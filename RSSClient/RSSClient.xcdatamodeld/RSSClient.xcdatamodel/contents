@@ -3,7 +3,8 @@
     <entity name="Article" representedClassName="Article" syncable="YES">
         <attribute name="author" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="content" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="enclosure" optional="YES" attributeType="Transformable" storedInTruthFile="YES" syncable="YES"/>
+        <attribute name="enclosures" optional="YES" attributeType="Transformable" storedInTruthFile="YES" syncable="YES"/>
+        <attribute name="enclosureURLs" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="link" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="published" optional="YES" attributeType="Date" syncable="YES"/>
@@ -22,6 +23,6 @@
     </entity>
     <elements>
         <element name="Feed" positionX="-63" positionY="-18" width="128" height="118"/>
-        <element name="Article" positionX="-54" positionY="27" width="128" height="208"/>
+        <element name="Article" positionX="-54" positionY="27" width="128" height="223"/>
     </elements>
 </model>

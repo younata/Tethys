@@ -19,6 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         // create window and such.
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        self.window?.backgroundColor = UIColor.whiteColor()
         self.window?.makeKeyAndVisible()
         self.window?.rootViewController = UINavigationController(rootViewController: AllFeedsViewController())
         return true

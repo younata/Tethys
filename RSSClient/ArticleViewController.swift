@@ -29,6 +29,8 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         
         let back = UIBarButtonItem(title: "<", style: .Plain, target: content, action: "goBack")
         let forward = UIBarButtonItem(title: ">", style: .Plain, target: content, action: "goForward")
+        back.enabled = false
+        forward.enabled = false
         
         self.navigationItem.rightBarButtonItems = [forward, back]
     }

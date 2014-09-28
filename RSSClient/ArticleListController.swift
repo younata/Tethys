@@ -30,13 +30,13 @@ class ArticleListController: UITableViewController {
     
     func refresh() {
         articles = []
-        for f in fs {
+        for f in feeds {
             articles += (f.articles.allObjects as [Article])
         }
         articles.sort({(a : Article, b: Article) in
-            var da : NSDate = a.updatedAt ?? a.published
-            var db : NSDate = b.updatedAt ?? b.published
-            return (da as NSDate) < (db as NSDate)
+            let da = a.updatedAt ?? a.published
+            let db = b.updatedAt ?? b.published
+            return da!.timeIntervalSince1970 < db!.timeIntervalSince1970
         })
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
         self.refreshControl?.endRefreshing()
@@ -84,10 +84,12 @@ class ArticleListController: UITableViewController {
         })
         let unread = NSLocalizedString("Mark as unread", comment: "")
         let read = NSLocalizedString("Mark as read", comment: "")
-        let toggleRead = UITableViewRowAction(style: .Normal, title: article.read ? unread : read, handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
+        let toggleText = article.read ? unread : read
+        let toggle = UITableViewRowAction(style: .Normal, title: toggleText, handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
             article.read = !article.read
             article.managedObjectContext.save(nil)
             tableView.reloadSections(NSIndexSet(index: indexPath.section), withRowAnimation: .Automatic)
         })
+        return [delete, toggle]
     }
 }

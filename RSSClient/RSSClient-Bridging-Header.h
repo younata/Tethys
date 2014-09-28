@@ -6,3 +6,5 @@
 #import "PureLayout.h"
 #import "RSBDragMenu.h"
 #import "MWFeedParser.h"
+#import "Article.h"
+#import "Feed.h"

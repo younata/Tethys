@@ -7,13 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		779BB468E5894659B87999AB /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FCD0EB0CDA2C4A6BBB506859 /* libPods.a */; };
 		89C8307919D730E9009924DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307819D730E9009924DA /* AppDelegate.swift */; };
 		89C8307C19D730E9009924DA /* RSSClient.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307A19D730E9009924DA /* RSSClient.xcdatamodeld */; };
 		89C8307E19D730E9009924DA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307D19D730E9009924DA /* ViewController.swift */; };
-		89C8308119D730E9009924DA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 89C8307F19D730E9009924DA /* Main.storyboard */; };
 		89C8308319D730E9009924DA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89C8308219D730E9009924DA /* Images.xcassets */; };
-		89C8308619D730E9009924DA /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89C8308419D730E9009924DA /* LaunchScreen.xib */; };
 		89C8309219D730E9009924DA /* RSSClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C8309119D730E9009924DA /* RSSClientTests.swift */; };
+		89C830A519D7A2DB009924DA /* AllFeedsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830A419D7A2DB009924DA /* AllFeedsViewController.swift */; };
+		89C830A719D7A5B4009924DA /* FeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830A619D7A5B4009924DA /* FeedCell.swift */; };
+		89C830A919D7B890009924DA /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830A819D7B890009924DA /* DataManager.swift */; };
+		89C830AB19D7BD8C009924DA /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830AA19D7BD8C009924DA /* Feed.swift */; };
+		89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830AD19D7CB8E009924DA /* ArticleListController.swift */; };
+		89C830B019D7CC59009924DA /* Article.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830AF19D7CC59009924DA /* Article.swift */; };
+		89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830B219D7D2CB009924DA /* ArticleCell.swift */; };
+		89C830B619D7DE97009924DA /* ArticleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830B519D7DE97009924DA /* ArticleViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,12 +39,21 @@
 		89C8307819D730E9009924DA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		89C8307B19D730E9009924DA /* RSSClient.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RSSClient.xcdatamodel; sourceTree = "<group>"; };
 		89C8307D19D730E9009924DA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		89C8308019D730E9009924DA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		89C8308219D730E9009924DA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		89C8308519D730E9009924DA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		89C8308B19D730E9009924DA /* RSSClientTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RSSClientTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		89C8309019D730E9009924DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89C8309119D730E9009924DA /* RSSClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSSClientTests.swift; sourceTree = "<group>"; };
+		89C8309B19D73334009924DA /* RSSClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSSClient-Bridging-Header.h"; sourceTree = "<group>"; };
+		89C830A419D7A2DB009924DA /* AllFeedsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllFeedsViewController.swift; sourceTree = "<group>"; };
+		89C830A619D7A5B4009924DA /* FeedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedCell.swift; sourceTree = "<group>"; };
+		89C830A819D7B890009924DA /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		89C830AA19D7BD8C009924DA /* Feed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
+		89C830AD19D7CB8E009924DA /* ArticleListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListController.swift; sourceTree = "<group>"; };
+		89C830AF19D7CC59009924DA /* Article.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Article.swift; sourceTree = "<group>"; };
+		89C830B219D7D2CB009924DA /* ArticleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleCell.swift; sourceTree = "<group>"; };
+		89C830B519D7DE97009924DA /* ArticleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleViewController.swift; sourceTree = "<group>"; };
+		EE775953AF0A4FE0B395FDC2 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		FCD0EB0CDA2C4A6BBB506859 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				779BB468E5894659B87999AB /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -58,12 +75,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		694B7677466B46B3BC9D72EF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FCD0EB0CDA2C4A6BBB506859 /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		89C8306A19D730E9009924DA = {
 			isa = PBXGroup;
 			children = (
 				89C8307519D730E9009924DA /* RSSClient */,
 				89C8308E19D730E9009924DA /* RSSClientTests */,
 				89C8307419D730E9009924DA /* Products */,
+				EE775953AF0A4FE0B395FDC2 /* Pods.xcconfig */,
+				694B7677466B46B3BC9D72EF /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -81,11 +108,12 @@
 			children = (
 				89C8307819D730E9009924DA /* AppDelegate.swift */,
 				89C8307D19D730E9009924DA /* ViewController.swift */,
-				89C8307F19D730E9009924DA /* Main.storyboard */,
+				89C830B119D7D2B7009924DA /* Feeds */,
+				89C830B419D7D2D2009924DA /* Articles */,
 				89C8308219D730E9009924DA /* Images.xcassets */,
-				89C8308419D730E9009924DA /* LaunchScreen.xib */,
-				89C8307A19D730E9009924DA /* RSSClient.xcdatamodeld */,
+				89C830AC19D7BDE0009924DA /* Core Data */,
 				89C8307619D730E9009924DA /* Supporting Files */,
+				89C8309B19D73334009924DA /* RSSClient-Bridging-Header.h */,
 			);
 			path = RSSClient;
 			sourceTree = "<group>";
@@ -115,6 +143,36 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		89C830AC19D7BDE0009924DA /* Core Data */ = {
+			isa = PBXGroup;
+			children = (
+				89C830A819D7B890009924DA /* DataManager.swift */,
+				89C830AA19D7BD8C009924DA /* Feed.swift */,
+				89C830AF19D7CC59009924DA /* Article.swift */,
+				89C8307A19D730E9009924DA /* RSSClient.xcdatamodeld */,
+			);
+			name = "Core Data";
+			sourceTree = "<group>";
+		};
+		89C830B119D7D2B7009924DA /* Feeds */ = {
+			isa = PBXGroup;
+			children = (
+				89C830A419D7A2DB009924DA /* AllFeedsViewController.swift */,
+				89C830A619D7A5B4009924DA /* FeedCell.swift */,
+			);
+			name = Feeds;
+			sourceTree = "<group>";
+		};
+		89C830B419D7D2D2009924DA /* Articles */ = {
+			isa = PBXGroup;
+			children = (
+				89C830AD19D7CB8E009924DA /* ArticleListController.swift */,
+				89C830B219D7D2CB009924DA /* ArticleCell.swift */,
+				89C830B519D7DE97009924DA /* ArticleViewController.swift */,
+			);
+			name = Articles;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -122,9 +180,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 89C8309519D730E9009924DA /* Build configuration list for PBXNativeTarget "RSSClient" */;
 			buildPhases = (
+				2908E238B1CB4E479EC01CAE /* Check Pods Manifest.lock */,
 				89C8306F19D730E9009924DA /* Sources */,
 				89C8307019D730E9009924DA /* Frameworks */,
 				89C8307119D730E9009924DA /* Resources */,
+				C8831EFC34E54DA38376756F /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -195,8 +255,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				89C8308119D730E9009924DA /* Main.storyboard in Resources */,
-				89C8308619D730E9009924DA /* LaunchScreen.xib in Resources */,
 				89C8308319D730E9009924DA /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -210,13 +268,54 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		2908E238B1CB4E479EC01CAE /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		C8831EFC34E54DA38376756F /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		89C8306F19D730E9009924DA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89C830A519D7A2DB009924DA /* AllFeedsViewController.swift in Sources */,
+				89C830A919D7B890009924DA /* DataManager.swift in Sources */,
+				89C830B019D7CC59009924DA /* Article.swift in Sources */,
+				89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */,
+				89C830A719D7A5B4009924DA /* FeedCell.swift in Sources */,
+				89C830B619D7DE97009924DA /* ArticleViewController.swift in Sources */,
+				89C830AB19D7BD8C009924DA /* Feed.swift in Sources */,
 				89C8307E19D730E9009924DA /* ViewController.swift in Sources */,
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
+				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
 				89C8307C19D730E9009924DA /* RSSClient.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -238,25 +337,6 @@
 			targetProxy = 89C8308C19D730E9009924DA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		89C8307F19D730E9009924DA /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				89C8308019D730E9009924DA /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		89C8308419D730E9009924DA /* LaunchScreen.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				89C8308519D730E9009924DA /* Base */,
-			);
-			name = LaunchScreen.xib;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		89C8309319D730E9009924DA /* Debug */ = {
@@ -340,21 +420,28 @@
 		};
 		89C8309619D730E9009924DA /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EE775953AF0A4FE0B395FDC2 /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = RSSClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "RSSClient/RSSClient-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		89C8309719D730E9009924DA /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EE775953AF0A4FE0B395FDC2 /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = RSSClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "RSSClient/RSSClient-Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -411,6 +498,7 @@
 				89C8309719D730E9009924DA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		89C8309819D730E9009924DA /* Build configuration list for PBXNativeTarget "RSSClientTests" */ = {
 			isa = XCConfigurationList;
@@ -419,6 +507,7 @@
 				89C8309A19D730E9009924DA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

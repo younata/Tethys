@@ -28,6 +28,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
         } else {
             feed = (NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: managedObjectContext) as Feed)
             feed.url = feedURL
+            self.managedObjectContext.save(nil)
             if let ico = icoURL {
                 let manager = AFHTTPRequestOperationManager()
                 manager.GET(ico, parameters: [:], success: {(op: AFHTTPRequestOperation!, response: AnyObject!) in
@@ -40,11 +41,20 @@ class DataManager: NSObject, MWFeedParserDelegate {
                 }, failure: {(op: AFHTTPRequestOperation!, response: AnyObject!) in
                     NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
                 })
+            } else {
+                NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
             }
-            self.managedObjectContext.save(nil)
         }
         self.loadFeed(feedURL)
         return feed
+    }
+    
+    func deleteFeed(feed: Feed) {
+        for article in (feed.articles.allObjects as [Article]) {
+            self.managedObjectContext.deleteObject(article)
+        }
+        self.managedObjectContext.deleteObject(feed)
+        self.managedObjectContext.save(nil)
     }
     
     func updateFeeds() {
@@ -81,7 +91,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
     }
     
     func feedParser(parser: MWFeedParser!, didParseFeedItem item: MWFeedItem!) {
-        let predicate = NSPredicate(format: "identifier = %@", item.identifier)
+        let predicate = NSPredicate(format: "link = %@", item.link)
         if let article = entities("Article", matchingPredicate: predicate).last as? Article {
             article.title = item.title
             article.link = item.link
@@ -98,13 +108,14 @@ class DataManager: NSObject, MWFeedParserDelegate {
                 let article = (NSEntityDescription.insertNewObjectForEntityForName("Article", inManagedObjectContext: managedObjectContext) as Article)
                 article.title = item.title
                 article.link = item.link
-                article.published = item.date
+                article.published = item.date ?? NSDate()
                 article.updatedAt = item.updated
                 article.summary = item.summary
                 article.content = item.content
                 article.author = item.author
                 article.enclosureURLs = item.enclosures
                 article.feed = feed
+                article.read = false
                 feed.addArticlesObject(article)
                 // TODO: enclosures
             } else {

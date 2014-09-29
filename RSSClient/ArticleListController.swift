@@ -20,8 +20,18 @@ class ArticleListController: UITableViewController {
         
         self.tableView.registerClass(ArticleCell.self, forCellReuseIdentifier: "reuse")
         
+        self.tableView.rowHeight = UITableViewAutomaticDimension
+        
         self.refreshControl = UIRefreshControl(frame: CGRectZero)
         self.refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        self.refreshControl?.beginRefreshing()
+        refresh()
+        if feeds.count == 1 {
+            self.navigationItem.title = feeds.first?.title
+        }
     }
     
     func articleForIndexPath(indexPath: NSIndexPath) -> Article {
@@ -50,6 +60,15 @@ class ArticleListController: UITableViewController {
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return articles.count
+    }
+    
+    override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        let article = articleForIndexPath(indexPath)
+        
+        if article.content == nil {
+            return 30
+        }
+        return 100
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -82,9 +101,9 @@ class ArticleListController: UITableViewController {
             article.managedObjectContext.save(nil)
             self.refresh()
         })
-        let unread = NSLocalizedString("Mark as unread", comment: "")
-        let read = NSLocalizedString("Mark as read", comment: "")
-        let toggleText = article.read ? unread : read
+        let unread = NSLocalizedString("Mark Unread", comment: "")
+        let read = NSLocalizedString("Mark Read", comment: "")
+        let toggleText = article.read ? read : unread
         let toggle = UITableViewRowAction(style: .Normal, title: toggleText, handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
             article.read = !article.read
             article.managedObjectContext.save(nil)

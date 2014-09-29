@@ -39,6 +39,7 @@ class ArticleCell: UITableViewCell {
         
         title.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         title.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
+        title.numberOfLines = 0
         
         author.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         author.autoPinEdge(.Top, toEdge: .Bottom, ofView: title, withOffset: 8)
@@ -49,7 +50,10 @@ class ArticleCell: UITableViewCell {
         published.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
         published.autoPinEdge(.Left, toEdge: .Right, ofView: title, withOffset: 8)
         published.autoPinEdge(.Bottom, toEdge: .Bottom, ofView: author)
+        published.autoMatchDimension(.Width, toDimension: .Width, ofView: published.superview, withMultiplier: 0.25)
         published.textAlignment = .Right
+        published.numberOfLines = 0
+        published.font = UIFont.systemFontOfSize(15)
         
         content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(0, 8, 4, 8), excludingEdge: .Top)
         content.autoPinEdge(.Top, toEdge: .Bottom, ofView: published, withOffset: 8)

@@ -165,10 +165,10 @@
 			isa = PBXGroup;
 			children = (
 				89C830A419D7A2DB009924DA /* AllFeedsViewController.swift */,
+				89C830A619D7A5B4009924DA /* FeedCell.swift */,
 				89C830B719D7EC55009924DA /* FindFeedViewController.swift */,
 				89C830B919D8904A009924DA /* findFeeds.js */,
 				89C830BD19D89722009924DA /* FindICO.js */,
-				89C830A619D7A5B4009924DA /* FeedCell.swift */,
 			);
 			name = Feeds;
 			sourceTree = "<group>";

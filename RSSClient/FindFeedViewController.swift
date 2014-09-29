@@ -9,9 +9,10 @@
 import UIKit
 import WebKit
 
-class FindFeedViewController: UIViewController, WKNavigationDelegate {
+class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFieldDelegate {
     let content = WKWebView(forAutoLayout: ())
     let loadingBar = UIProgressView(progressViewStyle: .Bar)
+    let navField = UITextField(frame: CGRectMake(0, 0, 200, 30))
     private var rssLink: String? = nil
     private var icoLink: String? = nil
     
@@ -34,9 +35,14 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Dismiss", comment: ""), style: .Plain, target: self, action: "dismiss")
         self.navigationItem.rightBarButtonItems = [useThis, forward, back]
         
-        self.navigationItem.titleView = loadingBar
+        self.navigationItem.titleView = navField
+        navField.delegate = self
+        navField.borderStyle = .Bezel
+        navField.autocapitalizationType = .None
+        navField.keyboardType = .URL
         loadingBar.progress = 0;
         
+        /*
         let alert = UIAlertController(title: NSLocalizedString("Load Page", comment: ""), message: NSLocalizedString("Initial page to load", comment: ""), preferredStyle: .Alert)
         alert.addTextFieldWithConfigurationHandler(nil)
         alert.addAction(UIAlertAction(title: NSLocalizedString("Go", comment: ""), style: .Default, handler: {(action: UIAlertAction!) in
@@ -54,6 +60,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate {
             
         }))
         self.presentViewController(alert, animated: true, completion: nil)
+        */
         //self.content.loadRequest(NSURLRequest(URL: NSURL(string: "https://news.ycombinator.com")))
     }
     
@@ -86,9 +93,24 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate {
         }
     }
     
+    // MARK: UITextFieldDelegate
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        if !textField.text.lowercaseString.hasPrefix("http") {
+            textField.text = "http://\(textField.text)"
+        }
+        if let url = NSURL.URLWithString(textField.text) {
+            self.content.loadRequest(NSURLRequest(URL: NSURL(string: textField.text)))
+        }
+        textField.text = ""
+        return true
+    }
+    
+    // MARK: WKNavigationDelegate
+    
     func webView(webView: WKWebView!, didFinishNavigation navigation: WKNavigation!) {
-        self.navigationItem.titleView = nil
-        self.navigationItem.title = webView.title
+        self.navigationItem.titleView = self.navField
+        self.navField.text = webView.title
         let forward = (self.navigationItem.rightBarButtonItems![1] as UIBarButtonItem)
         let back = (self.navigationItem.rightBarButtonItems![2] as UIBarButtonItem)
         forward.enabled = webView.canGoForward
@@ -110,7 +132,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate {
     }
     
     func webView(webView: WKWebView!, didFailNavigation navigation: WKNavigation!, withError error: NSError!) {
-        println("Error loading: \(error)")
+        self.navigationItem.titleView = self.navField
     }
     
     func webView(webView: WKWebView!, didStartProvisionalNavigation navigation: WKNavigation!) {

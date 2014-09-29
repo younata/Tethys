@@ -43,50 +43,58 @@ class FeedCell: UICollectionViewCell, RSBDragMenuDelegate {
     private var imageWidth: NSLayoutConstraint? = nil
     private var imageHeight: NSLayoutConstraint? = nil
     
-    func configure() {
-        if (imageView.superview == nil) {
-            self.contentView.addSubview(imageView)
-            self.contentView.addSubview(titleLabel)
-            self.contentView.addSubview(summaryLabel)
-            self.contentView.addSubview(dragMenu)
-            
-            imageView.autoPinEdgeToSuperviewEdge(.Left, withInset: 0)
-            imageView.autoPinEdgeToSuperviewEdge(.Top, withInset: 0)
-            imageView.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0, relation: .LessThanOrEqual)
-            if (image != nil) {
-                imageWidth = self.imageView.autoSetDimension(.Width, toSize: image!.size.width)
-                imageHeight = self.imageView.autoSetDimension(.Height, toSize: image!.size.height)
-            } else {
-                imageWidth = self.imageView.autoSetDimension(.Width, toSize: 0)
-                imageHeight = self.imageView.autoSetDimension(.Height, toSize: 0)
-            }
-            
-            titleLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 0)
-            titleLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 0)
-            titleLabel.autoPinEdge(.Left, toEdge: .Right, ofView: self.imageView, withOffset: 8)
-            
-            summaryLabel.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0)
-            summaryLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 0)
-            summaryLabel.autoPinEdge(.Left, toEdge: .Left, ofView: self.titleLabel)
-            summaryLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.titleLabel, withOffset: 8, relation: .GreaterThanOrEqual)
-            summaryLabel.font = UIFont.systemFontOfSize(15)
-            
-            dragMenu.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
-            dragMenu.circularMenu = false
-            dragMenu.borderColor = UIColor.blackColor()
-            dragMenu.borderWidth = 1
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        self.contentView.addSubview(imageView)
+        self.contentView.addSubview(titleLabel)
+        self.contentView.addSubview(summaryLabel)
+        self.contentView.addSubview(dragMenu)
+        
+        imageView.autoPinEdgeToSuperviewEdge(.Left, withInset: 0)
+        imageView.autoPinEdgeToSuperviewEdge(.Top, withInset: 0)
+        imageView.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0, relation: .GreaterThanOrEqual)
+        if (image != nil) {
+            imageWidth = self.imageView.autoSetDimension(.Width, toSize: image!.size.width)
+            imageHeight = self.imageView.autoSetDimension(.Height, toSize: image!.size.height)
+        } else {
+            imageWidth = self.imageView.autoSetDimension(.Width, toSize: 0)
+            imageHeight = self.imageView.autoSetDimension(.Height, toSize: 0)
         }
+        
+        titleLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 0)
+        titleLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 0)
+        titleLabel.autoPinEdge(.Left, toEdge: .Right, ofView: self.imageView, withOffset: 8)
+        titleLabel.numberOfLines = 0
+        
+        summaryLabel.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0)
+        summaryLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 0)
+        summaryLabel.autoPinEdge(.Left, toEdge: .Left, ofView: self.titleLabel)
+        summaryLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.titleLabel, withOffset: 8, relation: .GreaterThanOrEqual)
+        summaryLabel.autoSetDimension(.Width, toSize: 280, relation: .LessThanOrEqual)
+        summaryLabel.font = UIFont.systemFontOfSize(15)
+        summaryLabel.numberOfLines = 0
+        
+        dragMenu.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
+        //dragMenu.circularMenu = false
+        dragMenu.borderColor = UIColor.blackColor()
+        dragMenu.borderWidth = 1
+        dragMenu.delegate = self
     }
     
+    required init(coder: NSCoder) {
+        fatalError("NSCoding not supported")
+    }
+  
     func dragMenu(menu: RSBDragMenu!, didSelectItem item: UIView!) {
         let itemTexts = [NSString.localizedStringWithFormat(NSLocalizedString("Open %@", comment: ""), self.title!),
                          NSString.localizedStringWithFormat(NSLocalizedString("Delete %@", comment: ""), self.title!)]
         let l = (item as UILabel)
         if let c = controller {
             if l.text == itemTexts[0] {
-                c.deleteCell(self)
-            } else if l.text == itemTexts[1] {
                 c.showFeedFromCell(self)
+            } else if l.text == itemTexts[1] {
+                c.deleteCell(self)
             }
         }
     }

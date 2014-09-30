@@ -12,8 +12,6 @@
 		89C8307C19D730E9009924DA /* RSSClient.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307A19D730E9009924DA /* RSSClient.xcdatamodeld */; };
 		89C8308319D730E9009924DA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89C8308219D730E9009924DA /* Images.xcassets */; };
 		89C8309219D730E9009924DA /* RSSClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C8309119D730E9009924DA /* RSSClientTests.swift */; };
-		89C830A519D7A2DB009924DA /* AllFeedsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830A419D7A2DB009924DA /* AllFeedsViewController.swift */; };
-		89C830A719D7A5B4009924DA /* FeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830A619D7A5B4009924DA /* FeedCell.swift */; };
 		89C830A919D7B890009924DA /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830A819D7B890009924DA /* DataManager.swift */; };
 		89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830AD19D7CB8E009924DA /* ArticleListController.swift */; };
 		89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830B219D7D2CB009924DA /* ArticleCell.swift */; };
@@ -23,6 +21,8 @@
 		89C830BF19D89722009924DA /* FindICO.js in Resources */ = {isa = PBXBuildFile; fileRef = 89C830BD19D89722009924DA /* FindICO.js */; };
 		89C830C319D89E46009924DA /* Article.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C219D89E46009924DA /* Article.m */; };
 		89C830C619D8A058009924DA /* Feed.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C519D8A058009924DA /* Feed.m */; };
+		89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */; };
+		89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C919DA37FB009924DA /* FeedTableCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,8 +45,6 @@
 		89C8309019D730E9009924DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89C8309119D730E9009924DA /* RSSClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSSClientTests.swift; sourceTree = "<group>"; };
 		89C8309B19D73334009924DA /* RSSClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSSClient-Bridging-Header.h"; sourceTree = "<group>"; };
-		89C830A419D7A2DB009924DA /* AllFeedsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllFeedsViewController.swift; sourceTree = "<group>"; };
-		89C830A619D7A5B4009924DA /* FeedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedCell.swift; sourceTree = "<group>"; };
 		89C830A819D7B890009924DA /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		89C830AD19D7CB8E009924DA /* ArticleListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListController.swift; sourceTree = "<group>"; };
 		89C830B219D7D2CB009924DA /* ArticleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleCell.swift; sourceTree = "<group>"; };
@@ -58,6 +56,8 @@
 		89C830C219D89E46009924DA /* Article.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Article.m; sourceTree = "<group>"; };
 		89C830C419D8A058009924DA /* Feed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Feed.h; sourceTree = "<group>"; };
 		89C830C519D8A058009924DA /* Feed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Feed.m; sourceTree = "<group>"; };
+		89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsTableViewController.swift; sourceTree = "<group>"; };
+		89C830C919DA37FB009924DA /* FeedTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCell.swift; sourceTree = "<group>"; };
 		EE775953AF0A4FE0B395FDC2 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		FCD0EB0CDA2C4A6BBB506859 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -164,8 +164,8 @@
 		89C830B119D7D2B7009924DA /* Feeds */ = {
 			isa = PBXGroup;
 			children = (
-				89C830A419D7A2DB009924DA /* AllFeedsViewController.swift */,
-				89C830A619D7A5B4009924DA /* FeedCell.swift */,
+				89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */,
+				89C830C919DA37FB009924DA /* FeedTableCell.swift */,
 				89C830B719D7EC55009924DA /* FindFeedViewController.swift */,
 				89C830B919D8904A009924DA /* findFeeds.js */,
 				89C830BD19D89722009924DA /* FindICO.js */,
@@ -234,6 +234,11 @@
 				TargetAttributes = {
 					89C8307219D730E9009924DA = {
 						CreatedOnToolsVersion = 6.0.1;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					89C8308A19D730E9009924DA = {
 						CreatedOnToolsVersion = 6.0.1;
@@ -319,12 +324,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				89C830C619D8A058009924DA /* Feed.m in Sources */,
-				89C830A519D7A2DB009924DA /* AllFeedsViewController.swift in Sources */,
+				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
 				89C830A919D7B890009924DA /* DataManager.swift in Sources */,
 				89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */,
-				89C830A719D7A5B4009924DA /* FeedCell.swift in Sources */,
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
 				89C830B619D7DE97009924DA /* ArticleViewController.swift in Sources */,
+				89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */,
 				89C830C319D89E46009924DA /* Article.m in Sources */,
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,

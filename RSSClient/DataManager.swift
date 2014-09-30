@@ -17,7 +17,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
     }
     
     func feeds() -> [Feed] {
-        return (entities("Feed", matchingPredicate: NSPredicate(value: true)) as [Feed])
+        return (entities("Feed", matchingPredicate: NSPredicate(value: true), sortDescriptors: [NSSortDescriptor(key: "title", ascending: true)]) as [Feed])
     }
     
     func newFeed(feedURL: String, withICO icoURL: String?) -> Feed {
@@ -57,8 +57,17 @@ class DataManager: NSObject, MWFeedParserDelegate {
         self.managedObjectContext.save(nil)
     }
     
-    func updateFeeds() {
-        for feed in feeds() {
+    private var comp: (Void)->(Void) = {}
+    private var feedsLeft = 0
+    
+    func updateFeeds(completion: (Void)->(Void)) {
+        updateFeeds(feeds(), completion: completion)
+    }
+    
+    func updateFeeds(feeds: [Feed], completion: (Void)->(Void)) {
+        feedsLeft += feeds.count
+        comp = completion
+        for feed in feeds {
             loadFeed(feed.url)
         }
     }
@@ -99,7 +108,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
             article.summary = item.summary
             article.content = item.content
             article.author = item.author
-            if (article.enclosureURLs.description != item.enclosures.description) {
+            if (article.enclosureURLs?.description != item.enclosures?.description) {
                 // TODO: enclosures
             }
         } else {
@@ -125,16 +134,28 @@ class DataManager: NSObject, MWFeedParserDelegate {
         managedObjectContext.save(nil)
     }
     
+    func feedParser(parser: MWFeedParser!, didFailWithError error: NSError!) {
+        feedsLeft -= 1
+        if (feedsLeft == 0) {
+            self.comp()
+        }
+    }
+    
     func feedParserDidFinish(parser: MWFeedParser!) {
         NSNotificationCenter.defaultCenter().postNotificationName("FeedParserFinished", object: parser.url().absoluteString!)
+        feedsLeft -= 1
+        if (feedsLeft == 0) {
+            self.comp()
+        }
     }
     
     // MARK: Generic Core Data
     
-    func entities(entity: String, matchingPredicate predicate: NSPredicate) -> [AnyObject] {
+    func entities(entity: String, matchingPredicate predicate: NSPredicate, sortDescriptors: [NSSortDescriptor] = []) -> [AnyObject] {
         let request = NSFetchRequest()
         request.entity = NSEntityDescription.entityForName(entity, inManagedObjectContext: managedObjectContext)
         request.predicate = predicate
+        request.sortDescriptors = sortDescriptors
         
         var error : NSError? = nil
         var ret = managedObjectContext.executeFetchRequest(request, error: &error)

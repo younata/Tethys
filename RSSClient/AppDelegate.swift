@@ -21,8 +21,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
         self.window?.backgroundColor = UIColor.whiteColor()
         self.window?.makeKeyAndVisible()
-        self.window?.rootViewController = UINavigationController(rootViewController: AllFeedsViewController())
+        self.window?.rootViewController = UINavigationController(rootViewController: FeedsTableViewController(style: .Plain))
         return true
+    }
+    
+    func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        let unreadCombine: (Int, Article) -> (Int) = {(i: Int, a: Article) in
+            let n = a.read == true ? 1 : 0
+            return i + n
+        }
+        let containsUnread : (Feed) -> (Bool) = {(feed: Feed) in
+            return (feed.articles.allObjects as [Article]).reduce(0, combine: unreadCombine) != 0
+        }
+        let originalUnreadList: [Article] = DataManager.sharedInstance().feeds().filter(containsUnread).map({($0.articles.allObjects as [Article])}).reduce([], combine: {$0 + $1})
+        DataManager.sharedInstance().updateFeeds({
+            let alist: [Article] = DataManager.sharedInstance().feeds().filter(containsUnread).map({($0.articles.allObjects as [Article])}).reduce([], combine: {$0 + $1}).filter({return !contains(originalUnreadList, $0)})
+            
+            for article: Article in alist {
+                // show local notification.
+                let note = UILocalNotification()
+                let str = NSAttributedString(string: article.content, attributes: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType])
+                let txt = str.string.lengthOfBytesUsingEncoding(NSUTF8StringEncoding) != 0 ? "\n\(str.string)" : ""
+                note.alertBody = "\(article.title)" + txt
+                note.userInfo = ["feed": article.feed.url, "link": article.link]
+                //note.applicationIconBadgeNumber = alist.count + originalUnreadList.count
+                application.scheduleLocalNotification(note)
+            }
+        })
     }
 
     func applicationWillResignActive(application: UIApplication) {

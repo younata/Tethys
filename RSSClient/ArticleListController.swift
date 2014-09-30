@@ -24,6 +24,7 @@ class ArticleListController: UITableViewController {
         
         self.refreshControl = UIRefreshControl(frame: CGRectZero)
         self.refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+        
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -32,6 +33,17 @@ class ArticleListController: UITableViewController {
         if feeds.count == 1 {
             self.navigationItem.title = feeds.first?.title
         }
+        self.articles = []
+        for f in self.feeds {
+            self.articles += (f.articles.allObjects as [Article])
+        }
+        self.articles.sort({(a : Article, b: Article) in
+            let da = a.updatedAt ?? a.published
+            let db = b.updatedAt ?? b.published
+            return da!.timeIntervalSince1970 > db!.timeIntervalSince1970
+        })
+        self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+        self.refreshControl?.endRefreshing()
     }
     
     func articleForIndexPath(indexPath: NSIndexPath) -> Article {
@@ -39,17 +51,19 @@ class ArticleListController: UITableViewController {
     }
     
     func refresh() {
-        articles = []
-        for f in feeds {
-            articles += (f.articles.allObjects as [Article])
-        }
-        articles.sort({(a : Article, b: Article) in
-            let da = a.updatedAt ?? a.published
-            let db = b.updatedAt ?? b.published
-            return da!.timeIntervalSince1970 < db!.timeIntervalSince1970
+        DataManager.sharedInstance().updateFeeds(feeds, completion: {
+            self.articles = []
+            for f in self.feeds {
+                self.articles += (f.articles.allObjects as [Article])
+            }
+            self.articles.sort({(a : Article, b: Article) in
+                let da = a.updatedAt ?? a.published
+                let db = b.updatedAt ?? b.published
+                return da!.timeIntervalSince1970 > db!.timeIntervalSince1970
+            })
+            self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+            self.refreshControl?.endRefreshing()
         })
-        self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
-        self.refreshControl?.endRefreshing()
     }
 
     // MARK: - Table view data source

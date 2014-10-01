@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import WebKit
 
 private let instance = DataManager()
 
@@ -17,7 +18,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
     }
     
     func feeds() -> [Feed] {
-        return (entities("Feed", matchingPredicate: NSPredicate(value: true), sortDescriptors: [NSSortDescriptor(key: "title", ascending: true)]) as [Feed])
+        return (entities("Feed", matchingPredicate: NSPredicate(value: true), sortDescriptors: [NSSortDescriptor(key: "title", ascending: true)]) as [Feed]).sorted { return $0.title < $1.title }
     }
     
     func newFeed(feedURL: String, withICO icoURL: String?) -> Feed {
@@ -29,21 +30,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
             feed = (NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: managedObjectContext) as Feed)
             feed.url = feedURL
             self.managedObjectContext.save(nil)
-            if let ico = icoURL {
-                let manager = AFHTTPRequestOperationManager()
-                manager.GET(ico, parameters: [:], success: {(op: AFHTTPRequestOperation!, response: AnyObject!) in
-                    println("\(response)")
-                    if (response.isKindOfClass(UIImage.self)) {
-                        feed.image = (response as UIImage)
-                        self.managedObjectContext.save(nil)
-                        NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
-                    }
-                }, failure: {(op: AFHTTPRequestOperation!, response: AnyObject!) in
-                    NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
-                })
-            } else {
-                NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
-            }
+            NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
         }
         self.loadFeed(feedURL)
         return feed
@@ -82,6 +69,8 @@ class DataManager: NSObject, MWFeedParserDelegate {
     
     // MARK: MWFeedParserDelegate
     
+    let contentRenderer = WKWebView(frame: CGRectZero)
+    
     func feedParser(parser: MWFeedParser!, didParseFeedInfo info: MWFeedInfo!) {
         let predicate = NSPredicate(format: "url = %@", parser.url().absoluteString!)
         if let feed = entities("Feed", matchingPredicate: predicate).last as? Feed {
@@ -94,6 +83,26 @@ class DataManager: NSObject, MWFeedParserDelegate {
             feed.title = info.title
             feed.summary = info.summary
             feed.url = parser.url().absoluteString!
+            if let link = info.link {
+                AFHTTPRequestOperationManager().GET(link, parameters: [:], success: {(_, response: AnyObject!) in
+                    self.contentRenderer.loadHTMLString((response as String), baseURL: NSURL(string: link))
+                    let ICOScript = NSString.stringWithContentsOfFile(NSBundle.mainBundle().pathForResource("FindICO", ofType: "js")!, encoding: NSUTF8StringEncoding, error: nil)
+                    self.contentRenderer.evaluateJavaScript(ICOScript, completionHandler: {(jsResponse: AnyObject!, error: NSError?) in
+                        if (error == nil) {
+                            if let imageLink = jsResponse as? String {
+                                AFHTTPRequestOperationManager().GET(imageLink, parameters: [:], success: {(_, image: AnyObject!) in
+                                    if let im = image as? UIImage {
+                                        feed.image = im
+                                        self.managedObjectContext.save(nil)
+                                        NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
+                                    }
+                                }, failure:{(_, error: NSError!) in })
+                            }
+                        }
+                    })
+                    
+                }, failure: {(_, error: NSError!) in })
+            }
             // create?
         }
         managedObjectContext.save(nil)

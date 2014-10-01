@@ -30,6 +30,12 @@ class FeedsTableViewController: UITableViewController {
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 80
         self.refresh()
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -43,6 +49,11 @@ class FeedsTableViewController: UITableViewController {
         
         let vc = UINavigationController(rootViewController: FindFeedViewController())
         self.presentViewController(vc, animated: true, completion: nil)
+    }
+    
+    func reload() {
+        feeds = DataManager.sharedInstance().feeds()
+        self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
     }
     
     func refresh() {
@@ -80,9 +91,7 @@ class FeedsTableViewController: UITableViewController {
         self.navigationController?.pushViewController(al, animated: true)
     }
 
-    // Override to support conditional editing of the table view.
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return NO if you do not want the specified item to be editable.
         return true
     }
     

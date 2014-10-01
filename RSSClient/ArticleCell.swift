@@ -16,7 +16,19 @@ class ArticleCell: UITableViewCell {
             title.text = article?.title
             published.text = dateFormatter.stringFromDate(article?.updatedAt ?? article?.published ?? NSDate())
             author.text = article?.author
-            content.loadHTMLString(article?.content ?? article?.summary ?? "", baseURL: NSURL(string: article?.link ?? ""))
+            var cnt = article?.content
+            if (cnt == nil || cnt?.lengthOfBytesUsingEncoding(NSUTF8StringEncoding) == 0) {
+                cnt = article?.summary
+                if (cnt == nil || cnt?.lengthOfBytesUsingEncoding(NSUTF8StringEncoding) == 0) {
+                    cnt = ""
+                }
+            }
+            content.loadHTMLString(cnt, baseURL: NSURL(string: article?.link ?? ""))
+            let astr = NSAttributedString(string: cnt!, attributes: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                                                                     NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)])
+            let bounding = astr.boundingRectWithSize(CGSizeMake(self.contentView.bounds.size.width - 16, CGFloat.max), options: .UsesFontLeading, context: nil)
+            contentHeight.constant = ceil(bounding.size.height)
+            //content.attributedText = astr
             // TODO: enclosures.
             self.highlighted = article?.read ?? false
         }
@@ -25,12 +37,18 @@ class ArticleCell: UITableViewCell {
     let title = UILabel(forAutoLayout: ())
     let published = UILabel(forAutoLayout: ())
     let author = UILabel(forAutoLayout: ())
-    let content = WKWebView(forAutoLayout: ())
+    let content: WKWebView! = nil
+    
+    let contentHeight: NSLayoutConstraint! = nil
     
     let dateFormatter = NSDateFormatter()
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        let config = WKWebViewConfiguration()
+        config.preferences.minimumFontSize = UIFont.preferredFontForTextStyle(UIFontTextStyleBody).pointSize
+        content = WKWebView(frame: CGRectZero, configuration: config)
         
         self.contentView.addSubview(title)
         self.contentView.addSubview(author)
@@ -40,10 +58,11 @@ class ArticleCell: UITableViewCell {
         title.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         title.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
         title.numberOfLines = 0
+        title.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
         
         author.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         author.autoPinEdge(.Top, toEdge: .Bottom, ofView: title, withOffset: 8)
-        author.font = UIFont.systemFontOfSize(15)
+        author.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
         author.autoPinEdge(.Right, toEdge: .Right, ofView: title)
         
         published.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
@@ -53,10 +72,11 @@ class ArticleCell: UITableViewCell {
         published.autoMatchDimension(.Width, toDimension: .Width, ofView: published.superview, withMultiplier: 0.25)
         published.textAlignment = .Right
         published.numberOfLines = 0
-        published.font = UIFont.systemFontOfSize(15)
+        published.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
         
         content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(0, 8, 4, 8), excludingEdge: .Top)
         content.autoPinEdge(.Top, toEdge: .Bottom, ofView: published, withOffset: 8)
+        contentHeight = content.autoSetDimension(.Height, toSize: 0)
         
         dateFormatter.timeStyle = .ShortStyle
         dateFormatter.dateStyle = .ShortStyle

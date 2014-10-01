@@ -34,7 +34,6 @@ class FeedTableCell: UITableViewCell {
     let iconView = UIImageView(forAutoLayout: ())
     let summaryLabel = UILabel(forAutoLayout: ())
     
-    
     var iconHeight : NSLayoutConstraint? = nil
     var iconWidth : NSLayoutConstraint? = nil
     
@@ -55,12 +54,14 @@ class FeedTableCell: UITableViewCell {
         nameLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
         nameLabel.autoPinEdge(.Left, toEdge: .Right, ofView: iconView, withOffset: 8)
         nameLabel.numberOfLines = 0
+        nameLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
         
         summaryLabel.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
         summaryLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
         summaryLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: nameLabel, withOffset: 8, relation: .GreaterThanOrEqual)
         summaryLabel.autoPinEdge(.Left, toEdge: .Right, ofView: iconView, withOffset: 8)
         summaryLabel.numberOfLines = 0
+        summaryLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
     }
     
     required init(coder: NSCoder) {

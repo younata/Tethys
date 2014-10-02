@@ -30,8 +30,9 @@ class ArticleCell: UITableViewCell {
             contentHeight.constant = ceil(bounding.size.height)
             //content.attributedText = astr
             // TODO: enclosures.
-            let mult: CGFloat = article?.read == true ? 1.0 : 0.0
-            self.unreadWidth.multiplier = mult
+            unread.unread = article?.read == true ? 1 : 0
+            //let mult: CGFloat = article?.read == true ? 1.0 : 0.0
+            //unreadWidth.multiplier = mult
         }
     }
     
@@ -39,7 +40,7 @@ class ArticleCell: UITableViewCell {
     let published = UILabel(forAutoLayout: ())
     let author = UILabel(forAutoLayout: ())
     let content: WKWebView! = nil
-    let unread = UnreadCounter.newAutoLayoutView()
+    let unread = UnreadCounter(frame: CGRectZero)
     
     var unreadWidth: NSLayoutConstraint! = nil
     var contentHeight: NSLayoutConstraint! = nil
@@ -52,6 +53,8 @@ class ArticleCell: UITableViewCell {
         let config = WKWebViewConfiguration()
         config.preferences.minimumFontSize = UIFont.preferredFontForTextStyle(UIFontTextStyleBody).pointSize
         content = WKWebView(frame: CGRectZero, configuration: config)
+        
+        unread.setTranslatesAutoresizingMaskIntoConstraints(false)
         
         self.contentView.addSubview(title)
         self.contentView.addSubview(author)
@@ -71,7 +74,7 @@ class ArticleCell: UITableViewCell {
         
         unread.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
         unread.autoAlignAxis(.Horizontal, toSameAxisOfView: title)
-        unread.autoMatchDimension(.Height, toDimension: .Height, ofView: title, withMultiplier: 2.0 / 3.0)
+        unread.autoSetDimension(.Height, toSize: 20)
         unreadWidth = unread.autoMatchDimension(.Width, toDimension: .Height, ofView: unread)
         unread.hideUnreadText = true
         

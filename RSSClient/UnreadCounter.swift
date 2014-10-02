@@ -26,14 +26,14 @@ class UnreadCounter: UIView, UIAppearanceContainer {
         didSet {
             if unread == 0 {
                 countLabel.text = ""
-                circleLayer.strokeColor = UIColor.clearColor().CGColor
+                circleLayer.fillColor = UIColor.clearColor().CGColor
             } else {
                 if hideUnreadText {
                     countLabel.text = ""
                 } else {
                     countLabel.text = "\(unread)"
                 }
-                circleLayer.strokeColor = circleColor.CGColor
+                circleLayer.fillColor = circleColor.CGColor
             }
         }
     }
@@ -51,6 +51,7 @@ class UnreadCounter: UIView, UIAppearanceContainer {
         
         countLabel.autoCenterInSuperview()
         countLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+        countLabel.textColor = countColor
         
         self.backgroundColor = UIColor.clearColor()
         circleLayer.strokeColor = UIColor.clearColor().CGColor

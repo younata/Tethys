@@ -29,15 +29,13 @@ class FeedTableCell: UITableViewCell {
                 nameLabel.text = ""
                 unreadCounter.unread = 0
             }
-            let mult = unreadCounter.unread != 0.0 ? 1.0 : 0.0
-            //self.unreadWidth.multiplier = mult
         }
     }
     
     let nameLabel = UILabel(forAutoLayout: ())
     let iconView = UIImageView(forAutoLayout: ())
     let summaryLabel = UILabel(forAutoLayout: ())
-    let unreadCounter = UnreadCounter.newAutoLayoutView()
+    let unreadCounter = UnreadCounter(frame: CGRectZero)
     
     var unreadWidth: NSLayoutConstraint! = nil
     var iconHeight : NSLayoutConstraint! = nil
@@ -45,6 +43,8 @@ class FeedTableCell: UITableViewCell {
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        unreadCounter.setTranslatesAutoresizingMaskIntoConstraints(false)
         
         self.contentView.addSubview(nameLabel)
         self.contentView.addSubview(iconView)
@@ -59,8 +59,8 @@ class FeedTableCell: UITableViewCell {
         
         unreadCounter.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
         unreadCounter.autoAlignAxisToSuperviewAxis(.Horizontal)
-        unreadCounter.autoMatchDimension(.Height, toDimension: .Height, ofView: self.contentView, withMultiplier: 2.0 / 3.0)
-        unreadWidth = unreadCounter.autoMatchDimension(.Width, toDimension: .Height, ofView: unreadCounter, withMultiplier: 1.0)
+        unreadCounter.autoSetDimension(.Height, toSize: 30)
+        unreadWidth = unreadCounter.autoMatchDimension(.Width, toDimension: .Height, ofView: unreadCounter)
         
         nameLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
         nameLabel.autoPinEdge(.Right, toEdge: .Left, ofView: unreadCounter, withOffset: -8)
@@ -69,7 +69,7 @@ class FeedTableCell: UITableViewCell {
         nameLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
         
         summaryLabel.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
-        summaryLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
+        summaryLabel.autoPinEdge(.Right, toEdge: .Left, ofView: unreadCounter, withOffset: -8)
         summaryLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: nameLabel, withOffset: 8, relation: .GreaterThanOrEqual)
         summaryLabel.autoPinEdge(.Left, toEdge: .Right, ofView: iconView, withOffset: 8)
         summaryLabel.numberOfLines = 0

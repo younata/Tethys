@@ -33,10 +33,8 @@ class ArticleListController: UITableViewController {
         if feeds.count == 1 {
             self.navigationItem.title = feeds.first?.title
         }
-        self.articles = []
-        for f in self.feeds {
-            self.articles += (f.articles.allObjects as [Article])
-        }
+        
+        self.articles = self.feeds.reduce([], combine: {(list: [Article], feed: Feed) in return list + (feed.articles.allObjects as [Article])})
         self.articles.sort({(a : Article, b: Article) in
             let da = a.updatedAt ?? a.published
             let db = b.updatedAt ?? b.published

@@ -30,7 +30,8 @@ class ArticleCell: UITableViewCell {
             contentHeight.constant = ceil(bounding.size.height)
             //content.attributedText = astr
             // TODO: enclosures.
-            self.highlighted = article?.read ?? false
+            let mult: CGFloat = article?.read == true ? 1.0 : 0.0
+            self.unreadWidth.multiplier = mult
         }
     }
     
@@ -38,8 +39,10 @@ class ArticleCell: UITableViewCell {
     let published = UILabel(forAutoLayout: ())
     let author = UILabel(forAutoLayout: ())
     let content: WKWebView! = nil
+    let unread = UnreadCounter.newAutoLayoutView()
     
-    let contentHeight: NSLayoutConstraint! = nil
+    var unreadWidth: NSLayoutConstraint! = nil
+    var contentHeight: NSLayoutConstraint! = nil
     
     let dateFormatter = NSDateFormatter()
     
@@ -54,6 +57,7 @@ class ArticleCell: UITableViewCell {
         self.contentView.addSubview(author)
         self.contentView.addSubview(published)
         self.contentView.addSubview(content)
+        self.contentView.addSubview(unread)
         
         title.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         title.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
@@ -65,7 +69,13 @@ class ArticleCell: UITableViewCell {
         author.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
         author.autoPinEdge(.Right, toEdge: .Right, ofView: title)
         
-        published.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
+        unread.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
+        unread.autoAlignAxis(.Horizontal, toSameAxisOfView: title)
+        unread.autoMatchDimension(.Height, toDimension: .Height, ofView: title, withMultiplier: 2.0 / 3.0)
+        unreadWidth = unread.autoMatchDimension(.Width, toDimension: .Height, ofView: unread)
+        unread.hideUnreadText = true
+        
+        published.autoPinEdge(.Right, toEdge: .Left, ofView: unread, withOffset: -8)
         published.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
         published.autoPinEdge(.Left, toEdge: .Right, ofView: title, withOffset: 8)
         published.autoPinEdge(.Bottom, toEdge: .Bottom, ofView: author)

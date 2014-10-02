@@ -15,27 +15,33 @@ class FeedTableCell: UITableViewCell {
             if let f = feed {
                 if let image: UIImage = f.image as? UIImage {
                     iconView.image = image
-                    iconWidth?.constant = image.size.width
-                    iconHeight?.constant = image.size.height
+                    iconWidth.constant = image.size.width
+                    iconHeight.constant = image.size.height
                 }
                 
                 nameLabel.text = f.title
                 summaryLabel.text = f.summary
+                unreadCounter.unread = filter(f.articles.allObjects, {return $0.read == false}).count
             } else {
                 iconView.image = nil
-                iconWidth?.constant = 0
-                iconHeight?.constant = 0
+                iconWidth.constant = 0
+                iconHeight.constant = 0
                 nameLabel.text = ""
+                unreadCounter.unread = 0
             }
+            let mult = unreadCounter.unread != 0.0 ? 1.0 : 0.0
+            //self.unreadWidth.multiplier = mult
         }
     }
     
     let nameLabel = UILabel(forAutoLayout: ())
     let iconView = UIImageView(forAutoLayout: ())
     let summaryLabel = UILabel(forAutoLayout: ())
+    let unreadCounter = UnreadCounter.newAutoLayoutView()
     
-    var iconHeight : NSLayoutConstraint? = nil
-    var iconWidth : NSLayoutConstraint? = nil
+    var unreadWidth: NSLayoutConstraint! = nil
+    var iconHeight : NSLayoutConstraint! = nil
+    var iconWidth : NSLayoutConstraint! = nil
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -43,6 +49,7 @@ class FeedTableCell: UITableViewCell {
         self.contentView.addSubview(nameLabel)
         self.contentView.addSubview(iconView)
         self.contentView.addSubview(summaryLabel)
+        self.contentView.addSubview(unreadCounter)
         
         iconView.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
         iconView.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
@@ -50,8 +57,13 @@ class FeedTableCell: UITableViewCell {
         iconHeight = iconView.autoSetDimension(.Height, toSize: 0)
         iconWidth = iconView.autoSetDimension(.Width, toSize: 0)
         
+        unreadCounter.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
+        unreadCounter.autoAlignAxisToSuperviewAxis(.Horizontal)
+        unreadCounter.autoMatchDimension(.Height, toDimension: .Height, ofView: self.contentView, withMultiplier: 2.0 / 3.0)
+        unreadWidth = unreadCounter.autoMatchDimension(.Width, toDimension: .Height, ofView: unreadCounter, withMultiplier: 1.0)
+        
         nameLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
-        nameLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
+        nameLabel.autoPinEdge(.Right, toEdge: .Left, ofView: unreadCounter, withOffset: -8)
         nameLabel.autoPinEdge(.Left, toEdge: .Right, ofView: iconView, withOffset: 8)
         nameLabel.numberOfLines = 0
         nameLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)

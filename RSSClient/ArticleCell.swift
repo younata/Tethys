@@ -31,8 +31,8 @@ class ArticleCell: UITableViewCell {
             //content.attributedText = astr
             // TODO: enclosures.
             unread.unread = article?.read == true ? 1 : 0
-            //let mult: CGFloat = article?.read == true ? 1.0 : 0.0
-            //unreadWidth.multiplier = mult
+            let width = CGRectGetWidth(unread.bounds)
+            unreadWidth.constant = unread.unread == 0 ? -width : 0
         }
     }
     

@@ -17,5 +17,6 @@
 @dynamic summary;
 @dynamic image;
 @dynamic articles;
+@dynamic groups;
 
 @end

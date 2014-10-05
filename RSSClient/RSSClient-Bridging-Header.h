@@ -10,3 +10,4 @@
 
 #import "Article.h"
 #import "Feed.h"
+#import "Group.h"

@@ -29,6 +29,8 @@ class FeedTableCell: UITableViewCell {
                 nameLabel.text = ""
                 unreadCounter.unread = 0
             }
+            let width = CGRectGetWidth(unreadCounter.bounds)
+            unreadWidth.constant = unreadCounter.unread == 0 ? -width : 0
         }
     }
     

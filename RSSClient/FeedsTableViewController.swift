@@ -10,7 +10,14 @@ import UIKit
 
 class FeedsTableViewController: UITableViewController {
     
+    enum DisplayState {
+        case feeds
+        case groups
+    }
+    
+    var groups: [Group] = []
     var feeds: [Feed] = []
+    var state: DisplayState = .feeds
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +35,8 @@ class FeedsTableViewController: UITableViewController {
         self.tableView.estimatedRowHeight = 80
         self.refresh()
         
+        //self.toolbarItems = []
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
     }
     
@@ -37,6 +46,7 @@ class FeedsTableViewController: UITableViewController {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+        self.reload()
     }
     
     func addFeed() {
@@ -50,32 +60,56 @@ class FeedsTableViewController: UITableViewController {
     
     func reload() {
         feeds = DataManager.sharedInstance().feeds()
+        groups = DataManager.sharedInstance().groups()
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
     }
     
     func refresh() {
         self.refreshControl?.endRefreshing()
-        feeds = DataManager.sharedInstance().feeds()
+        self.reload()
         DataManager.sharedInstance().updateFeeds({
             self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
         })
-        self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+    }
+    
+    func groupAtSection(section: Int) -> Group? {
+        if section > 0 && (section - 1) < groups.count {
+            return groups[section-1]
+        }
+        return nil
+    }
+    
+    func feedAtIndexPath(indexPath: NSIndexPath) -> Feed! {
+        if indexPath.section == 0 {
+            return feeds[indexPath.row]
+        }
+        if let feedSet = groupAtSection(indexPath.section)?.feeds {
+            let feedArray = (feedSet.allObjects as [Feed])
+            let sortedArray = feedArray.sorted { return $0.title < $1.title }
+            return sortedArray.last
+        }
+        return nil
     }
 
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        switch (self.state) {
+        case .feeds:
+            return 1
+        case .groups:
+            return 1 + groups.count
+        }
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return feeds.count
+        return section == 0 ? feeds.count : self.groupAtSection(section)!.feeds.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as FeedTableCell
         
-        cell.feed = feeds[indexPath.row]
+        cell.feed = feedAtIndexPath(indexPath)
 
         return cell
     }
@@ -84,27 +118,59 @@ class FeedsTableViewController: UITableViewController {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
         let al = ArticleListController(style: .Plain)
-        al.feeds = [feeds[indexPath.row]]
+        al.feeds = [feedAtIndexPath(indexPath)]
         self.navigationController?.pushViewController(al, animated: true)
     }
 
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
+        switch (self.state) {
+        case .feeds:
+            return true
+        case .groups:
+            return indexPath.section != 0
+        }
+    }
+    
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch (self.state) {
+        case .feeds:
+            return nil
+        case .groups:
+            if section == 0 {
+                return NSLocalizedString("All", comment: "")
+            } else if let group = self.groupAtSection(section) {
+                return group.name
+            }
+        }
+        return nil
     }
     
     override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
-        let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
-            let feed = self.feeds[indexPath.row]
-            DataManager.sharedInstance().deleteFeed(feed)
-            self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-        })
         let markRead = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Mark Read", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
-            let feed = self.feeds[indexPath.row]
+            let feed = self.feedAtIndexPath(indexPath)
             for article in feed.articles.allObjects as [Article] {
                 article.read = true
             }
             self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
         })
-        return [delete, markRead]
+        switch (self.state) {
+        case .feeds:
+            let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
+                let feed = self.feedAtIndexPath(indexPath)
+                DataManager.sharedInstance().deleteFeed(feed)
+                self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+            })
+            return [delete, markRead]
+        case .groups:
+            let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Remove", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
+                let feed = self.feedAtIndexPath(indexPath)
+                if let group = self.groupAtSection(indexPath.section) {
+                    feed.removeGroupsObject(group)
+                    group.removeFeedsObject(feed)
+                    self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                }
+            })
+            return [delete, markRead]
+        }
     }
 }

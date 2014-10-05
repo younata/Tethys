@@ -17,8 +17,31 @@ class DataManager: NSObject, MWFeedParserDelegate {
         return instance
     }
     
+    // MARK: - Groups
+    
+    func groups() -> [Group] {
+        return (entities("Group", matchingPredicate: NSPredicate(value: true)) as [Group]).sorted { return $0.name < $1.name; }
+    }
+    
+    func newGroup(name: String) -> Group {
+        if let group = entities("Group", matchingPredicate: NSPredicate(format: "name = %@", name)).last as? Group {
+            return group
+        } else {
+            let group = (NSEntityDescription.insertNewObjectForEntityForName("Group", inManagedObjectContext: managedObjectContext) as Group)
+            group.name = name
+            managedObjectContext.save(nil)
+            return group
+        }
+    }
+    
+    func addFeed(feed: Feed, toGroup group:Group) {
+        group.addFeedsObject(feed)
+    }
+    
+    // MARK: - Feeds
+    
     func feeds() -> [Feed] {
-        return (entities("Feed", matchingPredicate: NSPredicate(value: true), sortDescriptors: [NSSortDescriptor(key: "title", ascending: true)]) as [Feed]).sorted { return $0.title < $1.title }
+        return (entities("Feed", matchingPredicate: NSPredicate(value: true)) as [Feed]).sorted { return $0.title < $1.title }
     }
     
     func newFeed(feedURL: String, withICO icoURL: String?) -> Feed {

@@ -87,6 +87,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     // MARK: UITextFieldDelegate
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
+        textField.text = textField.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         if !textField.text.lowercaseString.hasPrefix("http") {
             textField.text = "http://\(textField.text)"
         }
@@ -99,6 +100,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         feedParser.delegate = self
         feedParser.parse()
         textField.text = ""
+        textField.placeholder = NSLocalizedString("Loading", comment: "")
         textField.resignFirstResponder()
         
         return true
@@ -126,7 +128,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     
     func webView(webView: WKWebView!, didFinishNavigation navigation: WKNavigation!) {
         self.navigationItem.titleView = self.navField
-        self.navField.text = webView.title
+        navField.text = webView.title
         forward.enabled = webView.canGoForward
         back.enabled = webView.canGoBack
         
@@ -154,5 +156,6 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         println("loading navigation: \(navigation)")
         loadingBar.progress = 0
         self.navigationItem.titleView = loadingBar
+        navField.placeholder = ""
     }
 }

@@ -211,12 +211,17 @@ class DataManager: NSObject, MWFeedParserDelegate {
     let managedObjectContext: NSManagedObjectContext
     
     override init() {
-        managedObjectModel = NSManagedObjectModel.mergedModelFromBundles(nil)
+        let modelURL = NSBundle.mainBundle().URLForResource("RSSClient", withExtension: "momd")!
+        managedObjectModel = NSManagedObjectModel(contentsOfURL: modelURL)
         let applicationDocumentsDirectory: String = (NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).last as String)
         let storeURL = NSURL.fileURLWithPath(applicationDocumentsDirectory.stringByAppendingPathComponent("RSSClient.sqlite"))
         persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
         var error: NSError? = nil
-        persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: storeURL, options: nil, error: &error)
+        let options = [NSMigratePersistentStoresAutomaticallyOption: true, NSInferMappingModelAutomaticallyOption: true]
+        persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: storeURL, options: options, error: &error)
+        if (error != nil) {
+            println("Error adding persistent data store: \(error)")
+        }
         
         managedObjectContext = NSManagedObjectContext()
         managedObjectContext.persistentStoreCoordinator = persistentStoreCoordinator

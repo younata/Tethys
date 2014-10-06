@@ -8,7 +8,8 @@
 
 import UIKit
 
-class FeedsTableViewController: UITableViewController {
+class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+//class FeedsTableViewController: UITableViewController {
     
     enum DisplayState {
         case feeds
@@ -18,9 +19,38 @@ class FeedsTableViewController: UITableViewController {
     var groups: [Group] = []
     var feeds: [Feed] = []
     var state: DisplayState = .feeds
+    
+    let tabBar = UITabBar(forAutoLayout: ())
+    
+    let tableViewController = UITableViewController(style: .Plain)
+    
+    var refreshControl : UIRefreshControl? {
+        get {
+            return self.tableViewController.refreshControl
+        }
+        set {
+            self.tableViewController.refreshControl = refreshControl
+        }
+    }
+    
+    var tableView : UITableView {
+        return self.tableViewController.tableView
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.addChildViewController(tableViewController)
+        self.view.addSubview(tableView)
+        tableView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
+        
+        self.view.addSubview(tabBar)
+        tabBar.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
+        tabBar.autoSetDimension(.Height, toSize: 44)
+        let feedsTabItem = UITabBarItem(title: NSLocalizedString("Feeds", comment: ""), image: nil, selectedImage: nil) // TODO: images
+        let groupsTabItem = UITabBarItem(title: NSLocalizedString("Groups", comment: ""), image: nil, selectedImage: nil)
+        tabBar.items = [feedsTabItem, groupsTabItem]
 
         self.refreshControl = UIRefreshControl(frame: CGRectZero)
         self.refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)

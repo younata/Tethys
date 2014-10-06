@@ -33,15 +33,6 @@ class ArticleListController: UITableViewController {
         if feeds.count == 1 {
             self.navigationItem.title = feeds.first?.title
         }
-        
-        self.articles = self.feeds.reduce([], combine: {(list: [Article], feed: Feed) in return list + (feed.articles.allObjects as [Article])})
-        self.articles.sort({(a : Article, b: Article) in
-            let da = a.updatedAt ?? a.published
-            let db = b.updatedAt ?? b.published
-            return da!.timeIntervalSince1970 > db!.timeIntervalSince1970
-        })
-        self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
-        self.refreshControl?.endRefreshing()
     }
     
     func articleForIndexPath(indexPath: NSIndexPath) -> Article {
@@ -49,19 +40,17 @@ class ArticleListController: UITableViewController {
     }
     
     func refresh() {
-        DataManager.sharedInstance().updateFeeds(feeds, completion: {
-            self.articles = []
-            for f in self.feeds {
-                self.articles += (f.articles.allObjects as [Article])
-            }
-            self.articles.sort({(a : Article, b: Article) in
-                let da = a.updatedAt ?? a.published
-                let db = b.updatedAt ?? b.published
-                return da!.timeIntervalSince1970 > db!.timeIntervalSince1970
-            })
-            self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
-            self.refreshControl?.endRefreshing()
+        self.articles = []
+        for f in self.feeds {
+            self.articles += (f.articles.allObjects as [Article])
+        }
+        self.articles.sort({(a : Article, b: Article) in
+            let da = a.updatedAt ?? a.published
+            let db = b.updatedAt ?? b.published
+            return da!.timeIntervalSince1970 > db!.timeIntervalSince1970
         })
+        self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+        self.refreshControl?.endRefreshing()
     }
 
     // MARK: - Table view data source

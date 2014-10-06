@@ -21,7 +21,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
         self.window?.backgroundColor = UIColor.whiteColor()
         self.window?.makeKeyAndVisible()
-        self.window?.rootViewController = UINavigationController(rootViewController: FeedsTableViewController(style: .Plain))
+        self.window?.rootViewController = UINavigationController(rootViewController: FeedsTableViewController())
         return true
     }
     

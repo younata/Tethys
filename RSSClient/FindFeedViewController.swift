@@ -97,7 +97,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         }
     }
     
-    // MARK: UITextFieldDelegate
+    // MARK: - UITextFieldDelegate
     
     func textFieldDidBeginEditing(textField: UITextField) {
         self.navigationItem.setRightBarButtonItem(cancelTextEntry, animated: true)
@@ -131,7 +131,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         return true
     }
     
-    // MARK: MWFeedParserDelegate
+    // MARK: - MWFeedParserDelegate
     
     func feedParser(parser: MWFeedParser!, didParseFeedInfo info: MWFeedInfo!) {
         parser.stopParsing()
@@ -149,7 +149,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         }
     }
     
-    // MARK: WKNavigationDelegate
+    // MARK: - WKNavigationDelegate
     
     func webView(webView: WKWebView!, didFinishNavigation navigation: WKNavigation!) {
         self.navigationItem.titleView = self.navField

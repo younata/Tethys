@@ -38,6 +38,15 @@ class DataManager: NSObject, MWFeedParserDelegate {
         group.addFeedsObject(feed)
     }
     
+    func deleteGroup(group: Group) {
+        for feed: Feed in (group.feeds.allObjects as [Feed]) {
+            group.removeFeedsObject(feed)
+            feed.removeGroupsObject(group)
+        }
+        self.managedObjectContext.deleteObject(group)
+        self.managedObjectContext.save(nil)
+    }
+    
     // MARK: - Feeds
     
     func feeds() -> [Feed] {
@@ -62,6 +71,10 @@ class DataManager: NSObject, MWFeedParserDelegate {
     func deleteFeed(feed: Feed) {
         for article in (feed.articles.allObjects as [Article]) {
             self.managedObjectContext.deleteObject(article)
+        }
+        for group: Group in (feed.groups.allObjects as [Group]) {
+            group.removeFeedsObject(feed)
+            feed.removeGroupsObject(group)
         }
         self.managedObjectContext.deleteObject(feed)
         self.managedObjectContext.save(nil)

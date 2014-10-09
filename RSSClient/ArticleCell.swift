@@ -30,7 +30,7 @@ class ArticleCell: UITableViewCell {
             contentHeight.constant = ceil(bounding.size.height)
             //content.attributedText = astr
             // TODO: enclosures.
-            unread.unread = article?.read == true ? 1 : 0
+            unread.unread = article?.read == false ? 1 : 0
             let width = CGRectGetWidth(unread.bounds)
             unreadWidth.constant = unread.unread == 0 ? -width : 0
         }
@@ -51,7 +51,7 @@ class ArticleCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         let config = WKWebViewConfiguration()
-        config.preferences.minimumFontSize = UIFont.preferredFontForTextStyle(UIFontTextStyleBody).pointSize
+        config.preferences.minimumFontSize = 18
         content = WKWebView(frame: CGRectZero, configuration: config)
         
         unread.setTranslatesAutoresizingMaskIntoConstraints(false)
@@ -91,7 +91,7 @@ class ArticleCell: UITableViewCell {
         content.autoPinEdge(.Top, toEdge: .Bottom, ofView: published, withOffset: 8)
         contentHeight = content.autoSetDimension(.Height, toSize: 0)
         
-        dateFormatter.timeStyle = .ShortStyle
+        dateFormatter.timeStyle = .NoStyle
         dateFormatter.dateStyle = .ShortStyle
         dateFormatter.timeZone = NSCalendar.currentCalendar().timeZone
     }

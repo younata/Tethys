@@ -25,6 +25,11 @@
 		895779AC19E62CDA00548418 /* Article.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C219D89E46009924DA /* Article.m */; };
 		895779AD19E62CDA00548418 /* Feed.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C519D8A058009924DA /* Feed.m */; };
 		895779AE19E62CDA00548418 /* Group.m in Sources */ = {isa = PBXBuildFile; fileRef = 891710FF19E0703700D86C7B /* Group.m */; };
+		895779B019E6512200548418 /* UnreadCounterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895779AF19E6512200548418 /* UnreadCounterTests.swift */; };
+		895779B219E655F100548418 /* FeedTableCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895779B119E655F100548418 /* FeedTableCellTests.swift */; };
+		895779B419E658A700548418 /* Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895779B319E658A700548418 /* Mocks.swift */; };
+		895779B619E65A6D00548418 /* ArticleCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895779B519E65A6D00548418 /* ArticleCellTests.swift */; };
+		895779B819E65D9900548418 /* DataManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895779B719E65D9900548418 /* DataManagerTests.swift */; };
 		89C8307919D730E9009924DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307819D730E9009924DA /* AppDelegate.swift */; };
 		89C8307C19D730E9009924DA /* RSSClient.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307A19D730E9009924DA /* RSSClient.xcdatamodeld */; };
 		89C8308319D730E9009924DA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89C8308219D730E9009924DA /* Images.xcassets */; };
@@ -57,6 +62,11 @@
 		891710FF19E0703700D86C7B /* Group.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Group.m; sourceTree = "<group>"; };
 		8957799D19E62C7100548418 /* RSSClientTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSSClientTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		8957799E19E62C7100548418 /* AppDelegateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateTests.swift; sourceTree = "<group>"; };
+		895779AF19E6512200548418 /* UnreadCounterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounterTests.swift; sourceTree = "<group>"; };
+		895779B119E655F100548418 /* FeedTableCellTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCellTests.swift; sourceTree = "<group>"; };
+		895779B319E658A700548418 /* Mocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
+		895779B519E65A6D00548418 /* ArticleCellTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleCellTests.swift; sourceTree = "<group>"; };
+		895779B719E65D9900548418 /* DataManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManagerTests.swift; sourceTree = "<group>"; };
 		89C8307319D730E9009924DA /* RSSClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RSSClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89C8307719D730E9009924DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89C8307819D730E9009924DA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -160,6 +170,11 @@
 			children = (
 				89C8308F19D730E9009924DA /* Supporting Files */,
 				8957799E19E62C7100548418 /* AppDelegateTests.swift */,
+				895779AF19E6512200548418 /* UnreadCounterTests.swift */,
+				895779B119E655F100548418 /* FeedTableCellTests.swift */,
+				895779B519E65A6D00548418 /* ArticleCellTests.swift */,
+				895779B719E65D9900548418 /* DataManagerTests.swift */,
+				895779B319E658A700548418 /* Mocks.swift */,
 				8957799D19E62C7100548418 /* RSSClientTests-Bridging-Header.h */,
 			);
 			path = RSSClientTests;
@@ -373,16 +388,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				895779AD19E62CDA00548418 /* Feed.m in Sources */,
+				895779B019E6512200548418 /* UnreadCounterTests.swift in Sources */,
+				895779B219E655F100548418 /* FeedTableCellTests.swift in Sources */,
 				895779A819E62CC500548418 /* ArticleCell.swift in Sources */,
+				895779B619E65A6D00548418 /* ArticleCellTests.swift in Sources */,
 				895779AA19E62CC500548418 /* DataManager.swift in Sources */,
 				895779A019E62CC500548418 /* AppDelegate.swift in Sources */,
 				895779A319E62CC500548418 /* FeedTableCell.swift in Sources */,
 				895779A719E62CC500548418 /* ArticleListController.swift in Sources */,
 				895779A919E62CC500548418 /* ArticleViewController.swift in Sources */,
+				895779B819E65D9900548418 /* DataManagerTests.swift in Sources */,
 				895779A119E62CC500548418 /* UnreadCounter.swift in Sources */,
 				895779A419E62CC500548418 /* FindFeedViewController.swift in Sources */,
 				895779AE19E62CDA00548418 /* Group.m in Sources */,
 				895779AC19E62CDA00548418 /* Article.m in Sources */,
+				895779B419E658A700548418 /* Mocks.swift in Sources */,
 				8957799F19E62C7100548418 /* AppDelegateTests.swift in Sources */,
 				895779A219E62CC500548418 /* FeedsTableViewController.swift in Sources */,
 				895779AB19E62CCE00548418 /* RSSClient.xcdatamodeld in Sources */,

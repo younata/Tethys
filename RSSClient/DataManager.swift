@@ -36,6 +36,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
     
     func addFeed(feed: Feed, toGroup group:Group) {
         group.addFeedsObject(feed)
+        feed.addGroupsObject(group)
     }
     
     func deleteGroup(group: Group) {
@@ -51,6 +52,10 @@ class DataManager: NSObject, MWFeedParserDelegate {
     
     func feeds() -> [Feed] {
         return (entities("Feed", matchingPredicate: NSPredicate(value: true)) as [Feed]).sorted { return $0.title < $1.title }
+    }
+    
+    func newFeed(feedURL: String) -> Feed {
+        return newFeed(feedURL, withICO: nil)
     }
     
     func newFeed(feedURL: String, withICO icoURL: String?) -> Feed {
@@ -105,7 +110,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
     
     // MARK: MWFeedParserDelegate
     
-    let contentRenderer = WKWebView(frame: CGRectZero)
+    private let contentRenderer = WKWebView(frame: CGRectZero)
     
     func feedParser(parser: MWFeedParser!, didParseFeedInfo info: MWFeedInfo!) {
         let predicate = NSPredicate(format: "url = %@", parser.url().absoluteString!)

@@ -13,10 +13,10 @@ class ArticleCell: UITableViewCell {
     
     var article: Article? {
         didSet {
-            title.text = article?.title
-            published.text = dateFormatter.stringFromDate(article?.updatedAt ?? article?.published ?? NSDate())
-            author.text = article?.author
-            var cnt = article?.content
+            title.text = article?.title ?? ""
+            published.text = article != nil ? dateFormatter.stringFromDate(article?.updatedAt ?? article?.published ?? NSDate()) : ""
+            author.text = article?.author ?? ""
+            var cnt = article?.content ?? ""
             if (cnt == nil || cnt?.lengthOfBytesUsingEncoding(NSUTF8StringEncoding) == 0) {
                 cnt = article?.summary
                 if (cnt == nil || cnt?.lengthOfBytesUsingEncoding(NSUTF8StringEncoding) == 0) {
@@ -64,18 +64,21 @@ class ArticleCell: UITableViewCell {
         
         title.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         title.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
+        
         title.numberOfLines = 0
         title.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
         
         author.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         author.autoPinEdge(.Top, toEdge: .Bottom, ofView: title, withOffset: 8)
-        author.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
         author.autoPinEdge(.Right, toEdge: .Right, ofView: title)
+        
+        author.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
         
         unread.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
         unread.autoAlignAxis(.Horizontal, toSameAxisOfView: title)
         unread.autoSetDimension(.Height, toSize: 20)
         unreadWidth = unread.autoMatchDimension(.Width, toDimension: .Height, ofView: unread)
+        
         unread.hideUnreadText = true
         
         published.autoPinEdge(.Right, toEdge: .Left, ofView: unread, withOffset: -8)
@@ -83,6 +86,7 @@ class ArticleCell: UITableViewCell {
         published.autoPinEdge(.Left, toEdge: .Right, ofView: title, withOffset: 8)
         published.autoPinEdge(.Bottom, toEdge: .Bottom, ofView: author)
         published.autoMatchDimension(.Width, toDimension: .Width, ofView: published.superview, withMultiplier: 0.25)
+        
         published.textAlignment = .Right
         published.numberOfLines = 0
         published.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)

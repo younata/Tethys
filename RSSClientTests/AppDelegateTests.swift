@@ -11,7 +11,7 @@ import XCTest
 
 class AppDelegateTests: XCTestCase {
     
-    var appDelegate: AppDelegate
+    var appDelegate: AppDelegate = AppDelegate()
 
     override func setUp() {
         super.setUp()
@@ -19,24 +19,15 @@ class AppDelegateTests: XCTestCase {
         appDelegate = AppDelegate()
     }
     
-    override func tearDown() {
-        super.tearDown()
-    }
-    
     func testApplicationDidFinishLoading() {
         appDelegate.application(nil, didFinishLaunchingWithOptions: nil)
         XCTAssertNotNil(appDelegate.window, "App Delegate should have a window")
         XCTAssert(appDelegate.window!.rootViewController?.isKindOfClass(UINavigationController.self), "App should start with a navigation controller")
+        let nc = (appDelegate.window!.rootViewController! as UINavigationController)
+        XCTAssert(nc.viewControllers.last!.isKindOfClass(FeedsTableViewController.self), "Feeds Table controller should be root view controller of the navigation controller")
     }
-
-    func testExample() {
-        XCTAssert(true, "Pass")
+    
+    func testBackgroundFetch() {
+        XCTFail("Implement background fetch tests")
     }
-
-    func testPerformanceExample() {
-        self.measureBlock() {
-            // Put the code you want to measure the time of here.
-        }
-    }
-
 }

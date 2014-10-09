@@ -27,6 +27,7 @@ class FeedTableCell: UITableViewCell {
                 iconWidth.constant = 0
                 iconHeight.constant = 0
                 nameLabel.text = ""
+                summaryLabel.text = ""
                 unreadCounter.unread = 0
             }
             let width = CGRectGetWidth(unreadCounter.bounds)
@@ -67,6 +68,7 @@ class FeedTableCell: UITableViewCell {
         nameLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
         nameLabel.autoPinEdge(.Right, toEdge: .Left, ofView: unreadCounter, withOffset: -8)
         nameLabel.autoPinEdge(.Left, toEdge: .Right, ofView: iconView, withOffset: 8)
+        
         nameLabel.numberOfLines = 0
         nameLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
         
@@ -74,6 +76,7 @@ class FeedTableCell: UITableViewCell {
         summaryLabel.autoPinEdge(.Right, toEdge: .Left, ofView: unreadCounter, withOffset: -8)
         summaryLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: nameLabel, withOffset: 8, relation: .GreaterThanOrEqual)
         summaryLabel.autoPinEdge(.Left, toEdge: .Right, ofView: iconView, withOffset: 8)
+        
         summaryLabel.numberOfLines = 0
         summaryLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
     }

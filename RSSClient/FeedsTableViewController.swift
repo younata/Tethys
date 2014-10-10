@@ -217,13 +217,6 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
-        let markRead = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Mark Read", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
-            let feed = self.feedAtIndexPath(indexPath)
-            for article in feed.articles.allObjects as [Article] {
-                article.read = true
-            }
-            self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-        })
         let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
             switch (self.state) {
             case .feeds:
@@ -233,28 +226,23 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
         })
-        return [delete, markRead]
-    }
-    
-    /*
-    func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         switch (self.state) {
         case .feeds:
-            return false
+            let markRead = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Mark Read", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
+                let feed = self.feedAtIndexPath(indexPath)
+                for article in feed.articles.allObjects as [Article] {
+                    article.read = true
+                }
+                self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+            })
+            return [delete, markRead]
         case .groups:
-            return indexPath.section == 0
+            let edit = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Edit", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
+                let gvc = GroupsEditorViewController()
+                gvc.group = self.groupAtIndexPath(indexPath)
+                self.presentViewController(UINavigationController(rootViewController: gvc), animated: true, completion: nil)
+            })
+            return [delete, edit]
         }
     }
-    
-    func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
-        if let destGroup = groupAtSection(destinationIndexPath.section) {
-            let feed = feedAtIndexPath(sourceIndexPath)
-            destGroup.addFeedsObject(feed)
-            feed.addGroupsObject(destGroup)
-        }
-        let mis = NSMutableIndexSet(index: 0)
-        mis.addIndex(destinationIndexPath.section)
-        
-        tableView.reloadSections(mis, withRowAnimation: .Automatic)
-    }*/
 }

@@ -45,6 +45,7 @@
 		89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */; };
 		89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C919DA37FB009924DA /* FeedTableCell.swift */; };
 		89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830CC19DC67B9009924DA /* UnreadCounter.swift */; };
+		89F1C01F19E75E73009343DB /* GroupsEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F1C01E19E75E73009343DB /* GroupsEditorController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,6 +91,7 @@
 		89C830C919DA37FB009924DA /* FeedTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCell.swift; sourceTree = "<group>"; };
 		89C830CC19DC67B9009924DA /* UnreadCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounter.swift; sourceTree = "<group>"; };
 		89C830F119E043A8009924DA /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = "Vendor/Quick/Externals/Nimble/build/Debug-iphoneos/Nimble.framework"; sourceTree = "<group>"; };
+		89F1C01E19E75E73009343DB /* GroupsEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupsEditorController.swift; sourceTree = "<group>"; };
 		EE775953AF0A4FE0B395FDC2 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		FCD0EB0CDA2C4A6BBB506859 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -171,9 +173,9 @@
 				89C8308F19D730E9009924DA /* Supporting Files */,
 				8957799E19E62C7100548418 /* AppDelegateTests.swift */,
 				895779AF19E6512200548418 /* UnreadCounterTests.swift */,
+				895779B719E65D9900548418 /* DataManagerTests.swift */,
 				895779B119E655F100548418 /* FeedTableCellTests.swift */,
 				895779B519E65A6D00548418 /* ArticleCellTests.swift */,
-				895779B719E65D9900548418 /* DataManagerTests.swift */,
 				895779B319E658A700548418 /* Mocks.swift */,
 				8957799D19E62C7100548418 /* RSSClientTests-Bridging-Header.h */,
 			);
@@ -207,6 +209,7 @@
 			isa = PBXGroup;
 			children = (
 				89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */,
+				89F1C01E19E75E73009343DB /* GroupsEditorController.swift */,
 				89C830C919DA37FB009924DA /* FeedTableCell.swift */,
 				89C830B719D7EC55009924DA /* FindFeedViewController.swift */,
 				89C830B919D8904A009924DA /* findFeeds.js */,
@@ -375,6 +378,7 @@
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
 				89C830B619D7DE97009924DA /* ArticleViewController.swift in Sources */,
 				89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */,
+				89F1C01F19E75E73009343DB /* GroupsEditorController.swift in Sources */,
 				8917110019E0703700D86C7B /* Group.m in Sources */,
 				89C830C319D89E46009924DA /* Article.m in Sources */,
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,

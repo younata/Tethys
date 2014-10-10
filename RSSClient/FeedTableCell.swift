@@ -21,7 +21,7 @@ class FeedTableCell: UITableViewCell {
                 
                 nameLabel.text = f.title
                 summaryLabel.text = f.summary
-                unreadCounter.unread = filter(f.articles.allObjects, {return $0.read == false}).count
+                unreadCounter.unread = UInt(filter(f.articles.allObjects, {return $0.read == false}).count)
             } else {
                 iconView.image = nil
                 iconWidth.constant = 0

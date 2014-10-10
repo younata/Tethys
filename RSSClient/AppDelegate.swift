@@ -16,12 +16,21 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     public func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
-        // create window and such.
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
         self.window?.backgroundColor = UIColor.whiteColor()
         self.window?.makeKeyAndVisible()
-        self.window?.rootViewController = UINavigationController(rootViewController: FeedsTableViewController())
+        let ftvc = FeedsTableViewController()
+        self.window?.rootViewController = UINavigationController(rootViewController: ftvc)
+        if let options = launchOptions {
+            if let localNotification = options[UIApplicationLaunchOptionsLocalNotificationKey] as? UILocalNotification {
+                if let userInfo = localNotification.userInfo {
+                    let feed : Feed = (userInfo["feed"] as Feed)
+                    let article : Article = (userInfo["article"] as Article)
+                    let al = ftvc.showFeeds([feed], animated: false)
+                    al.showArticle(article)
+                }
+            }
+        }
         return true
     }
     
@@ -43,8 +52,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 let str = NSAttributedString(string: article.content, attributes: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType])
                 let txt = str.string.lengthOfBytesUsingEncoding(NSUTF8StringEncoding) != 0 ? "\n\(str.string)" : ""
                 note.alertBody = "\(article.title)" + txt
-                note.userInfo = ["feed": article.feed.url, "link": article.link]
-                //note.applicationIconBadgeNumber = alist.count + originalUnreadList.count
+                note.userInfo = ["feed": article.feed, "article": article]
                 application.scheduleLocalNotification(note)
             }
         })

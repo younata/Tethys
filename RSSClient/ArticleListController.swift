@@ -52,6 +52,19 @@ class ArticleListController: UITableViewController {
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
         self.refreshControl?.endRefreshing()
     }
+    
+    func showArticle(article: Article) -> ArticleViewController {
+        return showArticle(article, animated: true)
+    }
+    
+    func showArticle(article: Article, animated: Bool) -> ArticleViewController {
+        let avc = ArticleViewController()
+        avc.article = article
+        self.navigationController?.pushViewController(avc, animated: animated)
+        article.read = true
+        article.managedObjectContext.save(nil)
+        return avc
+    }
 
     // MARK: - Table view data source
 
@@ -83,12 +96,7 @@ class ArticleListController: UITableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
-        let avc = ArticleViewController()
-        let article = self.articleForIndexPath(indexPath)
-        avc.article = article
-        self.navigationController?.pushViewController(avc, animated: true)
-        article.read = true
-        article.managedObjectContext.save(nil)
+        showArticle(self.articleForIndexPath(indexPath))
     }
 
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {

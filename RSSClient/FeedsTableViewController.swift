@@ -170,6 +170,17 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         return nil
     }
+    
+    func showFeeds(feeds: [Feed]) -> ArticleListController {
+        return showFeeds(feeds, animated: true)
+    }
+    
+    func showFeeds(feeds: [Feed], animated: Bool) -> ArticleListController {
+        let al = ArticleListController(style: .Plain)
+        al.feeds = feeds
+        self.navigationController?.pushViewController(al, animated: animated)
+        return al
+    }
 
     // MARK: - Table view data source
 
@@ -202,14 +213,12 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
-        let al = ArticleListController(style: .Plain)
         switch (state) {
         case .feeds:
-            al.feeds = [feedAtIndexPath(indexPath)]
+            showFeeds([feedAtIndexPath(indexPath)])
         case .groups:
-            al.feeds = (groupAtIndexPath(indexPath)!.feeds.allObjects as [Feed]).sorted {return $0.title < $1.title}
+            showFeeds((groupAtIndexPath(indexPath)!.feeds.allObjects as [Feed]).sorted {return $0.title < $1.title})
         }
-        self.navigationController?.pushViewController(al, animated: true)
     }
 
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -238,7 +247,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             return [delete, markRead]
         case .groups:
             let edit = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Edit", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
-                let gvc = GroupsEditorViewController()
+                let gvc = GroupsEditorController()
                 gvc.group = self.groupAtIndexPath(indexPath)
                 self.presentViewController(UINavigationController(rootViewController: gvc), animated: true, completion: nil)
             })

@@ -16,16 +16,11 @@ class ArticleCell: UITableViewCell {
             title.text = article?.title ?? ""
             published.text = article != nil ? dateFormatter.stringFromDate(article?.updatedAt ?? article?.published ?? NSDate()) : ""
             author.text = article?.author ?? ""
-            var cnt = article?.content ?? ""
-            if (cnt == nil || cnt?.lengthOfBytesUsingEncoding(NSUTF8StringEncoding) == 0) {
-                cnt = article?.summary
-                if (cnt == nil || cnt?.lengthOfBytesUsingEncoding(NSUTF8StringEncoding) == 0) {
-                    cnt = ""
-                }
-            }
+            var cnt = article?.content ?? article?.summary
+
             content.loadHTMLString(cnt, baseURL: NSURL(string: article?.link ?? ""))
-            let astr = NSAttributedString(string: cnt!, attributes: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-                                                                     NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)])
+            let astr = NSAttributedString(string: cnt ?? "", attributes: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                                                                    NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)])
             let bounding = astr.boundingRectWithSize(CGSizeMake(self.contentView.bounds.size.width - 16, CGFloat.max), options: .UsesFontLeading, context: nil)
             contentHeight.constant = ceil(bounding.size.height)
             //content.attributedText = astr

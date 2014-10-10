@@ -108,7 +108,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
         parser.parse()
     }
     
-    // MARK: MWFeedParserDelegate
+    // MARK: - MWFeedParserDelegate
     
     private let contentRenderer = WKWebView(frame: CGRectZero)
     

@@ -34,7 +34,7 @@ class DataManagerTests: XCTestCase {
         let atomURL = ""
         for url in [rss1URL, rss2URL, atomURL] {
             let feed = DataManager.sharedInstance().newFeed(url)
-            XCTAssertNotNill(feed, "creating new feeds, should not be nil")
+            XCTAssertNotNil(feed, "creating new feeds, should not be nil")
         }
         XCTAssertEqual(DataManager.sharedInstance().feeds().count, 3, "Should have created and saved 3 feeds")
         DataManager.sharedInstance().newFeed(rss1URL)
@@ -83,18 +83,18 @@ class DataManagerTests: XCTestCase {
     func testCreateGroups() {
         let origCount = DataManager.sharedInstance().groups().count
         
-        let group = DataManager.newGroup("test")
+        let group = DataManager.sharedInstance().newGroup("test")
         
         XCTAssertEqual(DataManager.sharedInstance().groups().count, origCount + 1, "should add group")
         
-        let otherGroup = DataManager.newGroup("test")
+        let otherGroup = DataManager.sharedInstance().newGroup("test")
         XCTAssertEqual(otherGroup, group, "Adding group with dupe name should return original group")
         XCTAssertEqual(DataManager.sharedInstance().groups().count, origCount + 1, "adding group with dupe name should not create a new group")
     }
     
     func testAddingFeedsToGroups() {
         let feed = DataManager.sharedInstance().newFeed(feedURL)
-        let group = DataManager.newGroup("test")
+        let group = DataManager.sharedInstance().newGroup("test")
 
         DataManager.sharedInstance().addFeed(feed, toGroup: group)
         XCTAssert(feed.groups.containsObject(group), "adding a feed to a group should add the group to the feed's groups set")
@@ -103,7 +103,7 @@ class DataManagerTests: XCTestCase {
     
     func testDeleteGroup() {
         let feed = DataManager.sharedInstance().newFeed(feedURL)
-        let group = DataManager.newGroup("test")
+        let group = DataManager.sharedInstance().newGroup("test")
         
         DataManager.sharedInstance().addFeed(feed, toGroup: group)
         
@@ -117,7 +117,7 @@ class DataManagerTests: XCTestCase {
     
     func testDeleteFeedGroup() {
         let feed = DataManager.sharedInstance().newFeed(feedURL)
-        let group = DataManager.newGroup("test")
+        let group = DataManager.sharedInstance().newGroup("test")
         
         DataManager.sharedInstance().addFeed(feed, toGroup: group)
 

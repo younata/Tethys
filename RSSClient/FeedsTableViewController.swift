@@ -53,14 +53,18 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         feedsTabItem = UITabBarItem(title: NSLocalizedString("Feeds", comment: ""), image: nil, selectedImage: nil) // TODO: images
         groupsTabItem = UITabBarItem(title: NSLocalizedString("Groups", comment: ""), image: nil, selectedImage: nil)
         tabBar.items = [feedsTabItem, groupsTabItem]
+        tabBar.selectedItem = feedsTabItem
+        tabBar.delegate = self
 
         self.refreshControl = UIRefreshControl(frame: CGRectZero)
         self.refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
         
         self.tableView.registerClass(FeedTableCell.self, forCellReuseIdentifier: "cell")
+        self.tableView.delegate = self
+        self.tableView.dataSource = self;
 
         let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "addFeed")
-        self.navigationItem.rightBarButtonItems = [addButton, self.editButtonItem()]
+        self.navigationItem.rightBarButtonItems = [addButton, tableViewController.editButtonItem()]
         self.navigationItem.title = NSLocalizedString("Feeds", comment: "")
         
         self.tableView.rowHeight = UITableViewAutomaticDimension
@@ -144,7 +148,11 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         self.refreshControl?.endRefreshing()
         self.reload()
         DataManager.sharedInstance().updateFeeds({
-            self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+            if $0 == nil {
+                self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+            } else {
+                // TODO: alert the user
+            }
         })
     }
     

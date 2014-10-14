@@ -40,16 +40,17 @@ class ArticleListController: UITableViewController {
     }
     
     func refresh() {
-        self.articles = []
-        for f in self.feeds {
-            self.articles += (f.articles.allObjects as [Article])
+        // TODO: optimize this
+        let articles = self.feeds.reduce([]) { return $0 + $1.articles.allObjects }
+        if NSSet(array: articles) != NSSet(array: self.articles) {
+            self.articles = (articles as [Article])
+            self.articles.sort({(a : Article, b: Article) in
+                let da = a.updatedAt ?? a.published
+                let db = b.updatedAt ?? b.published
+                return da!.timeIntervalSince1970 > db!.timeIntervalSince1970
+            })
+            self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
         }
-        self.articles.sort({(a : Article, b: Article) in
-            let da = a.updatedAt ?? a.published
-            let db = b.updatedAt ?? b.published
-            return da!.timeIntervalSince1970 > db!.timeIntervalSince1970
-        })
-        self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
         self.refreshControl?.endRefreshing()
     }
     
@@ -65,6 +66,27 @@ class ArticleListController: UITableViewController {
         article.managedObjectContext.save(nil)
         return avc
     }
+    
+    // MARK: - Scroll view delegate
+    
+    // infinite scrolling, is it worth it?
+    /*
+    override func scrollViewDidScroll(scrollView: UIScrollView) {
+        let actualPosition = scrollView.contentOffset.y;
+        let contentHeight = scrollView.contentSize.height - (10 * self.tableView.estimatedRowHeight)
+        let maxIndexPath = (self.tableView.indexPathsForVisibleRows() as [NSIndexPath]).reduce(NSIndexPath(forRow: 0, inSection: 0), combine: {
+            if $0.row < $1.row {
+                return $1
+            }
+            return $0
+        })
+        if (actualPosition >= contentHeight) {
+            // try to load more...
+            self.articles += 
+            self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
+        }
+    }
+    */
 
     // MARK: - Table view data source
 

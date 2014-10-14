@@ -9,6 +9,7 @@
 import Foundation
 import CoreData
 import WebKit
+import Alamofire
 
 private let instance = DataManager()
 
@@ -85,14 +86,14 @@ class DataManager: NSObject, MWFeedParserDelegate {
         self.managedObjectContext.save(nil)
     }
     
-    private var comp: (Void)->(Void) = {}
+    private var comp: (NSError?)->(Void) = {(error: NSError?) in }
     private var feedsLeft = 0
     
-    func updateFeeds(completion: (Void)->(Void)) {
+    func updateFeeds(completion: (NSError?)->(Void)) {
         updateFeeds(feeds(), completion: completion)
     }
     
-    func updateFeeds(feeds: [Feed], completion: (Void)->(Void)) {
+    func updateFeeds(feeds: [Feed], completion: (NSError?)->(Void)) {
         feedsLeft += feeds.count
         comp = completion
         for feed in feeds {
@@ -125,24 +126,24 @@ class DataManager: NSObject, MWFeedParserDelegate {
             feed.summary = info.summary
             feed.url = parser.url().absoluteString!
             if let link = info.link {
-                AFHTTPRequestOperationManager().GET(link, parameters: [:], success: {(_, response: AnyObject!) in
+                Alamofire.request(.GET, link).response {(_, _, response, error) in
                     self.contentRenderer.loadHTMLString((response as String), baseURL: NSURL(string: link))
                     let ICOScript = NSString.stringWithContentsOfFile(NSBundle.mainBundle().pathForResource("FindICO", ofType: "js")!, encoding: NSUTF8StringEncoding, error: nil)
                     self.contentRenderer.evaluateJavaScript(ICOScript, completionHandler: {(jsResponse: AnyObject!, error: NSError?) in
                         if (error == nil) {
                             if let imageLink = jsResponse as? String {
-                                AFHTTPRequestOperationManager().GET(imageLink, parameters: [:], success: {(_, image: AnyObject!) in
+                                
+                                Alamofire.request(.GET, imageLink).response {(_, _, image, error) in
                                     if let im = image as? UIImage {
                                         feed.image = im
                                         self.managedObjectContext.save(nil)
                                         NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
                                     }
-                                }, failure:{(_, error: NSError!) in })
+                                }
                             }
                         }
                     })
-                    
-                }, failure: {(_, error: NSError!) in })
+                }
             }
             // create?
         }
@@ -187,7 +188,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
     func feedParser(parser: MWFeedParser!, didFailWithError error: NSError!) {
         feedsLeft -= 1
         if (feedsLeft == 0) {
-            self.comp()
+            self.comp(error)
         }
     }
     
@@ -195,7 +196,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
         NSNotificationCenter.defaultCenter().postNotificationName("FeedParserFinished", object: parser.url().absoluteString!)
         feedsLeft -= 1
         if (feedsLeft == 0) {
-            self.comp()
+            self.comp(nil)
         }
     }
     

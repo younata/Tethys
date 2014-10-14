@@ -9,6 +9,18 @@
 /* Begin PBXBuildFile section */
 		779BB468E5894659B87999AB /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FCD0EB0CDA2C4A6BBB506859 /* libPods.a */; };
 		8917110019E0703700D86C7B /* Group.m in Sources */ = {isa = PBXBuildFile; fileRef = 891710FF19E0703700D86C7B /* Group.m */; };
+		8933E90D19ECCBC300ECFF3F /* ALView+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90519ECCBC300ECFF3F /* ALView+PureLayout.m */; };
+		8933E90E19ECCBC300ECFF3F /* NSArray+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90719ECCBC300ECFF3F /* NSArray+PureLayout.m */; };
+		8933E90F19ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90919ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m */; };
+		8933E91819ECCD5E00ECFF3F /* MWFeedParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91319ECCD5E00ECFF3F /* MWFeedParser.m */; };
+		8933E91919ECCD5E00ECFF3F /* MWFeedInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91519ECCD5E00ECFF3F /* MWFeedInfo.m */; };
+		8933E91A19ECCD5E00ECFF3F /* MWFeedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91719ECCD5E00ECFF3F /* MWFeedItem.m */; };
+		8933E91C19ECD09100ECFF3F /* GroupsEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F1C01E19E75E73009343DB /* GroupsEditorController.swift */; };
+		8933E92319ECD21E00ECFF3F /* Alamofire.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 8933E8FB19ECCB9900ECFF3F /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8933E92C19ECD28900ECFF3F /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92519ECD28900ECFF3F /* GTMNSString+HTML.m */; };
+		8933E92D19ECD28900ECFF3F /* NSDate+InternetDateTime.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92719ECD28900ECFF3F /* NSDate+InternetDateTime.m */; };
+		8933E92E19ECD28900ECFF3F /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92919ECD28900ECFF3F /* NSString+HTML.m */; };
+		8933E92F19ECD28900ECFF3F /* NSString+XMLEntities.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92B19ECD28900ECFF3F /* NSString+XMLEntities.m */; };
 		8957799F19E62C7100548418 /* AppDelegateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8957799E19E62C7100548418 /* AppDelegateTests.swift */; };
 		895779A019E62CC500548418 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307819D730E9009924DA /* AppDelegate.swift */; };
 		895779A119E62CC500548418 /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830CC19DC67B9009924DA /* UnreadCounter.swift */; };
@@ -49,6 +61,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		8933E8FA19ECCB9900ECFF3F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8933E8F519ECCB9900ECFF3F /* Alamofire.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F8111E3319A95C8B0040E7D1;
+			remoteInfo = Alamofire;
+		};
+		8933E8FC19ECCB9900ECFF3F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8933E8F519ECCB9900ECFF3F /* Alamofire.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F8111E3E19A95C8B0040E7D1;
+			remoteInfo = AlamofireTests;
+		};
+		8933E91F19ECD1A000ECFF3F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8933E8F519ECCB9900ECFF3F /* Alamofire.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = F8111E3219A95C8B0040E7D1;
+			remoteInfo = Alamofire;
+		};
 		89C8308C19D730E9009924DA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 89C8306B19D730E9009924DA /* Project object */;
@@ -58,10 +91,53 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		8933E92219ECD20600ECFF3F /* Copy Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				8933E92319ECD21E00ECFF3F /* Alamofire.framework in Copy Frameworks */,
+			);
+			name = "Copy Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		275422A5BE446EA7EF58C0CB /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		891710FE19E0703700D86C7B /* Group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Group.h; sourceTree = "<group>"; };
 		891710FF19E0703700D86C7B /* Group.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Group.m; sourceTree = "<group>"; };
+		8933E8ED19ECC97F00ECFF3F /* libPods-AFNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-AFNetworking.a"; path = "Pods/build/Debug-iphoneos/libPods-AFNetworking.a"; sourceTree = "<group>"; };
+		8933E8EE19ECC97F00ECFF3F /* libPods-AMPopTip.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-AMPopTip.a"; path = "Pods/build/Debug-iphoneos/libPods-AMPopTip.a"; sourceTree = "<group>"; };
+		8933E8EF19ECC97F00ECFF3F /* libPods-MWFeedParser.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-MWFeedParser.a"; path = "Pods/build/Debug-iphoneos/libPods-MWFeedParser.a"; sourceTree = "<group>"; };
+		8933E8F019ECC97F00ECFF3F /* libPods-PureLayout.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-PureLayout.a"; path = "Pods/build/Debug-iphoneos/libPods-PureLayout.a"; sourceTree = "<group>"; };
+		8933E8F519ECCB9900ECFF3F /* Alamofire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire.xcodeproj; path = Alamofire/Alamofire.xcodeproj; sourceTree = SOURCE_ROOT; };
+		8933E90419ECCBC300ECFF3F /* ALView+PureLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "ALView+PureLayout.h"; path = "PureLayout/Source/ALView+PureLayout.h"; sourceTree = "<group>"; };
+		8933E90519ECCBC300ECFF3F /* ALView+PureLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "ALView+PureLayout.m"; path = "PureLayout/Source/ALView+PureLayout.m"; sourceTree = "<group>"; };
+		8933E90619ECCBC300ECFF3F /* NSArray+PureLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSArray+PureLayout.h"; path = "PureLayout/Source/NSArray+PureLayout.h"; sourceTree = "<group>"; };
+		8933E90719ECCBC300ECFF3F /* NSArray+PureLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSArray+PureLayout.m"; path = "PureLayout/Source/NSArray+PureLayout.m"; sourceTree = "<group>"; };
+		8933E90819ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSLayoutConstraint+PureLayout.h"; path = "PureLayout/Source/NSLayoutConstraint+PureLayout.h"; sourceTree = "<group>"; };
+		8933E90919ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSLayoutConstraint+PureLayout.m"; path = "PureLayout/Source/NSLayoutConstraint+PureLayout.m"; sourceTree = "<group>"; };
+		8933E90A19ECCBC300ECFF3F /* PureLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PureLayout.h; path = PureLayout/Source/PureLayout.h; sourceTree = "<group>"; };
+		8933E90B19ECCBC300ECFF3F /* PureLayout+Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PureLayout+Internal.h"; path = "PureLayout/Source/PureLayout+Internal.h"; sourceTree = "<group>"; };
+		8933E90C19ECCBC300ECFF3F /* PureLayoutDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PureLayoutDefines.h; path = PureLayout/Source/PureLayoutDefines.h; sourceTree = "<group>"; };
+		8933E91119ECCD5E00ECFF3F /* MWFeedParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MWFeedParser.h; path = MWFeedParser/Classes/MWFeedParser.h; sourceTree = "<group>"; };
+		8933E91219ECCD5E00ECFF3F /* MWFeedParser_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MWFeedParser_Private.h; path = MWFeedParser/Classes/MWFeedParser_Private.h; sourceTree = "<group>"; };
+		8933E91319ECCD5E00ECFF3F /* MWFeedParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MWFeedParser.m; path = MWFeedParser/Classes/MWFeedParser.m; sourceTree = "<group>"; };
+		8933E91419ECCD5E00ECFF3F /* MWFeedInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MWFeedInfo.h; path = MWFeedParser/Classes/MWFeedInfo.h; sourceTree = "<group>"; };
+		8933E91519ECCD5E00ECFF3F /* MWFeedInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MWFeedInfo.m; path = MWFeedParser/Classes/MWFeedInfo.m; sourceTree = "<group>"; };
+		8933E91619ECCD5E00ECFF3F /* MWFeedItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MWFeedItem.h; path = MWFeedParser/Classes/MWFeedItem.h; sourceTree = "<group>"; };
+		8933E91719ECCD5E00ECFF3F /* MWFeedItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MWFeedItem.m; path = MWFeedParser/Classes/MWFeedItem.m; sourceTree = "<group>"; };
+		8933E92419ECD28900ECFF3F /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "GTMNSString+HTML.h"; path = "MWFeedParser/Classes/GTMNSString+HTML.h"; sourceTree = "<group>"; };
+		8933E92519ECD28900ECFF3F /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "GTMNSString+HTML.m"; path = "MWFeedParser/Classes/GTMNSString+HTML.m"; sourceTree = "<group>"; };
+		8933E92619ECD28900ECFF3F /* NSDate+InternetDateTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDate+InternetDateTime.h"; path = "MWFeedParser/Classes/NSDate+InternetDateTime.h"; sourceTree = "<group>"; };
+		8933E92719ECD28900ECFF3F /* NSDate+InternetDateTime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDate+InternetDateTime.m"; path = "MWFeedParser/Classes/NSDate+InternetDateTime.m"; sourceTree = "<group>"; };
+		8933E92819ECD28900ECFF3F /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+HTML.h"; path = "MWFeedParser/Classes/NSString+HTML.h"; sourceTree = "<group>"; };
+		8933E92919ECD28900ECFF3F /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+HTML.m"; path = "MWFeedParser/Classes/NSString+HTML.m"; sourceTree = "<group>"; };
+		8933E92A19ECD28900ECFF3F /* NSString+XMLEntities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+XMLEntities.h"; path = "MWFeedParser/Classes/NSString+XMLEntities.h"; sourceTree = "<group>"; };
+		8933E92B19ECD28900ECFF3F /* NSString+XMLEntities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+XMLEntities.m"; path = "MWFeedParser/Classes/NSString+XMLEntities.m"; sourceTree = "<group>"; };
 		8957799D19E62C7100548418 /* RSSClientTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSSClientTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		8957799E19E62C7100548418 /* AppDelegateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateTests.swift; sourceTree = "<group>"; };
 		895779AF19E6512200548418 /* UnreadCounterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounterTests.swift; sourceTree = "<group>"; };
@@ -119,15 +195,69 @@
 		694B7677466B46B3BC9D72EF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8933E8ED19ECC97F00ECFF3F /* libPods-AFNetworking.a */,
+				8933E8EE19ECC97F00ECFF3F /* libPods-AMPopTip.a */,
+				8933E8EF19ECC97F00ECFF3F /* libPods-MWFeedParser.a */,
+				8933E8F019ECC97F00ECFF3F /* libPods-PureLayout.a */,
 				89C830F119E043A8009924DA /* Nimble.framework */,
 				FCD0EB0CDA2C4A6BBB506859 /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		8933E8F619ECCB9900ECFF3F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8933E8FB19ECCB9900ECFF3F /* Alamofire.framework */,
+				8933E8FD19ECCB9900ECFF3F /* AlamofireTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8933E91019ECCBCA00ECFF3F /* PureLayout */ = {
+			isa = PBXGroup;
+			children = (
+				8933E90419ECCBC300ECFF3F /* ALView+PureLayout.h */,
+				8933E90519ECCBC300ECFF3F /* ALView+PureLayout.m */,
+				8933E90619ECCBC300ECFF3F /* NSArray+PureLayout.h */,
+				8933E90719ECCBC300ECFF3F /* NSArray+PureLayout.m */,
+				8933E90819ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.h */,
+				8933E90919ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m */,
+				8933E90A19ECCBC300ECFF3F /* PureLayout.h */,
+				8933E90B19ECCBC300ECFF3F /* PureLayout+Internal.h */,
+				8933E90C19ECCBC300ECFF3F /* PureLayoutDefines.h */,
+			);
+			name = PureLayout;
+			sourceTree = "<group>";
+		};
+		8933E91B19ECCD6500ECFF3F /* MWFeedParser */ = {
+			isa = PBXGroup;
+			children = (
+				8933E91119ECCD5E00ECFF3F /* MWFeedParser.h */,
+				8933E91219ECCD5E00ECFF3F /* MWFeedParser_Private.h */,
+				8933E91319ECCD5E00ECFF3F /* MWFeedParser.m */,
+				8933E91419ECCD5E00ECFF3F /* MWFeedInfo.h */,
+				8933E91519ECCD5E00ECFF3F /* MWFeedInfo.m */,
+				8933E91619ECCD5E00ECFF3F /* MWFeedItem.h */,
+				8933E91719ECCD5E00ECFF3F /* MWFeedItem.m */,
+				8933E92419ECD28900ECFF3F /* GTMNSString+HTML.h */,
+				8933E92519ECD28900ECFF3F /* GTMNSString+HTML.m */,
+				8933E92619ECD28900ECFF3F /* NSDate+InternetDateTime.h */,
+				8933E92719ECD28900ECFF3F /* NSDate+InternetDateTime.m */,
+				8933E92819ECD28900ECFF3F /* NSString+HTML.h */,
+				8933E92919ECD28900ECFF3F /* NSString+HTML.m */,
+				8933E92A19ECD28900ECFF3F /* NSString+XMLEntities.h */,
+				8933E92B19ECD28900ECFF3F /* NSString+XMLEntities.m */,
+			);
+			name = MWFeedParser;
+			sourceTree = "<group>";
+		};
 		89C8306A19D730E9009924DA = {
 			isa = PBXGroup;
 			children = (
+				8933E91019ECCBCA00ECFF3F /* PureLayout */,
+				8933E91B19ECCD6500ECFF3F /* MWFeedParser */,
+				8933E8F519ECCB9900ECFF3F /* Alamofire.xcodeproj */,
 				89C8307519D730E9009924DA /* RSSClient */,
 				89C8308E19D730E9009924DA /* RSSClientTests */,
 				89C8307419D730E9009924DA /* Products */,
@@ -250,10 +380,12 @@
 				89C8307019D730E9009924DA /* Frameworks */,
 				89C8307119D730E9009924DA /* Resources */,
 				C8831EFC34E54DA38376756F /* Copy Pods Resources */,
+				8933E92219ECD20600ECFF3F /* Copy Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				8933E92019ECD1A000ECFF3F /* PBXTargetDependency */,
 			);
 			name = RSSClient;
 			productName = RSSClient;
@@ -312,6 +444,12 @@
 			mainGroup = 89C8306A19D730E9009924DA;
 			productRefGroup = 89C8307419D730E9009924DA /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 8933E8F619ECCB9900ECFF3F /* Products */;
+					ProjectRef = 8933E8F519ECCB9900ECFF3F /* Alamofire.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				89C8307219D730E9009924DA /* RSSClient */,
@@ -319,6 +457,23 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		8933E8FB19ECCB9900ECFF3F /* Alamofire.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Alamofire.framework;
+			remoteRef = 8933E8FA19ECCB9900ECFF3F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8933E8FD19ECCB9900ECFF3F /* AlamofireTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = AlamofireTests.xctest;
+			remoteRef = 8933E8FC19ECCB9900ECFF3F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		89C8307119D730E9009924DA /* Resources */ = {
@@ -382,8 +537,14 @@
 			files = (
 				89C830C619D8A058009924DA /* Feed.m in Sources */,
 				89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */,
+				8933E91A19ECCD5E00ECFF3F /* MWFeedItem.m in Sources */,
+				8933E92E19ECD28900ECFF3F /* NSString+HTML.m in Sources */,
+				8933E91919ECCD5E00ECFF3F /* MWFeedInfo.m in Sources */,
+				8933E91819ECCD5E00ECFF3F /* MWFeedParser.m in Sources */,
+				8933E90F19ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m in Sources */,
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
 				89C830A919D7B890009924DA /* DataManager.swift in Sources */,
+				8933E90E19ECCBC300ECFF3F /* NSArray+PureLayout.m in Sources */,
 				89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */,
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
 				89C830B619D7DE97009924DA /* ArticleViewController.swift in Sources */,
@@ -392,8 +553,12 @@
 				8917110019E0703700D86C7B /* Group.m in Sources */,
 				89C830C319D89E46009924DA /* Article.m in Sources */,
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
+				8933E92F19ECD28900ECFF3F /* NSString+XMLEntities.m in Sources */,
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
+				8933E92D19ECD28900ECFF3F /* NSDate+InternetDateTime.m in Sources */,
+				8933E90D19ECCBC300ECFF3F /* ALView+PureLayout.m in Sources */,
 				89C8307C19D730E9009924DA /* RSSClient.xcdatamodeld in Sources */,
+				8933E92C19ECD28900ECFF3F /* GTMNSString+HTML.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -403,6 +568,7 @@
 			files = (
 				895779AD19E62CDA00548418 /* Feed.m in Sources */,
 				895779B019E6512200548418 /* UnreadCounterTests.swift in Sources */,
+				8933E91C19ECD09100ECFF3F /* GroupsEditorController.swift in Sources */,
 				895779B219E655F100548418 /* FeedTableCellTests.swift in Sources */,
 				895779A819E62CC500548418 /* ArticleCell.swift in Sources */,
 				895779B619E65A6D00548418 /* ArticleCellTests.swift in Sources */,
@@ -426,6 +592,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		8933E92019ECD1A000ECFF3F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Alamofire;
+			targetProxy = 8933E91F19ECD1A000ECFF3F /* PBXContainerItemProxy */;
+		};
 		89C8308D19D730E9009924DA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 89C8307219D730E9009924DA /* RSSClient */;
@@ -521,18 +692,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"PODS_ROOT=\"${SRCROOT}/Pods\"",
-					"DEBUG=1",
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/Pods/Headers/\"/**",
+					"$(inherited)/**",
+					"$PODS_ROOT/headers/**",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
 				INFOPLIST_FILE = RSSClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/Pods/build/Debug-iphoneos";
+				PODS_ROOT = "${SRCROOT}/Pods";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "RSSClient/RSSClient-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -546,15 +715,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = "PODS_ROOT=\"${SRCROOT}/Pods\"";
+				GCC_PREPROCESSOR_DEFINITIONS = "";
 				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/Pods/Headers/\"/**",
+					"$(inherited)/**",
+					"$PODS_ROOT/headers/**",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
 				INFOPLIST_FILE = RSSClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/Pods/build/Release-iphoneos";
+				PODS_ROOT = "${SRCROOT}/Pods";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "RSSClient/RSSClient-Bridging-Header.h";
 				USER_HEADER_SEARCH_PATHS = "";

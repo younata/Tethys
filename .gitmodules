@@ -1,0 +1,9 @@
+[submodule "PureLayout"]
+	path = PureLayout
+	url = https://github.com/smileyborg/PureLayout.git
+[submodule "MWFeedParser"]
+	path = MWFeedParser
+	url = https://github.com/mwaterfall/MWFeedParser.git
+[submodule "Alamofire"]
+	path = Alamofire
+	url = https://github.com/Alamofire/Alamofire.git

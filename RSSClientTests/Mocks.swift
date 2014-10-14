@@ -9,7 +9,7 @@
 import Foundation
 
 class FakeFeed : Feed {
-    override var image: UIImage? {
+    override var image: AnyObject! {
         get {
             return nil
         }

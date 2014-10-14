@@ -11,18 +11,18 @@ import XCTest
 
 class ArticleCellTests: XCTestCase {
     
-    var cell : ArticleCell = ArticleCell()
+    var cell : ArticleCell = ArticleCell(style: .Default, reuseIdentifier: "")
 
     override func setUp() {
         super.setUp()
-        cell = ArticleCell(style: .Plain, reuseIdentifier: "")
+        cell = ArticleCell(style: .Default, reuseIdentifier: "")
     }
     
     func testArticleNil() {
         cell.article = nil
-        XCTAssertEqual(cell.title.text, "", "title text should be empty string")
-        XCTAssertEqual(cell.published.text, "", "published text should be empty string")
-        XCTAssertEqual(cell.author.text, "", "author text should be empty string")
+        XCTAssertEqual(cell.title.text!, "", "title text should be empty string")
+        XCTAssertEqual(cell.published.text!, "", "published text should be empty string")
+        XCTAssertEqual(cell.author.text!, "", "author text should be empty string")
     }
     
     func testArticle() {
@@ -31,9 +31,9 @@ class ArticleCellTests: XCTestCase {
         let dateParser = NSDateFormatter()
         dateParser.timeStyle = .NoStyle
         dateParser.dateStyle = .ShortStyle
-        dateFormatter.timeZone = NSCalendar.currentCalendar().timeZone
-        XCTAssertEqual(cell.title.text, article.title, "title text should be empty string")
-        XCTAssertEqual(cell.published.text, dateParser.stringFromDate(article.published), "published text should be empty string")
-        XCTAssertEqual(cell.author.text, article.author, "author text should be empty string")
+        dateParser.timeZone = NSCalendar.currentCalendar().timeZone
+        XCTAssertEqual(cell.title.text!, article.title, "title text should be empty string")
+        XCTAssertEqual(cell.published.text!, dateParser.stringFromDate(article.published), "published text should be empty string")
+        XCTAssertEqual(cell.author.text!, article.author, "author text should be empty string")
     }
 }

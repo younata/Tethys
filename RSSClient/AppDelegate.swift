@@ -42,9 +42,18 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         let containsUnread : (Feed) -> (Bool) = {(feed: Feed) in
             return (feed.articles.allObjects as [Article]).reduce(0, combine: unreadCombine) != 0
         }
-        let originalUnreadList: [Article] = DataManager.sharedInstance().feeds().filter(containsUnread).map({($0.articles.allObjects as [Article])}).reduce([], combine: {$0 + $1})
-        DataManager.sharedInstance().updateFeeds({
-            let alist: [Article] = DataManager.sharedInstance().feeds().filter(containsUnread).map({($0.articles.allObjects as [Article])}).reduce([], combine: {$0 + $1}).filter({return !contains(originalUnreadList, $0)})
+        let listCreator : ([Feed]) -> [Article] = {(feeds: [Feed]) in
+            return (feeds.filter(containsUnread).map({($0.articles.allObjects as [Article])}).reduce([], combine: {$0 + $1}) as [Article])
+        }
+        let originalUnreadList: [Article] = listCreator(DataManager.sharedInstance().feeds())
+        DataManager.sharedInstance().updateFeeds({(error: NSError?) in
+            if (error != nil) {
+                completionHandler(.Failed)
+                return
+            }
+            let alist: [Article] = listCreator(DataManager.sharedInstance().feeds()).filter({
+                return !contains(originalUnreadList, $0)
+            })
             
             for article: Article in alist {
                 // show local notification.
@@ -54,6 +63,11 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 note.alertBody = "\(article.title)" + txt
                 note.userInfo = ["feed": article.feed, "article": article]
                 application.scheduleLocalNotification(note)
+            }
+            if (alist.count > 0) {
+                completionHandler(.NewData)
+            } else {
+                completionHandler(.NoData)
             }
         })
     }

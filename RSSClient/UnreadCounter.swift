@@ -13,7 +13,7 @@ public class UnreadCounter: UIView, UIAppearanceContainer {
     let circleLayer = CAShapeLayer()
     let countLabel = UILabel(forAutoLayout: ())
     
-    public var circleColor: UIColor = UIColor.redColor()
+    public var circleColor: UIColor = UIColor.darkGreenColor()
     public var countColor: UIColor = UIColor.whiteColor() {
         didSet {
             countLabel.textColor = countColor
@@ -40,7 +40,12 @@ public class UnreadCounter: UIView, UIAppearanceContainer {
     
     public override func layoutSubviews() {
         super.layoutSubviews()
-        circleLayer.path = CGPathCreateWithEllipseInRect(self.bounds, nil)
+        let path = CGPathCreateMutable()
+        CGPathMoveToPoint(path, nil, 0, 0)
+        CGPathAddLineToPoint(path, nil, CGRectGetWidth(self.bounds), 0)
+        CGPathAddLineToPoint(path, nil, CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds))
+        CGPathAddLineToPoint(path, nil, 0, 0)
+        circleLayer.path = path
     }
     
     public override init(frame: CGRect) {
@@ -49,7 +54,9 @@ public class UnreadCounter: UIView, UIAppearanceContainer {
         self.layer.addSublayer(circleLayer)
         self.addSubview(countLabel)
         
-        countLabel.autoCenterInSuperview()
+        countLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
+        countLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 4)
+        countLabel.textAlignment = .Right
         countLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
         countLabel.textColor = countColor
         

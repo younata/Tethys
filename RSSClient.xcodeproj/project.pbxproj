@@ -21,6 +21,7 @@
 		8933E92D19ECD28900ECFF3F /* NSDate+InternetDateTime.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92719ECD28900ECFF3F /* NSDate+InternetDateTime.m */; };
 		8933E92E19ECD28900ECFF3F /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92919ECD28900ECFF3F /* NSString+HTML.m */; };
 		8933E92F19ECD28900ECFF3F /* NSString+XMLEntities.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92B19ECD28900ECFF3F /* NSString+XMLEntities.m */; };
+		8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */; };
 		8957799F19E62C7100548418 /* AppDelegateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8957799E19E62C7100548418 /* AppDelegateTests.swift */; };
 		895779A019E62CC500548418 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307819D730E9009924DA /* AppDelegate.swift */; };
 		895779A119E62CC500548418 /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830CC19DC67B9009924DA /* UnreadCounter.swift */; };
@@ -138,6 +139,8 @@
 		8933E92919ECD28900ECFF3F /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+HTML.m"; path = "MWFeedParser/Classes/NSString+HTML.m"; sourceTree = "<group>"; };
 		8933E92A19ECD28900ECFF3F /* NSString+XMLEntities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+XMLEntities.h"; path = "MWFeedParser/Classes/NSString+XMLEntities.h"; sourceTree = "<group>"; };
 		8933E92B19ECD28900ECFF3F /* NSString+XMLEntities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+XMLEntities.m"; path = "MWFeedParser/Classes/NSString+XMLEntities.m"; sourceTree = "<group>"; };
+		8933E93219EE33F700ECFF3F /* UIColor+RSSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+RSSClient.h"; sourceTree = "<group>"; };
+		8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+RSSClient.m"; sourceTree = "<group>"; };
 		8957799D19E62C7100548418 /* RSSClientTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSSClientTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		8957799E19E62C7100548418 /* AppDelegateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateTests.swift; sourceTree = "<group>"; };
 		895779AF19E6512200548418 /* UnreadCounterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounterTests.swift; sourceTree = "<group>"; };
@@ -252,6 +255,15 @@
 			name = MWFeedParser;
 			sourceTree = "<group>";
 		};
+		8933E93519EE342F00ECFF3F /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				8933E93219EE33F700ECFF3F /* UIColor+RSSClient.h */,
+				8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
 		89C8306A19D730E9009924DA = {
 			isa = PBXGroup;
 			children = (
@@ -284,6 +296,7 @@
 				89C830B419D7D2D2009924DA /* Articles */,
 				89C8308219D730E9009924DA /* Images.xcassets */,
 				89C830AC19D7BDE0009924DA /* Core Data */,
+				8933E93519EE342F00ECFF3F /* Categories */,
 				89C8307619D730E9009924DA /* Supporting Files */,
 				89C8309B19D73334009924DA /* RSSClient-Bridging-Header.h */,
 			);
@@ -340,9 +353,9 @@
 			isa = PBXGroup;
 			children = (
 				89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */,
-				89F1C01E19E75E73009343DB /* GroupsEditorController.swift */,
 				89C830C919DA37FB009924DA /* FeedTableCell.swift */,
 				89C830B719D7EC55009924DA /* FindFeedViewController.swift */,
+				89F1C01E19E75E73009343DB /* GroupsEditorController.swift */,
 				89C830B919D8904A009924DA /* findFeeds.js */,
 				89C830BD19D89722009924DA /* FindICO.js */,
 			);
@@ -558,6 +571,7 @@
 				8933E92D19ECD28900ECFF3F /* NSDate+InternetDateTime.m in Sources */,
 				8933E90D19ECCBC300ECFF3F /* ALView+PureLayout.m in Sources */,
 				89C8307C19D730E9009924DA /* RSSClient.xcdatamodeld in Sources */,
+				8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */,
 				8933E92C19ECD28900ECFF3F /* GTMNSString+HTML.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

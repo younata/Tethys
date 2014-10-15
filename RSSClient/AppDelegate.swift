@@ -19,6 +19,9 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
         self.window?.backgroundColor = UIColor.whiteColor()
         self.window?.makeKeyAndVisible()
+        UINavigationBar.appearance().tintColor = UIColor.darkGreenColor()
+        UIBarButtonItem.appearance().tintColor = UIColor.darkGreenColor()
+        UITabBar.appearance().tintColor = UIColor.darkGreenColor()
         let ftvc = FeedsTableViewController()
         self.window?.rootViewController = UINavigationController(rootViewController: ftvc)
         if let options = launchOptions {
@@ -35,34 +38,35 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     public func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        let unreadCombine: (Int, Article) -> (Int) = {(i: Int, a: Article) in
-            let n = a.read == true ? 1 : 0
-            return i + n
+        let originalList: [Article] = DataManager.sharedInstance().feeds().reduce([], combine: {return $0 + ($1.articles.allObjects as [Article])})
+        if originalList.count == 0 {
+            completionHandler(.Failed)
+            return
         }
-        let containsUnread : (Feed) -> (Bool) = {(feed: Feed) in
-            return (feed.articles.allObjects as [Article]).reduce(0, combine: unreadCombine) != 0
-        }
-        let listCreator : ([Feed]) -> [Article] = {(feeds: [Feed]) in
-            return (feeds.filter(containsUnread).map({($0.articles.allObjects as [Article])}).reduce([], combine: {$0 + $1}) as [Article])
-        }
-        let originalUnreadList: [Article] = listCreator(DataManager.sharedInstance().feeds())
         DataManager.sharedInstance().updateFeeds({(error: NSError?) in
             if (error != nil) {
                 completionHandler(.Failed)
                 return
             }
-            let alist: [Article] = listCreator(DataManager.sharedInstance().feeds()).filter({
-                return !contains(originalUnreadList, $0)
+            let al : [Article] = DataManager.sharedInstance().feeds().reduce([], combine: {return $0 + ($1.articles.allObjects as [Article])})
+            if (al.count == originalList.count) {
+                completionHandler(.NoData)
+                return
+            }
+            let alist: [Article] = al.filter({
+                return !contains(originalList, $0)
             })
             
             for article: Article in alist {
                 // show local notification.
                 let note = UILocalNotification()
-                let str = NSAttributedString(string: article.content, attributes: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType])
+                let cnt = article.summary ?? ""
+                let str = NSAttributedString(data: cnt.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false), options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil, error: nil)
                 let txt = str.string.lengthOfBytesUsingEncoding(NSUTF8StringEncoding) != 0 ? "\n\(str.string)" : ""
                 note.alertBody = "\(article.title)" + txt
                 note.userInfo = ["feed": article.feed, "article": article]
-                application.scheduleLocalNotification(note)
+                note.fireDate = NSDate()
+                application.presentLocalNotificationNow(note)
             }
             if (alist.count > 0) {
                 completionHandler(.NewData)

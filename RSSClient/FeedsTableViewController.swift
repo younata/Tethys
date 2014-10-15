@@ -23,15 +23,6 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     
     let tableViewController = UITableViewController(style: .Plain)
     
-    var refreshControl : UIRefreshControl? {
-        get {
-            return self.tableViewController.refreshControl
-        }
-        set {
-            self.tableViewController.refreshControl = refreshControl
-        }
-    }
-    
     var tableView : UITableView {
         return self.tableViewController.tableView
     }
@@ -56,8 +47,8 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         tabBar.selectedItem = feedsTabItem
         tabBar.delegate = self
 
-        self.refreshControl = UIRefreshControl(frame: CGRectZero)
-        self.refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+        self.tableViewController.refreshControl = UIRefreshControl(frame: CGRectZero)
+        self.tableViewController.refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
         
         self.tableView.registerClass(FeedTableCell.self, forCellReuseIdentifier: "cell")
         self.tableView.delegate = self
@@ -145,7 +136,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func refresh() {
-        self.refreshControl?.endRefreshing()
+        self.tableViewController.refreshControl?.endRefreshing()
         self.reload()
         DataManager.sharedInstance().updateFeeds({
             if $0 == nil {
@@ -233,6 +224,10 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         return true
     }
     
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+    }
+    
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
         let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
             switch (self.state) {
@@ -251,6 +246,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
                     article.read = true
                 }
                 self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                DataManager.sharedInstance().saveContext()
             })
             return [delete, markRead]
         case .groups:

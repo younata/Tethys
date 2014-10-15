@@ -56,7 +56,7 @@ class DataManagerTests: XCTestCase {
         let feed = DataManager.sharedInstance().newFeed(feedURL)
         let otherFeed = DataManager.sharedInstance().newFeed(otherFeedURL)
         let expectation = expectationWithDescription("Update all feeds")
-        let completion: (Void) -> (Void) = {
+        let completion: (NSError?) -> (Void) = {(_) in
             expectation.fulfill()
         }
         DataManager.sharedInstance().updateFeeds(completion)
@@ -69,7 +69,7 @@ class DataManagerTests: XCTestCase {
         let feed = DataManager.sharedInstance().newFeed(feedURL)
         let otherFeed = DataManager.sharedInstance().newFeed(otherFeedURL)
         let expectation = expectationWithDescription("Update all feeds")
-        let completion: (Void) -> (Void) = {
+        let completion: (NSError?) -> (Void) = {(_) in
             expectation.fulfill()
         }
         DataManager.sharedInstance().updateFeeds([feed], completion: completion)

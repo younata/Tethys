@@ -21,6 +21,8 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     var reload: UIBarButtonItem! = nil
     var cancelTextEntry : UIBarButtonItem! = nil
     
+    var lookForFeeds : Bool = true
+    
     var feeds: [String] = []
     
     override func viewDidLoad() {
@@ -48,7 +50,11 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         func spacer() -> UIBarButtonItem {
             return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: "")
         }
-        self.toolbarItems = [back, forward, spacer(), dismiss, spacer(), addFeedButton]
+        if (lookForFeeds) {
+            self.toolbarItems = [back, forward, spacer(), dismiss, spacer(), addFeedButton]
+        } else {
+            self.toolbarItems = [back, forward, spacer(), dismiss]
+        }
         
         self.navigationItem.titleView = navField
         navField.delegate = self
@@ -60,21 +66,26 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         loadingBar.progress = 0
         
         /*
+        if (lookForFeeds) {
         let navFieldShownString = "findfeedviewcontroller.navfield.shown"
-        if (NSUserDefaults.standardUserDefaults().boolForKey(navFieldShownString) == false) {
-            let popTip = AMPopTip()
-            let popTipText = NSAttributedString(string: NSLocalizedString("Enter the URL for the feed or website here", comment: ""),
-                                                attributes: [NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)])
-            let width = CGRectGetWidth(self.view.bounds) / 2.0
-            let size = popTipText.boundingRectWithSize(CGSizeMake(width, CGFloat.max), options: .UsesFontLeading, context: nil).size
-            popTip.showAttributedText(popTipText, direction: AMPopTipDirection.Up, maxWidth: ceil(size.width), inView: self.view, fromFrame: CGRectMake(width, -10, 0, 0))
-            NSUserDefaults.standardUserDefaults().setBool(true, forKey: navFieldShownString)
-        }*/
+            if (NSUserDefaults.standardUserDefaults().boolForKey(navFieldShownString) == false) {
+                let popTip = AMPopTip()
+                let popTipText = NSAttributedString(string: NSLocalizedString("Enter the URL for the feed or website here", comment: ""),
+                                                    attributes: [NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)])
+                let width = CGRectGetWidth(self.view.bounds) / 2.0
+                let size = popTipText.boundingRectWithSize(CGSizeMake(width, CGFloat.max), options: .UsesFontLeading, context: nil).size
+                popTip.showAttributedText(popTipText, direction: AMPopTipDirection.Up, maxWidth: ceil(size.width), inView: self.view, fromFrame: CGRectMake(width, -10, 0, 0))
+                NSUserDefaults.standardUserDefaults().setBool(true, forKey: navFieldShownString)
+            }
+        }
+        */
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        feeds = DataManager.sharedInstance().feeds().map({return $0.url;})
+        if (lookForFeeds) {
+            feeds = DataManager.sharedInstance().feeds().map({return $0.url;})
+        }
     }
     
     deinit {
@@ -120,11 +131,13 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         if let url = NSURL.URLWithString(textField.text) {
             self.webContent.loadRequest(NSURLRequest(URL: NSURL(string: textField.text)))
         }
-        let feedParser = MWFeedParser(feedURL: NSURL(string: textField.text))
-        feedParser.feedParseType = ParseTypeInfoOnly
-        feedParser.delegate = self
-        feedParser.connectionType = ConnectionTypeAsynchronously
-        feedParser.parse()
+        if (lookForFeeds) {
+            let feedParser = MWFeedParser(feedURL: NSURL(string: textField.text))
+            feedParser.feedParseType = ParseTypeInfoOnly
+            feedParser.delegate = self
+            feedParser.connectionType = ConnectionTypeAsynchronously
+            feedParser.parse()
+        }
         textField.text = ""
         textField.placeholder = NSLocalizedString("Loading", comment: "")
         textField.resignFirstResponder()
@@ -159,20 +172,22 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         back.enabled = webView.canGoBack
         self.navigationItem.rightBarButtonItem = reload
         
-        let discover = NSString.stringWithContentsOfFile(NSBundle.mainBundle().pathForResource("findFeeds", ofType: "js")!, encoding: NSUTF8StringEncoding, error: nil)
-        webView.evaluateJavaScript(discover, completionHandler: {(res: AnyObject!, error: NSError?) in
-            if let str = res as? String {
-                if (!contains(self.feeds, str)) {
-                    self.rssLink = str
-                    self.addFeedButton.enabled = true
+        if (lookForFeeds) {
+            let discover = NSString.stringWithContentsOfFile(NSBundle.mainBundle().pathForResource("findFeeds", ofType: "js")!, encoding: NSUTF8StringEncoding, error: nil)
+            webView.evaluateJavaScript(discover, completionHandler: {(res: AnyObject!, error: NSError?) in
+                if let str = res as? String {
+                    if (!contains(self.feeds, str)) {
+                        self.rssLink = str
+                        self.addFeedButton.enabled = true
+                    }
+                } else {
+                    self.rssLink = nil
                 }
-            } else {
-                self.rssLink = nil
-            }
-            if (error != nil) {
-                println("Error executing javascript: \(error)")
-            }
-        })
+                if (error != nil) {
+                    println("Error executing javascript: \(error)")
+                }
+            })
+        }
     }
     
     func webView(webView: WKWebView!, didFailNavigation navigation: WKNavigation!, withError error: NSError!) {

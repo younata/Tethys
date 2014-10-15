@@ -9,21 +9,22 @@
 import UIKit
 import WebKit
 
-class ArticleCell: UITableViewCell {
+class ArticleCell: UITableViewCell, UITextViewDelegate {
     
     var article: Article? {
         didSet {
             title.text = article?.title ?? ""
             published.text = article != nil ? dateFormatter.stringFromDate(article?.updatedAt ?? article?.published ?? NSDate()) : ""
             author.text = article?.author ?? ""
-            var cnt = article?.content ?? article?.summary
-
-            content.loadHTMLString(cnt, baseURL: NSURL(string: article?.link ?? ""))
-            let astr = NSAttributedString(string: cnt ?? "", attributes: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-                                                                    NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)])
+            var cnt = article?.summary ?? ""
+            
+            let data = cnt.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
+            let options = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
+            
+            let astr = NSAttributedString(data: data, options: options, documentAttributes: nil, error: nil)
             let bounding = astr.boundingRectWithSize(CGSizeMake(self.contentView.bounds.size.width - 16, CGFloat.max), options: .UsesFontLeading, context: nil)
             contentHeight.constant = ceil(bounding.size.height)
-            //content.attributedText = astr
+            content.attributedText = astr
             // TODO: enclosures.
             unread.unread = article?.read == false ? 1 : 0
             let width = CGRectGetWidth(unread.bounds)
@@ -34,7 +35,7 @@ class ArticleCell: UITableViewCell {
     let title = UILabel(forAutoLayout: ())
     let published = UILabel(forAutoLayout: ())
     let author = UILabel(forAutoLayout: ())
-    let content: WKWebView! = nil
+    let content = UITextView(forAutoLayout: ())
     let unread = UnreadCounter(frame: CGRectZero)
     
     var unreadWidth: NSLayoutConstraint! = nil
@@ -45,10 +46,6 @@ class ArticleCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        let config = WKWebViewConfiguration()
-        config.preferences.minimumFontSize = 18
-        content = WKWebView(frame: CGRectZero, configuration: config)
-        
         unread.setTranslatesAutoresizingMaskIntoConstraints(false)
         
         self.contentView.addSubview(title)
@@ -56,6 +53,11 @@ class ArticleCell: UITableViewCell {
         self.contentView.addSubview(published)
         self.contentView.addSubview(content)
         self.contentView.addSubview(unread)
+        
+        content.scrollEnabled = false
+        content.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+        content.textContainerInset = UIEdgeInsetsZero
+        content.delegate = self
         
         title.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         title.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
@@ -69,9 +71,9 @@ class ArticleCell: UITableViewCell {
         
         author.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
         
-        unread.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
-        unread.autoAlignAxis(.Horizontal, toSameAxisOfView: title)
-        unread.autoSetDimension(.Height, toSize: 20)
+        unread.autoPinEdgeToSuperviewEdge(.Top)
+        unread.autoPinEdgeToSuperviewEdge(.Right)
+        unread.autoSetDimension(.Height, toSize: 30)
         unreadWidth = unread.autoMatchDimension(.Width, toDimension: .Height, ofView: unread)
         
         unread.hideUnreadText = true
@@ -93,6 +95,10 @@ class ArticleCell: UITableViewCell {
         dateFormatter.timeStyle = .NoStyle
         dateFormatter.dateStyle = .ShortStyle
         dateFormatter.timeZone = NSCalendar.currentCalendar().timeZone
+    }
+    
+    func textView(textView: UITextView, shouldInteractWithURL URL: NSURL, inRange characterRange: NSRange) -> Bool {
+        return false
     }
     
     required init(coder aDecoder: NSCoder) {

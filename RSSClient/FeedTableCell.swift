@@ -60,9 +60,9 @@ class FeedTableCell: UITableViewCell {
         iconHeight = iconView.autoSetDimension(.Height, toSize: 0)
         iconWidth = iconView.autoSetDimension(.Width, toSize: 0)
         
-        unreadCounter.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
-        unreadCounter.autoAlignAxisToSuperviewAxis(.Horizontal)
-        unreadCounter.autoSetDimension(.Height, toSize: 30)
+        unreadCounter.autoPinEdgeToSuperviewEdge(.Top)
+        unreadCounter.autoPinEdgeToSuperviewEdge(.Right)
+        unreadCounter.autoSetDimension(.Height, toSize: 45)
         unreadWidth = unreadCounter.autoMatchDimension(.Width, toDimension: .Height, ofView: unreadCounter)
         
         nameLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)

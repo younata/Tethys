@@ -52,7 +52,14 @@ class DataManager: NSObject, MWFeedParserDelegate {
     // MARK: - Feeds
     
     func feeds() -> [Feed] {
-        return (entities("Feed", matchingPredicate: NSPredicate(value: true)) as [Feed]).sorted { return $0.title < $1.title }
+        return (entities("Feed", matchingPredicate: NSPredicate(value: true)) as [Feed]).sorted {
+            if $0.title == nil {
+                return true
+            } else if $1.title == nil {
+                return false
+            }
+            return $0.title < $1.title
+        }
     }
     
     func newFeed(feedURL: String) -> Feed {
@@ -70,6 +77,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
             self.managedObjectContext.save(nil)
             NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
         }
+        UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         self.loadFeed(feedURL)
         return feed
     }
@@ -84,6 +92,9 @@ class DataManager: NSObject, MWFeedParserDelegate {
         }
         self.managedObjectContext.deleteObject(feed)
         self.managedObjectContext.save(nil)
+        if (feeds().count == 0) {
+            UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
+        }
     }
     
     private var comp: (NSError?)->(Void) = {(error: NSError?) in }
@@ -195,6 +206,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
     func feedParserDidFinish(parser: MWFeedParser!) {
         NSNotificationCenter.defaultCenter().postNotificationName("FeedParserFinished", object: parser.url().absoluteString!)
         feedsLeft -= 1
+        managedObjectContext.save(nil)
         if (feedsLeft == 0) {
             self.comp(nil)
         }

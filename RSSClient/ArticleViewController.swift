@@ -14,17 +14,51 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     var article: Article? = nil {
         didSet {
             if let a = article {
-                println("Article: \(a)")
                 let request = NSURLRequest(URL: NSURL(string: a.link))
-                println("Loading \(a.link)")
-                self.content.loadRequest(request)
+                if let cnt = a.content ?? a.summary {
+                    self.content.loadHTMLString(cnt, baseURL: NSURL(string: a.feed.url))
+                } else {
+                    self.content.loadRequest(NSURLRequest(URL: NSURL(string: a.link)))
+                    if (shareButton != nil) {
+                        self.toolbarItems = [spacer(), shareButton, spacer()]
+                    }
+                }
                 self.navigationItem.title = a.title
             }
         }
     }
     
+    enum ArticleContentType {
+        case Content;
+        case Link;
+    }
+    
     let content = WKWebView(forAutoLayout: ())
     let loadingBar = UIProgressView(progressViewStyle: .Bar)
+    
+    var shareButton: UIBarButtonItem! = nil
+    var toggleContentButton: UIBarButtonItem! = nil
+    let contentString = NSLocalizedString("Content", comment: "")
+    let linkString = NSLocalizedString("Link", comment: "")
+    
+    var contentType: ArticleContentType = .Content {
+        didSet {
+            if let a = article {
+                switch (contentType) {
+                case .Content:
+                    toggleContentButton.title = linkString
+                    self.content.loadHTMLString(a.content ?? a.summary ?? "", baseURL: NSURL(string: a.feed.url))
+                case .Link:
+                    toggleContentButton.title = contentString
+                    self.content.loadRequest(NSURLRequest(URL: NSURL(string: a.link)))
+                }
+            }
+        }
+    }
+    
+    func spacer() -> UIBarButtonItem {
+        return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: "")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +67,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         content.setTranslatesAutoresizingMaskIntoConstraints(false)
         content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
         content.navigationDelegate = self
+        content.configuration.preferences.minimumFontSize = 16.0
         
         content.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
         
@@ -42,10 +77,39 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         forward.enabled = false
         
         self.navigationItem.rightBarButtonItems = [forward, back]
+        self.navigationController?.toolbarHidden = false
+        // share, show (content|link)...
+        var shareButton = UIBarButtonItem(barButtonSystemItem: .Compose, target: self, action: "share")
+        toggleContentButton = UIBarButtonItem(title: linkString, style: .Plain, target: self, action: "toggleContentLink")
+        if let a = article {
+            if (a.content ?? a.summary) != nil {
+                self.toolbarItems = [spacer(), shareButton, spacer(), toggleContentButton, spacer()]
+            } else {
+                self.toolbarItems = [spacer(), shareButton, spacer()]
+            }
+        }
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.toolbarHidden = false
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.toolbarHidden = true
     }
     
     deinit {
         content.removeObserver(self, forKeyPath: "estimatedProgress")
+    }
+    
+    func share() {
+        //let activity = UIActivityViewController(activityItems: [], applicationActivities: <#[AnyObject]?#>)
+    }
+    
+    func toggleContentLink() {
+        
     }
     
     override func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<Void>) {

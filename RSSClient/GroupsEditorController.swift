@@ -102,6 +102,9 @@ class GroupsEditorController: UITableViewController, UITextFieldDelegate {
         return indexPath.section == 0
     }
     
+    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    }
+    
     override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
         let rm = UITableViewRowAction(style: .Default, title: NSLocalizedString("Remove", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
             if indexPath.section == 0 {

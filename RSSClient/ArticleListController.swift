@@ -49,7 +49,7 @@ class ArticleListController: UITableViewController {
                 let db = b.updatedAt ?? b.published
                 return da!.timeIntervalSince1970 > db!.timeIntervalSince1970
             })
-            self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+            self.tableView.reloadData()
         }
         self.refreshControl?.endRefreshing()
     }
@@ -125,6 +125,10 @@ class ArticleListController: UITableViewController {
         return true
     }
     
+    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+    }
+    
     override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
         let article = self.articleForIndexPath(indexPath)
         let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""), handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
@@ -138,7 +142,7 @@ class ArticleListController: UITableViewController {
         let toggle = UITableViewRowAction(style: .Normal, title: toggleText, handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
             article.read = !article.read
             article.managedObjectContext.save(nil)
-            tableView.reloadSections(NSIndexSet(index: indexPath.section), withRowAnimation: .Automatic)
+            tableView.reloadSections(NSIndexSet(index: indexPath.section), withRowAnimation: .None)
         })
         return [delete, toggle]
     }

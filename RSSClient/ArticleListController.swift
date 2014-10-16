@@ -12,6 +12,7 @@ class ArticleListController: UITableViewController {
     
     var articles : [Article] = []
     var feeds : [Feed] = []
+    let queue = dispatch_queue_create("articleController", nil)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,7 +25,7 @@ class ArticleListController: UITableViewController {
         
         self.refreshControl = UIRefreshControl(frame: CGRectZero)
         self.refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
-        
+        self.refreshControl?.beginRefreshing()
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -40,18 +41,25 @@ class ArticleListController: UITableViewController {
     }
     
     func refresh() {
-        // TODO: optimize this
-        let articles = self.feeds.reduce([]) { return $0 + $1.articles.allObjects }
-        if NSSet(array: articles) != NSSet(array: self.articles) {
-            self.articles = (articles as [Article])
-            self.articles.sort({(a : Article, b: Article) in
-                let da = a.updatedAt ?? a.published
-                let db = b.updatedAt ?? b.published
-                return da!.timeIntervalSince1970 > db!.timeIntervalSince1970
-            })
-            self.tableView.reloadData()
+        dispatch_async(queue) {
+            let articles = self.feeds.reduce([]) { return $0 + $1.articles.allObjects }
+            let newArticles = NSSet(array: articles)
+            let oldArticles = NSSet(array: self.articles)
+            if newArticles != oldArticles {
+                self.articles = (articles as [Article])
+                self.articles.sort({(a : Article, b: Article) in
+                    let da = a.updatedAt ?? a.published
+                    let db = b.updatedAt ?? b.published
+                    return da!.timeIntervalSince1970 > db!.timeIntervalSince1970
+                })
+            }
+            dispatch_async(dispatch_get_main_queue()) {
+                if newArticles != oldArticles {
+                    self.tableView.reloadData()
+                }
+                self.refreshControl?.endRefreshing()
+            }
         }
-        self.refreshControl?.endRefreshing()
     }
     
     func showArticle(article: Article) -> ArticleViewController {
@@ -136,9 +144,9 @@ class ArticleListController: UITableViewController {
             article.managedObjectContext.save(nil)
             self.refresh()
         })
-        let unread = NSLocalizedString("Mark Unread", comment: "")
-        let read = NSLocalizedString("Mark Read", comment: "")
-        let toggleText = article.read ? read : unread
+        let unread = NSLocalizedString("Mark\nUnread", comment: "")
+        let read = NSLocalizedString("Mark\nRead", comment: "")
+        let toggleText = article.read ? unread : read
         let toggle = UITableViewRowAction(style: .Normal, title: toggleText, handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
             article.read = !article.read
             article.managedObjectContext.save(nil)

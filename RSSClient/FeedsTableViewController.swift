@@ -38,9 +38,11 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.setTranslatesAutoresizingMaskIntoConstraints(false)
         tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
         
+        /*
         self.view.addSubview(tabBar)
         tabBar.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
         tabBar.autoSetDimension(.Height, toSize: 44)
+        */ // I don't want to deal with assets for feeds and groups.
         feedsTabItem = UITabBarItem(title: NSLocalizedString("Feeds", comment: ""), image: nil, selectedImage: nil) // TODO: images
         groupsTabItem = UITabBarItem(title: NSLocalizedString("Groups", comment: ""), image: nil, selectedImage: nil)
         tabBar.items = [feedsTabItem, groupsTabItem]
@@ -61,6 +63,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 80
         self.refresh()
+        self.tableViewController.refreshControl?.beginRefreshing()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
     }
@@ -240,7 +243,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         })
         switch (self.state) {
         case .feeds:
-            let markRead = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Mark Read", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
+            let markRead = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Mark\nRead", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
                 let feed = self.feedAtIndexPath(indexPath)
                 for article in feed.articles.allObjects as [Article] {
                     article.read = true

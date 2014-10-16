@@ -105,7 +105,15 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     }
     
     func share() {
-        //let activity = UIActivityViewController(activityItems: [], applicationActivities: <#[AnyObject]?#>)
+        if let a = article {
+            let activity = UIActivityViewController(activityItems: [NSURL(string: a.link)], applicationActivities: nil)
+            if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
+                let popover = UIPopoverController(contentViewController: activity)
+                popover.presentPopoverFromBarButtonItem(shareButton, permittedArrowDirections: .Any, animated: true)
+            } else {
+                self.presentViewController(activity, animated: true, completion: nil)
+            }
+        }
     }
     
     func toggleContentLink() {

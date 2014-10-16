@@ -22,6 +22,9 @@
 		8933E92E19ECD28900ECFF3F /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92919ECD28900ECFF3F /* NSString+HTML.m */; };
 		8933E92F19ECD28900ECFF3F /* NSString+XMLEntities.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92B19ECD28900ECFF3F /* NSString+XMLEntities.m */; };
 		8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */; };
+		8933E93919EF4BB100ECFF3F /* ScriptEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93819EF4BB100ECFF3F /* ScriptEditorViewController.swift */; };
+		8933E93B19EF4D0C00ECFF3F /* TextHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93A19EF4D0C00ECFF3F /* TextHighlighter.swift */; };
+		8933E93E19EF508C00ECFF3F /* ScriptDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93D19EF508C00ECFF3F /* ScriptDocument.swift */; };
 		8957799F19E62C7100548418 /* AppDelegateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8957799E19E62C7100548418 /* AppDelegateTests.swift */; };
 		895779A019E62CC500548418 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307819D730E9009924DA /* AppDelegate.swift */; };
 		895779A119E62CC500548418 /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830CC19DC67B9009924DA /* UnreadCounter.swift */; };
@@ -141,6 +144,9 @@
 		8933E92B19ECD28900ECFF3F /* NSString+XMLEntities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+XMLEntities.m"; path = "MWFeedParser/Classes/NSString+XMLEntities.m"; sourceTree = "<group>"; };
 		8933E93219EE33F700ECFF3F /* UIColor+RSSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+RSSClient.h"; sourceTree = "<group>"; };
 		8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+RSSClient.m"; sourceTree = "<group>"; };
+		8933E93819EF4BB100ECFF3F /* ScriptEditorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScriptEditorViewController.swift; sourceTree = "<group>"; };
+		8933E93A19EF4D0C00ECFF3F /* TextHighlighter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextHighlighter.swift; sourceTree = "<group>"; };
+		8933E93D19EF508C00ECFF3F /* ScriptDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScriptDocument.swift; sourceTree = "<group>"; };
 		8957799D19E62C7100548418 /* RSSClientTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSSClientTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		8957799E19E62C7100548418 /* AppDelegateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateTests.swift; sourceTree = "<group>"; };
 		895779AF19E6512200548418 /* UnreadCounterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounterTests.swift; sourceTree = "<group>"; };
@@ -264,12 +270,22 @@
 			name = Categories;
 			sourceTree = "<group>";
 		};
+		8933E93C19EF507600ECFF3F /* Scripting */ = {
+			isa = PBXGroup;
+			children = (
+				8933E93819EF4BB100ECFF3F /* ScriptEditorViewController.swift */,
+				8933E93D19EF508C00ECFF3F /* ScriptDocument.swift */,
+				8933E93A19EF4D0C00ECFF3F /* TextHighlighter.swift */,
+			);
+			name = Scripting;
+			sourceTree = "<group>";
+		};
 		89C8306A19D730E9009924DA = {
 			isa = PBXGroup;
 			children = (
+				8933E8F519ECCB9900ECFF3F /* Alamofire.xcodeproj */,
 				8933E91019ECCBCA00ECFF3F /* PureLayout */,
 				8933E91B19ECCD6500ECFF3F /* MWFeedParser */,
-				8933E8F519ECCB9900ECFF3F /* Alamofire.xcodeproj */,
 				89C8307519D730E9009924DA /* RSSClient */,
 				89C8308E19D730E9009924DA /* RSSClientTests */,
 				89C8307419D730E9009924DA /* Products */,
@@ -293,6 +309,7 @@
 				89C8307819D730E9009924DA /* AppDelegate.swift */,
 				89C830CC19DC67B9009924DA /* UnreadCounter.swift */,
 				89C830B119D7D2B7009924DA /* Feeds */,
+				8933E93C19EF507600ECFF3F /* Scripting */,
 				89C830B419D7D2D2009924DA /* Articles */,
 				89C8308219D730E9009924DA /* Images.xcassets */,
 				89C830AC19D7BDE0009924DA /* Core Data */,
@@ -560,8 +577,10 @@
 				8933E90E19ECCBC300ECFF3F /* NSArray+PureLayout.m in Sources */,
 				89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */,
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
+				8933E93B19EF4D0C00ECFF3F /* TextHighlighter.swift in Sources */,
 				89C830B619D7DE97009924DA /* ArticleViewController.swift in Sources */,
 				89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */,
+				8933E93E19EF508C00ECFF3F /* ScriptDocument.swift in Sources */,
 				89F1C01F19E75E73009343DB /* GroupsEditorController.swift in Sources */,
 				8917110019E0703700D86C7B /* Group.m in Sources */,
 				89C830C319D89E46009924DA /* Article.m in Sources */,
@@ -570,6 +589,7 @@
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
 				8933E92D19ECD28900ECFF3F /* NSDate+InternetDateTime.m in Sources */,
 				8933E90D19ECCBC300ECFF3F /* ALView+PureLayout.m in Sources */,
+				8933E93919EF4BB100ECFF3F /* ScriptEditorViewController.swift in Sources */,
 				89C8307C19D730E9009924DA /* RSSClient.xcdatamodeld in Sources */,
 				8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */,
 				8933E92C19ECD28900ECFF3F /* GTMNSString+HTML.m in Sources */,

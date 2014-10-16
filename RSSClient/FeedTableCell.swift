@@ -30,8 +30,6 @@ class FeedTableCell: UITableViewCell {
                 summaryLabel.text = ""
                 unreadCounter.unread = 0
             }
-            let width = CGRectGetWidth(unreadCounter.bounds)
-            unreadWidth.constant = unreadCounter.unread == 0 ? -width : 0
         }
     }
     
@@ -40,7 +38,6 @@ class FeedTableCell: UITableViewCell {
     let summaryLabel = UILabel(forAutoLayout: ())
     let unreadCounter = UnreadCounter(frame: CGRectZero)
     
-    var unreadWidth: NSLayoutConstraint! = nil
     var iconHeight : NSLayoutConstraint! = nil
     var iconWidth : NSLayoutConstraint! = nil
     
@@ -63,7 +60,7 @@ class FeedTableCell: UITableViewCell {
         unreadCounter.autoPinEdgeToSuperviewEdge(.Top)
         unreadCounter.autoPinEdgeToSuperviewEdge(.Right)
         unreadCounter.autoSetDimension(.Height, toSize: 45)
-        unreadWidth = unreadCounter.autoMatchDimension(.Width, toDimension: .Height, ofView: unreadCounter)
+        unreadCounter.autoMatchDimension(.Width, toDimension: .Height, ofView: unreadCounter)
         
         nameLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
         nameLabel.autoPinEdge(.Right, toEdge: .Left, ofView: unreadCounter, withOffset: -8)
@@ -73,7 +70,7 @@ class FeedTableCell: UITableViewCell {
         nameLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
         
         summaryLabel.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
-        summaryLabel.autoPinEdge(.Right, toEdge: .Left, ofView: unreadCounter, withOffset: -8)
+        summaryLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
         summaryLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: nameLabel, withOffset: 8, relation: .GreaterThanOrEqual)
         summaryLabel.autoPinEdge(.Left, toEdge: .Right, ofView: iconView, withOffset: 8)
         

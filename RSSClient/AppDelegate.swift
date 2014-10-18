@@ -34,6 +34,15 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             }
         }
+        
+        dispatch_async(DISPATCH_QUEUE_PRIORITY_BACKGROUND) {
+            if DataManager.sharedInstance().feeds().count > 0 {
+                application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+            } else {
+                application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
+            }
+        }
+        
         return true
     }
     

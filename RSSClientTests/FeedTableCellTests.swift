@@ -27,7 +27,7 @@ class FeedTableCellTests: XCTestCase {
     }
     
     func testFeed() {
-        let feed = FakeFeed()
+        let feed = FakeFeed.newFeed()
         cell.feed = feed
         if feed.image != nil && cell.iconView.image != nil {
             XCTAssertEqual(feed.image! as UIImage, cell.iconView.image!, "iconView image should equal feed image")

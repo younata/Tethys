@@ -26,7 +26,7 @@ class ArticleCellTests: XCTestCase {
     }
     
     func testArticle() {
-        let article = FakeArticle()
+        let article = FakeArticle.newArticle()
         cell.article = article
         let dateParser = NSDateFormatter()
         dateParser.timeStyle = .NoStyle

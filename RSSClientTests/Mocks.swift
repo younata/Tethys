@@ -9,6 +9,22 @@
 import Foundation
 
 class FakeFeed : Feed {
+    init() {
+        let entity = NSEntityDescription()
+        entity.name = "Feed"
+        super.init(entity: entity, insertIntoManagedObjectContext: nil)
+    }
+    
+    override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext!) {
+        super.init(entity: entity, insertIntoManagedObjectContext: nil)
+    }
+    
+    class func newFeed() -> FakeFeed {
+        let entity = NSEntityDescription()
+        entity.name = "Feed"
+        return FakeFeed(entity: entity, insertIntoManagedObjectContext: nil)
+    }
+    
     override var image: AnyObject! {
         get {
             return nil
@@ -38,9 +54,9 @@ class FakeFeed : Feed {
     
     override var articles : NSSet? {
         get {
-            var a1 = FakeArticle()
-            var a2 = FakeArticle()
-            var a3 = FakeArticle()
+            var a1 = FakeArticle.newArticle()
+            var a2 = FakeArticle.newArticle()
+            var a3 = FakeArticle.newArticle()
             return NSSet(array: [a1, a2, a3])
         }
         set {
@@ -50,6 +66,22 @@ class FakeFeed : Feed {
 }
 
 class FakeArticle : Article {
+    init() {
+        let entity = NSEntityDescription()
+        entity.name = "Article"
+        super.init(entity: entity, insertIntoManagedObjectContext: nil)
+    }
+    
+    override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext!) {
+        super.init(entity: entity, insertIntoManagedObjectContext: nil)
+    }
+    
+    class func newArticle() -> FakeArticle {
+        let entity = NSEntityDescription()
+        entity.name = "Article"
+        return FakeArticle(entity: entity, insertIntoManagedObjectContext: nil)
+    }
+    
     override var read : Bool {
         get {
             return false

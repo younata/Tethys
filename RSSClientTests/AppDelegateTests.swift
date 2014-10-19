@@ -31,7 +31,7 @@ class AppDelegateTests: XCTestCase {
     
     func testNotificationLoad() {
         let note = UILocalNotification();
-        let feed = FakeFeed()
+        let feed = FakeFeed.newFeed()
         let article = (feed.articles!.anyObject() as Article)
         note.userInfo = ["feed": feed, "article": article]
         appDelegate.application(app, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsLocalNotificationKey: note])
@@ -42,7 +42,6 @@ class AppDelegateTests: XCTestCase {
     }
     
     func testBackgroundFetch() {
-        XCTFail("not implemented in a satisfactory way")
         // set up...
         let expectation = expectationWithDescription("background fetch")
         let notes = app.scheduledLocalNotifications

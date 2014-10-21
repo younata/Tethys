@@ -18,10 +18,10 @@ class ArticleCell: UITableViewCell, UITextViewDelegate {
             author.text = article?.author ?? ""
             var cnt = article?.summary ?? ""
             
-            let data = cnt.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
+            let data = cnt.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
             let options = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
             
-            let astr = NSAttributedString(data: data, options: options, documentAttributes: nil, error: nil)
+            let astr = NSAttributedString(data: data, options: options, documentAttributes: nil, error: nil)!
             let bounding = astr.boundingRectWithSize(CGSizeMake(self.contentView.bounds.size.width - 16, CGFloat.max), options: .UsesFontLeading, context: nil)
             contentHeight.constant = ceil(bounding.size.height)
             content.attributedText = astr

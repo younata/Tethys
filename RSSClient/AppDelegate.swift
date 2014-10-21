@@ -35,14 +35,14 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
         
-        /*
+        //*
         dispatch_async(DISPATCH_QUEUE_PRIORITY_BACKGROUND) {
             if DataManager.sharedInstance().feeds().count > 0 {
                 application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
             } else {
                 application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
             }
-        }*/
+        }//*/
         
         return true
     }
@@ -71,7 +71,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 // show local notification.
                 let note = UILocalNotification()
                 let cnt = article.summary ?? ""
-                let str = NSAttributedString(data: cnt.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false), options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil, error: nil)
+                let str = NSAttributedString(data: cnt.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!, options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil, error: nil)!
                 let txt = str.string.lengthOfBytesUsingEncoding(NSUTF8StringEncoding) != 0 ? "\n\(str.string)" : ""
                 note.alertBody = "\(article.title)" + txt
                 note.userInfo = ["feed": article.feed, "article": article]

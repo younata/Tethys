@@ -71,7 +71,7 @@ class ArticleListController: UITableViewController {
         avc.article = article
         self.navigationController?.pushViewController(avc, animated: animated)
         article.read = true
-        article.managedObjectContext.save(nil)
+        article.managedObjectContext!.save(nil)
         return avc
     }
     
@@ -141,7 +141,7 @@ class ArticleListController: UITableViewController {
         let article = self.articleForIndexPath(indexPath)
         let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""), handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
             DataManager.sharedInstance().managedObjectContext.deleteObject(article)
-            article.managedObjectContext.save(nil)
+            article.managedObjectContext?.save(nil)
             self.refresh()
         })
         let unread = NSLocalizedString("Mark\nUnread", comment: "")
@@ -149,7 +149,7 @@ class ArticleListController: UITableViewController {
         let toggleText = article.read ? unread : read
         let toggle = UITableViewRowAction(style: .Normal, title: toggleText, handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
             article.read = !article.read
-            article.managedObjectContext.save(nil)
+            article.managedObjectContext?.save(nil)
             tableView.reloadSections(NSIndexSet(index: indexPath.section), withRowAnimation: .None)
         })
         return [delete, toggle]

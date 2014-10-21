@@ -32,8 +32,8 @@ class ArticleCellTests: XCTestCase {
         dateParser.timeStyle = .NoStyle
         dateParser.dateStyle = .ShortStyle
         dateParser.timeZone = NSCalendar.currentCalendar().timeZone
-        XCTAssertEqual(cell.title.text!, article.title, "title text should be empty string")
-        XCTAssertEqual(cell.published.text!, dateParser.stringFromDate(article.published), "published text should be empty string")
-        XCTAssertEqual(cell.author.text!, article.author, "author text should be empty string")
+        XCTAssertEqual(cell.title.text!, article.title!, "title text should be empty string")
+        XCTAssertEqual(cell.published.text!, dateParser.stringFromDate(article.published!), "published text should be empty string")
+        XCTAssertEqual(cell.author.text!, article.author!, "author text should be empty string")
     }
 }

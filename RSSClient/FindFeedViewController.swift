@@ -128,8 +128,8 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         if !textField.text.lowercaseString.hasPrefix("http") {
             textField.text = "http://\(textField.text)"
         }
-        if let url = NSURL.URLWithString(textField.text) {
-            self.webContent.loadRequest(NSURLRequest(URL: NSURL(string: textField.text)))
+        if let url = NSURL(string: textField.text) {
+            self.webContent.loadRequest(NSURLRequest(URL: NSURL(string: textField.text)!))
         }
         if (lookForFeeds) {
             let feedParser = MWFeedParser(feedURL: NSURL(string: textField.text))
@@ -173,7 +173,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         self.navigationItem.rightBarButtonItem = reload
         
         if (lookForFeeds) {
-            let discover = NSString.stringWithContentsOfFile(NSBundle.mainBundle().pathForResource("findFeeds", ofType: "js")!, encoding: NSUTF8StringEncoding, error: nil)
+            let discover = NSString(contentsOfFile: NSBundle.mainBundle().pathForResource("findFeeds", ofType: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
             webView.evaluateJavaScript(discover, completionHandler: {(res: AnyObject!, error: NSError?) in
                 if let str = res as? String {
                     if (!contains(self.feeds, str)) {

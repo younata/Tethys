@@ -14,11 +14,11 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     var article: Article? = nil {
         didSet {
             if let a = article {
-                let request = NSURLRequest(URL: NSURL(string: a.link))
+                let request = NSURLRequest(URL: NSURL(string: a.link)!)
                 if let cnt = a.content ?? a.summary {
-                    self.content.loadHTMLString(cnt, baseURL: NSURL(string: a.feed.url))
+                    self.content.loadHTMLString(cnt, baseURL: NSURL(string: a.feed.url)!)
                 } else {
-                    self.content.loadRequest(NSURLRequest(URL: NSURL(string: a.link)))
+                    self.content.loadRequest(NSURLRequest(URL: NSURL(string: a.link)!))
                     if (shareButton != nil) {
                         self.toolbarItems = [spacer(), shareButton, spacer()]
                     }
@@ -50,7 +50,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                     self.content.loadHTMLString(a.content ?? a.summary ?? "", baseURL: NSURL(string: a.feed.url))
                 case .Link:
                     toggleContentButton.title = contentString
-                    self.content.loadRequest(NSURLRequest(URL: NSURL(string: a.link)))
+                    self.content.loadRequest(NSURLRequest(URL: NSURL(string: a.link)!))
                 }
             }
         }
@@ -106,7 +106,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     
     func share() {
         if let a = article {
-            let activity = UIActivityViewController(activityItems: [NSURL(string: a.link)], applicationActivities: nil)
+            let activity = UIActivityViewController(activityItems: [NSURL(string: a.link)!], applicationActivities: nil)
             if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
                 let popover = UIPopoverController(contentViewController: activity)
                 popover.presentPopoverFromBarButtonItem(shareButton, permittedArrowDirections: .Any, animated: true)

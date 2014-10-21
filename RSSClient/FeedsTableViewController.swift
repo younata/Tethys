@@ -207,7 +207,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             return cell
         case .groups:
             let cell = tableView.dequeueReusableCellWithIdentifier("groups", forIndexPath: indexPath) as UITableViewCell
-            cell.textLabel!.text = self.groupAtIndexPath(indexPath)!.name
+            cell.textLabel.text = self.groupAtIndexPath(indexPath)!.name
             return cell
         }
     }

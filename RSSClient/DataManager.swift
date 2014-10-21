@@ -25,7 +25,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
     }
     
     func newGroup(name: String) -> Group {
-        if let group = entities("Group", matchingPredicate: NSPredicate(format: "name = %@", name)).last as? Group {
+        if let group = entities("Group", matchingPredicate: NSPredicate(format: "name = %@", name)!).last as? Group {
             return group
         } else {
             let group = (NSEntityDescription.insertNewObjectForEntityForName("Group", inManagedObjectContext: managedObjectContext) as Group)
@@ -69,7 +69,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
     func newFeed(feedURL: String, withICO icoURL: String?) -> Feed {
         let predicate = NSPredicate(format: "url = %@", feedURL)
         var feed: Feed! = nil
-        if let theFeed = entities("Feed", matchingPredicate: predicate).last as? Feed {
+        if let theFeed = entities("Feed", matchingPredicate: predicate!).last as? Feed {
             feed = theFeed
         } else {
             feed = (NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: managedObjectContext) as Feed)
@@ -125,7 +125,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
     private let contentRenderer = WKWebView(frame: CGRectZero)
     
     func feedParser(parser: MWFeedParser!, didParseFeedInfo info: MWFeedInfo!) {
-        let predicate = NSPredicate(format: "url = %@", parser.url().absoluteString!)
+        let predicate = NSPredicate(format: "url = %@", parser.url().absoluteString!)!
         if let feed = entities("Feed", matchingPredicate: predicate).last as? Feed {
             feed.title = info.title
             feed.summary = info.summary
@@ -139,7 +139,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
             if let link = info.link {
                 Alamofire.request(.GET, link).response {(_, _, response, error) in
                     self.contentRenderer.loadHTMLString((response as String), baseURL: NSURL(string: link))
-                    let ICOScript = NSString.stringWithContentsOfFile(NSBundle.mainBundle().pathForResource("FindICO", ofType: "js")!, encoding: NSUTF8StringEncoding, error: nil)
+                    let ICOScript = NSString(contentsOfFile: NSBundle.mainBundle().pathForResource("FindICO", ofType: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
                     self.contentRenderer.evaluateJavaScript(ICOScript, completionHandler: {(jsResponse: AnyObject!, error: NSError?) in
                         if (error == nil) {
                             if let imageLink = jsResponse as? String {
@@ -162,7 +162,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
     }
     
     func feedParser(parser: MWFeedParser!, didParseFeedItem item: MWFeedItem!) {
-        let predicate = NSPredicate(format: "link = %@", item.link)
+        let predicate = NSPredicate(format: "link = %@", item.link)!
         if let article = entities("Article", matchingPredicate: predicate).last as? Article {
             article.title = item.title
             article.link = item.link
@@ -175,7 +175,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
             }
         } else {
             // create
-            if let feed = entities("Feed", matchingPredicate: NSPredicate(format: "url = %@", parser.url().absoluteString!)).last as? Feed {
+            if let feed = entities("Feed", matchingPredicate: NSPredicate(format: "url = %@", parser.url().absoluteString!)!).last as? Feed {
                 let article = (NSEntityDescription.insertNewObjectForEntityForName("Article", inManagedObjectContext: managedObjectContext) as Article)
                 article.title = item.title
                 article.link = item.link
@@ -243,7 +243,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
     
     override init() {
         let modelURL = NSBundle.mainBundle().URLForResource("RSSClient", withExtension: "momd")!
-        managedObjectModel = NSManagedObjectModel(contentsOfURL: modelURL)
+        managedObjectModel = NSManagedObjectModel(contentsOfURL: modelURL)!
         let applicationDocumentsDirectory: String = (NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).last as String)
         let storeURL = NSURL.fileURLWithPath(applicationDocumentsDirectory.stringByAppendingPathComponent("RSSClient.sqlite"))
         persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)

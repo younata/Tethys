@@ -62,7 +62,6 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 80
-        self.tableViewController.refreshControl?.beginRefreshing()
         self.refresh()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
@@ -238,7 +237,9 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             case .groups:
                 DataManager.sharedInstance().deleteGroup(self.groupAtIndexPath(indexPath)!)
             }
+            self.tableView.beginUpdates()
             self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+            self.tableView.endUpdates()
         })
         switch (self.state) {
         case .feeds:
@@ -247,7 +248,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
                 for article in feed.articles.allObjects as [Article] {
                     article.read = true
                 }
-                self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
                 DataManager.sharedInstance().saveContext()
             })
             return [delete, markRead]
@@ -255,6 +256,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             let edit = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Edit", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
                 let gvc = GroupsEditorController()
                 gvc.group = self.groupAtIndexPath(indexPath)
+                self.tableView.setEditing(false, animated: true)
                 self.presentViewController(UINavigationController(rootViewController: gvc), animated: true, completion: nil)
             })
             return [delete, edit]

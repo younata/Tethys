@@ -16,15 +16,21 @@ class ArticleCell: UITableViewCell, UITextViewDelegate {
             title.text = article?.title ?? ""
             published.text = article != nil ? dateFormatter.stringFromDate(article?.updatedAt ?? article?.published ?? NSDate()) : ""
             author.text = article?.author ?? ""
-            var cnt = article?.summary ?? ""
-            
-            let data = cnt.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
-            let options = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
-            
-            let astr = NSAttributedString(data: data, options: options, documentAttributes: nil, error: nil)!
-            let bounding = astr.boundingRectWithSize(CGSizeMake(self.contentView.bounds.size.width - 16, CGFloat.max), options: .UsesFontLeading, context: nil)
+            var preview: NSAttributedString? = (article?.preview as NSAttributedString?)
+            if preview == nil {
+                var cnt = article?.summary ?? ""
+                
+                let data = cnt.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
+                let options = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
+                
+                let astr = NSAttributedString(data: data, options: options, documentAttributes: nil, error: nil)!
+                preview = astr
+                article?.preview = astr
+                article?.managedObjectContext?.save(nil)
+            }
+            let bounding = preview!.boundingRectWithSize(CGSizeMake(self.contentView.bounds.size.width - 16, CGFloat.max), options: .UsesFontLeading, context: nil)
             contentHeight.constant = ceil(bounding.size.height)
-            content.attributedText = astr
+            content.attributedText = preview!
             // TODO: enclosures.
             unread.unread = article?.read == false ? 1 : 0
             let width = CGRectGetWidth(unread.bounds)

@@ -24,16 +24,25 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         UITabBar.appearance().tintColor = UIColor.darkGreenColor()
         let ftvc = FeedsTableViewController()
         self.window?.rootViewController = UINavigationController(rootViewController: ftvc)
-        if let options = launchOptions {
-            if let localNotification = options[UIApplicationLaunchOptionsLocalNotificationKey] as? UILocalNotification {
-                if let userInfo = localNotification.userInfo {
-                    let feed : Feed = (userInfo["feed"] as Feed)
-                    let article : Article = (userInfo["article"] as Article)
-                    let al = ftvc.showFeeds([feed], animated: false)
-                    al.showArticle(article)
-                }
-            }
-        }
+        
+        let markReadAction = UIMutableUserNotificationAction()
+        markReadAction.identifier = "read"
+        markReadAction.title = NSLocalizedString("Mark Read", comment: "")
+        markReadAction.activationMode = .Background
+        markReadAction.authenticationRequired = false
+        
+        let viewAction = UIMutableUserNotificationAction()
+        viewAction.identifier = "view"
+        viewAction.title = NSLocalizedString("View", comment: "")
+        viewAction.activationMode = .Foreground
+        viewAction.authenticationRequired = true
+        
+        let category = UIMutableUserNotificationCategory()
+        category.identifier = "default"
+        category.setActions([markReadAction, viewAction], forContext: .Minimal)
+        category.setActions([markReadAction, viewAction], forContext: .Default)
+        
+        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert, categories: NSSet(object: category)))
         
         if DataManager.sharedInstance().feeds().count > 0 {
             application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
@@ -41,9 +50,40 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
         }
         
-        
-        
         return true
+    }
+    
+    public func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
+        let nc = (self.window!.rootViewController! as UINavigationController)
+        let ftvc = (nc.viewControllers.first! as FeedsTableViewController)
+        if let userInfo = notification.userInfo {
+            nc.popToRootViewControllerAnimated(false)
+            let feedTitle = (userInfo["feed"] as String)
+            let feed : Feed = DataManager.sharedInstance().feeds().filter{ return $0.title == feedTitle; }.first!
+            let articleTitle = (userInfo["article"] as String)
+            let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.title == articleTitle }).first!
+            let al = ftvc.showFeeds([feed], animated: false)
+            al.showArticle(article)
+        }
+    }
+    
+    public func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
+        if let userInfo = notification.userInfo {
+            let feedTitle = (userInfo["feed"] as String)
+            let feed : Feed = DataManager.sharedInstance().feeds().filter{ return $0.title == feedTitle; }.first!
+            let articleTitle = (userInfo["article"] as String)
+            let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.title == articleTitle }).first!
+            if identifier == "read" {
+                article.read = true
+                article.managedObjectContext?.save(nil)
+            } else if identifier == "view" {
+                let nc = (self.window!.rootViewController! as UINavigationController)
+                let ftvc = (nc.viewControllers.first! as FeedsTableViewController)
+                nc.popToRootViewControllerAnimated(false)
+                let al = ftvc.showFeeds([feed], animated: false)
+                al.showArticle(article)
+            }
+        }
     }
     
     public func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
@@ -66,16 +106,18 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 return !contains(originalList, $0)
             })
             
-            for article: Article in alist {
-                // show local notification.
-                let note = UILocalNotification()
-                let cnt = article.summary ?? ""
-                let str = NSAttributedString(data: cnt.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!, options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil, error: nil)!
-                let txt = str.string.lengthOfBytesUsingEncoding(NSUTF8StringEncoding) != 0 ? "\n\(str.string)" : ""
-                note.alertBody = "\(article.title)" + txt
-                note.userInfo = ["feed": article.feed, "article": article]
-                note.fireDate = NSDate()
-                application.presentLocalNotificationNow(note)
+            let settings = application.currentUserNotificationSettings()
+            if settings.types & UIUserNotificationType.Alert == .Alert {
+                for article: Article in alist {
+                    // show local notification.
+                    let note = UILocalNotification()
+                    note.alertBody = NSString.localizedStringWithFormat("New article in %@: %@", article.feed.title, article.title)
+                    let dict = ["feed": article.feed.title, "article": article.title]
+                    note.userInfo = dict
+                    note.fireDate = NSDate()
+                    note.category = "default"
+                    application.presentLocalNotificationNow(note)
+                }
             }
             if (alist.count > 0) {
                 completionHandler(.NewData)
@@ -98,6 +140,21 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
     public func applicationWillEnterForeground(application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+        /*
+        let opml = "rnews.opml"
+        let origContents = NSUserDefaults.standardUserDefaults().arrayForKey("documents") as [String]
+        
+        let contents = (NSFileManager.defaultManager().contentsOfDirectoryAtPath(NSHomeDirectory().stringByAppendingPathComponent("Documents"), error: nil) as [String])
+        for itm in contents.filter({return !contains(origContents, $0) || $0 == opml}) {
+            // do something...
+            if itm.pathExtension == "opml" {
+                // parse opml
+            } else if contains(["xml", "rss", "atom"], itm.pathExtension) {
+                // parse atom
+            }
+        }
+        
+        NSUserDefaults.standardUserDefaults().setObject(contents, forKey: "documents")*/
     }
 
     public func applicationDidBecomeActive(application: UIApplication) {

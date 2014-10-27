@@ -98,12 +98,20 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     
     func save() {
         if let rl = rssLink {
-            DataManager.sharedInstance().newFeed(rl, withICO: nil)
+            save(rl)
+        } else {
+            dismiss()
         }
-        dismiss()
     }
     
-    override func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<Void>) {
+    func save(link: String) {
+        // show something to indicate we're doing work...
+        DataManager.sharedInstance().newFeed(link) {(_) in
+            self.dismiss()
+        }
+    }
+    
+    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
         if (keyPath == "estimatedProgress" && object as NSObject == webContent) {
             loadingBar.progress = Float(webContent.estimatedProgress)
         }
@@ -157,7 +165,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
             }))
             alert.addAction(UIAlertAction(title: NSLocalizedString("Save", comment: ""), style: .Default, handler: {(_) in
                 alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
-                self.dismiss()
+                self.save(info.url.absoluteString!)
             }))
             self.presentViewController(alert, animated: true, completion: nil)
         }

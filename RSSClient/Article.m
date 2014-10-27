@@ -24,5 +24,6 @@
 @dynamic read;
 @dynamic enclosureURLs;
 @dynamic feed;
+@dynamic preview;
 
 @end

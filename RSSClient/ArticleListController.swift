@@ -150,7 +150,7 @@ class ArticleListController: UITableViewController {
         let toggle = UITableViewRowAction(style: .Normal, title: toggleText, handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
             article.read = !article.read
             article.managedObjectContext?.save(nil)
-            tableView.reloadSections(NSIndexSet(index: indexPath.section), withRowAnimation: .None)
+            tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
         })
         return [delete, toggle]
     }

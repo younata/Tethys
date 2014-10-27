@@ -25,5 +25,6 @@
 @property (nonatomic) BOOL read;
 @property (nonatomic, retain) id enclosureURLs;
 @property (nonatomic, retain) Feed *feed;
+@property (nonatomic, retain) id preview;
 
 @end

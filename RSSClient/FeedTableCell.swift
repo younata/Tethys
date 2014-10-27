@@ -61,6 +61,7 @@ class FeedTableCell: UITableViewCell {
         unreadCounter.autoPinEdgeToSuperviewEdge(.Right)
         unreadCounter.autoSetDimension(.Height, toSize: 45)
         unreadCounter.autoMatchDimension(.Width, toDimension: .Height, ofView: unreadCounter)
+        unreadCounter.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0, relation: .GreaterThanOrEqual)
         
         nameLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
         nameLabel.autoPinEdge(.Right, toEdge: .Left, ofView: unreadCounter, withOffset: -8)

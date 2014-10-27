@@ -149,7 +149,7 @@
 		895779B319E658A700548418 /* Mocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
 		895779B519E65A6D00548418 /* ArticleCellTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleCellTests.swift; sourceTree = "<group>"; };
 		895779B719E65D9900548418 /* DataManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManagerTests.swift; sourceTree = "<group>"; };
-		89C8307319D730E9009924DA /* RSSClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RSSClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		89C8307319D730E9009924DA /* rNews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rNews.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89C8307719D730E9009924DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89C8307819D730E9009924DA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		89C8307B19D730E9009924DA /* RSSClient.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RSSClient.xcdatamodel; sourceTree = "<group>"; };
@@ -282,7 +282,7 @@
 		89C8307419D730E9009924DA /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				89C8307319D730E9009924DA /* RSSClient.app */,
+				89C8307319D730E9009924DA /* rNews.app */,
 				89C8308B19D730E9009924DA /* RSSClientTests.xctest */,
 			);
 			name = Products;
@@ -396,7 +396,7 @@
 			);
 			name = RSSClient;
 			productName = RSSClient;
-			productReference = 89C8307319D730E9009924DA /* RSSClient.app */;
+			productReference = 89C8307319D730E9009924DA /* rNews.app */;
 			productType = "com.apple.product-type.application";
 		};
 		89C8308A19D730E9009924DA /* RSSClientTests */ = {
@@ -711,7 +711,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/Pods/build/Debug-iphoneos";
 				PODS_ROOT = "${SRCROOT}/Pods";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = rNews;
 				SWIFT_OBJC_BRIDGING_HEADER = "RSSClient/RSSClient-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				USER_HEADER_SEARCH_PATHS = "";
@@ -733,7 +733,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/Pods/build/Release-iphoneos";
 				PODS_ROOT = "${SRCROOT}/Pods";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = rNews;
 				SWIFT_OBJC_BRIDGING_HEADER = "RSSClient/RSSClient-Bridging-Header.h";
 				USER_HEADER_SEARCH_PATHS = "";
 			};

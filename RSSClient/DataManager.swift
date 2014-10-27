@@ -63,10 +63,10 @@ class DataManager: NSObject, MWFeedParserDelegate {
     }
     
     func newFeed(feedURL: String) -> Feed {
-        return newFeed(feedURL, withICO: nil)
+        return newFeed(feedURL, completion: {(_) in })
     }
     
-    func newFeed(feedURL: String, withICO icoURL: String?) -> Feed {
+    func newFeed(feedURL: String, completion: (NSError?) -> (Void)) -> Feed {
         let predicate = NSPredicate(format: "url = %@", feedURL)
         var feed: Feed! = nil
         if let theFeed = entities("Feed", matchingPredicate: predicate!).last as? Feed {
@@ -78,7 +78,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
             NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
         }
         UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
-        self.loadFeed(feedURL)
+        self.updateFeeds([feed], completion: completion)
         return feed
     }
     
@@ -187,6 +187,13 @@ class DataManager: NSObject, MWFeedParserDelegate {
                 article.enclosureURLs = item.enclosures
                 article.feed = feed
                 article.read = false
+                
+                var cnt = article.summary ?? article.content ?? ""
+                
+                let data = cnt.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
+                let options = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
+                
+                article.preview = NSAttributedString(data: data, options: options, documentAttributes: nil, error: nil)!
                 feed.addArticlesObject(article)
                 // TODO: enclosures
             } else {
@@ -231,9 +238,11 @@ class DataManager: NSObject, MWFeedParserDelegate {
     
     func saveContext() {
         var error: NSError? = nil
-        if (managedObjectContext.hasChanges && !managedObjectContext.save(&error)) {
-            println("Error saving context: \(error)")
-            fatalError("Error saving context")
+        if managedObjectContext.hasChanges {
+            managedObjectContext.save(&error)
+            if let err = error {
+                println("Error saving context: \(error)")
+            }
         }
     }
     

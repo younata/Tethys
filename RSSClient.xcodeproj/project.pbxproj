@@ -60,6 +60,7 @@
 		89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */; };
 		89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C919DA37FB009924DA /* FeedTableCell.swift */; };
 		89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830CC19DC67B9009924DA /* UnreadCounter.swift */; };
+		89D06A1B19FDBC52003909A3 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89D06A1A19FDBC52003909A3 /* Launch Screen.xib */; };
 		89F1C01F19E75E73009343DB /* GroupsEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F1C01E19E75E73009343DB /* GroupsEditorController.swift */; };
 /* End PBXBuildFile section */
 
@@ -170,6 +171,7 @@
 		89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsTableViewController.swift; sourceTree = "<group>"; };
 		89C830C919DA37FB009924DA /* FeedTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCell.swift; sourceTree = "<group>"; };
 		89C830CC19DC67B9009924DA /* UnreadCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounter.swift; sourceTree = "<group>"; };
+		89D06A1A19FDBC52003909A3 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		89F1C01E19E75E73009343DB /* GroupsEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupsEditorController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -295,6 +297,7 @@
 				8933E93C19EF507600ECFF3F /* Scripting */,
 				89C830B419D7D2D2009924DA /* Articles */,
 				89C8308219D730E9009924DA /* Images.xcassets */,
+				89D06A1A19FDBC52003909A3 /* Launch Screen.xib */,
 				89C830AC19D7BDE0009924DA /* Core Data */,
 				8933E93519EE342F00ECFF3F /* Categories */,
 				89C8307619D730E9009924DA /* Supporting Files */,
@@ -485,6 +488,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				89C8308319D730E9009924DA /* Images.xcassets in Resources */,
+				89D06A1B19FDBC52003909A3 /* Launch Screen.xib in Resources */,
 				89C830BF19D89722009924DA /* FindICO.js in Resources */,
 				89C830BB19D8904A009924DA /* findFeeds.js in Resources */,
 			);

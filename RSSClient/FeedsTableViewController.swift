@@ -62,8 +62,8 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 80
-        self.refresh()
         self.tableViewController.refreshControl?.beginRefreshing()
+        self.refresh()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
     }
@@ -139,11 +139,10 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func refresh() {
-        self.tableViewController.refreshControl?.endRefreshing()
-        self.reload()
         DataManager.sharedInstance().updateFeeds({
+            self.tableViewController.refreshControl?.endRefreshing()
             if $0 == nil {
-                self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+                self.reload()
             } else {
                 // TODO: alert the user
             }

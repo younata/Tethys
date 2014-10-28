@@ -63,6 +63,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         navField.layer.cornerRadius = 5
         navField.autocapitalizationType = .None
         navField.keyboardType = .URL
+        navField.clearsOnBeginEditing = true
         loadingBar.progress = 0
         
         /*
@@ -106,7 +107,15 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     
     func save(link: String) {
         // show something to indicate we're doing work...
+        let loading = LoadingView(frame: self.view.bounds)
+        self.view.addSubview(loading)
+        loading.msg = NSString.localizedStringWithFormat(NSLocalizedString("Loading feed at %@", comment: ""), link)
+        self.navigationController?.toolbarHidden = true
+        self.navigationController?.navigationBarHidden = true
         DataManager.sharedInstance().newFeed(link) {(_) in
+            loading.removeFromSuperview()
+            self.navigationController?.toolbarHidden = false
+            self.navigationController?.navigationBarHidden = false
             self.dismiss()
         }
     }

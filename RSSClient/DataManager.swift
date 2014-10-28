@@ -136,6 +136,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
             feed.title = info.title
             feed.summary = info.summary
             feed.url = parser.url().absoluteString!
+            /*
             if let link = info.link {
                 Alamofire.request(.GET, link).response {(_, _, response, error) in
                     self.contentRenderer.loadHTMLString((response as String), baseURL: NSURL(string: link))
@@ -156,6 +157,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
                     })
                 }
             }
+            */
             // create?
         }
         managedObjectContext.save(nil)
@@ -193,7 +195,7 @@ class DataManager: NSObject, MWFeedParserDelegate {
                 let data = cnt.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
                 let options = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
                 
-                article.preview = NSAttributedString(data: data, options: options, documentAttributes: nil, error: nil)!
+                article.preview = NSAttributedString(data: data, options: options, documentAttributes: nil, error: nil)!.string
                 feed.addArticlesObject(article)
                 // TODO: enclosures
             } else {
@@ -258,9 +260,16 @@ class DataManager: NSObject, MWFeedParserDelegate {
         persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
         var error: NSError? = nil
         let options = [NSMigratePersistentStoresAutomaticallyOption: true, NSInferMappingModelAutomaticallyOption: true]
-        persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: storeURL, options: options, error: &error)
+        persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: managedObjectModel.configurations.last as NSString?, URL: storeURL, options: options, error: &error)
         if (error != nil) {
-            println("Error adding persistent data store: \(error)")
+            //println("Error adding persistent data store: \(error!)")
+            NSFileManager.defaultManager().removeItemAtURL(storeURL!, error: nil)
+            error = nil
+            persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: managedObjectModel.configurations.last as NSString?, URL: storeURL, options: options, error: &error)
+            if (error != nil) {
+                println("Fatal error adding persistent data store: \(error!)")
+                fatalError("")
+            }
         }
         
         managedObjectContext = NSManagedObjectContext()

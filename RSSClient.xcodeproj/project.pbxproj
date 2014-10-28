@@ -61,6 +61,8 @@
 		89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C919DA37FB009924DA /* FeedTableCell.swift */; };
 		89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830CC19DC67B9009924DA /* UnreadCounter.swift */; };
 		89D06A1B19FDBC52003909A3 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89D06A1A19FDBC52003909A3 /* Launch Screen.xib */; };
+		89D06A2119FF210C003909A3 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D06A2019FF210C003909A3 /* LoadingView.swift */; };
+		89D06A2219FF210C003909A3 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D06A2019FF210C003909A3 /* LoadingView.swift */; };
 		89F1C01F19E75E73009343DB /* GroupsEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F1C01E19E75E73009343DB /* GroupsEditorController.swift */; };
 /* End PBXBuildFile section */
 
@@ -172,6 +174,7 @@
 		89C830C919DA37FB009924DA /* FeedTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCell.swift; sourceTree = "<group>"; };
 		89C830CC19DC67B9009924DA /* UnreadCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounter.swift; sourceTree = "<group>"; };
 		89D06A1A19FDBC52003909A3 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
+		89D06A2019FF210C003909A3 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		89F1C01E19E75E73009343DB /* GroupsEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupsEditorController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -293,6 +296,7 @@
 			children = (
 				89C8307819D730E9009924DA /* AppDelegate.swift */,
 				89C830CC19DC67B9009924DA /* UnreadCounter.swift */,
+				89D06A2019FF210C003909A3 /* LoadingView.swift */,
 				89C830B119D7D2B7009924DA /* Feeds */,
 				8933E93C19EF507600ECFF3F /* Scripting */,
 				89C830B419D7D2D2009924DA /* Articles */,
@@ -565,6 +569,7 @@
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
 				8933E92F19ECD28900ECFF3F /* NSString+XMLEntities.m in Sources */,
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
+				89D06A2119FF210C003909A3 /* LoadingView.swift in Sources */,
 				8933E92D19ECD28900ECFF3F /* NSDate+InternetDateTime.m in Sources */,
 				8933E90D19ECCBC300ECFF3F /* ALView+PureLayout.m in Sources */,
 				8933E93919EF4BB100ECFF3F /* ScriptEditorViewController.swift in Sources */,
@@ -581,6 +586,7 @@
 				895779AD19E62CDA00548418 /* Feed.m in Sources */,
 				895779B019E6512200548418 /* UnreadCounterTests.swift in Sources */,
 				8933E91C19ECD09100ECFF3F /* GroupsEditorController.swift in Sources */,
+				89D06A2219FF210C003909A3 /* LoadingView.swift in Sources */,
 				895779B219E655F100548418 /* FeedTableCellTests.swift in Sources */,
 				895779A819E62CC500548418 /* ArticleCell.swift in Sources */,
 				895779B619E65A6D00548418 /* ArticleCellTests.swift in Sources */,

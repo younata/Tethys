@@ -31,16 +31,17 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         markReadAction.activationMode = .Background
         markReadAction.authenticationRequired = false
         
+        /*
         let viewAction = UIMutableUserNotificationAction()
         viewAction.identifier = "view"
         viewAction.title = NSLocalizedString("View", comment: "")
         viewAction.activationMode = .Foreground
-        viewAction.authenticationRequired = true
+        viewAction.authenticationRequired = true*/
         
         let category = UIMutableUserNotificationCategory()
         category.identifier = "default"
-        category.setActions([markReadAction, viewAction], forContext: .Minimal)
-        category.setActions([markReadAction, viewAction], forContext: .Default)
+        category.setActions([markReadAction], forContext: .Minimal)
+        category.setActions([markReadAction], forContext: .Default)
         
         application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert, categories: NSSet(object: category)))
         

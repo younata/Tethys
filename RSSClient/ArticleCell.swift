@@ -16,21 +16,6 @@ class ArticleCell: UITableViewCell, UITextViewDelegate {
             title.text = article?.title ?? ""
             published.text = article != nil ? dateFormatter.stringFromDate(article?.updatedAt ?? article?.published ?? NSDate()) : ""
             author.text = article?.author ?? ""
-            var preview: NSAttributedString? = (article?.preview as NSAttributedString?)
-            if preview == nil {
-                var cnt = article?.summary ?? ""
-                
-                let data = cnt.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
-                let options = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
-                
-                let astr = NSAttributedString(data: data, options: options, documentAttributes: nil, error: nil)!
-                preview = astr
-                article?.preview = astr
-                article?.managedObjectContext?.save(nil)
-            }
-            let bounding = preview!.boundingRectWithSize(CGSizeMake(self.contentView.bounds.size.width - 16, CGFloat.max), options: .UsesFontLeading, context: nil)
-            contentHeight.constant = ceil(bounding.size.height)
-            content.attributedText = preview!
             // TODO: enclosures.
             unread.unread = article?.read == false ? 1 : 0
             let width = CGRectGetWidth(unread.bounds)
@@ -41,11 +26,9 @@ class ArticleCell: UITableViewCell, UITextViewDelegate {
     let title = UILabel(forAutoLayout: ())
     let published = UILabel(forAutoLayout: ())
     let author = UILabel(forAutoLayout: ())
-    let content = UITextView(forAutoLayout: ())
     let unread = UnreadCounter(frame: CGRectZero)
     
     var unreadWidth: NSLayoutConstraint! = nil
-    var contentHeight: NSLayoutConstraint! = nil
     
     let dateFormatter = NSDateFormatter()
     
@@ -57,13 +40,7 @@ class ArticleCell: UITableViewCell, UITextViewDelegate {
         self.contentView.addSubview(title)
         self.contentView.addSubview(author)
         self.contentView.addSubview(published)
-        self.contentView.addSubview(content)
         self.contentView.addSubview(unread)
-        
-        content.scrollEnabled = false
-        content.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-        content.textContainerInset = UIEdgeInsetsZero
-        content.delegate = self
         
         title.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         title.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
@@ -73,8 +50,9 @@ class ArticleCell: UITableViewCell, UITextViewDelegate {
         
         author.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         author.autoPinEdge(.Top, toEdge: .Bottom, ofView: title, withOffset: 8)
-        author.autoPinEdge(.Right, toEdge: .Right, ofView: title)
+        author.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
         
+        author.numberOfLines = 0
         author.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
         
         unread.autoPinEdgeToSuperviewEdge(.Top)
@@ -87,16 +65,11 @@ class ArticleCell: UITableViewCell, UITextViewDelegate {
         published.autoPinEdge(.Right, toEdge: .Left, ofView: unread, withOffset: -8)
         published.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
         published.autoPinEdge(.Left, toEdge: .Right, ofView: title, withOffset: 8)
-        published.autoPinEdge(.Bottom, toEdge: .Bottom, ofView: author)
         published.autoMatchDimension(.Width, toDimension: .Width, ofView: published.superview, withMultiplier: 0.25)
         
         published.textAlignment = .Right
         published.numberOfLines = 0
         published.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
-        
-        content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(0, 8, 4, 8), excludingEdge: .Top)
-        content.autoPinEdge(.Top, toEdge: .Bottom, ofView: published, withOffset: 8)
-        contentHeight = content.autoSetDimension(.Height, toSize: 0)
         
         dateFormatter.timeStyle = .NoStyle
         dateFormatter.dateStyle = .ShortStyle

@@ -24,6 +24,17 @@
 		8933E93919EF4BB100ECFF3F /* ScriptEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93819EF4BB100ECFF3F /* ScriptEditorViewController.swift */; };
 		8933E93B19EF4D0C00ECFF3F /* TextHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93A19EF4D0C00ECFF3F /* TextHighlighter.swift */; };
 		8933E93E19EF508C00ECFF3F /* ScriptDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93D19EF508C00ECFF3F /* ScriptDocument.swift */; };
+		893448B71A004E4E00F5D528 /* MWFeedParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91319ECCD5E00ECFF3F /* MWFeedParser.m */; };
+		893448B81A004E4E00F5D528 /* MWFeedInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91519ECCD5E00ECFF3F /* MWFeedInfo.m */; };
+		893448B91A004E4E00F5D528 /* MWFeedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91719ECCD5E00ECFF3F /* MWFeedItem.m */; };
+		893448BA1A004E4E00F5D528 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92519ECD28900ECFF3F /* GTMNSString+HTML.m */; };
+		893448BB1A004E4E00F5D528 /* NSDate+InternetDateTime.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92719ECD28900ECFF3F /* NSDate+InternetDateTime.m */; };
+		893448BC1A004E4E00F5D528 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92919ECD28900ECFF3F /* NSString+HTML.m */; };
+		893448BD1A004E4E00F5D528 /* NSString+XMLEntities.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92B19ECD28900ECFF3F /* NSString+XMLEntities.m */; };
+		893448BF1A004E5C00F5D528 /* ALView+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90519ECCBC300ECFF3F /* ALView+PureLayout.m */; };
+		893448C01A004E5C00F5D528 /* NSArray+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90719ECCBC300ECFF3F /* NSArray+PureLayout.m */; };
+		893448C11A004E5C00F5D528 /* NSLayoutConstraint+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90919ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m */; };
+		893448C21A004E6400F5D528 /* UIColor+RSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */; };
 		8957799F19E62C7100548418 /* AppDelegateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8957799E19E62C7100548418 /* AppDelegateTests.swift */; };
 		895779A019E62CC500548418 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307819D730E9009924DA /* AppDelegate.swift */; };
 		895779A119E62CC500548418 /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830CC19DC67B9009924DA /* UnreadCounter.swift */; };
@@ -586,22 +597,33 @@
 				895779AD19E62CDA00548418 /* Feed.m in Sources */,
 				895779B019E6512200548418 /* UnreadCounterTests.swift in Sources */,
 				8933E91C19ECD09100ECFF3F /* GroupsEditorController.swift in Sources */,
+				893448B81A004E4E00F5D528 /* MWFeedInfo.m in Sources */,
+				893448C01A004E5C00F5D528 /* NSArray+PureLayout.m in Sources */,
 				89D06A2219FF210C003909A3 /* LoadingView.swift in Sources */,
 				895779B219E655F100548418 /* FeedTableCellTests.swift in Sources */,
+				893448B91A004E4E00F5D528 /* MWFeedItem.m in Sources */,
 				895779A819E62CC500548418 /* ArticleCell.swift in Sources */,
 				895779B619E65A6D00548418 /* ArticleCellTests.swift in Sources */,
 				895779AA19E62CC500548418 /* DataManager.swift in Sources */,
 				895779A019E62CC500548418 /* AppDelegate.swift in Sources */,
 				895779A319E62CC500548418 /* FeedTableCell.swift in Sources */,
+				893448C21A004E6400F5D528 /* UIColor+RSSClient.m in Sources */,
+				893448BB1A004E4E00F5D528 /* NSDate+InternetDateTime.m in Sources */,
+				893448BA1A004E4E00F5D528 /* GTMNSString+HTML.m in Sources */,
+				893448BD1A004E4E00F5D528 /* NSString+XMLEntities.m in Sources */,
+				893448B71A004E4E00F5D528 /* MWFeedParser.m in Sources */,
 				895779A719E62CC500548418 /* ArticleListController.swift in Sources */,
+				893448C11A004E5C00F5D528 /* NSLayoutConstraint+PureLayout.m in Sources */,
 				895779A919E62CC500548418 /* ArticleViewController.swift in Sources */,
 				895779B819E65D9900548418 /* DataManagerTests.swift in Sources */,
 				895779A119E62CC500548418 /* UnreadCounter.swift in Sources */,
 				895779A419E62CC500548418 /* FindFeedViewController.swift in Sources */,
 				895779AE19E62CDA00548418 /* Group.m in Sources */,
 				895779AC19E62CDA00548418 /* Article.m in Sources */,
+				893448BC1A004E4E00F5D528 /* NSString+HTML.m in Sources */,
 				895779B419E658A700548418 /* Mocks.swift in Sources */,
 				8957799F19E62C7100548418 /* AppDelegateTests.swift in Sources */,
+				893448BF1A004E5C00F5D528 /* ALView+PureLayout.m in Sources */,
 				895779A219E62CC500548418 /* FeedsTableViewController.swift in Sources */,
 				895779AB19E62CCE00548418 /* RSSClient.xcdatamodeld in Sources */,
 			);

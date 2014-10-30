@@ -233,9 +233,13 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
             switch (self.state) {
             case .feeds:
-                DataManager.sharedInstance().deleteFeed(self.feedAtIndexPath(indexPath))
+                let feed = self.feedAtIndexPath(indexPath)
+                DataManager.sharedInstance().deleteFeed(feed)
+                self.feeds = self.feeds.filter { return $0 != feed }
             case .groups:
+                let group = self.groupAtIndexPath(indexPath)!
                 DataManager.sharedInstance().deleteGroup(self.groupAtIndexPath(indexPath)!)
+                self.groups = self.groups.filter { return $0 != group }
             }
             self.tableView.beginUpdates()
             self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)

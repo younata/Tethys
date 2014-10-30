@@ -117,10 +117,15 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     }
     
     func toggleContentLink() {
-        
+        switch (self.contentType) {
+        case .Link:
+            self.contentType = .Content
+        case .Content:
+            self.contentType = .Link
+        }
     }
     
-    override func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<Void>) {
+    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
         if (keyPath == "estimatedProgress" && object as NSObject == content) {
             loadingBar.progress = Float(content.estimatedProgress)
         }

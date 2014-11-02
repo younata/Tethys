@@ -43,7 +43,6 @@ class UnreadCounterTests: XCTestCase {
             counter.unread = UInt(i)
             XCTAssert(label.text == "\(i)", "label text should be the string representation of the unread number")
         }
-        XCTAssertEqual(clColor, counter.circleColor, "fill color should equal the circle color")
     }
     
     func testChangePath() {

@@ -26,7 +26,7 @@ class ArticleCellTests: XCTestCase {
     }
     
     func testArticle() {
-        let article = FakeArticle.newArticle()
+        let article = newArticle(read: false)
         cell.article = article
         let dateParser = NSDateFormatter()
         dateParser.timeStyle = .NoStyle
@@ -35,5 +35,12 @@ class ArticleCellTests: XCTestCase {
         XCTAssertEqual(cell.title.text!, article.title!, "title text should be empty string")
         XCTAssertEqual(cell.published.text!, dateParser.stringFromDate(article.published!), "published text should be empty string")
         XCTAssertEqual(cell.author.text!, article.author!, "author text should be empty string")
+        XCTAssertEqual(cell.unreadWidth.constant, cell.unread.bounds.size.width * -1, "should show unread flag")
+    }
+    
+    func testReadArticle() {
+        let article = newArticle(read: false)
+        cell.article = article
+        XCTAssertEqual(cell.unreadWidth.constant, CGFloat(0), "should hide unread flag")
     }
 }

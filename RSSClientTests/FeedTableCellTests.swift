@@ -24,10 +24,11 @@ class FeedTableCellTests: XCTestCase {
         XCTAssertEqual(cell.nameLabel.text!, "", "nameLabel text should be empty string")
         XCTAssertEqual(cell.summaryLabel.text!, "", "summaryLabel text should be empty string")
         XCTAssertEqual(cell.unreadCounter.unread, UInt(0), "unreadcounter unread count should be 0")
+        
     }
     
     func testFeed() {
-        let feed = FakeFeed.newFeed()
+        let feed = newFeed()
         cell.feed = feed
         if feed.image != nil && cell.iconView.image != nil {
             XCTAssertEqual(feed.image! as UIImage, cell.iconView.image!, "iconView image should equal feed image")

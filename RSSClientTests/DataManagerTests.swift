@@ -29,16 +29,17 @@ class DataManagerTests: XCTestCase {
     // MARK: - Feeds
     
     func testCreateFeeds() {
-        let rss1URL = ""
-        let rss2URL = ""
-        let atomURL = ""
+        let rss1URL = "a"
+        let rss2URL = "b"
+        let atomURL = "c"
         for url in [rss1URL, rss2URL, atomURL] {
             let feed = DataManager.sharedInstance().newFeed(url)
             XCTAssertNotNil(feed, "creating new feeds, should not be nil")
         }
         XCTAssertEqual(DataManager.sharedInstance().feeds().count, 3, "Should have created and saved 3 feeds")
+        let n = DataManager.sharedInstance().feeds().count
         DataManager.sharedInstance().newFeed(rss1URL)
-        XCTAssertEqual(DataManager.sharedInstance().feeds().count, 3, "Should not have added a duplicate feed")
+        XCTAssertEqual(DataManager.sharedInstance().feeds().count, n, "Should not have added a duplicate feed")
     }
     
     let feedURL = ""

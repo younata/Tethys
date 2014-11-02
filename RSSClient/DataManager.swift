@@ -253,14 +253,23 @@ class DataManager: NSObject, MWFeedParserDelegate {
     let managedObjectContext: NSManagedObjectContext
     
     override init() {
-        let modelURL = NSBundle.mainBundle().URLForResource("RSSClient", withExtension: "momd")!
-        managedObjectModel = NSManagedObjectModel(contentsOfURL: modelURL)!
+        var unitTesting = false
+        if let modelURL = NSBundle.mainBundle().URLForResource("RSSClient", withExtension: "momd") {
+            managedObjectModel = NSManagedObjectModel(contentsOfURL: modelURL)!
+        } else {
+            managedObjectModel = NSManagedObjectModel.mergedModelFromBundles(NSBundle.allBundles())!
+            unitTesting = true
+        }
         let applicationDocumentsDirectory: String = (NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).last as String)
         let storeURL = NSURL.fileURLWithPath(applicationDocumentsDirectory.stringByAppendingPathComponent("RSSClient.sqlite"))
         persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
         var error: NSError? = nil
         let options = [NSMigratePersistentStoresAutomaticallyOption: true, NSInferMappingModelAutomaticallyOption: true]
-        persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: managedObjectModel.configurations.last as NSString?, URL: storeURL, options: options, error: &error)
+        if unitTesting {
+            persistentStoreCoordinator.addPersistentStoreWithType(NSInMemoryStoreType, configuration: nil, URL: nil, options: nil, error: &error)
+        } else {
+            persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: managedObjectModel.configurations.last as NSString?, URL: storeURL, options: options, error: &error)
+        }
         if (error != nil) {
             //println("Error adding persistent data store: \(error!)")
             NSFileManager.defaultManager().removeItemAtURL(storeURL!, error: nil)

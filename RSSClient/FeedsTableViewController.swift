@@ -64,6 +64,8 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         self.tableView.estimatedRowHeight = 80
         self.refresh()
         
+        self.tableView.tableFooterView = UIView()
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
     }
     

@@ -83,7 +83,6 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
         content.navigationDelegate = self
         content.configuration.preferences.minimumFontSize = 16.0
-        content.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
         
         if let splitView = self.splitViewController {
             self.navigationItem.backBarButtonItem = splitView.displayModeButtonItem()
@@ -115,14 +114,12 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.toolbarHidden = false
+        content.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.toolbarHidden = true
-    }
-    
-    deinit {
         content.removeObserver(self, forKeyPath: "estimatedProgress")
     }
     

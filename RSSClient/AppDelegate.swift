@@ -10,10 +10,11 @@ import UIKit
 import CoreData
 
 @UIApplicationMain
-public class AppDelegate: UIResponder, UIApplicationDelegate {
+public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
 
     public var window: UIWindow?
 
+    public var collapseDetailViewController = true
 
     public func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
@@ -25,23 +26,16 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         let master = UINavigationController(rootViewController: FeedsTableViewController())
         let detail = UINavigationController(rootViewController: ArticleViewController())
         let splitView = UISplitViewController()
+        splitView.delegate = self
         splitView.viewControllers = [master, detail]
-        //splitView.collapsed = false
         self.window?.rootViewController = splitView
-//        self.window?.rootViewController = master
+        splitView.delegate = self
         
         let markReadAction = UIMutableUserNotificationAction()
         markReadAction.identifier = "read"
         markReadAction.title = NSLocalizedString("Mark Read", comment: "")
         markReadAction.activationMode = .Background
         markReadAction.authenticationRequired = false
-        
-        /*
-        let viewAction = UIMutableUserNotificationAction()
-        viewAction.identifier = "view"
-        viewAction.title = NSLocalizedString("View", comment: "")
-        viewAction.activationMode = .Foreground
-        viewAction.authenticationRequired = true*/
         
         let category = UIMutableUserNotificationCategory()
         category.identifier = "default"
@@ -57,6 +51,10 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         return true
+    }
+    
+    public func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController!, ontoPrimaryViewController primaryViewController: UIViewController!) -> Bool {
+        return collapseDetailViewController
     }
     
     public func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {

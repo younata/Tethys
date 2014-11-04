@@ -18,7 +18,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 a.managedObjectContext?.save(nil)
                 let request = NSURLRequest(URL: NSURL(string: a.link)!)
                 if let cnt = a.content ?? a.summary {
-                    self.content.loadHTMLString(cnt, baseURL: NSURL(string: a.feed.url)!)
+                    self.content.loadHTMLString(articleCSS + cnt + "</body></html>", baseURL: NSURL(string: a.feed.url)!)
                 } else {
                     self.content.loadRequest(NSURLRequest(URL: NSURL(string: a.link)!))
                     if (shareButton != nil) {
@@ -46,13 +46,21 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     var articles: [Article] = []
     var lastArticleIndex = 0
     
+    var articleCSS : String {
+        if let loc = NSBundle.mainBundle().URLForResource("article", withExtension: "css") {
+            return "<html><head>" + (loc.absoluteString ?? "") + "</head><body>"
+        }
+        return "<html><body>"
+    }
+    
     var contentType: ArticleContentType = .Content {
         didSet {
             if let a = article {
                 switch (contentType) {
                 case .Content:
                     toggleContentButton.title = linkString
-                    self.content.loadHTMLString(a.content ?? a.summary ?? "", baseURL: NSURL(string: a.feed.url))
+                    let cnt = a.content ?? a.summary ?? ""
+                    self.content.loadHTMLString(articleCSS + cnt + "</body></html>", baseURL: NSURL(string: a.feed.url))
                 case .Link:
                     toggleContentButton.title = contentString
                     self.content.loadRequest(NSURLRequest(URL: NSURL(string: a.link)!))
@@ -84,6 +92,10 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         content.navigationDelegate = self
         content.configuration.preferences.minimumFontSize = 16.0
         
+        self.view.addSubview(loadingBar)
+        loadingBar.setTranslatesAutoresizingMaskIntoConstraints(false)
+        loadingBar.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
+        
         if let splitView = self.splitViewController {
             self.navigationItem.backBarButtonItem = splitView.displayModeButtonItem()
         }
@@ -114,7 +126,6 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.toolbarHidden = false
-        content.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -127,7 +138,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         if gesture.state == .Ended {
             // FIXME: animate this.
             if lastArticleIndex + 1 >= articles.count {
-                // TODO: display an "I can't do this, Dave" message.
+                
             } else {
                 lastArticleIndex++
                 article = articles[lastArticleIndex]
@@ -169,14 +180,18 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         let back = (self.navigationItem.rightBarButtonItems![1] as UIBarButtonItem)
         forward.enabled = webView.canGoForward
         back.enabled = webView.canGoBack
+        loadingBar.hidden = true
+        webView.removeObserver(self, forKeyPath: "estimatedProgress")
     }
     
     func webView(webView: WKWebView!, didFailNavigation navigation: WKNavigation!, withError error: NSError!) {
-        self.navigationItem.titleView = nil
+        loadingBar.hidden = true
+        webView.removeObserver(self, forKeyPath: "estimatedProgress")
     }
     
     func webView(webView: WKWebView!, didStartProvisionalNavigation navigation: WKNavigation!) {
         loadingBar.progress = 0
-        self.navigationItem.titleView = loadingBar
+        loadingBar.hidden = false
+        webView.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
     }
 }

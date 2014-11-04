@@ -10,7 +10,16 @@ import UIKit
 
 class ArticleListController: UITableViewController {
     
-    var articles : [Article] = []
+    var articles : [Article] = [] {
+        willSet {
+            articles.map({(article: Article) in
+                article.removeObserver(self, forKeyPath: "read")
+            })
+            newValue.map({(article: Article) in
+                article.addObserver(self, forKeyPath: "read", options: .New, context: nil)
+            })
+        }
+    }
     var feeds : [Feed] = []
     let queue = dispatch_queue_create("articleController", nil)
 
@@ -31,10 +40,22 @@ class ArticleListController: UITableViewController {
     }
     
     override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
         self.refreshControl?.beginRefreshing()
         refresh()
         if feeds.count == 1 {
             self.navigationItem.title = feeds.first?.title
+        }
+    }
+    
+    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
+        if (keyPath == "estimatedProgress" && object as? Article != nil) {
+            for (idx, article) in enumerate(articles) {
+                if article == (object as Article) {
+                    self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forItem: idx, inSection: 0)], withRowAnimation: .None)
+                    return
+                }
+            }
         }
     }
     
@@ -89,12 +110,12 @@ class ArticleListController: UITableViewController {
     override func scrollViewDidScroll(scrollView: UIScrollView) {
         let actualPosition = scrollView.contentOffset.y;
         let contentHeight = scrollView.contentSize.height - (10 * self.tableView.estimatedRowHeight)
-        let maxIndexPath = (self.tableView.indexPathsForVisibleRows() as [NSIndexPath]).reduce(NSIndexPath(forRow: 0, inSection: 0), combine: {
+        let maxIndexPath = (self.tableView.indexPathsForVisibleRows() as [NSIndexPath]).reduce(NSIndexPath(forRow: 0, inSection: 0)) {
             if $0.row < $1.row {
                 return $1
             }
             return $0
-        })
+        }
         if (actualPosition >= contentHeight) {
             // try to load more...
             self.articles += 

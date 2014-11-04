@@ -67,11 +67,16 @@ class ArticleListController: UITableViewController {
     }
     
     func showArticle(article: Article, animated: Bool) -> ArticleViewController {
-        let avc = ArticleViewController()
+        var avc : ArticleViewController
+        if let splitView = self.splitViewController {
+            avc = (splitView.viewControllers.last as ArticleViewController)
+        } else {
+            avc = ArticleViewController()
+            self.navigationController?.pushViewController(avc, animated: animated)
+        }
         avc.article = article
-        self.navigationController?.pushViewController(avc, animated: animated)
-        article.read = true
-        article.managedObjectContext!.save(nil)
+        avc.articles = self.articles//.filter { return !$0.read }
+        avc.lastArticleIndex = 0
         return avc
     }
     
@@ -126,7 +131,7 @@ class ArticleListController: UITableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
-        showArticle(self.articleForIndexPath(indexPath))
+        showArticle(articleForIndexPath(indexPath))
     }
 
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {

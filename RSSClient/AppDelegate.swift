@@ -22,8 +22,13 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().tintColor = UIColor.darkGreenColor()
         UIBarButtonItem.appearance().tintColor = UIColor.darkGreenColor()
         UITabBar.appearance().tintColor = UIColor.darkGreenColor()
-        let ftvc = FeedsTableViewController()
-        self.window?.rootViewController = UINavigationController(rootViewController: ftvc)
+        let master = UINavigationController(rootViewController: FeedsTableViewController())
+        let detail = UINavigationController(rootViewController: ArticleViewController())
+        let splitView = UISplitViewController()
+        splitView.viewControllers = [master, detail]
+        //splitView.collapsed = false
+        self.window?.rootViewController = splitView
+//        self.window?.rootViewController = master
         
         let markReadAction = UIMutableUserNotificationAction()
         markReadAction.identifier = "read"

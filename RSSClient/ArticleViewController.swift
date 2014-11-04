@@ -14,6 +14,8 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     var article: Article? = nil {
         didSet {
             if let a = article {
+                a.read = true
+                a.managedObjectContext?.save(nil)
                 let request = NSURLRequest(URL: NSURL(string: a.link)!)
                 if let cnt = a.content ?? a.summary {
                     self.content.loadHTMLString(cnt, baseURL: NSURL(string: a.feed.url)!)
@@ -41,6 +43,9 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     let contentString = NSLocalizedString("Content", comment: "")
     let linkString = NSLocalizedString("Link", comment: "")
     
+    var articles: [Article] = []
+    var lastArticleIndex = 0
+    
     var contentType: ArticleContentType = .Content {
         didSet {
             if let a = article {
@@ -52,6 +57,16 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                     toggleContentButton.title = contentString
                     self.content.loadRequest(NSURLRequest(URL: NSURL(string: a.link)!))
                 }
+                if (shareButton != nil && toggleContentButton != nil) {
+                    if (a.content ?? a.summary) != nil {
+                        self.toolbarItems = [spacer(), shareButton, spacer(), toggleContentButton, spacer()]
+                    } else {
+                        self.toolbarItems = [spacer(), shareButton, spacer()]
+                    }
+                }
+            } else {
+                self.toolbarItems = []
+                self.content.loadHTMLString("", baseURL: nil)
             }
         }
     }
@@ -68,8 +83,11 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
         content.navigationDelegate = self
         content.configuration.preferences.minimumFontSize = 16.0
-        
         content.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
+        
+        if let splitView = self.splitViewController {
+            self.navigationItem.backBarButtonItem = splitView.displayModeButtonItem()
+        }
         
         let back = UIBarButtonItem(title: "<", style: .Plain, target: content, action: "goBack")
         let forward = UIBarButtonItem(title: ">", style: .Plain, target: content, action: "goForward")
@@ -79,7 +97,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         self.navigationItem.rightBarButtonItems = [forward, back]
         self.navigationController?.toolbarHidden = false
         // share, show (content|link)...
-        var shareButton = UIBarButtonItem(barButtonSystemItem: .Compose, target: self, action: "share")
+        shareButton = UIBarButtonItem(barButtonSystemItem: .Compose, target: self, action: "share")
         toggleContentButton = UIBarButtonItem(title: linkString, style: .Plain, target: self, action: "toggleContentLink")
         if let a = article {
             if (a.content ?? a.summary) != nil {
@@ -88,6 +106,10 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 self.toolbarItems = [spacer(), shareButton, spacer()]
             }
         }
+        
+        let swipeRight = UIScreenEdgePanGestureRecognizer(target: self, action: "next:")
+        swipeRight.edges = .Right
+        self.view.addGestureRecognizer(swipeRight)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -102,6 +124,18 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     
     deinit {
         content.removeObserver(self, forKeyPath: "estimatedProgress")
+    }
+    
+    func next(gesture: UIScreenEdgePanGestureRecognizer) {
+        if gesture.state == .Ended {
+            // FIXME: animate this.
+            if lastArticleIndex + 1 >= articles.count {
+                // TODO: display an "I can't do this, Dave" message.
+            } else {
+                lastArticleIndex++
+                article = articles[lastArticleIndex]
+            }
+        }
     }
     
     func share() {

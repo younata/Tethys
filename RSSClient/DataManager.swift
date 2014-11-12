@@ -62,6 +62,15 @@ class DataManager: NSObject, MWFeedParserDelegate {
         }
     }
     
+    func generateOPMLContents(feeds: [Feed]) -> String {
+        var ret = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><opml version=\"2.0\"><body>"
+        for feed in feeds {
+            ret += "<outline xmlURL=\"\(feed.url)\""
+        }
+        ret += "</body></opml>"
+        return ret
+    }
+    
     func newFeed(feedURL: String) -> Feed {
         return newFeed(feedURL, completion: {(_) in })
     }

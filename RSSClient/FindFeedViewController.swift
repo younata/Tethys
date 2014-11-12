@@ -8,6 +8,7 @@
 
 import UIKit
 import WebKit
+import Alamofire
 
 class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFieldDelegate, MWFeedParserDelegate {
     let webContent = WKWebView(forAutoLayout: ())
@@ -149,11 +150,19 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
             self.webContent.loadRequest(NSURLRequest(URL: NSURL(string: textField.text)!))
         }
         if (lookForFeeds) {
-            let feedParser = MWFeedParser(feedURL: NSURL(string: textField.text))
-            feedParser.feedParseType = ParseTypeInfoOnly
-            feedParser.delegate = self
-            feedParser.connectionType = ConnectionTypeAsynchronously
-            feedParser.parse()
+            Alamofire.request(.GET, textField.text).response {(_, _, response, error) in
+                if let txt = response as? String {
+                    let feedParser = MWFeedParser(string: txt)
+                    feedParser.feedParseType = ParseTypeInfoOnly
+                    feedParser.delegate = self
+                    feedParser.parse()
+                    let opmlParser = OPMLParser(text: txt)
+                    opmlParser.callback = {(items) in
+                        feedParser.stopParsing()
+                        
+                    }
+                }
+            }
         }
         textField.text = ""
         textField.placeholder = NSLocalizedString("Loading", comment: "")

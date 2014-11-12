@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		8917110019E0703700D86C7B /* Group.m in Sources */ = {isa = PBXBuildFile; fileRef = 891710FF19E0703700D86C7B /* Group.m */; };
 		8924D8E91A094CF5003B7529 /* article.css in Resources */ = {isa = PBXBuildFile; fileRef = 8924D8E81A094CF5003B7529 /* article.css */; };
+		8924D8F21A0E8EEA003B7529 /* OPMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */; };
+		8924D8F31A108299003B7529 /* OPMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */; };
 		8933E90D19ECCBC300ECFF3F /* ALView+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90519ECCBC300ECFF3F /* ALView+PureLayout.m */; };
 		8933E90E19ECCBC300ECFF3F /* NSArray+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90719ECCBC300ECFF3F /* NSArray+PureLayout.m */; };
 		8933E90F19ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90919ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m */; };
@@ -40,6 +42,14 @@
 		893448C81A0315B600F5D528 /* ArticleListControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893448C71A0315B600F5D528 /* ArticleListControllerTests.swift */; };
 		893448CA1A0315DF00F5D528 /* FindFeedViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893448C91A0315DF00F5D528 /* FindFeedViewControllerTests.swift */; };
 		893448CC1A0315F400F5D528 /* FeedsTableViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893448CB1A0315F400F5D528 /* FeedsTableViewControllerTests.swift */; };
+		894C0C241A13293E008229A4 /* TUSafariActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 894C0C221A13293E008229A4 /* TUSafariActivity.m */; };
+		894C0C2E1A13296D008229A4 /* TUSafariActivity.strings in Resources */ = {isa = PBXBuildFile; fileRef = 894C0C271A13296D008229A4 /* TUSafariActivity.strings */; };
+		894C0C2F1A13296D008229A4 /* safari.png in Resources */ = {isa = PBXBuildFile; fileRef = 894C0C291A13296D008229A4 /* safari.png */; };
+		894C0C301A13296D008229A4 /* safari@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 894C0C2A1A13296D008229A4 /* safari@2x.png */; };
+		894C0C311A13296D008229A4 /* safari@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 894C0C2B1A13296D008229A4 /* safari@3x.png */; };
+		894C0C321A13296D008229A4 /* safari~iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = 894C0C2C1A13296D008229A4 /* safari~iPad.png */; };
+		894C0C331A13296D008229A4 /* safari~iPad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 894C0C2D1A13296D008229A4 /* safari~iPad@2x.png */; };
+		894C0C371A1329FB008229A4 /* AMPopTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 894C0C361A1329FB008229A4 /* AMPopTip.m */; };
 		8957799F19E62C7100548418 /* AppDelegateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8957799E19E62C7100548418 /* AppDelegateTests.swift */; };
 		895779A019E62CC500548418 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307819D730E9009924DA /* AppDelegate.swift */; };
 		895779A119E62CC500548418 /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830CC19DC67B9009924DA /* UnreadCounter.swift */; };
@@ -61,6 +71,44 @@
 		895779B419E658A700548418 /* Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895779B319E658A700548418 /* Mocks.swift */; };
 		895779B619E65A6D00548418 /* ArticleCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895779B519E65A6D00548418 /* ArticleCellTests.swift */; };
 		895779B819E65D9900548418 /* DataManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895779B719E65D9900548418 /* DataManagerTests.swift */; };
+		89635F831A13BF120052C248 /* TUSafariActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 894C0C221A13293E008229A4 /* TUSafariActivity.m */; };
+		89635F841A13BF120052C248 /* AMPopTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 894C0C361A1329FB008229A4 /* AMPopTip.m */; };
+		89635F8E1A13C2E30052C248 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89635F8D1A13C2E30052C248 /* AppDelegate.swift */; };
+		89635F901A13C2E30052C248 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89635F8F1A13C2E30052C248 /* Images.xcassets */; };
+		89635F931A13C2E30052C248 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89635F911A13C2E30052C248 /* MainMenu.xib */; };
+		89635F9F1A13C2E30052C248 /* RSSClient_OSXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89635F9E1A13C2E30052C248 /* RSSClient_OSXTests.swift */; };
+		89635FA81A13C4030052C248 /* OPMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */; };
+		89635FA91A13C4040052C248 /* OPMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */; };
+		89635FAA1A13C4120052C248 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830A819D7B890009924DA /* DataManager.swift */; };
+		89635FAB1A13C4130052C248 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830A819D7B890009924DA /* DataManager.swift */; };
+		89635FAC1A13C41C0052C248 /* RSSClient.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307A19D730E9009924DA /* RSSClient.xcdatamodeld */; };
+		89635FAD1A13C41C0052C248 /* RSSClient.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307A19D730E9009924DA /* RSSClient.xcdatamodeld */; };
+		89635FAE1A13C4210052C248 /* Article.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C219D89E46009924DA /* Article.m */; };
+		89635FAF1A13C4210052C248 /* Feed.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C519D8A058009924DA /* Feed.m */; };
+		89635FB01A13C4210052C248 /* Group.m in Sources */ = {isa = PBXBuildFile; fileRef = 891710FF19E0703700D86C7B /* Group.m */; };
+		89635FB11A13C4220052C248 /* Article.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C219D89E46009924DA /* Article.m */; };
+		89635FB21A13C4220052C248 /* Feed.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C519D8A058009924DA /* Feed.m */; };
+		89635FB31A13C4220052C248 /* Group.m in Sources */ = {isa = PBXBuildFile; fileRef = 891710FF19E0703700D86C7B /* Group.m */; };
+		89635FB41A13C48D0052C248 /* MWFeedParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91319ECCD5E00ECFF3F /* MWFeedParser.m */; };
+		89635FB51A13C48D0052C248 /* MWFeedInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91519ECCD5E00ECFF3F /* MWFeedInfo.m */; };
+		89635FB61A13C48D0052C248 /* MWFeedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91719ECCD5E00ECFF3F /* MWFeedItem.m */; };
+		89635FB71A13C48D0052C248 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92519ECD28900ECFF3F /* GTMNSString+HTML.m */; };
+		89635FB81A13C48D0052C248 /* NSDate+InternetDateTime.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92719ECD28900ECFF3F /* NSDate+InternetDateTime.m */; };
+		89635FB91A13C48D0052C248 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92919ECD28900ECFF3F /* NSString+HTML.m */; };
+		89635FBA1A13C48D0052C248 /* NSString+XMLEntities.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92B19ECD28900ECFF3F /* NSString+XMLEntities.m */; };
+		89635FBB1A13C48D0052C248 /* MWFeedParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91319ECCD5E00ECFF3F /* MWFeedParser.m */; };
+		89635FBC1A13C48D0052C248 /* MWFeedInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91519ECCD5E00ECFF3F /* MWFeedInfo.m */; };
+		89635FBD1A13C48D0052C248 /* MWFeedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91719ECCD5E00ECFF3F /* MWFeedItem.m */; };
+		89635FBE1A13C48D0052C248 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92519ECD28900ECFF3F /* GTMNSString+HTML.m */; };
+		89635FBF1A13C48D0052C248 /* NSDate+InternetDateTime.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92719ECD28900ECFF3F /* NSDate+InternetDateTime.m */; };
+		89635FC01A13C48D0052C248 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92919ECD28900ECFF3F /* NSString+HTML.m */; };
+		89635FC11A13C48D0052C248 /* NSString+XMLEntities.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92B19ECD28900ECFF3F /* NSString+XMLEntities.m */; };
+		89635FC21A13C49A0052C248 /* ALView+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90519ECCBC300ECFF3F /* ALView+PureLayout.m */; };
+		89635FC31A13C49A0052C248 /* NSArray+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90719ECCBC300ECFF3F /* NSArray+PureLayout.m */; };
+		89635FC41A13C49A0052C248 /* NSLayoutConstraint+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90919ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m */; };
+		89635FC51A13C49B0052C248 /* ALView+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90519ECCBC300ECFF3F /* ALView+PureLayout.m */; };
+		89635FC61A13C49B0052C248 /* NSArray+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90719ECCBC300ECFF3F /* NSArray+PureLayout.m */; };
+		89635FC71A13C49B0052C248 /* NSLayoutConstraint+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90919ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m */; };
 		89C8307919D730E9009924DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307819D730E9009924DA /* AppDelegate.swift */; };
 		89C8307C19D730E9009924DA /* RSSClient.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307A19D730E9009924DA /* RSSClient.xcdatamodeld */; };
 		89C8308319D730E9009924DA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89C8308219D730E9009924DA /* Images.xcassets */; };
@@ -104,6 +152,13 @@
 			remoteGlobalIDString = F8111E3219A95C8B0040E7D1;
 			remoteInfo = Alamofire;
 		};
+		89635F991A13C2E30052C248 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 89C8306B19D730E9009924DA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 89635F881A13C2E30052C248;
+			remoteInfo = "RSSClient-OSX";
+		};
 		89C8308C19D730E9009924DA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 89C8306B19D730E9009924DA /* Project object */;
@@ -128,9 +183,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1B2EC3404DBA17EC9D1669ED /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		7F4942F170534887B236C7F9 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		891710FE19E0703700D86C7B /* Group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Group.h; sourceTree = "<group>"; };
 		891710FF19E0703700D86C7B /* Group.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Group.m; sourceTree = "<group>"; };
 		8924D8E81A094CF5003B7529 /* article.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = article.css; sourceTree = "<group>"; };
+		8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLParser.swift; sourceTree = "<group>"; };
 		8933E8F519ECCB9900ECFF3F /* Alamofire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire.xcodeproj; path = Alamofire/Alamofire.xcodeproj; sourceTree = SOURCE_ROOT; };
 		8933E90419ECCBC300ECFF3F /* ALView+PureLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "ALView+PureLayout.h"; path = "PureLayout/Source/ALView+PureLayout.h"; sourceTree = "<group>"; };
 		8933E90519ECCBC300ECFF3F /* ALView+PureLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "ALView+PureLayout.m"; path = "PureLayout/Source/ALView+PureLayout.m"; sourceTree = "<group>"; };
@@ -165,6 +223,16 @@
 		893448C71A0315B600F5D528 /* ArticleListControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListControllerTests.swift; sourceTree = "<group>"; };
 		893448C91A0315DF00F5D528 /* FindFeedViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindFeedViewControllerTests.swift; sourceTree = "<group>"; };
 		893448CB1A0315F400F5D528 /* FeedsTableViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsTableViewControllerTests.swift; sourceTree = "<group>"; };
+		894C0C211A13293E008229A4 /* TUSafariActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUSafariActivity.h; sourceTree = "<group>"; };
+		894C0C221A13293E008229A4 /* TUSafariActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUSafariActivity.m; sourceTree = "<group>"; };
+		894C0C281A13296D008229A4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = TUSafariActivity.strings; sourceTree = "<group>"; };
+		894C0C291A13296D008229A4 /* safari.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = safari.png; sourceTree = "<group>"; };
+		894C0C2A1A13296D008229A4 /* safari@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "safari@2x.png"; sourceTree = "<group>"; };
+		894C0C2B1A13296D008229A4 /* safari@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "safari@3x.png"; sourceTree = "<group>"; };
+		894C0C2C1A13296D008229A4 /* safari~iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "safari~iPad.png"; sourceTree = "<group>"; };
+		894C0C2D1A13296D008229A4 /* safari~iPad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "safari~iPad@2x.png"; sourceTree = "<group>"; };
+		894C0C351A1329FB008229A4 /* AMPopTip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMPopTip.h; sourceTree = "<group>"; };
+		894C0C361A1329FB008229A4 /* AMPopTip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMPopTip.m; sourceTree = "<group>"; };
 		8957799D19E62C7100548418 /* RSSClientTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSSClientTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		8957799E19E62C7100548418 /* AppDelegateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateTests.swift; sourceTree = "<group>"; };
 		895779AF19E6512200548418 /* UnreadCounterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounterTests.swift; sourceTree = "<group>"; };
@@ -172,6 +240,14 @@
 		895779B319E658A700548418 /* Mocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
 		895779B519E65A6D00548418 /* ArticleCellTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleCellTests.swift; sourceTree = "<group>"; };
 		895779B719E65D9900548418 /* DataManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManagerTests.swift; sourceTree = "<group>"; };
+		89635F891A13C2E30052C248 /* RSSClient-OSX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RSSClient-OSX.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		89635F8C1A13C2E30052C248 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		89635F8D1A13C2E30052C248 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		89635F8F1A13C2E30052C248 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		89635F921A13C2E30052C248 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		89635F981A13C2E30052C248 /* RSSClient-OSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "RSSClient-OSXTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		89635F9D1A13C2E30052C248 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		89635F9E1A13C2E30052C248 /* RSSClient_OSXTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSSClient_OSXTests.swift; sourceTree = "<group>"; };
 		89C8307319D730E9009924DA /* rNews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rNews.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89C8307719D730E9009924DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89C8307819D730E9009924DA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -197,9 +273,24 @@
 		89D06A1A19FDBC52003909A3 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		89D06A2019FF210C003909A3 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		89F1C01E19E75E73009343DB /* GroupsEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupsEditorController.swift; sourceTree = "<group>"; };
+		E3BD5CAD62D2FA1E198BB3BD /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		89635F861A13C2E30052C248 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		89635F951A13C2E30052C248 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		89C8307019D730E9009924DA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -220,8 +311,18 @@
 		694B7677466B46B3BC9D72EF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E3BD5CAD62D2FA1E198BB3BD /* libPods.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		71674FD5D25A092A893BC80E /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7F4942F170534887B236C7F9 /* Pods.debug.xcconfig */,
+				1B2EC3404DBA17EC9D1669ED /* Pods.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		8933E8F619ECCB9900ECFF3F /* Products */ = {
@@ -319,16 +420,91 @@
 			name = Data;
 			sourceTree = "<group>";
 		};
+		894C0C1F1A13293E008229A4 /* TUSafariActivity */ = {
+			isa = PBXGroup;
+			children = (
+				894C0C261A13296D008229A4 /* en.lproj */,
+				894C0C291A13296D008229A4 /* safari.png */,
+				894C0C2A1A13296D008229A4 /* safari@2x.png */,
+				894C0C2B1A13296D008229A4 /* safari@3x.png */,
+				894C0C2C1A13296D008229A4 /* safari~iPad.png */,
+				894C0C2D1A13296D008229A4 /* safari~iPad@2x.png */,
+				894C0C211A13293E008229A4 /* TUSafariActivity.h */,
+				894C0C221A13293E008229A4 /* TUSafariActivity.m */,
+			);
+			name = TUSafariActivity;
+			path = TUSafariActivity/Pod/Classes;
+			sourceTree = "<group>";
+		};
+		894C0C261A13296D008229A4 /* en.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				894C0C271A13296D008229A4 /* TUSafariActivity.strings */,
+			);
+			path = en.lproj;
+			sourceTree = "<group>";
+		};
+		894C0C341A1329FB008229A4 /* AMPopTip */ = {
+			isa = PBXGroup;
+			children = (
+				894C0C351A1329FB008229A4 /* AMPopTip.h */,
+				894C0C361A1329FB008229A4 /* AMPopTip.m */,
+			);
+			name = AMPopTip;
+			path = AMPopTip/AMPopTip;
+			sourceTree = "<group>";
+		};
+		89635F8A1A13C2E30052C248 /* RSSClient-OSX */ = {
+			isa = PBXGroup;
+			children = (
+				89635F8D1A13C2E30052C248 /* AppDelegate.swift */,
+				89635F8F1A13C2E30052C248 /* Images.xcassets */,
+				89635F911A13C2E30052C248 /* MainMenu.xib */,
+				89635F8B1A13C2E30052C248 /* Supporting Files */,
+			);
+			path = "RSSClient-OSX";
+			sourceTree = "<group>";
+		};
+		89635F8B1A13C2E30052C248 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				89635F8C1A13C2E30052C248 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		89635F9B1A13C2E30052C248 /* RSSClient-OSXTests */ = {
+			isa = PBXGroup;
+			children = (
+				89635F9E1A13C2E30052C248 /* RSSClient_OSXTests.swift */,
+				89635F9C1A13C2E30052C248 /* Supporting Files */,
+			);
+			path = "RSSClient-OSXTests";
+			sourceTree = "<group>";
+		};
+		89635F9C1A13C2E30052C248 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				89635F9D1A13C2E30052C248 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		89C8306A19D730E9009924DA = {
 			isa = PBXGroup;
 			children = (
 				8933E8F519ECCB9900ECFF3F /* Alamofire.xcodeproj */,
 				8933E91019ECCBCA00ECFF3F /* PureLayout */,
 				8933E91B19ECCD6500ECFF3F /* MWFeedParser */,
+				894C0C1F1A13293E008229A4 /* TUSafariActivity */,
+				894C0C341A1329FB008229A4 /* AMPopTip */,
 				89C8307519D730E9009924DA /* RSSClient */,
 				89C8308E19D730E9009924DA /* RSSClientTests */,
+				89635F8A1A13C2E30052C248 /* RSSClient-OSX */,
+				89635F9B1A13C2E30052C248 /* RSSClient-OSXTests */,
 				89C8307419D730E9009924DA /* Products */,
 				694B7677466B46B3BC9D72EF /* Frameworks */,
+				71674FD5D25A092A893BC80E /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -337,6 +513,8 @@
 			children = (
 				89C8307319D730E9009924DA /* rNews.app */,
 				89C8308B19D730E9009924DA /* RSSClientTests.xctest */,
+				89635F891A13C2E30052C248 /* RSSClient-OSX.app */,
+				89635F981A13C2E30052C248 /* RSSClient-OSXTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -347,6 +525,7 @@
 				89C8307819D730E9009924DA /* AppDelegate.swift */,
 				89C830CC19DC67B9009924DA /* UnreadCounter.swift */,
 				89D06A2019FF210C003909A3 /* LoadingView.swift */,
+				8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */,
 				89C830B119D7D2B7009924DA /* Feeds */,
 				8933E93C19EF507600ECFF3F /* Scripting */,
 				89C830B419D7D2D2009924DA /* Articles */,
@@ -432,15 +611,48 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		89635F881A13C2E30052C248 /* RSSClient-OSX */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 89635FA01A13C2E30052C248 /* Build configuration list for PBXNativeTarget "RSSClient-OSX" */;
+			buildPhases = (
+				89635F851A13C2E30052C248 /* Sources */,
+				89635F861A13C2E30052C248 /* Frameworks */,
+				89635F871A13C2E30052C248 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "RSSClient-OSX";
+			productName = "RSSClient-OSX";
+			productReference = 89635F891A13C2E30052C248 /* RSSClient-OSX.app */;
+			productType = "com.apple.product-type.application";
+		};
+		89635F971A13C2E30052C248 /* RSSClient-OSXTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 89635FA31A13C2E30052C248 /* Build configuration list for PBXNativeTarget "RSSClient-OSXTests" */;
+			buildPhases = (
+				89635F941A13C2E30052C248 /* Sources */,
+				89635F951A13C2E30052C248 /* Frameworks */,
+				89635F961A13C2E30052C248 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				89635F9A1A13C2E30052C248 /* PBXTargetDependency */,
+			);
+			name = "RSSClient-OSXTests";
+			productName = "RSSClient-OSXTests";
+			productReference = 89635F981A13C2E30052C248 /* RSSClient-OSXTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		89C8307219D730E9009924DA /* RSSClient */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 89C8309519D730E9009924DA /* Build configuration list for PBXNativeTarget "RSSClient" */;
 			buildPhases = (
-				2908E238B1CB4E479EC01CAE /* Check Pods Manifest.lock */,
 				89C8306F19D730E9009924DA /* Sources */,
 				89C8307019D730E9009924DA /* Frameworks */,
 				89C8307119D730E9009924DA /* Resources */,
-				C8831EFC34E54DA38376756F /* Copy Pods Resources */,
 				8933E92219ECD20600ECFF3F /* Copy Frameworks */,
 			);
 			buildRules = (
@@ -480,6 +692,13 @@
 				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = "Rachel Brindle";
 				TargetAttributes = {
+					89635F881A13C2E30052C248 = {
+						CreatedOnToolsVersion = 6.1;
+					};
+					89635F971A13C2E30052C248 = {
+						CreatedOnToolsVersion = 6.1;
+						TestTargetID = 89635F881A13C2E30052C248;
+					};
 					89C8307219D730E9009924DA = {
 						CreatedOnToolsVersion = 6.0.1;
 						SystemCapabilities = {
@@ -515,6 +734,8 @@
 			targets = (
 				89C8307219D730E9009924DA /* RSSClient */,
 				89C8308A19D730E9009924DA /* RSSClientTests */,
+				89635F881A13C2E30052C248 /* RSSClient-OSX */,
+				89635F971A13C2E30052C248 /* RSSClient-OSXTests */,
 			);
 		};
 /* End PBXProject section */
@@ -537,15 +758,37 @@
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
+		89635F871A13C2E30052C248 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				89635F901A13C2E30052C248 /* Images.xcassets in Resources */,
+				89635F931A13C2E30052C248 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		89635F961A13C2E30052C248 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		89C8307119D730E9009924DA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				89C8308319D730E9009924DA /* Images.xcassets in Resources */,
+				894C0C331A13296D008229A4 /* safari~iPad@2x.png in Resources */,
 				8924D8E91A094CF5003B7529 /* article.css in Resources */,
 				89D06A1B19FDBC52003909A3 /* Launch Screen.xib in Resources */,
+				894C0C2F1A13296D008229A4 /* safari.png in Resources */,
+				894C0C301A13296D008229A4 /* safari@2x.png in Resources */,
 				89C830BF19D89722009924DA /* FindICO.js in Resources */,
+				894C0C321A13296D008229A4 /* safari~iPad.png in Resources */,
+				894C0C311A13296D008229A4 /* safari@3x.png in Resources */,
 				89C830BB19D8904A009924DA /* findFeeds.js in Resources */,
+				894C0C2E1A13296D008229A4 /* TUSafariActivity.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -560,40 +803,55 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		2908E238B1CB4E479EC01CAE /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "PODS_ROOT=\"${SRCROOT}/Pods\"\ndiff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		C8831EFC34E54DA38376756F /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
+		89635F851A13C2E30052C248 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				89635FBA1A13C48D0052C248 /* NSString+XMLEntities.m in Sources */,
+				89635FAE1A13C4210052C248 /* Article.m in Sources */,
+				89635FC41A13C49A0052C248 /* NSLayoutConstraint+PureLayout.m in Sources */,
+				89635FA81A13C4030052C248 /* OPMLParser.swift in Sources */,
+				89635FB61A13C48D0052C248 /* MWFeedItem.m in Sources */,
+				89635FC31A13C49A0052C248 /* NSArray+PureLayout.m in Sources */,
+				89635FB51A13C48D0052C248 /* MWFeedInfo.m in Sources */,
+				89635FB81A13C48D0052C248 /* NSDate+InternetDateTime.m in Sources */,
+				89635FB91A13C48D0052C248 /* NSString+HTML.m in Sources */,
+				89635FB71A13C48D0052C248 /* GTMNSString+HTML.m in Sources */,
+				89635FB01A13C4210052C248 /* Group.m in Sources */,
+				89635FAD1A13C41C0052C248 /* RSSClient.xcdatamodeld in Sources */,
+				89635FAF1A13C4210052C248 /* Feed.m in Sources */,
+				89635FAA1A13C4120052C248 /* DataManager.swift in Sources */,
+				89635FB41A13C48D0052C248 /* MWFeedParser.m in Sources */,
+				89635FC21A13C49A0052C248 /* ALView+PureLayout.m in Sources */,
+				89635F8E1A13C2E30052C248 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		89635F941A13C2E30052C248 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				89635FC11A13C48D0052C248 /* NSString+XMLEntities.m in Sources */,
+				89635FB11A13C4220052C248 /* Article.m in Sources */,
+				89635FC71A13C49B0052C248 /* NSLayoutConstraint+PureLayout.m in Sources */,
+				89635FA91A13C4040052C248 /* OPMLParser.swift in Sources */,
+				89635FBD1A13C48D0052C248 /* MWFeedItem.m in Sources */,
+				89635FC61A13C49B0052C248 /* NSArray+PureLayout.m in Sources */,
+				89635FBC1A13C48D0052C248 /* MWFeedInfo.m in Sources */,
+				89635FBF1A13C48D0052C248 /* NSDate+InternetDateTime.m in Sources */,
+				89635FC01A13C48D0052C248 /* NSString+HTML.m in Sources */,
+				89635FBE1A13C48D0052C248 /* GTMNSString+HTML.m in Sources */,
+				89635FB31A13C4220052C248 /* Group.m in Sources */,
+				89635FAC1A13C41C0052C248 /* RSSClient.xcdatamodeld in Sources */,
+				89635FB21A13C4220052C248 /* Feed.m in Sources */,
+				89635FAB1A13C4130052C248 /* DataManager.swift in Sources */,
+				89635FBB1A13C48D0052C248 /* MWFeedParser.m in Sources */,
+				89635FC51A13C49B0052C248 /* ALView+PureLayout.m in Sources */,
+				89635F9F1A13C2E30052C248 /* RSSClient_OSXTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		89C8306F19D730E9009924DA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -604,6 +862,7 @@
 				8933E92E19ECD28900ECFF3F /* NSString+HTML.m in Sources */,
 				8933E91919ECCD5E00ECFF3F /* MWFeedInfo.m in Sources */,
 				8933E91819ECCD5E00ECFF3F /* MWFeedParser.m in Sources */,
+				894C0C241A13293E008229A4 /* TUSafariActivity.m in Sources */,
 				8933E90F19ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m in Sources */,
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
 				89C830A919D7B890009924DA /* DataManager.swift in Sources */,
@@ -612,12 +871,14 @@
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
 				8933E93B19EF4D0C00ECFF3F /* TextHighlighter.swift in Sources */,
 				89C830B619D7DE97009924DA /* ArticleViewController.swift in Sources */,
+				894C0C371A1329FB008229A4 /* AMPopTip.m in Sources */,
 				89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */,
 				8933E93E19EF508C00ECFF3F /* ScriptDocument.swift in Sources */,
 				89F1C01F19E75E73009343DB /* GroupsEditorController.swift in Sources */,
 				8917110019E0703700D86C7B /* Group.m in Sources */,
 				89C830C319D89E46009924DA /* Article.m in Sources */,
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
+				8924D8F21A0E8EEA003B7529 /* OPMLParser.swift in Sources */,
 				8933E92F19ECD28900ECFF3F /* NSString+XMLEntities.m in Sources */,
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
 				89D06A2119FF210C003909A3 /* LoadingView.swift in Sources */,
@@ -637,6 +898,7 @@
 				893448C61A03159F00F5D528 /* ArticleViewControllerTests.swift in Sources */,
 				895779AD19E62CDA00548418 /* Feed.m in Sources */,
 				895779B019E6512200548418 /* UnreadCounterTests.swift in Sources */,
+				89635F831A13BF120052C248 /* TUSafariActivity.m in Sources */,
 				893448CA1A0315DF00F5D528 /* FindFeedViewControllerTests.swift in Sources */,
 				8933E91C19ECD09100ECFF3F /* GroupsEditorController.swift in Sources */,
 				893448B81A004E4E00F5D528 /* MWFeedInfo.m in Sources */,
@@ -650,9 +912,11 @@
 				895779AA19E62CC500548418 /* DataManager.swift in Sources */,
 				895779A019E62CC500548418 /* AppDelegate.swift in Sources */,
 				895779A319E62CC500548418 /* FeedTableCell.swift in Sources */,
+				89635F841A13BF120052C248 /* AMPopTip.m in Sources */,
 				893448C21A004E6400F5D528 /* UIColor+RSSClient.m in Sources */,
 				893448BB1A004E4E00F5D528 /* NSDate+InternetDateTime.m in Sources */,
 				893448BA1A004E4E00F5D528 /* GTMNSString+HTML.m in Sources */,
+				8924D8F31A108299003B7529 /* OPMLParser.swift in Sources */,
 				893448BD1A004E4E00F5D528 /* NSString+XMLEntities.m in Sources */,
 				893448B71A004E4E00F5D528 /* MWFeedParser.m in Sources */,
 				895779A719E62CC500548418 /* ArticleListController.swift in Sources */,
@@ -681,6 +945,11 @@
 			name = Alamofire;
 			targetProxy = 8933E91F19ECD1A000ECFF3F /* PBXContainerItemProxy */;
 		};
+		89635F9A1A13C2E30052C248 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 89635F881A13C2E30052C248 /* RSSClient-OSX */;
+			targetProxy = 89635F991A13C2E30052C248 /* PBXContainerItemProxy */;
+		};
 		89C8308D19D730E9009924DA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 89C8307219D730E9009924DA /* RSSClient */;
@@ -688,7 +957,100 @@
 		};
 /* End PBXTargetDependency section */
 
+/* Begin PBXVariantGroup section */
+		894C0C271A13296D008229A4 /* TUSafariActivity.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				894C0C281A13296D008229A4 /* en */,
+			);
+			name = TUSafariActivity.strings;
+			sourceTree = "<group>";
+		};
+		89635F911A13C2E30052C248 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				89635F921A13C2E30052C248 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
+		89635FA11A13C2E30052C248 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "RSSClient-OSX/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		89635FA21A13C2E30052C248 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				INFOPLIST_FILE = "RSSClient-OSX/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		89635FA41A13C2E30052C248 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "RSSClient-OSXTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RSSClient-OSX.app/Contents/MacOS/RSSClient-OSX";
+			};
+			name = Debug;
+		};
+		89635FA51A13C2E30052C248 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "RSSClient-OSXTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RSSClient-OSX.app/Contents/MacOS/RSSClient-OSX";
+			};
+			name = Release;
+		};
 		89C8309319D730E9009924DA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -770,19 +1132,16 @@
 		};
 		89C8309619D730E9009924DA /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7F4942F170534887B236C7F9 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)/**",
-					"$PODS_ROOT/headers/**",
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				HEADER_SEARCH_PATHS = "$(inherited)/**";
 				INFOPLIST_FILE = RSSClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/Pods/build/Debug-iphoneos";
-				PODS_ROOT = "${SRCROOT}/Pods";
+				PODS_ROOT = "$(inherited)";
 				PRODUCT_NAME = rNews;
 				SWIFT_OBJC_BRIDGING_HEADER = "RSSClient/RSSClient-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -792,19 +1151,16 @@
 		};
 		89C8309719D730E9009924DA /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1B2EC3404DBA17EC9D1669ED /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = "";
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)/**",
-					"$PODS_ROOT/headers/**",
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				HEADER_SEARCH_PATHS = "$(inherited)/**";
 				INFOPLIST_FILE = RSSClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/Pods/build/Release-iphoneos";
-				PODS_ROOT = "${SRCROOT}/Pods";
+				PODS_ROOT = "$(inherited)";
 				PRODUCT_NAME = rNews;
 				SWIFT_OBJC_BRIDGING_HEADER = "RSSClient/RSSClient-Bridging-Header.h";
 				USER_HEADER_SEARCH_PATHS = "";
@@ -855,6 +1211,22 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		89635FA01A13C2E30052C248 /* Build configuration list for PBXNativeTarget "RSSClient-OSX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				89635FA11A13C2E30052C248 /* Debug */,
+				89635FA21A13C2E30052C248 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		89635FA31A13C2E30052C248 /* Build configuration list for PBXNativeTarget "RSSClient-OSXTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				89635FA41A13C2E30052C248 /* Debug */,
+				89635FA51A13C2E30052C248 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		89C8306E19D730E9009924DA /* Build configuration list for PBXProject "RSSClient" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

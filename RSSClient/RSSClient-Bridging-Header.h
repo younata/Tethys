@@ -4,7 +4,8 @@
 
 #import "PureLayout.h"
 #import "MWFeedParser.h"
-//#import <AMPopTip/AMPopTip.h>
+#import "AMPopTip.h"
+#import "TUSafariActivity.h"
 
 #import "Article.h"
 #import "Feed.h"

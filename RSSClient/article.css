@@ -1,13 +1,9 @@
 body{
-    text-align: center;
-    font-size: 16px;
-    /*font-variant: small-caps;*/
+    font-size: 32px;
     font-family: Helvetica;
-    font-weight: 500;
 }
 
 a{
-    /*color: #96A8C8;*/
     text-decoration: none;
     font-weight: 800;
 }

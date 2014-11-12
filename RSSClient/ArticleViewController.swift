@@ -48,7 +48,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     
     var articleCSS : String {
         if let loc = NSBundle.mainBundle().URLForResource("article", withExtension: "css") {
-            return "<html><head>" + (loc.absoluteString ?? "") + "</head><body>"
+            return "<html><head><link rel=\"stylesheet\" href=\"" + (loc.absoluteString ?? "") + "\"></head><body>"
         }
         return "<html><body>"
     }
@@ -131,7 +131,6 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.toolbarHidden = true
-        content.removeObserver(self, forKeyPath: "estimatedProgress")
     }
     
     func next(gesture: UIScreenEdgePanGestureRecognizer) {
@@ -148,8 +147,9 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     
     func share() {
         if let a = article {
-            let activity = UIActivityViewController(activityItems: [NSURL(string: a.link)!], applicationActivities: nil)
-            if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
+            let share = TUSafariActivity()
+            let activity = UIActivityViewController(activityItems: [NSURL(string: a.link)!], applicationActivities: [share])
+            if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                 let popover = UIPopoverController(contentViewController: activity)
                 popover.presentPopoverFromBarButtonItem(shareButton, permittedArrowDirections: .Any, animated: true)
             } else {

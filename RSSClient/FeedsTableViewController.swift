@@ -59,6 +59,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "addFeed")
         self.navigationItem.rightBarButtonItems = [addButton, tableViewController.editButtonItem()]
         self.navigationItem.title = NSLocalizedString("Feeds", comment: "")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Settings", comment: ""), style: .Plain, target: self, action: "showSettings")
         
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 80
@@ -76,6 +77,17 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         self.reload()
+    }
+    
+    func showSettings() {
+        let settings = UIViewController()
+        // TODO: Settings
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+            let popover = UIPopoverController(contentViewController: settings)
+            popover.presentPopoverFromBarButtonItem(navigationItem.leftBarButtonItem!, permittedArrowDirections: .Any, animated: true)
+        } else {
+            presentViewController(settings, animated: true, completion: nil)
+        }
     }
     
     func tabBar(tabBar: UITabBar, didSelectItem item: UITabBarItem!) {

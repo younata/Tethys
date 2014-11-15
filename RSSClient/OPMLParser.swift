@@ -11,6 +11,7 @@ import Foundation
 class OPMLParser : NSObject, NSXMLParserDelegate {
 
     var callback : ([String]) -> Void = {(_) in }
+    var failure : (NSError) -> Void = {(_) in }
     
     private var xmlParser : NSXMLParser
     private var items : [String] = []
@@ -25,12 +26,20 @@ class OPMLParser : NSObject, NSXMLParserDelegate {
         xmlParser.parse()
     }
     
+    func stopParsing() {
+        xmlParser.abortParsing()
+    }
+    
     // MARK: NSXMLParserDelegate
     
     func parserDidEndDocument(parser: NSXMLParser!) {
         if (isOPML) {
             callback(items)
         }
+    }
+    
+    func parser(parser: NSXMLParser!, parseErrorOccurred parseError: NSError!) {
+        failure(parseError)
     }
     
     func parser(parser: NSXMLParser!, didStartElement elementName: String!, namespaceURI: String!, qualifiedName qName: String!, attributes attributeDict: [NSObject : AnyObject]!) {

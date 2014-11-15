@@ -49,6 +49,28 @@ class DataManager: NSObject, MWFeedParserDelegate {
         self.managedObjectContext.save(nil)
     }
     
+    // MARK: OPML
+    
+    func importOPML(opml: NSURL) {
+        if let text = NSString(contentsOfURL: opml, encoding: NSUTF8StringEncoding, error: nil) {
+            let opmlParser = OPMLParser(text: text)
+            opmlParser.callback = {(feeds) in
+                for feed in feeds {
+                    self.newFeed(feed)
+                }
+            }
+        }
+    }
+    
+    func generateOPMLContents(feeds: [Feed]) -> String {
+        var ret = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><opml version=\"2.0\"><body>"
+        for feed in feeds {
+            ret += "<outline xmlURL=\"\(feed.url)\""
+        }
+        ret += "</body></opml>"
+        return ret
+    }
+    
     // MARK: - Feeds
     
     func feeds() -> [Feed] {
@@ -60,15 +82,6 @@ class DataManager: NSObject, MWFeedParserDelegate {
             }
             return $0.title < $1.title
         }
-    }
-    
-    func generateOPMLContents(feeds: [Feed]) -> String {
-        var ret = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><opml version=\"2.0\"><body>"
-        for feed in feeds {
-            ret += "<outline xmlURL=\"\(feed.url)\""
-        }
-        ret += "</body></opml>"
-        return ret
     }
     
     func newFeed(feedURL: String) -> Feed {

@@ -58,6 +58,8 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
     }
     
     public func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
+        let str = application.applicationState == .Active ? "Active" : application.applicationState == .Inactive ? "Inactive" : "Background"
+        println("\(str)")
         let nc = (self.window!.rootViewController! as UINavigationController)
         let ftvc = (nc.viewControllers.first! as FeedsTableViewController)
         if let userInfo = notification.userInfo {

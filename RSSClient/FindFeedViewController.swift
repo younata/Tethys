@@ -161,6 +161,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
                         feedParser.stopParsing()
                         
                     }
+                    opmlParser.parse()
                 }
             }
         }

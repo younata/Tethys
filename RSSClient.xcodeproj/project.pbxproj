@@ -42,6 +42,10 @@
 		893448C81A0315B600F5D528 /* ArticleListControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893448C71A0315B600F5D528 /* ArticleListControllerTests.swift */; };
 		893448CA1A0315DF00F5D528 /* FindFeedViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893448C91A0315DF00F5D528 /* FindFeedViewControllerTests.swift */; };
 		893448CC1A0315F400F5D528 /* FeedsTableViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893448CB1A0315F400F5D528 /* FeedsTableViewControllerTests.swift */; };
+		894896EC1A16F1130030EB6E /* LocalImportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896EB1A16F1130030EB6E /* LocalImportViewController.swift */; };
+		894896ED1A16F1130030EB6E /* LocalImportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896EB1A16F1130030EB6E /* LocalImportViewController.swift */; };
+		894896F11A16F7B20030EB6E /* FeedParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896F01A16F7B20030EB6E /* FeedParser.swift */; };
+		894896F21A16F7B20030EB6E /* FeedParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896F01A16F7B20030EB6E /* FeedParser.swift */; };
 		894C0C241A13293E008229A4 /* TUSafariActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 894C0C221A13293E008229A4 /* TUSafariActivity.m */; };
 		894C0C2E1A13296D008229A4 /* TUSafariActivity.strings in Resources */ = {isa = PBXBuildFile; fileRef = 894C0C271A13296D008229A4 /* TUSafariActivity.strings */; };
 		894C0C2F1A13296D008229A4 /* safari.png in Resources */ = {isa = PBXBuildFile; fileRef = 894C0C291A13296D008229A4 /* safari.png */; };
@@ -223,6 +227,8 @@
 		893448C71A0315B600F5D528 /* ArticleListControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListControllerTests.swift; sourceTree = "<group>"; };
 		893448C91A0315DF00F5D528 /* FindFeedViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindFeedViewControllerTests.swift; sourceTree = "<group>"; };
 		893448CB1A0315F400F5D528 /* FeedsTableViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsTableViewControllerTests.swift; sourceTree = "<group>"; };
+		894896EB1A16F1130030EB6E /* LocalImportViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalImportViewController.swift; sourceTree = "<group>"; };
+		894896F01A16F7B20030EB6E /* FeedParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedParser.swift; sourceTree = "<group>"; };
 		894C0C211A13293E008229A4 /* TUSafariActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUSafariActivity.h; sourceTree = "<group>"; };
 		894C0C221A13293E008229A4 /* TUSafariActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUSafariActivity.m; sourceTree = "<group>"; };
 		894C0C281A13296D008229A4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = TUSafariActivity.strings; sourceTree = "<group>"; };
@@ -526,6 +532,7 @@
 				89C830CC19DC67B9009924DA /* UnreadCounter.swift */,
 				89D06A2019FF210C003909A3 /* LoadingView.swift */,
 				8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */,
+				894896F01A16F7B20030EB6E /* FeedParser.swift */,
 				89C830B119D7D2B7009924DA /* Feeds */,
 				8933E93C19EF507600ECFF3F /* Scripting */,
 				89C830B419D7D2D2009924DA /* Articles */,
@@ -588,6 +595,7 @@
 			isa = PBXGroup;
 			children = (
 				89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */,
+				894896EB1A16F1130030EB6E /* LocalImportViewController.swift */,
 				89C830C919DA37FB009924DA /* FeedTableCell.swift */,
 				89C830B719D7EC55009924DA /* FindFeedViewController.swift */,
 				89F1C01E19E75E73009343DB /* GroupsEditorController.swift */,
@@ -860,6 +868,7 @@
 				89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */,
 				8933E91A19ECCD5E00ECFF3F /* MWFeedItem.m in Sources */,
 				8933E92E19ECD28900ECFF3F /* NSString+HTML.m in Sources */,
+				894896EC1A16F1130030EB6E /* LocalImportViewController.swift in Sources */,
 				8933E91919ECCD5E00ECFF3F /* MWFeedInfo.m in Sources */,
 				8933E91819ECCD5E00ECFF3F /* MWFeedParser.m in Sources */,
 				894C0C241A13293E008229A4 /* TUSafariActivity.m in Sources */,
@@ -881,6 +890,7 @@
 				8924D8F21A0E8EEA003B7529 /* OPMLParser.swift in Sources */,
 				8933E92F19ECD28900ECFF3F /* NSString+XMLEntities.m in Sources */,
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
+				894896F11A16F7B20030EB6E /* FeedParser.swift in Sources */,
 				89D06A2119FF210C003909A3 /* LoadingView.swift in Sources */,
 				8933E92D19ECD28900ECFF3F /* NSDate+InternetDateTime.m in Sources */,
 				8933E90D19ECCBC300ECFF3F /* ALView+PureLayout.m in Sources */,
@@ -910,11 +920,13 @@
 				895779A819E62CC500548418 /* ArticleCell.swift in Sources */,
 				895779B619E65A6D00548418 /* ArticleCellTests.swift in Sources */,
 				895779AA19E62CC500548418 /* DataManager.swift in Sources */,
+				894896ED1A16F1130030EB6E /* LocalImportViewController.swift in Sources */,
 				895779A019E62CC500548418 /* AppDelegate.swift in Sources */,
 				895779A319E62CC500548418 /* FeedTableCell.swift in Sources */,
 				89635F841A13BF120052C248 /* AMPopTip.m in Sources */,
 				893448C21A004E6400F5D528 /* UIColor+RSSClient.m in Sources */,
 				893448BB1A004E4E00F5D528 /* NSDate+InternetDateTime.m in Sources */,
+				894896F21A16F7B20030EB6E /* FeedParser.swift in Sources */,
 				893448BA1A004E4E00F5D528 /* GTMNSString+HTML.m in Sources */,
 				8924D8F31A108299003B7529 /* OPMLParser.swift in Sources */,
 				893448BD1A004E4E00F5D528 /* NSString+XMLEntities.m in Sources */,
@@ -1218,6 +1230,7 @@
 				89635FA21A13C2E30052C248 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		89635FA31A13C2E30052C248 /* Build configuration list for PBXNativeTarget "RSSClient-OSXTests" */ = {
 			isa = XCConfigurationList;
@@ -1226,6 +1239,7 @@
 				89635FA51A13C2E30052C248 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		89C8306E19D730E9009924DA /* Build configuration list for PBXProject "RSSClient" */ = {
 			isa = XCConfigurationList;

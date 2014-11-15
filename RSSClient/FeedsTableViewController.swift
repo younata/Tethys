@@ -59,7 +59,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "addFeed")
         self.navigationItem.rightBarButtonItems = [addButton, tableViewController.editButtonItem()]
         self.navigationItem.title = NSLocalizedString("Feeds", comment: "")
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Settings", comment: ""), style: .Plain, target: self, action: "showSettings")
+        //self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Settings", comment: ""), style: .Plain, target: self, action: "showSettings")
         
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 80
@@ -80,7 +80,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func showSettings() {
-        let settings = UIViewController()
+        let settings = UINavigationController(rootViewController: UIViewController())
         // TODO: Settings
         if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
             let popover = UIPopoverController(contentViewController: settings)
@@ -107,7 +107,34 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         var controller = UIViewController()
         switch (state) {
         case .feeds:
-            controller = FindFeedViewController()
+            let alert = UIAlertController(title: NSLocalizedString("New Feed(s)", comment: ""),
+                                        message: NSLocalizedString("", comment: ""),
+                                 preferredStyle: .ActionSheet)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Add from Web", comment: ""), style: UIAlertActionStyle.Default, handler: {(_) in
+                print("")
+                alert.presentingViewController?.dismissViewControllerAnimated(true, completion: {
+                    let vc = UINavigationController(rootViewController: FindFeedViewController())
+                    if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+                        let popover = UIPopoverController(contentViewController: vc)
+                        popover.presentPopoverFromBarButtonItem(self.navigationItem.leftBarButtonItem!, permittedArrowDirections: .Any, animated: true)
+                    } else {
+                        self.presentViewController(vc, animated: true, completion: nil)
+                    }
+                })
+            }))
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Add from Local", comment: ""), style: .Default, handler: {(_) in
+                print("")
+                alert.presentingViewController?.dismissViewControllerAnimated(true, completion: {
+                    let vc = UINavigationController(rootViewController: UIViewController())
+                    if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+                        let popover = UIPopoverController(contentViewController: vc)
+                        popover.presentPopoverFromBarButtonItem(self.navigationItem.leftBarButtonItem!, permittedArrowDirections: .Any, animated: true)
+                    } else {
+                        self.presentViewController(vc, animated: true, completion: nil)
+                    }
+                })
+            }))
+            controller = alert
         case .groups:
             let alert = UIAlertController(title: NSLocalizedString("New Group", comment: ""),
                                         message: nil,
@@ -141,8 +168,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             }))
             controller = alert
         }
-        let vc = UINavigationController(rootViewController: controller)
-        self.presentViewController(vc, animated: true, completion: nil)
+        self.presentViewController(controller, animated: true, completion: nil)
     }
     
     func reload() {

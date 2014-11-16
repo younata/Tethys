@@ -52,13 +52,24 @@ class DataManager: NSObject, MWFeedParserDelegate {
     // MARK: OPML
     
     func importOPML(opml: NSURL) {
+        importOPML(opml, progress: {(_) in }, completion: {(_) in })
+    }
+    
+    func importOPML(opml: NSURL, progress: (Double) -> Void, completion: ([Feed]) -> Void) {
         if let text = NSString(contentsOfURL: opml, encoding: NSUTF8StringEncoding, error: nil) {
             let opmlParser = OPMLParser(text: text)
             opmlParser.callback = {(feeds) in
+                var ret : [Feed] = []
                 for feed in feeds {
-                    self.newFeed(feed)
+                    ret.append(self.newFeed(feed) {(_) in
+                        progress(Double(ret.count + 1) / Double(feeds.count))
+                        if (ret.count + 1) == feeds.count {
+                            completion(ret)
+                        }
+                    })
                 }
             }
+            opmlParser.parse()
         }
     }
     

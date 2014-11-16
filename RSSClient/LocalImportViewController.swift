@@ -8,20 +8,54 @@
 
 import UIKit
 
-class LocalImportViewController: UITableViewController, MWFeedParserDelegate {
+class LocalImportViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     var opmls : [String] = []
     var feeds : [String] = []
     var items : [String] = []
     var contentsOfDirectory : [String] = []
+    
+    let tableViewController = UITableViewController(style: .Plain)
+    
+    var tableViewTopOffset: NSLayoutConstraint!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.view.addSubview(self.tableViewController.tableView)
+        self.tableViewController.tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
+        tableViewTopOffset = self.tableViewController.tableView.autoPinEdgeToSuperviewEdge(.Top, withInset: CGRectGetHeight(self.navigationController!.navigationBar.frame) + (UIApplication.sharedApplication().statusBarHidden ? 0 : 20))
+        
         self.reloadItems()
         
-        self.refreshControl = UIRefreshControl()
-        refreshControl?.addTarget(self, action: "reloadItems", forControlEvents: .ValueChanged)
+        self.tableViewController.refreshControl = UIRefreshControl()
+        tableViewController.refreshControl?.addTarget(self, action: "reloadItems", forControlEvents: .ValueChanged)
+        
+        self.navigationItem.title = NSLocalizedString("Local Import", comment: "")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Dismiss", comment: ""), style: .Plain, target: self, action: "dismiss")
+        
+        self.tableViewController.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        self.tableViewController.tableView.delegate = self
+        self.tableViewController.tableView.dataSource = self
+    }
+    
+    override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
+        super.willRotateToInterfaceOrientation(toInterfaceOrientation, duration: duration)
+        let landscape = UIInterfaceOrientationIsLandscape(toInterfaceOrientation)
+        let statusBarHeight : CGFloat = (landscape ? 0 : 20)
+        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
+            let navBarHeight : CGFloat = (landscape ? 32 : 44)
+            tableViewTopOffset.constant = navBarHeight + statusBarHeight
+        } else {
+            tableViewTopOffset.constant = 44 + statusBarHeight
+        }
+        UIView.animateWithDuration(duration) {
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    func dismiss() {
+        self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
     
     func reloadItems() {
@@ -32,12 +66,12 @@ class LocalImportViewController: UITableViewController, MWFeedParserDelegate {
             verifyIfFeedOrOPML(path)
         }
         
-        self.refreshControl?.endRefreshing()
+        self.tableViewController.refreshControl?.endRefreshing()
     }
     
     func reload() {
         self.items.sort {return $0 < $1}
-        self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+        self.tableViewController.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
     }
     
     func verifyIfFeedOrOPML(path: String) {
@@ -48,46 +82,46 @@ class LocalImportViewController: UITableViewController, MWFeedParserDelegate {
         contentsOfDirectory.append(path)
         
         let location = NSHomeDirectory().stringByAppendingPathComponent("Documents").stringByAppendingPathComponent(path)
-        let text = NSString(contentsOfFile: location, encoding: NSUTF8StringEncoding, error: nil)!
-        
-        let opmlParser = OPMLParser(text: text)
-        let feedParser = FeedParser(string: text)
-        feedParser.parseInfoOnly = true
-        opmlParser.callback = {(_) in
-            self.items.append(path)
-            self.opmls.append(path)
-            feedParser.stopParsing()
-            self.reload()
+        if let text = NSString(contentsOfFile: location, encoding: NSUTF8StringEncoding, error: nil) {
+            let opmlParser = OPMLParser(text: text)
+            let feedParser = FeedParser(string: text)
+            feedParser.parseInfoOnly = true
+            feedParser.completion = {(_, _) in
+                self.items.append(path)
+                self.feeds.append(path)
+                opmlParser.stopParsing()
+                self.reload()
+            }
+            opmlParser.callback = {(_) in
+                self.items.append(path)
+                self.opmls.append(path)
+                feedParser.stopParsing()
+                self.reload()
+            }
+            feedParser.parse()
+            opmlParser.parse()
         }
-        feedParser.completion = {(_, _) in
-            self.items.append(path)
-            self.feeds.append(path)
-            opmlParser.stopParsing()
-            self.reload()
-        }
-        opmlParser.parse()
-        feedParser.parse()
     }
     
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items.count
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath) as UITableViewCell
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as UITableViewCell
         
         cell.textLabel.text = items[indexPath.row]
 
         return cell
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         let item = items[indexPath.row]
         let location = NSHomeDirectory().stringByAppendingPathComponent("Documents").stringByAppendingPathComponent(item)
@@ -99,9 +133,30 @@ class LocalImportViewController: UITableViewController, MWFeedParserDelegate {
             feedParser.completion = {(info, _) in
                 print("")
                 DataManager.sharedInstance().newFeed(info.url.absoluteString!)
+                self.dismiss()
             }
         } else if contains(opmls, item) {
-            DataManager.sharedInstance().importOPML(NSURL(string: "file://" + location)!)
+            
+            let activityIndicator = RBActivityIndicator(forAutoLayout: ())
+            activityIndicator.showProgressBar = true
+            activityIndicator.style = RBActivityIndicatorStyleDark
+            activityIndicator.displayMessage = NSLocalizedString("Importing feeds from OPML file", comment: "")
+            self.view.addSubview(activityIndicator)
+            self.navigationItem.leftBarButtonItem?.enabled = false
+            let color = activityIndicator.backgroundColor
+            activityIndicator.backgroundColor = UIColor.clearColor()
+            activityIndicator.autoCenterInSuperview()
+            UIView.animateWithDuration(0.3, animations: {activityIndicator.backgroundColor = color})
+            self.view.userInteractionEnabled = false
+            
+            DataManager.sharedInstance().importOPML(NSURL(string: "file://" + location)!, progress: {(progress: Double) in
+                activityIndicator.progress = progress
+            }) {(_) in
+                self.dismiss()
+                activityIndicator.removeFromSuperview()
+                self.view.userInteractionEnabled = true
+                self.navigationItem.leftBarButtonItem?.enabled = true
+            }
         }
     }
 }

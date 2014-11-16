@@ -8,6 +8,12 @@
 
 import Foundation
 
+func parseFeed(url: NSURL, completion: (MWFeedInfo, [MWFeedItem]) -> Void = {(_, _) in }) -> FeedParser {
+    let ret = FeedParser(URL: url).success(completion)
+    ret.parse()
+    return ret
+}
+
 class FeedParser: NSObject, MWFeedParserDelegate {
     var parseInfoOnly : Bool = false
     
@@ -15,9 +21,19 @@ class FeedParser: NSObject, MWFeedParserDelegate {
     var items : [MWFeedItem] = []
     
     var completion : (MWFeedInfo, [MWFeedItem]) -> Void = {(_, _) in }
-    var failure : (NSError) -> Void = {(_) in }
+    var onFailure : (NSError) -> Void = {(_) in }
     
     let feedParser : MWFeedParser
+    
+    func success(onSuccess: (MWFeedInfo, [MWFeedItem]) -> Void) -> FeedParser {
+        completion = onSuccess
+        return self
+    }
+    
+    func failure(failed: (NSError) -> Void) -> FeedParser {
+        onFailure = failed
+        return self
+    }
     
     init(URL: NSURL) {
         if URL.scheme == "file://" {
@@ -43,7 +59,7 @@ class FeedParser: NSObject, MWFeedParserDelegate {
     }
     
     func feedParser(parser: MWFeedParser!, didFailWithError error: NSError!) {
-        failure(error)
+        onFailure(error)
     }
     
     func feedParser(parser: MWFeedParser!, didParseFeedInfo info: MWFeedInfo!) {

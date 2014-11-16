@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITabBarDelegate {
+class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITabBarDelegate, MAKDropDownMenuDelegate {
     
     enum DisplayState {
         case feeds
@@ -29,6 +29,9 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     
     var feedsTabItem: UITabBarItem! = nil
     var groupsTabItem: UITabBarItem! = nil
+    
+    let dropDownMenu = MAKDropDownMenu(forAutoLayout: ())
+    var menuTopOffset : NSLayoutConstraint!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,6 +40,11 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         self.view.addSubview(tableView)
         tableView.setTranslatesAutoresizingMaskIntoConstraints(false)
         tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
+        
+        self.view.addSubview(dropDownMenu)
+        dropDownMenu.delegate = self
+        dropDownMenu.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
+        menuTopOffset = dropDownMenu.autoPinEdgeToSuperviewEdge(.Top)
         
         /*
         self.view.addSubview(tabBar)
@@ -74,6 +82,21 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
+    override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
+        super.willRotateToInterfaceOrientation(toInterfaceOrientation, duration: duration)
+        let landscape = UIInterfaceOrientationIsLandscape(toInterfaceOrientation)
+        let statusBarHeight : CGFloat = (landscape ? 0 : 20)
+        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
+            let navBarHeight : CGFloat = (landscape ? 32 : 44)
+            menuTopOffset.constant = navBarHeight + statusBarHeight
+        } else {
+            menuTopOffset.constant = 44 + statusBarHeight
+        }
+        UIView.animateWithDuration(duration) {
+            self.view.layoutIfNeeded()
+        }
+    }
+    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         self.reload()
@@ -104,9 +127,16 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             return
         }
         
-        var controller = UIViewController()
         switch (state) {
         case .feeds:
+            dropDownMenu.titles = [NSLocalizedString("Add from Web", comment: ""), NSLocalizedString("Add from Local", comment: "")]
+            menuTopOffset.constant = CGRectGetHeight(self.navigationController!.navigationBar.frame) + (UIApplication.sharedApplication().statusBarHidden ? 0 : 20)
+            if dropDownMenu.isOpen {
+                dropDownMenu.closeAnimated(true)
+            } else {
+                dropDownMenu.openAnimated(true)
+            }
+            /*
             let alert = UIAlertController(title: NSLocalizedString("New Feed(s)", comment: ""),
                                         message: NSLocalizedString("", comment: ""),
                                  preferredStyle: .ActionSheet)
@@ -124,8 +154,8 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             }))
             alert.addAction(UIAlertAction(title: NSLocalizedString("Add from Local", comment: ""), style: .Default, handler: {(_) in
                 print("")
-                alert.presentingViewController?.dismissViewControllerAnimated(true, completion: {
-                    let vc = UINavigationController(rootViewController: UIViewController())
+                self.dismissViewControllerAnimated(true, completion: {
+                    let vc = UINavigationController(rootViewController: LocalImportViewController())
                     if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                         let popover = UIPopoverController(contentViewController: vc)
                         popover.presentPopoverFromBarButtonItem(self.navigationItem.leftBarButtonItem!, permittedArrowDirections: .Any, animated: true)
@@ -134,13 +164,19 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
                     }
                 })
             }))
-            controller = alert
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: UIAlertActionStyle.Cancel, handler: {(_) in
+                print("") // really?
+                alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+            }))
+            self.presentViewController(alert, animated: true, completion: nil)
+            */
         case .groups:
             let alert = UIAlertController(title: NSLocalizedString("New Group", comment: ""),
-                                        message: nil,
-                                 preferredStyle: .Alert)
+                message: nil,
+                preferredStyle: .Alert)
             alert.addTextFieldWithConfigurationHandler({(textField: UITextField!) in
-                // TODO: configure this textfield?
+                print("")
+                textField.becomeFirstResponder()
             })
             alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: UIAlertActionStyle.Cancel, handler: {(_) in
                 print("") // really?
@@ -166,9 +202,33 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
                     fatalError("add group alert presented without a configured textfield")
                 }
             }))
-            controller = alert
+            self.presentViewController(alert, animated: true, completion: nil)
         }
-        self.presentViewController(controller, animated: true, completion: nil)
+    }
+    
+    func dropDownMenu(menu: MAKDropDownMenu!, itemDidSelect itemIndex: UInt) {
+        if itemIndex == 0 {
+            let vc = UINavigationController(rootViewController: FindFeedViewController())
+            if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+                let popover = UIPopoverController(contentViewController: vc)
+                popover.presentPopoverFromBarButtonItem(self.navigationItem.leftBarButtonItem!, permittedArrowDirections: .Any, animated: true)
+            } else {
+                self.presentViewController(vc, animated: true, completion: nil)
+            }
+        } else if itemIndex == 1 {
+            let vc = UINavigationController(rootViewController: LocalImportViewController())
+            if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+                let popover = UIPopoverController(contentViewController: vc)
+                popover.presentPopoverFromBarButtonItem(self.navigationItem.leftBarButtonItem!, permittedArrowDirections: .Any, animated: true)
+            } else {
+                self.presentViewController(vc, animated: true, completion: nil)
+            }
+        }
+        menu.closeAnimated(true)
+    }
+    
+    func dropDownMenuDidTapOutsideOfItem(menu: MAKDropDownMenu!) {
+        menu.closeAnimated(true)
     }
     
     func reload() {

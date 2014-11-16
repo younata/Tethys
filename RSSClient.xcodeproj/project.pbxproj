@@ -113,6 +113,10 @@
 		89635FC51A13C49B0052C248 /* ALView+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90519ECCBC300ECFF3F /* ALView+PureLayout.m */; };
 		89635FC61A13C49B0052C248 /* NSArray+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90719ECCBC300ECFF3F /* NSArray+PureLayout.m */; };
 		89635FC71A13C49B0052C248 /* NSLayoutConstraint+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90919ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m */; };
+		89C7FBE01A183EBE00ACBDB2 /* MAKDropDownMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C7FBDF1A183EBE00ACBDB2 /* MAKDropDownMenu.m */; };
+		89C7FBE11A183EBE00ACBDB2 /* MAKDropDownMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C7FBDF1A183EBE00ACBDB2 /* MAKDropDownMenu.m */; };
+		89C7FBE81A18847A00ACBDB2 /* RBActivityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C7FBE71A18847A00ACBDB2 /* RBActivityIndicator.m */; };
+		89C7FBE91A18847A00ACBDB2 /* RBActivityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C7FBE71A18847A00ACBDB2 /* RBActivityIndicator.m */; };
 		89C8307919D730E9009924DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307819D730E9009924DA /* AppDelegate.swift */; };
 		89C8307C19D730E9009924DA /* RSSClient.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307A19D730E9009924DA /* RSSClient.xcdatamodeld */; };
 		89C8308319D730E9009924DA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89C8308219D730E9009924DA /* Images.xcassets */; };
@@ -254,6 +258,10 @@
 		89635F981A13C2E30052C248 /* RSSClient-OSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "RSSClient-OSXTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		89635F9D1A13C2E30052C248 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89635F9E1A13C2E30052C248 /* RSSClient_OSXTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSSClient_OSXTests.swift; sourceTree = "<group>"; };
+		89C7FBDE1A183EBE00ACBDB2 /* MAKDropDownMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MAKDropDownMenu.h; sourceTree = "<group>"; };
+		89C7FBDF1A183EBE00ACBDB2 /* MAKDropDownMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MAKDropDownMenu.m; sourceTree = "<group>"; };
+		89C7FBE61A18847A00ACBDB2 /* RBActivityIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBActivityIndicator.h; sourceTree = "<group>"; };
+		89C7FBE71A18847A00ACBDB2 /* RBActivityIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RBActivityIndicator.m; sourceTree = "<group>"; };
 		89C8307319D730E9009924DA /* rNews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rNews.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89C8307719D730E9009924DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89C8307819D730E9009924DA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -496,6 +504,24 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		89C7FBDD1A183EBE00ACBDB2 /* DropDownMenu */ = {
+			isa = PBXGroup;
+			children = (
+				89C7FBDE1A183EBE00ACBDB2 /* MAKDropDownMenu.h */,
+				89C7FBDF1A183EBE00ACBDB2 /* MAKDropDownMenu.m */,
+			);
+			path = DropDownMenu;
+			sourceTree = "<group>";
+		};
+		89C7FBEA1A18848000ACBDB2 /* RBActivityIndicator */ = {
+			isa = PBXGroup;
+			children = (
+				89C7FBE61A18847A00ACBDB2 /* RBActivityIndicator.h */,
+				89C7FBE71A18847A00ACBDB2 /* RBActivityIndicator.m */,
+			);
+			name = RBActivityIndicator;
+			sourceTree = "<group>";
+		};
 		89C8306A19D730E9009924DA = {
 			isa = PBXGroup;
 			children = (
@@ -504,6 +530,8 @@
 				8933E91B19ECCD6500ECFF3F /* MWFeedParser */,
 				894C0C1F1A13293E008229A4 /* TUSafariActivity */,
 				894C0C341A1329FB008229A4 /* AMPopTip */,
+				89C7FBDD1A183EBE00ACBDB2 /* DropDownMenu */,
+				89C7FBEA1A18848000ACBDB2 /* RBActivityIndicator */,
 				89C8307519D730E9009924DA /* RSSClient */,
 				89C8308E19D730E9009924DA /* RSSClientTests */,
 				89635F8A1A13C2E30052C248 /* RSSClient-OSX */,
@@ -878,6 +906,7 @@
 				8933E90E19ECCBC300ECFF3F /* NSArray+PureLayout.m in Sources */,
 				89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */,
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
+				89C7FBE01A183EBE00ACBDB2 /* MAKDropDownMenu.m in Sources */,
 				8933E93B19EF4D0C00ECFF3F /* TextHighlighter.swift in Sources */,
 				89C830B619D7DE97009924DA /* ArticleViewController.swift in Sources */,
 				894C0C371A1329FB008229A4 /* AMPopTip.m in Sources */,
@@ -897,6 +926,7 @@
 				8933E93919EF4BB100ECFF3F /* ScriptEditorViewController.swift in Sources */,
 				89C8307C19D730E9009924DA /* RSSClient.xcdatamodeld in Sources */,
 				8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */,
+				89C7FBE81A18847A00ACBDB2 /* RBActivityIndicator.m in Sources */,
 				8933E92C19ECD28900ECFF3F /* GTMNSString+HTML.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -915,6 +945,7 @@
 				893448C01A004E5C00F5D528 /* NSArray+PureLayout.m in Sources */,
 				893448CC1A0315F400F5D528 /* FeedsTableViewControllerTests.swift in Sources */,
 				89D06A2219FF210C003909A3 /* LoadingView.swift in Sources */,
+				89C7FBE91A18847A00ACBDB2 /* RBActivityIndicator.m in Sources */,
 				895779B219E655F100548418 /* FeedTableCellTests.swift in Sources */,
 				893448B91A004E4E00F5D528 /* MWFeedItem.m in Sources */,
 				895779A819E62CC500548418 /* ArticleCell.swift in Sources */,
@@ -940,6 +971,7 @@
 				895779AE19E62CDA00548418 /* Group.m in Sources */,
 				895779AC19E62CDA00548418 /* Article.m in Sources */,
 				893448BC1A004E4E00F5D528 /* NSString+HTML.m in Sources */,
+				89C7FBE11A183EBE00ACBDB2 /* MAKDropDownMenu.m in Sources */,
 				895779B419E658A700548418 /* Mocks.swift in Sources */,
 				8957799F19E62C7100548418 /* AppDelegateTests.swift in Sources */,
 				893448C81A0315B600F5D528 /* ArticleListControllerTests.swift in Sources */,

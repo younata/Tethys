@@ -8,17 +8,34 @@
 
 import Foundation
 
-class OPMLParser : NSObject, NSXMLParserDelegate {
+func parseOPML(text: String, success: ([String]) -> Void = {(_) in }) -> OPMLParser {
+    let ret = OPMLParser(text: text).success(success)
+    ret.parse()
+    return ret
+}
 
+class OPMLParser : NSObject, NSXMLParserDelegate {
     var callback : ([String]) -> Void = {(_) in }
-    var failure : (NSError) -> Void = {(_) in }
+    var onFailure : (NSError) -> Void = {(_) in }
     
     private var xmlParser : NSXMLParser
     private var items : [String] = []
     private var isOPML = false
     
+    func success(onSuccess: ([String]) -> Void) -> OPMLParser {
+        callback = onSuccess
+        return self
+    }
+    
+    func failure(failed: (NSError) -> Void) -> OPMLParser {
+        onFailure = failed
+        return self
+    }
+    
     init(text: String) {
         xmlParser = NSXMLParser(data: text.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false))
+        super.init()
+        xmlParser.delegate = self
     }
     
     func parse() {
@@ -39,7 +56,7 @@ class OPMLParser : NSObject, NSXMLParserDelegate {
     }
     
     func parser(parser: NSXMLParser!, parseErrorOccurred parseError: NSError!) {
-        failure(parseError)
+        onFailure(parseError)
     }
     
     func parser(parser: NSXMLParser!, didStartElement elementName: String!, namespaceURI: String!, qualifiedName qName: String!, attributes attributeDict: [NSObject : AnyObject]!) {

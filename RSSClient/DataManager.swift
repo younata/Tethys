@@ -82,10 +82,14 @@ class DataManager: NSObject {
     func generateOPMLContents(feeds: [Feed]) -> String {
         var ret = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><opml version=\"2.0\"><body>"
         for feed in feeds {
-            ret += "<outline xmlURL=\"\(feed.url)\""
+            ret += "<outline xmlURL=\"\(feed.url)\" title=\"\(feed.title)\" type=\"rss\"/>"
         }
         ret += "</body></opml>"
         return ret
+    }
+    
+    func writeOPML() {
+        self.generateOPMLContents(self.feeds()).writeToFile(NSHomeDirectory().stringByAppendingPathComponent("Documents").stringByAppendingPathComponent("rnews.opml"), atomically: true, encoding: NSUTF8StringEncoding, error: nil)
     }
     
     // MARK: - Feeds
@@ -118,6 +122,7 @@ class DataManager: NSObject {
         }
         UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         self.updateFeeds([feed], completion: completion)
+        self.writeOPML()
         return feed
     }
     
@@ -134,6 +139,7 @@ class DataManager: NSObject {
         if (feeds().count == 0) {
             UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
         }
+        self.writeOPML()
     }
     
     func updateFeeds(completion: (NSError?)->(Void)) {

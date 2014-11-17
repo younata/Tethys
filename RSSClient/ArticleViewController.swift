@@ -15,6 +15,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         didSet {
             if let a = article {
                 a.read = true
+                NSNotificationCenter.defaultCenter().postNotificationName("ArticleWasRead", object: a)
                 a.managedObjectContext?.save(nil)
                 let request = NSURLRequest(URL: NSURL(string: a.link)!)
                 if let cnt = a.content ?? a.summary {

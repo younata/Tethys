@@ -10,16 +10,7 @@ import UIKit
 
 class ArticleListController: UITableViewController {
     
-    var articles : [Article] = [] {
-        willSet {
-            articles.map({(article: Article) in
-                article.removeObserver(self, forKeyPath: "read")
-            })
-            newValue.map({(article: Article) in
-                article.addObserver(self, forKeyPath: "read", options: .New, context: nil)
-            })
-        }
-    }
+    var articles : [Article] = []
     var feeds : [Feed] = []
     let queue = dispatch_queue_create("articleController", nil)
 
@@ -37,6 +28,16 @@ class ArticleListController: UITableViewController {
         self.refreshControl = UIRefreshControl(frame: CGRectZero)
         self.refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
         self.refreshControl?.beginRefreshing()
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "articleRead:", name: "ArticleWasRead", object: nil)
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    func articleRead(note: NSNotification) {
+        self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -45,17 +46,6 @@ class ArticleListController: UITableViewController {
         refresh()
         if feeds.count == 1 {
             self.navigationItem.title = feeds.first?.title
-        }
-    }
-    
-    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
-        if (keyPath == "estimatedProgress" && object as? Article != nil) {
-            for (idx, article) in enumerate(articles) {
-                if article == (object as Article) {
-                    self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forItem: idx, inSection: 0)], withRowAnimation: .None)
-                    return
-                }
-            }
         }
     }
     

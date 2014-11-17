@@ -43,7 +43,10 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         
         self.view.addSubview(dropDownMenu)
         dropDownMenu.delegate = self
+        dropDownMenu.separatorHeight = 1.0 / UIScreen.mainScreen().scale
+        dropDownMenu.buttonsInsets = UIEdgeInsetsMake(dropDownMenu.separatorHeight, 0, 0, 0)
         dropDownMenu.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
+        dropDownMenu.tintColor = UIColor.darkGreenColor()
         menuTopOffset = dropDownMenu.autoPinEdgeToSuperviewEdge(.Top)
         
         /*

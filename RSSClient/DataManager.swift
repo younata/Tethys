@@ -13,7 +13,7 @@ import Alamofire
 
 private let instance = DataManager()
 
-class DataManager: NSObject, MWFeedParserDelegate {
+class DataManager: NSObject {
     class func sharedInstance() -> DataManager {
         return instance
     }
@@ -61,12 +61,18 @@ class DataManager: NSObject, MWFeedParserDelegate {
             opmlParser.callback = {(feeds) in
                 var ret : [Feed] = []
                 for feed in feeds {
-                    ret.append(self.newFeed(feed) {(_) in
-                        progress(Double(ret.count + 1) / Double(feeds.count))
-                        if (ret.count + 1) == feeds.count {
-                            completion(ret)
-                        }
-                    })
+                    dispatch_async(dispatch_get_main_queue()) {
+                        ret.append(self.newFeed(feed) {(error) in
+                            if let err = error {
+                                println("error importing \(feed): \(err)")
+                            }
+                            println("imported \(feed)")
+                            progress(Double(ret.count + 1) / Double(feeds.count))
+                            if (ret.count + 1) == feeds.count {
+                                completion(ret)
+                            }
+                        })
+                    }
                 }
             }
             opmlParser.parse()
@@ -130,127 +136,85 @@ class DataManager: NSObject, MWFeedParserDelegate {
         }
     }
     
-    private var comp: (NSError?)->(Void) = {(error: NSError?) in }
-    private var feedsLeft = 0
-    
     func updateFeeds(completion: (NSError?)->(Void)) {
         updateFeeds(feeds(), completion: completion)
     }
     
+    var parsers : [FeedParser] = []
+    
     func updateFeeds(feeds: [Feed], completion: (NSError?)->(Void)) {
-        feedsLeft += feeds.count
-        comp = completion
+        var feedsLeft = feeds.count
         for feed in feeds {
-            loadFeed(feed.url)
-        }
-    }
-    
-    func loadFeed(url: NSString) {
-        let parser = MWFeedParser(feedURL: NSURL(string: url))
-        parser.feedParseType = ParseTypeFull
-        parser.connectionType = ConnectionTypeAsynchronously
-        parser.delegate = self
-        parser.parse()
-    }
-    
-    // MARK: - MWFeedParserDelegate
-    
-    private let contentRenderer = WKWebView(frame: CGRectZero)
-    
-    func feedParser(parser: MWFeedParser!, didParseFeedInfo info: MWFeedInfo!) {
-        let predicate = NSPredicate(format: "url = %@", parser.url().absoluteString!)!
-        if let feed = entities("Feed", matchingPredicate: predicate).last as? Feed {
-            feed.title = info.title
-            feed.summary = info.summary
-            // TODO: feed.image
-            // do something info.link?
-        } else {
-            let feed = (NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: managedObjectContext) as Feed)
-            feed.title = info.title
-            feed.summary = info.summary
-            feed.url = parser.url().absoluteString!
-            /*
-            if let link = info.link {
-                Alamofire.request(.GET, link).response {(_, _, response, error) in
-                    self.contentRenderer.loadHTMLString((response as String), baseURL: NSURL(string: link))
-                    let ICOScript = NSString(contentsOfFile: NSBundle.mainBundle().pathForResource("FindICO", ofType: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
-                    self.contentRenderer.evaluateJavaScript(ICOScript, completionHandler: {(jsResponse: AnyObject!, error: NSError?) in
-                        if (error == nil) {
-                            if let imageLink = jsResponse as? String {
-                                
-                                Alamofire.request(.GET, imageLink).response {(_, _, image, error) in
-                                    if let im = image as? UIImage {
-                                        feed.image = im
-                                        self.managedObjectContext.save(nil)
-                                        NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
-                                    }
-                                }
-                            }
+            let feedParser = FeedParser(URL: NSURL(string: feed.url)!)
+            feedParser.success {(info, items) in
+                var predicate = NSPredicate(format: "url = %@", feed.url)!
+                
+                var summary : String = ""
+                if let s = info.summary {
+                    let data = s.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
+                    let options = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
+                    summary = s
+                    if let aString = NSAttributedString(data: data, options: options, documentAttributes: nil, error: nil) {
+                        summary = aString.string
+                    }
+                }
+                if let feed = self.entities("Feed", matchingPredicate: predicate).last as? Feed {
+                    feed.title = info.title
+                    feed.summary = summary
+                } else {
+                    let feed = (NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: self.managedObjectContext) as Feed)
+                    feed.title = info.title
+                    feed.summary = summary
+                }
+                for item in items {
+                    predicate = NSPredicate(format: "link = %@", item.link)!
+                    if let article = self.entities("Article", matchingPredicate: predicate).last as? Article {
+                        article.title = item.title
+                        article.link = item.link
+                        article.updatedAt = item.updated
+                        article.summary = item.summary
+                        article.content = item.content
+                        article.author = item.author
+                        if (article.enclosureURLs?.description != item.enclosures?.description) {
+                            // TODO: enclosures
                         }
-                    })
+                    } else {
+                        // create
+                        if let feed = self.entities("Feed", matchingPredicate: NSPredicate(format: "url = %@", feed.url)!).last as? Feed {
+                            let article = (NSEntityDescription.insertNewObjectForEntityForName("Article", inManagedObjectContext: self.managedObjectContext) as Article)
+                            article.title = item.title
+                            article.link = item.link
+                            article.published = item.date ?? NSDate()
+                            article.updatedAt = item.updated
+                            article.summary = item.summary
+                            article.content = item.content
+                            article.author = item.author
+                            article.enclosureURLs = item.enclosures
+                            article.feed = feed
+                            article.read = false
+                            
+                            feed.addArticlesObject(article)
+                            // TODO: enclosures
+                        } else {
+                            println("Error, unable to find feed for item.")
+                        }
+                    }
+                }
+                self.managedObjectContext.save(nil)
+                
+                feedsLeft--
+                if (feedsLeft == 0) {
+                    completion(nil)
+                }
+                self.parsers = self.parsers.filter { $0 != feedParser }
+            }.failure {
+                feedsLeft--
+                if (feedsLeft == 0) {
+                    completion($0)
                 }
             }
-            */
-            // create?
-        }
-        managedObjectContext.save(nil)
-    }
-    
-    func feedParser(parser: MWFeedParser!, didParseFeedItem item: MWFeedItem!) {
-        let predicate = NSPredicate(format: "link = %@", item.link)!
-        if let article = entities("Article", matchingPredicate: predicate).last as? Article {
-            article.title = item.title
-            article.link = item.link
-            article.updatedAt = item.updated
-            article.summary = item.summary
-            article.content = item.content
-            article.author = item.author
-            if (article.enclosureURLs?.description != item.enclosures?.description) {
-                // TODO: enclosures
-            }
-        } else {
-            // create
-            if let feed = entities("Feed", matchingPredicate: NSPredicate(format: "url = %@", parser.url().absoluteString!)!).last as? Feed {
-                let article = (NSEntityDescription.insertNewObjectForEntityForName("Article", inManagedObjectContext: managedObjectContext) as Article)
-                article.title = item.title
-                article.link = item.link
-                article.published = item.date ?? NSDate()
-                article.updatedAt = item.updated
-                article.summary = item.summary
-                article.content = item.content
-                article.author = item.author
-                article.enclosureURLs = item.enclosures
-                article.feed = feed
-                article.read = false
-                
-                var cnt = article.summary ?? article.content ?? ""
-                
-                let data = cnt.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
-                let options = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
-                
-                article.preview = NSAttributedString(data: data, options: options, documentAttributes: nil, error: nil)!.string
-                feed.addArticlesObject(article)
-                // TODO: enclosures
-            } else {
-                println("Error, unable to find feed for item.")
-            }
-        }
-        managedObjectContext.save(nil)
-    }
-    
-    func feedParser(parser: MWFeedParser!, didFailWithError error: NSError!) {
-        feedsLeft -= 1
-        if (feedsLeft == 0) {
-            self.comp(error)
-        }
-    }
-    
-    func feedParserDidFinish(parser: MWFeedParser!) {
-        NSNotificationCenter.defaultCenter().postNotificationName("FeedParserFinished", object: parser.url().absoluteString!)
-        feedsLeft -= 1
-        managedObjectContext.save(nil)
-        if (feedsLeft == 0) {
-            self.comp(nil)
+            feedParser.parse()
+            self.parsers.append(feedParser)
         }
     }
     

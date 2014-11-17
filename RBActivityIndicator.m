@@ -66,6 +66,7 @@
         [self.progressBar autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:20];
         [self.progressBar autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
         [self.progressBar autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.indicator withOffset:8];
+        [self.progressBar autoSetDimension:ALDimensionHeight toSize:8];
         [self.doingStuff autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.progressBar withOffset:8];
     }
     

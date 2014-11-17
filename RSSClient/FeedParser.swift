@@ -41,11 +41,16 @@ class FeedParser: NSObject, MWFeedParserDelegate {
             feedParser = MWFeedParser(string: contents)
         } else {
             feedParser = MWFeedParser(feedURL: URL)
+            feedParser.connectionType = ConnectionTypeAsynchronously
         }
+        super.init()
+        feedParser.delegate = self
     }
     
     init(string: String) {
         feedParser = MWFeedParser(string: string)
+        super.init()
+        feedParser.delegate = self
     }
     
     func stopParsing() {
@@ -54,7 +59,6 @@ class FeedParser: NSObject, MWFeedParserDelegate {
     
     func parse() {
         feedParser.feedParseType = parseInfoOnly ? ParseTypeInfoOnly : ParseTypeFull
-        feedParser.delegate = self
         feedParser.parse()
     }
     
@@ -75,7 +79,9 @@ class FeedParser: NSObject, MWFeedParserDelegate {
     
     func feedParserDidFinish(parser: MWFeedParser!) {
         if let i = info {
-            completion(i, items)
+            dispatch_async(dispatch_get_main_queue()) {
+                self.completion(i, self.items)
+            }
         }
     }
 }

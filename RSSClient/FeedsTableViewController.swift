@@ -60,9 +60,6 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         tabBar.selectedItem = feedsTabItem
         tabBar.delegate = self
 
-        self.tableViewController.refreshControl = UIRefreshControl(frame: CGRectZero)
-        self.tableViewController.refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
-        
         self.tableView.registerClass(FeedTableCell.self, forCellReuseIdentifier: "cell")
         self.tableView.delegate = self
         self.tableView.dataSource = self;
@@ -70,11 +67,14 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "addFeed")
         self.navigationItem.rightBarButtonItems = [addButton, tableViewController.editButtonItem()]
         self.navigationItem.title = NSLocalizedString("Feeds", comment: "")
-        //self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Settings", comment: ""), style: .Plain, target: self, action: "showSettings")
         
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 80
+        
+        self.tableViewController.refreshControl = UIRefreshControl(frame: CGRectZero)
+        self.tableViewController.refreshControl?.beginRefreshing()
         self.refresh()
+        self.tableViewController.refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
         
         self.tableView.tableFooterView = UIView()
         
@@ -139,40 +139,6 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             } else {
                 dropDownMenu.openAnimated(true)
             }
-            /*
-            let alert = UIAlertController(title: NSLocalizedString("New Feed(s)", comment: ""),
-                                        message: NSLocalizedString("", comment: ""),
-                                 preferredStyle: .ActionSheet)
-            alert.addAction(UIAlertAction(title: NSLocalizedString("Add from Web", comment: ""), style: UIAlertActionStyle.Default, handler: {(_) in
-                print("")
-                alert.presentingViewController?.dismissViewControllerAnimated(true, completion: {
-                    let vc = UINavigationController(rootViewController: FindFeedViewController())
-                    if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-                        let popover = UIPopoverController(contentViewController: vc)
-                        popover.presentPopoverFromBarButtonItem(self.navigationItem.leftBarButtonItem!, permittedArrowDirections: .Any, animated: true)
-                    } else {
-                        self.presentViewController(vc, animated: true, completion: nil)
-                    }
-                })
-            }))
-            alert.addAction(UIAlertAction(title: NSLocalizedString("Add from Local", comment: ""), style: .Default, handler: {(_) in
-                print("")
-                self.dismissViewControllerAnimated(true, completion: {
-                    let vc = UINavigationController(rootViewController: LocalImportViewController())
-                    if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-                        let popover = UIPopoverController(contentViewController: vc)
-                        popover.presentPopoverFromBarButtonItem(self.navigationItem.leftBarButtonItem!, permittedArrowDirections: .Any, animated: true)
-                    } else {
-                        self.presentViewController(vc, animated: true, completion: nil)
-                    }
-                })
-            }))
-            alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: UIAlertActionStyle.Cancel, handler: {(_) in
-                print("") // really?
-                alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
-            }))
-            self.presentViewController(alert, animated: true, completion: nil)
-            */
         case .groups:
             let alert = UIAlertController(title: NSLocalizedString("New Group", comment: ""),
                 message: nil,
@@ -235,9 +201,50 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func reload() {
-        feeds = DataManager.sharedInstance().feeds()
+        let oldFeeds = feeds
+        feeds = DataManager.sharedInstance().feeds().sorted {(f1: Feed, f2: Feed) in
+            let f1Unread = f1.unreadArticles()
+            let f2Unread = f2.unreadArticles()
+            if f1Unread != f2Unread {
+                return f1Unread > f2Unread
+            }
+            if f1.title == nil {
+                return true
+            } else if f2.title == nil {
+                return false
+            }
+            return f1.title < f2.title
+        }
         groups = DataManager.sharedInstance().groups()
-        self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+        switch (state) {
+        case .feeds:
+            var newIndexes : [Int:Int] = [:]
+            for (i, x) in enumerate(oldFeeds) {
+                let ni = (feeds as NSArray).indexOfObject(x)
+                if i != ni {
+                    newIndexes[i] = ni
+                }
+            }
+            if newIndexes.count == 0 {
+                self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+            } else {
+                // this is going to suck when I move over to sections based on group
+                self.tableView.beginUpdates()
+                for key in newIndexes.keys {
+                    let ni = newIndexes[key]!
+                    self.tableView.moveRowAtIndexPath(NSIndexPath(forRow: key, inSection: 0), toIndexPath: NSIndexPath(forRow: ni, inSection: 0))
+                }
+                var ips : [NSIndexPath] = []
+                for (i, x) in enumerate(feeds.filter {return !contains(oldFeeds, $0)}) {
+                    ips.append(NSIndexPath(forRow: i, inSection: 0))
+                }
+                self.tableView.insertRowsAtIndexPaths(ips, withRowAnimation: .Automatic)
+                self.tableView.endUpdates()
+            }
+            break
+        case .groups:
+            self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+        }
     }
     
     func refresh() {
@@ -338,11 +345,11 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             case .feeds:
                 let feed = self.feedAtIndexPath(indexPath)
                 DataManager.sharedInstance().deleteFeed(feed)
-                self.feeds = self.feeds.filter { return $0 != feed }
+                self.reload()
             case .groups:
                 let group = self.groupAtIndexPath(indexPath)!
                 DataManager.sharedInstance().deleteGroup(self.groupAtIndexPath(indexPath)!)
-                self.groups = self.groups.filter { return $0 != group }
+                self.reload()
             }
             self.tableView.beginUpdates()
             self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
@@ -355,8 +362,8 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
                 for article in feed.articles.allObjects as [Article] {
                     article.read = true
                 }
-                self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
                 DataManager.sharedInstance().saveContext()
+                self.reload()
             })
             return [delete, markRead]
         case .groups:

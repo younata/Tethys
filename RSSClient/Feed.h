@@ -20,6 +20,9 @@
 @property (nonatomic, retain) id image;
 @property (nonatomic, retain) NSSet *articles;
 @property (nonatomic, retain) NSSet *groups;
+
+- (NSUInteger)unreadArticles;
+
 @end
 
 @interface Feed (CoreDataGeneratedAccessors)

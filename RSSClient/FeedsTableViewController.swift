@@ -100,8 +100,8 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         self.reload()
     }
     
@@ -180,7 +180,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             let vc = UINavigationController(rootViewController: FindFeedViewController())
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                 let popover = UIPopoverController(contentViewController: vc)
-                popover.presentPopoverFromBarButtonItem(self.navigationItem.leftBarButtonItem!, permittedArrowDirections: .Any, animated: true)
+                popover.presentPopoverFromBarButtonItem(self.navigationItem.rightBarButtonItem!, permittedArrowDirections: .Any, animated: true)
             } else {
                 self.presentViewController(vc, animated: true, completion: nil)
             }
@@ -188,7 +188,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             let vc = UINavigationController(rootViewController: LocalImportViewController())
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                 let popover = UIPopoverController(contentViewController: vc)
-                popover.presentPopoverFromBarButtonItem(self.navigationItem.leftBarButtonItem!, permittedArrowDirections: .Any, animated: true)
+                popover.presentPopoverFromBarButtonItem(self.navigationItem.rightBarButtonItem!, permittedArrowDirections: .Any, animated: true)
             } else {
                 self.presentViewController(vc, animated: true, completion: nil)
             }
@@ -216,35 +216,47 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             return f1.title < f2.title
         }
         groups = DataManager.sharedInstance().groups()
+        self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+        /*
         switch (state) {
         case .feeds:
-            var newIndexes : [Int:Int] = [:]
-            for (i, x) in enumerate(oldFeeds) {
-                let ni = (feeds as NSArray).indexOfObject(x)
-                if i != ni {
-                    newIndexes[i] = ni
+            if oldFeeds.count == feeds.count && oldFeeds != feeds {
+                var newIndexes : [Int:Int] = [:]
+                var deleted : [NSIndexPath] = []
+                for (i, x) in enumerate(oldFeeds) {
+                    if !contains(feeds, x) {
+                        deleted.append(NSIndexPath(forRow: i, inSection: 0))
+                    } else {
+                        let ni = (feeds as NSArray).indexOfObject(x)
+                        if i != ni {
+                            newIndexes[i] = ni
+                        }
+                    }
                 }
-            }
-            if newIndexes.count == 0 {
-                self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
-            } else {
-                // this is going to suck when I move over to sections based on group
                 self.tableView.beginUpdates()
+                var moved : [NSIndexPath] = []
                 for key in newIndexes.keys {
                     let ni = newIndexes[key]!
                     self.tableView.moveRowAtIndexPath(NSIndexPath(forRow: key, inSection: 0), toIndexPath: NSIndexPath(forRow: ni, inSection: 0))
+                    moved.append(NSIndexPath(forRow: ni, inSection: 0))
                 }
-                var ips : [NSIndexPath] = []
-                for (i, x) in enumerate(feeds.filter {return !contains(oldFeeds, $0)}) {
-                    ips.append(NSIndexPath(forRow: i, inSection: 0))
+                self.tableView.reloadRowsAtIndexPaths(moved, withRowAnimation: .None)
+                var added : [NSIndexPath] = []
+                for (i, x) in enumerate(feeds) {
+                    if !contains(oldFeeds, x) {
+                        added.append(NSIndexPath(forRow: i, inSection: 0))
+                    }
                 }
-                self.tableView.insertRowsAtIndexPaths(ips, withRowAnimation: .Automatic)
+                self.tableView.insertRowsAtIndexPaths(added, withRowAnimation: .Automatic)
+                self.tableView.deleteRowsAtIndexPaths(deleted, withRowAnimation: .Automatic)
                 self.tableView.endUpdates()
+            } else {
+                self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
             }
             break
         case .groups:
             self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
-        }
+        }*/
     }
     
     func refresh() {

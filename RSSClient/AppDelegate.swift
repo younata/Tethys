@@ -20,9 +20,11 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
         self.window?.backgroundColor = UIColor.whiteColor()
         self.window?.makeKeyAndVisible()
+        
         UINavigationBar.appearance().tintColor = UIColor.darkGreenColor()
         UIBarButtonItem.appearance().tintColor = UIColor.darkGreenColor()
         UITabBar.appearance().tintColor = UIColor.darkGreenColor()
+        
         let master = UINavigationController(rootViewController: FeedsTableViewController())
         let detail = UINavigationController(rootViewController: ArticleViewController())
         let splitView = UISplitViewController()
@@ -59,17 +61,22 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
     
     public func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
         let str = application.applicationState == .Active ? "Active" : application.applicationState == .Inactive ? "Inactive" : "Background"
-        println("\(str)")
-        let nc = (self.window!.rootViewController! as UINavigationController)
-        let ftvc = (nc.viewControllers.first! as FeedsTableViewController)
-        if let userInfo = notification.userInfo {
-            nc.popToRootViewControllerAnimated(false)
-            let feedTitle = (userInfo["feed"] as String)
-            let feed : Feed = DataManager.sharedInstance().feeds().filter{ return $0.title == feedTitle; }.first!
-            let articleTitle = (userInfo["article"] as String)
-            let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.title == articleTitle }).first!
-            let al = ftvc.showFeeds([feed], animated: false)
-            al.showArticle(article)
+        if let splitView = self.window?.rootViewController as? UISplitViewController {
+            if let nc = splitView.viewControllers.first as? UINavigationController {
+                if let ftvc = nc.viewControllers.first as? FeedsTableViewController {
+                    if let userInfo = notification.userInfo {
+                        nc.popToRootViewControllerAnimated(false)
+                        ftvc.state = .feeds
+                        let feedTitle = (userInfo["feed"] as String)
+                        let feed : Feed = DataManager.sharedInstance().feeds().filter{ return $0.title == feedTitle; }.first!
+                        let articleTitle = (userInfo["article"] as String)
+                        let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.title == articleTitle }).first!
+                        let al = ftvc.showFeeds([feed], animated: false)
+                        al.showArticle(article)
+                        return
+                    }
+                }
+            }
         }
     }
     
@@ -146,21 +153,6 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
 
     public func applicationWillEnterForeground(application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-        /*
-        let opml = "rnews.opml"
-        let origContents = NSUserDefaults.standardUserDefaults().arrayForKey("documents") as [String]
-        
-        let contents = (NSFileManager.defaultManager().contentsOfDirectoryAtPath(NSHomeDirectory().stringByAppendingPathComponent("Documents"), error: nil) as [String])
-        for itm in contents.filter({return !contains(origContents, $0) || $0 == opml}) {
-            // do something...
-            if itm.pathExtension == "opml" {
-                // parse opml
-            } else if contains(["xml", "rss", "atom"], itm.pathExtension) {
-                // parse atom
-            }
-        }
-        
-        NSUserDefaults.standardUserDefaults().setObject(contents, forKey: "documents")*/
     }
 
     public func applicationDidBecomeActive(application: UIApplication) {

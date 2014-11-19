@@ -251,6 +251,53 @@ class DataManager: NSObject {
         }
     }
     
+    func registerForiCloudNotifications() {
+        /*
+        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+        
+        [notificationCenter addObserver:self
+        selector:@selector(storesWillChange:)
+        name:NSPersistentStoreCoordinatorStoresWillChangeNotification
+        object:self.persistentStoreCoordinator];
+        
+        [notificationCenter addObserver:self
+        selector:@selector(storesDidChange:)
+        name:NSPersistentStoreCoordinatorStoresDidChangeNotification
+        object:self.persistentStoreCoordinator];
+        
+        [notificationCenter addObserver:self
+        selector:@selector(persistentStoreDidImportUbiquitousContentChanges:)
+        name:NSPersistentStoreDidImportUbiquitousContentChangesNotification
+        object:self.persistentStoreCoordinator];
+        */
+        let center = NSNotificationCenter.defaultCenter()
+        center.addObserver(self, selector: "storesWillChange:", name: NSPersistentStoreCoordinatorStoresWillChangeNotification, object: persistentStoreCoordinator)
+        center.addObserver(self, selector: "storesDidChange:", name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: persistentStoreCoordinator)
+        center.addObserver(self, selector: "storeDidImportiCloudContentChanges:", name: NSPersistentStoreDidImportUbiquitousContentChangesNotification, object: persistentStoreCoordinator)
+    }
+    
+    func storeDidImportiCloudContentChanges(note: NSNotification) {
+        
+    }
+    
+    func storesWillChange(note: NSNotification) {
+        managedObjectContext.performBlockAndWait {
+            var error: NSError? = nil
+            if (self.managedObjectContext.hasChanges) {
+                var success = self.managedObjectContext.save(&error)
+                if !success && error != nil {
+                    println("Error saving store: \(error!)")
+                }
+            }
+            self.managedObjectContext.reset()
+        }
+        NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: nil)
+    }
+    
+    func storesDidChange(note: NSNotification) {
+        NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: nil)
+    }
+    
     let managedObjectModel: NSManagedObjectModel
     let persistentStoreCoordinator: NSPersistentStoreCoordinator
     let managedObjectContext: NSManagedObjectContext
@@ -267,7 +314,8 @@ class DataManager: NSObject {
         let storeURL = NSURL.fileURLWithPath(applicationDocumentsDirectory.stringByAppendingPathComponent("RSSClient.sqlite"))
         persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
         var error: NSError? = nil
-        let options = [NSMigratePersistentStoresAutomaticallyOption: true, NSInferMappingModelAutomaticallyOption: true]
+        let options = [NSMigratePersistentStoresAutomaticallyOption: true, NSInferMappingModelAutomaticallyOption: true,
+                       ]//NSPersistentStoreUbiquitousContentNameKey: "RSSClient"]
         if unitTesting {
             persistentStoreCoordinator.addPersistentStoreWithType(NSInMemoryStoreType, configuration: nil, URL: nil, options: nil, error: &error)
         } else {

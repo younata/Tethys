@@ -175,24 +175,19 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     }
     
     func webView(webView: WKWebView!, didFinishNavigation navigation: WKNavigation!) {
-        self.navigationItem.titleView = nil
-        self.navigationItem.title = webView.title
         let forward = (self.navigationItem.rightBarButtonItems![0] as UIBarButtonItem)
         let back = (self.navigationItem.rightBarButtonItems![1] as UIBarButtonItem)
         forward.enabled = webView.canGoForward
         back.enabled = webView.canGoBack
         loadingBar.hidden = true
-        //webView.removeObserver(self, forKeyPath: "estimatedProgress")
     }
     
     func webView(webView: WKWebView!, didFailNavigation navigation: WKNavigation!, withError error: NSError!) {
         loadingBar.hidden = true
-        //webView.removeObserver(self, forKeyPath: "estimatedProgress")
     }
     
     func webView(webView: WKWebView!, didStartProvisionalNavigation navigation: WKNavigation!) {
         loadingBar.progress = 0
         loadingBar.hidden = false
-        //webView.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
     }
 }

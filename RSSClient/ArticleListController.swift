@@ -86,7 +86,7 @@ class ArticleListController: UITableViewController {
         avc.lastArticleIndex = 0
         if let splitView = self.splitViewController {
             (UIApplication.sharedApplication().delegate as AppDelegate).collapseDetailViewController = false
-            splitView.showDetailViewController(avc, sender: self)
+            splitView.showDetailViewController(UINavigationController(rootViewController: avc), sender: self)
         } else {
             self.navigationController?.pushViewController(avc, animated: animated)
         }

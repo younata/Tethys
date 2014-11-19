@@ -1,6 +1,14 @@
 body{
-    font-size: 32px;
+    font-size: 24px;
     font-family: Helvetica;
+    width: 95%;
+}
+
+p{
+    font-size: 24px;
+    font-family: Helvetica;
+    margin-left: 2.5%;
+    margin-right: 2.5%;
 }
 
 a{
@@ -14,43 +22,4 @@ h1{
 
 img{
     border: 0;
-}
-
-ul{
-    list-style-type: none;
-}
-
-ul#navButtons, ul#footerLinks{
-    padding: 0;
-    list-style-type: none;
-}
-
-ul#navButtons{
-    margin: .75em 0;
-}
-
-ul#navButtons li, ul#footerLinks li{
-    text-align: center;
-    display: inline;
-}
-
-ul#navButtons li a, ul#footerLinks li a{
-    color: #FFF;
-    border: 2px solid #333;
-    font-size: 16px;
-    font-variant: small-caps;
-    font-family: Helvetica, sans-serif;
-    font-weight: 600;
-    padding: .25em .75em;
-    margin: 0 4px;
-    text-decoration: none;
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-    box-shadow: 0 0 5px 0 gray;
-    -webkit-box-shadow: 0 0 5px 0 gray;
-}
-
-ul#navButtons li a:active, ul#footerLinks li a:active{
-    box-shadow: 0 0 2px 0 black;
-    -webkit-box-shadow:0 0 2px 0 black;
 }

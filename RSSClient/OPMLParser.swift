@@ -33,7 +33,7 @@ class OPMLParser : NSObject, NSXMLParserDelegate {
     }
     
     init(text: String) {
-        xmlParser = NSXMLParser(data: text.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false))
+        xmlParser = NSXMLParser(data: text.lowercaseString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false))
         super.init()
         xmlParser.delegate = self
     }
@@ -70,7 +70,7 @@ class OPMLParser : NSObject, NSXMLParserDelegate {
             return
         }
         if elementName.lowercaseString.hasPrefix("outline") {
-            if let url = attributeDict["xmlUrl"] as? String {
+            if let url = attributeDict["xmlurl"] as? String {
                 items.append(url)
             }
         }

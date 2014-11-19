@@ -60,6 +60,10 @@ class DataManager: NSObject {
             let opmlParser = OPMLParser(text: text)
             opmlParser.callback = {(feeds) in
                 var ret : [Feed] = []
+                if feeds.count == 0 {
+                    completion([])
+                }
+                var i = 0
                 for feed in feeds {
                     dispatch_async(dispatch_get_main_queue()) {
                         ret.append(self.newFeed(feed) {(error) in
@@ -67,8 +71,9 @@ class DataManager: NSObject {
                                 println("error importing \(feed): \(err)")
                             }
                             println("imported \(feed)")
-                            progress(Double(ret.count + 1) / Double(feeds.count))
-                            if (ret.count + 1) == feeds.count {
+                            i++
+                            progress(Double(i) / Double(feeds.count))
+                            if i == feeds.count {
                                 completion(ret)
                             }
                         })

@@ -215,6 +215,9 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             return f1.title < f2.title
         }
+        if feeds.count == 0 {
+            self.tableViewController.refreshControl?.endRefreshing()
+        }
         groups = DataManager.sharedInstance().groups()
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
         /*
@@ -363,9 +366,6 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
                 DataManager.sharedInstance().deleteGroup(self.groupAtIndexPath(indexPath)!)
                 self.reload()
             }
-            self.tableView.beginUpdates()
-            self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-            self.tableView.endUpdates()
         })
         switch (self.state) {
         case .feeds:

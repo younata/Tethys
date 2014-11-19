@@ -159,8 +159,8 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
             self.webContent.loadRequest(NSURLRequest(URL: NSURL(string: textField.text)!))
         }
         if (lookForFeeds) {
-            Alamofire.request(.GET, textField.text).response {(_, _, response, error) in
-                if let txt = response as? String {
+            Alamofire.request(.GET, textField.text).responseString {(_, _, response, error) in
+                if let txt = response {
                     let feedParser = FeedParser(string: txt)
                     feedParser.parseInfoOnly = true
                     let opmlParser = OPMLParser(text: txt).success{(_) in
@@ -178,15 +178,15 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
                     }
                     feedParser.success {(info, _) in
                         opmlParser.stopParsing()
-                        if (!contains(self.feeds, info.url.absoluteString!)) {
-                            let alert = UIAlertController(title: NSLocalizedString("Feed Detected", comment: ""), message: NSString.localizedStringWithFormat(NSLocalizedString("Save %@?", comment: ""), info.url), preferredStyle: .Alert)
+                        if (!contains(self.feeds, textField.text)) {
+                            let alert = UIAlertController(title: NSLocalizedString("Feed Detected", comment: ""), message: NSString.localizedStringWithFormat(NSLocalizedString("Save %@?", comment: ""), textField.text), preferredStyle: .Alert)
                             alert.addAction(UIAlertAction(title: NSLocalizedString("Don't Save", comment: ""), style: .Cancel, handler: {(alertAction: UIAlertAction!) in
                                 print("") // this is bullshit
                                 alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
                             }))
                             alert.addAction(UIAlertAction(title: NSLocalizedString("Save", comment: ""), style: .Default, handler: {(_) in
                                 alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
-                                self.save(info.url.absoluteString!, opml: true)
+                                self.save(textField.text, opml: true)
                             }))
                             self.presentViewController(alert, animated: true, completion: nil)
                         }

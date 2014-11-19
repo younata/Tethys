@@ -49,7 +49,9 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     
     var articleCSS : String {
         if let loc = NSBundle.mainBundle().URLForResource("article", withExtension: "css") {
-            return "<html><head><link rel=\"stylesheet\" href=\"" + (loc.absoluteString ?? "") + "\"></head><body>"
+            if let str = NSString(contentsOfURL: loc, encoding: NSUTF8StringEncoding, error: nil) {
+                return "<html><head><style type=\"text/css\">\(str)</style></head><body>"
+            }
         }
         return "<html><body>"
     }

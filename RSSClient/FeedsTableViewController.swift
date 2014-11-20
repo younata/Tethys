@@ -110,6 +110,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         // TODO: Settings
         if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
             let popover = UIPopoverController(contentViewController: settings)
+            popover.popoverContentSize = CGSizeMake(600, 800)
             popover.presentPopoverFromBarButtonItem(navigationItem.leftBarButtonItem!, permittedArrowDirections: .Any, animated: true)
         } else {
             presentViewController(settings, animated: true, completion: nil)
@@ -180,6 +181,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             let vc = UINavigationController(rootViewController: FindFeedViewController())
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                 let popover = UIPopoverController(contentViewController: vc)
+                popover.popoverContentSize = CGSizeMake(600, 800)
                 popover.presentPopoverFromBarButtonItem(self.navigationItem.rightBarButtonItem!, permittedArrowDirections: .Any, animated: true)
             } else {
                 self.presentViewController(vc, animated: true, completion: nil)
@@ -188,6 +190,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             let vc = UINavigationController(rootViewController: LocalImportViewController())
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                 let popover = UIPopoverController(contentViewController: vc)
+                popover.popoverContentSize = CGSizeMake(600, 800)
                 popover.presentPopoverFromBarButtonItem(self.navigationItem.rightBarButtonItem!, permittedArrowDirections: .Any, animated: true)
             } else {
                 self.presentViewController(vc, animated: true, completion: nil)

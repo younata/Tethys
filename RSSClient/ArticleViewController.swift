@@ -13,6 +13,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     
     var article: Article? = nil {
         didSet {
+            self.navigationController?.setToolbarHidden(article != nil, animated: true)
             if let a = article {
                 a.read = true
                 NSNotificationCenter.defaultCenter().postNotificationName("ArticleWasRead", object: a)
@@ -100,7 +101,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         loadingBar.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
         
         if let splitView = self.splitViewController {
-            self.navigationItem.backBarButtonItem = splitView.displayModeButtonItem()
+            self.navigationItem.leftBarButtonItem = splitView.displayModeButtonItem()
         }
         
         let back = UIBarButtonItem(title: "<", style: .Plain, target: content, action: "goBack")
@@ -109,7 +110,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         forward.enabled = false
         
         self.navigationItem.rightBarButtonItems = [forward, back]
-        self.navigationController?.toolbarHidden = false
+        self.navigationController?.setToolbarHidden(article != nil, animated: true)
         // share, show (content|link)...
         shareButton = UIBarButtonItem(barButtonSystemItem: .Compose, target: self, action: "share")
         toggleContentButton = UIBarButtonItem(title: linkString, style: .Plain, target: self, action: "toggleContentLink")
@@ -128,7 +129,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.toolbarHidden = false
+        self.navigationController?.setToolbarHidden(article != nil, animated: true)
     }
     
     override func viewWillDisappear(animated: Bool) {

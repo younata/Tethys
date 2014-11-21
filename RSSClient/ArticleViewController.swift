@@ -18,14 +18,13 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 a.read = true
                 NSNotificationCenter.defaultCenter().postNotificationName("ArticleWasRead", object: a)
                 a.managedObjectContext?.save(nil)
-                let request = NSURLRequest(URL: NSURL(string: a.link)!)
                 if let cnt = a.content ?? a.summary {
                     self.content.loadHTMLString(articleCSS + cnt + "</body></html>", baseURL: NSURL(string: a.feed.url)!)
                 } else {
                     self.content.loadRequest(NSURLRequest(URL: NSURL(string: a.link)!))
-                    if (shareButton != nil) {
-                        self.toolbarItems = [spacer(), shareButton, spacer()]
-                    }
+                }
+                if (shareButton != nil) {
+                    self.toolbarItems = [spacer(), shareButton, spacer()]
                 }
                 self.navigationItem.title = a.title
             }
@@ -37,7 +36,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         case Link;
     }
     
-    let content = WKWebView(forAutoLayout: ())
+    var content = WKWebView(forAutoLayout: ())
     let loadingBar = UIProgressView(progressViewStyle: .Bar)
     
     var shareButton: UIBarButtonItem! = nil
@@ -91,17 +90,20 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         super.viewDidLoad()
         
         self.view.addSubview(content)
-        content.setTranslatesAutoresizingMaskIntoConstraints(false)
         content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
-        content.navigationDelegate = self
-        content.configuration.preferences.minimumFontSize = 16.0
+        configureContent()
         
         self.view.addSubview(loadingBar)
         loadingBar.setTranslatesAutoresizingMaskIntoConstraints(false)
         loadingBar.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
+        loadingBar.autoSetDimension(.Height, toSize: 2)
         
         if let splitView = self.splitViewController {
-            self.navigationItem.leftBarButtonItem = splitView.displayModeButtonItem()
+            // don't set this if ipad or iphone 6+ in normal mode...
+            if UIDevice.currentDevice().userInterfaceIdiom == .Pad || false {
+                // if iphone6+ in normal...
+                self.navigationItem.leftBarButtonItem = splitView.displayModeButtonItem()
+            }
         }
         
         let back = UIBarButtonItem(title: "<", style: .Plain, target: content, action: "goBack")
@@ -125,6 +127,9 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         let swipeRight = UIScreenEdgePanGestureRecognizer(target: self, action: "next:")
         swipeRight.edges = .Right
         self.view.addGestureRecognizer(swipeRight)
+        let swipeLeft = UIScreenEdgePanGestureRecognizer(target: self, action: "back:")
+        swipeLeft.edges = .Left
+        self.view.addGestureRecognizer(swipeLeft)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -137,14 +142,95 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         self.navigationController?.toolbarHidden = true
     }
     
-    func next(gesture: UIScreenEdgePanGestureRecognizer) {
-        if gesture.state == .Ended {
-            // FIXME: animate this.
-            if lastArticleIndex + 1 >= articles.count {
-                
+    func configureContent() {
+        content.navigationDelegate = self
+    }
+    
+    var nextContent: WKWebView = WKWebView(forAutoLayout: ())
+    var nextContentRight : NSLayoutConstraint! = nil
+    
+    func back(gesture: UIScreenEdgePanGestureRecognizer) {
+        if lastArticleIndex == 0 {
+            return
+        }
+        let width = CGRectGetWidth(self.view.bounds)
+        let translation = width - gesture.translationInView(self.view).x
+        if gesture.state == .Began {
+            let a = articles[lastArticleIndex-1]
+            nextContent = WKWebView(forAutoLayout: ())
+            self.view.addSubview(nextContent)
+            if let cnt = a.content ?? a.summary {
+                self.content.loadHTMLString(articleCSS + cnt + "</body></html>", baseURL: NSURL(string: a.feed.url)!)
             } else {
+                let request = NSURLRequest(URL: NSURL(string: a.link)!)
+                self.content.loadRequest(request)
+            }
+            nextContent.autoPinEdgeToSuperviewEdge(.Top)
+            nextContent.autoPinEdgeToSuperviewEdge(.Bottom)
+            nextContent.autoMatchDimension(.Width, toDimension: .Width, ofView: self.view)
+            nextContentRight = nextContent.autoPinEdgeToSuperviewEdge(.Right, withInset: translation)
+        } else if gesture.state == .Changed {
+            nextContentRight.constant = translation
+        } else if gesture.state == .Cancelled {
+            nextContent.removeFromSuperview()
+        } else if gesture.state == .Ended {
+            let speed = gesture.velocityInView(self.view).x
+            if speed >= 0 {
+                lastArticleIndex--
+                article = articles[lastArticleIndex]
+                nextContentRight.constant = 0
+                content = nextContent
+                configureContent()
+                UIView.animateWithDuration(0.2, animations: {
+                    self.view.layoutIfNeeded()
+                }, completion: {(completed) in
+                    self.view.bringSubviewToFront(self.loadingBar)
+                })
+            } else {
+                nextContent.removeFromSuperview()
+            }
+        }
+    }
+    
+    func next(gesture: UIScreenEdgePanGestureRecognizer) {
+        if lastArticleIndex + 1 >= articles.count {
+            return;
+        }
+        let width = CGRectGetWidth(self.view.bounds)
+        let translation = width + gesture.translationInView(self.view).x
+        if gesture.state == .Began {
+            let a = articles[lastArticleIndex+1]
+            nextContent = WKWebView(forAutoLayout: ())
+            self.view.addSubview(nextContent)
+            if let cnt = a.content ?? a.summary {
+                nextContent.loadHTMLString(articleCSS + cnt + "</body></html>", baseURL: NSURL(string: a.feed.url)!)
+            } else {
+                let request = NSURLRequest(URL: NSURL(string: a.link)!)
+                nextContent.loadRequest(request)
+            }
+            nextContent.autoPinEdgeToSuperviewEdge(.Top)
+            nextContent.autoPinEdgeToSuperviewEdge(.Bottom)
+            nextContent.autoMatchDimension(.Width, toDimension: .Width, ofView: self.view)
+            nextContentRight = nextContent.autoPinEdgeToSuperviewEdge(.Right, withInset: translation)
+        } else if gesture.state == .Changed {
+            nextContentRight.constant = translation
+        } else if gesture.state == .Cancelled {
+            nextContent.removeFromSuperview()
+        } else if gesture.state == .Ended {
+            let speed = gesture.velocityInView(self.view).x * -1
+            if speed >= 0 {
                 lastArticleIndex++
                 article = articles[lastArticleIndex]
+                nextContentRight.constant = 0
+                content = nextContent
+                configureContent()
+                UIView.animateWithDuration(0.2, animations: {
+                    self.view.layoutIfNeeded()
+                }, completion: {(completed) in
+                    self.view.bringSubviewToFront(self.loadingBar)
+                })
+            } else {
+                nextContent.removeFromSuperview()
             }
         }
     }

@@ -79,7 +79,6 @@
 		89635F841A13BF120052C248 /* AMPopTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 894C0C361A1329FB008229A4 /* AMPopTip.m */; };
 		89635F8E1A13C2E30052C248 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89635F8D1A13C2E30052C248 /* AppDelegate.swift */; };
 		89635F901A13C2E30052C248 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89635F8F1A13C2E30052C248 /* Images.xcassets */; };
-		89635F931A13C2E30052C248 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89635F911A13C2E30052C248 /* MainMenu.xib */; };
 		89635F9F1A13C2E30052C248 /* RSSClient_OSXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89635F9E1A13C2E30052C248 /* RSSClient_OSXTests.swift */; };
 		89635FA81A13C4030052C248 /* OPMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */; };
 		89635FA91A13C4040052C248 /* OPMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */; };
@@ -168,13 +167,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 89635F881A13C2E30052C248;
 			remoteInfo = "RSSClient-OSX";
-		};
-		89C8308C19D730E9009924DA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 89C8306B19D730E9009924DA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 89C8307219D730E9009924DA;
-			remoteInfo = RSSClient;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -731,7 +723,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				89C8308D19D730E9009924DA /* PBXTargetDependency */,
 			);
 			name = RSSClientTests;
 			productName = RSSClientTests;
@@ -822,7 +813,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				89635F901A13C2E30052C248 /* Images.xcassets in Resources */,
-				89635F931A13C2E30052C248 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1018,11 +1008,6 @@
 			isa = PBXTargetDependency;
 			target = 89635F881A13C2E30052C248 /* RSSClient-OSX */;
 			targetProxy = 89635F991A13C2E30052C248 /* PBXContainerItemProxy */;
-		};
-		89C8308D19D730E9009924DA /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 89C8307219D730E9009924DA /* RSSClient */;
-			targetProxy = 89C8308C19D730E9009924DA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1249,12 +1234,11 @@
 		89C8309919D730E9009924DA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
+				BUNDLE_LOADER = "";
 				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
-					"$(PROJECT_DIR)/Vendor/Quick/Externals/Nimble/build/Debug-iphoneos",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -1272,12 +1256,11 @@
 		89C8309A19D730E9009924DA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
+				BUNDLE_LOADER = "";
 				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
-					"$(PROJECT_DIR)/Vendor/Quick/Externals/Nimble/build/Debug-iphoneos",
 				);
 				INFOPLIST_FILE = RSSClientTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";

@@ -18,7 +18,6 @@
 		8933E91919ECCD5E00ECFF3F /* MWFeedInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91519ECCD5E00ECFF3F /* MWFeedInfo.m */; };
 		8933E91A19ECCD5E00ECFF3F /* MWFeedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91719ECCD5E00ECFF3F /* MWFeedItem.m */; };
 		8933E91C19ECD09100ECFF3F /* GroupsEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F1C01E19E75E73009343DB /* GroupsEditorController.swift */; };
-		8933E92319ECD21E00ECFF3F /* Alamofire.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 8933E8FB19ECCB9900ECFF3F /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8933E92C19ECD28900ECFF3F /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92519ECD28900ECFF3F /* GTMNSString+HTML.m */; };
 		8933E92D19ECD28900ECFF3F /* NSDate+InternetDateTime.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92719ECD28900ECFF3F /* NSDate+InternetDateTime.m */; };
 		8933E92E19ECD28900ECFF3F /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92919ECD28900ECFF3F /* NSString+HTML.m */; };
@@ -46,13 +45,6 @@
 		894896ED1A16F1130030EB6E /* LocalImportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896EB1A16F1130030EB6E /* LocalImportViewController.swift */; };
 		894896F11A16F7B20030EB6E /* FeedParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896F01A16F7B20030EB6E /* FeedParser.swift */; };
 		894896F21A16F7B20030EB6E /* FeedParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896F01A16F7B20030EB6E /* FeedParser.swift */; };
-		894C0C241A13293E008229A4 /* TUSafariActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 894C0C221A13293E008229A4 /* TUSafariActivity.m */; };
-		894C0C2E1A13296D008229A4 /* TUSafariActivity.strings in Resources */ = {isa = PBXBuildFile; fileRef = 894C0C271A13296D008229A4 /* TUSafariActivity.strings */; };
-		894C0C2F1A13296D008229A4 /* safari.png in Resources */ = {isa = PBXBuildFile; fileRef = 894C0C291A13296D008229A4 /* safari.png */; };
-		894C0C301A13296D008229A4 /* safari@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 894C0C2A1A13296D008229A4 /* safari@2x.png */; };
-		894C0C311A13296D008229A4 /* safari@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 894C0C2B1A13296D008229A4 /* safari@3x.png */; };
-		894C0C321A13296D008229A4 /* safari~iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = 894C0C2C1A13296D008229A4 /* safari~iPad.png */; };
-		894C0C331A13296D008229A4 /* safari~iPad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 894C0C2D1A13296D008229A4 /* safari~iPad@2x.png */; };
 		894C0C371A1329FB008229A4 /* AMPopTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 894C0C361A1329FB008229A4 /* AMPopTip.m */; };
 		8957799F19E62C7100548418 /* AppDelegateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8957799E19E62C7100548418 /* AppDelegateTests.swift */; };
 		895779A019E62CC500548418 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307819D730E9009924DA /* AppDelegate.swift */; };
@@ -75,7 +67,6 @@
 		895779B419E658A700548418 /* Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895779B319E658A700548418 /* Mocks.swift */; };
 		895779B619E65A6D00548418 /* ArticleCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895779B519E65A6D00548418 /* ArticleCellTests.swift */; };
 		895779B819E65D9900548418 /* DataManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895779B719E65D9900548418 /* DataManagerTests.swift */; };
-		89635F831A13BF120052C248 /* TUSafariActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 894C0C221A13293E008229A4 /* TUSafariActivity.m */; };
 		89635F841A13BF120052C248 /* AMPopTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 894C0C361A1329FB008229A4 /* AMPopTip.m */; };
 		89635F8E1A13C2E30052C248 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89635F8D1A13C2E30052C248 /* AppDelegate.swift */; };
 		89635F901A13C2E30052C248 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89635F8F1A13C2E30052C248 /* Images.xcassets */; };
@@ -114,6 +105,42 @@
 		89635FC71A13C49B0052C248 /* NSLayoutConstraint+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90919ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m */; };
 		898046D51A1C385A00EB29F0 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898046D41A1C385A00EB29F0 /* MainController.swift */; };
 		898046D61A1C385A00EB29F0 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898046D41A1C385A00EB29F0 /* MainController.swift */; };
+		898047361A20475D00EB29F0 /* Alamofire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898047351A20475D00EB29F0 /* Alamofire.swift */; };
+		898047371A20475D00EB29F0 /* Alamofire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898047351A20475D00EB29F0 /* Alamofire.swift */; };
+		898047381A20475D00EB29F0 /* Alamofire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898047351A20475D00EB29F0 /* Alamofire.swift */; };
+		898047391A20475D00EB29F0 /* Alamofire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898047351A20475D00EB29F0 /* Alamofire.swift */; };
+		898047451A20478600EB29F0 /* TUSafariActivity.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8980473C1A20478600EB29F0 /* TUSafariActivity.strings */; };
+		898047461A20478600EB29F0 /* TUSafariActivity.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8980473C1A20478600EB29F0 /* TUSafariActivity.strings */; };
+		898047471A20478600EB29F0 /* TUSafariActivity.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8980473C1A20478600EB29F0 /* TUSafariActivity.strings */; };
+		898047481A20478600EB29F0 /* TUSafariActivity.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8980473C1A20478600EB29F0 /* TUSafariActivity.strings */; };
+		898047491A20478600EB29F0 /* safari.png in Resources */ = {isa = PBXBuildFile; fileRef = 8980473E1A20478600EB29F0 /* safari.png */; };
+		8980474A1A20478600EB29F0 /* safari.png in Resources */ = {isa = PBXBuildFile; fileRef = 8980473E1A20478600EB29F0 /* safari.png */; };
+		8980474B1A20478600EB29F0 /* safari.png in Resources */ = {isa = PBXBuildFile; fileRef = 8980473E1A20478600EB29F0 /* safari.png */; };
+		8980474C1A20478600EB29F0 /* safari.png in Resources */ = {isa = PBXBuildFile; fileRef = 8980473E1A20478600EB29F0 /* safari.png */; };
+		8980474D1A20478600EB29F0 /* safari@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8980473F1A20478600EB29F0 /* safari@2x.png */; };
+		8980474E1A20478600EB29F0 /* safari@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8980473F1A20478600EB29F0 /* safari@2x.png */; };
+		8980474F1A20478600EB29F0 /* safari@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8980473F1A20478600EB29F0 /* safari@2x.png */; };
+		898047501A20478600EB29F0 /* safari@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8980473F1A20478600EB29F0 /* safari@2x.png */; };
+		898047511A20478600EB29F0 /* safari@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 898047401A20478600EB29F0 /* safari@3x.png */; };
+		898047521A20478600EB29F0 /* safari@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 898047401A20478600EB29F0 /* safari@3x.png */; };
+		898047531A20478600EB29F0 /* safari@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 898047401A20478600EB29F0 /* safari@3x.png */; };
+		898047541A20478600EB29F0 /* safari@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 898047401A20478600EB29F0 /* safari@3x.png */; };
+		898047551A20478600EB29F0 /* safari~iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = 898047411A20478600EB29F0 /* safari~iPad.png */; };
+		898047561A20478600EB29F0 /* safari~iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = 898047411A20478600EB29F0 /* safari~iPad.png */; };
+		898047571A20478600EB29F0 /* safari~iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = 898047411A20478600EB29F0 /* safari~iPad.png */; };
+		898047581A20478600EB29F0 /* safari~iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = 898047411A20478600EB29F0 /* safari~iPad.png */; };
+		898047591A20478600EB29F0 /* safari~iPad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 898047421A20478600EB29F0 /* safari~iPad@2x.png */; };
+		8980475A1A20478600EB29F0 /* safari~iPad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 898047421A20478600EB29F0 /* safari~iPad@2x.png */; };
+		8980475B1A20478600EB29F0 /* safari~iPad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 898047421A20478600EB29F0 /* safari~iPad@2x.png */; };
+		8980475C1A20478600EB29F0 /* safari~iPad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 898047421A20478600EB29F0 /* safari~iPad@2x.png */; };
+		8980475D1A20478600EB29F0 /* TUSafariActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 898047441A20478600EB29F0 /* TUSafariActivity.m */; };
+		8980475E1A20478600EB29F0 /* TUSafariActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 898047441A20478600EB29F0 /* TUSafariActivity.m */; };
+		8980475F1A20478600EB29F0 /* TUSafariActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 898047441A20478600EB29F0 /* TUSafariActivity.m */; };
+		898047601A20478600EB29F0 /* TUSafariActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 898047441A20478600EB29F0 /* TUSafariActivity.m */; };
+		898047611A2048F200EB29F0 /* FeedParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896F01A16F7B20030EB6E /* FeedParser.swift */; };
+		898047621A2048F300EB29F0 /* FeedParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896F01A16F7B20030EB6E /* FeedParser.swift */; };
+		898047641A206CB100EB29F0 /* FeedsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898047631A206CB100EB29F0 /* FeedsList.swift */; };
+		898047651A206CB100EB29F0 /* FeedsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898047631A206CB100EB29F0 /* FeedsList.swift */; };
 		89C7FBE01A183EBE00ACBDB2 /* MAKDropDownMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C7FBDF1A183EBE00ACBDB2 /* MAKDropDownMenu.m */; };
 		89C7FBE11A183EBE00ACBDB2 /* MAKDropDownMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C7FBDF1A183EBE00ACBDB2 /* MAKDropDownMenu.m */; };
 		89C7FBE81A18847A00ACBDB2 /* RBActivityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C7FBE71A18847A00ACBDB2 /* RBActivityIndicator.m */; };
@@ -140,27 +167,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		8933E8FA19ECCB9900ECFF3F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8933E8F519ECCB9900ECFF3F /* Alamofire.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = F8111E3319A95C8B0040E7D1;
-			remoteInfo = Alamofire;
-		};
-		8933E8FC19ECCB9900ECFF3F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8933E8F519ECCB9900ECFF3F /* Alamofire.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = F8111E3E19A95C8B0040E7D1;
-			remoteInfo = AlamofireTests;
-		};
-		8933E91F19ECD1A000ECFF3F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8933E8F519ECCB9900ECFF3F /* Alamofire.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = F8111E3219A95C8B0040E7D1;
-			remoteInfo = Alamofire;
-		};
 		89635F991A13C2E30052C248 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 89C8306B19D730E9009924DA /* Project object */;
@@ -177,7 +183,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				8933E92319ECD21E00ECFF3F /* Alamofire.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -201,7 +206,6 @@
 		891710FF19E0703700D86C7B /* Group.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Group.m; sourceTree = "<group>"; };
 		8924D8E81A094CF5003B7529 /* article.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = article.css; sourceTree = "<group>"; };
 		8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLParser.swift; sourceTree = "<group>"; };
-		8933E8F519ECCB9900ECFF3F /* Alamofire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire.xcodeproj; path = Alamofire/Alamofire.xcodeproj; sourceTree = SOURCE_ROOT; };
 		8933E90419ECCBC300ECFF3F /* ALView+PureLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "ALView+PureLayout.h"; path = "PureLayout/Source/ALView+PureLayout.h"; sourceTree = "<group>"; };
 		8933E90519ECCBC300ECFF3F /* ALView+PureLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "ALView+PureLayout.m"; path = "PureLayout/Source/ALView+PureLayout.m"; sourceTree = "<group>"; };
 		8933E90619ECCBC300ECFF3F /* NSArray+PureLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSArray+PureLayout.h"; path = "PureLayout/Source/NSArray+PureLayout.h"; sourceTree = "<group>"; };
@@ -237,14 +241,6 @@
 		893448CB1A0315F400F5D528 /* FeedsTableViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsTableViewControllerTests.swift; sourceTree = "<group>"; };
 		894896EB1A16F1130030EB6E /* LocalImportViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalImportViewController.swift; sourceTree = "<group>"; };
 		894896F01A16F7B20030EB6E /* FeedParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedParser.swift; sourceTree = "<group>"; };
-		894C0C211A13293E008229A4 /* TUSafariActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUSafariActivity.h; sourceTree = "<group>"; };
-		894C0C221A13293E008229A4 /* TUSafariActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUSafariActivity.m; sourceTree = "<group>"; };
-		894C0C281A13296D008229A4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = TUSafariActivity.strings; sourceTree = "<group>"; };
-		894C0C291A13296D008229A4 /* safari.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = safari.png; sourceTree = "<group>"; };
-		894C0C2A1A13296D008229A4 /* safari@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "safari@2x.png"; sourceTree = "<group>"; };
-		894C0C2B1A13296D008229A4 /* safari@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "safari@3x.png"; sourceTree = "<group>"; };
-		894C0C2C1A13296D008229A4 /* safari~iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "safari~iPad.png"; sourceTree = "<group>"; };
-		894C0C2D1A13296D008229A4 /* safari~iPad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "safari~iPad@2x.png"; sourceTree = "<group>"; };
 		894C0C351A1329FB008229A4 /* AMPopTip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMPopTip.h; sourceTree = "<group>"; };
 		894C0C361A1329FB008229A4 /* AMPopTip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMPopTip.m; sourceTree = "<group>"; };
 		8957799D19E62C7100548418 /* RSSClientTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSSClientTests-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -254,7 +250,7 @@
 		895779B319E658A700548418 /* Mocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
 		895779B519E65A6D00548418 /* ArticleCellTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleCellTests.swift; sourceTree = "<group>"; };
 		895779B719E65D9900548418 /* DataManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManagerTests.swift; sourceTree = "<group>"; };
-		89635F891A13C2E30052C248 /* RSSClient-OSX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RSSClient-OSX.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		89635F891A13C2E30052C248 /* rNews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rNews.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89635F8C1A13C2E30052C248 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89635F8D1A13C2E30052C248 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		89635F8F1A13C2E30052C248 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -265,6 +261,16 @@
 		898046D11A1BC8FD00EB29F0 /* rNews.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = rNews.entitlements; sourceTree = "<group>"; };
 		898046D31A1C36B000EB29F0 /* RSSClient-OSX-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSSClient-OSX-Bridging-Header.h"; sourceTree = "<group>"; };
 		898046D41A1C385A00EB29F0 /* MainController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
+		898047351A20475D00EB29F0 /* Alamofire.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Alamofire.swift; path = Vendor/Alamofire/Alamofire.swift; sourceTree = "<group>"; };
+		8980473D1A20478600EB29F0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = TUSafariActivity.strings; sourceTree = "<group>"; };
+		8980473E1A20478600EB29F0 /* safari.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = safari.png; path = Vendor/TUSafariActivity/Classes/safari.png; sourceTree = "<group>"; };
+		8980473F1A20478600EB29F0 /* safari@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "safari@2x.png"; path = "Vendor/TUSafariActivity/Classes/safari@2x.png"; sourceTree = "<group>"; };
+		898047401A20478600EB29F0 /* safari@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "safari@3x.png"; path = "Vendor/TUSafariActivity/Classes/safari@3x.png"; sourceTree = "<group>"; };
+		898047411A20478600EB29F0 /* safari~iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "safari~iPad.png"; path = "Vendor/TUSafariActivity/Classes/safari~iPad.png"; sourceTree = "<group>"; };
+		898047421A20478600EB29F0 /* safari~iPad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "safari~iPad@2x.png"; path = "Vendor/TUSafariActivity/Classes/safari~iPad@2x.png"; sourceTree = "<group>"; };
+		898047431A20478600EB29F0 /* TUSafariActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TUSafariActivity.h; path = Vendor/TUSafariActivity/Classes/TUSafariActivity.h; sourceTree = "<group>"; };
+		898047441A20478600EB29F0 /* TUSafariActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TUSafariActivity.m; path = Vendor/TUSafariActivity/Classes/TUSafariActivity.m; sourceTree = "<group>"; };
+		898047631A206CB100EB29F0 /* FeedsList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FeedsList.swift; path = "RSSClient-OSX/FeedsList.swift"; sourceTree = SOURCE_ROOT; };
 		89C7FBDE1A183EBE00ACBDB2 /* MAKDropDownMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MAKDropDownMenu.h; sourceTree = "<group>"; };
 		89C7FBDF1A183EBE00ACBDB2 /* MAKDropDownMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MAKDropDownMenu.m; sourceTree = "<group>"; };
 		89C7FBE61A18847A00ACBDB2 /* RBActivityIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBActivityIndicator.h; sourceTree = "<group>"; };
@@ -344,15 +350,6 @@
 				1B2EC3404DBA17EC9D1669ED /* Pods.release.xcconfig */,
 			);
 			name = Pods;
-			sourceTree = "<group>";
-		};
-		8933E8F619ECCB9900ECFF3F /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				8933E8FB19ECCB9900ECFF3F /* Alamofire.framework */,
-				8933E8FD19ECCB9900ECFF3F /* AlamofireTests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		8933E91019ECCBCA00ECFF3F /* PureLayout */ = {
@@ -441,30 +438,6 @@
 			name = Data;
 			sourceTree = "<group>";
 		};
-		894C0C1F1A13293E008229A4 /* TUSafariActivity */ = {
-			isa = PBXGroup;
-			children = (
-				894C0C261A13296D008229A4 /* en.lproj */,
-				894C0C291A13296D008229A4 /* safari.png */,
-				894C0C2A1A13296D008229A4 /* safari@2x.png */,
-				894C0C2B1A13296D008229A4 /* safari@3x.png */,
-				894C0C2C1A13296D008229A4 /* safari~iPad.png */,
-				894C0C2D1A13296D008229A4 /* safari~iPad@2x.png */,
-				894C0C211A13293E008229A4 /* TUSafariActivity.h */,
-				894C0C221A13293E008229A4 /* TUSafariActivity.m */,
-			);
-			name = TUSafariActivity;
-			path = TUSafariActivity/Pod/Classes;
-			sourceTree = "<group>";
-		};
-		894C0C261A13296D008229A4 /* en.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				894C0C271A13296D008229A4 /* TUSafariActivity.strings */,
-			);
-			path = en.lproj;
-			sourceTree = "<group>";
-		};
 		894C0C341A1329FB008229A4 /* AMPopTip */ = {
 			isa = PBXGroup;
 			children = (
@@ -480,6 +453,7 @@
 			children = (
 				89635F8D1A13C2E30052C248 /* AppDelegate.swift */,
 				898046D41A1C385A00EB29F0 /* MainController.swift */,
+				898047631A206CB100EB29F0 /* FeedsList.swift */,
 				898046D31A1C36B000EB29F0 /* RSSClient-OSX-Bridging-Header.h */,
 				89635F8F1A13C2E30052C248 /* Images.xcassets */,
 				89635F911A13C2E30052C248 /* MainMenu.xib */,
@@ -513,6 +487,38 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		898047341A2044EE00EB29F0 /* Alamofire */ = {
+			isa = PBXGroup;
+			children = (
+				898047351A20475D00EB29F0 /* Alamofire.swift */,
+			);
+			name = Alamofire;
+			sourceTree = "<group>";
+		};
+		8980473A1A20476900EB29F0 /* TUSafariActivity */ = {
+			isa = PBXGroup;
+			children = (
+				8980473B1A20478600EB29F0 /* en.lproj */,
+				8980473E1A20478600EB29F0 /* safari.png */,
+				8980473F1A20478600EB29F0 /* safari@2x.png */,
+				898047401A20478600EB29F0 /* safari@3x.png */,
+				898047411A20478600EB29F0 /* safari~iPad.png */,
+				898047421A20478600EB29F0 /* safari~iPad@2x.png */,
+				898047431A20478600EB29F0 /* TUSafariActivity.h */,
+				898047441A20478600EB29F0 /* TUSafariActivity.m */,
+			);
+			name = TUSafariActivity;
+			sourceTree = "<group>";
+		};
+		8980473B1A20478600EB29F0 /* en.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				8980473C1A20478600EB29F0 /* TUSafariActivity.strings */,
+			);
+			name = en.lproj;
+			path = Vendor/TUSafariActivity/Classes/en.lproj;
+			sourceTree = "<group>";
+		};
 		89C7FBDD1A183EBE00ACBDB2 /* DropDownMenu */ = {
 			isa = PBXGroup;
 			children = (
@@ -534,10 +540,10 @@
 		89C8306A19D730E9009924DA = {
 			isa = PBXGroup;
 			children = (
-				8933E8F519ECCB9900ECFF3F /* Alamofire.xcodeproj */,
+				8980473A1A20476900EB29F0 /* TUSafariActivity */,
+				898047341A2044EE00EB29F0 /* Alamofire */,
 				8933E91019ECCBCA00ECFF3F /* PureLayout */,
 				8933E91B19ECCD6500ECFF3F /* MWFeedParser */,
-				894C0C1F1A13293E008229A4 /* TUSafariActivity */,
 				894C0C341A1329FB008229A4 /* AMPopTip */,
 				89C7FBDD1A183EBE00ACBDB2 /* DropDownMenu */,
 				89C7FBEA1A18848000ACBDB2 /* RBActivityIndicator */,
@@ -556,7 +562,7 @@
 			children = (
 				89C8307319D730E9009924DA /* rNews.app */,
 				89C8308B19D730E9009924DA /* RSSClientTests.xctest */,
-				89635F891A13C2E30052C248 /* RSSClient-OSX.app */,
+				89635F891A13C2E30052C248 /* rNews.app */,
 				89635F981A13C2E30052C248 /* RSSClient-OSXTests.xctest */,
 			);
 			name = Products;
@@ -672,7 +678,7 @@
 			);
 			name = "RSSClient-OSX";
 			productName = "RSSClient-OSX";
-			productReference = 89635F891A13C2E30052C248 /* RSSClient-OSX.app */;
+			productReference = 89635F891A13C2E30052C248 /* rNews.app */;
 			productType = "com.apple.product-type.application";
 		};
 		89635F971A13C2E30052C248 /* RSSClient-OSXTests */ = {
@@ -705,7 +711,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				8933E92019ECD1A000ECFF3F /* PBXTargetDependency */,
 			);
 			name = RSSClient;
 			productName = RSSClient;
@@ -774,12 +779,6 @@
 			mainGroup = 89C8306A19D730E9009924DA;
 			productRefGroup = 89C8307419D730E9009924DA /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 8933E8F619ECCB9900ECFF3F /* Products */;
-					ProjectRef = 8933E8F519ECCB9900ECFF3F /* Alamofire.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				89C8307219D730E9009924DA /* RSSClient */,
@@ -790,29 +789,18 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXReferenceProxy section */
-		8933E8FB19ECCB9900ECFF3F /* Alamofire.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Alamofire.framework;
-			remoteRef = 8933E8FA19ECCB9900ECFF3F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		8933E8FD19ECCB9900ECFF3F /* AlamofireTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = AlamofireTests.xctest;
-			remoteRef = 8933E8FC19ECCB9900ECFF3F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
-
 /* Begin PBXResourcesBuildPhase section */
 		89635F871A13C2E30052C248 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				898047571A20478600EB29F0 /* safari~iPad.png in Resources */,
+				8980475B1A20478600EB29F0 /* safari~iPad@2x.png in Resources */,
+				8980474F1A20478600EB29F0 /* safari@2x.png in Resources */,
+				898047471A20478600EB29F0 /* TUSafariActivity.strings in Resources */,
+				898047531A20478600EB29F0 /* safari@3x.png in Resources */,
 				89635F901A13C2E30052C248 /* Images.xcassets in Resources */,
+				8980474B1A20478600EB29F0 /* safari.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -820,6 +808,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				898047481A20478600EB29F0 /* TUSafariActivity.strings in Resources */,
+				8980475C1A20478600EB29F0 /* safari~iPad@2x.png in Resources */,
+				898047541A20478600EB29F0 /* safari@3x.png in Resources */,
+				898047501A20478600EB29F0 /* safari@2x.png in Resources */,
+				898047581A20478600EB29F0 /* safari~iPad.png in Resources */,
+				8980474C1A20478600EB29F0 /* safari.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -827,17 +821,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8980474D1A20478600EB29F0 /* safari@2x.png in Resources */,
+				898047451A20478600EB29F0 /* TUSafariActivity.strings in Resources */,
 				89C8308319D730E9009924DA /* Images.xcassets in Resources */,
-				894C0C331A13296D008229A4 /* safari~iPad@2x.png in Resources */,
 				8924D8E91A094CF5003B7529 /* article.css in Resources */,
+				898047511A20478600EB29F0 /* safari@3x.png in Resources */,
+				898047591A20478600EB29F0 /* safari~iPad@2x.png in Resources */,
 				89D06A1B19FDBC52003909A3 /* Launch Screen.xib in Resources */,
-				894C0C2F1A13296D008229A4 /* safari.png in Resources */,
-				894C0C301A13296D008229A4 /* safari@2x.png in Resources */,
+				898047491A20478600EB29F0 /* safari.png in Resources */,
 				89C830BF19D89722009924DA /* FindICO.js in Resources */,
-				894C0C321A13296D008229A4 /* safari~iPad.png in Resources */,
-				894C0C311A13296D008229A4 /* safari@3x.png in Resources */,
+				898047551A20478600EB29F0 /* safari~iPad.png in Resources */,
 				89C830BB19D8904A009924DA /* findFeeds.js in Resources */,
-				894C0C2E1A13296D008229A4 /* TUSafariActivity.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -845,8 +839,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				898047461A20478600EB29F0 /* TUSafariActivity.strings in Resources */,
+				8980475A1A20478600EB29F0 /* safari~iPad@2x.png in Resources */,
+				898047521A20478600EB29F0 /* safari@3x.png in Resources */,
 				895779A519E62CC500548418 /* findFeeds.js in Resources */,
+				898047561A20478600EB29F0 /* safari~iPad.png in Resources */,
+				8980474E1A20478600EB29F0 /* safari@2x.png in Resources */,
 				895779A619E62CC500548418 /* FindICO.js in Resources */,
+				8980474A1A20478600EB29F0 /* safari.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -858,13 +858,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				89635FBA1A13C48D0052C248 /* NSString+XMLEntities.m in Sources */,
+				8980475F1A20478600EB29F0 /* TUSafariActivity.m in Sources */,
 				89635FAE1A13C4210052C248 /* Article.m in Sources */,
+				898047611A2048F200EB29F0 /* FeedParser.swift in Sources */,
 				89635FC41A13C49A0052C248 /* NSLayoutConstraint+PureLayout.m in Sources */,
 				89635FA81A13C4030052C248 /* OPMLParser.swift in Sources */,
 				898046D51A1C385A00EB29F0 /* MainController.swift in Sources */,
 				89635FB61A13C48D0052C248 /* MWFeedItem.m in Sources */,
 				89635FC31A13C49A0052C248 /* NSArray+PureLayout.m in Sources */,
+				898047641A206CB100EB29F0 /* FeedsList.swift in Sources */,
 				89635FB51A13C48D0052C248 /* MWFeedInfo.m in Sources */,
+				898047381A20475D00EB29F0 /* Alamofire.swift in Sources */,
 				89635FB81A13C48D0052C248 /* NSDate+InternetDateTime.m in Sources */,
 				89635FB91A13C48D0052C248 /* NSString+HTML.m in Sources */,
 				89635FB71A13C48D0052C248 /* GTMNSString+HTML.m in Sources */,
@@ -883,13 +887,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				89635FC11A13C48D0052C248 /* NSString+XMLEntities.m in Sources */,
+				898047601A20478600EB29F0 /* TUSafariActivity.m in Sources */,
 				89635FB11A13C4220052C248 /* Article.m in Sources */,
+				898047621A2048F300EB29F0 /* FeedParser.swift in Sources */,
 				89635FC71A13C49B0052C248 /* NSLayoutConstraint+PureLayout.m in Sources */,
 				89635FA91A13C4040052C248 /* OPMLParser.swift in Sources */,
 				898046D61A1C385A00EB29F0 /* MainController.swift in Sources */,
 				89635FBD1A13C48D0052C248 /* MWFeedItem.m in Sources */,
 				89635FC61A13C49B0052C248 /* NSArray+PureLayout.m in Sources */,
+				898047651A206CB100EB29F0 /* FeedsList.swift in Sources */,
 				89635FBC1A13C48D0052C248 /* MWFeedInfo.m in Sources */,
+				898047391A20475D00EB29F0 /* Alamofire.swift in Sources */,
 				89635FBF1A13C48D0052C248 /* NSDate+InternetDateTime.m in Sources */,
 				89635FC01A13C48D0052C248 /* NSString+HTML.m in Sources */,
 				89635FBE1A13C48D0052C248 /* GTMNSString+HTML.m in Sources */,
@@ -913,8 +921,8 @@
 				8933E92E19ECD28900ECFF3F /* NSString+HTML.m in Sources */,
 				894896EC1A16F1130030EB6E /* LocalImportViewController.swift in Sources */,
 				8933E91919ECCD5E00ECFF3F /* MWFeedInfo.m in Sources */,
+				898047361A20475D00EB29F0 /* Alamofire.swift in Sources */,
 				8933E91819ECCD5E00ECFF3F /* MWFeedParser.m in Sources */,
-				894C0C241A13293E008229A4 /* TUSafariActivity.m in Sources */,
 				8933E90F19ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m in Sources */,
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
 				89C830A919D7B890009924DA /* DataManager.swift in Sources */,
@@ -930,6 +938,7 @@
 				89F1C01F19E75E73009343DB /* GroupsEditorController.swift in Sources */,
 				8917110019E0703700D86C7B /* Group.m in Sources */,
 				89C830C319D89E46009924DA /* Article.m in Sources */,
+				8980475D1A20478600EB29F0 /* TUSafariActivity.m in Sources */,
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
 				8924D8F21A0E8EEA003B7529 /* OPMLParser.swift in Sources */,
 				8933E92F19ECD28900ECFF3F /* NSString+XMLEntities.m in Sources */,
@@ -953,13 +962,13 @@
 				893448C61A03159F00F5D528 /* ArticleViewControllerTests.swift in Sources */,
 				895779AD19E62CDA00548418 /* Feed.m in Sources */,
 				895779B019E6512200548418 /* UnreadCounterTests.swift in Sources */,
-				89635F831A13BF120052C248 /* TUSafariActivity.m in Sources */,
 				893448CA1A0315DF00F5D528 /* FindFeedViewControllerTests.swift in Sources */,
 				8933E91C19ECD09100ECFF3F /* GroupsEditorController.swift in Sources */,
 				893448B81A004E4E00F5D528 /* MWFeedInfo.m in Sources */,
 				893448C01A004E5C00F5D528 /* NSArray+PureLayout.m in Sources */,
 				893448CC1A0315F400F5D528 /* FeedsTableViewControllerTests.swift in Sources */,
 				89D06A2219FF210C003909A3 /* LoadingView.swift in Sources */,
+				8980475E1A20478600EB29F0 /* TUSafariActivity.m in Sources */,
 				89C7FBE91A18847A00ACBDB2 /* RBActivityIndicator.m in Sources */,
 				895779B219E655F100548418 /* FeedTableCellTests.swift in Sources */,
 				893448B91A004E4E00F5D528 /* MWFeedItem.m in Sources */,
@@ -991,6 +1000,7 @@
 				8957799F19E62C7100548418 /* AppDelegateTests.swift in Sources */,
 				893448C81A0315B600F5D528 /* ArticleListControllerTests.swift in Sources */,
 				893448BF1A004E5C00F5D528 /* ALView+PureLayout.m in Sources */,
+				898047371A20475D00EB29F0 /* Alamofire.swift in Sources */,
 				895779A219E62CC500548418 /* FeedsTableViewController.swift in Sources */,
 				895779AB19E62CCE00548418 /* RSSClient.xcdatamodeld in Sources */,
 			);
@@ -999,11 +1009,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		8933E92019ECD1A000ECFF3F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Alamofire;
-			targetProxy = 8933E91F19ECD1A000ECFF3F /* PBXContainerItemProxy */;
-		};
 		89635F9A1A13C2E30052C248 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 89635F881A13C2E30052C248 /* RSSClient-OSX */;
@@ -1012,20 +1017,20 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		894C0C271A13296D008229A4 /* TUSafariActivity.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				894C0C281A13296D008229A4 /* en */,
-			);
-			name = TUSafariActivity.strings;
-			sourceTree = "<group>";
-		};
 		89635F911A13C2E30052C248 /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				89635F921A13C2E30052C248 /* Base */,
 			);
 			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		8980473C1A20478600EB29F0 /* TUSafariActivity.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8980473D1A20478600EB29F0 /* en */,
+			);
+			name = TUSafariActivity.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -1044,7 +1049,7 @@
 				INFOPLIST_FILE = "RSSClient-OSX/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = rNews;
 				SDKROOT = macosx;
 				SWIFT_OBJC_BRIDGING_HEADER = "RSSClient-OSX/RSSClient-OSX-Bridging-Header.h";
 			};
@@ -1060,7 +1065,7 @@
 				INFOPLIST_FILE = "RSSClient-OSX/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = rNews;
 				SDKROOT = macosx;
 				SWIFT_OBJC_BRIDGING_HEADER = "RSSClient-OSX/RSSClient-OSX-Bridging-Header.h";
 			};

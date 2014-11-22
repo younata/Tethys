@@ -9,7 +9,6 @@
 import Foundation
 import CoreData
 import WebKit
-import Alamofire
 
 private let instance = DataManager()
 
@@ -125,7 +124,9 @@ class DataManager: NSObject {
             self.managedObjectContext.save(nil)
             NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
         }
+        #if os(iOS)
         UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+        #endif
         self.updateFeeds([feed], completion: completion)
         self.writeOPML()
         return feed
@@ -142,7 +143,9 @@ class DataManager: NSObject {
         self.managedObjectContext.deleteObject(feed)
         self.managedObjectContext.save(nil)
         if (feeds().count == 0) {
+            #if os(iOS)
             UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
+            #endif
         }
         self.writeOPML()
     }

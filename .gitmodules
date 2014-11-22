@@ -4,12 +4,6 @@
 [submodule "MWFeedParser"]
 	path = MWFeedParser
 	url = https://github.com/mwaterfall/MWFeedParser.git
-[submodule "Alamofire"]
-	path = Alamofire
-	url = https://github.com/Alamofire/Alamofire.git
-[submodule "TUSafariActivity"]
-	path = TUSafariActivity
-	url = https://github.com/davbeck/TUSafariActivity.git
 [submodule "AMPopTip"]
 	path = AMPopTip
 	url = https://github.com/andreamazz/AMPopTip.git

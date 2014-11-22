@@ -13,11 +13,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet weak var window: NSWindow!
     
-    
+    var mainController: MainController? = nil
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         // Insert code here to initialize your application
         
+        mainController = MainController(window: self.window)
     }
 
     func applicationWillTerminate(aNotification: NSNotification) {

@@ -82,8 +82,12 @@ class ArticleListController: UITableViewController {
     func showArticle(article: Article, animated: Bool) -> ArticleViewController {
         let avc = self.splitViewController?.viewControllers.last as? ArticleViewController ?? ArticleViewController()
         avc.article = article
-        avc.articles = self.articles//.filter { return !$0.read }
-        avc.lastArticleIndex = 0
+        avc.articles = self.articles
+        if (self.articles.count != 0) {
+            avc.lastArticleIndex = (self.articles as NSArray).indexOfObject(article)
+        } else {
+            avc.lastArticleIndex = 0
+        }
         if let splitView = self.splitViewController {
             (UIApplication.sharedApplication().delegate as AppDelegate).collapseDetailViewController = false
             splitView.showDetailViewController(UINavigationController(rootViewController: avc), sender: self)

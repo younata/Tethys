@@ -8,7 +8,6 @@
 
 import UIKit
 import WebKit
-import Alamofire
 
 class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFieldDelegate {
     let webContent = WKWebView(forAutoLayout: ())
@@ -111,8 +110,6 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         let loading = LoadingView(frame: self.view.bounds)
         self.view.addSubview(loading)
         loading.msg = NSString.localizedStringWithFormat(NSLocalizedString("Loading feed at %@", comment: ""), link)
-        self.navigationController?.toolbarHidden = true
-        self.navigationController?.navigationBarHidden = true
         if opml {
             DataManager.sharedInstance().importOPML(NSURL(string: link)!, progress: {(_) in }) {(_) in
                 loading.removeFromSuperview()
@@ -159,7 +156,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
             self.webContent.loadRequest(NSURLRequest(URL: NSURL(string: textField.text)!))
         }
         if (lookForFeeds) {
-            Alamofire.request(.GET, textField.text).responseString {(_, _, response, error) in
+            request(.GET, textField.text).responseString {(_, _, response, error) in
                 if let txt = response {
                     let feedParser = FeedParser(string: txt)
                     feedParser.parseInfoOnly = true

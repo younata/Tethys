@@ -116,7 +116,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as UITableViewCell
         
-        cell.textLabel.text = items[indexPath.row]
+        cell.textLabel?.text = items[indexPath.row]
 
         return cell
     }

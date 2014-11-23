@@ -17,7 +17,7 @@ class ScriptDocument: UIDocument {
         didSet {
             // oldValue
             if (notifyUndo) {
-                self.undoManager?.registerUndoWithTarget(self, selector: "undo:", object: oldValue)
+                self.undoManager.registerUndoWithTarget(self, selector: "undo:", object: oldValue)
             }
         }
     }
@@ -57,7 +57,7 @@ class ScriptDocument: UIDocument {
     override func loadFromContents(contents: AnyObject, ofType typeName: String, error outError: NSErrorPointer) -> Bool {
         if let cnt = contents as? NSData {
             text = NSString(data: cnt, encoding: NSUTF8StringEncoding)
-            self.undoManager?.beginUndoGrouping()
+            self.undoManager.beginUndoGrouping()
             return true
         } else {
             let error = NSError(domain: "com.rachelbrindle.rssclient", code: 404, userInfo: ["reason": "data not stored as NSData"])

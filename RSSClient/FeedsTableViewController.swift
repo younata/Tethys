@@ -79,6 +79,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         self.tableView.tableFooterView = UIView()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "appDidBecomeVisible", name: UIApplicationWillEnterForegroundNotification, object: nil)
     }
     
     deinit {
@@ -223,56 +224,17 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         groups = DataManager.sharedInstance().groups()
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
-        /*
-        switch (state) {
-        case .feeds:
-            if oldFeeds.count == feeds.count && oldFeeds != feeds {
-                var newIndexes : [Int:Int] = [:]
-                var deleted : [NSIndexPath] = []
-                for (i, x) in enumerate(oldFeeds) {
-                    if !contains(feeds, x) {
-                        deleted.append(NSIndexPath(forRow: i, inSection: 0))
-                    } else {
-                        let ni = (feeds as NSArray).indexOfObject(x)
-                        if i != ni {
-                            newIndexes[i] = ni
-                        }
-                    }
-                }
-                self.tableView.beginUpdates()
-                var moved : [NSIndexPath] = []
-                for key in newIndexes.keys {
-                    let ni = newIndexes[key]!
-                    self.tableView.moveRowAtIndexPath(NSIndexPath(forRow: key, inSection: 0), toIndexPath: NSIndexPath(forRow: ni, inSection: 0))
-                    moved.append(NSIndexPath(forRow: ni, inSection: 0))
-                }
-                self.tableView.reloadRowsAtIndexPaths(moved, withRowAnimation: .None)
-                var added : [NSIndexPath] = []
-                for (i, x) in enumerate(feeds) {
-                    if !contains(oldFeeds, x) {
-                        added.append(NSIndexPath(forRow: i, inSection: 0))
-                    }
-                }
-                self.tableView.insertRowsAtIndexPaths(added, withRowAnimation: .Automatic)
-                self.tableView.deleteRowsAtIndexPaths(deleted, withRowAnimation: .Automatic)
-                self.tableView.endUpdates()
-            } else {
-                self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
-            }
-            break
-        case .groups:
-            self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
-        }*/
+    }
+    
+    func appDidBecomeVisible(note: NSNotification) {
+        self.tableViewController.refreshControl?.beginRefreshing()
+        self.refresh()
     }
     
     func refresh() {
-        DataManager.sharedInstance().updateFeeds({
+        DataManager.sharedInstance().updateFeeds({(_) in
             self.tableViewController.refreshControl?.endRefreshing()
-            if $0 == nil {
-                self.reload()
-            } else {
-                // TODO: alert the user
-            }
+            self.reload()
         })
     }
     
@@ -333,7 +295,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             return cell
         case .groups:
             let cell = tableView.dequeueReusableCellWithIdentifier("groups", forIndexPath: indexPath) as UITableViewCell
-            cell.textLabel.text = self.groupAtIndexPath(indexPath)!.name
+            cell.textLabel?.text = self.groupAtIndexPath(indexPath)!.name
             return cell
         }
     }

@@ -61,6 +61,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         navField.placeholder = "Enter URL"
         navField.backgroundColor = UIColor(white: 0.8, alpha: 0.75)
         navField.layer.cornerRadius = 5
+        navField.autocorrectionType = .No
         navField.autocapitalizationType = .None
         navField.keyboardType = .URL
         navField.clearsOnBeginEditing = true
@@ -118,7 +119,10 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
                 self.dismiss()
             }
         } else {
-            DataManager.sharedInstance().newFeed(link) {(_) in
+            DataManager.sharedInstance().newFeed(link) {(error) in
+                if let err = error {
+                    println("\(err)")
+                }
                 loading.removeFromSuperview()
                 self.navigationController?.toolbarHidden = false
                 self.navigationController?.navigationBarHidden = false
@@ -156,7 +160,8 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
             self.webContent.loadRequest(NSURLRequest(URL: NSURL(string: textField.text)!))
         }
         if (lookForFeeds) {
-            request(.GET, textField.text).responseString {(_, _, response, error) in
+            let text = textField.text!
+            request(.GET, text).responseString {(_, _, response, error) in
                 if let txt = response {
                     let feedParser = FeedParser(string: txt)
                     feedParser.parseInfoOnly = true
@@ -169,11 +174,12 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
                         }))
                         alert.addAction(UIAlertAction(title: NSLocalizedString("Save", comment: ""), style: .Default, handler: {(_) in
                             alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
-                            self.save(textField.text)
+                            self.save(textField.text, opml: true)
                         }))
                         self.presentViewController(alert, animated: true, completion: nil)
                     }
                     feedParser.success {(info, _) in
+                        let string = info.url != nil ? info.url.absoluteString! : text
                         opmlParser.stopParsing()
                         if (!contains(self.feeds, textField.text)) {
                             let alert = UIAlertController(title: NSLocalizedString("Feed Detected", comment: ""), message: NSString.localizedStringWithFormat(NSLocalizedString("Save %@?", comment: ""), textField.text), preferredStyle: .Alert)
@@ -183,7 +189,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
                             }))
                             alert.addAction(UIAlertAction(title: NSLocalizedString("Save", comment: ""), style: .Default, handler: {(_) in
                                 alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
-                                self.save(textField.text, opml: true)
+                                self.save(string, opml: false)
                             }))
                             self.presentViewController(alert, animated: true, completion: nil)
                         }

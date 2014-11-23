@@ -221,10 +221,10 @@ class DataManager: NSObject {
                     completion(nil)
                 }
                 self.parsers = self.parsers.filter { $0 != feedParser }
-            }.failure {
+            }.failure {(error) in
                 feedsLeft--
                 if (feedsLeft == 0) {
-                    completion($0)
+                    completion(error)
                 }
             }
             feedParser.parse()

@@ -88,11 +88,11 @@ class GroupsEditorController: UITableViewController, UITextFieldDelegate {
         
         switch (indexPath.section) {
         case 0:
-            cell.textLabel.text = groupFeeds[indexPath.row].title
+            cell.textLabel?.text = groupFeeds[indexPath.row].title
         case 1:
-            cell.textLabel.text = feeds[indexPath.row].title
+            cell.textLabel?.text = feeds[indexPath.row].title
         default:
-            cell.textLabel.text = ""
+            cell.textLabel?.text = ""
         }
 
         return cell

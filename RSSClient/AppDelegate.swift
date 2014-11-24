@@ -139,6 +139,34 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
             }
         })
     }
+    
+    public func application(application: UIApplication, continueUserActivity userActivity: NSUserActivity, restorationHandler: ([AnyObject]!) -> Void) -> Bool {
+        var handled = false
+        
+        let type = userActivity.activityType
+        if type == "com.rachelbrindle.rssclient.article" {
+            var controllers : [AnyObject] = []
+            if let splitView = self.window?.rootViewController as? UISplitViewController {
+                if let nc = splitView.viewControllers.first as? UINavigationController {
+                    if let ftvc = nc.viewControllers.first as? FeedsTableViewController {
+                        if let userInfo = userActivity.userInfo {
+                            nc.popToRootViewControllerAnimated(false)
+                            ftvc.state = .feeds
+                            let feedTitle = (userInfo["feed"] as String)
+                            let feed : Feed = DataManager.sharedInstance().feeds().filter{ return $0.title == feedTitle; }.first!
+                            let articleTitle = (userInfo["article"] as String)
+                            let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.title == articleTitle }).first!
+                            let al = ftvc.showFeeds([feed], animated: false)
+                            controllers = [al.showArticle(article)]
+                            restorationHandler(controllers)
+                            handled = true
+                        }
+                    }
+                }
+            }
+        }
+        return handled
+    }
 
     public func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

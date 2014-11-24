@@ -18,11 +18,14 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 a.read = true
                 NSNotificationCenter.defaultCenter().postNotificationName("ArticleWasRead", object: a)
                 a.managedObjectContext?.save(nil)
+                let url = NSURL(string: a.link)!
+                var hasContent = false
                 if let cnt = a.content ?? a.summary {
                     self.content.loadHTMLString(articleCSS + cnt + "</body></html>", baseURL: NSURL(string: a.feed.url)!)
                     if let sb = shareButton {
                         self.toolbarItems = [spacer(), sb, spacer(), toggleContentButton, spacer()]
                     }
+                    hasContent = true
                 } else {
                     self.content.loadRequest(NSURLRequest(URL: NSURL(string: a.link)!))
                     if let sb = shareButton {
@@ -30,6 +33,30 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                     }
                 }
                 self.navigationItem.title = a.title
+                
+                if userActivity == nil {
+                    userActivity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
+                    userActivity?.title = NSLocalizedString("Reading Article", comment: "")
+                    userActivity?.becomeCurrent()
+                }
+                userActivity?.userInfo = ["feed": a.feed.title, "article": a.title, "showingContent": hasContent, "url": (hasContent ? url : NSNull())]
+                userActivity?.webpageURL = NSURL(string: a.link)
+                self.userActivity?.needsSave = true
+                
+                let notes : [UILocalNotification] = (UIApplication.sharedApplication().scheduledLocalNotifications as [UILocalNotification]).filter {(note) in
+                    if let ui = note.userInfo {
+                        if let feed : String = ui["feed"] as? String {
+                            if let title : String = ui["article"] as? String {
+                                return feed == a.feed.title && title == a.title
+                            }
+                        }
+                    }
+                    return false
+                }
+                
+                for note in notes {
+                    UIApplication.sharedApplication().cancelLocalNotification(note)
+                }
             }
         }
     }
@@ -93,7 +120,12 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         super.viewDidLoad()
         
         self.edgesForExtendedLayout = .None
-                
+        
+        if userActivity == nil {
+            userActivity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
+            userActivity?.title = NSLocalizedString("Reading Article", comment: "")
+        }
+        
         self.view.addSubview(content)
         content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
         configureContent()
@@ -137,6 +169,22 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         self.view.addGestureRecognizer(swipeLeft)
     }
     
+    override func restoreUserActivityState(activity: NSUserActivity) {
+        super.restoreUserActivityState(activity)
+        
+        if let ui = activity.userInfo {
+            let showingContent = (ui["showingContent"] as Bool)
+            if showingContent {
+                self.contentType = .Content
+            } else {
+                self.contentType = .Link
+            }
+            if let url = ui["url"] as? NSURL {
+                self.content.loadRequest(NSURLRequest(URL: url))
+            }
+        }
+    }
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setToolbarHidden(article == nil, animated: true)
@@ -145,6 +193,12 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.toolbarHidden = true
+        userActivity?.invalidate()
+        userActivity = nil
+    }
+    
+    deinit {
+        userActivity?.invalidate()
     }
     
     func configureContent() {
@@ -257,9 +311,14 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         switch (self.contentType) {
         case .Link:
             self.contentType = .Content
+            self.userActivity?.userInfo?["showingContent"] = true
+            self.userActivity?.userInfo?["url"] = NSNull()
         case .Content:
             self.contentType = .Link
+            self.userActivity?.userInfo?["showingContent"] = false
+            self.userActivity?.userInfo?["url"] = NSURL(string: self.article!.link)!
         }
+        self.userActivity?.needsSave = true
     }
     
     override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
@@ -283,5 +342,10 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     func webView(webView: WKWebView!, didStartProvisionalNavigation navigation: WKNavigation!) {
         loadingBar.progress = 0
         loadingBar.hidden = false
+        if let wvu = webView.URL {
+            self.userActivity?.userInfo?["url"] = wvu
+            self.userActivity?.needsSave = true
+            self.userActivity?.webpageURL = wvu
+        }
     }
 }

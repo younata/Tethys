@@ -65,7 +65,13 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         navField.autocapitalizationType = .None
         navField.keyboardType = .URL
         navField.clearsOnBeginEditing = true
+        
+        loadingBar.setTranslatesAutoresizingMaskIntoConstraints(false)
+        self.view.addSubview(loadingBar)
+        loadingBar.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
+        loadingBar.autoSetDimension(.Height, toSize: 2)
         loadingBar.progress = 0
+        loadingBar.hidden = true
         
         /*
         if (lookForFeeds) {
@@ -231,16 +237,18 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
                 }
             })
         }
+        loadingBar.hidden = true
     }
     
     func webView(webView: WKWebView!, didFailNavigation navigation: WKNavigation!, withError error: NSError!) {
         self.navigationItem.titleView = self.navField
+        loadingBar.hidden = true
     }
     
     func webView(webView: WKWebView!, didStartProvisionalNavigation navigation: WKNavigation!) {
         println("loading navigation: \(navigation)")
         loadingBar.progress = 0
-        self.navigationItem.titleView = loadingBar
+        loadingBar.hidden = false
         navField.placeholder = ""
         addFeedButton.enabled = false
     }

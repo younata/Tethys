@@ -20,11 +20,14 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 a.managedObjectContext?.save(nil)
                 if let cnt = a.content ?? a.summary {
                     self.content.loadHTMLString(articleCSS + cnt + "</body></html>", baseURL: NSURL(string: a.feed.url)!)
+                    if let sb = shareButton {
+                        self.toolbarItems = [spacer(), sb, spacer(), toggleContentButton, spacer()]
+                    }
                 } else {
                     self.content.loadRequest(NSURLRequest(URL: NSURL(string: a.link)!))
-                }
-                if (shareButton != nil) {
-                    self.toolbarItems = [spacer(), shareButton, spacer()]
+                    if let sb = shareButton {
+                        self.toolbarItems = [spacer(), sb, spacer()]
+                    }
                 }
                 self.navigationItem.title = a.title
             }

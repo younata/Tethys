@@ -100,6 +100,7 @@ static const NSTimeInterval kAnimationDuration = .3;
     if (self.isOpen) {
         return;
     }
+    self.hidden = NO;
     _isOpen = YES;
     
     CGFloat const y = -kButtonHeight;
@@ -143,9 +144,10 @@ static const NSTimeInterval kAnimationDuration = .3;
         [self updateBackgroundColor];
     };
     if (animated) {
-        [UIView animateWithDuration:kAnimationDuration animations:hideBlock];
+        [UIView animateWithDuration:kAnimationDuration animations:hideBlock completion:^(BOOL completed){self.hidden = YES;}];
     } else {
         hideBlock();
+        self.hidden = YES;
     }
 }
 

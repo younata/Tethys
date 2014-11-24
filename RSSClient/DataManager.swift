@@ -260,24 +260,6 @@ class DataManager: NSObject {
     }
     
     func registerForiCloudNotifications() {
-        /*
-        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-        
-        [notificationCenter addObserver:self
-        selector:@selector(storesWillChange:)
-        name:NSPersistentStoreCoordinatorStoresWillChangeNotification
-        object:self.persistentStoreCoordinator];
-        
-        [notificationCenter addObserver:self
-        selector:@selector(storesDidChange:)
-        name:NSPersistentStoreCoordinatorStoresDidChangeNotification
-        object:self.persistentStoreCoordinator];
-        
-        [notificationCenter addObserver:self
-        selector:@selector(persistentStoreDidImportUbiquitousContentChanges:)
-        name:NSPersistentStoreDidImportUbiquitousContentChangesNotification
-        object:self.persistentStoreCoordinator];
-        */
         let center = NSNotificationCenter.defaultCenter()
         center.addObserver(self, selector: "storesWillChange:", name: NSPersistentStoreCoordinatorStoresWillChangeNotification, object: persistentStoreCoordinator)
         center.addObserver(self, selector: "storesDidChange:", name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: persistentStoreCoordinator)
@@ -285,7 +267,7 @@ class DataManager: NSObject {
     }
     
     func storeDidImportiCloudContentChanges(note: NSNotification) {
-        
+        NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: nil)
     }
     
     func storesWillChange(note: NSNotification) {
@@ -322,15 +304,16 @@ class DataManager: NSObject {
         let storeURL = NSURL.fileURLWithPath(applicationDocumentsDirectory.stringByAppendingPathComponent("RSSClient.sqlite"))
         persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
         var error: NSError? = nil
-        let options = [NSMigratePersistentStoresAutomaticallyOption: true, NSInferMappingModelAutomaticallyOption: true,
-                       ]//NSPersistentStoreUbiquitousContentNameKey: "RSSClient"]
+        var options : [String: AnyObject] = [NSMigratePersistentStoresAutomaticallyOption: true, NSInferMappingModelAutomaticallyOption: true]
+        if NSUserDefaults.standardUserDefaults().boolForKey("use_iCloud") {
+            options[NSPersistentStoreUbiquitousContentNameKey] = "RSSClient"
+        }
         if unitTesting {
             persistentStoreCoordinator.addPersistentStoreWithType(NSInMemoryStoreType, configuration: nil, URL: nil, options: nil, error: &error)
         } else {
             persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: managedObjectModel.configurations.last as NSString?, URL: storeURL, options: options, error: &error)
         }
         if (error != nil) {
-            //println("Error adding persistent data store: \(error!)")
             NSFileManager.defaultManager().removeItemAtURL(storeURL!, error: nil)
             error = nil
             persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: managedObjectModel.configurations.last as NSString?, URL: storeURL, options: options, error: &error)

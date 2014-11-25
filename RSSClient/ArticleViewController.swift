@@ -41,6 +41,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 }
                 userActivity?.userInfo = ["feed": a.feed.title, "article": a.title, "showingContent": hasContent, "url": (hasContent ? url : NSNull())]
                 userActivity?.webpageURL = NSURL(string: a.link)
+                println("\(a.link) (set by article)")
                 self.userActivity?.needsSave = true
                 
                 let notes : [UILocalNotification] = (UIApplication.sharedApplication().scheduledLocalNotifications as [UILocalNotification]).filter {(note) in
@@ -343,9 +344,12 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         loadingBar.progress = 0
         loadingBar.hidden = false
         if let wvu = webView.URL {
-            self.userActivity?.userInfo?["url"] = wvu
-            self.userActivity?.needsSave = true
-            self.userActivity?.webpageURL = wvu
+            if wvu != NSURL(string: self.article!.feed.url) {
+                self.userActivity?.userInfo?["url"] = wvu
+                self.userActivity?.needsSave = true
+                self.userActivity?.webpageURL = wvu
+                println("\(wvu) (set by content)")
+            }
         }
     }
 }

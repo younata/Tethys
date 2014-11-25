@@ -81,7 +81,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         self.tableView.tableFooterView = UIView()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "appDidBecomeVisible:", name: UIApplicationWillEnterForegroundNotification, object: nil)
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "appDidBecomeVisible:", name: UIApplicationWillEnterForegroundNotification, object: nil)
     }
     
     deinit {

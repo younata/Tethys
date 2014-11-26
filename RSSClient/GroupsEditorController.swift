@@ -18,7 +18,13 @@ class GroupsEditorController: UITableViewController, UITextFieldDelegate {
             }
         }
     }
-    let feeds = DataManager.sharedInstance().feeds()
+    
+    var dataManager : DataManager? = nil
+    var feeds : [Feed] {
+        get {
+            return dataManager!.feeds()
+        }
+    }
     var cancelButton : UIBarButtonItem! = nil
     var editButton: UIBarButtonItem! = nil
     
@@ -127,7 +133,7 @@ class GroupsEditorController: UITableViewController, UITextFieldDelegate {
             self.groupFeeds.removeAtIndex(fromIndexPath.row)
         } else if fromIndexPath.section == 1 && toIndexPath.section == 1 {
             let feed = feeds[fromIndexPath.row]
-            DataManager.sharedInstance().addFeed(feed, toGroup: group)
+            dataManager!.addFeed(feed, toGroup: group)
         }
         tableView.reloadSections(NSIndexSet(indexesInRange: NSMakeRange(0, 2)), withRowAnimation: .Automatic)
     }

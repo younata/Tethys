@@ -18,6 +18,8 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
     let tableViewController = UITableViewController(style: .Plain)
     
     var tableViewTopOffset: NSLayoutConstraint!
+    
+    var dataManager : DataManager? = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -130,10 +132,33 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
             let text = NSString(contentsOfFile: location, encoding: NSUTF8StringEncoding, error: nil)!
             let feedParser = FeedParser(string: text)
             feedParser.parseInfoOnly = true
+            
+            let activityIndicator = RBActivityIndicator(forAutoLayout: ())
+            activityIndicator.showProgressBar = true
+            activityIndicator.style = RBActivityIndicatorStyleDark
+            activityIndicator.displayMessage = NSLocalizedString("Importing feed", comment: "")
+            self.view.addSubview(activityIndicator)
+            self.navigationItem.leftBarButtonItem?.enabled = false
+            let color = activityIndicator.backgroundColor
+            activityIndicator.backgroundColor = UIColor.clearColor()
+            activityIndicator.autoCenterInSuperview()
+            UIView.animateWithDuration(0.3, animations: {activityIndicator.backgroundColor = color})
+            self.view.userInteractionEnabled = false
+            
             feedParser.completion = {(info, _) in
-                print("")
-                DataManager.sharedInstance().newFeed(info.url.absoluteString!)
-                self.dismiss()
+                if let url = info.url.absoluteString {
+                    self.dataManager!.newFeed(info.url.absoluteString!) {(error) in
+                        activityIndicator.removeFromSuperview()
+                        self.view.userInteractionEnabled = true
+                        self.navigationItem.leftBarButtonItem?.enabled = true
+                        self.dismiss()
+                    }
+                } else {
+                    activityIndicator.removeFromSuperview()
+                    self.view.userInteractionEnabled = true
+                    self.navigationItem.leftBarButtonItem?.enabled = true
+                    self.dismiss()
+                }
             }
         } else if contains(opmls, item) {
             
@@ -149,7 +174,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
             UIView.animateWithDuration(0.3, animations: {activityIndicator.backgroundColor = color})
             self.view.userInteractionEnabled = false
             
-            DataManager.sharedInstance().importOPML(NSURL(string: "file://" + location)!, progress: {(progress: Double) in
+            dataManager!.importOPML(NSURL(string: "file://" + location)!, progress: {(progress: Double) in
                 activityIndicator.progress = progress
             }) {(_) in
                 self.dismiss()

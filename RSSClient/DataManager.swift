@@ -10,12 +10,7 @@ import Foundation
 import CoreData
 import WebKit
 
-private let instance = DataManager()
-
 class DataManager: NSObject {
-    class func sharedInstance() -> DataManager {
-        return instance
-    }
     
     // MARK: - Groups
     
@@ -96,7 +91,7 @@ class DataManager: NSObject {
         self.generateOPMLContents(self.feeds()).writeToFile(NSHomeDirectory().stringByAppendingPathComponent("Documents").stringByAppendingPathComponent("rnews.opml"), atomically: true, encoding: NSUTF8StringEncoding, error: nil)
     }
     
-    // MARK: - Feeds
+    // MARK: Feeds
     
     func feeds() -> [Feed] {
         return (entities("Feed", matchingPredicate: NSPredicate(value: true)) as [Feed]).sorted {
@@ -203,12 +198,36 @@ class DataManager: NSObject {
                             article.summary = item.summary
                             article.content = item.content
                             article.author = item.author
-                            article.enclosureURLs = item.enclosures
+                            article.enclosureURLs = (item.enclosures as [[String: AnyObject]]).map { return $0["url"] as String } as [String]
                             article.feed = feed
                             article.read = false
                             
                             feed.addArticlesObject(article)
-                            // TODO: enclosures
+                            
+                            /*
+                            var toInsert : [[String: AnyObject]] = []
+                            for (idx, itm) in enumerate(item.enclosures as [[String: AnyObject]]) {
+                                let url = itm["url"] as String
+                                let length = itm["length"] as Int
+                                let type = itm["type"] as String
+                                request(.GET, url).response {(_, _, response, error) in
+                                    if let err = error {
+                                        // TODO: notify the user!
+                                    } else {
+                                        if let data = response as? NSData {
+                                            if data.length == length {
+                                                let ti = ["type": type, "data": data, "url": url]
+                                                toInsert.append(ti)
+                                                if idx == (item.enclosures.count - 1) {
+                                                    article.enclosures = toInsert
+                                                    self.managedObjectContext.save(nil)
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            */
                         } else {
                             println("Error, unable to find feed for item.")
                         }
@@ -307,6 +326,7 @@ class DataManager: NSObject {
         var options : [String: AnyObject] = [NSMigratePersistentStoresAutomaticallyOption: true, NSInferMappingModelAutomaticallyOption: true]
         if NSUserDefaults.standardUserDefaults().boolForKey("use_iCloud") {
             options[NSPersistentStoreUbiquitousContentNameKey] = "RSSClient"
+            //options[NSPersistentStoreRebuildFromUbiquitousContentOption] = true
         }
         if unitTesting {
             persistentStoreCoordinator.addPersistentStoreWithType(NSInMemoryStoreType, configuration: nil, URL: nil, options: nil, error: &error)

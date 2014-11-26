@@ -15,17 +15,29 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
     public var window: UIWindow?
 
     public var collapseDetailViewController = true
+    
+    var dataManager : DataManager? = nil
+    
+    public func createDataManager() {
+        dataManager = DataManager()
+    }
 
     public func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
         self.window?.backgroundColor = UIColor.whiteColor()
         self.window?.makeKeyAndVisible()
         
+        if dataManager == nil {
+            createDataManager()
+        }
+        
         UINavigationBar.appearance().tintColor = UIColor.darkGreenColor()
         UIBarButtonItem.appearance().tintColor = UIColor.darkGreenColor()
         UITabBar.appearance().tintColor = UIColor.darkGreenColor()
         
-        let master = UINavigationController(rootViewController: FeedsTableViewController())
+        let feeds = FeedsTableViewController()
+        feeds.dataManager = dataManager
+        let master = UINavigationController(rootViewController: feeds)
         let detail = UINavigationController(rootViewController: ArticleViewController())
         let splitView = UISplitViewController()
         splitView.delegate = self
@@ -46,7 +58,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
         
         application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert, categories: NSSet(object: category)))
         
-        if DataManager.sharedInstance().feeds().count > 0 {
+        if dataManager!.feeds().count > 0 {
             application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         } else {
             application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
@@ -60,6 +72,10 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
     }
     
     public func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
+        if dataManager == nil {
+            createDataManager()
+        }
+        
         let str = application.applicationState == .Active ? "Active" : application.applicationState == .Inactive ? "Inactive" : "Background"
         if let splitView = self.window?.rootViewController as? UISplitViewController {
             if let nc = splitView.viewControllers.first as? UINavigationController {
@@ -68,7 +84,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
                         nc.popToRootViewControllerAnimated(false)
                         ftvc.state = .feeds
                         let feedTitle = (userInfo["feed"] as String)
-                        let feed : Feed = DataManager.sharedInstance().feeds().filter{ return $0.title == feedTitle; }.first!
+                        let feed : Feed = dataManager!.feeds().filter{ return $0.title == feedTitle; }.first!
                         let articleTitle = (userInfo["article"] as String)
                         let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.title == articleTitle }).first!
                         let al = ftvc.showFeeds([feed], animated: false)
@@ -83,7 +99,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
     public func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
         if let userInfo = notification.userInfo {
             let feedTitle = (userInfo["feed"] as String)
-            let feed : Feed = DataManager.sharedInstance().feeds().filter{ return $0.title == feedTitle; }.first!
+            let feed : Feed = dataManager!.feeds().filter{ return $0.title == feedTitle; }.first!
             let articleTitle = (userInfo["article"] as String)
             let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.title == articleTitle }).first!
             if identifier == "read" {
@@ -100,17 +116,21 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
     }
     
     public func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        let originalList: [Article] = DataManager.sharedInstance().feeds().reduce([], combine: {return $0 + ($1.articles.allObjects as [Article])})
+        if dataManager == nil {
+            createDataManager()
+        }
+        
+        let originalList: [Article] = dataManager!.feeds().reduce([], combine: {return $0 + ($1.articles.allObjects as [Article])})
         if originalList.count == 0 {
             completionHandler(.Failed)
             return
         }
-        DataManager.sharedInstance().updateFeeds({(error: NSError?) in
+        dataManager!.updateFeeds({(error: NSError?) in
             if (error != nil) {
                 completionHandler(.Failed)
                 return
             }
-            let al : [Article] = DataManager.sharedInstance().feeds().reduce([], combine: {return $0 + ($1.articles.allObjects as [Article])})
+            let al : [Article] = self.dataManager!.feeds().reduce([], combine: {return $0 + ($1.articles.allObjects as [Article])})
             if (al.count == originalList.count) {
                 completionHandler(.NoData)
                 return
@@ -143,6 +163,10 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
     public func application(application: UIApplication, continueUserActivity userActivity: NSUserActivity, restorationHandler: ([AnyObject]!) -> Void) -> Bool {
         var handled = false
         
+        if dataManager == nil {
+            createDataManager()
+        }
+        
         let type = userActivity.activityType
         if type == "com.rachelbrindle.rssclient.article" {
             var controllers : [AnyObject] = []
@@ -153,7 +177,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
                             nc.popToRootViewControllerAnimated(false)
                             ftvc.state = .feeds
                             let feedTitle = (userInfo["feed"] as String)
-                            let feed : Feed = DataManager.sharedInstance().feeds().filter{ return $0.title == feedTitle; }.first!
+                            let feed : Feed = dataManager!.feeds().filter{ return $0.title == feedTitle; }.first!
                             let articleTitle = (userInfo["article"] as String)
                             let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.title == articleTitle }).first!
                             let al = ftvc.showFeeds([feed], animated: false)
@@ -176,7 +200,10 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
     public func applicationDidEnterBackground(application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-        DataManager.sharedInstance().managedObjectContext.save(nil)
+        if dataManager == nil {
+            createDataManager()
+        }
+        dataManager!.managedObjectContext.save(nil)
     }
 
     public func applicationWillEnterForeground(application: UIApplication) {
@@ -190,7 +217,10 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
     public func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Saves changes in the application's managed object context before the application terminates.
-        DataManager.sharedInstance().managedObjectContext.save(nil)
+        if dataManager == nil {
+            createDataManager()
+        }
+        dataManager!.managedObjectContext.save(nil)
     }
 
     // MARK: - Core Data stack

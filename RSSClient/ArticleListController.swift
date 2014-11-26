@@ -13,7 +13,7 @@ class ArticleListController: UITableViewController {
     var articles : [Article] = []
     var feeds : [Feed] = []
     let queue = dispatch_queue_create("articleController", nil)
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -162,7 +162,7 @@ class ArticleListController: UITableViewController {
     override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
         let article = self.articleForIndexPath(indexPath)
         let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""), handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
-            DataManager.sharedInstance().managedObjectContext.deleteObject(article)
+            article.managedObjectContext?.deleteObject(article)
             article.managedObjectContext?.save(nil)
             self.refresh()
         })

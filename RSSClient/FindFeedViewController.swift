@@ -25,6 +25,8 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     
     var feeds: [String] = []
     
+    var dataManager : DataManager? = nil
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -92,7 +94,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         if (lookForFeeds) {
-            feeds = DataManager.sharedInstance().feeds().map({return $0.url;})
+            feeds = dataManager!.feeds().map({return $0.url;})
         }
     }
     
@@ -118,14 +120,14 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         self.view.addSubview(loading)
         loading.msg = NSString.localizedStringWithFormat(NSLocalizedString("Loading feed at %@", comment: ""), link)
         if opml {
-            DataManager.sharedInstance().importOPML(NSURL(string: link)!, progress: {(_) in }) {(_) in
+            dataManager!.importOPML(NSURL(string: link)!, progress: {(_) in }) {(_) in
                 loading.removeFromSuperview()
                 self.navigationController?.toolbarHidden = false
                 self.navigationController?.navigationBarHidden = false
                 self.dismiss()
             }
         } else {
-            DataManager.sharedInstance().newFeed(link) {(error) in
+            dataManager!.newFeed(link) {(error) in
                 if let err = error {
                     println("\(err)")
                 }

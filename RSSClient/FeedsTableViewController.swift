@@ -32,6 +32,8 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     
     let dropDownMenu = MAKDropDownMenu(forAutoLayout: ())
     var menuTopOffset : NSLayoutConstraint!
+    
+    var dataManager : DataManager? = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -161,7 +163,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
                     
                     if (groupName as NSString).length > 0 {
                         if !contains(self.groups.map({return $0.name}), groupName) {
-                            let group = DataManager.sharedInstance().newGroup(groupName)
+                            let group = self.dataManager!.newGroup(groupName)
                             self.reload()
                             alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
                         } else {
@@ -181,7 +183,9 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func dropDownMenu(menu: MAKDropDownMenu!, itemDidSelect itemIndex: UInt) {
         if itemIndex == 0 {
-            let vc = UINavigationController(rootViewController: FindFeedViewController())
+            let findFeed = FindFeedViewController()
+            findFeed.dataManager = dataManager
+            let vc = UINavigationController(rootViewController: findFeed)
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                 let popover = UIPopoverController(contentViewController: vc)
                 popover.popoverContentSize = CGSizeMake(600, 800)
@@ -190,7 +194,9 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
                 self.presentViewController(vc, animated: true, completion: nil)
             }
         } else if itemIndex == 1 {
-            let vc = UINavigationController(rootViewController: LocalImportViewController())
+            let localImport = LocalImportViewController()
+            localImport.dataManager = dataManager
+            let vc = UINavigationController(rootViewController: localImport)
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                 let popover = UIPopoverController(contentViewController: vc)
                 popover.popoverContentSize = CGSizeMake(600, 800)
@@ -208,7 +214,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func reload() {
         let oldFeeds = feeds
-        feeds = DataManager.sharedInstance().feeds().sorted {(f1: Feed, f2: Feed) in
+        feeds = dataManager!.feeds().sorted {(f1: Feed, f2: Feed) in
             let f1Unread = f1.unreadArticles()
             let f2Unread = f2.unreadArticles()
             if f1Unread != f2Unread {
@@ -224,7 +230,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         if feeds.count == 0 {
             self.tableViewController.refreshControl?.endRefreshing()
         }
-        groups = DataManager.sharedInstance().groups()
+        groups = dataManager!.groups()
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
     }
     
@@ -234,7 +240,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func refresh() {
-        DataManager.sharedInstance().updateFeeds({(_) in
+        dataManager!.updateFeeds({(_) in
             self.tableViewController.refreshControl?.endRefreshing()
             self.reload()
         })
@@ -326,11 +332,11 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             switch (self.state) {
             case .feeds:
                 let feed = self.feedAtIndexPath(indexPath)
-                DataManager.sharedInstance().deleteFeed(feed)
+                self.dataManager!.deleteFeed(feed)
                 self.reload()
             case .groups:
                 let group = self.groupAtIndexPath(indexPath)!
-                DataManager.sharedInstance().deleteGroup(self.groupAtIndexPath(indexPath)!)
+                self.dataManager!.deleteGroup(self.groupAtIndexPath(indexPath)!)
                 self.reload()
             }
         })
@@ -341,13 +347,14 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
                 for article in feed.articles.allObjects as [Article] {
                     article.read = true
                 }
-                DataManager.sharedInstance().saveContext()
+                self.dataManager!.saveContext()
                 self.reload()
             })
             return [delete, markRead]
         case .groups:
             let edit = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Edit", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
                 let gvc = GroupsEditorController()
+                gvc.dataManager = self.dataManager
                 gvc.group = self.groupAtIndexPath(indexPath)
                 self.tableView.setEditing(false, animated: true)
                 self.presentViewController(UINavigationController(rootViewController: gvc), animated: true, completion: nil)

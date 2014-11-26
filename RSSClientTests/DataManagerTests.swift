@@ -15,14 +15,16 @@ class DataManagerTests: XCTestCase {
         super.setUp()
     }
     
+    let dataManager = DataManager()
+    
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
-        for feed in DataManager.sharedInstance().feeds() {
-            DataManager.sharedInstance().deleteFeed(feed)
+        for feed in dataManager.feeds() {
+            dataManager.deleteFeed(feed)
         }
-        for group in DataManager.sharedInstance().groups() {
-            DataManager.sharedInstance().deleteGroup(group)
+        for group in dataManager.groups() {
+            dataManager.deleteGroup(group)
         }
     }
     
@@ -33,47 +35,47 @@ class DataManagerTests: XCTestCase {
         let rss2URL = "b"
         let atomURL = "c"
         for url in [rss1URL, rss2URL, atomURL] {
-            let feed = DataManager.sharedInstance().newFeed(url)
+            let feed = dataManager.newFeed(url)
             XCTAssertNotNil(feed, "creating new feeds, should not be nil")
         }
-        XCTAssertEqual(DataManager.sharedInstance().feeds().count, 3, "Should have created and saved 3 feeds")
-        let n = DataManager.sharedInstance().feeds().count
-        DataManager.sharedInstance().newFeed(rss1URL)
-        XCTAssertEqual(DataManager.sharedInstance().feeds().count, n, "Should not have added a duplicate feed")
+        XCTAssertEqual(dataManager.feeds().count, 3, "Should have created and saved 3 feeds")
+        let n = dataManager.feeds().count
+        dataManager.newFeed(rss1URL)
+        XCTAssertEqual(dataManager.feeds().count, n, "Should not have added a duplicate feed")
     }
     
     let feedURL = ""
     let otherFeedURL = ""
     
     func testDeleteFeed() {
-        let originalCount = DataManager.sharedInstance().feeds().count
-        let feed = DataManager.sharedInstance().newFeed(feedURL)
-        XCTAssertEqual(DataManager.sharedInstance().feeds().count, originalCount + 1, "Should have stored 1 more feed")
-        DataManager.sharedInstance().deleteFeed(feed)
-        XCTAssertEqual(DataManager.sharedInstance().feeds().count, originalCount, "Should have deleted stored feed")
+        let originalCount = dataManager.feeds().count
+        let feed = dataManager.newFeed(feedURL)
+        XCTAssertEqual(dataManager.feeds().count, originalCount + 1, "Should have stored 1 more feed")
+        dataManager.deleteFeed(feed)
+        XCTAssertEqual(dataManager.feeds().count, originalCount, "Should have deleted stored feed")
     }
     
     func testUpdateAllFeeds() {
-        let feed = DataManager.sharedInstance().newFeed(feedURL)
-        let otherFeed = DataManager.sharedInstance().newFeed(otherFeedURL)
+        let feed = dataManager.newFeed(feedURL)
+        let otherFeed = dataManager.newFeed(otherFeedURL)
         let expectation = expectationWithDescription("Update all feeds")
         let completion: (NSError?) -> (Void) = {(_) in
             expectation.fulfill()
         }
-        DataManager.sharedInstance().updateFeeds(completion)
+        dataManager.updateFeeds(completion)
         waitForExpectationsWithTimeout(60, handler: {error in
             // blep
         })
     }
     
     func testUpdateSomeFeeds() {
-        let feed = DataManager.sharedInstance().newFeed(feedURL)
-        let otherFeed = DataManager.sharedInstance().newFeed(otherFeedURL)
+        let feed = dataManager.newFeed(feedURL)
+        let otherFeed = dataManager.newFeed(otherFeedURL)
         let expectation = expectationWithDescription("Update all feeds")
         let completion: (NSError?) -> (Void) = {(_) in
             expectation.fulfill()
         }
-        DataManager.sharedInstance().updateFeeds([feed], completion: completion)
+        dataManager.updateFeeds([feed], completion: completion)
         waitForExpectationsWithTimeout(60, handler: {error in
             // blep
         })
@@ -82,47 +84,47 @@ class DataManagerTests: XCTestCase {
     // MARK: - Groups
     
     func testCreateGroups() {
-        let origCount = DataManager.sharedInstance().groups().count
+        let origCount = dataManager.groups().count
         
-        let group = DataManager.sharedInstance().newGroup("test")
+        let group = dataManager.newGroup("test")
         
-        XCTAssertEqual(DataManager.sharedInstance().groups().count, origCount + 1, "should add group")
+        XCTAssertEqual(dataManager.groups().count, origCount + 1, "should add group")
         
-        let otherGroup = DataManager.sharedInstance().newGroup("test")
+        let otherGroup = dataManager.newGroup("test")
         XCTAssertEqual(otherGroup, group, "Adding group with dupe name should return original group")
-        XCTAssertEqual(DataManager.sharedInstance().groups().count, origCount + 1, "adding group with dupe name should not create a new group")
+        XCTAssertEqual(dataManager.groups().count, origCount + 1, "adding group with dupe name should not create a new group")
     }
     
     func testAddingFeedsToGroups() {
-        let feed = DataManager.sharedInstance().newFeed(feedURL)
-        let group = DataManager.sharedInstance().newGroup("test")
+        let feed = dataManager.newFeed(feedURL)
+        let group = dataManager.newGroup("test")
 
-        DataManager.sharedInstance().addFeed(feed, toGroup: group)
+        dataManager.addFeed(feed, toGroup: group)
         XCTAssert(feed.groups.containsObject(group), "adding a feed to a group should add the group to the feed's groups set")
         XCTAssert(group.feeds.containsObject(feed), "adding a feed to a group should add the feed to the group's feeds set")
     }
     
     func testDeleteGroup() {
-        let feed = DataManager.sharedInstance().newFeed(feedURL)
-        let group = DataManager.sharedInstance().newGroup("test")
+        let feed = dataManager.newFeed(feedURL)
+        let group = dataManager.newGroup("test")
         
-        DataManager.sharedInstance().addFeed(feed, toGroup: group)
+        dataManager.addFeed(feed, toGroup: group)
         
-        let origCount = DataManager.sharedInstance().groups().count
+        let origCount = dataManager.groups().count
 
-        DataManager.sharedInstance().deleteGroup(group)
-        XCTAssertEqual(DataManager.sharedInstance().groups().count, origCount - 1, "Deleting feed should remove it from storage")
+        dataManager.deleteGroup(group)
+        XCTAssertEqual(dataManager.groups().count, origCount - 1, "Deleting feed should remove it from storage")
         XCTAssertFalse(feed.groups.containsObject(group), "deleting group should remove it from any feed's groups set")
-        XCTAssert(contains(DataManager.sharedInstance().feeds(), feed), "")
+        XCTAssert(contains(dataManager.feeds(), feed), "")
     }
     
     func testDeleteFeedGroup() {
-        let feed = DataManager.sharedInstance().newFeed(feedURL)
-        let group = DataManager.sharedInstance().newGroup("test")
+        let feed = dataManager.newFeed(feedURL)
+        let group = dataManager.newGroup("test")
         
-        DataManager.sharedInstance().addFeed(feed, toGroup: group)
+        dataManager.addFeed(feed, toGroup: group)
 
-        DataManager.sharedInstance().deleteFeed(feed)
+        dataManager.deleteFeed(feed)
     }
 
     func testPerformanceExample() {

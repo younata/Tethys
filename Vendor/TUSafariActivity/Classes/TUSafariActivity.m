@@ -43,11 +43,6 @@
 - (NSString *)activityTitle
 {
     return NSLocalizedString(@"Open in Safari", @"");
-    NSURL *resourcesURL = [[NSBundle mainBundle] URLForResource:@"TUSafariActivity" withExtension:@"bundle"];
-    NSBundle *bundle = [NSBundle bundleWithURL:resourcesURL];
-    NSString *defaultString = [bundle localizedStringForKey:@"Open in Safari" value:@"Open in Safari" table:@"TUSafariActivity"];
-    
-    return [[NSBundle mainBundle] localizedStringForKey:@"Open in Safari" value:defaultString table:nil];
 }
 
 - (UIImage *)activityImage

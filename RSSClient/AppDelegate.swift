@@ -82,7 +82,6 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
                 if let ftvc = nc.viewControllers.first as? FeedsTableViewController {
                     if let userInfo = notification.userInfo {
                         nc.popToRootViewControllerAnimated(false)
-                        ftvc.state = .feeds
                         let feedTitle = (userInfo["feed"] as String)
                         let feed : Feed = dataManager!.feeds().filter{ return $0.title == feedTitle; }.first!
                         let articleTitle = (userInfo["article"] as String)
@@ -175,7 +174,6 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
                     if let ftvc = nc.viewControllers.first as? FeedsTableViewController {
                         if let userInfo = userActivity.userInfo {
                             nc.popToRootViewControllerAnimated(false)
-                            ftvc.state = .feeds
                             let feedTitle = (userInfo["feed"] as String)
                             let feed : Feed = dataManager!.feeds().filter{ return $0.title == feedTitle; }.first!
                             let articleTitle = (userInfo["article"] as String)

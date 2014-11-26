@@ -14,7 +14,6 @@ func newFeed(title: String = "test", summary: String = "test summary", image: UI
     let feed = (newObject("Feed") as Feed)
     feed.title = title
     feed.summary = summary
-    feed.image = nil
     feed.articles = NSSet(array: articles)
     dataManager.managedObjectContext.save(nil)
     return feed

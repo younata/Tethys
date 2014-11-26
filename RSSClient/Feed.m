@@ -9,15 +9,14 @@
 #import "Feed.h"
 #import "Article.h"
 
-
 @implementation Feed
 
 @dynamic title;
 @dynamic url;
 @dynamic summary;
-@dynamic image;
 @dynamic articles;
-@dynamic groups;
+@dynamic tags;
+@dynamic query;
 
 - (NSUInteger)unreadArticles
 {

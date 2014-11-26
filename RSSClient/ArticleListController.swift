@@ -11,7 +11,7 @@ import UIKit
 class ArticleListController: UITableViewController {
     
     var articles : [Article] = []
-    var feeds : [Feed] = []
+    var feeds : [Feed]? = nil
     let queue = dispatch_queue_create("articleController", nil)
     
     override func viewDidLoad() {
@@ -44,8 +44,8 @@ class ArticleListController: UITableViewController {
         super.viewDidAppear(animated)
         self.refreshControl?.beginRefreshing()
         refresh()
-        if feeds.count == 1 {
-            self.navigationItem.title = feeds.first?.title
+        if feeds?.count == 1 {
+            self.navigationItem.title = feeds?.first?.title
         }
     }
     
@@ -54,24 +54,29 @@ class ArticleListController: UITableViewController {
     }
     
     func refresh() {
-        dispatch_async(queue) {
-            let articles = self.feeds.reduce([]) { return $0 + $1.articles.allObjects }
-            let newArticles = NSSet(array: articles)
-            let oldArticles = NSSet(array: self.articles)
-            if newArticles != oldArticles {
-                self.articles = (articles as [Article])
-                self.articles.sort({(a : Article, b: Article) in
-                    let da = a.updatedAt ?? a.published
-                    let db = b.updatedAt ?? b.published
-                    return da!.timeIntervalSince1970 > db!.timeIntervalSince1970
-                })
-            }
-            dispatch_async(dispatch_get_main_queue()) {
+        if let feeds = self.feeds {
+            dispatch_async(queue) {
+                let articles = feeds.reduce([]) { return $0 + $1.articles.allObjects }
+                let newArticles = NSSet(array: articles)
+                let oldArticles = NSSet(array: self.articles)
                 if newArticles != oldArticles {
-                    self.tableView.reloadData()
+                    self.articles = (articles as [Article])
+                    self.articles.sort({(a : Article, b: Article) in
+                        let da = a.updatedAt ?? a.published
+                        let db = b.updatedAt ?? b.published
+                        return da!.timeIntervalSince1970 > db!.timeIntervalSince1970
+                    })
                 }
-                self.refreshControl?.endRefreshing()
+                dispatch_async(dispatch_get_main_queue()) {
+                    if newArticles != oldArticles {
+                        self.tableView.reloadData()
+                    }
+                    self.refreshControl?.endRefreshing()
+                }
             }
+        } else {
+            self.tableView.reloadData()
+            self.refreshControl?.endRefreshing()
         }
     }
     

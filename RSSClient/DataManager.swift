@@ -12,37 +12,6 @@ import WebKit
 
 class DataManager: NSObject {
     
-    // MARK: - Groups
-    
-    func groups() -> [Group] {
-        return (entities("Group", matchingPredicate: NSPredicate(value: true)) as [Group]).sorted { return $0.name < $1.name; }
-    }
-    
-    func newGroup(name: String) -> Group {
-        if let group = entities("Group", matchingPredicate: NSPredicate(format: "name = %@", name)!).last as? Group {
-            return group
-        } else {
-            let group = (NSEntityDescription.insertNewObjectForEntityForName("Group", inManagedObjectContext: managedObjectContext) as Group)
-            group.name = name
-            managedObjectContext.save(nil)
-            return group
-        }
-    }
-    
-    func addFeed(feed: Feed, toGroup group:Group) {
-        group.addFeedsObject(feed)
-        feed.addGroupsObject(group)
-    }
-    
-    func deleteGroup(group: Group) {
-        for feed: Feed in (group.feeds.allObjects as [Feed]) {
-            group.removeFeedsObject(feed)
-            feed.removeGroupsObject(group)
-        }
-        self.managedObjectContext.deleteObject(group)
-        self.managedObjectContext.save(nil)
-    }
-    
     // MARK: OPML
     
     func importOPML(opml: NSURL) {
@@ -80,7 +49,7 @@ class DataManager: NSObject {
     
     func generateOPMLContents(feeds: [Feed]) -> String {
         var ret = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><opml version=\"2.0\"><body>"
-        for feed in feeds {
+        for feed in feeds.filter({return $0.query == nil}) {
             ret += "<outline xmlURL=\"\(feed.url)\" title=\"\(feed.title)\" type=\"rss\"/>"
         }
         ret += "</body></opml>"
@@ -114,7 +83,7 @@ class DataManager: NSObject {
         if let theFeed = entities("Feed", matchingPredicate: predicate!).last as? Feed {
             feed = theFeed
         } else {
-            feed = (NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: managedObjectContext) as Feed)
+            feed = NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: managedObjectContext) as Feed
             feed.url = feedURL
             self.managedObjectContext.save(nil)
             NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
@@ -127,13 +96,25 @@ class DataManager: NSObject {
         return feed
     }
     
+    func newQueryFeed(title: String, code: String, summary: String? = nil) -> Feed {
+        let predicate = NSPredicate(format: "title = %@", title)
+        var feed: Feed! = nil
+        if let theFeed = entities("Feed", matchingPredicate: predicate!).last as? Feed {
+            feed = theFeed
+        } else {
+            feed = NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: managedObjectContext) as Feed
+            feed.title = title
+            feed.query = code
+            feed.summary = summary
+            self.managedObjectContext.save(nil)
+            NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
+        }
+        return feed
+    }
+    
     func deleteFeed(feed: Feed) {
         for article in (feed.articles.allObjects as [Article]) {
             self.managedObjectContext.deleteObject(article)
-        }
-        for group: Group in (feed.groups.allObjects as [Group]) {
-            group.removeFeedsObject(feed)
-            feed.removeGroupsObject(group)
         }
         self.managedObjectContext.deleteObject(feed)
         self.managedObjectContext.save(nil)
@@ -153,7 +134,7 @@ class DataManager: NSObject {
     
     func updateFeeds(feeds: [Feed], completion: (NSError?)->(Void)) {
         var feedsLeft = feeds.count
-        for feed in feeds {
+        for feed in feeds.filter({$0.url != nil}) {
             let feedParser = FeedParser(URL: NSURL(string: feed.url)!)
             feedParser.success {(info, items) in
                 var predicate = NSPredicate(format: "url = %@", feed.url)!
@@ -198,29 +179,31 @@ class DataManager: NSObject {
                             article.summary = item.summary
                             article.content = item.content
                             article.author = item.author
-                            article.enclosureURLs = (item.enclosures as [[String: AnyObject]]).map { return $0["url"] as String } as [String]
                             article.feed = feed
                             article.read = false
                             
                             feed.addArticlesObject(article)
                             
                             /*
-                            var toInsert : [[String: AnyObject]] = []
-                            for (idx, itm) in enumerate(item.enclosures as [[String: AnyObject]]) {
-                                let url = itm["url"] as String
-                                let length = itm["length"] as Int
-                                let type = itm["type"] as String
-                                request(.GET, url).response {(_, _, response, error) in
-                                    if let err = error {
-                                        // TODO: notify the user!
-                                    } else {
-                                        if let data = response as? NSData {
-                                            if data.length == length {
-                                                let ti = ["type": type, "data": data, "url": url]
-                                                toInsert.append(ti)
-                                                if idx == (item.enclosures.count - 1) {
-                                                    article.enclosures = toInsert
-                                                    self.managedObjectContext.save(nil)
+                            if let enclosures = item.enclosures {
+                                article.enclosureURLs = (enclosures as [[String: AnyObject]]).map { return $0["url"] as String } as [String]
+                                var toInsert : [[String: AnyObject]] = []
+                                for (idx, itm) in enumerate(item.enclosures as [[String: AnyObject]]) {
+                                    let url = itm["url"] as String
+                                    let length = itm["length"] as Int
+                                    let type = itm["type"] as String
+                                    request(.GET, url).response {(_, _, response, error) in
+                                        if let err = error {
+                                            // TODO: notify the user!
+                                        } else {
+                                            if let data = response as? NSData {
+                                                if data.length == length {
+                                                    let ti = ["type": type, "data": data, "url": url]
+                                                    toInsert.append(ti)
+                                                    if idx == (item.enclosures.count - 1) {
+                                                        article.enclosures = toInsert
+                                                        self.managedObjectContext.save(nil)
+                                                    }
                                                 }
                                             }
                                         }
@@ -248,6 +231,26 @@ class DataManager: NSObject {
             }
             feedParser.parse()
             self.parsers.append(feedParser)
+        }
+    }
+    
+    // MARK: Articles
+    
+    func articles() -> [Article] {
+        return (entities("Article", matchingPredicate: NSPredicate(value: true)) as [Article]).sorted {(a : Article, b: Article) in
+            if let da = a.updatedAt ?? a.published {
+                if let db = b.updatedAt ?? b.published {
+                    return da.timeIntervalSince1970 > db.timeIntervalSince1970
+                }
+            }
+            return true
+        }
+    }
+    
+    func articlesMatchingQuery(query: String) -> [Article] {
+        // TODO: research javascriptcore to do this. Until then, query feeds are useless.
+        return articles().filter {(article) in
+            return true
         }
     }
     

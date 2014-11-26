@@ -10,16 +10,15 @@
 #import <CoreData/CoreData.h>
 
 @class Article;
-@class Group;
 
 @interface Feed : NSManagedObject
 
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSString * url;
 @property (nonatomic, retain) NSString * summary;
-@property (nonatomic, retain) id image;
+@property (nonatomic, retain) NSString * query;
+@property (nonatomic, retain) id tags;
 @property (nonatomic, retain) NSSet *articles;
-@property (nonatomic, retain) NSSet *groups;
 
 - (NSUInteger)unreadArticles;
 
@@ -31,10 +30,5 @@
 - (void)removeArticlesObject:(Article *)value;
 - (void)addArticles:(NSSet *)values;
 - (void)removeArticles:(NSSet *)values;
-
-- (void)addGroupsObject:(Group *)value;
-- (void)removeGroupsObject:(Group *)value;
-- (void)addGroups:(NSSet *)values;
-- (void)removeGroups:(NSSet *)values;
 
 @end

@@ -11,5 +11,4 @@
 
 #import "Article.h"
 #import "Feed.h"
-#import "Group.h"
 #import "UIColor+RSSClient.h"

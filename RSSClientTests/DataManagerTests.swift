@@ -23,9 +23,6 @@ class DataManagerTests: XCTestCase {
         for feed in dataManager.feeds() {
             dataManager.deleteFeed(feed)
         }
-        for group in dataManager.groups() {
-            dataManager.deleteGroup(group)
-        }
     }
     
     // MARK: - Feeds
@@ -79,52 +76,6 @@ class DataManagerTests: XCTestCase {
         waitForExpectationsWithTimeout(60, handler: {error in
             // blep
         })
-    }
-    
-    // MARK: - Groups
-    
-    func testCreateGroups() {
-        let origCount = dataManager.groups().count
-        
-        let group = dataManager.newGroup("test")
-        
-        XCTAssertEqual(dataManager.groups().count, origCount + 1, "should add group")
-        
-        let otherGroup = dataManager.newGroup("test")
-        XCTAssertEqual(otherGroup, group, "Adding group with dupe name should return original group")
-        XCTAssertEqual(dataManager.groups().count, origCount + 1, "adding group with dupe name should not create a new group")
-    }
-    
-    func testAddingFeedsToGroups() {
-        let feed = dataManager.newFeed(feedURL)
-        let group = dataManager.newGroup("test")
-
-        dataManager.addFeed(feed, toGroup: group)
-        XCTAssert(feed.groups.containsObject(group), "adding a feed to a group should add the group to the feed's groups set")
-        XCTAssert(group.feeds.containsObject(feed), "adding a feed to a group should add the feed to the group's feeds set")
-    }
-    
-    func testDeleteGroup() {
-        let feed = dataManager.newFeed(feedURL)
-        let group = dataManager.newGroup("test")
-        
-        dataManager.addFeed(feed, toGroup: group)
-        
-        let origCount = dataManager.groups().count
-
-        dataManager.deleteGroup(group)
-        XCTAssertEqual(dataManager.groups().count, origCount - 1, "Deleting feed should remove it from storage")
-        XCTAssertFalse(feed.groups.containsObject(group), "deleting group should remove it from any feed's groups set")
-        XCTAssert(contains(dataManager.feeds(), feed), "")
-    }
-    
-    func testDeleteFeedGroup() {
-        let feed = dataManager.newFeed(feedURL)
-        let group = dataManager.newGroup("test")
-        
-        dataManager.addFeed(feed, toGroup: group)
-
-        dataManager.deleteFeed(feed)
     }
 
     func testPerformanceExample() {

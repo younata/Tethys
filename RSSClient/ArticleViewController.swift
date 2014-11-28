@@ -13,7 +13,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     
     var article: Article? = nil {
         didSet {
-            self.navigationController?.setToolbarHidden(article == nil, animated: true)
+            self.navigationController?.setToolbarHidden(article == nil, animated: false)
             if let a = article {
                 a.read = true
                 NSNotificationCenter.defaultCenter().postNotificationName("ArticleWasRead", object: a)
@@ -187,12 +187,12 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.setToolbarHidden(article == nil, animated: true)
+        //self.navigationController?.setToolbarHidden(article == nil, animated: true)
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        self.navigationController?.toolbarHidden = true
+        //self.navigationController?.toolbarHidden = true
         userActivity?.invalidate()
         userActivity = nil
     }

@@ -13,6 +13,9 @@ class FeedTableCell: UITableViewCell {
     var feed: Feed? = nil {
         didSet {
             if let f = feed {
+                let title = f.allTags().reduce(f.title) {
+                    if $1.hasPrefix("~") { return $1.substringFromIndex($1.startIndex) }; return $0
+                }
                 nameLabel.text = f.title
                 summaryLabel.text = f.summary
                 unreadCounter.unread = UInt(filter(f.articles.allObjects, {return $0.read == false}).count)
@@ -45,7 +48,7 @@ class FeedTableCell: UITableViewCell {
         
         nameLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
         nameLabel.autoPinEdge(.Right, toEdge: .Left, ofView: unreadCounter, withOffset: -8)
-        nameLabel.autoPinEdge(.Left, toEdge: .Right, ofView: self.contentView, withOffset: 8)
+        nameLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         
         nameLabel.numberOfLines = 0
         nameLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
@@ -53,7 +56,7 @@ class FeedTableCell: UITableViewCell {
         summaryLabel.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
         summaryLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
         summaryLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: nameLabel, withOffset: 8, relation: .GreaterThanOrEqual)
-        summaryLabel.autoPinEdge(.Left, toEdge: .Right, ofView: self.contentView, withOffset: 8)
+        summaryLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         
         summaryLabel.numberOfLines = 0
         summaryLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)

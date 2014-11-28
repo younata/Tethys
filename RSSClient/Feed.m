@@ -18,13 +18,4 @@
 @dynamic tags;
 @dynamic query;
 
-- (NSUInteger)unreadArticles
-{
-    NSUInteger ret = 0;
-    for (Article *article in self.articles) {
-        ret += article.read ? 0 : 1;
-    }
-    return ret;
-}
-
 @end

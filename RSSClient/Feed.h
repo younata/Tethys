@@ -20,8 +20,6 @@
 @property (nonatomic, retain) id tags;
 @property (nonatomic, retain) NSSet *articles;
 
-- (NSUInteger)unreadArticles;
-
 @end
 
 @interface Feed (CoreDataGeneratedAccessors)

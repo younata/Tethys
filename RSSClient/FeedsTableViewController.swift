@@ -146,8 +146,8 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     func reload() {
         let oldFeeds = feeds
         feeds = dataManager!.feeds().sorted {(f1: Feed, f2: Feed) in
-            let f1Unread = f1.unreadArticles()
-            let f2Unread = f2.unreadArticles()
+            let f1Unread = f1.unreadArticles(self.dataManager!)
+            let f2Unread = f2.unreadArticles(self.dataManager!)
             if f1Unread != f2Unread {
                 return f1Unread > f2Unread
             }
@@ -186,6 +186,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func showFeeds(feeds: [Feed], animated: Bool) -> ArticleListController {
         let al = ArticleListController(style: .Plain)
+        al.dataManager = dataManager
         al.feeds = feeds
         self.navigationController?.pushViewController(al, animated: animated)
         return al

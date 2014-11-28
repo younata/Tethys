@@ -1168,7 +1168,7 @@
 				8963F42C1A2660DF00B447D6 /* RSSClient 1.1.xcdatamodel */,
 				89C8307B19D730E9009924DA /* RSSClient.xcdatamodel */,
 			);
-			currentVersion = 89C8307B19D730E9009924DA /* RSSClient.xcdatamodel */;
+			currentVersion = 8963F42C1A2660DF00B447D6 /* RSSClient 1.1.xcdatamodel */;
 			path = RSSClient.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

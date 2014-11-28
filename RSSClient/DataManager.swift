@@ -9,6 +9,7 @@
 import Foundation
 import CoreData
 import WebKit
+import JavaScriptCore
 
 class DataManager: NSObject {
     
@@ -248,9 +249,14 @@ class DataManager: NSObject {
     }
     
     func articlesMatchingQuery(query: String) -> [Article] {
-        // TODO: research javascriptcore to do this. Until then, query feeds are useless.
+        let ctx = JSContext()
+        let script = "var include = function(article) {\(query)}"
+        ctx.evaluateScript(script)
+        let function = ctx.objectForKeyedSubscript("include")
+        
         return articles().filter {(article) in
-            return true
+            let val = function.callWithArguments([article])
+            return val.toBool()
         }
     }
     

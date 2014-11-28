@@ -9,14 +9,21 @@
 import Foundation
 
 extension Feed {
-    func allArticles(dataManager: DataManager?) -> [Article] {
+    func unreadArticles(dataManager: DataManager) -> UInt {
+        return allArticles(dataManager).reduce(0) {
+            return $0 + ($1.read ? 0 : 1)
+        }
+    }
+    
+    func allArticles(dataManager: DataManager) -> [Article] {
         if let query = self.query {
-            if let dm = dataManager {
-                
-            }
+            return dataManager.articlesMatchingQuery(query)
         } else {
             return self.articles.allObjects as [Article]
         }
-        return []
+    }
+    
+    func allTags() -> [String] {
+        return self.tags == nil ? [] : self.tags as [String]
     }
 }

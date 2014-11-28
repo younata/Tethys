@@ -14,6 +14,8 @@ class ArticleListController: UITableViewController {
     var feeds : [Feed]? = nil
     let queue = dispatch_queue_create("articleController", nil)
     
+    var dataManager : DataManager? = nil
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -56,7 +58,7 @@ class ArticleListController: UITableViewController {
     func refresh() {
         if let feeds = self.feeds {
             dispatch_async(queue) {
-                let articles = feeds.reduce([]) { return $0 + $1.articles.allObjects }
+                let articles = feeds.reduce([] as [Article]) { return $0 + $1.allArticles(self.dataManager!) }
                 let newArticles = NSSet(array: articles)
                 let oldArticles = NSSet(array: self.articles)
                 if newArticles != oldArticles {
@@ -104,7 +106,8 @@ class ArticleListController: UITableViewController {
     
     // MARK: - Scroll view delegate
     
-    // infinite scrolling, is it worth it?
+    // infinite scrolling, is it worth it? (Yes, but later)
+    // TODO: infinite scrolling
     /*
     override func scrollViewDidScroll(scrollView: UIScrollView) {
         let actualPosition = scrollView.contentOffset.y;

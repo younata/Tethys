@@ -28,6 +28,16 @@ extension Feed {
     }
     
     func asDict() -> [String: AnyObject] {
+        var ret = asDictNoArticles()
+        var theArticles : [[String: AnyObject]] = []
+        for article in articles.allObjects as [Article] {
+            theArticles.append(article.asDictNoFeed())
+        }
+        ret["articles"] = theArticles
+        return ret
+    }
+    
+    func asDictNoArticles() -> [String: AnyObject] {
         var ret : [String: AnyObject] = [:]
         ret["title"] = title ?? ""
         ret["url"] = url ?? ""
@@ -40,6 +50,12 @@ extension Feed {
 
 extension Article {
     func asDict() -> [String: AnyObject] {
+        var ret = asDictNoFeed()
+        ret["feed"] = feed.asDictNoArticles()
+        return ret
+    }
+    
+    func asDictNoFeed() -> [String: AnyObject] {
         var ret : [String: AnyObject] = [:]
         ret["title"] = title ?? ""
         ret["link"] = link ?? ""

@@ -53,13 +53,12 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         self.tableView.estimatedRowHeight = 80
         
         self.tableViewController.refreshControl = UIRefreshControl(frame: CGRectZero)
-        self.tableViewController.refreshControl?.beginRefreshing()
-        self.refresh()
         self.tableViewController.refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
         
         self.tableView.tableFooterView = UIView()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "appWillBecomeVisible:", name: UIApplicationDidBecomeActiveNotification, object: nil)
     }
     
     deinit {
@@ -84,6 +83,11 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.reload()
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.tableViewController.refreshControl?.endRefreshing()
     }
     
     func showSettings() {
@@ -158,20 +162,19 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             return f1.title < f2.title
         }
-        if feeds.count == 0 {
-            self.tableViewController.refreshControl?.endRefreshing()
-        }
+        self.tableViewController.refreshControl?.endRefreshing()
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
     }
     
-    func appDidBecomeVisible(note: NSNotification) {
-        self.tableViewController.refreshControl?.beginRefreshing()
-        self.refresh()
+    func appWillBecomeVisible(note: NSNotification) {
+        dispatch_async(dispatch_get_main_queue()) {
+            self.tableViewController.refreshControl?.beginRefreshing()
+            self.refresh()
+        }
     }
     
     func refresh() {
         dataManager!.updateFeeds({(_) in
-            self.tableViewController.refreshControl?.endRefreshing()
             self.reload()
         })
     }

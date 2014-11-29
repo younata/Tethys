@@ -36,17 +36,28 @@ class QueryFeedViewController: UIViewController, UITextViewDelegate, UITextField
         super.viewDidLoad()
         
         self.edgesForExtendedLayout = .None
-        
+        /*
         self.view.addSubview(scrollView)
         scrollView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
         scrollBottomConstraint = scrollView.autoPinEdgeToSuperviewEdge(.Bottom)
         scrollView.contentSize = self.view.bounds.size
-        scrollView.backgroundColor = UIColor.clearColor()
+        scrollView.backgroundColor = UIColor.clearColor()*/
         
         //let view = scrollView
         
+        let label = UITextView(forAutoLayout: ())
+        view.addSubview(label)
+        label.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(8, 8, 0, 8), excludingEdge: .Bottom)
+        label.autoSetDimension(.Height, toSize: 64, relation: .GreaterThanOrEqual)
+        label.scrollEnabled = false
+        label.editable = false
+        label.attributedText = NSAttributedString(data: NSData(contentsOfURL: NSBundle.mainBundle().URLForResource("aboutQueryFeeds", withExtension: "html")!)!, options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil, error: nil)
+        label.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+        
         view.addSubview(titleField)
-        titleField.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(20, 8, 0, 8), excludingEdge: .Bottom)
+        titleField.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
+        titleField.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
+        titleField.autoPinEdge(.Top, toEdge: .Bottom, ofView: label, withOffset: 8)
         titleField.autoSetDimension(.Height, toSize: 32)
         
         titleField.delegate = self

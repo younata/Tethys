@@ -134,8 +134,9 @@ class DataManager: NSObject {
     var parsers : [FeedParser] = []
     
     func updateFeeds(feeds: [Feed], completion: (NSError?)->(Void)) {
-        var feedsLeft = feeds.count
-        for feed in feeds.filter({$0.url != nil}) {
+        let theFeeds = feeds.filter { $0.url != nil }
+        var feedsLeft = theFeeds.count
+        for feed in theFeeds {
             let feedParser = FeedParser(URL: NSURL(string: feed.url)!)
             feedParser.success {(info, items) in
                 var predicate = NSPredicate(format: "url = %@", feed.url)!
@@ -237,8 +238,10 @@ class DataManager: NSObject {
     
     // MARK: Articles
     
-    func articles() -> [Article] {
-        return (entities("Article", matchingPredicate: NSPredicate(value: true)) as [Article]).sorted {(a : Article, b: Article) in
+    private var theArticles : [Article]? = nil
+    
+    func refreshArticles() {
+        theArticles = (entities("Article", matchingPredicate: NSPredicate(value: true)) as [Article]).sorted {(a : Article, b: Article) in
             if let da = a.updatedAt ?? a.published {
                 if let db = b.updatedAt ?? b.published {
                     return da.timeIntervalSince1970 > db.timeIntervalSince1970
@@ -248,14 +251,28 @@ class DataManager: NSObject {
         }
     }
     
+    func articles() -> [Article] {
+        if theArticles == nil {
+            refreshArticles()
+        }
+        return theArticles!
+    }
+    
     func articlesMatchingQuery(query: String) -> [Article] {
         let ctx = JSContext()
-        let script = "var include = function(article) {\(query)}"
+        ctx.exceptionHandler = {(context, value) in
+            println("Javascript exception: \(value)")
+        }
+        ctx.evaluateScript("var console = {}")
+        let console = ctx.objectForKeyedSubscript("console")
+        var block : @objc_block (NSString) -> Void = {(message: NSString) in println("\(message)")}
+        console.setObject(unsafeBitCast(block, AnyObject.self), forKeyedSubscript: "log")
+        let script = "var include = \(query)"
         ctx.evaluateScript(script)
         let function = ctx.objectForKeyedSubscript("include")
         
         return articles().filter {(article) in
-            let val = function.callWithArguments([article])
+            let val = function.callWithArguments([article.asDict()])
             return val.toBool()
         }
     }

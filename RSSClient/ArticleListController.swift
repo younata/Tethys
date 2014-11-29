@@ -16,6 +16,8 @@ class ArticleListController: UITableViewController {
     
     var dataManager : DataManager? = nil
     
+    var previewMode : Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -27,11 +29,12 @@ class ArticleListController: UITableViewController {
         
         self.tableView.tableFooterView = UIView()
         
-        self.refreshControl = UIRefreshControl(frame: CGRectZero)
-        self.refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
-        self.refreshControl?.beginRefreshing()
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "articleRead:", name: "ArticleWasRead", object: nil)
+        if !previewMode {
+            self.refreshControl = UIRefreshControl(frame: CGRectZero)
+            self.refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+            self.refreshControl?.beginRefreshing()
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "articleRead:", name: "ArticleWasRead", object: nil)
+        }
     }
     
     deinit {
@@ -44,10 +47,12 @@ class ArticleListController: UITableViewController {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        self.refreshControl?.beginRefreshing()
-        refresh()
-        if feeds?.count == 1 {
-            self.navigationItem.title = feeds?.first?.title
+        if !previewMode {
+            self.refreshControl?.beginRefreshing()
+            refresh()
+            if feeds?.count == 1 {
+                self.navigationItem.title = feeds?.first?.title
+            }
         }
     }
     
@@ -156,7 +161,9 @@ class ArticleListController: UITableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
-        showArticle(articleForIndexPath(indexPath))
+        if !previewMode {
+            showArticle(articleForIndexPath(indexPath))
+        }
     }
 
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -168,6 +175,9 @@ class ArticleListController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+        if previewMode {
+            return nil
+        }
         let article = self.articleForIndexPath(indexPath)
         let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""), handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
             article.managedObjectContext?.deleteObject(article)

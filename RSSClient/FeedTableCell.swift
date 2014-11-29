@@ -18,7 +18,7 @@ class FeedTableCell: UITableViewCell {
                 }
                 nameLabel.text = f.title
                 summaryLabel.text = f.summary
-                unreadCounter.unread = UInt(filter(f.articles.allObjects, {return $0.read == false}).count)
+                unreadCounter.unread = UInt(filter(f.allArticles(dataManager!), {return $0.read == false}).count)
             } else {
                 nameLabel.text = ""
                 summaryLabel.text = ""
@@ -26,6 +26,8 @@ class FeedTableCell: UITableViewCell {
             }
         }
     }
+    
+    var dataManager : DataManager? = nil
     
     let nameLabel = UILabel(forAutoLayout: ())
     let summaryLabel = UILabel(forAutoLayout: ())

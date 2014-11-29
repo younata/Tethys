@@ -103,7 +103,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             return
         }
 
-        dropDownMenu.titles = [NSLocalizedString("Add from Web", comment: ""), NSLocalizedString("Add from Local", comment: "")]
+        dropDownMenu.titles = [NSLocalizedString("Add from Web", comment: ""), NSLocalizedString("Add from Local", comment: ""), NSLocalizedString("Create Query Feed", comment: "")]
         menuTopOffset.constant = CGRectGetHeight(self.navigationController!.navigationBar.frame) + (UIApplication.sharedApplication().statusBarHidden ? 0 : 20)
         if dropDownMenu.isOpen {
             dropDownMenu.closeAnimated(true)
@@ -113,27 +113,27 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func dropDownMenu(menu: MAKDropDownMenu!, itemDidSelect itemIndex: UInt) {
+        var vc : UINavigationController? = nil
         if itemIndex == 0 {
             let findFeed = FindFeedViewController()
             findFeed.dataManager = dataManager
-            let vc = UINavigationController(rootViewController: findFeed)
-            if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-                let popover = UIPopoverController(contentViewController: vc)
-                popover.popoverContentSize = CGSizeMake(600, 800)
-                popover.presentPopoverFromBarButtonItem(self.navigationItem.rightBarButtonItem!, permittedArrowDirections: .Any, animated: true)
-            } else {
-                self.presentViewController(vc, animated: true, completion: nil)
-            }
+            vc = UINavigationController(rootViewController: findFeed)
         } else if itemIndex == 1 {
             let localImport = LocalImportViewController()
             localImport.dataManager = dataManager
             let vc = UINavigationController(rootViewController: localImport)
+        } else if itemIndex == 2 {
+            let queryFeed = QueryFeedViewController()
+            queryFeed.dataManager = dataManager
+            vc = UINavigationController(rootViewController: queryFeed)
+        }
+        if let nc = vc {
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-                let popover = UIPopoverController(contentViewController: vc)
+                let popover = UIPopoverController(contentViewController: nc)
                 popover.popoverContentSize = CGSizeMake(600, 800)
                 popover.presentPopoverFromBarButtonItem(self.navigationItem.rightBarButtonItem!, permittedArrowDirections: .Any, animated: true)
             } else {
-                self.presentViewController(vc, animated: true, completion: nil)
+                self.presentViewController(nc, animated: true, completion: nil)
             }
         }
         menu.closeAnimated(true)
@@ -204,6 +204,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as FeedTableCell
+        cell.dataManager = dataManager
         cell.feed = feedAtIndexPath(indexPath)
         return cell
     }

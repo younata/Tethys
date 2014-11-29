@@ -1,0 +1,62 @@
+//
+//  Data-extensions.swift
+//  RSSClient
+//
+//  Created by Rachel Brindle on 11/26/14.
+//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
+//
+
+import Foundation
+
+extension Feed {
+    func unreadArticles(dataManager: DataManager) -> UInt {
+        return allArticles(dataManager).reduce(0) {
+            return $0 + ($1.read ? 0 : 1)
+        }
+    }
+    
+    func updateArticles(dataManager: DataManager) {
+        
+    }
+    
+    func allArticles(dataManager: DataManager) -> [Article] {
+        if let query = self.query {
+            if theArticles == nil {
+                theArticles = dataManager.articlesMatchingQuery(query)
+            }
+            return theArticles as [Article]
+        } else {
+            return self.articles.allObjects as [Article]
+        }
+    }
+    
+    func allTags() -> [String] {
+        return self.tags == nil ? [] : self.tags as [String]
+    }
+    
+    func asDict() -> [String: AnyObject] {
+        var ret : [String: AnyObject] = [:]
+        ret["title"] = title ?? ""
+        ret["url"] = url ?? ""
+        ret["summary"] = summary ?? ""
+        ret["query"] = query ?? ""
+        ret["tags"] = allTags()
+        return ret
+    }
+}
+
+extension Article {
+    func asDict() -> [String: AnyObject] {
+        var ret : [String: AnyObject] = [:]
+        ret["title"] = title ?? ""
+        ret["link"] = link ?? ""
+        ret["summary"] = summary ?? ""
+        ret["author"] = author ?? ""
+        ret["published"] = published?.description ?? ""
+        ret["updatedAt"] = updatedAt?.description ?? ""
+        ret["identifier"] = identifier ?? ""
+        ret["content"] = content ?? ""
+        ret["read"] = read
+        return ret
+    }
+}

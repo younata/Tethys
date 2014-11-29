@@ -258,7 +258,16 @@ class DataManager: NSObject {
         return theArticles!
     }
     
-    func articlesMatchingQuery(query: String) -> [Article] {
+    private var queryFeedResults : [Feed: [Article]]? = nil
+    
+    func articlesMatchingQuery(query: String, feed: Feed? = nil) -> [Article] {
+        if let f = feed {
+            if let res = queryFeedResults {
+                if let results = res[f] {
+                    return results
+                }
+            }
+        }
         let ctx = JSContext()
         ctx.exceptionHandler = {(context, value) in
             println("Javascript exception: \(value)")
@@ -271,13 +280,25 @@ class DataManager: NSObject {
         ctx.evaluateScript(script)
         let function = ctx.objectForKeyedSubscript("include")
         
-        return articles().filter {(article) in
+        let results = articles().filter {(article) in
             let val = function.callWithArguments([article.asDict()])
             return val.toBool()
         }
+        if let f = feed {
+            if queryFeedResults == nil {
+                queryFeedResults = [:]
+            }
+            queryFeedResults![f] = results
+        }
+        return results
     }
     
     // MARK: Generic Core Data
+    
+    func managedObjectContextDidSave() {
+        theArticles = nil
+        queryFeedResults = nil
+    }
     
     func entities(entity: String, matchingPredicate predicate: NSPredicate, sortDescriptors: [NSSortDescriptor] = []) -> [AnyObject] {
         let request = NSFetchRequest()
@@ -372,5 +393,10 @@ class DataManager: NSObject {
         managedObjectContext = NSManagedObjectContext()
         managedObjectContext.persistentStoreCoordinator = persistentStoreCoordinator
         super.init()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "managedObjectContextDidSave", name: NSManagedObjectContextDidSaveNotification, object: managedObjectContext)
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 }

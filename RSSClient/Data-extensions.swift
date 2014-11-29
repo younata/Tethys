@@ -15,16 +15,9 @@ extension Feed {
         }
     }
     
-    func updateArticles(dataManager: DataManager) {
-        
-    }
-    
     func allArticles(dataManager: DataManager) -> [Article] {
         if let query = self.query {
-            if theArticles == nil {
-                theArticles = dataManager.articlesMatchingQuery(query)
-            }
-            return theArticles as [Article]
+            return dataManager.articlesMatchingQuery(query, feed: self)
         } else {
             return self.articles.allObjects as [Article]
         }

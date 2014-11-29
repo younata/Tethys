@@ -114,16 +114,22 @@ class QueryFeedViewController: UIViewController, UITextViewDelegate, UITextField
     }
     
     func save() {
-        if let f = feed {
-            f.title = titleField.text
-            f.query = queryField.text
-            f.managedObjectContext?.save(nil)
-        } else if let dm = dataManager {
-            dm.newQueryFeed(titleField.text, code: queryField.text, summary: summaryField.text)
-        } else {
-            println("feed is nil and so is datamanager")
+        let loading = LoadingView(frame: self.view.bounds)
+        self.view.addSubview(loading)
+        loading.msg = NSLocalizedString("Creating Query Feed", comment: "")
+        dispatch_async(dispatch_get_main_queue()) {
+            if let f = self.feed {
+                f.title = self.titleField.text
+                f.query = self.queryField.text
+                f.managedObjectContext?.save(nil)
+            } else if let dm = self.dataManager {
+                dm.newQueryFeed(self.titleField.text, code: self.queryField.text, summary: self.summaryField.text)
+            } else {
+                println("feed is nil and so is datamanager")
+            }
+            loading.removeFromSuperview()
+            self.dismiss()
         }
-        self.dismiss()
     }
     
     func getKeyboardHeight(note: NSNotification) -> CGFloat {

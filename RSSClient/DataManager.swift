@@ -218,16 +218,17 @@ class DataManager: NSObject {
                         }
                     }
                 }
-                self.managedObjectContext.save(nil)
                 
                 feedsLeft--
                 if (feedsLeft == 0) {
+                    self.managedObjectContext.save(nil)
                     completion(nil)
                 }
                 self.parsers = self.parsers.filter { $0 != feedParser }
             }.failure {(error) in
                 feedsLeft--
                 if (feedsLeft == 0) {
+                    self.managedObjectContext.save(nil)
                     completion(error)
                 }
             }
@@ -240,7 +241,7 @@ class DataManager: NSObject {
     
     private var theArticles : [Article]? = nil
     
-    func refreshArticles() {
+    private func refreshArticles() {
         theArticles = (entities("Article", matchingPredicate: NSPredicate(value: true)) as [Article]).sorted {(a : Article, b: Article) in
             if let da = a.updatedAt ?? a.published {
                 if let db = b.updatedAt ?? b.published {
@@ -268,6 +269,17 @@ class DataManager: NSObject {
                 }
             }
         }
+        let results = articlesFromQuery(query, articles: articles())
+        if let f = feed {
+            if queryFeedResults == nil {
+                queryFeedResults = [:]
+            }
+            queryFeedResults![f] = results
+        }
+        return results
+    }
+    
+    private func articlesFromQuery(query: String, articles: [Article]) -> [Article] {
         let ctx = JSContext()
         ctx.exceptionHandler = {(context, value) in
             println("Javascript exception: \(value)")
@@ -280,15 +292,9 @@ class DataManager: NSObject {
         ctx.evaluateScript(script)
         let function = ctx.objectForKeyedSubscript("include")
         
-        let results = articles().filter {(article) in
+        let results = articles.filter {(article) in
             let val = function.callWithArguments([article.asDict()])
             return val.toBool()
-        }
-        if let f = feed {
-            if queryFeedResults == nil {
-                queryFeedResults = [:]
-            }
-            queryFeedResults![f] = results
         }
         return results
     }
@@ -297,17 +303,50 @@ class DataManager: NSObject {
     
     func managedObjectContextDidSave() {
         theArticles = nil
-        queryFeedResults = nil
+        operationQueue.cancelAllOperations()
+        if let qfr = queryFeedResults {
+            var feeds : [NSManagedObjectID] = []
+            for feed in self.feeds() {
+                if feed.query != nil {
+                    feeds.append(feed.objectID)
+                }
+            }
+            operationQueue.addOperation(NSBlockOperation(block: {
+                self.updateBackgroundThreads(feeds)
+            }))
+        }
     }
     
-    func entities(entity: String, matchingPredicate predicate: NSPredicate, sortDescriptors: [NSSortDescriptor] = []) -> [AnyObject] {
+    func updateBackgroundThreads(feeds: [NSManagedObjectID]) {
+        let articles = entities("Article", matchingPredicate: NSPredicate(value: true), managedObjectContext: backgroundObjectContext) as [Article]
+        var articleIDs : [NSManagedObjectID: [NSManagedObjectID]] = [:]
+        for feed in feeds {
+            let theFeed = entities("Feed", matchingPredicate: NSPredicate(format: "self == %@", feed)!, managedObjectContext: backgroundObjectContext).last! as Feed
+            if let query = theFeed.query {
+                let res = articlesFromQuery(query, articles: articles)
+                articleIDs[feed] = res.map { return $0.objectID }
+            }
+        }
+        dispatch_async(dispatch_get_main_queue()) {
+            var queryFeedResults : [Feed: [Article]] = [:]
+            for (key, value) in articleIDs {
+                let theFeed = self.entities("Feed", matchingPredicate: NSPredicate(format: "self == %@", (key as NSManagedObjectID))!).last! as Feed
+                let articles = self.entities("Article", matchingPredicate: NSPredicate(format: "self IN %@", value)!) as [Article]
+                queryFeedResults[theFeed] = articles
+            }
+            self.queryFeedResults = queryFeedResults
+        }
+    }
+    
+    func entities(entity: String, matchingPredicate predicate: NSPredicate, sortDescriptors: [NSSortDescriptor] = [], managedObjectContext: NSManagedObjectContext? = nil) -> [AnyObject] {
+        let moc = managedObjectContext ?? self.managedObjectContext
         let request = NSFetchRequest()
-        request.entity = NSEntityDescription.entityForName(entity, inManagedObjectContext: managedObjectContext)
+        request.entity = NSEntityDescription.entityForName(entity, inManagedObjectContext: moc)
         request.predicate = predicate
         request.sortDescriptors = sortDescriptors
         
         var error : NSError? = nil
-        var ret = managedObjectContext.executeFetchRequest(request, error: &error)
+        var ret = moc.executeFetchRequest(request, error: &error)
         if (ret == nil) {
             println("Error executing fetch request: \(error)")
             return []
@@ -358,6 +397,9 @@ class DataManager: NSObject {
     let persistentStoreCoordinator: NSPersistentStoreCoordinator
     let managedObjectContext: NSManagedObjectContext
     
+    let operationQueue = NSOperationQueue()
+    var backgroundObjectContext: NSManagedObjectContext! = nil
+    
     override init() {
         var unitTesting = false
         if let modelURL = NSBundle.mainBundle().URLForResource("RSSClient", withExtension: "momd") {
@@ -393,7 +435,13 @@ class DataManager: NSObject {
         managedObjectContext = NSManagedObjectContext()
         managedObjectContext.persistentStoreCoordinator = persistentStoreCoordinator
         super.init()
+        operationQueue.underlyingQueue = dispatch_queue_create("DataManager Background Queue", nil)
+        operationQueue.addOperation(NSBlockOperation(block: {
+            self.backgroundObjectContext = NSManagedObjectContext()
+            self.backgroundObjectContext.persistentStoreCoordinator = self.persistentStoreCoordinator
+        }))
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "managedObjectContextDidSave", name: NSManagedObjectContextDidSaveNotification, object: managedObjectContext)
+        managedObjectContextDidSave() // update all the query feeds.
     }
     
     deinit {

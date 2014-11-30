@@ -18,7 +18,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 a.read = true
                 NSNotificationCenter.defaultCenter().postNotificationName("ArticleWasRead", object: a)
                 a.managedObjectContext?.save(nil)
-                let url = NSURL(string: a.link)!
+                let url = NSURL(string: a.link)
                 var hasContent = false
                 if let cnt = a.content ?? a.summary {
                     self.content.loadHTMLString(articleCSS + cnt + "</body></html>", baseURL: NSURL(string: a.feed.url)!)
@@ -27,7 +27,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                     }
                     hasContent = true
                 } else {
-                    self.content.loadRequest(NSURLRequest(URL: NSURL(string: a.link)!))
+                    self.content.loadRequest(NSURLRequest(URL: url!))
                     if let sb = shareButton {
                         self.toolbarItems = [spacer(), sb, spacer()]
                     }
@@ -39,7 +39,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                     userActivity?.title = NSLocalizedString("Reading Article", comment: "")
                     userActivity?.becomeCurrent()
                 }
-                userActivity?.userInfo = ["feed": a.feed.title, "article": a.title, "showingContent": hasContent, "url": (hasContent ? url : NSNull())]
+                userActivity?.userInfo = ["feed": a.feed.title, "article": a.title, "showingContent": hasContent, "url": (hasContent ? url! : NSNull())]
                 userActivity?.webpageURL = NSURL(string: a.link)
                 self.userActivity?.needsSave = true
                 
@@ -238,6 +238,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 lastArticleIndex--
                 article = articles[lastArticleIndex]
                 nextContentRight.constant = 0
+                content.removeFromSuperview()
                 content = nextContent
                 configureContent()
                 UIView.animateWithDuration(0.2, animations: {

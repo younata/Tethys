@@ -26,6 +26,8 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.edgesForExtendedLayout = .None
+        
         self.addChildViewController(tableViewController)
         self.view.addSubview(tableView)
         tableView.setTranslatesAutoresizingMaskIntoConstraints(false)
@@ -87,7 +89,11 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        self.tableViewController.refreshControl?.endRefreshing()
+        if let rc = self.tableViewController.refreshControl {
+            if rc.refreshing {
+                rc.endRefreshing()
+            }
+        }
     }
     
     func showSettings() {
@@ -162,13 +168,21 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             return f1.feedTitle()!.lowercaseString < f2.feedTitle()!.lowercaseString
         }
-        self.tableViewController.refreshControl?.endRefreshing()
+        if let rc = self.tableViewController.refreshControl {
+            if rc.refreshing {
+                rc.endRefreshing()
+            }
+        }
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
     }
     
     func appWillBecomeVisible(note: NSNotification) {
         dispatch_async(dispatch_get_main_queue()) {
-            self.tableViewController.refreshControl?.beginRefreshing()
+            if let rc = self.tableViewController.refreshControl {
+                rc.beginRefreshing()
+                let contentOffset = self.tableViewController.tableView.contentOffset.y - (rc.frame.size.height + (UIApplication.sharedApplication().statusBarHidden ? 0 : 20))
+                self.tableViewController.tableView.setContentOffset(CGPointMake(0, contentOffset), animated: true)
+            }
             self.refresh()
         }
     }

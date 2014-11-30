@@ -293,23 +293,34 @@ class DataManager: NSObject {
     }
     
     private var queryFeedResults : [Feed: [Article]]? = nil
+    private var reloading = false
     
     func articlesMatchingQuery(query: String, feed: Feed? = nil) -> [Article] {
         if let f = feed {
             if let res = queryFeedResults {
                 if let results = res[f] {
                     return results
+                } else {
+                    queryFeedResults![f] = []
+                    if !reloading {
+                        reloadQFR()
+                    }
                 }
+            } else {
+                queryFeedResults = [f: []]
+                reloadQFR()
             }
-        }
-        let results = articlesFromQuery(query, articles: articles())
-        if let f = feed {
-            if queryFeedResults == nil {
-                queryFeedResults = [:]
+        } else {
+            let results = articlesFromQuery(query, articles: articles())
+            if let f = feed {
+                if queryFeedResults == nil {
+                    queryFeedResults = [:]
+                }
+                queryFeedResults![f] = results
             }
-            queryFeedResults![f] = results
+            return results
         }
-        return results
+        return []
     }
     
     private func articlesFromQuery(query: String, articles: [Article]) -> [Article] {
@@ -336,8 +347,13 @@ class DataManager: NSObject {
     
     func managedObjectContextDidSave() {
         theArticles = nil
+        reloadQFR()
+    }
+    
+    func reloadQFR() {
         operationQueue.cancelAllOperations()
         if let qfr = queryFeedResults {
+            reloading = true
             var feeds : [NSManagedObjectID] = []
             for feed in self.feeds() {
                 if feed.query != nil {
@@ -368,6 +384,7 @@ class DataManager: NSObject {
                 queryFeedResults[theFeed] = articles
             }
             self.queryFeedResults = queryFeedResults
+            self.reloading = false
             NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: nil)
         }
     }

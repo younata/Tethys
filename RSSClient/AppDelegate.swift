@@ -56,13 +56,15 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
         category.setActions([markReadAction], forContext: .Minimal)
         category.setActions([markReadAction], forContext: .Default)
         
-        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert, categories: NSSet(object: category)))
+        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: UIUserNotificationType.Badge | UIUserNotificationType.Alert | .Sound, categories: NSSet(object: category)))
         
         if dataManager!.feeds().count > 0 {
             application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         } else {
             application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
         }
+        
+        application.applicationIconBadgeNumber = 0
         
         return true
     }
@@ -75,8 +77,6 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
         if dataManager == nil {
             createDataManager()
         }
-        
-        application.applicationIconBadgeNumber = 0
         
         let str = application.applicationState == .Active ? "Active" : application.applicationState == .Inactive ? "Inactive" : "Background"
         if let splitView = self.window?.rootViewController as? UISplitViewController {
@@ -209,6 +209,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
 
     public func applicationWillEnterForeground(application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+        application.applicationIconBadgeNumber = 0
     }
 
     public func applicationDidBecomeActive(application: UIApplication) {

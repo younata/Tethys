@@ -125,7 +125,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         } else if itemIndex == 1 {
             let localImport = LocalImportViewController()
             localImport.dataManager = dataManager
-            let vc = UINavigationController(rootViewController: localImport)
+            vc = UINavigationController(rootViewController: localImport)
         } else if itemIndex == 2 {
             let queryFeed = QueryFeedViewController()
             queryFeed.dataManager = dataManager
@@ -155,12 +155,12 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             if f1Unread != f2Unread {
                 return f1Unread > f2Unread
             }
-            if f1.title == nil {
+            if f1.feedTitle() == nil {
                 return true
-            } else if f2.title == nil {
+            } else if f2.feedTitle() == nil {
                 return false
             }
-            return f1.title < f2.title
+            return f1.feedTitle()!.lowercaseString < f2.feedTitle()!.lowercaseString
         }
         self.tableViewController.refreshControl?.endRefreshing()
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
@@ -234,7 +234,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         })
         let markRead = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Mark\nRead", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
             let feed = self.feedAtIndexPath(indexPath)
-            for article in feed.articles.allObjects as [Article] {
+            for article in feed.allArticles(self.dataManager!) {
                 article.read = true
             }
             self.dataManager!.saveContext()

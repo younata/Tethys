@@ -23,6 +23,15 @@ extension Feed {
         }
     }
     
+    func feedTitle() -> String? {
+        return reduce(allTags(), self.title) {
+            if $1.hasPrefix("~") {
+                return $1.substringFromIndex($1.startIndex.successor())
+            }
+            return $0
+        }
+    }
+    
     func allTags() -> [String] {
         return self.tags == nil ? [] : self.tags as [String]
     }

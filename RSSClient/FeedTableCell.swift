@@ -13,10 +13,7 @@ class FeedTableCell: UITableViewCell {
     var feed: Feed? = nil {
         didSet {
             if let f = feed {
-                let title = f.allTags().reduce(f.title) {
-                    if $1.hasPrefix("~") { return $1.substringFromIndex($1.startIndex) }; return $0
-                }
-                nameLabel.text = f.title
+                nameLabel.text = f.feedTitle()
                 summaryLabel.text = f.summary
                 unreadCounter.unread = UInt(filter(f.allArticles(dataManager!), {return $0.read == false}).count)
             } else {

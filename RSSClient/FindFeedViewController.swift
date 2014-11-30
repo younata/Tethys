@@ -30,6 +30,8 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.edgesForExtendedLayout = .None
+        
         webContent.navigationDelegate = self
         self.view.addSubview(webContent)
         webContent.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
@@ -94,7 +96,14 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         if (lookForFeeds) {
-            feeds = dataManager!.feeds().map({return $0.url;})
+            if let f = dataManager?.feeds() {
+                feeds = f.reduce([], combine: {
+                    if $1.url == nil {
+                        return $0
+                    }
+                    return $0 + [$1.url]
+                })
+            }
         }
     }
     

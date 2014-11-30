@@ -76,6 +76,8 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
             createDataManager()
         }
         
+        application.applicationIconBadgeNumber = 0
+        
         let str = application.applicationState == .Active ? "Active" : application.applicationState == .Inactive ? "Inactive" : "Background"
         if let splitView = self.window?.rootViewController as? UISplitViewController {
             if let nc = splitView.viewControllers.first as? UINavigationController {
@@ -151,6 +153,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
                     application.presentLocalNotificationNow(note)
                 }
             }
+            application.applicationIconBadgeNumber += alist.count
             if (alist.count > 0) {
                 completionHandler(.NewData)
             } else {

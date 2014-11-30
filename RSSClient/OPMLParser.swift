@@ -8,21 +8,37 @@
 
 import Foundation
 
-func parseOPML(text: String, success: ([String]) -> Void = {(_) in }) -> OPMLParser {
+func parseOPML(text: String, success: ([OPMLItem]) -> Void = {(_) in }) -> OPMLParser {
     let ret = OPMLParser(text: text).success(success)
     ret.parse()
     return ret
 }
 
+class OPMLItem : NSObject {
+    var title : String? = nil
+    var summary : String? = nil
+    var xmlURL: String? = nil
+    var query : String? = nil
+    var tags: [String]? = nil
+    
+    func isValidItem() -> Bool {
+        return xmlURL != nil || (query != nil && title != nil)
+    }
+    
+    func isQueryFeed() -> Bool {
+        return query != nil
+    }
+}
+
 class OPMLParser : NSObject, NSXMLParserDelegate {
-    var callback : ([String]) -> Void = {(_) in }
+    var callback : ([OPMLItem]) -> Void = {(_) in }
     var onFailure : (NSError) -> Void = {(_) in }
     
     private var xmlParser : NSXMLParser
-    private var items : [String] = []
+    private var items : [OPMLItem] = []
     private var isOPML = false
     
-    func success(onSuccess: ([String]) -> Void) -> OPMLParser {
+    func success(onSuccess: ([OPMLItem]) -> Void) -> OPMLParser {
         callback = onSuccess
         return self
     }
@@ -33,7 +49,7 @@ class OPMLParser : NSObject, NSXMLParserDelegate {
     }
     
     init(text: String) {
-        xmlParser = NSXMLParser(data: text.lowercaseString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false))
+        xmlParser = NSXMLParser(data: text.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false))
         super.init()
         xmlParser.delegate = self
     }
@@ -56,6 +72,8 @@ class OPMLParser : NSObject, NSXMLParserDelegate {
     }
     
     func parser(parser: NSXMLParser!, parseErrorOccurred parseError: NSError!) {
+        isOPML = false
+        println("\(parseError)")
         onFailure(parseError)
     }
     
@@ -70,8 +88,34 @@ class OPMLParser : NSObject, NSXMLParserDelegate {
             return
         }
         if elementName.lowercaseString.hasPrefix("outline") {
-            if let url = attributeDict["xmlurl"] as? String {
-                items.append(url)
+            var item = OPMLItem()
+            for (k, v) in attributeDict {
+                let key = (k as String).lowercaseString
+                let value = v as String
+                if value == "" {
+                    continue
+                }
+                if key == "xmlurl" {
+                    item.xmlURL = value
+                }
+                if key == "tags" {
+                    let comps = value.componentsSeparatedByString(",") as [String]
+                    item.tags = comps.map({(str: String) in
+                        return str.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                    })
+                }
+                if key == "query" {
+                    item.query = value
+                }
+                if key == "title" {
+                    item.title = value
+                }
+                if key == "summary" || key == "description" {
+                    item.summary = value
+                }
+            }
+            if item.isValidItem() {
+                items.append(item)
             }
         }
     }

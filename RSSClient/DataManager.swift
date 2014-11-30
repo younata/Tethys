@@ -22,25 +22,49 @@ class DataManager: NSObject {
     func importOPML(opml: NSURL, progress: (Double) -> Void, completion: ([Feed]) -> Void) {
         if let text = NSString(contentsOfURL: opml, encoding: NSUTF8StringEncoding, error: nil) {
             let opmlParser = OPMLParser(text: text)
-            opmlParser.callback = {(feeds) in
+            opmlParser.callback = {(items) in
                 var ret : [Feed] = []
-                if feeds.count == 0 {
+                if items.count == 0 {
                     completion([])
                 }
                 var i = 0
-                for feed in feeds {
+                for item in items {
                     dispatch_async(dispatch_get_main_queue()) {
-                        ret.append(self.newFeed(feed) {(error) in
-                            if let err = error {
-                                println("error importing \(feed): \(err)")
+                        if item.isQueryFeed() {
+                            if let query = item.query {
+                                let newFeed = self.newQueryFeed(item.title!, code: query, summary: item.summary)
+                                newFeed.tags = item.tags
+                                ret.append(newFeed)
+                                
                             }
-                            println("imported \(feed)")
                             i++
-                            progress(Double(i) / Double(feeds.count))
-                            if i == feeds.count {
+                            progress(Double(i) / Double(items.count))
+                            if i == items.count {
                                 completion(ret)
                             }
-                        })
+                        } else {
+                            if let feed = item.xmlURL {
+                                let newFeed = self.newFeed(feed) {(error) in
+                                    if let err = error {
+                                        println("error importing \(feed): \(err)")
+                                    }
+                                    println("imported \(feed)")
+                                    i++
+                                    progress(Double(i) / Double(items.count))
+                                    if i == items.count {
+                                        completion(ret)
+                                    }
+                                }
+                                newFeed.tags = item.tags
+                                ret.append(newFeed)
+                            } else {
+                                i++
+                                progress(Double(i) / Double(items.count))
+                                if i == items.count {
+                                    completion(ret)
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -49,11 +73,20 @@ class DataManager: NSObject {
     }
     
     func generateOPMLContents(feeds: [Feed]) -> String {
-        var ret = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><opml version=\"2.0\"><body>"
+        var ret = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<opml version=\"2.0\">\n    <body>\n"
         for feed in feeds.filter({return $0.query == nil}) {
-            ret += "<outline xmlURL=\"\(feed.url)\" title=\"\(feed.title)\" type=\"rss\"/>"
+            if feed.url == nil {
+                ret += "        <outline query=\"\(feed.query)\" title=\"\(feed.title)\" summary=\"\(feed.summary)\" type=\"query\""
+            } else {
+                ret += "        <outline xmlURL=\"\(feed.url)\" title=\"\(feed.title)\" type=\"rss\""
+            }
+            if feed.tags != nil {
+                let tags : String = ",".join(feed.tags as [String])
+                ret += " tags=\"\(tags)\""
+            }
+            ret += "/>\n"
         }
-        ret += "</body></opml>"
+        ret += "</body>\n</opml>"
         return ret
     }
     
@@ -335,6 +368,7 @@ class DataManager: NSObject {
                 queryFeedResults[theFeed] = articles
             }
             self.queryFeedResults = queryFeedResults
+            NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: nil)
         }
     }
     

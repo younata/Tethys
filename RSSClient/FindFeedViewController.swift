@@ -76,6 +76,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         loadingBar.autoSetDimension(.Height, toSize: 2)
         loadingBar.progress = 0
         loadingBar.hidden = true
+        loadingBar.progressTintColor = UIColor.darkGreenColor()
         
         /*
         if (lookForFeeds) {

@@ -19,15 +19,14 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     let dropDownMenu = MAKDropDownMenu(forAutoLayout: ())
+    let tagField = UITextField(forAutoLayout: ())
     var menuTopOffset : NSLayoutConstraint!
     
     var dataManager : DataManager? = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.edgesForExtendedLayout = .None
-        
+                
         self.addChildViewController(tableViewController)
         self.view.addSubview(tableView)
         tableView.setTranslatesAutoresizingMaskIntoConstraints(false)
@@ -60,7 +59,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         self.tableView.tableFooterView = UIView()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "appWillBecomeVisible:", name: UIApplicationDidBecomeActiveNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "appWillBecomeVisible:", name: UIApplicationWillEnterForegroundNotification, object: nil)
     }
     
     deinit {
@@ -155,7 +154,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func reload() {
         let oldFeeds = feeds
-        feeds = dataManager!.feeds().sorted {(f1: Feed, f2: Feed) in
+        feeds = dataManager!.feedsMatchingTag(self.tagField.text).sorted {(f1: Feed, f2: Feed) in
             let f1Unread = f1.unreadArticles(self.dataManager!)
             let f2Unread = f2.unreadArticles(self.dataManager!)
             if f1Unread != f2Unread {

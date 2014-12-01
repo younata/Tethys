@@ -53,6 +53,7 @@ extension Feed {
         ret["summary"] = summary ?? ""
         ret["query"] = query ?? ""
         ret["tags"] = allTags()
+        ret["id"] = self.objectID.description
         return ret
     }
 }
@@ -75,6 +76,7 @@ extension Article {
         ret["identifier"] = identifier ?? ""
         ret["content"] = content ?? ""
         ret["read"] = read
+        ret["id"] = self.objectID.description
         return ret
     }
 }

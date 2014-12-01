@@ -96,14 +96,36 @@ class DataManager: NSObject {
     
     // MARK: Feeds
     
-    func feeds() -> [Feed] {
-        return (entities("Feed", matchingPredicate: NSPredicate(value: true)) as [Feed]).sorted {
+    func feeds(managedObjectContext: NSManagedObjectContext? = nil) -> [Feed] {
+        return (entities("Feed", matchingPredicate: NSPredicate(value: true), managedObjectContext: (managedObjectContext ?? self.managedObjectContext)) as [Feed]).sorted {
             if $0.title == nil {
                 return true
             } else if $1.title == nil {
                 return false
             }
             return $0.title < $1.title
+        }
+    }
+    
+    func feedsMatchingTag(tag: String?, managedObjectContext: NSManagedObjectContext? = nil, allowIncompleteTags: Bool = true) -> [Feed] {
+        if let theTag = (tag == "" ? nil : tag) {
+            return feeds(managedObjectContext: managedObjectContext).filter {
+                let tags : [String] = $0.tags as [String]
+                for t in tags {
+                    if allowIncompleteTags {
+                        if t.rangeOfString(theTag) != nil {
+                            return true
+                        }
+                    } else {
+                        if t == theTag {
+                            return true
+                        }
+                    }
+                }
+                return false
+            }
+        } else {
+            return feeds(managedObjectContext: managedObjectContext)
         }
     }
     
@@ -323,16 +345,9 @@ class DataManager: NSObject {
         return []
     }
     
-    private func articlesFromQuery(query: String, articles: [Article]) -> [Article] {
-        let ctx = JSContext()
-        ctx.exceptionHandler = {(context, value) in
-            println("Javascript exception: \(value)")
-        }
-        ctx.evaluateScript("var console = {}")
-        let console = ctx.objectForKeyedSubscript("console")
-        var block : @objc_block (NSString) -> Void = {(message: NSString) in println("\(message)")}
-        console.setObject(unsafeBitCast(block, AnyObject.self), forKeyedSubscript: "log")
-        let script = "var include = \(query)"
+    private func articlesFromQuery(query: String, articles: [Article], context: JSContext? = nil) -> [Article] {
+        let ctx = context ?? setUpContext(JSContext()!)
+        let script = "include = \(query)"
         ctx.evaluateScript(script)
         let function = ctx.objectForKeyedSubscript("include")
         
@@ -343,7 +358,65 @@ class DataManager: NSObject {
         return results
     }
     
-    // MARK: Generic Core Data
+    // MARK: Scripting
+    
+    private func setUpContext(ctx: JSContext) -> JSContext {
+        ctx.exceptionHandler = {(context, value) in
+            println("Javascript exception: \(value)")
+        }
+        ctx.evaluateScript("var console = {}")
+        let console = ctx.objectForKeyedSubscript("console")
+        var block : @objc_block (NSString) -> Void = {(message: NSString) in println("\(message)")}
+        console.setObject(unsafeBitCast(block, AnyObject.self), forKeyedSubscript: "log")
+        let script = "var include = function(article) { return true }"
+        ctx.evaluateScript(script)
+        return ctx
+    }
+    
+    private func console(ctx: JSContext) {
+        ctx.evaluateScript("var console = {}")
+        let console = ctx.objectForKeyedSubscript("console")
+        var block : @objc_block (NSString) -> Void = {(message: NSString) in println("\(message)")}
+        console.setObject(unsafeBitCast(block, AnyObject.self), forKeyedSubscript: "log")
+    }
+    
+    private func fetching(ctx: JSContext, isBackground: Bool) {
+        let moc = isBackground ? self.backgroundObjectContext! : self.managedObjectContext
+        
+        ctx.evaluateScript("var data = {onNewFeed: [], onNewArticle: []}")
+        let data = ctx.objectForKeyedSubscript("data")
+        
+        var articles : @objc_block (Void) -> [NSDictionary] = {
+            return (self.entities("Article", matchingPredicate: NSPredicate(value: true), managedObjectContext: moc) as [Article]).map {return $0.asDict()}
+        }
+        data.setObject(unsafeBitCast(articles, AnyObject.self), forKeyedSubscript: "articles")
+        
+        var queryArticles : @objc_block (NSString, [NSObject]) -> [NSDictionary] = {(query, args) in
+            let predicate = NSPredicate(format: query, argumentArray: args)
+            return (self.entities("Article", matchingPredicate: predicate, managedObjectContext: moc) as [Article]).map {$0.asDict()}
+        }
+        data.setObject(unsafeBitCast(queryArticles, AnyObject.self), forKeyedSubscript: "articlesMatchingQuery")
+        
+        var feeds : @objc_block (Void) -> [NSDictionary] = {
+            return (self.entities("Feed", matchingPredicate: NSPredicate(value: true), managedObjectContext: moc) as [Feed]).map {return $0.asDict()}
+        }
+        data.setObject(unsafeBitCast(feeds, AnyObject.self), forKeyedSubscript: "feeds")
+        
+        var queryFeeds : @objc_block (NSString, [NSObject]) -> [NSDictionary] = {(query, args) in // queries for feeds, not to be confused with query feeds.
+            let predicate = NSPredicate(format: query, argumentArray: args)
+            return (self.entities("Feed", matchingPredicate: predicate, managedObjectContext: moc) as [Feed]).map {$0.asDict()}
+        }
+        data.setObject(unsafeBitCast(feeds, AnyObject.self), forKeyedSubscript: "feedsMatchingQuery")
+        
+        var addOnNewFeed : @objc_block (@objc_block (NSDictionary) -> Void) -> Void = {(block) in
+            var onNewFeed = data.objectForKeyedSubscript("onNewFeed").toArray()
+            onNewFeed.append(unsafeBitCast(block, AnyObject.self))
+            data.setObject(onNewFeed, forKeyedSubscript: "onNewFeed")
+        }
+        data.setObject(unsafeBitCast(addOnNewFeed, AnyObject.self), forKeyedSubscript: "")
+    }
+    
+    // MARK: Background Data Fetch
     
     func managedObjectContextDidSave() {
         theArticles = nil
@@ -372,7 +445,7 @@ class DataManager: NSObject {
         for feed in feeds {
             let theFeed = entities("Feed", matchingPredicate: NSPredicate(format: "self == %@", feed)!, managedObjectContext: backgroundObjectContext).last! as Feed
             if let query = theFeed.query {
-                let res = articlesFromQuery(query, articles: articles)
+                let res = articlesFromQuery(query, articles: articles, context: self.backgroundContext)
                 articleIDs[feed] = res.map { return $0.objectID }
             }
         }
@@ -388,6 +461,8 @@ class DataManager: NSObject {
             NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: nil)
         }
     }
+    
+    // MARK: Generic Core Data
     
     func entities(entity: String, matchingPredicate predicate: NSPredicate, sortDescriptors: [NSSortDescriptor] = [], managedObjectContext: NSManagedObjectContext? = nil) -> [AnyObject] {
         let moc = managedObjectContext ?? self.managedObjectContext
@@ -450,6 +525,8 @@ class DataManager: NSObject {
     
     let operationQueue = NSOperationQueue()
     var backgroundObjectContext: NSManagedObjectContext! = nil
+    var backgroundJSVM: JSVirtualMachine? = nil
+    var backgroundContext: JSContext? = nil
     
     override init() {
         var unitTesting = false
@@ -490,6 +567,9 @@ class DataManager: NSObject {
         operationQueue.addOperation(NSBlockOperation(block: {
             self.backgroundObjectContext = NSManagedObjectContext()
             self.backgroundObjectContext.persistentStoreCoordinator = self.persistentStoreCoordinator
+            
+            self.backgroundJSVM = JSVirtualMachine()
+            self.backgroundContext = self.setUpContext(JSContext(virtualMachine: self.backgroundJSVM))
         }))
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "managedObjectContextDidSave", name: NSManagedObjectContextDidSaveNotification, object: managedObjectContext)
         managedObjectContextDidSave() // update all the query feeds.

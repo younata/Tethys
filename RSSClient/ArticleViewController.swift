@@ -121,6 +121,8 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         
         self.edgesForExtendedLayout = .None
         
+        self.view.backgroundColor = UIColor.whiteColor()
+        
         if userActivity == nil {
             userActivity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
             userActivity?.title = NSLocalizedString("Reading Article", comment: "")
@@ -238,13 +240,14 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 lastArticleIndex--
                 article = articles[lastArticleIndex]
                 nextContentRight.constant = 0
-                content.removeFromSuperview()
+                let oldContent = content
                 content = nextContent
                 configureContent()
                 UIView.animateWithDuration(0.2, animations: {
                     self.view.layoutIfNeeded()
                 }, completion: {(completed) in
                     self.view.bringSubviewToFront(self.loadingBar)
+                    oldContent.removeFromSuperview()
                 })
             } else {
                 nextContent.removeFromSuperview()
@@ -282,12 +285,14 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 lastArticleIndex++
                 article = articles[lastArticleIndex]
                 nextContentRight.constant = 0
+                let oldContent = content
                 content = nextContent
                 configureContent()
                 UIView.animateWithDuration(0.2, animations: {
                     self.view.layoutIfNeeded()
                 }, completion: {(completed) in
                     self.view.bringSubviewToFront(self.loadingBar)
+                    oldContent.removeFromSuperview()
                 })
             } else {
                 nextContent.removeFromSuperview()

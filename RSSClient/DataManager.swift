@@ -406,14 +406,14 @@ class DataManager: NSObject {
             let predicate = NSPredicate(format: query, argumentArray: args)
             return (self.entities("Feed", matchingPredicate: predicate, managedObjectContext: moc) as [Feed]).map {$0.asDict()}
         }
-        data.setObject(unsafeBitCast(feeds, AnyObject.self), forKeyedSubscript: "feedsMatchingQuery")
+        data.setObject(unsafeBitCast(queryFeeds, AnyObject.self), forKeyedSubscript: "feedsMatchingQuery")
         
         var addOnNewFeed : @objc_block (@objc_block (NSDictionary) -> Void) -> Void = {(block) in
             var onNewFeed = data.objectForKeyedSubscript("onNewFeed").toArray()
             onNewFeed.append(unsafeBitCast(block, AnyObject.self))
             data.setObject(onNewFeed, forKeyedSubscript: "onNewFeed")
         }
-        data.setObject(unsafeBitCast(addOnNewFeed, AnyObject.self), forKeyedSubscript: "")
+        data.setObject(unsafeBitCast(addOnNewFeed, AnyObject.self), forKeyedSubscript: "onNewFeed")
     }
     
     // MARK: Background Data Fetch

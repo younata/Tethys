@@ -113,6 +113,9 @@
 		8980475E1A20478600EB29F0 /* TUSafariActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 898047441A20478600EB29F0 /* TUSafariActivity.m */; };
 		898047611A2048F200EB29F0 /* FeedParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896F01A16F7B20030EB6E /* FeedParser.swift */; };
 		898047641A206CB100EB29F0 /* FeedsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898047631A206CB100EB29F0 /* FeedsList.swift */; };
+		89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509EF1A2EB18300CBD000 /* FeedViewController.swift */; };
+		89C509F11A2EB18300CBD000 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509EF1A2EB18300CBD000 /* FeedViewController.swift */; };
+		89C509F21A2EB18300CBD000 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509EF1A2EB18300CBD000 /* FeedViewController.swift */; };
 		89C7FBE01A183EBE00ACBDB2 /* MAKDropDownMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C7FBDF1A183EBE00ACBDB2 /* MAKDropDownMenu.m */; };
 		89C7FBE11A183EBE00ACBDB2 /* MAKDropDownMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C7FBDF1A183EBE00ACBDB2 /* MAKDropDownMenu.m */; };
 		89C7FBE81A18847A00ACBDB2 /* RBActivityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C7FBE71A18847A00ACBDB2 /* RBActivityIndicator.m */; };
@@ -132,6 +135,10 @@
 		89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */; };
 		89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C919DA37FB009924DA /* FeedTableCell.swift */; };
 		89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830CC19DC67B9009924DA /* UnreadCounter.swift */; };
+		89C891971A2E1FB100DE36F4 /* TagsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C891961A2E1FB100DE36F4 /* TagsListView.swift */; };
+		89C891981A2E1FB100DE36F4 /* TagsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C891961A2E1FB100DE36F4 /* TagsListView.swift */; };
+		89C8919A1A2E220C00DE36F4 /* TagCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C891991A2E220C00DE36F4 /* TagCollectionViewCell.swift */; };
+		89C8919B1A2E220C00DE36F4 /* TagCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C891991A2E220C00DE36F4 /* TagCollectionViewCell.swift */; };
 		89D06A1B19FDBC52003909A3 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89D06A1A19FDBC52003909A3 /* Launch Screen.xib */; };
 		89D06A2119FF210C003909A3 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D06A2019FF210C003909A3 /* LoadingView.swift */; };
 		89D06A2219FF210C003909A3 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D06A2019FF210C003909A3 /* LoadingView.swift */; };
@@ -238,6 +245,7 @@
 		898047431A20478600EB29F0 /* TUSafariActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TUSafariActivity.h; path = Vendor/TUSafariActivity/Classes/TUSafariActivity.h; sourceTree = "<group>"; };
 		898047441A20478600EB29F0 /* TUSafariActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TUSafariActivity.m; path = Vendor/TUSafariActivity/Classes/TUSafariActivity.m; sourceTree = "<group>"; };
 		898047631A206CB100EB29F0 /* FeedsList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FeedsList.swift; path = "RSSClient-OSX/FeedsList.swift"; sourceTree = SOURCE_ROOT; };
+		89C509EF1A2EB18300CBD000 /* FeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 		89C7FBDE1A183EBE00ACBDB2 /* MAKDropDownMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MAKDropDownMenu.h; sourceTree = "<group>"; };
 		89C7FBDF1A183EBE00ACBDB2 /* MAKDropDownMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MAKDropDownMenu.m; sourceTree = "<group>"; };
 		89C7FBE61A18847A00ACBDB2 /* RBActivityIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBActivityIndicator.h; sourceTree = "<group>"; };
@@ -264,6 +272,8 @@
 		89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsTableViewController.swift; sourceTree = "<group>"; };
 		89C830C919DA37FB009924DA /* FeedTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCell.swift; sourceTree = "<group>"; };
 		89C830CC19DC67B9009924DA /* UnreadCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounter.swift; sourceTree = "<group>"; };
+		89C891961A2E1FB100DE36F4 /* TagsListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsListView.swift; sourceTree = "<group>"; };
+		89C891991A2E220C00DE36F4 /* TagCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagCollectionViewCell.swift; sourceTree = "<group>"; };
 		89D06A1A19FDBC52003909A3 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		89D06A2019FF210C003909A3 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		E3BD5CAD62D2FA1E198BB3BD /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -544,6 +554,8 @@
 				89C830CC19DC67B9009924DA /* UnreadCounter.swift */,
 				89D06A2019FF210C003909A3 /* LoadingView.swift */,
 				8963F4331A280F8E00B447D6 /* TagPickerView.swift */,
+				89C891961A2E1FB100DE36F4 /* TagsListView.swift */,
+				89C891991A2E220C00DE36F4 /* TagCollectionViewCell.swift */,
 				8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */,
 				894896F01A16F7B20030EB6E /* FeedParser.swift */,
 				8963F42B1A2570F500B447D6 /* Settings */,
@@ -611,6 +623,7 @@
 				89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */,
 				89C830C919DA37FB009924DA /* FeedTableCell.swift */,
 				894896EB1A16F1130030EB6E /* LocalImportViewController.swift */,
+				89C509EF1A2EB18300CBD000 /* FeedViewController.swift */,
 				8963F4301A280DCD00B447D6 /* QueryFeedViewController.swift */,
 				896795B81A2A656900894914 /* aboutQueryFeeds.html */,
 				89C830B719D7EC55009924DA /* FindFeedViewController.swift */,
@@ -811,6 +824,7 @@
 				89635FAD1A13C41C0052C248 /* RSSClient.xcdatamodeld in Sources */,
 				89635FAF1A13C4210052C248 /* Feed.m in Sources */,
 				89635FAA1A13C4120052C248 /* DataManager.swift in Sources */,
+				89C509F21A2EB18300CBD000 /* FeedViewController.swift in Sources */,
 				89635FB41A13C48D0052C248 /* MWFeedParser.m in Sources */,
 				89635FC21A13C49A0052C248 /* ALView+PureLayout.m in Sources */,
 				89635F8E1A13C2E30052C248 /* AppDelegate.swift in Sources */,
@@ -824,9 +838,11 @@
 				89C830C619D8A058009924DA /* Feed.m in Sources */,
 				8963F4311A280DCD00B447D6 /* QueryFeedViewController.swift in Sources */,
 				8963F42E1A26674500B447D6 /* Data-extensions.swift in Sources */,
+				89C8919A1A2E220C00DE36F4 /* TagCollectionViewCell.swift in Sources */,
 				8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */,
 				89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */,
 				8933E91A19ECCD5E00ECFF3F /* MWFeedItem.m in Sources */,
+				89C891971A2E1FB100DE36F4 /* TagsListView.swift in Sources */,
 				8933E92E19ECD28900ECFF3F /* NSString+HTML.m in Sources */,
 				894896EC1A16F1130030EB6E /* LocalImportViewController.swift in Sources */,
 				8933E91919ECCD5E00ECFF3F /* MWFeedInfo.m in Sources */,
@@ -852,6 +868,7 @@
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
 				894896F11A16F7B20030EB6E /* FeedParser.swift in Sources */,
 				89D06A2119FF210C003909A3 /* LoadingView.swift in Sources */,
+				89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */,
 				8933E92D19ECD28900ECFF3F /* NSDate+InternetDateTime.m in Sources */,
 				8933E90D19ECCBC300ECFF3F /* ALView+PureLayout.m in Sources */,
 				8933E93919EF4BB100ECFF3F /* ScriptEditorViewController.swift in Sources */,
@@ -869,6 +886,7 @@
 				893448C61A03159F00F5D528 /* ArticleViewControllerTests.swift in Sources */,
 				895779AD19E62CDA00548418 /* Feed.m in Sources */,
 				895779B019E6512200548418 /* UnreadCounterTests.swift in Sources */,
+				89C891981A2E1FB100DE36F4 /* TagsListView.swift in Sources */,
 				893448CA1A0315DF00F5D528 /* FindFeedViewControllerTests.swift in Sources */,
 				893448B81A004E4E00F5D528 /* MWFeedInfo.m in Sources */,
 				893448C01A004E5C00F5D528 /* NSArray+PureLayout.m in Sources */,
@@ -878,6 +896,7 @@
 				89C7FBE91A18847A00ACBDB2 /* RBActivityIndicator.m in Sources */,
 				895779B219E655F100548418 /* FeedTableCellTests.swift in Sources */,
 				893448B91A004E4E00F5D528 /* MWFeedItem.m in Sources */,
+				89C509F11A2EB18300CBD000 /* FeedViewController.swift in Sources */,
 				895779A819E62CC500548418 /* ArticleCell.swift in Sources */,
 				895779B619E65A6D00548418 /* ArticleCellTests.swift in Sources */,
 				895779AA19E62CC500548418 /* DataManager.swift in Sources */,
@@ -889,6 +908,7 @@
 				893448C21A004E6400F5D528 /* UIColor+RSSClient.m in Sources */,
 				893448BB1A004E4E00F5D528 /* NSDate+InternetDateTime.m in Sources */,
 				894896F21A16F7B20030EB6E /* FeedParser.swift in Sources */,
+				89C8919B1A2E220C00DE36F4 /* TagCollectionViewCell.swift in Sources */,
 				893448BA1A004E4E00F5D528 /* GTMNSString+HTML.m in Sources */,
 				8924D8F31A108299003B7529 /* OPMLParser.swift in Sources */,
 				8963F4321A280DCD00B447D6 /* QueryFeedViewController.swift in Sources */,

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, MAKDropDownMenuDelegate {
+class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, MAKDropDownMenuDelegate, UITextFieldDelegate {
 
     var feeds: [Feed] = []
     
@@ -31,6 +31,10 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         self.view.addSubview(tableView)
         tableView.setTranslatesAutoresizingMaskIntoConstraints(false)
         tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
+        
+        tagField.placeholder = NSLocalizedString("Filter by Tag", comment: "")
+        tagField.delegate = self
+        tagField.backgroundColor = UIColor.whiteColor()
         
         self.view.addSubview(dropDownMenu)
         dropDownMenu.delegate = self
@@ -153,8 +157,12 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func reload() {
+        reload(nil)
+    }
+    
+    func reload(tag: String?) {
         let oldFeeds = feeds
-        feeds = dataManager!.feedsMatchingTag(self.tagField.text).sorted {(f1: Feed, f2: Feed) in
+        feeds = dataManager!.feedsMatchingTag(tag).sorted {(f1: Feed, f2: Feed) in
             let f1Unread = f1.unreadArticles(self.dataManager!)
             let f2Unread = f2.unreadArticles(self.dataManager!)
             if f1Unread != f2Unread {
@@ -209,6 +217,13 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
 
     // MARK: - Table view data source
+    
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        if section == 0 {
+            return tagField
+        }
+        return nil
+    }
 
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -253,6 +268,31 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             self.dataManager!.saveContext()
             self.reload()
         })
-        return [delete, markRead]
+        let edit = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Edit", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
+            let feed = self.feedAtIndexPath(indexPath)
+            var viewController : UIViewController? = nil
+            if feed.isQueryFeed() {
+                let vc = QueryFeedViewController()
+                vc.feed = feed
+                viewController = vc
+            } else {
+                let vc = FeedViewController(style: .Grouped)
+                vc.feed = feed
+                viewController = vc
+            }
+            if let vc = viewController {
+                self.presentViewController(UINavigationController(rootViewController: vc), animated: true, completion: nil)
+            }
+        })
+        edit.backgroundColor = UIColor.blueColor()
+        return [delete, markRead, edit]
+    }
+    
+    // MARK: UITextFieldDelegate
+    
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        let text = (textField.text as NSString).stringByReplacingCharactersInRange(range, withString: string)
+        self.reload(text)
+        return true
     }
 }

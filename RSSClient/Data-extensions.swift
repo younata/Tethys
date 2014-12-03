@@ -23,9 +23,22 @@ extension Feed {
         }
     }
     
+    func isQueryFeed() -> Bool {
+        return self.query != nil
+    }
+    
     func feedTitle() -> String? {
         return reduce(allTags(), self.title) {
             if $1.hasPrefix("~") {
+                return $1.substringFromIndex($1.startIndex.successor())
+            }
+            return $0
+        }
+    }
+    
+    func feedSummary() -> String? {
+        return reduce(allTags(), self.summary) {
+            if $1.hasPrefix("`") {
                 return $1.substringFromIndex($1.startIndex.successor())
             }
             return $0

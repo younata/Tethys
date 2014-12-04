@@ -257,6 +257,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             nextContentRight.constant = translation
         } else if gesture.state == .Cancelled {
             nextContent.removeFromSuperview()
+            self.removeObserverFromContent(nextContent)
         } else if gesture.state == .Ended {
             let speed = gesture.velocityInView(self.view).x
             if speed >= 0 {
@@ -275,6 +276,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 })
             } else {
                 nextContent.removeFromSuperview()
+                self.removeObserverFromContent(nextContent)
             }
         }
     }
@@ -303,6 +305,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             nextContentRight.constant = translation
         } else if gesture.state == .Cancelled {
             nextContent.removeFromSuperview()
+            self.removeObserverFromContent(nextContent)
         } else if gesture.state == .Ended {
             let speed = gesture.velocityInView(self.view).x * -1
             if speed >= 0 {
@@ -321,6 +324,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 })
             } else {
                 nextContent.removeFromSuperview()
+                self.removeObserverFromContent(nextContent)
             }
         }
     }

@@ -73,7 +73,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         loadingBar.setTranslatesAutoresizingMaskIntoConstraints(false)
         self.view.addSubview(loadingBar)
         loadingBar.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
-        loadingBar.autoSetDimension(.Height, toSize: 2)
+        loadingBar.autoSetDimension(.Height, toSize: 1)
         loadingBar.progress = 0
         loadingBar.hidden = true
         loadingBar.progressTintColor = UIColor.darkGreenColor()

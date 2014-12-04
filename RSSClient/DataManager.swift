@@ -96,6 +96,16 @@ class DataManager: NSObject {
     
     // MARK: Feeds
     
+    func allTags(managedObjectContext: NSManagedObjectContext? = nil) -> [String] {
+        let feedsWithTags = entities("Feed", matchingPredicate: NSPredicate(format: "tags != nil")!, managedObjectContext: (managedObjectContext ?? self.managedObjectContext)) as [Feed]
+        
+        let setOfTags = feedsWithTags.reduce(NSSet()) {(set, feed) in
+            return set.setByAddingObjectsFromArray(feed.allTags())
+        }
+        
+        return (setOfTags.allObjects as [String]).sorted { return $0.lowercaseString < $1.lowercaseString }
+    }
+    
     func feeds(managedObjectContext: NSManagedObjectContext? = nil) -> [Feed] {
         return (entities("Feed", matchingPredicate: NSPredicate(value: true), managedObjectContext: (managedObjectContext ?? self.managedObjectContext)) as [Feed]).sorted {
             if $0.title == nil {
@@ -139,7 +149,7 @@ class DataManager: NSObject {
         if let theFeed = entities("Feed", matchingPredicate: predicate!).last as? Feed {
             feed = theFeed
         } else {
-            feed = NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: managedObjectContext) as Feed
+            feed = newFeed()
             feed.url = feedURL
             self.managedObjectContext.save(nil)
             NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
@@ -158,7 +168,7 @@ class DataManager: NSObject {
         if let theFeed = entities("Feed", matchingPredicate: predicate!).last as? Feed {
             feed = theFeed
         } else {
-            feed = NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: managedObjectContext) as Feed
+            feed = newFeed()
             feed.title = title
             feed.query = code
             feed.summary = summary
@@ -166,6 +176,10 @@ class DataManager: NSObject {
             NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
         }
         return feed
+    }
+    
+    func newFeed() -> Feed {
+        return NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: managedObjectContext) as Feed
     }
     
     func deleteFeed(feed: Feed) {

@@ -2,204 +2,215 @@
 //  QueryFeedViewController.swift
 //  RSSClient
 //
-//  Created by Rachel Brindle on 11/27/14.
+//  Created by Rachel Brindle on 12/3/14.
 //  Copyright (c) 2014 Rachel Brindle. All rights reserved.
 //
 
 import UIKit
 
-class QueryFeedViewController: UIViewController, UITextViewDelegate, UITextFieldDelegate {
-    
-    let scrollView = UIScrollView(forAutoLayout: ())
-    
-    let titleField = UITextField(forAutoLayout: ())
-    let summaryField = UITextView(forAutoLayout: ())
-    let queryField = UITextView(forAutoLayout: ())
-    
-    var scrollBottomConstraint : NSLayoutConstraint? = nil
-    
-    var summaryHeight : NSLayoutConstraint? = nil
-    var queryHeight : NSLayoutConstraint? = nil
+class QueryFeedViewController: UITableViewController {
     
     var feed : Feed? = nil {
         didSet {
-            titleField.text = feed?.title ?? ""
-            summaryField.text = feed?.summary ?? ""
-            queryField.text = feed?.query ?? ""
+            self.navigationItem.title = self.feed?.feedTitle() ?? NSLocalizedString("New Query Feed", comment: "")
+            self.tableView.reloadData()
+            if feed?.query == nil {
+                feed?.query = "function(article) {\n    return !article.read;\n}"
+            }
         }
     }
-    var dataManager : DataManager? = nil
     
-    let testButton : UIButton = UIButton.buttonWithType(.System) as UIButton
+    var dataManager: DataManager? = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.edgesForExtendedLayout = .None
-        /*
-        self.view.addSubview(scrollView)
-        scrollView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
-        scrollBottomConstraint = scrollView.autoPinEdgeToSuperviewEdge(.Bottom)
-        scrollView.contentSize = self.view.bounds.size
-        scrollView.backgroundColor = UIColor.clearColor()*/
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Done", comment: ""), style: .Plain, target: self, action: "dismiss")
+        self.navigationItem.title = self.feed?.feedTitle() ?? NSLocalizedString("New Query Feed", comment: "")
         
-        //let view = scrollView
+        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tags")
+        tableView.registerClass(TextViewCell.self, forCellReuseIdentifier: "cell")
         
-        let label = UITextView(forAutoLayout: ())
-        view.addSubview(label)
-        label.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(8, 8, 0, 8), excludingEdge: .Bottom)
-        label.autoSetDimension(.Height, toSize: 64, relation: .GreaterThanOrEqual)
-        label.scrollEnabled = false
-        label.editable = false
-        label.attributedText = NSAttributedString(data: NSData(contentsOfURL: NSBundle.mainBundle().URLForResource("aboutQueryFeeds", withExtension: "html")!)!, options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil, error: nil)
-        label.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-        
-        view.addSubview(titleField)
-        titleField.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-        titleField.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
-        titleField.autoPinEdge(.Top, toEdge: .Bottom, ofView: label, withOffset: 8)
-        titleField.autoSetDimension(.Height, toSize: 32)
-        
-        titleField.delegate = self
-        titleField.placeholder = NSLocalizedString("All Unread", comment: "")
-        titleField.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-        titleField.backgroundColor = UIColor(white: 0.9, alpha: 1.0)
-        titleField.layer.cornerRadius = 5
-        
-        view.addSubview(summaryField)
-        summaryField.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-        summaryField.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
-        summaryField.autoPinEdge(.Top, toEdge: .Bottom, ofView: titleField, withOffset: 8)
-        summaryHeight = summaryField.autoSetDimension(.Height, toSize: 32)
-        
-        summaryField.delegate = self
-        summaryField.text = feed?.summary ?? NSLocalizedString("Feeds with unread articles", comment: "")
-        summaryField.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-        summaryField.backgroundColor = UIColor(white: 0.9, alpha: 1.0)
-        summaryField.layer.cornerRadius = 5
-        self.textViewDidChange(summaryField)
-        
-        view.addSubview(queryField)
-        queryField.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-        queryField.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
-        queryField.autoPinEdge(.Top, toEdge: .Bottom, ofView: summaryField, withOffset: 8)
-        queryHeight = queryField.autoSetDimension(.Height, toSize: 32)
-        
-        queryField.delegate = self
-        queryField.text = feed?.query ?? "function(article) {\n    return !article.read;\n}"
-        queryField.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-        queryField.backgroundColor = UIColor(white: 0.9, alpha: 1.0)
-        queryField.layer.cornerRadius = 5
-        self.textViewDidChange(queryField)
-        
-        view.addSubview(testButton)
-        testButton.setTranslatesAutoresizingMaskIntoConstraints(false)
-        testButton.autoAlignAxisToSuperviewAxis(.Vertical)
-        testButton.autoSetDimension(.Height, toSize: 32)
-        testButton.autoPinEdge(.Top, toEdge: .Bottom, ofView: queryField, withOffset: 8)
-        
-        testButton.setTitle(NSLocalizedString("Preview Query", comment: ""), forState: .Normal)
-        testButton.setTitleColor(UIColor.darkGreenColor(), forState: .Normal)
-        testButton.setTitleColor(UIColor.grayColor(), forState: .Disabled)
-        testButton.addTarget(self, action: "test", forControlEvents: .TouchUpInside)
-        testButton.backgroundColor = UIColor(white: 0.9, alpha: 1.0)
-        testButton.layer.cornerRadius = 5
-        testButton.enabled = queryField.text != ""
-        
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Save", comment: ""), style: .Plain, target: self, action: "save")
-        self.navigationItem.rightBarButtonItem!.enabled = feed != nil
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Dismiss", comment: ""), style: .Plain, target: self, action: "dismiss")
-        
-        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
-        }
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 64
+        tableView.tableFooterView = UIView()
     }
     
-    deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
     }
     
     func dismiss() {
+        if let feed = self.feed {
+            if feed.title == nil && feed.query == nil {
+                dataManager?.deleteFeed(feed)
+            }
+            feed.managedObjectContext?.save(nil)
+        }
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func save() {
-        let loading = LoadingView(frame: self.view.bounds)
-        self.view.addSubview(loading)
-        loading.msg = NSLocalizedString("Creating Query Feed", comment: "")
-        dispatch_async(dispatch_get_main_queue()) {
-            if let f = self.feed {
-                f.title = self.titleField.text
-                f.query = self.queryField.text
-                f.managedObjectContext?.save(nil)
-            } else if let dm = self.dataManager {
-                dm.newQueryFeed(self.titleField.text, code: self.queryField.text, summary: self.summaryField.text)
-            } else {
-                println("feed is nil and so is datamanager")
+    func showTagEditor(tagIndex: Int) {
+        let tagEditor = TagEditorViewController()
+        tagEditor.feed = feed
+        tagEditor.dataManager = dataManager
+        if tagIndex < feed?.allTags().count {
+            tagEditor.tagPicker.textField.text = feed?.allTags()[tagIndex]
+        }
+        self.navigationController?.pushViewController(tagEditor, animated: true)
+    }
+
+    // MARK: - Table view data source
+
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return feed == nil ? 3 : 4
+    }
+
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section != 3 {
+            return 1
+        }
+        return (feed?.allTags().count ?? 0) + 1
+    }
+    
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch section {
+        case 0:
+            return NSLocalizedString("Title", comment: "")
+        case 1:
+            return NSLocalizedString("Summary", comment: "")
+        case 2:
+            return NSLocalizedString("Query", comment: "")
+        case 3:
+            return NSLocalizedString("Tags", comment: "")
+        default:
+            return nil
+        }
+    }
+
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        if indexPath.section == 3 {
+            let cell = tableView.dequeueReusableCellWithIdentifier("tags", forIndexPath: indexPath) as UITableViewCell
+            if let tags = feed?.allTags() {
+                if indexPath.row == tags.count {
+                    cell.textLabel?.text = NSLocalizedString("Add Tag", comment: "")
+                    cell.textLabel?.textColor = UIColor.darkGreenColor()
+                } else {
+                    cell.textLabel?.text = tags[indexPath.row]
+                }
             }
-            loading.removeFromSuperview()
-            self.dismiss()
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as TextViewCell
+            cell.textView.textColor = UIColor.blackColor()
+            switch (indexPath.section) {
+            case 0:
+                if let title = (feed?.feedTitle() == "" ? nil : feed?.feedTitle()) {
+                    cell.textView.text = title
+                } else {
+                    cell.textView.text = NSLocalizedString("No title available", comment: "")
+                    cell.textView.textColor = UIColor.grayColor()
+                }
+                cell.onTextChange = {
+                    if let feed = self.feed {
+                        feed.title = $0
+                    }
+                }
+            case 1:
+                if let summary = (feed?.feedSummary() == "" ? nil : feed?.feedSummary())  {
+                    cell.textView.text = summary
+                } else {
+                    cell.textView.text = NSLocalizedString("No summary available", comment: "")
+                    cell.textView.textColor = UIColor.grayColor()
+                }
+                cell.onTextChange = {
+                    if let feed = self.feed {
+                        feed.summary = $0
+                    }
+                }
+            case 2:
+                if let query = feed?.query {
+                    cell.textView.text = query
+                } else {
+                    cell.textView.text = "function(article) {\n    return !article.read;\n}"
+                }
+                cell.onTextChange = {
+                    if let feed = self.feed {
+                        feed.query = $0
+                    }
+                }
+            default:
+                break
+            }
+            return cell
         }
     }
-    
-    func getKeyboardHeight(note: NSNotification) -> CGFloat {
-        let info = note.userInfo!
-        let value = info[UIKeyboardFrameBeginUserInfoKey as NSObject] as NSValue
-        let beginRect = value.CGRectValue()
-        return UIInterfaceOrientationIsLandscape(self.interfaceOrientation) ? CGRectGetWidth(beginRect) : CGRectGetHeight(beginRect)
-    }
-    
-    func keyboardWillShow(note: NSNotification) {
-        scrollBottomConstraint?.constant = -1 * getKeyboardHeight(note)
-        self.view.setNeedsUpdateConstraints()
-        let info = note.userInfo!
-        let duration = info[UIKeyboardAnimationDurationUserInfoKey as NSObject] as Double
-        UIView.animateWithDuration(duration, animations: {
-            self.view.layoutIfNeeded()
-        })
-    }
-    
-    func keyboardWillHide(note: NSNotification) {
-        scrollBottomConstraint?.constant = 0
-        self.view.setNeedsUpdateConstraints()
-        let info = note.userInfo!
-        let duration = info[UIKeyboardAnimationDurationUserInfoKey as NSObject] as Double
-        UIView.animateWithDuration(duration, animations: {
-            self.view.layoutIfNeeded()
-        })
-    }
-    
-    func test() {
-        let articleList = ArticleListController(style: .Plain)
-        articleList.previewMode = true
-        articleList.articles = dataManager!.articlesMatchingQuery(queryField.text)
-        self.navigationController?.pushViewController(articleList, animated: true)
-    }
-    
-    // MARK: UITextViewDelegate
-    
-    func textViewDidChange(textView: UITextView) {
-        let text = (textView.text! as NSString)
-        let width = self.view.bounds.size.width - 16 - (textView.textContainerInset.left + textView.textContainerInset.right)
-        let h = fabs(textView.textContainerInset.top + textView.textContainerInset.bottom) + 5
-        let bounds = text.boundingRectWithSize(CGSizeMake(width - 16, CGFloat.max), options: .UsesLineFragmentOrigin, attributes: [NSFontAttributeName: textView.font], context: nil)
-        let height = max(ceil(CGRectGetHeight(bounds)) + h, 32)
-        if textView == summaryField {
-            summaryHeight?.constant = height
-        } else if textView == queryField {
-            queryHeight?.constant = height
-            testButton.enabled = textView.text != ""
-            self.navigationItem.rightBarButtonItem?.enabled = (titleField.text as NSString).length != 0 && (textView.text as NSString).length != 0
+
+    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        if indexPath.section == 3 {
+            return indexPath.row < (feed?.allTags().count ?? 1)
+        } else if indexPath.section == 2 {
+            return true
         }
-        scrollView.setNeedsLayout()
+        return false
+    }
+
+    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        
     }
     
-    // MARK: UITextFieldDelegate
+    override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+        if feed == nil {
+            return nil
+        }
+        if indexPath.section < 2 {
+            return nil
+        }
+        if feed!.allTags().count == indexPath.row {
+            return nil
+        }
+        if indexPath.section == 2 {
+            let preview = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Preview", comment: ""), handler: {(_, _) in
+                let articleList = ArticleListController(style: .Plain)
+                articleList.previewMode = true
+                articleList.articles = self.dataManager!.articlesMatchingQuery(self.feed!.query)
+                self.navigationController?.pushViewController(articleList, animated: true)
+            })
+            return [preview]
+        } else if indexPath.section == 3 {
+            let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""), handler: {(_, indexPath) in
+                if let feed = self.feed {
+                    var tags = feed.allTags()
+                    let tag = tags[indexPath.row]
+                    tags.removeAtIndex(indexPath.row)
+                    feed.tags = tags
+                    tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                    if tag.hasPrefix("~") {
+                        tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: .None)
+                    } else if tag.hasPrefix("`") {
+                        tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 1)], withRowAnimation: .None)
+                    }
+                }
+            })
+            let edit = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Edit", comment: ""), handler: {(_, indexPath) in
+                println("present a view controller")
+                self.showTagEditor(indexPath.row)
+            })
+            return [delete, edit]
+        }
+        return nil
+    }
     
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        let text = (textField.text as NSString).stringByReplacingCharactersInRange(range, withString: string)
-        self.navigationItem.rightBarButtonItem?.enabled = (text as NSString).length != 0 && (queryField.text as NSString).length != 0
-        return true
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.deselectRowAtIndexPath(indexPath, animated: false)
+        
+        if indexPath.section == 3 {
+            if let count = feed?.allTags().count {
+                if indexPath.row != count {
+                    showTagEditor(indexPath.row)
+                }
+            }
+        }
     }
 }

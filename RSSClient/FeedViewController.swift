@@ -12,22 +12,22 @@ class FeedViewController: UITableViewController {
     
     var feed : Feed? = nil {
         didSet {
-            self.navigationItem.rightBarButtonItem?.enabled = self.feed != nil
             self.navigationItem.title = self.feed?.feedTitle() ?? ""
             self.tableView.reloadData()
         }
     }
+    
+    var dataManager: DataManager? = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Save", comment: ""), style: .Plain, target: self, action: "save")
-        self.navigationItem.rightBarButtonItem?.enabled = self.feed != nil
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Dismiss", comment: ""), style: .Plain, target: self, action: "dismiss")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Done", comment: ""), style: .Plain, target: self, action: "dismiss")
         self.navigationItem.title = self.feed?.feedTitle() ?? ""
 
         
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.tableFooterView = UIView()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -39,8 +39,15 @@ class FeedViewController: UITableViewController {
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func save() {
-        dismiss()
+    func showTagEditor(tagIndex: Int) -> TagEditorViewController {
+        let tagEditor = TagEditorViewController()
+        tagEditor.feed = feed
+        tagEditor.dataManager = dataManager
+        if tagIndex < feed?.allTags().count {
+            tagEditor.tagPicker.textField.text = feed?.allTags()[tagIndex]
+        }
+        self.navigationController?.pushViewController(tagEditor, animated: true)
+        return tagEditor
     }
 
     // MARK: - Table view data source
@@ -65,9 +72,9 @@ class FeedViewController: UITableViewController {
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
         case 0:
-            return (feed?.feedTitle() == nil ? nil : NSLocalizedString("Title", comment: ""))
+            return NSLocalizedString("Title", comment: "")
         case 1:
-            return (feed?.feedSummary() == nil ? nil : NSLocalizedString("Summary", comment: ""))
+            return NSLocalizedString("Summary", comment: "")
         case 2:
             return NSLocalizedString("Tags", comment: "")
         default:
@@ -129,13 +136,20 @@ class FeedViewController: UITableViewController {
         let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""), handler: {(_, indexPath) in
             if let feed = self.feed {
                 var tags = feed.allTags()
+                let tag = tags[indexPath.row]
                 tags.removeAtIndex(indexPath.row)
                 feed.tags = tags
                 tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                if tag.hasPrefix("~") {
+                    tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: .None)
+                } else if tag.hasPrefix("`") {
+                    tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 1)], withRowAnimation: .None)
+                }
             }
         })
         let edit = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Edit", comment: ""), handler: {(_, indexPath) in
             println("present a view controller")
+            self.showTagEditor(indexPath.row)
         })
         return [delete, edit]
     }
@@ -148,9 +162,8 @@ class FeedViewController: UITableViewController {
         
         if indexPath.section == 2 {
             if let count = feed?.allTags().count {
-                if indexPath.row == count {
-                    // present a tag editor.
-                    println("present a view controller")
+                if indexPath.row != count {
+                    showTagEditor(indexPath.row)
                 }
             }
         }

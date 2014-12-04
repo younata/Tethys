@@ -85,11 +85,8 @@
 		89635FC41A13C49A0052C248 /* NSLayoutConstraint+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90919ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m */; };
 		8963F42E1A26674500B447D6 /* Data-extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963F42D1A26674500B447D6 /* Data-extensions.swift */; };
 		8963F42F1A26674500B447D6 /* Data-extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963F42D1A26674500B447D6 /* Data-extensions.swift */; };
-		8963F4311A280DCD00B447D6 /* QueryFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963F4301A280DCD00B447D6 /* QueryFeedViewController.swift */; };
-		8963F4321A280DCD00B447D6 /* QueryFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963F4301A280DCD00B447D6 /* QueryFeedViewController.swift */; };
 		8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963F4331A280F8E00B447D6 /* TagPickerView.swift */; };
 		8963F4351A280F8E00B447D6 /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963F4331A280F8E00B447D6 /* TagPickerView.swift */; };
-		896795B91A2A656900894914 /* aboutQueryFeeds.html in Resources */ = {isa = PBXBuildFile; fileRef = 896795B81A2A656900894914 /* aboutQueryFeeds.html */; };
 		897CD85C1A213F0900C97ECC /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89635F911A13C2E30052C248 /* MainMenu.xib */; };
 		897CD85E1A21C49000C97ECC /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897CD85D1A21C49000C97ECC /* FeedView.swift */; };
 		898046D51A1C385A00EB29F0 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898046D41A1C385A00EB29F0 /* MainController.swift */; };
@@ -116,6 +113,12 @@
 		89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509EF1A2EB18300CBD000 /* FeedViewController.swift */; };
 		89C509F11A2EB18300CBD000 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509EF1A2EB18300CBD000 /* FeedViewController.swift */; };
 		89C509F21A2EB18300CBD000 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509EF1A2EB18300CBD000 /* FeedViewController.swift */; };
+		89C509F41A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F31A2EE56E00CBD000 /* TagEditorViewController.swift */; };
+		89C509F51A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F31A2EE56E00CBD000 /* TagEditorViewController.swift */; };
+		89C509F71A2F825400CBD000 /* TextViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F61A2F825400CBD000 /* TextViewCell.swift */; };
+		89C509F81A2F825400CBD000 /* TextViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F61A2F825400CBD000 /* TextViewCell.swift */; };
+		89C509FA1A2F865F00CBD000 /* QueryFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F91A2F865F00CBD000 /* QueryFeedViewController.swift */; };
+		89C509FB1A2F865F00CBD000 /* QueryFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F91A2F865F00CBD000 /* QueryFeedViewController.swift */; };
 		89C7FBE01A183EBE00ACBDB2 /* MAKDropDownMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C7FBDF1A183EBE00ACBDB2 /* MAKDropDownMenu.m */; };
 		89C7FBE11A183EBE00ACBDB2 /* MAKDropDownMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C7FBDF1A183EBE00ACBDB2 /* MAKDropDownMenu.m */; };
 		89C7FBE81A18847A00ACBDB2 /* RBActivityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C7FBE71A18847A00ACBDB2 /* RBActivityIndicator.m */; };
@@ -135,10 +138,6 @@
 		89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */; };
 		89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C919DA37FB009924DA /* FeedTableCell.swift */; };
 		89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830CC19DC67B9009924DA /* UnreadCounter.swift */; };
-		89C891971A2E1FB100DE36F4 /* TagsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C891961A2E1FB100DE36F4 /* TagsListView.swift */; };
-		89C891981A2E1FB100DE36F4 /* TagsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C891961A2E1FB100DE36F4 /* TagsListView.swift */; };
-		89C8919A1A2E220C00DE36F4 /* TagCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C891991A2E220C00DE36F4 /* TagCollectionViewCell.swift */; };
-		89C8919B1A2E220C00DE36F4 /* TagCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C891991A2E220C00DE36F4 /* TagCollectionViewCell.swift */; };
 		89D06A1B19FDBC52003909A3 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89D06A1A19FDBC52003909A3 /* Launch Screen.xib */; };
 		89D06A2119FF210C003909A3 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D06A2019FF210C003909A3 /* LoadingView.swift */; };
 		89D06A2219FF210C003909A3 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D06A2019FF210C003909A3 /* LoadingView.swift */; };
@@ -217,6 +216,7 @@
 		895779B319E658A700548418 /* Mocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
 		895779B519E65A6D00548418 /* ArticleCellTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleCellTests.swift; sourceTree = "<group>"; };
 		895779B719E65D9900548418 /* DataManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManagerTests.swift; sourceTree = "<group>"; };
+		895901A11A2FFDDD002E2C62 /* RSSClient 1. 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1. 2.xcdatamodel"; sourceTree = "<group>"; };
 		89635F891A13C2E30052C248 /* rNews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rNews.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89635F8C1A13C2E30052C248 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89635F8D1A13C2E30052C248 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -228,9 +228,7 @@
 		8963F4281A2570F100B447D6 /* SettingsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsCell.swift; sourceTree = "<group>"; };
 		8963F42C1A2660DF00B447D6 /* RSSClient 1.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.1.xcdatamodel"; sourceTree = "<group>"; };
 		8963F42D1A26674500B447D6 /* Data-extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data-extensions.swift"; sourceTree = "<group>"; };
-		8963F4301A280DCD00B447D6 /* QueryFeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryFeedViewController.swift; sourceTree = "<group>"; };
 		8963F4331A280F8E00B447D6 /* TagPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagPickerView.swift; sourceTree = "<group>"; };
-		896795B81A2A656900894914 /* aboutQueryFeeds.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = aboutQueryFeeds.html; sourceTree = "<group>"; };
 		897CD85D1A21C49000C97ECC /* FeedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		898046D11A1BC8FD00EB29F0 /* rNews.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = rNews.entitlements; sourceTree = "<group>"; };
 		898046D31A1C36B000EB29F0 /* RSSClient-OSX-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSSClient-OSX-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -246,6 +244,9 @@
 		898047441A20478600EB29F0 /* TUSafariActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TUSafariActivity.m; path = Vendor/TUSafariActivity/Classes/TUSafariActivity.m; sourceTree = "<group>"; };
 		898047631A206CB100EB29F0 /* FeedsList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FeedsList.swift; path = "RSSClient-OSX/FeedsList.swift"; sourceTree = SOURCE_ROOT; };
 		89C509EF1A2EB18300CBD000 /* FeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
+		89C509F31A2EE56E00CBD000 /* TagEditorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagEditorViewController.swift; sourceTree = "<group>"; };
+		89C509F61A2F825400CBD000 /* TextViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextViewCell.swift; sourceTree = "<group>"; };
+		89C509F91A2F865F00CBD000 /* QueryFeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryFeedViewController.swift; sourceTree = "<group>"; };
 		89C7FBDE1A183EBE00ACBDB2 /* MAKDropDownMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MAKDropDownMenu.h; sourceTree = "<group>"; };
 		89C7FBDF1A183EBE00ACBDB2 /* MAKDropDownMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MAKDropDownMenu.m; sourceTree = "<group>"; };
 		89C7FBE61A18847A00ACBDB2 /* RBActivityIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBActivityIndicator.h; sourceTree = "<group>"; };
@@ -272,8 +273,6 @@
 		89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsTableViewController.swift; sourceTree = "<group>"; };
 		89C830C919DA37FB009924DA /* FeedTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCell.swift; sourceTree = "<group>"; };
 		89C830CC19DC67B9009924DA /* UnreadCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounter.swift; sourceTree = "<group>"; };
-		89C891961A2E1FB100DE36F4 /* TagsListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsListView.swift; sourceTree = "<group>"; };
-		89C891991A2E220C00DE36F4 /* TagCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagCollectionViewCell.swift; sourceTree = "<group>"; };
 		89D06A1A19FDBC52003909A3 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		89D06A2019FF210C003909A3 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		E3BD5CAD62D2FA1E198BB3BD /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -554,8 +553,6 @@
 				89C830CC19DC67B9009924DA /* UnreadCounter.swift */,
 				89D06A2019FF210C003909A3 /* LoadingView.swift */,
 				8963F4331A280F8E00B447D6 /* TagPickerView.swift */,
-				89C891961A2E1FB100DE36F4 /* TagsListView.swift */,
-				89C891991A2E220C00DE36F4 /* TagCollectionViewCell.swift */,
 				8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */,
 				894896F01A16F7B20030EB6E /* FeedParser.swift */,
 				8963F42B1A2570F500B447D6 /* Settings */,
@@ -624,8 +621,9 @@
 				89C830C919DA37FB009924DA /* FeedTableCell.swift */,
 				894896EB1A16F1130030EB6E /* LocalImportViewController.swift */,
 				89C509EF1A2EB18300CBD000 /* FeedViewController.swift */,
-				8963F4301A280DCD00B447D6 /* QueryFeedViewController.swift */,
-				896795B81A2A656900894914 /* aboutQueryFeeds.html */,
+				89C509F31A2EE56E00CBD000 /* TagEditorViewController.swift */,
+				89C509F91A2F865F00CBD000 /* QueryFeedViewController.swift */,
+				89C509F61A2F825400CBD000 /* TextViewCell.swift */,
 				89C830B719D7EC55009924DA /* FindFeedViewController.swift */,
 				89C830B919D8904A009924DA /* findFeeds.js */,
 				89C830BD19D89722009924DA /* FindICO.js */,
@@ -768,7 +766,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				896795B91A2A656900894914 /* aboutQueryFeeds.html in Resources */,
 				8980474D1A20478600EB29F0 /* safari@2x.png in Resources */,
 				898047451A20478600EB29F0 /* TUSafariActivity.strings in Resources */,
 				89C8308319D730E9009924DA /* Images.xcassets in Resources */,
@@ -836,13 +833,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				89C830C619D8A058009924DA /* Feed.m in Sources */,
-				8963F4311A280DCD00B447D6 /* QueryFeedViewController.swift in Sources */,
 				8963F42E1A26674500B447D6 /* Data-extensions.swift in Sources */,
-				89C8919A1A2E220C00DE36F4 /* TagCollectionViewCell.swift in Sources */,
 				8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */,
 				89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */,
 				8933E91A19ECCD5E00ECFF3F /* MWFeedItem.m in Sources */,
-				89C891971A2E1FB100DE36F4 /* TagsListView.swift in Sources */,
 				8933E92E19ECD28900ECFF3F /* NSString+HTML.m in Sources */,
 				894896EC1A16F1130030EB6E /* LocalImportViewController.swift in Sources */,
 				8933E91919ECCD5E00ECFF3F /* MWFeedInfo.m in Sources */,
@@ -861,6 +855,7 @@
 				89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */,
 				8933E93E19EF508C00ECFF3F /* ScriptDocument.swift in Sources */,
 				89C830C319D89E46009924DA /* Article.m in Sources */,
+				89C509F71A2F825400CBD000 /* TextViewCell.swift in Sources */,
 				8980475D1A20478600EB29F0 /* TUSafariActivity.m in Sources */,
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
 				8924D8F21A0E8EEA003B7529 /* OPMLParser.swift in Sources */,
@@ -869,8 +864,10 @@
 				894896F11A16F7B20030EB6E /* FeedParser.swift in Sources */,
 				89D06A2119FF210C003909A3 /* LoadingView.swift in Sources */,
 				89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */,
+				89C509FA1A2F865F00CBD000 /* QueryFeedViewController.swift in Sources */,
 				8933E92D19ECD28900ECFF3F /* NSDate+InternetDateTime.m in Sources */,
 				8933E90D19ECCBC300ECFF3F /* ALView+PureLayout.m in Sources */,
+				89C509F41A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */,
 				8933E93919EF4BB100ECFF3F /* ScriptEditorViewController.swift in Sources */,
 				89C8307C19D730E9009924DA /* RSSClient.xcdatamodeld in Sources */,
 				8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */,
@@ -886,7 +883,6 @@
 				893448C61A03159F00F5D528 /* ArticleViewControllerTests.swift in Sources */,
 				895779AD19E62CDA00548418 /* Feed.m in Sources */,
 				895779B019E6512200548418 /* UnreadCounterTests.swift in Sources */,
-				89C891981A2E1FB100DE36F4 /* TagsListView.swift in Sources */,
 				893448CA1A0315DF00F5D528 /* FindFeedViewControllerTests.swift in Sources */,
 				893448B81A004E4E00F5D528 /* MWFeedInfo.m in Sources */,
 				893448C01A004E5C00F5D528 /* NSArray+PureLayout.m in Sources */,
@@ -908,10 +904,9 @@
 				893448C21A004E6400F5D528 /* UIColor+RSSClient.m in Sources */,
 				893448BB1A004E4E00F5D528 /* NSDate+InternetDateTime.m in Sources */,
 				894896F21A16F7B20030EB6E /* FeedParser.swift in Sources */,
-				89C8919B1A2E220C00DE36F4 /* TagCollectionViewCell.swift in Sources */,
 				893448BA1A004E4E00F5D528 /* GTMNSString+HTML.m in Sources */,
 				8924D8F31A108299003B7529 /* OPMLParser.swift in Sources */,
-				8963F4321A280DCD00B447D6 /* QueryFeedViewController.swift in Sources */,
+				89C509FB1A2F865F00CBD000 /* QueryFeedViewController.swift in Sources */,
 				893448BD1A004E4E00F5D528 /* NSString+XMLEntities.m in Sources */,
 				893448B71A004E4E00F5D528 /* MWFeedParser.m in Sources */,
 				895779A719E62CC500548418 /* ArticleListController.swift in Sources */,
@@ -919,6 +914,7 @@
 				895779A919E62CC500548418 /* ArticleViewController.swift in Sources */,
 				895779B819E65D9900548418 /* DataManagerTests.swift in Sources */,
 				8963F4351A280F8E00B447D6 /* TagPickerView.swift in Sources */,
+				89C509F51A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */,
 				895779A119E62CC500548418 /* UnreadCounter.swift in Sources */,
 				895779A419E62CC500548418 /* FindFeedViewController.swift in Sources */,
 				895779AC19E62CDA00548418 /* Article.m in Sources */,
@@ -929,6 +925,7 @@
 				893448C81A0315B600F5D528 /* ArticleListControllerTests.swift in Sources */,
 				893448BF1A004E5C00F5D528 /* ALView+PureLayout.m in Sources */,
 				898047371A20475D00EB29F0 /* Alamofire.swift in Sources */,
+				89C509F81A2F825400CBD000 /* TextViewCell.swift in Sources */,
 				895779A219E62CC500548418 /* FeedsTableViewController.swift in Sources */,
 				895779AB19E62CCE00548418 /* RSSClient.xcdatamodeld in Sources */,
 			);
@@ -1201,10 +1198,11 @@
 		89C8307A19D730E9009924DA /* RSSClient.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				895901A11A2FFDDD002E2C62 /* RSSClient 1. 2.xcdatamodel */,
 				8963F42C1A2660DF00B447D6 /* RSSClient 1.1.xcdatamodel */,
 				89C8307B19D730E9009924DA /* RSSClient.xcdatamodel */,
 			);
-			currentVersion = 8963F42C1A2660DF00B447D6 /* RSSClient 1.1.xcdatamodel */;
+			currentVersion = 895901A11A2FFDDD002E2C62 /* RSSClient 1. 2.xcdatamodel */;
 			path = RSSClient.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

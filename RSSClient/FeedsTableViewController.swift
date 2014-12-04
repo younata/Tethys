@@ -136,8 +136,9 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             localImport.dataManager = dataManager
             vc = UINavigationController(rootViewController: localImport)
         } else if itemIndex == 2 {
-            let queryFeed = QueryFeedViewController()
+            let queryFeed = QueryFeedViewController(style: .Grouped)
             queryFeed.dataManager = dataManager
+            queryFeed.feed = dataManager?.newFeed()
             vc = UINavigationController(rootViewController: queryFeed)
         }
         if let nc = vc {
@@ -272,12 +273,14 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             let feed = self.feedAtIndexPath(indexPath)
             var viewController : UIViewController? = nil
             if feed.isQueryFeed() {
-                let vc = QueryFeedViewController()
+                let vc = QueryFeedViewController(style: .Grouped)
                 vc.feed = feed
+                vc.dataManager = self.dataManager
                 viewController = vc
             } else {
                 let vc = FeedViewController(style: .Grouped)
                 vc.feed = feed
+                vc.dataManager = self.dataManager
                 viewController = vc
             }
             if let vc = viewController {

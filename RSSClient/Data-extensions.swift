@@ -72,6 +72,10 @@ extension Feed {
 }
 
 extension Article {
+    func allFlags() -> [String] {
+        return self.flags == nil ? [] : self.flags as [String]
+    }
+    
     func asDict() -> [String: AnyObject] {
         var ret = asDictNoFeed()
         ret["feed"] = feed.asDictNoArticles()
@@ -89,6 +93,7 @@ extension Article {
         ret["identifier"] = identifier ?? ""
         ret["content"] = content ?? ""
         ret["read"] = read
+        ret["flags"] = allFlags()
         ret["id"] = self.objectID.description
         return ret
     }

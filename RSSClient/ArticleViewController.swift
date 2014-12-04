@@ -128,19 +128,18 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             userActivity?.title = NSLocalizedString("Reading Article", comment: "")
         }
         
+        self.view.addSubview(loadingBar)
+        loadingBar.setTranslatesAutoresizingMaskIntoConstraints(false)
+        loadingBar.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
+        loadingBar.autoSetDimension(.Height, toSize: 1)
+        loadingBar.progressTintColor = UIColor.darkGreenColor()
+        
         self.view.addSubview(content)
         content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
         configureContent()
         
-        self.view.addSubview(loadingBar)
-        loadingBar.setTranslatesAutoresizingMaskIntoConstraints(false)
-        loadingBar.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
-        loadingBar.autoSetDimension(.Height, toSize: 2)
-        
         if let splitView = self.splitViewController {
-            // don't set this if ipad or iphone 6+ in normal mode...
-            if UIDevice.currentDevice().userInterfaceIdiom == .Pad || false {
-                // if iphone6+ in normal...
+            if UIDevice.currentDevice().userInterfaceIdiom == .Pad || (UIScreen.mainScreen().scale == UIScreen.mainScreen().nativeScale && UIScreen.mainScreen().scale > 2) {
                 self.navigationItem.leftBarButtonItem = splitView.displayModeButtonItem()
             }
         }
@@ -192,11 +191,34 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         //self.navigationController?.setToolbarHidden(article == nil, animated: true)
     }
     
+    var objectsBeingObserved : [WKWebView] = []
+    
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         //self.navigationController?.toolbarHidden = true
         userActivity?.invalidate()
         userActivity = nil
+        for obj in objectsBeingObserved {
+            obj.removeObserver(self, forKeyPath: "estimatedProgress")
+        }
+        objectsBeingObserved = []
+    }
+    
+    func removeObserverFromContent(obj: WKWebView) {
+        var idx : Int? = nil
+        do {
+            idx = nil
+            for (i, x) in enumerate(objectsBeingObserved) {
+                if x == obj {
+                    idx = i
+                    x.removeObserver(self, forKeyPath: "estimatedProgress")
+                    break
+                }
+            }
+            if let i = idx {
+                objectsBeingObserved.removeAtIndex(i)
+            }
+        } while idx != nil
     }
     
     deinit {
@@ -205,6 +227,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     
     func configureContent() {
         content.navigationDelegate = self
+        self.view.bringSubviewToFront(self.loadingBar)
     }
     
     var nextContent: WKWebView = WKWebView(forAutoLayout: ())
@@ -248,6 +271,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 }, completion: {(completed) in
                     self.view.bringSubviewToFront(self.loadingBar)
                     oldContent.removeFromSuperview()
+                    self.removeObserverFromContent(oldContent)
                 })
             } else {
                 nextContent.removeFromSuperview()
@@ -293,6 +317,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 }, completion: {(completed) in
                     self.view.bringSubviewToFront(self.loadingBar)
                     oldContent.removeFromSuperview()
+                    self.removeObserverFromContent(oldContent)
                 })
             } else {
                 nextContent.removeFromSuperview()
@@ -339,15 +364,21 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         forward.enabled = webView.canGoForward
         back.enabled = webView.canGoBack
         loadingBar.hidden = true
+        self.removeObserverFromContent(webView)
     }
     
     func webView(webView: WKWebView!, didFailNavigation navigation: WKNavigation!, withError error: NSError!) {
         loadingBar.hidden = true
+        self.removeObserverFromContent(webView)
     }
     
     func webView(webView: WKWebView!, didStartProvisionalNavigation navigation: WKNavigation!) {
         loadingBar.progress = 0
         loadingBar.hidden = false
+        if !contains(objectsBeingObserved, webView) {
+            webView.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
+            objectsBeingObserved.append(webView)
+        }
         if let wvu = webView.URL {
             if wvu != NSURL(string: self.article!.feed.url) {
                 self.userActivity?.userInfo?["url"] = wvu

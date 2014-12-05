@@ -22,7 +22,6 @@
 @dynamic identifier;
 @dynamic content;
 @dynamic read;
-@dynamic enclosureURLs;
 @dynamic feed;
 @dynamic flags;
 

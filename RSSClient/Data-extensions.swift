@@ -76,6 +76,10 @@ extension Article {
         return self.flags == nil ? [] : self.flags as [String]
     }
     
+    func allEnclosures() -> [Enclosure] {
+        return self.enclosures == nil ? [] : self.enclosures.allObjects as [Enclosure]
+    }
+    
     func asDict() -> [String: AnyObject] {
         var ret = asDictNoFeed()
         ret["feed"] = feed.asDictNoArticles()

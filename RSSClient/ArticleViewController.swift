@@ -14,6 +14,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     var article: Article? = nil {
         didSet {
             self.navigationController?.setToolbarHidden(article == nil, animated: false)
+            enclosureHeight?.constant = (article?.allEnclosures().count > 0 ? 120 : 0)
             if let a = article {
                 a.read = true
                 NSNotificationCenter.defaultCenter().postNotificationName("ArticleWasRead", object: a)
@@ -33,6 +34,12 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                     }
                 }
                 self.navigationItem.title = a.title
+                
+                if let enclosures = a.allEnclosures() {
+                    if enclosures.count > 0 {
+                        enclosureView.enclosures = enclosures
+                    }
+                }
                 
                 if userActivity == nil {
                     userActivity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
@@ -69,6 +76,9 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     var content = WKWebView(forAutoLayout: ())
     let loadingBar = UIProgressView(progressViewStyle: .Bar)
     
+    let enclosureView = EnclosuresView(frame: CGRectZero)
+    var enclosureHeight : NSLayoutConstraint? = nil
+    
     var shareButton: UIBarButtonItem! = nil
     var toggleContentButton: UIBarButtonItem! = nil
     let contentString = NSLocalizedString("Content", comment: "")
@@ -76,6 +86,12 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     
     var articles: [Article] = []
     var lastArticleIndex = 0
+    
+    var dataManager: DataManager? = nil {
+        didSet {
+            enclosureView.dataManager = dataManager
+        }
+    }
     
     var articleCSS : String {
         if let loc = NSBundle.mainBundle().URLForResource("article", withExtension: "css") {
@@ -135,8 +151,13 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         loadingBar.progressTintColor = UIColor.darkGreenColor()
         
         self.view.addSubview(content)
-        content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
+        content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
         configureContent()
+        
+        self.view.addSubview(enclosureView)
+        enclosureView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
+        content.autoPinEdge(.Bottom, toEdge: .Top, ofView: enclosureView)
+        enclosureHeight = enclosureView.autoSetDimension(.Height, toSize: 0)
         
         if let splitView = self.splitViewController {
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad || (UIScreen.mainScreen().scale == UIScreen.mainScreen().nativeScale && UIScreen.mainScreen().scale > 2) {
@@ -159,6 +180,9 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 self.toolbarItems = [spacer(), shareButton, spacer(), toggleContentButton, spacer()]
             } else {
                 self.toolbarItems = [spacer(), shareButton, spacer()]
+            }
+            if a.allEnclosures().count > 0 {
+                enclosureHeight?.constant = 120
             }
         }
         

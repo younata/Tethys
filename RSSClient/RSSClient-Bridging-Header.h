@@ -11,4 +11,5 @@
 
 #import "Article.h"
 #import "Feed.h"
+#import "Enclosure.h"
 #import "UIColor+RSSClient.h"

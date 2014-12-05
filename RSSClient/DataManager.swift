@@ -236,8 +236,26 @@ class DataManager: NSObject {
                         article.summary = item.summary
                         article.content = item.content
                         article.author = item.author
-                        if (article.enclosureURLs?.description != item.enclosures?.description) {
-                            // TODO: enclosures
+                        if let itemEnclosures = (item.enclosures?.count == 0 ? nil : item.enclosures) as [[String: AnyObject]]? {
+                            for enc in itemEnclosures {
+                                let url = enc["url"] as String?
+                                var found = false
+                                for enclosure in article.allEnclosures() {
+                                    if enclosure.url == url {
+                                        found = true
+                                        break
+                                    }
+                                }
+                                if !found {
+                                    let type = enc["type"] as String?
+                                    
+                                    let enclosure = self.newEnclosure()
+                                    enclosure.url = url
+                                    enclosure.kind = type
+                                    enclosure.article = article
+                                    article.addEnclosuresObject(enclosure)
+                                }
+                            }
                         }
                     } else {
                         // create
@@ -255,33 +273,17 @@ class DataManager: NSObject {
                             
                             feed.addArticlesObject(article)
                             
-                            /*
                             if let enclosures = item.enclosures {
-                                article.enclosureURLs = (enclosures as [[String: AnyObject]]).map { return $0["url"] as String } as [String]
-                                var toInsert : [[String: AnyObject]] = []
-                                for (idx, itm) in enumerate(item.enclosures as [[String: AnyObject]]) {
-                                    let url = itm["url"] as String
-                                    let length = itm["length"] as Int
-                                    let type = itm["type"] as String
-                                    request(.GET, url).response {(_, _, response, error) in
-                                        if let err = error {
-                                            // TODO: notify the user!
-                                        } else {
-                                            if let data = response as? NSData {
-                                                if data.length == length {
-                                                    let ti = ["type": type, "data": data, "url": url]
-                                                    toInsert.append(ti)
-                                                    if idx == (item.enclosures.count - 1) {
-                                                        article.enclosures = toInsert
-                                                        self.managedObjectContext.save(nil)
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
+                                for enclosure in enclosures as [[String: AnyObject]] {
+                                    let url = enclosure["url"] as String?
+                                    let type = enclosure["type"] as String?
+                                    let enclosure = self.newEnclosure()
+                                    enclosure.url = url
+                                    enclosure.kind = type
+                                    enclosure.article = article
+                                    article.addEnclosuresObject(enclosure)
                                 }
                             }
-                            */
                         } else {
                             println("Error, unable to find feed for item.")
                         }
@@ -306,7 +308,88 @@ class DataManager: NSObject {
         }
     }
     
+    // MARK: Enclosures
+    
+    func newEnclosure() -> Enclosure {
+        let ret = NSEntityDescription.insertNewObjectForEntityForName("Enclosure", inManagedObjectContext: self.managedObjectContext) as Enclosure
+        ret.downloaded = false
+        return ret
+    }
+    
+    func allEnclosures() -> [Enclosure] {
+        return (entities("Enclosure", matchingPredicate: NSPredicate(value: true)) as [Enclosure]).sorted {(a : Enclosure, b: Enclosure) in
+            if let da = a.url {
+                if let db = b.url {
+                    return da.lastPathComponent < db.lastPathComponent
+                }
+            }
+            return true
+        }
+    }
+    
+    func allEnlosures(downloaded: Bool) -> [Enclosure] {
+        return (entities("Enclosure", matchingPredicate: NSPredicate(format: "downloaded = %d", downloaded)!) as [Enclosure]).sorted {(a : Enclosure, b: Enclosure) in
+            if let da = a.url {
+                if let db = b.url {
+                    return da.lastPathComponent < db.lastPathComponent
+                }
+            }
+            return true
+        }
+    }
+    
+    func deleteEnclosure(enclosure: Enclosure) {
+        enclosure.article.removeEnclosuresObject(enclosure)
+        enclosure.article = nil
+        self.managedObjectContext.deleteObject(enclosure)
+    }
+    
+    private var enclosureProgress: [NSObject: Double] = [:]
+    
+    var enclosureDownloadProgress: Double {
+        get {
+            let n = Array(enclosureProgress.values).reduce(0.0) {return $0 + $1}
+            return n / Double(enclosureProgress.count)
+        }
+    }
+    
+    func progressForEnclosure(enclosure: Enclosure) -> Double {
+        if let progress = self.enclosureProgress[enclosure.objectID] {
+            return progress
+        }
+        return -1
+    }
+    
+    func updateEnclosure(enclosure: Enclosure, progress: Double) {
+        self.enclosureProgress[enclosure.objectID] = progress
+    }
+    
+    func downloadEnclosure(enclosure: Enclosure, progress: (Double) -> (Void) = {(_) in }, completion: (Enclosure, NSError?) -> (Void) = {(_) in }) {
+        if (!enclosure.downloaded.boolValue) {
+            request(.GET, enclosure.url).response {(_, _, response, error) in
+                if let err = error {
+                    completion(enclosure, err)
+                } else {
+                    enclosure.data = response as NSData
+                    completion(enclosure, nil)
+                }
+                self.enclosureProgress.removeValueForKey(enclosure.objectID)
+            }.progress {(_, bytesRead, totalBytes) in
+                let p = Double(bytesRead) / Double(totalBytes)
+                self.updateEnclosure(enclosure, progress: p)
+                progress(p)
+            }
+        } else {
+            completion(enclosure, nil)
+        }
+    }
+    
+    
     // MARK: Articles
+    
+    func newArticle() -> Article {
+        return NSEntityDescription.insertNewObjectForEntityForName("Article", inManagedObjectContext: self.managedObjectContext) as Article
+    }
     
     private var theArticles : [Article]? = nil
     

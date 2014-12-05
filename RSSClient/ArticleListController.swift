@@ -93,6 +93,7 @@ class ArticleListController: UITableViewController {
     
     func showArticle(article: Article, animated: Bool) -> ArticleViewController {
         let avc = self.splitViewController?.viewControllers.last as? ArticleViewController ?? ArticleViewController()
+        avc.dataManager = dataManager
         avc.article = article
         avc.articles = self.articles
         if (self.articles.count != 0) {

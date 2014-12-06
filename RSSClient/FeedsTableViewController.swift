@@ -20,6 +20,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     
     let dropDownMenu = MAKDropDownMenu(forAutoLayout: ())
     let tagField = UITextField(forAutoLayout: ())
+    let tagHolder = UIView()
     var menuTopOffset : NSLayoutConstraint!
     
     var dataManager : DataManager? = nil
@@ -32,9 +33,20 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.setTranslatesAutoresizingMaskIntoConstraints(false)
         tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
         
+        tagHolder.bounds = CGRectMake(0, 0, self.view.bounds.width, 40)
+        let view = UIView(forAutoLayout: ())
+        view.backgroundColor = UIColor.lightGrayColor()
+        tagHolder.addSubview(view)
+        view.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
+        view.autoSetDimension(.Height, toSize: 1)
+        tagHolder.addSubview(tagField)
+        tagField.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(0, 8, 1, 0))
         tagField.placeholder = NSLocalizedString("Filter by Tag", comment: "")
         tagField.delegate = self
         tagField.backgroundColor = UIColor.whiteColor()
+        //tagField.layer.cornerRadius = 5
+        tagField.autocorrectionType = .No
+        tagField.autocapitalizationType = .None
         
         self.view.addSubview(dropDownMenu)
         dropDownMenu.delegate = self
@@ -60,6 +72,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         self.tableViewController.refreshControl = UIRefreshControl(frame: CGRectZero)
         self.tableViewController.refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
         
+        self.tableView.tableHeaderView = tagHolder
         self.tableView.tableFooterView = UIView()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
@@ -176,11 +189,14 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             return f1.feedTitle()!.lowercaseString < f2.feedTitle()!.lowercaseString
         }
+        self.tableView.tableHeaderView = (feeds.filter({ $0.allTags().count != 0 }).count == 0 ? nil : self.tagHolder)
+        
         if let rc = self.tableViewController.refreshControl {
             if rc.refreshing {
                 rc.endRefreshing()
             }
         }
+        
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
     }
     

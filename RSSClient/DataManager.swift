@@ -120,7 +120,7 @@ class DataManager: NSObject {
     func feedsMatchingTag(tag: String?, managedObjectContext: NSManagedObjectContext? = nil, allowIncompleteTags: Bool = true) -> [Feed] {
         if let theTag = (tag == "" ? nil : tag) {
             return feeds(managedObjectContext: managedObjectContext).filter {
-                let tags : [String] = $0.tags as [String]
+                let tags = $0.allTags()
                 for t in tags {
                     if allowIncompleteTags {
                         if t.rangeOfString(theTag) != nil {

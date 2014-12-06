@@ -203,109 +203,117 @@ class DataManager: NSObject {
     var parsers : [FeedParser] = []
     
     func updateFeeds(feeds: [Feed], completion: (NSError?)->(Void)) {
-        let theFeeds = feeds.filter { $0.url != nil }
-        var feedsLeft = theFeeds.count
-        for feed in theFeeds {
-            let feedParser = FeedParser(URL: NSURL(string: feed.url)!)
-            feedParser.success {(info, items) in
-                var predicate = NSPredicate(format: "url = %@", feed.url)!
-                
-                var summary : String = ""
-                if let s = info.summary {
-                    let data = s.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
-                    let options = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
-                    summary = s
-                    if let aString = NSAttributedString(data: data, options: options, documentAttributes: nil, error: nil) {
-                        summary = aString.string
-                    }
-                }
-                if let feed = self.entities("Feed", matchingPredicate: predicate).last as? Feed {
-                    feed.title = info.title
-                    feed.summary = summary
-                } else {
-                    let feed = (NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: self.managedObjectContext) as Feed)
-                    feed.title = info.title
-                    feed.summary = summary
-                }
-                for item in items {
-                    predicate = NSPredicate(format: "link = %@", item.link)!
-                    if let article = self.entities("Article", matchingPredicate: predicate).last as? Article {
-                        article.title = item.title
-                        article.link = item.link
-                        article.updatedAt = item.updated
-                        article.summary = item.summary
-                        article.content = item.content
-                        article.author = item.author
-                        
-                        if let itemEnclosures = (item.enclosures?.count == 0 ? nil : item.enclosures) as [[String: AnyObject]]? {
-                            for enc in itemEnclosures {
-                                let url = enc["url"] as String?
-                                var found = false
-                                for enclosure in article.allEnclosures() {
-                                    if enclosure.url == url {
-                                        found = true
-                                        break
-                                    }
-                                }
-                                if !found {
-                                    let type = enc["type"] as String?
-                                    
-                                    let enclosure = NSEntityDescription.insertNewObjectForEntityForName("Enclosure", inManagedObjectContext: self.managedObjectContext) as Enclosure
-                                    enclosure.url = url
-                                    enclosure.kind = type
-                                    enclosure.article = article
-                                    article.addEnclosuresObject(enclosure)
-                                }
-                            }
+        let feedIds = feeds.filter { $0.url != nil }.map { $0.objectID }
+        
+        self.operationQueue.addOperationWithBlock {
+            let theFeeds = self.entities("Feed", matchingPredicate: NSPredicate(format: "self in %@", feedIds)!, managedObjectContext: self.backgroundObjectContext) as [Feed]
+            var feedsLeft = theFeeds.count
+            for feed in theFeeds {
+                let feedParser = FeedParser(URL: NSURL(string: feed.url)!)
+                feedParser.success {(info, items) in
+                    var predicate = NSPredicate(format: "url = %@", feed.url)!
+                    
+                    var summary : String = ""
+                    if let s = info.summary {
+                        let data = s.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
+                        let options = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
+                        summary = s
+                        if let aString = NSAttributedString(data: data, options: options, documentAttributes: nil, error: nil) {
+                            summary = aString.string
                         }
+                    }
+                    if let feed = self.entities("Feed", matchingPredicate: predicate).last as? Feed {
+                        feed.title = info.title
+                        feed.summary = summary
                     } else {
-                        // create
-                        if let feed = self.entities("Feed", matchingPredicate: NSPredicate(format: "url = %@", feed.url)!).last as? Feed {
-                            let article = (NSEntityDescription.insertNewObjectForEntityForName("Article", inManagedObjectContext: self.managedObjectContext) as Article)
+                        let feed = (NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: self.backgroundObjectContext) as Feed)
+                        feed.title = info.title
+                        feed.summary = summary
+                    }
+                    for item in items {
+                        predicate = NSPredicate(format: "link = %@", item.link)!
+                        if let article = self.entities("Article", matchingPredicate: predicate).last as? Article {
                             article.title = item.title
                             article.link = item.link
-                            article.published = item.date ?? NSDate()
                             article.updatedAt = item.updated
                             article.summary = item.summary
                             article.content = item.content
                             article.author = item.author
-                            article.feed = feed
-                            article.read = false
                             
-                            feed.addArticlesObject(article)
-                            
-                            if let enclosures = item.enclosures {
-                                for enclosure in enclosures as [[String: AnyObject]] {
-                                    let url = enclosure["url"] as String?
-                                    let type = enclosure["type"] as String?
-                                    let enclosure = NSEntityDescription.insertNewObjectForEntityForName("Enclosure", inManagedObjectContext: self.managedObjectContext) as Enclosure
-                                    enclosure.url = url
-                                    enclosure.kind = type
-                                    enclosure.article = article
-                                    article.addEnclosuresObject(enclosure)
+                            if let itemEnclosures = (item.enclosures?.count == 0 ? nil : item.enclosures) as [[String: AnyObject]]? {
+                                for enc in itemEnclosures {
+                                    let url = enc["url"] as String?
+                                    var found = false
+                                    for enclosure in article.allEnclosures() {
+                                        if enclosure.url == url {
+                                            found = true
+                                            break
+                                        }
+                                    }
+                                    if !found {
+                                        let type = enc["type"] as String?
+                                        
+                                        let enclosure = NSEntityDescription.insertNewObjectForEntityForName("Enclosure", inManagedObjectContext: self.backgroundObjectContext) as Enclosure
+                                        enclosure.url = url
+                                        enclosure.kind = type
+                                        enclosure.article = article
+                                        article.addEnclosuresObject(enclosure)
+                                    }
                                 }
                             }
                         } else {
-                            println("Error, unable to find feed for item.")
+                            // create
+                            if let feed = self.entities("Feed", matchingPredicate: NSPredicate(format: "url = %@", feed.url)!).last as? Feed {
+                                let article = (NSEntityDescription.insertNewObjectForEntityForName("Article", inManagedObjectContext: self.backgroundObjectContext) as Article)
+                                article.title = item.title
+                                article.link = item.link
+                                article.published = item.date ?? NSDate()
+                                article.updatedAt = item.updated
+                                article.summary = item.summary
+                                article.content = item.content
+                                article.author = item.author
+                                article.feed = feed
+                                article.read = false
+                                
+                                feed.addArticlesObject(article)
+                                
+                                if let enclosures = item.enclosures {
+                                    for enclosure in enclosures as [[String: AnyObject]] {
+                                        let url = enclosure["url"] as String?
+                                        let type = enclosure["type"] as String?
+                                        let enclosure = NSEntityDescription.insertNewObjectForEntityForName("Enclosure", inManagedObjectContext: self.backgroundObjectContext) as Enclosure
+                                        enclosure.url = url
+                                        enclosure.kind = type
+                                        enclosure.article = article
+                                        article.addEnclosuresObject(enclosure)
+                                    }
+                                }
+                            } else {
+                                println("Error, unable to find feed for item.")
+                            }
                         }
                     }
+                    
+                    feedsLeft--
+                    if (feedsLeft == 0) {
+                        self.backgroundObjectContext.save(nil)
+                        dispatch_async(dispatch_get_main_queue()) {
+                            completion(nil)
+                        }
+                    }
+                    self.parsers = self.parsers.filter { $0 != feedParser }
+                    }.failure {(error) in
+                        feedsLeft--
+                        if (feedsLeft == 0) {
+                            self.backgroundObjectContext.save(nil)
+                            dispatch_async(dispatch_get_main_queue()) {
+                                completion(error)
+                            }
+                        }
                 }
-                
-                feedsLeft--
-                if (feedsLeft == 0) {
-                    self.managedObjectContext.save(nil)
-                    completion(nil)
-                }
-                self.parsers = self.parsers.filter { $0 != feedParser }
-            }.failure {(error) in
-                feedsLeft--
-                if (feedsLeft == 0) {
-                    self.managedObjectContext.save(nil)
-                    completion(error)
-                }
+                feedParser.parse()
+                self.parsers.append(feedParser)
             }
-            feedParser.parse()
-            self.parsers.append(feedParser)
         }
     }
     

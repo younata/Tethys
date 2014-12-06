@@ -15,6 +15,9 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         didSet {
             self.navigationController?.setToolbarHidden(article == nil, animated: false)
             enclosureHeight?.constant = (article?.allEnclosures().count > 0 ? 120 : 0)
+            UIView.animateWithDuration(0.2) {
+                self.view.layoutIfNeeded()
+            }
             if let a = article {
                 a.read = true
                 NSNotificationCenter.defaultCenter().postNotificationName("ArticleWasRead", object: a)
@@ -35,10 +38,9 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 }
                 self.navigationItem.title = a.title
                 
-                if let enclosures = a.allEnclosures() {
-                    if enclosures.count > 0 {
-                        enclosureView.enclosures = enclosures
-                    }
+                let enclosures = a.allEnclosures()
+                if enclosures.count > 0 {
+                    enclosureView.enclosures = enclosures
                 }
                 
                 if userActivity == nil {
@@ -158,6 +160,10 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         enclosureView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
         content.autoPinEdge(.Bottom, toEdge: .Top, ofView: enclosureView)
         enclosureHeight = enclosureView.autoSetDimension(.Height, toSize: 0)
+        
+        enclosureView.openEnclosure = {(enclosure) in
+            
+        }
         
         if let splitView = self.splitViewController {
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad || (UIScreen.mainScreen().scale == UIScreen.mainScreen().nativeScale && UIScreen.mainScreen().scale > 2) {

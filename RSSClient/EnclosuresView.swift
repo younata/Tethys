@@ -9,7 +9,7 @@
 import UIKit
 
 class EnclosuresView: UIView, UICollectionViewDelegate, UICollectionViewDataSource {
-    let collectionView = UICollectionView(forAutoLayout: ())
+    let collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: UICollectionViewFlowLayout())
     
     var dataManager : DataManager? = nil
     
@@ -29,11 +29,11 @@ class EnclosuresView: UIView, UICollectionViewDelegate, UICollectionViewDataSour
         super.init(frame: frame)
         
         self.addSubview(collectionView)
+        collectionView.setTranslatesAutoresizingMaskIntoConstraints(false)
         collectionView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
         
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.collectionViewLayout = UICollectionViewFlowLayout()
         
         collectionView.registerClass(EnclosureCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.backgroundColor = UIColor.clearColor()

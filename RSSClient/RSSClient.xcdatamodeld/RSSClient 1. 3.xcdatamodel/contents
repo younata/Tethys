@@ -14,7 +14,7 @@
         <relationship name="enclosures" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Enclosure" inverseName="article" inverseEntity="Enclosure" syncable="YES"/>
         <relationship name="feed" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Feed" inverseName="articles" inverseEntity="Feed" syncable="YES"/>
     </entity>
-    <entity name="Enclosure" syncable="YES">
+    <entity name="Enclosure" representedClassName="Enclosure" syncable="YES">
         <attribute name="data" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="downloaded" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="kind" optional="YES" attributeType="String" syncable="YES"/>

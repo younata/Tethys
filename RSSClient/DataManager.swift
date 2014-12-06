@@ -236,6 +236,7 @@ class DataManager: NSObject {
                         article.summary = item.summary
                         article.content = item.content
                         article.author = item.author
+                        
                         if let itemEnclosures = (item.enclosures?.count == 0 ? nil : item.enclosures) as [[String: AnyObject]]? {
                             for enc in itemEnclosures {
                                 let url = enc["url"] as String?
@@ -249,7 +250,7 @@ class DataManager: NSObject {
                                 if !found {
                                     let type = enc["type"] as String?
                                     
-                                    let enclosure = self.newEnclosure()
+                                    let enclosure = NSEntityDescription.insertNewObjectForEntityForName("Enclosure", inManagedObjectContext: self.managedObjectContext) as Enclosure
                                     enclosure.url = url
                                     enclosure.kind = type
                                     enclosure.article = article
@@ -277,7 +278,7 @@ class DataManager: NSObject {
                                 for enclosure in enclosures as [[String: AnyObject]] {
                                     let url = enclosure["url"] as String?
                                     let type = enclosure["type"] as String?
-                                    let enclosure = self.newEnclosure()
+                                    let enclosure = NSEntityDescription.insertNewObjectForEntityForName("Enclosure", inManagedObjectContext: self.managedObjectContext) as Enclosure
                                     enclosure.url = url
                                     enclosure.kind = type
                                     enclosure.article = article
@@ -309,12 +310,6 @@ class DataManager: NSObject {
     }
     
     // MARK: Enclosures
-    
-    func newEnclosure() -> Enclosure {
-        let ret = NSEntityDescription.insertNewObjectForEntityForName("Enclosure", inManagedObjectContext: self.managedObjectContext) as Enclosure
-        ret.downloaded = false
-        return ret
-    }
     
     func allEnclosures() -> [Enclosure] {
         return (entities("Enclosure", matchingPredicate: NSPredicate(value: true)) as [Enclosure]).sorted {(a : Enclosure, b: Enclosure) in

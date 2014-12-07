@@ -72,6 +72,10 @@
 		895901AA1A30C5D1002E2C62 /* EnclosuresView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895901A81A30C5D1002E2C62 /* EnclosuresView.swift */; };
 		895901AC1A30C6B7002E2C62 /* EnclosureCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895901AB1A30C6B7002E2C62 /* EnclosureCell.swift */; };
 		895901AD1A30C6B7002E2C62 /* EnclosureCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895901AB1A30C6B7002E2C62 /* EnclosureCell.swift */; };
+		895901B31A32B61A002E2C62 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 895901AF1A32B61A002E2C62 /* Localizable.strings */; };
+		895901B41A32B61A002E2C62 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 895901AF1A32B61A002E2C62 /* Localizable.strings */; };
+		895901B51A32B61A002E2C62 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 895901B11A32B61A002E2C62 /* Localizable.stringsdict */; };
+		895901B61A32B61A002E2C62 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 895901B11A32B61A002E2C62 /* Localizable.stringsdict */; };
 		89635F841A13BF120052C248 /* AMPopTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 894C0C361A1329FB008229A4 /* AMPopTip.m */; };
 		89635F8E1A13C2E30052C248 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89635F8D1A13C2E30052C248 /* AppDelegate.swift */; };
 		89635F901A13C2E30052C248 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89635F8F1A13C2E30052C248 /* Images.xcassets */; };
@@ -229,6 +233,8 @@
 		895901A41A30BCB7002E2C62 /* Enclosure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Enclosure.m; sourceTree = "<group>"; };
 		895901A81A30C5D1002E2C62 /* EnclosuresView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnclosuresView.swift; sourceTree = "<group>"; };
 		895901AB1A30C6B7002E2C62 /* EnclosureCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnclosureCell.swift; sourceTree = "<group>"; };
+		895901B01A32B61A002E2C62 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Localizable.strings; sourceTree = "<group>"; };
+		895901B21A32B61A002E2C62 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = en; path = Localizable.stringsdict; sourceTree = "<group>"; };
 		89635F891A13C2E30052C248 /* rNews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rNews.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89635F8C1A13C2E30052C248 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89635F8D1A13C2E30052C248 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -428,6 +434,15 @@
 			path = AMPopTip/AMPopTip;
 			sourceTree = "<group>";
 		};
+		895901AE1A32B61A002E2C62 /* en.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				895901AF1A32B61A002E2C62 /* Localizable.strings */,
+				895901B11A32B61A002E2C62 /* Localizable.stringsdict */,
+			);
+			path = en.lproj;
+			sourceTree = SOURCE_ROOT;
+		};
 		89635F8A1A13C2E30052C248 /* RSSClient-OSX */ = {
 			isa = PBXGroup;
 			children = (
@@ -584,6 +599,7 @@
 		89C8307619D730E9009924DA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				895901AE1A32B61A002E2C62 /* en.lproj */,
 				89C8307719D730E9009924DA /* Info.plist */,
 				890EAF491A22EB4500F4EA5E /* Settings.bundle */,
 			);
@@ -791,9 +807,11 @@
 				898047591A20478600EB29F0 /* safari~iPad@2x.png in Resources */,
 				89D06A1B19FDBC52003909A3 /* Launch Screen.xib in Resources */,
 				898047491A20478600EB29F0 /* safari.png in Resources */,
+				895901B31A32B61A002E2C62 /* Localizable.strings in Resources */,
 				89C830BF19D89722009924DA /* FindICO.js in Resources */,
 				898047551A20478600EB29F0 /* safari~iPad.png in Resources */,
 				89C830BB19D8904A009924DA /* findFeeds.js in Resources */,
+				895901B51A32B61A002E2C62 /* Localizable.stringsdict in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -804,7 +822,9 @@
 				898047461A20478600EB29F0 /* TUSafariActivity.strings in Resources */,
 				8980475A1A20478600EB29F0 /* safari~iPad@2x.png in Resources */,
 				898047521A20478600EB29F0 /* safari@3x.png in Resources */,
+				895901B61A32B61A002E2C62 /* Localizable.stringsdict in Resources */,
 				895779A519E62CC500548418 /* findFeeds.js in Resources */,
+				895901B41A32B61A002E2C62 /* Localizable.strings in Resources */,
 				898047561A20478600EB29F0 /* safari~iPad.png in Resources */,
 				8980474E1A20478600EB29F0 /* safari@2x.png in Resources */,
 				895779A619E62CC500548418 /* FindICO.js in Resources */,
@@ -957,6 +977,22 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		895901AF1A32B61A002E2C62 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				895901B01A32B61A002E2C62 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		895901B11A32B61A002E2C62 /* Localizable.stringsdict */ = {
+			isa = PBXVariantGroup;
+			children = (
+				895901B21A32B61A002E2C62 /* en */,
+			);
+			name = Localizable.stringsdict;
+			sourceTree = "<group>";
+		};
 		89635F911A13C2E30052C248 /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (

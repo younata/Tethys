@@ -205,8 +205,9 @@ class DataManager: NSObject {
     func updateFeeds(feeds: [Feed], completion: (NSError?)->(Void)) {
         let feedIds = feeds.filter { $0.url != nil }.map { $0.objectID }
         
-        self.operationQueue.addOperationWithBlock {
-            let theFeeds = self.entities("Feed", matchingPredicate: NSPredicate(format: "self in %@", feedIds)!, managedObjectContext: self.backgroundObjectContext) as [Feed]
+        dispatch_async(dispatch_get_main_queue()) {
+            let ctx = self.managedObjectContext
+            let theFeeds = self.entities("Feed", matchingPredicate: NSPredicate(format: "self in %@", feedIds)!, managedObjectContext: ctx) as [Feed]
             var feedsLeft = theFeeds.count
             for feed in theFeeds {
                 let feedParser = FeedParser(URL: NSURL(string: feed.url)!)
@@ -222,17 +223,17 @@ class DataManager: NSObject {
                             summary = aString.string
                         }
                     }
-                    if let feed = self.entities("Feed", matchingPredicate: predicate).last as? Feed {
+                    if let feed = self.entities("Feed", matchingPredicate: predicate, managedObjectContext: ctx).last as? Feed {
                         feed.title = info.title
-                        feed.summary = summary
+                        feed.summary = info.summary
                     } else {
-                        let feed = (NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: self.backgroundObjectContext) as Feed)
+                        let feed = (NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: ctx) as Feed)
                         feed.title = info.title
-                        feed.summary = summary
+                        feed.summary = info.summary
                     }
                     for item in items {
                         predicate = NSPredicate(format: "link = %@", item.link)!
-                        if let article = self.entities("Article", matchingPredicate: predicate).last as? Article {
+                        if let article = self.entities("Article", matchingPredicate: predicate, managedObjectContext: ctx).last as? Article {
                             article.title = item.title
                             article.link = item.link
                             article.updatedAt = item.updated
@@ -253,7 +254,7 @@ class DataManager: NSObject {
                                     if !found {
                                         let type = enc["type"] as String?
                                         
-                                        let enclosure = NSEntityDescription.insertNewObjectForEntityForName("Enclosure", inManagedObjectContext: self.backgroundObjectContext) as Enclosure
+                                        let enclosure = NSEntityDescription.insertNewObjectForEntityForName("Enclosure", inManagedObjectContext: ctx) as Enclosure
                                         enclosure.url = url
                                         enclosure.kind = type
                                         enclosure.article = article
@@ -264,7 +265,7 @@ class DataManager: NSObject {
                         } else {
                             // create
                             if let feed = self.entities("Feed", matchingPredicate: NSPredicate(format: "url = %@", feed.url)!).last as? Feed {
-                                let article = (NSEntityDescription.insertNewObjectForEntityForName("Article", inManagedObjectContext: self.backgroundObjectContext) as Article)
+                                let article = (NSEntityDescription.insertNewObjectForEntityForName("Article", inManagedObjectContext: ctx) as Article)
                                 article.title = item.title
                                 article.link = item.link
                                 article.published = item.date ?? NSDate()
@@ -281,7 +282,7 @@ class DataManager: NSObject {
                                     for enclosure in enclosures as [[String: AnyObject]] {
                                         let url = enclosure["url"] as String?
                                         let type = enclosure["type"] as String?
-                                        let enclosure = NSEntityDescription.insertNewObjectForEntityForName("Enclosure", inManagedObjectContext: self.backgroundObjectContext) as Enclosure
+                                        let enclosure = NSEntityDescription.insertNewObjectForEntityForName("Enclosure", inManagedObjectContext: ctx) as Enclosure
                                         enclosure.url = url
                                         enclosure.kind = type
                                         enclosure.article = article
@@ -296,20 +297,21 @@ class DataManager: NSObject {
                     
                     feedsLeft--
                     if (feedsLeft == 0) {
-                        self.backgroundObjectContext.save(nil)
+                        ctx.save(nil)
                         dispatch_async(dispatch_get_main_queue()) {
                             completion(nil)
                         }
                     }
                     self.parsers = self.parsers.filter { $0 != feedParser }
-                    }.failure {(error) in
-                        feedsLeft--
-                        if (feedsLeft == 0) {
-                            self.backgroundObjectContext.save(nil)
-                            dispatch_async(dispatch_get_main_queue()) {
-                                completion(error)
-                            }
+                }.failure {(error) in
+                    feedsLeft--
+                    if (feedsLeft == 0) {
+                        ctx.save(nil)
+                        dispatch_async(dispatch_get_main_queue()) {
+                            completion(error)
                         }
+                    }
+                    self.parsers = self.parsers.filter { $0 != feedParser }
                 }
                 feedParser.parse()
                 self.parsers.append(feedParser)

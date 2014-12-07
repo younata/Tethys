@@ -17,9 +17,14 @@ class ArticleCell: UITableViewCell, UITextViewDelegate {
             published.text = article != nil ? dateFormatter.stringFromDate(article?.updatedAt ?? article?.published ?? NSDate()) : ""
             author.text = article?.author ?? ""
             // TODO: enclosures.
-            unread.unread = article?.read == false ? 1 : 0
-            let width = CGRectGetWidth(unread.bounds)
-            unreadWidth.constant = unread.unread == 0 ? -width : 0
+            let hasNotRead = article?.read != true
+            unread.unread = hasNotRead ? 1 : 0
+            unreadWidth.constant = (hasNotRead ? 30 : 0)
+            if article?.enclosures != nil && article?.enclosures.count != 0 {
+                enclosures.text = NSString.localizedStringWithFormat(NSLocalizedString("%ld enclosures", comment: ""), article!.enclosures.count)
+            } else {
+                enclosures.text = ""
+            }
         }
     }
     
@@ -27,6 +32,8 @@ class ArticleCell: UITableViewCell, UITextViewDelegate {
     let published = UILabel(forAutoLayout: ())
     let author = UILabel(forAutoLayout: ())
     let unread = UnreadCounter(frame: CGRectZero)
+    
+    let enclosures = UILabel(forAutoLayout: ())
     
     var unreadWidth: NSLayoutConstraint! = nil
     
@@ -41,6 +48,7 @@ class ArticleCell: UITableViewCell, UITextViewDelegate {
         self.contentView.addSubview(author)
         self.contentView.addSubview(published)
         self.contentView.addSubview(unread)
+        self.contentView.addSubview(enclosures)
         
         title.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         title.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
@@ -58,7 +66,7 @@ class ArticleCell: UITableViewCell, UITextViewDelegate {
         unread.autoPinEdgeToSuperviewEdge(.Top)
         unread.autoPinEdgeToSuperviewEdge(.Right)
         unread.autoSetDimension(.Height, toSize: 30)
-        unreadWidth = unread.autoMatchDimension(.Width, toDimension: .Height, ofView: unread)
+        unreadWidth = unread.autoSetDimension(.Width, toSize: 30)
         
         unread.hideUnreadText = true
         
@@ -66,6 +74,11 @@ class ArticleCell: UITableViewCell, UITextViewDelegate {
         published.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
         published.autoPinEdge(.Left, toEdge: .Right, ofView: title, withOffset: 8)
         published.autoMatchDimension(.Width, toDimension: .Width, ofView: published.superview, withMultiplier: 0.25)
+        
+        enclosures.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
+        enclosures.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
+        enclosures.autoPinEdge(.Top, toEdge: .Bottom, ofView: unread, withOffset: 8)
+        enclosures.autoPinEdge(.Left, toEdge: .Right, ofView: author, withOffset: 8)
         
         published.textAlignment = .Right
         published.numberOfLines = 0

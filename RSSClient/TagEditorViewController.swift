@@ -34,7 +34,8 @@ class TagEditorViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Dismiss", comment: ""), style: .Plain, target: self, action: "dismiss")
+        self.edgesForExtendedLayout = .None
+        
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Save", comment: ""), style: .Plain, target: self, action: "save")
         self.navigationItem.rightBarButtonItem?.enabled = false
         self.navigationItem.title = self.feed?.feedTitle() ?? ""
@@ -47,16 +48,17 @@ class TagEditorViewController: UIViewController {
         }
         
         self.view.addSubview(tagLabel)
-        tagLabel.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(0, 8, 8, 8), excludingEdge: .Top)
+        tagLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
+        tagLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
+        //tagLabel.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(0, 8, 8, 8), excludingEdge: .Top)
         tagLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: tagPicker, withOffset: 8)
         tagLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-        tagLabel.text = NSLocalizedString("Tags:", comment: "")
-        tagLabel.text! += "\n"
-        tagLabel.text! += NSLocalizedString("Prefixing a tag with '~' will set the title to that, minus the leading ~. Prefixing a tag with '`' will set the summary to that, minus the leading `. Tags cannot contain commas (,)", comment: "")
+        tagLabel.numberOfLines = 0
+        tagLabel.text = NSLocalizedString("Prefixing a tag with '~' will set the title to that, minus the leading ~. Prefixing a tag with '`' will set the summary to that, minus the leading `. Tags cannot contain commas (,)", comment: "")
     }
     
     func dismiss() {
-        self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+        self.navigationController?.popViewControllerAnimated(true)
     }
     
     func save() {

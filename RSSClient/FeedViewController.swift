@@ -22,7 +22,8 @@ class FeedViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Done", comment: ""), style: .Plain, target: self, action: "dismiss")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Dismiss", comment: ""), style: .Plain, target: self, action: "dismiss")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Save", comment: ""), style: .Plain, target: self, action: "save")
         self.navigationItem.title = self.feed?.feedTitle() ?? ""
 
         
@@ -39,11 +40,17 @@ class FeedViewController: UITableViewController {
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
     
+    func save() {
+        feed?.managedObjectContext?.save(nil)
+        dismiss()
+    }
+    
     func showTagEditor(tagIndex: Int) -> TagEditorViewController {
         let tagEditor = TagEditorViewController()
         tagEditor.feed = feed
         tagEditor.dataManager = dataManager
         if tagIndex < feed?.allTags().count {
+            tagEditor.tagIndex = tagIndex
             tagEditor.tagPicker.textField.text = feed?.allTags()[tagIndex]
         }
         self.navigationController?.pushViewController(tagEditor, animated: true)
@@ -148,7 +155,7 @@ class FeedViewController: UITableViewController {
             }
         })
         let edit = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Edit", comment: ""), handler: {(_, indexPath) in
-            println("present a view controller")
+            print("")
             self.showTagEditor(indexPath.row)
         })
         return [delete, edit]
@@ -162,7 +169,7 @@ class FeedViewController: UITableViewController {
         
         if indexPath.section == 2 {
             if let count = feed?.allTags().count {
-                if indexPath.row != count {
+                if indexPath.row == count {
                     showTagEditor(indexPath.row)
                 }
             }

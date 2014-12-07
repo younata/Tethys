@@ -19,6 +19,10 @@ h1{
     display: inline;
 }
 
+h2{
+    text-align: center;
+}
+
 img{
     border: 0;
 }

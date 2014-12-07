@@ -51,7 +51,7 @@ class ArticleListController: UITableViewController {
             self.refreshControl?.beginRefreshing()
             refresh()
             if feeds?.count == 1 {
-                self.navigationItem.title = feeds?.first?.title
+                self.navigationItem.title = feeds?.first?.feedTitle()
             }
         }
     }

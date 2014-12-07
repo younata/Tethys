@@ -73,12 +73,21 @@ class DataManager: NSObject {
     }
     
     func generateOPMLContents(feeds: [Feed]) -> String {
+        func sanitize(str: String) -> String {
+            var s = str.stringByReplacingOccurrencesOfString("\"", withString: "&quot;")
+            s = s.stringByReplacingOccurrencesOfString("'", withString: "&apos;")
+            s = s.stringByReplacingOccurrencesOfString("<", withString: "&gt;")
+            s = s.stringByReplacingOccurrencesOfString(">", withString: "&lt;")
+            s = s.stringByReplacingOccurrencesOfString("&", withString: "&amp;")
+            return ""
+        }
+        
         var ret = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<opml version=\"2.0\">\n    <body>\n"
         for feed in feeds.filter({return $0.query == nil}) {
             if feed.url == nil {
-                ret += "        <outline query=\"\(feed.query)\" title=\"\(feed.title)\" summary=\"\(feed.summary)\" type=\"query\""
+                ret += "        <outline query=\"\(sanitize(feed.query))\" title=\"\(sanitize(feed.title))\" summary=\"\(sanitize(feed.summary))\" type=\"query\""
             } else {
-                ret += "        <outline xmlURL=\"\(feed.url)\" title=\"\(feed.title)\" type=\"rss\""
+                ret += "        <outline xmlURL=\"\(sanitize(feed.url))\" title=\"\(sanitize(feed.title))\" type=\"rss\""
             }
             if feed.tags != nil {
                 let tags : String = ",".join(feed.tags as [String])

@@ -26,6 +26,7 @@ class QueryFeedViewController: UITableViewController {
         super.viewDidLoad()
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Done", comment: ""), style: .Plain, target: self, action: "dismiss")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Save", comment: ""), style: .Plain, target: self, action: "save")
         self.navigationItem.title = self.feed?.feedTitle() ?? NSLocalizedString("New Query Feed", comment: "")
         
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tags")
@@ -46,9 +47,18 @@ class QueryFeedViewController: UITableViewController {
             if feed.title == nil && feed.query == nil {
                 dataManager?.deleteFeed(feed)
             }
-            feed.managedObjectContext?.save(nil)
         }
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func save() {
+        if let feed = self.feed {
+            if feed.title == nil && feed.query == nil {
+                dataManager?.deleteFeed(feed)
+            }
+            feed.managedObjectContext?.save(nil)
+        }
+        dismiss()
     }
     
     func showTagEditor(tagIndex: Int) {
@@ -56,6 +66,7 @@ class QueryFeedViewController: UITableViewController {
         tagEditor.feed = feed
         tagEditor.dataManager = dataManager
         if tagIndex < feed?.allTags().count {
+            tagEditor.tagIndex = tagIndex
             tagEditor.tagPicker.textField.text = feed?.allTags()[tagIndex]
         }
         self.navigationController?.pushViewController(tagEditor, animated: true)
@@ -116,6 +127,7 @@ class QueryFeedViewController: UITableViewController {
                     if let feed = self.feed {
                         feed.title = $0
                     }
+                    self.navigationItem.rightBarButtonItem?.enabled = self.feed?.title != nil && self.feed?.query != nil
                 }
             case 1:
                 if let summary = (feed?.feedSummary() == "" ? nil : feed?.feedSummary())  {
@@ -139,6 +151,7 @@ class QueryFeedViewController: UITableViewController {
                     if let feed = self.feed {
                         feed.query = $0
                     }
+                    self.navigationItem.rightBarButtonItem?.enabled = self.feed?.title != nil && self.feed?.query != nil
                 }
             default:
                 break
@@ -194,7 +207,6 @@ class QueryFeedViewController: UITableViewController {
                 }
             })
             let edit = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Edit", comment: ""), handler: {(_, indexPath) in
-                println("present a view controller")
                 self.showTagEditor(indexPath.row)
             })
             return [delete, edit]
@@ -207,7 +219,7 @@ class QueryFeedViewController: UITableViewController {
         
         if indexPath.section == 3 {
             if let count = feed?.allTags().count {
-                if indexPath.row != count {
+                if indexPath.row == count {
                     showTagEditor(indexPath.row)
                 }
             }

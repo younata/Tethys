@@ -36,10 +36,12 @@ class TagPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate, UITex
         
         self.addSubview(textField)
         textField.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
+        textField.autoSetDimension(.Height, toSize: 40)
         
         self.addSubview(picker)
         picker.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
         picker.autoPinEdge(.Top, toEdge: .Bottom, ofView: textField)
+        picker.autoSetDimension(.Height, toSize: 120)
         
         textField.delegate = self
         textField.placeholder = NSLocalizedString("Tag", comment: "")
@@ -65,8 +67,9 @@ class TagPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate, UITex
     }
     
     func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        textField.text = existingSolutions[row]
-        textFieldShouldReturn(textField)
+        if row < existingSolutions.count {
+            textField.text = existingSolutions[row]
+        }
     }
     
     // UITextFieldDelegate
@@ -77,13 +80,8 @@ class TagPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate, UITex
         existingSolutions = allTags.filter {
             return $0.rangeOfString(text) != nil
         }
+        didSelect(text)
         
         return true
-    }
-    
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        didSelect(textField.text)
-        
-        return false
     }
 }

@@ -13,11 +13,6 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     
     var article: Article? = nil {
         didSet {
-            /*
-            enclosureHeight?.constant = (article?.allEnclosures().count > 0 ? 120 : 0)
-            UIView.animateWithDuration(0.2) {
-                self.view.layoutIfNeeded()
-            }*/
             self.navigationController?.setToolbarHidden(false, animated: false)
             if let a = article {
                 a.read = true
@@ -26,7 +21,8 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 let url = NSURL(string: a.link)
                 var hasContent = false
                 if let cnt = a.content ?? a.summary {
-                    self.content.loadHTMLString(articleCSS + cnt + "</body></html>", baseURL: NSURL(string: a.feed.url)!)
+                    let title = (a.title != nil ? "<h2>\(a.title)</h2>" : "")
+                    self.content.loadHTMLString(articleCSS + title + cnt + "</body></html>", baseURL: NSURL(string: a.feed.url)!)
                     if let sb = shareButton {
                         self.toolbarItems = [spacer(), sb, spacer(), toggleContentButton, spacer()]
                     }
@@ -41,7 +37,6 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 
                 let enclosures = a.allEnclosures()
                 if enclosures.count > 0 {
-                    enclosureView.enclosures = enclosures
                 }
                 
                 if userActivity == nil {
@@ -79,9 +74,6 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     var content = WKWebView(forAutoLayout: ())
     let loadingBar = UIProgressView(progressViewStyle: .Bar)
     
-    let enclosureView = EnclosuresView(frame: CGRectZero)
-    var enclosureHeight : NSLayoutConstraint? = nil
-    
     var shareButton: UIBarButtonItem! = nil
     var toggleContentButton: UIBarButtonItem! = nil
     let contentString = NSLocalizedString("Content", comment: "")
@@ -90,11 +82,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     var articles: [Article] = []
     var lastArticleIndex = 0
     
-    var dataManager: DataManager? = nil {
-        didSet {
-            enclosureView.dataManager = dataManager
-        }
-    }
+    var dataManager: DataManager? = nil
     
     var articleCSS : String {
         if let loc = NSBundle.mainBundle().URLForResource("article", withExtension: "css") {
@@ -139,6 +127,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         super.viewDidLoad()
         
         self.edgesForExtendedLayout = .None
+        self.navigationController?.setToolbarHidden(false, animated: true)
         
         self.view.backgroundColor = UIColor.whiteColor()
         
@@ -169,7 +158,6 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         forward.enabled = false
         
         self.navigationItem.rightBarButtonItems = [forward, back]
-        self.navigationController?.setToolbarHidden(false, animated: true)
         // share, show (content|link)...
         shareButton = UIBarButtonItem(barButtonSystemItem: .Compose, target: self, action: "share")
         toggleContentButton = UIBarButtonItem(title: linkString, style: .Plain, target: self, action: "toggleContentLink")
@@ -180,7 +168,6 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 self.toolbarItems = [spacer(), shareButton, spacer()]
             }
             if a.allEnclosures().count > 0 {
-                enclosureHeight?.constant = 120
             }
         }
         
@@ -354,6 +341,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     func share() {
         if let a = article {
             let share = TUSafariActivity()
+            
             let activity = UIActivityViewController(activityItems: [NSURL(string: a.link)!], applicationActivities: [share])
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                 let popover = UIPopoverController(contentViewController: activity)

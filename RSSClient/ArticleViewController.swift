@@ -19,32 +19,21 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 NSNotificationCenter.defaultCenter().postNotificationName("ArticleWasRead", object: a)
                 a.managedObjectContext?.save(nil)
                 let url = NSURL(string: a.link)
-                var hasContent = false
-                if let cnt = a.content ?? a.summary {
-                    let title = (a.title != nil ? "<h2>\(a.title)</h2>" : "")
-                    self.content.loadHTMLString(articleCSS + title + cnt + "</body></html>", baseURL: NSURL(string: a.feed.url)!)
-                    if let sb = shareButton {
-                        self.toolbarItems = [spacer(), sb, spacer(), toggleContentButton, spacer()]
-                    }
-                    hasContent = true
-                } else {
-                    self.content.loadRequest(NSURLRequest(URL: url!))
-                    if let sb = shareButton {
-                        self.toolbarItems = [spacer(), sb, spacer()]
-                    }
-                }
-                self.navigationItem.title = a.title
+                
+                showArticle(a, onWebView: content)
                 
                 let enclosures = a.allEnclosures()
                 if enclosures.count > 0 {
                 }
+                
+                self.navigationItem.title = a.title
                 
                 if userActivity == nil {
                     userActivity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
                     userActivity?.title = NSLocalizedString("Reading Article", comment: "")
                     userActivity?.becomeCurrent()
                 }
-                userActivity?.userInfo = ["feed": a.feed.title, "article": a.title, "showingContent": hasContent, "url": (hasContent ? url! : NSNull())]
+                userActivity?.userInfo = ["feed": a.feed.title, "article": a.title, "showingContent": true, "url": url!]
                 userActivity?.webpageURL = NSURL(string: a.link)
                 self.userActivity?.needsSave = true
                 
@@ -115,6 +104,21 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             } else {
                 self.toolbarItems = []
                 self.content.loadHTMLString("", baseURL: nil)
+            }
+        }
+    }
+    
+    func showArticle(article: Article, onWebView webView: WKWebView) {
+        if let cnt = article.content ?? article.summary {
+            let title = (article.title != nil ? "<h2>\(article.title)</h2>" : "")
+            webView.loadHTMLString(articleCSS + title + cnt + "</body></html>", baseURL: NSURL(string: article.feed.url)!)
+            if let sb = shareButton {
+                self.toolbarItems = [spacer(), sb, spacer(), toggleContentButton, spacer()]
+            }
+        } else {
+            webView.loadRequest(NSURLRequest(URL: NSURL(string: article.link)!))
+            if let sb = shareButton {
+                self.toolbarItems = [spacer(), sb, spacer()]
             }
         }
     }
@@ -252,12 +256,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             let a = articles[lastArticleIndex-1]
             nextContent = WKWebView(forAutoLayout: ())
             self.view.addSubview(nextContent)
-            if let cnt = a.content ?? a.summary {
-                self.content.loadHTMLString(articleCSS + cnt + "</body></html>", baseURL: NSURL(string: a.feed.url)!)
-            } else {
-                let request = NSURLRequest(URL: NSURL(string: a.link)!)
-                self.content.loadRequest(request)
-            }
+            self.showArticle(a, onWebView: nextContent)
             nextContent.autoPinEdgeToSuperviewEdge(.Top)
             nextContent.autoPinEdgeToSuperviewEdge(.Bottom)
             nextContent.autoMatchDimension(.Width, toDimension: .Width, ofView: self.view)
@@ -300,12 +299,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             let a = articles[lastArticleIndex+1]
             nextContent = WKWebView(forAutoLayout: ())
             self.view.addSubview(nextContent)
-            if let cnt = a.content ?? a.summary {
-                nextContent.loadHTMLString(articleCSS + cnt + "</body></html>", baseURL: NSURL(string: a.feed.url)!)
-            } else {
-                let request = NSURLRequest(URL: NSURL(string: a.link)!)
-                nextContent.loadRequest(request)
-            }
+            self.showArticle(a, onWebView: nextContent)
             nextContent.autoPinEdgeToSuperviewEdge(.Top)
             nextContent.autoPinEdgeToSuperviewEdge(.Bottom)
             nextContent.autoMatchDimension(.Width, toDimension: .Width, ofView: self.view)

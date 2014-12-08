@@ -145,7 +145,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
                 for article: Article in alist {
                     // show local notification.
                     let note = UILocalNotification()
-                    note.alertBody = NSString.localizedStringWithFormat("New article in %@: %@", article.feed.title, article.title)
+                    note.alertBody = NSString.localizedStringWithFormat("New article in %@: %@", article.feed.feedTitle() ?? "", article.title)
                     let dict = ["feed": article.feed.title, "article": article.title]
                     note.userInfo = dict
                     note.fireDate = NSDate()

@@ -42,6 +42,7 @@ class FeedViewController: UITableViewController {
     
     func save() {
         feed?.managedObjectContext?.save(nil)
+        dataManager?.writeOPML()
         dismiss()
     }
     

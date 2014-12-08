@@ -35,7 +35,6 @@ class DataManager: NSObject {
                                 let newFeed = self.newQueryFeed(item.title!, code: query, summary: item.summary)
                                 newFeed.tags = item.tags
                                 ret.append(newFeed)
-                                
                             }
                             i++
                             progress(Double(i) / Double(items.count))
@@ -73,13 +72,17 @@ class DataManager: NSObject {
     }
     
     func generateOPMLContents(feeds: [Feed]) -> String {
-        func sanitize(str: String) -> String {
-            var s = str.stringByReplacingOccurrencesOfString("\"", withString: "&quot;")
+        func sanitize(str: String?) -> String {
+            if str == nil {
+                return ""
+            }
+            var s = str!
+            s = s.stringByReplacingOccurrencesOfString("\"", withString: "&quot;")
             s = s.stringByReplacingOccurrencesOfString("'", withString: "&apos;")
             s = s.stringByReplacingOccurrencesOfString("<", withString: "&gt;")
             s = s.stringByReplacingOccurrencesOfString(">", withString: "&lt;")
             s = s.stringByReplacingOccurrencesOfString("&", withString: "&amp;")
-            return ""
+            return s
         }
         
         var ret = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<opml version=\"2.0\">\n    <body>\n"

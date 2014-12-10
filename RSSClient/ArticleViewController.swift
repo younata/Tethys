@@ -63,8 +63,9 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     var content = WKWebView(forAutoLayout: ())
     let loadingBar = UIProgressView(progressViewStyle: .Bar)
     
-    var shareButton: UIBarButtonItem! = nil
-    var toggleContentButton: UIBarButtonItem! = nil
+    var shareButton: UIBarButtonItem? = nil
+    var toggleContentButton: UIBarButtonItem? = nil
+    var showEnclosuresButton: UIBarButtonItem? = nil
     let contentString = NSLocalizedString("Content", comment: "")
     let linkString = NSLocalizedString("Link", comment: "")
     
@@ -87,18 +88,23 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             if let a = article {
                 switch (contentType) {
                 case .Content:
-                    toggleContentButton.title = linkString
+                    toggleContentButton?.title = linkString
                     let cnt = a.content ?? a.summary ?? ""
                     self.content.loadHTMLString(articleCSS + cnt + "</body></html>", baseURL: NSURL(string: a.feed.url))
                 case .Link:
-                    toggleContentButton.title = contentString
+                    toggleContentButton?.title = contentString
                     self.content.loadRequest(NSURLRequest(URL: NSURL(string: a.link)!))
                 }
                 if (shareButton != nil && toggleContentButton != nil) {
                     if (a.content ?? a.summary) != nil {
-                        self.toolbarItems = [spacer(), shareButton, spacer(), toggleContentButton, spacer()]
+                        self.toolbarItems = [spacer(), shareButton!, spacer(), toggleContentButton!, spacer()]
                     } else {
-                        self.toolbarItems = [spacer(), shareButton, spacer()]
+                        self.toolbarItems = [spacer(), shareButton!, spacer()]
+                    }
+                    if let ec = showEnclosuresButton {
+                        if a.allEnclosures().count > 0 {
+                            self.toolbarItems! += [ec, spacer()]
+                        }
                     }
                 }
             } else {
@@ -113,12 +119,22 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             let title = (article.title != nil ? "<h2>\(article.title)</h2>" : "")
             webView.loadHTMLString(articleCSS + title + cnt + "</body></html>", baseURL: NSURL(string: article.feed.url)!)
             if let sb = shareButton {
-                self.toolbarItems = [spacer(), sb, spacer(), toggleContentButton, spacer()]
+                self.toolbarItems = [spacer(), sb, spacer(), toggleContentButton!, spacer()]
+                if let ec = showEnclosuresButton {
+                    if article.allEnclosures().count > 0 {
+                        self.toolbarItems! += [ec, spacer()]
+                    }
+                }
             }
         } else {
             webView.loadRequest(NSURLRequest(URL: NSURL(string: article.link)!))
             if let sb = shareButton {
                 self.toolbarItems = [spacer(), sb, spacer()]
+                if let ec = showEnclosuresButton {
+                    if article.allEnclosures().count > 0 {
+                        self.toolbarItems! += [ec, spacer()]
+                    }
+                }
             }
         }
     }
@@ -165,13 +181,15 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         // share, show (content|link)...
         shareButton = UIBarButtonItem(barButtonSystemItem: .Compose, target: self, action: "share")
         toggleContentButton = UIBarButtonItem(title: linkString, style: .Plain, target: self, action: "toggleContentLink")
+        showEnclosuresButton = UIBarButtonItem(title: NSLocalizedString("Enclosures", comment: ""), style: .Plain, target: self, action: "showEnclosures")
         if let a = article {
             if (a.content ?? a.summary) != nil {
-                self.toolbarItems = [spacer(), shareButton, spacer(), toggleContentButton, spacer()]
+                self.toolbarItems = [spacer(), shareButton!, spacer(), toggleContentButton!, spacer()]
             } else {
-                self.toolbarItems = [spacer(), shareButton, spacer()]
+                self.toolbarItems = [spacer(), shareButton!, spacer()]
             }
             if a.allEnclosures().count > 0 {
+                self.toolbarItems! += [showEnclosuresButton!, spacer()]
             }
         }
         
@@ -339,7 +357,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             let activity = UIActivityViewController(activityItems: [NSURL(string: a.link)!], applicationActivities: [share])
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                 let popover = UIPopoverController(contentViewController: activity)
-                popover.presentPopoverFromBarButtonItem(shareButton, permittedArrowDirections: .Any, animated: true)
+                popover.presentPopoverFromBarButtonItem(shareButton!, permittedArrowDirections: .Any, animated: true)
             } else {
                 self.presentViewController(activity, animated: true, completion: nil)
             }
@@ -358,6 +376,21 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             self.userActivity?.userInfo?["url"] = NSURL(string: self.article!.link)!
         }
         self.userActivity?.needsSave = true
+    }
+    
+    func showEnclosures() {
+        if let enclosures = article?.allEnclosures() {
+            let activity = UIViewController()
+            
+            
+            
+            if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+                let popover = UIPopoverController(contentViewController: UINavigationController(rootViewController: activity))
+                popover.presentPopoverFromBarButtonItem(showEnclosuresButton!, permittedArrowDirections: .Any, animated: true)
+            } else {
+                self.presentViewController(UINavigationController(rootViewController: activity), animated: true, completion: nil)
+            }
+        }
     }
     
     override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {

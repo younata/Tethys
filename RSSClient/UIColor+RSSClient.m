@@ -20,4 +20,9 @@
     return [self colorWithWhite:0.4 alpha:1.0];
 }
 
++ (UIColor *)darkVioletColor
+{
+    return [self colorWithRed:0.25 green:0 blue:0.5 alpha:1.0];
+}
+
 @end

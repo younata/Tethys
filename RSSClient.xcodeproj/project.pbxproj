@@ -24,7 +24,6 @@
 		8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */; };
 		8933E93919EF4BB100ECFF3F /* ScriptEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93819EF4BB100ECFF3F /* ScriptEditorViewController.swift */; };
 		8933E93B19EF4D0C00ECFF3F /* TextHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93A19EF4D0C00ECFF3F /* TextHighlighter.swift */; };
-		8933E93E19EF508C00ECFF3F /* ScriptDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93D19EF508C00ECFF3F /* ScriptDocument.swift */; };
 		893448B71A004E4E00F5D528 /* MWFeedParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91319ECCD5E00ECFF3F /* MWFeedParser.m */; };
 		893448B81A004E4E00F5D528 /* MWFeedInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91519ECCD5E00ECFF3F /* MWFeedInfo.m */; };
 		893448B91A004E4E00F5D528 /* MWFeedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91719ECCD5E00ECFF3F /* MWFeedItem.m */; };
@@ -211,7 +210,6 @@
 		8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+RSSClient.m"; sourceTree = "<group>"; };
 		8933E93819EF4BB100ECFF3F /* ScriptEditorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScriptEditorViewController.swift; sourceTree = "<group>"; };
 		8933E93A19EF4D0C00ECFF3F /* TextHighlighter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextHighlighter.swift; sourceTree = "<group>"; };
-		8933E93D19EF508C00ECFF3F /* ScriptDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScriptDocument.swift; sourceTree = "<group>"; };
 		893448C51A03159F00F5D528 /* ArticleViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleViewControllerTests.swift; sourceTree = "<group>"; };
 		893448C71A0315B600F5D528 /* ArticleListControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListControllerTests.swift; sourceTree = "<group>"; };
 		893448C91A0315DF00F5D528 /* FindFeedViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindFeedViewControllerTests.swift; sourceTree = "<group>"; };
@@ -389,7 +387,6 @@
 			isa = PBXGroup;
 			children = (
 				8933E93819EF4BB100ECFF3F /* ScriptEditorViewController.swift */,
-				8933E93D19EF508C00ECFF3F /* ScriptDocument.swift */,
 				8933E93A19EF4D0C00ECFF3F /* TextHighlighter.swift */,
 			);
 			name = Scripting;
@@ -893,7 +890,6 @@
 				894C0C371A1329FB008229A4 /* AMPopTip.m in Sources */,
 				895901A51A30BCB7002E2C62 /* Enclosure.m in Sources */,
 				89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */,
-				8933E93E19EF508C00ECFF3F /* ScriptDocument.swift in Sources */,
 				89C830C319D89E46009924DA /* Article.m in Sources */,
 				89C509F71A2F825400CBD000 /* TextViewCell.swift in Sources */,
 				8980475D1A20478600EB29F0 /* TUSafariActivity.m in Sources */,

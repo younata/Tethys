@@ -380,9 +380,9 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     
     func showEnclosures() {
         if let enclosures = article?.allEnclosures() {
-            let activity = UIViewController()
-            
-            
+            let activity = EnclosuresViewController()
+            activity.dataManager = dataManager
+            activity.enclosures = article?.allEnclosures()
             
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                 let popover = UIPopoverController(contentViewController: UINavigationController(rootViewController: activity))

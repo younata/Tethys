@@ -21,11 +21,12 @@ class ArticleCell: UITableViewCell, UITextViewDelegate {
             unread.unread = hasNotRead ? 1 : 0
             unreadWidth.constant = (hasNotRead ? 30 : 0)
             if article?.enclosures != nil && article?.enclosures.count != 0 {
-                enclosures.text = "\(article!.enclosures.count)"
+                enclosures.text = NSString.localizedStringWithFormat(NSLocalizedString("%ld enclosures", comment: ""), article!.enclosures.count)
                 let attributed = NSAttributedString(string: enclosures.text!, attributes: [NSFontAttributeName: enclosures.font])
                 let width = ceil(attributed.boundingRectWithSize(CGSizeMake(self.contentView.bounds.height, CGFloat.max), options: .UsesFontLeading, context: nil).size.width)
                 enclosuresWidth.constant = width
                 
+                /*
                 let key = "ArticleCell.Enclosures"
                 if NSUserDefaults.standardUserDefaults().boolForKey(key) == false {
                     let popTip = AMPopTip()
@@ -36,7 +37,7 @@ class ArticleCell: UITableViewCell, UITextViewDelegate {
                     popTip.showAttributedText(popTipText, direction: .Up, maxWidth: ceil(size.width), inView: self.contentView, fromFrame: enclosures.frame)
                     
                     NSUserDefaults.standardUserDefaults().setBool(true, forKey: key)
-                }
+                }*/
             } else {
                 enclosures.text = ""
                 enclosuresWidth.constant = 0
@@ -93,13 +94,12 @@ class ArticleCell: UITableViewCell, UITextViewDelegate {
         published.autoMatchDimension(.Width, toDimension: .Width, ofView: published.superview, withMultiplier: 0.25)
         
         enclosures.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
-        enclosures.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
-        enclosures.autoPinEdge(.Top, toEdge: .Bottom, ofView: unread, withOffset: 8)
-        enclosures.autoPinEdge(.Right, toEdge: .Left, ofView: unread, withOffset: -8)
+        enclosures.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 8)
+        enclosures.autoPinEdge(.Top, toEdge: .Bottom, ofView: unread, withOffset: 8, relation: .GreaterThanOrEqual)
         enclosuresWidth = enclosures.autoSetDimension(.Width, toSize: 0)
-        enclosures.textColor = UIColor.whiteColor()
-        enclosures.backgroundColor = UIColor.darkVioletColor()
-        enclosures.layer.cornerRadius = 5
+        enclosures.textAlignment = .Center
+        //enclosures.textColor = UIColor.whiteColor()
+        //enclosures.backgroundColor = UIColor.darkVioletColor()
         enclosures.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
         
         published.textAlignment = .Right

@@ -16,13 +16,19 @@ class EnclosuresViewController: UIViewController {
         }
     }
     
+    var dataManager : DataManager? = nil {
+        didSet {
+            enclosuresView.dataManager = dataManager;
+        }
+    }
+    
     let enclosuresView = EnclosuresView(frame: CGRectZero)
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.navigationItem.title = NSLocalizedString("Enclosures", comment: "")
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Dismiss", comment: ""), style: .Plain, target: self, action: "dismiss")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Dismiss", comment: ""), style: .Plain, target: self, action: "dismiss")
         
         enclosuresView.setTranslatesAutoresizingMaskIntoConstraints(false)
         self.view.addSubview(enclosuresView)

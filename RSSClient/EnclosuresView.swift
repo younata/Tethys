@@ -37,6 +37,7 @@ class EnclosuresView: UIView, UICollectionViewDelegate, UICollectionViewDataSour
         
         collectionView.registerClass(EnclosureCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.backgroundColor = UIColor.clearColor()
+        (collectionView.collectionViewLayout as UICollectionViewFlowLayout).estimatedItemSize = CGSizeMake(120, 50)
     }
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {

@@ -13,12 +13,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet weak var window: NSWindow!
     
-    var mainController: MainController? = nil
+    @IBOutlet var mainController: MainController? = nil
+    
+    var dataManager = DataManager() // var is only because of testing...
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         // Insert code here to initialize your application
-        
-        mainController = MainController(window: self.window)
+        mainController?.window = window
+        mainController?.configure(dataManager)
     }
 
     func applicationWillTerminate(aNotification: NSNotification) {

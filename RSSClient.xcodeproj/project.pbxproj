@@ -101,6 +101,9 @@
 		897CD85E1A21C49000C97ECC /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897CD85D1A21C49000C97ECC /* FeedView.swift */; };
 		897F70F21A38AFE500ECE1A1 /* EnclosuresViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897F70F11A38AFE500ECE1A1 /* EnclosuresViewController.swift */; };
 		897F70F31A38AFE500ECE1A1 /* EnclosuresViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897F70F11A38AFE500ECE1A1 /* EnclosuresViewController.swift */; };
+		897F70F91A39772C00ECE1A1 /* Data-extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963F42D1A26674500B447D6 /* Data-extensions.swift */; };
+		897F70FD1A3A4E7700ECE1A1 /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897F70FC1A3A4E7700ECE1A1 /* UnreadCounter.swift */; };
+		897F71001A3A57A300ECE1A1 /* NSColor+RSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 897F70FF1A3A57A300ECE1A1 /* NSColor+RSSClient.m */; };
 		898046D51A1C385A00EB29F0 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898046D41A1C385A00EB29F0 /* MainController.swift */; };
 		898047361A20475D00EB29F0 /* Alamofire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898047351A20475D00EB29F0 /* Alamofire.swift */; };
 		898047371A20475D00EB29F0 /* Alamofire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898047351A20475D00EB29F0 /* Alamofire.swift */; };
@@ -124,7 +127,6 @@
 		898047641A206CB100EB29F0 /* FeedsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898047631A206CB100EB29F0 /* FeedsList.swift */; };
 		89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509EF1A2EB18300CBD000 /* FeedViewController.swift */; };
 		89C509F11A2EB18300CBD000 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509EF1A2EB18300CBD000 /* FeedViewController.swift */; };
-		89C509F21A2EB18300CBD000 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509EF1A2EB18300CBD000 /* FeedViewController.swift */; };
 		89C509F41A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F31A2EE56E00CBD000 /* TagEditorViewController.swift */; };
 		89C509F51A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F31A2EE56E00CBD000 /* TagEditorViewController.swift */; };
 		89C509F71A2F825400CBD000 /* TextViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F61A2F825400CBD000 /* TextViewCell.swift */; };
@@ -249,6 +251,9 @@
 		8963F4331A280F8E00B447D6 /* TagPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagPickerView.swift; sourceTree = "<group>"; };
 		897CD85D1A21C49000C97ECC /* FeedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		897F70F11A38AFE500ECE1A1 /* EnclosuresViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnclosuresViewController.swift; sourceTree = "<group>"; };
+		897F70FC1A3A4E7700ECE1A1 /* UnreadCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounter.swift; sourceTree = "<group>"; };
+		897F70FE1A3A57A300ECE1A1 /* NSColor+RSSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSColor+RSSClient.h"; sourceTree = "<group>"; };
+		897F70FF1A3A57A300ECE1A1 /* NSColor+RSSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSColor+RSSClient.m"; sourceTree = "<group>"; };
 		898046D11A1BC8FD00EB29F0 /* rNews.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = rNews.entitlements; sourceTree = "<group>"; };
 		898046D31A1C36B000EB29F0 /* RSSClient-OSX-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSSClient-OSX-Bridging-Header.h"; sourceTree = "<group>"; };
 		898046D41A1C385A00EB29F0 /* MainController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
@@ -450,6 +455,9 @@
 				898046D41A1C385A00EB29F0 /* MainController.swift */,
 				898047631A206CB100EB29F0 /* FeedsList.swift */,
 				897CD85D1A21C49000C97ECC /* FeedView.swift */,
+				897F70FC1A3A4E7700ECE1A1 /* UnreadCounter.swift */,
+				897F70FE1A3A57A300ECE1A1 /* NSColor+RSSClient.h */,
+				897F70FF1A3A57A300ECE1A1 /* NSColor+RSSClient.m */,
 				898046D31A1C36B000EB29F0 /* RSSClient-OSX-Bridging-Header.h */,
 				89635F8F1A13C2E30052C248 /* Images.xcassets */,
 				89635F911A13C2E30052C248 /* MainMenu.xib */,
@@ -842,6 +850,7 @@
 			files = (
 				89635FBA1A13C48D0052C248 /* NSString+XMLEntities.m in Sources */,
 				89635FAE1A13C4210052C248 /* Article.m in Sources */,
+				897F71001A3A57A300ECE1A1 /* NSColor+RSSClient.m in Sources */,
 				898047611A2048F200EB29F0 /* FeedParser.swift in Sources */,
 				89635FC41A13C49A0052C248 /* NSLayoutConstraint+PureLayout.m in Sources */,
 				89635FA81A13C4030052C248 /* OPMLParser.swift in Sources */,
@@ -853,13 +862,14 @@
 				89635FB51A13C48D0052C248 /* MWFeedInfo.m in Sources */,
 				898047381A20475D00EB29F0 /* Alamofire.swift in Sources */,
 				89635FB81A13C48D0052C248 /* NSDate+InternetDateTime.m in Sources */,
+				897F70FD1A3A4E7700ECE1A1 /* UnreadCounter.swift in Sources */,
 				89635FB91A13C48D0052C248 /* NSString+HTML.m in Sources */,
+				897F70F91A39772C00ECE1A1 /* Data-extensions.swift in Sources */,
 				89635FB71A13C48D0052C248 /* GTMNSString+HTML.m in Sources */,
 				89635FAD1A13C41C0052C248 /* RSSClient.xcdatamodeld in Sources */,
 				89635FAF1A13C4210052C248 /* Feed.m in Sources */,
 				895901A71A30BCB7002E2C62 /* Enclosure.m in Sources */,
 				89635FAA1A13C4120052C248 /* DataManager.swift in Sources */,
-				89C509F21A2EB18300CBD000 /* FeedViewController.swift in Sources */,
 				89635FB41A13C48D0052C248 /* MWFeedParser.m in Sources */,
 				89635FC21A13C49A0052C248 /* ALView+PureLayout.m in Sources */,
 				89635F8E1A13C2E30052C248 /* AppDelegate.swift in Sources */,

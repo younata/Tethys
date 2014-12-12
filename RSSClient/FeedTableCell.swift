@@ -14,7 +14,7 @@ class FeedTableCell: UITableViewCell {
         didSet {
             if let f = feed {
                 nameLabel.text = f.feedTitle()
-                summaryLabel.text = f.summary
+                summaryLabel.text = f.feedSummary()
                 unreadCounter.unread = UInt(filter(f.allArticles(dataManager!), {return $0.read == false}).count)
             } else {
                 nameLabel.text = ""

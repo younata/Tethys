@@ -18,14 +18,17 @@ class FeedsList: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         }
     }
     
+    var dataManager : DataManager? = nil
+    
     override init() {
         super.init()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
     }
     
     func reload() {
-        feeds = DataManager.sharedInstance().feeds().sorted {(f1: Feed, f2: Feed) in
-            let f1Unread = f1.unreadArticles()
-            let f2Unread = f2.unreadArticles()
+        feeds = dataManager?.feeds().sorted {(f1: Feed, f2: Feed) in
+            let f1Unread = f1.unreadArticles(self.dataManager!)
+            let f2Unread = f2.unreadArticles(self.dataManager!)
             if f1Unread != f2Unread {
                 return f1Unread > f2Unread
             }
@@ -35,7 +38,7 @@ class FeedsList: NSObject, NSTableViewDataSource, NSTableViewDelegate {
                 return false
             }
             return f1.title < f2.title
-        }
+        } ?? []
         if feeds.count == 0 {
             
         }
@@ -67,6 +70,8 @@ class FeedsList: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     }
     
     func tableView(tableView: NSTableView, objectValueForTableColumn aTableColumn: NSTableColumn?, row rowIndex: Int) -> AnyObject? {
-        return nil
+        let feedView = FeedView(frame: NSMakeRect(0, 0, 0, 0))
+        feedView.feed = feeds[rowIndex]
+        return feedView
     }
 }

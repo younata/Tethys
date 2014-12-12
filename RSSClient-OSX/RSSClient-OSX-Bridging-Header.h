@@ -11,4 +11,6 @@
 
 #import "Article.h"
 #import "Feed.h"
-#import "Group.h"
+#import "Enclosure.h"
+
+#import "NSColor+RSSClient.h"

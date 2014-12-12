@@ -22,6 +22,9 @@ class DataManager: NSObject {
     func importOPML(opml: NSURL, progress: (Double) -> Void, completion: ([Feed]) -> Void) {
         if let text = NSString(contentsOfURL: opml, encoding: NSUTF8StringEncoding, error: nil) {
             let opmlParser = OPMLParser(text: text)
+            opmlParser.failure {(error) in
+                completion([])
+            }
             opmlParser.callback = {(items) in
                 var ret : [Feed] = []
                 if items.count == 0 {

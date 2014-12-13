@@ -240,11 +240,11 @@ class DataManager: NSObject {
                     }
                     if let feed = self.entities("Feed", matchingPredicate: predicate, managedObjectContext: ctx).last as? Feed {
                         feed.title = info.title
-                        feed.summary = info.summary
+                        feed.summary = summary
                     } else {
                         let feed = (NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: ctx) as Feed)
                         feed.title = info.title
-                        feed.summary = info.summary
+                        feed.summary = summary
                     }
                     for item in items {
                         predicate = NSPredicate(format: "link = %@", item.link)!

@@ -13,10 +13,12 @@ class MainController: NSResponder, NSTextViewDelegate {
     
     let feedsList = FeedsList()
     
-    let tableView = NSTableView(forAutoLayout: ())
+    @IBOutlet var tableView : NSTableView? = nil
     
     let commandView = NSTextView(forAutoLayout: ())
     var commandHeight : NSLayoutConstraint? = nil
+    
+    @IBOutlet var tableLeftEdge : NSLayoutConstraint? = nil
     
     @IBOutlet var splitView : NSSplitView? = nil
     
@@ -35,9 +37,6 @@ class MainController: NSResponder, NSTextViewDelegate {
         feedsList.reload()
         
         window?.makeFirstResponder(self)
-        
-        splitView?.addSubview(tableView)
-        tableView.autoPinEdgesToSuperviewEdgesWithInsets(NSEdgeInsetsZero)
         
         // add everything on top of this...
         window?.contentView.addSubview(commandView)

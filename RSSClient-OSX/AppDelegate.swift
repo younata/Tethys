@@ -19,12 +19,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         // Insert code here to initialize your application
+        
+        NSUserDefaults.standardUserDefaults().setBool(false, forKey: "NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints")
+        
         mainController?.window = window
         mainController?.configure(dataManager)
     }
 
     func applicationWillTerminate(aNotification: NSNotification) {
-        // Insert code here to tear down your application
     }
     
     func applicationDockMenu(sender: NSApplication) -> NSMenu? {
@@ -55,7 +57,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func application(sender: NSApplication, openFile filename: String) -> Bool {
         return false
-        return openFile(filename) {(feeds) in }
+        //return openFile(filename) {(feeds) in }
     }
     
     func application(sender: AnyObject, openFileWithoutUI filename: String) -> Bool {

@@ -50,7 +50,7 @@ class UnreadCounter: NSView {
     }
     
     override init() {
-        super.init()
+        super.init(frame: NSMakeRect(0, 0, 0, 0))
         self.layer = CALayer()
         self.wantsLayer = true
         

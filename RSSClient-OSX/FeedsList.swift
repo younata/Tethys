@@ -20,6 +20,8 @@ class FeedsList: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     
     var dataManager : DataManager? = nil
     
+    var onFeedSelection : (Feed) -> Void = {(_) in }
+    
     override init() {
         super.init()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
@@ -45,21 +47,40 @@ class FeedsList: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         tableView?.reloadData()
     }
     
-    // MARK: NSTableViewDelegate
-    
-    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        return NSView()
+    func heightForFeed(feed: Feed, width: CGFloat) -> CGFloat {
+        var height : CGFloat = 16.0
+        let attributes = [NSFontAttributeName: NSFont.systemFontOfSize(12)]
+        let title = NSAttributedString(string: feed.feedTitle() ?? "", attributes: attributes)
+        let summary = NSAttributedString(string: feed.feedSummary() ?? "", attributes: attributes)
+        
+        let titleBounds = title.boundingRectWithSize(NSMakeSize(width, CGFloat.max), options: NSStringDrawingOptions.UsesFontLeading)
+        let summaryBounds = summary.boundingRectWithSize(NSMakeSize(width, CGFloat.max), options: NSStringDrawingOptions.UsesFontLeading)
+        
+        let titleHeight = ceil(titleBounds.width / width) * titleBounds.height
+        let summaryHeight = ceil(summaryBounds.width / width) * summaryBounds.height
+                
+        height += titleHeight
+        height += summaryHeight
+        
+        return max(30, height)
     }
     
+    // MARK: NSTableViewDelegate
+    
     func tableView(tableView: NSTableView, rowViewForRow row: Int) -> NSTableRowView? {
-        return nil
+        let feed = feeds[row]
+        let feedView = FeedView(frame: NSMakeRect(0, 0, tableView.bounds.width, heightForFeed(feed, width: tableView.bounds.width - 16)))
+        feedView.dataManager = dataManager
+        feedView.feed = feed
+        return feedView
     }
     
     func tableView(tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
-        return 100
+        return heightForFeed(feeds[row], width: tableView.bounds.width - 16)
     }
     
     func tableView(tableView: NSTableView, shouldSelectRow rowIndex: Int) -> Bool {
+        onFeedSelection(feeds[rowIndex])
         return false
     }
     
@@ -67,11 +88,5 @@ class FeedsList: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     
     func numberOfRowsInTableView(tableView: NSTableView) -> Int {
         return feeds.count
-    }
-    
-    func tableView(tableView: NSTableView, objectValueForTableColumn aTableColumn: NSTableColumn?, row rowIndex: Int) -> AnyObject? {
-        let feedView = FeedView(frame: NSMakeRect(0, 0, 0, 0))
-        feedView.feed = feeds[rowIndex]
-        return feedView
     }
 }

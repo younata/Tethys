@@ -8,12 +8,14 @@
 
 import Cocoa
 
-class FeedView: NSView {
+class FeedView: NSTableRowView {
     var feed: Feed? = nil {
         didSet {
             if let f = feed {
                 nameLabel.string = f.feedTitle()
-                summaryLabel.string = f.feedSummary()
+                let font : NSFont = nameLabel.font!
+                nameHeight?.constant = NSAttributedString(string: nameLabel.string!, attributes: [NSFontAttributeName: font]).size.height
+                summaryLabel.string = f.feedSummary() ?? ""
                 unreadCounter.unread = UInt(filter(f.allArticles(dataManager!), {return $0.read == false}).count)
             } else {
                 nameLabel.string = ""
@@ -27,6 +29,8 @@ class FeedView: NSView {
     let summaryLabel = NSTextView(forAutoLayout: ())
     let unreadCounter = UnreadCounter()
     
+    var nameHeight : NSLayoutConstraint? = nil
+    
     var dataManager: DataManager? = nil
     
     override init(frame: NSRect) {
@@ -39,12 +43,13 @@ class FeedView: NSView {
         
         unreadCounter.autoPinEdgeToSuperviewEdge(.Top)
         unreadCounter.autoPinEdgeToSuperviewEdge(.Right)
-        unreadCounter.autoSetDimensionsToSize(CGSizeMake(45, 45))
+        unreadCounter.autoSetDimensionsToSize(CGSizeMake(30, 30))
         unreadCounter.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0, relation: .GreaterThanOrEqual)
         
         nameLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
         nameLabel.autoPinEdge(.Right, toEdge: .Left, ofView: unreadCounter, withOffset: -8)
         nameLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
+        nameHeight = nameLabel.autoSetDimension(.Height, toSize: 22)
         
         summaryLabel.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
         summaryLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
@@ -54,6 +59,7 @@ class FeedView: NSView {
         for textView in [nameLabel, summaryLabel] {
             textView.textContainerInset = NSMakeSize(0, 0)
             textView.editable = false
+            textView.font = NSFont.systemFontOfSize(12)
         }
     }
 

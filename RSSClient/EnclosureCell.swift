@@ -13,7 +13,6 @@ class EnclosureCell: UICollectionViewCell {
         didSet {
             nameLabel.text = enclosure?.url.lastPathComponent ?? ""
             let size = NSAttributedString(string: nameLabel.text!, attributes: [NSFontAttributeName: nameLabel.font]).boundingRectWithSize(CGSizeMake(120, CGFloat.max), options: .UsesFontLeading, context: nil).size
-            nameWidth?.constant = ceil(size.width)
             nameHeight?.constant = ceil(size.height)
             loadingBar.progress = 0
         }
@@ -22,7 +21,6 @@ class EnclosureCell: UICollectionViewCell {
     let nameLabel = UILabel(forAutoLayout: ())
     let loadingBar = UIProgressView(progressViewStyle: .Default)
     
-    var nameWidth : NSLayoutConstraint? = nil
     var nameHeight : NSLayoutConstraint? = nil
     
     required init(coder: NSCoder) {
@@ -42,7 +40,7 @@ class EnclosureCell: UICollectionViewCell {
         self.contentView.addSubview(nameLabel)
         nameLabel.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(0, 4, 4, 4), excludingEdge: .Top)
         nameHeight = nameLabel.autoSetDimension(.Height, toSize: 30)
-        nameWidth = nameLabel.autoSetDimension(.Width, toSize: 120)
+        nameLabel.autoSetDimension(.Width, toSize: 60)
         nameLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: loadingBar, withOffset: 8)
         nameLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
     }

@@ -385,7 +385,8 @@ class DataManager: NSObject {
     }
     
     func downloadEnclosure(enclosure: Enclosure, progress: (Double) -> (Void) = {(_) in }, completion: (Enclosure, NSError?) -> (Void) = {(_) in }) {
-        if (!enclosure.downloaded.boolValue) {
+        let downloaded = (enclosure.downloaded == nil ? false : enclosure.downloaded.boolValue)
+        if (!downloaded) {
             request(.GET, enclosure.url).response {(_, _, response, error) in
                 if let err = error {
                     completion(enclosure, err)

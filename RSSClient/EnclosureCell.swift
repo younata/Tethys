@@ -14,12 +14,13 @@ class EnclosureCell: UICollectionViewCell {
             nameLabel.text = enclosure?.url.lastPathComponent ?? ""
             let size = NSAttributedString(string: nameLabel.text!, attributes: [NSFontAttributeName: nameLabel.font]).boundingRectWithSize(CGSizeMake(120, CGFloat.max), options: .UsesFontLeading, context: nil).size
             nameHeight?.constant = ceil(size.height)
-            loadingBar.progress = 0
+            progressLayer.progress = 0
         }
     }
     
     let nameLabel = UILabel(forAutoLayout: ())
-    let loadingBar = UIProgressView(progressViewStyle: .Default)
+    let loadingBar = UIView(forAutoLayout: ())
+    let progressLayer = CircularProgressLayer()
     
     var nameHeight : NSLayoutConstraint? = nil
     
@@ -32,10 +33,12 @@ class EnclosureCell: UICollectionViewCell {
         
         // FIXME: replace with circular progressview.
         self.contentView.addSubview(loadingBar)
-        loadingBar.progressTintColor = UIColor.darkGreenColor()
-        loadingBar.trackTintColor = UIColor.clearColor()
         loadingBar.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(4, 4, 0, 4), excludingEdge: .Bottom)
-        loadingBar.autoSetDimension(.Height, toSize: 1)
+        loadingBar.autoSetDimension(.Width, toSize: 60)
+        loadingBar.autoMatchDimension(.Height, toDimension: .Width, ofView: loadingBar)
+        loadingBar.layer.addSublayer(progressLayer)
+        progressLayer.strokeColor = UIColor.clearColor().CGColor
+        progressLayer.fillColor = UIColor.blackColor().colorWithAlphaComponent(0.5).CGColor
         
         self.contentView.addSubview(nameLabel)
         nameLabel.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(0, 4, 4, 4), excludingEdge: .Top)

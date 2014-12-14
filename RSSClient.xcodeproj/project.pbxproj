@@ -64,8 +64,9 @@
 		895779B419E658A700548418 /* Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895779B319E658A700548418 /* Mocks.swift */; };
 		895779B619E65A6D00548418 /* ArticleCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895779B519E65A6D00548418 /* ArticleCellTests.swift */; };
 		895779B819E65D9900548418 /* DataManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895779B719E65D9900548418 /* DataManagerTests.swift */; };
-		8957823E1A3BDA680022F345 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8957823D1A3BDA680022F345 /* CircularProgressView.swift */; };
-		8957823F1A3BDA680022F345 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8957823D1A3BDA680022F345 /* CircularProgressView.swift */; };
+		895782411A3CC0130022F345 /* CircularProgressLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895782401A3CC0130022F345 /* CircularProgressLayer.swift */; };
+		895782421A3CC0130022F345 /* CircularProgressLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895782401A3CC0130022F345 /* CircularProgressLayer.swift */; };
+		895782431A3CC0130022F345 /* CircularProgressLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895782401A3CC0130022F345 /* CircularProgressLayer.swift */; };
 		895901A51A30BCB7002E2C62 /* Enclosure.m in Sources */ = {isa = PBXBuildFile; fileRef = 895901A41A30BCB7002E2C62 /* Enclosure.m */; };
 		895901A61A30BCB7002E2C62 /* Enclosure.m in Sources */ = {isa = PBXBuildFile; fileRef = 895901A41A30BCB7002E2C62 /* Enclosure.m */; };
 		895901A71A30BCB7002E2C62 /* Enclosure.m in Sources */ = {isa = PBXBuildFile; fileRef = 895901A41A30BCB7002E2C62 /* Enclosure.m */; };
@@ -231,7 +232,7 @@
 		895779B319E658A700548418 /* Mocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
 		895779B519E65A6D00548418 /* ArticleCellTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleCellTests.swift; sourceTree = "<group>"; };
 		895779B719E65D9900548418 /* DataManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManagerTests.swift; sourceTree = "<group>"; };
-		8957823D1A3BDA680022F345 /* CircularProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
+		895782401A3CC0130022F345 /* CircularProgressLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircularProgressLayer.swift; sourceTree = "<group>"; };
 		895901A11A2FFDDD002E2C62 /* RSSClient 1. 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1. 2.xcdatamodel"; sourceTree = "<group>"; };
 		895901A21A30BA9C002E2C62 /* RSSClient 1. 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1. 3.xcdatamodel"; sourceTree = "<group>"; };
 		895901A31A30BCB7002E2C62 /* Enclosure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Enclosure.h; sourceTree = "<group>"; };
@@ -681,7 +682,7 @@
 				897F70F11A38AFE500ECE1A1 /* EnclosuresViewController.swift */,
 				895901A81A30C5D1002E2C62 /* EnclosuresView.swift */,
 				895901AB1A30C6B7002E2C62 /* EnclosureCell.swift */,
-				8957823D1A3BDA680022F345 /* CircularProgressView.swift */,
+				895782401A3CC0130022F345 /* CircularProgressLayer.swift */,
 				8924D8E81A094CF5003B7529 /* article.css */,
 			);
 			name = Articles;
@@ -867,6 +868,7 @@
 				898047381A20475D00EB29F0 /* Alamofire.swift in Sources */,
 				89635FB81A13C48D0052C248 /* NSDate+InternetDateTime.m in Sources */,
 				897F70FD1A3A4E7700ECE1A1 /* UnreadCounter.swift in Sources */,
+				895782431A3CC0130022F345 /* CircularProgressLayer.swift in Sources */,
 				89635FB91A13C48D0052C248 /* NSString+HTML.m in Sources */,
 				897F70F91A39772C00ECE1A1 /* Data-extensions.swift in Sources */,
 				89635FB71A13C48D0052C248 /* GTMNSString+HTML.m in Sources */,
@@ -901,6 +903,7 @@
 				89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */,
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
 				895901A91A30C5D1002E2C62 /* EnclosuresView.swift in Sources */,
+				895782411A3CC0130022F345 /* CircularProgressLayer.swift in Sources */,
 				89C7FBE01A183EBE00ACBDB2 /* MAKDropDownMenu.m in Sources */,
 				895901AC1A30C6B7002E2C62 /* EnclosureCell.swift in Sources */,
 				8933E93B19EF4D0C00ECFF3F /* TextHighlighter.swift in Sources */,
@@ -912,7 +915,6 @@
 				89C509F71A2F825400CBD000 /* TextViewCell.swift in Sources */,
 				8980475D1A20478600EB29F0 /* TUSafariActivity.m in Sources */,
 				897F70F21A38AFE500ECE1A1 /* EnclosuresViewController.swift in Sources */,
-				8957823E1A3BDA680022F345 /* CircularProgressView.swift in Sources */,
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
 				8924D8F21A0E8EEA003B7529 /* OPMLParser.swift in Sources */,
 				8933E92F19ECD28900ECFF3F /* NSString+XMLEntities.m in Sources */,
@@ -936,7 +938,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8957823F1A3BDA680022F345 /* CircularProgressView.swift in Sources */,
 				893448C61A03159F00F5D528 /* ArticleViewControllerTests.swift in Sources */,
 				895901AD1A30C6B7002E2C62 /* EnclosureCell.swift in Sources */,
 				895779AD19E62CDA00548418 /* Feed.m in Sources */,
@@ -973,6 +974,7 @@
 				893448C11A004E5C00F5D528 /* NSLayoutConstraint+PureLayout.m in Sources */,
 				895779A919E62CC500548418 /* ArticleViewController.swift in Sources */,
 				895779B819E65D9900548418 /* DataManagerTests.swift in Sources */,
+				895782421A3CC0130022F345 /* CircularProgressLayer.swift in Sources */,
 				8963F4351A280F8E00B447D6 /* TagPickerView.swift in Sources */,
 				89C509F51A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */,
 				895779A119E62CC500548418 /* UnreadCounter.swift in Sources */,

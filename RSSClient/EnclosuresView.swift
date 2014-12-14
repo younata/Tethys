@@ -37,7 +37,7 @@ class EnclosuresView: UIView, UICollectionViewDelegate, UICollectionViewDataSour
         
         collectionView.registerClass(EnclosureCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.backgroundColor = UIColor.clearColor()
-        (collectionView.collectionViewLayout as UICollectionViewFlowLayout).estimatedItemSize = CGSizeMake(120, 50)
+        (collectionView.collectionViewLayout as UICollectionViewFlowLayout).estimatedItemSize = CGSizeMake(68, 98)
     }
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
@@ -56,7 +56,7 @@ class EnclosuresView: UIView, UICollectionViewDelegate, UICollectionViewDataSour
         cell.enclosure = enclosures?[indexPath.row]
         if let enclosure = enclosures?[indexPath.row] {
             if let progress = dataManager?.progressForEnclosure(enclosure) {
-                cell.loadingBar.progress = (progress == -1 ? 0 : Float(progress))
+                cell.progressLayer.progress = (progress == -1 ? 0 : progress)
             }
         }
         return cell
@@ -73,11 +73,11 @@ class EnclosuresView: UIView, UICollectionViewDelegate, UICollectionViewDataSour
             if progress == -1 {
                 dataManager!.downloadEnclosure(enclosure, progress: {(progress) in
                     if let cell = (collectionView.visibleCells() as [EnclosureCell]).filter({return $0.enclosure?.objectID == enclosure.objectID}).first {
-                        cell.loadingBar.setProgress(Float(progress), animated: true)
+                        cell.progressLayer.progress = progress
                     }
                 }) {(_, error) in
                     if let cell = (collectionView.visibleCells() as [EnclosureCell]).filter({return $0.enclosure?.objectID == enclosure.objectID}).first {
-                        cell.loadingBar.progress = 0
+                        cell.progressLayer.progress = 0
                     }
                 }
             } else {

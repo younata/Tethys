@@ -35,6 +35,7 @@ class MainController: NSResponder, NSTextViewDelegate {
         feedsList.dataManager = dataManager
         feedsList.tableView = tableView!
         feedsList.reload()
+        feedsList.onFeedSelection = showFeeds
         
         window?.makeFirstResponder(self)
         
@@ -57,6 +58,12 @@ class MainController: NSResponder, NSTextViewDelegate {
                 }
             }
         }
+    }
+    
+    let articleList = NSTableView(forAutoLayout: ())
+    
+    func showFeeds(feed: Feed) {
+        
     }
     
     // MARK: NSTextViewDelegate

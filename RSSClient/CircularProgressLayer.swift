@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Rachel Brindle. All rights reserved.
 //
 
-import UIKit
+import CoreGraphics
 
 class CircularProgressLayer: CAShapeLayer {
     var progress : Double = 0.0 {

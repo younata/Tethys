@@ -251,34 +251,33 @@
         <window title="RSSClient-OSX" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="335" y="390" width="743" height="346"/>
+            <rect key="contentRect" x="335" y="390" width="766" height="346"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <view key="contentView" id="EiT-Mj-1SZ">
-                <rect key="frame" x="0.0" y="0.0" width="743" height="346"/>
+                <rect key="frame" x="0.0" y="0.0" width="766" height="346"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <splitView dividerStyle="thin" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="X2e-Iw-lcg">
-                        <rect key="frame" x="0.0" y="0.0" width="743" height="346"/>
+                        <rect key="frame" x="0.0" y="0.0" width="766" height="346"/>
                         <subviews>
                             <customView id="eAh-yT-61T">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="346"/>
+                                <rect key="frame" x="0.0" y="0.0" width="294" height="346"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <subviews>
                                     <scrollView borderType="line" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9ir-Vy-ELK">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="364"/>
-                                        <clipView key="contentView" id="uay-WP-WDw">
+                                        <rect key="frame" x="0.0" y="0.0" width="294" height="320"/>
+                                        <clipView key="contentView" misplaced="YES" id="uay-WP-WDw">
                                             <rect key="frame" x="1" y="0.0" width="238" height="134"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="cYO-FW-eWC" viewBased="YES" id="0fL-ha-QCe">
-                                                    <rect key="frame" x="0.0" y="0.0" width="238" height="134"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <tableViewGridLines key="gridStyleMask" horizontal="YES"/>
                                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                     <tableColumns>
-                                                        <tableColumn width="370" minWidth="40" maxWidth="1000" id="4uh-DA-Rjb">
+                                                        <tableColumn width="289" minWidth="40" maxWidth="1000" id="4uh-DA-Rjb">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -292,7 +291,7 @@
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="G1m-w7-QDi">
-                                                                    <rect key="frame" x="1" y="1" width="370" height="17"/>
+                                                                    <rect key="frame" x="1" y="1" width="289" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 </tableCellView>
                                                             </prototypeCellViews>
@@ -306,7 +305,7 @@
                                             <rect key="frame" x="1" y="119" width="223" height="15"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
-                                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="RjE-3h-Q1f">
+                                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="RjE-3h-Q1f">
                                             <rect key="frame" x="224" y="17" width="15" height="102"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
@@ -315,16 +314,42 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableHeaderView>
                                     </scrollView>
+                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="mcl-Jw-qde" customClass="BackgroundView" customModule="rNews" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="302" width="294" height="44"/>
+                                        <subviews>
+                                            <button hidden="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OGB-JX-TeG">
+                                                <rect key="frame" x="20" y="10" width="47" height="32"/>
+                                                <buttonCell key="cell" type="bevel" title="❮ Back" bezelStyle="rounded" alignment="center" state="on" imageScaling="proportionallyDown" inset="2" id="WtT-2Z-rQe">
+                                                    <behavior key="behavior" lightByContents="YES"/>
+                                                    <font key="font" metaFont="system"/>
+                                                </buttonCell>
+                                            </button>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="44" id="0BP-9y-SzI"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="backgroundColor">
+                                                <color key="value" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="lineColor">
+                                                <color key="value" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </customView>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstItem="9ir-Vy-ELK" firstAttribute="top" secondItem="eAh-yT-61T" secondAttribute="top" constant="-18" id="IxQ-hG-ojh"/>
+                                    <constraint firstItem="9ir-Vy-ELK" firstAttribute="top" secondItem="mcl-Jw-qde" secondAttribute="bottom" constant="-18" id="3bS-VG-20E"/>
                                     <constraint firstAttribute="bottom" secondItem="9ir-Vy-ELK" secondAttribute="bottom" id="Iyr-g9-huc"/>
+                                    <constraint firstItem="mcl-Jw-qde" firstAttribute="leading" secondItem="eAh-yT-61T" secondAttribute="leading" id="SwE-p1-Xkj"/>
                                     <constraint firstAttribute="trailing" secondItem="9ir-Vy-ELK" secondAttribute="trailing" id="j0W-er-bj6"/>
                                     <constraint firstItem="9ir-Vy-ELK" firstAttribute="leading" secondItem="eAh-yT-61T" secondAttribute="leading" id="lGl-vM-AeL"/>
+                                    <constraint firstItem="mcl-Jw-qde" firstAttribute="top" secondItem="eAh-yT-61T" secondAttribute="top" id="poV-XE-sYR"/>
+                                    <constraint firstAttribute="trailing" secondItem="mcl-Jw-qde" secondAttribute="trailing" id="pz2-Xb-40C"/>
                                 </constraints>
                             </customView>
                             <customView fixedFrame="YES" id="bke-L0-vFV">
-                                <rect key="frame" x="376" y="0.0" width="367" height="346"/>
+                                <rect key="frame" x="295" y="0.0" width="471" height="346"/>
                                 <autoresizingMask key="autoresizingMask"/>
                             </customView>
                         </subviews>
@@ -341,7 +366,7 @@
                     <constraint firstItem="X2e-Iw-lcg" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" id="qew-68-o7W"/>
                 </constraints>
             </view>
-            <point key="canvasLocation" x="233.5" y="280"/>
+            <point key="canvasLocation" x="381" y="280"/>
         </window>
     </objects>
 </document>

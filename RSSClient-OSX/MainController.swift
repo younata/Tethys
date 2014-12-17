@@ -39,9 +39,15 @@ class MainController: NSResponder, NSTextViewDelegate {
         feedsList.dataManager = dataManager
         feedsList.tableView = tableView!
         feedsList.reload()
-        feedsList.onFeedSelection = showFeeds
+        feedsList.onFeedSelection = showArticles
         
         window?.makeFirstResponder(self)
+        
+        for view in [tableView, splitView, leftView, navigationBar, navigationTitle, backButton, commandView] {
+            if let v = view {
+                v.wantsLayer = true
+            }
+        }
         
         // add everything on top of this...
         window?.contentView.addSubview(commandView)
@@ -67,29 +73,79 @@ class MainController: NSResponder, NSTextViewDelegate {
     }
     
     var articleTableView : NSTableView? = nil
+    var articleScrollView : NSScrollView? = nil
     let articleList = ArticlesList()
+    var articleListConstraint : NSLayoutConstraint? = nil
     
-    func showFeeds(feed: Feed) {
+    func showArticles(feed: Feed) {
         if articleTableView != nil {
             return
         }
+        articleScrollView = NSScrollView(forAutoLayout: ())
+        leftView?.addSubview(articleScrollView!)
+        
         articleTableView = NSTableView(forAutoLayout: ())
-        leftView?.addSubview(articleTableView!)
-        articleTableView?.autoPinEdgeToSuperviewEdge(.Top)
-        articleTableView?.autoPinEdgeToSuperviewEdge(.Bottom)
-        articleTableView?.autoMatchDimension(.Width, toDimension: .Width, ofView: leftView!)
-        let rightConstraint = articleTableView?.autoPinEdgeToSuperviewEdge(.Right, withInset: -(leftView!.bounds.width))
+        articleTableView?.wantsLayer = true
+        articleTableView?.gridStyleMask = .SolidHorizontalGridLineMask
+        articleScrollView?.addSubview(articleTableView!)
+        articleTableView?.autoPinEdgesToSuperviewEdgesWithInsets(NSEdgeInsetsZero)
+        
+        articleScrollView?.autoPinEdge(.Top, toEdge: .Bottom, ofView: navigationBar)
+        articleScrollView?.autoPinEdgeToSuperviewEdge(.Bottom)
+        articleScrollView?.autoMatchDimension(.Width, toDimension: .Width, ofView: leftView!)
+        let inset = -(leftView!.bounds.width)
+        let rightConstraint = articleScrollView?.autoPinEdgeToSuperviewEdge(.Right, withInset: inset)
+        
+        let tableColumn = NSTableColumn(identifier: "articles")
+        tableColumn.resizingMask = .AutoresizingMask
+        
+        articleTableView?.addTableColumn(tableColumn)
+        
+        articleScrollView?.documentView = articleTableView
+        articleScrollView?.hasVerticalScroller = true
+        
         articleList.dataManager = dataManager
         articleList.tableView = articleTableView
         articleList.feeds = [feed]
+        articleList.onSelection = showArticle
+        backButton?.alphaValue = 0.0
+        backButton?.hidden = false
+        navigationTitle?.stringValue = NSLocalizedString("Articles", comment: "")
         leftView?.layout()
         rightConstraint?.constant = 0
         NSAnimationContext.runAnimationGroup({(ctx) in
             ctx.duration = 0.2
-            self.leftView?.layout()
+            self.leftView?.needsLayout = true
+            self.backButton?.alphaValue = 1.0
         }) {
             self.articleList.reload()
         }
+        articleListConstraint = rightConstraint
+    }
+    
+    @IBAction func showFeeds(sender: NSObject) {
+        if articleTableView == nil {
+            return
+        }
+        let inset = -(leftView!.bounds.width)
+        articleListConstraint?.constant = inset
+        NSAnimationContext.runAnimationGroup({(ctx) in
+            ctx.duration = 0.2
+            self.leftView?.needsLayout = true
+            self.backButton?.alphaValue = 0.0
+        }) {
+            print("")
+            self.articleScrollView?.removeFromSuperview()
+            self.articleScrollView = nil
+            self.articleTableView?.removeFromSuperview()
+            self.articleTableView = nil
+            self.backButton?.hidden = true
+            self.navigationTitle?.stringValue = NSLocalizedString("Feeds", comment: "")
+        }
+    }
+    
+    func showArticle(article: Article) {
+        println("Show \(article.title)")
     }
     
     // MARK: NSTextViewDelegate

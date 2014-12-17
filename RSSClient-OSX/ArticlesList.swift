@@ -19,7 +19,7 @@ class ArticlesList: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     weak var tableView: NSTableView? = nil {
         didSet {
             tableView?.setDelegate(self)
-            tableView?.setDelegate(self)
+            tableView?.setDataSource(self)
             tableView?.headerView = nil
         }
     }
@@ -33,8 +33,8 @@ class ArticlesList: NSObject, NSTableViewDataSource, NSTableViewDelegate {
             let articles = feeds.reduce([] as [Article]) { return $0 + $1.allArticles(self.dataManager!) }
             let newArticles = NSSet(array: articles)
             let oldArticles = NSSet(array: self.articles)
+            self.articles = (articles as [Article])
             if newArticles != oldArticles {
-                self.articles = (articles as [Article])
                 self.articles.sort({(a : Article, b: Article) in
                     let da = a.updatedAt ?? a.published
                     let db = b.updatedAt ?? b.published
@@ -58,19 +58,27 @@ class ArticlesList: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         let titleBounds = title.boundingRectWithSize(NSMakeSize(width, CGFloat.max), options: NSStringDrawingOptions.UsesFontLeading)
         let authorBounds = author.boundingRectWithSize(NSMakeSize(width, CGFloat.max), options: NSStringDrawingOptions.UsesFontLeading)
         
-        let titleHeight = ceil(titleBounds.width / width * titleBounds.height)
-        let authorHeight = ceil(authorBounds.width / width * authorBounds.height)
+        let titleHeight = ceil(titleBounds.width / width) * ceil(titleBounds.height)
+        let authorHeight = ceil(authorBounds.width / width) * ceil(authorBounds.height)
         
         return max(30, height + titleHeight + authorHeight)
     }
     
-    // MARK: NSTableViewDelegate
-    
-    func tableView(tableView: NSTableView, rowViewForRow row: Int) -> NSTableRowView? {
+    func rowViewForRow(row: Int) -> ArticleListView {
         let article = articles[row]
-        let articleView = ArticleListView(frame: NSMakeRect(0, 0, tableView.bounds.width, heightForArticle(article, width: tableView.bounds.width - 16)))
+        let width = tableView!.bounds.width
+        let articleView = ArticleListView(frame: NSMakeRect(0, 0, width, heightForArticle(article, width: width - 16)))
         articleView.article = article
         return articleView
+    }
+    
+    // MARK: NSTableViewDelegate
+    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        return NSView(forAutoLayout: ())
+    }
+
+    func tableView(tableView: NSTableView, rowViewForRow row: Int) -> NSTableRowView? {
+        return rowViewForRow(row)
     }
     
     func tableView(tableView: NSTableView, heightOfRow row: Int) -> CGFloat {

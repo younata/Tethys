@@ -36,11 +36,13 @@ class ArticleListView: NSTableRowView {
     
     var unreadWidth: NSLayoutConstraint? = nil
     var titleHeight : NSLayoutConstraint? = nil
+    var authorHeight : NSLayoutConstraint? = nil
     
     let dateFormatter = NSDateFormatter()
     
     override func layout() {
         titleHeight?.constant = ceil(NSAttributedString(string: title.string!, attributes: [NSFontAttributeName: title.font!]).size.height)
+        //authorHeight?.constant = ceil(NSAttributedString(string: author.string!, attributes: [NSFontAttributeName: author.font!]).size.height)
         
         super.layout()
     }
@@ -57,18 +59,20 @@ class ArticleListView: NSTableRowView {
         
         title.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         title.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
-        titleHeight = title.autoSetDimension(.Height, toSize: 22)
+        titleHeight = title.autoSetDimension(.Height, toSize: 18)
         title.font = NSFont.systemFontOfSize(14)
         
         author.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         author.autoPinEdge(.Top, toEdge: .Bottom, ofView: title, withOffset: 8)
         author.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
+        //authorHeight = author.autoSetDimension(.Height, toSize: 16)
         author.font = NSFont.systemFontOfSize(12)
         
         unread.autoPinEdgeToSuperviewEdge(.Top)
         unread.autoPinEdgeToSuperviewEdge(.Right)
         unread.autoSetDimension(.Height, toSize: 20)
         unreadWidth = unread.autoSetDimension(.Width, toSize: 20)
+        unread.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0, relation: .GreaterThanOrEqual)
         
         unread.hideUnreadText = true
         

@@ -19,7 +19,6 @@ class FeedsList: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     }
     
     var dataManager : DataManager? = nil
-    
     var onFeedSelection : (Feed) -> Void = {(_) in }
     
     override init() {
@@ -56,8 +55,8 @@ class FeedsList: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         let titleBounds = title.boundingRectWithSize(NSMakeSize(width, CGFloat.max), options: NSStringDrawingOptions.UsesFontLeading)
         let summaryBounds = summary.boundingRectWithSize(NSMakeSize(width, CGFloat.max), options: NSStringDrawingOptions.UsesFontLeading)
         
-        let titleHeight = ceil(titleBounds.width / width * titleBounds.height)
-        let summaryHeight = ceil(summaryBounds.width / width * summaryBounds.height)
+        let titleHeight = ceil(titleBounds.width / width) * ceil(titleBounds.height)
+        let summaryHeight = ceil(summaryBounds.width / width) * ceil(summaryBounds.height)
                 
         height += titleHeight
         height += summaryHeight

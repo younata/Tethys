@@ -19,6 +19,10 @@
         </customObject>
         <customObject id="kTN-Xc-YiB" customClass="MainController" customModule="rNews" customModuleProvider="target">
             <connections>
+                <outlet property="backButton" destination="OGB-JX-TeG" id="R4y-99-YOa"/>
+                <outlet property="leftView" destination="eAh-yT-61T" id="aJh-tO-3wM"/>
+                <outlet property="navigationBar" destination="mcl-Jw-qde" id="nnW-4a-lcJ"/>
+                <outlet property="navigationTitle" destination="cvJ-8Z-cdU" id="EW2-sz-bBY"/>
                 <outlet property="splitView" destination="X2e-Iw-lcg" id="0xe-Xh-IAi"/>
                 <outlet property="tableView" destination="0fL-ha-QCe" id="9re-7J-2q4"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="SIx-uf-Zep"/>
@@ -317,16 +321,42 @@
                                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="mcl-Jw-qde" customClass="BackgroundView" customModule="rNews" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="302" width="294" height="44"/>
                                         <subviews>
-                                            <button hidden="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OGB-JX-TeG">
-                                                <rect key="frame" x="20" y="10" width="47" height="32"/>
-                                                <buttonCell key="cell" type="bevel" title="❮ Back" bezelStyle="rounded" alignment="center" state="on" imageScaling="proportionallyDown" inset="2" id="WtT-2Z-rQe">
+                                            <button hidden="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OGB-JX-TeG">
+                                                <rect key="frame" x="20" y="10" width="53" height="32"/>
+                                                <buttonCell key="cell" type="bevel" title="❮ Feeds" bezelStyle="rounded" alignment="center" state="on" imageScaling="proportionallyDown" inset="2" id="WtT-2Z-rQe">
                                                     <behavior key="behavior" lightByContents="YES"/>
+                                                    <font key="font" metaFont="system"/>
+                                                </buttonCell>
+                                            </button>
+                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cvJ-8Z-cdU">
+                                                <rect key="frame" x="73" y="18" width="149" height="17"/>
+                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Feeds" id="fVn-cY-5k6">
+                                                    <font key="font" metaFont="system"/>
+                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                            </textField>
+                                            <button hidden="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9jx-Yk-gvh">
+                                                <rect key="frame" x="228" y="16" width="46" height="21"/>
+                                                <buttonCell key="cell" type="bevel" title="Button" bezelStyle="rounded" alignment="center" imageScaling="proportionallyDown" inset="2" id="ffx-D8-YrE">
+                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="system"/>
                                                 </buttonCell>
                                             </button>
                                         </subviews>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="0BP-9y-SzI"/>
+                                            <constraint firstItem="OGB-JX-TeG" firstAttribute="top" secondItem="mcl-Jw-qde" secondAttribute="top" constant="7" id="2HL-GH-x7y"/>
+                                            <constraint firstItem="cvJ-8Z-cdU" firstAttribute="top" secondItem="mcl-Jw-qde" secondAttribute="top" constant="9" id="5ea-JY-DNE"/>
+                                            <constraint firstItem="9jx-Yk-gvh" firstAttribute="leading" secondItem="cvJ-8Z-cdU" secondAttribute="trailing" constant="8" id="Ds9-73-lNF"/>
+                                            <constraint firstAttribute="bottom" secondItem="cvJ-8Z-cdU" secondAttribute="bottom" constant="18" id="OkM-I7-erj"/>
+                                            <constraint firstAttribute="trailing" secondItem="9jx-Yk-gvh" secondAttribute="trailing" constant="20" id="PaP-Io-E9O"/>
+                                            <constraint firstAttribute="bottom" secondItem="9jx-Yk-gvh" secondAttribute="bottom" constant="16" id="Ri0-R4-u8Q"/>
+                                            <constraint firstItem="9jx-Yk-gvh" firstAttribute="top" secondItem="mcl-Jw-qde" secondAttribute="top" constant="7" id="V47-FI-6A5"/>
+                                            <constraint firstItem="cvJ-8Z-cdU" firstAttribute="leading" secondItem="OGB-JX-TeG" secondAttribute="trailing" constant="8" id="aim-T3-H9Y"/>
+                                            <constraint firstAttribute="bottom" secondItem="OGB-JX-TeG" secondAttribute="bottom" constant="16" id="elY-k4-tub"/>
+                                            <constraint firstItem="OGB-JX-TeG" firstAttribute="leading" secondItem="mcl-Jw-qde" secondAttribute="leading" constant="20" id="jae-In-AZ5"/>
+                                            <constraint firstAttribute="centerX" secondItem="cvJ-8Z-cdU" secondAttribute="centerX" id="xkX-bx-QWy"/>
                                         </constraints>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="color" keyPath="backgroundColor">

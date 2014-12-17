@@ -14,7 +14,7 @@ class FeedView: NSTableRowView {
             if let f = feed {
                 nameLabel.string = f.feedTitle()
                 let font : NSFont = nameLabel.font!
-                nameHeight?.constant = NSAttributedString(string: nameLabel.string!, attributes: [NSFontAttributeName: font]).size.height
+                nameHeight?.constant = ceil(NSAttributedString(string: nameLabel.string!, attributes: [NSFontAttributeName: font]).size.height)
                 summaryLabel.string = f.feedSummary() ?? ""
                 unreadCounter.unread = UInt(filter(f.allArticles(dataManager!), {return $0.read == false}).count)
             } else {

@@ -10,7 +10,6 @@ import Cocoa
 
 class UnreadCounter: NSView {
     
-    let triangleLayer = CAShapeLayer()
     let countLabel = NSText(forAutoLayout: ())
     
     var triangleColor: NSColor = NSColor.darkGreenColor()
@@ -20,41 +19,33 @@ class UnreadCounter: NSView {
         }
     }
     
+    private var color : NSColor = NSColor.darkGreenColor()
+    
     var hideUnreadText = false
     var unread : UInt = 0 {
         didSet {
             if unread == 0 {
                 countLabel.string = ""
-                triangleLayer.fillColor = NSColor.clearColor().CGColor
+                color = NSColor.clearColor()
             } else {
                 if hideUnreadText {
                     countLabel.string = ""
                 } else {
                     countLabel.string = "\(unread)"
                 }
-                triangleLayer.fillColor = triangleColor.CGColor
+                color = triangleColor
             }
+            self.needsDisplay = true
         }
     }
     
     override func layout() {
         super.layout()
-        let path = CGPathCreateMutable()
-        let height = CGRectGetHeight(self.bounds)
-        let width = CGRectGetWidth(self.bounds)
-        CGPathMoveToPoint(path, nil, 0, height)
-        CGPathAddLineToPoint(path, nil, width, height)
-        CGPathAddLineToPoint(path, nil, width, 0)
-        CGPathAddLineToPoint(path, nil, 0, height)
-        triangleLayer.path = path
     }
     
     override init() {
         super.init(frame: NSMakeRect(0, 0, 0, 0))
-        self.layer = CALayer()
-        self.wantsLayer = true
-        
-        self.layer!.addSublayer(triangleLayer)
+
         self.addSubview(countLabel)
         countLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 4)
         countLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
@@ -69,6 +60,17 @@ class UnreadCounter: NSView {
 
     override func drawRect(dirtyRect: NSRect) {
         super.drawRect(dirtyRect)
+        
+        let ctx = NSGraphicsContext.currentContext()
+        let path = CGPathCreateMutable()
+        let height = CGRectGetHeight(self.bounds)
+        let width = CGRectGetWidth(self.bounds)
+        CGPathMoveToPoint(path, nil, 0, height)
+        CGPathAddLineToPoint(path, nil, width, height)
+        CGPathAddLineToPoint(path, nil, width, 0)
+        CGPathAddLineToPoint(path, nil, 0, height)
+        CGContextAddPath(ctx?.CGContext, path)
+        CGContextSetFillColorWithColor(ctx?.CGContext, color.CGColor)
+        CGContextFillPath(ctx?.CGContext)
     }
-    
 }

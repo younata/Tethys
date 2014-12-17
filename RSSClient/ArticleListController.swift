@@ -62,7 +62,7 @@ class ArticleListController: UITableViewController {
     
     func refresh() {
         if let feeds = self.feeds {
-            dispatch_async(queue) {
+            dispatch_async(dispatch_get_main_queue()) {
                 let articles = feeds.reduce([] as [Article]) { return $0 + $1.allArticles(self.dataManager!) }
                 let newArticles = NSSet(array: articles)
                 let oldArticles = NSSet(array: self.articles)
@@ -74,12 +74,10 @@ class ArticleListController: UITableViewController {
                         return da!.timeIntervalSince1970 > db!.timeIntervalSince1970
                     })
                 }
-                dispatch_async(dispatch_get_main_queue()) {
-                    if newArticles != oldArticles {
-                        self.tableView.reloadData()
-                    }
-                    self.refreshControl?.endRefreshing()
+                if newArticles != oldArticles {
+                    self.tableView.reloadData()
                 }
+                self.refreshControl?.endRefreshing()
             }
         } else {
             self.tableView.reloadData()

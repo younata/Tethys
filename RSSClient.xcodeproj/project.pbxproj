@@ -101,6 +101,8 @@
 		8963F42F1A26674500B447D6 /* Data-extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963F42D1A26674500B447D6 /* Data-extensions.swift */; };
 		8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963F4331A280F8E00B447D6 /* TagPickerView.swift */; };
 		8963F4351A280F8E00B447D6 /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963F4331A280F8E00B447D6 /* TagPickerView.swift */; };
+		8967DA061A4092A6000424F4 /* ArticlesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8967DA051A4092A6000424F4 /* ArticlesList.swift */; };
+		8967DA081A409433000424F4 /* ArticleListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8967DA071A409433000424F4 /* ArticleListView.swift */; };
 		897CD85C1A213F0900C97ECC /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89635F911A13C2E30052C248 /* MainMenu.xib */; };
 		897CD85E1A21C49000C97ECC /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897CD85D1A21C49000C97ECC /* FeedView.swift */; };
 		897F70F21A38AFE500ECE1A1 /* EnclosuresViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897F70F11A38AFE500ECE1A1 /* EnclosuresViewController.swift */; };
@@ -255,6 +257,8 @@
 		8963F42C1A2660DF00B447D6 /* RSSClient 1.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.1.xcdatamodel"; sourceTree = "<group>"; };
 		8963F42D1A26674500B447D6 /* Data-extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data-extensions.swift"; sourceTree = "<group>"; };
 		8963F4331A280F8E00B447D6 /* TagPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagPickerView.swift; sourceTree = "<group>"; };
+		8967DA051A4092A6000424F4 /* ArticlesList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticlesList.swift; sourceTree = "<group>"; };
+		8967DA071A409433000424F4 /* ArticleListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListView.swift; sourceTree = "<group>"; };
 		897CD85D1A21C49000C97ECC /* FeedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		897F70F11A38AFE500ECE1A1 /* EnclosuresViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnclosuresViewController.swift; sourceTree = "<group>"; };
 		897F70FC1A3A4E7700ECE1A1 /* UnreadCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounter.swift; sourceTree = "<group>"; };
@@ -459,8 +463,8 @@
 			children = (
 				89635F8D1A13C2E30052C248 /* AppDelegate.swift */,
 				898046D41A1C385A00EB29F0 /* MainController.swift */,
-				898047631A206CB100EB29F0 /* FeedsList.swift */,
-				897CD85D1A21C49000C97ECC /* FeedView.swift */,
+				8967DA041A409274000424F4 /* Feeds */,
+				8967DA091A40979D000424F4 /* Articles */,
 				897F70FC1A3A4E7700ECE1A1 /* UnreadCounter.swift */,
 				8929D27E1A3F3E9400782A37 /* BackgroundView.swift */,
 				897F70FE1A3A57A300ECE1A1 /* NSColor+RSSClient.h */,
@@ -505,6 +509,24 @@
 				8963F4281A2570F100B447D6 /* SettingsCell.swift */,
 			);
 			name = Settings;
+			sourceTree = "<group>";
+		};
+		8967DA041A409274000424F4 /* Feeds */ = {
+			isa = PBXGroup;
+			children = (
+				898047631A206CB100EB29F0 /* FeedsList.swift */,
+				897CD85D1A21C49000C97ECC /* FeedView.swift */,
+			);
+			name = Feeds;
+			sourceTree = "<group>";
+		};
+		8967DA091A40979D000424F4 /* Articles */ = {
+			isa = PBXGroup;
+			children = (
+				8967DA051A4092A6000424F4 /* ArticlesList.swift */,
+				8967DA071A409433000424F4 /* ArticleListView.swift */,
+			);
+			name = Articles;
 			sourceTree = "<group>";
 		};
 		898047341A2044EE00EB29F0 /* Alamofire */ = {
@@ -856,6 +878,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8967DA081A409433000424F4 /* ArticleListView.swift in Sources */,
+				8967DA061A4092A6000424F4 /* ArticlesList.swift in Sources */,
 				8929D27F1A3F3E9400782A37 /* BackgroundView.swift in Sources */,
 				89635FBA1A13C48D0052C248 /* NSString+XMLEntities.m in Sources */,
 				89635FAE1A13C4210052C248 /* Article.m in Sources */,

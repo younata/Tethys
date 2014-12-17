@@ -15,12 +15,16 @@ class MainController: NSResponder, NSTextViewDelegate {
     
     @IBOutlet var tableView : NSTableView? = nil
     
+    @IBOutlet var splitView : NSSplitView? = nil
+    
+    @IBOutlet var leftView : NSView? = nil
+    @IBOutlet var navigationBar : BackgroundView? = nil
+    @IBOutlet var navigationTitle : NSTextField? = nil
+    
+    @IBOutlet var backButton : NSButton? = nil
+    
     let commandView = NSTextView(forAutoLayout: ())
     var commandHeight : NSLayoutConstraint? = nil
-    
-    @IBOutlet var tableLeftEdge : NSLayoutConstraint? = nil
-    
-    @IBOutlet var splitView : NSSplitView? = nil
     
     var dataManager : DataManager? = nil
     
@@ -43,6 +47,8 @@ class MainController: NSResponder, NSTextViewDelegate {
         window?.contentView.addSubview(commandView)
         commandView.autoPinEdgesToSuperviewEdgesWithInsets(NSEdgeInsetsZero, excludingEdge: .Top)
         commandHeight = commandView.autoSetDimension(.Height, toSize: 0)
+        
+        navigationBar?.alphaValue = 1.0
     }
     
     @IBAction func openDocument(sender: AnyObject) {
@@ -60,10 +66,30 @@ class MainController: NSResponder, NSTextViewDelegate {
         }
     }
     
-    let articleList = NSTableView(forAutoLayout: ())
+    var articleTableView : NSTableView? = nil
+    let articleList = ArticlesList()
     
     func showFeeds(feed: Feed) {
-        
+        if articleTableView != nil {
+            return
+        }
+        articleTableView = NSTableView(forAutoLayout: ())
+        leftView?.addSubview(articleTableView!)
+        articleTableView?.autoPinEdgeToSuperviewEdge(.Top)
+        articleTableView?.autoPinEdgeToSuperviewEdge(.Bottom)
+        articleTableView?.autoMatchDimension(.Width, toDimension: .Width, ofView: leftView!)
+        let rightConstraint = articleTableView?.autoPinEdgeToSuperviewEdge(.Right, withInset: -(leftView!.bounds.width))
+        articleList.dataManager = dataManager
+        articleList.tableView = articleTableView
+        articleList.feeds = [feed]
+        leftView?.layout()
+        rightConstraint?.constant = 0
+        NSAnimationContext.runAnimationGroup({(ctx) in
+            ctx.duration = 0.2
+            self.leftView?.layout()
+        }) {
+            self.articleList.reload()
+        }
     }
     
     // MARK: NSTextViewDelegate

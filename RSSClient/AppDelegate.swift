@@ -153,7 +153,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
                     application.presentLocalNotificationNow(note)
                 }
             }
-            application.applicationIconBadgeNumber += alist.count
+            application.applicationIconBadgeNumber = application.applicationIconBadgeNumber + alist.count
             if (alist.count > 0) {
                 completionHandler(.NewData)
             } else {

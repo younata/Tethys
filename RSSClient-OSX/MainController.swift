@@ -28,6 +28,11 @@ class MainController: NSResponder, NSTextViewDelegate {
     
     var dataManager : DataManager? = nil
     
+    @IBOutlet var rightView : NSView? = nil
+    
+    let rightNavBar = BackgroundView(forAutoLayout: ())
+    let rightNavTitle = NSTextField(forAutoLayout: ())
+    
     override var acceptsFirstResponder : Bool {
         get {
             return true

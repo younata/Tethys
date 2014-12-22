@@ -259,6 +259,8 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     func configureContent() {
         content.navigationDelegate = self
         self.view.bringSubviewToFront(self.loadingBar)
+        forward.enabled = content.canGoForward
+        back.enabled = content.canGoBack
     }
     
     var nextContent: WKWebView = WKWebView(forAutoLayout: ())

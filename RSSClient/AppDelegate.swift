@@ -64,8 +64,6 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
             application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
         }
         
-        application.applicationIconBadgeNumber = 0
-        
         return true
     }
     

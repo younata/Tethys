@@ -187,8 +187,7 @@ class ArticleListController: UITableViewController {
         let read = NSLocalizedString("Mark\nRead", comment: "")
         let toggleText = article.read ? unread : read
         let toggle = UITableViewRowAction(style: .Normal, title: toggleText, handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
-            article.read = !article.read
-            article.managedObjectContext?.save(nil)
+            self.dataManager?.readArticle(article)
             tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
         })
         return [delete, toggle]

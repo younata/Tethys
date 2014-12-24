@@ -96,14 +96,16 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
     }
     
     public func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
+        if dataManager == nil {
+            createDataManager()
+        }
         if let userInfo = notification.userInfo {
             let feedTitle = (userInfo["feed"] as String)
             let feed : Feed = dataManager!.feeds().filter{ return $0.title == feedTitle; }.first!
             let articleTitle = (userInfo["article"] as String)
             let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.title == articleTitle }).first!
             if identifier == "read" {
-                article.read = true
-                article.managedObjectContext?.save(nil)
+                dataManager?.readArticle(article)
             } else if identifier == "view" {
                 let nc = (self.window!.rootViewController! as UINavigationController)
                 let ftvc = (nc.viewControllers.first! as FeedsTableViewController)

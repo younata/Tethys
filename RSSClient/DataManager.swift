@@ -408,6 +408,18 @@ class DataManager: NSObject {
     
     // MARK: Articles
     
+    func readArticle(article: Article, read: Bool = true) {
+        article.read = read
+        article.managedObjectContext?.save(nil)
+    }
+    
+    func readArticles(articles: [Article], read: Bool = true) {
+        for article in articles {
+            article.read = read
+        }
+        articles.first?.managedObjectContext?.save(nil)
+    }
+    
     func newArticle() -> Article {
         return NSEntityDescription.insertNewObjectForEntityForName("Article", inManagedObjectContext: self.managedObjectContext) as Article
     }

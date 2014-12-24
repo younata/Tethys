@@ -280,10 +280,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         })
         let markRead = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Mark\nRead", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
             let feed = self.feedAtIndexPath(indexPath)
-            for article in feed.allArticles(self.dataManager!) {
-                article.read = true
-            }
-            self.dataManager!.saveContext()
+            self.dataManager!.readArticles(feed.allArticles(self.dataManager!))
             self.reload()
         })
         let edit = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Edit", comment: ""), handler: {(_, indexPath: NSIndexPath!) in

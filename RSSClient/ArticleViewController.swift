@@ -259,10 +259,12 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     func configureContent() {
         content.navigationDelegate = self
         self.view.bringSubviewToFront(self.loadingBar)
-        let forward = (self.navigationItem.rightBarButtonItems![0] as UIBarButtonItem)
-        let back = (self.navigationItem.rightBarButtonItems![1] as UIBarButtonItem)
-        forward.enabled = content.canGoForward
-        back.enabled = content.canGoBack
+        if let items = self.navigationItem.rightBarButtonItems as? [UIBarButtonItem] {
+            let forward = items[0]
+            let back = items[1]
+            forward.enabled = content.canGoForward
+            back.enabled = content.canGoBack
+        }
     }
     
     var nextContent: WKWebView = WKWebView(forAutoLayout: ())
@@ -404,10 +406,6 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     }
     
     func webView(webView: WKWebView!, didFinishNavigation navigation: WKNavigation!) {
-        let forward = (self.navigationItem.rightBarButtonItems![0] as UIBarButtonItem)
-        let back = (self.navigationItem.rightBarButtonItems![1] as UIBarButtonItem)
-        forward.enabled = webView.canGoForward
-        back.enabled = webView.canGoBack
         loadingBar.hidden = true
         self.removeObserverFromContent(webView)
     }
@@ -430,6 +428,12 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 self.userActivity?.needsSave = true
                 self.userActivity?.webpageURL = wvu
             }
+        }
+        if let items = self.navigationItem.rightBarButtonItems as? [UIBarButtonItem] {
+            let forward = items[0]
+            let back = items[1]
+            forward.enabled = content.canGoForward
+            back.enabled = content.canGoBack
         }
     }
 }

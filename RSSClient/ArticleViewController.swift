@@ -181,14 +181,14 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         // share, show (content|link)...
         shareButton = UIBarButtonItem(barButtonSystemItem: .Compose, target: self, action: "share")
         toggleContentButton = UIBarButtonItem(title: linkString, style: .Plain, target: self, action: "toggleContentLink")
-        showEnclosuresButton = UIBarButtonItem(title: NSLocalizedString("Enclosures", comment: ""), style: .Plain, target: self, action: "showEnclosures")
+        //showEnclosuresButton = UIBarButtonItem(title: NSLocalizedString("Enclosures", comment: ""), style: .Plain, target: self, action: "showEnclosures")
         if let a = article {
             if (a.content ?? a.summary) != nil {
                 self.toolbarItems = [spacer(), shareButton!, spacer(), toggleContentButton!, spacer()]
             } else {
                 self.toolbarItems = [spacer(), shareButton!, spacer()]
             }
-            if a.allEnclosures().count > 0 {
+            if a.allEnclosures().count > 0 && showEnclosuresButton != nil {
                 self.toolbarItems! += [showEnclosuresButton!, spacer()]
             }
         }
@@ -259,6 +259,8 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     func configureContent() {
         content.navigationDelegate = self
         self.view.bringSubviewToFront(self.loadingBar)
+        let forward = (self.navigationItem.rightBarButtonItems![0] as UIBarButtonItem)
+        let back = (self.navigationItem.rightBarButtonItems![1] as UIBarButtonItem)
         forward.enabled = content.canGoForward
         back.enabled = content.canGoBack
     }

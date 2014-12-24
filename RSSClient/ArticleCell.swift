@@ -20,6 +20,7 @@ class ArticleCell: UITableViewCell, UITextViewDelegate {
             let hasNotRead = article?.read != true
             unread.unread = hasNotRead ? 1 : 0
             unreadWidth.constant = (hasNotRead ? 30 : 0)
+            /*
             if article?.enclosures != nil && article?.enclosures.count != 0 {
                 enclosures.text = NSString.localizedStringWithFormat(NSLocalizedString("%ld enclosures", comment: ""), article!.enclosures.count)
                 let attributed = NSAttributedString(string: enclosures.text!, attributes: [NSFontAttributeName: enclosures.font])
@@ -41,7 +42,7 @@ class ArticleCell: UITableViewCell, UITextViewDelegate {
             } else {
                 enclosures.text = ""
                 enclosuresWidth.constant = 0
-            }
+            }*/
         }
     }
     

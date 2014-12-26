@@ -101,7 +101,6 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.reload()
-        UIApplication.sharedApplication().applicationIconBadgeNumber = 0
     }
     
     override func viewWillDisappear(animated: Bool) {

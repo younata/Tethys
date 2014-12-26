@@ -153,7 +153,6 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
                     application.presentLocalNotificationNow(note)
                 }
             }
-            application.applicationIconBadgeNumber = application.applicationIconBadgeNumber + alist.count
             if (alist.count > 0) {
                 completionHandler(.NewData)
             } else {
@@ -209,7 +208,6 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
 
     public func applicationWillEnterForeground(application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-        application.applicationIconBadgeNumber = 0
     }
 
     public func applicationDidBecomeActive(application: UIApplication) {

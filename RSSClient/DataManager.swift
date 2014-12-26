@@ -315,6 +315,7 @@ class DataManager: NSObject {
                         ctx.save(nil)
                         dispatch_async(dispatch_get_main_queue()) {
                             completion(nil)
+                            self.setApplicationBadgeCount()
                         }
                     }
                     self.parsers = self.parsers.filter { $0 != feedParser }
@@ -324,6 +325,7 @@ class DataManager: NSObject {
                         ctx.save(nil)
                         dispatch_async(dispatch_get_main_queue()) {
                             completion(error)
+                            self.setApplicationBadgeCount()
                         }
                     }
                     self.parsers = self.parsers.filter { $0 != feedParser }
@@ -332,6 +334,15 @@ class DataManager: NSObject {
                 self.parsers.append(feedParser)
             }
         }
+    }
+    
+    func setApplicationBadgeCount() {
+        let num = feeds(managedObjectContext: managedObjectContext).filter {return !$0.isQueryFeed()}.reduce(0) {return $0 + Int($1.unreadArticles(self))}
+        #if os(iOS)
+            UIApplication.sharedApplication().applicationIconBadgeNumber = num
+        #elseif os(OSX)
+            // something.
+        #endif
     }
     
     // MARK: Enclosures
@@ -411,6 +422,7 @@ class DataManager: NSObject {
     func readArticle(article: Article, read: Bool = true) {
         article.read = read
         article.managedObjectContext?.save(nil)
+        setApplicationBadgeCount()
     }
     
     func readArticles(articles: [Article], read: Bool = true) {
@@ -418,6 +430,7 @@ class DataManager: NSObject {
             article.read = read
         }
         articles.first?.managedObjectContext?.save(nil)
+        setApplicationBadgeCount()
     }
     
     func newArticle() -> Article {

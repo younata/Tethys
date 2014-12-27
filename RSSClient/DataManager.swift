@@ -341,6 +341,7 @@ class DataManager: NSObject {
         #if os(iOS)
             UIApplication.sharedApplication().applicationIconBadgeNumber = num
         #elseif os(OSX)
+            NSApplication.sharedApplication().dockTile.badgeLabel = "\(num)"
             // something.
         #endif
     }

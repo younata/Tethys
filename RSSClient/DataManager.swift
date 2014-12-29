@@ -249,12 +249,13 @@ class DataManager: NSObject {
                     for item in items {
                         predicate = NSPredicate(format: "link = %@", item.link)!
                         if let article = self.entities("Article", matchingPredicate: predicate, managedObjectContext: ctx).last as? Article {
-                            article.title = item.title
+                            article.title = item.title ?? ""
                             article.link = item.link
                             article.updatedAt = item.updated
                             article.summary = item.summary
                             article.content = item.content
                             article.author = item.author
+                            article.identifier = item.identifier ?? article.objectID.description
                             
                             if let itemEnclosures = (item.enclosures?.count == 0 ? nil : item.enclosures) as [[String: AnyObject]]? {
                                 for enc in itemEnclosures {
@@ -281,7 +282,7 @@ class DataManager: NSObject {
                             // create
                             if let feed = self.entities("Feed", matchingPredicate: NSPredicate(format: "url = %@", feed.url)!).last as? Feed {
                                 let article = (NSEntityDescription.insertNewObjectForEntityForName("Article", inManagedObjectContext: ctx) as Article)
-                                article.title = item.title
+                                article.title = item.title ?? ""
                                 article.link = item.link
                                 article.published = item.date ?? NSDate()
                                 article.updatedAt = item.updated
@@ -290,6 +291,7 @@ class DataManager: NSObject {
                                 article.author = item.author
                                 article.feed = feed
                                 article.read = false
+                                article.identifier = item.identifier ?? article.objectID.description
                                 
                                 feed.addArticlesObject(article)
                                 
@@ -342,7 +344,6 @@ class DataManager: NSObject {
             UIApplication.sharedApplication().applicationIconBadgeNumber = num
         #elseif os(OSX)
             NSApplication.sharedApplication().dockTile.badgeLabel = "\(num)"
-            // something.
         #endif
     }
     

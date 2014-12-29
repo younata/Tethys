@@ -26,14 +26,14 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 if enclosures.count > 0 {
                 }
                 
-                self.navigationItem.title = a.title
+                self.navigationItem.title = a.title ?? ""
                 
                 if userActivity == nil {
                     userActivity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
                     userActivity?.title = NSLocalizedString("Reading Article", comment: "")
                     userActivity?.becomeCurrent()
                 }
-                userActivity?.userInfo = ["feed": a.feed.title, "article": a.title, "showingContent": true, "url": url!]
+                userActivity?.userInfo = ["feed": a.feed.title, "article": a.identifier ?? a.objectID.description, "showingContent": true, "url": url!]
                 userActivity?.webpageURL = NSURL(string: a.link)
                 self.userActivity?.needsSave = true
                 

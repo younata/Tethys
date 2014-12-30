@@ -178,7 +178,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         forward.enabled = false
         
         self.navigationItem.rightBarButtonItems = [forward, back]
-        // share, show (content|link)...
+        // share, show (content|link)
         shareButton = UIBarButtonItem(barButtonSystemItem: .Compose, target: self, action: "share")
         toggleContentButton = UIBarButtonItem(title: linkString, style: .Plain, target: self, action: "toggleContentLink")
         //showEnclosuresButton = UIBarButtonItem(title: NSLocalizedString("Enclosures", comment: ""), style: .Plain, target: self, action: "showEnclosures")
@@ -219,14 +219,12 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        //self.navigationController?.setToolbarHidden(article == nil, animated: true)
     }
     
     var objectsBeingObserved : [WKWebView] = []
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        //self.navigationController?.toolbarHidden = true
         userActivity?.invalidate()
         userActivity = nil
         for obj in objectsBeingObserved {

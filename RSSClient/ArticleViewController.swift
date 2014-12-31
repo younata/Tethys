@@ -15,7 +15,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         didSet {
             self.navigationController?.setToolbarHidden(false, animated: false)
             if let a = article {
-                a.read = true
+                self.dataManager?.readArticle(a, read: true)
                 NSNotificationCenter.defaultCenter().postNotificationName("ArticleWasRead", object: a)
                 a.managedObjectContext?.save(nil)
                 let url = NSURL(string: a.link)

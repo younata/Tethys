@@ -23,7 +23,9 @@ class ArticleListController: UITableViewController {
 
         self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
-        self.tableView.registerClass(ArticleCell.self, forCellReuseIdentifier: "reuse")
+        self.tableView.registerClass(ArticleCell.self, forCellReuseIdentifier: "read")
+        self.tableView.registerClass(ArticleCell.self, forCellReuseIdentifier: "unread")
+        // Prevents a green triangle which'll (dis)appear depending on whether article loaded into it is read or not.
         
         self.tableView.rowHeight = UITableViewAutomaticDimension
         
@@ -144,15 +146,17 @@ class ArticleListController: UITableViewController {
         let article = articleForIndexPath(indexPath)
         
         if article.content == nil {
-            return 30
+            return 40
         }
-        return 100
+        return 40
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("reuse", forIndexPath: indexPath) as ArticleCell
+        let article = articleForIndexPath(indexPath)
+        let strToUse = (article.read ? "read" : "unread") // Prevents a green triangle which'll (dis)appear depending on whether article loaded into it is read or not.
+        let cell = tableView.dequeueReusableCellWithIdentifier(strToUse, forIndexPath: indexPath) as ArticleCell
         
-        cell.article = articleForIndexPath(indexPath)
+        cell.article = article
 
         return cell
     }

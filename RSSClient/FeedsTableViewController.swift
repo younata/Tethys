@@ -58,7 +58,9 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         menuTopOffset = dropDownMenu.autoPinEdgeToSuperviewEdge(.Top)
         dropDownMenu.hidden = true
 
-        self.tableView.registerClass(FeedTableCell.self, forCellReuseIdentifier: "cell")
+        self.tableView.registerClass(FeedTableCell.self, forCellReuseIdentifier: "read")
+        self.tableView.registerClass(FeedTableCell.self, forCellReuseIdentifier: "unread")
+        // Prevents a green triangle which'll (dis)appear depending on whether new feed loaded into it has unread articles or not.
         self.tableView.delegate = self
         self.tableView.dataSource = self;
 
@@ -251,9 +253,12 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as FeedTableCell
+        let feed = feedAtIndexPath(indexPath)
+        let strToUse = (feed.unreadArticles(self.dataManager!) == 0 ? "unread" : "read") // Prevents a green triangle which'll (dis)appear depending on whether new feed loaded into it has unread articles or not.
+        
+        let cell = tableView.dequeueReusableCellWithIdentifier(strToUse, forIndexPath: indexPath) as FeedTableCell
         cell.dataManager = dataManager
-        cell.feed = feedAtIndexPath(indexPath)
+        cell.feed = feed
         return cell
     }
     

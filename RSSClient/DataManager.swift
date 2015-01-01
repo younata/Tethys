@@ -220,14 +220,17 @@ class DataManager: NSObject {
     func updateFeeds(feeds: [Feed], completion: (NSError?)->(Void)) {
         let feedIds = feeds.filter { $0.url != nil }.map { $0.objectID }
         
-        dispatch_async(dispatch_get_main_queue()) {
+        let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
+        dispatch_async(queue) {
             let ctx = self.managedObjectContext
             let theFeeds = self.entities("Feed", matchingPredicate: NSPredicate(format: "self in %@", feedIds)!, managedObjectContext: ctx) as [Feed]
             var feedsLeft = theFeeds.count
             for feed in theFeeds {
                 let feedParser = FeedParser(URL: NSURL(string: feed.url)!)
-                feedParser.success {(info, items) in
+                
+                feedParser.completion = {(info, items) in
                     var predicate = NSPredicate(format: "url = %@", feed.url)!
+                    
                     
                     var summary : String = ""
                     if let s = info.summary {
@@ -321,8 +324,10 @@ class DataManager: NSObject {
                         }
                     }
                     self.parsers = self.parsers.filter { $0 != feedParser }
-                }.failure {(error) in
+                }
+                feedParser.onFailure = {(error) in
                     feedsLeft--
+                    println("Errored loading \(feed.url) with error \(error)")
                     if (feedsLeft == 0) {
                         ctx.save(nil)
                         dispatch_async(dispatch_get_main_queue()) {

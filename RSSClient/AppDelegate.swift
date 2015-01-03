@@ -126,7 +126,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
             completionHandler(.Failed)
             return
         }
-        dataManager!.updateFeeds({(error: NSError?) in
+        dataManager!.updateFeedsInBackground({(error: NSError?) in
             if (error != nil) {
                 completionHandler(.Failed)
                 return

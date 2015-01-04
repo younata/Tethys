@@ -236,11 +236,28 @@ class DataManager: NSObject {
                 let feedParser = FeedParser(URL: NSURL(string: feed.url)!)
                 
                 let manager = backgroundFetch ? self.backgroundManager : self.mainManager
+                let wait = feed.remainingWait?.integerValue ?? 0
+                if wait != 0 && backgroundFetch == false { // The only reason the "skip if last few times errored" exists is to save the user time waiting for (temporarily?) nonexistant feeds to refresh.
+                                                           // If this is being done as part of a background fetch, then it doesn't matter if we try it, especially since the system is handling this now.
+                    feed.remainingWait = NSNumber(integer: wait - 1)
+                    println("Skipping feed at \(feed.url)")
+                    feedsLeft--
+                    continue
+                }
                 
                 var finished : (FeedParser?, NSError?) -> (Void) = {(feedParser: FeedParser?, error: NSError?) in
                     feedsLeft--
                     if error != nil {
                         println("Errored loading \(feed.url) with error \(error)")
+                    }
+                    if (feedParser != nil && error == nil) {
+                        // set the wait period to zero.
+                        feed.waitPeriod = NSNumber(integer: 0)
+                        feed.remainingWait = NSNumber(integer: 0)
+                    } else {
+                        feed.waitPeriod = NSNumber(integer: (feed.waitPeriod?.integerValue ?? 0) + 1)
+                        feed.remainingWait = feed.waitPeriodInRefreshes(feed.waitPeriod.integerValue)
+                        println("Setting feed at \(feed.url) to have remainingWait of \(feed.remainingWait) refreshes")
                     }
                     if (feedsLeft == 0) {
                         ctx.save(nil)
@@ -261,7 +278,6 @@ class DataManager: NSObject {
                         let feedParser = FeedParser(string: s)
                         feedParser.completion = {(info, items) in
                             var predicate = NSPredicate(format: "url = %@", feed.url)!
-                            
                             
                             var summary : String = ""
                             if let s = info.summary {

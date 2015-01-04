@@ -67,6 +67,17 @@ extension Feed {
         ret["query"] = query ?? ""
         ret["tags"] = allTags()
         ret["id"] = self.objectID.description
+        ret["remainingWait"] = remainingWait ?? 0
+        ret["waitPeriod"] = waitPeriod ?? 0
+        return ret
+    }
+    
+    func waitPeriodInRefreshes(waitPeriod: Int) -> Int {
+        var ret = 0, next = 1
+        let wait = max(0, waitPeriod - 2)
+        for i in 0..<wait {
+            (ret, next) = (next, ret+next)
+        }
         return ret
     }
 }

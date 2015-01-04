@@ -17,5 +17,7 @@
 @dynamic articles;
 @dynamic tags;
 @dynamic query;
+@dynamic waitPeriod;
+@dynamic remainingWait;
 
 @end

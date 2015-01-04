@@ -18,6 +18,8 @@
 @property (nonatomic, retain) NSString * summary;
 @property (nonatomic, retain) NSString * query;
 @property (nonatomic, retain) id tags;
+@property (nonatomic, retain) NSNumber * waitPeriod;
+@property (nonatomic, retain) NSNumber * remainingWait;
 @property (nonatomic, retain) NSSet *articles;
 
 @end

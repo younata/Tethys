@@ -222,7 +222,7 @@ class DataManager: NSObject {
     var parsers : [FeedParser] = []
     
     let mainManager = Manager(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
-    let backgroundManager = Manager(configuration: NSURLSessionConfiguration.backgroundSessionConfiguration("com.rachelbrindle.rNews.background"))
+    let backgroundManager = Manager(configuration: NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier("com.rachelbrindle.rNews.background"))
     
     func updateFeeds(feeds: [Feed], completion: (NSError?)->(Void), backgroundFetch: Bool = false) {
         let feedIds = feeds.filter { $0.url != nil }.map { $0.objectID }
@@ -236,6 +236,23 @@ class DataManager: NSObject {
                 let feedParser = FeedParser(URL: NSURL(string: feed.url)!)
                 
                 let manager = backgroundFetch ? self.backgroundManager : self.mainManager
+                
+                var finished : (FeedParser?, NSError?) -> (Void) = {(feedParser: FeedParser?, error: NSError?) in
+                    feedsLeft--
+                    if error != nil {
+                        println("Errored loading \(feed.url) with error \(error)")
+                    }
+                    if (feedsLeft == 0) {
+                        ctx.save(nil)
+                        dispatch_async(dispatch_get_main_queue()) {
+                            completion(error)
+                            self.setApplicationBadgeCount()
+                        }
+                    }
+                    if let fp = feedParser {
+                        self.parsers = self.parsers.filter { $0 != fp }
+                    }
+                }
                 
                 manager.request(.GET, feed.url).responseString {(_, _, str, error) in
                     if let s = str {
@@ -327,51 +344,19 @@ class DataManager: NSObject {
                                 }
                             }
                             
-                            feedsLeft--
-                            if (feedsLeft == 0) {
-                                ctx.save(nil)
-                                dispatch_async(dispatch_get_main_queue()) {
-                                    completion(nil)
-                                    self.setApplicationBadgeCount()
-                                }
-                            }
-                            self.parsers = self.parsers.filter { $0 != feedParser }
+                            finished(feedParser, nil)
                         }
                         feedParser.onFailure = {(error) in
-                            feedsLeft--
-                            println("Errored loading \(feed.url) with error \(error)")
-                            if (feedsLeft == 0) {
-                                ctx.save(nil)
-                                dispatch_async(dispatch_get_main_queue()) {
-                                    completion(error)
-                                    self.setApplicationBadgeCount()
-                                }
-                            }
-                            self.parsers = self.parsers.filter { $0 != feedParser }
+                            finished(feedParser, error)
                         }
                         feedParser.parse()
                         self.parsers.append(feedParser)
                     } else if let err = error {
-                        feedsLeft--
-                        println("Errored loading \(feed.url) with error \(error)")
-                        if (feedsLeft == 0) {
-                            ctx.save(nil)
-                            dispatch_async(dispatch_get_main_queue()) {
-                                completion(error)
-                                self.setApplicationBadgeCount()
-                            }
-                        }
+                        finished(nil, error)
                     } else {
                         // str and error are nil.
-                        feedsLeft--
                         println("Errored loading \(feed.url) with unknown error")
-                        if (feedsLeft == 0) {
-                            ctx.save(nil)
-                            dispatch_async(dispatch_get_main_queue()) {
-                                completion(error)
-                                self.setApplicationBadgeCount()
-                            }
-                        }
+                        self.parsers = self.parsers.filter { $0 != feedParser }
                     }
                 }
             }
@@ -743,6 +728,11 @@ class DataManager: NSObject {
                 println("Fatal error adding persistent data store: \(error!)")
                 fatalError("")
             }
+        }
+        
+        for manager in [mainManager, backgroundManager] {
+            manager.session.configuration.timeoutIntervalForRequest = 30.0;
+            manager.session.configuration.timeoutIntervalForResource = 60.0;
         }
         
         managedObjectContext = NSManagedObjectContext()

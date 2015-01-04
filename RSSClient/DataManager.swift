@@ -254,8 +254,10 @@ class DataManager: NSObject {
                     }
                 }
                 
-                manager.request(.GET, feed.url).responseString {(_, _, str, error) in
-                    if let s = str {
+                manager.request(.GET, feed.url).responseString {(req, response, str, error) in
+                    if let err = error {
+                        finished(nil, error)
+                    } else if let s = str {
                         let feedParser = FeedParser(string: s)
                         feedParser.completion = {(info, items) in
                             var predicate = NSPredicate(format: "url = %@", feed.url)!
@@ -351,8 +353,6 @@ class DataManager: NSObject {
                         }
                         feedParser.parse()
                         self.parsers.append(feedParser)
-                    } else if let err = error {
-                        finished(nil, error)
                     } else {
                         // str and error are nil.
                         println("Errored loading \(feed.url) with unknown error")
@@ -425,7 +425,7 @@ class DataManager: NSObject {
     func downloadEnclosure(enclosure: Enclosure, progress: (Double) -> (Void) = {(_) in }, completion: (Enclosure, NSError?) -> (Void) = {(_) in }) {
         let downloaded = (enclosure.downloaded == nil ? false : enclosure.downloaded.boolValue)
         if (!downloaded) {
-            request(.GET, enclosure.url).response {(_, _, response, error) in
+            mainManager.request(.GET, enclosure.url).response {(_, _, response, error) in
                 if let err = error {
                     completion(enclosure, err)
                 } else {
@@ -732,7 +732,7 @@ class DataManager: NSObject {
         
         for manager in [mainManager, backgroundManager] {
             manager.session.configuration.timeoutIntervalForRequest = 30.0;
-            manager.session.configuration.timeoutIntervalForResource = 60.0;
+            manager.session.configuration.timeoutIntervalForResource = 30.0;
         }
         
         managedObjectContext = NSManagedObjectContext()

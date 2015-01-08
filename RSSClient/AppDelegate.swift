@@ -84,8 +84,8 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
                         nc.popToRootViewControllerAnimated(false)
                         let feedTitle = (userInfo["feed"] as String)
                         let feed : Feed = dataManager!.feeds().filter{ return $0.title == feedTitle; }.first!
-                        let articleID = (userInfo["article"] as String)
-                        let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.identifier == articleID }).first!
+                        let articleID = (userInfo["article"] as NSURL)
+                        let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.objectID.URIRepresentation() == articleID }).first!
                         let al = ftvc.showFeeds([feed], animated: false)
                         al.showArticle(article)
                         return
@@ -102,8 +102,8 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
         if let userInfo = notification.userInfo {
             let feedTitle = (userInfo["feed"] as String)
             let feed : Feed = dataManager!.feeds().filter{ return $0.title == feedTitle; }.first!
-            let articleID = (userInfo["article"] as String)
-            let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.identifier == articleID }).first!
+            let articleID = (userInfo["article"] as NSURL)
+            let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.objectID.URIRepresentation() == articleID }).first!
             if identifier == "read" {
                 dataManager?.readArticle(article)
             } else if identifier == "view" {
@@ -146,7 +146,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
                     // show local notification.
                     let note = UILocalNotification()
                     note.alertBody = NSString.localizedStringWithFormat("New article in %@: %@", article.feed.feedTitle() ?? "", article.title)
-                    let dict = ["feed": article.feed.title, "article": article.identifier]
+                    let dict = ["feed": article.feed.title, "article": article.objectID.URIRepresentation()]
                     note.userInfo = dict
                     note.fireDate = NSDate()
                     note.category = "default"
@@ -178,8 +178,8 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
                             nc.popToRootViewControllerAnimated(false)
                             let feedTitle = (userInfo["feed"] as String)
                             let feed : Feed = dataManager!.feeds().filter{ return $0.title == feedTitle; }.first!
-                            let articleID = (userInfo["article"] as String)
-                            let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.identifier == articleID }).first!
+                            let articleID = (userInfo["article"] as NSURL)
+                            let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.objectID.URIRepresentation() == articleID }).first!
                             let al = ftvc.showFeeds([feed], animated: false)
                             controllers = [al.showArticle(article)]
                             restorationHandler(controllers)

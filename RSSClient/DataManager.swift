@@ -235,11 +235,11 @@ class DataManager: NSObject {
             for feed in theFeeds {
                 let feedParser = FeedParser(URL: NSURL(string: feed.url)!)
                 
-                let manager = backgroundFetch ? self.backgroundManager : self.mainManager
+                let manager = /*backgroundFetch ? self.backgroundManager :*/ self.mainManager // FIXME: using backgroundManager seems to always fail?
                 let wait = feed.remainingWait?.integerValue ?? 0
-                if wait != 0 && backgroundFetch == false { // The only reason the "skip if last few times errored" exists is to save the user time waiting for (temporarily?) nonexistant feeds to refresh.
-                                                           // If this is being done as part of a background fetch, then it doesn't matter if we try it, especially since the system is handling this now.
+                if wait != 0 {
                     feed.remainingWait = NSNumber(integer: wait - 1)
+                    feed.managedObjectContext?.save(nil)
                     println("Skipping feed at \(feed.url)")
                     feedsLeft--
                     continue
@@ -248,16 +248,23 @@ class DataManager: NSObject {
                 var finished : (FeedParser?, NSError?) -> (Void) = {(feedParser: FeedParser?, error: NSError?) in
                     feedsLeft--
                     if error != nil {
-                        println("Errored loading \(feed.url) with error \(error)")
+                        println("Errored loading: \(error)")
                     }
                     if (feedParser != nil && error == nil) {
                         // set the wait period to zero.
-                        feed.waitPeriod = NSNumber(integer: 0)
-                        feed.remainingWait = NSNumber(integer: 0)
-                    } else {
-                        feed.waitPeriod = NSNumber(integer: (feed.waitPeriod?.integerValue ?? 0) + 1)
-                        feed.remainingWait = feed.waitPeriodInRefreshes(feed.waitPeriod.integerValue)
-                        println("Setting feed at \(feed.url) to have remainingWait of \(feed.remainingWait) refreshes")
+                        //if (error == )
+                        if feed.waitPeriod.integerValue != 0 {
+                            feed.waitPeriod = NSNumber(integer: 0)
+                            feed.remainingWait = NSNumber(integer: 0)
+                            feed.managedObjectContext?.save(nil)
+                        }
+                    } else if let err = error {
+                        if (err.domain == NSURLErrorDomain && err.code > 0) { // FIXME: check the error code for specific HTTP error codes.
+                            feed.waitPeriod = NSNumber(integer: (feed.waitPeriod?.integerValue ?? 0) + 1)
+                            feed.remainingWait = feed.waitPeriodInRefreshes(feed.waitPeriod.integerValue)
+                            println("Setting feed at \(feed.url) to have remainingWait of \(feed.remainingWait) refreshes")
+                            feed.managedObjectContext?.save(nil)
+                        }
                     }
                     if (feedsLeft == 0) {
                         ctx.save(nil)
@@ -305,7 +312,7 @@ class DataManager: NSObject {
                                     article.summary = item.summary
                                     article.content = item.content
                                     article.author = item.author
-                                    article.identifier = item.identifier ?? article.objectID.description
+                                    article.identifier = item.identifier
                                     
                                     if let itemEnclosures = (item.enclosures?.count == 0 ? nil : item.enclosures) as [[String: AnyObject]]? {
                                         for enc in itemEnclosures {
@@ -341,7 +348,7 @@ class DataManager: NSObject {
                                         article.author = item.author
                                         article.feed = feed
                                         article.read = false
-                                        article.identifier = item.identifier ?? article.objectID.description
+                                        article.identifier = item.identifier
                                         
                                         feed.addArticlesObject(article)
                                         

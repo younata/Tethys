@@ -107,7 +107,7 @@ extension Article {
         ret["author"] = author ?? ""
         ret["published"] = published?.description ?? ""
         ret["updatedAt"] = updatedAt?.description ?? ""
-        ret["identifier"] = identifier ?? ""
+        ret["identifier"] = objectID.URIRepresentation()
         ret["content"] = content ?? ""
         ret["read"] = read
         ret["flags"] = allFlags()

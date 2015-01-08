@@ -33,7 +33,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                     userActivity?.title = NSLocalizedString("Reading Article", comment: "")
                     userActivity?.becomeCurrent()
                 }
-                userActivity?.userInfo = ["feed": a.feed.title, "article": a.identifier ?? a.objectID.description, "showingContent": true, "url": url!]
+                userActivity?.userInfo = ["feed": a.feed.title, "article": a.objectID.URIRepresentation(), "showingContent": true, "url": url!]
                 userActivity?.webpageURL = NSURL(string: a.link)
                 self.userActivity?.needsSave = true
                 

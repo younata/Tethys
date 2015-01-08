@@ -736,7 +736,6 @@ class DataManager: NSObject {
         var options : [String: AnyObject] = [NSMigratePersistentStoresAutomaticallyOption: true, NSInferMappingModelAutomaticallyOption: true]
         if NSUserDefaults.standardUserDefaults().boolForKey("use_iCloud") {
             options[NSPersistentStoreUbiquitousContentNameKey] = "RSSClient"
-            //options[NSPersistentStoreRebuildFromUbiquitousContentOption] = true
         }
         if unitTesting {
             persistentStoreCoordinator.addPersistentStoreWithType(NSInMemoryStoreType, configuration: nil, URL: nil, options: nil, error: &error)

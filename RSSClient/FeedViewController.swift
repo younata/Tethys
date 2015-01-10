@@ -18,6 +18,8 @@ class FeedViewController: UITableViewController {
     }
     
     var dataManager: DataManager? = nil
+    
+    let intervalFormatter = NSDateIntervalFormatter()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,6 +31,10 @@ class FeedViewController: UITableViewController {
         
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.tableFooterView = UIView()
+        
+        intervalFormatter.calendar = NSCalendar.currentCalendar()
+        intervalFormatter.dateStyle = .MediumStyle
+        intervalFormatter.timeStyle = .ShortStyle
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -61,7 +67,7 @@ class FeedViewController: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return (feed == nil ? 0 : 3)
+        return (feed == nil ? 0 : 4)
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -74,6 +80,9 @@ class FeedViewController: UITableViewController {
         if section == 1 {
             return (feed?.feedSummary() == nil ? 0 : 1)
         }
+        if section == 3 {
+            return 1
+        }
         return feed!.allTags().count + 1
     }
     
@@ -85,6 +94,8 @@ class FeedViewController: UITableViewController {
             return NSLocalizedString("Summary", comment: "")
         case 2:
             return NSLocalizedString("Tags", comment: "")
+        case 3:
+            return NSLocalizedString("Next Expected Update", comment: "")
         default:
             return nil
         }
@@ -120,6 +131,19 @@ class FeedViewController: UITableViewController {
                     cell.textLabel?.text = tags[indexPath.row]
                 }
             }
+        case 3:
+            if let f = feed {
+                if let (date, stdev) = dataManager?.estimateNextFeedTime(f) {
+                    if let d = date {
+                        let start = d.dateByAddingTimeInterval(-stdev)
+                        let end = d.dateByAddingTimeInterval(stdev)
+                        cell.textLabel?.text = intervalFormatter.stringFromDate(start, toDate: end)
+                    } else {
+                        cell.textLabel?.text = NSLocalizedString("Unknown", comment: "")
+                    }
+                }
+            }
+            cell.textLabel?.numberOfLines = 0
         default:
             break
         }

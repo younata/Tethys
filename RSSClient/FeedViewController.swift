@@ -67,7 +67,12 @@ class FeedViewController: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return (feed == nil ? 0 : 4)
+        #if DEBUG
+        let numSection = 4
+        #else
+        let numSection = 3
+        #endif
+        return (feed == nil ? 0 : numSection)
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

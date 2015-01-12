@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		890EAF4A1A22EB4500F4EA5E /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 890EAF491A22EB4500F4EA5E /* Settings.bundle */; };
 		8924D8E91A094CF5003B7529 /* article.css in Resources */ = {isa = PBXBuildFile; fileRef = 8924D8E81A094CF5003B7529 /* article.css */; };
 		8924D8F21A0E8EEA003B7529 /* OPMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */; };
 		8924D8F31A108299003B7529 /* OPMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */; };
@@ -189,7 +188,6 @@
 /* Begin PBXFileReference section */
 		1B2EC3404DBA17EC9D1669ED /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		7F4942F170534887B236C7F9 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
-		890EAF491A22EB4500F4EA5E /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		8924D8E81A094CF5003B7529 /* article.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = article.css; sourceTree = "<group>"; };
 		8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLParser.swift; sourceTree = "<group>"; };
 		8929D27E1A3F3E9400782A37 /* BackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundView.swift; sourceTree = "<group>"; };
@@ -639,7 +637,6 @@
 			children = (
 				895901AE1A32B61A002E2C62 /* en.lproj */,
 				89C8307719D730E9009924DA /* Info.plist */,
-				890EAF491A22EB4500F4EA5E /* Settings.bundle */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -842,7 +839,6 @@
 				898047451A20478600EB29F0 /* TUSafariActivity.strings in Resources */,
 				89C8308319D730E9009924DA /* Images.xcassets in Resources */,
 				8924D8E91A094CF5003B7529 /* article.css in Resources */,
-				890EAF4A1A22EB4500F4EA5E /* Settings.bundle in Resources */,
 				898047511A20478600EB29F0 /* safari@3x.png in Resources */,
 				898047591A20478600EB29F0 /* safari~iPad@2x.png in Resources */,
 				89D06A1B19FDBC52003909A3 /* Launch Screen.xib in Resources */,

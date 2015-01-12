@@ -78,7 +78,6 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         self.tableView.tableFooterView = UIView()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "appWillBecomeVisible:", name: UIApplicationWillEnterForegroundNotification, object: nil)
     }
     
     deinit {
@@ -200,17 +199,6 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
-    }
-    
-    func appWillBecomeVisible(note: NSNotification) {
-        dispatch_async(dispatch_get_main_queue()) {
-            if let rc = self.tableViewController.refreshControl {
-                rc.beginRefreshing()
-                let contentOffset = self.tableViewController.tableView.contentOffset.y - (rc.frame.size.height + (UIApplication.sharedApplication().statusBarHidden ? 0 : 20))
-                self.tableViewController.tableView.setContentOffset(CGPointMake(0, contentOffset), animated: true)
-            }
-            self.refresh()
-        }
     }
     
     func refresh() {

@@ -30,6 +30,7 @@ class FeedViewController: UITableViewController {
 
         
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.registerClass(TextViewCell.self, forCellReuseIdentifier: "text")
         tableView.tableFooterView = UIView()
         
         intervalFormatter.calendar = NSCalendar.currentCalendar()
@@ -68,27 +69,23 @@ class FeedViewController: UITableViewController {
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         #if DEBUG
-        let numSection = 4
+        let numSection = 5
         #else
-        let numSection = 3
+        let numSection = 4
         #endif
         return (feed == nil ? 0 : numSection)
     }
+    
+    let tagSection = 3
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if feed == nil {
             return 0
         }
-        if section == 0 {
-            return (feed?.feedTitle() == nil ? 0 : 1)
+        if section == tagSection { // tags
+            return feed!.allTags().count + 1
         }
-        if section == 1 {
-            return (feed?.feedSummary() == nil ? 0 : 1)
-        }
-        if section == 3 {
-            return 1
-        }
-        return feed!.allTags().count + 1
+        return 1
     }
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -96,10 +93,12 @@ class FeedViewController: UITableViewController {
         case 0:
             return NSLocalizedString("Title", comment: "")
         case 1:
-            return NSLocalizedString("Summary", comment: "")
+            return NSLocalizedString("URL", comment: "")
         case 2:
+            return NSLocalizedString("Summary", comment: "")
+        case tagSection:
             return NSLocalizedString("Tags", comment: "")
-        case 3:
+        case 4:
             return NSLocalizedString("Next Expected Update", comment: "")
         default:
             return nil
@@ -121,13 +120,15 @@ class FeedViewController: UITableViewController {
                 cell.textLabel?.textColor = UIColor.grayColor()
             }
         case 1:
+            break
+        case 2:
             if let summary = (feed?.feedSummary() == "" ? nil : feed?.feedSummary())  {
                 cell.textLabel?.text = summary
             } else {
                 cell.textLabel?.text = NSLocalizedString("No summary available", comment: "")
                 cell.textLabel?.textColor = UIColor.grayColor()
             }
-        case 2:
+        case tagSection:
             if let tags = feed?.allTags() {
                 if indexPath.row == tags.count {
                     cell.textLabel?.text = NSLocalizedString("Add Tag", comment: "")
@@ -136,7 +137,7 @@ class FeedViewController: UITableViewController {
                     cell.textLabel?.text = tags[indexPath.row]
                 }
             }
-        case 3:
+        case 4:
             if let f = feed {
                 if let (date, stdev) = dataManager?.estimateNextFeedTime(f) {
                     if let d = date {
@@ -157,14 +158,14 @@ class FeedViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return indexPath.section == 2 && indexPath.row != (tableView.numberOfRowsInSection(2) - 1)
+        return indexPath.section == tagSection && indexPath.row != (tableView.numberOfRowsInSection(2) - 1)
     }
     
     override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
         if feed == nil {
             return nil
         }
-        if indexPath.section != 2 {
+        if indexPath.section != tagSection {
             return nil
         }
         if feed!.allTags().count == indexPath.row {
@@ -197,7 +198,7 @@ class FeedViewController: UITableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
-        if indexPath.section == 2 {
+        if indexPath.section == tagSection {
             if let count = feed?.allTags().count {
                 if indexPath.row == count {
                     showTagEditor(indexPath.row)

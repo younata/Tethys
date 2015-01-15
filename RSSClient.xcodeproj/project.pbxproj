@@ -162,6 +162,7 @@
 		89D06A2219FF210C003909A3 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D06A2019FF210C003909A3 /* LoadingView.swift */; };
 		89DA7D2C1A66111E0050685B /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2B1A66111E0050685B /* TextFieldCell.swift */; };
 		89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2D1A6613100050685B /* ValidatorView.swift */; };
+		89DA7D2F1A681B880050685B /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2B1A66111E0050685B /* TextFieldCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -976,6 +977,7 @@
 				895779AD19E62CDA00548418 /* Feed.m in Sources */,
 				895779B019E6512200548418 /* UnreadCounterTests.swift in Sources */,
 				893448CA1A0315DF00F5D528 /* FindFeedViewControllerTests.swift in Sources */,
+				89DA7D2F1A681B880050685B /* TextFieldCell.swift in Sources */,
 				893448B81A004E4E00F5D528 /* MWFeedInfo.m in Sources */,
 				895901AA1A30C5D1002E2C62 /* EnclosuresView.swift in Sources */,
 				897F70F31A38AFE500ECE1A1 /* EnclosuresViewController.swift in Sources */,

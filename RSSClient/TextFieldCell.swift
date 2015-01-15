@@ -21,8 +21,11 @@ class TextFieldCell: UITableViewCell, UITextFieldDelegate {
     }
     var validate: (String) -> Bool = {(_) in return false}
     
-    let validView = UIView(forAutoLayout: ())
+    let validView = ValidatorView(frame: CGRectZero)
     
+    func setValid(valid: Bool) {
+        validView.endValidating(valid: valid)
+    }
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -31,6 +34,13 @@ class TextFieldCell: UITableViewCell, UITextFieldDelegate {
         textField.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Right)
         textField.delegate = self
         textField.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+        
+        self.contentView.addSubview(validView)
+        validView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        validView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Left)
+        validView.autoPinEdge(.Left, toEdge: .Right, ofView: textField)
+        
+        showValidator = false
     }
     
     required init(coder: NSCoder) {
@@ -42,6 +52,9 @@ class TextFieldCell: UITableViewCell, UITextFieldDelegate {
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         let text = (textField.text as NSString).stringByReplacingCharactersInRange(range, withString: string)
         
+        if showValidator {
+            validView.beginValidating()
+        }
         onTextChange(text)
         
         return true

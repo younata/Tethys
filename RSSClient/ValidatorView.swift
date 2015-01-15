@@ -27,6 +27,7 @@ class ValidatorView: UIView {
         checkMark.removeFromSuperlayer()
         
         progressIndicator.hidden = false
+        progressIndicator.alpha = 1
         progressIndicator.startAnimating()
     }
     

@@ -30,7 +30,7 @@ class FeedViewController: UITableViewController {
 
         
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        tableView.registerClass(TextViewCell.self, forCellReuseIdentifier: "text")
+        tableView.registerClass(TextFieldCell.self, forCellReuseIdentifier: "text")
         tableView.tableFooterView = UIView()
         
         intervalFormatter.calendar = NSCalendar.currentCalendar()
@@ -120,7 +120,25 @@ class FeedViewController: UITableViewController {
                 cell.textLabel?.textColor = UIColor.grayColor()
             }
         case 1:
-            break
+            let tc = tableView.dequeueReusableCellWithIdentifier("text", forIndexPath: indexPath) as TextFieldCell
+            tc.onTextChange = {(_) in } // remove any previous onTextChange for setting stuff here.
+            tc.textField.text = feed?.url
+            tc.showValidator = true
+            tc.onTextChange = {(text) in
+                if let txt = text {
+                    request(.GET, txt).responseString {(_, _, str, error) in
+                        if let err = error {
+                            tc.setValid(false)
+                        } else if let s = str {
+                            let fp = FeedParser(string: s)
+                            fp.failure {(_) in tc.setValid(false)}
+                            fp.success {(_) in tc.setValid(true)}
+                        }
+                    }
+                }
+                return
+            }
+            return tc
         case 2:
             if let summary = (feed?.feedSummary() == "" ? nil : feed?.feedSummary())  {
                 cell.textLabel?.text = summary

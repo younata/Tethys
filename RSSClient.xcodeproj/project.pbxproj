@@ -163,6 +163,7 @@
 		89DA7D2C1A66111E0050685B /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2B1A66111E0050685B /* TextFieldCell.swift */; };
 		89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2D1A6613100050685B /* ValidatorView.swift */; };
 		89DA7D2F1A681B880050685B /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2B1A66111E0050685B /* TextFieldCell.swift */; };
+		89DA7D301A68C04C0050685B /* ValidatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2D1A6613100050685B /* ValidatorView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -1021,6 +1022,7 @@
 				895901A61A30BCB7002E2C62 /* Enclosure.m in Sources */,
 				8957799F19E62C7100548418 /* AppDelegateTests.swift in Sources */,
 				893448C81A0315B600F5D528 /* ArticleListControllerTests.swift in Sources */,
+				89DA7D301A68C04C0050685B /* ValidatorView.swift in Sources */,
 				893448BF1A004E5C00F5D528 /* ALView+PureLayout.m in Sources */,
 				898047371A20475D00EB29F0 /* Alamofire.swift in Sources */,
 				89C509F81A2F825400CBD000 /* TextViewCell.swift in Sources */,

@@ -121,7 +121,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
             createDataManager()
         }
         
-        let originalList: [Article] = dataManager!.feeds().reduce([], combine: {return $0 + ($1.articles.allObjects as [Article])})
+        let originalList: [NSManagedObjectID] = (dataManager!.feeds().reduce([], combine: {return $0 + ($1.articles.allObjects as [Article])}) as [Article]).map { return $0.objectID }
         if originalList.count == 0 {
             completionHandler(.Failed)
             return
@@ -131,18 +131,19 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
                 completionHandler(.Failed)
                 return
             }
-            let al : [Article] = self.dataManager!.feeds().reduce([], combine: {return $0 + ($1.articles.allObjects as [Article])})
+            let al : [NSManagedObjectID] = (self.dataManager!.feeds().reduce([], combine: {return $0 + ($1.articles.allObjects as [Article])}) as [Article]).map { return $0.objectID }
             if (al.count == originalList.count) {
                 completionHandler(.NoData)
                 return
             }
-            let alist: [Article] = al.filter({
+            let alist: [NSManagedObjectID] = al.filter({
                 return !contains(originalList, $0)
             })
             
             let settings = application.currentUserNotificationSettings()
             if settings.types & UIUserNotificationType.Alert == .Alert {
-                for article: Article in alist {
+                let articles : [Article] = self.dataManager!.entities("Article", matchingPredicate: NSPredicate(format: "self IN %@", alist)!) as [Article]
+                for article: Article in articles {
                     // show local notification.
                     let note = UILocalNotification()
                     note.alertBody = NSString.localizedStringWithFormat("New article in %@: %@", article.feed.feedTitle() ?? "", article.title)

@@ -60,7 +60,7 @@ class FeedTableCell: UITableViewCell {
         unreadCounter.autoMatchDimension(.Width, toDimension: .Height, ofView: unreadCounter)
         unreadCounter.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0, relation: .GreaterThanOrEqual)
         
-        iconView.autoPinEdge(.Top, toEdge: .Top, ofView: unreadCounter)
+        iconView.autoPinEdgeToSuperviewEdge(.Top)
         iconView.autoPinEdgeToSuperviewEdge(.Right)
         iconView.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0, relation: .GreaterThanOrEqual)
         iconWidth = iconView.autoSetDimension(.Width, toSize: 45)

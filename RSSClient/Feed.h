@@ -21,6 +21,7 @@
 @property (nonatomic, retain) NSNumber * waitPeriod;
 @property (nonatomic, retain) NSNumber * remainingWait;
 @property (nonatomic, retain) NSSet *articles;
+@property (nonatomic, retain) id image;
 
 @end
 

@@ -8,7 +8,18 @@
 
 import Foundation
 
+#if os(iOS)
+    typealias Image=UIImage
+#elseif os(OSX)
+    typealias Image=NSImage
+#endif
+
 extension Feed {
+    func feedImage() -> Image? {
+        if self.image == nil { return nil }
+        return (self.image as Image)
+    }
+    
     func unreadArticles(dataManager: DataManager) -> UInt {
         return allArticles(dataManager).reduce(0) {
             return $0 + ($1.read ? 0 : 1)

@@ -19,5 +19,6 @@
 @dynamic query;
 @dynamic waitPeriod;
 @dynamic remainingWait;
+@dynamic image;
 
 @end

@@ -253,7 +253,7 @@ class DataManager: NSObject {
                     if (feedParser != nil && error == nil) {
                         // set the wait period to zero.
                         //if (error == )
-                        if feed.waitPeriod.integerValue != 0 {
+                        if feed.waitPeriod == nil || feed.waitPeriod.integerValue != 0 {
                             feed.waitPeriod = NSNumber(integer: 0)
                             feed.remainingWait = NSNumber(integer: 0)
                             feed.managedObjectContext?.save(nil)
@@ -297,12 +297,30 @@ class DataManager: NSObject {
                             }
                             if let feed = self.entities("Feed", matchingPredicate: predicate, managedObjectContext: ctx).last as? Feed {
                                 feed.title = info.title
-                                feed.summary = summary
                             } else {
                                 let feed = (NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: ctx) as Feed)
                                 feed.title = info.title
-                                feed.summary = summary
                             }
+                            
+                            if info.imageURL != nil && feed.feedImage() == nil {
+                                manager.request(.GET, info.imageURL).response {(_, _, data, error) in
+                                    if let err = error {
+                                        
+                                    } else if let theData: AnyObject = data {
+                                        if let image = theData as? Image {
+                                            feed.image = image
+                                            feed.managedObjectContext?.save(nil)
+                                        } else if let d = theData as? NSData {
+                                            if let image = Image(data: d) {
+                                                feed.image = image
+                                                feed.managedObjectContext?.save(nil)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            feed.summary = summary
                             for item in items {
                                 predicate = NSPredicate(format: "link = %@", item.link)!
                                 if let article = self.entities("Article", matchingPredicate: predicate, managedObjectContext: ctx).last as? Article {

@@ -21,6 +21,16 @@ class FeedTableCell: UITableViewCell {
                 summaryLabel.text = ""
                 unreadCounter.unread = 0
             }
+            if let image = feed?.feedImage() {
+                iconView.image = image
+                let scaleRatio = 60 / image.size.width
+                iconWidth.constant = 60
+                iconHeight.constant = image.size.height * scaleRatio
+            } else {
+                iconView.image = nil
+                iconWidth.constant = 45
+                iconHeight.constant = 0
+            }
         }
     }
     
@@ -29,6 +39,10 @@ class FeedTableCell: UITableViewCell {
     let nameLabel = UILabel(forAutoLayout: ())
     let summaryLabel = UILabel(forAutoLayout: ())
     let unreadCounter = UnreadCounter(frame: CGRectZero)
+    let iconView = UIImageView(forAutoLayout: ())
+    
+    var iconWidth : NSLayoutConstraint! = nil
+    var iconHeight : NSLayoutConstraint! = nil
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -37,6 +51,7 @@ class FeedTableCell: UITableViewCell {
         
         self.contentView.addSubview(nameLabel)
         self.contentView.addSubview(summaryLabel)
+        self.contentView.addSubview(iconView)
         self.contentView.addSubview(unreadCounter)
         
         unreadCounter.autoPinEdgeToSuperviewEdge(.Top)
@@ -45,15 +60,23 @@ class FeedTableCell: UITableViewCell {
         unreadCounter.autoMatchDimension(.Width, toDimension: .Height, ofView: unreadCounter)
         unreadCounter.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0, relation: .GreaterThanOrEqual)
         
+        iconView.autoPinEdge(.Top, toEdge: .Top, ofView: unreadCounter)
+        iconView.autoPinEdgeToSuperviewEdge(.Right)
+        iconView.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0, relation: .GreaterThanOrEqual)
+        iconWidth = iconView.autoSetDimension(.Width, toSize: 45)
+        iconHeight = iconView.autoSetDimension(.Height, toSize: 0)
+        
+        iconView.contentMode = .ScaleAspectFit
+        
         nameLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
-        nameLabel.autoPinEdge(.Right, toEdge: .Left, ofView: unreadCounter, withOffset: -8)
+        nameLabel.autoPinEdge(.Right, toEdge: .Left, ofView: iconView, withOffset: -8)
         nameLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         
         nameLabel.numberOfLines = 0
         nameLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
         
-        summaryLabel.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
-        summaryLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
+        summaryLabel.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4, relation: .GreaterThanOrEqual)
+        summaryLabel.autoPinEdge(.Right, toEdge: .Left, ofView: iconView, withOffset: -8)
         summaryLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: nameLabel, withOffset: 8, relation: .GreaterThanOrEqual)
         summaryLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         

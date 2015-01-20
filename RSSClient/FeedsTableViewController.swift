@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, MAKDropDownMenuDelegate, UITextFieldDelegate {
+class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, MAKDropDownMenuDelegate, UITextFieldDelegate, UISearchBarDelegate {
 
     var feeds: [Feed] = []
     
@@ -19,8 +19,8 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     let dropDownMenu = MAKDropDownMenu(forAutoLayout: ())
-    let tagField = UITextField(forAutoLayout: ())
-    let tagHolder = UIView()
+    let searchBar = UISearchBar(forAutoLayout: ())
+    
     var menuTopOffset : NSLayoutConstraint!
     
     var dataManager : DataManager? = nil
@@ -33,6 +33,10 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.setTranslatesAutoresizingMaskIntoConstraints(false)
         tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
         
+        self.view.addSubview(searchBar)
+        searchBar.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
+        
+        /*
         tagHolder.bounds = CGRectMake(0, 0, self.view.bounds.width, 40)
         let view = UIView(forAutoLayout: ())
         view.backgroundColor = UIColor.lightGrayColor()
@@ -47,6 +51,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         //tagField.layer.cornerRadius = 5
         tagField.autocorrectionType = .No
         tagField.autocapitalizationType = .None
+        */
         
         self.view.addSubview(dropDownMenu)
         dropDownMenu.delegate = self
@@ -74,7 +79,6 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         self.tableViewController.refreshControl = UIRefreshControl(frame: CGRectZero)
         self.tableViewController.refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
         
-        self.tableView.tableHeaderView = tagHolder
         self.tableView.tableFooterView = UIView()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
@@ -190,7 +194,6 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             return f1.feedTitle()!.lowercaseString < f2.feedTitle()!.lowercaseString
         }
-        self.tableView.tableHeaderView = (feeds.filter({ $0.allTags().count != 0 }).count == 0 ? nil : self.tagHolder)
         
         if let rc = self.tableViewController.refreshControl {
             if rc.refreshing {
@@ -224,13 +227,6 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
 
     // MARK: - Table view data source
-    
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if section == 0 {
-            return tagField
-        }
-        return nil
-    }
 
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -303,5 +299,11 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         let text = (textField.text as NSString).stringByReplacingCharactersInRange(range, withString: string)
         self.reload(text)
         return true
+    }
+    
+    // MARK: UISearchBarDelegate
+    
+    func searchBar(searchBar: UISearchBar, textDidChange text: String) {
+        self.reload(text)
     }
 }

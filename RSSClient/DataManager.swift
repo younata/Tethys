@@ -715,38 +715,6 @@ class DataManager: NSObject {
         }
     }
     
-    // MARK: Useful one-off helpers
-    
-    func serializeToURL(url: NSURL) -> Bool {
-        let feeds : [Feed] = self.feeds()
-        let feedDicts : [[String: AnyObject]] = feeds.map { return $0.asDict() }
-        if let data = NSJSONSerialization.dataWithJSONObject(feedDicts, options: .allZeros, error: nil) {
-            data.writeToURL(url, atomically: true)
-            return true
-        }
-        return false
-    }
-    
-    func deserializeFromURL(url: NSURL) -> Bool {
-        if let data = NSData(contentsOfURL: url) {
-            if let feedArray = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.allZeros, error: nil) as? [[String: AnyObject]] {
-                for feedDict in feedArray {
-                    let articleArray: [[String: AnyObject]] = feedDict["articles"] as [[String: AnyObject]]
-                    var properties = feedDict
-                    properties.removeValueForKey("articles")
-                    let feed = findOrCreateEntity("Feed", withProperties: properties) as Feed
-                    for articleDict in articleArray {
-                        let article = findOrCreateEntity("Article", withProperties: articleDict) as Article
-                        feed.addArticlesObject(article)
-                        article.feed = feed
-                    }
-                }
-            }
-            return true
-        }
-        return false
-    }
-    
     // MARK: Generic Core Data
     
     func findOrCreateEntity(entity: String, withProperties properties: [String: AnyObject], managedObjectContext: NSManagedObjectContext? = nil) -> NSManagedObject {

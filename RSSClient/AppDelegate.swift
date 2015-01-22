@@ -39,6 +39,11 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
         feeds.dataManager = dataManager
         let master = UINavigationController(rootViewController: feeds)
         let detail = UINavigationController(rootViewController: ArticleViewController())
+        
+        for nc in [master, detail] {
+            nc.navigationBar.translucent = true
+        }
+        
         let splitView = UISplitViewController()
         splitView.delegate = self
         splitView.viewControllers = [master, detail]

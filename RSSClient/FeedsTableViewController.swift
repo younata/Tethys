@@ -27,31 +27,25 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.edgesForExtendedLayout = .None
                 
         self.addChildViewController(tableViewController)
         self.view.addSubview(tableView)
         tableView.setTranslatesAutoresizingMaskIntoConstraints(false)
         tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
         
+        tableView.contentInset = UIEdgeInsetsMake(32, 0, 0, 0)
+        tableView.scrollIndicatorInsets = UIEdgeInsetsMake(32, 0, 0, 0)
+        
         self.view.addSubview(searchBar)
         searchBar.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
+        searchBar.autoSetDimension(.Height, toSize: 32)
         
-        /*
-        tagHolder.bounds = CGRectMake(0, 0, self.view.bounds.width, 40)
-        let view = UIView(forAutoLayout: ())
-        view.backgroundColor = UIColor.lightGrayColor()
-        tagHolder.addSubview(view)
-        view.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
-        view.autoSetDimension(.Height, toSize: 1)
-        tagHolder.addSubview(tagField)
-        tagField.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(0, 8, 1, 0))
-        tagField.placeholder = NSLocalizedString("Filter by Tag", comment: "")
-        tagField.delegate = self
-        tagField.backgroundColor = UIColor.whiteColor()
-        //tagField.layer.cornerRadius = 5
-        tagField.autocorrectionType = .No
-        tagField.autocapitalizationType = .None
-        */
+        searchBar.autocorrectionType = .No
+        searchBar.autocapitalizationType = .None
+        searchBar.delegate = self
+        searchBar.placeholder = NSLocalizedString("Filter by Tag", comment: "")
         
         self.view.addSubview(dropDownMenu)
         dropDownMenu.delegate = self
@@ -225,6 +219,12 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         self.navigationController?.pushViewController(al, animated: animated)
         return al
     }
+    
+    // MARK: - UIScrollViewDelegate
+    
+    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        self.searchBar.resignFirstResponder()
+    }
 
     // MARK: - Table view data source
 
@@ -291,14 +291,6 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         })
         edit.backgroundColor = UIColor.blueColor()
         return [delete, markRead, edit]
-    }
-    
-    // MARK: UITextFieldDelegate
-    
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        let text = (textField.text as NSString).stringByReplacingCharactersInRange(range, withString: string)
-        self.reload(text)
-        return true
     }
     
     // MARK: UISearchBarDelegate

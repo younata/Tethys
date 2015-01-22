@@ -1,9 +1,9 @@
 [submodule "PureLayout"]
 	path = PureLayout
 	url = https://github.com/smileyborg/PureLayout.git
-[submodule "MWFeedParser"]
-	path = MWFeedParser
-	url = https://github.com/mwaterfall/MWFeedParser.git
 [submodule "AMPopTip"]
 	path = AMPopTip
 	url = https://github.com/andreamazz/AMPopTip.git
+[submodule "MWFeedParser"]
+	path = MWFeedParser
+	url = https://github.com/younata/MWFeedParser.git

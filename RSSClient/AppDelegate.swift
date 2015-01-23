@@ -16,20 +16,12 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
 
     public var collapseDetailViewController = true
     
-    var dataManager : DataManager? = nil
-    
-    public func createDataManager() {
-        dataManager = DataManager()
-    }
+    let dataManager : DataManager = DataManager()
 
     public func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
         self.window?.backgroundColor = UIColor.whiteColor()
         self.window?.makeKeyAndVisible()
-        
-        if dataManager == nil {
-            createDataManager()
-        }
         
         UINavigationBar.appearance().tintColor = UIColor.darkGreenColor()
         UIBarButtonItem.appearance().tintColor = UIColor.darkGreenColor()
@@ -63,7 +55,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
         
         application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: UIUserNotificationType.Badge | UIUserNotificationType.Alert | .Sound, categories: NSSet(object: category)))
         
-        if dataManager!.feeds().count > 0 {
+        if dataManager.feeds().count > 0 {
             application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         } else {
             application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
@@ -77,10 +69,6 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
     }
     
     public func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
-        if dataManager == nil {
-            createDataManager()
-        }
-        
         let str = application.applicationState == .Active ? "Active" : application.applicationState == .Inactive ? "Inactive" : "Background"
         if let splitView = self.window?.rootViewController as? UISplitViewController {
             if let nc = splitView.viewControllers.first as? UINavigationController {
@@ -88,7 +76,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
                     if let userInfo = notification.userInfo {
                         nc.popToRootViewControllerAnimated(false)
                         let feedTitle = (userInfo["feed"] as String)
-                        let feed : Feed = dataManager!.feeds().filter{ return $0.title == feedTitle; }.first!
+                        let feed : Feed = dataManager.feeds().filter{ return $0.title == feedTitle; }.first!
                         let articleID = (userInfo["article"] as NSURL)
                         let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.objectID.URIRepresentation() == articleID }).first!
                         let al = ftvc.showFeeds([feed], animated: false)
@@ -101,16 +89,13 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
     }
     
     public func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
-        if dataManager == nil {
-            createDataManager()
-        }
         if let userInfo = notification.userInfo {
             let feedTitle = (userInfo["feed"] as String)
-            let feed : Feed = dataManager!.feeds().filter{ return $0.title == feedTitle; }.first!
+            let feed : Feed = dataManager.feeds().filter{ return $0.title == feedTitle; }.first!
             let articleID = (userInfo["article"] as NSURL)
             let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.objectID.URIRepresentation() == articleID }).first!
             if identifier == "read" {
-                dataManager?.readArticle(article)
+                dataManager.readArticle(article)
             } else if identifier == "view" {
                 let nc = (self.window!.rootViewController! as UINavigationController)
                 let ftvc = (nc.viewControllers.first! as FeedsTableViewController)
@@ -122,21 +107,17 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
     }
     
     public func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        if dataManager == nil {
-            createDataManager()
-        }
-        
-        let originalList: [NSManagedObjectID] = (dataManager!.feeds().reduce([], combine: {return $0 + ($1.articles.allObjects as [Article])}) as [Article]).map { return $0.objectID }
+        let originalList: [NSManagedObjectID] = (dataManager.feeds().reduce([], combine: {return $0 + ($1.articles.allObjects as [Article])}) as [Article]).map { return $0.objectID }
         if originalList.count == 0 {
             completionHandler(.Failed)
             return
         }
-        dataManager!.updateFeedsInBackground({(error: NSError?) in
+        dataManager.updateFeedsInBackground({(error: NSError?) in
             if (error != nil) {
                 completionHandler(.Failed)
                 return
             }
-            let al : [NSManagedObjectID] = (self.dataManager!.feeds().reduce([], combine: {return $0 + ($1.articles.allObjects as [Article])}) as [Article]).map { return $0.objectID }
+            let al : [NSManagedObjectID] = (self.dataManager.feeds().reduce([], combine: {return $0 + ($1.articles.allObjects as [Article])}) as [Article]).map { return $0.objectID }
             if (al.count == originalList.count) {
                 completionHandler(.NoData)
                 return
@@ -147,7 +128,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
             
             let settings = application.currentUserNotificationSettings()
             if settings.types & UIUserNotificationType.Alert == .Alert {
-                let articles : [Article] = self.dataManager!.entities("Article", matchingPredicate: NSPredicate(format: "self IN %@", alist)!) as [Article]
+                let articles : [Article] = self.dataManager.entities("Article", matchingPredicate: NSPredicate(format: "self IN %@", alist)!) as [Article]
                 for article: Article in articles {
                     // show local notification.
                     let note = UILocalNotification()
@@ -170,10 +151,6 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
     public func application(application: UIApplication, continueUserActivity userActivity: NSUserActivity, restorationHandler: ([AnyObject]!) -> Void) -> Bool {
         var handled = false
         
-        if dataManager == nil {
-            createDataManager()
-        }
-        
         let type = userActivity.activityType
         if type == "com.rachelbrindle.rssclient.article" {
             var controllers : [AnyObject] = []
@@ -183,7 +160,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
                         if let userInfo = userActivity.userInfo {
                             nc.popToRootViewControllerAnimated(false)
                             let feedTitle = (userInfo["feed"] as String)
-                            let feed : Feed = dataManager!.feeds().filter{ return $0.title == feedTitle; }.first!
+                            let feed : Feed = dataManager.feeds().filter{ return $0.title == feedTitle; }.first!
                             let articleID = (userInfo["article"] as NSURL)
                             let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.objectID.URIRepresentation() == articleID }).first!
                             let al = ftvc.showFeeds([feed], animated: false)
@@ -206,10 +183,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
     public func applicationDidEnterBackground(application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-        if dataManager == nil {
-            createDataManager()
-        }
-        dataManager!.managedObjectContext.save(nil)
+        dataManager.managedObjectContext.save(nil)
     }
 
     public func applicationWillEnterForeground(application: UIApplication) {
@@ -223,10 +197,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControl
     public func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Saves changes in the application's managed object context before the application terminates.
-        if dataManager == nil {
-            createDataManager()
-        }
-        dataManager!.managedObjectContext.save(nil)
+        dataManager.managedObjectContext.save(nil)
     }
 
     // MARK: - Core Data stack

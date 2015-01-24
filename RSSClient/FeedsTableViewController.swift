@@ -19,7 +19,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     let dropDownMenu = MAKDropDownMenu(forAutoLayout: ())
-    let searchBar = UISearchBar(forAutoLayout: ())
+    let searchBar = UISearchBar(frame: CGRectMake(0, 0, 320, 32))
     
     var menuTopOffset : NSLayoutConstraint!
     
@@ -28,20 +28,21 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.edgesForExtendedLayout = .None
-                
         self.addChildViewController(tableViewController)
         self.view.addSubview(tableView)
         tableView.setTranslatesAutoresizingMaskIntoConstraints(false)
         tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
         
-        tableView.contentInset = UIEdgeInsetsMake(32, 0, 0, 0)
-        tableView.scrollIndicatorInsets = UIEdgeInsetsMake(32, 0, 0, 0)
+        let height = UIFont.preferredFontForTextStyle(UIFontTextStyleBody).lineHeight + 10
+        let insets = UIEdgeInsetsMake(height, 0, 0, 0)
+        tableView.contentInset = insets
+        tableView.scrollIndicatorInsets = insets
         
         self.view.addSubview(searchBar)
         searchBar.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
-        searchBar.autoSetDimension(.Height, toSize: 32)
+        searchBar.autoSetDimension(.Height, toSize: height)
         
+        self.tableView.tableHeaderView = searchBar
         searchBar.autocorrectionType = .No
         searchBar.autocapitalizationType = .None
         searchBar.delegate = self

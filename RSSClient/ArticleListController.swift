@@ -102,35 +102,13 @@ class ArticleListController: UITableViewController {
             avc.lastArticleIndex = 0
         }
         if let splitView = self.splitViewController {
-            (UIApplication.sharedApplication().delegate as AppDelegate).collapseDetailViewController = false
+            (UIApplication.sharedApplication().delegate as AppDelegate).splitDelegate.collapseDetailViewController = false
             splitView.showDetailViewController(UINavigationController(rootViewController: avc), sender: self)
         } else {
             self.navigationController?.pushViewController(avc, animated: animated)
         }
         return avc
     }
-    
-    // MARK: - Scroll view delegate
-    
-    // infinite scrolling, is it worth it? (Yes, but later)
-    // TODO: infinite scrolling
-    /*
-    override func scrollViewDidScroll(scrollView: UIScrollView) {
-        let actualPosition = scrollView.contentOffset.y;
-        let contentHeight = scrollView.contentSize.height - (10 * self.tableView.estimatedRowHeight)
-        let maxIndexPath = (self.tableView.indexPathsForVisibleRows() as [NSIndexPath]).reduce(NSIndexPath(forRow: 0, inSection: 0)) {
-            if $0.row < $1.row {
-                return $1
-            }
-            return $0
-        }
-        if (actualPosition >= contentHeight) {
-            // try to load more...
-            self.articles += 
-            self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
-        }
-    }
-    */
 
     // MARK: - Table view data source
 

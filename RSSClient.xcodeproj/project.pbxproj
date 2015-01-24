@@ -123,6 +123,12 @@
 		89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204B41A73811000C792D2 /* AppDelegateSpec.swift */; };
 		89C204BA1A73813300C792D2 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89C204AB1A73804D00C792D2 /* Nimble.framework */; };
 		89C204BB1A73813300C792D2 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89C204981A73804500C792D2 /* Quick.framework */; };
+		89C204BD1A73F72800C792D2 /* SplitDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204BC1A73F72800C792D2 /* SplitDelegate.swift */; };
+		89C204BE1A73FD1000C792D2 /* SplitDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204BC1A73F72800C792D2 /* SplitDelegate.swift */; };
+		89C204C21A73FEDA00C792D2 /* SplitDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204C11A73FEDA00C792D2 /* SplitDelegateSpec.swift */; };
+		89C204C41A7400D100C792D2 /* NotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204C31A7400D100C792D2 /* NotificationHandler.swift */; };
+		89C204C51A7400D100C792D2 /* NotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204C31A7400D100C792D2 /* NotificationHandler.swift */; };
+		89C204C71A740D8900C792D2 /* NotificationHandlerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204C61A740D8900C792D2 /* NotificationHandlerSpec.swift */; };
 		89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509EF1A2EB18300CBD000 /* FeedViewController.swift */; };
 		89C509F11A2EB18300CBD000 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509EF1A2EB18300CBD000 /* FeedViewController.swift */; };
 		89C509F41A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F31A2EE56E00CBD000 /* TagEditorViewController.swift */; };
@@ -353,6 +359,10 @@
 		89C2048E1A73804500C792D2 /* Quick.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Quick.xcodeproj; path = Vendor/Quick/Quick.xcodeproj; sourceTree = "<group>"; };
 		89C204A31A73804D00C792D2 /* Nimble.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Nimble.xcodeproj; path = Vendor/Nimble/Nimble.xcodeproj; sourceTree = "<group>"; };
 		89C204B41A73811000C792D2 /* AppDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateSpec.swift; sourceTree = "<group>"; };
+		89C204BC1A73F72800C792D2 /* SplitDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitDelegate.swift; sourceTree = "<group>"; };
+		89C204C11A73FEDA00C792D2 /* SplitDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitDelegateSpec.swift; sourceTree = "<group>"; };
+		89C204C31A7400D100C792D2 /* NotificationHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationHandler.swift; sourceTree = "<group>"; };
+		89C204C61A740D8900C792D2 /* NotificationHandlerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationHandlerSpec.swift; sourceTree = "<group>"; };
 		89C509EF1A2EB18300CBD000 /* FeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 		89C509F31A2EE56E00CBD000 /* TagEditorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagEditorViewController.swift; sourceTree = "<group>"; };
 		89C509F61A2F825400CBD000 /* TextViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextViewCell.swift; sourceTree = "<group>"; };
@@ -708,6 +718,8 @@
 			children = (
 				898046D11A1BC8FD00EB29F0 /* rNews.entitlements */,
 				89C8307819D730E9009924DA /* AppDelegate.swift */,
+				89C204BC1A73F72800C792D2 /* SplitDelegate.swift */,
+				89C204C31A7400D100C792D2 /* NotificationHandler.swift */,
 				89C830CC19DC67B9009924DA /* UnreadCounter.swift */,
 				89D06A2019FF210C003909A3 /* LoadingView.swift */,
 				89DA7D2D1A6613100050685B /* ValidatorView.swift */,
@@ -742,6 +754,8 @@
 			children = (
 				89C8308F19D730E9009924DA /* Supporting Files */,
 				89C204B41A73811000C792D2 /* AppDelegateSpec.swift */,
+				89C204C11A73FEDA00C792D2 /* SplitDelegateSpec.swift */,
+				89C204C61A740D8900C792D2 /* NotificationHandlerSpec.swift */,
 				8957799D19E62C7100548418 /* RSSClientTests-Bridging-Header.h */,
 			);
 			path = RSSClientTests;
@@ -1119,6 +1133,7 @@
 				89C509F71A2F825400CBD000 /* TextViewCell.swift in Sources */,
 				8980475D1A20478600EB29F0 /* TUSafariActivity.m in Sources */,
 				897F70F21A38AFE500ECE1A1 /* EnclosuresViewController.swift in Sources */,
+				89C204C41A7400D100C792D2 /* NotificationHandler.swift in Sources */,
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
 				8924D8F21A0E8EEA003B7529 /* OPMLParser.swift in Sources */,
 				8933E92F19ECD28900ECFF3F /* NSString+XMLEntities.m in Sources */,
@@ -1126,6 +1141,7 @@
 				89DA7D2C1A66111E0050685B /* TextFieldCell.swift in Sources */,
 				894896F11A16F7B20030EB6E /* FeedParser.swift in Sources */,
 				89D06A2119FF210C003909A3 /* LoadingView.swift in Sources */,
+				89C204BD1A73F72800C792D2 /* SplitDelegate.swift in Sources */,
 				89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */,
 				89C509FA1A2F865F00CBD000 /* QueryFeedViewController.swift in Sources */,
 				8933E92D19ECD28900ECFF3F /* NSDate+InternetDateTime.m in Sources */,
@@ -1147,6 +1163,7 @@
 				895779AD19E62CDA00548418 /* Feed.m in Sources */,
 				89DA7D2F1A681B880050685B /* TextFieldCell.swift in Sources */,
 				893448B81A004E4E00F5D528 /* MWFeedInfo.m in Sources */,
+				89C204C21A73FEDA00C792D2 /* SplitDelegateSpec.swift in Sources */,
 				895901AA1A30C5D1002E2C62 /* EnclosuresView.swift in Sources */,
 				897F70F31A38AFE500ECE1A1 /* EnclosuresViewController.swift in Sources */,
 				893448C01A004E5C00F5D528 /* NSArray+PureLayout.m in Sources */,
@@ -1159,6 +1176,7 @@
 				895779AA19E62CC500548418 /* DataManager.swift in Sources */,
 				894896ED1A16F1130030EB6E /* LocalImportViewController.swift in Sources */,
 				895779A019E62CC500548418 /* AppDelegate.swift in Sources */,
+				89C204BE1A73FD1000C792D2 /* SplitDelegate.swift in Sources */,
 				8963F42F1A26674500B447D6 /* Data-extensions.swift in Sources */,
 				895779A319E62CC500548418 /* FeedTableCell.swift in Sources */,
 				89635F841A13BF120052C248 /* AMPopTip.m in Sources */,
@@ -1171,6 +1189,7 @@
 				893448BD1A004E4E00F5D528 /* NSString+XMLEntities.m in Sources */,
 				893448B71A004E4E00F5D528 /* MWFeedParser.m in Sources */,
 				895779A719E62CC500548418 /* ArticleListController.swift in Sources */,
+				89C204C51A7400D100C792D2 /* NotificationHandler.swift in Sources */,
 				893448C11A004E5C00F5D528 /* NSLayoutConstraint+PureLayout.m in Sources */,
 				895779A919E62CC500548418 /* ArticleViewController.swift in Sources */,
 				895782421A3CC0130022F345 /* CircularProgressLayer.swift in Sources */,
@@ -1184,6 +1203,7 @@
 				89C7FBE11A183EBE00ACBDB2 /* MAKDropDownMenu.m in Sources */,
 				895901A61A30BCB7002E2C62 /* Enclosure.m in Sources */,
 				89DA7D301A68C04C0050685B /* ValidatorView.swift in Sources */,
+				89C204C71A740D8900C792D2 /* NotificationHandlerSpec.swift in Sources */,
 				893448BF1A004E5C00F5D528 /* ALView+PureLayout.m in Sources */,
 				898047371A20475D00EB29F0 /* Alamofire.swift in Sources */,
 				89C509F81A2F825400CBD000 /* TextViewCell.swift in Sources */,

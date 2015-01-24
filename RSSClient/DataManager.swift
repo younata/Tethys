@@ -718,7 +718,7 @@ class DataManager: NSObject {
     // MARK: Generic Core Data
     
     func findOrCreateEntity(entity: String, withProperties properties: [String: AnyObject], managedObjectContext: NSManagedObjectContext? = nil) -> NSManagedObject {
-        let moc = managedObjectContext ?? self.managedObjectContext
+        let moc = managedObjectContext ?? self.managedObjectContext!
         let request = NSFetchRequest()
         request.entity = NSEntityDescription.entityForName(entity, inManagedObjectContext: moc)
         var predicateString = ""
@@ -749,7 +749,7 @@ class DataManager: NSObject {
     }
     
     func entities(entity: String, matchingPredicate predicate: NSPredicate, sortDescriptors: [NSSortDescriptor] = [], managedObjectContext: NSManagedObjectContext? = nil) -> [AnyObject] {
-        let moc = managedObjectContext ?? self.managedObjectContext
+        let moc = managedObjectContext ?? self.managedObjectContext!
         let request = NSFetchRequest()
         request.entity = NSEntityDescription.entityForName(entity, inManagedObjectContext: moc)
         request.predicate = predicate
@@ -774,14 +774,18 @@ class DataManager: NSObject {
         }
     }
     
-    let managedObjectModel: NSManagedObjectModel
-    let persistentStoreCoordinator: NSPersistentStoreCoordinator
-    let managedObjectContext: NSManagedObjectContext
+    let managedObjectModel: NSManagedObjectModel! = nil
+    let persistentStoreCoordinator: NSPersistentStoreCoordinator! = nil
+    let managedObjectContext: NSManagedObjectContext! = nil
     
     let operationQueue = NSOperationQueue()
     var backgroundObjectContext: NSManagedObjectContext! = nil
     var backgroundJSVM: JSVirtualMachine? = nil
     var backgroundContext: JSContext? = nil
+    
+    init(testing: Bool) {
+        
+    }
     
     override init() {
         var unitTesting = false

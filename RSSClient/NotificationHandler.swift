@@ -9,7 +9,6 @@
 import UIKit
 
 class NotificationHandler {
-    let dataManager: DataManager
     
     func enableNotifications(application: UIApplication) {
         let markReadAction = UIMutableUserNotificationAction()
@@ -23,25 +22,23 @@ class NotificationHandler {
         category.setActions([markReadAction], forContext: .Minimal)
         category.setActions([markReadAction], forContext: .Default)
         
-        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: UIUserNotificationType.Badge | UIUserNotificationType.Alert | .Sound, categories: NSSet(object: category)))
+        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Badge | .Alert | .Sound, categories: NSSet(object: category)))
     }
     
-    func handleLocalNotification(application: UIApplication, notification: UILocalNotification, window: UIWindow) {
-        let str = application.applicationState == .Active ? "Active" : application.applicationState == .Inactive ? "Inactive" : "Background"
-        
+    func handleLocalNotification(notification: UILocalNotification, window: UIWindow, dataManager: DataManager) {
         if let userInfo = notification.userInfo {
-            let (feed, article) = feedAndArticleFromUserInfo(userInfo)
-            showFeed(feed, article: article, window: window)
+            let (feed, article) = feedAndArticleFromUserInfo(userInfo, dataManager: dataManager)
+            showArticle(article, window: window)
         }
     }
     
-    func handleAction(application: UIApplication, identifier: String?, notification: UILocalNotification, window: UIWindow, completionHandler: () -> Void) {
+    func handleAction(identifier: String?, notification: UILocalNotification, window: UIWindow, dataManager: DataManager, completionHandler: () -> Void) {
         if let userInfo = notification.userInfo {
-            let (feed, article) = feedAndArticleFromUserInfo(userInfo)
+            let (feed, article) = feedAndArticleFromUserInfo(userInfo, dataManager: dataManager)
             if identifier == "read" {
                 dataManager.readArticle(article)
             } else if identifier == "view" {
-                showFeed(feed, article: article, window: window)
+                showArticle(article, window: window)
             }
         }
     }
@@ -56,11 +53,7 @@ class NotificationHandler {
         application.presentLocalNotificationNow(note)
     }
     
-    init(dataManager: DataManager) {
-        self.dataManager = dataManager
-    }
-    
-    private func feedAndArticleFromUserInfo(userInfo: [NSObject : AnyObject]) -> (Feed, Article) {
+    private func feedAndArticleFromUserInfo(userInfo: [NSObject : AnyObject], dataManager: DataManager) -> (Feed, Article) {
         let feedID = (userInfo["feed"] as String)
         let feed : Feed = dataManager.feeds().filter{ return $0.objectID.URIRepresentation().absoluteString == feedID; }.first!
         let articleID = (userInfo["article"] as String)
@@ -68,10 +61,11 @@ class NotificationHandler {
         return (feed, article)
     }
     
-    private func showFeed(feed: Feed, article: Article, window: UIWindow) {
+    private func showArticle(article: Article, window: UIWindow) {
         if let nc = (window.rootViewController as? UISplitViewController)?.viewControllers.first as? UINavigationController {
             if let ftvc = nc.viewControllers.first as? FeedsTableViewController {
                 nc.popToRootViewControllerAnimated(false)
+                let feed = article.feed
                 let al = ftvc.showFeeds([feed], animated: false)
                 al.showArticle(article)
             }

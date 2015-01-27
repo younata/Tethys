@@ -48,7 +48,7 @@ class AppDelegateSpec: QuickSpec {
             subject = AppDelegate()
             subject.window = UIWindow(frame: CGRectMake(0, 0, 320, 480))
             // Apparently, calling "-makeKeyAndVisible" on a window in test will cause a crash.
-            subject.dataManager = DataManagerMock(testing: true)
+            subject.dataManager = DataManagerMock(dataHelper: CoreDataHelper(), dataFetcher: DataFetcher(), testing: true)
         }
         
         describe("-application:didFinishLaunchingWithOptions:") {

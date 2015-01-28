@@ -20,7 +20,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
     }()
     
     lazy var dataManager : DataManager = {
-        return DataManager(dataHelper: CoreDataHelper(), dataFetcher: DataFetcher(), testing: false)
+        return DataManager(dataHelper: CoreDataHelper(), testing: false)
     }()
     
     

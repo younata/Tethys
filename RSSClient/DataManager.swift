@@ -112,46 +112,15 @@ class DataManager: NSObject {
     // MARK: Feeds
     
     func allTags(managedObjectContext: NSManagedObjectContext? = nil) -> [String] {
-        let feedsWithTags = dataHelper.entities("Feed", matchingPredicate: NSPredicate(format: "tags != nil")!, managedObjectContext: (managedObjectContext ?? self.managedObjectContext)) as [Feed]
-        
-        let setOfTags = feedsWithTags.reduce(NSSet()) {(set, feed) in
-            return set.setByAddingObjectsFromArray(feed.allTags())
-        }
-        
-        return (setOfTags.allObjects as [String]).sorted { return $0.lowercaseString < $1.lowercaseString }
+        return feedManager.allTags(managedObjectContext ?? self.managedObjectContext)
     }
     
     func feeds(managedObjectContext: NSManagedObjectContext? = nil) -> [Feed] {
-        return (dataHelper.entities("Feed", matchingPredicate: NSPredicate(value: true), managedObjectContext: (managedObjectContext ?? self.managedObjectContext)) as [Feed]).sorted {
-            if $0.title == nil {
-                return true
-            } else if $1.title == nil {
-                return false
-            }
-            return $0.title < $1.title
-        }
+        return feedManager.feeds(managedObjectContext ?? self.managedObjectContext)
     }
     
     func feedsMatchingTag(tag: String?, managedObjectContext: NSManagedObjectContext? = nil, allowIncompleteTags: Bool = true) -> [Feed] {
-        if let theTag = (tag == "" ? nil : tag) {
-            return feeds(managedObjectContext: managedObjectContext).filter {
-                let tags = $0.allTags()
-                for t in tags {
-                    if allowIncompleteTags {
-                        if t.rangeOfString(theTag) != nil {
-                            return true
-                        }
-                    } else {
-                        if t == theTag {
-                            return true
-                        }
-                    }
-                }
-                return false
-            }
-        } else {
-            return feeds(managedObjectContext: managedObjectContext)
-        }
+        return feedManager.feedsMatchingTag(tag, managedObjectContext: managedObjectContext ?? self.managedObjectContext, allowIncompleteTags: allowIncompleteTags)
     }
     
     func newFeed(feedURL: String) -> Feed {
@@ -159,16 +128,8 @@ class DataManager: NSObject {
     }
     
     func newFeed(feedURL: String, completion: (NSError?) -> (Void)) -> Feed {
-        let predicate = NSPredicate(format: "url = %@", feedURL)
-        var feed: Feed! = nil
-        if let theFeed = dataHelper.entities("Feed", matchingPredicate: predicate!, managedObjectContext: managedObjectContext)?.last as? Feed {
-            feed = theFeed
-        } else {
-            feed = newFeed()
-            feed.url = feedURL
-            self.managedObjectContext.save(nil)
-            NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
-        }
+        let feed = feedManager.newFeed(feedURL, managedObjectContext: managedObjectContext, completion: completion)
+
         #if os(iOS)
         UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         #endif
@@ -178,37 +139,38 @@ class DataManager: NSObject {
     }
     
     func newQueryFeed(title: String, code: String, summary: String? = nil) -> Feed {
-        let predicate = NSPredicate(format: "title = %@", title)
-        var feed: Feed! = nil
-        if let theFeed = dataHelper.entities("Feed", matchingPredicate: predicate!, managedObjectContext: managedObjectContext)?.last as? Feed {
-            feed = theFeed
-        } else {
-            feed = newFeed()
-            feed.title = title
-            feed.query = code
-            feed.summary = summary
-            self.managedObjectContext.save(nil)
-            NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
-        }
-        return feed
-    }
-    
-    func newFeed() -> Feed {
-        return NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: managedObjectContext) as Feed
+        return feedManager.newQueryFeed(title, code: code, managedObjectContext: managedObjectContext, summary: summary)
     }
     
     func deleteFeed(feed: Feed) {
-        for article in (feed.articles.allObjects as [Article]) {
-            self.managedObjectContext.deleteObject(article)
-        }
-        self.managedObjectContext.deleteObject(feed)
-        self.managedObjectContext.save(nil)
+        feedManager.deleteFeed(feed)
         if (feeds().count == 0) {
             #if os(iOS)
             UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
             #endif
         }
         self.writeOPML()
+    }
+    
+    func updateFeed(feed: Feed, fromInfo info: MWFeedInfo) {
+        var summary : String = ""
+        if let s = info.summary {
+            let data = s.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
+            let options = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
+            summary = s
+            if let aString = NSAttributedString(data: data, options: options, documentAttributes: nil, error: nil) {
+                summary = aString.string
+            }
+        }
+        feed.title = info.title
+        feed.summary = summary
+        
+        if info.imageURL != nil && feed.feedImage() == nil {
+            self.dataFetcher.fetchImageAtURL(info.imageURL) {(image, error) in
+                feed.image = image
+                feed.managedObjectContext?.save(nil)
+            }
+        }
     }
     
     func updateFeeds(completion: (NSError?)->(Void)) {
@@ -251,7 +213,6 @@ class DataManager: NSObject {
                     }
                     if (feedParser != nil && error == nil) {
                         // set the wait period to zero.
-                        //if (error == )
                         if feed.waitPeriod == nil || feed.waitPeriod.integerValue != 0 {
                             feed.waitPeriod = NSNumber(integer: 0)
                             feed.remainingWait = NSNumber(integer: 0)
@@ -283,32 +244,9 @@ class DataManager: NSObject {
                     } else if let s = str {
                         let feedParser = FeedParser(string: s)
                         feedParser.completion = {(info, items) in
-                            var predicate = NSPredicate(format: "url = %@", feed.url)!
                             
-                            var summary : String = ""
-                            if let s = info.summary {
-                                let data = s.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
-                                let options = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
-                                summary = s
-                                if let aString = NSAttributedString(data: data, options: options, documentAttributes: nil, error: nil) {
-                                    summary = aString.string
-                                }
-                            }
-                            if let feed = self.dataHelper.entities("Feed", matchingPredicate: predicate, managedObjectContext: ctx)?.last as? Feed {
-                                feed.title = info.title
-                            } else {
-                                let feed = (NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: ctx) as Feed)
-                                feed.title = info.title
-                            }
+                            self.updateFeed(feed, fromInfo: info)
                             
-                            if info.imageURL != nil && feed.feedImage() == nil {
-                                self.dataFetcher.fetchImageAtURL(info.imageURL) {(image, error) in
-                                    feed.image = image
-                                    feed.managedObjectContext?.save(nil)
-                                }
-                            }
-                            
-                            feed.summary = summary
                             for item in items {
                                 let article = self.upsertArticle(item, context: ctx)
                                 if let enclosures = item.enclosures {
@@ -332,48 +270,6 @@ class DataManager: NSObject {
                 }
             }
         }
-    }
-    
-    func estimateNextFeedTime(feed: Feed) -> (NSDate?, Double) { // Time, stddev
-        // This could be much better done.
-        // For example, some feeds only update on weekdays, which this would tell it to update
-        // once every 7/5ths of a day, instead of once a day for 5 days, then not at all on the weekends.
-        // But for now, it's ok.
-        let times : [NSTimeInterval] = feed.allArticles(self).map {
-            return $0.published.timeIntervalSince1970
-        }.sorted { return $0 < $1 }
-        
-        if times.count < 2 {
-            return (nil, 0)
-        }
-        
-        func mean(values: [Double]) -> Double {
-            return (values.reduce(0.0) { return $0 + $1 }) / Double(values.count)
-        }
-        
-        var intervals : [NSTimeInterval] = []
-        for (i, t) in enumerate(times) {
-            if i == (times.count - 1) {
-                break
-            }
-            intervals.append(fabs(times[i+1] - t))
-        }
-        let averageTimeInterval = mean(intervals)
-        
-        func stdev(values: [Double], average: Double) -> Double {
-            return sqrt(mean(values.map { pow($0 - average, 2) }))
-        }
-        
-        let standardDeviation = stdev(intervals, averageTimeInterval)
-        
-        let d = NSDate(timeIntervalSince1970: times.last! + averageTimeInterval)
-        let end = d.dateByAddingTimeInterval(standardDeviation)
-        
-        if NSDate().compare(end) == NSComparisonResult.OrderedDescending {
-            return (nil, 0)
-        }
-        
-        return (NSDate(timeIntervalSince1970: times.last! + averageTimeInterval), standardDeviation)
     }
     
     func setApplicationBadgeCount() {
@@ -680,23 +576,39 @@ class DataManager: NSObject {
         }
     }
     
-    let persistentStoreCoordinator: NSPersistentStoreCoordinator! = nil
-    let managedObjectContext: NSManagedObjectContext! = nil
+    var persistentStoreCoordinator: NSPersistentStoreCoordinator! = nil
+    lazy var managedObjectContext: NSManagedObjectContext = {
+        self.dataHelper.managedObjectContext(self.persistentStoreCoordinator)
+    }()
     
-    let operationQueue = NSOperationQueue()
+    lazy var operationQueue : NSOperationQueue = {
+        let queue = NSOperationQueue()
+        queue.underlyingQueue = dispatch_queue_create("DataManager Background Queue", nil)
+        return queue
+    }()
+    
     var backgroundObjectContext: NSManagedObjectContext! = nil
     var backgroundJSVM: JSVirtualMachine? = nil
     var backgroundContext: JSContext? = nil
     
     let dataHelper: CoreDataHelper
     
-    let dataFetcher: DataFetcher
+    lazy var dataFetcher: DataFetcher = DataFetcher()
     
-    init(dataHelper: CoreDataHelper, dataFetcher: DataFetcher, testing: Bool) {
-        
+    lazy var feedManager: FeedManager = { FeedManager(dataHelper: self.dataHelper, dataFetcher: self.dataFetcher) } ()
+    
+    func setupBackgroundContexts() {
+        operationQueue.addOperationWithBlock {
+            self.backgroundObjectContext = self.dataHelper.managedObjectContext(self.persistentStoreCoordinator)
+            
+            self.backgroundJSVM = JSVirtualMachine()
+            self.backgroundContext = self.setUpContext(JSContext(virtualMachine: self.backgroundJSVM))
+            self.managedObjectContextDidSave() // update all the query feeds.
+        }
+    }
+    
+    init(dataHelper: CoreDataHelper, testing: Bool) {
         self.dataHelper = dataHelper
-        
-        self.dataFetcher = dataFetcher
         
         persistentStoreCoordinator = dataHelper.persistentStoreCoordinator(dataHelper.managedObjectModel(), storeType: (testing ? NSInMemoryStoreType : NSSQLiteStoreType))
         
@@ -705,17 +617,9 @@ class DataManager: NSObject {
             manager.session.configuration.timeoutIntervalForResource = 30.0;
         }
         
-        managedObjectContext = dataHelper.managedObjectContext(persistentStoreCoordinator)
         super.init()
-        operationQueue.underlyingQueue = dispatch_queue_create("DataManager Background Queue", nil)
-        operationQueue.addOperation(NSBlockOperation(block: {
-            self.backgroundObjectContext = dataHelper.managedObjectContext(self.persistentStoreCoordinator)
-            
-            self.backgroundJSVM = JSVirtualMachine()
-            self.backgroundContext = self.setUpContext(JSContext(virtualMachine: self.backgroundJSVM))
-        }))
+        setupBackgroundContexts()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "managedObjectContextDidSave", name: NSManagedObjectContextDidSaveNotification, object: managedObjectContext)
-        managedObjectContextDidSave() // update all the query feeds.
     }
     
     deinit {

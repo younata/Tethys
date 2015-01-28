@@ -40,6 +40,18 @@
 		894896F11A16F7B20030EB6E /* FeedParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896F01A16F7B20030EB6E /* FeedParser.swift */; };
 		894896F21A16F7B20030EB6E /* FeedParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896F01A16F7B20030EB6E /* FeedParser.swift */; };
 		894C0C371A1329FB008229A4 /* AMPopTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 894C0C361A1329FB008229A4 /* AMPopTip.m */; };
+		894FEF1C1A755D92009DF7CD /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF1B1A755D92009DF7CD /* CoreDataHelper.swift */; };
+		894FEF1D1A755D92009DF7CD /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF1B1A755D92009DF7CD /* CoreDataHelper.swift */; };
+		894FEF1E1A755D92009DF7CD /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF1B1A755D92009DF7CD /* CoreDataHelper.swift */; };
+		894FEF281A76E117009DF7CD /* DataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF271A76E116009DF7CD /* DataFetcher.swift */; };
+		894FEF291A76E117009DF7CD /* DataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF271A76E116009DF7CD /* DataFetcher.swift */; };
+		894FEF2A1A76E117009DF7CD /* DataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF271A76E116009DF7CD /* DataFetcher.swift */; };
+		894FEF341A776AFC009DF7CD /* FeedManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF331A776AFC009DF7CD /* FeedManager.swift */; };
+		894FEF351A776AFC009DF7CD /* FeedManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF331A776AFC009DF7CD /* FeedManager.swift */; };
+		894FEF361A776AFC009DF7CD /* FeedManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF331A776AFC009DF7CD /* FeedManager.swift */; };
+		894FEF381A78359F009DF7CD /* FeedStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF371A78359F009DF7CD /* FeedStatistics.swift */; };
+		894FEF391A78359F009DF7CD /* FeedStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF371A78359F009DF7CD /* FeedStatistics.swift */; };
+		894FEF3A1A78359F009DF7CD /* FeedStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF371A78359F009DF7CD /* FeedStatistics.swift */; };
 		895779A019E62CC500548418 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307819D730E9009924DA /* AppDelegate.swift */; };
 		895779A119E62CC500548418 /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830CC19DC67B9009924DA /* UnreadCounter.swift */; };
 		895779A219E62CC500548418 /* FeedsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */; };
@@ -313,6 +325,10 @@
 		894896F01A16F7B20030EB6E /* FeedParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedParser.swift; sourceTree = "<group>"; };
 		894C0C351A1329FB008229A4 /* AMPopTip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMPopTip.h; sourceTree = "<group>"; };
 		894C0C361A1329FB008229A4 /* AMPopTip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMPopTip.m; sourceTree = "<group>"; };
+		894FEF1B1A755D92009DF7CD /* CoreDataHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataHelper.swift; sourceTree = "<group>"; };
+		894FEF271A76E116009DF7CD /* DataFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataFetcher.swift; sourceTree = "<group>"; };
+		894FEF331A776AFC009DF7CD /* FeedManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedManager.swift; sourceTree = "<group>"; };
+		894FEF371A78359F009DF7CD /* FeedStatistics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedStatistics.swift; sourceTree = "<group>"; };
 		8957799D19E62C7100548418 /* RSSClientTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSSClientTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		895782401A3CC0130022F345 /* CircularProgressLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircularProgressLayer.swift; sourceTree = "<group>"; };
 		895901A11A2FFDDD002E2C62 /* RSSClient 1. 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1. 2.xcdatamodel"; sourceTree = "<group>"; };
@@ -773,6 +789,10 @@
 			isa = PBXGroup;
 			children = (
 				89C830A819D7B890009924DA /* DataManager.swift */,
+				894FEF331A776AFC009DF7CD /* FeedManager.swift */,
+				894FEF1B1A755D92009DF7CD /* CoreDataHelper.swift */,
+				894FEF271A76E116009DF7CD /* DataFetcher.swift */,
+				894FEF371A78359F009DF7CD /* FeedStatistics.swift */,
 				89C8307A19D730E9009924DA /* RSSClient.xcdatamodeld */,
 				89C830C119D89E46009924DA /* Article.h */,
 				89C830C219D89E46009924DA /* Article.m */,
@@ -1067,6 +1087,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				894FEF1E1A755D92009DF7CD /* CoreDataHelper.swift in Sources */,
 				8967DA081A409433000424F4 /* ArticleListView.swift in Sources */,
 				8967DA061A4092A6000424F4 /* ArticlesList.swift in Sources */,
 				8929D27F1A3F3E9400782A37 /* BackgroundView.swift in Sources */,
@@ -1093,6 +1114,9 @@
 				89635FAF1A13C4210052C248 /* Feed.m in Sources */,
 				895901A71A30BCB7002E2C62 /* Enclosure.m in Sources */,
 				89635FAA1A13C4120052C248 /* DataManager.swift in Sources */,
+				894FEF361A776AFC009DF7CD /* FeedManager.swift in Sources */,
+				894FEF2A1A76E117009DF7CD /* DataFetcher.swift in Sources */,
+				894FEF3A1A78359F009DF7CD /* FeedStatistics.swift in Sources */,
 				89635FB41A13C48D0052C248 /* MWFeedParser.m in Sources */,
 				89635FC21A13C49A0052C248 /* ALView+PureLayout.m in Sources */,
 				89635F8E1A13C2E30052C248 /* AppDelegate.swift in Sources */,
@@ -1113,6 +1137,7 @@
 				8933E91919ECCD5E00ECFF3F /* MWFeedInfo.m in Sources */,
 				898047361A20475D00EB29F0 /* Alamofire.swift in Sources */,
 				8933E91819ECCD5E00ECFF3F /* MWFeedParser.m in Sources */,
+				894FEF1C1A755D92009DF7CD /* CoreDataHelper.swift in Sources */,
 				89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */,
 				8933E90F19ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m in Sources */,
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
@@ -1129,6 +1154,8 @@
 				894C0C371A1329FB008229A4 /* AMPopTip.m in Sources */,
 				895901A51A30BCB7002E2C62 /* Enclosure.m in Sources */,
 				89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */,
+				894FEF341A776AFC009DF7CD /* FeedManager.swift in Sources */,
+				894FEF381A78359F009DF7CD /* FeedStatistics.swift in Sources */,
 				89C830C319D89E46009924DA /* Article.m in Sources */,
 				89C509F71A2F825400CBD000 /* TextViewCell.swift in Sources */,
 				8980475D1A20478600EB29F0 /* TUSafariActivity.m in Sources */,
@@ -1138,6 +1165,7 @@
 				8924D8F21A0E8EEA003B7529 /* OPMLParser.swift in Sources */,
 				8933E92F19ECD28900ECFF3F /* NSString+XMLEntities.m in Sources */,
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
+				894FEF281A76E117009DF7CD /* DataFetcher.swift in Sources */,
 				89DA7D2C1A66111E0050685B /* TextFieldCell.swift in Sources */,
 				894896F11A16F7B20030EB6E /* FeedParser.swift in Sources */,
 				89D06A2119FF210C003909A3 /* LoadingView.swift in Sources */,
@@ -1176,10 +1204,12 @@
 				895779AA19E62CC500548418 /* DataManager.swift in Sources */,
 				894896ED1A16F1130030EB6E /* LocalImportViewController.swift in Sources */,
 				895779A019E62CC500548418 /* AppDelegate.swift in Sources */,
+				894FEF351A776AFC009DF7CD /* FeedManager.swift in Sources */,
 				89C204BE1A73FD1000C792D2 /* SplitDelegate.swift in Sources */,
 				8963F42F1A26674500B447D6 /* Data-extensions.swift in Sources */,
 				895779A319E62CC500548418 /* FeedTableCell.swift in Sources */,
 				89635F841A13BF120052C248 /* AMPopTip.m in Sources */,
+				894FEF1D1A755D92009DF7CD /* CoreDataHelper.swift in Sources */,
 				893448C21A004E6400F5D528 /* UIColor+RSSClient.m in Sources */,
 				893448BB1A004E4E00F5D528 /* NSDate+InternetDateTime.m in Sources */,
 				894896F21A16F7B20030EB6E /* FeedParser.swift in Sources */,
@@ -1194,6 +1224,8 @@
 				895779A919E62CC500548418 /* ArticleViewController.swift in Sources */,
 				895782421A3CC0130022F345 /* CircularProgressLayer.swift in Sources */,
 				8963F4351A280F8E00B447D6 /* TagPickerView.swift in Sources */,
+				894FEF291A76E117009DF7CD /* DataFetcher.swift in Sources */,
+				894FEF391A78359F009DF7CD /* FeedStatistics.swift in Sources */,
 				89C509F51A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */,
 				895779A119E62CC500548418 /* UnreadCounter.swift in Sources */,
 				895779A419E62CC500548418 /* FindFeedViewController.swift in Sources */,

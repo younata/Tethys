@@ -151,7 +151,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         } else if itemIndex == 2 {
             let queryFeed = QueryFeedViewController(style: .Grouped)
             queryFeed.dataManager = dataManager
-            queryFeed.feed = dataManager?.newFeed()
+//            queryFeed.feed = dataManager?.newFeed()
             vc = UINavigationController(rootViewController: queryFeed)
         }
         if let nc = vc {

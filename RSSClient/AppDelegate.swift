@@ -19,11 +19,12 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         return window
     }()
     
-    lazy var dataManager = DataManager()
-    
-    lazy var notificationHandler : NotificationHandler = {
-        return NotificationHandler(dataManager: self.dataManager)
+    lazy var dataManager : DataManager = {
+        return DataManager(dataHelper: CoreDataHelper(), testing: false)
     }()
+    
+    
+    let notificationHandler = NotificationHandler()
     
     lazy var splitDelegate : SplitDelegate = {
         return SplitDelegate(splitViewController: (self.window.rootViewController as UISplitViewController))
@@ -60,11 +61,11 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     public func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
-        notificationHandler.handleLocalNotification(application, notification: notification, window: self.window)
+        notificationHandler.handleLocalNotification(notification, window: self.window, dataManager: dataManager)
     }
     
     public func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
-        notificationHandler.handleAction(application, identifier: identifier, notification: notification, window: self.window, completionHandler: completionHandler)
+        notificationHandler.handleAction(identifier, notification: notification, window: self.window, dataManager: dataManager, completionHandler: completionHandler)
     }
     
     public func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
@@ -89,7 +90,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             
             let settings = application.currentUserNotificationSettings()
             if settings.types & UIUserNotificationType.Alert == .Alert {
-                let articles : [Article] = self.dataManager.entities("Article", matchingPredicate: NSPredicate(format: "self IN %@", alist)!) as [Article]
+                let articles : [Article] = self.dataManager.dataHelper.entities("Article", matchingPredicate: NSPredicate(format: "self IN %@", alist)!, managedObjectContext: self.dataManager.managedObjectContext) as [Article]
                 for article: Article in articles {
                     self.notificationHandler.sendLocalNotification(application, article: article)
                 }

@@ -157,14 +157,13 @@ class FeedViewController: UITableViewController {
             }
         case 4:
             if let f = feed {
-                if let (date, stdev) = dataManager?.estimateNextFeedTime(f) {
-                    if let d = date {
-                        let start = d.dateByAddingTimeInterval(-stdev)
-                        let end = d.dateByAddingTimeInterval(stdev)
-                        cell.textLabel?.text = intervalFormatter.stringFromDate(start, toDate: end)
-                    } else {
-                        cell.textLabel?.text = NSLocalizedString("Unknown", comment: "")
-                    }
+                let (date, stdev) = FeedStatistics().estimateNextFeedTime(f)
+                if let d = date {
+                    let start = d.dateByAddingTimeInterval(-stdev)
+                    let end = d.dateByAddingTimeInterval(stdev)
+                    cell.textLabel?.text = intervalFormatter.stringFromDate(start, toDate: end)
+                } else {
+                    cell.textLabel?.text = NSLocalizedString("Unknown", comment: "")
                 }
             }
             cell.textLabel?.numberOfLines = 0

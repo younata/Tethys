@@ -20,10 +20,20 @@ extension Feed {
         return (self.image as Image)
     }
     
+    func unreadArticles() -> UInt {
+        return self.allArticles().reduce(0) {
+            return $0 + ($1.read ? 0 : 1)
+        }
+    }
+    
     func unreadArticles(dataManager: DataManager) -> UInt {
         return allArticles(dataManager).reduce(0) {
             return $0 + ($1.read ? 0 : 1)
         }
+    }
+    
+    func allArticles() -> [Article] {
+        return self.articles.allObjects as [Article]
     }
     
     func allArticles(dataManager: DataManager) -> [Article] {

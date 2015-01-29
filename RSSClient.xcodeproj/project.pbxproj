@@ -311,6 +311,13 @@
 			remoteGlobalIDString = 8955AA9F1A79F72100D18868;
 			remoteInfo = "Ra-iOS";
 		};
+		AE43560A1A7AC61400A961B9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 89C8306B19D730E9009924DA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 89C8307219D730E9009924DA;
+			remoteInfo = RSSClient;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -979,6 +986,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				AE43560B1A7AC61400A961B9 /* PBXTargetDependency */,
 				AE4355F91A7AB10C00A961B9 /* PBXTargetDependency */,
 				89C204B71A73812900C792D2 /* PBXTargetDependency */,
 				89C204B91A73812900C792D2 /* PBXTargetDependency */,
@@ -1396,6 +1404,11 @@
 			name = "Ra-iOS";
 			targetProxy = AE4355F81A7AB10C00A961B9 /* PBXContainerItemProxy */;
 		};
+		AE43560B1A7AC61400A961B9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 89C8307219D730E9009924DA /* RSSClient */;
+			targetProxy = AE43560A1A7AC61400A961B9 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -1598,7 +1611,7 @@
 		89C8309919D730E9009924DA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "";
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -1613,14 +1626,14 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "RSSClientTests/RSSClientTests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RSSClient.app/RSSClient";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/rNews.app/rNews";
 			};
 			name = Debug;
 		};
 		89C8309A19D730E9009924DA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "";
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -1630,7 +1643,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "RSSClientTests/RSSClientTests-Bridging-Header.h";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RSSClient.app/RSSClient";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/rNews.app/rNews";
 			};
 			name = Release;
 		};

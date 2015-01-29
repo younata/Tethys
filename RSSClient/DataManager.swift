@@ -574,6 +574,7 @@ class DataManager: NSObject {
     }
     
     var persistentStoreCoordinator: NSPersistentStoreCoordinator! = nil
+
     lazy var managedObjectContext: NSManagedObjectContext = {
         self.dataHelper.managedObjectContext(self.persistentStoreCoordinator)
     }()

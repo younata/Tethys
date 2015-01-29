@@ -16,7 +16,7 @@ class DataFetcher {
         manager.session.configuration.timeoutIntervalForResource = 30.0;
         return manager
     }()
-    
+
     lazy var backgroundManager : Manager = {
         let manager = Manager(configuration: NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier("com.rachelbrindle.rNews.background"))
         manager.session.configuration.timeoutIntervalForRequest = 30.0;

@@ -1,54 +1,25 @@
 import Quick
 import Nimble
-
-class DataManagerMock : DataManager {
-    override func importOPML(opml: NSURL) {
-        
-    }
-    
-    override func importOPML(opml: NSURL, progress: (Double) -> Void, completion: ([Feed]) -> Void) {
-    }
-    
-    override func writeOPML() {
-        
-    }
-    
-    override func allTags(#managedObjectContext: NSManagedObjectContext?) -> [String] {
-        return []
-    }
-    
-    override func feeds(#managedObjectContext: NSManagedObjectContext?) -> [Feed] {
-        return []
-    }
-    
-    override func feedsMatchingTag(tag: String?, managedObjectContext: NSManagedObjectContext?, allowIncompleteTags: Bool) -> [Feed] {
-        return []
-    }
-    
-    override func updateFeeds(completion: (NSError?) -> (Void)) {
-        completion(nil)
-    }
-    
-    override func updateFeedsInBackground(completion: (NSError?) -> (Void)) {
-        completion(nil)
-    }
-    
-    override func updateFeeds(feeds: [Feed], completion: (NSError?) -> (Void), backgroundFetch: Bool) {
-        completion(nil)
-    }
-}
+import Ra
 
 class AppDelegateSpec: QuickSpec {
     override func spec() {
         var subject: AppDelegate! = nil
         
         let application = UIApplication.sharedApplication()
+        var injector : Ra.Injector! = nil
         
         beforeEach {
             subject = AppDelegate()
+
+            injector = Ra.Injector()
+            injector.setCreationMethod(DataManager.self) {
+                return DataManagerMock(dataHelper: CoreDataHelperMock(), testing: true)
+            }
+
+            subject.injector = injector
             subject.window = UIWindow(frame: CGRectMake(0, 0, 320, 480))
             // Apparently, calling "-makeKeyAndVisible" on a window in test will cause a crash.
-            subject.dataManager = DataManagerMock(dataHelper: CoreDataHelper(), testing: true)
         }
         
         describe("-application:didFinishLaunchingWithOptions:") {

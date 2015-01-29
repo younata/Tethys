@@ -13,11 +13,6 @@ class FeedManager {
     
     let dataFetcher : DataFetcher
     
-    init(dataHelper: CoreDataHelper, dataFetcher: DataFetcher) {
-        self.dataHelper = dataHelper
-        self.dataFetcher = dataFetcher
-    }
-    
     func allTags(managedObjectContext: NSManagedObjectContext) -> [String] {
         let feedsWithTags = dataHelper.entities("Feed", matchingPredicate: NSPredicate(format: "tags != nil")!, managedObjectContext: managedObjectContext) as [Feed]
         
@@ -122,5 +117,10 @@ class FeedManager {
                 feed.managedObjectContext?.save(nil)
             }
         }
+    }
+
+    init(dataHelper: CoreDataHelper, dataFetcher: DataFetcher) {
+        self.dataHelper = dataHelper
+        self.dataFetcher = dataFetcher
     }
 }

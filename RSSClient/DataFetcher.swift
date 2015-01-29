@@ -10,8 +10,19 @@ import Foundation
 
 class DataFetcher {
     
-    let mainManager = Manager(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
-    let backgroundManager = Manager(configuration: NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier("com.rachelbrindle.rNews.background"))
+    lazy var mainManager : Manager = {
+        let manager = Manager(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
+        manager.session.configuration.timeoutIntervalForRequest = 30.0;
+        manager.session.configuration.timeoutIntervalForResource = 30.0;
+        return manager
+    }()
+    
+    lazy var backgroundManager : Manager = {
+        let manager = Manager(configuration: NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier("com.rachelbrindle.rNews.background"))
+        manager.session.configuration.timeoutIntervalForRequest = 30.0;
+        manager.session.configuration.timeoutIntervalForResource = 30.0;
+        return manager
+    }()
     
     let unknownError = NSError(domain: "com.rachelbrindle.rssclient", code: 1, userInfo: ["description": "Unknown Error"])
     let conversionStringError = NSError(domain: "com.rachelbrindle.rssclient", code: 11, userInfo: ["description": "Error Converting data to string"])

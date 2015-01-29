@@ -13,3 +13,6 @@
 [submodule "Vendor/Nimble"]
 	path = Vendor/Nimble
 	url = https://github.com/Quick/Nimble.git
+[submodule "Vendor/Ra"]
+	path = Vendor/Ra
+	url = https://github.com/younata/Ra.git

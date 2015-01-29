@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import Ra
 
 @UIApplicationMain
 public class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -19,10 +20,19 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         return window
     }()
     
-    lazy var dataManager : DataManager = {
-        return DataManager(dataHelper: CoreDataHelper(), testing: false)
+    lazy var injector : Ra.Injector = {
+        let injector = Ra.Injector()
+        let dataHelper = CoreDataHelper()
+        let dataManager = DataManager(dataHelper: dataHelper, testing: false)
+        injector.setCreationMethod(DataManager.self) {
+            return dataManager
+        }
+        return injector
     }()
-    
+
+    lazy var dataManager : DataManager = {
+        return self.injector.create(DataManager.self) as DataManager
+    }()
     
     let notificationHandler = NotificationHandler()
     
@@ -34,7 +44,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().tintColor = UIColor.darkGreenColor()
         UIBarButtonItem.appearance().tintColor = UIColor.darkGreenColor()
         UITabBar.appearance().tintColor = UIColor.darkGreenColor()
-        
+
         let feeds = FeedsTableViewController()
         feeds.dataManager = dataManager
         let master = UINavigationController(rootViewController: feeds)

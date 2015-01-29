@@ -16,10 +16,6 @@ func + <K,V>(a: Dictionary<K,V>, b: Dictionary<K,V>) -> Dictionary<K,V> {
     return d
 }
 
-func += <K,V>(inout a: Dictionary<K,V>, b: Dictionary<K,V>) {
-    for (k, v) in b { a[k] = v }
-}
-
 class CoreDataHelper {
     
     // MARK: Creating
@@ -95,7 +91,7 @@ class CoreDataHelper {
                 persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: managedObjectModel.configurations.last as NSString?, URL: storeURL, options: options, error: &error)
                 if (error != nil) {
                     println("Fatal error adding persistent data store: \(error!)")
-                    fatalError("")
+                    fatalError("bye.")
                 }
             }
         }

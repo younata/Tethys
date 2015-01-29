@@ -183,9 +183,6 @@ class DataManager: NSObject {
     
     var parsers : [FeedParser] = []
     
-    let mainManager = Manager(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
-    let backgroundManager = Manager(configuration: NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier("com.rachelbrindle.rNews.background"))
-    
     func updateFeeds(feeds: [Feed], completion: (NSError?)->(Void), backgroundFetch: Bool = false) {
         let feedIds = feeds.filter { $0.url != nil }.map { $0.objectID }
         
@@ -355,11 +352,11 @@ class DataManager: NSObject {
                 }
                 self.enclosureProgress.removeValueForKey(enclosure.objectID)
             }
-            mainManager.request(.GET, enclosure.url).response {(_, _, response, error) in
+            dataFetcher.fetchItemAtURL(enclosure.url) {(data, error) in
                 if let err = error {
                     completion(enclosure, err)
-                } else {
-                    enclosure.data = response as NSData
+                } else if let d = data {
+                    enclosure.data = d
                     completion(enclosure, nil)
                 }
                 self.enclosureProgress.removeValueForKey(enclosure.objectID)
@@ -611,11 +608,6 @@ class DataManager: NSObject {
         self.dataHelper = dataHelper
         
         persistentStoreCoordinator = dataHelper.persistentStoreCoordinator(dataHelper.managedObjectModel(), storeType: (testing ? NSInMemoryStoreType : NSSQLiteStoreType))
-        
-        for manager in [mainManager, backgroundManager] {
-            manager.session.configuration.timeoutIntervalForRequest = 30.0;
-            manager.session.configuration.timeoutIntervalForResource = 30.0;
-        }
         
         super.init()
         setupBackgroundContexts()

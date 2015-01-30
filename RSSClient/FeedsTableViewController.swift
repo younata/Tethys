@@ -23,7 +23,16 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     
     var menuTopOffset : NSLayoutConstraint!
     
-    var dataManager : DataManager? = nil
+    let dataManager : DataManager
+
+    init(dataManager: DataManager) {
+        self.dataManager = dataManager
+        super.init()
+    }
+
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -145,8 +154,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             findFeed.dataManager = dataManager
             vc = UINavigationController(rootViewController: findFeed)
         } else if itemIndex == 1 {
-            let localImport = LocalImportViewController()
-            localImport.dataManager = dataManager
+            let localImport = LocalImportViewController(dataManager: dataManager) // Fixme: Use Ra.
             vc = UINavigationController(rootViewController: localImport)
         } else if itemIndex == 2 {
             let queryFeed = QueryFeedViewController(style: .Grouped)
@@ -176,9 +184,9 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func reload(tag: String?) {
         let oldFeeds = feeds
-        feeds = dataManager!.feedsMatchingTag(tag).sorted {(f1: Feed, f2: Feed) in
-            let f1Unread = f1.unreadArticles(self.dataManager!)
-            let f2Unread = f2.unreadArticles(self.dataManager!)
+        feeds = dataManager.feedsMatchingTag(tag).sorted {(f1: Feed, f2: Feed) in
+            let f1Unread = f1.unreadArticles(self.dataManager)
+            let f2Unread = f2.unreadArticles(self.dataManager)
             if f1Unread != f2Unread {
                 return f1Unread > f2Unread
             }
@@ -200,7 +208,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func refresh() {
-        dataManager!.updateFeeds({(_) in
+        dataManager.updateFeeds({(_) in
             self.reload()
         })
     }
@@ -239,7 +247,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let feed = feedAtIndexPath(indexPath)
-        let strToUse = (feed.unreadArticles(self.dataManager!) == 0 ? "unread" : "read") // Prevents a green triangle which'll (dis)appear depending on whether new feed loaded into it has unread articles or not.
+        let strToUse = (feed.unreadArticles(self.dataManager) == 0 ? "unread" : "read") // Prevents a green triangle which'll (dis)appear depending on whether new feed loaded into it has unread articles or not.
         
         let cell = tableView.dequeueReusableCellWithIdentifier(strToUse, forIndexPath: indexPath) as FeedTableCell
         cell.dataManager = dataManager
@@ -264,12 +272,12 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
         let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
             let feed = self.feedAtIndexPath(indexPath)
-            self.dataManager!.deleteFeed(feed)
+            self.dataManager.deleteFeed(feed)
             self.reload()
         })
         let markRead = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Mark\nRead", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
             let feed = self.feedAtIndexPath(indexPath)
-            self.dataManager!.readArticles(feed.allArticles(self.dataManager!))
+            self.dataManager.readArticles(feed.allArticles(self.dataManager))
             self.reload()
         })
         let edit = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Edit", comment: ""), handler: {(_, indexPath: NSIndexPath!) in

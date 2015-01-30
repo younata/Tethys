@@ -49,8 +49,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         UIBarButtonItem.appearance().tintColor = UIColor.darkGreenColor()
         UITabBar.appearance().tintColor = UIColor.darkGreenColor()
 
-        let feeds = FeedsTableViewController()
-        feeds.dataManager = dataManager
+        let feeds = injector.create(FeedsTableViewController.self) as FeedsTableViewController
         let master = UINavigationController(rootViewController: feeds)
         let detail = UINavigationController(rootViewController: ArticleViewController())
         

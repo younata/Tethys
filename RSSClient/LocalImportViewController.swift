@@ -18,8 +18,17 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
     let tableViewController = UITableViewController(style: .Plain)
     
     var tableViewTopOffset: NSLayoutConstraint!
-    
-    var dataManager : DataManager? = nil
+
+    let dataManager : DataManager
+
+    init(dataManager: DataManager) {
+        self.dataManager = dataManager
+        super.init()
+    }
+   
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -147,7 +156,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
             
             feedParser.completion = {(info, _) in
                 if let url = info.url.absoluteString {
-                    self.dataManager!.newFeed(info.url.absoluteString!) {(error) in
+                    self.dataManager.newFeed(info.url.absoluteString!) {(error) in
                         activityIndicator.removeFromSuperview()
                         self.view.userInteractionEnabled = true
                         self.navigationItem.leftBarButtonItem?.enabled = true
@@ -174,7 +183,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
             UIView.animateWithDuration(0.3, animations: {activityIndicator.backgroundColor = color})
             self.view.userInteractionEnabled = false
             
-            dataManager!.importOPML(NSURL(string: "file://" + location)!, progress: {(progress: Double) in
+            dataManager.importOPML(NSURL(string: "file://" + location)!, progress: {(progress: Double) in
                 activityIndicator.progress = progress
             }) {(_) in
                 self.dismiss()

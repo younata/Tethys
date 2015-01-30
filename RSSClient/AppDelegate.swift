@@ -19,14 +19,12 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         window.makeKeyAndVisible()
         return window
     }()
+
+    private lazy var injectorModule : InjectorModule = InjectorModule()
     
     lazy var injector : Ra.Injector = {
         let injector = Ra.Injector()
-        let dataHelper = CoreDataHelper()
-        let dataManager = DataManager(dataHelper: dataHelper, testing: false)
-        injector.setCreationMethod(DataManager.self) {
-            return dataManager
-        }
+        self.injectorModule.configure(injector)
         return injector
     }()
 
@@ -37,8 +35,14 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
     let notificationHandler = NotificationHandler()
     
     lazy var splitDelegate : SplitDelegate = {
-        return SplitDelegate(splitViewController: (self.window.rootViewController as UISplitViewController))
+        let splitDelegate = SplitDelegate(splitViewController: self.splitView)
+        self.injector.setCreationMethod(SplitDelegate.self) {
+            return splitDelegate
+        }
+        return splitDelegate
     }()
+
+    private lazy var splitView : UISplitViewController = UISplitViewController()
 
     public func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         UINavigationBar.appearance().tintColor = UIColor.darkGreenColor()
@@ -54,7 +58,6 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             nc.navigationBar.translucent = true
         }
         
-        let splitView = UISplitViewController()
         self.window.rootViewController = splitView
         splitView.delegate = splitDelegate
         splitView.viewControllers = [master, detail]
@@ -102,7 +105,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             if settings.types & UIUserNotificationType.Alert == .Alert {
                 let articles : [Article] = self.dataManager.dataHelper.entities("Article", matchingPredicate: NSPredicate(format: "self IN %@", alist)!, managedObjectContext: self.dataManager.managedObjectContext) as [Article]
                 for article: Article in articles {
-                    self.notificationHandler.sendLocalNotification(application, article: article)
+//                    self.notificationHandler.sendLocalNotification(application, article: article)
                 }
             }
             if (alist.count > 0) {

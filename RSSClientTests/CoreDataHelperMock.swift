@@ -8,24 +8,17 @@
 
 import Foundation
 
+func fullyConfiguredManagedObjectContext() -> NSManagedObjectContext {
+    let helper = CoreDataHelperMock()
+    let managedObjectModel = helper.managedObjectModel()
+    let persistentStoreCoordinator = helper.persistentStoreCoordinator(managedObjectModel)
+    return helper.managedObjectContext(persistentStoreCoordinator)
+}
+
 class CoreDataHelperMock : CoreDataHelper {
-    override func upsertEntity(entity: String, withProperties properties: [String : AnyObject], managedObjectContext: NSManagedObjectContext, createProperties: [String : AnyObject]) -> NSManagedObject {
-        return NSManagedObject()
-    }
-
-    override func entities(entity: String, matchingPredicate predicate: NSPredicate, managedObjectContext: NSManagedObjectContext, sortDescriptors: [NSSortDescriptor]) -> [AnyObject]? {
-        return nil
-    }
-
-    override func managedObjectModel() -> NSManagedObjectModel {
-        return NSManagedObjectModel()
-    }
-
-    override func persistentStoreCoordinator(managedObjectModel: NSManagedObjectModel, storeType: String) -> NSPersistentStoreCoordinator {
-        return NSPersistentStoreCoordinator()
-    }
-
-    override func managedObjectContext(persistentStoreCoordinator: NSPersistentStoreCoordinator) -> NSManagedObjectContext {
-        return NSManagedObjectContext()
+    override func persistentStoreCoordinator(managedObjectModel: NSManagedObjectModel) -> NSPersistentStoreCoordinator {
+        let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
+        persistentStoreCoordinator.addPersistentStoreWithType(NSInMemoryStoreType, configuration: nil, URL: nil, options: nil, error: nil)
+        return persistentStoreCoordinator
     }
 }

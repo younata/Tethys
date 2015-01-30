@@ -605,10 +605,10 @@ class DataManager: NSObject {
         }
     }
     
-    init(dataHelper: CoreDataHelper, testing: Bool) {
+    init(dataHelper: CoreDataHelper) {
         self.dataHelper = dataHelper
         
-        persistentStoreCoordinator = dataHelper.persistentStoreCoordinator(dataHelper.managedObjectModel(), storeType: (testing ? NSInMemoryStoreType : NSSQLiteStoreType))
+        persistentStoreCoordinator = dataHelper.persistentStoreCoordinator(dataHelper.managedObjectModel())
         
         super.init()
         setupBackgroundContexts()

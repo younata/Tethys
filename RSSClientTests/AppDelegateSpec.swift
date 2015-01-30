@@ -14,7 +14,7 @@ class AppDelegateSpec: QuickSpec {
 
             injector = Ra.Injector()
             injector.setCreationMethod(DataManager.self) {
-                return DataManagerMock(dataHelper: CoreDataHelperMock(), testing: true)
+                return DataManagerMock(dataHelper: CoreDataHelperMock())
             }
 
             subject.injector = injector

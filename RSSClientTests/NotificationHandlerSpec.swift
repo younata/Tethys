@@ -9,16 +9,27 @@ class NotificationHandlerSpec: QuickSpec {
         let window = UIWindow()
         
         var subject : NotificationHandler! = nil
-        
+
+        var ctx : NSManagedObjectContext! = nil
+
+        var article: ArticleObject? = nil
+        var feed: FeedObject? = nil
+        var feedID: NSManagedObjectIDMock! = nil
+        var articleID: NSManagedObjectIDMock! = nil
+
         beforeEach {
             subject = NotificationHandler()
-        }
-        
-        describe("Enabling notifications") {
-            it("should enable badges, alerts, and sounds for the 'default' category") {
-                // enabling notifications isn't really testable.
-                expect(true).to(beTruthy())
-            }
+
+            ctx = fullyConfiguredManagedObjectContext()
+
+            feedID = NSManagedObjectIDMock()
+            feedID.uri = NSURL(string: "https://example.com/feed")!
+
+            articleID = NSManagedObjectIDMock()
+            articleID.uri = NSURL(string: "https://example.com/article")!
+
+            feed = FeedObject(tuple: ("example feed", "http://example.com/feed", "", nil, [], 0, 0, nil), objectID: feedID)
+            article = ArticleObject(tuple: ("example article", "http://example.com/article", "", "", NSDate(), nil, "", false, [], feed, []), objectID: articleID)
         }
         
         sharedExamples("Opening articles") {(sharedExampleContext: SharedExampleContext) in
@@ -32,11 +43,46 @@ class NotificationHandlerSpec: QuickSpec {
         }
         
         describe("handling actions") {
-            
+            describe("read") {
+                it("should set the article's read value to true") {
+
+                }
+            }
+
+            describe("view") {
+                it("should open the app and show the article") {
+
+                }
+            }
         }
         
         describe("sending notifications") {
-            
+            it("should send a notification") {
+                expect(article).toNot(beNil())
+                if let article = article {
+                    subject.sendLocalNotification(app, article: article)
+                    let scheduledNotes = app.scheduledLocalNotifications as [UILocalNotification]
+                    expect(scheduledNotes).toNot(beEmpty())
+                    var found = false
+
+                    let feedIDStr : String? = feedID.URIRepresentation().absoluteString
+                    let articleIDStr : String? = articleID.URIRepresentation().absoluteString
+
+                    for note in scheduledNotes {
+                        if note.category == "default" {
+                            if let userInfo = note.userInfo as? [String: String] {
+                                let feedInfoID = userInfo["feed"]
+                                let articleInfoID = userInfo["article"]
+                                if feedInfoID == feedIDStr && articleInfoID == articleIDStr {
+                                    found = true
+                                    break
+                                }
+                            }
+                        }
+                    }
+                    expect(found).to(beTruthy())
+                }
+            }
         }
     }
 }

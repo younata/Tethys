@@ -76,26 +76,23 @@ class CoreDataHelper {
         return model
     }
     
-    func persistentStoreCoordinator(managedObjectModel: NSManagedObjectModel, storeType: String) -> NSPersistentStoreCoordinator {let applicationDocumentsDirectory: String = (NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).last as String)
+    func persistentStoreCoordinator(managedObjectModel: NSManagedObjectModel) -> NSPersistentStoreCoordinator {let applicationDocumentsDirectory: String = (NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).last as String)
         let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
-        if storeType == NSInMemoryStoreType {
-            persistentStoreCoordinator.addPersistentStoreWithType(storeType, configuration: nil, URL: nil, options: nil, error: nil)
-        } else {
-            let storeURL = NSURL.fileURLWithPath(applicationDocumentsDirectory.stringByAppendingPathComponent("RSSClient.sqlite"))
-            var error: NSError? = nil
-            var options : [String: AnyObject] = [NSMigratePersistentStoresAutomaticallyOption: true, NSInferMappingModelAutomaticallyOption: true]
-            persistentStoreCoordinator.addPersistentStoreWithType(storeType, configuration: managedObjectModel.configurations.last as NSString?, URL: storeURL, options: options, error: &error)
+
+        let storeURL = NSURL.fileURLWithPath(applicationDocumentsDirectory.stringByAppendingPathComponent("RSSClient.sqlite"))
+        var error: NSError? = nil
+        var options : [String: AnyObject] = [NSMigratePersistentStoresAutomaticallyOption: true, NSInferMappingModelAutomaticallyOption: true]
+        persistentStoreCoordinator.addPersistentStoreWithType(NSInMemoryStoreType, configuration: managedObjectModel.configurations.last as NSString?, URL: storeURL, options: options, error: &error)
+        if (error != nil) {
+            NSFileManager.defaultManager().removeItemAtURL(storeURL!, error: nil)
+            error = nil
+            persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: managedObjectModel.configurations.last as NSString?, URL: storeURL, options: options, error: &error)
             if (error != nil) {
-                NSFileManager.defaultManager().removeItemAtURL(storeURL!, error: nil)
-                error = nil
-                persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: managedObjectModel.configurations.last as NSString?, URL: storeURL, options: options, error: &error)
-                if (error != nil) {
-                    println("Fatal error adding persistent data store: \(error!)")
-                    fatalError("bye.")
-                }
+                println("Fatal error adding persistent data store: \(error!)")
+                fatalError("bye.")
             }
         }
-        
+
         return persistentStoreCoordinator
     }
     

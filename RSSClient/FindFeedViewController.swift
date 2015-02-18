@@ -258,7 +258,6 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     }
     
     func webView(webView: WKWebView!, didStartProvisionalNavigation navigation: WKNavigation!) {
-        println("loading navigation: \(navigation)")
         loadingBar.progress = 0
         loadingBar.hidden = false
         navField.placeholder = ""

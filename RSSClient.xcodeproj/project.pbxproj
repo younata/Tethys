@@ -182,14 +182,8 @@
 		AE4356021A7ABA6900A961B9 /* CoreDataHelperMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4356011A7ABA6900A961B9 /* CoreDataHelperMock.swift */; };
 		AE4356041A7ABA8100A961B9 /* DataFetcherMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4356031A7ABA8100A961B9 /* DataFetcherMock.swift */; };
 		AE4356061A7ABA9600A961B9 /* FeedManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4356051A7ABA9600A961B9 /* FeedManagerMock.swift */; };
-		AE43560D1A7ACC5200A961B9 /* FeedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE43560C1A7ACC5200A961B9 /* FeedObject.swift */; };
-		AE43560E1A7ACC5200A961B9 /* FeedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE43560C1A7ACC5200A961B9 /* FeedObject.swift */; };
-		AE4356101A7ACF8A00A961B9 /* ArticleObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE43560F1A7ACF8A00A961B9 /* ArticleObject.swift */; };
-		AE4356111A7ACF8A00A961B9 /* ArticleObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE43560F1A7ACF8A00A961B9 /* ArticleObject.swift */; };
 		AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4356301A7AE4FE00A961B9 /* InjectorModule.swift */; };
 		AE43563D1A7AE5D000A961B9 /* InjectorModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4356301A7AE4FE00A961B9 /* InjectorModule.swift */; };
-		AE43563F1A7AE74800A961B9 /* EnclosureObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE43563E1A7AE74800A961B9 /* EnclosureObject.swift */; };
-		AE4356401A7AE74800A961B9 /* EnclosureObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE43563E1A7AE74800A961B9 /* EnclosureObject.swift */; };
 		AE4356421A7AFD6B00A961B9 /* NSManagedObjectIDMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4356411A7AFD6B00A961B9 /* NSManagedObjectIDMock.swift */; };
 /* End PBXBuildFile section */
 
@@ -485,10 +479,7 @@
 		AE4356011A7ABA6900A961B9 /* CoreDataHelperMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataHelperMock.swift; sourceTree = "<group>"; };
 		AE4356031A7ABA8100A961B9 /* DataFetcherMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataFetcherMock.swift; sourceTree = "<group>"; };
 		AE4356051A7ABA9600A961B9 /* FeedManagerMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedManagerMock.swift; sourceTree = "<group>"; };
-		AE43560C1A7ACC5200A961B9 /* FeedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedObject.swift; sourceTree = "<group>"; };
-		AE43560F1A7ACF8A00A961B9 /* ArticleObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleObject.swift; sourceTree = "<group>"; };
 		AE4356301A7AE4FE00A961B9 /* InjectorModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InjectorModule.swift; sourceTree = "<group>"; };
-		AE43563E1A7AE74800A961B9 /* EnclosureObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnclosureObject.swift; sourceTree = "<group>"; };
 		AE4356411A7AFD6B00A961B9 /* NSManagedObjectIDMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSManagedObjectIDMock.swift; sourceTree = "<group>"; };
 		E3BD5CAD62D2FA1E198BB3BD /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -882,9 +873,6 @@
 				89C830C519D8A058009924DA /* Feed.m */,
 				895901A31A30BCB7002E2C62 /* Enclosure.h */,
 				895901A41A30BCB7002E2C62 /* Enclosure.m */,
-				AE43560C1A7ACC5200A961B9 /* FeedObject.swift */,
-				AE43560F1A7ACF8A00A961B9 /* ArticleObject.swift */,
-				AE43563E1A7AE74800A961B9 /* EnclosureObject.swift */,
 				8963F42D1A26674500B447D6 /* Data-extensions.swift */,
 			);
 			name = "Core Data";
@@ -1297,7 +1285,6 @@
 				89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */,
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
 				895901A91A30C5D1002E2C62 /* EnclosuresView.swift in Sources */,
-				AE43560D1A7ACC5200A961B9 /* FeedObject.swift in Sources */,
 				895782411A3CC0130022F345 /* CircularProgressLayer.swift in Sources */,
 				89C7FBE01A183EBE00ACBDB2 /* MAKDropDownMenu.m in Sources */,
 				895901AC1A30C6B7002E2C62 /* EnclosureCell.swift in Sources */,
@@ -1314,7 +1301,6 @@
 				897F70F21A38AFE500ECE1A1 /* EnclosuresViewController.swift in Sources */,
 				89C204C41A7400D100C792D2 /* NotificationHandler.swift in Sources */,
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
-				AE4356101A7ACF8A00A961B9 /* ArticleObject.swift in Sources */,
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
 				8924D8F21A0E8EEA003B7529 /* OPMLParser.swift in Sources */,
 				8933E92F19ECD28900ECFF3F /* NSString+XMLEntities.m in Sources */,
@@ -1333,7 +1319,6 @@
 				89C8307C19D730E9009924DA /* RSSClient.xcdatamodeld in Sources */,
 				8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */,
 				89C7FBE81A18847A00ACBDB2 /* RBActivityIndicator.m in Sources */,
-				AE43563F1A7AE74800A961B9 /* EnclosureObject.swift in Sources */,
 				8933E92C19ECD28900ECFF3F /* GTMNSString+HTML.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1343,7 +1328,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				895901AD1A30C6B7002E2C62 /* EnclosureCell.swift in Sources */,
-				AE43560E1A7ACC5200A961B9 /* FeedObject.swift in Sources */,
 				895779AD19E62CDA00548418 /* Feed.m in Sources */,
 				89DA7D2F1A681B880050685B /* TextFieldCell.swift in Sources */,
 				893448B81A004E4E00F5D528 /* MWFeedInfo.m in Sources */,
@@ -1365,9 +1349,7 @@
 				894FEF351A776AFC009DF7CD /* FeedManager.swift in Sources */,
 				AE4356021A7ABA6900A961B9 /* CoreDataHelperMock.swift in Sources */,
 				89C204BE1A73FD1000C792D2 /* SplitDelegate.swift in Sources */,
-				AE4356111A7ACF8A00A961B9 /* ArticleObject.swift in Sources */,
 				8963F42F1A26674500B447D6 /* Data-extensions.swift in Sources */,
-				AE4356401A7AE74800A961B9 /* EnclosureObject.swift in Sources */,
 				895779A319E62CC500548418 /* FeedTableCell.swift in Sources */,
 				89635F841A13BF120052C248 /* AMPopTip.m in Sources */,
 				894FEF1D1A755D92009DF7CD /* CoreDataHelper.swift in Sources */,

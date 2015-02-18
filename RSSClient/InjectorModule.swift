@@ -38,11 +38,15 @@ class InjectorModule {
         }
 
         injector.setCreationMethod(FeedsTableViewController.self) {
-            return FeedsTableViewController(dataManager: injector.create(DataManager.self) as DataManager)
+            let feeds = FeedsTableViewController()
+            feeds.dataManager = injector.create(DataManager.self) as DataManager
+            return feeds
         }
 
         injector.setCreationMethod(LocalImportViewController.self) {
-            return LocalImportViewController(dataManager: injector.create(DataManager.self) as DataManager)
+            let localImport = LocalImportViewController()
+            localImport.dataManager = injector.create(DataManager.self) as DataManager
+            return localImport
         }
     }
 }

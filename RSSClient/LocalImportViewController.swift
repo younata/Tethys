@@ -19,16 +19,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
     
     var tableViewTopOffset: NSLayoutConstraint!
 
-    let dataManager : DataManager
-
-    init(dataManager: DataManager) {
-        self.dataManager = dataManager
-        super.init()
-    }
-   
-    required init(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    lazy var dataManager : DataManager = { DataManager(dataHelper: CoreDataHelper()) }()
 
     override func viewDidLoad() {
         super.viewDidLoad()

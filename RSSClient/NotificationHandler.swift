@@ -43,9 +43,9 @@ class NotificationHandler {
         }
     }
     
-    func sendLocalNotification(application: UIApplication, article: ArticleObject) {
+    func sendLocalNotification(application: UIApplication, article: Article) {
         let note = UILocalNotification()
-        note.alertBody = NSString.localizedStringWithFormat("New article in %@: %@", article.feed?.feedTitle ?? "", article.title)
+        note.alertBody = NSString.localizedStringWithFormat("New article in %@: %@", article.feed?.feedTitle() ?? "", article.title)
 
         let feedID = article.feed!.objectID.URIRepresentation().absoluteString!
         let articleID = article.objectID.URIRepresentation().absoluteString!
@@ -60,15 +60,15 @@ class NotificationHandler {
 //        application.presentLocalNotificationNow(note)
     }
     
-    private func feedAndArticleFromUserInfo(userInfo: [NSObject : AnyObject], dataManager: DataManager) -> (FeedObject, ArticleObject) {
+    private func feedAndArticleFromUserInfo(userInfo: [NSObject : AnyObject], dataManager: DataManager) -> (Feed, Article) {
         let feedID = (userInfo["feed"] as String)
         let feed : Feed = dataManager.feeds().filter{ return $0.objectID.URIRepresentation().absoluteString == feedID; }.first!
         let articleID = (userInfo["article"] as String)
         let article : Article = feed.allArticles(dataManager).filter({ return $0.objectID.URIRepresentation().absoluteString == articleID }).first!
-        return (FeedObject(feed: feed), ArticleObject(article: article))
+        return (feed, article)
     }
     
-    private func showArticle(article: ArticleObject, window: UIWindow) {
+    private func showArticle(article: Article, window: UIWindow) {
         if let nc = (window.rootViewController as? UISplitViewController)?.viewControllers.first as? UINavigationController {
             if let ftvc = nc.viewControllers.first as? FeedsTableViewController {
                 nc.popToRootViewControllerAnimated(false)

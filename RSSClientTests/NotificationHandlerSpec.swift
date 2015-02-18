@@ -12,8 +12,8 @@ class NotificationHandlerSpec: QuickSpec {
 
         var ctx : NSManagedObjectContext! = nil
 
-        var article: ArticleObject? = nil
-        var feed: FeedObject? = nil
+        var article: Article? = nil
+        var feed: Feed? = nil
         var feedID: NSManagedObjectIDMock! = nil
         var articleID: NSManagedObjectIDMock! = nil
 
@@ -28,8 +28,8 @@ class NotificationHandlerSpec: QuickSpec {
             articleID = NSManagedObjectIDMock()
             articleID.uri = NSURL(string: "https://example.com/article")!
 
-            feed = FeedObject(tuple: ("example feed", "http://example.com/feed", "", nil, [], 0, 0, nil), objectID: feedID)
-            article = ArticleObject(tuple: ("example article", "http://example.com/article", "", "", NSDate(), nil, "", false, [], feed, []), objectID: articleID)
+//            feed = FeedObject(tuple: ("example feed", "http://example.com/feed", "", nil, [], 0, 0, nil), objectID: feedID)
+//            article = ArticleObject(tuple: ("example article", "http://example.com/article", "", "", NSDate(), nil, "", false, [], feed, []), objectID: articleID)
         }
         
         sharedExamples("Opening articles") {(sharedExampleContext: SharedExampleContext) in

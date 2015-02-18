@@ -23,16 +23,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     
     var menuTopOffset : NSLayoutConstraint!
     
-    let dataManager : DataManager
-
-    init(dataManager: DataManager) {
-        self.dataManager = dataManager
-        super.init()
-    }
-
-    required init(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    lazy var dataManager : DataManager = { DataManager(dataHelper: CoreDataHelper()) }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -154,7 +145,8 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             findFeed.dataManager = dataManager
             vc = UINavigationController(rootViewController: findFeed)
         } else if itemIndex == 1 {
-            let localImport = LocalImportViewController(dataManager: dataManager) // Fixme: Use Ra.
+            let localImport = LocalImportViewController() // Fixme: Use Ra.
+            localImport.dataManager = dataManager
             vc = UINavigationController(rootViewController: localImport)
         } else if itemIndex == 2 {
             let queryFeed = QueryFeedViewController(style: .Grouped)

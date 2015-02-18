@@ -8,6 +8,12 @@
 
 import Foundation
 
+#if os(iOS)
+    typealias Image=UIImage
+#else
+    typealias Image=NSImage
+#endif
+
 extension Feed {
     func feedImage() -> Image? {
         if self.image == nil { return nil }

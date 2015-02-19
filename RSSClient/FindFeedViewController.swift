@@ -77,21 +77,6 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         loadingBar.progress = 0
         loadingBar.hidden = true
         loadingBar.progressTintColor = UIColor.darkGreenColor()
-        
-        /*
-        if (lookForFeeds) {
-        let navFieldShownString = "findfeedviewcontroller.navfield.shown"
-            if (NSUserDefaults.standardUserDefaults().boolForKey(navFieldShownString) == false) {
-                let popTip = AMPopTip()
-                let popTipText = NSAttributedString(string: NSLocalizedString("Enter the URL for the feed or website here", comment: ""),
-                                                    attributes: [NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)])
-                let width = CGRectGetWidth(self.view.bounds) / 2.0
-                let size = popTipText.boundingRectWithSize(CGSizeMake(width, CGFloat.max), options: .UsesFontLeading, context: nil).size
-                popTip.showAttributedText(popTipText, direction: AMPopTipDirection.Up, maxWidth: ceil(size.width), inView: self.view, fromFrame: CGRectMake(width, -10, 0, 0))
-                NSUserDefaults.standardUserDefaults().setBool(true, forKey: navFieldShownString)
-            }
-        }
-        */
     }
     
     override func viewDidAppear(animated: Bool) {

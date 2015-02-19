@@ -57,32 +57,32 @@ class NotificationHandlerSpec: QuickSpec {
         }
         
         describe("sending notifications") {
-            it("should send a notification") {
-                expect(article).toNot(beNil())
-                if let article = article {
-                    subject.sendLocalNotification(app, article: article)
-                    let scheduledNotes = app.scheduledLocalNotifications as [UILocalNotification]
-                    expect(scheduledNotes).toNot(beEmpty())
-                    var found = false
-
-                    let feedIDStr : String? = feedID.URIRepresentation().absoluteString
-                    let articleIDStr : String? = articleID.URIRepresentation().absoluteString
-
-                    for note in scheduledNotes {
-                        if note.category == "default" {
-                            if let userInfo = note.userInfo as? [String: String] {
-                                let feedInfoID = userInfo["feed"]
-                                let articleInfoID = userInfo["article"]
-                                if feedInfoID == feedIDStr && articleInfoID == articleIDStr {
-                                    found = true
-                                    break
-                                }
-                            }
-                        }
-                    }
-                    expect(found).to(beTruthy())
-                }
-            }
+//            it("should send a notification") {
+//                expect(article).toNot(beNil())
+//                if let article = article {
+//                    subject.sendLocalNotification(app, article: article)
+//                    let scheduledNotes = app.scheduledLocalNotifications as [UILocalNotification]
+//                    expect(scheduledNotes).toNot(beEmpty())
+//                    var found = false
+//
+//                    let feedIDStr : String? = feedID.URIRepresentation().absoluteString
+//                    let articleIDStr : String? = articleID.URIRepresentation().absoluteString
+//
+//                    for note in scheduledNotes {
+//                        if note.category == "default" {
+//                            if let userInfo = note.userInfo as? [String: String] {
+//                                let feedInfoID = userInfo["feed"]
+//                                let articleInfoID = userInfo["article"]
+//                                if feedInfoID == feedIDStr && articleInfoID == articleIDStr {
+//                                    found = true
+//                                    break
+//                                }
+//                            }
+//                        }
+//                    }
+//                    expect(found).to(beTruthy())
+//                }
+//            }
         }
     }
 }

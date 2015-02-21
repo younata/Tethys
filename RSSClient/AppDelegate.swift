@@ -22,23 +22,21 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private lazy var injectorModule : InjectorModule = InjectorModule()
     
-    lazy var injector : Ra.Injector = {
+    lazy var anInjector : Ra.Injector = {
         let injector = Ra.Injector()
         self.injectorModule.configure(injector)
         return injector
     }()
 
     lazy var dataManager : DataManager = {
-        return self.injector.create(DataManager.self) as DataManager
+        return self.anInjector.create(DataManager.self) as DataManager
     }()
     
     let notificationHandler = NotificationHandler()
     
     lazy var splitDelegate : SplitDelegate = {
         let splitDelegate = SplitDelegate(splitViewController: self.splitView)
-        self.injector.setCreationMethod(SplitDelegate.self) {
-            return splitDelegate
-        }
+        self.anInjector.bind(SplitDelegate.self, to: splitDelegate)
         return splitDelegate
     }()
 
@@ -49,7 +47,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         UIBarButtonItem.appearance().tintColor = UIColor.darkGreenColor()
         UITabBar.appearance().tintColor = UIColor.darkGreenColor()
 
-        let feeds = injector.create(FeedsTableViewController.self) as FeedsTableViewController
+        let feeds = self.anInjector.create(FeedsTableViewController.self) as FeedsTableViewController
         let master = UINavigationController(rootViewController: feeds)
         let detail = UINavigationController(rootViewController: ArticleViewController())
         

@@ -13,11 +13,11 @@ class AppDelegateSpec: QuickSpec {
             subject = AppDelegate()
 
             injector = Ra.Injector()
-            injector.setCreationMethod(DataManager.self) {
+            injector.bind(DataManager.self) {
                 return DataManagerMock(dataHelper: CoreDataHelperMock())
             }
 
-            subject.injector = injector
+            subject.anInjector = injector
             subject.window = UIWindow(frame: CGRectMake(0, 0, 320, 480))
             // Apparently, calling "-makeKeyAndVisible" on a window in test will cause a crash.
         }

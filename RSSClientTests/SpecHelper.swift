@@ -11,7 +11,7 @@ import Ra
 
 func injector() -> Injector {
     let injector = Ra.Injector()
-    injector.setCreationMethod(DataManager.self) {
+    injector.bind(DataManager.self) {
         return DataManagerMock(dataHelper: CoreDataHelper())
     }
     return injector

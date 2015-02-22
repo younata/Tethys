@@ -9,6 +9,9 @@
 import Foundation
 import Ra
 
+let kMainManagedObjectContext = "kMainManagedObjectContext"
+let kBackgroundManagedObjectContext = "kBackgroundManagedObjectContext"
+
 class InjectorModule {
     func configure(injector: Ra.Injector) {
         let dataHelper = CoreDataHelper()
@@ -34,17 +37,8 @@ class InjectorModule {
             tagPicker.setTranslatesAutoresizingMaskIntoConstraints(false)
             return tagPicker
         }
-
-        injector.bind(FeedsTableViewController.self) {
-            let feeds = FeedsTableViewController()
-            feeds.dataManager = injector.create(DataManager.self) as DataManager
-            return feeds
-        }
-
-        injector.bind(LocalImportViewController.self) {
-            let localImport = LocalImportViewController()
-            localImport.dataManager = injector.create(DataManager.self) as DataManager
-            return localImport
-        }
+        
+        injector.bind(kMainManagedObjectContext, to: dataManager.managedObjectContext)
+        injector.bind(kBackgroundManagedObjectContext, to: dataManager.backgroundObjectContext)
     }
 }

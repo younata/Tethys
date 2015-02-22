@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, MAKDropDownMenuDelegate, UITextFieldDelegate, UISearchBarDelegate {
+class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, MAKDropDownMenuDelegate, UITextFieldDelegate, UISearchBarDelegate, BreakOutToRefreshDelegate {
 
     var feeds: [Feed] = []
     
@@ -23,7 +23,19 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     
     var menuTopOffset : NSLayoutConstraint!
     
-    lazy var dataManager : DataManager = { DataManager(dataHelper: CoreDataHelper()) }()
+    lazy var refreshView : BreakOutToRefreshView = {
+        let refreshView = BreakOutToRefreshView(scrollView: self.tableView)
+        refreshView.delegate = self
+        refreshView.scenebackgroundColor = UIColor(hue: 0.68, saturation: 0.9, brightness: 0.3, alpha: 1.0)
+        refreshView.paddleColor = UIColor.lightGrayColor()
+        refreshView.ballColor = UIColor.whiteColor()
+        refreshView.blockColors = [UIColor(hue: 0.17, saturation: 0.9, brightness: 1.0, alpha: 1.0),
+                                   UIColor(hue: 0.17, saturation: 0.7, brightness: 1.0, alpha: 1.0),
+                                   UIColor(hue: 0.17, saturation: 0.5, brightness: 1.0, alpha: 1.0)]
+        return refreshView
+    }()
+    
+    lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as DataManager }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,16 +45,8 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.setTranslatesAutoresizingMaskIntoConstraints(false)
         tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
         
-        let height = UIFont.preferredFontForTextStyle(UIFontTextStyleBody).lineHeight + 10
-        let insets = UIEdgeInsetsMake(height, 0, 0, 0)
-        tableView.contentInset = insets
-        tableView.scrollIndicatorInsets = insets
+        tableView.tableHeaderView = searchBar
         
-        self.view.addSubview(searchBar)
-        searchBar.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
-        searchBar.autoSetDimension(.Height, toSize: height)
-        
-        self.tableView.tableHeaderView = searchBar
         searchBar.autocorrectionType = .No
         searchBar.autocapitalizationType = .None
         searchBar.delegate = self
@@ -71,8 +75,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 80
         
-        self.tableViewController.refreshControl = UIRefreshControl(frame: CGRectZero)
-        self.tableViewController.refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+        self.tableView.addSubview(self.refreshView)
         
         self.tableView.tableFooterView = UIView()
         
@@ -139,29 +142,24 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func dropDownMenu(menu: MAKDropDownMenu!, itemDidSelect itemIndex: UInt) {
-        var vc : UINavigationController? = nil
+        var klass : AnyClass! = nil
         if itemIndex == 0 {
-            let findFeed = FindFeedViewController()
-            findFeed.dataManager = dataManager
-            vc = UINavigationController(rootViewController: findFeed)
+            klass = FindFeedViewController.self
         } else if itemIndex == 1 {
-            let localImport = LocalImportViewController() // Fixme: Use Ra.
-            localImport.dataManager = dataManager
-            vc = UINavigationController(rootViewController: localImport)
+            klass = LocalImportViewController.self
         } else if itemIndex == 2 {
-            let queryFeed = QueryFeedViewController(style: .Grouped)
-            queryFeed.dataManager = dataManager
-//            queryFeed.feed = dataManager?.newFeed()
-            vc = UINavigationController(rootViewController: queryFeed)
+            klass = QueryFeedViewController.self
+        } else {
+            menu.closeAnimated(true)
+            return
         }
-        if let nc = vc {
-            if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-                let popover = UIPopoverController(contentViewController: nc)
-                popover.popoverContentSize = CGSizeMake(600, 800)
-                popover.presentPopoverFromBarButtonItem(self.navigationItem.rightBarButtonItem!, permittedArrowDirections: .Any, animated: true)
-            } else {
-                self.presentViewController(nc, animated: true, completion: nil)
-            }
+        let nc = UINavigationController(rootViewController: self.injector!.create(klass) as UIViewController)
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+            let popover = UIPopoverController(contentViewController: nc)
+            popover.popoverContentSize = CGSizeMake(600, 800)
+            popover.presentPopoverFromBarButtonItem(self.navigationItem.rightBarButtonItem!, permittedArrowDirections: .Any, animated: true)
+        } else {
+            self.presentViewController(nc, animated: true, completion: nil)
         }
         menu.closeAnimated(true)
     }
@@ -170,11 +168,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         menu.closeAnimated(true)
     }
     
-    func reload() {
-        reload(nil)
-    }
-    
-    func reload(tag: String?) {
+    func reload(_ tag: String? = nil) {
         let oldFeeds = feeds
         feeds = dataManager.feedsMatchingTag(tag).sorted {(f1: Feed, f2: Feed) in
             let f1Unread = f1.unreadArticles(self.dataManager)
@@ -219,6 +213,12 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         al.feeds = feeds
         self.navigationController?.pushViewController(al, animated: animated)
         return al
+    }
+    
+    // MARK: - BreakOutToRefreshDelegate
+    
+    func refreshViewDidRefresh(refreshView: BreakOutToRefreshView) {
+        reload(nil)
     }
     
     // MARK: - UIScrollViewDelegate
@@ -274,21 +274,18 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         })
         let edit = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Edit", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
             let feed = self.feedAtIndexPath(indexPath)
-            var viewController : UIViewController? = nil
+            var klass : AnyClass? = nil
+            var viewController : UIViewController! = nil
             if feed.isQueryFeed() {
-                let vc = QueryFeedViewController(style: .Grouped)
+                let vc = self.injector!.create(QueryFeedViewController.self) as QueryFeedViewController
                 vc.feed = feed
-                vc.dataManager = self.dataManager
                 viewController = vc
             } else {
-                let vc = FeedViewController(style: .Grouped)
+                let vc = self.injector!.create(FeedViewController.self) as FeedViewController
                 vc.feed = feed
-                vc.dataManager = self.dataManager
                 viewController = vc
             }
-            if let vc = viewController {
-                self.presentViewController(UINavigationController(rootViewController: vc), animated: true, completion: nil)
-            }
+            self.presentViewController(UINavigationController(rootViewController: viewController), animated: true, completion: nil)
         })
         edit.backgroundColor = UIColor.blueColor()
         return [delete, markRead, edit]

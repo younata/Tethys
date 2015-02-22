@@ -17,7 +17,7 @@ class FeedViewController: UITableViewController {
         }
     }
     
-    var dataManager: DataManager? = nil
+    lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as DataManager }()
     
     let intervalFormatter = NSDateIntervalFormatter()
 
@@ -49,14 +49,13 @@ class FeedViewController: UITableViewController {
     
     func save() {
         feed?.managedObjectContext?.save(nil)
-        dataManager?.writeOPML()
+        dataManager.writeOPML()
         dismiss()
     }
     
     func showTagEditor(tagIndex: Int) -> TagEditorViewController {
-        let tagEditor = TagEditorViewController()
+        let tagEditor = self.injector!.create(TagEditorViewController.self) as TagEditorViewController
         tagEditor.feed = feed
-        tagEditor.dataManager = dataManager
         if tagIndex < feed?.allTags().count {
             tagEditor.tagIndex = tagIndex
             tagEditor.tagPicker.textField.text = feed?.allTags()[tagIndex]

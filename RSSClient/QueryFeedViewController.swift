@@ -20,7 +20,7 @@ class QueryFeedViewController: UITableViewController {
         }
     }
     
-    var dataManager: DataManager? = nil
+    lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as DataManager }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,7 +45,7 @@ class QueryFeedViewController: UITableViewController {
     func dismiss() {
         if let feed = self.feed {
             if feed.title == nil && feed.query == nil {
-                dataManager?.deleteFeed(feed)
+                dataManager.deleteFeed(feed)
             }
         }
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
@@ -54,18 +54,17 @@ class QueryFeedViewController: UITableViewController {
     func save() {
         if let feed = self.feed {
             if feed.title == nil && feed.query == nil {
-                dataManager?.deleteFeed(feed)
+                dataManager.deleteFeed(feed)
             }
             feed.managedObjectContext?.save(nil)
         }
-        dataManager?.writeOPML()
+        dataManager.writeOPML()
         dismiss()
     }
     
     func showTagEditor(tagIndex: Int) {
-        let tagEditor = TagEditorViewController()
+        let tagEditor = self.injector!.create(TagEditorViewController.self) as TagEditorViewController
         tagEditor.feed = feed
-        tagEditor.dataManager = dataManager
         if tagIndex < feed?.allTags().count {
             tagEditor.tagIndex = tagIndex
             tagEditor.tagPicker.textField.text = feed?.allTags()[tagIndex]
@@ -188,7 +187,7 @@ class QueryFeedViewController: UITableViewController {
             let preview = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Preview", comment: ""), handler: {(_, _) in
                 let articleList = ArticleListController(style: .Plain)
                 articleList.previewMode = true
-                articleList.articles = self.dataManager!.articlesMatchingQuery(self.feed!.query)
+                articleList.articles = self.dataManager.articlesMatchingQuery(self.feed!.query)
                 self.navigationController?.pushViewController(articleList, animated: true)
             })
             return [preview]

@@ -130,6 +130,8 @@
 		8980475E1A20478600EB29F0 /* TUSafariActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 898047441A20478600EB29F0 /* TUSafariActivity.m */; };
 		898047611A2048F200EB29F0 /* FeedParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896F01A16F7B20030EB6E /* FeedParser.swift */; };
 		898047641A206CB100EB29F0 /* FeedsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898047631A206CB100EB29F0 /* FeedsList.swift */; };
+		899C47EC1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */; };
+		899C47ED1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */; };
 		89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204B41A73811000C792D2 /* AppDelegateSpec.swift */; };
 		89C204BA1A73813300C792D2 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89C204AB1A73804D00C792D2 /* Nimble.framework */; };
 		89C204BB1A73813300C792D2 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89C204981A73804500C792D2 /* Quick.framework */; };
@@ -427,6 +429,7 @@
 		898047431A20478600EB29F0 /* TUSafariActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TUSafariActivity.h; path = Vendor/TUSafariActivity/Classes/TUSafariActivity.h; sourceTree = "<group>"; };
 		898047441A20478600EB29F0 /* TUSafariActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TUSafariActivity.m; path = Vendor/TUSafariActivity/Classes/TUSafariActivity.m; sourceTree = "<group>"; };
 		898047631A206CB100EB29F0 /* FeedsList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FeedsList.swift; path = "RSSClient-OSX/FeedsList.swift"; sourceTree = SOURCE_ROOT; };
+		899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BreakOutToRefreshView.swift; path = Vendor/BreakOutToRefresh/PullToRefreshDemo/BreakOutToRefreshView.swift; sourceTree = "<group>"; };
 		89C2048E1A73804500C792D2 /* Quick.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Quick.xcodeproj; path = Vendor/Quick/Quick.xcodeproj; sourceTree = "<group>"; };
 		89C204A31A73804D00C792D2 /* Nimble.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Nimble.xcodeproj; path = Vendor/Nimble/Nimble.xcodeproj; sourceTree = "<group>"; };
 		89C204B41A73811000C792D2 /* AppDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateSpec.swift; sourceTree = "<group>"; };
@@ -688,6 +691,14 @@
 			path = Vendor/TUSafariActivity/Classes/en.lproj;
 			sourceTree = "<group>";
 		};
+		899C47F91A99B49000F57B96 /* BreakOutToRefresh */ = {
+			isa = PBXGroup;
+			children = (
+				899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */,
+			);
+			name = BreakOutToRefresh;
+			sourceTree = "<group>";
+		};
 		89C2048F1A73804500C792D2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -866,6 +877,7 @@
 		89EF4FC61A9681650052A82F /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				899C47F91A99B49000F57B96 /* BreakOutToRefresh */,
 				AE4355F41A7AAD6100A961B9 /* Ra */,
 				89C204B21A73805300C792D2 /* Nimble */,
 				89C204B31A73805A00C792D2 /* Quick */,
@@ -1380,6 +1392,7 @@
 				89C204BD1A73F72800C792D2 /* SplitDelegate.swift in Sources */,
 				89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */,
 				89C509FA1A2F865F00CBD000 /* QueryFeedViewController.swift in Sources */,
+				899C47EC1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */,
 				8933E92D19ECD28900ECFF3F /* NSDate+InternetDateTime.m in Sources */,
 				8933E90D19ECCBC300ECFF3F /* ALView+PureLayout.m in Sources */,
 				89C509F41A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */,
@@ -1419,6 +1432,7 @@
 				89C204BE1A73FD1000C792D2 /* SplitDelegate.swift in Sources */,
 				8963F42F1A26674500B447D6 /* Data-extensions.swift in Sources */,
 				895779A319E62CC500548418 /* FeedTableCell.swift in Sources */,
+				899C47ED1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */,
 				89635F841A13BF120052C248 /* AMPopTip.m in Sources */,
 				894FEF1D1A755D92009DF7CD /* CoreDataHelper.swift in Sources */,
 				893448C21A004E6400F5D528 /* UIColor+RSSClient.m in Sources */,

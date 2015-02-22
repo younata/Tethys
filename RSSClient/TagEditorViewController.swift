@@ -23,13 +23,7 @@ class TagEditorViewController: UIViewController {
     
     let tagPicker = TagPickerView(frame: CGRectZero)
     
-    var dataManager: DataManager? = nil {
-        didSet {
-            if let dm = dataManager {
-                tagPicker.allTags = dm.allTags()
-            }
-        }
-    }
+    lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as DataManager }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,6 +37,7 @@ class TagEditorViewController: UIViewController {
         tagPicker.setTranslatesAutoresizingMaskIntoConstraints(false)
         self.view.addSubview(tagPicker)
         tagPicker.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(16, 8, 0, 8), excludingEdge: .Bottom)
+        tagPicker.allTags = dataManager.allTags()
         tagPicker.didSelect = {
             self.tag = $0
         }
@@ -50,7 +45,6 @@ class TagEditorViewController: UIViewController {
         self.view.addSubview(tagLabel)
         tagLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         tagLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
-        //tagLabel.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(0, 8, 8, 8), excludingEdge: .Top)
         tagLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: tagPicker, withOffset: 8)
         tagLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
         tagLabel.numberOfLines = 0

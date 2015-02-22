@@ -16,3 +16,9 @@
 [submodule "Vendor/Ra"]
 	path = Vendor/Ra
 	url = https://github.com/younata/Ra.git
+[submodule "BreakOutToRefresh"]
+	path = BreakOutToRefresh
+	url = https://github.com/dasdom/BreakOutToRefresh.git
+[submodule "Vendor/BreakOutToRefresh"]
+	path = Vendor/BreakOutToRefresh
+	url = https://github.com/dasdom/BreakOutToRefresh.git

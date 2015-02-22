@@ -49,7 +49,8 @@ class FeedViewController: UITableViewController {
     
     func save() {
         feed?.managedObjectContext?.save(nil)
-        dataManager.writeOPML()
+        let opmlManager = self.injector!.create(OPMLManager.self) as OPMLManager
+        opmlManager.writeOPML()
         dismiss()
     }
     

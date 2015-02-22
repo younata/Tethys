@@ -17,7 +17,6 @@ class InjectorModule {
         let dataHelper = CoreDataHelper()
         let dataManager = DataManager(dataHelper: dataHelper)
         injector.bind(DataManager.self, to: dataManager)
-        injector.bind(FeedManager.self, to: FeedManager(dataHelper: dataHelper))
 
         // Views
 

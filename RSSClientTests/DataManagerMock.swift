@@ -9,17 +9,6 @@
 import Foundation
 
 class DataManagerMock : DataManager {
-    override func importOPML(opml: NSURL) {
-
-    }
-
-    override func importOPML(opml: NSURL, progress: (Double) -> Void, completion: ([Feed]) -> Void) {
-    }
-
-    override func writeOPML() {
-
-    }
-
     override func updateFeeds(completion: (NSError?) -> (Void)) {
         completion(nil)
     }

@@ -21,12 +21,12 @@ class FeedManagerMock : FeedManager {
     override func feedsMatchingTag(tag: String?, var managedObjectContext: NSManagedObjectContext! = nil, allowIncompleteTags: Bool) -> [Feed] {
         return []
     }
-
-    override func newFeed(feedURL: String, managedObjectContext: NSManagedObjectContext, completion: (NSError?) -> (Void)) -> Feed {
+    
+    override func newFeed(feedURL: String, managedObjectContext: NSManagedObjectContext! = nil, completion: (NSError?) -> (Void)) -> Feed {
         return Feed()
     }
 
-    override func newFeed(managedObjectContext: NSManagedObjectContext) -> Feed {
+    override func newFeed(_ managedObjectContext: NSManagedObjectContext! = nil) -> Feed {
         return Feed()
     }
 

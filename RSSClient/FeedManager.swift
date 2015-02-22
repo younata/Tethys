@@ -9,13 +9,8 @@
 import Foundation
 
 class FeedManager : NSObject {
-    let dataHelper : CoreDataHelper
-    
+    let dataHelper : CoreDataHelper = CoreDataHelper()
     let dataFetcher : DataFetcher = DataFetcher()
-    
-    init(dataHelper: CoreDataHelper) {
-        self.dataHelper = dataHelper
-    }
     
     func allTags(var _ managedObjectContext: NSManagedObjectContext! = nil) -> [String] {
         if managedObjectContext == nil {
@@ -69,7 +64,10 @@ class FeedManager : NSObject {
         }
     }
     
-    func newFeed(feedURL: String, managedObjectContext: NSManagedObjectContext, completion: (NSError?) -> (Void)) -> Feed {
+    func newFeed(feedURL: String, var managedObjectContext: NSManagedObjectContext! = nil, completion: (NSError?) -> (Void)) -> Feed {
+        if managedObjectContext == nil {
+            managedObjectContext = self.injector!.create(kMainManagedObjectContext) as NSManagedObjectContext
+        }
         let predicate = NSPredicate(format: "url = %@", feedURL)
         var feed: Feed! = nil
         if let theFeed = dataHelper.entities("Feed", matchingPredicate: predicate!, managedObjectContext: managedObjectContext)?.last as? Feed {
@@ -83,23 +81,29 @@ class FeedManager : NSObject {
         return feed
     }
     
-    func newQueryFeed(title: String, code: String, managedObjectContext: NSManagedObjectContext, summary: String? = nil) -> Feed {
+    func newQueryFeed(title: String, code: String, var managedObjectContext: NSManagedObjectContext! = nil, summary: String? = nil) -> Feed {
+        if managedObjectContext == nil {
+            managedObjectContext = self.injector!.create(kMainManagedObjectContext) as NSManagedObjectContext
+        }
         let predicate = NSPredicate(format: "title = %@", title)
         var feed: Feed! = nil
         if let theFeed = dataHelper.entities("Feed", matchingPredicate: predicate!, managedObjectContext: managedObjectContext)?.last as? Feed {
             feed = theFeed
         } else {
-            feed = newFeed(managedObjectContext)
+            feed = newFeed()
             feed.title = title
             feed.query = code
             feed.summary = summary
-            managedObjectContext.save(nil)
+            feed.managedObjectContext?.save(nil)
             NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
         }
         return feed
     }
     
-    func newFeed(managedObjectContext: NSManagedObjectContext) -> Feed {
+    func newFeed(var _ managedObjectContext: NSManagedObjectContext! = nil) -> Feed {
+        if managedObjectContext == nil {
+            managedObjectContext = self.injector!.create(kMainManagedObjectContext) as NSManagedObjectContext
+        }
         return NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: managedObjectContext) as Feed
     }
     

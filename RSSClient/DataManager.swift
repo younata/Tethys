@@ -12,103 +12,6 @@ import WebKit
 import JavaScriptCore
 
 class DataManager: NSObject {
-    
-    // MARK: OPML
-    
-    func importOPML(opml: NSURL) {
-        importOPML(opml, progress: {(_) in }, completion: {(_) in })
-    }
-    
-    func importOPML(opml: NSURL, progress: (Double) -> Void, completion: ([Feed]) -> Void) {
-        if let text = NSString(contentsOfURL: opml, encoding: NSUTF8StringEncoding, error: nil) {
-            let opmlParser = OPMLParser(text: text)
-            opmlParser.failure {(error) in
-                completion([])
-            }
-            opmlParser.callback = {(items) in
-                var ret : [Feed] = []
-                if items.count == 0 {
-                    completion([])
-                }
-                var i = 0
-                for item in items {
-                    dispatch_async(dispatch_get_main_queue()) {
-                        if item.isQueryFeed() {
-                            if let query = item.query {
-                                let newFeed = self.feedManager.newQueryFeed(item.title!, code: query, managedObjectContext: self.managedObjectContext, summary: item.summary)
-                                newFeed.tags = item.tags
-                                ret.append(newFeed)
-                            }
-                            i++
-                            progress(Double(i) / Double(items.count))
-                            if i == items.count {
-                                completion(ret)
-                            }
-                        } else {
-                            if let feed = item.xmlURL {
-                                let newFeed = self.newFeed(feed) {(error) in
-                                    if let err = error {
-                                        println("error importing \(feed): \(err)")
-                                    }
-                                    println("imported \(feed)")
-                                    i++
-                                    progress(Double(i) / Double(items.count))
-                                    if i == items.count {
-                                        completion(ret)
-                                    }
-                                }
-                                newFeed.tags = item.tags
-                                ret.append(newFeed)
-                            } else {
-                                i++
-                                progress(Double(i) / Double(items.count))
-                                if i == items.count {
-                                    completion(ret)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            opmlParser.parse()
-        }
-    }
-    
-    func generateOPMLContents(feeds: [Feed]) -> String {
-        func sanitize(str: String?) -> String {
-            if str == nil {
-                return ""
-            }
-            var s = str!
-            s = s.stringByReplacingOccurrencesOfString("\"", withString: "&quot;")
-            s = s.stringByReplacingOccurrencesOfString("'", withString: "&apos;")
-            s = s.stringByReplacingOccurrencesOfString("<", withString: "&gt;")
-            s = s.stringByReplacingOccurrencesOfString(">", withString: "&lt;")
-            s = s.stringByReplacingOccurrencesOfString("&", withString: "&amp;")
-            return s
-        }
-        
-        var ret = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<opml version=\"2.0\">\n    <body>\n"
-        for feed in feeds.filter({return $0.query == nil}) {
-            if feed.url == nil {
-                ret += "        <outline query=\"\(sanitize(feed.query))\" title=\"\(sanitize(feed.title))\" summary=\"\(sanitize(feed.summary))\" type=\"query\""
-            } else {
-                ret += "        <outline xmlURL=\"\(sanitize(feed.url))\" title=\"\(sanitize(feed.title))\" type=\"rss\""
-            }
-            if feed.tags != nil {
-                let tags : String = ",".join(feed.tags as [String])
-                ret += " tags=\"\(tags)\""
-            }
-            ret += "/>\n"
-        }
-        ret += "</body>\n</opml>"
-        return ret
-    }
-    
-    func writeOPML() {
-        self.generateOPMLContents(feedManager.feeds()).writeToFile(NSHomeDirectory().stringByAppendingPathComponent("Documents").stringByAppendingPathComponent("rnews.opml"), atomically: true, encoding: NSUTF8StringEncoding, error: nil)
-    }
-    
     // MARK: Feeds
     
     func newFeed(feedURL: String) -> Feed {
@@ -122,7 +25,8 @@ class DataManager: NSObject {
         UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         #endif
         self.updateFeeds([feed], completion: completion)
-        self.writeOPML()
+        let opmlManager = self.injector!.create(OPMLManager.self) as OPMLManager
+        opmlManager.writeOPML()
         return feed
     }
     
@@ -133,7 +37,8 @@ class DataManager: NSObject {
             UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
             #endif
         }
-        self.writeOPML()
+        let opmlManager = self.injector!.create(OPMLManager.self) as OPMLManager
+        opmlManager.writeOPML()
     }
     
     func updateFeeds(completion: (NSError?)->(Void)) {
@@ -345,7 +250,8 @@ class DataManager: NSObject {
     }
     
     private func articlesFromQuery(query: String, articles: [Article], context: JSContext? = nil) -> [Article] {
-        let ctx = context ?? setUpContext(JSContext()!)
+        let scriptManager = self.injector!.create(ScriptManager.self) as ScriptManager
+        let ctx = context ?? scriptManager.setUpContext(JSContext()!)
         let script = "include = \(query)"
         ctx.evaluateScript(script)
         let function = ctx.objectForKeyedSubscript("include")
@@ -355,64 +261,6 @@ class DataManager: NSObject {
             return val.toBool()
         }
         return results
-    }
-    
-    // MARK: Scripting
-    
-    private func setUpContext(ctx: JSContext) -> JSContext {
-        ctx.exceptionHandler = {(context, value) in
-            println("Javascript exception: \(value)")
-        }
-        ctx.evaluateScript("var console = {}")
-        let console = ctx.objectForKeyedSubscript("console")
-        var block : @objc_block (NSString) -> Void = {(message: NSString) in println("\(message)")}
-        console.setObject(unsafeBitCast(block, AnyObject.self), forKeyedSubscript: "log")
-        let script = "var include = function(article) { return true }"
-        ctx.evaluateScript(script)
-        return ctx
-    }
-    
-    private func console(ctx: JSContext) {
-        ctx.evaluateScript("var console = {}")
-        let console = ctx.objectForKeyedSubscript("console")
-        var block : @objc_block (NSString) -> Void = {(message: NSString) in println("\(message)")}
-        console.setObject(unsafeBitCast(block, AnyObject.self), forKeyedSubscript: "log")
-    }
-    
-    private func fetching(ctx: JSContext, isBackground: Bool) {
-        let moc = isBackground ? self.backgroundObjectContext! : self.managedObjectContext
-        
-        ctx.evaluateScript("var data = {onNewFeed: [], onNewArticle: []}")
-        let data = ctx.objectForKeyedSubscript("data")
-        
-        var articles : @objc_block (Void) -> [NSDictionary] = {
-            return (self.dataHelper.entities("Article", matchingPredicate: NSPredicate(value: true), managedObjectContext: moc)! as [Article]).map {return $0.asDict()}
-        }
-        data.setObject(unsafeBitCast(articles, AnyObject.self), forKeyedSubscript: "articles")
-        
-        var queryArticles : @objc_block (NSString, [NSObject]) -> [NSDictionary] = {(query, args) in
-            let predicate = NSPredicate(format: query, argumentArray: args)
-            return (self.dataHelper.entities("Article", matchingPredicate: predicate, managedObjectContext: moc)! as [Article]).map {$0.asDict()}
-        }
-        data.setObject(unsafeBitCast(queryArticles, AnyObject.self), forKeyedSubscript: "articlesMatchingQuery")
-        
-        var feeds : @objc_block (Void) -> [NSDictionary] = {
-            return (self.dataHelper.entities("Feed", matchingPredicate: NSPredicate(value: true), managedObjectContext: moc)! as [Feed]).map {return $0.asDict()}
-        }
-        data.setObject(unsafeBitCast(feeds, AnyObject.self), forKeyedSubscript: "feeds")
-        
-        var queryFeeds : @objc_block (NSString, [NSObject]) -> [NSDictionary] = {(query, args) in // queries for feeds, not to be confused with query feeds.
-            let predicate = NSPredicate(format: query, argumentArray: args)
-            return (self.dataHelper.entities("Feed", matchingPredicate: predicate, managedObjectContext: moc)! as [Feed]).map {$0.asDict()}
-        }
-        data.setObject(unsafeBitCast(queryFeeds, AnyObject.self), forKeyedSubscript: "feedsMatchingQuery")
-        
-        var addOnNewFeed : @objc_block (@objc_block (NSDictionary) -> Void) -> Void = {(block) in
-            var onNewFeed = data.objectForKeyedSubscript("onNewFeed").toArray()
-            onNewFeed.append(unsafeBitCast(block, AnyObject.self))
-            data.setObject(onNewFeed, forKeyedSubscript: "onNewFeed")
-        }
-        data.setObject(unsafeBitCast(addOnNewFeed, AnyObject.self), forKeyedSubscript: "onNewFeed")
     }
     
     // MARK: Background Data Fetch
@@ -488,7 +336,8 @@ class DataManager: NSObject {
             self.backgroundObjectContext = self.dataHelper.managedObjectContext(self.persistentStoreCoordinator)
             
             self.backgroundJSVM = JSVirtualMachine()
-            self.backgroundContext = self.setUpContext(JSContext(virtualMachine: self.backgroundJSVM))
+            let scriptManager = ScriptManager()
+            self.backgroundContext = scriptManager.setUpContext(JSContext(virtualMachine: self.backgroundJSVM))
             self.managedObjectContextDidSave() // update all the query feeds.
         }
     }

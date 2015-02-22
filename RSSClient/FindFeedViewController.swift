@@ -114,7 +114,8 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         self.view.addSubview(loading)
         loading.msg = NSString.localizedStringWithFormat(NSLocalizedString("Loading feed at %@", comment: ""), link)
         if opml {
-            dataManager.importOPML(NSURL(string: link)!, progress: {(_) in }) {(_) in
+            let opmlManager = self.injector!.create(OPMLManager.self) as OPMLManager
+            opmlManager.importOPML(NSURL(string: link)!, progress: {(_) in }) {(_) in
                 loading.removeFromSuperview()
                 self.navigationController?.toolbarHidden = false
                 self.navigationController?.navigationBarHidden = false

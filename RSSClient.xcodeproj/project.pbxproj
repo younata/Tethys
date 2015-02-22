@@ -132,6 +132,11 @@
 		898047641A206CB100EB29F0 /* FeedsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898047631A206CB100EB29F0 /* FeedsList.swift */; };
 		899C47EC1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */; };
 		899C47ED1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */; };
+		899C47FB1A9A864700F57B96 /* DataManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */; };
+		899C47FD1A9A885A00F57B96 /* OPMLManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FC1A9A885A00F57B96 /* OPMLManager.swift */; };
+		899C47FE1A9A885A00F57B96 /* OPMLManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FC1A9A885A00F57B96 /* OPMLManager.swift */; };
+		899C48001A9A8AC100F57B96 /* ScriptManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FF1A9A8AC100F57B96 /* ScriptManager.swift */; };
+		899C48011A9A8AC100F57B96 /* ScriptManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FF1A9A8AC100F57B96 /* ScriptManager.swift */; };
 		89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204B41A73811000C792D2 /* AppDelegateSpec.swift */; };
 		89C204BA1A73813300C792D2 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89C204AB1A73804D00C792D2 /* Nimble.framework */; };
 		89C204BB1A73813300C792D2 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89C204981A73804500C792D2 /* Quick.framework */; };
@@ -430,6 +435,9 @@
 		898047441A20478600EB29F0 /* TUSafariActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TUSafariActivity.m; path = Vendor/TUSafariActivity/Classes/TUSafariActivity.m; sourceTree = "<group>"; };
 		898047631A206CB100EB29F0 /* FeedsList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FeedsList.swift; path = "RSSClient-OSX/FeedsList.swift"; sourceTree = SOURCE_ROOT; };
 		899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BreakOutToRefreshView.swift; path = Vendor/BreakOutToRefreshView.swift; sourceTree = "<group>"; };
+		899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManagerSpec.swift; sourceTree = "<group>"; };
+		899C47FC1A9A885A00F57B96 /* OPMLManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLManager.swift; sourceTree = "<group>"; };
+		899C47FF1A9A8AC100F57B96 /* ScriptManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScriptManager.swift; sourceTree = "<group>"; };
 		89C2048E1A73804500C792D2 /* Quick.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Quick.xcodeproj; path = Vendor/Quick/Quick.xcodeproj; sourceTree = "<group>"; };
 		89C204A31A73804D00C792D2 /* Nimble.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Nimble.xcodeproj; path = Vendor/Nimble/Nimble.xcodeproj; sourceTree = "<group>"; };
 		89C204B41A73811000C792D2 /* AppDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateSpec.swift; sourceTree = "<group>"; };
@@ -793,7 +801,7 @@
 				89C830B419D7D2D2009924DA /* Articles */,
 				89C8308219D730E9009924DA /* Images.xcassets */,
 				89D06A1A19FDBC52003909A3 /* Launch Screen.xib */,
-				89C830AC19D7BDE0009924DA /* Core Data */,
+				89C830AC19D7BDE0009924DA /* Domain */,
 				8933E93519EE342F00ECFF3F /* Categories */,
 				89C8309B19D73334009924DA /* RSSClient-Bridging-Header.h */,
 				89C8307619D730E9009924DA /* Supporting Files */,
@@ -817,6 +825,7 @@
 				89C204B41A73811000C792D2 /* AppDelegateSpec.swift */,
 				89C204C11A73FEDA00C792D2 /* SplitDelegateSpec.swift */,
 				89C204C61A740D8900C792D2 /* NotificationHandlerSpec.swift */,
+				899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */,
 				89EF4FDB1A9790350052A82F /* Parsers */,
 				AE4355FD1A7AB7D900A961B9 /* SpecHelper.swift */,
 				AE4356071A7ABAD500A961B9 /* Mocks */,
@@ -834,11 +843,13 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		89C830AC19D7BDE0009924DA /* Core Data */ = {
+		89C830AC19D7BDE0009924DA /* Domain */ = {
 			isa = PBXGroup;
 			children = (
 				89C830A819D7B890009924DA /* DataManager.swift */,
 				894FEF331A776AFC009DF7CD /* FeedManager.swift */,
+				899C47FC1A9A885A00F57B96 /* OPMLManager.swift */,
+				899C47FF1A9A8AC100F57B96 /* ScriptManager.swift */,
 				894FEF1B1A755D92009DF7CD /* CoreDataHelper.swift */,
 				894FEF271A76E116009DF7CD /* DataFetcher.swift */,
 				894FEF371A78359F009DF7CD /* FeedStatistics.swift */,
@@ -851,7 +862,7 @@
 				895901A41A30BCB7002E2C62 /* Enclosure.m */,
 				8963F42D1A26674500B447D6 /* Data-extensions.swift */,
 			);
-			name = "Core Data";
+			name = Domain;
 			sourceTree = "<group>";
 		};
 		89C830B119D7D2B7009924DA /* Feeds */ = {
@@ -1362,6 +1373,7 @@
 				8933E90F19ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m in Sources */,
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
 				89C830A919D7B890009924DA /* DataManager.swift in Sources */,
+				899C47FD1A9A885A00F57B96 /* OPMLManager.swift in Sources */,
 				8933E90E19ECCBC300ECFF3F /* NSArray+PureLayout.m in Sources */,
 				89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */,
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
@@ -1399,6 +1411,7 @@
 				89C8307C19D730E9009924DA /* RSSClient.xcdatamodeld in Sources */,
 				8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */,
 				89C7FBE81A18847A00ACBDB2 /* RBActivityIndicator.m in Sources */,
+				899C48001A9A8AC100F57B96 /* ScriptManager.swift in Sources */,
 				8933E92C19ECD28900ECFF3F /* GTMNSString+HTML.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1427,6 +1440,7 @@
 				AE43563D1A7AE5D000A961B9 /* InjectorModule.swift in Sources */,
 				894896ED1A16F1130030EB6E /* LocalImportViewController.swift in Sources */,
 				895779A019E62CC500548418 /* AppDelegate.swift in Sources */,
+				899C48011A9A8AC100F57B96 /* ScriptManager.swift in Sources */,
 				894FEF351A776AFC009DF7CD /* FeedManager.swift in Sources */,
 				AE4356021A7ABA6900A961B9 /* CoreDataHelperMock.swift in Sources */,
 				89C204BE1A73FD1000C792D2 /* SplitDelegate.swift in Sources */,
@@ -1439,6 +1453,7 @@
 				893448BB1A004E4E00F5D528 /* NSDate+InternetDateTime.m in Sources */,
 				894896F21A16F7B20030EB6E /* FeedParser.swift in Sources */,
 				AE4356061A7ABA9600A961B9 /* FeedManagerMock.swift in Sources */,
+				899C47FE1A9A885A00F57B96 /* OPMLManager.swift in Sources */,
 				893448BA1A004E4E00F5D528 /* GTMNSString+HTML.m in Sources */,
 				8924D8F31A108299003B7529 /* OPMLParser.swift in Sources */,
 				89C509FB1A2F865F00CBD000 /* QueryFeedViewController.swift in Sources */,
@@ -1455,6 +1470,7 @@
 				894FEF391A78359F009DF7CD /* FeedStatistics.swift in Sources */,
 				89C509F51A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */,
 				895779A119E62CC500548418 /* UnreadCounter.swift in Sources */,
+				899C47FB1A9A864700F57B96 /* DataManagerSpec.swift in Sources */,
 				895779A419E62CC500548418 /* FindFeedViewController.swift in Sources */,
 				AE4356421A7AFD6B00A961B9 /* NSManagedObjectIDMock.swift in Sources */,
 				89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */,

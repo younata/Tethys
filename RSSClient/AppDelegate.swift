@@ -55,9 +55,9 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             nc.navigationBar.translucent = true
         }
         
-        self.window.rootViewController = splitView
-        splitView.delegate = splitDelegate
         splitView.viewControllers = [master, detail]
+        splitView.delegate = splitDelegate
+        self.window.rootViewController = splitView
         
         notificationHandler.enableNotifications(application)
         

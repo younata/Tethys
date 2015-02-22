@@ -174,7 +174,9 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
             UIView.animateWithDuration(0.3, animations: {activityIndicator.backgroundColor = color})
             self.view.userInteractionEnabled = false
             
-            dataManager.importOPML(NSURL(string: "file://" + location)!, progress: {(progress: Double) in
+            let opmlManager = self.injector!.create(OPMLManager.self) as OPMLManager
+            
+            opmlManager.importOPML(NSURL(string: "file://" + location)!, progress: {(progress: Double) in
                 activityIndicator.progress = progress
             }) {(_) in
                 self.dismiss()

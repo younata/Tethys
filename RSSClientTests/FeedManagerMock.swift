@@ -10,23 +10,19 @@ import Foundation
 
 
 class FeedManagerMock : FeedManager {
-    override func allTags(managedObjectContext: NSManagedObjectContext) -> [String] {
+    override func allTags(var _ managedObjectContext: NSManagedObjectContext! = nil) -> [String] {
         return []
     }
 
-    override func feeds(managedObjectContext: NSManagedObjectContext) -> [Feed] {
+    override func feeds(var _ managedObjectContext: NSManagedObjectContext! = nil) -> [Feed] {
         return []
     }
 
-    override func feedsMatchingTag(tag: String?, managedObjectContext: NSManagedObjectContext, allowIncompleteTags: Bool) -> [Feed] {
+    override func feedsMatchingTag(tag: String?, var managedObjectContext: NSManagedObjectContext! = nil, allowIncompleteTags: Bool) -> [Feed] {
         return []
     }
 
     override func newFeed(feedURL: String, managedObjectContext: NSManagedObjectContext, completion: (NSError?) -> (Void)) -> Feed {
-        return Feed()
-    }
-
-    override func newQueryFeed(title: String, code: String, managedObjectContext: NSManagedObjectContext, summary: String?) -> Feed {
         return Feed()
     }
 

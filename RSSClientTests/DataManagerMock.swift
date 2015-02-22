@@ -20,18 +20,6 @@ class DataManagerMock : DataManager {
 
     }
 
-    override func allTags(#managedObjectContext: NSManagedObjectContext?) -> [String] {
-        return []
-    }
-
-    override func feeds(#managedObjectContext: NSManagedObjectContext?) -> [Feed] {
-        return []
-    }
-
-    override func feedsMatchingTag(tag: String?, managedObjectContext: NSManagedObjectContext?, allowIncompleteTags: Bool) -> [Feed] {
-        return []
-    }
-
     override func updateFeeds(completion: (NSError?) -> (Void)) {
         completion(nil)
     }

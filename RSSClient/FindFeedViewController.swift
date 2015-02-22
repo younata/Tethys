@@ -26,6 +26,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     var feeds: [String] = []
     
     lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as DataManager }()
+    lazy var feedManager : FeedManager = { self.injector!.create(FeedManager.self) as FeedManager }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,7 +83,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         if (lookForFeeds) {
-            feeds = dataManager.feeds().reduce([], combine: {
+            feeds = feedManager.feeds().reduce([], combine: {
                 if $1.url == nil {
                     return $0
                 }

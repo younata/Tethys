@@ -8,7 +8,10 @@
 
 import UIKit
 
-class NotificationHandler {
+class NotificationHandler : NSObject {
+    
+    lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as DataManager }()
+    lazy var feedManager : FeedManager = { self.injector!.create(FeedManager.self) as FeedManager }()
     
     func enableNotifications(application: UIApplication) {
         let markReadAction = UIMutableUserNotificationAction()
@@ -36,7 +39,7 @@ class NotificationHandler {
         if let userInfo = notification.userInfo {
             let (feed, article) = feedAndArticleFromUserInfo(userInfo, dataManager: dataManager)
             if identifier == "read" {
-//                dataManager.readArticle(article)
+                dataManager.readArticle(article)
             } else if identifier == "view" {
                 showArticle(article, window: window)
             }
@@ -57,12 +60,12 @@ class NotificationHandler {
         let existingNotes = application.scheduledLocalNotifications as [UILocalNotification]
 
         application.scheduledLocalNotifications = existingNotes + [note]
-//        application.presentLocalNotificationNow(note)
+        application.presentLocalNotificationNow(note)
     }
     
     private func feedAndArticleFromUserInfo(userInfo: [NSObject : AnyObject], dataManager: DataManager) -> (Feed, Article) {
         let feedID = (userInfo["feed"] as String)
-        let feed : Feed = dataManager.feeds().filter{ return $0.objectID.URIRepresentation().absoluteString == feedID; }.first!
+        let feed : Feed = feedManager.feeds().filter{ return $0.objectID.URIRepresentation().absoluteString == feedID; }.first!
         let articleID = (userInfo["article"] as String)
         let article : Article = feed.allArticles(dataManager).filter({ return $0.objectID.URIRepresentation().absoluteString == articleID }).first!
         return (feed, article)
@@ -73,8 +76,8 @@ class NotificationHandler {
             if let ftvc = nc.viewControllers.first as? FeedsTableViewController {
                 nc.popToRootViewControllerAnimated(false)
                 let feed = article.feed
-//                let al = ftvc.showFeeds([feed], animated: false)
-//                al.showArticle(article)
+                let al = ftvc.showFeeds([feed], animated: false)
+                al.showArticle(article)
             }
         }
     }

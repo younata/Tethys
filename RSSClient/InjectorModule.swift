@@ -17,6 +17,7 @@ class InjectorModule {
         let dataHelper = CoreDataHelper()
         let dataManager = DataManager(dataHelper: dataHelper)
         injector.bind(DataManager.self, to: dataManager)
+        injector.bind(FeedManager.self, to: FeedManager(dataHelper: dataHelper))
 
         // Views
 
@@ -38,6 +39,7 @@ class InjectorModule {
             return tagPicker
         }
         
+        // Managed Object Contexts
         injector.bind(kMainManagedObjectContext, to: dataManager.managedObjectContext)
         injector.bind(kBackgroundManagedObjectContext, to: dataManager.backgroundObjectContext)
     }

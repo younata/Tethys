@@ -26,12 +26,10 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     lazy var refreshView : BreakOutToRefreshView = {
         let refreshView = BreakOutToRefreshView(scrollView: self.tableView)
         refreshView.delegate = self
-        refreshView.scenebackgroundColor = UIColor(hue: 0.68, saturation: 0.9, brightness: 0.3, alpha: 1.0)
-        refreshView.paddleColor = UIColor.lightGrayColor()
-        refreshView.ballColor = UIColor.whiteColor()
-        refreshView.blockColors = [UIColor(hue: 0.17, saturation: 0.9, brightness: 1.0, alpha: 1.0),
-                                   UIColor(hue: 0.17, saturation: 0.7, brightness: 1.0, alpha: 1.0),
-                                   UIColor(hue: 0.17, saturation: 0.5, brightness: 1.0, alpha: 1.0)]
+        refreshView.scenebackgroundColor = UIColor.whiteColor()
+        refreshView.paddleColor = UIColor.blueColor()
+        refreshView.ballColor = UIColor.darkGreenColor()
+        refreshView.blockColors = [UIColor.darkGrayColor(), UIColor.grayColor(), UIColor.lightGrayColor()]
         return refreshView
     }()
     
@@ -170,7 +168,8 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func reload(_ tag: String? = nil) {
         let oldFeeds = feeds
-        feeds = dataManager.feedsMatchingTag(tag).sorted {(f1: Feed, f2: Feed) in
+        let feedManager = self.injector!.create(FeedManager.self) as FeedManager
+        feeds = feedManager.feedsMatchingTag(tag).sorted {(f1: Feed, f2: Feed) in
             let f1Unread = f1.unreadArticles(self.dataManager)
             let f2Unread = f2.unreadArticles(self.dataManager)
             if f1Unread != f2Unread {
@@ -184,10 +183,8 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             return f1.feedTitle()!.lowercaseString < f2.feedTitle()!.lowercaseString
         }
         
-        if let rc = self.tableViewController.refreshControl {
-            if rc.refreshing {
-                rc.endRefreshing()
-            }
+        if refreshView.isRefreshing {
+            refreshView.endRefreshing()
         }
         
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
@@ -225,6 +222,15 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         self.searchBar.resignFirstResponder()
+        refreshView.scrollViewWillBeginDragging(scrollView)
+    }
+    
+    func scrollViewWillEndDragging(scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        refreshView.scrollViewWillEndDragging(scrollView, withVelocity: velocity, targetContentOffset: targetContentOffset)
+    }
+    
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        refreshView.scrollViewDidScroll(scrollView)
     }
 
     // MARK: - Table view data source

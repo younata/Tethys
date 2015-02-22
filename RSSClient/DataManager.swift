@@ -35,7 +35,7 @@ class DataManager: NSObject {
                     dispatch_async(dispatch_get_main_queue()) {
                         if item.isQueryFeed() {
                             if let query = item.query {
-                                let newFeed = self.newQueryFeed(item.title!, code: query, summary: item.summary)
+                                let newFeed = self.feedManager.newQueryFeed(item.title!, code: query, managedObjectContext: self.managedObjectContext, summary: item.summary)
                                 newFeed.tags = item.tags
                                 ret.append(newFeed)
                             }
@@ -106,22 +106,10 @@ class DataManager: NSObject {
     }
     
     func writeOPML() {
-        self.generateOPMLContents(self.feeds()).writeToFile(NSHomeDirectory().stringByAppendingPathComponent("Documents").stringByAppendingPathComponent("rnews.opml"), atomically: true, encoding: NSUTF8StringEncoding, error: nil)
+        self.generateOPMLContents(feedManager.feeds()).writeToFile(NSHomeDirectory().stringByAppendingPathComponent("Documents").stringByAppendingPathComponent("rnews.opml"), atomically: true, encoding: NSUTF8StringEncoding, error: nil)
     }
     
     // MARK: Feeds
-    
-    func allTags(managedObjectContext: NSManagedObjectContext? = nil) -> [String] {
-        return feedManager.allTags(managedObjectContext ?? self.managedObjectContext)
-    }
-    
-    func feeds(managedObjectContext: NSManagedObjectContext? = nil) -> [Feed] {
-        return feedManager.feeds(managedObjectContext ?? self.managedObjectContext)
-    }
-    
-    func feedsMatchingTag(tag: String?, managedObjectContext: NSManagedObjectContext? = nil, allowIncompleteTags: Bool = true) -> [Feed] {
-        return feedManager.feedsMatchingTag(tag, managedObjectContext: managedObjectContext ?? self.managedObjectContext, allowIncompleteTags: allowIncompleteTags)
-    }
     
     func newFeed(feedURL: String) -> Feed {
         return newFeed(feedURL, completion: {(_) in })
@@ -138,13 +126,9 @@ class DataManager: NSObject {
         return feed
     }
     
-    func newQueryFeed(title: String, code: String, summary: String? = nil) -> Feed {
-        return feedManager.newQueryFeed(title, code: code, managedObjectContext: managedObjectContext, summary: summary)
-    }
-    
     func deleteFeed(feed: Feed) {
         feedManager.deleteFeed(feed)
-        if (feeds().count == 0) {
+        if (feedManager.feeds().count == 0) {
             #if os(iOS)
             UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
             #endif
@@ -152,33 +136,12 @@ class DataManager: NSObject {
         self.writeOPML()
     }
     
-    func updateFeed(feed: Feed, fromInfo info: MWFeedInfo) {
-        var summary : String = ""
-        if let s = info.summary {
-            let data = s.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
-            let options = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
-            summary = s
-            if let aString = NSAttributedString(data: data, options: options, documentAttributes: nil, error: nil) {
-                summary = aString.string
-            }
-        }
-        feed.title = info.title
-        feed.summary = summary
-        
-        if info.imageURL != nil && feed.feedImage() == nil {
-            self.dataFetcher.fetchImageAtURL(info.imageURL) {(image, error) in
-                feed.image = image
-                feed.managedObjectContext?.save(nil)
-            }
-        }
-    }
-    
     func updateFeeds(completion: (NSError?)->(Void)) {
-        updateFeeds(feeds(), completion: completion)
+        updateFeeds(feedManager.feeds(), completion: completion)
     }
     
     func updateFeedsInBackground(completion: (NSError?)->(Void)) {
-        updateFeeds(feeds(), completion: completion, backgroundFetch: true)
+        updateFeeds(feedManager.feeds(), completion: completion, backgroundFetch: true)
     }
     
     var parsers : [FeedParser] = []
@@ -190,87 +153,12 @@ class DataManager: NSObject {
         dispatch_async(queue) {
             let ctx = self.managedObjectContext
             let theFeeds = self.dataHelper.entities("Feed", matchingPredicate: NSPredicate(format: "self in %@", feedIds)!, managedObjectContext: ctx) as [Feed]
-            var feedsLeft = theFeeds.count
-            for feed in theFeeds {
-                let feedParser = FeedParser(URL: NSURL(string: feed.url)!)
-                
-                let wait = feed.remainingWait?.integerValue ?? 0
-                if wait != 0 {
-                    feed.remainingWait = NSNumber(integer: wait - 1)
-                    feed.managedObjectContext?.save(nil)
-                    println("Skipping feed at \(feed.url)")
-                    feedsLeft--
-                    continue
-                }
-                
-                var finished : (FeedParser?, NSError?) -> (Void) = {(feedParser: FeedParser?, error: NSError?) in
-                    feedsLeft--
-                    if error != nil {
-                        println("Errored loading: \(error)")
-                    }
-                    if (feedParser != nil && error == nil) {
-                        // set the wait period to zero.
-                        if feed.waitPeriod == nil || feed.waitPeriod.integerValue != 0 {
-                            feed.waitPeriod = NSNumber(integer: 0)
-                            feed.remainingWait = NSNumber(integer: 0)
-                            feed.managedObjectContext?.save(nil)
-                        }
-                    } else if let err = error {
-                        if (err.domain == NSURLErrorDomain && err.code > 0) { // FIXME: check the error code for specific HTTP error codes.
-                            feed.waitPeriod = NSNumber(integer: (feed.waitPeriod?.integerValue ?? 0) + 1)
-                            feed.remainingWait = feed.waitPeriodInRefreshes(feed.waitPeriod.integerValue)
-                            println("Setting feed at \(feed.url) to have remainingWait of \(feed.remainingWait) refreshes")
-                            feed.managedObjectContext?.save(nil)
-                        }
-                    }
-                    if (feedsLeft == 0) {
-                        ctx.save(nil)
-                        dispatch_async(dispatch_get_main_queue()) {
-                            completion(error)
-                            self.setApplicationBadgeCount()
-                        }
-                    }
-                    if let fp = feedParser {
-                        self.parsers = self.parsers.filter { $0 != fp }
-                    }
-                }
-                
-                self.dataFetcher.fetchFeedAtURL(feed.url, background: backgroundFetch) {(str, error) in
-                    if let err = error {
-                        finished(nil, error)
-                    } else if let s = str {
-                        let feedParser = FeedParser(string: s)
-                        feedParser.completion = {(info, items) in
-                            
-                            self.updateFeed(feed, fromInfo: info)
-                            
-                            for item in items {
-                                let article = self.upsertArticle(item, context: ctx)
-                                if let enclosures = item.enclosures {
-                                    self.upsertEnclosures(enclosures as [[String: AnyObject]], article: article)
-                                }
-                                ctx.save(nil)
-                            }
-                            
-                            finished(feedParser, nil)
-                        }
-                        feedParser.onFailure = {(error) in
-                            finished(feedParser, error)
-                        }
-                        feedParser.parse()
-                        self.parsers.append(feedParser)
-                    } else {
-                        // str and error are nil.
-                        println("Errored loading \(feed.url) with unknown error")
-                        self.parsers = self.parsers.filter { $0 != feedParser }
-                    }
-                }
-            }
+            self.feedManager.updateFeeds(theFeeds, completion: completion, backgroundFetch: backgroundFetch)
         }
     }
     
     func setApplicationBadgeCount() {
-        let num = feeds(managedObjectContext: managedObjectContext).filter {return !$0.isQueryFeed()}.reduce(0) {return $0 + Int($1.unreadArticles(self))}
+        let num = feedManager.feeds(managedObjectContext).filter {return !$0.isQueryFeed()}.reduce(0) {return $0 + Int($1.unreadArticles(self))}
         #if os(iOS)
             UIApplication.sharedApplication().applicationIconBadgeNumber = num
         #elseif os(OSX)
@@ -539,7 +427,7 @@ class DataManager: NSObject {
         if let qfr = queryFeedResults {
             reloading = true
             var feeds : [NSManagedObjectID] = []
-            for feed in self.feeds() {
+            for feed in feedManager.feeds() {
                 if feed.query != nil {
                     feeds.append(feed.objectID)
                 }
@@ -593,7 +481,7 @@ class DataManager: NSObject {
     
     lazy var dataFetcher: DataFetcher = DataFetcher()
     
-    lazy var feedManager: FeedManager = { FeedManager(dataHelper: self.dataHelper, dataFetcher: self.dataFetcher) } ()
+    lazy var feedManager: FeedManager = { self.injector!.create(FeedManager.self) as FeedManager } ()
     
     func setupBackgroundContexts() {
         operationQueue.addOperationWithBlock {

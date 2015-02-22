@@ -16,11 +16,14 @@ func + <K,V>(a: Dictionary<K,V>, b: Dictionary<K,V>) -> Dictionary<K,V> {
     return d
 }
 
-class CoreDataHelper {
+class CoreDataHelper : NSObject {
     
     // MARK: Creating
     
-    func upsertEntity(entity: String, withProperties properties: [String: AnyObject], managedObjectContext: NSManagedObjectContext, createProperties: [String: AnyObject] = [:]) -> NSManagedObject {
+    func upsertEntity(entity: String, withProperties properties: [String: AnyObject], var managedObjectContext: NSManagedObjectContext! = nil, createProperties: [String: AnyObject] = [:]) -> NSManagedObject {
+        if managedObjectContext == nil {
+            managedObjectContext = self.injector!.create(kMainManagedObjectContext) as NSManagedObjectContext
+        }
         var predicateString = ""
         var predicateArgs : [AnyObject] = []
         
@@ -50,7 +53,10 @@ class CoreDataHelper {
         return ret
     }
     
-    func entities(entity: String, matchingPredicate predicate: NSPredicate, managedObjectContext: NSManagedObjectContext, sortDescriptors: [NSSortDescriptor] = []) -> [AnyObject]? {
+    func entities(entity: String, matchingPredicate predicate: NSPredicate, var managedObjectContext: NSManagedObjectContext! = nil, sortDescriptors: [NSSortDescriptor] = []) -> [AnyObject]? {
+        if managedObjectContext == nil {
+            managedObjectContext = self.injector!.create(kMainManagedObjectContext) as NSManagedObjectContext
+        }
         let request = NSFetchRequest()
         request.entity = NSEntityDescription.entityForName(entity, inManagedObjectContext: managedObjectContext)
         request.predicate = predicate

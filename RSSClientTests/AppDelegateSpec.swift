@@ -13,12 +13,15 @@ class AppDelegateSpec: QuickSpec {
             subject = AppDelegate()
 
             injector = Ra.Injector()
-            let dataManager = DataManager(dataHelper: CoreDataHelper())
+            let dataManager = DataManager()
             injector.bind(DataManager.self) {
                 dataManager
             }
             injector.bind(kMainManagedObjectContext, to: dataManager.managedObjectContext)
             injector.bind(kBackgroundManagedObjectContext, to: dataManager.backgroundObjectContext)
+
+            let feedManager = FeedManagerMock()
+            injector.bind(FeedManager.self, to: feedManager)
 
             subject.anInjector = injector
             subject.window = UIWindow(frame: CGRectMake(0, 0, 320, 480))

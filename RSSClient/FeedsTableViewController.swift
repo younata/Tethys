@@ -63,8 +63,6 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         self.tableView.registerClass(FeedTableCell.self, forCellReuseIdentifier: "read")
         self.tableView.registerClass(FeedTableCell.self, forCellReuseIdentifier: "unread")
         // Prevents a green triangle which'll (dis)appear depending on whether new feed loaded into it has unread articles or not.
-        self.tableView.delegate = self
-        self.tableView.dataSource = self;
 
         let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "addFeed")
         self.navigationItem.rightBarButtonItems = [addButton, tableViewController.editButtonItem()]
@@ -74,7 +72,10 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         self.tableView.estimatedRowHeight = 80
         
         self.tableView.addSubview(self.refreshView)
-        
+
+        self.tableView.delegate = self
+        self.tableView.dataSource = self;
+
         self.tableView.tableFooterView = UIView()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
@@ -165,8 +166,12 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     func dropDownMenuDidTapOutsideOfItem(menu: MAKDropDownMenu!) {
         menu.closeAnimated(true)
     }
+
+    func reload() {
+        self.reload(nil)
+    }
     
-    func reload(_ tag: String? = nil) {
+    func reload(tag: String?) {
         let oldFeeds = feeds
         let feedManager = self.injector!.create(FeedManager.self) as FeedManager
         feeds = feedManager.feedsMatchingTag(tag).sorted {(f1: Feed, f2: Feed) in

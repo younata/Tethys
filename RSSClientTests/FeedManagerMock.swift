@@ -10,6 +10,7 @@ import Foundation
 
 
 class FeedManagerMock : FeedManager {
+    var feed : Feed? = nil
     override func allTags(var _ managedObjectContext: NSManagedObjectContext! = nil) -> [String] {
         return []
     }
@@ -23,11 +24,11 @@ class FeedManagerMock : FeedManager {
     }
     
     override func newFeed(feedURL: String, managedObjectContext: NSManagedObjectContext! = nil, completion: (NSError?) -> (Void)) -> Feed {
-        return Feed()
+        return feed!
     }
 
     override func newFeed(_ managedObjectContext: NSManagedObjectContext! = nil) -> Feed {
-        return Feed()
+        return feed!
     }
 
     override func deleteFeed(feed: Feed) {

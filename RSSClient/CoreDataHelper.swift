@@ -19,7 +19,12 @@ func + <K,V>(a: Dictionary<K,V>, b: Dictionary<K,V>) -> Dictionary<K,V> {
 class CoreDataHelper : NSObject {
     
     // MARK: Creating
-    
+
+    func createEntity(entity: String) -> NSManagedObject {
+        let managedObjectContext = self.injector!.create(kMainManagedObjectContext) as NSManagedObjectContext
+        return NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: managedObjectContext) as Feed
+    }
+
     func upsertEntity(entity: String, withProperties properties: [String: AnyObject], var managedObjectContext: NSManagedObjectContext! = nil, createProperties: [String: AnyObject] = [:]) -> NSManagedObject {
         if managedObjectContext == nil {
             managedObjectContext = self.injector!.create(kMainManagedObjectContext) as NSManagedObjectContext

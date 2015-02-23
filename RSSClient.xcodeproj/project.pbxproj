@@ -38,18 +38,6 @@
 		894896F11A16F7B20030EB6E /* FeedParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896F01A16F7B20030EB6E /* FeedParser.swift */; };
 		894896F21A16F7B20030EB6E /* FeedParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896F01A16F7B20030EB6E /* FeedParser.swift */; };
 		894C0C371A1329FB008229A4 /* AMPopTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 894C0C361A1329FB008229A4 /* AMPopTip.m */; };
-		894FEF1C1A755D92009DF7CD /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF1B1A755D92009DF7CD /* CoreDataHelper.swift */; };
-		894FEF1D1A755D92009DF7CD /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF1B1A755D92009DF7CD /* CoreDataHelper.swift */; };
-		894FEF1E1A755D92009DF7CD /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF1B1A755D92009DF7CD /* CoreDataHelper.swift */; };
-		894FEF281A76E117009DF7CD /* DataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF271A76E116009DF7CD /* DataFetcher.swift */; };
-		894FEF291A76E117009DF7CD /* DataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF271A76E116009DF7CD /* DataFetcher.swift */; };
-		894FEF2A1A76E117009DF7CD /* DataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF271A76E116009DF7CD /* DataFetcher.swift */; };
-		894FEF341A776AFC009DF7CD /* FeedManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF331A776AFC009DF7CD /* FeedManager.swift */; };
-		894FEF351A776AFC009DF7CD /* FeedManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF331A776AFC009DF7CD /* FeedManager.swift */; };
-		894FEF361A776AFC009DF7CD /* FeedManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF331A776AFC009DF7CD /* FeedManager.swift */; };
-		894FEF381A78359F009DF7CD /* FeedStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF371A78359F009DF7CD /* FeedStatistics.swift */; };
-		894FEF391A78359F009DF7CD /* FeedStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF371A78359F009DF7CD /* FeedStatistics.swift */; };
-		894FEF3A1A78359F009DF7CD /* FeedStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF371A78359F009DF7CD /* FeedStatistics.swift */; };
 		895779A019E62CC500548418 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307819D730E9009924DA /* AppDelegate.swift */; };
 		895779A119E62CC500548418 /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830CC19DC67B9009924DA /* UnreadCounter.swift */; };
 		895779A219E62CC500548418 /* FeedsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */; };
@@ -133,10 +121,19 @@
 		899C47EC1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */; };
 		899C47ED1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */; };
 		899C47FB1A9A864700F57B96 /* DataManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */; };
-		899C47FD1A9A885A00F57B96 /* OPMLManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FC1A9A885A00F57B96 /* OPMLManager.swift */; };
-		899C47FE1A9A885A00F57B96 /* OPMLManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FC1A9A885A00F57B96 /* OPMLManager.swift */; };
-		899C48001A9A8AC100F57B96 /* ScriptManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FF1A9A8AC100F57B96 /* ScriptManager.swift */; };
-		899C48011A9A8AC100F57B96 /* ScriptManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FF1A9A8AC100F57B96 /* ScriptManager.swift */; };
+		899C48041A9AB6BF00F57B96 /* FeedManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C48031A9AB6BF00F57B96 /* FeedManagerSpec.swift */; };
+		899C48071A9AB82000F57B96 /* FeedManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF331A776AFC009DF7CD /* FeedManager.swift */; };
+		899C48081A9AB82000F57B96 /* OPMLManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FC1A9A885A00F57B96 /* OPMLManager.swift */; };
+		899C48091A9AB82000F57B96 /* ScriptManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FF1A9A8AC100F57B96 /* ScriptManager.swift */; };
+		899C480A1A9AB82000F57B96 /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF1B1A755D92009DF7CD /* CoreDataHelper.swift */; };
+		899C480B1A9AB82000F57B96 /* DataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF271A76E116009DF7CD /* DataFetcher.swift */; };
+		899C480C1A9AB82000F57B96 /* FeedStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF371A78359F009DF7CD /* FeedStatistics.swift */; };
+		899C480D1A9AB82100F57B96 /* FeedManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF331A776AFC009DF7CD /* FeedManager.swift */; };
+		899C480E1A9AB82100F57B96 /* OPMLManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FC1A9A885A00F57B96 /* OPMLManager.swift */; };
+		899C480F1A9AB82100F57B96 /* ScriptManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FF1A9A8AC100F57B96 /* ScriptManager.swift */; };
+		899C48101A9AB82100F57B96 /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF1B1A755D92009DF7CD /* CoreDataHelper.swift */; };
+		899C48111A9AB82100F57B96 /* DataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF271A76E116009DF7CD /* DataFetcher.swift */; };
+		899C48121A9AB82100F57B96 /* FeedStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF371A78359F009DF7CD /* FeedStatistics.swift */; };
 		89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204B41A73811000C792D2 /* AppDelegateSpec.swift */; };
 		89C204BA1A73813300C792D2 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89C204AB1A73804D00C792D2 /* Nimble.framework */; };
 		89C204BB1A73813300C792D2 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89C204981A73804500C792D2 /* Quick.framework */; };
@@ -438,6 +435,7 @@
 		899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManagerSpec.swift; sourceTree = "<group>"; };
 		899C47FC1A9A885A00F57B96 /* OPMLManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLManager.swift; sourceTree = "<group>"; };
 		899C47FF1A9A8AC100F57B96 /* ScriptManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScriptManager.swift; sourceTree = "<group>"; };
+		899C48031A9AB6BF00F57B96 /* FeedManagerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedManagerSpec.swift; sourceTree = "<group>"; };
 		89C2048E1A73804500C792D2 /* Quick.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Quick.xcodeproj; path = Vendor/Quick/Quick.xcodeproj; sourceTree = "<group>"; };
 		89C204A31A73804D00C792D2 /* Nimble.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Nimble.xcodeproj; path = Vendor/Nimble/Nimble.xcodeproj; sourceTree = "<group>"; };
 		89C204B41A73811000C792D2 /* AppDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateSpec.swift; sourceTree = "<group>"; };
@@ -707,6 +705,15 @@
 			name = BreakOutToRefresh;
 			sourceTree = "<group>";
 		};
+		899C48021A9AB6A900F57B96 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */,
+				899C48031A9AB6BF00F57B96 /* FeedManagerSpec.swift */,
+			);
+			name = Domain;
+			sourceTree = "<group>";
+		};
 		89C2048F1A73804500C792D2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -825,7 +832,7 @@
 				89C204B41A73811000C792D2 /* AppDelegateSpec.swift */,
 				89C204C11A73FEDA00C792D2 /* SplitDelegateSpec.swift */,
 				89C204C61A740D8900C792D2 /* NotificationHandlerSpec.swift */,
-				899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */,
+				899C48021A9AB6A900F57B96 /* Domain */,
 				89EF4FDB1A9790350052A82F /* Parsers */,
 				AE4355FD1A7AB7D900A961B9 /* SpecHelper.swift */,
 				AE4356071A7ABAD500A961B9 /* Mocks */,
@@ -1318,7 +1325,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				894FEF1E1A755D92009DF7CD /* CoreDataHelper.swift in Sources */,
 				8967DA081A409433000424F4 /* ArticleListView.swift in Sources */,
 				8967DA061A4092A6000424F4 /* ArticlesList.swift in Sources */,
 				8929D27F1A3F3E9400782A37 /* BackgroundView.swift in Sources */,
@@ -1345,9 +1351,6 @@
 				89635FAF1A13C4210052C248 /* Feed.m in Sources */,
 				895901A71A30BCB7002E2C62 /* Enclosure.m in Sources */,
 				89635FAA1A13C4120052C248 /* DataManager.swift in Sources */,
-				894FEF361A776AFC009DF7CD /* FeedManager.swift in Sources */,
-				894FEF2A1A76E117009DF7CD /* DataFetcher.swift in Sources */,
-				894FEF3A1A78359F009DF7CD /* FeedStatistics.swift in Sources */,
 				89635FB41A13C48D0052C248 /* MWFeedParser.m in Sources */,
 				89635FC21A13C49A0052C248 /* ALView+PureLayout.m in Sources */,
 				89635F8E1A13C2E30052C248 /* AppDelegate.swift in Sources */,
@@ -1368,25 +1371,27 @@
 				8933E91919ECCD5E00ECFF3F /* MWFeedInfo.m in Sources */,
 				898047361A20475D00EB29F0 /* Alamofire.swift in Sources */,
 				8933E91819ECCD5E00ECFF3F /* MWFeedParser.m in Sources */,
-				894FEF1C1A755D92009DF7CD /* CoreDataHelper.swift in Sources */,
+				899C48091A9AB82000F57B96 /* ScriptManager.swift in Sources */,
 				89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */,
+				899C48071A9AB82000F57B96 /* FeedManager.swift in Sources */,
 				8933E90F19ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m in Sources */,
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
+				899C480B1A9AB82000F57B96 /* DataFetcher.swift in Sources */,
 				89C830A919D7B890009924DA /* DataManager.swift in Sources */,
-				899C47FD1A9A885A00F57B96 /* OPMLManager.swift in Sources */,
 				8933E90E19ECCBC300ECFF3F /* NSArray+PureLayout.m in Sources */,
 				89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */,
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
 				895901A91A30C5D1002E2C62 /* EnclosuresView.swift in Sources */,
 				895782411A3CC0130022F345 /* CircularProgressLayer.swift in Sources */,
 				89C7FBE01A183EBE00ACBDB2 /* MAKDropDownMenu.m in Sources */,
+				899C48081A9AB82000F57B96 /* OPMLManager.swift in Sources */,
 				895901AC1A30C6B7002E2C62 /* EnclosureCell.swift in Sources */,
 				89C830B619D7DE97009924DA /* ArticleViewController.swift in Sources */,
+				899C480A1A9AB82000F57B96 /* CoreDataHelper.swift in Sources */,
 				894C0C371A1329FB008229A4 /* AMPopTip.m in Sources */,
 				895901A51A30BCB7002E2C62 /* Enclosure.m in Sources */,
+				899C480C1A9AB82000F57B96 /* FeedStatistics.swift in Sources */,
 				89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */,
-				894FEF341A776AFC009DF7CD /* FeedManager.swift in Sources */,
-				894FEF381A78359F009DF7CD /* FeedStatistics.swift in Sources */,
 				89C830C319D89E46009924DA /* Article.m in Sources */,
 				89C509F71A2F825400CBD000 /* TextViewCell.swift in Sources */,
 				8980475D1A20478600EB29F0 /* TUSafariActivity.m in Sources */,
@@ -1397,7 +1402,6 @@
 				8924D8F21A0E8EEA003B7529 /* OPMLParser.swift in Sources */,
 				8933E92F19ECD28900ECFF3F /* NSString+XMLEntities.m in Sources */,
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
-				894FEF281A76E117009DF7CD /* DataFetcher.swift in Sources */,
 				89DA7D2C1A66111E0050685B /* TextFieldCell.swift in Sources */,
 				894896F11A16F7B20030EB6E /* FeedParser.swift in Sources */,
 				89D06A2119FF210C003909A3 /* LoadingView.swift in Sources */,
@@ -1411,7 +1415,6 @@
 				89C8307C19D730E9009924DA /* RSSClient.xcdatamodeld in Sources */,
 				8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */,
 				89C7FBE81A18847A00ACBDB2 /* RBActivityIndicator.m in Sources */,
-				899C48001A9A8AC100F57B96 /* ScriptManager.swift in Sources */,
 				8933E92C19ECD28900ECFF3F /* GTMNSString+HTML.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1426,6 +1429,7 @@
 				893448B81A004E4E00F5D528 /* MWFeedInfo.m in Sources */,
 				89C204C21A73FEDA00C792D2 /* SplitDelegateSpec.swift in Sources */,
 				895901AA1A30C5D1002E2C62 /* EnclosuresView.swift in Sources */,
+				899C480E1A9AB82100F57B96 /* OPMLManager.swift in Sources */,
 				897F70F31A38AFE500ECE1A1 /* EnclosuresViewController.swift in Sources */,
 				893448C01A004E5C00F5D528 /* NSArray+PureLayout.m in Sources */,
 				89D06A2219FF210C003909A3 /* LoadingView.swift in Sources */,
@@ -1433,27 +1437,26 @@
 				89C7FBE91A18847A00ACBDB2 /* RBActivityIndicator.m in Sources */,
 				89EF4FD61A9682170052A82F /* OPMLParserSpec.swift in Sources */,
 				893448B91A004E4E00F5D528 /* MWFeedItem.m in Sources */,
+				899C48121A9AB82100F57B96 /* FeedStatistics.swift in Sources */,
 				89C509F11A2EB18300CBD000 /* FeedViewController.swift in Sources */,
 				AE4355FE1A7AB7D900A961B9 /* SpecHelper.swift in Sources */,
 				895779A819E62CC500548418 /* ArticleCell.swift in Sources */,
 				895779AA19E62CC500548418 /* DataManager.swift in Sources */,
 				AE43563D1A7AE5D000A961B9 /* InjectorModule.swift in Sources */,
 				894896ED1A16F1130030EB6E /* LocalImportViewController.swift in Sources */,
+				899C480D1A9AB82100F57B96 /* FeedManager.swift in Sources */,
 				895779A019E62CC500548418 /* AppDelegate.swift in Sources */,
-				899C48011A9A8AC100F57B96 /* ScriptManager.swift in Sources */,
-				894FEF351A776AFC009DF7CD /* FeedManager.swift in Sources */,
 				AE4356021A7ABA6900A961B9 /* CoreDataHelperMock.swift in Sources */,
 				89C204BE1A73FD1000C792D2 /* SplitDelegate.swift in Sources */,
 				8963F42F1A26674500B447D6 /* Data-extensions.swift in Sources */,
 				895779A319E62CC500548418 /* FeedTableCell.swift in Sources */,
 				899C47ED1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */,
 				89635F841A13BF120052C248 /* AMPopTip.m in Sources */,
-				894FEF1D1A755D92009DF7CD /* CoreDataHelper.swift in Sources */,
 				893448C21A004E6400F5D528 /* UIColor+RSSClient.m in Sources */,
 				893448BB1A004E4E00F5D528 /* NSDate+InternetDateTime.m in Sources */,
+				899C480F1A9AB82100F57B96 /* ScriptManager.swift in Sources */,
 				894896F21A16F7B20030EB6E /* FeedParser.swift in Sources */,
 				AE4356061A7ABA9600A961B9 /* FeedManagerMock.swift in Sources */,
-				899C47FE1A9A885A00F57B96 /* OPMLManager.swift in Sources */,
 				893448BA1A004E4E00F5D528 /* GTMNSString+HTML.m in Sources */,
 				8924D8F31A108299003B7529 /* OPMLParser.swift in Sources */,
 				89C509FB1A2F865F00CBD000 /* QueryFeedViewController.swift in Sources */,
@@ -1461,13 +1464,13 @@
 				893448B71A004E4E00F5D528 /* MWFeedParser.m in Sources */,
 				895779A719E62CC500548418 /* ArticleListController.swift in Sources */,
 				89C204C51A7400D100C792D2 /* NotificationHandler.swift in Sources */,
+				899C48041A9AB6BF00F57B96 /* FeedManagerSpec.swift in Sources */,
 				893448C11A004E5C00F5D528 /* NSLayoutConstraint+PureLayout.m in Sources */,
 				895779A919E62CC500548418 /* ArticleViewController.swift in Sources */,
 				895782421A3CC0130022F345 /* CircularProgressLayer.swift in Sources */,
 				8963F4351A280F8E00B447D6 /* TagPickerView.swift in Sources */,
-				894FEF291A76E117009DF7CD /* DataFetcher.swift in Sources */,
+				899C48111A9AB82100F57B96 /* DataFetcher.swift in Sources */,
 				AE4356001A7ABA4F00A961B9 /* DataManagerMock.swift in Sources */,
-				894FEF391A78359F009DF7CD /* FeedStatistics.swift in Sources */,
 				89C509F51A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */,
 				895779A119E62CC500548418 /* UnreadCounter.swift in Sources */,
 				899C47FB1A9A864700F57B96 /* DataManagerSpec.swift in Sources */,
@@ -1482,6 +1485,7 @@
 				89C204C71A740D8900C792D2 /* NotificationHandlerSpec.swift in Sources */,
 				893448BF1A004E5C00F5D528 /* ALView+PureLayout.m in Sources */,
 				898047371A20475D00EB29F0 /* Alamofire.swift in Sources */,
+				899C48101A9AB82100F57B96 /* CoreDataHelper.swift in Sources */,
 				89C509F81A2F825400CBD000 /* TextViewCell.swift in Sources */,
 				AE4356041A7ABA8100A961B9 /* DataFetcherMock.swift in Sources */,
 				895779A219E62CC500548418 /* FeedsTableViewController.swift in Sources */,

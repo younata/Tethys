@@ -100,7 +100,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             
             let settings = application.currentUserNotificationSettings()
             if settings.types & UIUserNotificationType.Alert == .Alert {
-                let articles : [Article] = self.dataManager.dataHelper.entities("Article", matchingPredicate: NSPredicate(format: "self IN %@", alist)!, managedObjectContext: self.dataManager.managedObjectContext) as [Article]
+                let articles : [Article] = self.dataManager.entities("Article", matchingPredicate: NSPredicate(format: "self IN %@", alist)!, managedObjectContext: self.dataManager.managedObjectContext) as [Article]
                 for article: Article in articles {
                     self.notificationHandler.sendLocalNotification(application, article: article)
                 }

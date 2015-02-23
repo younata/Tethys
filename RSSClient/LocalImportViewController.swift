@@ -175,7 +175,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
             self.view.userInteractionEnabled = false
             
             let opmlManager = self.injector!.create(OPMLManager.self) as OPMLManager
-            
+
             opmlManager.importOPML(NSURL(string: "file://" + location)!, progress: {(progress: Double) in
                 activityIndicator.progress = progress
             }) {(_) in

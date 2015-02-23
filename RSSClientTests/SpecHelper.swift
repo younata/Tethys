@@ -12,7 +12,7 @@ import Ra
 func injector() -> Injector {
     let injector = Ra.Injector()
     injector.bind(DataManager.self) {
-        return DataManagerMock(dataHelper: CoreDataHelper())
+        return DataManagerMock()
     }
     return injector
 }

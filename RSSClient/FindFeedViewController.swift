@@ -25,7 +25,6 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     
     var feeds: [String] = []
     
-    lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as DataManager }()
     lazy var feedManager : FeedManager = { self.injector!.create(FeedManager.self) as FeedManager }()
     
     override func viewDidLoad() {
@@ -114,15 +113,15 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         self.view.addSubview(loading)
         loading.msg = NSString.localizedStringWithFormat(NSLocalizedString("Loading feed at %@", comment: ""), link)
         if opml {
-            let opmlManager = self.injector!.create(OPMLManager.self) as OPMLManager
-            opmlManager.importOPML(NSURL(string: link)!, progress: {(_) in }) {(_) in
+            let dataManager = self.injector!.create(DataManager.self) as DataManager
+            dataManager.importOPML(NSURL(string: link)!, progress: {(_) in }) {(_) in
                 loading.removeFromSuperview()
                 self.navigationController?.toolbarHidden = false
                 self.navigationController?.navigationBarHidden = false
                 self.dismiss()
             }
         } else {
-            dataManager.newFeed(link) {(error) in
+            feedManager.newFeed(link) {(error) in
                 if let err = error {
                     println("\(err)")
                 }
@@ -157,7 +156,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.text = textField.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         if !textField.text.lowercaseString.hasPrefix("http") {
-            textField.text = "http://\(textField.text)"
+            textField.text = "https://\(textField.text)"
         }
         if let url = NSURL(string: textField.text) {
             self.webContent.loadRequest(NSURLRequest(URL: NSURL(string: textField.text)!))
@@ -202,7 +201,6 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
                 }
             }
         }
-        textField.text = ""
         textField.placeholder = NSLocalizedString("Loading", comment: "")
         textField.resignFirstResponder()
         
@@ -245,7 +243,8 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     func webView(webView: WKWebView!, didStartProvisionalNavigation navigation: WKNavigation!) {
         loadingBar.progress = 0
         loadingBar.hidden = false
-        navField.placeholder = ""
+        navField.text = ""
+        navField.placeholder = NSLocalizedString("Loading", comment: "")
         addFeedButton.enabled = false
     }
 }

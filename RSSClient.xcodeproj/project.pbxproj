@@ -134,6 +134,8 @@
 		899C48101A9AB82100F57B96 /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF1B1A755D92009DF7CD /* CoreDataHelper.swift */; };
 		899C48111A9AB82100F57B96 /* DataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF271A76E116009DF7CD /* DataFetcher.swift */; };
 		899C48121A9AB82100F57B96 /* FeedStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894FEF371A78359F009DF7CD /* FeedStatistics.swift */; };
+		899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */; };
+		899C48191A9AC73100F57B96 /* Ra.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AE4355F11A7AAD5400A961B9 /* Ra.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204B41A73811000C792D2 /* AppDelegateSpec.swift */; };
 		89C204BA1A73813300C792D2 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89C204AB1A73804D00C792D2 /* Nimble.framework */; };
 		89C204BB1A73813300C792D2 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89C204981A73804500C792D2 /* Quick.framework */; };
@@ -334,6 +336,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				899C48191A9AC73100F57B96 /* Ra.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -436,6 +439,7 @@
 		899C47FC1A9A885A00F57B96 /* OPMLManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLManager.swift; sourceTree = "<group>"; };
 		899C47FF1A9A8AC100F57B96 /* ScriptManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScriptManager.swift; sourceTree = "<group>"; };
 		899C48031A9AB6BF00F57B96 /* FeedManagerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedManagerSpec.swift; sourceTree = "<group>"; };
+		899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindFeedViewControllerSpec.swift; sourceTree = "<group>"; };
 		89C2048E1A73804500C792D2 /* Quick.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Quick.xcodeproj; path = Vendor/Quick/Quick.xcodeproj; sourceTree = "<group>"; };
 		89C204A31A73804D00C792D2 /* Nimble.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Nimble.xcodeproj; path = Vendor/Nimble/Nimble.xcodeproj; sourceTree = "<group>"; };
 		89C204B41A73811000C792D2 /* AppDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateSpec.swift; sourceTree = "<group>"; };
@@ -714,6 +718,14 @@
 			name = Domain;
 			sourceTree = "<group>";
 		};
+		899C48181A9AC0F000F57B96 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
 		89C2048F1A73804500C792D2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -832,6 +844,7 @@
 				89C204B41A73811000C792D2 /* AppDelegateSpec.swift */,
 				89C204C11A73FEDA00C792D2 /* SplitDelegateSpec.swift */,
 				89C204C61A740D8900C792D2 /* NotificationHandlerSpec.swift */,
+				899C48181A9AC0F000F57B96 /* UI */,
 				899C48021A9AB6A900F57B96 /* Domain */,
 				89EF4FDB1A9790350052A82F /* Parsers */,
 				AE4355FD1A7AB7D900A961B9 /* SpecHelper.swift */,
@@ -1427,6 +1440,7 @@
 				895779AD19E62CDA00548418 /* Feed.m in Sources */,
 				89DA7D2F1A681B880050685B /* TextFieldCell.swift in Sources */,
 				893448B81A004E4E00F5D528 /* MWFeedInfo.m in Sources */,
+				899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */,
 				89C204C21A73FEDA00C792D2 /* SplitDelegateSpec.swift in Sources */,
 				895901AA1A30C5D1002E2C62 /* EnclosuresView.swift in Sources */,
 				899C480E1A9AB82100F57B96 /* OPMLManager.swift in Sources */,

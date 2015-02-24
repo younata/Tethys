@@ -173,8 +173,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func reload(tag: String?) {
         let oldFeeds = feeds
-        let feedManager = self.injector!.create(FeedManager.self) as FeedManager
-        feeds = feedManager.feedsMatchingTag(tag).sorted {(f1: Feed, f2: Feed) in
+        feeds = dataManager.feedsMatchingTag(tag).sorted {(f1: Feed, f2: Feed) in
             let f1Unread = f1.unreadArticles(self.dataManager)
             let f2Unread = f2.unreadArticles(self.dataManager)
             if f1Unread != f2Unread {
@@ -220,7 +219,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     // MARK: - BreakOutToRefreshDelegate
     
     func refreshViewDidRefresh(refreshView: BreakOutToRefreshView) {
-        reload(nil)
+        refresh()
     }
     
     // MARK: - UIScrollViewDelegate

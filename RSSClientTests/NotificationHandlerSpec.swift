@@ -20,8 +20,6 @@ class NotificationHandlerSpec: QuickSpec {
         beforeEach {
             subject = NotificationHandler()
 
-            ctx = fullyConfiguredManagedObjectContext()
-
             feedID = NSManagedObjectIDMock()
             feedID.uri = NSURL(string: "https://example.com/feed")!
 

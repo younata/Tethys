@@ -58,8 +58,7 @@ class QueryFeedViewController: UITableViewController {
             }
             feed.managedObjectContext?.save(nil)
         }
-        let opmlManager = self.injector!.create(OPMLManager.self) as OPMLManager
-        opmlManager.writeOPML()
+        dataManager.writeOPML()
         dismiss()
     }
     

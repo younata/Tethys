@@ -29,9 +29,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
     }()
 
     lazy var dataManager : DataManager = { return self.anInjector.create(DataManager.self) as DataManager }()
-    
-    lazy var feedManager : FeedManager = { return self.anInjector.create(FeedManager.self) as FeedManager }()
-    
+        
     lazy var notificationHandler : NotificationHandler = { self.anInjector.create(NotificationHandler.self) as NotificationHandler }()
     
     lazy var splitDelegate : SplitDelegate = {
@@ -61,7 +59,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         
         notificationHandler.enableNotifications(application)
         
-        if feedManager.feeds().count > 0 {
+        if dataManager.feeds().count > 0 {
             application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         } else {
             application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
@@ -71,15 +69,15 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     public func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
-        notificationHandler.handleLocalNotification(notification, window: self.window, dataManager: dataManager)
+        notificationHandler.handleLocalNotification(notification, window: self.window)
     }
     
     public func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
-        notificationHandler.handleAction(identifier, notification: notification, window: self.window, dataManager: dataManager, completionHandler: completionHandler)
+        notificationHandler.handleAction(identifier, notification: notification, window: self.window, completionHandler: completionHandler)
     }
     
     public func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        let originalList: [NSManagedObjectID] = (feedManager.feeds().reduce([], combine: {return $0 + ($1.articles.allObjects as [Article])}) as [Article]).map { return $0.objectID }
+        let originalList: [NSManagedObjectID] = (dataManager.feeds().reduce([], combine: {return $0 + ($1.articles.allObjects as [Article])}) as [Article]).map { return $0.objectID }
         if originalList.count == 0 {
             completionHandler(.Failed)
             return
@@ -89,7 +87,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 completionHandler(.Failed)
                 return
             }
-            let al : [NSManagedObjectID] = (self.feedManager.feeds().reduce([], combine: {return $0 + ($1.articles.allObjects as [Article])}) as [Article]).map { return $0.objectID }
+            let al : [NSManagedObjectID] = (self.dataManager.feeds().reduce([], combine: {return $0 + ($1.articles.allObjects as [Article])}) as [Article]).map { return $0.objectID }
             if (al.count == originalList.count) {
                 completionHandler(.NoData)
                 return
@@ -125,7 +123,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                         if let userInfo = userActivity.userInfo {
                             nc.popToRootViewControllerAnimated(false)
                             let feedTitle = (userInfo["feed"] as String)
-                            let feed : Feed = feedManager.feeds().filter{ return $0.title == feedTitle; }.first!
+                            let feed : Feed = dataManager.feeds().filter{ return $0.title == feedTitle; }.first!
                             let articleID = (userInfo["article"] as NSURL)
                             let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.objectID.URIRepresentation() == articleID }).first!
                             let al = ftvc.showFeeds([feed], animated: false)

@@ -14,7 +14,6 @@ let kBackgroundManagedObjectContext = "kBackgroundManagedObjectContext"
 
 class InjectorModule {
     func configure(injector: Ra.Injector) {
-        let dataHelper = CoreDataHelper()
         let dataManager = DataManager()
         injector.bind(DataManager.self, to: dataManager)
 

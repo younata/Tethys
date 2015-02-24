@@ -49,8 +49,7 @@ class FeedViewController: UITableViewController {
     
     func save() {
         feed?.managedObjectContext?.save(nil)
-        let opmlManager = self.injector!.create(OPMLManager.self) as OPMLManager
-        opmlManager.writeOPML()
+        dataManager.writeOPML()
         dismiss()
     }
     
@@ -157,7 +156,7 @@ class FeedViewController: UITableViewController {
             }
         case 4:
             if let f = feed {
-                let (date, stdev) = FeedStatistics().estimateNextFeedTime(f)
+                let (date, stdev) = dataManager.estimateNextFeedTime(f)
                 if let d = date {
                     let start = d.dateByAddingTimeInterval(-stdev)
                     let end = d.dateByAddingTimeInterval(stdev)

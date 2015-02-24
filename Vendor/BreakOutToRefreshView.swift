@@ -32,7 +32,11 @@ protocol BreakOutToRefreshDelegate: class {
   func refreshViewDidRefresh(refreshView: BreakOutToRefreshView)
 }
 
-class BreakOutToRefreshView: SKView {
+protocol BreakOutToRefreshNotifiee {
+  func gameLost() -> Bool // Notifies the receiver that the game ended, and asks whether it should kick the user out.
+}
+
+class BreakOutToRefreshView: SKView, BreakOutToRefreshNotifiee {
 
   private let sceneHeight = CGFloat(100)
   
@@ -101,7 +105,9 @@ class BreakOutToRefreshView: SKView {
     breakOutScene.blockColors = blockColors
 
     super.init(frame: frame)
-    
+
+    breakOutScene.notifiee = self
+
     layer.borderColor = UIColor.grayColor().CGColor
     layer.borderWidth = 1.0
     
@@ -123,7 +129,8 @@ class BreakOutToRefreshView: SKView {
     UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
       self.scrollView.contentInset.top += self.sceneHeight
     }) { (_) -> Void in
-      if self.scrollView.contentOffset.y < -60 && !self.breakOutScene.isStarted {
+      if self.scrollView.contentOffset.y < -60 {
+        self.breakOutScene.reset()
         self.breakOutScene.start()
       }
       self.isVisible = true
@@ -132,19 +139,29 @@ class BreakOutToRefreshView: SKView {
   
   func endRefreshing() {
     if (!isDragging || forceEnd) && isVisible {
+      self.isVisible = false
       UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
         self.scrollView.contentInset.top -= self.sceneHeight
         }) { (_) -> Void in
           self.isRefreshing = false
           self.presentScene(StartScene(size: self.frame.size))
-          self.isVisible = false
       }
     } else {
       breakOutScene.updateLabel("Loading Finished")
       isRefreshing = false
     }
   }
-  
+
+  func gameLost() -> Bool {
+    var kickUserOut = !isRefreshing
+    if kickUserOut {
+      let fe = forceEnd
+      forceEnd = true
+      endRefreshing()
+      forceEnd = fe
+    }
+    return kickUserOut
+  }
 }
 
 extension BreakOutToRefreshView: UIScrollViewDelegate {
@@ -157,7 +174,6 @@ extension BreakOutToRefreshView: UIScrollViewDelegate {
     isDragging = false
     
     if !isRefreshing && scrollView.contentOffset.y + scrollView.contentInset.top < -sceneHeight {
-//    if scrollView.contentOffset.y + scrollView.contentInset.top < -sceneHeight {
       beginRefreshing()
       targetContentOffset.memory.y = -scrollView.contentInset.top
       delegate?.refreshViewDidRefresh(self)
@@ -170,16 +186,10 @@ extension BreakOutToRefreshView: UIScrollViewDelegate {
   }
   
   func scrollViewDidScroll(scrollView: UIScrollView) {
-//    println("\(scrollView.contentOffset)")
-
     let frameHeight = frame.size.height
     let yPosition = sceneHeight - (-scrollView.contentInset.top-scrollView.contentOffset.y)*2
     
     breakOutScene.moveHandle(yPosition)
-    
-//    if scrollView.contentOffset.y < -60 && !breakOutScene.isStarted {
-//      breakOutScene.start()
-//    }
   }
 }
 
@@ -191,7 +201,7 @@ class BreakOutScene: SKScene, SKPhysicsContactDelegate {
   let backgroundLabelName = "backgroundLabel"
   
   let ballCategory   : UInt32 = 0x1 << 0
-  let bottomCategory : UInt32 = 0x1 << 1
+  let backCategory : UInt32 = 0x1 << 1
   let blockCategory  : UInt32 = 0x1 << 2
   let paddleCategory : UInt32 = 0x1 << 3
   
@@ -202,6 +212,8 @@ class BreakOutScene: SKScene, SKPhysicsContactDelegate {
   var paddleColor: UIColor!
   var ballColor: UIColor!
   var blockColors: [UIColor]!
+
+  var notifiee : BreakOutToRefreshNotifiee? = nil
   
   override func didMoveToView(view: SKView) {
     super.didMoveToView(view)
@@ -214,7 +226,7 @@ class BreakOutScene: SKScene, SKPhysicsContactDelegate {
   override func update(currentTime: NSTimeInterval) {
     let ball = self.childNodeWithName(ballName) as SKSpriteNode!
     
-    let maxSpeed: CGFloat = 600.0
+    let maxSpeed: CGFloat = 1500.0
     let speed = sqrt(ball.physicsBody!.velocity.dx * ball.physicsBody!.velocity.dx + ball.physicsBody!.velocity.dy * ball.physicsBody!.velocity.dy)
     
     if speed > maxSpeed {
@@ -235,7 +247,14 @@ class BreakOutScene: SKScene, SKPhysicsContactDelegate {
     physicsBody = SKPhysicsBody(edgeLoopFromRect: frame)
     physicsBody?.restitution = 1.0
     physicsBody?.friction = 0.0
-    
+    name = "scene"
+
+    let back = SKNode()
+    back.physicsBody = SKPhysicsBody(edgeFromPoint: CGPointMake(frame.size.width - 1, 0),
+                                           toPoint: CGPointMake(frame.size.width - 1, frame.size.height))
+    back.physicsBody?.categoryBitMask = backCategory
+    addChild(back)
+
     createLoadingLabelNode()
     
     let paddle = createPaddle()
@@ -251,7 +270,6 @@ class BreakOutScene: SKScene, SKPhysicsContactDelegate {
     let paddle = SKSpriteNode(color: paddleColor, size: CGSize(width: 5, height: 30))
     
     paddle.physicsBody = SKPhysicsBody(rectangleOfSize: paddle.size)
-    paddle.physicsBody?.categoryBitMask = paddleCategory
     paddle.physicsBody?.dynamic = false
     paddle.physicsBody?.restitution = 1.0
     paddle.physicsBody?.friction = 0.0
@@ -280,11 +298,18 @@ class BreakOutScene: SKScene, SKPhysicsContactDelegate {
         block.physicsBody?.allowsRotation = false
         block.physicsBody?.restitution = 1.0
         block.physicsBody?.friction = 0.0
-//        block.physicsBody?.mass = 1000.0
         block.physicsBody?.dynamic = false
         
         addChild(block)
       }
+    }
+  }
+
+  func removeBlocks() {
+    var node = childNodeWithName(blockName)
+    while (node != nil) {
+        node?.removeFromParent()
+        node = childNodeWithName(blockName)
     }
   }
   
@@ -298,7 +323,7 @@ class BreakOutScene: SKScene, SKPhysicsContactDelegate {
     ball.physicsBody = SKPhysicsBody(circleOfRadius: ceil(ball.size.width/2.0))
     ball.physicsBody?.usesPreciseCollisionDetection = true
     ball.physicsBody?.categoryBitMask = ballCategory
-    ball.physicsBody?.contactTestBitMask = blockCategory | paddleCategory
+    ball.physicsBody?.contactTestBitMask = blockCategory | paddleCategory | backCategory
     ball.physicsBody?.allowsRotation = false
     
     ball.physicsBody?.linearDamping = 0.0
@@ -309,8 +334,9 @@ class BreakOutScene: SKScene, SKPhysicsContactDelegate {
   }
   
   func removeBall() {
-    let ball = childNodeWithName(ballName)
-    ball?.removeFromParent()
+    if let ball = childNodeWithName(ballName) {
+        ball.removeFromParent()
+    }
   }
   
   func createLoadingLabelNode() {
@@ -324,6 +350,7 @@ class BreakOutScene: SKScene, SKPhysicsContactDelegate {
   }
   
   func reset() {
+    removeBlocks()
     createBlocks()
     removeBall()
     createBall()
@@ -343,8 +370,6 @@ class BreakOutScene: SKScene, SKPhysicsContactDelegate {
   }
   
   func moveHandle(value: CGFloat) {
-//    println("\(value)")
-    
     let paddle = childNodeWithName(paddleName)
     
     paddle?.position.y = value
@@ -353,26 +378,24 @@ class BreakOutScene: SKScene, SKPhysicsContactDelegate {
   func didEndContact(contact: SKPhysicsContact) {
     var ballBody: SKPhysicsBody?
     var otherBody: SKPhysicsBody?
-    
-//    println("--------------------------------------------")
-//    println("A \(contact.bodyA) \(contact.bodyA.categoryBitMask) \(ballCategory)")
-//    println("B \(contact.bodyB) \(contact.bodyB.categoryBitMask) \(ballCategory)")
+
     if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
-//      println("first")
       ballBody = contact.bodyA
       otherBody = contact.bodyB
     } else {
-//      println("second")
       ballBody = contact.bodyB
       otherBody = contact.bodyA
     }
-    
-    if ballBody!.categoryBitMask & ballCategory != 0 {
+
+    if ((otherBody?.categoryBitMask ?? 0) == backCategory) {
+      if notifiee?.gameLost() == false {
+        reset()
+        start()
+      }
+    } else if ballBody!.categoryBitMask & ballCategory != 0 {
       let minimalXVelocity = CGFloat(20.0)
       let minimalYVelocity = CGFloat(20.0)
       var velocity = ballBody!.velocity as CGVector
-//      println("ball category: \(ballBody?.categoryBitMask)")
-//      println("before \(velocity.dx) \(velocity.dy)")
       if velocity.dx > -minimalXVelocity && velocity.dx <= 0 {
         velocity.dx = -minimalXVelocity-1
       } else if velocity.dx > 0 && velocity.dx < minimalXVelocity {
@@ -383,19 +406,16 @@ class BreakOutScene: SKScene, SKPhysicsContactDelegate {
       } else if velocity.dy > 0 && velocity.dy < minimalYVelocity {
         velocity.dy = minimalYVelocity+1
       }
-//      println("after \(velocity.dx) \(velocity.dy)")
       ballBody?.velocity = velocity
     }
-    
-    if otherBody != nil && (otherBody!.categoryBitMask & blockCategory != 0) {
+
+    if otherBody != nil && (otherBody!.categoryBitMask & blockCategory != 0) && otherBody!.categoryBitMask == blockCategory {
       otherBody!.node?.removeFromParent()
       if isGameWon() {
         reset()
         start()
       }
-      return
     }
-    
   }
   
   func isGameWon() -> Bool {

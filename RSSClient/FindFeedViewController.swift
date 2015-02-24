@@ -24,9 +24,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     var lookForFeeds : Bool = true
     
     var feeds: [String] = []
-    
-    lazy var feedManager : FeedManager = { self.injector!.create(FeedManager.self) as FeedManager }()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -82,7 +80,8 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         if (lookForFeeds) {
-            feeds = feedManager.feeds().reduce([], combine: {
+            let dataManager = self.injector!.create(DataManager.self) as DataManager
+            feeds = dataManager.feeds().reduce([], combine: {
                 if $1.url == nil {
                     return $0
                 }
@@ -112,8 +111,8 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         let loading = LoadingView(frame: self.view.bounds)
         self.view.addSubview(loading)
         loading.msg = NSString.localizedStringWithFormat(NSLocalizedString("Loading feed at %@", comment: ""), link)
+        let dataManager = self.injector!.create(DataManager.self) as DataManager
         if opml {
-            let dataManager = self.injector!.create(DataManager.self) as DataManager
             dataManager.importOPML(NSURL(string: link)!, progress: {(_) in }) {(_) in
                 loading.removeFromSuperview()
                 self.navigationController?.toolbarHidden = false
@@ -121,7 +120,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
                 self.dismiss()
             }
         } else {
-            feedManager.newFeed(link) {(error) in
+            dataManager.newFeed(link) {(error) in
                 if let err = error {
                     println("\(err)")
                 }
@@ -156,7 +155,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.text = textField.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         if !textField.text.lowercaseString.hasPrefix("http") {
-            textField.text = "https://\(textField.text)"
+            textField.text = "http://\(textField.text)"
         }
         if let url = NSURL(string: textField.text) {
             self.webContent.loadRequest(NSURLRequest(URL: NSURL(string: textField.text)!))

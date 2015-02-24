@@ -9,6 +9,10 @@
 import Foundation
 
 class DataManagerMock : DataManager {
+    override func feeds(managedObjectContext: NSManagedObjectContext? = nil) -> [Feed] {
+        return []
+    }
+
     override func updateFeeds(completion: (NSError?) -> (Void)) {
         completion(nil)
     }

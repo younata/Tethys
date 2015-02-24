@@ -229,13 +229,13 @@ class DataManager: NSObject {
 
         let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
         dispatch_async(queue) {
-            let ctx = self.managedObjectContext
+            let ctx = self.backgroundObjectContext
             let theFeeds = self.entities("Feed", matchingPredicate: NSPredicate(format: "self in %@", feedIds)!, managedObjectContext: ctx) as [Feed]
             var feedsLeft = theFeeds.count
             for feed in theFeeds {
                 let feedParser = FeedParser(URL: NSURL(string: feed.url)!)
 
-                let manager = /*backgroundFetch ? self.backgroundManager :*/ self.mainManager // FIXME: using backgroundManager seems to always fail?
+                let manager = backgroundFetch ? self.backgroundManager : self.mainManager // FIXME: using backgroundManager seems to always fail?
                 let wait = feed.remainingWait?.integerValue ?? 0
                 if wait != 0 {
                     feed.remainingWait = NSNumber(integer: wait - 1)
@@ -633,7 +633,7 @@ class DataManager: NSObject {
     }
 
     private func fetching(ctx: JSContext, isBackground: Bool) {
-        let moc = isBackground ? self.backgroundObjectContext! : self.managedObjectContext
+        let moc = isBackground ? self.backgroundObjectContext : self.managedObjectContext
 
         ctx.evaluateScript("var data = {onNewFeed: [], onNewArticle: []}")
         let data = ctx.objectForKeyedSubscript("data")
@@ -778,7 +778,7 @@ class DataManager: NSObject {
     let managedObjectContext: NSManagedObjectContext
 
     let operationQueue = NSOperationQueue()
-    var backgroundObjectContext: NSManagedObjectContext! = nil
+    let backgroundObjectContext: NSManagedObjectContext
     var backgroundJSVM: JSVirtualMachine? = nil
     var backgroundContext: JSContext? = nil
 
@@ -815,14 +815,15 @@ class DataManager: NSObject {
             manager.session.configuration.timeoutIntervalForResource = 30.0;
         }
 
-        managedObjectContext = NSManagedObjectContext()
+        managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
         managedObjectContext.persistentStoreCoordinator = persistentStoreCoordinator
+
+        self.backgroundObjectContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+        self.backgroundObjectContext.parentContext = managedObjectContext
+
         super.init()
         operationQueue.underlyingQueue = dispatch_queue_create("DataManager Background Queue", nil)
         operationQueue.addOperation(NSBlockOperation(block: {
-            self.backgroundObjectContext = NSManagedObjectContext()
-            self.backgroundObjectContext.persistentStoreCoordinator = self.persistentStoreCoordinator
-
             self.backgroundJSVM = JSVirtualMachine()
             self.backgroundContext = self.setUpContext(JSContext(virtualMachine: self.backgroundJSVM))
         }))

@@ -9,10 +9,7 @@
 import UIKit
 
 class NotificationHandler : NSObject {
-    
-    lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as DataManager }()
-    lazy var feedManager : FeedManager = { self.injector!.create(FeedManager.self) as FeedManager }()
-    
+
     func enableNotifications(application: UIApplication) {
         let markReadAction = UIMutableUserNotificationAction()
         markReadAction.identifier = "read"
@@ -28,17 +25,18 @@ class NotificationHandler : NSObject {
         application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Badge | .Alert | .Sound, categories: NSSet(object: category)))
     }
     
-    func handleLocalNotification(notification: UILocalNotification, window: UIWindow, dataManager: DataManager) {
+    func handleLocalNotification(notification: UILocalNotification, window: UIWindow) {
         if let userInfo = notification.userInfo {
-            let (feed, article) = feedAndArticleFromUserInfo(userInfo, dataManager: dataManager)
+            let (feed, article) = feedAndArticleFromUserInfo(userInfo)
             showArticle(article, window: window)
         }
     }
     
-    func handleAction(identifier: String?, notification: UILocalNotification, window: UIWindow, dataManager: DataManager, completionHandler: () -> Void) {
+    func handleAction(identifier: String?, notification: UILocalNotification, window: UIWindow, completionHandler: () -> Void) {
         if let userInfo = notification.userInfo {
-            let (feed, article) = feedAndArticleFromUserInfo(userInfo, dataManager: dataManager)
+            let (feed, article) = feedAndArticleFromUserInfo(userInfo)
             if identifier == "read" {
+                let dataManager = self.injector!.create(DataManager.self) as DataManager
                 dataManager.readArticle(article)
             } else if identifier == "view" {
                 showArticle(article, window: window)
@@ -63,9 +61,10 @@ class NotificationHandler : NSObject {
         application.presentLocalNotificationNow(note)
     }
     
-    private func feedAndArticleFromUserInfo(userInfo: [NSObject : AnyObject], dataManager: DataManager) -> (Feed, Article) {
+    private func feedAndArticleFromUserInfo(userInfo: [NSObject : AnyObject]) -> (Feed, Article) {
         let feedID = (userInfo["feed"] as String)
-        let feed : Feed = feedManager.feeds().filter{ return $0.objectID.URIRepresentation().absoluteString == feedID; }.first!
+        let dataManager = self.injector!.create(DataManager.self) as DataManager
+        let feed : Feed = dataManager.feeds().filter{ return $0.objectID.URIRepresentation().absoluteString == feedID; }.first!
         let articleID = (userInfo["article"] as String)
         let article : Article = feed.allArticles(dataManager).filter({ return $0.objectID.URIRepresentation().absoluteString == articleID }).first!
         return (feed, article)

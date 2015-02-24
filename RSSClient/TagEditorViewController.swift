@@ -23,8 +23,6 @@ class TagEditorViewController: UIViewController {
     
     let tagPicker = TagPickerView(frame: CGRectZero)
     
-    lazy var feedManager : FeedManager = { self.injector!.create(FeedManager.self) as FeedManager }()
-
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -37,7 +35,8 @@ class TagEditorViewController: UIViewController {
         tagPicker.setTranslatesAutoresizingMaskIntoConstraints(false)
         self.view.addSubview(tagPicker)
         tagPicker.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(16, 8, 0, 8), excludingEdge: .Bottom)
-        tagPicker.allTags = feedManager.allTags()
+        let dataManager = self.injector!.create(DataManager.self) as DataManager
+        tagPicker.allTags = dataManager.allTags()
         tagPicker.didSelect = {
             self.tag = $0
         }

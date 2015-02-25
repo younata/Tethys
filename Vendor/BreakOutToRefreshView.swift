@@ -32,11 +32,7 @@ protocol BreakOutToRefreshDelegate: class {
   func refreshViewDidRefresh(refreshView: BreakOutToRefreshView)
 }
 
-protocol BreakOutToRefreshNotifiee {
-  func gameLost() -> Bool // Notifies the receiver that the game ended, and asks whether it should kick the user out.
-}
-
-class BreakOutToRefreshView: SKView, BreakOutToRefreshNotifiee {
+class BreakOutToRefreshView: SKView {
 
   private let sceneHeight = CGFloat(100)
   
@@ -106,8 +102,6 @@ class BreakOutToRefreshView: SKView, BreakOutToRefreshNotifiee {
 
     super.init(frame: frame)
 
-    breakOutScene.notifiee = self
-
     layer.borderColor = UIColor.grayColor().CGColor
     layer.borderWidth = 1.0
     
@@ -150,17 +144,6 @@ class BreakOutToRefreshView: SKView, BreakOutToRefreshNotifiee {
       breakOutScene.updateLabel("Loading Finished")
       isRefreshing = false
     }
-  }
-
-  func gameLost() -> Bool {
-    var kickUserOut = !isRefreshing
-    if kickUserOut {
-      let fe = forceEnd
-      forceEnd = true
-      endRefreshing()
-      forceEnd = fe
-    }
-    return kickUserOut
   }
 }
 
@@ -213,8 +196,6 @@ class BreakOutScene: SKScene, SKPhysicsContactDelegate {
   var ballColor: UIColor!
   var blockColors: [UIColor]!
 
-  var notifiee : BreakOutToRefreshNotifiee? = nil
-  
   override func didMoveToView(view: SKView) {
     super.didMoveToView(view)
     if !contentCreated {
@@ -388,10 +369,8 @@ class BreakOutScene: SKScene, SKPhysicsContactDelegate {
     }
 
     if ((otherBody?.categoryBitMask ?? 0) == backCategory) {
-      if notifiee?.gameLost() == false {
-        reset()
-        start()
-      }
+      reset()
+      start()
     } else if ballBody!.categoryBitMask & ballCategory != 0 {
       let minimalXVelocity = CGFloat(20.0)
       let minimalYVelocity = CGFloat(20.0)

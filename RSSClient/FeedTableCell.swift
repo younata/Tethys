@@ -24,12 +24,12 @@ class FeedTableCell: UITableViewCell {
             if let image = feed?.feedImage() {
                 iconView.image = image
                 let scaleRatio = 60 / image.size.width
-                iconWidth.constant = 60
-                iconHeight.constant = image.size.height * scaleRatio
+                iconWidth?.constant = 60
+                iconHeight?.constant = image.size.height * scaleRatio
             } else {
                 iconView.image = nil
-                iconWidth.constant = 45
-                iconHeight.constant = 0
+                iconWidth?.constant = 45
+                iconHeight?.constant = 0
             }
         }
     }
@@ -41,8 +41,8 @@ class FeedTableCell: UITableViewCell {
     let unreadCounter = UnreadCounter(frame: CGRectZero)
     let iconView = UIImageView(forAutoLayout: ())
     
-    var iconWidth : NSLayoutConstraint! = nil
-    var iconHeight : NSLayoutConstraint! = nil
+    var iconWidth : NSLayoutConstraint? = nil
+    var iconHeight : NSLayoutConstraint? = nil
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)

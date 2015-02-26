@@ -15,7 +15,6 @@ class FeedParserSpec: QuickSpec {
                 println("\n\n\n\n\n")
                 for i in 0..<amount {
                     let fp = FeedParser(string: str)
-                    fp.asynch = true
                     fp.success {(_, _) in
                         parsers.removeAtIndex(0)
                         if parsers.count == 0 {

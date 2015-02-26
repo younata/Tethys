@@ -166,6 +166,8 @@
 		89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2D1A6613100050685B /* ValidatorView.swift */; };
 		89DA7D2F1A681B880050685B /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2B1A66111E0050685B /* TextFieldCell.swift */; };
 		89DA7D301A68C04C0050685B /* ValidatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2D1A6613100050685B /* ValidatorView.swift */; };
+		89DBDA8D1A9EBACD00959AC7 /* FeedParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DBDA8C1A9EBACD00959AC7 /* FeedParserSpec.swift */; };
+		89DBDA9A1A9EBB0C00959AC7 /* feed.rss in Resources */ = {isa = PBXBuildFile; fileRef = 89DBDA991A9EBB0C00959AC7 /* feed.rss */; };
 		89EF4FD61A9682170052A82F /* OPMLParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EF4FD51A9682170052A82F /* OPMLParserSpec.swift */; };
 		89EF4FD81A96852D0052A82F /* test.opml in Resources */ = {isa = PBXBuildFile; fileRef = 89EF4FD71A96852D0052A82F /* test.opml */; };
 		AE4355F71A7AADD900A961B9 /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE4355ED1A7AAD5400A961B9 /* Ra.framework */; };
@@ -459,6 +461,8 @@
 		89D135101A5944A200B6937A /* RSSClient 1.4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.4.xcdatamodel"; sourceTree = "<group>"; };
 		89DA7D2B1A66111E0050685B /* TextFieldCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldCell.swift; sourceTree = "<group>"; };
 		89DA7D2D1A6613100050685B /* ValidatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidatorView.swift; sourceTree = "<group>"; };
+		89DBDA8C1A9EBACD00959AC7 /* FeedParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedParserSpec.swift; sourceTree = "<group>"; };
+		89DBDA991A9EBB0C00959AC7 /* feed.rss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = feed.rss; sourceTree = "<group>"; };
 		89EF4FD51A9682170052A82F /* OPMLParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLParserSpec.swift; sourceTree = "<group>"; };
 		89EF4FD71A96852D0052A82F /* test.opml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = test.opml; sourceTree = "<group>"; };
 		AE4355DB1A7AAD5400A961B9 /* Ra.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Ra.xcodeproj; path = Vendor/Ra/Ra.xcodeproj; sourceTree = "<group>"; };
@@ -830,6 +834,7 @@
 		89C8308F19D730E9009924DA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				89DBDA991A9EBB0C00959AC7 /* feed.rss */,
 				89EF4FD71A96852D0052A82F /* test.opml */,
 				89C8309019D730E9009924DA /* Info.plist */,
 			);
@@ -903,6 +908,7 @@
 			isa = PBXGroup;
 			children = (
 				89EF4FD51A9682170052A82F /* OPMLParserSpec.swift */,
+				89DBDA8C1A9EBACD00959AC7 /* FeedParserSpec.swift */,
 			);
 			name = Parsers;
 			sourceTree = "<group>";
@@ -1283,6 +1289,7 @@
 			files = (
 				898047461A20478600EB29F0 /* TUSafariActivity.strings in Resources */,
 				89EF4FD81A96852D0052A82F /* test.opml in Resources */,
+				89DBDA9A1A9EBB0C00959AC7 /* feed.rss in Resources */,
 				8980475A1A20478600EB29F0 /* safari~iPad@2x.png in Resources */,
 				898047521A20478600EB29F0 /* safari@3x.png in Resources */,
 				895901B61A32B61A002E2C62 /* Localizable.stringsdict in Resources */,
@@ -1396,6 +1403,7 @@
 			files = (
 				895901AD1A30C6B7002E2C62 /* EnclosureCell.swift in Sources */,
 				895779AD19E62CDA00548418 /* Feed.m in Sources */,
+				89DBDA8D1A9EBACD00959AC7 /* FeedParserSpec.swift in Sources */,
 				89DA7D2F1A681B880050685B /* TextFieldCell.swift in Sources */,
 				893448B81A004E4E00F5D528 /* MWFeedInfo.m in Sources */,
 				899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */,

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+    <title>objc.io</title>
+    <description>A periodical about best practices and advanced techniques for iOS and OS X development.</description>
+    <link>http://www.objc.io</link>
+    <atom:link href="http://www.objc.io/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+        <title>Issue #21: Camera and Photos</title>
+        <description>&lt;p&gt;This issue is all about photos and the camera, an important area for developers. The iPhone has become the most popular camera in the world, and for many people, the camera is the most loved feature of their smartphone. We cover a wide range of topics in this issue, from the inner workings of your camera, to advanced GPU-based image processing techniques.&lt;&#x2F;p&gt;
+</description>
+        <pubDate>Tue, 10 Feb 2015 13:00:00 +0000</pubDate>
+        <link>http://www.objc.io/issue-21</link>
+        <guid isPermaLink="true">http://www.objc.io/issue-21</guid>
+    </item>
+    
+    
+    <item>
+        <title>Issue #20: Interviews</title>
+        <description>&lt;p&gt;To mark the first issue of the year, we did things a bit differently again. This time, we interviewed some developers — Andy Matuschak, Loren Brichter, and Natasha Murashev — all of whom had interesting stories to share. We hope you&amp;rsquo;ll enjoy this special issue!&lt;&#x2F;p&gt;
+</description>
+        <pubDate>Tue, 13 Jan 2015 13:00:00 +0000</pubDate>
+        <link>http://www.objc.io/issue-20</link>
+        <guid isPermaLink="true">http://www.objc.io/issue-20</guid>
+    </item>
+    
+    
+    <item>
+        <title>Issue #19: Debugging</title>
+        <description>&lt;p&gt;We&amp;rsquo;re all making mistakes, all the time. As such, debugging is a core part of what we do every day, and we&amp;rsquo;ve all developed debugging habits — our own way of approaching the all-too-common situation where something is not working as it should. But there&amp;rsquo;s always more to learn about debugging. Do you use LLDB to its full potential? Have you disassembled framework code to glance under the covers? Have you ever used the DTrace framework? Do you know about Apple&amp;rsquo;s new activity tracing APIs? We&amp;rsquo;re going to take a look at these topics and more in this issue.&lt;&#x2F;p&gt;
+</description>
+        <pubDate>Mon, 08 Dec 2014 13:00:00 +0000</pubDate>
+        <link>http://www.objc.io/issue-19</link>
+        <guid isPermaLink="true">http://www.objc.io/issue-19</guid>
+    </item>
+    
+    
+    <item>
+        <title>Issue #18: Games</title>
+        <description>&lt;p&gt;This issue of objc.io is centered around game development. It contains articles covering many varied aspects of game development, providing non-game developers insight into this related, but nonetheless very different, field. Topics include what makes mobile games great, the new Metal framework, Multipeer Connectivity for games, Scene Kit, and sound design.&lt;&#x2F;p&gt;
+</description>
+        <pubDate>Mon, 10 Nov 2014 13:00:00 +0000</pubDate>
+        <link>http://www.objc.io/issue-18</link>
+        <guid isPermaLink="true">http://www.objc.io/issue-18</guid>
+    </item>
+    
+    
+    <item>
+        <title>Issue #17: Security</title>
+        <description>&lt;p&gt;This issue is about security. It&amp;rsquo;s a relatively small issue, since September was a busy month for us and our contributors. Nevertheless, we have some great articles on code signing, receipt validation, and why security still matters today.   &lt;&#x2F;p&gt;
+</description>
+        <pubDate>Fri, 10 Oct 2014 13:00:00 +0000</pubDate>
+        <link>http://www.objc.io/issue-17</link>
+        <guid isPermaLink="true">http://www.objc.io/issue-17</guid>
+    </item>
+    
+    
+    <item>
+        <title>Issue #16: Swift</title>
+        <description>&lt;p&gt;This month&amp;rsquo;s objc.io is all about Swift, Apple&amp;rsquo;s new programming language that went 1.0 the day before this issue came out.&lt;&#x2F;p&gt;
+
+&lt;p&gt;This issue is neither an introduction to Swift, nor a guide of best practices. Instead, we focus on some aspects of Swift that are new and potentially very foreign to Objective-C developers, like first-class functions, structs and value types, functional APIs, and making the most of playgrounds.&lt;&#x2F;p&gt;
+
+&lt;p&gt;If you&amp;rsquo;d like to dive deeper into the functional aspects of Swift, please check out the Functional Programming in Swift book that we&amp;rsquo;re currently finishing up. It&amp;rsquo;s available as an early-access version now, and will be published on October 1.&lt;&#x2F;p&gt;
+</description>
+        <pubDate>Wed, 10 Sep 2014 13:00:00 +0000</pubDate>
+        <link>http://www.objc.io/issue-16</link>
+        <guid isPermaLink="true">http://www.objc.io/issue-16</guid>
+    </item>
+    
+    
+    <item>
+        <title>Issue #15: Testing</title>
+        <description>&lt;p&gt;This month&amp;rsquo;s issue is about a topic we&amp;rsquo;ve wanted to cover for a long time: Testing.&lt;&#x2F;p&gt;
+
+&lt;p&gt;Automated testing isn&amp;rsquo;t a very long-standing tradition in Apple&amp;rsquo;s developer community. As a result, some people love it, some people hate it, and others just haven&amp;rsquo;t gotten around to really looking into it. Regardless, testing has many different aspects, and we hope that no matter what camp you&amp;rsquo;re in, you&amp;rsquo;ll be able to take something away from this issue.&lt;&#x2F;p&gt;
+</description>
+        <pubDate>Fri, 08 Aug 2014 13:00:00 +0000</pubDate>
+        <link>http://www.objc.io/issue-15</link>
+        <guid isPermaLink="true">http://www.objc.io/issue-15</guid>
+    </item>
+    
+    
+    <item>
+        <title>Issue #14: Back to the Mac</title>
+        <description>&lt;p&gt;This month&amp;rsquo;s issue is all about the Mac, with articles focused around topics that are unique to the OS X platform, like scripting, plugins, and XPC. We also have a guide with tips for iOS developers on how to get started with AppKit.&lt;&#x2F;p&gt;
+
+&lt;p&gt;Additionally, with the introduction of the new language Swift, we&amp;rsquo;ve decided to write a book about it: &amp;ldquo;Functional Programming in Swift.&amp;rdquo; This will not be your standard introduction to the language, but it will focus on how to leverage Swift&amp;rsquo;s language features to write functional code. It&amp;rsquo;s targeted for release in September, but a pre-order option with beta access is available today.&lt;&#x2F;p&gt;
+</description>
+        <pubDate>Fri, 11 Jul 2014 13:00:00 +0000</pubDate>
+        <link>http://www.objc.io/issue-14</link>
+        <guid isPermaLink="true">http://www.objc.io/issue-14</guid>
+    </item>
+    
+    
+    <item>
+        <title>Issue #13: Architecture</title>
+        <description>&lt;p&gt;The very first issue of objc.io appeared one year ago, so we&amp;rsquo;re celebrating our first anniversary! Thank you for all your support during this time, and especially for all the excellent contributions we have received from the community.&lt;&#x2F;p&gt;
+
+&lt;p&gt;While all the announcements at WWDC were going on, we prepared a more timeless topic for you this month: application architecture. It picks up the theme of our very first issue, lighter view controllers, but this time around we chose a broader scope, so that the articles in this issue cover a variety of different issues you might encounter when thinking about app architecture. &lt;&#x2F;p&gt;
+</description>
+        <pubDate>Mon, 09 Jun 2014 13:00:00 +0000</pubDate>
+        <link>http://www.objc.io/issue-13</link>
+        <guid isPermaLink="true">http://www.objc.io/issue-13</guid>
+    </item>
+    
+    
+    <item>
+        <title>Issue #12: Animations</title>
+        <description>&lt;p&gt;This issue is all about animations. It&amp;rsquo;s our twelfth issue; next month is our one-year anniversary! After last month&amp;rsquo;s fun escape to the world of Android, we&amp;rsquo;re back to Objective-C. We tried to cover all angles of animations &amp;ndash; from UIView animations, to Core Animation, all the way down to creating your own animations from scratch. We talk about animation view controllers, collection views, and making everything interactive.&lt;&#x2F;p&gt;
+</description>
+        <pubDate>Thu, 08 May 2014 12:00:00 +0000</pubDate>
+        <link>http://www.objc.io/issue-12</link>
+        <guid isPermaLink="true">http://www.objc.io/issue-12</guid>
+    </item>
+    
+    
+    <item>
+        <title>Issue #11: Android</title>
+        <description>&lt;p&gt;objc.io goes Android. Although this started out as an idea for an April Fools&amp;#39; joke, it matured into a really good issue about Android development for Objective-C developers. After all, it&amp;rsquo;s interesting and instructive to learn about what developing for the other major mobile platform is like. &lt;&#x2F;p&gt;
+
+&lt;p&gt;We&amp;rsquo;ve been very busy the last month finishing one of our own projects – &lt;a href=&quot;http:&#x2F;&#x2F;www.decksetapp.com&quot;&gt;Deckset&lt;&#x2F;a&gt;. Therefore, we were delighted that many great Android developers chipped in with their knowledge of the Android platform, covering topics ranging from application structure over notifications and databases to dependency injection in Java.&lt;&#x2F;p&gt;
+</description>
+        <pubDate>Tue, 01 Apr 2014 12:00:00 +0000</pubDate>
+        <link>http://www.objc.io/issue-11</link>
+        <guid isPermaLink="true">http://www.objc.io/issue-11</guid>
+    </item>
+    
+	</channel>
+</rss>
+

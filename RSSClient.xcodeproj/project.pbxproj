@@ -168,6 +168,7 @@
 		89DA7D301A68C04C0050685B /* ValidatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2D1A6613100050685B /* ValidatorView.swift */; };
 		89DBDA8D1A9EBACD00959AC7 /* FeedParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DBDA8C1A9EBACD00959AC7 /* FeedParserSpec.swift */; };
 		89DBDA9A1A9EBB0C00959AC7 /* feed.rss in Resources */ = {isa = PBXBuildFile; fileRef = 89DBDA991A9EBB0C00959AC7 /* feed.rss */; };
+		89DBDA9C1A9FBCB200959AC7 /* feed2.rss in Resources */ = {isa = PBXBuildFile; fileRef = 89DBDA9B1A9FBC4100959AC7 /* feed2.rss */; };
 		89EF4FD61A9682170052A82F /* OPMLParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EF4FD51A9682170052A82F /* OPMLParserSpec.swift */; };
 		89EF4FD81A96852D0052A82F /* test.opml in Resources */ = {isa = PBXBuildFile; fileRef = 89EF4FD71A96852D0052A82F /* test.opml */; };
 		AE4355F71A7AADD900A961B9 /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE4355ED1A7AAD5400A961B9 /* Ra.framework */; };
@@ -463,6 +464,7 @@
 		89DA7D2D1A6613100050685B /* ValidatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidatorView.swift; sourceTree = "<group>"; };
 		89DBDA8C1A9EBACD00959AC7 /* FeedParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedParserSpec.swift; sourceTree = "<group>"; };
 		89DBDA991A9EBB0C00959AC7 /* feed.rss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = feed.rss; sourceTree = "<group>"; };
+		89DBDA9B1A9FBC4100959AC7 /* feed2.rss */ = {isa = PBXFileReference; lastKnownFileType = file; path = feed2.rss; sourceTree = "<group>"; };
 		89EF4FD51A9682170052A82F /* OPMLParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLParserSpec.swift; sourceTree = "<group>"; };
 		89EF4FD71A96852D0052A82F /* test.opml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = test.opml; sourceTree = "<group>"; };
 		AE4355DB1A7AAD5400A961B9 /* Ra.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Ra.xcodeproj; path = Vendor/Ra/Ra.xcodeproj; sourceTree = "<group>"; };
@@ -835,6 +837,7 @@
 			isa = PBXGroup;
 			children = (
 				89DBDA991A9EBB0C00959AC7 /* feed.rss */,
+				89DBDA9B1A9FBC4100959AC7 /* feed2.rss */,
 				89EF4FD71A96852D0052A82F /* test.opml */,
 				89C8309019D730E9009924DA /* Info.plist */,
 			);
@@ -1295,6 +1298,7 @@
 				895901B61A32B61A002E2C62 /* Localizable.stringsdict in Resources */,
 				895779A519E62CC500548418 /* findFeeds.js in Resources */,
 				895901B41A32B61A002E2C62 /* Localizable.strings in Resources */,
+				89DBDA9C1A9FBCB200959AC7 /* feed2.rss in Resources */,
 				898047561A20478600EB29F0 /* safari~iPad.png in Resources */,
 				8980474E1A20478600EB29F0 /* safari@2x.png in Resources */,
 				895779A619E62CC500548418 /* FindICO.js in Resources */,

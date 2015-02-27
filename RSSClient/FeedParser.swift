@@ -59,7 +59,11 @@ class FeedParser: NSObject, MWFeedParserDelegate {
     
     func parse() {
         feedParser.feedParseType = parseInfoOnly ? ParseTypeInfoOnly : ParseTypeFull
-        feedParser.parse()
+        let queue = NSOperationQueue.currentQueue() ?? NSOperationQueue.mainQueue()
+        queue.addOperationWithBlock {
+            self.feedParser.parse()
+            return
+        }
     }
     
     func feedParser(parser: MWFeedParser!, didFailWithError error: NSError!) {

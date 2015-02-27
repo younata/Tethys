@@ -11,7 +11,7 @@ class FeedParserSpec: QuickSpec {
         describe("performance tests") {
             it("is reasonably performant") {
                 let startTime = CACurrentMediaTime();
-                let amount = 20
+                let amount = 100
                 println("\n\n\n\n\n")
                 for i in 0..<amount {
                     let fp = FeedParser(string: str)

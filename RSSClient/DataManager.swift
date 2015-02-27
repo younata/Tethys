@@ -232,6 +232,9 @@ class DataManager: NSObject {
             let ctx = self.backgroundObjectContext
             let theFeeds = self.entities("Feed", matchingPredicate: NSPredicate(format: "self in %@", feedIds)!, managedObjectContext: ctx) as [Feed]
             var feedsLeft = theFeeds.count
+
+            var stats : [(parseTime: Double, importTime: Double)] = []
+
             for feed in theFeeds {
                 let feedParser = FeedParser(URL: NSURL(string: feed.url)!)
 
@@ -272,6 +275,17 @@ class DataManager: NSObject {
                             completion(error)
                             self.setApplicationBadgeCount()
                         }
+                        let parseTime = stats.reduce(0.0) {
+                            return $0 + $1.parseTime
+                        }
+                        let importTime = stats.reduce(0.0) {
+                            return $0 + $1.importTime
+                        }
+                        let total = parseTime + importTime
+                        println("\n\n")
+                        println("Parsing feed took \(parseTime / total * 100)% of the time")
+                        println("Importing data took \(importTime / total * 100)% of the time")
+                        println("\n\n")
                     }
                     if let fp = feedParser {
                         self.parsers = self.parsers.filter { $0 != fp }
@@ -282,8 +296,10 @@ class DataManager: NSObject {
                     if let err = error {
                         finished(nil, error)
                     } else if let s = str {
+                        let start = CACurrentMediaTime()
                         let feedParser = FeedParser(string: s)
                         feedParser.completion = {(info, items) in
+                            let mid = CACurrentMediaTime()
                             var predicate = NSPredicate(format: "url = %@", feed.url)!
 
                             var summary : String = ""
@@ -326,6 +342,11 @@ class DataManager: NSObject {
                                 feed.addArticlesObject(article)
                                 article.feed = feed
                             }
+
+                            let importTime = CACurrentMediaTime() - mid
+                            let parseTime = mid - start
+                            let toInsert : (parseTime: Double, importTime: Double) = (parseTime, importTime)
+                            stats.append(toInsert)
                             finished(feedParser, nil)
                         }
                         feedParser.onFailure = {(error) in
@@ -470,32 +491,34 @@ class DataManager: NSObject {
     func upsertArticle(item: MWFeedItem, var context ctx: NSManagedObjectContext! = nil) -> Article {
         let predicate = NSPredicate(format: "link = %@", item.link)!
         if let article = self.entities("Article", matchingPredicate: predicate, managedObjectContext: ctx).last as? Article {
-            article.title = item.title ?? ""
-            article.link = item.link
-            article.updatedAt = item.updated
-            article.summary = item.summary
-            article.content = item.content
-            article.author = item.author
-            article.identifier = item.identifier
+            if article.updatedAt != item.updated {
+                article.title = item.title ?? ""
+                article.link = item.link
+                article.updatedAt = item.updated
+                article.summary = item.summary
+                article.content = item.content
+                article.author = item.author
+                article.identifier = item.identifier
 
-            if let itemEnclosures = (item.enclosures?.count == 0 ? nil : item.enclosures) as [[String: AnyObject]]? {
-                for enc in itemEnclosures {
-                    let url = enc["url"] as String?
-                    var found = false
-                    for enclosure in article.allEnclosures() {
-                        if enclosure.url == url {
-                            found = true
-                            break
+                if let itemEnclosures = (item.enclosures?.count == 0 ? nil : item.enclosures) as [[String: AnyObject]]? {
+                    for enc in itemEnclosures {
+                        let url = enc["url"] as String?
+                        var found = false
+                        for enclosure in article.allEnclosures() {
+                            if enclosure.url == url {
+                                found = true
+                                break
+                            }
                         }
-                    }
-                    if !found {
-                        let type = enc["type"] as String?
+                        if !found {
+                            let type = enc["type"] as String?
 
-                        let enclosure = NSEntityDescription.insertNewObjectForEntityForName("Enclosure", inManagedObjectContext: ctx) as Enclosure
-                        enclosure.url = url
-                        enclosure.kind = type
-                        enclosure.article = article
-                        article.addEnclosuresObject(enclosure)
+                            let enclosure = NSEntityDescription.insertNewObjectForEntityForName("Enclosure", inManagedObjectContext: ctx) as Enclosure
+                            enclosure.url = url
+                            enclosure.kind = type
+                            enclosure.article = article
+                            article.addEnclosuresObject(enclosure)
+                        }
                     }
                 }
             }

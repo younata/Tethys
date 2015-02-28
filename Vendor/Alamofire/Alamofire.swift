@@ -542,7 +542,7 @@ public class Request {
     /// The progress of the request lifecycle.
     public var progress: NSProgress? { return delegate.progress }
 
-    internal init(session: NSURLSession, task: NSURLSessionTask) {
+    private init(session: NSURLSession, task: NSURLSessionTask) {
         self.session = session
 
         switch task {

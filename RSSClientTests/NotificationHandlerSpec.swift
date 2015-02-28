@@ -14,17 +14,10 @@ class NotificationHandlerSpec: QuickSpec {
 
         var article: Article? = nil
         var feed: Feed? = nil
-        var feedID: NSManagedObjectIDMock! = nil
-        var articleID: NSManagedObjectIDMock! = nil
 
         beforeEach {
             subject = NotificationHandler()
 
-            feedID = NSManagedObjectIDMock()
-            feedID.uri = NSURL(string: "https://example.com/feed")!
-
-            articleID = NSManagedObjectIDMock()
-            articleID.uri = NSURL(string: "https://example.com/article")!
 
 //            feed = FeedObject(tuple: ("example feed", "http://example.com/feed", "", nil, [], 0, 0, nil), objectID: feedID)
 //            article = ArticleObject(tuple: ("example article", "http://example.com/article", "", "", NSDate(), nil, "", false, [], feed, []), objectID: articleID)

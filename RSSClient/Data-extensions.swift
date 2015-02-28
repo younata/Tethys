@@ -109,7 +109,8 @@ extension Article {
     }
     
     func allEnclosures() -> [Enclosure] {
-        return self.enclosures == nil ? [] : self.enclosures.allObjects as [Enclosure]
+        let def : [Enclosure] = []
+        return self.enclosures == nil ? def : self.enclosures.allObjects as [Enclosure]
     }
     
     func asDict() -> [String: AnyObject] {

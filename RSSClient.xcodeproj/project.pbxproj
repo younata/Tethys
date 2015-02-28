@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		890E47591AA19D69007F217C /* DataUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890E47581AA19D69007F217C /* DataUtility.swift */; };
+		890E475A1AA19D69007F217C /* DataUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890E47581AA19D69007F217C /* DataUtility.swift */; };
+		890E47671AA19F7F007F217C /* DataUtilitySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890E47661AA19F7F007F217C /* DataUtilitySpec.swift */; };
+		890E47691AA1A1D8007F217C /* ManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890E47681AA1A1D8007F217C /* ManagerMock.swift */; };
 		8924D8E91A094CF5003B7529 /* article.css in Resources */ = {isa = PBXBuildFile; fileRef = 8924D8E81A094CF5003B7529 /* article.css */; };
 		8924D8F21A0E8EEA003B7529 /* OPMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */; };
 		8924D8F31A108299003B7529 /* OPMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */; };
@@ -343,6 +347,9 @@
 /* Begin PBXFileReference section */
 		1B2EC3404DBA17EC9D1669ED /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		7F4942F170534887B236C7F9 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		890E47581AA19D69007F217C /* DataUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataUtility.swift; sourceTree = "<group>"; };
+		890E47661AA19F7F007F217C /* DataUtilitySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataUtilitySpec.swift; sourceTree = "<group>"; };
+		890E47681AA1A1D8007F217C /* ManagerMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManagerMock.swift; sourceTree = "<group>"; };
 		8924D8E81A094CF5003B7529 /* article.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = article.css; sourceTree = "<group>"; };
 		8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLParser.swift; sourceTree = "<group>"; };
 		8929D27E1A3F3E9400782A37 /* BackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundView.swift; sourceTree = "<group>"; };
@@ -464,7 +471,7 @@
 		89DA7D2D1A6613100050685B /* ValidatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidatorView.swift; sourceTree = "<group>"; };
 		89DBDA8C1A9EBACD00959AC7 /* FeedParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedParserSpec.swift; sourceTree = "<group>"; };
 		89DBDA991A9EBB0C00959AC7 /* feed.rss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = feed.rss; sourceTree = "<group>"; };
-		89DBDA9B1A9FBC4100959AC7 /* feed2.rss */ = {isa = PBXFileReference; lastKnownFileType = file; path = feed2.rss; sourceTree = "<group>"; };
+		89DBDA9B1A9FBC4100959AC7 /* feed2.rss */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = feed2.rss; sourceTree = "<group>"; };
 		89EF4FD51A9682170052A82F /* OPMLParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLParserSpec.swift; sourceTree = "<group>"; };
 		89EF4FD71A96852D0052A82F /* test.opml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = test.opml; sourceTree = "<group>"; };
 		AE4355DB1A7AAD5400A961B9 /* Ra.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Ra.xcodeproj; path = Vendor/Ra/Ra.xcodeproj; sourceTree = "<group>"; };
@@ -693,6 +700,7 @@
 			isa = PBXGroup;
 			children = (
 				899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */,
+				890E47661AA19F7F007F217C /* DataUtilitySpec.swift */,
 			);
 			name = Domain;
 			sourceTree = "<group>";
@@ -848,6 +856,7 @@
 			isa = PBXGroup;
 			children = (
 				89C830A819D7B890009924DA /* DataManager.swift */,
+				890E47581AA19D69007F217C /* DataUtility.swift */,
 				89C8307A19D730E9009924DA /* RSSClient.xcdatamodeld */,
 				89C830C119D89E46009924DA /* Article.h */,
 				89C830C219D89E46009924DA /* Article.m */,
@@ -1022,6 +1031,7 @@
 			children = (
 				AE4355FF1A7ABA4F00A961B9 /* DataManagerMock.swift */,
 				AE4356411A7AFD6B00A961B9 /* NSManagedObjectIDMock.swift */,
+				890E47681AA1A1D8007F217C /* ManagerMock.swift */,
 			);
 			name = Mocks;
 			sourceTree = "<group>";
@@ -1379,6 +1389,7 @@
 				8980475D1A20478600EB29F0 /* TUSafariActivity.m in Sources */,
 				897F70F21A38AFE500ECE1A1 /* EnclosuresViewController.swift in Sources */,
 				89C204C41A7400D100C792D2 /* NotificationHandler.swift in Sources */,
+				890E47591AA19D69007F217C /* DataUtility.swift in Sources */,
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
 				8924D8F21A0E8EEA003B7529 /* OPMLParser.swift in Sources */,
@@ -1425,6 +1436,8 @@
 				895779A819E62CC500548418 /* ArticleCell.swift in Sources */,
 				895779AA19E62CC500548418 /* DataManager.swift in Sources */,
 				AE43563D1A7AE5D000A961B9 /* InjectorModule.swift in Sources */,
+				890E475A1AA19D69007F217C /* DataUtility.swift in Sources */,
+				890E47691AA1A1D8007F217C /* ManagerMock.swift in Sources */,
 				894896ED1A16F1130030EB6E /* LocalImportViewController.swift in Sources */,
 				895779A019E62CC500548418 /* AppDelegate.swift in Sources */,
 				89C204BE1A73FD1000C792D2 /* SplitDelegate.swift in Sources */,
@@ -1436,6 +1449,7 @@
 				893448BB1A004E4E00F5D528 /* NSDate+InternetDateTime.m in Sources */,
 				894896F21A16F7B20030EB6E /* FeedParser.swift in Sources */,
 				893448BA1A004E4E00F5D528 /* GTMNSString+HTML.m in Sources */,
+				890E47671AA19F7F007F217C /* DataUtilitySpec.swift in Sources */,
 				8924D8F31A108299003B7529 /* OPMLParser.swift in Sources */,
 				89C509FB1A2F865F00CBD000 /* QueryFeedViewController.swift in Sources */,
 				893448BD1A004E4E00F5D528 /* NSString+XMLEntities.m in Sources */,

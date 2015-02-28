@@ -227,6 +227,11 @@ class DataManager: NSObject {
     func updateFeeds(feeds: [Feed], completion: (NSError?)->(Void), backgroundFetch: Bool = false) {
         let feedIds = feeds.filter { $0.url != nil }.map { $0.objectID }
 
+        if feedIds.count == 0 {
+            completion(nil);
+            return;
+        }
+
         let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
         dispatch_async(queue) {
             let ctx = self.backgroundObjectContext
@@ -245,6 +250,10 @@ class DataManager: NSObject {
                     feed.managedObjectContext?.save(nil)
                     println("Skipping feed at \(feed.url)")
                     feedsLeft--
+                    if (feedsLeft == 0) {
+                        completion(nil)
+                        return
+                    }
                     continue
                 }
 
@@ -254,8 +263,6 @@ class DataManager: NSObject {
                         println("Errored loading: \(error)")
                     }
                     if (feedParser != nil && error == nil) {
-                        // set the wait period to zero.
-                        //if (error == )
                         if feed.waitPeriod == nil || feed.waitPeriod.integerValue != 0 {
                             feed.waitPeriod = NSNumber(integer: 0)
                             feed.remainingWait = NSNumber(integer: 0)
@@ -269,8 +276,14 @@ class DataManager: NSObject {
                             feed.managedObjectContext?.save(nil)
                         }
                     }
-                    if (feedsLeft == 0) {
-                        ctx.save(nil)
+                    if let fp = feedParser {
+                        self.parsers = self.parsers.filter { $0 != fp }
+                    }
+                    if feedsLeft == 0 {
+                        assert(self.parsers.count == 0)
+                        if ctx.hasChanges {
+                            ctx.save(nil)
+                        }
                         dispatch_async(dispatch_get_main_queue()) {
                             completion(error)
                             self.setApplicationBadgeCount()
@@ -287,9 +300,6 @@ class DataManager: NSObject {
                         println("Importing data took \(importTime / total * 100)% of the time")
                         println("\n\n")
                     }
-                    if let fp = feedParser {
-                        self.parsers = self.parsers.filter { $0 != fp }
-                    }
                 }
 
                 manager.request(.GET, feed.url).responseString {(req, response, str, error) in
@@ -300,48 +310,9 @@ class DataManager: NSObject {
                         let feedParser = FeedParser(string: s)
                         feedParser.completion = {(info, items) in
                             let mid = CACurrentMediaTime()
-                            var predicate = NSPredicate(format: "url = %@", feed.url)!
 
-                            var summary : String = ""
-                            if let s = info.summary {
-                                let data = s.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
-                                let options = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
-                                summary = s
-                                if let aString = NSAttributedString(data: data, options: options, documentAttributes: nil, error: nil) {
-                                    summary = aString.string
-                                }
-                            }
-                            if let feed = self.entities("Feed", matchingPredicate: predicate, managedObjectContext: ctx).last as? Feed {
-                                feed.title = info.title
-                            } else {
-                                let feed = (NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: ctx) as Feed)
-                                feed.title = info.title
-                            }
-
-                            if info.imageURL != nil && feed.feedImage() == nil {
-                                manager.request(.GET, info.imageURL).response {(_, _, data, error) in
-                                    if let err = error {
-
-                                    } else if let theData: AnyObject = data {
-                                        if let image = theData as? Image {
-                                            feed.image = image
-                                            feed.managedObjectContext?.save(nil)
-                                        } else if let d = theData as? NSData {
-                                            if let image = Image(data: d) {
-                                                feed.image = image
-                                                feed.managedObjectContext?.save(nil)
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            feed.summary = summary
-                            for item in items {
-                                let article = self.upsertArticle(item, context: ctx)
-                                feed.addArticlesObject(article)
-                                article.feed = feed
-                            }
+                            DataUtility.updateFeed(feed, info: info, items: items, context: ctx, dataManager: self)
+                            DataUtility.updateFeedImage(feed, info: info, manager: manager)
 
                             let importTime = CACurrentMediaTime() - mid
                             let parseTime = mid - start

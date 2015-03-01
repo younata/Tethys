@@ -343,8 +343,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1B2EC3404DBA17EC9D1669ED /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
-		7F4942F170534887B236C7F9 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		890E47581AA19D69007F217C /* DataUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataUtility.swift; sourceTree = "<group>"; };
 		890E47661AA19F7F007F217C /* DataUtilitySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataUtilitySpec.swift; sourceTree = "<group>"; };
 		8924D8E81A094CF5003B7529 /* article.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = article.css; sourceTree = "<group>"; };
@@ -475,7 +473,6 @@
 		AE4355FD1A7AB7D900A961B9 /* SpecHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpecHelper.swift; sourceTree = "<group>"; };
 		AE4355FF1A7ABA4F00A961B9 /* DataManagerMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManagerMock.swift; sourceTree = "<group>"; };
 		AE4356301A7AE4FE00A961B9 /* InjectorModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InjectorModule.swift; sourceTree = "<group>"; };
-		E3BD5CAD62D2FA1E198BB3BD /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -507,23 +504,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		694B7677466B46B3BC9D72EF /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				E3BD5CAD62D2FA1E198BB3BD /* libPods.a */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		71674FD5D25A092A893BC80E /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				7F4942F170534887B236C7F9 /* Pods.debug.xcconfig */,
-				1B2EC3404DBA17EC9D1669ED /* Pods.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
 		8933E91019ECCBCA00ECFF3F /* PureLayout */ = {
 			isa = PBXGroup;
 			children = (
@@ -776,8 +756,6 @@
 				89635F8A1A13C2E30052C248 /* RSSClient-OSX */,
 				89635F9B1A13C2E30052C248 /* RSSClient-OSXTests */,
 				89C8307419D730E9009924DA /* Products */,
-				694B7677466B46B3BC9D72EF /* Frameworks */,
-				71674FD5D25A092A893BC80E /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1655,7 +1633,6 @@
 		};
 		89C8309619D730E9009924DA /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7F4942F170534887B236C7F9 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1667,8 +1644,7 @@
 				HEADER_SEARCH_PATHS = "$(inherited)/**";
 				INFOPLIST_FILE = RSSClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/Pods/build/Debug-iphoneos";
-				PODS_ROOT = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = rNews;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "RSSClient/RSSClient-Bridging-Header.h";
@@ -1679,7 +1655,6 @@
 		};
 		89C8309719D730E9009924DA /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1B2EC3404DBA17EC9D1669ED /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1691,8 +1666,7 @@
 				HEADER_SEARCH_PATHS = "$(inherited)/**";
 				INFOPLIST_FILE = RSSClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/Pods/build/Release-iphoneos";
-				PODS_ROOT = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = rNews;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "RSSClient/RSSClient-Bridging-Header.h";

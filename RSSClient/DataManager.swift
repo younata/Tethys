@@ -220,6 +220,52 @@ class DataManager: NSObject {
     }
 
     var parsers : [FeedParser] = []
+    var stats : [(parseTime: Double, importTime: Double)] = []
+
+    func finishedUpdatingFeed(feedParser: FeedParser?, error: NSError?, feed: Feed, managedObjectContext: NSManagedObjectContext, inout feedsLeft: Int, completion: (NSError?) -> (Void)) {
+        feedsLeft--
+        if error != nil {
+            println("Errored loading: \(error)")
+        }
+        if (feedParser != nil && error == nil) {
+            if feed.waitPeriod == nil || feed.waitPeriod.integerValue != 0 {
+                feed.waitPeriod = NSNumber(integer: 0)
+                feed.remainingWait = NSNumber(integer: 0)
+                feed.managedObjectContext?.save(nil)
+            }
+        } else if let err = error {
+            if (err.domain == NSURLErrorDomain && err.code > 0) { // FIXME: check the error code for specific HTTP error codes.
+                feed.waitPeriod = NSNumber(integer: (feed.waitPeriod?.integerValue ?? 0) + 1)
+                feed.remainingWait = feed.waitPeriodInRefreshes(feed.waitPeriod.integerValue)
+                println("Setting feed at \(feed.url) to have remainingWait of \(feed.remainingWait) refreshes")
+                feed.managedObjectContext?.save(nil)
+            }
+        }
+        if let fp = feedParser {
+            self.parsers = self.parsers.filter { $0 != fp }
+        }
+        if feedsLeft == 0 {
+            assert(self.parsers.count == 0)
+            if managedObjectContext.hasChanges {
+                managedObjectContext.save(nil)
+            }
+            dispatch_async(dispatch_get_main_queue()) {
+                completion(error)
+                self.setApplicationBadgeCount()
+            }
+            let parseTime = stats.reduce(0.0) {
+                return $0 + $1.parseTime
+            }
+            let importTime = stats.reduce(0.0) {
+                return $0 + $1.importTime
+            }
+            let total = parseTime + importTime
+            println("\n\n")
+            println("Parsing feed took \(parseTime / total * 100)% of the time")
+            println("Importing data took \(importTime / total * 100)% of the time")
+            println("\n\n")
+        }
+    }
 
     let mainManager = Manager(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
     let backgroundManager = Manager(configuration: NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier("com.rachelbrindle.rNews.background"))
@@ -238,7 +284,7 @@ class DataManager: NSObject {
             let theFeeds = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self in %@", feedIds)!, managedObjectContext: ctx) as [Feed]
             var feedsLeft = theFeeds.count
 
-            var stats : [(parseTime: Double, importTime: Double)] = []
+            self.stats = []
 
             for feed in theFeeds {
                 let feedParser = FeedParser(URL: NSURL(string: feed.url)!)
@@ -257,54 +303,9 @@ class DataManager: NSObject {
                     continue
                 }
 
-                var finished : (FeedParser?, NSError?) -> (Void) = {(feedParser: FeedParser?, error: NSError?) in
-                    feedsLeft--
-                    if error != nil {
-                        println("Errored loading: \(error)")
-                    }
-                    if (feedParser != nil && error == nil) {
-                        if feed.waitPeriod == nil || feed.waitPeriod.integerValue != 0 {
-                            feed.waitPeriod = NSNumber(integer: 0)
-                            feed.remainingWait = NSNumber(integer: 0)
-                            feed.managedObjectContext?.save(nil)
-                        }
-                    } else if let err = error {
-                        if (err.domain == NSURLErrorDomain && err.code > 0) { // FIXME: check the error code for specific HTTP error codes.
-                            feed.waitPeriod = NSNumber(integer: (feed.waitPeriod?.integerValue ?? 0) + 1)
-                            feed.remainingWait = feed.waitPeriodInRefreshes(feed.waitPeriod.integerValue)
-                            println("Setting feed at \(feed.url) to have remainingWait of \(feed.remainingWait) refreshes")
-                            feed.managedObjectContext?.save(nil)
-                        }
-                    }
-                    if let fp = feedParser {
-                        self.parsers = self.parsers.filter { $0 != fp }
-                    }
-                    if feedsLeft == 0 {
-                        assert(self.parsers.count == 0)
-                        if ctx.hasChanges {
-                            ctx.save(nil)
-                        }
-                        dispatch_async(dispatch_get_main_queue()) {
-                            completion(error)
-                            self.setApplicationBadgeCount()
-                        }
-                        let parseTime = stats.reduce(0.0) {
-                            return $0 + $1.parseTime
-                        }
-                        let importTime = stats.reduce(0.0) {
-                            return $0 + $1.importTime
-                        }
-                        let total = parseTime + importTime
-                        println("\n\n")
-                        println("Parsing feed took \(parseTime / total * 100)% of the time")
-                        println("Importing data took \(importTime / total * 100)% of the time")
-                        println("\n\n")
-                    }
-                }
-
                 manager.request(.GET, feed.url).responseString {(req, response, str, error) in
                     if let err = error {
-                        finished(nil, error)
+                        self.finishedUpdatingFeed(nil, error: error, feed: feed, managedObjectContext: ctx, feedsLeft: &feedsLeft, completion: completion)
                     } else if let s = str {
                         let start = CACurrentMediaTime()
                         let feedParser = FeedParser(string: s)
@@ -322,11 +323,11 @@ class DataManager: NSObject {
                             let importTime = CACurrentMediaTime() - mid
                             let parseTime = mid - start
                             let toInsert : (parseTime: Double, importTime: Double) = (parseTime, importTime)
-                            stats.append(toInsert)
-                            finished(feedParser, nil)
+                            self.stats.append(toInsert)
+                            self.finishedUpdatingFeed(feedParser, error: nil, feed: feed, managedObjectContext: ctx, feedsLeft: &feedsLeft, completion: completion)
                         }
                         feedParser.onFailure = {(error) in
-                            finished(feedParser, error)
+                            self.finishedUpdatingFeed(feedParser, error: error, feed: feed, managedObjectContext: ctx, feedsLeft: &feedsLeft, completion: completion)
                         }
                         feedParser.parse()
                         self.parsers.append(feedParser)
@@ -386,7 +387,7 @@ class DataManager: NSObject {
         let num = feeds(managedObjectContext: managedObjectContext).filter {return !$0.isQueryFeed()}.reduce(0) {return $0 + Int($1.unreadArticles(self))}
         #if os(iOS)
             UIApplication.sharedApplication().applicationIconBadgeNumber = num
-            #elseif os(OSX)
+        #elseif os(OSX)
             NSApplication.sharedApplication().dockTile.badgeLabel = "\(num)"
         #endif
     }
@@ -464,10 +465,6 @@ class DataManager: NSObject {
 
     // MARK: Articles
 
-    func upsertEnclosure(enclosure: [String: AnyObject], article: Article) {
-
-    }
-
     func upsertArticle(item: MWFeedItem, var context ctx: NSManagedObjectContext! = nil) -> Article {
         let predicate = NSPredicate(format: "link = %@", item.link)!
         if let article = DataUtility.entities("Article", matchingPredicate: predicate, managedObjectContext: ctx).last as? Article {
@@ -486,7 +483,7 @@ class DataManager: NSObject {
             let article = (NSEntityDescription.insertNewObjectForEntityForName("Article", inManagedObjectContext: ctx) as Article)
             DataUtility.updateArticle(article, item: item)
 
-            if let enclosures = item.enclosures {
+            if let enclosures = (item.enclosures?.count == 0 ? nil : item.enclosures) as [[String: AnyObject]]? {
                 for enclosure in enclosures as [[String: AnyObject]] {
                     DataUtility.insertEnclosureFromItem(enclosure, article: article)
                 }
@@ -678,49 +675,6 @@ class DataManager: NSObject {
             self.queryFeedResults = queryFeedResults
             self.reloading = false
             NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: nil)
-        }
-    }
-
-    // MARK: Generic Core Data
-
-    func findOrCreateEntity(entity: String, withProperties properties: [String: AnyObject], managedObjectContext: NSManagedObjectContext? = nil) -> NSManagedObject {
-        let moc = managedObjectContext ?? self.managedObjectContext
-        let request = NSFetchRequest()
-        request.entity = NSEntityDescription.entityForName(entity, inManagedObjectContext: moc)
-        var predicateString = ""
-        var predicateArgs : [AnyObject] = []
-
-        let keys = Array(properties.keys)
-        for (idx, key) in enumerate(keys) {
-            if idx != 0 {
-                predicateString += " AND "
-            }
-            predicateString += "\(key) == %@"
-            predicateArgs.append(properties[key]!)
-        }
-        request.predicate = NSPredicate(format: predicateString, predicateArgs)!
-
-        var error : NSError? = nil
-        if let res = moc.executeFetchRequest(request, error: &error) {
-            if let r = res.first as? NSManagedObject {
-                return r
-            }
-        }
-
-        let ret = NSEntityDescription.insertNewObjectForEntityForName(entity, inManagedObjectContext: moc) as NSManagedObject
-        for key in keys {
-            ret.setValue(properties[key], forKey: key)
-        }
-        return ret
-    }
-
-    func saveContext() {
-        var error: NSError? = nil
-        if managedObjectContext.hasChanges {
-            managedObjectContext.save(&error)
-            if let err = error {
-                println("Error saving context: \(error)")
-            }
         }
     }
 

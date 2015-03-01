@@ -13,7 +13,7 @@ class DataUtilitySpec: QuickSpec {
             feed = createFeed(ctx)
         }
 
-        describe("updateFeed:info:managedObjectContext:") {
+        describe("updateFeed:info:") {
             beforeEach {
                 info.title = "example feed"
                 info.link = "http://example.com"
@@ -25,7 +25,6 @@ info.imageURL = nil
                 DataUtility.updateFeed(feed, info: info)
 
                 expect(feed.title).to(equal("example feed"))
-                expect(feed.url).to(equal("http://example.com"))
                 expect(feed.summary).to(equal("example"))
             }
         }

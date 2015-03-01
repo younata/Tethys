@@ -14,7 +14,6 @@ class DataUtility {
             }
         }
         feed.title = info.title
-        feed.url = info.url.absoluteString
 
         feed.summary = summary
     }

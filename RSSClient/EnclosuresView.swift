@@ -37,7 +37,7 @@ class EnclosuresView: UIView, UICollectionViewDelegate, UICollectionViewDataSour
         
         collectionView.registerClass(EnclosureCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.backgroundColor = UIColor.clearColor()
-        (collectionView.collectionViewLayout as UICollectionViewFlowLayout).estimatedItemSize = CGSizeMake(68, 98)
+        (collectionView.collectionViewLayout as? UICollectionViewFlowLayout)?.estimatedItemSize = CGSizeMake(68, 98)
     }
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
@@ -52,7 +52,7 @@ class EnclosuresView: UIView, UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as EnclosureCell
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as! EnclosureCell
         cell.enclosure = enclosures?[indexPath.row]
         if let enclosure = enclosures?[indexPath.row] {
             if let progress = dataManager?.progressForEnclosure(enclosure) {
@@ -69,14 +69,13 @@ class EnclosuresView: UIView, UICollectionViewDelegate, UICollectionViewDataSour
         if enclosure.data != nil {
             openEnclosure(enclosure)
         } else {
-            let progress = dataManager!.progressForEnclosure(enclosure)
-            if progress == -1 {
-                dataManager!.downloadEnclosure(enclosure, progress: {(progress) in
-                    if let cell = (collectionView.visibleCells() as [EnclosureCell]).filter({return $0.enclosure?.objectID == enclosure.objectID}).first {
+            if let progress = dataManager?.progressForEnclosure(enclosure) where progress == -1 {
+                dataManager?.downloadEnclosure(enclosure, progress: {(progress) in
+                    if let cell = (collectionView.visibleCells() as! [EnclosureCell]).filter({return $0.enclosure?.objectID == enclosure.objectID}).first {
                         cell.progressLayer.progress = progress
                     }
                 }) {(_, error) in
-                    if let cell = (collectionView.visibleCells() as [EnclosureCell]).filter({return $0.enclosure?.objectID == enclosure.objectID}).first {
+                    if let cell = (collectionView.visibleCells() as! [EnclosureCell]).filter({return $0.enclosure?.objectID == enclosure.objectID}).first {
                         cell.progressLayer.progress = 0
                     }
                 }

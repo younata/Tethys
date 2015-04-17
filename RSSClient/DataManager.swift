@@ -10,6 +10,7 @@ import Foundation
 import CoreData
 import WebKit
 import JavaScriptCore
+import Alamofire
 
 class DataManager: NSObject {
 
@@ -21,7 +22,7 @@ class DataManager: NSObject {
 
     func importOPML(opml: NSURL, progress: (Double) -> Void, completion: ([Feed]) -> Void) {
         if let text = NSString(contentsOfURL: opml, encoding: NSUTF8StringEncoding, error: nil) {
-            let opmlParser = OPMLParser(text: text)
+            let opmlParser = OPMLParser(text: text as String)
             opmlParser.failure {(error) in
                 completion([])
             }
@@ -96,7 +97,7 @@ class DataManager: NSObject {
                 ret += "        <outline xmlURL=\"\(sanitize(feed.url))\" title=\"\(sanitize(feed.title))\" type=\"rss\""
             }
             if feed.tags != nil {
-                let tags : String = ",".join(feed.tags as [String])
+                let tags : String = ",".join(feed.tags as! [String])
                 ret += " tags=\"\(tags)\""
             }
             ret += "/>\n"
@@ -194,7 +195,7 @@ class DataManager: NSObject {
     }
 
     func newFeed() -> Feed {
-        return NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: managedObjectContext) as Feed
+        return NSEntityDescription.insertNewObjectForEntityForName("Feed", inManagedObjectContext: managedObjectContext) as! Feed
     }
 
     func deleteFeed(feed: Feed) {
@@ -267,8 +268,8 @@ class DataManager: NSObject {
         }
     }
 
-    let mainManager = Manager(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
-    let backgroundManager = Manager(configuration: NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier("com.rachelbrindle.rNews.background"))
+    let mainManager = Alamofire.Manager(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
+    let backgroundManager = Alamofire.Manager(configuration: NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier("com.rachelbrindle.rNews.background"))
 
     func updateFeeds(feeds: [Feed], completion: (NSError?)->(Void), backgroundFetch: Bool = false) {
         let feedIds = feeds.filter { $0.url != nil }.map { $0.objectID }
@@ -396,10 +397,8 @@ class DataManager: NSObject {
 
     func allEnclosures() -> [Enclosure] {
         return (DataUtility.entities("Enclosure", matchingPredicate: NSPredicate(value: true), managedObjectContext: self.managedObjectContext) as [Enclosure]).sorted {(a : Enclosure, b: Enclosure) in
-            if let da = a.url {
-                if let db = b.url {
-                    return da.lastPathComponent < db.lastPathComponent
-                }
+            if let da = a.url, let db = b.url {
+                return da.lastPathComponent < db.lastPathComponent
             }
             return true
         }
@@ -407,10 +406,8 @@ class DataManager: NSObject {
 
     func allEnlosures(downloaded: Bool) -> [Enclosure] {
         return (DataUtility.entities("Enclosure", matchingPredicate: NSPredicate(format: "downloaded = %d", downloaded)!, managedObjectContext: self.managedObjectContext) as [Enclosure]).sorted {(a : Enclosure, b: Enclosure) in
-            if let da = a.url {
-                if let db = b.url {
-                    return da.lastPathComponent < db.lastPathComponent
-                }
+            if let da = a.url, let db = b.url {
+                return da.lastPathComponent < db.lastPathComponent
             }
             return true
         }
@@ -466,7 +463,7 @@ class DataManager: NSObject {
     // MARK: Articles
 
     func upsertArticle(item: MWFeedItem, var context ctx: NSManagedObjectContext! = nil) -> Article {
-        let predicate = NSPredicate(format: "link = %@", item.link)!
+        let predicate = NSPredicate(format: "link = %@", item.link)
         if let article = DataUtility.entities("Article", matchingPredicate: predicate, managedObjectContext: ctx).last as? Article {
             if article.updatedAt != item.updated {
                 DataUtility.updateArticle(article, item: item)
@@ -507,17 +504,15 @@ class DataManager: NSObject {
     }
 
     func newArticle() -> Article {
-        return NSEntityDescription.insertNewObjectForEntityForName("Article", inManagedObjectContext: self.managedObjectContext) as Article
+        return NSEntityDescription.insertNewObjectForEntityForName("Article", inManagedObjectContext: self.managedObjectContext) as! Article
     }
 
     private var theArticles : [Article]? = nil
 
     private func refreshArticles() {
         theArticles = (DataUtility.entities("Article", matchingPredicate: NSPredicate(value: true), managedObjectContext: self.managedObjectContext) as [Article]).sorted {(a : Article, b: Article) in
-            if let da = a.updatedAt ?? a.published {
-                if let db = b.updatedAt ?? b.published {
-                    return da.timeIntervalSince1970 > db.timeIntervalSince1970
-                }
+            if let da = a.updatedAt ?? a.published, let db = b.updatedAt ?? b.published {
+                return da.timeIntervalSince1970 > db.timeIntervalSince1970
             }
             return true
         }
@@ -608,7 +603,7 @@ class DataManager: NSObject {
         data.setObject(unsafeBitCast(articles, AnyObject.self), forKeyedSubscript: "articles")
 
         var queryArticles : @objc_block (NSString, [NSObject]) -> [NSDictionary] = {(query, args) in
-            let predicate = NSPredicate(format: query, argumentArray: args)
+            let predicate = NSPredicate(format: query as String, argumentArray: args)
             return (DataUtility.entities("Article", matchingPredicate: predicate, managedObjectContext: moc) as [Article]).map {$0.asDict()}
         }
         data.setObject(unsafeBitCast(queryArticles, AnyObject.self), forKeyedSubscript: "articlesMatchingQuery")
@@ -619,7 +614,7 @@ class DataManager: NSObject {
         data.setObject(unsafeBitCast(feeds, AnyObject.self), forKeyedSubscript: "feeds")
 
         var queryFeeds : @objc_block (NSString, [NSObject]) -> [NSDictionary] = {(query, args) in // queries for feeds, not to be confused with query feeds.
-            let predicate = NSPredicate(format: query, argumentArray: args)
+            let predicate = NSPredicate(format: query as String, argumentArray: args)
             return (DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: moc) as [Feed]).map {$0.asDict()}
         }
         data.setObject(unsafeBitCast(queryFeeds, AnyObject.self), forKeyedSubscript: "feedsMatchingQuery")
@@ -695,7 +690,7 @@ class DataManager: NSObject {
             managedObjectModel = NSManagedObjectModel.mergedModelFromBundles(NSBundle.allBundles())!
             unitTesting = true
         }
-        let applicationDocumentsDirectory: String = (NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).last as String)
+        let applicationDocumentsDirectory: String = (NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).last as! String)
         let storeURL = NSURL.fileURLWithPath(applicationDocumentsDirectory.stringByAppendingPathComponent("RSSClient.sqlite"))
         persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
         var error: NSError? = nil

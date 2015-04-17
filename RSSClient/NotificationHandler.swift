@@ -22,7 +22,7 @@ class NotificationHandler : NSObject {
         category.setActions([markReadAction], forContext: .Minimal)
         category.setActions([markReadAction], forContext: .Default)
         
-        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Badge | .Alert | .Sound, categories: NSSet(object: category)))
+        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Badge | .Alert | .Sound, categories: Set<NSObject>([category])))
     }
     
     func handleLocalNotification(notification: UILocalNotification, window: UIWindow) {
@@ -36,7 +36,7 @@ class NotificationHandler : NSObject {
         if let userInfo = notification.userInfo {
             let (feed, article) = feedAndArticleFromUserInfo(userInfo)
             if identifier == "read" {
-                let dataManager = self.injector!.create(DataManager.self) as DataManager
+                let dataManager = self.injector!.create(DataManager.self) as! DataManager
                 dataManager.readArticle(article)
             } else if identifier == "view" {
                 showArticle(article, window: window)
@@ -46,7 +46,7 @@ class NotificationHandler : NSObject {
     
     func sendLocalNotification(application: UIApplication, article: Article) {
         let note = UILocalNotification()
-        note.alertBody = NSString.localizedStringWithFormat("New article in %@: %@", article.feed?.feedTitle() ?? "", article.title)
+        note.alertBody = NSString.localizedStringWithFormat("New article in %@: %@", article.feed?.feedTitle() ?? "", article.title) as String
 
         let feedID = article.feed!.objectID.URIRepresentation().absoluteString!
         let articleID = article.objectID.URIRepresentation().absoluteString!
@@ -55,17 +55,17 @@ class NotificationHandler : NSObject {
         note.userInfo = dict
         note.fireDate = NSDate()
         note.category = "default"
-        let existingNotes = application.scheduledLocalNotifications as [UILocalNotification]
+        let existingNotes = application.scheduledLocalNotifications as! [UILocalNotification]
 
         application.scheduledLocalNotifications = existingNotes + [note]
         application.presentLocalNotificationNow(note)
     }
     
     private func feedAndArticleFromUserInfo(userInfo: [NSObject : AnyObject]) -> (Feed, Article) {
-        let feedID = (userInfo["feed"] as String)
-        let dataManager = self.injector!.create(DataManager.self) as DataManager
+        let feedID = (userInfo["feed"] as! String)
+        let dataManager = self.injector!.create(DataManager.self) as! DataManager
         let feed : Feed = dataManager.feeds().filter{ return $0.objectID.URIRepresentation().absoluteString == feedID; }.first!
-        let articleID = (userInfo["article"] as String)
+        let articleID = (userInfo["article"] as! String)
         let article : Article = feed.allArticles(dataManager).filter({ return $0.objectID.URIRepresentation().absoluteString == articleID }).first!
         return (feed, article)
     }

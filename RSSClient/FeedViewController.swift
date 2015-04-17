@@ -17,7 +17,7 @@ class FeedViewController: UITableViewController {
         }
     }
     
-    lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as DataManager }()
+    lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as! DataManager }()
     
     let intervalFormatter = NSDateIntervalFormatter()
 
@@ -54,7 +54,7 @@ class FeedViewController: UITableViewController {
     }
     
     func showTagEditor(tagIndex: Int) -> TagEditorViewController {
-        let tagEditor = self.injector!.create(TagEditorViewController.self) as TagEditorViewController
+        let tagEditor = self.injector!.create(TagEditorViewController.self) as! TagEditorViewController
         tagEditor.feed = feed
         if tagIndex < feed?.allTags().count {
             tagEditor.tagIndex = tagIndex
@@ -105,7 +105,7 @@ class FeedViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
         
         cell.textLabel?.textColor = UIColor.blackColor()
         cell.textLabel?.text = ""
@@ -119,7 +119,7 @@ class FeedViewController: UITableViewController {
                 cell.textLabel?.textColor = UIColor.grayColor()
             }
         case 1:
-            let tc = tableView.dequeueReusableCellWithIdentifier("text", forIndexPath: indexPath) as TextFieldCell
+            let tc = tableView.dequeueReusableCellWithIdentifier("text", forIndexPath: indexPath) as! TextFieldCell
             tc.onTextChange = {(_) in } // remove any previous onTextChange for setting stuff here.
             tc.textField.text = feed?.url
             tc.showValidator = true
@@ -214,12 +214,9 @@ class FeedViewController: UITableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
-        if indexPath.section == tagSection {
-            if let count = feed?.allTags().count {
-                if indexPath.row == count {
-                    showTagEditor(indexPath.row)
-                }
-            }
+        if indexPath.section == tagSection,
+            let count = feed?.allTags().count where indexPath.row == count {
+                showTagEditor(indexPath.row)
         }
     }
 }

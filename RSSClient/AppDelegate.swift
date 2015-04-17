@@ -13,7 +13,7 @@ import Ra
 @UIApplicationMain
 public class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    public lazy var window: UIWindow = {
+    public lazy var window: UIWindow? = {
         let window = UIWindow(frame: UIScreen.mainScreen().bounds)
         window.backgroundColor = UIColor.whiteColor()
         window.makeKeyAndVisible()
@@ -28,9 +28,9 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         return injector
     }()
 
-    lazy var dataManager : DataManager = { return self.anInjector.create(DataManager.self) as DataManager }()
+    lazy var dataManager : DataManager = { return self.anInjector.create(DataManager.self) as! DataManager }()
         
-    lazy var notificationHandler : NotificationHandler = { self.anInjector.create(NotificationHandler.self) as NotificationHandler }()
+    lazy var notificationHandler : NotificationHandler = { self.anInjector.create(NotificationHandler.self) as! NotificationHandler }()
     
     lazy var splitDelegate : SplitDelegate = {
         let splitDelegate = SplitDelegate(splitViewController: self.splitView)
@@ -45,7 +45,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         UIBarButtonItem.appearance().tintColor = UIColor.darkGreenColor()
         UITabBar.appearance().tintColor = UIColor.darkGreenColor()
 
-        let feeds = self.anInjector.create(FeedsTableViewController.self) as FeedsTableViewController
+        let feeds = self.anInjector.create(FeedsTableViewController.self) as! FeedsTableViewController
         let master = UINavigationController(rootViewController: feeds)
         let detail = UINavigationController(rootViewController: ArticleViewController())
         
@@ -115,25 +115,21 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         var handled = false
         
         let type = userActivity.activityType
-        if type == "com.rachelbrindle.rssclient.article" {
-            var controllers : [AnyObject] = []
-            if let splitView = self.window.rootViewController as? UISplitViewController {
-                if let nc = splitView.viewControllers.first as? UINavigationController {
-                    if let ftvc = nc.viewControllers.first as? FeedsTableViewController {
-                        if let userInfo = userActivity.userInfo {
-                            nc.popToRootViewControllerAnimated(false)
-                            let feedTitle = (userInfo["feed"] as String)
-                            let feed : Feed = dataManager.feeds().filter{ return $0.title == feedTitle; }.first!
-                            let articleID = (userInfo["article"] as NSURL)
-                            let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.objectID.URIRepresentation() == articleID }).first!
-                            let al = ftvc.showFeeds([feed], animated: false)
-                            controllers = [al.showArticle(article)]
-                            restorationHandler(controllers)
-                            handled = true
-                        }
-                    }
-                }
-            }
+        if type == "com.rachelbrindle.rssclient.article",
+            let splitView = self.window?.rootViewController as? UISplitViewController,
+            let nc = splitView.viewControllers.first as? UINavigationController,
+            let ftvc = nc.viewControllers.first as? FeedsTableViewController,
+            let userInfo = userActivity.userInfo {
+                nc.popToRootViewControllerAnimated(false)
+                let feedTitle = userInfo["feed"] as! String
+                let feed : Feed = dataManager.feeds().filter{ return $0.title == feedTitle; }.first!
+                let articleID = userInfo["article"] as! NSURL
+                let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.objectID.URIRepresentation() == articleID }).first!
+                let al = ftvc.showFeeds([feed], animated: false)
+                var controllers : [AnyObject] = []
+                controllers = [al.showArticle(article)]
+                restorationHandler(controllers)
+                handled = true
         }
         return handled
     }

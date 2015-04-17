@@ -205,7 +205,7 @@ class BreakOutScene: SKScene, SKPhysicsContactDelegate {
   }
   
   override func update(currentTime: NSTimeInterval) {
-    let ball = self.childNodeWithName(ballName) as SKSpriteNode!
+    let ball = self.childNodeWithName(ballName) as! SKSpriteNode!
     
     let maxSpeed: CGFloat = 1500.0
     let speed = sqrt(ball.physicsBody!.velocity.dx * ball.physicsBody!.velocity.dx + ball.physicsBody!.velocity.dy * ball.physicsBody!.velocity.dy)

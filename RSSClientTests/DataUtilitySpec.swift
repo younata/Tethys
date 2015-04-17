@@ -177,13 +177,13 @@ info.imageURL = nil
                 ctx.save(nil)
             }
             it("should return all objects that match the given predicate") {
-                let predicate = NSPredicate(format: "title = %@", "example")!
+                let predicate = NSPredicate(format: "title = %@", "example")
                 let ret = DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: ctx)
                 expect(ret.count).to(equal(2))
             }
 
             it("should sort the results if you ask it to") {
-                let predicate = NSPredicate(format: "title = %@", "example")!
+                let predicate = NSPredicate(format: "title = %@", "example")
                 let sortDescriptor = NSSortDescriptor(key: "summary", ascending: true)
                 let ret = DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: ctx, sortDescriptors: [sortDescriptor])
                 expect(ret.first?.summary).to(equal("example"))

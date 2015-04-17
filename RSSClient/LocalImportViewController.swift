@@ -19,7 +19,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
     
     var tableViewTopOffset: NSLayoutConstraint!
 
-    lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as DataManager }()
+    lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as! DataManager }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,7 +63,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
     func reloadItems() {
         let documents : String = NSHomeDirectory().stringByAppendingPathComponent("Documents")
         var error : NSError? = nil
-        let contents = (NSFileManager.defaultManager().contentsOfDirectoryAtPath(documents, error: &error) as [String])
+        let contents = (NSFileManager.defaultManager().contentsOfDirectoryAtPath(documents, error: &error) as! [String])
         for path in contents {
             verifyIfFeedOrOPML(path)
         }
@@ -85,8 +85,8 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
         
         let location = NSHomeDirectory().stringByAppendingPathComponent("Documents").stringByAppendingPathComponent(path)
         if let text = NSString(contentsOfFile: location, encoding: NSUTF8StringEncoding, error: nil) {
-            let opmlParser = OPMLParser(text: text)
-            let feedParser = FeedParser(string: text)
+            let opmlParser = OPMLParser(text: text as String)
+            let feedParser = FeedParser(string: text as String)
             feedParser.parseInfoOnly = true
             feedParser.completion = {(_, _) in
                 self.items.append(path)
@@ -116,7 +116,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
         
         cell.textLabel?.text = items[indexPath.row]
 
@@ -130,7 +130,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
         if contains(feeds, item) {
             let location = NSHomeDirectory().stringByAppendingPathComponent("Documents").stringByAppendingPathComponent(item)
             let text = NSString(contentsOfFile: location, encoding: NSUTF8StringEncoding, error: nil)!
-            let feedParser = FeedParser(string: text)
+            let feedParser = FeedParser(string: text as String)
             feedParser.parseInfoOnly = true
             
             let activityIndicator = RBActivityIndicator(forAutoLayout: ())
@@ -174,7 +174,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
             UIView.animateWithDuration(0.3, animations: {activityIndicator.backgroundColor = color})
             self.view.userInteractionEnabled = false
             
-            let dataManager = self.injector!.create(DataManager.self) as DataManager
+            let dataManager = self.injector!.create(DataManager.self) as! DataManager
 
             dataManager.importOPML(NSURL(string: "file://" + location)!, progress: {(progress: Double) in
                 activityIndicator.progress = progress

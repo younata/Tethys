@@ -20,7 +20,7 @@ class QueryFeedViewController: UITableViewController {
         }
     }
     
-    lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as DataManager }()
+    lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as! DataManager }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,7 +63,7 @@ class QueryFeedViewController: UITableViewController {
     }
     
     func showTagEditor(tagIndex: Int) {
-        let tagEditor = self.injector!.create(TagEditorViewController.self) as TagEditorViewController
+        let tagEditor = self.injector!.create(TagEditorViewController.self) as! TagEditorViewController
         tagEditor.feed = feed
         if tagIndex < feed?.allTags().count {
             tagEditor.tagIndex = tagIndex
@@ -102,7 +102,7 @@ class QueryFeedViewController: UITableViewController {
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if indexPath.section == 3 {
-            let cell = tableView.dequeueReusableCellWithIdentifier("tags", forIndexPath: indexPath) as UITableViewCell
+            let cell = tableView.dequeueReusableCellWithIdentifier("tags", forIndexPath: indexPath) as! UITableViewCell
             if let tags = feed?.allTags() {
                 if indexPath.row == tags.count {
                     cell.textLabel?.text = NSLocalizedString("Add Tag", comment: "")
@@ -113,7 +113,7 @@ class QueryFeedViewController: UITableViewController {
             }
             return cell
         } else {
-            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as TextViewCell
+            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextViewCell
             cell.textView.textColor = UIColor.blackColor()
             switch (indexPath.section) {
             case 0:
@@ -217,12 +217,9 @@ class QueryFeedViewController: UITableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
-        if indexPath.section == 3 {
-            if let count = feed?.allTags().count {
-                if indexPath.row == count {
-                    showTagEditor(indexPath.row)
-                }
-            }
+        if indexPath.section == 3,
+            let count = feed?.allTags().count where indexPath.row == count {
+                showTagEditor(indexPath.row)
         }
     }
 }

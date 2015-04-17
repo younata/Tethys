@@ -8,6 +8,7 @@
 
 import UIKit
 import WebKit
+import Alamofire
 
 class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFieldDelegate {
     let webContent = WKWebView(forAutoLayout: ())
@@ -80,7 +81,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         if (lookForFeeds) {
-            let dataManager = self.injector!.create(DataManager.self) as DataManager
+            let dataManager = self.injector!.create(DataManager.self) as! DataManager
             feeds = dataManager.feeds().reduce([], combine: {
                 if $1.url == nil {
                     return $0
@@ -110,8 +111,8 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         // show something to indicate we're doing work...
         let loading = LoadingView(frame: self.view.bounds)
         self.view.addSubview(loading)
-        loading.msg = NSString.localizedStringWithFormat(NSLocalizedString("Loading feed at %@", comment: ""), link)
-        let dataManager = self.injector!.create(DataManager.self) as DataManager
+        loading.msg = NSString.localizedStringWithFormat(NSLocalizedString("Loading feed at %@", comment: ""), link) as String
+        let dataManager = self.injector!.create(DataManager.self) as! DataManager
         if opml {
             dataManager.importOPML(NSURL(string: link)!, progress: {(_) in }) {(_) in
                 loading.removeFromSuperview()
@@ -133,7 +134,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     }
     
     override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
-        if (keyPath == "estimatedProgress" && object as NSObject == webContent) {
+        if (keyPath == "estimatedProgress" && object as? NSObject == webContent) {
             loadingBar.progress = Float(webContent.estimatedProgress)
         }
     }
@@ -162,7 +163,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         }
         if (lookForFeeds) {
             let text = textField.text!
-            request(.GET, text).responseString {(_, _, response, error) in
+            Alamofire.request(.GET, text).responseString {(_, _, response, error) in
                 if let txt = response {
                     let feedParser = FeedParser(string: txt)
                     feedParser.parseInfoOnly = true
@@ -183,7 +184,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
                         let string = info.url != nil ? info.url.absoluteString! : text
                         opmlParser.stopParsing()
                         if (!contains(self.feeds, textField.text)) {
-                            let alert = UIAlertController(title: NSLocalizedString("Feed Detected", comment: ""), message: NSString.localizedStringWithFormat(NSLocalizedString("Save %@?", comment: ""), textField.text), preferredStyle: .Alert)
+                            let alert = UIAlertController(title: NSLocalizedString("Feed Detected", comment: ""), message: NSString.localizedStringWithFormat(NSLocalizedString("Save %@?", comment: ""), textField.text) as String, preferredStyle: .Alert)
                             alert.addAction(UIAlertAction(title: NSLocalizedString("Don't Save", comment: ""), style: .Cancel, handler: {(alertAction: UIAlertAction!) in
                                 print("") // this is bullshit
                                 alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
@@ -208,7 +209,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     
     // MARK: - WKNavigationDelegate
     
-    func webView(webView: WKWebView!, didFinishNavigation navigation: WKNavigation!) {
+    func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
         self.navigationItem.titleView = self.navField
         navField.placeholder = webView.title
         forward.enabled = webView.canGoForward
@@ -217,7 +218,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         
         if (lookForFeeds) {
             let discover = NSString(contentsOfFile: NSBundle.mainBundle().pathForResource("findFeeds", ofType: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
-            webView.evaluateJavaScript(discover, completionHandler: {(res: AnyObject!, error: NSError?) in
+            webView.evaluateJavaScript(discover as String, completionHandler: {(res: AnyObject!, error: NSError?) in
                 if let str = res as? String {
                     if (!contains(self.feeds, str)) {
                         self.rssLink = str
@@ -234,12 +235,12 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         loadingBar.hidden = true
     }
     
-    func webView(webView: WKWebView!, didFailNavigation navigation: WKNavigation!, withError error: NSError!) {
+    func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
         self.navigationItem.titleView = self.navField
         loadingBar.hidden = true
     }
     
-    func webView(webView: WKWebView!, didStartProvisionalNavigation navigation: WKNavigation!) {
+    func webView(webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         loadingBar.progress = 0
         loadingBar.hidden = false
         navField.text = ""

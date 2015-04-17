@@ -33,7 +33,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         return refreshView
     }()
     
-    lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as DataManager }()
+    lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as! DataManager }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -107,10 +107,8 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        if let rc = self.tableViewController.refreshControl {
-            if rc.refreshing {
-                rc.endRefreshing()
-            }
+        if let rc = self.tableViewController.refreshControl where rc.refreshing {
+            rc.endRefreshing()
         }
     }
     
@@ -152,7 +150,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             menu.closeAnimated(true)
             return
         }
-        let nc = UINavigationController(rootViewController: self.injector!.create(klass) as UIViewController)
+        let nc = UINavigationController(rootViewController: self.injector!.create(klass) as! UIViewController)
         if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
             let popover = UIPopoverController(contentViewController: nc)
             popover.popoverContentSize = CGSizeMake(600, 800)
@@ -251,7 +249,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         let feed = feedAtIndexPath(indexPath)
         let strToUse = (feed.unreadArticles(self.dataManager) == 0 ? "unread" : "read") // Prevents a green triangle which'll (dis)appear depending on whether new feed loaded into it has unread articles or not.
         
-        let cell = tableView.dequeueReusableCellWithIdentifier(strToUse, forIndexPath: indexPath) as FeedTableCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(strToUse, forIndexPath: indexPath) as! FeedTableCell
         cell.dataManager = dataManager
         cell.feed = feed
         return cell
@@ -287,11 +285,11 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             var klass : AnyClass? = nil
             var viewController : UIViewController! = nil
             if feed.isQueryFeed() {
-                let vc = self.injector!.create(QueryFeedViewController.self) as QueryFeedViewController
+                let vc = self.injector!.create(QueryFeedViewController.self) as! QueryFeedViewController
                 vc.feed = feed
                 viewController = vc
             } else {
-                let vc = self.injector!.create(FeedViewController.self) as FeedViewController
+                let vc = self.injector!.create(FeedViewController.self) as! FeedViewController
                 vc.feed = feed
                 viewController = vc
             }

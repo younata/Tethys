@@ -35,7 +35,7 @@ class TagEditorViewController: UIViewController {
         tagPicker.setTranslatesAutoresizingMaskIntoConstraints(false)
         self.view.addSubview(tagPicker)
         tagPicker.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(16, 8, 0, 8), excludingEdge: .Bottom)
-        let dataManager = self.injector!.create(DataManager.self) as DataManager
+        let dataManager = self.injector!.create(DataManager.self) as! DataManager
         tagPicker.allTags = dataManager.allTags()
         tagPicker.didSelect = {
             self.tag = $0

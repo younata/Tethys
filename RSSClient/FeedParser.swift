@@ -37,7 +37,7 @@ class FeedParser: NSObject, MWFeedParserDelegate {
     
     init(URL: NSURL) {
         if URL.scheme == "file://" {
-            let contents : String = NSString(contentsOfURL: URL, encoding: NSUTF8StringEncoding, error: nil)!
+            let contents : String = NSString(contentsOfURL: URL, encoding: NSUTF8StringEncoding, error: nil)! as String
             feedParser = MWFeedParser(string: contents)
         } else {
             feedParser = MWFeedParser(feedURL: URL)

@@ -35,7 +35,7 @@ class AppDelegateSpec: QuickSpec {
                 var splitViewController: UISplitViewController! = nil
                 
                 beforeEach {
-                    splitViewController = subject.window.rootViewController as UISplitViewController
+                    splitViewController = subject.window.rootViewController as! UISplitViewController
                 }
 
                 it("should have a splitViewController as the rootViewController") {
@@ -46,7 +46,7 @@ class AppDelegateSpec: QuickSpec {
                     var vc: UIViewController! = nil
                     
                     beforeEach {
-                        vc = splitViewController.viewControllers[0] as UIViewController
+                        vc = splitViewController.viewControllers[0] as! UIViewController
                     }
                 
                     it("should be an instance of UINavigationController") {
@@ -54,7 +54,7 @@ class AppDelegateSpec: QuickSpec {
                     }
                     
                     it("should have a FeedsTableViewController as the root controller") {
-                        let nc = vc as UINavigationController
+                        let nc = vc as! UINavigationController
                         expect(nc.viewControllers.first! as UIViewController).to(beAnInstanceOf(FeedsTableViewController.self))
                     }
                 }
@@ -63,7 +63,7 @@ class AppDelegateSpec: QuickSpec {
                     var vc: UIViewController! = nil
                     
                     beforeEach {
-                        vc = splitViewController.viewControllers[1] as UIViewController
+                        vc = splitViewController.viewControllers[1] as! UIViewController
                     }
                     
                     it("should be an instance of UINavigationController") {
@@ -71,7 +71,7 @@ class AppDelegateSpec: QuickSpec {
                     }
                     
                     it("should have an ArticleViewController as the root controller") {
-                        let nc = vc as UINavigationController
+                        let nc = vc as! UINavigationController
                         expect(nc.viewControllers.first! as UIViewController).to(beAnInstanceOf(ArticleViewController.self))
                     }
                 }

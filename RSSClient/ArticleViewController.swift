@@ -37,7 +37,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 userActivity?.webpageURL = NSURL(string: a.link)
                 self.userActivity?.needsSave = true
                 
-                let notes : [UILocalNotification] = (UIApplication.sharedApplication().scheduledLocalNotifications as [UILocalNotification]).filter {(note) in
+                let notes : [UILocalNotification] = (UIApplication.sharedApplication().scheduledLocalNotifications as! [UILocalNotification]).filter {(note) in
                     if let ui = note.userInfo {
                         if let feed : String = ui["feed"] as? String {
                             if let title : String = ui["article"] as? String {
@@ -120,20 +120,16 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             webView.loadHTMLString(articleCSS + title + cnt + "</body></html>", baseURL: NSURL(string: article.feed.url)!)
             if let sb = shareButton {
                 self.toolbarItems = [spacer(), sb, spacer(), toggleContentButton!, spacer()]
-                if let ec = showEnclosuresButton {
-                    if article.allEnclosures().count > 0 {
-                        self.toolbarItems! += [ec, spacer()]
-                    }
+                if let ec = showEnclosuresButton where article.allEnclosures().count > 0 {
+                    self.toolbarItems! += [ec, spacer()]
                 }
             }
         } else {
             webView.loadRequest(NSURLRequest(URL: NSURL(string: article.link)!))
             if let sb = shareButton {
                 self.toolbarItems = [spacer(), sb, spacer()]
-                if let ec = showEnclosuresButton {
-                    if article.allEnclosures().count > 0 {
-                        self.toolbarItems! += [ec, spacer()]
-                    }
+                if let ec = showEnclosuresButton where article.allEnclosures().count > 0 {
+                    self.toolbarItems! += [ec, spacer()]
                 }
             }
         }
@@ -166,10 +162,8 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
         configureContent()
         
-        if let splitView = self.splitViewController {
-            if UIDevice.currentDevice().userInterfaceIdiom == .Pad || (UIScreen.mainScreen().scale == UIScreen.mainScreen().nativeScale && UIScreen.mainScreen().scale > 2) {
-                self.navigationItem.leftBarButtonItem = splitView.displayModeButtonItem()
-            }
+        if let splitView = self.splitViewController where UIDevice.currentDevice().userInterfaceIdiom == .Pad || (UIScreen.mainScreen().scale == UIScreen.mainScreen().nativeScale && UIScreen.mainScreen().scale > 2) {
+            self.navigationItem.leftBarButtonItem = splitView.displayModeButtonItem()
         }
         
         let back = UIBarButtonItem(title: "<", style: .Plain, target: content, action: "goBack")
@@ -205,7 +199,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         super.restoreUserActivityState(activity)
         
         if let ui = activity.userInfo {
-            let showingContent = (ui["showingContent"] as Bool)
+            let showingContent = (ui["showingContent"] as! Bool)
             if showingContent {
                 self.contentType = .Content
             } else {
@@ -415,22 +409,22 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     }
     
     override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
-        if (keyPath == "estimatedProgress" && object as NSObject == content) {
+        if (keyPath == "estimatedProgress" && object as! NSObject == content) {
             loadingBar.progress = Float(content.estimatedProgress)
         }
     }
     
-    func webView(webView: WKWebView!, didFinishNavigation navigation: WKNavigation!) {
+    func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
         loadingBar.hidden = true
         self.removeObserverFromContent(webView)
     }
     
-    func webView(webView: WKWebView!, didFailNavigation navigation: WKNavigation!, withError error: NSError!) {
+    func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
         loadingBar.hidden = true
         self.removeObserverFromContent(webView)
     }
     
-    func webView(webView: WKWebView!, didStartProvisionalNavigation navigation: WKNavigation!) {
+    func webView(webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         loadingBar.progress = 0
         loadingBar.hidden = false
         if !contains(objectsBeingObserved, webView) {

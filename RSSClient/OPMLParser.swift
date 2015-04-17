@@ -49,7 +49,7 @@ class OPMLParser : NSObject, NSXMLParserDelegate {
     }
     
     init(text: String) {
-        xmlParser = NSXMLParser(data: text.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false))
+        xmlParser = NSXMLParser(data: text.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!)
         super.init()
         xmlParser.delegate = self
     }
@@ -65,19 +65,19 @@ class OPMLParser : NSObject, NSXMLParserDelegate {
     
     // MARK: NSXMLParserDelegate
     
-    func parserDidEndDocument(parser: NSXMLParser!) {
+    func parserDidEndDocument(parser: NSXMLParser) {
         if (isOPML) {
             callback(items)
         }
     }
     
-    func parser(parser: NSXMLParser!, parseErrorOccurred parseError: NSError!) {
+    func parser(parser: NSXMLParser, parseErrorOccurred parseError: NSError) {
         isOPML = false
         println("\(parseError)")
         onFailure(parseError)
     }
     
-    func parser(parser: NSXMLParser!, didStartElement elementName: String!, namespaceURI: String!, qualifiedName qName: String!, attributes attributeDict: [NSObject : AnyObject]!) {
+    func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [NSObject : AnyObject]) {
         if elementName.lowercaseString == "xml" {
             return
         }
@@ -90,8 +90,8 @@ class OPMLParser : NSObject, NSXMLParserDelegate {
         if elementName.lowercaseString.hasPrefix("outline") {
             var item = OPMLItem()
             for (k, v) in attributeDict {
-                let key = (k as String).lowercaseString
-                let value = v as String
+                let key = (k as! String).lowercaseString
+                let value = v as! String
                 if value == "" {
                     continue
                 }

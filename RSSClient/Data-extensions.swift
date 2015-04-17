@@ -17,7 +17,7 @@ import Foundation
 extension Feed {
     func feedImage() -> Image? {
         if self.image == nil { return nil }
-        return (self.image as Image)
+        return (self.image as? Image)
     }
     
     func unreadArticles() -> UInt {
@@ -33,14 +33,17 @@ extension Feed {
     }
     
     func allArticles() -> [Article] {
-        return self.articles.allObjects as [Article]
+        if let articles = self.articles as? Set<Article> {
+            return Array<Article>(articles)
+        }
+        return []
     }
     
     func allArticles(dataManager: DataManager) -> [Article] {
         if let query = self.query {
             return dataManager.articlesMatchingQuery(query, feed: self)
         } else {
-            return self.articles.allObjects as [Article]
+            return self.allArticles()
         }
     }
     
@@ -67,14 +70,19 @@ extension Feed {
     }
     
     func allTags() -> [String] {
-        return self.tags == nil ? [] : self.tags as [String]
+        if let tags = self.tags as? [String] {
+            return tags
+        }
+        return []
     }
     
     func asDict() -> [String: AnyObject] {
         var ret = asDictNoArticles()
         var theArticles : [[String: AnyObject]] = []
-        for article in articles.allObjects as [Article] {
-            theArticles.append(article.asDictNoFeed())
+        if let articles = self.articles as? Set<Article> {
+            for article in Array<Article>(articles) {
+                theArticles.append(article.asDictNoFeed())
+            }
         }
         ret["articles"] = theArticles
         return ret
@@ -105,12 +113,17 @@ extension Feed {
 
 extension Article {
     func allFlags() -> [String] {
-        return self.flags == nil ? [] : self.flags as [String]
+        if let flags = self.flags as? [String] {
+            return flags
+        }
+        return []
     }
     
     func allEnclosures() -> [Enclosure] {
-        let def : [Enclosure] = []
-        return self.enclosures == nil ? def : self.enclosures.allObjects as [Enclosure]
+        if let enclosures = self.enclosures as? Set<Enclosure> {
+            return Array<Enclosure>(enclosures)
+        }
+        return []
     }
     
     func asDict() -> [String: AnyObject] {

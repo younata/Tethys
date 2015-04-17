@@ -102,7 +102,7 @@ class ArticleListController: UITableViewController {
             avc.lastArticleIndex = 0
         }
         if let splitView = self.splitViewController {
-            (UIApplication.sharedApplication().delegate as AppDelegate).splitDelegate.collapseDetailViewController = false
+            (UIApplication.sharedApplication().delegate as! AppDelegate).splitDelegate.collapseDetailViewController = false
             splitView.showDetailViewController(UINavigationController(rootViewController: avc), sender: self)
         } else {
             self.navigationController?.pushViewController(avc, animated: animated)
@@ -132,7 +132,7 @@ class ArticleListController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let article = articleForIndexPath(indexPath)
         let strToUse = (article.read ? "read" : "unread") // Prevents a green triangle which'll (dis)appear depending on whether article loaded into it is read or not.
-        let cell = tableView.dequeueReusableCellWithIdentifier(strToUse, forIndexPath: indexPath) as ArticleCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(strToUse, forIndexPath: indexPath) as! ArticleCell
         
         cell.article = article
 

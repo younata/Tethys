@@ -21,7 +21,7 @@ class DataManagerMock : DataManager {
         completion(nil)
     }
 
-    override func updateFeeds(feeds: [Feed], completion: (NSError?) -> (Void), backgroundFetch: Bool) {
+    override func updateFeeds(feeds: [Feed], backgroundFetch: Bool, completion: (NSError?) -> (Void)) {
         completion(nil)
     }
 }

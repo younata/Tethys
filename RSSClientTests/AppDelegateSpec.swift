@@ -35,11 +35,11 @@ class AppDelegateSpec: QuickSpec {
                 var splitViewController: UISplitViewController! = nil
                 
                 beforeEach {
-                    splitViewController = subject.window.rootViewController as! UISplitViewController
+                    splitViewController = subject.window!.rootViewController as! UISplitViewController
                 }
 
                 it("should have a splitViewController as the rootViewController") {
-                    expect(subject.window.rootViewController).to(beAnInstanceOf(UISplitViewController.self))
+                    expect(subject.window!.rootViewController).to(beAnInstanceOf(UISplitViewController.self))
                 }
                 
                 describe("master view controller") {
@@ -55,7 +55,7 @@ class AppDelegateSpec: QuickSpec {
                     
                     it("should have a FeedsTableViewController as the root controller") {
                         let nc = vc as! UINavigationController
-                        expect(nc.viewControllers.first! as UIViewController).to(beAnInstanceOf(FeedsTableViewController.self))
+                        expect(nc.viewControllers.first as! UIViewController).to(beAnInstanceOf(FeedsTableViewController.self))
                     }
                 }
 
@@ -72,7 +72,7 @@ class AppDelegateSpec: QuickSpec {
                     
                     it("should have an ArticleViewController as the root controller") {
                         let nc = vc as! UINavigationController
-                        expect(nc.viewControllers.first! as UIViewController).to(beAnInstanceOf(ArticleViewController.self))
+                        expect(nc.viewControllers.first as! UIViewController).to(beAnInstanceOf(ArticleViewController.self))
                     }
                 }
             }

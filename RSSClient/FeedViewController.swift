@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class FeedViewController: UITableViewController {
     
@@ -125,7 +126,7 @@ class FeedViewController: UITableViewController {
             tc.showValidator = true
             tc.onTextChange = {(text) in
                 if let txt = text {
-                    request(.GET, txt).responseString {(_, _, str, error) in
+                    Alamofire.request(.GET, txt).responseString {(_, _, str, error) in
                         if let err = error {
                             tc.setValid(false)
                         } else if let s = str {

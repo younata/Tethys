@@ -1,6 +1,7 @@
 import Quick
 import Nimble
 import Foundation
+import Alamofire
 
 class DataUtilitySpec: QuickSpec {
     override func spec() {
@@ -40,7 +41,7 @@ info.imageURL = nil
 
             context("when the feed doesn't have an existing image") {
                 it("should download the image pointed at by info.imageURL and set it as the feed image") {
-                    DataUtility.updateFeedImage(feed, info: info, manager: Manager.sharedInstance)
+                    DataUtility.updateFeedImage(feed, info: info, manager: Alamofire.Manager.sharedInstance)
 
                     expect(feed.hasChanges).toEventually(beTruthy(), timeout: 60)
                     expect(feed.feedImage()).toEventuallyNot(beNil(), timeout: 60)
@@ -160,7 +161,7 @@ info.imageURL = nil
                     DataUtility.insertEnclosureFromItem(enclosure, article: article)
 
                     expect(article.enclosures.count).to(equal(1))
-                    let enclosure = article.enclosures.anyObject() as NSManagedObject
+                    let enclosure = article.allEnclosures().first! as NSManagedObject
                     expect(enclosure.valueForKey("url") as? String).to(equal("http://example.com/enclosure.txt"))
                     expect(enclosure.valueForKey("kind") as? String).to(equal("text/text"))
                 }

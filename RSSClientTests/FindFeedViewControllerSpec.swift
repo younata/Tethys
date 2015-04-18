@@ -11,7 +11,7 @@ class FindFeedViewControllerSpec: QuickSpec {
 
         beforeEach {
             injector = Ra.Injector()
-            subject = injector.create(FindFeedViewController.self) as FindFeedViewController
+            subject = injector.create(FindFeedViewController.self) as! FindFeedViewController
         }
 
         describe("Looking up feeds on the interwebs") {

@@ -113,24 +113,24 @@ class DataManager: NSObject {
     // MARK: Feeds
 
     func allTags(managedObjectContext: NSManagedObjectContext? = nil) -> [String] {
-        let feedsWithTags = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "tags != nil")!, managedObjectContext: (managedObjectContext ?? self.managedObjectContext)) as [Feed]
+        let feedsWithTags = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "tags != nil"), managedObjectContext: (managedObjectContext ?? self.managedObjectContext)) as? [Feed] ?? []
 
         let setOfTags = feedsWithTags.reduce(NSSet()) {(set, feed) in
             return set.setByAddingObjectsFromArray(feed.allTags())
         }
 
-        return (setOfTags.allObjects as [String]).sorted { return $0.lowercaseString < $1.lowercaseString }
+        return (setOfTags.allObjects as? [String] ?? []).sorted { return $0.lowercaseString < $1.lowercaseString }
     }
 
     func feeds(managedObjectContext: NSManagedObjectContext? = nil) -> [Feed] {
-        return (DataUtility.entities("Feed", matchingPredicate: NSPredicate(value: true), managedObjectContext: (managedObjectContext ?? self.managedObjectContext)) as [Feed]).sorted {
+        return (DataUtility.entities("Feed", matchingPredicate: NSPredicate(value: true), managedObjectContext: (managedObjectContext ?? self.managedObjectContext)) as? [Feed] ?? []).sorted {
             if $0.title == nil {
                 return true
             } else if $1.title == nil {
                 return false
             }
             return $0.title < $1.title
-        }
+        } ?? []
     }
 
     func feedsMatchingTag(tag: String?, managedObjectContext: NSManagedObjectContext? = nil, allowIncompleteTags: Bool = true) -> [Feed] {
@@ -162,7 +162,7 @@ class DataManager: NSObject {
     func newFeed(feedURL: String, completion: (NSError?) -> (Void)) -> Feed {
         let predicate = NSPredicate(format: "url = %@", feedURL)
         var feed: Feed! = nil
-        if let theFeed = DataUtility.entities("Feed", matchingPredicate: predicate!, managedObjectContext: self.managedObjectContext).last as? Feed {
+        if let theFeed = DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: self.managedObjectContext).last as? Feed {
             feed = theFeed
         } else {
             feed = newFeed()
@@ -181,7 +181,7 @@ class DataManager: NSObject {
     func newQueryFeed(title: String, code: String, summary: String? = nil) -> Feed {
         let predicate = NSPredicate(format: "title = %@", title)
         var feed: Feed! = nil
-        if let theFeed = DataUtility.entities("Feed", matchingPredicate: predicate!, managedObjectContext: self.managedObjectContext).last as? Feed {
+        if let theFeed = DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: self.managedObjectContext).last as? Feed {
             feed = theFeed
         } else {
             feed = newFeed()
@@ -199,7 +199,7 @@ class DataManager: NSObject {
     }
 
     func deleteFeed(feed: Feed) {
-        for article in (feed.articles.allObjects as [Article]) {
+        for article in feed.allArticles() {
             self.managedObjectContext.deleteObject(article)
         }
         self.managedObjectContext.deleteObject(feed)
@@ -271,7 +271,7 @@ class DataManager: NSObject {
     let mainManager = Alamofire.Manager(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
     let backgroundManager = Alamofire.Manager(configuration: NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier("com.rachelbrindle.rNews.background"))
 
-    func updateFeeds(feeds: [Feed], completion: (NSError?)->(Void), backgroundFetch: Bool = false) {
+    func updateFeeds(feeds: [Feed], backgroundFetch: Bool = false, completion: (NSError?)->(Void) = {_ in }) {
         let feedIds = feeds.filter { $0.url != nil }.map { $0.objectID }
 
         if feedIds.count == 0 {
@@ -282,7 +282,7 @@ class DataManager: NSObject {
         let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
         dispatch_async(queue) {
             let ctx = self.backgroundObjectContext
-            let theFeeds = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self in %@", feedIds)!, managedObjectContext: ctx) as [Feed]
+            let theFeeds = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self in %@", feedIds), managedObjectContext: ctx) as? [Feed] ?? []
             var feedsLeft = theFeeds.count
 
             self.stats = []
@@ -396,7 +396,7 @@ class DataManager: NSObject {
     // MARK: Enclosures
 
     func allEnclosures() -> [Enclosure] {
-        return (DataUtility.entities("Enclosure", matchingPredicate: NSPredicate(value: true), managedObjectContext: self.managedObjectContext) as [Enclosure]).sorted {(a : Enclosure, b: Enclosure) in
+        return (DataUtility.entities("Enclosure", matchingPredicate: NSPredicate(value: true), managedObjectContext: self.managedObjectContext) as? [Enclosure] ?? []).sorted {(a : Enclosure, b: Enclosure) in
             if let da = a.url, let db = b.url {
                 return da.lastPathComponent < db.lastPathComponent
             }
@@ -405,7 +405,7 @@ class DataManager: NSObject {
     }
 
     func allEnlosures(downloaded: Bool) -> [Enclosure] {
-        return (DataUtility.entities("Enclosure", matchingPredicate: NSPredicate(format: "downloaded = %d", downloaded)!, managedObjectContext: self.managedObjectContext) as [Enclosure]).sorted {(a : Enclosure, b: Enclosure) in
+        return (DataUtility.entities("Enclosure", matchingPredicate: NSPredicate(format: "downloaded = %d", downloaded), managedObjectContext: self.managedObjectContext) as? [Enclosure] ?? []).sorted {(a : Enclosure, b: Enclosure) in
             if let da = a.url, let db = b.url {
                 return da.lastPathComponent < db.lastPathComponent
             }
@@ -445,8 +445,10 @@ class DataManager: NSObject {
             mainManager.request(.GET, enclosure.url).response {(_, _, response, error) in
                 if let err = error {
                     completion(enclosure, err)
+                } else if let response = response as? NSData {
+                    enclosure.data = response
+                    completion(enclosure, nil)
                 } else {
-                    enclosure.data = response as NSData
                     completion(enclosure, nil)
                 }
                 self.enclosureProgress.removeValueForKey(enclosure.objectID)
@@ -468,7 +470,7 @@ class DataManager: NSObject {
             if article.updatedAt != item.updated {
                 DataUtility.updateArticle(article, item: item)
 
-                if let itemEnclosures = (item.enclosures?.count == 0 ? nil : item.enclosures) as [[String: AnyObject]]? {
+                if let itemEnclosures = (item.enclosures?.count == 0 ? nil : item.enclosures) as? [[String: AnyObject]] {
                     for enc in itemEnclosures {
                         DataUtility.insertEnclosureFromItem(enc, article: article)
                     }
@@ -477,10 +479,10 @@ class DataManager: NSObject {
             return article
         } else {
             // create
-            let article = (NSEntityDescription.insertNewObjectForEntityForName("Article", inManagedObjectContext: ctx) as Article)
+            let article = NSEntityDescription.insertNewObjectForEntityForName("Article", inManagedObjectContext: ctx) as! Article
             DataUtility.updateArticle(article, item: item)
 
-            if let enclosures = (item.enclosures?.count == 0 ? nil : item.enclosures) as [[String: AnyObject]]? {
+            if let enclosures = (item.enclosures?.count == 0 ? nil : item.enclosures) as? [[String: AnyObject]] {
                 for enclosure in enclosures as [[String: AnyObject]] {
                     DataUtility.insertEnclosureFromItem(enclosure, article: article)
                 }
@@ -510,7 +512,7 @@ class DataManager: NSObject {
     private var theArticles : [Article]? = nil
 
     private func refreshArticles() {
-        theArticles = (DataUtility.entities("Article", matchingPredicate: NSPredicate(value: true), managedObjectContext: self.managedObjectContext) as [Article]).sorted {(a : Article, b: Article) in
+        theArticles = (DataUtility.entities("Article", matchingPredicate: NSPredicate(value: true), managedObjectContext: self.managedObjectContext) as? [Article] ?? []).sorted {(a : Article, b: Article) in
             if let da = a.updatedAt ?? a.published, let db = b.updatedAt ?? b.published {
                 return da.timeIntervalSince1970 > db.timeIntervalSince1970
             }
@@ -598,24 +600,24 @@ class DataManager: NSObject {
         let data = ctx.objectForKeyedSubscript("data")
 
         var articles : @objc_block (Void) -> [NSDictionary] = {
-            return (DataUtility.entities("Article", matchingPredicate: NSPredicate(value: true), managedObjectContext: moc) as [Article]).map {return $0.asDict()}
+            return (DataUtility.entities("Article", matchingPredicate: NSPredicate(value: true), managedObjectContext: moc) as? [Article] ?? []).map {return $0.asDict()}
         }
         data.setObject(unsafeBitCast(articles, AnyObject.self), forKeyedSubscript: "articles")
 
         var queryArticles : @objc_block (NSString, [NSObject]) -> [NSDictionary] = {(query, args) in
             let predicate = NSPredicate(format: query as String, argumentArray: args)
-            return (DataUtility.entities("Article", matchingPredicate: predicate, managedObjectContext: moc) as [Article]).map {$0.asDict()}
+            return (DataUtility.entities("Article", matchingPredicate: predicate, managedObjectContext: moc) as? [Article] ?? []).map {$0.asDict()}
         }
         data.setObject(unsafeBitCast(queryArticles, AnyObject.self), forKeyedSubscript: "articlesMatchingQuery")
 
         var feeds : @objc_block (Void) -> [NSDictionary] = {
-            return (DataUtility.entities("Feed", matchingPredicate: NSPredicate(value: true), managedObjectContext: moc) as [Feed]).map {return $0.asDict()}
+            return (DataUtility.entities("Feed", matchingPredicate: NSPredicate(value: true), managedObjectContext: moc) as? [Feed] ?? []).map {return $0.asDict()}
         }
         data.setObject(unsafeBitCast(feeds, AnyObject.self), forKeyedSubscript: "feeds")
 
         var queryFeeds : @objc_block (NSString, [NSObject]) -> [NSDictionary] = {(query, args) in // queries for feeds, not to be confused with query feeds.
             let predicate = NSPredicate(format: query as String, argumentArray: args)
-            return (DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: moc) as [Feed]).map {$0.asDict()}
+            return (DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: moc) as? [Feed] ?? []).map {$0.asDict()}
         }
         data.setObject(unsafeBitCast(queryFeeds, AnyObject.self), forKeyedSubscript: "feedsMatchingQuery")
 
@@ -651,11 +653,11 @@ class DataManager: NSObject {
     }
 
     func updateBackgroundThreads(feeds: [NSManagedObjectID]) {
-        let articles = DataUtility.entities("Article", matchingPredicate: NSPredicate(value: true), managedObjectContext: backgroundObjectContext) as [Article]
+        let articles = DataUtility.entities("Article", matchingPredicate: NSPredicate(value: true), managedObjectContext: backgroundObjectContext) as? [Article] ?? []
         var articleIDs : [NSManagedObjectID: [NSManagedObjectID]] = [:]
         for feed in feeds {
-            let theFeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self == %@", feed)!, managedObjectContext: backgroundObjectContext).last! as Feed
-            if let query = theFeed.query {
+            let theFeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self == %@", feed), managedObjectContext: backgroundObjectContext).last as? Feed
+            if let query = theFeed?.query {
                 let res = articlesFromQuery(query, articles: articles, context: self.backgroundContext)
                 articleIDs[feed] = res.map { return $0.objectID }
             }
@@ -663,8 +665,8 @@ class DataManager: NSObject {
         dispatch_async(dispatch_get_main_queue()) {
             var queryFeedResults : [Feed: [Article]] = [:]
             for (key, value) in articleIDs {
-                let theFeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self == %@", (key as NSManagedObjectID))!, managedObjectContext: self.managedObjectContext).last! as Feed
-                let articles = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self IN %@", value)!, managedObjectContext: self.managedObjectContext) as [Article]
+                let theFeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self == %@", (key as NSManagedObjectID)), managedObjectContext: self.managedObjectContext).last as! Feed
+                let articles = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self IN %@", value), managedObjectContext: self.managedObjectContext) as? [Article] ?? []
                 queryFeedResults[theFeed] = articles
             }
             self.queryFeedResults = queryFeedResults
@@ -698,12 +700,12 @@ class DataManager: NSObject {
         if unitTesting {
             persistentStoreCoordinator.addPersistentStoreWithType(NSInMemoryStoreType, configuration: nil, URL: nil, options: nil, error: &error)
         } else {
-            persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: managedObjectModel.configurations.last as NSString?, URL: storeURL, options: options, error: &error)
+            persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: managedObjectModel.configurations.last as? String, URL: storeURL, options: options, error: &error)
         }
         if (error != nil) {
             NSFileManager.defaultManager().removeItemAtURL(storeURL!, error: nil)
             error = nil
-            persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: managedObjectModel.configurations.last as NSString?, URL: storeURL, options: options, error: &error)
+            persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: managedObjectModel.configurations.last as? String, URL: storeURL, options: options, error: &error)
             if (error != nil) {
                 println("Fatal error adding persistent data store: \(error!)")
                 fatalError("")

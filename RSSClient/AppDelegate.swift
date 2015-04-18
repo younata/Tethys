@@ -55,7 +55,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         
         splitView.viewControllers = [master, detail]
         splitView.delegate = splitDelegate
-        self.window.rootViewController = splitView
+        self.window?.rootViewController = splitView
         
         notificationHandler.enableNotifications(application)
         
@@ -69,15 +69,19 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     public func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
-        notificationHandler.handleLocalNotification(notification, window: self.window)
+        if let window = self.window {
+            notificationHandler.handleLocalNotification(notification, window: window)
+        }
     }
     
     public func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
-        notificationHandler.handleAction(identifier, notification: notification, window: self.window, completionHandler: completionHandler)
+        if let window = self.window {
+            notificationHandler.handleAction(identifier, notification: notification, window: window, completionHandler: completionHandler)
+        }
     }
     
     public func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        let originalList: [NSManagedObjectID] = (dataManager.feeds().reduce([], combine: {return $0 + ($1.articles.allObjects as [Article])}) as [Article]).map { return $0.objectID }
+        let originalList: [NSManagedObjectID] = (dataManager.feeds().reduce([], combine: {return $0 + ($1.allArticles())}) as [Article]).map { $0.objectID }
         if originalList.count == 0 {
             completionHandler(.Failed)
             return
@@ -87,7 +91,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 completionHandler(.Failed)
                 return
             }
-            let al : [NSManagedObjectID] = (self.dataManager.feeds().reduce([], combine: {return $0 + ($1.articles.allObjects as [Article])}) as [Article]).map { return $0.objectID }
+            let al : [NSManagedObjectID] = (self.dataManager.feeds().reduce([], combine: {return $0 + ($1.allArticles())}) as [Article]).map { return $0.objectID }
             if (al.count == originalList.count) {
                 completionHandler(.NoData)
                 return
@@ -98,7 +102,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             
             let settings = application.currentUserNotificationSettings()
             if settings.types & UIUserNotificationType.Alert == .Alert {
-                let articles : [Article] = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self IN %@", alist)!, managedObjectContext: self.dataManager.managedObjectContext) as [Article]
+                let articles : [Article] = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self IN %@", alist), managedObjectContext: self.dataManager.managedObjectContext) as? [Article] ?? []
                 for article: Article in articles {
                     self.notificationHandler.sendLocalNotification(application, article: article)
                 }
@@ -124,7 +128,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 let feedTitle = userInfo["feed"] as! String
                 let feed : Feed = dataManager.feeds().filter{ return $0.title == feedTitle; }.first!
                 let articleID = userInfo["article"] as! NSURL
-                let article : Article = (feed.articles.allObjects as [Article]).filter({ return $0.objectID.URIRepresentation() == articleID }).first!
+                let article : Article = feed.allArticles().filter({ return $0.objectID.URIRepresentation() == articleID }).first!
                 let al = ftvc.showFeeds([feed], animated: false)
                 var controllers : [AnyObject] = []
                 controllers = [al.showArticle(article)]

@@ -119,13 +119,6 @@ extension Article {
         return []
     }
     
-    func allEnclosures() -> [Enclosure] {
-        if let enclosures = self.enclosures as? Set<Enclosure> {
-            return Array<Enclosure>(enclosures)
-        }
-        return []
-    }
-    
     func asDict() -> [String: AnyObject] {
         var ret = asDictNoFeed()
         if feed != nil {

@@ -161,9 +161,12 @@ info.imageURL = nil
                     DataUtility.insertEnclosureFromItem(enclosure, article: article)
 
                     expect(article.enclosures.count).to(equal(1))
-                    let enclosure = article.allEnclosures().first! as NSManagedObject
-                    expect(enclosure.valueForKey("url") as? String).to(equal("http://example.com/enclosure.txt"))
-                    expect(enclosure.valueForKey("kind") as? String).to(equal("text/text"))
+                    if let enclosure = article.enclosures.first as? NSManagedObject {
+                        expect(enclosure.valueForKey("url") as? String).to(equal("http://example.com/enclosure.txt"))
+                        expect(enclosure.valueForKey("kind") as? String).to(equal("text/text"))
+                    } else {
+                        expect(false).to(beTruthy())
+                    }
                 }
             }
         }

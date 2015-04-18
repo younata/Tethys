@@ -54,22 +54,19 @@ class DataUtility {
     class func insertEnclosureFromItem(item: [String: AnyObject], article: Article) {
         let url = item["url"] as? String
         var found = false
-        for enclosure in article.allEnclosures() {
-            if enclosure.url == url {
-                found = true
-                break
+        for enclosure in article.enclosures {
+            if (enclosure.valueForKey("url") as? NSObject) == url {
+                return
             }
         }
-        if !found {
-            let type = item["type"] as? String
+        let type = item["type"] as? String
 
-            let entityDescription = NSEntityDescription.entityForName("Enclosure", inManagedObjectContext: article.managedObjectContext!)!
-            let enclosure = Enclosure(entity: entityDescription, insertIntoManagedObjectContext: article.managedObjectContext!)
-            enclosure.url = url
-            enclosure.kind = type
-            enclosure.article = article
-            article.addEnclosuresObject(enclosure)
-        }
+        let entityDescription = NSEntityDescription.entityForName("Enclosure", inManagedObjectContext: article.managedObjectContext!)!
+        let enclosure = Enclosure(entity: entityDescription, insertIntoManagedObjectContext: article.managedObjectContext!)
+        enclosure.url = url
+        enclosure.kind = type
+        enclosure.article = article
+        article.addEnclosuresObject(enclosure)
     }
 
     class func entities(entity: String, matchingPredicate predicate: NSPredicate, managedObjectContext: NSManagedObjectContext, sortDescriptors: [NSSortDescriptor] = []) -> [AnyObject] {

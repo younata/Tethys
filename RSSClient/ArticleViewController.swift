@@ -22,10 +22,6 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 
                 showArticle(a, onWebView: content)
                 
-                let enclosures = a.allEnclosures()
-                if enclosures.count > 0 {
-                }
-                
                 self.navigationItem.title = a.title ?? ""
                 
                 if userActivity == nil {
@@ -102,7 +98,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                         self.toolbarItems = [spacer(), shareButton!, spacer()]
                     }
                     if let ec = showEnclosuresButton {
-                        if a.allEnclosures().count > 0 {
+                        if a.enclosures.count > 0 {
                             self.toolbarItems! += [ec, spacer()]
                         }
                     }
@@ -120,7 +116,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             webView.loadHTMLString(articleCSS + title + cnt + "</body></html>", baseURL: NSURL(string: article.feed.url)!)
             if let sb = shareButton {
                 self.toolbarItems = [spacer(), sb, spacer(), toggleContentButton!, spacer()]
-                if let ec = showEnclosuresButton where article.allEnclosures().count > 0 {
+                if let ec = showEnclosuresButton where article.enclosures.count > 0 {
                     self.toolbarItems! += [ec, spacer()]
                 }
             }
@@ -128,7 +124,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             webView.loadRequest(NSURLRequest(URL: NSURL(string: article.link)!))
             if let sb = shareButton {
                 self.toolbarItems = [spacer(), sb, spacer()]
-                if let ec = showEnclosuresButton where article.allEnclosures().count > 0 {
+                if let ec = showEnclosuresButton where article.enclosures.count > 0 {
                     self.toolbarItems! += [ec, spacer()]
                 }
             }
@@ -182,7 +178,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             } else {
                 self.toolbarItems = [spacer(), shareButton!, spacer()]
             }
-            if a.allEnclosures().count > 0 && showEnclosuresButton != nil {
+            if a.enclosures.count > 0 && showEnclosuresButton != nil {
                 self.toolbarItems! += [showEnclosuresButton!, spacer()]
             }
         }
@@ -394,10 +390,10 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     }
     
     func showEnclosures() {
-        if let enclosures = article?.allEnclosures() {
+        if let enclosures = article?.enclosures as? Set<Enclosure> {
             let activity = EnclosuresViewController()
             activity.dataManager = dataManager
-            activity.enclosures = article?.allEnclosures()
+            activity.enclosures = Array<Enclosure>(enclosures)
             
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                 let popover = UIPopoverController(contentViewController: UINavigationController(rootViewController: activity))

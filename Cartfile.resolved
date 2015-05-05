@@ -1,4 +1,5 @@
-github "younata/Ra" "v0.3.0"
-github "alamofire/alamofire" "1.2.0"
+github "younata/Muon" "v0.1.1"
+github "younata/Ra" "v0.3.1"
+github "alamofire/alamofire" "1.2.1"
 github "quick/nimble" "v0.4.2"
 github "quick/quick" "v0.3.1"

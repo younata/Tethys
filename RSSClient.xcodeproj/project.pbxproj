@@ -17,29 +17,13 @@
 		8933E90D19ECCBC300ECFF3F /* ALView+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90519ECCBC300ECFF3F /* ALView+PureLayout.m */; };
 		8933E90E19ECCBC300ECFF3F /* NSArray+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90719ECCBC300ECFF3F /* NSArray+PureLayout.m */; };
 		8933E90F19ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90919ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m */; };
-		8933E91819ECCD5E00ECFF3F /* MWFeedParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91319ECCD5E00ECFF3F /* MWFeedParser.m */; };
-		8933E91919ECCD5E00ECFF3F /* MWFeedInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91519ECCD5E00ECFF3F /* MWFeedInfo.m */; };
-		8933E91A19ECCD5E00ECFF3F /* MWFeedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91719ECCD5E00ECFF3F /* MWFeedItem.m */; };
-		8933E92C19ECD28900ECFF3F /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92519ECD28900ECFF3F /* GTMNSString+HTML.m */; };
-		8933E92D19ECD28900ECFF3F /* NSDate+InternetDateTime.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92719ECD28900ECFF3F /* NSDate+InternetDateTime.m */; };
-		8933E92E19ECD28900ECFF3F /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92919ECD28900ECFF3F /* NSString+HTML.m */; };
-		8933E92F19ECD28900ECFF3F /* NSString+XMLEntities.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92B19ECD28900ECFF3F /* NSString+XMLEntities.m */; };
 		8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */; };
-		893448B71A004E4E00F5D528 /* MWFeedParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91319ECCD5E00ECFF3F /* MWFeedParser.m */; };
-		893448B81A004E4E00F5D528 /* MWFeedInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91519ECCD5E00ECFF3F /* MWFeedInfo.m */; };
-		893448B91A004E4E00F5D528 /* MWFeedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91719ECCD5E00ECFF3F /* MWFeedItem.m */; };
-		893448BA1A004E4E00F5D528 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92519ECD28900ECFF3F /* GTMNSString+HTML.m */; };
-		893448BB1A004E4E00F5D528 /* NSDate+InternetDateTime.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92719ECD28900ECFF3F /* NSDate+InternetDateTime.m */; };
-		893448BC1A004E4E00F5D528 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92919ECD28900ECFF3F /* NSString+HTML.m */; };
-		893448BD1A004E4E00F5D528 /* NSString+XMLEntities.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92B19ECD28900ECFF3F /* NSString+XMLEntities.m */; };
 		893448BF1A004E5C00F5D528 /* ALView+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90519ECCBC300ECFF3F /* ALView+PureLayout.m */; };
 		893448C01A004E5C00F5D528 /* NSArray+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90719ECCBC300ECFF3F /* NSArray+PureLayout.m */; };
 		893448C11A004E5C00F5D528 /* NSLayoutConstraint+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90919ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m */; };
 		893448C21A004E6400F5D528 /* UIColor+RSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */; };
 		894896EC1A16F1130030EB6E /* LocalImportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896EB1A16F1130030EB6E /* LocalImportViewController.swift */; };
 		894896ED1A16F1130030EB6E /* LocalImportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896EB1A16F1130030EB6E /* LocalImportViewController.swift */; };
-		894896F11A16F7B20030EB6E /* FeedParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896F01A16F7B20030EB6E /* FeedParser.swift */; };
-		894896F21A16F7B20030EB6E /* FeedParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896F01A16F7B20030EB6E /* FeedParser.swift */; };
 		894C0C371A1329FB008229A4 /* AMPopTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 894C0C361A1329FB008229A4 /* AMPopTip.m */; };
 		895779A019E62CC500548418 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307819D730E9009924DA /* AppDelegate.swift */; };
 		895779A119E62CC500548418 /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830CC19DC67B9009924DA /* UnreadCounter.swift */; };
@@ -76,13 +60,6 @@
 		89635FAD1A13C41C0052C248 /* RSSClient.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307A19D730E9009924DA /* RSSClient.xcdatamodeld */; };
 		89635FAE1A13C4210052C248 /* Article.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C219D89E46009924DA /* Article.m */; };
 		89635FAF1A13C4210052C248 /* Feed.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C519D8A058009924DA /* Feed.m */; };
-		89635FB41A13C48D0052C248 /* MWFeedParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91319ECCD5E00ECFF3F /* MWFeedParser.m */; };
-		89635FB51A13C48D0052C248 /* MWFeedInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91519ECCD5E00ECFF3F /* MWFeedInfo.m */; };
-		89635FB61A13C48D0052C248 /* MWFeedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E91719ECCD5E00ECFF3F /* MWFeedItem.m */; };
-		89635FB71A13C48D0052C248 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92519ECD28900ECFF3F /* GTMNSString+HTML.m */; };
-		89635FB81A13C48D0052C248 /* NSDate+InternetDateTime.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92719ECD28900ECFF3F /* NSDate+InternetDateTime.m */; };
-		89635FB91A13C48D0052C248 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92919ECD28900ECFF3F /* NSString+HTML.m */; };
-		89635FBA1A13C48D0052C248 /* NSString+XMLEntities.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E92B19ECD28900ECFF3F /* NSString+XMLEntities.m */; };
 		89635FC21A13C49A0052C248 /* ALView+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90519ECCBC300ECFF3F /* ALView+PureLayout.m */; };
 		89635FC31A13C49A0052C248 /* NSArray+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90719ECCBC300ECFF3F /* NSArray+PureLayout.m */; };
 		89635FC41A13C49A0052C248 /* NSLayoutConstraint+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90919ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m */; };
@@ -127,8 +104,9 @@
 		8980475A1A20478600EB29F0 /* safari~iPad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 898047421A20478600EB29F0 /* safari~iPad@2x.png */; };
 		8980475D1A20478600EB29F0 /* TUSafariActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 898047441A20478600EB29F0 /* TUSafariActivity.m */; };
 		8980475E1A20478600EB29F0 /* TUSafariActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 898047441A20478600EB29F0 /* TUSafariActivity.m */; };
-		898047611A2048F200EB29F0 /* FeedParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896F01A16F7B20030EB6E /* FeedParser.swift */; };
 		898047641A206CB100EB29F0 /* FeedsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898047631A206CB100EB29F0 /* FeedsList.swift */; };
+		898131681AF880400090FA7F /* Muon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; };
+		898131691AF880A70090FA7F /* Muon.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		899C47EC1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */; };
 		899C47ED1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */; };
 		899C47FB1A9A864700F57B96 /* DataManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */; };
@@ -174,7 +152,6 @@
 		89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2D1A6613100050685B /* ValidatorView.swift */; };
 		89DA7D2F1A681B880050685B /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2B1A66111E0050685B /* TextFieldCell.swift */; };
 		89DA7D301A68C04C0050685B /* ValidatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2D1A6613100050685B /* ValidatorView.swift */; };
-		89DBDA8D1A9EBACD00959AC7 /* FeedParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DBDA8C1A9EBACD00959AC7 /* FeedParserSpec.swift */; };
 		89DBDA9A1A9EBB0C00959AC7 /* feed.rss in Resources */ = {isa = PBXBuildFile; fileRef = 89DBDA991A9EBB0C00959AC7 /* feed.rss */; };
 		89DBDA9C1A9FBCB200959AC7 /* feed2.rss in Resources */ = {isa = PBXBuildFile; fileRef = 89DBDA9B1A9FBC4100959AC7 /* feed2.rss */; };
 		89EF4FD61A9682170052A82F /* OPMLParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EF4FD51A9682170052A82F /* OPMLParserSpec.swift */; };
@@ -202,6 +179,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				898131691AF880A70090FA7F /* Muon.framework in Copy Frameworks */,
 				89718F2C1AE0C9A1004C3CB4 /* Alamofire.framework in Copy Frameworks */,
 				89718F2D1AE0C9A1004C3CB4 /* Ra.framework in Copy Frameworks */,
 			);
@@ -249,25 +227,9 @@
 		8933E90A19ECCBC300ECFF3F /* PureLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PureLayout.h; path = PureLayout/Source/PureLayout.h; sourceTree = "<group>"; };
 		8933E90B19ECCBC300ECFF3F /* PureLayout+Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PureLayout+Internal.h"; path = "PureLayout/Source/PureLayout+Internal.h"; sourceTree = "<group>"; };
 		8933E90C19ECCBC300ECFF3F /* PureLayoutDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PureLayoutDefines.h; path = PureLayout/Source/PureLayoutDefines.h; sourceTree = "<group>"; };
-		8933E91119ECCD5E00ECFF3F /* MWFeedParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MWFeedParser.h; path = MWFeedParser/Classes/MWFeedParser.h; sourceTree = "<group>"; };
-		8933E91219ECCD5E00ECFF3F /* MWFeedParser_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MWFeedParser_Private.h; path = MWFeedParser/Classes/MWFeedParser_Private.h; sourceTree = "<group>"; };
-		8933E91319ECCD5E00ECFF3F /* MWFeedParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MWFeedParser.m; path = MWFeedParser/Classes/MWFeedParser.m; sourceTree = "<group>"; };
-		8933E91419ECCD5E00ECFF3F /* MWFeedInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MWFeedInfo.h; path = MWFeedParser/Classes/MWFeedInfo.h; sourceTree = "<group>"; };
-		8933E91519ECCD5E00ECFF3F /* MWFeedInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MWFeedInfo.m; path = MWFeedParser/Classes/MWFeedInfo.m; sourceTree = "<group>"; };
-		8933E91619ECCD5E00ECFF3F /* MWFeedItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MWFeedItem.h; path = MWFeedParser/Classes/MWFeedItem.h; sourceTree = "<group>"; };
-		8933E91719ECCD5E00ECFF3F /* MWFeedItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MWFeedItem.m; path = MWFeedParser/Classes/MWFeedItem.m; sourceTree = "<group>"; };
-		8933E92419ECD28900ECFF3F /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "GTMNSString+HTML.h"; path = "MWFeedParser/Classes/GTMNSString+HTML.h"; sourceTree = "<group>"; };
-		8933E92519ECD28900ECFF3F /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "GTMNSString+HTML.m"; path = "MWFeedParser/Classes/GTMNSString+HTML.m"; sourceTree = "<group>"; };
-		8933E92619ECD28900ECFF3F /* NSDate+InternetDateTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDate+InternetDateTime.h"; path = "MWFeedParser/Classes/NSDate+InternetDateTime.h"; sourceTree = "<group>"; };
-		8933E92719ECD28900ECFF3F /* NSDate+InternetDateTime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDate+InternetDateTime.m"; path = "MWFeedParser/Classes/NSDate+InternetDateTime.m"; sourceTree = "<group>"; };
-		8933E92819ECD28900ECFF3F /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+HTML.h"; path = "MWFeedParser/Classes/NSString+HTML.h"; sourceTree = "<group>"; };
-		8933E92919ECD28900ECFF3F /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+HTML.m"; path = "MWFeedParser/Classes/NSString+HTML.m"; sourceTree = "<group>"; };
-		8933E92A19ECD28900ECFF3F /* NSString+XMLEntities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+XMLEntities.h"; path = "MWFeedParser/Classes/NSString+XMLEntities.h"; sourceTree = "<group>"; };
-		8933E92B19ECD28900ECFF3F /* NSString+XMLEntities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+XMLEntities.m"; path = "MWFeedParser/Classes/NSString+XMLEntities.m"; sourceTree = "<group>"; };
 		8933E93219EE33F700ECFF3F /* UIColor+RSSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+RSSClient.h"; sourceTree = "<group>"; };
 		8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+RSSClient.m"; sourceTree = "<group>"; };
 		894896EB1A16F1130030EB6E /* LocalImportViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalImportViewController.swift; sourceTree = "<group>"; };
-		894896F01A16F7B20030EB6E /* FeedParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedParser.swift; sourceTree = "<group>"; };
 		894C0C351A1329FB008229A4 /* AMPopTip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMPopTip.h; sourceTree = "<group>"; };
 		894C0C361A1329FB008229A4 /* AMPopTip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMPopTip.m; sourceTree = "<group>"; };
 		8957799D19E62C7100548418 /* RSSClientTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSSClientTests-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -314,6 +276,7 @@
 		898047431A20478600EB29F0 /* TUSafariActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TUSafariActivity.h; path = Vendor/TUSafariActivity/Classes/TUSafariActivity.h; sourceTree = "<group>"; };
 		898047441A20478600EB29F0 /* TUSafariActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TUSafariActivity.m; path = Vendor/TUSafariActivity/Classes/TUSafariActivity.m; sourceTree = "<group>"; };
 		898047631A206CB100EB29F0 /* FeedsList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FeedsList.swift; path = "RSSClient-OSX/FeedsList.swift"; sourceTree = SOURCE_ROOT; };
+		898131671AF880400090FA7F /* Muon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Muon.framework; path = ../Carthage/Build/iOS/Muon.framework; sourceTree = "<group>"; };
 		899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BreakOutToRefreshView.swift; path = Vendor/BreakOutToRefreshView.swift; sourceTree = "<group>"; };
 		899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManagerSpec.swift; sourceTree = "<group>"; };
 		899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindFeedViewControllerSpec.swift; sourceTree = "<group>"; };
@@ -357,7 +320,6 @@
 		89D135101A5944A200B6937A /* RSSClient 1.4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.4.xcdatamodel"; sourceTree = "<group>"; };
 		89DA7D2B1A66111E0050685B /* TextFieldCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldCell.swift; sourceTree = "<group>"; };
 		89DA7D2D1A6613100050685B /* ValidatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidatorView.swift; sourceTree = "<group>"; };
-		89DBDA8C1A9EBACD00959AC7 /* FeedParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedParserSpec.swift; sourceTree = "<group>"; };
 		89DBDA991A9EBB0C00959AC7 /* feed.rss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = feed.rss; sourceTree = "<group>"; };
 		89DBDA9B1A9FBC4100959AC7 /* feed2.rss */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = feed2.rss; sourceTree = "<group>"; };
 		89EF4FD51A9682170052A82F /* OPMLParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLParserSpec.swift; sourceTree = "<group>"; };
@@ -381,6 +343,7 @@
 			files = (
 				89718F281AE0C942004C3CB4 /* Alamofire.framework in Frameworks */,
 				89718F2A1AE0C942004C3CB4 /* Ra.framework in Frameworks */,
+				898131681AF880400090FA7F /* Muon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -412,28 +375,6 @@
 				8933E90C19ECCBC300ECFF3F /* PureLayoutDefines.h */,
 			);
 			name = PureLayout;
-			sourceTree = "<group>";
-		};
-		8933E91B19ECCD6500ECFF3F /* MWFeedParser */ = {
-			isa = PBXGroup;
-			children = (
-				8933E91119ECCD5E00ECFF3F /* MWFeedParser.h */,
-				8933E91219ECCD5E00ECFF3F /* MWFeedParser_Private.h */,
-				8933E91319ECCD5E00ECFF3F /* MWFeedParser.m */,
-				8933E91419ECCD5E00ECFF3F /* MWFeedInfo.h */,
-				8933E91519ECCD5E00ECFF3F /* MWFeedInfo.m */,
-				8933E91619ECCD5E00ECFF3F /* MWFeedItem.h */,
-				8933E91719ECCD5E00ECFF3F /* MWFeedItem.m */,
-				8933E92419ECD28900ECFF3F /* GTMNSString+HTML.h */,
-				8933E92519ECD28900ECFF3F /* GTMNSString+HTML.m */,
-				8933E92619ECD28900ECFF3F /* NSDate+InternetDateTime.h */,
-				8933E92719ECD28900ECFF3F /* NSDate+InternetDateTime.m */,
-				8933E92819ECD28900ECFF3F /* NSString+HTML.h */,
-				8933E92919ECD28900ECFF3F /* NSString+HTML.m */,
-				8933E92A19ECD28900ECFF3F /* NSString+XMLEntities.h */,
-				8933E92B19ECD28900ECFF3F /* NSString+XMLEntities.m */,
-			);
-			name = MWFeedParser;
 			sourceTree = "<group>";
 		};
 		8933E93519EE342F00ECFF3F /* Categories */ = {
@@ -633,6 +574,7 @@
 				89C8307619D730E9009924DA /* Supporting Files */,
 				89718F261AE0C942004C3CB4 /* Alamofire.framework */,
 				89718F271AE0C942004C3CB4 /* Ra.framework */,
+				898131671AF880400090FA7F /* Muon.framework */,
 			);
 			path = RSSClient;
 			sourceTree = "<group>";
@@ -719,7 +661,6 @@
 				899C47F91A99B49000F57B96 /* BreakOutToRefresh */,
 				8980473A1A20476900EB29F0 /* TUSafariActivity */,
 				8933E91019ECCBCA00ECFF3F /* PureLayout */,
-				8933E91B19ECCD6500ECFF3F /* MWFeedParser */,
 				894C0C341A1329FB008229A4 /* AMPopTip */,
 				89C7FBDD1A183EBE00ACBDB2 /* DropDownMenu */,
 				89C7FBEA1A18848000ACBDB2 /* RBActivityIndicator */,
@@ -731,7 +672,6 @@
 			isa = PBXGroup;
 			children = (
 				8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */,
-				894896F01A16F7B20030EB6E /* FeedParser.swift */,
 			);
 			name = Parsers;
 			sourceTree = "<group>";
@@ -740,7 +680,6 @@
 			isa = PBXGroup;
 			children = (
 				89EF4FD51A9682170052A82F /* OPMLParserSpec.swift */,
-				89DBDA8C1A9EBACD00959AC7 /* FeedParserSpec.swift */,
 			);
 			name = Parsers;
 			sourceTree = "<group>";
@@ -1007,28 +946,20 @@
 				8967DA081A409433000424F4 /* ArticleListView.swift in Sources */,
 				8967DA061A4092A6000424F4 /* ArticlesList.swift in Sources */,
 				8929D27F1A3F3E9400782A37 /* BackgroundView.swift in Sources */,
-				89635FBA1A13C48D0052C248 /* NSString+XMLEntities.m in Sources */,
 				89635FAE1A13C4210052C248 /* Article.m in Sources */,
 				897F71001A3A57A300ECE1A1 /* NSColor+RSSClient.m in Sources */,
-				898047611A2048F200EB29F0 /* FeedParser.swift in Sources */,
 				89635FC41A13C49A0052C248 /* NSLayoutConstraint+PureLayout.m in Sources */,
 				89635FA81A13C4030052C248 /* OPMLParser.swift in Sources */,
 				898046D51A1C385A00EB29F0 /* MainController.swift in Sources */,
 				897CD85E1A21C49000C97ECC /* FeedView.swift in Sources */,
-				89635FB61A13C48D0052C248 /* MWFeedItem.m in Sources */,
 				89635FC31A13C49A0052C248 /* NSArray+PureLayout.m in Sources */,
 				898047641A206CB100EB29F0 /* FeedsList.swift in Sources */,
-				89635FB51A13C48D0052C248 /* MWFeedInfo.m in Sources */,
-				89635FB81A13C48D0052C248 /* NSDate+InternetDateTime.m in Sources */,
 				897F70FD1A3A4E7700ECE1A1 /* UnreadCounter.swift in Sources */,
 				895782431A3CC0130022F345 /* CircularProgressLayer.swift in Sources */,
-				89635FB91A13C48D0052C248 /* NSString+HTML.m in Sources */,
 				897F70F91A39772C00ECE1A1 /* Data-extensions.swift in Sources */,
-				89635FB71A13C48D0052C248 /* GTMNSString+HTML.m in Sources */,
 				89635FAD1A13C41C0052C248 /* RSSClient.xcdatamodeld in Sources */,
 				89635FAF1A13C4210052C248 /* Feed.m in Sources */,
 				895901A71A30BCB7002E2C62 /* Enclosure.m in Sources */,
-				89635FB41A13C48D0052C248 /* MWFeedParser.m in Sources */,
 				89635FC21A13C49A0052C248 /* ALView+PureLayout.m in Sources */,
 				89635F8E1A13C2E30052C248 /* AppDelegate.swift in Sources */,
 			);
@@ -1042,11 +973,7 @@
 				8963F42E1A26674500B447D6 /* Data-extensions.swift in Sources */,
 				8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */,
 				89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */,
-				8933E91A19ECCD5E00ECFF3F /* MWFeedItem.m in Sources */,
-				8933E92E19ECD28900ECFF3F /* NSString+HTML.m in Sources */,
 				894896EC1A16F1130030EB6E /* LocalImportViewController.swift in Sources */,
-				8933E91919ECCD5E00ECFF3F /* MWFeedInfo.m in Sources */,
-				8933E91819ECCD5E00ECFF3F /* MWFeedParser.m in Sources */,
 				89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */,
 				8933E90F19ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m in Sources */,
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
@@ -1071,22 +998,18 @@
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
 				8924D8F21A0E8EEA003B7529 /* OPMLParser.swift in Sources */,
-				8933E92F19ECD28900ECFF3F /* NSString+XMLEntities.m in Sources */,
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
 				89DA7D2C1A66111E0050685B /* TextFieldCell.swift in Sources */,
-				894896F11A16F7B20030EB6E /* FeedParser.swift in Sources */,
 				89D06A2119FF210C003909A3 /* LoadingView.swift in Sources */,
 				89C204BD1A73F72800C792D2 /* SplitDelegate.swift in Sources */,
 				89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */,
 				89C509FA1A2F865F00CBD000 /* QueryFeedViewController.swift in Sources */,
 				899C47EC1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */,
-				8933E92D19ECD28900ECFF3F /* NSDate+InternetDateTime.m in Sources */,
 				8933E90D19ECCBC300ECFF3F /* ALView+PureLayout.m in Sources */,
 				89C509F41A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */,
 				89C8307C19D730E9009924DA /* RSSClient.xcdatamodeld in Sources */,
 				8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */,
 				89C7FBE81A18847A00ACBDB2 /* RBActivityIndicator.m in Sources */,
-				8933E92C19ECD28900ECFF3F /* GTMNSString+HTML.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1096,9 +1019,7 @@
 			files = (
 				895901AD1A30C6B7002E2C62 /* EnclosureCell.swift in Sources */,
 				895779AD19E62CDA00548418 /* Feed.m in Sources */,
-				89DBDA8D1A9EBACD00959AC7 /* FeedParserSpec.swift in Sources */,
 				89DA7D2F1A681B880050685B /* TextFieldCell.swift in Sources */,
-				893448B81A004E4E00F5D528 /* MWFeedInfo.m in Sources */,
 				899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */,
 				89C204C21A73FEDA00C792D2 /* SplitDelegateSpec.swift in Sources */,
 				895901AA1A30C5D1002E2C62 /* EnclosuresView.swift in Sources */,
@@ -1108,7 +1029,6 @@
 				8980475E1A20478600EB29F0 /* TUSafariActivity.m in Sources */,
 				89C7FBE91A18847A00ACBDB2 /* RBActivityIndicator.m in Sources */,
 				89EF4FD61A9682170052A82F /* OPMLParserSpec.swift in Sources */,
-				893448B91A004E4E00F5D528 /* MWFeedItem.m in Sources */,
 				89C509F11A2EB18300CBD000 /* FeedViewController.swift in Sources */,
 				AE4355FE1A7AB7D900A961B9 /* SpecHelper.swift in Sources */,
 				895779A819E62CC500548418 /* ArticleCell.swift in Sources */,
@@ -1123,14 +1043,9 @@
 				899C47ED1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */,
 				89635F841A13BF120052C248 /* AMPopTip.m in Sources */,
 				893448C21A004E6400F5D528 /* UIColor+RSSClient.m in Sources */,
-				893448BB1A004E4E00F5D528 /* NSDate+InternetDateTime.m in Sources */,
-				894896F21A16F7B20030EB6E /* FeedParser.swift in Sources */,
-				893448BA1A004E4E00F5D528 /* GTMNSString+HTML.m in Sources */,
 				890E47671AA19F7F007F217C /* DataUtilitySpec.swift in Sources */,
 				8924D8F31A108299003B7529 /* OPMLParser.swift in Sources */,
 				89C509FB1A2F865F00CBD000 /* QueryFeedViewController.swift in Sources */,
-				893448BD1A004E4E00F5D528 /* NSString+XMLEntities.m in Sources */,
-				893448B71A004E4E00F5D528 /* MWFeedParser.m in Sources */,
 				895779A719E62CC500548418 /* ArticleListController.swift in Sources */,
 				89C204C51A7400D100C792D2 /* NotificationHandler.swift in Sources */,
 				893448C11A004E5C00F5D528 /* NSLayoutConstraint+PureLayout.m in Sources */,
@@ -1144,7 +1059,6 @@
 				895779A419E62CC500548418 /* FindFeedViewController.swift in Sources */,
 				89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */,
 				895779AC19E62CDA00548418 /* Article.m in Sources */,
-				893448BC1A004E4E00F5D528 /* NSString+HTML.m in Sources */,
 				89C7FBE11A183EBE00ACBDB2 /* MAKDropDownMenu.m in Sources */,
 				895901A61A30BCB7002E2C62 /* Enclosure.m in Sources */,
 				89DA7D301A68C04C0050685B /* ValidatorView.swift in Sources */,
@@ -1332,7 +1246,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = "$(inherited)/**";
 				INFOPLIST_FILE = RSSClient/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = rNews;
@@ -1359,7 +1273,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = "$(inherited)/**";
 				INFOPLIST_FILE = RSSClient/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = rNews;
@@ -1384,7 +1298,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = RSSClientTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "RSSClient/RSSClient-Bridging-Header.h";
@@ -1404,7 +1318,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = RSSClientTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "RSSClient/RSSClient-Bridging-Header.h";

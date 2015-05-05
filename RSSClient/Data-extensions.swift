@@ -1,11 +1,3 @@
-//
-//  Data-extensions.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 11/26/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import Foundation
 
 #if os(iOS)
@@ -13,6 +5,10 @@ import Foundation
 #else
     typealias Image=NSImage
 #endif
+
+typealias CoreDataFeed = Feed
+typealias CoreDataArticle = Article
+typealias CoreDataEnclosure = Enclosure
 
 extension Feed {
     func feedImage() -> Image? {

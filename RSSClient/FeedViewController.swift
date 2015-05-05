@@ -8,10 +8,11 @@
 
 import UIKit
 import Alamofire
+import Muon
 
 class FeedViewController: UITableViewController {
     
-    var feed : Feed? = nil {
+    var feed : CoreDataFeed? = nil {
         didSet {
             self.navigationItem.title = self.feed?.feedTitle() ?? ""
             self.tableView.reloadData()
@@ -130,7 +131,7 @@ class FeedViewController: UITableViewController {
                         if let err = error {
                             tc.setValid(false)
                         } else if let s = str {
-                            let fp = FeedParser(string: s)
+                            let fp = Muon.FeedParser(string: s)
                             fp.failure {(_) in tc.setValid(false)}
                             fp.success {(_) in tc.setValid(true)}
                         }

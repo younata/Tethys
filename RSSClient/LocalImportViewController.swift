@@ -1,12 +1,5 @@
-//
-//  LocalImportViewController.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 11/14/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import UIKit
+import Muon
 
 class LocalImportViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
@@ -87,8 +80,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
         if let text = NSString(contentsOfFile: location, encoding: NSUTF8StringEncoding, error: nil) {
             let opmlParser = OPMLParser(text: text as String)
             let feedParser = FeedParser(string: text as String)
-            feedParser.parseInfoOnly = true
-            feedParser.completion = {(_, _) in
+            feedParser.completion = {_ in
                 self.items.append(path)
                 self.feeds.append(path)
                 opmlParser.stopParsing()
@@ -97,10 +89,10 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
             opmlParser.callback = {(_) in
                 self.items.append(path)
                 self.opmls.append(path)
-                feedParser.stopParsing()
+                feedParser.cancel()
                 self.reload()
             }
-            feedParser.parse()
+            feedParser.main()
             opmlParser.parse()
         }
     }
@@ -131,8 +123,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
             let location = NSHomeDirectory().stringByAppendingPathComponent("Documents").stringByAppendingPathComponent(item)
             let text = NSString(contentsOfFile: location, encoding: NSUTF8StringEncoding, error: nil)!
             let feedParser = FeedParser(string: text as String)
-            feedParser.parseInfoOnly = true
-            
+
             let activityIndicator = RBActivityIndicator(forAutoLayout: ())
             activityIndicator.showProgressBar = true
             activityIndicator.style = RBActivityIndicatorStyleDark
@@ -145,9 +136,9 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
             UIView.animateWithDuration(0.3, animations: {activityIndicator.backgroundColor = color})
             self.view.userInteractionEnabled = false
             
-            feedParser.completion = {(info, _) in
-                if let url = info.url.absoluteString {
-                    self.dataManager.newFeed(info.url.absoluteString!) {(error) in
+            feedParser.completion = {info in
+                if let url = info.link.absoluteString {
+                    self.dataManager.newFeed(url) {(error) in
                         activityIndicator.removeFromSuperview()
                         self.view.userInteractionEnabled = true
                         self.navigationItem.leftBarButtonItem?.enabled = true

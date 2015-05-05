@@ -1,14 +1,7 @@
-//
-//  FindFeedViewController.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 9/28/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import UIKit
 import WebKit
 import Alamofire
+import Muon
 
 class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFieldDelegate {
     let webContent = WKWebView(forAutoLayout: ())
@@ -165,13 +158,11 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
             let text = textField.text!
             Alamofire.request(.GET, text).responseString {(_, _, response, error) in
                 if let txt = response {
-                    let feedParser = FeedParser(string: txt)
-                    feedParser.parseInfoOnly = true
+                    let feedParser = Muon.FeedParser(string: txt)
                     let opmlParser = OPMLParser(text: txt).success{(_) in
-                        feedParser.stopParsing()
+                        feedParser.cancel()
                         let alert = UIAlertController(title: NSLocalizedString("Feed list Detected", comment: ""), message: NSLocalizedString("Import?", comment: ""), preferredStyle: .Alert)
                         alert.addAction(UIAlertAction(title: NSLocalizedString("Don't Save", comment: ""), style: .Cancel, handler: {(alertAction: UIAlertAction!) in
-                            print("") // this is bullshit
                             alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
                         }))
                         alert.addAction(UIAlertAction(title: NSLocalizedString("Save", comment: ""), style: .Default, handler: {(_) in
@@ -180,13 +171,12 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
                         }))
                         self.presentViewController(alert, animated: true, completion: nil)
                     }
-                    feedParser.success {(info, _) in
-                        let string = info.url != nil ? info.url.absoluteString! : text
+                    feedParser.success {info in
+                        let string = info.link.absoluteString ?? text
                         opmlParser.stopParsing()
                         if (!contains(self.feeds, textField.text)) {
                             let alert = UIAlertController(title: NSLocalizedString("Feed Detected", comment: ""), message: NSString.localizedStringWithFormat(NSLocalizedString("Save %@?", comment: ""), textField.text) as String, preferredStyle: .Alert)
                             alert.addAction(UIAlertAction(title: NSLocalizedString("Don't Save", comment: ""), style: .Cancel, handler: {(alertAction: UIAlertAction!) in
-                                print("") // this is bullshit
                                 alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
                             }))
                             alert.addAction(UIAlertAction(title: NSLocalizedString("Save", comment: ""), style: .Default, handler: {(_) in
@@ -196,7 +186,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
                             self.presentViewController(alert, animated: true, completion: nil)
                         }
                     }
-                    feedParser.parse()
+                    feedParser.main()
                     opmlParser.parse()
                 }
             }

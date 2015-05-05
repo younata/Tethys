@@ -1,27 +1,27 @@
 import Foundation
 import CoreData
 import Alamofire
+import Muon
 
 class DataUtility {
     // Just a collection of class functions, grouped under a class for namespacing reasons
-    class func updateFeed(feed: Feed, info: MWFeedInfo) {
-        var summary : String = ""
-        if let s = info.summary {
-            let data = s.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
-            let options = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
-            summary = s
-            if let aString = NSAttributedString(data: data, options: options, documentAttributes: nil, error: nil) {
-                summary = aString.string
-            }
+    class func updateFeed(feed: CoreDataFeed, info: Muon.Feed) {
+        let summary : String
+        let data = info.description.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
+        let options = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
+        if let aString = NSAttributedString(data: data, options: options, documentAttributes: nil, error: nil) {
+            summary = aString.string
+        } else {
+            summary = info.description
         }
         feed.title = info.title
 
         feed.summary = summary
     }
 
-    class func updateFeedImage(feed: Feed, info: MWFeedInfo, manager: Alamofire.Manager) {
-        if info.imageURL != nil && feed.feedImage() == nil {
-            manager.request(.GET, info.imageURL).response {(_, _, data, error) in
+    class func updateFeedImage(feed: CoreDataFeed, info: Muon.Feed, manager: Alamofire.Manager) {
+        if let imageURL = info.imageURL where feed.feedImage() == nil {
+            manager.request(.GET, imageURL).response {(_, _, data, error) in
                 if error != nil {
                     return
                 }
@@ -35,36 +35,40 @@ class DataUtility {
         }
     }
 
-    class func updateArticle(article: Article, item: MWFeedItem) {
+    class func updateArticle(article: CoreDataArticle, item: Muon.Article) {
         article.title = item.title ?? article.title ?? "unknown"
-        article.link = item.link
+        article.link = item.link?.absoluteString ?? ""
         if article.published == nil {
             article.read = false
-            article.published = item.date ?? NSDate()
+            article.published = item.published ?? NSDate()
         } else {
-            article.published = item.date ?? article.published
+            article.published = item.published ?? article.published
         }
         article.updatedAt = item.updated
-        article.summary = item.summary
+        article.summary = item.description
         article.content = item.content
-        article.author = item.author
-        article.identifier = item.identifier
+        let author = join(", ", item.authors.map { author in
+            if let email = author.email {
+                return "\(author.name) <\(author.email)>"
+            }
+            return author.name
+        })
+        article.author = author
+        article.identifier = item.guid
     }
 
-    class func insertEnclosureFromItem(item: [String: AnyObject], article: Article) {
-        let url = item["url"] as? String
-        var found = false
+    class func insertEnclosureFromItem(item: Muon.Enclosure, article: CoreDataArticle) {
+        let url = item.url.absoluteString
         for enclosure in article.enclosures {
             if (enclosure.valueForKey("url") as? NSObject) == url {
                 return
             }
         }
-        let type = item["type"] as? String
 
         let entityDescription = NSEntityDescription.entityForName("Enclosure", inManagedObjectContext: article.managedObjectContext!)!
         let enclosure = Enclosure(entity: entityDescription, insertIntoManagedObjectContext: article.managedObjectContext!)
         enclosure.url = url
-        enclosure.kind = type
+        enclosure.kind = item.type
         enclosure.article = article
         article.addEnclosuresObject(enclosure)
     }

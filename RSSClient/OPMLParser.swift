@@ -1,11 +1,3 @@
-//
-//  OPMLParser.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 11/8/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import Foundation
 
 func parseOPML(text: String, success: ([OPMLItem]) -> Void = {(_) in }) -> OPMLParser {

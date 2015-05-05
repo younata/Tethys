@@ -2,13 +2,14 @@ import Quick
 import Nimble
 import Foundation
 import Alamofire
+import Muon
 
 class DataUtilitySpec: QuickSpec {
     override func spec() {
         let ctx = managedObjectContext()
-        var feed : Feed! = nil
+        var feed : CoreDataFeed! = nil
 
-        let info = MWFeedInfo()
+        var info : Muon.Feed! = nil
 
         beforeEach {
             feed = createFeed(ctx)
@@ -16,11 +17,7 @@ class DataUtilitySpec: QuickSpec {
 
         describe("updateFeed:info:") {
             beforeEach {
-                info.title = "example feed"
-                info.link = "http://example.com"
-                info.summary = "example"
-                info.url = NSURL(string: "http://example.com")
-info.imageURL = nil
+                info = Muon.Feed(title: "example feed", link: NSURL(string: "http://example.com")!, description: "example", articles: [])
             }
             it("should update the feed accordingly") {
                 DataUtility.updateFeed(feed, info: info)
@@ -32,11 +29,8 @@ info.imageURL = nil
 
         describe("updateFeedImage:info:manager") {
             beforeEach {
-                info.title = "example"
-                info.link = "http://example.com"
-                info.summary = "example"
-                info.url = NSURL(string: "http://example.com")
-                info.imageURL = "https://raw.githubusercontent.com/younata/RSSClient/master/RSSClient/Images.xcassets/AppIcon.appiconset/Icon@2x.png"
+                let imageURL = NSURL(string: "https://raw.githubusercontent.com/younata/RSSClient/master/RSSClient/Images.xcassets/AppIcon.appiconset/Icon@2x.png")!
+                info = Muon.Feed(title: "example", link: NSURL(string: "http://example.com")!, description: "example", articles: [], imageURL: imageURL)
             }
 
             context("when the feed doesn't have an existing image") {
@@ -61,20 +55,15 @@ info.imageURL = nil
         }
 
         describe("updateArticle:item:") {
-            var article: Article! = nil
-            let item = MWFeedItem()
+            var article: CoreDataArticle! = nil
+            var item : Muon.Article! = nil
             beforeEach {
                 article = createArticle(ctx)
                 ctx.save(nil)
 
-                item.title = "example"
-                item.link = "http://example.com"
-                item.date = NSDate(timeIntervalSinceReferenceDate: 0)
-                item.updated = NSDate(timeIntervalSinceReferenceDate: 10)
-                item.summary = "summary"
-                item.content = "content"
-                item.author = "me"
-                item.identifier = "0xDEADBEEF"
+                item = Muon.Article(title: "example", link: NSURL(string: "http://example.com"), description: "summary",
+                    content: "content", guid: "0xDEADBEEF", published: NSDate(timeIntervalSinceReferenceDate: 0),
+                    updated: NSDate(timeIntervalSinceReferenceDate: 10), authors: [], enclosures: [])
             }
 
             it("should update an article with the given feed item") {
@@ -92,7 +81,7 @@ info.imageURL = nil
 
             context("when the item title is nil") {
                 beforeEach {
-                    item.title = nil
+                    item = Muon.Article()
                 }
                 context("and the article title has not previously been set") {
                     beforeEach {
@@ -127,9 +116,9 @@ info.imageURL = nil
         }
 
         describe("insertEnclosureFromItem:article:") {
-            let enclosure = ["url": "http://example.com/enclosure.txt", "type": "text/text"]
+            let enclosure = Muon.Enclosure(url: NSURL(string: "http://example.com/enclosure.txt")!, length: 1234, type: "text/text")
 
-            var article: Article! = nil
+            var article: CoreDataArticle! = nil
 
             beforeEach {
                 article = createArticle(ctx)

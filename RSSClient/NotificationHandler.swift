@@ -46,7 +46,7 @@ class NotificationHandler : NSObject {
     
     func sendLocalNotification(application: UIApplication, article: Article) {
         let note = UILocalNotification()
-        note.alertBody = NSString.localizedStringWithFormat("New article in %@: %@", article.feed?.feedTitle() ?? "", article.title) as String
+        note.alertBody = NSString.localizedStringWithFormat("New article in %@: %@", article.feed?.feedTitle() ?? "", article.title ?? "") as String
 
         let feedID = article.feed!.objectID.URIRepresentation().absoluteString!
         let articleID = article.objectID.URIRepresentation().absoluteString!
@@ -71,13 +71,13 @@ class NotificationHandler : NSObject {
     }
     
     private func showArticle(article: Article, window: UIWindow) {
-        if let nc = (window.rootViewController as? UISplitViewController)?.viewControllers.first as? UINavigationController {
-            if let ftvc = nc.viewControllers.first as? FeedsTableViewController {
+        if let nc = (window.rootViewController as? UISplitViewController)?.viewControllers.first as? UINavigationController,
+            let ftvc = nc.viewControllers.first as? FeedsTableViewController {
                 nc.popToRootViewControllerAnimated(false)
-                let feed = article.feed
-                let al = ftvc.showFeeds([feed], animated: false)
-                al.showArticle(article)
-            }
+                if let feed = article.feed {
+                    let al = ftvc.showFeeds([feed], animated: false)
+                    al.showArticle(article)
+                }
         }
     }
 }

@@ -11,12 +11,12 @@ import UIKit
 class EnclosureCell: UICollectionViewCell {
     var enclosure: Enclosure? = nil {
         didSet {
-            nameLabel.text = enclosure?.url.lastPathComponent ?? ""
+            nameLabel.text = enclosure?.url?.lastPathComponent ?? ""
             let size = NSAttributedString(string: nameLabel.text!, attributes: [NSFontAttributeName: nameLabel.font]).boundingRectWithSize(CGSizeMake(120, CGFloat.max), options: .UsesFontLeading, context: nil).size
             nameHeight?.constant = ceil(size.height)
             progressLayer.progress = 0
             
-            placeholderLabel.text = enclosure?.url.pathExtension ?? ""
+            placeholderLabel.text = enclosure?.url?.pathExtension ?? ""
         }
     }
     

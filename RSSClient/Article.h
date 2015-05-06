@@ -14,26 +14,26 @@
 
 @interface Article : NSManagedObject
 
-@property (nonatomic, retain) NSString * title;
-@property (nonatomic, retain) NSString * link;
-@property (nonatomic, retain) NSString * summary;
-@property (nonatomic, retain) NSString * author;
-@property (nonatomic, retain) NSDate * published;
-@property (nonatomic, retain) NSDate * updatedAt;
-@property (nonatomic, retain) NSString * identifier;
-@property (nonatomic, retain) NSString * content;
+@property (nullable, nonatomic, retain) NSString * title;
+@property (nullable, nonatomic, retain) NSString * link;
+@property (nullable, nonatomic, retain) NSString * summary;
+@property (nullable, nonatomic, retain) NSString * author;
+@property (nullable, nonatomic, retain) NSDate * published;
+@property (nullable, nonatomic, retain) NSDate * updatedAt;
+@property (nullable, nonatomic, retain) NSString * identifier;
+@property (nullable, nonatomic, retain) NSString * content;
 @property (nonatomic) BOOL read;
-@property (nonatomic, retain) Feed *feed;
-@property (nonatomic, retain) id flags;
-@property (nonatomic, retain) NSSet *enclosures;
+@property (nullable, nonatomic, retain) Feed *feed;
+@property (nullable, nonatomic, retain) id flags;
+@property (nonnull, nonatomic, retain) NSSet *enclosures;
 
 @end
 
 @interface Article (CoreDataGeneratedAccessors)
 
-- (void)addEnclosuresObject:(Enclosure *)value;
-- (void)removeEnclosuresObject:(Enclosure *)value;
-- (void)addEnclosures:(NSSet *)values;
-- (void)removeEnclosures:(NSSet *)values;
+- (void)addEnclosuresObject:(nonnull Enclosure *)value;
+- (void)removeEnclosuresObject:(nonnull Enclosure *)value;
+- (void)addEnclosures:(nonnull NSSet *)values;
+- (void)removeEnclosures:(nonnull NSSet *)values;
 
 @end

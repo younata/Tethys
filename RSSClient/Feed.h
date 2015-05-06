@@ -13,23 +13,23 @@
 
 @interface Feed : NSManagedObject
 
-@property (nonatomic, retain) NSString * title;
-@property (nonatomic, retain) NSString * url;
-@property (nonatomic, retain) NSString * summary;
-@property (nonatomic, retain) NSString * query;
-@property (nonatomic, retain) id tags;
-@property (nonatomic, retain) NSNumber * waitPeriod;
-@property (nonatomic, retain) NSNumber * remainingWait;
-@property (nonatomic, retain) NSSet *articles;
-@property (nonatomic, retain) id image;
+@property (nullable, nonatomic, retain) NSString * title;
+@property (nullable, nonatomic, retain) NSString * url;
+@property (nullable, nonatomic, retain) NSString * summary;
+@property (nullable, nonatomic, retain) NSString * query;
+@property (nullable, nonatomic, retain) id tags;
+@property (nullable, nonatomic, retain) NSNumber * waitPeriod;
+@property (nullable, nonatomic, retain) NSNumber * remainingWait;
+@property (nonnull, nonatomic, retain) NSSet *articles;
+@property (nullable, nonatomic, retain) id image;
 
 @end
 
 @interface Feed (CoreDataGeneratedAccessors)
 
-- (void)addArticlesObject:(Article *)value;
-- (void)removeArticlesObject:(Article *)value;
-- (void)addArticles:(NSSet *)values;
-- (void)removeArticles:(NSSet *)values;
+- (void)addArticlesObject:(nonnull Article *)value;
+- (void)removeArticlesObject:(nonnull Article *)value;
+- (void)addArticles:(nonnull NSSet *)values;
+- (void)removeArticles:(nonnull NSSet *)values;
 
 @end

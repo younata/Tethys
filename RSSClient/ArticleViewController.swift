@@ -18,7 +18,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 self.dataManager?.readArticle(a, read: true)
                 NSNotificationCenter.defaultCenter().postNotificationName("ArticleWasRead", object: a)
                 a.managedObjectContext?.save(nil)
-                let url = NSURL(string: a.link)
+                let url = NSURL(string: a.link ?? "")
                 
                 showArticle(a, onWebView: content)
                 
@@ -29,15 +29,15 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                     userActivity?.title = NSLocalizedString("Reading Article", comment: "")
                     userActivity?.becomeCurrent()
                 }
-                userActivity?.userInfo = ["feed": a.feed.title, "article": a.objectID.URIRepresentation(), "showingContent": true, "url": url!]
-                userActivity?.webpageURL = NSURL(string: a.link)
+                userActivity?.userInfo = ["feed": a.feed?.title ?? "", "article": a.objectID.URIRepresentation(), "showingContent": true, "url": url!]
+                userActivity?.webpageURL = NSURL(string: a.link ?? "")
                 self.userActivity?.needsSave = true
                 
                 let notes : [UILocalNotification] = (UIApplication.sharedApplication().scheduledLocalNotifications as! [UILocalNotification]).filter {(note) in
                     if let ui = note.userInfo {
                         if let feed : String = ui["feed"] as? String {
                             if let title : String = ui["article"] as? String {
-                                return feed == a.feed.title && title == a.title
+                                return feed == a.feed?.title && title == a.title
                             }
                         }
                     }
@@ -86,10 +86,10 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 case .Content:
                     toggleContentButton?.title = linkString
                     let cnt = a.content ?? a.summary ?? ""
-                    self.content.loadHTMLString(articleCSS + cnt + "</body></html>", baseURL: NSURL(string: a.feed.url))
+                    self.content.loadHTMLString(articleCSS + cnt + "</body></html>", baseURL: NSURL(string: a.feed?.url ?? ""))
                 case .Link:
                     toggleContentButton?.title = contentString
-                    self.content.loadRequest(NSURLRequest(URL: NSURL(string: a.link)!))
+                    self.content.loadRequest(NSURLRequest(URL: NSURL(string: a.link ?? "")!))
                 }
                 if (shareButton != nil && toggleContentButton != nil) {
                     if (a.content ?? a.summary) != nil {
@@ -113,7 +113,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     func showArticle(article: Article, onWebView webView: WKWebView) {
         if let cnt = article.content ?? article.summary {
             let title = (article.title != nil ? "<h2>\(article.title)</h2>" : "")
-            webView.loadHTMLString(articleCSS + title + cnt + "</body></html>", baseURL: NSURL(string: article.feed.url)!)
+            webView.loadHTMLString(articleCSS + title + cnt + "</body></html>", baseURL: NSURL(string: article.feed?.url ?? "")!)
             if let sb = shareButton {
                 self.toolbarItems = [spacer(), sb, spacer(), toggleContentButton!, spacer()]
                 if let ec = showEnclosuresButton where article.enclosures.count > 0 {
@@ -121,7 +121,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 }
             }
         } else {
-            webView.loadRequest(NSURLRequest(URL: NSURL(string: article.link)!))
+            webView.loadRequest(NSURLRequest(URL: NSURL(string: article.link ?? "")!))
             if let sb = shareButton {
                 self.toolbarItems = [spacer(), sb, spacer()]
                 if let ec = showEnclosuresButton where article.enclosures.count > 0 {
@@ -365,7 +365,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         if let a = article {
             let share = TUSafariActivity()
             
-            let activity = UIActivityViewController(activityItems: [NSURL(string: a.link)!], applicationActivities: [share])
+            let activity = UIActivityViewController(activityItems: [NSURL(string: a.link ?? "")!], applicationActivities: [share])
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                 let popover = UIPopoverController(contentViewController: activity)
                 popover.presentPopoverFromBarButtonItem(shareButton!, permittedArrowDirections: .Any, animated: true)
@@ -384,7 +384,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         case .Content:
             self.contentType = .Link
             self.userActivity?.userInfo?["showingContent"] = false
-            self.userActivity?.userInfo?["url"] = NSURL(string: self.article!.link)!
+            self.userActivity?.userInfo?["url"] = NSURL(string: self.article?.link ?? "")!
         }
         self.userActivity?.needsSave = true
     }
@@ -428,7 +428,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             objectsBeingObserved.append(webView)
         }
         if let wvu = webView.URL {
-            if wvu != NSURL(string: self.article!.feed.url) {
+            if wvu != NSURL(string: self.article?.feed?.url ?? "") {
                 self.userActivity?.userInfo?["url"] = wvu
                 self.userActivity?.needsSave = true
                 self.userActivity?.webpageURL = wvu

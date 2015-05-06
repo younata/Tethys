@@ -40,7 +40,7 @@ class EnclosuresViewController: UIViewController {
             
             vc.view.addSubview(webView)
             webView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
-            webView.loadData(enclosure.data, MIMEType: enclosure.kind, textEncodingName: "UTF-8", baseURL: NSURL(string: enclosure.url))
+            webView.loadData(enclosure.data, MIMEType: enclosure.kind, textEncodingName: "UTF-8", baseURL: NSURL(string: enclosure.url ?? ""))
             
             self.navigationController?.pushViewController(vc, animated: true)
         }

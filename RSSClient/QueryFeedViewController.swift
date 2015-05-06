@@ -187,7 +187,7 @@ class QueryFeedViewController: UITableViewController {
             let preview = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Preview", comment: ""), handler: {(_, _) in
                 let articleList = ArticleListController(style: .Plain)
                 articleList.previewMode = true
-                articleList.articles = self.dataManager.articlesMatchingQuery(self.feed!.query)
+                articleList.articles = self.dataManager.articlesMatchingQuery(self.feed?.query ?? "")
                 self.navigationController?.pushViewController(articleList, animated: true)
             })
             return [preview]

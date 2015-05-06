@@ -117,8 +117,8 @@ extension Article {
     
     func asDict() -> [String: AnyObject] {
         var ret = asDictNoFeed()
-        if feed != nil {
-            ret["feed"] = feed.asDictNoArticles()
+        if let f = feed {
+            ret["feed"] = f.asDictNoArticles()
         }
         return ret
     }

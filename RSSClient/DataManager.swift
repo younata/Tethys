@@ -117,11 +117,6 @@ class DataManager: NSObject {
 
     func feeds(managedObjectContext: NSManagedObjectContext? = nil) -> [CoreDataFeed] {
         return (DataUtility.entities("Feed", matchingPredicate: NSPredicate(value: true), managedObjectContext: (managedObjectContext ?? self.managedObjectContext)) as? [CoreDataFeed] ?? []).sorted {
-            if $0.title == nil {
-                return true
-            } else if $1.title == nil {
-                return false
-            }
             return $0.title < $1.title
         } ?? []
     }
@@ -213,27 +208,25 @@ class DataManager: NSObject {
         updateFeeds(feeds(), completion: completion, backgroundFetch: true)
     }
 
-    var parsers : [FeedParser] = []
+    var parsers : [Muon.FeedParser] = []
     var stats : [(parseTime: Double, importTime: Double)] = []
 
-    func finishedUpdatingFeed(feedParser: FeedParser?, error: NSError?, feed: CoreDataFeed, managedObjectContext: NSManagedObjectContext, inout feedsLeft: Int, completion: (NSError?) -> (Void)) {
+    func finishedUpdatingFeed(feedParser: Muon.FeedParser?, error: NSError?, feed: CoreDataFeed, managedObjectContext: NSManagedObjectContext, inout feedsLeft: Int, completion: (NSError?) -> (Void)) {
         feedsLeft--
         if error != nil {
             println("Errored loading: \(error)")
         }
         if (feedParser != nil && error == nil) {
-            if feed.waitPeriod == nil || feed.waitPeriod.integerValue != 0 {
+            if feed.waitPeriod == nil || feed.waitPeriod?.integerValue != 0 {
                 feed.waitPeriod = NSNumber(integer: 0)
                 feed.remainingWait = NSNumber(integer: 0)
                 feed.managedObjectContext?.save(nil)
             }
-        } else if let err = error {
-            if (err.domain == NSURLErrorDomain && err.code > 0) { // FIXME: check the error code for specific HTTP error codes.
-                feed.waitPeriod = NSNumber(integer: (feed.waitPeriod?.integerValue ?? 0) + 1)
-                feed.remainingWait = feed.waitPeriodInRefreshes(feed.waitPeriod.integerValue)
-                println("Setting feed at \(feed.url) to have remainingWait of \(feed.remainingWait) refreshes")
-                feed.managedObjectContext?.save(nil)
-            }
+        } else if let err = error where (err.domain == NSURLErrorDomain && err.code > 0) {
+            feed.waitPeriod = NSNumber(integer: (feed.waitPeriod?.integerValue ?? 0) + 1)
+            feed.remainingWait = feed.waitPeriodInRefreshes(feed.waitPeriod!.integerValue)
+            println("Setting feed at \(feed.url) to have remainingWait of \(feed.remainingWait) refreshes")
+            feed.managedObjectContext?.save(nil)
         }
         if let fp = feedParser {
             self.parsers = self.parsers.filter { $0 != fp }
@@ -272,8 +265,7 @@ class DataManager: NSObject {
             return;
         }
 
-        let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
-        dispatch_async(queue) {
+        operationQueue.addOperationWithBlock {
             let ctx = self.backgroundObjectContext
             let theFeeds = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self in %@", feedIds), managedObjectContext: ctx) as? [CoreDataFeed] ?? []
             var feedsLeft = theFeeds.count
@@ -281,8 +273,6 @@ class DataManager: NSObject {
             self.stats = []
 
             for feed in theFeeds {
-                let feedParser = FeedParser(string: "")//URL: NSURL(string: feed.url)!)
-
                 let manager = backgroundFetch ? self.backgroundManager : self.mainManager // FIXME: using backgroundManager seems to always fail?
                 let wait = feed.remainingWait?.integerValue ?? 0
                 if wait != 0 {
@@ -297,12 +287,13 @@ class DataManager: NSObject {
                     continue
                 }
 
-                manager.request(.GET, feed.url).responseString {(req, response, str, error) in
+                manager.request(.GET, feed.url!).responseString {(req, response, str, error) in
                     if let err = error {
                         self.finishedUpdatingFeed(nil, error: error, feed: feed, managedObjectContext: ctx, feedsLeft: &feedsLeft, completion: completion)
                     } else if let s = str {
                         let start = CACurrentMediaTime()
-                        let feedParser = FeedParser(string: s).success {info in
+                        let feedParser = FeedParser(string: s)
+                        feedParser.success {info in
                             let mid = CACurrentMediaTime()
 
                             DataUtility.updateFeed(feed, info: info)
@@ -322,12 +313,11 @@ class DataManager: NSObject {
                         feedParser.onFailure = {(error) in
                             self.finishedUpdatingFeed(feedParser, error: error, feed: feed, managedObjectContext: ctx, feedsLeft: &feedsLeft, completion: completion)
                         }
-                        feedParser.main()
                         self.parsers.append(feedParser)
+                        self.operationQueue.addOperation(feedParser)
                     } else {
                         // str and error are nil.
                         println("Errored loading \(feed.url) with unknown error")
-                        self.parsers = self.parsers.filter { $0 != feedParser }
                     }
                 }
             }
@@ -340,7 +330,7 @@ class DataManager: NSObject {
         // once every 7/5ths of a day, instead of once a day for 5 days, then not at all on the weekends.
         // But for now, it's ok.
         let times : [NSTimeInterval] = feed.allArticles(self).map {
-            return $0.published.timeIntervalSince1970
+            return $0.published?.timeIntervalSince1970 ?? NSTimeInterval.infinity
             }.sorted { return $0 < $1 }
 
         if times.count < 2 {
@@ -406,7 +396,7 @@ class DataManager: NSObject {
     }
 
     func deleteEnclosure(enclosure: CoreDataEnclosure) {
-        enclosure.article.removeEnclosuresObject(enclosure)
+        enclosure.article?.removeEnclosuresObject(enclosure)
         enclosure.article = nil
         self.managedObjectContext.deleteObject(enclosure)
     }
@@ -432,9 +422,9 @@ class DataManager: NSObject {
     }
 
     func downloadEnclosure(enclosure: CoreDataEnclosure, progress: (Double) -> (Void) = {(_) in }, completion: (CoreDataEnclosure, NSError?) -> (Void) = {(_) in }) {
-        let downloaded = (enclosure.downloaded == nil ? false : enclosure.downloaded.boolValue)
-        if (!downloaded) {
-            mainManager.request(.GET, enclosure.url).response {(_, _, response, error) in
+        let downloaded = enclosure.downloaded?.boolValue ?? false
+        if let url = enclosure.url where !downloaded {
+            mainManager.request(.GET, url).response {(_, _, response, error) in
                 if let err = error {
                     completion(enclosure, err)
                 } else if let response = response as? NSData {

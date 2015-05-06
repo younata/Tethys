@@ -13,10 +13,10 @@
 
 @interface Enclosure : NSManagedObject
 
-@property (nonatomic, retain) NSString * url;
-@property (nonatomic, retain) NSString * kind;
-@property (nonatomic, retain) NSData * data;
-@property (nonatomic, retain) NSNumber * downloaded;
-@property (nonatomic, retain) Article *article;
+@property (nullable, nonatomic, retain) NSString * url;
+@property (nullable, nonatomic, retain) NSString * kind;
+@property (nullable, nonatomic, retain) NSData * data;
+@property (nullable, nonatomic, retain) NSNumber * downloaded;
+@property (nullable, nonatomic, retain) Article *article;
 
 @end

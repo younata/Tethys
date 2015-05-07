@@ -107,6 +107,8 @@
 		898047641A206CB100EB29F0 /* FeedsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898047631A206CB100EB29F0 /* FeedsList.swift */; };
 		898131681AF880400090FA7F /* Muon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; };
 		898131691AF880A70090FA7F /* Muon.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8981316B1AFB1ED70090FA7F /* FeedRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8981316A1AFB1ED60090FA7F /* FeedRepository.swift */; };
+		8981316C1AFB1ED70090FA7F /* FeedRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8981316A1AFB1ED60090FA7F /* FeedRepository.swift */; };
 		899C47EC1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */; };
 		899C47ED1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */; };
 		899C47FB1A9A864700F57B96 /* DataManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */; };
@@ -277,6 +279,7 @@
 		898047441A20478600EB29F0 /* TUSafariActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TUSafariActivity.m; path = Vendor/TUSafariActivity/Classes/TUSafariActivity.m; sourceTree = "<group>"; };
 		898047631A206CB100EB29F0 /* FeedsList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FeedsList.swift; path = "RSSClient-OSX/FeedsList.swift"; sourceTree = SOURCE_ROOT; };
 		898131671AF880400090FA7F /* Muon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Muon.framework; path = ../Carthage/Build/iOS/Muon.framework; sourceTree = "<group>"; };
+		8981316A1AFB1ED60090FA7F /* FeedRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedRepository.swift; sourceTree = "<group>"; };
 		899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BreakOutToRefreshView.swift; path = Vendor/BreakOutToRefreshView.swift; sourceTree = "<group>"; };
 		899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManagerSpec.swift; sourceTree = "<group>"; };
 		899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindFeedViewControllerSpec.swift; sourceTree = "<group>"; };
@@ -621,6 +624,7 @@
 		89C830AC19D7BDE0009924DA /* Domain */ = {
 			isa = PBXGroup;
 			children = (
+				8981316A1AFB1ED60090FA7F /* FeedRepository.swift */,
 				89C830A819D7B890009924DA /* DataManager.swift */,
 				890E47581AA19D69007F217C /* DataUtility.swift */,
 				89C8307A19D730E9009924DA /* RSSClient.xcdatamodeld */,
@@ -973,6 +977,7 @@
 				8963F42E1A26674500B447D6 /* Data-extensions.swift in Sources */,
 				8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */,
 				89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */,
+				8981316B1AFB1ED70090FA7F /* FeedRepository.swift in Sources */,
 				894896EC1A16F1130030EB6E /* LocalImportViewController.swift in Sources */,
 				89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */,
 				8933E90F19ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m in Sources */,
@@ -1051,6 +1056,7 @@
 				893448C11A004E5C00F5D528 /* NSLayoutConstraint+PureLayout.m in Sources */,
 				895779A919E62CC500548418 /* ArticleViewController.swift in Sources */,
 				895782421A3CC0130022F345 /* CircularProgressLayer.swift in Sources */,
+				8981316C1AFB1ED70090FA7F /* FeedRepository.swift in Sources */,
 				8963F4351A280F8E00B447D6 /* TagPickerView.swift in Sources */,
 				AE4356001A7ABA4F00A961B9 /* DataManagerMock.swift in Sources */,
 				89C509F51A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */,

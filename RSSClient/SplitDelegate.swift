@@ -1,11 +1,3 @@
-//
-//  SplitDelegate.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 1/24/15.
-//  Copyright (c) 2015 Rachel Brindle. All rights reserved.
-//
-
 import UIKit
 
 public class SplitDelegate: NSObject, UISplitViewControllerDelegate {

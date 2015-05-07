@@ -1,11 +1,3 @@
-//
-//  AppDelegate.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 9/27/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import UIKit
 import CoreData
 import Ra
@@ -23,9 +15,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
     private lazy var injectorModule : InjectorModule = InjectorModule()
     
     lazy var anInjector : Ra.Injector = {
-        let injector = Ra.Injector()
-        self.injectorModule.configure(injector)
-        return injector
+        return Ra.Injector(module: self.injectorModule)
     }()
 
     lazy var dataManager : DataManager = { return self.anInjector.create(DataManager.self) as! DataManager }()

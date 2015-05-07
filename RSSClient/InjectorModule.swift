@@ -1,19 +1,11 @@
-//
-//  InjectorModule.swift
-//  RSSClient
-//
-//  Created by pivotal on 1/29/15.
-//  Copyright (c) 2015 Rachel Brindle. All rights reserved.
-//
-
 import Foundation
 import Ra
 
 let kMainManagedObjectContext = "kMainManagedObjectContext"
 let kBackgroundManagedObjectContext = "kBackgroundManagedObjectContext"
 
-class InjectorModule {
-    func configure(injector: Ra.Injector) {
+class InjectorModule : Ra.InjectorModule {
+    func configureInjector(injector: Ra.Injector) {
         let dataManager = DataManager()
         injector.bind(DataManager.self, to: dataManager)
 

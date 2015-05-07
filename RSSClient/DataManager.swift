@@ -208,15 +208,14 @@ class DataManager: NSObject {
         updateFeeds(feeds(), completion: completion, backgroundFetch: true)
     }
 
-    var parsers : [Muon.FeedParser] = []
     var stats : [(parseTime: Double, importTime: Double)] = []
 
-    func finishedUpdatingFeed(feedParser: Muon.FeedParser?, error: NSError?, feed: CoreDataFeed, managedObjectContext: NSManagedObjectContext, inout feedsLeft: Int, completion: (NSError?) -> (Void)) {
+    func finishedUpdatingFeed(error: NSError?, feed: CoreDataFeed, managedObjectContext: NSManagedObjectContext, inout feedsLeft: Int, completion: (NSError?) -> (Void)) {
         feedsLeft--
         if error != nil {
             println("Errored loading: \(error)")
         }
-        if (feedParser != nil && error == nil) {
+        if (error == nil) {
             if feed.waitPeriod == nil || feed.waitPeriod?.integerValue != 0 {
                 feed.waitPeriod = NSNumber(integer: 0)
                 feed.remainingWait = NSNumber(integer: 0)
@@ -228,11 +227,7 @@ class DataManager: NSObject {
             println("Setting feed at \(feed.url) to have remainingWait of \(feed.remainingWait) refreshes")
             feed.managedObjectContext?.save(nil)
         }
-        if let fp = feedParser {
-            self.parsers = self.parsers.filter { $0 != fp }
-        }
         if feedsLeft == 0 {
-            assert(self.parsers.count == 0)
             if managedObjectContext.hasChanges {
                 managedObjectContext.save(nil)
             }
@@ -240,17 +235,6 @@ class DataManager: NSObject {
                 completion(error)
                 self.setApplicationBadgeCount()
             }
-            let parseTime = stats.reduce(0.0) {
-                return $0 + $1.parseTime
-            }
-            let importTime = stats.reduce(0.0) {
-                return $0 + $1.importTime
-            }
-            let total = parseTime + importTime
-            println("\n\n")
-            println("Parsing feed took \(parseTime / total * 100)% of the time")
-            println("Importing data took \(importTime / total * 100)% of the time")
-            println("\n\n")
         }
     }
 
@@ -287,37 +271,19 @@ class DataManager: NSObject {
                     continue
                 }
 
-                manager.request(.GET, feed.url!).responseString {(req, response, str, error) in
+                FeedRepository.loadFeed(feed.url!, downloadManager: manager, operationQueue: self.operationQueue) {muonFeed, error in
                     if let err = error {
-                        self.finishedUpdatingFeed(nil, error: error, feed: feed, managedObjectContext: ctx, feedsLeft: &feedsLeft, completion: completion)
-                    } else if let s = str {
-                        let start = CACurrentMediaTime()
-                        let feedParser = FeedParser(string: s)
-                        feedParser.success {info in
-                            let mid = CACurrentMediaTime()
-
-                            DataUtility.updateFeed(feed, info: info)
-                            DataUtility.updateFeedImage(feed, info: info, manager: manager)
-                            for item in info.articles {
-                                let article = self.upsertArticle(item, context: ctx)
-                                feed.addArticlesObject(article)
-                                article.feed = feed
-                            }
-
-                            let importTime = CACurrentMediaTime() - mid
-                            let parseTime = mid - start
-                            let toInsert : (parseTime: Double, importTime: Double) = (parseTime, importTime)
-                            self.stats.append(toInsert)
-                            self.finishedUpdatingFeed(feedParser, error: nil, feed: feed, managedObjectContext: ctx, feedsLeft: &feedsLeft, completion: completion)
+                        self.finishedUpdatingFeed(error, feed: feed, managedObjectContext: ctx, feedsLeft: &feedsLeft, completion: completion)
+                    } else if let info = muonFeed {
+                        DataUtility.updateFeed(feed, info: info)
+                        DataUtility.updateFeedImage(feed, info: info, manager: manager)
+                        for item in info.articles {
+                            let article = self.upsertArticle(item, context: ctx)
+                            feed.addArticlesObject(article)
+                            article.feed = feed
                         }
-                        feedParser.onFailure = {(error) in
-                            self.finishedUpdatingFeed(feedParser, error: error, feed: feed, managedObjectContext: ctx, feedsLeft: &feedsLeft, completion: completion)
-                        }
-                        self.parsers.append(feedParser)
-                        self.operationQueue.addOperation(feedParser)
-                    } else {
-                        // str and error are nil.
-                        println("Errored loading \(feed.url) with unknown error")
+                        self.finishedUpdatingFeed(nil, feed: feed, managedObjectContext: ctx, feedsLeft: &feedsLeft, completion: completion)
+
                     }
                 }
             }

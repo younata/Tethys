@@ -278,9 +278,10 @@ class DataManager: NSObject {
                         DataUtility.updateFeed(feed, info: info)
                         DataUtility.updateFeedImage(feed, info: info, manager: manager)
                         for item in info.articles {
-                            let article = self.upsertArticle(item, context: ctx)
-                            feed.addArticlesObject(article)
-                            article.feed = feed
+                            if let article = self.upsertArticle(item, context: ctx) {
+                                feed.addArticlesObject(article)
+                                article.feed = feed
+                            }
                         }
                         self.finishedUpdatingFeed(nil, feed: feed, managedObjectContext: ctx, feedsLeft: &feedsLeft, completion: completion)
 
@@ -412,7 +413,7 @@ class DataManager: NSObject {
 
     // MARK: Articles
 
-    func upsertArticle(item: Muon.Article, var context ctx: NSManagedObjectContext! = nil) -> CoreDataArticle {
+    func upsertArticle(item: Muon.Article, var context ctx: NSManagedObjectContext! = nil) -> CoreDataArticle? {
         let predicate = NSPredicate(format: "link = %@", item.link ?? "")
         if let article = DataUtility.entities("Article", matchingPredicate: predicate, managedObjectContext: ctx).last as? CoreDataArticle {
             if article.updatedAt != item.updated {
@@ -422,7 +423,7 @@ class DataManager: NSObject {
                     DataUtility.insertEnclosureFromItem(enc, article: article)
                 }
             }
-            return article
+            return nil
         } else {
             // create
             let article = NSEntityDescription.insertNewObjectForEntityForName("Article", inManagedObjectContext: ctx) as! CoreDataArticle

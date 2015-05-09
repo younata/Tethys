@@ -1,4 +1,5 @@
 import UIKit
+import Ra
 import Muon
 
 class LocalImportViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
@@ -55,10 +56,11 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
     
     func reloadItems() {
         let documents : String = NSHomeDirectory().stringByAppendingPathComponent("Documents")
-        var error : NSError? = nil
-        let contents = (NSFileManager.defaultManager().contentsOfDirectoryAtPath(documents, error: &error) as! [String])
-        for path in contents {
-            verifyIfFeedOrOPML(path)
+        if let fileManager = self.injector?.create(NSFileManager.self) as? NSFileManager,
+            let contents = fileManager.contentsOfDirectoryAtPath(documents, error: nil) as? [String] {
+                for path in contents {
+                    verifyIfFeedOrOPML(path)
+                }
         }
         
         self.tableViewController.refreshControl?.endRefreshing()

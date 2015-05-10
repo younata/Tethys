@@ -39,18 +39,18 @@ class DataManager: NSObject {
                                 completion(ret)
                             }
                         } else {
-                            if let feed = item.xmlURL {
-                                let newFeed = self.newFeed(feed) {(error) in
-                                    if let err = error {
-                                        println("error importing \(feed): \(err)")
-                                    }
-                                    println("imported \(feed)")
-                                    i++
-                                    progress(Double(i) / Double(items.count))
-                                    if i == items.count {
-                                        completion(ret)
-                                    }
+                            if let feed = item.xmlURL,
+                            let newFeed = self.newFeed(feed, completion: {error in
+                                if let err = error {
+                                    println("error importing \(feed): \(err)")
                                 }
+                                println("imported \(feed)")
+                                i++
+                                progress(Double(i) / Double(items.count))
+                                if i == items.count {
+                                    completion(ret)
+                                }
+                            }) {
                                 newFeed.tags = item.tags
                                 ret.append(newFeed)
                             } else {
@@ -143,11 +143,11 @@ class DataManager: NSObject {
         }
     }
 
-    func newFeed(feedURL: String) -> CoreDataFeed {
+    func newFeed(feedURL: String) -> CoreDataFeed? {
         return newFeed(feedURL, completion: {(_) in })
     }
 
-    func newFeed(feedURL: String, completion: (NSError?) -> (Void)) -> CoreDataFeed {
+    func newFeed(feedURL: String, completion: (NSError?) -> (Void)) -> CoreDataFeed? {
         let predicate = NSPredicate(format: "url = %@", feedURL)
         var feed: CoreDataFeed! = nil
         if let theFeed = DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: self.managedObjectContext).last as? CoreDataFeed {

@@ -3,10 +3,19 @@ import Ra
 import Muon
 
 class LocalImportViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+
+    private class TableViewCell : UITableViewCell {
+        required init(coder aDecoder: NSCoder) {
+            fatalError("not supported")
+        }
+
+        override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+            super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
+        }
+    }
     
-    var opmls : [String] = []
-    var feeds : [String] = []
-    var items : [String] = []
+    var opmls : [(String, [OPMLItem])] = []
+    var feeds : [(String, Muon.Feed)] = []
     var contentsOfDirectory : [String] = []
     
     let tableViewController = UITableViewController(style: .Plain)
@@ -30,7 +39,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
         self.navigationItem.title = NSLocalizedString("Local Import", comment: "")
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Dismiss", comment: ""), style: .Plain, target: self, action: "dismiss")
         
-        self.tableViewController.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        self.tableViewController.tableView.registerClass(TableViewCell.self, forCellReuseIdentifier: "cell")
         self.tableViewController.tableView.delegate = self
         self.tableViewController.tableView.dataSource = self
     }
@@ -67,8 +76,9 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     func reload() {
-        self.items.sort {return $0 < $1}
-        self.tableViewController.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+        self.feeds.sort { $0.0 < $1.0 }
+        self.opmls.sort { $0.0 < $1.0 }
+        self.tableViewController.tableView.reloadSections(NSIndexSet(indexesInRange: NSMakeRange(0, 2)), withRowAnimation: .Automatic)
     }
     
     func verifyIfFeedOrOPML(path: String) {
@@ -82,101 +92,108 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
         if let text = NSString(contentsOfFile: location, encoding: NSUTF8StringEncoding, error: nil) {
             let opmlParser = OPMLParser(text: text as String)
             let feedParser = FeedParser(string: text as String)
-            feedParser.completion = {_ in
-                self.items.append(path)
-                self.feeds.append(path)
+            feedParser.completion = {feed in
+                self.feeds.append((path, feed))
                 opmlParser.stopParsing()
                 self.reload()
             }
-            opmlParser.callback = {(_) in
-                self.items.append(path)
-                self.opmls.append(path)
+            opmlParser.callback = {items in
+                let toAdd = (path, items)
+                self.opmls.append(toAdd)
                 feedParser.cancel()
                 self.reload()
             }
-            feedParser.main()
             opmlParser.parse()
+            feedParser.main()
         }
     }
     
     // MARK: - Table view data source
 
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return 2
     }
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items.count
+        switch (section) {
+        case 0: return opmls.count
+        case 1: return feeds.count
+        default: return 0
+        }
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
-        
-        cell.textLabel?.text = items[indexPath.row]
+
+        if indexPath.section == 0 {
+            let (path, items) = opmls[indexPath.row]
+            cell.textLabel?.text = path
+            cell.detailTextLabel?.text = "\(items.count) feeds"
+        } else if indexPath.section == 1 {
+            let (path, item) = feeds[indexPath.row]
+            cell.textLabel?.text = path
+            cell.detailTextLabel?.text = "\(item.articles.count) articles"
+        }
 
         return cell
+    }
+
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch (section) {
+        case 0: return "Feed Lists"
+        case 1: return "Individual Feeds"
+        default: return ""
+        }
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
-        let item = items[indexPath.row]
-        let location = NSHomeDirectory().stringByAppendingPathComponent("Documents").stringByAppendingPathComponent(item)
-        if contains(feeds, item) {
-            let location = NSHomeDirectory().stringByAppendingPathComponent("Documents").stringByAppendingPathComponent(item)
-            let text = NSString(contentsOfFile: location, encoding: NSUTF8StringEncoding, error: nil)!
-            let feedParser = FeedParser(string: text as String)
+        if indexPath.section == 0 {
+            let path = opmls[indexPath.row].0
+            let location = NSHomeDirectory().stringByAppendingPathComponent("Documents").stringByAppendingPathComponent(path)
 
-            let activityIndicator = RBActivityIndicator(forAutoLayout: ())
-            activityIndicator.showProgressBar = true
-            activityIndicator.style = RBActivityIndicatorStyleDark
-            activityIndicator.displayMessage = NSLocalizedString("Importing feed", comment: "")
-            self.view.addSubview(activityIndicator)
-            self.navigationItem.leftBarButtonItem?.enabled = false
-            let color = activityIndicator.backgroundColor
-            activityIndicator.backgroundColor = UIColor.clearColor()
-            activityIndicator.autoCenterInSuperview()
-            UIView.animateWithDuration(0.3, animations: {activityIndicator.backgroundColor = color})
-            self.view.userInteractionEnabled = false
-            
-            feedParser.completion = {info in
-                if let url = info.link.absoluteString {
-                    self.dataManager.newFeed(url) {(error) in
-                        activityIndicator.removeFromSuperview()
-                        self.view.userInteractionEnabled = true
-                        self.navigationItem.leftBarButtonItem?.enabled = true
-                        self.dismiss()
-                    }
-                } else {
-                    activityIndicator.removeFromSuperview()
-                    self.view.userInteractionEnabled = true
-                    self.navigationItem.leftBarButtonItem?.enabled = true
-                    self.dismiss()
-                }
-            }
-        } else if contains(opmls, item) {
-            
-            let activityIndicator = RBActivityIndicator(forAutoLayout: ())
-            activityIndicator.showProgressBar = true
-            activityIndicator.style = RBActivityIndicatorStyleDark
-            activityIndicator.displayMessage = NSLocalizedString("Importing feeds from OPML file", comment: "")
-            self.view.addSubview(activityIndicator)
-            self.navigationItem.leftBarButtonItem?.enabled = false
-            let color = activityIndicator.backgroundColor
-            activityIndicator.backgroundColor = UIColor.clearColor()
-            activityIndicator.autoCenterInSuperview()
-            UIView.animateWithDuration(0.3, animations: {activityIndicator.backgroundColor = color})
-            self.view.userInteractionEnabled = false
-            
-            let dataManager = self.injector!.create(DataManager.self) as! DataManager
+            let activityIndicator = disableInteractionWithMessage(NSLocalizedString("Importing feeds", comment: ""))
 
             dataManager.importOPML(NSURL(string: "file://" + location)!, progress: {(progress: Double) in
                 activityIndicator.progress = progress
-            }) {(_) in
-                self.dismiss()
-                activityIndicator.removeFromSuperview()
-                self.view.userInteractionEnabled = true
-                self.navigationItem.leftBarButtonItem?.enabled = true
+            }, completion: {(_) in
+                    self.reenableInteractionAndDismiss(activityIndicator)
+            })
+        } else if indexPath.section == 1 {
+            let feed = feeds[indexPath.row].1
+
+            let activityIndicator = disableInteractionWithMessage(NSLocalizedString("Importing feed", comment: ""))
+
+            if let url = feed.link.absoluteString {
+                self.dataManager.newFeed(url) {_ in
+                    self.reenableInteractionAndDismiss(activityIndicator)
+                }
+            } else {
+                self.reenableInteractionAndDismiss(activityIndicator)
             }
         }
+    }
+
+    private func disableInteractionWithMessage(message: String) -> RBActivityIndicator {
+        let activityIndicator = RBActivityIndicator(forAutoLayout: ())
+        activityIndicator.showProgressBar = true
+        activityIndicator.style = RBActivityIndicatorStyleDark
+        activityIndicator.displayMessage = message
+        self.view.addSubview(activityIndicator)
+        let color = activityIndicator.backgroundColor
+        activityIndicator.backgroundColor = UIColor.clearColor()
+        activityIndicator.autoCenterInSuperview()
+        UIView.animateWithDuration(0.3, animations: {activityIndicator.backgroundColor = color})
+
+        self.navigationItem.leftBarButtonItem?.enabled = false
+        self.view.userInteractionEnabled = false
+        return activityIndicator
+    }
+
+    private func reenableInteractionAndDismiss(activityIndicator: RBActivityIndicator) {
+        activityIndicator.removeFromSuperview()
+        view.userInteractionEnabled = true
+        navigationItem.leftBarButtonItem?.enabled = true
+        dismiss()
     }
 }

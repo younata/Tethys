@@ -19,9 +19,13 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     
     var feeds: [String] = []
 
+    lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as! DataManager }()
+    lazy var mainQueue : NSOperationQueue = { self.injector!.create(kMainQueue) as! NSOperationQueue }()
+    lazy var backgroundQueue : NSOperationQueue = { self.injector!.create(kBackgroundQueue) as! NSOperationQueue }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         self.edgesForExtendedLayout = .None
         
         webContent.navigationDelegate = self
@@ -105,7 +109,6 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         let loading = LoadingView(frame: self.view.bounds)
         self.view.addSubview(loading)
         loading.msg = NSString.localizedStringWithFormat(NSLocalizedString("Loading feed at %@", comment: ""), link) as String
-        let dataManager = self.injector!.create(DataManager.self) as! DataManager
         if opml {
             dataManager.importOPML(NSURL(string: link)!, progress: {(_) in }) {(_) in
                 loading.removeFromSuperview()
@@ -154,43 +157,6 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         if let url = NSURL(string: textField.text) {
             self.webContent.loadRequest(NSURLRequest(URL: NSURL(string: textField.text)!))
         }
-        if (lookForFeeds) {
-            let text = textField.text!
-            Alamofire.request(.GET, text).responseString {(_, _, response, error) in
-                if let txt = response {
-                    let feedParser = Muon.FeedParser(string: txt)
-                    let opmlParser = OPMLParser(text: txt).success{(_) in
-                        feedParser.cancel()
-                        let alert = UIAlertController(title: NSLocalizedString("Feed list Detected", comment: ""), message: NSLocalizedString("Import?", comment: ""), preferredStyle: .Alert)
-                        alert.addAction(UIAlertAction(title: NSLocalizedString("Don't Save", comment: ""), style: .Cancel, handler: {(alertAction: UIAlertAction!) in
-                            alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
-                        }))
-                        alert.addAction(UIAlertAction(title: NSLocalizedString("Save", comment: ""), style: .Default, handler: {(_) in
-                            alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
-                            self.save(textField.text, opml: true)
-                        }))
-                        self.presentViewController(alert, animated: true, completion: nil)
-                    }
-                    feedParser.success {info in
-                        let string = info.link.absoluteString ?? text
-                        opmlParser.stopParsing()
-                        if (!contains(self.feeds, textField.text)) {
-                            let alert = UIAlertController(title: NSLocalizedString("Feed Detected", comment: ""), message: NSString.localizedStringWithFormat(NSLocalizedString("Save %@?", comment: ""), textField.text) as String, preferredStyle: .Alert)
-                            alert.addAction(UIAlertAction(title: NSLocalizedString("Don't Save", comment: ""), style: .Cancel, handler: {(alertAction: UIAlertAction!) in
-                                alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
-                            }))
-                            alert.addAction(UIAlertAction(title: NSLocalizedString("Save", comment: ""), style: .Default, handler: {(_) in
-                                alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
-                                self.save(string, opml: false)
-                            }))
-                            self.presentViewController(alert, animated: true, completion: nil)
-                        }
-                    }
-                    feedParser.main()
-                    opmlParser.parse()
-                }
-            }
-        }
         textField.placeholder = NSLocalizedString("Loading", comment: "")
         textField.resignFirstResponder()
         
@@ -199,13 +165,14 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     
     // MARK: - WKNavigationDelegate
     
-    func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
-        self.navigationItem.titleView = self.navField
+    func webView(webView: WKWebView, didFinishNavigation _: WKNavigation!) {
+//        self.navigationItem.titleView = self.navField
+        loadingBar.hidden = true
         navField.placeholder = webView.title
         forward.enabled = webView.canGoForward
         back.enabled = webView.canGoBack
         self.navigationItem.rightBarButtonItem = reload
-        
+
         if (lookForFeeds) {
             let discover = NSString(contentsOfFile: NSBundle.mainBundle().pathForResource("findFeeds", ofType: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
             webView.evaluateJavaScript(discover as String, completionHandler: {(res: AnyObject!, error: NSError?) in
@@ -222,19 +189,62 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
                 }
             })
         }
+    }
+    
+    func webView(webView: WKWebView, didFailNavigation _: WKNavigation!, withError error: NSError) {
+//        self.navigationItem.titleView = self.navField
+        loadingBar.hidden = true
+    }
+
+    func webView(webView: WKWebView, didFailProvisionalNavigation _: WKNavigation!, withError error: NSError) {
+//        self.navigationItem.titleView = self.navField
         loadingBar.hidden = true
     }
     
-    func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
-        self.navigationItem.titleView = self.navField
-        loadingBar.hidden = true
-    }
-    
-    func webView(webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+    func webView(webView: WKWebView, didStartProvisionalNavigation _: WKNavigation!) {
         loadingBar.progress = 0
         loadingBar.hidden = false
         navField.text = ""
         navField.placeholder = NSLocalizedString("Loading", comment: "")
         addFeedButton.enabled = false
+        if let text = webView.URL?.absoluteString where lookForFeeds {
+            Alamofire.request(.GET, text).responseString {(_, _, response, error) in
+                if let txt = response {
+                    let feedParser = Muon.FeedParser(string: txt)
+                    let opmlParser = OPMLParser(text: txt).success{(_) in
+                        feedParser.cancel()
+                        let alert = UIAlertController(title: NSLocalizedString("Feed list Detected", comment: ""), message: NSLocalizedString("Import?", comment: ""), preferredStyle: .Alert)
+                        alert.addAction(UIAlertAction(title: NSLocalizedString("Don't Save", comment: ""), style: .Cancel, handler: {(alertAction: UIAlertAction!) in
+                            alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+                        }))
+                        alert.addAction(UIAlertAction(title: NSLocalizedString("Save", comment: ""), style: .Default, handler: {(_) in
+                            alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+                            self.save(text, opml: true)
+                        }))
+                        self.mainQueue.addOperationWithBlock {
+                            self.presentViewController(alert, animated: true, completion: nil)
+                        }
+                    }
+                    feedParser.success {info in
+                        let string = info.link.absoluteString ?? text
+                        opmlParser.cancel()
+                        if (!contains(self.feeds, text)) {
+                            let alert = UIAlertController(title: NSLocalizedString("Feed Detected", comment: ""), message: NSString.localizedStringWithFormat(NSLocalizedString("Save %@?", comment: ""), text) as String, preferredStyle: .Alert)
+                            alert.addAction(UIAlertAction(title: NSLocalizedString("Don't Save", comment: ""), style: .Cancel, handler: {(alertAction: UIAlertAction!) in
+                                alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+                            }))
+                            alert.addAction(UIAlertAction(title: NSLocalizedString("Save", comment: ""), style: .Default, handler: {(_) in
+                                alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+                                self.save(string, opml: false)
+                            }))
+                            self.mainQueue.addOperationWithBlock {
+                                self.presentViewController(alert, animated: true, completion: nil)
+                            }
+                        }
+                    }
+                    self.backgroundQueue.addOperations([opmlParser, feedParser], waitUntilFinished: false)
+                }
+            }
+        }
     }
 }

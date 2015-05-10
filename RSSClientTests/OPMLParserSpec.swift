@@ -29,7 +29,7 @@ class OPMLParserSpec: QuickSpec {
                         expect(feed.tags).to(beNil())
                     }
                 }
-                parser.parse()
+                parser.main()
             }
             
             it("pulls out query feeds") {
@@ -39,12 +39,12 @@ class OPMLParserSpec: QuickSpec {
                     if let feed = queryFeeds.first {
                         expect(feed.title).to(equal("Query Feed"))
                         expect(feed.summary).to(beNil())
-                        expect(feed.xmlURL).to(equal(""))
+                        expect(feed.xmlURL).to(beNil())
                         expect(feed.query).to(equal("return true;"))
                         expect(feed.tags).to(beNil())
                     }
                 }
-                parser.parse()
+                parser.main()
             }
         }
     }

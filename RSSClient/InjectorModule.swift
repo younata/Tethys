@@ -4,8 +4,11 @@ import Ra
 let kMainManagedObjectContext = "kMainManagedObjectContext"
 let kBackgroundManagedObjectContext = "kBackgroundManagedObjectContext"
 
+let kMainQueue = "kMainQueue"
+let kBackgroundQueue = "kBackgroundQueue"
+
 class InjectorModule : Ra.InjectorModule {
-    func configureInjector(injector: Ra.Injector) {
+    func configureInjector(injector: Injector) {
         let dataManager = DataManager()
         injector.bind(DataManager.self, to: dataManager)
 
@@ -34,5 +37,12 @@ class InjectorModule : Ra.InjectorModule {
         // Managed Object Contexts
         injector.bind(kMainManagedObjectContext, to: dataManager.managedObjectContext)
         injector.bind(kBackgroundManagedObjectContext, to: dataManager.backgroundObjectContext)
+
+        // Operation Queues
+        injector.bind(kMainQueue, to: NSOperationQueue.mainQueue())
+
+        let backgroundQueue = NSOperationQueue()
+        backgroundQueue.qualityOfService = NSQualityOfService.Utility
+        injector.bind(kBackgroundQueue, to: backgroundQueue)
     }
 }

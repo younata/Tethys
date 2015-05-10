@@ -24,6 +24,8 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
 
     lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as! DataManager }()
 
+    lazy var backgroundQueue : NSOperationQueue = { self.injector!.create(kBackgroundQueue) as! NSOperationQueue }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -81,7 +83,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
         self.tableViewController.tableView.reloadSections(NSIndexSet(indexesInRange: NSMakeRange(0, 2)), withRowAnimation: .Automatic)
     }
     
-    func verifyIfFeedOrOPML(path: String) {
+    private func verifyIfFeedOrOPML(path: String) {
         if contains(contentsOfDirectory, path) {
             return;
         }
@@ -94,7 +96,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
             let feedParser = FeedParser(string: text as String)
             feedParser.completion = {feed in
                 self.feeds.append((path, feed))
-                opmlParser.stopParsing()
+                opmlParser.cancel()
                 self.reload()
             }
             opmlParser.callback = {items in
@@ -103,8 +105,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
                 feedParser.cancel()
                 self.reload()
             }
-            opmlParser.parse()
-            feedParser.main()
+            backgroundQueue.addOperations([opmlParser, feedParser], waitUntilFinished: false)
         }
     }
     

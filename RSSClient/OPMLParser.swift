@@ -22,11 +22,12 @@ class OPMLItem : NSObject {
     }
 }
 
-class OPMLParser : NSObject, NSXMLParserDelegate {
+class OPMLParser : NSOperation, NSXMLParserDelegate {
     var callback : ([OPMLItem]) -> Void = {(_) in }
     var onFailure : (NSError) -> Void = {(_) in }
-    
-    private var xmlParser : NSXMLParser
+
+    private var content : String? = nil
+    private var xmlParser : NSXMLParser? = nil
     private var items : [OPMLItem] = []
     private var isOPML = false
     
@@ -41,18 +42,37 @@ class OPMLParser : NSObject, NSXMLParserDelegate {
     }
     
     init(text: String) {
-        xmlParser = NSXMLParser(data: text.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!)
         super.init()
-        xmlParser.delegate = self
+        content = text
+    }
+
+    override init() {
+        super.init()
+    }
+
+    func configureWithText(text: String) {
+        content = text
+    }
+
+    override func main() {
+        parse()
+    }
+
+    override func cancel() {
+        stopParsing()
     }
     
-    func parse() {
+    private func parse() {
         items = []
-        xmlParser.parse()
+        if let text = content {
+            xmlParser = NSXMLParser(data: text.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!)
+            xmlParser?.delegate = self
+            xmlParser?.parse()
+        }
     }
     
-    func stopParsing() {
-        xmlParser.abortParsing()
+    private func stopParsing() {
+        xmlParser?.abortParsing()
     }
     
     // MARK: NSXMLParserDelegate

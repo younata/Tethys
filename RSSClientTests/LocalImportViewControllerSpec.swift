@@ -40,10 +40,13 @@ class LocalImportViewControllerSpec: QuickSpec {
         var tableView : UITableView! = nil
 
         var dataManager = DataManagerMock()
+        var backgroundQueue : FakeOperationQueue! = nil
 
         beforeEach {
-            injector = Ra.Injector()
+            injector = Ra.Injector(module: SpecInjectorModule())
             injector.bind(DataManager.self, to: dataManager)
+            backgroundQueue = injector.create(kBackgroundQueue) as! FakeOperationQueue
+            backgroundQueue.runSynchronously = true
             subject = injector.create(LocalImportViewController.self) as! LocalImportViewController
 
             navigationController = UINavigationController(rootViewController: subject)
@@ -54,7 +57,6 @@ class LocalImportViewControllerSpec: QuickSpec {
 
         it("should have 2 sections") {
             expect(subject.numberOfSectionsInTableView(tableView)).to(equal(2))
-            
         }
 
         it("should start out with 0 rows in each section") {

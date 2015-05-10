@@ -64,7 +64,7 @@ class DataManager: NSObject {
                     }
                 }
             }
-            opmlParser.parse()
+            operationQueue.addOperation(opmlParser)
         }
     }
 
@@ -591,9 +591,9 @@ class DataManager: NSObject {
                     feeds.append(feed.objectID)
                 }
             }
-            operationQueue.addOperation(NSBlockOperation(block: {
+            operationQueue.addOperationWithBlock {
                 self.updateBackgroundThreads(feeds)
-            }))
+            }
         }
     }
 
@@ -670,10 +670,10 @@ class DataManager: NSObject {
 
         super.init()
         operationQueue.underlyingQueue = dispatch_queue_create("DataManager Background Queue", nil)
-        operationQueue.addOperation(NSBlockOperation(block: {
+        operationQueue.addOperationWithBlock {
             self.backgroundJSVM = JSVirtualMachine()
             self.backgroundContext = self.setUpContext(JSContext(virtualMachine: self.backgroundJSVM))
-        }))
+        }
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "managedObjectContextDidSave", name: NSManagedObjectContextDidSaveNotification, object: managedObjectContext)
         managedObjectContextDidSave() // update all the query feeds.
     }

@@ -26,7 +26,7 @@ class DataManager: NSObject {
                 }
                 var i = 0
                 for item in items {
-                    dispatch_async(dispatch_get_main_queue()) {
+                    self.mainQueue.addOperationWithBlock {
                         if item.isQueryFeed() {
                             if let query = item.query {
                                 let newFeed = self.newQueryFeed(item.title!, code: query, summary: item.summary)
@@ -64,7 +64,7 @@ class DataManager: NSObject {
                     }
                 }
             }
-            operationQueue.addOperation(opmlParser)
+            backgroundQueue.addOperation(opmlParser)
         }
     }
 
@@ -231,7 +231,7 @@ class DataManager: NSObject {
             if managedObjectContext.hasChanges {
                 managedObjectContext.save(nil)
             }
-            dispatch_async(dispatch_get_main_queue()) {
+            mainQueue.addOperationWithBlock {
                 completion(error)
                 self.setApplicationBadgeCount()
             }
@@ -249,7 +249,7 @@ class DataManager: NSObject {
             return;
         }
 
-        operationQueue.addOperationWithBlock {
+        backgroundQueue.addOperationWithBlock {
             let ctx = self.backgroundObjectContext
             let theFeeds = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self in %@", feedIds), managedObjectContext: ctx) as? [CoreDataFeed] ?? []
             var feedsLeft = theFeeds.count
@@ -271,7 +271,7 @@ class DataManager: NSObject {
                     continue
                 }
 
-                FeedRepository.loadFeed(feed.url!, downloadManager: manager, operationQueue: self.operationQueue) {muonFeed, error in
+                FeedRepository.loadFeed(feed.url!, downloadManager: manager, operationQueue: self.backgroundQueue) {muonFeed, error in
                     if let err = error {
                         self.finishedUpdatingFeed(error, feed: feed, managedObjectContext: ctx, feedsLeft: &feedsLeft, completion: completion)
                     } else if let info = muonFeed {
@@ -582,7 +582,7 @@ class DataManager: NSObject {
     }
 
     func reloadQFR() {
-        operationQueue.cancelAllOperations()
+        backgroundQueue.cancelAllOperations()
         if let qfr = queryFeedResults {
             reloading = true
             var feeds : [NSManagedObjectID] = []
@@ -591,7 +591,7 @@ class DataManager: NSObject {
                     feeds.append(feed.objectID)
                 }
             }
-            operationQueue.addOperationWithBlock {
+            backgroundQueue.addOperationWithBlock {
                 self.updateBackgroundThreads(feeds)
             }
         }
@@ -607,7 +607,7 @@ class DataManager: NSObject {
                 articleIDs[feed] = res.map { return $0.objectID }
             }
         }
-        dispatch_async(dispatch_get_main_queue()) {
+        mainQueue.addOperationWithBlock {
             var queryFeedResults : [CoreDataFeed: [CoreDataArticle]] = [:]
             for (key, value) in articleIDs {
                 let theFeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self == %@", (key as NSManagedObjectID)), managedObjectContext: self.managedObjectContext).last as! CoreDataFeed
@@ -623,11 +623,22 @@ class DataManager: NSObject {
     let managedObjectModel: NSManagedObjectModel
     let persistentStoreCoordinator: NSPersistentStoreCoordinator
     let managedObjectContext: NSManagedObjectContext
-
-    let operationQueue = NSOperationQueue()
     let backgroundObjectContext: NSManagedObjectContext
-    var backgroundJSVM: JSVirtualMachine? = nil
-    var backgroundContext: JSContext? = nil
+
+    lazy var mainQueue : NSOperationQueue = { self.injector!.create(kMainQueue) as! NSOperationQueue }()
+    lazy var backgroundQueue : NSOperationQueue = {
+        let queue = self.injector!.create(kBackgroundQueue) as! NSOperationQueue
+        queue.addOperationWithBlock {
+            self.backgroundContext
+        }
+        return queue
+    }()
+    lazy var backgroundJSVM: JSVirtualMachine? = JSVirtualMachine()
+    lazy var backgroundContext: JSContext? = { self.setUpContext(JSContext(virtualMachine: self.backgroundJSVM)) }()
+
+    func configure() {
+        managedObjectContextDidSave() // update all the query feeds.
+    }
 
     override init() {
         var unitTesting = false
@@ -651,8 +662,8 @@ class DataManager: NSObject {
             NSFileManager.defaultManager().removeItemAtURL(storeURL!, error: nil)
             error = nil
             persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: managedObjectModel.configurations.last as? String, URL: storeURL, options: options, error: &error)
-            if (error != nil) {
-                println("Fatal error adding persistent data store: \(error!)")
+            if let err = error {
+                println("Fatal error adding persistent data store: \(err)")
                 fatalError("")
             }
         }
@@ -669,13 +680,7 @@ class DataManager: NSObject {
         self.backgroundObjectContext.parentContext = managedObjectContext
 
         super.init()
-        operationQueue.underlyingQueue = dispatch_queue_create("DataManager Background Queue", nil)
-        operationQueue.addOperationWithBlock {
-            self.backgroundJSVM = JSVirtualMachine()
-            self.backgroundContext = self.setUpContext(JSContext(virtualMachine: self.backgroundJSVM))
-        }
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "managedObjectContextDidSave", name: NSManagedObjectContextDidSaveNotification, object: managedObjectContext)
-        managedObjectContextDidSave() // update all the query feeds.
     }
 
     deinit {

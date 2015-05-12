@@ -17,6 +17,8 @@ class ArticleListController: UITableViewController {
     var dataManager : DataManager? = nil
     
     var previewMode : Bool = false
+
+    lazy var mainQueue : NSOperationQueue! = { self.injector!.create(kMainQueue) as! NSOperationQueue }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,7 +66,7 @@ class ArticleListController: UITableViewController {
     
     func refresh() {
         if let feeds = self.feeds {
-            dispatch_async(dispatch_get_main_queue()) {
+            mainQueue.addOperationWithBlock {
                 let articles = feeds.reduce([] as [Article]) { return $0 + $1.allArticles(self.dataManager!) }
                 let newArticles = NSSet(array: articles)
                 let oldArticles = NSSet(array: self.articles)

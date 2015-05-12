@@ -9,7 +9,16 @@ let kBackgroundQueue = "kBackgroundQueue"
 
 class InjectorModule : Ra.InjectorModule {
     func configureInjector(injector: Injector) {
-        let dataManager = DataManager()
+        // Operation Queues
+        injector.bind(kMainQueue, to: NSOperationQueue.mainQueue())
+
+        let backgroundQueue = NSOperationQueue()
+        backgroundQueue.qualityOfService = NSQualityOfService.Utility
+        injector.bind(kBackgroundQueue, to: backgroundQueue)
+
+        // DataManager
+        let dataManager = injector.create(DataManager.self) as! DataManager
+        dataManager.configure()
         injector.bind(DataManager.self, to: dataManager)
 
         injector.bind(NSFileManager.self, to: NSFileManager.defaultManager())
@@ -37,12 +46,5 @@ class InjectorModule : Ra.InjectorModule {
         // Managed Object Contexts
         injector.bind(kMainManagedObjectContext, to: dataManager.managedObjectContext)
         injector.bind(kBackgroundManagedObjectContext, to: dataManager.backgroundObjectContext)
-
-        // Operation Queues
-        injector.bind(kMainQueue, to: NSOperationQueue.mainQueue())
-
-        let backgroundQueue = NSOperationQueue()
-        backgroundQueue.qualityOfService = NSQualityOfService.Utility
-        injector.bind(kBackgroundQueue, to: backgroundQueue)
     }
 }

@@ -10,7 +10,7 @@
 #import "MWFeedParser.h"
 
 #import "Article.h"
-#import "Feed.h"
+#import "CoreDataFeed.h"
 #import "Enclosure.h"
 
 #import "NSColor+RSSClient.h"

@@ -71,7 +71,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     public func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        let originalList: [NSManagedObjectID] = (dataManager.feeds().reduce([], combine: {return $0 + ($1.allArticles())}) as [Article]).map { $0.objectID }
+        let originalList: [NSManagedObjectID] = (dataManager.feeds().reduce([], combine: {return $0 + ($1.allArticles())}) as [CoreDataArticle]).map { $0.objectID }
         if originalList.count == 0 {
             completionHandler(.Failed)
             return
@@ -81,7 +81,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 completionHandler(.Failed)
                 return
             }
-            let al : [NSManagedObjectID] = (self.dataManager.feeds().reduce([], combine: {return $0 + ($1.allArticles())}) as [Article]).map { return $0.objectID }
+            let al : [NSManagedObjectID] = (self.dataManager.feeds().reduce([], combine: {return $0 + ($1.allArticles())}) as [CoreDataArticle]).map { return $0.objectID }
             if (al.count == originalList.count) {
                 completionHandler(.NoData)
                 return
@@ -92,8 +92,8 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             
             let settings = application.currentUserNotificationSettings()
             if settings.types & UIUserNotificationType.Alert == .Alert {
-                let articles : [Article] = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self IN %@", alist), managedObjectContext: self.dataManager.managedObjectContext) as? [Article] ?? []
-                for article: Article in articles {
+                let articles : [CoreDataArticle] = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self IN %@", alist), managedObjectContext: self.dataManager.managedObjectContext) as? [CoreDataArticle] ?? []
+                for article in articles {
                     self.notificationHandler.sendLocalNotification(application, article: article)
                 }
             }
@@ -116,9 +116,9 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             let userInfo = userActivity.userInfo {
                 nc.popToRootViewControllerAnimated(false)
                 let feedTitle = userInfo["feed"] as! String
-                let feed : Feed = dataManager.feeds().filter{ return $0.title == feedTitle; }.first!
+                let feed : CoreDataFeed = dataManager.feeds().filter{ return $0.title == feedTitle; }.first!
                 let articleID = userInfo["article"] as! NSURL
-                let article : Article = feed.allArticles().filter({ return $0.objectID.URIRepresentation() == articleID }).first!
+                let article : CoreDataArticle = feed.allArticles().filter({ return $0.objectID.URIRepresentation() == articleID }).first!
                 let al = ftvc.showFeeds([feed], animated: false)
                 var controllers : [AnyObject] = []
                 controllers = [al.showArticle(article)]

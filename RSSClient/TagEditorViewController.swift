@@ -1,16 +1,8 @@
-//
-//  TagEditorViewController.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 12/2/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import UIKit
 
 class TagEditorViewController: UIViewController {
     
-    var feed : Feed? = nil
+    var feed : CoreDataFeed? = nil
     var tag: String? = nil {
         didSet {
             self.navigationItem.rightBarButtonItem?.enabled = self.feed != nil && tag != nil

@@ -21,7 +21,7 @@
         <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="article" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Article" inverseName="enclosures" inverseEntity="Article" syncable="YES"/>
     </entity>
-    <entity name="Feed" representedClassName="Feed" syncable="YES">
+    <entity name="Feed" representedClassName="CoreDataFeed" syncable="YES">
         <attribute name="query" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="summary" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tags" optional="YES" attributeType="Transformable" syncable="YES"/>

@@ -1,15 +1,7 @@
-//
-//  EnclosureCell.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 12/4/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import UIKit
 
 class EnclosureCell: UICollectionViewCell {
-    var enclosure: Enclosure? = nil {
+    var enclosure: CoreDataEnclosure? = nil {
         didSet {
             nameLabel.text = enclosure?.url?.lastPathComponent ?? ""
             let size = NSAttributedString(string: nameLabel.text!, attributes: [NSFontAttributeName: nameLabel.font]).boundingRectWithSize(CGSizeMake(120, CGFloat.max), options: .UsesFontLeading, context: nil).size

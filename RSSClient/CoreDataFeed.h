@@ -1,17 +1,9 @@
-//
-//  Feed.h
-//  RSSClient
-//
-//  Created by Rachel Brindle on 9/28/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Article;
+@class CoreDataArticle;
 
-@interface Feed : NSManagedObject
+@interface CoreDataFeed : NSManagedObject
 
 @property (nullable, nonatomic, retain) NSString * title;
 @property (nullable, nonatomic, retain) NSString * url;
@@ -25,10 +17,10 @@
 
 @end
 
-@interface Feed (CoreDataGeneratedAccessors)
+@interface CoreDataFeed (CoreDataGeneratedAccessors)
 
-- (void)addArticlesObject:(nonnull Article *)value;
-- (void)removeArticlesObject:(nonnull Article *)value;
+- (void)addArticlesObject:(nonnull CoreDataArticle *)value;
+- (void)removeArticlesObject:(nonnull CoreDataArticle *)value;
 - (void)addArticles:(nonnull NSSet *)values;
 - (void)removeArticles:(nonnull NSSet *)values;
 

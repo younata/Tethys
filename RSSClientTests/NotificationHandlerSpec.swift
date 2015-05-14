@@ -12,8 +12,8 @@ class NotificationHandlerSpec: QuickSpec {
 
         var ctx : NSManagedObjectContext! = nil
 
-        var article: Article? = nil
-        var feed: Feed? = nil
+        var article: CoreDataArticle? = nil
+        var feed: CoreDataFeed? = nil
 
         beforeEach {
             subject = NotificationHandler()

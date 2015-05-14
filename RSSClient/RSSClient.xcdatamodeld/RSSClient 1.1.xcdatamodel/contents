@@ -15,7 +15,7 @@
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="feed" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Feed" inverseName="articles" inverseEntity="Feed" syncable="YES"/>
     </entity>
-    <entity name="Feed" representedClassName="Feed" syncable="YES">
+    <entity name="Feed" representedClassName="CoreDataFeed" syncable="YES">
         <attribute name="query" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="summary" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tags" optional="YES" attributeType="Transformable" syncable="YES"/>

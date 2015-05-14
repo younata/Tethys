@@ -1,16 +1,8 @@
-//
-//  FeedTableCell.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 9/29/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import UIKit
 
 class FeedTableCell: UITableViewCell {
     
-    var feed: Feed? = nil {
+    var feed: CoreDataFeed? = nil {
         didSet {
             if let f = feed {
                 nameLabel.text = f.feedTitle()

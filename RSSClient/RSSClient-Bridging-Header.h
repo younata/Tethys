@@ -8,7 +8,7 @@
 #import "MAKDropDownMenu.h"
 #import "RBActivityIndicator.h"
 
-#import "Article.h"
-#import "Feed.h"
-#import "Enclosure.h"
+#import "CoreDataArticle.h"
+#import "CoreDataFeed.h"
+#import "CoreDataEnclosure.h"
 #import "UIColor+RSSClient.h"

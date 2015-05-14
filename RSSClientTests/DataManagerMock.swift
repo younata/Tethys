@@ -18,7 +18,7 @@ class DataManagerMock : DataManager {
         return nil
     }
 
-    override func feeds(managedObjectContext: NSManagedObjectContext? = nil) -> [Feed] {
+    override func feeds(managedObjectContext: NSManagedObjectContext? = nil) -> [CoreDataFeed] {
         return []
     }
 
@@ -30,7 +30,7 @@ class DataManagerMock : DataManager {
         completion(nil)
     }
 
-    override func updateFeeds(feeds: [Feed], backgroundFetch: Bool, completion: (NSError?) -> (Void)) {
+    override func updateFeeds(feeds: [CoreDataFeed], backgroundFetch: Bool, completion: (NSError?) -> (Void)) {
         completion(nil)
     }
 }

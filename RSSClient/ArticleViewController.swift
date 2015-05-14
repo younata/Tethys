@@ -11,7 +11,7 @@ import WebKit
 
 class ArticleViewController: UIViewController, WKNavigationDelegate {
     
-    var article: Article? = nil {
+    var article: CoreDataArticle? = nil {
         didSet {
             self.navigationController?.setToolbarHidden(false, animated: false)
             if let a = article {
@@ -65,7 +65,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     let contentString = NSLocalizedString("Content", comment: "")
     let linkString = NSLocalizedString("Link", comment: "")
     
-    var articles: [Article] = []
+    var articles: [CoreDataArticle] = []
     var lastArticleIndex = 0
     
     var dataManager: DataManager? = nil
@@ -110,7 +110,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         }
     }
     
-    func showArticle(article: Article, onWebView webView: WKWebView) {
+    func showArticle(article: CoreDataArticle, onWebView webView: WKWebView) {
         if let cnt = article.content ?? article.summary {
             let title = (article.title != nil ? "<h2>\(article.title)</h2>" : "")
             webView.loadHTMLString(articleCSS + title + cnt + "</body></html>", baseURL: NSURL(string: article.feed?.url ?? "")!)
@@ -390,10 +390,10 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     }
     
     func showEnclosures() {
-        if let enclosures = article?.enclosures as? Set<Enclosure> {
+        if let enclosures = article?.enclosures as? Set<CoreDataEnclosure> {
             let activity = EnclosuresViewController()
             activity.dataManager = dataManager
-            activity.enclosures = Array<Enclosure>(enclosures)
+            activity.enclosures = Array<CoreDataEnclosure>(enclosures)
             
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                 let popover = UIPopoverController(contentViewController: UINavigationController(rootViewController: activity))

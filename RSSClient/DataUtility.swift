@@ -66,7 +66,7 @@ class DataUtility {
         }
 
         let entityDescription = NSEntityDescription.entityForName("Enclosure", inManagedObjectContext: article.managedObjectContext!)!
-        let enclosure = Enclosure(entity: entityDescription, insertIntoManagedObjectContext: article.managedObjectContext!)
+        let enclosure = CoreDataEnclosure(entity: entityDescription, insertIntoManagedObjectContext: article.managedObjectContext!)
         enclosure.url = url
         enclosure.kind = item.type
         enclosure.article = article

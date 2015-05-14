@@ -6,11 +6,7 @@ import Foundation
     typealias Image=NSImage
 #endif
 
-typealias CoreDataFeed = Feed
-typealias CoreDataArticle = Article
-typealias CoreDataEnclosure = Enclosure
-
-extension Feed {
+extension CoreDataFeed {
     func feedImage() -> Image? {
         if self.image == nil { return nil }
         return (self.image as? Image)
@@ -28,14 +24,14 @@ extension Feed {
         }
     }
     
-    func allArticles() -> [Article] {
-        if let articles = self.articles as? Set<Article> {
-            return Array<Article>(articles)
+    func allArticles() -> [CoreDataArticle] {
+        if let articles = self.articles as? Set<CoreDataArticle> {
+            return Array<CoreDataArticle>(articles)
         }
         return []
     }
     
-    func allArticles(dataManager: DataManager) -> [Article] {
+    func allArticles(dataManager: DataManager) -> [CoreDataArticle] {
         if let query = self.query {
             return dataManager.articlesMatchingQuery(query, feed: self)
         } else {
@@ -75,8 +71,8 @@ extension Feed {
     func asDict() -> [String: AnyObject] {
         var ret = asDictNoArticles()
         var theArticles : [[String: AnyObject]] = []
-        if let articles = self.articles as? Set<Article> {
-            for article in Array<Article>(articles) {
+        if let articles = self.articles as? Set<CoreDataArticle> {
+            for article in Array<CoreDataArticle>(articles) {
                 theArticles.append(article.asDictNoFeed())
             }
         }
@@ -107,7 +103,7 @@ extension Feed {
     }
 }
 
-extension Article {
+extension CoreDataArticle {
     func allFlags() -> [String] {
         if let flags = self.flags as? [String] {
             return flags

@@ -1,16 +1,8 @@
-//
-//  Article.m
-//  RSSClient
-//
-//  Created by Rachel Brindle on 9/28/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
-#import "Article.h"
-#import "Feed.h"
+#import "CoreDataArticle.h"
+#import "CoreDataFeed.h"
 
 
-@implementation Article
+@implementation CoreDataArticle
 
 @dynamic title;
 @dynamic link;

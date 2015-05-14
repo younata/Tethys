@@ -1,17 +1,9 @@
-//
-//  ArticleListController.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 9/27/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import UIKit
 
 class ArticleListController: UITableViewController {
     
-    var articles : [Article] = []
-    var feeds : [Feed]? = nil
+    var articles : [CoreDataArticle] = []
+    var feeds : [CoreDataFeed]? = nil
     let queue = dispatch_queue_create("articleController", nil)
     
     var dataManager : DataManager? = nil
@@ -60,19 +52,19 @@ class ArticleListController: UITableViewController {
         }
     }
     
-    func articleForIndexPath(indexPath: NSIndexPath) -> Article {
+    func articleForIndexPath(indexPath: NSIndexPath) -> CoreDataArticle {
         return articles[indexPath.row]
     }
     
     func refresh() {
         if let feeds = self.feeds {
             mainQueue.addOperationWithBlock {
-                let articles = feeds.reduce([] as [Article]) { return $0 + $1.allArticles(self.dataManager!) }
+                let articles = feeds.reduce([] as [CoreDataArticle]) { return $0 + $1.allArticles(self.dataManager!) }
                 let newArticles = NSSet(array: articles)
                 let oldArticles = NSSet(array: self.articles)
                 if newArticles != oldArticles {
-                    self.articles = (articles as [Article])
-                    self.articles.sort({(a : Article, b: Article) in
+                    self.articles = (articles as [CoreDataArticle])
+                    self.articles.sort({(a : CoreDataArticle, b: CoreDataArticle) in
                         let da = a.updatedAt ?? a.published
                         let db = b.updatedAt ?? b.published
                         return da!.timeIntervalSince1970 > db!.timeIntervalSince1970
@@ -89,11 +81,11 @@ class ArticleListController: UITableViewController {
         }
     }
     
-    func showArticle(article: Article) -> ArticleViewController {
+    func showArticle(article: CoreDataArticle) -> ArticleViewController {
         return showArticle(article, animated: true)
     }
     
-    func showArticle(article: Article, animated: Bool) -> ArticleViewController {
+    func showArticle(article: CoreDataArticle, animated: Bool) -> ArticleViewController {
         let avc = self.splitViewController?.viewControllers.last as? ArticleViewController ?? ArticleViewController()
         avc.dataManager = dataManager
         avc.article = article

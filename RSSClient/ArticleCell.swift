@@ -11,7 +11,7 @@ import WebKit
 
 class ArticleCell: UITableViewCell, UITextViewDelegate {
     
-    var article: Article? {
+    var article: CoreDataArticle? {
         didSet {
             title.text = article?.title ?? ""
             published.text = article != nil ? dateFormatter.stringFromDate(article?.updatedAt ?? article?.published ?? NSDate()) : ""

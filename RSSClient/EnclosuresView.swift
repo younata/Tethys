@@ -13,9 +13,9 @@ class EnclosuresView: UIView, UICollectionViewDelegate, UICollectionViewDataSour
     
     var dataManager : DataManager? = nil
     
-    var openEnclosure : (Enclosure) -> (Void) = {(_) in }
+    var openEnclosure : (CoreDataEnclosure) -> (Void) = {(_) in }
     
-    var enclosures : [Enclosure]? = nil {
+    var enclosures : [CoreDataEnclosure]? = nil {
         didSet {
             collectionView.reloadData()
         }

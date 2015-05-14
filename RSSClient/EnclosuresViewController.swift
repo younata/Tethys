@@ -10,7 +10,7 @@ import UIKit
 
 class EnclosuresViewController: UIViewController {
     
-    var enclosures : [Enclosure]? = nil {
+    var enclosures : [CoreDataEnclosure]? = nil {
         didSet {
             enclosuresView.enclosures = enclosures
         }

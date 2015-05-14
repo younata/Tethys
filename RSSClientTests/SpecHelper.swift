@@ -23,17 +23,17 @@ func managedObjectContext() -> NSManagedObjectContext {
     return managedObjectContext
 }
 
-func createFeed(managedObjectContext: NSManagedObjectContext) -> Feed {
+func createFeed(managedObjectContext: NSManagedObjectContext) -> CoreDataFeed {
     let entityDescription = NSEntityDescription.entityForName("Feed", inManagedObjectContext: managedObjectContext)!
-    return Feed(entity: entityDescription, insertIntoManagedObjectContext: managedObjectContext)
+    return CoreDataFeed(entity: entityDescription, insertIntoManagedObjectContext: managedObjectContext)
 }
 
-func createArticle(managedObjectContext: NSManagedObjectContext) -> Article {
+func createArticle(managedObjectContext: NSManagedObjectContext) -> CoreDataArticle {
     let entityDescription = NSEntityDescription.entityForName("Article", inManagedObjectContext: managedObjectContext)!
-    return Article(entity: entityDescription, insertIntoManagedObjectContext: managedObjectContext)
+    return CoreDataArticle(entity: entityDescription, insertIntoManagedObjectContext: managedObjectContext)
 }
 
-func createEnclosure(managedObjectContext: NSManagedObjectContext) -> Enclosure {
+func createEnclosure(managedObjectContext: NSManagedObjectContext) -> CoreDataEnclosure {
     let entityDescription = NSEntityDescription.entityForName("Enclosure", inManagedObjectContext: managedObjectContext)!
-    return Enclosure(entity: entityDescription, insertIntoManagedObjectContext: managedObjectContext)
+    return CoreDataEnclosure(entity: entityDescription, insertIntoManagedObjectContext: managedObjectContext)
 }

@@ -1,16 +1,8 @@
-//
-//  FeedsTableViewController.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 9/29/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import UIKit
 
 class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, MAKDropDownMenuDelegate, UITextFieldDelegate, UISearchBarDelegate, BreakOutToRefreshDelegate {
 
-    var feeds: [Feed] = []
+    var feeds: [CoreDataFeed] = []
     
     let tableViewController = UITableViewController(style: .Plain)
     
@@ -171,7 +163,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func reload(tag: String?) {
         let oldFeeds = feeds
-        feeds = dataManager.feedsMatchingTag(tag).sorted {(f1: Feed, f2: Feed) in
+        feeds = dataManager.feedsMatchingTag(tag).sorted {(f1: CoreDataFeed, f2: CoreDataFeed) in
             let f1Unread = f1.unreadArticles(self.dataManager)
             let f2Unread = f2.unreadArticles(self.dataManager)
             if f1Unread != f2Unread {
@@ -198,15 +190,15 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         })
     }
     
-    func feedAtIndexPath(indexPath: NSIndexPath) -> Feed! {
+    func feedAtIndexPath(indexPath: NSIndexPath) -> CoreDataFeed! {
         return feeds[indexPath.row]
     }
     
-    func showFeeds(feeds: [Feed]) -> ArticleListController {
+    func showFeeds(feeds: [CoreDataFeed]) -> ArticleListController {
         return showFeeds(feeds, animated: true)
     }
     
-    func showFeeds(feeds: [Feed], animated: Bool) -> ArticleListController {
+    func showFeeds(feeds: [CoreDataFeed], animated: Bool) -> ArticleListController {
         let al = ArticleListController(style: .Plain)
         al.dataManager = dataManager
         al.feeds = feeds

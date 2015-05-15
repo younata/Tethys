@@ -20,7 +20,7 @@ class DataUtility {
     }
 
     class func updateFeedImage(feed: CoreDataFeed, info: Muon.Feed, manager: Alamofire.Manager) {
-        if let imageURL = info.imageURL where feed.feedImage() == nil {
+        if let imageURL = info.imageURL where feed.image == nil {
             manager.request(.GET, imageURL).response {(_, _, data, error) in
                 if error != nil {
                     return
@@ -85,5 +85,17 @@ class DataUtility {
         }
         println("Error executing fetch request: \(error)")
         return []
+    }
+
+    class func feedsWithPredicate(predicate: NSPredicate, managedObjectContext: NSManagedObjectContext, sortDescriptors: [NSSortDescriptor] = []) -> [Feed] {
+        return map(DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: managedObjectContext, sortDescriptors: []) as? [CoreDataFeed] ?? []) {
+            Feed(feed: $0)
+        }
+    }
+
+    class func articlesWithPredicate(predicate: NSPredicate, managedObjectContext: NSManagedObjectContext, sortDescriptors: [NSSortDescriptor] = []) -> [Article] {
+        return map(DataUtility.entities("Article", matchingPredicate: predicate, managedObjectContext: managedObjectContext, sortDescriptors: []) as? [CoreDataArticle] ?? []) {
+            Article(article: $0, feed: nil)
+        }
     }
 }

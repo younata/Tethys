@@ -37,22 +37,22 @@ class NotificationHandler : NSObject {
             let (feed, article) = feedAndArticleFromUserInfo(userInfo)
             if identifier == "read" {
                 let dataManager = self.injector!.create(DataManager.self) as! DataManager
-                dataManager.readArticle(article)
+//                dataManager.readArticle(article)
             } else if identifier == "view" {
                 showArticle(article, window: window)
             }
         }
     }
     
-    func sendLocalNotification(application: UIApplication, article: CoreDataArticle) {
+    func sendLocalNotification(application: UIApplication, article: Article) {
         let note = UILocalNotification()
-        note.alertBody = NSString.localizedStringWithFormat("New article in %@: %@", article.feed?.feedTitle() ?? "", article.title ?? "") as String
+        note.alertBody = NSString.localizedStringWithFormat("New article in %@: %@", article.feed?.title ?? "", article.title ?? "") as String
 
-        let feedID = article.feed!.objectID.URIRepresentation().absoluteString!
-        let articleID = article.objectID.URIRepresentation().absoluteString!
+//        let feedID = article.feed!.objectID.URIRepresentation().absoluteString!
+//        let articleID = article.objectID.URIRepresentation().absoluteString!
 
-        let dict = ["feed": feedID, "article": articleID]
-        note.userInfo = dict
+//        let dict = ["feed": feedID, "article": articleID]
+//        note.userInfo = dict
         note.fireDate = NSDate()
         note.category = "default"
         let existingNotes = application.scheduledLocalNotifications as! [UILocalNotification]
@@ -61,22 +61,22 @@ class NotificationHandler : NSObject {
         application.presentLocalNotificationNow(note)
     }
     
-    private func feedAndArticleFromUserInfo(userInfo: [NSObject : AnyObject]) -> (CoreDataFeed, CoreDataArticle) {
+    private func feedAndArticleFromUserInfo(userInfo: [NSObject : AnyObject]) -> (Feed, Article) {
         let feedID = (userInfo["feed"] as! String)
         let dataManager = self.injector!.create(DataManager.self) as! DataManager
-        let feed : CoreDataFeed = dataManager.feeds().filter{ return $0.objectID.URIRepresentation().absoluteString == feedID; }.first!
+        let feed : Feed = dataManager.feeds().filter{ return $0.feedID?.URIRepresentation().absoluteString == feedID; }.first!
         let articleID = (userInfo["article"] as! String)
-        let article : CoreDataArticle = feed.allArticles(dataManager).filter({ return $0.objectID.URIRepresentation().absoluteString == articleID }).first!
+        let article : Article = feed.articles.filter({ return $0.articleID?.URIRepresentation().absoluteString == articleID }).first!
         return (feed, article)
     }
     
-    private func showArticle(article: CoreDataArticle, window: UIWindow) {
+    private func showArticle(article: Article, window: UIWindow) {
         if let nc = (window.rootViewController as? UISplitViewController)?.viewControllers.first as? UINavigationController,
             let ftvc = nc.viewControllers.first as? FeedsTableViewController {
                 nc.popToRootViewControllerAnimated(false)
                 if let feed = article.feed {
-                    let al = ftvc.showFeeds([feed], animated: false)
-                    al.showArticle(article)
+//                    let al = ftvc.showFeeds([feed], animated: false)
+//                    al.showArticle(article)
                 }
         }
     }

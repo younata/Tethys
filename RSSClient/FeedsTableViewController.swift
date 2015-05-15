@@ -2,7 +2,7 @@ import UIKit
 
 class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, MAKDropDownMenuDelegate, UITextFieldDelegate, UISearchBarDelegate, BreakOutToRefreshDelegate {
 
-    var feeds: [CoreDataFeed] = []
+    var feeds: [Feed] = []
     
     let tableViewController = UITableViewController(style: .Plain)
     
@@ -163,18 +163,13 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func reload(tag: String?) {
         let oldFeeds = feeds
-        feeds = dataManager.feedsMatchingTag(tag).sorted {(f1: CoreDataFeed, f2: CoreDataFeed) in
-            let f1Unread = f1.unreadArticles(self.dataManager)
-            let f2Unread = f2.unreadArticles(self.dataManager)
+        feeds = dataManager.feedsMatchingTag(tag).sorted {(f1: Feed, f2: Feed) in
+            let f1Unread = f1.unreadArticles().count
+            let f2Unread = f2.unreadArticles().count
             if f1Unread != f2Unread {
                 return f1Unread > f2Unread
             }
-            if f1.feedTitle() == nil {
-                return true
-            } else if f2.feedTitle() == nil {
-                return false
-            }
-            return f1.feedTitle()!.lowercaseString < f2.feedTitle()!.lowercaseString
+            return f1.title.lowercaseString < f2.title.lowercaseString
         }
         
         if refreshView.isRefreshing {
@@ -190,15 +185,15 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         })
     }
     
-    func feedAtIndexPath(indexPath: NSIndexPath) -> CoreDataFeed! {
+    func feedAtIndexPath(indexPath: NSIndexPath) -> Feed! {
         return feeds[indexPath.row]
     }
     
-    func showFeeds(feeds: [CoreDataFeed]) -> ArticleListController {
+    func showFeeds(feeds: [Feed]) -> ArticleListController {
         return showFeeds(feeds, animated: true)
     }
     
-    func showFeeds(feeds: [CoreDataFeed], animated: Bool) -> ArticleListController {
+    func showFeeds(feeds: [Feed], animated: Bool) -> ArticleListController {
         let al = ArticleListController(style: .Plain)
         al.dataManager = dataManager
         al.feeds = feeds
@@ -239,7 +234,7 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let feed = feedAtIndexPath(indexPath)
-        let strToUse = (feed.unreadArticles(self.dataManager) == 0 ? "unread" : "read") // Prevents a green triangle which'll (dis)appear depending on whether new feed loaded into it has unread articles or not.
+        let strToUse = (feed.unreadArticles().isEmpty ? "unread" : "read") // Prevents a green triangle which'll (dis)appear depending on whether new feed loaded into it has unread articles or not.
         
         let cell = tableView.dequeueReusableCellWithIdentifier(strToUse, forIndexPath: indexPath) as! FeedTableCell
         cell.dataManager = dataManager
@@ -264,19 +259,19 @@ class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
         let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
             let feed = self.feedAtIndexPath(indexPath)
-            self.dataManager.deleteFeed(feed)
+//            self.dataManager.deleteFeed(feed)
             self.reload()
         })
         let markRead = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Mark\nRead", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
             let feed = self.feedAtIndexPath(indexPath)
-            self.dataManager.readArticles(feed.allArticles(self.dataManager))
+//            self.dataManager.readArticles(feed.allArticles(self.dataManager))
             self.reload()
         })
         let edit = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Edit", comment: ""), handler: {(_, indexPath: NSIndexPath!) in
             let feed = self.feedAtIndexPath(indexPath)
             var klass : AnyClass? = nil
             var viewController : UIViewController! = nil
-            if feed.isQueryFeed() {
+            if feed.isQueryFeed {
                 let vc = self.injector!.create(QueryFeedViewController.self) as! QueryFeedViewController
                 vc.feed = feed
                 viewController = vc

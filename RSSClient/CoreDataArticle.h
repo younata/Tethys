@@ -10,7 +10,7 @@
 @property (nullable, nonatomic, retain) NSString * link;
 @property (nullable, nonatomic, retain) NSString * summary;
 @property (nullable, nonatomic, retain) NSString * author;
-@property (nullable, nonatomic, retain) NSDate * published;
+@property (null_resettable, nonatomic, retain) NSDate * published;
 @property (nullable, nonatomic, retain) NSDate * updatedAt;
 @property (nullable, nonatomic, retain) NSString * identifier;
 @property (nullable, nonatomic, retain) NSString * content;

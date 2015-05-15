@@ -80,7 +80,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         if (lookForFeeds) {
             let dataManager = self.injector!.create(DataManager.self) as! DataManager
             feeds = dataManager.feeds().reduce([], combine: {
-                if let url = $1.url {
+                if let url = $1.url?.absoluteString {
                     return $0 + [url]
                 }
                 return $0

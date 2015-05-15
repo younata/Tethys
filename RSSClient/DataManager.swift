@@ -13,14 +13,14 @@ class DataManager: NSObject {
         importOPML(opml, progress: {(_) in }, completion: {(_) in })
     }
 
-    func importOPML(opml: NSURL, progress: (Double) -> Void, completion: ([CoreDataFeed]) -> Void) {
+    func importOPML(opml: NSURL, progress: (Double) -> Void, completion: ([Feed]) -> Void) {
         if let text = NSString(contentsOfURL: opml, encoding: NSUTF8StringEncoding, error: nil) {
             let opmlParser = OPMLParser(text: text as String)
             opmlParser.failure {(error) in
                 completion([])
             }
             opmlParser.callback = {(items) in
-                var ret : [CoreDataFeed] = []
+                var ret : [Feed] = []
                 if items.count == 0 {
                     completion([])
                 }
@@ -29,8 +29,8 @@ class DataManager: NSObject {
                     self.mainQueue.addOperationWithBlock {
                         if item.isQueryFeed() {
                             if let query = item.query {
-                                let newFeed = self.newQueryFeed(item.title!, code: query, summary: item.summary)
-                                newFeed.tags = item.tags
+                                var newFeed = self.newQueryFeed(item.title!, code: query, summary: item.summary)
+                                newFeed.tags = item.tags ?? []
                                 ret.append(newFeed)
                             }
                             i++
@@ -40,7 +40,7 @@ class DataManager: NSObject {
                             }
                         } else {
                             if let feed = item.xmlURL,
-                            let newFeed = self.newFeed(feed, completion: {error in
+                            var newFeed = self.newFeed(feed, completion: {error in
                                 if let err = error {
                                     println("error importing \(feed): \(err)")
                                 }
@@ -51,7 +51,7 @@ class DataManager: NSObject {
                                     completion(ret)
                                 }
                             }) {
-                                newFeed.tags = item.tags
+                                newFeed.tags = item.tags ?? []
                                 ret.append(newFeed)
                             } else {
                                 i++
@@ -68,7 +68,7 @@ class DataManager: NSObject {
         }
     }
 
-    func generateOPMLContents(feeds: [CoreDataFeed]) -> String {
+    func generateOPMLContents(feeds: [Feed]) -> String {
         func sanitize(str: String?) -> String {
             if str == nil {
                 return ""
@@ -84,13 +84,13 @@ class DataManager: NSObject {
 
         var ret = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<opml version=\"2.0\">\n    <body>\n"
         for feed in feeds.filter({return $0.query == nil}) {
-            if feed.url == nil {
+            if feed.isQueryFeed {
                 ret += "        <outline query=\"\(sanitize(feed.query))\" title=\"\(sanitize(feed.title))\" summary=\"\(sanitize(feed.summary))\" type=\"query\""
             } else {
-                ret += "        <outline xmlURL=\"\(sanitize(feed.url))\" title=\"\(sanitize(feed.title))\" type=\"rss\""
+                ret += "        <outline xmlURL=\"\(sanitize(feed.url?.absoluteString))\" title=\"\(sanitize(feed.title))\" type=\"rss\""
             }
-            if feed.tags != nil {
-                let tags : String = ",".join(feed.tags as! [String])
+            if feed.tags.count != 0 {
+                let tags : String = ",".join(feed.tags)
                 ret += " tags=\"\(tags)\""
             }
             ret += "/>\n"
@@ -106,25 +106,25 @@ class DataManager: NSObject {
     // MARK: CoreDataFeeds
 
     func allTags(managedObjectContext: NSManagedObjectContext? = nil) -> [String] {
-        let feedsWithTags = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "tags != nil"), managedObjectContext: (managedObjectContext ?? self.managedObjectContext)) as? [CoreDataFeed] ?? []
+        let feedsWithTags = DataUtility.feedsWithPredicate(NSPredicate(format: "tags != nil"), managedObjectContext: (managedObjectContext ?? self.managedObjectContext))
 
-        let setOfTags = feedsWithTags.reduce(NSSet()) {(set, feed) in
-            return set.setByAddingObjectsFromArray(feed.allTags())
+        let setOfTags = feedsWithTags.reduce(Set<String>()) {set, feed in
+            return set.intersect(Set(feed.tags))
         }
 
-        return (setOfTags.allObjects as? [String] ?? []).sorted { return $0.lowercaseString < $1.lowercaseString }
+        return Array(setOfTags).sorted { return $0.lowercaseString < $1.lowercaseString }
     }
 
-    func feeds(managedObjectContext: NSManagedObjectContext? = nil) -> [CoreDataFeed] {
-        return (DataUtility.entities("Feed", matchingPredicate: NSPredicate(value: true), managedObjectContext: (managedObjectContext ?? self.managedObjectContext)) as? [CoreDataFeed] ?? []).sorted {
+    func feeds(managedObjectContext: NSManagedObjectContext? = nil) -> [Feed] {
+        return DataUtility.feedsWithPredicate(NSPredicate(value: true), managedObjectContext: (managedObjectContext ?? self.managedObjectContext)).sorted {
             return $0.title < $1.title
-        } ?? []
+        }
     }
 
-    func feedsMatchingTag(tag: String?, managedObjectContext: NSManagedObjectContext? = nil, allowIncompleteTags: Bool = true) -> [CoreDataFeed] {
+    func feedsMatchingTag(tag: String?, managedObjectContext: NSManagedObjectContext? = nil, allowIncompleteTags: Bool = true) -> [Feed] {
         if let theTag = (tag == "" ? nil : tag) {
             return feeds(managedObjectContext: managedObjectContext).filter {
-                let tags = $0.allTags()
+                let tags = $0.tags
                 for t in tags {
                     if allowIncompleteTags {
                         if t.rangeOfString(theTag) != nil {
@@ -143,20 +143,17 @@ class DataManager: NSObject {
         }
     }
 
-    func newFeed(feedURL: String) -> CoreDataFeed? {
-        return newFeed(feedURL, completion: {(_) in })
-    }
-
-    func newFeed(feedURL: String, completion: (NSError?) -> (Void)) -> CoreDataFeed? {
+    func newFeed(feedURL: String, completion: (NSError?) -> (Void)) -> Feed? {
         let predicate = NSPredicate(format: "url = %@", feedURL)
-        var feed: CoreDataFeed! = nil
+        let feed: Feed
         if let theFeed = DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: self.managedObjectContext).last as? CoreDataFeed {
-            feed = theFeed
+            feed = Feed(feed: theFeed)
         } else {
-            feed = newFeed()
-            feed.url = feedURL
+            let cdfeed = newFeed()
+            cdfeed.url = feedURL
+            feed = Feed(feed: cdfeed)
             self.managedObjectContext.save(nil)
-            NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
+            NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: cdfeed)
         }
         #if os(iOS)
             UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
@@ -166,7 +163,7 @@ class DataManager: NSObject {
         return feed
     }
 
-    func newQueryFeed(title: String, code: String, summary: String? = nil) -> CoreDataFeed {
+    func newQueryFeed(title: String, code: String, summary: String? = nil) -> Feed {
         let predicate = NSPredicate(format: "title = %@", title)
         var feed: CoreDataFeed! = nil
         if let theFeed = DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: self.managedObjectContext).last as? CoreDataFeed {
@@ -179,7 +176,7 @@ class DataManager: NSObject {
             self.managedObjectContext.save(nil)
             NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
         }
-        return feed
+        return Feed(feed: feed)
     }
 
     func newFeed() -> CoreDataFeed {
@@ -187,8 +184,10 @@ class DataManager: NSObject {
     }
 
     func deleteFeed(feed: CoreDataFeed) {
-        for article in feed.allArticles() {
-            self.managedObjectContext.deleteObject(article)
+        for article in feed.articles {
+            if let article = article as? CoreDataArticle {
+                self.managedObjectContext.deleteObject(article)
+            }
         }
         self.managedObjectContext.deleteObject(feed)
         self.managedObjectContext.save(nil)
@@ -210,22 +209,22 @@ class DataManager: NSObject {
 
     var stats : [(parseTime: Double, importTime: Double)] = []
 
-    func finishedUpdatingFeed(error: NSError?, feed: CoreDataFeed, managedObjectContext: NSManagedObjectContext, inout feedsLeft: Int, completion: (NSError?) -> (Void)) {
+    func finishedUpdatingFeed(error: NSError?, var feed: Feed, managedObjectContext: NSManagedObjectContext, inout feedsLeft: Int, completion: (NSError?) -> (Void)) {
         feedsLeft--
         if error != nil {
             println("Errored loading: \(error)")
         }
         if (error == nil) {
-            if feed.waitPeriod == nil || feed.waitPeriod?.integerValue != 0 {
-                feed.waitPeriod = NSNumber(integer: 0)
-                feed.remainingWait = NSNumber(integer: 0)
-                feed.managedObjectContext?.save(nil)
+            if feed.waitPeriod == nil || feed.waitPeriod != 0 {
+                feed.waitPeriod = 0
+                feed.remainingWait = 0
+//                feed.managedObjectContext?.save(nil)
             }
         } else if let err = error where (err.domain == NSURLErrorDomain && err.code > 0) {
-            feed.waitPeriod = NSNumber(integer: (feed.waitPeriod?.integerValue ?? 0) + 1)
-            feed.remainingWait = feed.waitPeriodInRefreshes(feed.waitPeriod!.integerValue)
+            feed.waitPeriod = (feed.waitPeriod ?? 0) + 1
+            feed.remainingWait = feed.waitPeriodInRefreshes()
             println("Setting feed at \(feed.url) to have remainingWait of \(feed.remainingWait) refreshes")
-            feed.managedObjectContext?.save(nil)
+//            feed.managedObjectContext?.save(nil)
         }
         if feedsLeft == 0 {
             if managedObjectContext.hasChanges {
@@ -241,8 +240,8 @@ class DataManager: NSObject {
     let mainManager = Alamofire.Manager(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
     let backgroundManager = Alamofire.Manager(configuration: NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier("com.rachelbrindle.rNews.background"))
 
-    func updateFeeds(feeds: [CoreDataFeed], backgroundFetch: Bool = false, completion: (NSError?)->(Void) = {_ in }) {
-        let feedIds = feeds.filter { $0.url != nil }.map { $0.objectID }
+    func updateFeeds(feeds: [Feed], backgroundFetch: Bool = false, completion: (NSError?)->(Void) = {_ in }) {
+        let feedIds = feeds.filter { !$0.isQueryFeed && $0.feedID != nil }.map { $0.feedID! }
 
         if feedIds.count == 0 {
             completion(nil);
@@ -251,17 +250,17 @@ class DataManager: NSObject {
 
         backgroundQueue.addOperationWithBlock {
             let ctx = self.backgroundObjectContext
-            let theFeeds = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self in %@", feedIds), managedObjectContext: ctx) as? [CoreDataFeed] ?? []
+            let theFeeds = DataUtility.feedsWithPredicate(NSPredicate(format: "self in %@", feedIds), managedObjectContext: ctx)
             var feedsLeft = theFeeds.count
 
             self.stats = []
 
             for feed in theFeeds {
                 let manager = backgroundFetch ? self.backgroundManager : self.mainManager // FIXME: using backgroundManager seems to always fail?
-                let wait = feed.remainingWait?.integerValue ?? 0
+                let wait = feed.remainingWait ?? 0
                 if wait != 0 {
-                    feed.remainingWait = NSNumber(integer: wait - 1)
-                    feed.managedObjectContext?.save(nil)
+//                    feed.remainingWait = wait - 1
+//                    ctx.save(nil)
                     println("Skipping feed at \(feed.url)")
                     feedsLeft--
                     if (feedsLeft == 0) {
@@ -271,16 +270,16 @@ class DataManager: NSObject {
                     continue
                 }
 
-                FeedRepository.loadFeed(feed.url!, downloadManager: manager, operationQueue: self.backgroundQueue) {muonFeed, error in
+                FeedRepository.loadFeed(feed.url!.absoluteString!, downloadManager: manager, operationQueue: self.backgroundQueue) {muonFeed, error in
                     if let err = error {
                         self.finishedUpdatingFeed(error, feed: feed, managedObjectContext: ctx, feedsLeft: &feedsLeft, completion: completion)
                     } else if let info = muonFeed {
-                        DataUtility.updateFeed(feed, info: info)
-                        DataUtility.updateFeedImage(feed, info: info, manager: manager)
+//                        DataUtility.updateFeed(feed, info: info)
+//                        DataUtility.updateFeedImage(feed, info: info, manager: manager)
                         for item in info.articles {
-                            if let article = self.upsertArticle(item, context: ctx) {
-                                feed.addArticlesObject(article)
-                                article.feed = feed
+                            if var article = self.upsertArticle(item, context: ctx) {
+//                                feed.addArticle(article)
+//                                article.feed = feed
                             }
                         }
                         self.finishedUpdatingFeed(nil, feed: feed, managedObjectContext: ctx, feedsLeft: &feedsLeft, completion: completion)
@@ -291,14 +290,14 @@ class DataManager: NSObject {
         }
     }
 
-    func estimateNextFeedTime(feed: CoreDataFeed) -> (NSDate?, Double) { // Time, stddev
+    func estimateNextFeedTime(feed: Feed) -> (NSDate?, Double) { // Time, stddev
         // This could be much better done.
         // For example, some feeds only update on weekdays, which this would tell it to update
         // once every 7/5ths of a day, instead of once a day for 5 days, then not at all on the weekends.
         // But for now, it's ok.
-        let times : [NSTimeInterval] = feed.allArticles(self).map {
-            return $0.published?.timeIntervalSince1970 ?? NSTimeInterval.infinity
-            }.sorted { return $0 < $1 }
+        let times : [NSTimeInterval] = feed.articles.map {
+            return $0.published.timeIntervalSince1970
+        }.sorted { return $0 < $1 }
 
         if times.count < 2 {
             return (nil, 0)
@@ -334,7 +333,7 @@ class DataManager: NSObject {
     }
 
     func setApplicationBadgeCount() {
-        let num = feeds(managedObjectContext: managedObjectContext).filter {return !$0.isQueryFeed()}.reduce(0) {return $0 + Int($1.unreadArticles(self))}
+        let num = feeds(managedObjectContext: managedObjectContext).filter {return !$0.isQueryFeed}.reduce(0) {return $0 + $1.unreadArticles().count}
         #if os(iOS)
             UIApplication.sharedApplication().applicationIconBadgeNumber = num
         #elseif os(OSX)
@@ -413,7 +412,7 @@ class DataManager: NSObject {
 
     // MARK: Articles
 
-    func upsertArticle(item: Muon.Article, var context ctx: NSManagedObjectContext! = nil) -> CoreDataArticle? {
+    func upsertArticle(item: Muon.Article, var context ctx: NSManagedObjectContext! = nil) -> Article? {
         let predicate = NSPredicate(format: "link = %@", item.link ?? "")
         if let article = DataUtility.entities("Article", matchingPredicate: predicate, managedObjectContext: ctx).last as? CoreDataArticle {
             if article.updatedAt != item.updated {
@@ -432,7 +431,7 @@ class DataManager: NSObject {
             for enclosure in item.enclosures {
                 DataUtility.insertEnclosureFromItem(enclosure, article: article)
             }
-            return article
+            return Article(article: article, feed: nil)
         }
     }
 
@@ -472,16 +471,16 @@ class DataManager: NSObject {
         return theArticles!
     }
 
-    private var queryFeedResults : [CoreDataFeed: [CoreDataArticle]]? = nil
+    private var queryFeedResults : [Feed: [Article]]? = nil
     private var reloading = false
 
-    func articlesMatchingQuery(query: String, feed: CoreDataFeed? = nil) -> [CoreDataArticle] {
+    func articlesMatchingQuery(query: String, feed: Feed? = nil) -> [Article] {
         if let f = feed {
-            if let res = queryFeedResults {
+            if let res = self.queryFeedResults {
                 if let results = res[f] {
                     return results
                 } else {
-                    queryFeedResults![f] = []
+                    self.queryFeedResults![f] = []
                     if !reloading {
                         reloadQFR()
                     }
@@ -503,17 +502,18 @@ class DataManager: NSObject {
         return []
     }
 
-    private func articlesFromQuery(query: String, articles: [CoreDataArticle], context: JSContext? = nil) -> [CoreDataArticle] {
-        let ctx = context ?? setUpContext(JSContext()!)
-        let script = "include = \(query)"
-        ctx.evaluateScript(script)
-        let function = ctx.objectForKeyedSubscript("include")
-
-        let results = articles.filter {(article) in
-            let val = function.callWithArguments([article.asDict()])
-            return val.toBool()
-        }
-        return results
+    private func articlesFromQuery(query: String, articles: [CoreDataArticle], context: JSContext? = nil) -> [Article] {
+//        let ctx = context ?? setUpContext(JSContext()!)
+//        let script = "include = \(query)"
+//        ctx.evaluateScript(script)
+//        let function = ctx.objectForKeyedSubscript("include")
+//
+//        let results = articles.filter {(article) in
+//            let val = function.callWithArguments([article.asDict()])
+//            return val.toBool()
+//        }
+//        return results
+        return []
     }
 
     // MARK: Scripting
@@ -539,39 +539,39 @@ class DataManager: NSObject {
     }
 
     private func fetching(ctx: JSContext, isBackground: Bool) {
-        let moc = isBackground ? self.backgroundObjectContext : self.managedObjectContext
+//        let moc = isBackground ? self.backgroundObjectContext : self.managedObjectContext
 
-        ctx.evaluateScript("var data = {onNewFeed: [], onNewArticle: []}")
-        let data = ctx.objectForKeyedSubscript("data")
-
-        var articles : @objc_block (Void) -> [NSDictionary] = {
-            return (DataUtility.entities("Article", matchingPredicate: NSPredicate(value: true), managedObjectContext: moc) as? [CoreDataArticle] ?? []).map {return $0.asDict()}
-        }
-        data.setObject(unsafeBitCast(articles, AnyObject.self), forKeyedSubscript: "articles")
-
-        var queryArticles : @objc_block (NSString, [NSObject]) -> [NSDictionary] = {(query, args) in
-            let predicate = NSPredicate(format: query as String, argumentArray: args)
-            return (DataUtility.entities("Article", matchingPredicate: predicate, managedObjectContext: moc) as? [CoreDataArticle] ?? []).map {$0.asDict()}
-        }
-        data.setObject(unsafeBitCast(queryArticles, AnyObject.self), forKeyedSubscript: "articlesMatchingQuery")
-
-        var feeds : @objc_block (Void) -> [NSDictionary] = {
-            return (DataUtility.entities("Feed", matchingPredicate: NSPredicate(value: true), managedObjectContext: moc) as? [CoreDataFeed] ?? []).map {return $0.asDict()}
-        }
-        data.setObject(unsafeBitCast(feeds, AnyObject.self), forKeyedSubscript: "feeds")
-
-        var queryFeeds : @objc_block (NSString, [NSObject]) -> [NSDictionary] = {(query, args) in // queries for feeds, not to be confused with query feeds.
-            let predicate = NSPredicate(format: query as String, argumentArray: args)
-            return (DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: moc) as? [CoreDataFeed] ?? []).map {$0.asDict()}
-        }
-        data.setObject(unsafeBitCast(queryFeeds, AnyObject.self), forKeyedSubscript: "feedsMatchingQuery")
-
-        var addOnNewFeed : @objc_block (@objc_block (NSDictionary) -> Void) -> Void = {(block) in
-            var onNewFeed = data.objectForKeyedSubscript("onNewFeed").toArray()
-            onNewFeed.append(unsafeBitCast(block, AnyObject.self))
-            data.setObject(onNewFeed, forKeyedSubscript: "onNewFeed")
-        }
-        data.setObject(unsafeBitCast(addOnNewFeed, AnyObject.self), forKeyedSubscript: "onNewFeed")
+//        ctx.evaluateScript("var data = {onNewFeed: [], onNewArticle: []}")
+//        let data = ctx.objectForKeyedSubscript("data")
+//
+//        var articles : @objc_block (Void) -> [NSDictionary] = {
+//            return (DataUtility.entities("Article", matchingPredicate: NSPredicate(value: true), managedObjectContext: moc) as? [CoreDataArticle] ?? []).map {return $0.asDict()}
+//        }
+//        data.setObject(unsafeBitCast(articles, AnyObject.self), forKeyedSubscript: "articles")
+//
+//        var queryArticles : @objc_block (NSString, [NSObject]) -> [NSDictionary] = {(query, args) in
+//            let predicate = NSPredicate(format: query as String, argumentArray: args)
+//            return (DataUtility.entities("Article", matchingPredicate: predicate, managedObjectContext: moc) as? [CoreDataArticle] ?? []).map {$0.asDict()}
+//        }
+//        data.setObject(unsafeBitCast(queryArticles, AnyObject.self), forKeyedSubscript: "articlesMatchingQuery")
+//
+//        var feeds : @objc_block (Void) -> [NSDictionary] = {
+//            return (DataUtility.entities("Feed", matchingPredicate: NSPredicate(value: true), managedObjectContext: moc) as? [CoreDataFeed] ?? []).map {return $0.asDict()}
+//        }
+//        data.setObject(unsafeBitCast(feeds, AnyObject.self), forKeyedSubscript: "feeds")
+//
+//        var queryFeeds : @objc_block (NSString, [NSObject]) -> [NSDictionary] = {(query, args) in // queries for feeds, not to be confused with query feeds.
+//            let predicate = NSPredicate(format: query as String, argumentArray: args)
+//            return (DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: moc) as? [CoreDataFeed] ?? []).map {$0.asDict()}
+//        }
+//        data.setObject(unsafeBitCast(queryFeeds, AnyObject.self), forKeyedSubscript: "feedsMatchingQuery")
+//
+//        var addOnNewFeed : @objc_block (@objc_block (NSDictionary) -> Void) -> Void = {(block) in
+//            var onNewFeed = data.objectForKeyedSubscript("onNewFeed").toArray()
+//            onNewFeed.append(unsafeBitCast(block, AnyObject.self))
+//            data.setObject(onNewFeed, forKeyedSubscript: "onNewFeed")
+//        }
+//        data.setObject(unsafeBitCast(addOnNewFeed, AnyObject.self), forKeyedSubscript: "onNewFeed")
     }
 
     // MARK: Background Data Fetch
@@ -587,8 +587,8 @@ class DataManager: NSObject {
             reloading = true
             var feeds : [NSManagedObjectID] = []
             for feed in self.feeds() {
-                if feed.query != nil {
-                    feeds.append(feed.objectID)
+                if let objectID = feed.feedID where feed.query != nil {
+                    feeds.append(objectID)
                 }
             }
             backgroundQueue.addOperationWithBlock {
@@ -604,15 +604,23 @@ class DataManager: NSObject {
             let theFeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self == %@", feed), managedObjectContext: backgroundObjectContext).last as? CoreDataFeed
             if let query = theFeed?.query {
                 let res = articlesFromQuery(query, articles: articles, context: self.backgroundContext)
-                articleIDs[feed] = res.map { return $0.objectID }
+                let array : [NSManagedObjectID] = []
+//                articleIDs[feed] = res.filter(array) { list, article in
+//                    if let objectID = article.objectID {
+//                        return list + [objectID]
+//                    }
+//                    return list
+//                }
             }
         }
         mainQueue.addOperationWithBlock {
-            var queryFeedResults : [CoreDataFeed: [CoreDataArticle]] = [:]
+            var queryFeedResults : [Feed: [Article]] = [:]
             for (key, value) in articleIDs {
-                let theFeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self == %@", (key as NSManagedObjectID)), managedObjectContext: self.managedObjectContext).last as! CoreDataFeed
-                let articles = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self IN %@", value), managedObjectContext: self.managedObjectContext) as? [CoreDataArticle] ?? []
-                queryFeedResults[theFeed] = articles
+                let theFeed = DataUtility.feedsWithPredicate(NSPredicate(format: "self == %@", (key as NSManagedObjectID)), managedObjectContext: self.managedObjectContext).last
+                let articles = DataUtility.articlesWithPredicate(NSPredicate(format: "self IN %@", value), managedObjectContext: self.managedObjectContext)
+                if let feed = theFeed {
+                    queryFeedResults[feed] = articles
+                }
             }
             self.queryFeedResults = queryFeedResults
             self.reloading = false

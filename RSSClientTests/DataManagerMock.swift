@@ -3,8 +3,8 @@ import Foundation
 class DataManagerMock : DataManager {
     var importOPMLURL : NSURL? = nil
     var importOPMLProgress : (Double) -> Void = {_ in }
-    var importOPMLCompletion : ([CoreDataFeed]) -> Void = {_ in }
-    override func importOPML(opml: NSURL, progress: (Double) -> Void, completion: ([CoreDataFeed]) -> Void) {
+    var importOPMLCompletion : ([Feed]) -> Void = {_ in }
+    override func importOPML(opml: NSURL, progress: (Double) -> Void, completion: ([Feed]) -> Void) {
         importOPMLURL = opml
         importOPMLProgress = progress
         importOPMLCompletion = completion
@@ -12,13 +12,13 @@ class DataManagerMock : DataManager {
 
     var newFeedURL: String? = nil
     var newFeedCompletion : (NSError?) -> Void = {_ in }
-    override func newFeed(feedURL: String, completion: (NSError?) -> (Void)) -> CoreDataFeed? {
+    override func newFeed(feedURL: String, completion: (NSError?) -> (Void)) -> Feed? {
         newFeedURL = feedURL
         newFeedCompletion = completion
         return nil
     }
 
-    override func feeds(managedObjectContext: NSManagedObjectContext? = nil) -> [CoreDataFeed] {
+    override func feeds(managedObjectContext: NSManagedObjectContext? = nil) -> [Feed] {
         return []
     }
 
@@ -30,7 +30,7 @@ class DataManagerMock : DataManager {
         completion(nil)
     }
 
-    override func updateFeeds(feeds: [CoreDataFeed], backgroundFetch: Bool, completion: (NSError?) -> (Void)) {
+    override func updateFeeds(feeds: [Feed], backgroundFetch: Bool, completion: (NSError?)->(Void)) {
         completion(nil)
     }
 }

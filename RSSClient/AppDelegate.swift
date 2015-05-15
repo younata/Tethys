@@ -1,5 +1,4 @@
 import UIKit
-import CoreData
 import Ra
 
 @UIApplicationMain
@@ -71,38 +70,38 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     public func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        let originalList: [NSManagedObjectID] = (dataManager.feeds().reduce([], combine: {return $0 + ($1.allArticles())}) as [CoreDataArticle]).map { $0.objectID }
-        if originalList.count == 0 {
-            completionHandler(.Failed)
-            return
-        }
-        dataManager.updateFeedsInBackground({(error: NSError?) in
-            if (error != nil) {
-                completionHandler(.Failed)
-                return
-            }
-            let al : [NSManagedObjectID] = (self.dataManager.feeds().reduce([], combine: {return $0 + ($1.allArticles())}) as [CoreDataArticle]).map { return $0.objectID }
-            if (al.count == originalList.count) {
-                completionHandler(.NoData)
-                return
-            }
-            let alist: [NSManagedObjectID] = al.filter({
-                return !contains(originalList, $0)
-            })
-            
-            let settings = application.currentUserNotificationSettings()
-            if settings.types & UIUserNotificationType.Alert == .Alert {
-                let articles : [CoreDataArticle] = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self IN %@", alist), managedObjectContext: self.dataManager.managedObjectContext) as? [CoreDataArticle] ?? []
-                for article in articles {
-                    self.notificationHandler.sendLocalNotification(application, article: article)
-                }
-            }
-            if (alist.count > 0) {
-                completionHandler(.NewData)
-            } else {
-                completionHandler(.NoData)
-            }
-        })
+//        let originalList: [NSManagedObjectID?] = (dataManager.feeds().reduce([], combine: {return $0 + ($1.allArticles())}) as [Article]).map { $0.articleID }
+//        if originalList.count == 0 {
+//            completionHandler(.Failed)
+//            return
+//        }
+//        dataManager.updateFeedsInBackground({(error: NSError?) in
+//            if (error != nil) {
+//                completionHandler(.Failed)
+//                return
+//            }
+//            let al : [NSManagedObjectID?] = (self.dataManager.feeds().reduce([], combine: {return $0 + ($1.allArticles())}) as [Article]).map { return $0.articleID }
+//            if (al.count == originalList.count) {
+//                completionHandler(.NoData)
+//                return
+//            }
+//            let alist: [NSManagedObjectID?] = al.filter({
+//                return !contains(originalList, $0)
+//            })
+//            
+//            let settings = application.currentUserNotificationSettings()
+//            if settings.types & UIUserNotificationType.Alert == .Alert {
+//                let articles = DataUtility.articlesWithPredicate(NSPredicate(format: "self IN %@", alist), managedObjectContext: self.dataManager.managedObjectContext)
+//                for article in articles {
+//                    self.notificationHandler.sendLocalNotification(application, article: article)
+//                }
+//            }
+//            if (alist.count > 0) {
+//                completionHandler(.NewData)
+//            } else {
+//                completionHandler(.NoData)
+//            }
+//        })
     }
     
     public func application(application: UIApplication, continueUserActivity userActivity: NSUserActivity, restorationHandler: ([AnyObject]!) -> Void) -> Bool {
@@ -115,13 +114,13 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             let ftvc = nc.viewControllers.first as? FeedsTableViewController,
             let userInfo = userActivity.userInfo {
                 nc.popToRootViewControllerAnimated(false)
-                let feedTitle = userInfo["feed"] as! String
-                let feed : CoreDataFeed = dataManager.feeds().filter{ return $0.title == feedTitle; }.first!
-                let articleID = userInfo["article"] as! NSURL
-                let article : CoreDataArticle = feed.allArticles().filter({ return $0.objectID.URIRepresentation() == articleID }).first!
-                let al = ftvc.showFeeds([feed], animated: false)
+//                let feedTitle = userInfo["feed"] as! String
+//                let feed : Feed = dataManager.feeds().filter{ return $0.title == feedTitle; }.first!
+//                let articleID = userInfo["article"] as! NSURL
+//                let article : Article = feed.articles.filter({ return $0.objectID.URIRepresentation() == articleID }).first!
+//                let al = ftvc.showFeeds([feed], animated: false)
                 var controllers : [AnyObject] = []
-                controllers = [al.showArticle(article)]
+//                controllers = [al.showArticle(article)]
                 restorationHandler(controllers)
                 handled = true
         }

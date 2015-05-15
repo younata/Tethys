@@ -1,18 +1,10 @@
-//
-//  QueryFeedViewController.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 12/3/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import UIKit
 
 class QueryFeedViewController: UITableViewController {
     
-    var feed : CoreDataFeed? = nil {
+    var feed : Feed? = nil {
         didSet {
-            self.navigationItem.title = self.feed?.feedTitle() ?? NSLocalizedString("New Query Feed", comment: "")
+            self.navigationItem.title = self.feed?.title ?? NSLocalizedString("New Query Feed", comment: "")
             self.tableView.reloadData()
             if feed?.query == nil {
                 feed?.query = "function(article) {\n    return !article.read;\n}"
@@ -27,7 +19,7 @@ class QueryFeedViewController: UITableViewController {
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Done", comment: ""), style: .Plain, target: self, action: "dismiss")
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Save", comment: ""), style: .Plain, target: self, action: "save")
-        self.navigationItem.title = self.feed?.feedTitle() ?? NSLocalizedString("New Query Feed", comment: "")
+        self.navigationItem.title = self.feed?.title ?? NSLocalizedString("New Query Feed", comment: "")
         
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tags")
         tableView.registerClass(TextViewCell.self, forCellReuseIdentifier: "cell")
@@ -44,8 +36,8 @@ class QueryFeedViewController: UITableViewController {
     
     func dismiss() {
         if let feed = self.feed {
-            if feed.title == nil && feed.query == nil {
-                dataManager.deleteFeed(feed)
+            if feed.title.isEmpty && feed.query == nil {
+//                dataManager.deleteFeed(feed)
             }
         }
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
@@ -53,10 +45,10 @@ class QueryFeedViewController: UITableViewController {
     
     func save() {
         if let feed = self.feed {
-            if feed.title == nil && feed.query == nil {
-                dataManager.deleteFeed(feed)
+            if feed.title.isEmpty && feed.query == nil {
+//                dataManager.deleteFeed(feed)
             }
-            feed.managedObjectContext?.save(nil)
+//            feed.managedObjectContext?.save(nil)
         }
         dataManager.writeOPML()
         dismiss()
@@ -65,9 +57,9 @@ class QueryFeedViewController: UITableViewController {
     func showTagEditor(tagIndex: Int) {
         let tagEditor = self.injector!.create(TagEditorViewController.self) as! TagEditorViewController
         tagEditor.feed = feed
-        if tagIndex < feed?.allTags().count {
+        if tagIndex < feed?.tags.count {
             tagEditor.tagIndex = tagIndex
-            tagEditor.tagPicker.textField.text = feed?.allTags()[tagIndex]
+            tagEditor.tagPicker.textField.text = feed?.tags[tagIndex]
         }
         self.navigationController?.pushViewController(tagEditor, animated: true)
     }
@@ -82,7 +74,7 @@ class QueryFeedViewController: UITableViewController {
         if section != 3 {
             return 1
         }
-        return (feed?.allTags().count ?? 0) + 1
+        return (feed?.tags.count ?? 0) + 1
     }
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -103,7 +95,7 @@ class QueryFeedViewController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if indexPath.section == 3 {
             let cell = tableView.dequeueReusableCellWithIdentifier("tags", forIndexPath: indexPath) as! UITableViewCell
-            if let tags = feed?.allTags() {
+            if let tags = feed?.tags {
                 if indexPath.row == tags.count {
                     cell.textLabel?.text = NSLocalizedString("Add Tag", comment: "")
                     cell.textLabel?.textColor = UIColor.darkGreenColor()
@@ -117,28 +109,28 @@ class QueryFeedViewController: UITableViewController {
             cell.textView.textColor = UIColor.blackColor()
             switch (indexPath.section) {
             case 0:
-                if let title = (feed?.feedTitle() == "" ? nil : feed?.feedTitle()) {
+                if let title = (feed?.title == "" ? nil : feed?.title) {
                     cell.textView.text = title
                 } else {
                     cell.textView.text = NSLocalizedString("No title available", comment: "")
                     cell.textView.textColor = UIColor.grayColor()
                 }
                 cell.onTextChange = {
-                    if let feed = self.feed {
-                        feed.title = $0
+                    if var feed = self.feed {
+                        feed.title = $0 ?? ""
                     }
                     self.navigationItem.rightBarButtonItem?.enabled = self.feed?.title != nil && self.feed?.query != nil
                 }
             case 1:
-                if let summary = (feed?.feedSummary() == "" ? nil : feed?.feedSummary())  {
+                if let summary = (feed?.summary == "" ? nil : feed?.summary)  {
                     cell.textView.text = summary
                 } else {
                     cell.textView.text = NSLocalizedString("No summary available", comment: "")
                     cell.textView.textColor = UIColor.grayColor()
                 }
                 cell.onTextChange = {
-                    if let feed = self.feed {
-                        feed.summary = $0
+                    if var feed = self.feed {
+                        feed.summary = $0 ?? ""
                     }
                 }
             case 2:
@@ -148,8 +140,8 @@ class QueryFeedViewController: UITableViewController {
                     cell.textView.text = "function(article) {\n    return !article.read;\n}"
                 }
                 cell.onTextChange = {
-                    if let feed = self.feed {
-                        feed.query = $0
+                    if var feed = self.feed {
+                        feed.query = $0 ?? ""
                     }
                     self.navigationItem.rightBarButtonItem?.enabled = self.feed?.title != nil && self.feed?.query != nil
                 }
@@ -162,7 +154,7 @@ class QueryFeedViewController: UITableViewController {
 
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         if indexPath.section == 3 {
-            return indexPath.row < (feed?.allTags().count ?? 1)
+            return indexPath.row < (feed?.tags.count ?? 1)
         } else if indexPath.section == 2 {
             return true
         }
@@ -180,7 +172,7 @@ class QueryFeedViewController: UITableViewController {
         if indexPath.section < 2 {
             return nil
         }
-        if feed!.allTags().count == indexPath.row {
+        if feed!.tags.count == indexPath.row {
             return nil
         }
         if indexPath.section == 2 {
@@ -193,8 +185,8 @@ class QueryFeedViewController: UITableViewController {
             return [preview]
         } else if indexPath.section == 3 {
             let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""), handler: {(_, indexPath) in
-                if let feed = self.feed {
-                    var tags = feed.allTags()
+                if var feed = self.feed {
+                    var tags = feed.tags
                     let tag = tags[indexPath.row]
                     tags.removeAtIndex(indexPath.row)
                     feed.tags = tags
@@ -218,7 +210,7 @@ class QueryFeedViewController: UITableViewController {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
         if indexPath.section == 3,
-            let count = feed?.allTags().count where indexPath.row == count {
+            let count = feed?.tags.count where indexPath.row == count {
                 showTagEditor(indexPath.row)
         }
     }

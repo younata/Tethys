@@ -5,10 +5,10 @@
 
 @interface CoreDataEnclosure : NSManagedObject
 
-@property (nullable, nonatomic, retain) NSString * url;
-@property (nullable, nonatomic, retain) NSString * kind;
+@property (null_resettable, nonatomic, retain) NSString * url;
+@property (null_resettable, nonatomic, retain) NSString * kind;
 @property (nullable, nonatomic, retain) NSData * data;
-@property (nullable, nonatomic, retain) NSNumber * downloaded;
+@property (null_resettable, nonatomic, retain) NSNumber * downloaded;
 @property (nullable, nonatomic, retain) CoreDataArticle *article;
 
 @end

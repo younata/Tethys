@@ -1,20 +1,12 @@
-//
-//  FeedViewController.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 12/2/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import UIKit
 import Alamofire
 import Muon
 
 class FeedViewController: UITableViewController {
     
-    var feed : CoreDataFeed? = nil {
+    var feed : Feed? = nil {
         didSet {
-            self.navigationItem.title = self.feed?.feedTitle() ?? ""
+            self.navigationItem.title = self.feed?.title ?? ""
             self.tableView.reloadData()
         }
     }
@@ -28,7 +20,7 @@ class FeedViewController: UITableViewController {
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Dismiss", comment: ""), style: .Plain, target: self, action: "dismiss")
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Save", comment: ""), style: .Plain, target: self, action: "save")
-        self.navigationItem.title = self.feed?.feedTitle() ?? ""
+        self.navigationItem.title = self.feed?.title ?? ""
 
         
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -50,7 +42,7 @@ class FeedViewController: UITableViewController {
     }
     
     func save() {
-        feed?.managedObjectContext?.save(nil)
+//        feed?.managedObjectContext?.save(nil)
         dataManager.writeOPML()
         dismiss()
     }
@@ -58,9 +50,9 @@ class FeedViewController: UITableViewController {
     func showTagEditor(tagIndex: Int) -> TagEditorViewController {
         let tagEditor = self.injector!.create(TagEditorViewController.self) as! TagEditorViewController
         tagEditor.feed = feed
-        if tagIndex < feed?.allTags().count {
+        if tagIndex < feed?.tags.count {
             tagEditor.tagIndex = tagIndex
-            tagEditor.tagPicker.textField.text = feed?.allTags()[tagIndex]
+            tagEditor.tagPicker.textField.text = feed?.tags[tagIndex]
         }
         self.navigationController?.pushViewController(tagEditor, animated: true)
         return tagEditor
@@ -84,7 +76,7 @@ class FeedViewController: UITableViewController {
             return 0
         }
         if section == tagSection { // tags
-            return feed!.allTags().count + 1
+            return feed!.tags.count + 1
         }
         return 1
     }
@@ -114,7 +106,7 @@ class FeedViewController: UITableViewController {
 
         switch (indexPath.section) {
         case 0:
-            if let title = (feed?.feedTitle() == "" ? nil : feed?.feedTitle()) {
+            if let title = ((feed?.title.isEmpty ?? true) ? nil : feed?.title) {
                 cell.textLabel?.text = title
             } else {
                 cell.textLabel?.text = NSLocalizedString("No title available", comment: "")
@@ -123,7 +115,7 @@ class FeedViewController: UITableViewController {
         case 1:
             let tc = tableView.dequeueReusableCellWithIdentifier("text", forIndexPath: indexPath) as! TextFieldCell
             tc.onTextChange = {(_) in } // remove any previous onTextChange for setting stuff here.
-            tc.textField.text = feed?.url
+            tc.textField.text = feed?.url?.absoluteString
             tc.showValidator = true
             tc.onTextChange = {(text) in
                 if let txt = text {
@@ -141,14 +133,14 @@ class FeedViewController: UITableViewController {
             }
             return tc
         case 2:
-            if let summary = (feed?.feedSummary() == "" ? nil : feed?.feedSummary())  {
+            if let summary = ((feed?.summary.isEmpty ?? true) ? nil : feed?.summary)  {
                 cell.textLabel?.text = summary
             } else {
                 cell.textLabel?.text = NSLocalizedString("No summary available", comment: "")
                 cell.textLabel?.textColor = UIColor.grayColor()
             }
         case tagSection:
-            if let tags = feed?.allTags() {
+            if let tags = feed?.tags {
                 if indexPath.row == tags.count {
                     cell.textLabel?.text = NSLocalizedString("Add Tag", comment: "")
                     cell.textLabel?.textColor = UIColor.darkGreenColor()
@@ -186,12 +178,12 @@ class FeedViewController: UITableViewController {
         if indexPath.section != tagSection {
             return nil
         }
-        if feed!.allTags().count == indexPath.row {
+        if feed!.tags.count == indexPath.row {
             return nil
         }
         let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""), handler: {(_, indexPath) in
-            if let feed = self.feed {
-                var tags = feed.allTags()
+            if var feed = self.feed {
+                var tags = feed.tags
                 let tag = tags[indexPath.row]
                 tags.removeAtIndex(indexPath.row)
                 feed.tags = tags
@@ -217,7 +209,7 @@ class FeedViewController: UITableViewController {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
         if indexPath.section == tagSection,
-            let count = feed?.allTags().count where indexPath.row == count {
+            let count = feed?.tags.count where indexPath.row == count {
                 showTagEditor(indexPath.row)
         }
     }

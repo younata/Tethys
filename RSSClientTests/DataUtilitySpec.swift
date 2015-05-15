@@ -38,7 +38,7 @@ class DataUtilitySpec: QuickSpec {
                     DataUtility.updateFeedImage(feed, info: info, manager: Alamofire.Manager.sharedInstance)
 
                     expect(feed.hasChanges).toEventually(beTruthy(), timeout: 60)
-                    expect(feed.feedImage()).toEventuallyNot(beNil(), timeout: 60)
+                    expect(feed.image).toEventuallyNot(beNil(), timeout: 60)
                 }
             }
             context("when the feed has an existing image") {

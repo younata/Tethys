@@ -2,7 +2,7 @@ import UIKit
 
 class TagEditorViewController: UIViewController {
     
-    var feed : CoreDataFeed? = nil
+    var feed : Feed? = nil
     var tag: String? = nil {
         didSet {
             self.navigationItem.rightBarButtonItem?.enabled = self.feed != nil && tag != nil
@@ -22,7 +22,7 @@ class TagEditorViewController: UIViewController {
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Save", comment: ""), style: .Plain, target: self, action: "save")
         self.navigationItem.rightBarButtonItem?.enabled = false
-        self.navigationItem.title = self.feed?.feedTitle() ?? ""
+        self.navigationItem.title = self.feed?.title ?? ""
         
         tagPicker.setTranslatesAutoresizingMaskIntoConstraints(false)
         self.view.addSubview(tagPicker)
@@ -47,14 +47,15 @@ class TagEditorViewController: UIViewController {
     }
     
     func save() {
-        if let feed = self.feed {
-            var tags = feed.allTags()
+        if var feed = self.feed {
+            var tags = feed.tags
             if let ti = tagIndex {
                 tags[ti] = tag!
             } else {
                 tags.append(tag!)
             }
             feed.tags = tags
+            self.feed = feed
         }
         
         self.dismiss()

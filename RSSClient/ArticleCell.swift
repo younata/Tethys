@@ -1,20 +1,12 @@
-//
-//  ArticleCell.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 9/27/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import UIKit
 import WebKit
 
 class ArticleCell: UITableViewCell, UITextViewDelegate {
     
-    var article: CoreDataArticle? {
+    var article: Article? {
         didSet {
             title.text = article?.title ?? ""
-            published.text = article != nil ? dateFormatter.stringFromDate(article?.updatedAt ?? article?.published ?? NSDate()) : ""
+            published.text = dateFormatter.stringFromDate(article?.updatedAt ?? article?.published ?? NSDate()) ?? ""
             author.text = article?.author ?? ""
             // TODO: enclosures.
             let hasNotRead = article?.read != true

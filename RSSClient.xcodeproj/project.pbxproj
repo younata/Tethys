@@ -81,6 +81,15 @@
 		89718F361AE0D953004C3CB4 /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F271AE0C942004C3CB4 /* Ra.framework */; };
 		89718F371AE0DD51004C3CB4 /* Alamofire.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F261AE0C942004C3CB4 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89718F381AE0DD51004C3CB4 /* Ra.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F271AE0C942004C3CB4 /* Ra.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8978D4DC1B0533B600EDD6D0 /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4DB1B0533B600EDD6D0 /* Feed.swift */; };
+		8978D4DD1B0533B600EDD6D0 /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4DB1B0533B600EDD6D0 /* Feed.swift */; };
+		8978D4DF1B0535EB00EDD6D0 /* Article.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4DE1B0535EB00EDD6D0 /* Article.swift */; };
+		8978D4E01B0535EB00EDD6D0 /* Article.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4DE1B0535EB00EDD6D0 /* Article.swift */; };
+		8978D4E21B053A5900EDD6D0 /* Enclosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4E11B053A5900EDD6D0 /* Enclosure.swift */; };
+		8978D4E31B053A5900EDD6D0 /* Enclosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4E11B053A5900EDD6D0 /* Enclosure.swift */; };
+		8978D4E51B05AB2800EDD6D0 /* FeedSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4E41B05AB2800EDD6D0 /* FeedSpec.swift */; };
+		8978D4E71B05AB3800EDD6D0 /* ArticleSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4E61B05AB3800EDD6D0 /* ArticleSpec.swift */; };
+		8978D4E91B05AB4300EDD6D0 /* EnclosureSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4E81B05AB4300EDD6D0 /* EnclosureSpec.swift */; };
 		897CD85C1A213F0900C97ECC /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89635F911A13C2E30052C248 /* MainMenu.xib */; };
 		897CD85E1A21C49000C97ECC /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897CD85D1A21C49000C97ECC /* FeedView.swift */; };
 		897F70F21A38AFE500ECE1A1 /* EnclosuresViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897F70F11A38AFE500ECE1A1 /* EnclosuresViewController.swift */; };
@@ -264,6 +273,12 @@
 		89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/iOS/Nimble.framework; sourceTree = SOURCE_ROOT; };
 		89718F2F1AE0C9B4004C3CB4 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/iOS/Quick.framework; sourceTree = SOURCE_ROOT; };
 		89744FB71A6970CA000AA7DE /* RSSClient 1.5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.5.xcdatamodel"; sourceTree = "<group>"; };
+		8978D4DB1B0533B600EDD6D0 /* Feed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
+		8978D4DE1B0535EB00EDD6D0 /* Article.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Article.swift; sourceTree = "<group>"; };
+		8978D4E11B053A5900EDD6D0 /* Enclosure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enclosure.swift; sourceTree = "<group>"; };
+		8978D4E41B05AB2800EDD6D0 /* FeedSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedSpec.swift; sourceTree = "<group>"; };
+		8978D4E61B05AB3800EDD6D0 /* ArticleSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleSpec.swift; sourceTree = "<group>"; };
+		8978D4E81B05AB4300EDD6D0 /* EnclosureSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnclosureSpec.swift; sourceTree = "<group>"; };
 		897CD85D1A21C49000C97ECC /* FeedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		897F70F11A38AFE500ECE1A1 /* EnclosuresViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnclosuresViewController.swift; sourceTree = "<group>"; };
 		897F70FC1A3A4E7700ECE1A1 /* UnreadCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounter.swift; sourceTree = "<group>"; };
@@ -513,6 +528,9 @@
 			children = (
 				899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */,
 				890E47661AA19F7F007F217C /* DataUtilitySpec.swift */,
+				8978D4E41B05AB2800EDD6D0 /* FeedSpec.swift */,
+				8978D4E61B05AB3800EDD6D0 /* ArticleSpec.swift */,
+				8978D4E81B05AB4300EDD6D0 /* EnclosureSpec.swift */,
 			);
 			name = Domain;
 			sourceTree = "<group>";
@@ -643,6 +661,9 @@
 				895901A31A30BCB7002E2C62 /* CoreDataEnclosure.h */,
 				895901A41A30BCB7002E2C62 /* CoreDataEnclosure.m */,
 				8963F42D1A26674500B447D6 /* Data-extensions.swift */,
+				8978D4DB1B0533B600EDD6D0 /* Feed.swift */,
+				8978D4DE1B0535EB00EDD6D0 /* Article.swift */,
+				8978D4E11B053A5900EDD6D0 /* Enclosure.swift */,
 			);
 			name = Domain;
 			sourceTree = "<group>";
@@ -982,6 +1003,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8978D4DF1B0535EB00EDD6D0 /* Article.swift in Sources */,
 				89C830C619D8A058009924DA /* CoreDataFeed.m in Sources */,
 				8963F42E1A26674500B447D6 /* Data-extensions.swift in Sources */,
 				8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */,
@@ -1011,6 +1033,8 @@
 				890E47591AA19D69007F217C /* DataUtility.swift in Sources */,
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
+				8978D4E21B053A5900EDD6D0 /* Enclosure.swift in Sources */,
+				8978D4DC1B0533B600EDD6D0 /* Feed.swift in Sources */,
 				8924D8F21A0E8EEA003B7529 /* OPMLParser.swift in Sources */,
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
 				89DA7D2C1A66111E0050685B /* TextFieldCell.swift in Sources */,
@@ -1033,11 +1057,14 @@
 			files = (
 				898F670E1B0007F4004A7BE3 /* SpecInjectorModule.swift in Sources */,
 				895901AD1A30C6B7002E2C62 /* EnclosureCell.swift in Sources */,
+				8978D4E51B05AB2800EDD6D0 /* FeedSpec.swift in Sources */,
 				895779AD19E62CDA00548418 /* CoreDataFeed.m in Sources */,
 				89DA7D2F1A681B880050685B /* TextFieldCell.swift in Sources */,
+				8978D4E71B05AB3800EDD6D0 /* ArticleSpec.swift in Sources */,
 				898F670C1B000451004A7BE3 /* FakeOperationQueue.swift in Sources */,
 				899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */,
 				89C204C21A73FEDA00C792D2 /* SplitDelegateSpec.swift in Sources */,
+				8978D4E91B05AB4300EDD6D0 /* EnclosureSpec.swift in Sources */,
 				895901AA1A30C5D1002E2C62 /* EnclosuresView.swift in Sources */,
 				897F70F31A38AFE500ECE1A1 /* EnclosuresViewController.swift in Sources */,
 				893448C01A004E5C00F5D528 /* NSArray+PureLayout.m in Sources */,
@@ -1057,7 +1084,9 @@
 				8963F42F1A26674500B447D6 /* Data-extensions.swift in Sources */,
 				895779A319E62CC500548418 /* FeedTableCell.swift in Sources */,
 				899C47ED1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */,
+				8978D4DD1B0533B600EDD6D0 /* Feed.swift in Sources */,
 				89635F841A13BF120052C248 /* AMPopTip.m in Sources */,
+				8978D4E01B0535EB00EDD6D0 /* Article.swift in Sources */,
 				893448C21A004E6400F5D528 /* UIColor+RSSClient.m in Sources */,
 				890E47671AA19F7F007F217C /* DataUtilitySpec.swift in Sources */,
 				8924D8F31A108299003B7529 /* OPMLParser.swift in Sources */,
@@ -1068,6 +1097,7 @@
 				895779A919E62CC500548418 /* ArticleViewController.swift in Sources */,
 				895782421A3CC0130022F345 /* CircularProgressLayer.swift in Sources */,
 				8981316C1AFB1ED70090FA7F /* FeedRepository.swift in Sources */,
+				8978D4E31B053A5900EDD6D0 /* Enclosure.swift in Sources */,
 				8963F4351A280F8E00B447D6 /* TagPickerView.swift in Sources */,
 				AE4356001A7ABA4F00A961B9 /* DataManagerMock.swift in Sources */,
 				89C509F51A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */,

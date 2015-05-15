@@ -2,18 +2,18 @@ import UIKit
 
 class FeedTableCell: UITableViewCell {
     
-    var feed: CoreDataFeed? = nil {
+    var feed: Feed? = nil {
         didSet {
             if let f = feed {
-                nameLabel.text = f.feedTitle()
-                summaryLabel.text = f.feedSummary()
-                unreadCounter.unread = UInt(filter(f.allArticles(dataManager!), {return $0.read == false}).count)
+                nameLabel.text = f.title
+                summaryLabel.text = f.summary
+                unreadCounter.unread = UInt(filter(f.articles, {return $0.read == false}).count)
             } else {
                 nameLabel.text = ""
                 summaryLabel.text = ""
                 unreadCounter.unread = 0
             }
-            if let image = feed?.feedImage() {
+            if let image = feed?.image {
                 iconView.image = image
                 let scaleRatio = 60 / image.size.width
                 iconWidth?.constant = 60

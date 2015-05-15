@@ -2,8 +2,8 @@ import UIKit
 
 class ArticleListController: UITableViewController {
     
-    var articles : [CoreDataArticle] = []
-    var feeds : [CoreDataFeed]? = nil
+    var articles : [Article] = []
+    var feeds : [Feed]? = nil
     let queue = dispatch_queue_create("articleController", nil)
     
     var dataManager : DataManager? = nil
@@ -47,27 +47,27 @@ class ArticleListController: UITableViewController {
             self.refreshControl?.beginRefreshing()
             refresh()
             if feeds?.count == 1 {
-                self.navigationItem.title = feeds?.first?.feedTitle()
+                self.navigationItem.title = feeds?.first?.title
             }
         }
     }
     
-    func articleForIndexPath(indexPath: NSIndexPath) -> CoreDataArticle {
+    func articleForIndexPath(indexPath: NSIndexPath) -> Article {
         return articles[indexPath.row]
     }
     
     func refresh() {
         if let feeds = self.feeds {
             mainQueue.addOperationWithBlock {
-                let articles = feeds.reduce([] as [CoreDataArticle]) { return $0 + $1.allArticles(self.dataManager!) }
-                let newArticles = NSSet(array: articles)
-                let oldArticles = NSSet(array: self.articles)
+                let articles = feeds.reduce(Array<Article>()) { return $0 + $1.articles }
+                let newArticles = Set<Article>(articles)
+                let oldArticles = Set<Article>(self.articles)
                 if newArticles != oldArticles {
-                    self.articles = (articles as [CoreDataArticle])
-                    self.articles.sort({(a : CoreDataArticle, b: CoreDataArticle) in
+                    self.articles = (articles as [Article])
+                    self.articles.sort({(a : Article, b: Article) in
                         let da = a.updatedAt ?? a.published
                         let db = b.updatedAt ?? b.published
-                        return da!.timeIntervalSince1970 > db!.timeIntervalSince1970
+                        return da.timeIntervalSince1970 > db.timeIntervalSince1970
                     })
                 }
                 if newArticles != oldArticles {
@@ -81,17 +81,17 @@ class ArticleListController: UITableViewController {
         }
     }
     
-    func showArticle(article: CoreDataArticle) -> ArticleViewController {
+    func showArticle(article: Article) -> ArticleViewController {
         return showArticle(article, animated: true)
     }
     
-    func showArticle(article: CoreDataArticle, animated: Bool) -> ArticleViewController {
+    func showArticle(article: Article, animated: Bool) -> ArticleViewController {
         let avc = self.splitViewController?.viewControllers.last as? ArticleViewController ?? ArticleViewController()
         avc.dataManager = dataManager
         avc.article = article
         avc.articles = self.articles
         if (self.articles.count != 0) {
-            avc.lastArticleIndex = (self.articles as NSArray).indexOfObject(article)
+//            avc.lastArticleIndex = (self.articles as NSArray).indexOfObject(article)
         } else {
             avc.lastArticleIndex = 0
         }
@@ -117,9 +117,9 @@ class ArticleListController: UITableViewController {
     override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         let article = articleForIndexPath(indexPath)
         
-        if article.content == nil {
-            return 40
-        }
+//        if article.content == nil {
+//            return 40
+//        }
         return 40
     }
 
@@ -155,15 +155,15 @@ class ArticleListController: UITableViewController {
         }
         let article = self.articleForIndexPath(indexPath)
         let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""), handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
-            article.managedObjectContext?.deleteObject(article)
-            article.managedObjectContext?.save(nil)
+//            article.managedObjectContext?.deleteObject(article)
+//            article.managedObjectContext?.save(nil)
             self.refresh()
         })
         let unread = NSLocalizedString("Mark\nUnread", comment: "")
         let read = NSLocalizedString("Mark\nRead", comment: "")
         let toggleText = article.read ? unread : read
         let toggle = UITableViewRowAction(style: .Normal, title: toggleText, handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
-            self.dataManager?.readArticle(article)
+//            self.dataManager?.readArticle(article)
             tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
         })
         return [delete, toggle]

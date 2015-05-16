@@ -63,8 +63,6 @@
 		89635FC21A13C49A0052C248 /* ALView+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90519ECCBC300ECFF3F /* ALView+PureLayout.m */; };
 		89635FC31A13C49A0052C248 /* NSArray+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90719ECCBC300ECFF3F /* NSArray+PureLayout.m */; };
 		89635FC41A13C49A0052C248 /* NSLayoutConstraint+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90919ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m */; };
-		8963F42E1A26674500B447D6 /* Data-extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963F42D1A26674500B447D6 /* Data-extensions.swift */; };
-		8963F42F1A26674500B447D6 /* Data-extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963F42D1A26674500B447D6 /* Data-extensions.swift */; };
 		8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963F4331A280F8E00B447D6 /* TagPickerView.swift */; };
 		8963F4351A280F8E00B447D6 /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963F4331A280F8E00B447D6 /* TagPickerView.swift */; };
 		8967DA061A4092A6000424F4 /* ArticlesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8967DA051A4092A6000424F4 /* ArticlesList.swift */; };
@@ -94,7 +92,6 @@
 		897CD85E1A21C49000C97ECC /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897CD85D1A21C49000C97ECC /* FeedView.swift */; };
 		897F70F21A38AFE500ECE1A1 /* EnclosuresViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897F70F11A38AFE500ECE1A1 /* EnclosuresViewController.swift */; };
 		897F70F31A38AFE500ECE1A1 /* EnclosuresViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897F70F11A38AFE500ECE1A1 /* EnclosuresViewController.swift */; };
-		897F70F91A39772C00ECE1A1 /* Data-extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963F42D1A26674500B447D6 /* Data-extensions.swift */; };
 		897F70FD1A3A4E7700ECE1A1 /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897F70FC1A3A4E7700ECE1A1 /* UnreadCounter.swift */; };
 		897F71001A3A57A300ECE1A1 /* NSColor+RSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 897F70FF1A3A57A300ECE1A1 /* NSColor+RSSClient.m */; };
 		898046D51A1C385A00EB29F0 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898046D41A1C385A00EB29F0 /* MainController.swift */; };
@@ -264,7 +261,6 @@
 		89635F9D1A13C2E30052C248 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89635F9E1A13C2E30052C248 /* RSSClient_OSXTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSSClient_OSXTests.swift; sourceTree = "<group>"; };
 		8963F42C1A2660DF00B447D6 /* RSSClient 1.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.1.xcdatamodel"; sourceTree = "<group>"; };
-		8963F42D1A26674500B447D6 /* Data-extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data-extensions.swift"; sourceTree = "<group>"; };
 		8963F4331A280F8E00B447D6 /* TagPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagPickerView.swift; sourceTree = "<group>"; };
 		8967DA051A4092A6000424F4 /* ArticlesList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticlesList.swift; sourceTree = "<group>"; };
 		8967DA071A409433000424F4 /* ArticleListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListView.swift; sourceTree = "<group>"; };
@@ -660,7 +656,6 @@
 				89C830C519D8A058009924DA /* CoreDataFeed.m */,
 				895901A31A30BCB7002E2C62 /* CoreDataEnclosure.h */,
 				895901A41A30BCB7002E2C62 /* CoreDataEnclosure.m */,
-				8963F42D1A26674500B447D6 /* Data-extensions.swift */,
 				8978D4DB1B0533B600EDD6D0 /* Feed.swift */,
 				8978D4DE1B0535EB00EDD6D0 /* Article.swift */,
 				8978D4E11B053A5900EDD6D0 /* Enclosure.swift */,
@@ -990,7 +985,6 @@
 				898047641A206CB100EB29F0 /* FeedsList.swift in Sources */,
 				897F70FD1A3A4E7700ECE1A1 /* UnreadCounter.swift in Sources */,
 				895782431A3CC0130022F345 /* CircularProgressLayer.swift in Sources */,
-				897F70F91A39772C00ECE1A1 /* Data-extensions.swift in Sources */,
 				89635FAD1A13C41C0052C248 /* RSSClient.xcdatamodeld in Sources */,
 				89635FAF1A13C4210052C248 /* CoreDataFeed.m in Sources */,
 				895901A71A30BCB7002E2C62 /* CoreDataEnclosure.m in Sources */,
@@ -1005,7 +999,6 @@
 			files = (
 				8978D4DF1B0535EB00EDD6D0 /* Article.swift in Sources */,
 				89C830C619D8A058009924DA /* CoreDataFeed.m in Sources */,
-				8963F42E1A26674500B447D6 /* Data-extensions.swift in Sources */,
 				8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */,
 				89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */,
 				8981316B1AFB1ED70090FA7F /* FeedRepository.swift in Sources */,
@@ -1081,7 +1074,6 @@
 				894896ED1A16F1130030EB6E /* LocalImportViewController.swift in Sources */,
 				895779A019E62CC500548418 /* AppDelegate.swift in Sources */,
 				89C204BE1A73FD1000C792D2 /* SplitDelegate.swift in Sources */,
-				8963F42F1A26674500B447D6 /* Data-extensions.swift in Sources */,
 				895779A319E62CC500548418 /* FeedTableCell.swift in Sources */,
 				899C47ED1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */,
 				8978D4DD1B0533B600EDD6D0 /* Feed.swift in Sources */,

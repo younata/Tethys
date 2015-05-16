@@ -17,7 +17,18 @@ struct Article : Equatable, Hashable {
     private(set) var updated : Bool = false
 
     var hashValue : Int {
-        return 0
+        if let id = articleID {
+            return id.URIRepresentation().hash
+        }
+        let nonNilHashValues = title.hashValue ^ summary.hashValue ^ author.hashValue ^ published.hash ^ identifier.hashValue ^ content.hashValue & read.hashValue
+        let flagsHashValues = flags.reduce(0) { $0 ^ $1.hashValue }
+        let possiblyNilHashValues : Int
+        if let link = link, updatedAt = updatedAt {
+            possiblyNilHashValues = link.hash ^ updatedAt.hash
+        } else {
+            possiblyNilHashValues = 0
+        }
+        return nonNilHashValues ^ flagsHashValues ^ possiblyNilHashValues
     }
 
     init(title: String, link: NSURL?, summary: String, author: String, published: NSDate,
@@ -50,7 +61,7 @@ struct Article : Equatable, Hashable {
 
         summary = article.summary ?? ""
         author = article.author ?? ""
-        published = article.published
+        published = article.published ?? NSDate()
         updatedAt = article.updatedAt
         identifier = article.identifier ?? ""
         content = article.content ?? ""
@@ -83,21 +94,24 @@ struct Article : Equatable, Hashable {
         }
     }
 
-//    mutating func addEnclosure(enclosure: Enclosure) {
-//        if !contains(self.enclosures, enclosure) {
-//            self.enclosures.append(enclosure)
-//            updated = true
-//        }
-//    }
-//
-//    mutating func removeEnclosure(enclosure: Enclosure) {
-//        if contains(self.enclosures, enclosure) {
-//            self.enclosures = self.enclosures.filter { $0 != enclosure }
-//            updated = true
-//        }
-//    }
+    mutating func addEnclosure(enclosure: Enclosure) {
+        if !contains(self.enclosures, enclosure) {
+            self.enclosures.append(enclosure)
+            updated = true
+        }
+    }
+
+    mutating func removeEnclosure(enclosure: Enclosure) {
+        if contains(self.enclosures, enclosure) {
+            self.enclosures = self.enclosures.filter { $0 != enclosure }
+            updated = true
+        }
+    }
 }
 
 func ==(a: Article, b: Article) -> Bool {
-    return true
+    if let aID = a.articleID, let bID = b.articleID {
+        return aID.URIRepresentation() == bID.URIRepresentation()
+    }
+    return a.title == b.title && a.link == b.link && a.summary == b.summary && a.author == b.author && a.published == b.published && a.updatedAt == b.updatedAt && a.identifier == b.identifier && a.content == b.content && a.read == b.read && a.flags == b.flags
 }

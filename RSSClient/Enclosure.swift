@@ -20,16 +20,17 @@ struct Enclosure: Equatable {
     private(set) var enclosureID : NSManagedObjectID? = nil
 
     init(enclosure: CoreDataEnclosure, article: Article?) {
-        url = NSURL(string: enclosure.url)!
-        kind = enclosure.kind
+        url = NSURL(string: enclosure.url ?? "") ?? NSURL()
+        kind = enclosure.kind ?? ""
         data = enclosure.data
         self.article = article
+        enclosureID = enclosure.objectID
     }
 }
 
 func ==(a: Enclosure, b: Enclosure) -> Bool {
     if let aEID = a.enclosureID, let bEID = b.enclosureID {
-        return aEID == bEID
+        return aEID.URIRepresentation() == bEID.URIRepresentation()
     }
-    return false
+    return a.url == b.url && a.kind == b.kind && a.data == b.data
 }

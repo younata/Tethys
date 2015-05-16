@@ -7,7 +7,7 @@ class FeedSpec: QuickSpec {
         describe("waitPeriodInRefreshes") {
             func feedWithWaitPeriod(waitPeriod: Int) -> Feed {
                 return Feed(title: "", url: nil, summary: "", query: nil, tags: [],
-                    waitPeriod: 5, remainingWait: 0, articles: [], image: nil)
+                    waitPeriod: waitPeriod, remainingWait: 0, articles: [], image: nil)
             }
 
             it("should return a number based on the fibonacci sequence offset by 2") {

@@ -1,6 +1,6 @@
 import Foundation
 
-struct Article : Equatable, Hashable {
+class Article : Equatable, Hashable {
     var title : String
     var link : NSURL?
     var summary : String
@@ -14,7 +14,7 @@ struct Article : Equatable, Hashable {
     var flags : [String]
     internal private(set) var enclosures : [Enclosure] = []
 
-    private(set) var updated : Bool = false
+    internal private(set) var updated : Bool = false
 
     var hashValue : Int {
         if let id = articleID {
@@ -80,28 +80,28 @@ struct Article : Equatable, Hashable {
         articleID = article.objectID
     }
 
-    mutating func addFlag(flag: String) {
+    func addFlag(flag: String) {
         if !contains(self.flags, flag) {
             self.flags.append(flag)
             updated = true
         }
     }
 
-    mutating func removeFlag(flag: String) {
+    func removeFlag(flag: String) {
         if contains(self.flags, flag) {
             self.flags = self.flags.filter { $0 != flag }
             updated = true
         }
     }
 
-    mutating func addEnclosure(enclosure: Enclosure) {
+    func addEnclosure(enclosure: Enclosure) {
         if !contains(self.enclosures, enclosure) {
             self.enclosures.append(enclosure)
             updated = true
         }
     }
 
-    mutating func removeEnclosure(enclosure: Enclosure) {
+    func removeEnclosure(enclosure: Enclosure) {
         if contains(self.enclosures, enclosure) {
             self.enclosures = self.enclosures.filter { $0 != enclosure }
             updated = true

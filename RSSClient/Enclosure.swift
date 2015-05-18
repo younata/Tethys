@@ -1,10 +1,41 @@
 import Foundation
 
-struct Enclosure: Equatable {
-    var url : NSURL
-    var kind : String
-    var data : NSData?
-    var article : Article?
+class Enclosure: Equatable {
+    var url : NSURL {
+        willSet {
+            if newValue != url {
+                self.updated = true
+            }
+        }
+    }
+    var kind : String {
+        willSet {
+            if newValue != kind {
+                self.updated = true
+            }
+        }
+    }
+    var data : NSData? {
+        willSet {
+            if newValue != data {
+                self.updated = true
+            }
+        }
+    }
+    var article : Article? {
+        willSet {
+            if newValue != article {
+                self.updated = true
+            }
+        }
+        didSet {
+            if let art = article where !contains(art.enclosures, self) {
+                article?.addEnclosure(self)
+            }
+        }
+    }
+
+    internal private(set) var updated : Bool = false
 
     var downloaded : Bool {
         return data == nil

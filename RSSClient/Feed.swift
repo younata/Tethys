@@ -6,7 +6,7 @@ import Foundation
     typealias Image=NSImage
 #endif
 
-struct Feed : Equatable, Hashable {
+class Feed : Equatable, Hashable {
     var title : String
     var url : NSURL?
     var summary : String

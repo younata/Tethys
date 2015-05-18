@@ -26,11 +26,12 @@ class Enclosure: Equatable {
         willSet {
             if newValue != article {
                 self.updated = true
-            }
-        }
-        didSet {
-            if let art = article where !contains(art.enclosures, self) {
-                article?.addEnclosure(self)
+                if let oldValue = article where contains(oldValue.enclosures, self) {
+                    oldValue.removeEnclosure(self)
+                }
+                if let nv = newValue where !contains(nv.enclosures, self) {
+                    nv.addEnclosure(self)
+                }
             }
         }
     }

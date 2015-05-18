@@ -38,6 +38,18 @@ class Feed : Equatable, Hashable {
         return []
     }
 
+    func addArticle(article: Article) {
+        if !contains(self.articles, article) {
+            articles.append(article)
+        }
+    }
+
+    func removeArticle(article: Article) {
+        if contains(self.articles, article) {
+            self.articles = self.articles.filter { $0 != article }
+        }
+    }
+
     init(title: String, url: NSURL?, summary: String, query: String?, tags: [String],
         waitPeriod: Int?, remainingWait: Int?, articles: [Article], image: Image?) {
             self.title = title

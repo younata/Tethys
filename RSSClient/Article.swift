@@ -1,17 +1,83 @@
 import Foundation
 
 class Article : Equatable, Hashable {
-    var title : String
-    var link : NSURL?
-    var summary : String
-    var author : String
-    var published : NSDate
-    var updatedAt : NSDate?
-    var identifier : String
-    var content : String
-    var read : Bool
-    var feed : Feed?
-    var flags : [String]
+    var title : String {
+        willSet {
+            if newValue != title {
+                self.updated = true
+            }
+        }
+    }
+    var link : NSURL? {
+        willSet {
+            if newValue != link {
+                self.updated = true
+            }
+        }
+    }
+    var summary : String {
+        willSet {
+            if newValue != summary {
+                self.updated = true
+            }
+        }
+    }
+    var author : String {
+        willSet {
+            if newValue != author {
+                self.updated = true
+            }
+        }
+    }
+    var published : NSDate {
+        willSet {
+            if newValue != published {
+                self.updated = true
+            }
+        }
+    }
+    var updatedAt : NSDate? {
+        willSet {
+            if newValue != updatedAt {
+                self.updated = true
+            }
+        }
+    }
+    var identifier : String {
+        willSet {
+            if newValue != identifier {
+                self.updated = true
+            }
+        }
+    }
+    var content : String {
+        willSet {
+            if newValue != content {
+                self.updated = true
+            }
+        }
+    }
+    var read : Bool {
+        willSet {
+            if newValue != read {
+                self.updated = true
+            }
+        }
+    }
+    var feed : Feed? {
+        willSet {
+            if newValue != feed {
+                self.updated = true
+                if let oldValue = feed where contains(oldValue.articles, self) {
+                    oldValue.removeArticle(self)
+                }
+                if let nv = newValue where !contains(nv.articles, self) {
+                    nv.addArticle(self)
+                }
+            }
+        }
+    }
+    internal private(set) var flags : [String] = []
     internal private(set) var enclosures : [Enclosure] = []
 
     internal private(set) var updated : Bool = false
@@ -47,6 +113,9 @@ class Article : Equatable, Hashable {
             self.flags = flags
             self.enclosures = enclosures
             updated = false
+            for enclosure in enclosures {
+                enclosure.article = self
+            }
     }
 
     private(set) var articleID : NSManagedObjectID? = nil
@@ -97,6 +166,10 @@ class Article : Equatable, Hashable {
     func addEnclosure(enclosure: Enclosure) {
         if !contains(self.enclosures, enclosure) {
             self.enclosures.append(enclosure)
+            if let otherArticle = enclosure.article {
+                otherArticle.removeEnclosure(enclosure)
+            }
+            enclosure.article = self
             updated = true
         }
     }
@@ -104,6 +177,9 @@ class Article : Equatable, Hashable {
     func removeEnclosure(enclosure: Enclosure) {
         if contains(self.enclosures, enclosure) {
             self.enclosures = self.enclosures.filter { $0 != enclosure }
+            if enclosure.article == self {
+                enclosure.article = nil
+            }
             updated = true
         }
     }

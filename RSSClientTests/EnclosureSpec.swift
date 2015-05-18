@@ -31,17 +31,34 @@ class EnclosureSpec: QuickSpec {
             }
         }
 
-        describe("setting article") {
+        describe("changing article") {
             var article : Article! = nil
 
             beforeEach {
                 article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
+
                 subject?.article = article
             }
 
             it("should add subject to the article's enclosures list") {
                 if let sub = subject {
                     expect(article.enclosures).to(contain(sub))
+                }
+            }
+
+            it("should remove subject from the article's enclosures list when that gets unset") {
+                subject?.article = nil
+                if let sub = subject {
+                    expect(article.enclosures).toNot(contain(sub))
+                }
+            }
+
+            it("should remove from the old and add to the new when changing articles") {
+                let newArticle = Article(title: "bleh", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
+                subject?.article = newArticle
+                if let sub = subject {
+                    expect(article.enclosures).toNot(contain(sub))
+                    expect(newArticle.enclosures).to(contain(sub))
                 }
             }
         }
@@ -51,29 +68,29 @@ class EnclosureSpec: QuickSpec {
                 expect(subject?.updated).to(beFalsy())
             }
 
-            describe("when a property is changed") {
-                it("such as url, updated should change to positive") {
+            describe("properties that change updated to positive") {
+                it("url") {
                     subject?.url = NSURL(string: "http://example.com")!
                     expect(subject?.updated).to(beFalsy())
                     subject?.url = NSURL(string: "http://example.com/changed")!
                     expect(subject?.updated).to(beTruthy())
                 }
 
-                it("such as kind, updated should change to positive") {
+                it("kind") {
                     subject?.kind = ""
                     expect(subject?.updated).to(beFalsy())
                     subject?.kind = "hello there"
                     expect(subject?.updated).to(beTruthy())
                 }
 
-                it("such as data, updated should change to positive") {
+                it("data") {
                     subject?.data = nil
                     expect(subject?.updated).to(beFalsy())
                     subject?.data = NSData()
                     expect(subject?.updated).to(beTruthy())
                 }
 
-                it("such as article, updated should change to positive") {
+                it("article") {
                     subject?.article = nil
                     expect(subject?.updated).to(beFalsy())
                     let article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])

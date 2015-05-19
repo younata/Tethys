@@ -30,7 +30,9 @@ class DataManager: NSObject {
                         if item.isQueryFeed() {
                             if let query = item.query {
                                 var newFeed = self.newQueryFeed(item.title!, code: query, summary: item.summary)
-                                newFeed.tags = item.tags ?? []
+                                for tag in (item.tags ?? []) {
+                                    newFeed.addTag(tag)
+                                }
                                 ret.append(newFeed)
                             }
                             i++
@@ -51,7 +53,9 @@ class DataManager: NSObject {
                                     completion(ret)
                                 }
                             }) {
-                                newFeed.tags = item.tags ?? []
+                                for tag in (item.tags ?? []) {
+                                    newFeed.addTag(tag)
+                                }
                                 ret.append(newFeed)
                             } else {
                                 i++

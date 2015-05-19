@@ -186,10 +186,8 @@ class QueryFeedViewController: UITableViewController {
         } else if indexPath.section == 3 {
             let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""), handler: {(_, indexPath) in
                 if var feed = self.feed {
-                    var tags = feed.tags
-                    let tag = tags[indexPath.row]
-                    tags.removeAtIndex(indexPath.row)
-                    feed.tags = tags
+                    let tag = feed.tags[indexPath.row]
+                    feed.removeTag(tag)
                     tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
                     if tag.hasPrefix("~") {
                         tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: .None)

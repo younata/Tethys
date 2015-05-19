@@ -14,14 +14,50 @@ class Feed : Equatable, Hashable {
             }
         }
     }
-    var url : NSURL?
-    var summary : String
-    var query : String?
-    var tags : [String]
-    var waitPeriod : Int?
-    var remainingWait : Int?
-    var articles : [Article] = []
-    var image : Image?
+    var url : NSURL? {
+        willSet {
+            if newValue != url {
+                self.updated = true
+            }
+        }
+    }
+    var summary : String {
+        willSet {
+            if newValue != summary {
+                self.updated = true
+            }
+        }
+    }
+    var query : String? {
+        willSet {
+            if newValue != query {
+                self.updated = true
+            }
+        }
+    }
+    internal private(set) var tags : [String]
+    var waitPeriod : Int? {
+        willSet {
+            if newValue != waitPeriod {
+                self.updated = true
+            }
+        }
+    }
+    var remainingWait : Int? {
+        willSet {
+            if newValue != remainingWait {
+                self.updated = true
+            }
+        }
+    }
+    internal private(set) var articles : [Article] = []
+    var image : Image? {
+        willSet {
+            if newValue != image {
+                self.updated = true
+            }
+        }
+    }
 
     var isQueryFeed : Bool { return query != nil }
 
@@ -60,13 +96,36 @@ class Feed : Equatable, Hashable {
 
     func addArticle(article: Article) {
         if !contains(self.articles, article) {
+            updated = true
             articles.append(article)
+            if let otherFeed = article.feed where otherFeed != self {
+                otherFeed.removeArticle(article)
+            }
+            article.feed = self
         }
     }
 
     func removeArticle(article: Article) {
         if contains(self.articles, article) {
+            updated = true
             self.articles = self.articles.filter { $0 != article }
+            if article.feed == self {
+                article.feed = nil
+            }
+        }
+    }
+
+    func addTag(tag: String) {
+        if !contains(tags, tag) {
+            updated = true
+            tags.append(tag)
+        }
+    }
+
+    func removeTag(tag: String) {
+        if contains(tags, tag) {
+            updated = true
+            tags = tags.filter { $0 != tag }
         }
     }
 
@@ -81,6 +140,9 @@ class Feed : Equatable, Hashable {
             self.remainingWait = remainingWait
             self.image = image
             self.articles = articles
+            for article in articles {
+                article.feed = self
+            }
     }
 
     private(set) var feedID : NSManagedObjectID? = nil
@@ -112,17 +174,6 @@ func ==(a: Feed, b: Feed) -> Bool {
     if let aID = a.feedID, let bID = b.feedID {
         return aID.URIRepresentation() == bID.URIRepresentation()
     }
-    /*
-    var title : String
-    var url : NSURL?
-    var summary : String
-    var query : String?
-    var tags : [String]
-    var waitPeriod : Int?
-    var remainingWait : Int?
-    var articles : [Article] = []
-    var image : Image?
-    */
     return a.title == b.title && a.url == b.url && a.summary == b.summary &&
         a.query == b.query && a.tags == b.tags && a.waitPeriod == b.waitPeriod &&
         a.remainingWait == b.remainingWait && a.image == b.image

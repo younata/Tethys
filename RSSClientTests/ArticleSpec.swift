@@ -190,7 +190,7 @@ class ArticleSpec: QuickSpec {
                     expect(subject.flags).toNot(contain("flag"))
                     subject.removeFlag("flag")
 
-                    expect(subject.flags).toNot(contain("flags"))
+                    expect(subject.flags).toNot(contain("flag"))
                     expect(subject.updated).to(beFalsy())
                 }
             }

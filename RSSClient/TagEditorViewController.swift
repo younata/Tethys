@@ -47,14 +47,8 @@ class TagEditorViewController: UIViewController {
     }
     
     func save() {
-        if var feed = self.feed {
-            var tags = feed.tags
-            if let ti = tagIndex {
-                tags[ti] = tag!
-            } else {
-                tags.append(tag!)
-            }
-            feed.tags = tags
+        if var feed = self.feed, let tag = tag {
+            feed.addTag(tag)
             self.feed = feed
         }
         

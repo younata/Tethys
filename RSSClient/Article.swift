@@ -189,5 +189,8 @@ func ==(a: Article, b: Article) -> Bool {
     if let aID = a.articleID, let bID = b.articleID {
         return aID.URIRepresentation() == bID.URIRepresentation()
     }
-    return a.title == b.title && a.link == b.link && a.summary == b.summary && a.author == b.author && a.published == b.published && a.updatedAt == b.updatedAt && a.identifier == b.identifier && a.content == b.content && a.read == b.read && a.flags == b.flags
+    return a.title == b.title && a.link == b.link && a.summary == b.summary &&
+        a.author == b.author && a.published == b.published && a.updatedAt == b.updatedAt &&
+        a.identifier == b.identifier && a.content == b.content && a.read == b.read &&
+        a.flags == b.flags
 }

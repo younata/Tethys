@@ -9,7 +9,7 @@ class ArticleSpec: QuickSpec {
             subject = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
         }
 
-        describe("equality") {
+        describe("Equatable") {
             it("should report two articles created with a coredataarticle with the same articleID as equal") {
                 let ctx = managedObjectContext()
                 let a = createArticle(ctx)
@@ -215,13 +215,13 @@ class ArticleSpec: QuickSpec {
                 expect(feed.articles).toNot(contain(self))
             }
 
-            xit("should remove from the old and add to the new when changing feeds") {
+            it("should remove from the old and add to the new when changing feeds") {
                 let newFeed = Feed(title: "blah", url: nil, summary: "", query: nil, tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
 
                 subject.feed = newFeed
 
-                expect(feed.articles).toNot(contain(self))
-                expect(newFeed.articles).to(contain(self))
+                expect(feed.articles).toNot(contain(subject))
+                expect(newFeed.articles).to(contain(subject))
             }
         }
 

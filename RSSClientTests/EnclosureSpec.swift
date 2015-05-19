@@ -11,7 +11,7 @@ class EnclosureSpec: QuickSpec {
             expect(subject).toNot(beNil())
         }
 
-        describe("equality") {
+        describe("Equatable") {
             it("should report two enclosures created with a coredataenclosure with the same enclosureID as equal") {
                 let ctx = managedObjectContext()
                 let a = createEnclosure(ctx)

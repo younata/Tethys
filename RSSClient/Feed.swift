@@ -7,7 +7,13 @@ import Foundation
 #endif
 
 class Feed : Equatable, Hashable {
-    var title : String
+    var title : String {
+        willSet {
+            if newValue != title {
+                self.updated = true
+            }
+        }
+    }
     var url : NSURL?
     var summary : String
     var query : String?
@@ -20,8 +26,22 @@ class Feed : Equatable, Hashable {
     var isQueryFeed : Bool { return query != nil }
 
     var hashValue : Int {
-        return 0
+        if let id = feedID {
+            return id.URIRepresentation().hash
+        }
+        let nonNilHashValues = title.hashValue ^ summary.hashValue
+        let possiblyNilHashValues : Int
+        if let link = url, query = query, waitPeriod = waitPeriod,
+            remainingWait = remainingWait, image = image {
+                possiblyNilHashValues = link.hash ^ query.hashValue ^ waitPeriod.hashValue ^ remainingWait.hashValue ^ image.hash
+        } else {
+            possiblyNilHashValues = 0
+        }
+        let tagsHashValues = tags.map({$0.hashValue}).reduce(0, combine: ^)
+        return nonNilHashValues ^ possiblyNilHashValues ^ tagsHashValues
     }
+
+    internal private(set) var updated = false
 
     func waitPeriodInRefreshes() -> Int {
         var ret = 0, next = 1
@@ -89,5 +109,21 @@ class Feed : Equatable, Hashable {
 }
 
 func ==(a: Feed, b: Feed) -> Bool {
-    return true
+    if let aID = a.feedID, let bID = b.feedID {
+        return aID.URIRepresentation() == bID.URIRepresentation()
+    }
+    /*
+    var title : String
+    var url : NSURL?
+    var summary : String
+    var query : String?
+    var tags : [String]
+    var waitPeriod : Int?
+    var remainingWait : Int?
+    var articles : [Article] = []
+    var image : Image?
+    */
+    return a.title == b.title && a.url == b.url && a.summary == b.summary &&
+        a.query == b.query && a.tags == b.tags && a.waitPeriod == b.waitPeriod &&
+        a.remainingWait == b.remainingWait && a.image == b.image
 }

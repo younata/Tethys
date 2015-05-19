@@ -91,7 +91,7 @@ class Feed : Equatable, Hashable {
     }
 
     func unreadArticles() -> [Article] {
-        return []
+        return articles.filter { !$0.read }
     }
 
     func addArticle(article: Article) {

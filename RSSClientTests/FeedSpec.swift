@@ -47,8 +47,22 @@ class FeedSpec: QuickSpec {
             expect(queryFeed.isQueryFeed).to(beTruthy())
         }
 
-        it("should return the correct number of unread articles") {
+        it("unreadArticles() should return articles with read->false") {
+            func article(name: String, read: Bool) -> Article {
+                return Article(title: name, link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: read, feed: nil, flags: [], enclosures: [])
+            }
 
+            let a = article("a", true)
+            let b = article("b", false)
+            let c = article("c", false)
+            let d = article("d", true)
+
+            subject.addArticle(a)
+            subject.addArticle(b)
+            subject.addArticle(c)
+            subject.addArticle(d)
+
+            expect(subject.unreadArticles()).to(equal([b, c]))
         }
 
         describe("Equatable") {

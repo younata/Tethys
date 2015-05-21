@@ -128,11 +128,11 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     public func applicationDidEnterBackground(application: UIApplication) {
-        dataManager.managedObjectContext.save(nil)
+//        dataManager.backgroundObjectContext.save(nil)
     }
     
     public func applicationWillTerminate(application: UIApplication) {
-        dataManager.managedObjectContext.save(nil)
+//        dataManager.backgroundObjectContext.save(nil)
     }
 }
 

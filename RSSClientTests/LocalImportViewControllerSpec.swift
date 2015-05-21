@@ -3,7 +3,7 @@ import Nimble
 import Ra
 import Muon
 
-func createOPMLWithFeeds(feeds: [(url: String, title: String)], location: String) {
+private func createOPMLWithFeeds(feeds: [(url: String, title: String)], location: String) {
     var opml = "<opml><body>"
     for feed in feeds {
         opml += "<outline xmlURL=\"\(feed.url)\" title=\"\(feed.title)\" type=\"rss\"/>"
@@ -14,12 +14,12 @@ func createOPMLWithFeeds(feeds: [(url: String, title: String)], location: String
     opml.writeToFile(path, atomically: true, encoding: NSUTF8StringEncoding, error: nil)
 }
 
-func deleteAtLocation(location: String) {
+private func deleteAtLocation(location: String) {
     let path = NSHomeDirectory().stringByAppendingPathComponent("Documents/" + location)
     NSFileManager.defaultManager().removeItemAtPath(path, error: nil)
 }
 
-func createFeed(feed: (url: String, title: String, articles: [String]), location: String) {
+private func createFeed(feed: (url: String, title: String, articles: [String]), location: String) {
     var str = "<rss><channel><title>\(feed.title)</title><link>\(feed.url)</link>"
     for article in feed.articles {
         str += "<item><title>\(article)</title></item>"

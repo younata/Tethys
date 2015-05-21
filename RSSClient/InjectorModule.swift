@@ -1,7 +1,6 @@
 import Foundation
 import Ra
 
-let kMainManagedObjectContext = "kMainManagedObjectContext"
 let kBackgroundManagedObjectContext = "kBackgroundManagedObjectContext"
 
 let kMainQueue = "kMainQueue"
@@ -44,7 +43,6 @@ class InjectorModule : Ra.InjectorModule {
         }
         
         // Managed Object Contexts
-        injector.bind(kMainManagedObjectContext, to: dataManager.managedObjectContext)
         injector.bind(kBackgroundManagedObjectContext, to: dataManager.backgroundObjectContext)
     }
 }

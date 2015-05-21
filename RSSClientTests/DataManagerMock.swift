@@ -18,7 +18,7 @@ class DataManagerMock : DataManager {
         return nil
     }
 
-    override func feeds(managedObjectContext: NSManagedObjectContext? = nil) -> [Feed] {
+    override func feeds() -> [Feed] {
         return []
     }
 

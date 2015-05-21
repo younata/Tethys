@@ -6,7 +6,6 @@ class SpecInjectorModule : InjectorModule {
         super.configureInjector(injector)
         let dataManager = DataManagerMock()
         injector.bind(DataManager.self, to: dataManager)
-        injector.bind(kMainManagedObjectContext, to: dataManager.managedObjectContext)
         injector.bind(kBackgroundManagedObjectContext, to: dataManager.backgroundObjectContext)
 
         let mainQueue = FakeOperationQueue()

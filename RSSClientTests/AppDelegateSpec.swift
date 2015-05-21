@@ -17,7 +17,6 @@ class AppDelegateSpec: QuickSpec {
             injector.bind(DataManager.self) {
                 dataManager
             }
-            injector.bind(kMainManagedObjectContext, to: dataManager.managedObjectContext)
             injector.bind(kBackgroundManagedObjectContext, to: dataManager.backgroundObjectContext)
 
             subject.anInjector = injector

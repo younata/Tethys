@@ -121,19 +121,13 @@ class DataManager: NSObject {
         }
     }
 
-    func feedsMatchingTag(tag: String?, allowIncompleteTags: Bool = true) -> [Feed] {
+    func feedsMatchingTag(tag: String?) -> [Feed] {
         if let theTag = (tag == "" ? nil : tag) {
             return feeds().filter {
                 let tags = $0.tags
                 for t in tags {
-                    if allowIncompleteTags {
-                        if t.rangeOfString(theTag) != nil {
-                            return true
-                        }
-                    } else {
-                        if t == theTag {
-                            return true
-                        }
+                    if t.rangeOfString(theTag) != nil {
+                        return true
                     }
                 }
                 return false

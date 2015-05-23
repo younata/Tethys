@@ -116,6 +116,9 @@
 		8981316B1AFB1ED70090FA7F /* FeedRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8981316A1AFB1ED60090FA7F /* FeedRepository.swift */; };
 		8981316C1AFB1ED70090FA7F /* FeedRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8981316A1AFB1ED60090FA7F /* FeedRepository.swift */; };
 		898131781AFC877A0090FA7F /* LocalImportViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898131771AFC877A0090FA7F /* LocalImportViewControllerSpec.swift */; };
+		89839C851B1042C500C34BD2 /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 89839C841B1042C500C34BD2 /* DataManager.m */; };
+		89839C861B1042C500C34BD2 /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 89839C841B1042C500C34BD2 /* DataManager.m */; };
+		89839C881B1042FC00C34BD2 /* DataManagerSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 89839C871B1042FC00C34BD2 /* DataManagerSpec.m */; };
 		898F670C1B000451004A7BE3 /* FakeOperationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */; };
 		898F670E1B0007F4004A7BE3 /* SpecInjectorModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F670D1B0007F4004A7BE3 /* SpecInjectorModule.swift */; };
 		899C47EC1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */; };
@@ -295,6 +298,9 @@
 		898131671AF880400090FA7F /* Muon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Muon.framework; path = ../Carthage/Build/iOS/Muon.framework; sourceTree = "<group>"; };
 		8981316A1AFB1ED60090FA7F /* FeedRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedRepository.swift; sourceTree = "<group>"; };
 		898131771AFC877A0090FA7F /* LocalImportViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalImportViewControllerSpec.swift; sourceTree = "<group>"; };
+		89839C831B1042C500C34BD2 /* DataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataManager.h; sourceTree = "<group>"; };
+		89839C841B1042C500C34BD2 /* DataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
+		89839C871B1042FC00C34BD2 /* DataManagerSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManagerSpec.m; sourceTree = "<group>"; };
 		898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeOperationQueue.swift; sourceTree = "<group>"; };
 		898F670D1B0007F4004A7BE3 /* SpecInjectorModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpecInjectorModule.swift; sourceTree = "<group>"; };
 		899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BreakOutToRefreshView.swift; path = Vendor/BreakOutToRefreshView.swift; sourceTree = "<group>"; };
@@ -523,6 +529,7 @@
 			isa = PBXGroup;
 			children = (
 				899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */,
+				89839C871B1042FC00C34BD2 /* DataManagerSpec.m */,
 				890E47661AA19F7F007F217C /* DataUtilitySpec.swift */,
 				8978D4E41B05AB2800EDD6D0 /* FeedSpec.swift */,
 				8978D4E61B05AB3800EDD6D0 /* ArticleSpec.swift */,
@@ -649,6 +656,8 @@
 				8981316A1AFB1ED60090FA7F /* FeedRepository.swift */,
 				89C830A819D7B890009924DA /* DataManager.swift */,
 				890E47581AA19D69007F217C /* DataUtility.swift */,
+				89839C831B1042C500C34BD2 /* DataManager.h */,
+				89839C841B1042C500C34BD2 /* DataManager.m */,
 				89C8307A19D730E9009924DA /* RSSClient.xcdatamodeld */,
 				89C830C119D89E46009924DA /* CoreDataArticle.h */,
 				89C830C219D89E46009924DA /* CoreDataArticle.m */,
@@ -1013,6 +1022,7 @@
 				895901A91A30C5D1002E2C62 /* EnclosuresView.swift in Sources */,
 				895782411A3CC0130022F345 /* CircularProgressLayer.swift in Sources */,
 				89C7FBE01A183EBE00ACBDB2 /* MAKDropDownMenu.m in Sources */,
+				89839C851B1042C500C34BD2 /* DataManager.m in Sources */,
 				895901AC1A30C6B7002E2C62 /* EnclosureCell.swift in Sources */,
 				89C830B619D7DE97009924DA /* ArticleViewController.swift in Sources */,
 				894C0C371A1329FB008229A4 /* AMPopTip.m in Sources */,
@@ -1049,6 +1059,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				898F670E1B0007F4004A7BE3 /* SpecInjectorModule.swift in Sources */,
+				89839C861B1042C500C34BD2 /* DataManager.m in Sources */,
 				895901AD1A30C6B7002E2C62 /* EnclosureCell.swift in Sources */,
 				8978D4E51B05AB2800EDD6D0 /* FeedSpec.swift in Sources */,
 				895779AD19E62CDA00548418 /* CoreDataFeed.m in Sources */,
@@ -1090,6 +1101,7 @@
 				895782421A3CC0130022F345 /* CircularProgressLayer.swift in Sources */,
 				8981316C1AFB1ED70090FA7F /* FeedRepository.swift in Sources */,
 				8978D4E31B053A5900EDD6D0 /* Enclosure.swift in Sources */,
+				89839C881B1042FC00C34BD2 /* DataManagerSpec.m in Sources */,
 				8963F4351A280F8E00B447D6 /* TagPickerView.swift in Sources */,
 				AE4356001A7ABA4F00A961B9 /* DataManagerMock.swift in Sources */,
 				89C509F51A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */,
@@ -1166,6 +1178,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "RSSClient-OSX/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
@@ -1182,6 +1195,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "RSSClient-OSX/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
@@ -1284,6 +1298,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				HEADER_SEARCH_PATHS = "$(inherited)/**";
 				INFOPLIST_FILE = RSSClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
@@ -1311,6 +1326,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				HEADER_SEARCH_PATHS = "$(inherited)/**";
 				INFOPLIST_FILE = RSSClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
@@ -1337,11 +1353,13 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = RSSClientTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "RSSClient/RSSClient-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "rNews-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/rNews.app/rNews";
 			};
@@ -1357,11 +1375,13 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = RSSClientTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "RSSClient/RSSClient-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "rNews-Swift.h";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/rNews.app/rNews";
 			};
 			name = Release;

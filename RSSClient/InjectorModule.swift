@@ -16,9 +16,12 @@ class InjectorModule : Ra.InjectorModule {
         injector.bind(kBackgroundQueue, to: backgroundQueue)
 
         // DataManager
-        let dataManager = injector.create(DataManager.self) as! DataManager
-        dataManager.configure()
-        injector.bind(DataManager.self, to: dataManager)
+        if let dataManager = injector.create(DataManager.self) as? DataManager {
+            dataManager.configure()
+            injector.bind(DataManager.self, to: dataManager)
+
+            injector.bind(kBackgroundManagedObjectContext, to: dataManager.backgroundObjectContext)
+        }
 
         injector.bind(NSFileManager.self, to: NSFileManager.defaultManager())
 
@@ -41,8 +44,5 @@ class InjectorModule : Ra.InjectorModule {
             tagPicker.setTranslatesAutoresizingMaskIntoConstraints(false)
             return tagPicker
         }
-        
-        // Managed Object Contexts
-        injector.bind(kBackgroundManagedObjectContext, to: dataManager.backgroundObjectContext)
     }
 }

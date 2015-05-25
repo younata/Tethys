@@ -1,70 +1,70 @@
 import Foundation
 
-class Article : Equatable, Hashable {
-    var title : String {
+class Article: Equatable, Hashable {
+    var title: String {
         willSet {
             if newValue != title {
                 self.updated = true
             }
         }
     }
-    var link : NSURL? {
+    var link: NSURL? {
         willSet {
             if newValue != link {
                 self.updated = true
             }
         }
     }
-    var summary : String {
+    var summary: String {
         willSet {
             if newValue != summary {
                 self.updated = true
             }
         }
     }
-    var author : String {
+    var author: String {
         willSet {
             if newValue != author {
                 self.updated = true
             }
         }
     }
-    var published : NSDate {
+    var published: NSDate {
         willSet {
             if newValue != published {
                 self.updated = true
             }
         }
     }
-    var updatedAt : NSDate? {
+    var updatedAt: NSDate? {
         willSet {
             if newValue != updatedAt {
                 self.updated = true
             }
         }
     }
-    var identifier : String {
+    var identifier: String {
         willSet {
             if newValue != identifier {
                 self.updated = true
             }
         }
     }
-    var content : String {
+    var content: String {
         willSet {
             if newValue != content {
                 self.updated = true
             }
         }
     }
-    var read : Bool {
+    var read: Bool {
         willSet {
             if newValue != read {
                 self.updated = true
             }
         }
     }
-    var feed : Feed? {
+    var feed: Feed? {
         willSet {
             if newValue != feed {
                 self.updated = true
@@ -77,18 +77,19 @@ class Article : Equatable, Hashable {
             }
         }
     }
-    internal private(set) var flags : [String] = []
-    internal private(set) var enclosures : [Enclosure] = []
+    internal private(set) var flags: [String] = []
+    internal private(set) var enclosures: [Enclosure] = []
 
-    internal private(set) var updated : Bool = false
+    internal private(set) var updated: Bool = false
 
-    var hashValue : Int {
+    var hashValue: Int {
         if let id = articleID {
             return id.URIRepresentation().hash
         }
-        let nonNilHashValues = title.hashValue ^ summary.hashValue ^ author.hashValue ^ published.hash ^ identifier.hashValue ^ content.hashValue & read.hashValue
+        let nonNilHashValues = title.hashValue ^ summary.hashValue ^ author.hashValue ^
+            published.hash ^ identifier.hashValue ^ content.hashValue & read.hashValue
         let flagsHashValues = flags.reduce(0) { $0 ^ $1.hashValue }
-        let possiblyNilHashValues : Int
+        let possiblyNilHashValues: Int
         if let link = link, updatedAt = updatedAt {
             possiblyNilHashValues = link.hash ^ updatedAt.hash
         } else {
@@ -118,7 +119,7 @@ class Article : Equatable, Hashable {
             }
     }
 
-    private(set) var articleID : NSManagedObjectID? = nil
+    private(set) var articleID: NSManagedObjectID? = nil
 
     init(article: CoreDataArticle, feed: Feed?) {
         title = article.title ?? ""

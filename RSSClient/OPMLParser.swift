@@ -99,11 +99,10 @@ class OPMLParser : NSOperation, NSXMLParserDelegate {
         if (!isOPML) {
             return
         }
-        if elementName.lowercaseString.hasPrefix("outline") {
+        if let attributes = attributeDict as? [String: String] where elementName.lowercaseString.hasPrefix("outline") {
             var item = OPMLItem()
-            for (k, v) in attributeDict {
-                let key = (k as! String).lowercaseString
-                let value = v as! String
+            for (k, value) in attributes {
+                let key = k.lowercaseString
                 if value == "" {
                     continue
                 }

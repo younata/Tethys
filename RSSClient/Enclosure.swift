@@ -1,28 +1,28 @@
 import Foundation
 
 class Enclosure: Equatable {
-    var url : NSURL {
+    var url: NSURL {
         willSet {
             if newValue != url {
                 self.updated = true
             }
         }
     }
-    var kind : String {
+    var kind: String {
         willSet {
             if newValue != kind {
                 self.updated = true
             }
         }
     }
-    var data : NSData? {
+    var data: NSData? {
         willSet {
             if newValue != data {
                 self.updated = true
             }
         }
     }
-    var article : Article? {
+    var article: Article? {
         willSet {
             if newValue != article {
                 self.updated = true
@@ -36,9 +36,9 @@ class Enclosure: Equatable {
         }
     }
 
-    internal private(set) var updated : Bool = false
+    internal private(set) var updated: Bool = false
 
-    var downloaded : Bool {
+    var downloaded: Bool {
         return data == nil
     }
 
@@ -49,7 +49,7 @@ class Enclosure: Equatable {
         self.article = article
     }
 
-    private(set) var enclosureID : NSManagedObjectID? = nil
+    private(set) var enclosureID: NSManagedObjectID? = nil
 
     init(enclosure: CoreDataEnclosure, article: Article?) {
         url = NSURL(string: enclosure.url ?? "") ?? NSURL()

@@ -3,7 +3,6 @@ import WebKit
 import TOBrowserActivityKit
 
 class ArticleViewController: UIViewController, WKNavigationDelegate {
-    
     var article: Article? = nil {
         didSet {
             self.navigationController?.setToolbarHidden(false, animated: false)
@@ -12,58 +11,63 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
 //                NSNotificationCenter.defaultCenter().postNotificationName("ArticleWasRead", object: a)
 //                a.managedObjectContext?.save(nil)
                 let url = a.link
-                
                 showArticle(a, onWebView: content)
 
                 self.navigationItem.title = a.title ?? ""
-                
+
                 if userActivity == nil {
-                    userActivity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
+                    let activityType = "com.rachelbrindle.rssclient.article"
+                    userActivity = NSUserActivity(activityType: activityType)
                     userActivity?.title = NSLocalizedString("Reading Article", comment: "")
                     userActivity?.becomeCurrent()
                 }
-//                userActivity?.userInfo = ["feed": a.feed?.title ?? "", "article": a.objectID.URIRepresentation(), "showingContent": true, "url": a.link!]
+                /*
+                userActivity?.userInfo = ["feed": a.feed?.title ?? "",
+                                          "article": a.objectID.URIRepresentation(),
+                                          "showingContent": true,
+                                          "url": a.link!]
+                */
                 userActivity?.webpageURL = a.link
                 self.userActivity?.needsSave = true
-                
-                let notes : [UILocalNotification] = (UIApplication.sharedApplication().scheduledLocalNotifications as! [UILocalNotification]).filter {(note) in
-                    if let ui = note.userInfo {
-                        if let feed : String = ui["feed"] as? String {
-                            if let title : String = ui["article"] as? String {
+
+                let localNotes = UIApplication.sharedApplication().scheduledLocalNotifications
+                if let scheduledNotes = localNotes as? [UILocalNotification] {
+                    let notes = scheduledNotes.filter {note in
+                        if let ui = note.userInfo,
+                            let feed: String = ui["feed"] as? String,
+                            let title: String = ui["article"] as? String {
                                 return feed == a.feed?.title && title == a.title
-                            }
                         }
+                        return false
                     }
-                    return false
-                }
-                
-                for note in notes {
-                    UIApplication.sharedApplication().cancelLocalNotification(note)
+                    for note in notes {
+                        UIApplication.sharedApplication().cancelLocalNotification(note)
+                    }
                 }
             }
         }
     }
-    
+
     enum ArticleContentType {
         case Content;
         case Link;
     }
-    
+
     var content = WKWebView(forAutoLayout: ())
     let loadingBar = UIProgressView(progressViewStyle: .Bar)
-    
+
     var shareButton: UIBarButtonItem? = nil
     var toggleContentButton: UIBarButtonItem? = nil
     var showEnclosuresButton: UIBarButtonItem? = nil
     let contentString = NSLocalizedString("Content", comment: "")
     let linkString = NSLocalizedString("Link", comment: "")
-    
+
     var articles: [Article] = []
     var lastArticleIndex = 0
-    
+
     var dataManager: DataManager? = nil
-    
-    var articleCSS : String {
+
+    var articleCSS: String {
         if let loc = NSBundle.mainBundle().URLForResource("article", withExtension: "css") {
             if let str = NSString(contentsOfURL: loc, encoding: NSUTF8StringEncoding, error: nil) {
                 return "<html><head><style type=\"text/css\">\(str)</style></head><body>"
@@ -71,15 +75,15 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         }
         return "<html><body>"
     }
-    
+
     var contentType: ArticleContentType = .Content {
         didSet {
             if let a = article {
                 switch (contentType) {
                 case .Content:
                     toggleContentButton?.title = linkString
-                    let cnt = a.content ?? a.summary ?? ""
-                    self.content.loadHTMLString(articleCSS + cnt + "</body></html>", baseURL: a.feed?.url)
+                    let content = a.content ?? a.summary ?? ""
+                    self.content.loadHTMLString(articleCSS + content + "</body></html>", baseURL: a.feed?.url)
                 case .Link:
                     toggleContentButton?.title = contentString
                     self.content.loadRequest(NSURLRequest(URL: a.link!))
@@ -102,12 +106,12 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             }
         }
     }
-    
+
     func showArticle(article: Article, onWebView webView: WKWebView) {
-        let cnt = article.content.isEmpty ? article.summary : article.content
-        if !cnt.isEmpty {
+        let content = article.content.isEmpty ? article.summary : article.content
+        if !content.isEmpty {
             let title = "<h2>\(article.title)</h2>"
-            webView.loadHTMLString(articleCSS + title + cnt + "</body></html>", baseURL: article.feed?.url!)
+            webView.loadHTMLString(articleCSS + title + content + "</body></html>", baseURL: article.feed?.url!)
             if let sb = shareButton {
                 self.toolbarItems = [spacer(), sb, spacer(), toggleContentButton!, spacer()]
                 if let ec = showEnclosuresButton where article.enclosures.count > 0 {
@@ -124,48 +128,51 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             }
         }
     }
-    
+
     func spacer() -> UIBarButtonItem {
         return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: "")
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         self.edgesForExtendedLayout = .None
         self.navigationController?.setToolbarHidden(false, animated: true)
-        
+
         self.view.backgroundColor = UIColor.whiteColor()
-        
+
         if userActivity == nil {
             userActivity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
             userActivity?.title = NSLocalizedString("Reading Article", comment: "")
         }
-        
+
         self.view.addSubview(loadingBar)
         loadingBar.setTranslatesAutoresizingMaskIntoConstraints(false)
         loadingBar.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
         loadingBar.autoSetDimension(.Height, toSize: 1)
         loadingBar.progressTintColor = UIColor.darkGreenColor()
-        
+
         self.view.addSubview(content)
         content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
         configureContent()
-        
-        if let splitView = self.splitViewController where UIDevice.currentDevice().userInterfaceIdiom == .Pad || (UIScreen.mainScreen().scale == UIScreen.mainScreen().nativeScale && UIScreen.mainScreen().scale > 2) {
+
+        let is6Plus = UIScreen.mainScreen().scale == UIScreen.mainScreen().nativeScale &&
+                      UIScreen.mainScreen().scale > 2
+        let isiPad = UIDevice.currentDevice().userInterfaceIdiom == .Pad
+        if let splitView = self.splitViewController where isiPad || is6Plus {
             self.navigationItem.leftBarButtonItem = splitView.displayModeButtonItem()
         }
-        
+
         let back = UIBarButtonItem(title: "<", style: .Plain, target: content, action: "goBack")
         let forward = UIBarButtonItem(title: ">", style: .Plain, target: content, action: "goForward")
         back.enabled = false
         forward.enabled = false
-        
+
         self.navigationItem.rightBarButtonItems = [forward, back]
         // share, show (content|link)
         shareButton = UIBarButtonItem(barButtonSystemItem: .Compose, target: self, action: "share")
-        toggleContentButton = UIBarButtonItem(title: linkString, style: .Plain, target: self, action: "toggleContentLink")
-        //showEnclosuresButton = UIBarButtonItem(title: NSLocalizedString("Enclosures", comment: ""), style: .Plain, target: self, action: "showEnclosures")
+        toggleContentButton = UIBarButtonItem(title: linkString, style: .Plain,
+            target: self, action: "toggleContentLink")
         if let a = article {
             if (a.content ?? a.summary) != nil {
                 self.toolbarItems = [spacer(), shareButton!, spacer(), toggleContentButton!, spacer()]
@@ -176,7 +183,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
                 self.toolbarItems! += [showEnclosuresButton!, spacer()]
             }
         }
-        
+
         let swipeRight = UIScreenEdgePanGestureRecognizer(target: self, action: "next:")
         swipeRight.edges = .Right
         self.view.addGestureRecognizer(swipeRight)
@@ -184,12 +191,11 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         swipeLeft.edges = .Left
         self.view.addGestureRecognizer(swipeLeft)
     }
-    
+
     override func restoreUserActivityState(activity: NSUserActivity) {
         super.restoreUserActivityState(activity)
-        
-        if let ui = activity.userInfo {
-            let showingContent = (ui["showingContent"] as! Bool)
+
+        if let ui = activity.userInfo, let showingContent = ui["showingContent"] as? Bool {
             if showingContent {
                 self.contentType = .Content
             } else {
@@ -200,13 +206,13 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             }
         }
     }
-    
+
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
     }
-    
-    var objectsBeingObserved : [WKWebView] = []
-    
+
+    var objectsBeingObserved: [WKWebView] = []
+
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         userActivity?.invalidate()
@@ -216,9 +222,9 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         }
         objectsBeingObserved = []
     }
-    
+
     func removeObserverFromContent(obj: WKWebView) {
-        var idx : Int? = nil
+        var idx: Int? = nil
         do {
             idx = nil
             for (i, x) in enumerate(objectsBeingObserved) {
@@ -233,11 +239,11 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             }
         } while idx != nil
     }
-    
+
     deinit {
         userActivity?.invalidate()
     }
-    
+
     func configureContent() {
         content.navigationDelegate = self
         self.view.bringSubviewToFront(self.loadingBar)
@@ -248,24 +254,25 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             back.enabled = content.canGoBack
         }
     }
-    
+
     var nextContent: WKWebView = WKWebView(forAutoLayout: ())
-    var nextContentRight : NSLayoutConstraint! = nil
-    
+    var nextContentRight: NSLayoutConstraint! = nil
+
     func showPopTip(text: String, fromPoint point: CGPoint, fromDirection direction: AMPopTipDirection) {
         let poptip = AMPopTip()
         poptip.popoverColor = UIColor.lightGrayColor()
         let rect = CGRectMake(point.x, point.y, 0, 0)
-        let attributedText = NSAttributedString(string: text,
-            attributes: [NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)])
-        
+        let font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
+        let attributedText = NSAttributedString(string: text, attributes: [NSFontAttributeName: font])
+
         poptip.showAttributedText(attributedText, direction: direction, maxWidth: 120, inView: self.view,
             fromFrame: rect, duration: 2)
     }
-    
+
     func back(gesture: UIScreenEdgePanGestureRecognizer) {
         if lastArticleIndex == 0 {
-            showPopTip(NSLocalizedString("No previous article", comment: ""), fromPoint: gesture.locationInView(self.view), fromDirection: .Right)
+            showPopTip(NSLocalizedString("No previous article", comment: ""),
+                fromPoint: gesture.locationInView(self.view), fromDirection: .Right)
             return
         }
         let width = CGRectGetWidth(self.view.bounds)
@@ -306,13 +313,13 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             }
         }
     }
-    
+
     func next(gesture: UIScreenEdgePanGestureRecognizer) {
         if lastArticleIndex + 1 >= articles.count {
             if gesture.state == .Began {
                 let point = CGPointMake(self.view.bounds.width, gesture.locationInView(self.view).y)
-                
-                showPopTip(NSLocalizedString("End of article list", comment: ""), fromPoint: point, fromDirection: .Left)
+                showPopTip(NSLocalizedString("End of article list", comment: ""),
+                    fromPoint: point, fromDirection: .Left)
             }
             return;
         }
@@ -354,13 +361,14 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             }
         }
     }
-    
+
     func share() {
         if let a = article {
             let safari = TOActivitySafari()
             let chrome = TOActivityChrome()
-            
-            let activity = UIActivityViewController(activityItems: [a.link!], applicationActivities: [safari, chrome])
+
+            let activity = UIActivityViewController(activityItems: [a.link!],
+                applicationActivities: [safari, chrome])
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                 let popover = UIPopoverController(contentViewController: activity)
                 popover.presentPopoverFromBarButtonItem(shareButton!, permittedArrowDirections: .Any, animated: true)
@@ -369,7 +377,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             }
         }
     }
-    
+
     func toggleContentLink() {
         switch (self.contentType) {
         case .Link:
@@ -383,38 +391,39 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         }
         self.userActivity?.needsSave = true
     }
-    
+
     func showEnclosures() {
         if let enclosures = article?.enclosures {
             let activity = EnclosuresViewController()
             activity.dataManager = dataManager
-//            activity.enclosures = enclosures
+
+            let navController = UINavigationController(rootViewController: activity)
 
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-                let popover = UIPopoverController(contentViewController: UINavigationController(rootViewController: activity))
+                let popover = UIPopoverController(contentViewController: navController)
                 popover.presentPopoverFromBarButtonItem(showEnclosuresButton!, permittedArrowDirections: .Any, animated: true)
             } else {
-                self.presentViewController(UINavigationController(rootViewController: activity), animated: true, completion: nil)
+                self.presentViewController(navController, animated: true, completion: nil)
             }
         }
     }
-    
+
     override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
-        if (keyPath == "estimatedProgress" && object as! NSObject == content) {
+        if (keyPath == "estimatedProgress" && (object as? NSObject) == content) {
             loadingBar.progress = Float(content.estimatedProgress)
         }
     }
-    
+
     func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
         loadingBar.hidden = true
         self.removeObserverFromContent(webView)
     }
-    
-    func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
+
+    func webView(webView: WKWebView, didFailNavigation _: WKNavigation!, withError _: NSError) {
         loadingBar.hidden = true
         self.removeObserverFromContent(webView)
     }
-    
+
     func webView(webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         loadingBar.progress = 0
         loadingBar.hidden = false

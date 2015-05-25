@@ -8,44 +8,57 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
     let loadingBar = UIProgressView(progressViewStyle: .Bar)
     let navField = UITextField(frame: CGRectMake(0, 0, 200, 30))
     private var rssLink: String? = nil
-    
+
     var addFeedButton: UIBarButtonItem! = nil
     var back: UIBarButtonItem! = nil
     var forward: UIBarButtonItem! = nil
     var reload: UIBarButtonItem! = nil
-    var cancelTextEntry : UIBarButtonItem! = nil
-    
-    var lookForFeeds : Bool = true
-    
+    var cancelTextEntry: UIBarButtonItem! = nil
+
+    var lookForFeeds: Bool = true
+
     var feeds: [String] = []
 
-    lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as! DataManager }()
-    lazy var mainQueue : NSOperationQueue = { self.injector!.create(kMainQueue) as! NSOperationQueue }()
-    lazy var backgroundQueue : NSOperationQueue = { self.injector!.create(kBackgroundQueue) as! NSOperationQueue }()
+    lazy var dataManager: DataManager = {
+        return self.injector!.create(DataManager.self) as! DataManager
+    }()
+
+    lazy var mainQueue: NSOperationQueue = {
+        return self.injector!.create(kMainQueue) as! NSOperationQueue
+    }()
+
+    lazy var backgroundQueue: NSOperationQueue = {
+        return self.injector!.create(kBackgroundQueue) as! NSOperationQueue
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.edgesForExtendedLayout = .None
-        
+
         webContent.navigationDelegate = self
         self.view.addSubview(webContent)
         webContent.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
-        
+
         webContent.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
-                
+
         back = UIBarButtonItem(title: "<", style: .Plain, target: webContent, action: "goBack")
         forward = UIBarButtonItem(title: ">", style: .Plain, target: webContent, action: "goForward")
-        addFeedButton = UIBarButtonItem(title: NSLocalizedString("Add Feed", comment: ""), style: .Plain, target: self, action: "save")
+
+        let addFeedTitle = NSLocalizedString("Add Feed", comment: "")
+        addFeedButton = UIBarButtonItem(title: addFeedTitle, style: .Plain, target: self, action: "save")
         back.enabled = false
         forward.enabled = false
         addFeedButton.enabled = false
-        
-        let dismiss = UIBarButtonItem(title: NSLocalizedString("Dismiss", comment: ""), style: .Plain, target: self, action: "dismiss")
+
+        let dismissTitle = NSLocalizedString("Dismiss", comment: "")
+        let dismiss = UIBarButtonItem(title: dismissTitle, style: .Plain, target: self, action: "dismiss")
         reload = UIBarButtonItem(barButtonSystemItem: .Refresh, target: webContent, action: "reload")
-        cancelTextEntry = UIBarButtonItem(title: NSLocalizedString("Cancel", comment: ""), style: .Plain, target: navField, action: "resignFirstResponder")
+
+        let cancelTitle = NSLocalizedString("Cancel", comment: "")
+        cancelTextEntry = UIBarButtonItem(title: cancelTitle, style: .Plain, target: navField, action: "resignFirstResponder")
         cancelTextEntry.tintColor = UIColor.darkTextColor()
-        
+
         self.navigationController?.toolbarHidden = false
         func spacer() -> UIBarButtonItem {
             return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: "")
@@ -55,7 +68,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         } else {
             self.toolbarItems = [back, forward, spacer(), dismiss]
         }
-        
+
         self.navigationItem.titleView = navField
         navField.delegate = self
         navField.placeholder = "Enter URL"
@@ -65,7 +78,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         navField.autocapitalizationType = .None
         navField.keyboardType = .URL
         navField.clearsOnBeginEditing = true
-        
+
         loadingBar.setTranslatesAutoresizingMaskIntoConstraints(false)
         self.view.addSubview(loadingBar)
         loadingBar.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
@@ -74,11 +87,10 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         loadingBar.hidden = true
         loadingBar.progressTintColor = UIColor.darkGreenColor()
     }
-    
+
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         if (lookForFeeds) {
-            let dataManager = self.injector!.create(DataManager.self) as! DataManager
             feeds = dataManager.feeds().reduce([], combine: {
                 if let url = $1.url?.absoluteString {
                     return $0 + [url]
@@ -87,15 +99,15 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
             })
         }
     }
-    
+
     deinit {
         webContent.removeObserver(self, forKeyPath: "estimatedProgress")
     }
-    
+
     func dismiss() {
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
-    
+
     func save() {
         if let rl = rssLink {
             save(rl)
@@ -103,12 +115,13 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
             dismiss()
         }
     }
-    
+
     func save(link: String, opml: Bool = false) {
         // show something to indicate we're doing work...
         let loading = LoadingView(frame: self.view.bounds)
         self.view.addSubview(loading)
-        loading.msg = NSString.localizedStringWithFormat(NSLocalizedString("Loading feed at %@", comment: ""), link) as String
+        let loadingMessage = NSLocalizedString("Loading feed at %@", comment: "")
+        loading.msg = NSString.localizedStringWithFormat(loadingMessage, link) as String
         if opml {
             dataManager.importOPML(NSURL(string: link)!, progress: {(_) in }) {(_) in
                 loading.removeFromSuperview()
@@ -128,29 +141,31 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
             }
         }
     }
-    
-    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
+
+    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject,
+        change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
         if (keyPath == "estimatedProgress" && object as? NSObject == webContent) {
             loadingBar.progress = Float(webContent.estimatedProgress)
         }
     }
-    
+
     // MARK: - UITextFieldDelegate
-    
+
     func textFieldDidBeginEditing(textField: UITextField) {
         self.navigationItem.setRightBarButtonItem(cancelTextEntry, animated: true)
     }
-    
+
     func textFieldDidEndEditing(textField: UITextField) {
-        var button : UIBarButtonItem? = nil
+        var button: UIBarButtonItem? = nil
         if (webContent.estimatedProgress >= 1.0) {
             button = reload
         }
         self.navigationItem.setRightBarButtonItem(button, animated: true)
     }
-    
+
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        textField.text = textField.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        let whitespace = NSCharacterSet.whitespaceAndNewlineCharacterSet()
+        textField.text = textField.text.stringByTrimmingCharactersInSet(whitespace)
         if !textField.text.lowercaseString.hasPrefix("http") {
             textField.text = "http://\(textField.text)"
         }
@@ -159,12 +174,12 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         }
         textField.placeholder = NSLocalizedString("Loading", comment: "")
         textField.resignFirstResponder()
-        
+
         return true
     }
-    
+
     // MARK: - WKNavigationDelegate
-    
+
     func webView(webView: WKWebView, didFinishNavigation _: WKNavigation!) {
 //        self.navigationItem.titleView = self.navField
         loadingBar.hidden = true
@@ -173,24 +188,25 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         back.enabled = webView.canGoBack
         self.navigationItem.rightBarButtonItem = reload
 
-        if (lookForFeeds) {
-            let discover = NSString(contentsOfFile: NSBundle.mainBundle().pathForResource("findFeeds", ofType: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
-            webView.evaluateJavaScript(discover as String, completionHandler: {(res: AnyObject!, error: NSError?) in
-                if let str = res as? String {
-                    if (!contains(self.feeds, str)) {
-                        self.rssLink = str
-                        self.addFeedButton.enabled = true
+        if let findFeedsJS = NSBundle.mainBundle().pathForResource("findFeeds", ofType: "js"),
+           let discover = String(contentsOfFile: findFeedsJS,
+            encoding: NSUTF8StringEncoding, error: nil) where lookForFeeds {
+                webView.evaluateJavaScript(discover, completionHandler: {(res: AnyObject!, error: NSError?) in
+                    if let str = res as? String {
+                        if (!contains(self.feeds, str)) {
+                            self.rssLink = str
+                            self.addFeedButton.enabled = true
+                        }
+                    } else {
+                        self.rssLink = nil
                     }
-                } else {
-                    self.rssLink = nil
-                }
-                if (error != nil) {
-                    println("Error executing javascript: \(error)")
-                }
-            })
+                    if (error != nil) {
+                        println("Error executing javascript: \(error)")
+                    }
+                })
         }
     }
-    
+
     func webView(webView: WKWebView, didFailNavigation _: WKNavigation!, withError error: NSError) {
 //        self.navigationItem.titleView = self.navField
         loadingBar.hidden = true
@@ -200,7 +216,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
 //        self.navigationItem.titleView = self.navField
         loadingBar.hidden = true
     }
-    
+
     func webView(webView: WKWebView, didStartProvisionalNavigation _: WKNavigation!) {
         loadingBar.progress = 0
         loadingBar.hidden = false
@@ -210,14 +226,21 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         if let text = webView.URL?.absoluteString where lookForFeeds {
             Alamofire.request(.GET, text).responseString {(_, _, response, error) in
                 if let txt = response {
+                    let doNotSave = NSLocalizedString("Don't Save", comment: "")
+                    let save = NSLocalizedString("Save", comment: "")
+
                     let feedParser = Muon.FeedParser(string: txt)
                     let opmlParser = OPMLParser(text: txt).success{(_) in
                         feedParser.cancel()
-                        let alert = UIAlertController(title: NSLocalizedString("Feed list Detected", comment: ""), message: NSLocalizedString("Import?", comment: ""), preferredStyle: .Alert)
-                        alert.addAction(UIAlertAction(title: NSLocalizedString("Don't Save", comment: ""), style: .Cancel, handler: {(alertAction: UIAlertAction!) in
+
+                        let detected = NSLocalizedString("Feed list Detected", comment: "")
+                        let shouldImport = NSLocalizedString("Import?", comment: "")
+
+                        let alert = UIAlertController(title: detected, message: shouldImport, preferredStyle: .Alert)
+                        alert.addAction(UIAlertAction(title: doNotSave, style: .Cancel, handler: {(alertAction: UIAlertAction!) in
                             alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
                         }))
-                        alert.addAction(UIAlertAction(title: NSLocalizedString("Save", comment: ""), style: .Default, handler: {(_) in
+                        alert.addAction(UIAlertAction(title: save, style: .Default, handler: {(_) in
                             alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
                             self.save(text, opml: true)
                         }))
@@ -229,11 +252,13 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
                         let string = info.link.absoluteString ?? text
                         opmlParser.cancel()
                         if (!contains(self.feeds, text)) {
-                            let alert = UIAlertController(title: NSLocalizedString("Feed Detected", comment: ""), message: NSString.localizedStringWithFormat(NSLocalizedString("Save %@?", comment: ""), text) as String, preferredStyle: .Alert)
-                            alert.addAction(UIAlertAction(title: NSLocalizedString("Don't Save", comment: ""), style: .Cancel, handler: {(alertAction: UIAlertAction!) in
+                            let detected = NSLocalizedString("Feed Detected", comment: "")
+                            let saveFeed = String.localizedStringWithFormat(NSLocalizedString("Save %@?", comment: ""), text)
+                            let alert = UIAlertController(title: detected, message: saveFeed, preferredStyle: .Alert)
+                            alert.addAction(UIAlertAction(title: doNotSave, style: .Cancel, handler: {(alertAction: UIAlertAction!) in
                                 alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
                             }))
-                            alert.addAction(UIAlertAction(title: NSLocalizedString("Save", comment: ""), style: .Default, handler: {(_) in
+                            alert.addAction(UIAlertAction(title: save, style: .Default, handler: {(_) in
                                 alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
                                 self.save(string, opml: false)
                             }))

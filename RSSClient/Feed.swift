@@ -6,52 +6,52 @@ import Foundation
     typealias Image=NSImage
 #endif
 
-class Feed : Equatable, Hashable {
-    var title : String {
+class Feed: Equatable, Hashable {
+    var title: String {
         willSet {
             if newValue != title {
                 self.updated = true
             }
         }
     }
-    var url : NSURL? {
+    var url: NSURL? {
         willSet {
             if newValue != url {
                 self.updated = true
             }
         }
     }
-    var summary : String {
+    var summary: String {
         willSet {
             if newValue != summary {
                 self.updated = true
             }
         }
     }
-    var query : String? {
+    var query: String? {
         willSet {
             if newValue != query {
                 self.updated = true
             }
         }
     }
-    internal private(set) var tags : [String]
-    var waitPeriod : Int? {
+    internal private(set) var tags: [String]
+    var waitPeriod: Int? {
         willSet {
             if newValue != waitPeriod {
                 self.updated = true
             }
         }
     }
-    var remainingWait : Int? {
+    var remainingWait: Int? {
         willSet {
             if newValue != remainingWait {
                 self.updated = true
             }
         }
     }
-    internal private(set) var articles : [Article] = []
-    var image : Image? {
+    internal private(set) var articles: [Article] = []
+    var image: Image? {
         willSet {
             if newValue != image {
                 self.updated = true
@@ -59,17 +59,18 @@ class Feed : Equatable, Hashable {
         }
     }
 
-    var isQueryFeed : Bool { return query != nil }
+    var isQueryFeed: Bool { return query != nil }
 
-    var hashValue : Int {
+    var hashValue: Int {
         if let id = feedID {
             return id.URIRepresentation().hash
         }
         let nonNilHashValues = title.hashValue ^ summary.hashValue
-        let possiblyNilHashValues : Int
+        let possiblyNilHashValues: Int
         if let link = url, query = query, waitPeriod = waitPeriod,
             remainingWait = remainingWait, image = image {
-                possiblyNilHashValues = link.hash ^ query.hashValue ^ waitPeriod.hashValue ^ remainingWait.hashValue ^ image.hash
+                possiblyNilHashValues = link.hash ^ query.hashValue ^
+                    waitPeriod.hashValue ^ remainingWait.hashValue ^ image.hash
         } else {
             possiblyNilHashValues = 0
         }
@@ -145,11 +146,11 @@ class Feed : Equatable, Hashable {
             }
     }
 
-    private(set) var feedID : NSManagedObjectID? = nil
+    private(set) var feedID: NSManagedObjectID? = nil
 
     init(feed: CoreDataFeed) {
         title = feed.title ?? ""
-        let url : NSURL?
+        let url: NSURL?
         if let feedURL = feed.url {
             url = NSURL(string: feedURL)
         } else {

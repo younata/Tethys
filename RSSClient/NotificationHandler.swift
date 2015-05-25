@@ -1,11 +1,3 @@
-//
-//  NotificationHandler.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 1/24/15.
-//  Copyright (c) 2015 Rachel Brindle. All rights reserved.
-//
-
 import UIKit
 
 class NotificationHandler : NSObject {
@@ -55,9 +47,9 @@ class NotificationHandler : NSObject {
 //        note.userInfo = dict
         note.fireDate = NSDate()
         note.category = "default"
-        let existingNotes = application.scheduledLocalNotifications as! [UILocalNotification]
-
-        application.scheduledLocalNotifications = existingNotes + [note]
+        if let existingNotes = application.scheduledLocalNotifications as? [UILocalNotification] {
+            application.scheduledLocalNotifications = existingNotes + [note]
+        }
         application.presentLocalNotificationNow(note)
     }
     

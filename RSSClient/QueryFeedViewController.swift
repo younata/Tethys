@@ -12,7 +12,9 @@ class QueryFeedViewController: UITableViewController {
         }
     }
     
-    lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as! DataManager }()
+    lazy var dataManager : DataManager = {
+        return self.injector!.create(DataManager.self) as! DataManager
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()

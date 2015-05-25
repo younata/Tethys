@@ -2,51 +2,76 @@ import UIKit
 import Alamofire
 import Muon
 
+private enum FeedSections: Int {
+    case Title = 0
+    case URL = 1
+    case Summary = 2
+    case Tags = 3
+
+    var titleForSection: String {
+        switch self {
+        case .Title:
+            return NSLocalizedString("Title", comment: "")
+        case .URL:
+            return NSLocalizedString("URL", comment: "")
+        case .Summary:
+            return NSLocalizedString("Summary", comment: "")
+        case .Tags:
+            return NSLocalizedString("Tags", comment: "")
+        }
+    }
+}
+
 class FeedViewController: UITableViewController {
-    
-    var feed : Feed? = nil {
+    var feed: Feed? = nil {
         didSet {
             self.navigationItem.title = self.feed?.title ?? ""
             self.tableView.reloadData()
         }
     }
-    
-    lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as! DataManager }()
-    
+
+    lazy var dataManager: DataManager = {
+        return self.injector!.create(DataManager.self) as! DataManager
+    }()
+
     let intervalFormatter = NSDateIntervalFormatter()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Dismiss", comment: ""), style: .Plain, target: self, action: "dismiss")
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Save", comment: ""), style: .Plain, target: self, action: "save")
+
+        let dismissTitle = NSLocalizedString("Dismiss", comment: "")
+        let dismissButton = UIBarButtonItem(title: dismissTitle, style: .Plain, target: self, action: "dismiss")
+        self.navigationItem.leftBarButtonItem = dismissButton
+
+        let saveTitle = NSLocalizedString("Save", comment: "")
+        let saveButton = UIBarButtonItem(title: saveTitle, style: .Plain, target: self, action: "save")
+        self.navigationItem.rightBarButtonItem = saveButton
         self.navigationItem.title = self.feed?.title ?? ""
 
-        
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.registerClass(TextFieldCell.self, forCellReuseIdentifier: "text")
         tableView.tableFooterView = UIView()
-        
+
         intervalFormatter.calendar = NSCalendar.currentCalendar()
         intervalFormatter.dateStyle = .MediumStyle
         intervalFormatter.timeStyle = .ShortStyle
     }
-    
+
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         tableView.reloadData()
     }
-    
+
     func dismiss() {
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
-    
+
     func save() {
 //        feed?.managedObjectContext?.save(nil)
         dataManager.writeOPML()
         dismiss()
     }
-    
+
     func showTagEditor(tagIndex: Int) -> TagEditorViewController {
         let tagEditor = self.injector!.create(TagEditorViewController.self) as! TagEditorViewController
         tagEditor.feed = feed
@@ -61,65 +86,51 @@ class FeedViewController: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        #if DEBUG
-        let numSection = 5
-        #else
         let numSection = 4
-        #endif
         return (feed == nil ? 0 : numSection)
     }
-    
-    let tagSection = 3
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(tableView: UITableView, numberOfRowsInSection sectionNum: Int) -> Int {
         if feed == nil {
             return 0
         }
-        if section == tagSection { // tags
+        if let section = FeedSections(rawValue: sectionNum) where section == .Tags {
             return feed!.tags.count + 1
         }
         return 1
     }
-    
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        switch section {
-        case 0:
-            return NSLocalizedString("Title", comment: "")
-        case 1:
-            return NSLocalizedString("URL", comment: "")
-        case 2:
-            return NSLocalizedString("Summary", comment: "")
-        case tagSection:
-            return NSLocalizedString("Tags", comment: "")
-        case 4:
-            return NSLocalizedString("Next Expected Update", comment: "")
-        default:
-            return nil
+
+    override func tableView(tableView: UITableView, titleForHeaderInSection sectionNum: Int) -> String? {
+        if let section = FeedSections(rawValue: sectionNum) {
+            return section.titleForSection
         }
+        return nil
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
-        
+
         cell.textLabel?.textColor = UIColor.blackColor()
         cell.textLabel?.text = ""
 
-        switch (indexPath.section) {
-        case 0:
+        let section = FeedSections(rawValue: indexPath.section) ?? .Title
+
+        switch (section) {
+        case .Title:
             if let title = ((feed?.title.isEmpty ?? true) ? nil : feed?.title) {
                 cell.textLabel?.text = title
             } else {
                 cell.textLabel?.text = NSLocalizedString("No title available", comment: "")
                 cell.textLabel?.textColor = UIColor.grayColor()
             }
-        case 1:
+        case .URL:
             let tc = tableView.dequeueReusableCellWithIdentifier("text", forIndexPath: indexPath) as! TextFieldCell
             tc.onTextChange = {(_) in } // remove any previous onTextChange for setting stuff here.
             tc.textField.text = feed?.url?.absoluteString
             tc.showValidator = true
             tc.onTextChange = {(text) in
                 if let txt = text {
-                    Alamofire.request(.GET, txt).responseString {(_, _, str, error) in
+                    request(.GET, txt).responseString {(_, _, str, error) in
                         if let err = error {
                             tc.setValid(false)
                         } else if let s = str {
@@ -132,14 +143,14 @@ class FeedViewController: UITableViewController {
                 return
             }
             return tc
-        case 2:
+        case .Summary:
             if let summary = ((feed?.summary.isEmpty ?? true) ? nil : feed?.summary)  {
                 cell.textLabel?.text = summary
             } else {
                 cell.textLabel?.text = NSLocalizedString("No summary available", comment: "")
                 cell.textLabel?.textColor = UIColor.grayColor()
             }
-        case tagSection:
+        case .Tags:
             if let tags = feed?.tags {
                 if indexPath.row == tags.count {
                     cell.textLabel?.text = NSLocalizedString("Add Tag", comment: "")
@@ -148,18 +159,6 @@ class FeedViewController: UITableViewController {
                     cell.textLabel?.text = tags[indexPath.row]
                 }
             }
-        case 4:
-            if let f = feed {
-                let (date, stdev) = dataManager.estimateNextFeedTime(f)
-                if let d = date {
-                    let start = d.dateByAddingTimeInterval(-stdev)
-                    let end = d.dateByAddingTimeInterval(stdev)
-                    cell.textLabel?.text = intervalFormatter.stringFromDate(start, toDate: end)
-                } else {
-                    cell.textLabel?.text = NSLocalizedString("Unknown", comment: "")
-                }
-            }
-            cell.textLabel?.numberOfLines = 0
         default:
             break
         }
@@ -168,45 +167,46 @@ class FeedViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return indexPath.section == tagSection && indexPath.row != (tableView.numberOfRowsInSection(2) - 1)
+        let isTagsSection = FeedSections(rawValue: indexPath.section) == .Tags
+        let isEditableTag = indexPath.row != (tableView.numberOfRowsInSection(FeedSections.Tags.rawValue) - 1)
+
+        return isTagsSection && isEditableTag
     }
-    
+
     override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
-        if feed == nil {
+        if feed == nil || FeedSections(rawValue: indexPath.section) != .Tags {
             return nil
         }
-        if indexPath.section != tagSection {
-            return nil
-        }
-        if feed!.tags.count == indexPath.row {
-            return nil
-        }
-        let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""), handler: {(_, indexPath) in
+        let deleteTitle = NSLocalizedString("Delete", comment: "")
+        let delete = UITableViewRowAction(style: .Default, title: deleteTitle, handler: {(_, indexPath) in
             if var feed = self.feed {
                 let tag = feed.tags[indexPath.row]
                 feed.removeTag(tag)
                 tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
                 if tag.hasPrefix("~") {
-                    tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: .None)
+                    let indexPath = NSIndexPath(forRow: 0, inSection: 0)
+                    tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
                 } else if tag.hasPrefix("`") {
-                    tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 1)], withRowAnimation: .None)
+                    let indexPath = NSIndexPath(forRow: 0, inSection: 1)
+                    tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
                 }
             }
         })
-        let edit = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Edit", comment: ""), handler: {(_, indexPath) in
-            print("")
+        let editTitle = NSLocalizedString("Edit", comment: "")
+        let edit = UITableViewRowAction(style: .Normal, title: editTitle, handler: {(_, indexPath) in
             self.showTagEditor(indexPath.row)
         })
         return [delete, edit]
     }
 
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-    }
-    
+    override func tableView(tableView: UITableView,
+        commitEditingStyle _: UITableViewCellEditingStyle,
+        forRowAtIndexPath _: NSIndexPath) {}
+
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
-        
-        if indexPath.section == tagSection,
+
+        if FeedSections(rawValue: indexPath.section) == .Tags,
             let count = feed?.tags.count where indexPath.row == count {
                 showTagEditor(indexPath.row)
         }

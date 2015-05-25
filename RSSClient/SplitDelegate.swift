@@ -13,7 +13,9 @@ public class SplitDelegate: NSObject, UISplitViewControllerDelegate {
         self.splitController = splitViewController
     }
     
-    public func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController!, ontoPrimaryViewController primaryViewController: UIViewController!) -> Bool {
-        return collapseDetailViewController
+    public func splitViewController(splitViewController: UISplitViewController,
+        collapseSecondaryViewController secondaryViewController: UIViewController!,
+        ontoPrimaryViewController primaryViewController: UIViewController!) -> Bool {
+            return collapseDetailViewController
     }
 }

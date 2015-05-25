@@ -2,7 +2,6 @@ import UIKit
 import PureLayout_iOS
 
 class FeedTableCell: UITableViewCell {
-    
     var feed: Feed? = nil {
         didSet {
             if let f = feed {
@@ -41,7 +40,7 @@ class FeedTableCell: UITableViewCell {
         return label
     }()
 
-    lazy var summaryLabel : UILabel = {
+    lazy var summaryLabel: UILabel = {
         let label = UILabel(forAutoLayout: ())
 
         label.numberOfLines = 0
@@ -57,7 +56,7 @@ class FeedTableCell: UITableViewCell {
         return label
     }()
 
-    lazy var unreadCounter : UnreadCounter = {
+    lazy var unreadCounter: UnreadCounter = {
         let counter = UnreadCounter(frame: CGRectZero)
 
         counter.setTranslatesAutoresizingMaskIntoConstraints(false)
@@ -72,7 +71,7 @@ class FeedTableCell: UITableViewCell {
         return counter
     }()
 
-    lazy var iconView : UIImageView = {
+    lazy var iconView: UIImageView = {
         let imageView = UIImageView(forAutoLayout: ())
 
         imageView.contentMode = .ScaleAspectFit
@@ -86,8 +85,13 @@ class FeedTableCell: UITableViewCell {
         return imageView
     }()
 
-    lazy var iconWidth : NSLayoutConstraint = { return self.iconView.autoSetDimension(.Width, toSize: 45) }()
-    lazy var iconHeight : NSLayoutConstraint = { return self.iconView.autoSetDimension(.Height, toSize: 0) }()
+    lazy var iconWidth: NSLayoutConstraint = {
+        return self.iconView.autoSetDimension(.Width, toSize: 45)
+    }()
 
-    var dataManager : DataManager? = nil
+    lazy var iconHeight: NSLayoutConstraint = {
+        return self.iconView.autoSetDimension(.Height, toSize: 0)
+    }()
+
+    var dataManager: DataManager? = nil
 }

@@ -775,6 +775,7 @@
 				89C8307019D730E9009924DA /* Frameworks */,
 				89C8307119D730E9009924DA /* Resources */,
 				8933E92219ECD20600ECFF3F /* Copy Frameworks */,
+				89CB98C01B13A0ED00C87160 /* Lint */,
 			);
 			buildRules = (
 			);
@@ -896,6 +897,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		89CB98C01B13A0ED00C87160 /* Lint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Lint;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "pushd RSSClient 2>/dev/null\n/usr/local/bin/swiftlint\npopd 2>/dev/null";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		89635F851A13C2E30052C248 /* Sources */ = {

@@ -1,46 +1,50 @@
 import UIKit
 
 class ArticleListController: UITableViewController {
-    
-    var articles : [Article] = []
-    var feeds : [Feed]? = nil
-    let queue = dispatch_queue_create("articleController", nil)
-    
-    var dataManager : DataManager? = nil
-    
-    var previewMode : Bool = false
 
-    lazy var mainQueue : NSOperationQueue! = { self.injector!.create(kMainQueue) as! NSOperationQueue }()
-    
+    var articles: [Article] = []
+    var feeds: [Feed]? = nil
+    let queue = dispatch_queue_create("articleController", nil)
+
+    var dataManager: DataManager? = nil
+
+    var previewMode: Bool = false
+
+    lazy var mainQueue: NSOperationQueue! = {
+        self.injector!.create(kMainQueue) as! NSOperationQueue
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.navigationItem.rightBarButtonItem = self.editButtonItem()
-        
+
         self.tableView.registerClass(ArticleCell.self, forCellReuseIdentifier: "read")
         self.tableView.registerClass(ArticleCell.self, forCellReuseIdentifier: "unread")
-        // Prevents a green triangle which'll (dis)appear depending on whether article loaded into it is read or not.
-        
+        // Prevents a green triangle which'll (dis)appear depending on whether
+        // article loaded into it is read or not.
+
         self.tableView.rowHeight = UITableViewAutomaticDimension
-        
+
         self.tableView.tableFooterView = UIView()
-        
+
         if !previewMode {
             self.refreshControl = UIRefreshControl(frame: CGRectZero)
             self.refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
             self.refreshControl?.beginRefreshing()
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: "articleRead:", name: "ArticleWasRead", object: nil)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "articleRead:",
+                name: "ArticleWasRead", object: nil)
         }
     }
-    
+
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
-    
+
     func articleRead(note: NSNotification) {
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
     }
-    
+
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         if !previewMode {
@@ -51,11 +55,11 @@ class ArticleListController: UITableViewController {
             }
         }
     }
-    
+
     func articleForIndexPath(indexPath: NSIndexPath) -> Article {
         return articles[indexPath.row]
     }
-    
+
     func refresh() {
         if let feeds = self.feeds {
             mainQueue.addOperationWithBlock {
@@ -64,7 +68,7 @@ class ArticleListController: UITableViewController {
                 let oldArticles = Set<Article>(self.articles)
                 if newArticles != oldArticles {
                     self.articles = (articles as [Article])
-                    self.articles.sort({(a : Article, b: Article) in
+                    self.articles.sort({(a: Article, b: Article) in
                         let da = a.updatedAt ?? a.published
                         let db = b.updatedAt ?? b.published
                         return da.timeIntervalSince1970 > db.timeIntervalSince1970
@@ -80,13 +84,14 @@ class ArticleListController: UITableViewController {
             self.refreshControl?.endRefreshing()
         }
     }
-    
+
     func showArticle(article: Article) -> ArticleViewController {
         return showArticle(article, animated: true)
     }
-    
+
     func showArticle(article: Article, animated: Bool) -> ArticleViewController {
-        let avc = self.splitViewController?.viewControllers.last as? ArticleViewController ?? ArticleViewController()
+        let avc = splitViewController?.viewControllers.last as? ArticleViewController ??
+            ArticleViewController()
         avc.dataManager = dataManager
         avc.article = article
         avc.articles = self.articles
@@ -96,8 +101,10 @@ class ArticleListController: UITableViewController {
             avc.lastArticleIndex = 0
         }
         if let splitView = self.splitViewController {
-            (UIApplication.sharedApplication().delegate as! AppDelegate).splitDelegate.collapseDetailViewController = false
-            splitView.showDetailViewController(UINavigationController(rootViewController: avc), sender: self)
+            let delegate = UIApplication.sharedApplication().delegate as? AppDelegate
+            delegate?.splitDelegate.collapseDetailViewController = false
+            splitView.showDetailViewController(UINavigationController(rootViewController: avc),
+                sender: self)
         } else {
             self.navigationController?.pushViewController(avc, animated: animated)
         }
@@ -113,10 +120,10 @@ class ArticleListController: UITableViewController {
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return articles.count
     }
-    
+
     override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         let article = articleForIndexPath(indexPath)
-        
+
 //        if article.content == nil {
 //            return 40
 //        }
@@ -125,17 +132,19 @@ class ArticleListController: UITableViewController {
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let article = articleForIndexPath(indexPath)
-        let strToUse = (article.read ? "read" : "unread") // Prevents a green triangle which'll (dis)appear depending on whether article loaded into it is read or not.
+        let strToUse = (article.read ? "read" : "unread")
+        // Prevents a green triangle which'll (dis)appear depending
+        // on whether article loaded into it is read or not.
         let cell = tableView.dequeueReusableCellWithIdentifier(strToUse, forIndexPath: indexPath) as! ArticleCell
-        
+
         cell.article = article
 
         return cell
     }
-    
+
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
-        
+
         if !previewMode {
             showArticle(articleForIndexPath(indexPath))
         }
@@ -144,17 +153,18 @@ class ArticleListController: UITableViewController {
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return true
     }
-    
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        
+
+    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle,
+        forRowAtIndexPath indexPath: NSIndexPath) {
     }
-    
+
     override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
         if previewMode {
             return nil
         }
         let article = self.articleForIndexPath(indexPath)
-        let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""), handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
+        let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""),
+            handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
 //            article.managedObjectContext?.deleteObject(article)
 //            article.managedObjectContext?.save(nil)
             self.refresh()
@@ -162,7 +172,8 @@ class ArticleListController: UITableViewController {
         let unread = NSLocalizedString("Mark\nUnread", comment: "")
         let read = NSLocalizedString("Mark\nRead", comment: "")
         let toggleText = article.read ? unread : read
-        let toggle = UITableViewRowAction(style: .Normal, title: toggleText, handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
+        let toggle = UITableViewRowAction(style: .Normal, title: toggleText,
+            handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
 //            self.dataManager?.readArticle(article)
             tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
         })

@@ -11,23 +11,23 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         return window
     }()
 
-    private lazy var injectorModule : InjectorModule = InjectorModule()
-    
-    lazy var anInjector : Ra.Injector = {
+    private lazy var injectorModule: InjectorModule = InjectorModule()
+
+    lazy var anInjector: Ra.Injector = {
         return Ra.Injector(module: self.injectorModule)
     }()
 
-    lazy var dataManager : DataManager = { return self.anInjector.create(DataManager.self) as! DataManager }()
-        
-    lazy var notificationHandler : NotificationHandler = { self.anInjector.create(NotificationHandler.self) as! NotificationHandler }()
-    
-    lazy var splitDelegate : SplitDelegate = {
+    lazy var dataManager: DataManager = { return self.anInjector.create(DataManager.self) as! DataManager }()
+
+    lazy var notificationHandler: NotificationHandler = { self.anInjector.create(NotificationHandler.self) as! NotificationHandler }()
+
+    lazy var splitDelegate: SplitDelegate = {
         let splitDelegate = SplitDelegate(splitViewController: self.splitView)
         self.anInjector.bind(SplitDelegate.self, to: splitDelegate)
         return splitDelegate
     }()
 
-    private lazy var splitView : UISplitViewController = UISplitViewController()
+    private lazy var splitView: UISplitViewController = UISplitViewController()
 
     public func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         UINavigationBar.appearance().tintColor = UIColor.darkGreenColor()
@@ -37,38 +37,38 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         let feeds = self.anInjector.create(FeedsTableViewController.self) as! FeedsTableViewController
         let master = UINavigationController(rootViewController: feeds)
         let detail = UINavigationController(rootViewController: ArticleViewController())
-        
+
         for nc in [master, detail] {
             nc.navigationBar.translucent = true
         }
-        
+
         splitView.viewControllers = [master, detail]
         splitView.delegate = splitDelegate
         self.window?.rootViewController = splitView
-        
+
         notificationHandler.enableNotifications(application)
-        
+
         if dataManager.feeds().count > 0 {
             application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         } else {
             application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
         }
-        
+
         return true
     }
-    
+
     public func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
         if let window = self.window {
             notificationHandler.handleLocalNotification(notification, window: window)
         }
     }
-    
+
     public func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
         if let window = self.window {
             notificationHandler.handleAction(identifier, notification: notification, window: window, completionHandler: completionHandler)
         }
     }
-    
+
     public func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
 //        let originalList: [NSManagedObjectID?] = (dataManager.feeds().reduce([], combine: {return $0 + ($1.allArticles())}) as [Article]).map { $0.articleID }
 //        if originalList.count == 0 {
@@ -103,10 +103,10 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 //            }
 //        })
     }
-    
+
     public func application(application: UIApplication, continueUserActivity userActivity: NSUserActivity, restorationHandler: ([AnyObject]!) -> Void) -> Bool {
         var handled = false
-        
+
         let type = userActivity.activityType
         if type == "com.rachelbrindle.rssclient.article",
             let splitView = self.window?.rootViewController as? UISplitViewController,
@@ -130,7 +130,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
     public func applicationDidEnterBackground(application: UIApplication) {
 //        dataManager.backgroundObjectContext.save(nil)
     }
-    
+
     public func applicationWillTerminate(application: UIApplication) {
 //        dataManager.backgroundObjectContext.save(nil)
     }

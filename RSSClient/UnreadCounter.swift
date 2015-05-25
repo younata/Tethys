@@ -1,12 +1,5 @@
-//
-//  UnreadCounter.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 10/1/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import UIKit
+import PureLayout_iOS
 
 public class UnreadCounter: UIView, UIAppearanceContainer {
     

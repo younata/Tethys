@@ -6,7 +6,7 @@ import Foundation
     typealias Image=NSImage
 #endif
 
-@objc class Feed : Equatable, Hashable {
+class Feed : Equatable, Hashable {
     var title : String {
         willSet {
             if newValue != title {
@@ -146,10 +146,6 @@ import Foundation
     }
 
     private(set) var feedID : NSManagedObjectID? = nil
-
-    @objc class func new() -> Feed {
-        return Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
-    }
 
     init(feed: CoreDataFeed) {
         title = feed.title ?? ""

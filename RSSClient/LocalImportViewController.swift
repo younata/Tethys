@@ -155,9 +155,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
 
             let activityIndicator = disableInteractionWithMessage(NSLocalizedString("Importing feeds", comment: ""))
 
-            dataManager.importOPML(NSURL(string: "file://" + location)!, progress: {(progress: Double) in
-                activityIndicator.progress = progress
-            }, completion: {(_) in
+            dataManager.importOPML(NSURL(string: "file://" + location)!, progress: {_ in }, completion: {(_) in
                     self.reenableInteractionAndDismiss(activityIndicator)
             })
         } else if indexPath.section == 1 {
@@ -175,23 +173,31 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
         }
     }
 
-    private func disableInteractionWithMessage(message: String) -> RBActivityIndicator {
-        let activityIndicator = RBActivityIndicator(forAutoLayout: ())
-        activityIndicator.showProgressBar = true
-        activityIndicator.style = RBActivityIndicatorStyleDark
-        activityIndicator.displayMessage = message
-        self.view.addSubview(activityIndicator)
-        let color = activityIndicator.backgroundColor
-        activityIndicator.backgroundColor = UIColor.clearColor()
-        activityIndicator.autoCenterInSuperview()
-        UIView.animateWithDuration(0.3, animations: {activityIndicator.backgroundColor = color})
+    private func disableInteractionWithMessage(message: String) -> UIView {
+        let view = UIView(forAutoLayout: ())
+        let label = UILabel(forAutoLayout: ())
+        label.text = message
+        label.textColor = UIColor.whiteColor()
+        view.addSubview(label)
+        label.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
+        let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .White)
+        activityIndicator.setTranslatesAutoresizingMaskIntoConstraints(false)
+        view.addSubview(activityIndicator)
+        activityIndicator.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
+        activityIndicator.autoPinEdge(.Bottom, toEdge: .Top, ofView: label)
+        let color = view.backgroundColor
+        view.backgroundColor = UIColor.clearColor()
+        view.autoCenterInSuperview()
+        UIView.animateWithDuration(0.3, animations: {view.backgroundColor = color})
+
+        self.view.addSubview(view)
 
         self.navigationItem.leftBarButtonItem?.enabled = false
         self.view.userInteractionEnabled = false
         return activityIndicator
     }
 
-    private func reenableInteractionAndDismiss(activityIndicator: RBActivityIndicator) {
+    private func reenableInteractionAndDismiss(activityIndicator: UIView) {
         activityIndicator.removeFromSuperview()
         view.userInteractionEnabled = true
         navigationItem.leftBarButtonItem?.enabled = true

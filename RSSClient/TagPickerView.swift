@@ -1,12 +1,5 @@
-//
-//  TagPickerView.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 11/27/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import UIKit
+import PureLayout_iOS
 
 class TagPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate {
     let picker = UIPickerView(forAutoLayout: ())

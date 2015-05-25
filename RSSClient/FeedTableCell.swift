@@ -1,4 +1,5 @@
 import UIKit
+import PureLayout_iOS
 
 class FeedTableCell: UITableViewCell {
     

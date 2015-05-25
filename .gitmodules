@@ -1,15 +1,3 @@
-[submodule "PureLayout"]
-	path = PureLayout
-	url = https://github.com/smileyborg/PureLayout.git
 [submodule "AMPopTip"]
 	path = AMPopTip
 	url = https://github.com/andreamazz/AMPopTip.git
-[submodule "Vendor/Quick"]
-	path = Vendor/Quick
-	url = https://github.com/Quick/Quick.git
-[submodule "Vendor/Nimble"]
-	path = Vendor/Nimble
-	url = https://github.com/Quick/Nimble.git
-[submodule "Vendor/Ra"]
-	path = Vendor/Ra
-	url = https://github.com/younata/Ra.git

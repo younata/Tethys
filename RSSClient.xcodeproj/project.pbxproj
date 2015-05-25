@@ -14,13 +14,7 @@
 		8924D8F21A0E8EEA003B7529 /* OPMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */; };
 		8924D8F31A108299003B7529 /* OPMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */; };
 		8929D27F1A3F3E9400782A37 /* BackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8929D27E1A3F3E9400782A37 /* BackgroundView.swift */; };
-		8933E90D19ECCBC300ECFF3F /* ALView+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90519ECCBC300ECFF3F /* ALView+PureLayout.m */; };
-		8933E90E19ECCBC300ECFF3F /* NSArray+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90719ECCBC300ECFF3F /* NSArray+PureLayout.m */; };
-		8933E90F19ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90919ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m */; };
 		8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */; };
-		893448BF1A004E5C00F5D528 /* ALView+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90519ECCBC300ECFF3F /* ALView+PureLayout.m */; };
-		893448C01A004E5C00F5D528 /* NSArray+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90719ECCBC300ECFF3F /* NSArray+PureLayout.m */; };
-		893448C11A004E5C00F5D528 /* NSLayoutConstraint+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90919ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m */; };
 		893448C21A004E6400F5D528 /* UIColor+RSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */; };
 		894896EC1A16F1130030EB6E /* LocalImportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896EB1A16F1130030EB6E /* LocalImportViewController.swift */; };
 		894896ED1A16F1130030EB6E /* LocalImportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896EB1A16F1130030EB6E /* LocalImportViewController.swift */; };
@@ -60,9 +54,6 @@
 		89635FAD1A13C41C0052C248 /* RSSClient.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307A19D730E9009924DA /* RSSClient.xcdatamodeld */; };
 		89635FAE1A13C4210052C248 /* CoreDataArticle.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C219D89E46009924DA /* CoreDataArticle.m */; };
 		89635FAF1A13C4210052C248 /* CoreDataFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C519D8A058009924DA /* CoreDataFeed.m */; };
-		89635FC21A13C49A0052C248 /* ALView+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90519ECCBC300ECFF3F /* ALView+PureLayout.m */; };
-		89635FC31A13C49A0052C248 /* NSArray+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90719ECCBC300ECFF3F /* NSArray+PureLayout.m */; };
-		89635FC41A13C49A0052C248 /* NSLayoutConstraint+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E90919ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m */; };
 		8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963F4331A280F8E00B447D6 /* TagPickerView.swift */; };
 		8963F4351A280F8E00B447D6 /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963F4331A280F8E00B447D6 /* TagPickerView.swift */; };
 		8967DA061A4092A6000424F4 /* ArticlesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8967DA051A4092A6000424F4 /* ArticlesList.swift */; };
@@ -116,11 +107,12 @@
 		8981316B1AFB1ED70090FA7F /* FeedRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8981316A1AFB1ED60090FA7F /* FeedRepository.swift */; };
 		8981316C1AFB1ED70090FA7F /* FeedRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8981316A1AFB1ED60090FA7F /* FeedRepository.swift */; };
 		898131781AFC877A0090FA7F /* LocalImportViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898131771AFC877A0090FA7F /* LocalImportViewControllerSpec.swift */; };
-		89839C851B1042C500C34BD2 /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 89839C841B1042C500C34BD2 /* DataManager.m */; };
-		89839C861B1042C500C34BD2 /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 89839C841B1042C500C34BD2 /* DataManager.m */; };
-		89839C881B1042FC00C34BD2 /* DataManagerSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 89839C871B1042FC00C34BD2 /* DataManagerSpec.m */; };
 		898F670C1B000451004A7BE3 /* FakeOperationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */; };
 		898F670E1B0007F4004A7BE3 /* SpecInjectorModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F670D1B0007F4004A7BE3 /* SpecInjectorModule.swift */; };
+		898F6E0A1B128736000D343D /* PureLayout_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898F6E091B128736000D343D /* PureLayout_iOS.framework */; };
+		898F6E0B1B128741000D343D /* PureLayout_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898F6E091B128736000D343D /* PureLayout_iOS.framework */; };
+		898F6E0C1B128751000D343D /* PureLayout_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898F6E091B128736000D343D /* PureLayout_iOS.framework */; };
+		898F6E0D1B128751000D343D /* PureLayout_iOS.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 898F6E091B128736000D343D /* PureLayout_iOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		899C47EC1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */; };
 		899C47ED1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */; };
 		899C47FB1A9A864700F57B96 /* DataManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */; };
@@ -142,8 +134,6 @@
 		89C509FB1A2F865F00CBD000 /* QueryFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F91A2F865F00CBD000 /* QueryFeedViewController.swift */; };
 		89C7FBE01A183EBE00ACBDB2 /* MAKDropDownMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C7FBDF1A183EBE00ACBDB2 /* MAKDropDownMenu.m */; };
 		89C7FBE11A183EBE00ACBDB2 /* MAKDropDownMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C7FBDF1A183EBE00ACBDB2 /* MAKDropDownMenu.m */; };
-		89C7FBE81A18847A00ACBDB2 /* RBActivityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C7FBE71A18847A00ACBDB2 /* RBActivityIndicator.m */; };
-		89C7FBE91A18847A00ACBDB2 /* RBActivityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C7FBE71A18847A00ACBDB2 /* RBActivityIndicator.m */; };
 		89C8307919D730E9009924DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307819D730E9009924DA /* AppDelegate.swift */; };
 		89C8307C19D730E9009924DA /* RSSClient.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307A19D730E9009924DA /* RSSClient.xcdatamodeld */; };
 		89C8308319D730E9009924DA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89C8308219D730E9009924DA /* Images.xcassets */; };
@@ -193,6 +183,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				898F6E0D1B128751000D343D /* PureLayout_iOS.framework in Copy Frameworks */,
 				898131691AF880A70090FA7F /* Muon.framework in Copy Frameworks */,
 				89718F2C1AE0C9A1004C3CB4 /* Alamofire.framework in Copy Frameworks */,
 				89718F2D1AE0C9A1004C3CB4 /* Ra.framework in Copy Frameworks */,
@@ -232,15 +223,6 @@
 		8924D8E81A094CF5003B7529 /* article.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = article.css; sourceTree = "<group>"; };
 		8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLParser.swift; sourceTree = "<group>"; };
 		8929D27E1A3F3E9400782A37 /* BackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundView.swift; sourceTree = "<group>"; };
-		8933E90419ECCBC300ECFF3F /* ALView+PureLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "ALView+PureLayout.h"; path = "PureLayout/Source/ALView+PureLayout.h"; sourceTree = "<group>"; };
-		8933E90519ECCBC300ECFF3F /* ALView+PureLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "ALView+PureLayout.m"; path = "PureLayout/Source/ALView+PureLayout.m"; sourceTree = "<group>"; };
-		8933E90619ECCBC300ECFF3F /* NSArray+PureLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSArray+PureLayout.h"; path = "PureLayout/Source/NSArray+PureLayout.h"; sourceTree = "<group>"; };
-		8933E90719ECCBC300ECFF3F /* NSArray+PureLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSArray+PureLayout.m"; path = "PureLayout/Source/NSArray+PureLayout.m"; sourceTree = "<group>"; };
-		8933E90819ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSLayoutConstraint+PureLayout.h"; path = "PureLayout/Source/NSLayoutConstraint+PureLayout.h"; sourceTree = "<group>"; };
-		8933E90919ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSLayoutConstraint+PureLayout.m"; path = "PureLayout/Source/NSLayoutConstraint+PureLayout.m"; sourceTree = "<group>"; };
-		8933E90A19ECCBC300ECFF3F /* PureLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PureLayout.h; path = PureLayout/Source/PureLayout.h; sourceTree = "<group>"; };
-		8933E90B19ECCBC300ECFF3F /* PureLayout+Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PureLayout+Internal.h"; path = "PureLayout/Source/PureLayout+Internal.h"; sourceTree = "<group>"; };
-		8933E90C19ECCBC300ECFF3F /* PureLayoutDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PureLayoutDefines.h; path = PureLayout/Source/PureLayoutDefines.h; sourceTree = "<group>"; };
 		8933E93219EE33F700ECFF3F /* UIColor+RSSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+RSSClient.h"; sourceTree = "<group>"; };
 		8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+RSSClient.m"; sourceTree = "<group>"; };
 		894896EB1A16F1130030EB6E /* LocalImportViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalImportViewController.swift; sourceTree = "<group>"; };
@@ -298,11 +280,9 @@
 		898131671AF880400090FA7F /* Muon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Muon.framework; path = ../Carthage/Build/iOS/Muon.framework; sourceTree = "<group>"; };
 		8981316A1AFB1ED60090FA7F /* FeedRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedRepository.swift; sourceTree = "<group>"; };
 		898131771AFC877A0090FA7F /* LocalImportViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalImportViewControllerSpec.swift; sourceTree = "<group>"; };
-		89839C831B1042C500C34BD2 /* DataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataManager.h; sourceTree = "<group>"; };
-		89839C841B1042C500C34BD2 /* DataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
-		89839C871B1042FC00C34BD2 /* DataManagerSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManagerSpec.m; sourceTree = "<group>"; };
 		898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeOperationQueue.swift; sourceTree = "<group>"; };
 		898F670D1B0007F4004A7BE3 /* SpecInjectorModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpecInjectorModule.swift; sourceTree = "<group>"; };
+		898F6E091B128736000D343D /* PureLayout_iOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PureLayout_iOS.framework; path = Carthage/Build/iOS/PureLayout_iOS.framework; sourceTree = SOURCE_ROOT; };
 		899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BreakOutToRefreshView.swift; path = Vendor/BreakOutToRefreshView.swift; sourceTree = "<group>"; };
 		899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManagerSpec.swift; sourceTree = "<group>"; };
 		899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindFeedViewControllerSpec.swift; sourceTree = "<group>"; };
@@ -317,8 +297,6 @@
 		89C509F91A2F865F00CBD000 /* QueryFeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryFeedViewController.swift; sourceTree = "<group>"; };
 		89C7FBDE1A183EBE00ACBDB2 /* MAKDropDownMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MAKDropDownMenu.h; sourceTree = "<group>"; };
 		89C7FBDF1A183EBE00ACBDB2 /* MAKDropDownMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MAKDropDownMenu.m; sourceTree = "<group>"; };
-		89C7FBE61A18847A00ACBDB2 /* RBActivityIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBActivityIndicator.h; sourceTree = "<group>"; };
-		89C7FBE71A18847A00ACBDB2 /* RBActivityIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RBActivityIndicator.m; sourceTree = "<group>"; };
 		89C8307319D730E9009924DA /* rNews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rNews.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89C8307719D730E9009924DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89C8307819D730E9009924DA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -367,6 +345,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				898F6E0A1B128736000D343D /* PureLayout_iOS.framework in Frameworks */,
+				898F6E0C1B128751000D343D /* PureLayout_iOS.framework in Frameworks */,
 				89718F281AE0C942004C3CB4 /* Alamofire.framework in Frameworks */,
 				89718F2A1AE0C942004C3CB4 /* Ra.framework in Frameworks */,
 				898131681AF880400090FA7F /* Muon.framework in Frameworks */,
@@ -378,6 +358,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				89718F311AE0C9B4004C3CB4 /* Quick.framework in Frameworks */,
+				898F6E0B1B128741000D343D /* PureLayout_iOS.framework in Frameworks */,
 				89718F351AE0D953004C3CB4 /* Alamofire.framework in Frameworks */,
 				89718F301AE0C9B4004C3CB4 /* Nimble.framework in Frameworks */,
 				89718F361AE0D953004C3CB4 /* Ra.framework in Frameworks */,
@@ -387,22 +368,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		8933E91019ECCBCA00ECFF3F /* PureLayout */ = {
-			isa = PBXGroup;
-			children = (
-				8933E90419ECCBC300ECFF3F /* ALView+PureLayout.h */,
-				8933E90519ECCBC300ECFF3F /* ALView+PureLayout.m */,
-				8933E90619ECCBC300ECFF3F /* NSArray+PureLayout.h */,
-				8933E90719ECCBC300ECFF3F /* NSArray+PureLayout.m */,
-				8933E90819ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.h */,
-				8933E90919ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m */,
-				8933E90A19ECCBC300ECFF3F /* PureLayout.h */,
-				8933E90B19ECCBC300ECFF3F /* PureLayout+Internal.h */,
-				8933E90C19ECCBC300ECFF3F /* PureLayoutDefines.h */,
-			);
-			name = PureLayout;
-			sourceTree = "<group>";
-		};
 		8933E93519EE342F00ECFF3F /* Categories */ = {
 			isa = PBXGroup;
 			children = (
@@ -529,7 +494,6 @@
 			isa = PBXGroup;
 			children = (
 				899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */,
-				89839C871B1042FC00C34BD2 /* DataManagerSpec.m */,
 				890E47661AA19F7F007F217C /* DataUtilitySpec.swift */,
 				8978D4E41B05AB2800EDD6D0 /* FeedSpec.swift */,
 				8978D4E61B05AB3800EDD6D0 /* ArticleSpec.swift */,
@@ -554,15 +518,6 @@
 				89C7FBDF1A183EBE00ACBDB2 /* MAKDropDownMenu.m */,
 			);
 			path = DropDownMenu;
-			sourceTree = "<group>";
-		};
-		89C7FBEA1A18848000ACBDB2 /* RBActivityIndicator */ = {
-			isa = PBXGroup;
-			children = (
-				89C7FBE61A18847A00ACBDB2 /* RBActivityIndicator.h */,
-				89C7FBE71A18847A00ACBDB2 /* RBActivityIndicator.m */,
-			);
-			name = RBActivityIndicator;
 			sourceTree = "<group>";
 		};
 		89C8306A19D730E9009924DA = {
@@ -603,6 +558,7 @@
 				8933E93519EE342F00ECFF3F /* Categories */,
 				89C8309B19D73334009924DA /* RSSClient-Bridging-Header.h */,
 				89C8307619D730E9009924DA /* Supporting Files */,
+				898F6E091B128736000D343D /* PureLayout_iOS.framework */,
 				89718F261AE0C942004C3CB4 /* Alamofire.framework */,
 				89718F271AE0C942004C3CB4 /* Ra.framework */,
 				898131671AF880400090FA7F /* Muon.framework */,
@@ -656,8 +612,6 @@
 				8981316A1AFB1ED60090FA7F /* FeedRepository.swift */,
 				89C830A819D7B890009924DA /* DataManager.swift */,
 				890E47581AA19D69007F217C /* DataUtility.swift */,
-				89839C831B1042C500C34BD2 /* DataManager.h */,
-				89839C841B1042C500C34BD2 /* DataManager.m */,
 				89C8307A19D730E9009924DA /* RSSClient.xcdatamodeld */,
 				89C830C119D89E46009924DA /* CoreDataArticle.h */,
 				89C830C219D89E46009924DA /* CoreDataArticle.m */,
@@ -697,10 +651,8 @@
 			children = (
 				899C47F91A99B49000F57B96 /* BreakOutToRefresh */,
 				8980473A1A20476900EB29F0 /* TUSafariActivity */,
-				8933E91019ECCBCA00ECFF3F /* PureLayout */,
 				894C0C341A1329FB008229A4 /* AMPopTip */,
 				89C7FBDD1A183EBE00ACBDB2 /* DropDownMenu */,
-				89C7FBEA1A18848000ACBDB2 /* RBActivityIndicator */,
 			);
 			name = Vendor;
 			sourceTree = "<group>";
@@ -986,18 +938,15 @@
 				8929D27F1A3F3E9400782A37 /* BackgroundView.swift in Sources */,
 				89635FAE1A13C4210052C248 /* CoreDataArticle.m in Sources */,
 				897F71001A3A57A300ECE1A1 /* NSColor+RSSClient.m in Sources */,
-				89635FC41A13C49A0052C248 /* NSLayoutConstraint+PureLayout.m in Sources */,
 				89635FA81A13C4030052C248 /* OPMLParser.swift in Sources */,
 				898046D51A1C385A00EB29F0 /* MainController.swift in Sources */,
 				897CD85E1A21C49000C97ECC /* FeedView.swift in Sources */,
-				89635FC31A13C49A0052C248 /* NSArray+PureLayout.m in Sources */,
 				898047641A206CB100EB29F0 /* FeedsList.swift in Sources */,
 				897F70FD1A3A4E7700ECE1A1 /* UnreadCounter.swift in Sources */,
 				895782431A3CC0130022F345 /* CircularProgressLayer.swift in Sources */,
 				89635FAD1A13C41C0052C248 /* RSSClient.xcdatamodeld in Sources */,
 				89635FAF1A13C4210052C248 /* CoreDataFeed.m in Sources */,
 				895901A71A30BCB7002E2C62 /* CoreDataEnclosure.m in Sources */,
-				89635FC21A13C49A0052C248 /* ALView+PureLayout.m in Sources */,
 				89635F8E1A13C2E30052C248 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1013,16 +962,13 @@
 				8981316B1AFB1ED70090FA7F /* FeedRepository.swift in Sources */,
 				894896EC1A16F1130030EB6E /* LocalImportViewController.swift in Sources */,
 				89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */,
-				8933E90F19ECCBC300ECFF3F /* NSLayoutConstraint+PureLayout.m in Sources */,
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
 				89C830A919D7B890009924DA /* DataManager.swift in Sources */,
-				8933E90E19ECCBC300ECFF3F /* NSArray+PureLayout.m in Sources */,
 				89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */,
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
 				895901A91A30C5D1002E2C62 /* EnclosuresView.swift in Sources */,
 				895782411A3CC0130022F345 /* CircularProgressLayer.swift in Sources */,
 				89C7FBE01A183EBE00ACBDB2 /* MAKDropDownMenu.m in Sources */,
-				89839C851B1042C500C34BD2 /* DataManager.m in Sources */,
 				895901AC1A30C6B7002E2C62 /* EnclosureCell.swift in Sources */,
 				89C830B619D7DE97009924DA /* ArticleViewController.swift in Sources */,
 				894C0C371A1329FB008229A4 /* AMPopTip.m in Sources */,
@@ -1046,11 +992,9 @@
 				89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */,
 				89C509FA1A2F865F00CBD000 /* QueryFeedViewController.swift in Sources */,
 				899C47EC1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */,
-				8933E90D19ECCBC300ECFF3F /* ALView+PureLayout.m in Sources */,
 				89C509F41A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */,
 				89C8307C19D730E9009924DA /* RSSClient.xcdatamodeld in Sources */,
 				8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */,
-				89C7FBE81A18847A00ACBDB2 /* RBActivityIndicator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1059,7 +1003,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				898F670E1B0007F4004A7BE3 /* SpecInjectorModule.swift in Sources */,
-				89839C861B1042C500C34BD2 /* DataManager.m in Sources */,
 				895901AD1A30C6B7002E2C62 /* EnclosureCell.swift in Sources */,
 				8978D4E51B05AB2800EDD6D0 /* FeedSpec.swift in Sources */,
 				895779AD19E62CDA00548418 /* CoreDataFeed.m in Sources */,
@@ -1071,10 +1014,8 @@
 				8978D4E91B05AB4300EDD6D0 /* EnclosureSpec.swift in Sources */,
 				895901AA1A30C5D1002E2C62 /* EnclosuresView.swift in Sources */,
 				897F70F31A38AFE500ECE1A1 /* EnclosuresViewController.swift in Sources */,
-				893448C01A004E5C00F5D528 /* NSArray+PureLayout.m in Sources */,
 				89D06A2219FF210C003909A3 /* LoadingView.swift in Sources */,
 				8980475E1A20478600EB29F0 /* TUSafariActivity.m in Sources */,
-				89C7FBE91A18847A00ACBDB2 /* RBActivityIndicator.m in Sources */,
 				89EF4FD61A9682170052A82F /* OPMLParserSpec.swift in Sources */,
 				89C509F11A2EB18300CBD000 /* FeedViewController.swift in Sources */,
 				AE4355FE1A7AB7D900A961B9 /* SpecHelper.swift in Sources */,
@@ -1096,12 +1037,10 @@
 				89C509FB1A2F865F00CBD000 /* QueryFeedViewController.swift in Sources */,
 				895779A719E62CC500548418 /* ArticleListController.swift in Sources */,
 				89C204C51A7400D100C792D2 /* NotificationHandler.swift in Sources */,
-				893448C11A004E5C00F5D528 /* NSLayoutConstraint+PureLayout.m in Sources */,
 				895779A919E62CC500548418 /* ArticleViewController.swift in Sources */,
 				895782421A3CC0130022F345 /* CircularProgressLayer.swift in Sources */,
 				8981316C1AFB1ED70090FA7F /* FeedRepository.swift in Sources */,
 				8978D4E31B053A5900EDD6D0 /* Enclosure.swift in Sources */,
-				89839C881B1042FC00C34BD2 /* DataManagerSpec.m in Sources */,
 				8963F4351A280F8E00B447D6 /* TagPickerView.swift in Sources */,
 				AE4356001A7ABA4F00A961B9 /* DataManagerMock.swift in Sources */,
 				89C509F51A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */,
@@ -1115,7 +1054,6 @@
 				895901A61A30BCB7002E2C62 /* CoreDataEnclosure.m in Sources */,
 				89DA7D301A68C04C0050685B /* ValidatorView.swift in Sources */,
 				89C204C71A740D8900C792D2 /* NotificationHandlerSpec.swift in Sources */,
-				893448BF1A004E5C00F5D528 /* ALView+PureLayout.m in Sources */,
 				89C509F81A2F825400CBD000 /* TextViewCell.swift in Sources */,
 				895779A219E62CC500548418 /* FeedsTableViewController.swift in Sources */,
 				895779AB19E62CCE00548418 /* RSSClient.xcdatamodeld in Sources */,

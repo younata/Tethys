@@ -73,14 +73,14 @@ class DataUtility {
         article.addEnclosuresObject(enclosure)
     }
 
-    class func entities(entity: String, matchingPredicate predicate: NSPredicate, managedObjectContext: NSManagedObjectContext, sortDescriptors: [NSSortDescriptor] = []) -> [AnyObject] {
+    class func entities(entity: String, matchingPredicate predicate: NSPredicate, managedObjectContext: NSManagedObjectContext, sortDescriptors: [NSSortDescriptor] = []) -> [NSManagedObject] {
         let request = NSFetchRequest()
         request.entity = NSEntityDescription.entityForName(entity, inManagedObjectContext: managedObjectContext)
         request.predicate = predicate
         request.sortDescriptors = sortDescriptors
 
         var error : NSError? = nil
-        if let ret = managedObjectContext.executeFetchRequest(request, error: &error) {
+        if let ret = managedObjectContext.executeFetchRequest(request, error: &error) as? [NSManagedObject] {
             return ret
         }
         println("Error executing fetch request: \(error)")

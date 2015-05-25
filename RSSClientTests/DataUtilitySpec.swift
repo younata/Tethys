@@ -181,12 +181,9 @@ class DataUtilitySpec: QuickSpec {
             it("should sort the results if you ask it to") {
                 let predicate = NSPredicate(format: "title = %@", "example")
                 let sortDescriptor = NSSortDescriptor(key: "summary", ascending: true)
-                if let ret = DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: ctx, sortDescriptors: [sortDescriptor]) as? [CoreDataFeed] {
-                    expect(ret.first?.summary).to(equal("example"))
-                    expect(ret.last?.summary).to(equal("other"))
-                } else {
-                    expect(true).to(beFalsy())
-                }
+                let ret = DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: ctx, sortDescriptors: [sortDescriptor])
+                expect(ret.first?.valueForKey("summary") as? String).to(equal("example"))
+                expect(ret.last?.valueForKey("summary") as? String).to(equal("other"))
             }
         }
 

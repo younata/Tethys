@@ -1,4 +1,5 @@
 import UIKit
+import BreakOutToRefresh
 
 class FeedsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, MAKDropDownMenuDelegate, UITextFieldDelegate, UISearchBarDelegate, BreakOutToRefreshDelegate {
 

@@ -115,8 +115,6 @@
 		898F6E0D1B128751000D343D /* PureLayout_iOS.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 898F6E091B128736000D343D /* PureLayout_iOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		898F6E121B129AB6000D343D /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F6E111B129AB6000D343D /* ActivityIndicator.swift */; };
 		898F6E131B129AB6000D343D /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F6E111B129AB6000D343D /* ActivityIndicator.swift */; };
-		899C47EC1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */; };
-		899C47ED1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */; };
 		899C47FB1A9A864700F57B96 /* DataManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */; };
 		899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */; };
 		89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204B41A73811000C792D2 /* AppDelegateSpec.swift */; };
@@ -152,6 +150,10 @@
 		89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C919DA37FB009924DA /* FeedTableCell.swift */; };
 		89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830CC19DC67B9009924DA /* UnreadCounter.swift */; };
 		89CB984A1B12C50000C87160 /* ActivityIndicatorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CB98491B12C50000C87160 /* ActivityIndicatorSpec.swift */; };
+		89CB986B1B12CCD700C87160 /* BreakOutToRefresh.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB986A1B12CCD700C87160 /* BreakOutToRefresh.framework */; };
+		89CB986C1B12CCD700C87160 /* BreakOutToRefresh.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB986A1B12CCD700C87160 /* BreakOutToRefresh.framework */; };
+		89CB986D1B12CCE800C87160 /* BreakOutToRefresh.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB986A1B12CCD700C87160 /* BreakOutToRefresh.framework */; };
+		89CB986E1B12CCE800C87160 /* BreakOutToRefresh.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB986A1B12CCD700C87160 /* BreakOutToRefresh.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89D06A1B19FDBC52003909A3 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89D06A1A19FDBC52003909A3 /* Launch Screen.xib */; };
 		89D06A2119FF210C003909A3 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D06A2019FF210C003909A3 /* LoadingView.swift */; };
 		89D06A2219FF210C003909A3 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D06A2019FF210C003909A3 /* LoadingView.swift */; };
@@ -189,6 +191,7 @@
 				898F6E0D1B128751000D343D /* PureLayout_iOS.framework in Copy Frameworks */,
 				898131691AF880A70090FA7F /* Muon.framework in Copy Frameworks */,
 				89718F2C1AE0C9A1004C3CB4 /* Alamofire.framework in Copy Frameworks */,
+				89CB986E1B12CCE800C87160 /* BreakOutToRefresh.framework in Copy Frameworks */,
 				89718F2D1AE0C9A1004C3CB4 /* Ra.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
@@ -287,7 +290,6 @@
 		898F670D1B0007F4004A7BE3 /* SpecInjectorModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpecInjectorModule.swift; sourceTree = "<group>"; };
 		898F6E091B128736000D343D /* PureLayout_iOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PureLayout_iOS.framework; path = Carthage/Build/iOS/PureLayout_iOS.framework; sourceTree = SOURCE_ROOT; };
 		898F6E111B129AB6000D343D /* ActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
-		899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BreakOutToRefreshView.swift; path = Vendor/BreakOutToRefreshView.swift; sourceTree = "<group>"; };
 		899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManagerSpec.swift; sourceTree = "<group>"; };
 		899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindFeedViewControllerSpec.swift; sourceTree = "<group>"; };
 		89C204B41A73811000C792D2 /* AppDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateSpec.swift; sourceTree = "<group>"; };
@@ -324,6 +326,7 @@
 		89C830C919DA37FB009924DA /* FeedTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCell.swift; sourceTree = "<group>"; };
 		89C830CC19DC67B9009924DA /* UnreadCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounter.swift; sourceTree = "<group>"; };
 		89CB98491B12C50000C87160 /* ActivityIndicatorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorSpec.swift; sourceTree = "<group>"; };
+		89CB986A1B12CCD700C87160 /* BreakOutToRefresh.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BreakOutToRefresh.framework; path = Carthage/Build/iOS/BreakOutToRefresh.framework; sourceTree = SOURCE_ROOT; };
 		89D06A1A19FDBC52003909A3 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		89D06A2019FF210C003909A3 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		89D135101A5944A200B6937A /* RSSClient 1.4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.4.xcdatamodel"; sourceTree = "<group>"; };
@@ -350,6 +353,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89CB986D1B12CCE800C87160 /* BreakOutToRefresh.framework in Frameworks */,
+				89CB986B1B12CCD700C87160 /* BreakOutToRefresh.framework in Frameworks */,
 				898F6E0A1B128736000D343D /* PureLayout_iOS.framework in Frameworks */,
 				898F6E0C1B128751000D343D /* PureLayout_iOS.framework in Frameworks */,
 				89718F281AE0C942004C3CB4 /* Alamofire.framework in Frameworks */,
@@ -362,6 +367,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89CB986C1B12CCD700C87160 /* BreakOutToRefresh.framework in Frameworks */,
 				89718F311AE0C9B4004C3CB4 /* Quick.framework in Frameworks */,
 				898F6E0B1B128741000D343D /* PureLayout_iOS.framework in Frameworks */,
 				89718F351AE0D953004C3CB4 /* Alamofire.framework in Frameworks */,
@@ -487,14 +493,6 @@
 			path = Vendor/TUSafariActivity/Classes/en.lproj;
 			sourceTree = "<group>";
 		};
-		899C47F91A99B49000F57B96 /* BreakOutToRefresh */ = {
-			isa = PBXGroup;
-			children = (
-				899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */,
-			);
-			name = BreakOutToRefresh;
-			sourceTree = "<group>";
-		};
 		899C48021A9AB6A900F57B96 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
@@ -564,6 +562,7 @@
 				8933E93519EE342F00ECFF3F /* Categories */,
 				89C8309B19D73334009924DA /* RSSClient-Bridging-Header.h */,
 				89C8307619D730E9009924DA /* Supporting Files */,
+				89CB986A1B12CCD700C87160 /* BreakOutToRefresh.framework */,
 				898F6E091B128736000D343D /* PureLayout_iOS.framework */,
 				89718F261AE0C942004C3CB4 /* Alamofire.framework */,
 				89718F271AE0C942004C3CB4 /* Ra.framework */,
@@ -656,7 +655,6 @@
 		89EF4FC61A9681650052A82F /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
-				899C47F91A99B49000F57B96 /* BreakOutToRefresh */,
 				8980473A1A20476900EB29F0 /* TUSafariActivity */,
 				894C0C341A1329FB008229A4 /* AMPopTip */,
 				89C7FBDD1A183EBE00ACBDB2 /* DropDownMenu */,
@@ -999,7 +997,6 @@
 				89C204BD1A73F72800C792D2 /* SplitDelegate.swift in Sources */,
 				89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */,
 				89C509FA1A2F865F00CBD000 /* QueryFeedViewController.swift in Sources */,
-				899C47EC1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */,
 				89C509F41A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */,
 				89C8307C19D730E9009924DA /* RSSClient.xcdatamodeld in Sources */,
 				8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */,
@@ -1037,7 +1034,6 @@
 				89C204BE1A73FD1000C792D2 /* SplitDelegate.swift in Sources */,
 				89CB984A1B12C50000C87160 /* ActivityIndicatorSpec.swift in Sources */,
 				895779A319E62CC500548418 /* FeedTableCell.swift in Sources */,
-				899C47ED1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */,
 				8978D4DD1B0533B600EDD6D0 /* Feed.swift in Sources */,
 				89635F841A13BF120052C248 /* AMPopTip.m in Sources */,
 				8978D4E01B0535EB00EDD6D0 /* Article.swift in Sources */,

@@ -113,6 +113,8 @@
 		898F6E0B1B128741000D343D /* PureLayout_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898F6E091B128736000D343D /* PureLayout_iOS.framework */; };
 		898F6E0C1B128751000D343D /* PureLayout_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898F6E091B128736000D343D /* PureLayout_iOS.framework */; };
 		898F6E0D1B128751000D343D /* PureLayout_iOS.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 898F6E091B128736000D343D /* PureLayout_iOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		898F6E121B129AB6000D343D /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F6E111B129AB6000D343D /* ActivityIndicator.swift */; };
+		898F6E131B129AB6000D343D /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F6E111B129AB6000D343D /* ActivityIndicator.swift */; };
 		899C47EC1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */; };
 		899C47ED1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */; };
 		899C47FB1A9A864700F57B96 /* DataManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */; };
@@ -149,6 +151,7 @@
 		89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */; };
 		89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C919DA37FB009924DA /* FeedTableCell.swift */; };
 		89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830CC19DC67B9009924DA /* UnreadCounter.swift */; };
+		89CB984A1B12C50000C87160 /* ActivityIndicatorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CB98491B12C50000C87160 /* ActivityIndicatorSpec.swift */; };
 		89D06A1B19FDBC52003909A3 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89D06A1A19FDBC52003909A3 /* Launch Screen.xib */; };
 		89D06A2119FF210C003909A3 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D06A2019FF210C003909A3 /* LoadingView.swift */; };
 		89D06A2219FF210C003909A3 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D06A2019FF210C003909A3 /* LoadingView.swift */; };
@@ -283,6 +286,7 @@
 		898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeOperationQueue.swift; sourceTree = "<group>"; };
 		898F670D1B0007F4004A7BE3 /* SpecInjectorModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpecInjectorModule.swift; sourceTree = "<group>"; };
 		898F6E091B128736000D343D /* PureLayout_iOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PureLayout_iOS.framework; path = Carthage/Build/iOS/PureLayout_iOS.framework; sourceTree = SOURCE_ROOT; };
+		898F6E111B129AB6000D343D /* ActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
 		899C47EB1A99B48B00F57B96 /* BreakOutToRefreshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BreakOutToRefreshView.swift; path = Vendor/BreakOutToRefreshView.swift; sourceTree = "<group>"; };
 		899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManagerSpec.swift; sourceTree = "<group>"; };
 		899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindFeedViewControllerSpec.swift; sourceTree = "<group>"; };
@@ -319,6 +323,7 @@
 		89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsTableViewController.swift; sourceTree = "<group>"; };
 		89C830C919DA37FB009924DA /* FeedTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCell.swift; sourceTree = "<group>"; };
 		89C830CC19DC67B9009924DA /* UnreadCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounter.swift; sourceTree = "<group>"; };
+		89CB98491B12C50000C87160 /* ActivityIndicatorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorSpec.swift; sourceTree = "<group>"; };
 		89D06A1A19FDBC52003909A3 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		89D06A2019FF210C003909A3 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		89D135101A5944A200B6937A /* RSSClient 1.4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.4.xcdatamodel"; sourceTree = "<group>"; };
@@ -549,6 +554,7 @@
 				89EF4FE31A97DAD70052A82F /* Application */,
 				89C830CC19DC67B9009924DA /* UnreadCounter.swift */,
 				89D06A2019FF210C003909A3 /* LoadingView.swift */,
+				898F6E111B129AB6000D343D /* ActivityIndicator.swift */,
 				89EF4FD41A9681EC0052A82F /* Parsers */,
 				89C830B119D7D2B7009924DA /* Feeds */,
 				89C830B419D7D2D2009924DA /* Articles */,
@@ -582,6 +588,7 @@
 				89C204B41A73811000C792D2 /* AppDelegateSpec.swift */,
 				89C204C11A73FEDA00C792D2 /* SplitDelegateSpec.swift */,
 				89C204C61A740D8900C792D2 /* NotificationHandlerSpec.swift */,
+				89CB98491B12C50000C87160 /* ActivityIndicatorSpec.swift */,
 				899C48181A9AC0F000F57B96 /* UI */,
 				899C48021A9AB6A900F57B96 /* Domain */,
 				89EF4FDB1A9790350052A82F /* Parsers */,
@@ -971,6 +978,7 @@
 				89C7FBE01A183EBE00ACBDB2 /* MAKDropDownMenu.m in Sources */,
 				895901AC1A30C6B7002E2C62 /* EnclosureCell.swift in Sources */,
 				89C830B619D7DE97009924DA /* ArticleViewController.swift in Sources */,
+				898F6E121B129AB6000D343D /* ActivityIndicator.swift in Sources */,
 				894C0C371A1329FB008229A4 /* AMPopTip.m in Sources */,
 				895901A51A30BCB7002E2C62 /* CoreDataEnclosure.m in Sources */,
 				89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */,
@@ -1006,6 +1014,7 @@
 				895901AD1A30C6B7002E2C62 /* EnclosureCell.swift in Sources */,
 				8978D4E51B05AB2800EDD6D0 /* FeedSpec.swift in Sources */,
 				895779AD19E62CDA00548418 /* CoreDataFeed.m in Sources */,
+				898F6E131B129AB6000D343D /* ActivityIndicator.swift in Sources */,
 				89DA7D2F1A681B880050685B /* TextFieldCell.swift in Sources */,
 				8978D4E71B05AB3800EDD6D0 /* ArticleSpec.swift in Sources */,
 				898F670C1B000451004A7BE3 /* FakeOperationQueue.swift in Sources */,
@@ -1026,6 +1035,7 @@
 				894896ED1A16F1130030EB6E /* LocalImportViewController.swift in Sources */,
 				895779A019E62CC500548418 /* AppDelegate.swift in Sources */,
 				89C204BE1A73FD1000C792D2 /* SplitDelegate.swift in Sources */,
+				89CB984A1B12C50000C87160 /* ActivityIndicatorSpec.swift in Sources */,
 				895779A319E62CC500548418 /* FeedTableCell.swift in Sources */,
 				899C47ED1A99B48B00F57B96 /* BreakOutToRefreshView.swift in Sources */,
 				8978D4DD1B0533B600EDD6D0 /* Feed.swift in Sources */,

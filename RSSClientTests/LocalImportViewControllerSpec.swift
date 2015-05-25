@@ -112,16 +112,16 @@ class LocalImportViewControllerSpec: QuickSpec {
                     }
 
                     it("should present an activity indicator") {
-                        var indicator : RBActivityIndicator? = nil
+                        var indicator : ActivityIndicator? = nil
                         for view in subject.view.subviews {
-                            if view is RBActivityIndicator {
-                                indicator = view as? RBActivityIndicator
+                            if view is ActivityIndicator {
+                                indicator = view as? ActivityIndicator
                                 break
                             }
                         }
                         expect(indicator).toNot(beNil())
                         if let activityIndicator = indicator {
-                            expect(activityIndicator.displayMessage).to(equal("Importing feeds"))
+                            expect(activityIndicator.message).to(equal("Importing feeds"))
                         }
                     }
 
@@ -144,7 +144,14 @@ class LocalImportViewControllerSpec: QuickSpec {
                         }
 
                         it("should remove the activity indicator") {
-                            expect(subject.view.subviews).toNot(contain(RBActivityIndicator.self))
+                            var indicator : ActivityIndicator? = nil
+                            for view in subject.view.subviews {
+                                if view is ActivityIndicator {
+                                    indicator = view as? ActivityIndicator
+                                    break
+                                }
+                            }
+                            expect(indicator).to(beNil())
                         }
 
                         it("should re-enable user interaction") {
@@ -179,16 +186,16 @@ class LocalImportViewControllerSpec: QuickSpec {
                     }
 
                     it("should present an activity indicator") {
-                        var indicator : RBActivityIndicator? = nil
+                        var indicator : ActivityIndicator? = nil
                         for view in subject.view.subviews {
-                            if view is RBActivityIndicator {
-                                indicator = view as? RBActivityIndicator
+                            if view is ActivityIndicator {
+                                indicator = view as? ActivityIndicator
                                 break
                             }
                         }
                         expect(indicator).toNot(beNil())
                         if let activityIndicator = indicator {
-                            expect(activityIndicator.displayMessage).to(equal("Importing feed"))
+                            expect(activityIndicator.message).to(equal("Importing feed"))
                         }
                     }
 
@@ -210,7 +217,7 @@ class LocalImportViewControllerSpec: QuickSpec {
                         }
 
                         it("should remove the activity indicator") {
-                            expect(subject.view.subviews).toNot(contain(RBActivityIndicator.self))
+                            expect(subject.view.subviews).toNot(contain(ActivityIndicator.self))
                         }
 
                         it("should re-enable user interaction") {

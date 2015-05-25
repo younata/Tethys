@@ -1,11 +1,3 @@
-//
-//  LoadingView.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 10/27/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import UIKit
 
 class LoadingView: UIView {

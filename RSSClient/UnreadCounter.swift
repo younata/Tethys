@@ -19,6 +19,7 @@ public class UnreadCounter: UIView, UIAppearanceContainer {
         didSet {
             if unread == 0 {
                 countLabel.text = ""
+                self.hidden = true
                 circleLayer.fillColor = UIColor.clearColor().CGColor
             } else {
                 if hideUnreadText {
@@ -26,6 +27,7 @@ public class UnreadCounter: UIView, UIAppearanceContainer {
                 } else {
                     countLabel.text = "\(unread)"
                 }
+                self.hidden = false
                 circleLayer.fillColor = circleColor.CGColor
             }
         }

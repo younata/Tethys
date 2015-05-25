@@ -141,6 +141,7 @@
 		89CB98B81B12E9C900C87160 /* MAKDropDownMenu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB98B61B12E9C900C87160 /* MAKDropDownMenu.framework */; };
 		89CB98B91B12E9D300C87160 /* MAKDropDownMenu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB98B61B12E9C900C87160 /* MAKDropDownMenu.framework */; };
 		89CB98BA1B12E9D300C87160 /* MAKDropDownMenu.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB98B61B12E9C900C87160 /* MAKDropDownMenu.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		89CB98BF1B13947800C87160 /* FeedTableCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */; };
 		89D06A1B19FDBC52003909A3 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89D06A1A19FDBC52003909A3 /* Launch Screen.xib */; };
 		89D06A2119FF210C003909A3 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D06A2019FF210C003909A3 /* LoadingView.swift */; };
 		89D06A2219FF210C003909A3 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D06A2019FF210C003909A3 /* LoadingView.swift */; };
@@ -308,6 +309,7 @@
 		89CB986A1B12CCD700C87160 /* BreakOutToRefresh.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BreakOutToRefresh.framework; path = Carthage/Build/iOS/BreakOutToRefresh.framework; sourceTree = SOURCE_ROOT; };
 		89CB98911B12DFB100C87160 /* TOBrowserActivityKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TOBrowserActivityKit.framework; path = Carthage/Build/iOS/TOBrowserActivityKit.framework; sourceTree = SOURCE_ROOT; };
 		89CB98B61B12E9C900C87160 /* MAKDropDownMenu.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MAKDropDownMenu.framework; path = Carthage/Build/iOS/MAKDropDownMenu.framework; sourceTree = SOURCE_ROOT; };
+		89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCellSpec.swift; sourceTree = "<group>"; };
 		89D06A1A19FDBC52003909A3 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		89D06A2019FF210C003909A3 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		89D135101A5944A200B6937A /* RSSClient 1.4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.4.xcdatamodel"; sourceTree = "<group>"; };
@@ -467,8 +469,8 @@
 		899C48181A9AC0F000F57B96 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */,
-				898131771AFC877A0090FA7F /* LocalImportViewControllerSpec.swift */,
+				89CB98BD1B13945500C87160 /* Importing Feeds */,
+				89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -512,13 +514,7 @@
 				8933E93519EE342F00ECFF3F /* Categories */,
 				89C8309B19D73334009924DA /* RSSClient-Bridging-Header.h */,
 				89C8307619D730E9009924DA /* Supporting Files */,
-				89CB98B61B12E9C900C87160 /* MAKDropDownMenu.framework */,
-				89CB98911B12DFB100C87160 /* TOBrowserActivityKit.framework */,
-				89CB986A1B12CCD700C87160 /* BreakOutToRefresh.framework */,
-				898F6E091B128736000D343D /* PureLayout_iOS.framework */,
-				89718F261AE0C942004C3CB4 /* Alamofire.framework */,
-				89718F271AE0C942004C3CB4 /* Ra.framework */,
-				898131671AF880400090FA7F /* Muon.framework */,
+				89CB98BB1B13921200C87160 /* Frameworks */,
 			);
 			path = RSSClient;
 			sourceTree = "<group>";
@@ -547,8 +543,7 @@
 				898F670D1B0007F4004A7BE3 /* SpecInjectorModule.swift */,
 				AE4356071A7ABAD500A961B9 /* Mocks */,
 				8957799D19E62C7100548418 /* RSSClientTests-Bridging-Header.h */,
-				89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */,
-				89718F2F1AE0C9B4004C3CB4 /* Quick.framework */,
+				89CB98BC1B13941200C87160 /* Frameworks */,
 			);
 			path = RSSClientTests;
 			sourceTree = "<group>";
@@ -602,6 +597,38 @@
 				89EF4FDF1A97D9D20052A82F /* Enclosures */,
 			);
 			name = Articles;
+			sourceTree = "<group>";
+		};
+		89CB98BB1B13921200C87160 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				89CB98B61B12E9C900C87160 /* MAKDropDownMenu.framework */,
+				89CB98911B12DFB100C87160 /* TOBrowserActivityKit.framework */,
+				89CB986A1B12CCD700C87160 /* BreakOutToRefresh.framework */,
+				898F6E091B128736000D343D /* PureLayout_iOS.framework */,
+				89718F261AE0C942004C3CB4 /* Alamofire.framework */,
+				89718F271AE0C942004C3CB4 /* Ra.framework */,
+				898131671AF880400090FA7F /* Muon.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		89CB98BC1B13941200C87160 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */,
+				89718F2F1AE0C9B4004C3CB4 /* Quick.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		89CB98BD1B13945500C87160 /* Importing Feeds */ = {
+			isa = PBXGroup;
+			children = (
+				899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */,
+				898131771AFC877A0090FA7F /* LocalImportViewControllerSpec.swift */,
+			);
+			name = "Importing Feeds";
 			sourceTree = "<group>";
 		};
 		89EF4FC61A9681650052A82F /* Vendor */ = {
@@ -942,6 +969,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89CB98BF1B13947800C87160 /* FeedTableCellSpec.swift in Sources */,
 				898F670E1B0007F4004A7BE3 /* SpecInjectorModule.swift in Sources */,
 				895901AD1A30C6B7002E2C62 /* EnclosureCell.swift in Sources */,
 				8978D4E51B05AB2800EDD6D0 /* FeedSpec.swift in Sources */,

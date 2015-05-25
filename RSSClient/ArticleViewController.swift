@@ -1,5 +1,6 @@
 import UIKit
 import WebKit
+import TOBrowserActivityKit
 
 class ArticleViewController: UIViewController, WKNavigationDelegate {
     
@@ -356,9 +357,10 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
     
     func share() {
         if let a = article {
-            let share = TUSafariActivity()
+            let safari = TOActivitySafari()
+            let chrome = TOActivityChrome()
             
-            let activity = UIActivityViewController(activityItems: [a.link!], applicationActivities: [share])
+            let activity = UIActivityViewController(activityItems: [a.link!], applicationActivities: [safari, chrome])
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                 let popover = UIPopoverController(contentViewController: activity)
                 popover.presentPopoverFromBarButtonItem(shareButton!, permittedArrowDirections: .Any, animated: true)

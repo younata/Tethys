@@ -3,8 +3,6 @@
 //
 
 #import "AMPopTip.h"
-#import "TUSafariActivity.h"
-#import "MAKDropDownMenu.h"
 
 #import "CoreDataArticle.h"
 #import "CoreDataFeed.h"

@@ -56,7 +56,8 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         reload = UIBarButtonItem(barButtonSystemItem: .Refresh, target: webContent, action: "reload")
 
         let cancelTitle = NSLocalizedString("Cancel", comment: "")
-        cancelTextEntry = UIBarButtonItem(title: cancelTitle, style: .Plain, target: navField, action: "resignFirstResponder")
+        cancelTextEntry = UIBarButtonItem(title: cancelTitle, style: .Plain,
+            target: navField, action: "resignFirstResponder")
         cancelTextEntry.tintColor = UIColor.darkTextColor()
 
         self.navigationController?.toolbarHidden = false
@@ -237,8 +238,9 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
                         let shouldImport = NSLocalizedString("Import?", comment: "")
 
                         let alert = UIAlertController(title: detected, message: shouldImport, preferredStyle: .Alert)
-                        alert.addAction(UIAlertAction(title: doNotSave, style: .Cancel, handler: {(alertAction: UIAlertAction!) in
-                            alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+                        alert.addAction(UIAlertAction(title: doNotSave, style: .Cancel,
+                            handler: {(alertAction: UIAlertAction!) in
+                                alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
                         }))
                         alert.addAction(UIAlertAction(title: save, style: .Default, handler: {(_) in
                             alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
@@ -253,10 +255,12 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
                         opmlParser.cancel()
                         if (!contains(self.feeds, text)) {
                             let detected = NSLocalizedString("Feed Detected", comment: "")
-                            let saveFeed = String.localizedStringWithFormat(NSLocalizedString("Save %@?", comment: ""), text)
+                            let saveFormatString = NSLocalizedString("Save %@?", comment: "")
+                            let saveFeed = String.localizedStringWithFormat(saveFormatString, text)
                             let alert = UIAlertController(title: detected, message: saveFeed, preferredStyle: .Alert)
-                            alert.addAction(UIAlertAction(title: doNotSave, style: .Cancel, handler: {(alertAction: UIAlertAction!) in
-                                alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+                            alert.addAction(UIAlertAction(title: doNotSave, style: .Cancel,
+                                handler: {(alertAction: UIAlertAction!) in
+                                    alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
                             }))
                             alert.addAction(UIAlertAction(title: save, style: .Default, handler: {(_) in
                                 alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)

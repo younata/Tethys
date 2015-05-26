@@ -10,12 +10,12 @@ private func createOPMLWithFeeds(feeds: [(url: String, title: String)], location
     }
     opml += "</body></opml>"
 
-    let path = NSHomeDirectory().stringByAppendingPathComponent("Documents/" + location)
+    let path = documentsDirectory().stringByAppendingPathComponent(location)
     opml.writeToFile(path, atomically: true, encoding: NSUTF8StringEncoding, error: nil)
 }
 
 private func deleteAtLocation(location: String) {
-    let path = NSHomeDirectory().stringByAppendingPathComponent("Documents/" + location)
+    let path = documentsDirectory().stringByAppendingPathComponent(location)
     NSFileManager.defaultManager().removeItemAtPath(path, error: nil)
 }
 
@@ -26,7 +26,7 @@ private func createFeed(feed: (url: String, title: String, articles: [String]), 
     }
     str += "</channel></rss>"
 
-    let path = NSHomeDirectory().stringByAppendingPathComponent("Documents/" + location)
+    let path = documentsDirectory().stringByAppendingPathComponent(location)
     str.writeToFile(path, atomically: true, encoding: NSUTF8StringEncoding, error: nil)
 }
 
@@ -134,7 +134,7 @@ class LocalImportViewControllerSpec: QuickSpec {
                     }
 
                     it("should import the feeds") {
-                        let expectedLocation = NSHomeDirectory() + "/Documents/opml"
+                        let expectedLocation = documentsDirectory().stringByAppendingPathComponent("opml")
                         expect(dataManager.importOPMLURL).to(equal(NSURL(string: "file://" + expectedLocation)))
                     }
 

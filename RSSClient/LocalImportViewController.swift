@@ -4,7 +4,7 @@ import Muon
 
 class LocalImportViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
-    private class TableViewCell : UITableViewCell {
+    private class TableViewCell: UITableViewCell {
         required init(coder aDecoder: NSCoder) {
             fatalError("not supported")
         }
@@ -13,85 +13,89 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
             super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
         }
     }
-    
-    var opmls : [(String, [OPMLItem])] = []
-    var feeds : [(String, Muon.Feed)] = []
-    var contentsOfDirectory : [String] = []
-    
+
+    var opmls: [(String, [OPMLItem])] = []
+    var feeds: [(String, Muon.Feed)] = []
+    var contentsOfDirectory: [String] = []
+
     let tableViewController = UITableViewController(style: .Plain)
-    
+
     var tableViewTopOffset: NSLayoutConstraint!
 
-    lazy var dataManager : DataManager = { self.injector!.create(DataManager.self) as! DataManager }()
+    lazy var dataManager: DataManager = { self.injector!.create(DataManager.self) as! DataManager }()
 
-    lazy var backgroundQueue : NSOperationQueue = { self.injector!.create(kBackgroundQueue) as! NSOperationQueue }()
+    lazy var backgroundQueue: NSOperationQueue = { self.injector!.create(kBackgroundQueue) as! NSOperationQueue }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         self.view.addSubview(self.tableViewController.tableView)
         self.tableViewController.tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
-        let inset = CGRectGetHeight(self.navigationController!.navigationBar.frame) + CGRectGetHeight(UIApplication.sharedApplication().statusBarFrame)
+        let inset = CGRectGetHeight(self.navigationController!.navigationBar.frame) +
+            CGRectGetHeight(UIApplication.sharedApplication().statusBarFrame)
         tableViewTopOffset = self.tableViewController.tableView.autoPinEdgeToSuperviewEdge(.Top, withInset: inset)
-        
+
         self.reloadItems()
-        
+
         self.tableViewController.refreshControl = UIRefreshControl()
         tableViewController.refreshControl?.addTarget(self, action: "reloadItems", forControlEvents: .ValueChanged)
-        
+
         self.navigationItem.title = NSLocalizedString("Local Import", comment: "")
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Dismiss", comment: ""), style: .Plain, target: self, action: "dismiss")
-        
+        let dismissTitle = NSLocalizedString("Dismiss", comment: "")
+        let dismissButton = UIBarButtonItem(title: dismissTitle, style: .Plain, target: self, action: "dismiss")
+        self.navigationItem.leftBarButtonItem = dismissButton
+
         self.tableViewController.tableView.registerClass(TableViewCell.self, forCellReuseIdentifier: "cell")
         self.tableViewController.tableView.delegate = self
         self.tableViewController.tableView.dataSource = self
     }
-    
-    override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
-        super.willRotateToInterfaceOrientation(toInterfaceOrientation, duration: duration)
-        let landscape = UIInterfaceOrientationIsLandscape(toInterfaceOrientation)
-        let statusBarHeight : CGFloat = (landscape ? 0 : 20)
-        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-            let navBarHeight : CGFloat = (landscape ? 32 : 44)
-            tableViewTopOffset.constant = navBarHeight + statusBarHeight
-        } else {
-            tableViewTopOffset.constant = 44 + statusBarHeight
-        }
-        UIView.animateWithDuration(duration) {
-            self.view.layoutIfNeeded()
-        }
+
+    override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation,
+        duration: NSTimeInterval) {
+            super.willRotateToInterfaceOrientation(toInterfaceOrientation, duration: duration)
+            let landscape = UIInterfaceOrientationIsLandscape(toInterfaceOrientation)
+            let statusBarHeight: CGFloat = (landscape ? 0 : 20)
+            if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
+                let navBarHeight: CGFloat = (landscape ? 32 : 44)
+                tableViewTopOffset.constant = navBarHeight + statusBarHeight
+            } else {
+                tableViewTopOffset.constant = 44 + statusBarHeight
+            }
+            UIView.animateWithDuration(duration) {
+                self.view.layoutIfNeeded()
+            }
     }
-    
+
     func dismiss() {
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
-    
+
     func reloadItems() {
-        let documents : String = NSHomeDirectory().stringByAppendingPathComponent("Documents")
         if let fileManager = self.injector?.create(NSFileManager.self) as? NSFileManager,
-            let contents = fileManager.contentsOfDirectoryAtPath(documents, error: nil) as? [String] {
+            let contents = fileManager.contentsOfDirectoryAtPath(documentsDirectory(), error: nil) as? [String] {
                 for path in contents {
                     verifyIfFeedOrOPML(path)
                 }
         }
-        
+
         self.tableViewController.refreshControl?.endRefreshing()
     }
-    
+
     func reload() {
         self.feeds.sort { $0.0 < $1.0 }
         self.opmls.sort { $0.0 < $1.0 }
-        self.tableViewController.tableView.reloadSections(NSIndexSet(indexesInRange: NSMakeRange(0, 2)), withRowAnimation: .Automatic)
+        let sections = NSIndexSet(indexesInRange: NSMakeRange(0, 2))
+        self.tableViewController.tableView.reloadSections(sections, withRowAnimation: .Automatic)
     }
-    
+
     private func verifyIfFeedOrOPML(path: String) {
         if contains(contentsOfDirectory, path) {
             return;
         }
-        
+
         contentsOfDirectory.append(path)
-        
-        let location = NSHomeDirectory().stringByAppendingPathComponent("Documents").stringByAppendingPathComponent(path)
+
+        let location = documentsDirectory().stringByAppendingPathComponent(path)
         if let text = NSString(contentsOfFile: location, encoding: NSUTF8StringEncoding, error: nil) {
             let opmlParser = OPMLParser(text: text as String)
             let feedParser = FeedParser(string: text as String)
@@ -109,7 +113,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
             backgroundQueue.addOperations([opmlParser, feedParser], waitUntilFinished: false)
         }
     }
-    
+
     // MARK: - Table view data source
 
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -147,12 +151,12 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
         default: return ""
         }
     }
-    
+
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         if indexPath.section == 0 {
             let path = opmls[indexPath.row].0
-            let location = NSHomeDirectory().stringByAppendingPathComponent("Documents").stringByAppendingPathComponent(path)
+            let location = documentsDirectory().stringByAppendingPathComponent(path)
 
             let activityIndicator = disableInteractionWithMessage(NSLocalizedString("Importing feeds", comment: ""))
 

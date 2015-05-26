@@ -2,20 +2,20 @@ import UIKit
 import PureLayout_iOS
 
 public class UnreadCounter: UIView, UIAppearanceContainer {
-    
+
     let circleLayer = CAShapeLayer()
     let countLabel = UILabel(forAutoLayout: ())
-    
+
     public var circleColor: UIColor = UIColor.darkGreenColor()
     public var countColor: UIColor = UIColor.whiteColor() {
         didSet {
             countLabel.textColor = countColor
         }
     }
-    
+
     public var hideUnreadText: Bool = false
-    
-    public var unread : UInt = 0 {
+
+    public var unread: UInt = 0 {
         didSet {
             if unread == 0 {
                 countLabel.text = ""
@@ -32,7 +32,7 @@ public class UnreadCounter: UIView, UIAppearanceContainer {
             }
         }
     }
-    
+
     public override func layoutSubviews() {
         super.layoutSubviews()
         let path = CGPathCreateMutable()
@@ -42,19 +42,19 @@ public class UnreadCounter: UIView, UIAppearanceContainer {
         CGPathAddLineToPoint(path, nil, 0, 0)
         circleLayer.path = path
     }
-    
+
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        
+
         self.layer.addSublayer(circleLayer)
         self.addSubview(countLabel)
-        
+
         countLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
         countLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 4)
         countLabel.textAlignment = .Right
         countLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
         countLabel.textColor = countColor
-        
+
         self.backgroundColor = UIColor.clearColor()
         circleLayer.strokeColor = UIColor.clearColor().CGColor
     }

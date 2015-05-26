@@ -401,17 +401,20 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
 
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                 let popover = UIPopoverController(contentViewController: navController)
-                popover.presentPopoverFromBarButtonItem(showEnclosuresButton!, permittedArrowDirections: .Any, animated: true)
+                popover.presentPopoverFromBarButtonItem(showEnclosuresButton!,
+                    permittedArrowDirections: .Any, animated: true)
             } else {
                 self.presentViewController(navController, animated: true, completion: nil)
             }
         }
     }
 
-    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
-        if (keyPath == "estimatedProgress" && (object as? NSObject) == content) {
-            loadingBar.progress = Float(content.estimatedProgress)
-        }
+    override func observeValueForKeyPath(keyPath: String,
+        ofObject object: AnyObject, change: [NSObject : AnyObject],
+        context: UnsafeMutablePointer<Void>) {
+            if (keyPath == "estimatedProgress" && (object as? NSObject) == content) {
+                loadingBar.progress = Float(content.estimatedProgress)
+            }
     }
 
     func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {

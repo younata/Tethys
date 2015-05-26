@@ -6,41 +6,41 @@ func parseOPML(text: String, success: ([OPMLItem]) -> Void = {(_) in }) -> OPMLP
     return ret
 }
 
-class OPMLItem : NSObject {
-    var title : String? = nil
-    var summary : String? = nil
+class OPMLItem: NSObject {
+    var title: String? = nil
+    var summary: String? = nil
     var xmlURL: String? = nil
-    var query : String? = nil
+    var query: String? = nil
     var tags: [String]? = nil
-    
+
     func isValidItem() -> Bool {
         return xmlURL != nil || (query != nil && title != nil)
     }
-    
+
     func isQueryFeed() -> Bool {
         return query != nil
     }
 }
 
-class OPMLParser : NSOperation, NSXMLParserDelegate {
-    var callback : ([OPMLItem]) -> Void = {(_) in }
-    var onFailure : (NSError) -> Void = {(_) in }
+class OPMLParser: NSOperation, NSXMLParserDelegate {
+    var callback: ([OPMLItem]) -> Void = {(_) in }
+    var onFailure: (NSError) -> Void = {(_) in }
 
-    private var content : String? = nil
-    private var xmlParser : NSXMLParser? = nil
-    private var items : [OPMLItem] = []
+    private var content: String? = nil
+    private var xmlParser: NSXMLParser? = nil
+    private var items: [OPMLItem] = []
     private var isOPML = false
-    
+
     func success(onSuccess: ([OPMLItem]) -> Void) -> OPMLParser {
         callback = onSuccess
         return self
     }
-    
+
     func failure(failed: (NSError) -> Void) -> OPMLParser {
         onFailure = failed
         return self
     }
-    
+
     init(text: String) {
         super.init()
         content = text
@@ -61,7 +61,7 @@ class OPMLParser : NSOperation, NSXMLParserDelegate {
     override func cancel() {
         stopParsing()
     }
-    
+
     private func parse() {
         items = []
         if let text = content {
@@ -70,64 +70,63 @@ class OPMLParser : NSOperation, NSXMLParserDelegate {
             xmlParser?.parse()
         }
     }
-    
+
     private func stopParsing() {
         xmlParser?.abortParsing()
     }
-    
+
     // MARK: NSXMLParserDelegate
-    
+
     func parserDidEndDocument(parser: NSXMLParser) {
         if (isOPML) {
             callback(items)
         }
     }
-    
+
     func parser(parser: NSXMLParser, parseErrorOccurred parseError: NSError) {
         isOPML = false
         println("\(parseError)")
         onFailure(parseError)
     }
-    
-    func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [NSObject : AnyObject]) {
-        if elementName.lowercaseString == "xml" {
-            return
-        }
-        if elementName.lowercaseString == "opml" {
-            isOPML = true
-        }
-        if (!isOPML) {
-            return
-        }
-        if let attributes = attributeDict as? [String: String] where elementName.lowercaseString.hasPrefix("outline") {
-            var item = OPMLItem()
-            for (k, value) in attributes {
-                let key = k.lowercaseString
-                if value == "" {
-                    continue
+
+    func parser(parser: NSXMLParser, didStartElement elementName: String,
+        namespaceURI: String?, qualifiedName qName: String?,
+        attributes attributeDict: [NSObject : AnyObject]) {
+            if elementName.lowercaseString == "xml" { return }
+            if elementName.lowercaseString == "opml" { isOPML = true }
+            if (!isOPML) { return }
+
+            let isOPMLObject = elementName.lowercaseString.hasPrefix("outline")
+            if let attributes = attributeDict as? [String: String] where isOPMLObject {
+                var item = OPMLItem()
+                let whitespaceSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
+                for (k, value) in attributes {
+                    let key = k.lowercaseString
+                    if value == "" {
+                        continue
+                    }
+                    if key == "xmlurl" {
+                        item.xmlURL = value
+                    }
+                    if key == "tags" {
+                        let comps = value.componentsSeparatedByString(",") as [String]
+                        item.tags = comps.map({(str: String) in
+                            return str.stringByTrimmingCharactersInSet(whitespaceSet)
+                        })
+                    }
+                    if key == "query" {
+                        item.query = value
+                    }
+                    if key == "title" {
+                        item.title = value
+                    }
+                    if key == "summary" || key == "description" {
+                        item.summary = value
+                    }
                 }
-                if key == "xmlurl" {
-                    item.xmlURL = value
-                }
-                if key == "tags" {
-                    let comps = value.componentsSeparatedByString(",") as [String]
-                    item.tags = comps.map({(str: String) in
-                        return str.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                    })
-                }
-                if key == "query" {
-                    item.query = value
-                }
-                if key == "title" {
-                    item.title = value
-                }
-                if key == "summary" || key == "description" {
-                    item.summary = value
+                if item.isValidItem() {
+                    items.append(item)
                 }
             }
-            if item.isValidItem() {
-                items.append(item)
-            }
-        }
     }
 }

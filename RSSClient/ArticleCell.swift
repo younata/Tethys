@@ -9,7 +9,6 @@ class ArticleCell: UITableViewCell, UITextViewDelegate {
             let publishedDate = article?.updatedAt ?? article?.published ?? NSDate()
             published.text = dateFormatter.stringFromDate(publishedDate) ?? ""
             author.text = article?.author ?? ""
-            // TODO: enclosures.
             let hasNotRead = article?.read != true
             unread.unread = hasNotRead ? 1 : 0
             unreadWidth.constant = (hasNotRead ? 30 : 0)

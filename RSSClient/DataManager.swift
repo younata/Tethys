@@ -107,8 +107,7 @@ class DataManager: NSObject {
     }
 
     func writeOPML() {
-        let documentsDirectory = NSHomeDirectory().stringByAppendingPathComponent("Documents")
-        let opmlLocation = documentsDirectory.stringByAppendingPathComponent("rnews.opml")
+        let opmlLocation = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
         self.generateOPMLContents(self.feeds()).writeToFile(opmlLocation, atomically: true,
             encoding: NSUTF8StringEncoding, error: nil)
     }
@@ -643,8 +642,7 @@ class DataManager: NSObject {
         return NSManagedObjectModel(contentsOfURL: modelURL)!
     }()
     lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
-        let documentsDirectory = NSHomeDirectory().stringByAppendingPathComponent("Documents")
-        let storeURL = NSURL.fileURLWithPath(documentsDirectory.stringByAppendingPathComponent("RSSClient.sqlite"))
+        let storeURL = NSURL.fileURLWithPath(documentsDirectory().stringByAppendingPathComponent("RSSClient.sqlite"))
         let persistentStore = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
         var error: NSError? = nil
         var options: [String: AnyObject] = [NSMigratePersistentStoresAutomaticallyOption: true,

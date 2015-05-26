@@ -159,8 +159,6 @@ class FeedViewController: UITableViewController {
                     cell.textLabel?.text = tags[indexPath.row]
                 }
             }
-        default:
-            break
         }
 
         return cell
@@ -173,30 +171,31 @@ class FeedViewController: UITableViewController {
         return isTagsSection && isEditableTag
     }
 
-    override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
-        if feed == nil || FeedSections(rawValue: indexPath.section) != .Tags {
-            return nil
-        }
-        let deleteTitle = NSLocalizedString("Delete", comment: "")
-        let delete = UITableViewRowAction(style: .Default, title: deleteTitle, handler: {(_, indexPath) in
-            if var feed = self.feed {
-                let tag = feed.tags[indexPath.row]
-                feed.removeTag(tag)
-                tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-                if tag.hasPrefix("~") {
-                    let indexPath = NSIndexPath(forRow: 0, inSection: 0)
-                    tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-                } else if tag.hasPrefix("`") {
-                    let indexPath = NSIndexPath(forRow: 0, inSection: 1)
-                    tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-                }
+    override func tableView(tableView: UITableView,
+        editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+            if feed == nil || FeedSections(rawValue: indexPath.section) != .Tags {
+                return nil
             }
-        })
-        let editTitle = NSLocalizedString("Edit", comment: "")
-        let edit = UITableViewRowAction(style: .Normal, title: editTitle, handler: {(_, indexPath) in
-            self.showTagEditor(indexPath.row)
-        })
-        return [delete, edit]
+            let deleteTitle = NSLocalizedString("Delete", comment: "")
+            let delete = UITableViewRowAction(style: .Default, title: deleteTitle, handler: {(_, indexPath) in
+                if var feed = self.feed {
+                    let tag = feed.tags[indexPath.row]
+                    feed.removeTag(tag)
+                    tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                    if tag.hasPrefix("~") {
+                        let indexPath = NSIndexPath(forRow: 0, inSection: 0)
+                        tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                    } else if tag.hasPrefix("`") {
+                        let indexPath = NSIndexPath(forRow: 0, inSection: 1)
+                        tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                    }
+                }
+            })
+            let editTitle = NSLocalizedString("Edit", comment: "")
+            let edit = UITableViewRowAction(style: .Normal, title: editTitle, handler: {(_, indexPath) in
+                self.showTagEditor(indexPath.row)
+            })
+            return [delete, edit]
     }
 
     override func tableView(tableView: UITableView,

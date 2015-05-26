@@ -26,7 +26,7 @@ class FeedTableCell: UITableViewCell {
         }
     }
 
-    lazy var nameLabel : UILabel = {
+    lazy var nameLabel: UILabel = {
         let label = UILabel(forAutoLayout: ())
 
         label.numberOfLines = 0

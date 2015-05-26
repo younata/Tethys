@@ -121,8 +121,8 @@ class ArticleListController: UITableViewController {
         return articles.count
     }
 
-    override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        let article = articleForIndexPath(indexPath)
+    override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath _: NSIndexPath) -> CGFloat {
+//        let article = articleForIndexPath(indexPath)
 
 //        if article.content == nil {
 //            return 40
@@ -158,25 +158,26 @@ class ArticleListController: UITableViewController {
         forRowAtIndexPath indexPath: NSIndexPath) {
     }
 
-    override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
-        if previewMode {
-            return nil
-        }
-        let article = self.articleForIndexPath(indexPath)
-        let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""),
-            handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
-//            article.managedObjectContext?.deleteObject(article)
-//            article.managedObjectContext?.save(nil)
-            self.refresh()
-        })
-        let unread = NSLocalizedString("Mark\nUnread", comment: "")
-        let read = NSLocalizedString("Mark\nRead", comment: "")
-        let toggleText = article.read ? unread : read
-        let toggle = UITableViewRowAction(style: .Normal, title: toggleText,
-            handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
-//            self.dataManager?.readArticle(article)
-            tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
-        })
-        return [delete, toggle]
+    override func tableView(tableView: UITableView,
+        editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+            if previewMode {
+                return nil
+            }
+            let article = self.articleForIndexPath(indexPath)
+            let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""),
+                handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
+                    //            article.managedObjectContext?.deleteObject(article)
+                    //            article.managedObjectContext?.save(nil)
+                    self.refresh()
+            })
+            let unread = NSLocalizedString("Mark\nUnread", comment: "")
+            let read = NSLocalizedString("Mark\nRead", comment: "")
+            let toggleText = article.read ? unread : read
+            let toggle = UITableViewRowAction(style: .Normal, title: toggleText,
+                handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
+                    //            self.dataManager?.readArticle(article)
+                    tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
+            })
+            return [delete, toggle]
     }
 }

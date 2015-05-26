@@ -41,15 +41,17 @@ class EnclosuresView: UIView, UICollectionViewDelegate, UICollectionViewDataSour
         return 0
     }
 
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as! EnclosureCell
-        cell.enclosure = enclosures?[indexPath.row]
-        if let enclosure = enclosures?[indexPath.row] {
-            if let progress = dataManager?.progressForEnclosure(enclosure) {
-                cell.progressLayer.progress = (progress == -1 ? 0 : progress)
+    func collectionView(collectionView: UICollectionView,
+        cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+            let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell",
+                forIndexPath: indexPath) as! EnclosureCell
+            cell.enclosure = enclosures?[indexPath.row]
+            if let enclosure = enclosures?[indexPath.row] {
+                if let progress = dataManager?.progressForEnclosure(enclosure) {
+                    cell.progressLayer.progress = (progress == -1 ? 0 : progress)
+                }
             }
-        }
-        return cell
+            return cell
     }
 
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {

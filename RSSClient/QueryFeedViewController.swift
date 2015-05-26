@@ -1,8 +1,8 @@
 import UIKit
 
 class QueryFeedViewController: UITableViewController {
-    
-    var feed : Feed? = nil {
+
+    var feed: Feed? = nil {
         didSet {
             self.navigationItem.title = self.feed?.title ?? NSLocalizedString("New Query Feed", comment: "")
             self.tableView.reloadData()
@@ -11,31 +11,36 @@ class QueryFeedViewController: UITableViewController {
             }
         }
     }
-    
-    lazy var dataManager : DataManager = {
+
+    lazy var dataManager: DataManager = {
         return self.injector!.create(DataManager.self) as! DataManager
     }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Done", comment: ""), style: .Plain, target: self, action: "dismiss")
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Save", comment: ""), style: .Plain, target: self, action: "save")
+
+        let dismissTitle = NSLocalizedString("Done", comment: "")
+        let dismissButton = UIBarButtonItem(title: dismissTitle, style: .Plain, target: self, action: "dismiss")
+        self.navigationItem.leftBarButtonItem = dismissButton
+
+        let saveTitle = NSLocalizedString("Save", comment: "")
+        let saveButton = UIBarButtonItem(title: saveTitle, style: .Plain, target: self, action: "save")
+        self.navigationItem.rightBarButtonItem = saveButton
         self.navigationItem.title = self.feed?.title ?? NSLocalizedString("New Query Feed", comment: "")
-        
+
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tags")
         tableView.registerClass(TextViewCell.self, forCellReuseIdentifier: "cell")
-        
+
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 64
         tableView.tableFooterView = UIView()
     }
-    
+
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         tableView.reloadData()
     }
-    
+
     func dismiss() {
         if let feed = self.feed {
             if feed.title.isEmpty && feed.query == nil {
@@ -44,7 +49,7 @@ class QueryFeedViewController: UITableViewController {
         }
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
-    
+
     func save() {
         if let feed = self.feed {
             if feed.title.isEmpty && feed.query == nil {
@@ -55,7 +60,7 @@ class QueryFeedViewController: UITableViewController {
         dataManager.writeOPML()
         dismiss()
     }
-    
+
     func showTagEditor(tagIndex: Int) {
         let tagEditor = self.injector!.create(TagEditorViewController.self) as! TagEditorViewController
         tagEditor.feed = feed
@@ -78,7 +83,7 @@ class QueryFeedViewController: UITableViewController {
         }
         return (feed?.tags.count ?? 0) + 1
     }
-    
+
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
         case 0:
@@ -163,22 +168,17 @@ class QueryFeedViewController: UITableViewController {
         return false
     }
 
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        
-    }
-    
+    override func tableView(tableView: UITableView,
+        commitEditingStyle _: UITableViewCellEditingStyle,
+        forRowAtIndexPath _: NSIndexPath) {}
+
     override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
-        if feed == nil {
-            return nil
-        }
-        if indexPath.section < 2 {
-            return nil
-        }
-        if feed!.tags.count == indexPath.row {
+        if feed == nil && indexPath.section < 2 && feed?.tags.count == indexPath.row {
             return nil
         }
         if indexPath.section == 2 {
-            let preview = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Preview", comment: ""), handler: {(_, _) in
+            let previewTitle = NSLocalizedString("Preview", comment: "")
+            let preview = UITableViewRowAction(style: .Normal, title: previewTitle, handler: {(_, _) in
                 let articleList = ArticleListController(style: .Plain)
                 articleList.previewMode = true
                 articleList.articles = self.dataManager.articlesMatchingQuery(self.feed?.query ?? "")
@@ -186,29 +186,33 @@ class QueryFeedViewController: UITableViewController {
             })
             return [preview]
         } else if indexPath.section == 3 {
-            let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""), handler: {(_, indexPath) in
+            let deleteTitle = NSLocalizedString("Delete", comment: "")
+            let delete = UITableViewRowAction(style: .Default, title: deleteTitle, handler: {(_, indexPath) in
                 if var feed = self.feed {
                     let tag = feed.tags[indexPath.row]
                     feed.removeTag(tag)
                     tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
                     if tag.hasPrefix("~") {
-                        tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: .None)
+                        let ip = NSIndexPath(forRow: 0, inSection: 0)
+                        tableView.reloadRowsAtIndexPaths([ip], withRowAnimation: .None)
                     } else if tag.hasPrefix("`") {
-                        tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 1)], withRowAnimation: .None)
+                        let ip = NSIndexPath(forRow: 0, inSection: 1)
+                        tableView.reloadRowsAtIndexPaths([ip], withRowAnimation: .None)
                     }
                 }
             })
-            let edit = UITableViewRowAction(style: .Normal, title: NSLocalizedString("Edit", comment: ""), handler: {(_, indexPath) in
+            let editTitle = NSLocalizedString("Edit", comment: "")
+            let edit = UITableViewRowAction(style: .Normal, title: editTitle, handler: {(_, indexPath) in
                 self.showTagEditor(indexPath.row)
             })
             return [delete, edit]
         }
         return nil
     }
-    
+
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
-        
+
         if indexPath.section == 3,
             let count = feed?.tags.count where indexPath.row == count {
                 showTagEditor(indexPath.row)

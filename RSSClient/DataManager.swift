@@ -68,50 +68,6 @@ class DataManager: NSObject {
         }
     }
 
-    func generateOPMLContents(feeds: [Feed]) -> String {
-        func sanitize(str: String?) -> String {
-            if str == nil {
-                return ""
-            }
-            var s = str!
-            s = s.stringByReplacingOccurrencesOfString("\"", withString: "&quot;")
-            s = s.stringByReplacingOccurrencesOfString("'", withString: "&apos;")
-            s = s.stringByReplacingOccurrencesOfString("<", withString: "&gt;")
-            s = s.stringByReplacingOccurrencesOfString(">", withString: "&lt;")
-            s = s.stringByReplacingOccurrencesOfString("&", withString: "&amp;")
-            return s
-        }
-
-        var ret = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
-        ret += "<opml version=\"2.0\">\n    <body>\n"
-        for feed in feeds.filter({return $0.query == nil}) {
-            ret += "        "
-            var line: String
-            let title = "title=\"\(sanitize(feed.title))\""
-            if feed.isQueryFeed {
-                let query = "query=\"\(sanitize(feed.query))\""
-                let summary = "summary=\"\(sanitize(feed.summary))\""
-                line = "<outline \(query) \(title) \(summary) type=\"query\""
-            } else {
-                let url = "xmlURL=\"\(sanitize(feed.url?.absoluteString))\""
-                line = "<outline \(url) \(title) type=\"rss\""
-            }
-            if feed.tags.count != 0 {
-                let tags: String = ",".join(feed.tags)
-                line += " tags=\"\(tags)\""
-            }
-            ret += "\(line)/>\n"
-        }
-        ret += "</body>\n</opml>"
-        return ret
-    }
-
-    func writeOPML() {
-        let opmlLocation = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
-        self.generateOPMLContents(self.feeds()).writeToFile(opmlLocation, atomically: true,
-            encoding: NSUTF8StringEncoding, error: nil)
-    }
-
     // MARK: CoreDataFeeds
 
     func allTags() -> [String] {

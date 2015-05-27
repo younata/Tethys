@@ -18,8 +18,9 @@ class DataManagerMock : DataManager {
         return nil
     }
 
+    var feedsList : [Feed] = []
     override func feeds() -> [Feed] {
-        return []
+        return feedsList
     }
 
     override func updateFeeds(completion: (NSError?) -> (Void)) {

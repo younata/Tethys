@@ -12,10 +12,14 @@ class DataManagerMock : DataManager {
 
     var newFeedURL: String? = nil
     var newFeedCompletion : (NSError?) -> Void = {_ in }
-    override func newFeed(feedURL: String, completion: (NSError?) -> (Void)) -> Feed? {
+    override func newFeed(feedURL: String, completion: (NSError?) -> (Void)) -> Feed {
         newFeedURL = feedURL
         newFeedCompletion = completion
-        return nil
+        return Feed(title: "", url: NSURL(string: feedURL), summary: "", query: nil, tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+    }
+
+    override func newQueryFeed(title: String, code: String, summary: String?) -> Feed {
+        return Feed(title: title, url: nil, summary: summary ?? "", query: code, tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
     }
 
     var feedsList : [Feed] = []

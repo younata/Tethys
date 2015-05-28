@@ -2,14 +2,56 @@ import Foundation
 
 class OPMLManager {
 
-    private let dataManager : DataManager
+    private let dataManager: DataManager
+    private let mainQueue: NSOperationQueue
+    private let importQueue: NSOperationQueue
 
-    init(dataManager: DataManager) {
+    init(dataManager: DataManager, mainQueue: NSOperationQueue, importQueue: NSOperationQueue) {
         self.dataManager = dataManager
+        self.mainQueue = mainQueue
+        self.importQueue = importQueue
     }
 
-    func importOPML(opml: NSURL, progress: (Double) -> Void, completion: ([Feed]) -> Void) {
+    func importOPML(opml: NSURL, completion: ([Feed]) -> Void) {
+        if let text = String(contentsOfURL: opml, encoding: NSUTF8StringEncoding, error: nil) {
+            let parser = OPMLParser(text: text)
+            parser.success {items in
+                var feeds : [Feed] = []
 
+                for item in items {
+                    if item.isQueryFeed() {
+                        if let title = item.title, let query = item.query {
+                            let newFeed = self.dataManager.newQueryFeed(title, code: query, summary: item.summary)
+                            for tag in (item.tags ?? []) {
+                                newFeed.addTag(tag)
+                            }
+                            feeds.append(newFeed)
+                        }
+                    } else {
+                        if let feedURL = item.xmlURL {
+                            let newFeed = self.dataManager.newFeed(feedURL) {error in
+                            }
+                            for tag in item.tags ?? [] {
+                                newFeed.addTag(tag)
+                            }
+                            feeds.append(newFeed)
+                        }
+                    }
+                }
+                self.mainQueue.addOperationWithBlock {
+                    completion(feeds)
+                }
+            }
+            parser.failure {error in
+                self.mainQueue.addOperationWithBlock {
+                    completion([])
+                }
+            }
+
+            importQueue.addOperation(parser)
+        } else {
+            completion([])
+        }
     }
 
     private func generateOPMLContents(feeds: [Feed]) -> String {

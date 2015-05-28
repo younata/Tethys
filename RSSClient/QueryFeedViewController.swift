@@ -57,7 +57,7 @@ class QueryFeedViewController: UITableViewController {
             }
 //            feed.managedObjectContext?.save(nil)
         }
-        dataManager.writeOPML()
+//        dataManager.writeOPML()
         dismiss()
     }
 

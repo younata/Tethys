@@ -8,26 +8,30 @@ class OPMLManagerSpec: QuickSpec {
         var moc : NSManagedObjectContext! = nil
 
         var dataManager : DataManagerMock! = nil
+        var importQueue : FakeOperationQueue! = nil
+        var mainQueue : FakeOperationQueue! = nil
 
         beforeEach {
             dataManager = DataManagerMock()
-            subject = OPMLManager(dataManager: dataManager)
+            importQueue = FakeOperationQueue()
+            importQueue.runSynchronously = true
+            mainQueue = FakeOperationQueue()
+            mainQueue.runSynchronously = true
+            subject = OPMLManager(dataManager: dataManager, mainQueue: mainQueue, importQueue: importQueue)
 
             moc = managedObjectContext()
         }
 
-        describe("Importing OPML Files") {
+        fdescribe("Importing OPML Files") {
             var feeds : [Feed] = []
             beforeEach {
                 // write the opml file
 
                 let expectation = self.expectationWithDescription("import opml")
 
-                let opmlUrl = NSURL(string: "")!
+                let opmlUrl = NSBundle(forClass: self.classForCoder).URLForResource("test", withExtension: "opml")!
 
-                subject.importOPML(opmlUrl, progress: { _ in
-
-                }) {otherFeeds in
+                subject.importOPML(opmlUrl) {otherFeeds in
                     feeds = otherFeeds
                     expectation.fulfill()
                 }
@@ -37,8 +41,48 @@ class OPMLManagerSpec: QuickSpec {
                 }
             }
 
-            it("should import the OPML file") {
+            fit("should return a list of feeds imported") {
+                expect(feeds.count).to(equal(3))
+                if (feeds.count != 3) {
+                    return;
+                }
+                feeds.sort { $0.title < $1.title }
+                let first = feeds[0]
+                expect(first.title).to(equal("Feed With Title"))
+                expect(first.url).to(equal(NSURL(string: "http://example.com/feedWithTitle")))
+
+                let second = feeds[1]
+                expect(first.title).to(equal("nil"))
+                expect(first.url).to(equal(NSURL(string: "http://example.com/feedWithTag")))
+                expect(first.tags).to(equal(["a tag"]))
+
+                let query = feeds[2]
+                expect(query.title).to(equal("Query Feed"))
+                expect(query.url).to(beNil())
+                expect(query.query).to(equal("return true;"))
+            }
+
+            it("should import the OPML file to the data store") {
                 // no idea.
+                let titleSort = NSSortDescriptor(key: "title", ascending: true)
+                let feeds = DataUtility.entities("Feed", matchingPredicate: NSPredicate(value: true), managedObjectContext: moc, sortDescriptors: [titleSort])
+                expect(feeds.count).to(equal(3))
+                if (feeds.count != 3) {
+                    return; // Don't want a crash, already have failing test
+                }
+                let first = feeds[0]
+                expect(first.valueForKey("title") as? String).to(equal("Feed With Title"))
+                expect(first.valueForKey("url") as? String).to(equal("http://example.com/feedWithTitle"))
+
+                let second = feeds[1]
+                expect(second.valueForKey("title") as? String).to(equal("nil"))
+                expect(second.valueForKey("url") as? String).to(equal("http://example.com/feedWithTag"))
+                expect(second.valueForKey("tags") as? [String]).to(equal(["a tag"]))
+
+                let query = feeds[2]
+                expect(query.valueForKey("title") as? String).to(equal("Query Feed"))
+                expect(query.valueForKey("url")).to(beNil())
+                expect(query.valueForKey("query") as? String).to(equal("return true;"))
             }
         }
 

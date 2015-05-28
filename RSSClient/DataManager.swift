@@ -37,29 +37,29 @@ class DataManager: NSObject {
                                 completion(ret)
                             }
                         } else {
-                            if let feed = item.xmlURL,
-                            var newFeed = self.newFeed(feed, completion: {error in
-                                if let err = error {
-                                    println("error importing \(feed): \(err)")
-                                }
-                                println("imported \(feed)")
-                                i++
-                                progress(Double(i) / Double(items.count))
-                                if i == items.count {
-                                    completion(ret)
-                                }
-                            }) {
-                                for tag in (item.tags ?? []) {
-                                    newFeed.addTag(tag)
-                                }
-                                ret.append(newFeed)
-                            } else {
-                                i++
-                                progress(Double(i) / Double(items.count))
-                                if i == items.count {
-                                    completion(ret)
-                                }
-                            }
+//                            if let feed = item.xmlURL,
+//                            var newFeed = self.newFeed(feed, completion: {error in
+//                                if let err = error {
+//                                    println("error importing \(feed): \(err)")
+//                                }
+//                                println("imported \(feed)")
+//                                i++
+//                                progress(Double(i) / Double(items.count))
+//                                if i == items.count {
+//                                    completion(ret)
+//                                }
+//                            }) {
+//                                for tag in (item.tags ?? []) {
+//                                    newFeed.addTag(tag)
+//                                }
+//                                ret.append(newFeed)
+//                            } else {
+//                                i++
+//                                progress(Double(i) / Double(items.count))
+//                                if i == items.count {
+//                                    completion(ret)
+//                                }
+//                            }
                         }
                     }
                 }
@@ -104,7 +104,7 @@ class DataManager: NSObject {
         }
     }
 
-    func newFeed(feedURL: String, completion: (NSError?) -> (Void)) -> Feed? {
+    func newFeed(feedURL: String, completion: (NSError?) -> (Void)) -> Feed {
         let predicate = NSPredicate(format: "url = %@", feedURL)
         let feed: Feed
         if let theFeed = DataUtility.entities("Feed", matchingPredicate: predicate,
@@ -122,7 +122,7 @@ class DataManager: NSObject {
             app.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         #endif
         self.updateFeeds([feed], completion: completion)
-        self.writeOPML()
+//        self.writeOPML()
         return feed
     }
 
@@ -162,7 +162,7 @@ class DataManager: NSObject {
                 app.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
             #endif
         }
-        self.writeOPML()
+//        self.writeOPML()
     }
 
     func updateFeeds(completion: (NSError?)->(Void)) {

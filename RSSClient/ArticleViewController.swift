@@ -2,7 +2,7 @@ import UIKit
 import WebKit
 import TOBrowserActivityKit
 
-class ArticleViewController: UIViewController, WKNavigationDelegate {
+public class ArticleViewController: UIViewController, WKNavigationDelegate {
     var article: Article? = nil {
         didSet {
             self.navigationController?.setToolbarHidden(false, animated: false)
@@ -133,7 +133,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: "")
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         self.edgesForExtendedLayout = .None
@@ -192,7 +192,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         self.view.addGestureRecognizer(swipeLeft)
     }
 
-    override func restoreUserActivityState(activity: NSUserActivity) {
+    public override func restoreUserActivityState(activity: NSUserActivity) {
         super.restoreUserActivityState(activity)
 
         if let ui = activity.userInfo, let showingContent = ui["showingContent"] as? Bool {
@@ -207,13 +207,13 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         }
     }
 
-    override func viewWillAppear(animated: Bool) {
+    public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
     }
 
     var objectsBeingObserved: [WKWebView] = []
 
-    override func viewWillDisappear(animated: Bool) {
+    public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         userActivity?.invalidate()
         userActivity = nil
@@ -409,7 +409,7 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
         }
     }
 
-    override func observeValueForKeyPath(keyPath: String,
+    public override func observeValueForKeyPath(keyPath: String,
         ofObject object: AnyObject, change: [NSObject : AnyObject],
         context: UnsafeMutablePointer<Void>) {
             if (keyPath == "estimatedProgress" && (object as? NSObject) == content) {
@@ -417,17 +417,17 @@ class ArticleViewController: UIViewController, WKNavigationDelegate {
             }
     }
 
-    func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
+    public func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
         loadingBar.hidden = true
         self.removeObserverFromContent(webView)
     }
 
-    func webView(webView: WKWebView, didFailNavigation _: WKNavigation!, withError _: NSError) {
+    public func webView(webView: WKWebView, didFailNavigation _: WKNavigation!, withError _: NSError) {
         loadingBar.hidden = true
         self.removeObserverFromContent(webView)
     }
 
-    func webView(webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+    public func webView(webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         loadingBar.progress = 0
         loadingBar.hidden = false
         if !contains(objectsBeingObserved, webView) {

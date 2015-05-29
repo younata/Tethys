@@ -1,12 +1,12 @@
 import UIKit
 import PureLayout_iOS
 
-class ActivityIndicator: UIView {
-    var message: String {
+public class ActivityIndicator: UIView {
+    public var message: String {
         return self.label.text ?? ""
     }
 
-    func configureWithMessage(message: String) {
+    public func configureWithMessage(message: String) {
         label.text = message
         activityIndicator.startAnimating()
         backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.7)

@@ -13,7 +13,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private lazy var injectorModule: InjectorModule = InjectorModule()
 
-    lazy var anInjector: Ra.Injector = {
+    public lazy var anInjector: Ra.Injector = {
         return Ra.Injector(module: self.injectorModule)
     }()
 

@@ -1,28 +1,28 @@
 import Foundation
 
-class Enclosure: Equatable {
-    var url: NSURL {
+public class Enclosure: Equatable {
+    public var url: NSURL {
         willSet {
             if newValue != url {
                 self.updated = true
             }
         }
     }
-    var kind: String {
+    public var kind: String {
         willSet {
             if newValue != kind {
                 self.updated = true
             }
         }
     }
-    var data: NSData? {
+    public var data: NSData? {
         willSet {
             if newValue != data {
                 self.updated = true
             }
         }
     }
-    var article: Article? {
+    public var article: Article? {
         willSet {
             if newValue != article {
                 self.updated = true
@@ -36,22 +36,22 @@ class Enclosure: Equatable {
         }
     }
 
-    internal private(set) var updated: Bool = false
+    public private(set) var updated: Bool = false
 
-    var downloaded: Bool {
+    public var downloaded: Bool {
         return data == nil
     }
 
-    init(url: NSURL, kind: String, data: NSData?, article: Article?) {
+    public init(url: NSURL, kind: String, data: NSData?, article: Article?) {
         self.url = url
         self.kind = kind
         self.data = data
         self.article = article
     }
 
-    private(set) var enclosureID: NSManagedObjectID? = nil
+    public private(set) var enclosureID: NSManagedObjectID? = nil
 
-    init(enclosure: CoreDataEnclosure, article: Article?) {
+    public init(enclosure: CoreDataEnclosure, article: Article?) {
         url = NSURL(string: enclosure.url ?? "") ?? NSURL()
         kind = enclosure.kind ?? ""
         data = enclosure.data
@@ -60,7 +60,7 @@ class Enclosure: Equatable {
     }
 }
 
-func ==(a: Enclosure, b: Enclosure) -> Bool {
+public func ==(a: Enclosure, b: Enclosure) -> Bool {
     if let aEID = a.enclosureID, let bEID = b.enclosureID {
         return aEID.URIRepresentation() == bEID.URIRepresentation()
     }

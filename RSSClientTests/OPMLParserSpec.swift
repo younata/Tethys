@@ -1,5 +1,6 @@
 import Quick
 import Nimble
+import rNews
 
 class OPMLParserSpec: QuickSpec {
     override func spec() {

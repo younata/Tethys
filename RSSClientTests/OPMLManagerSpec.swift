@@ -1,5 +1,6 @@
 import Quick
 import Nimble
+import rNews
 
 class OPMLManagerSpec: QuickSpec {
     override func spec() {

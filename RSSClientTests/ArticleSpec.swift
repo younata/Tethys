@@ -1,5 +1,6 @@
 import Quick
 import Nimble
+import rNews
 
 class ArticleSpec: QuickSpec {
     override func spec() {

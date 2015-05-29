@@ -1,18 +1,18 @@
 import Foundation
 
-class OPMLManager {
+public class OPMLManager {
 
     private let dataManager: DataManager
     private let mainQueue: NSOperationQueue
     private let importQueue: NSOperationQueue
 
-    init(dataManager: DataManager, mainQueue: NSOperationQueue, importQueue: NSOperationQueue) {
+    public init(dataManager: DataManager, mainQueue: NSOperationQueue, importQueue: NSOperationQueue) {
         self.dataManager = dataManager
         self.mainQueue = mainQueue
         self.importQueue = importQueue
     }
 
-    func importOPML(opml: NSURL, completion: ([Feed]) -> Void) {
+    public func importOPML(opml: NSURL, completion: ([Feed]) -> Void) {
         if let text = String(contentsOfURL: opml, encoding: NSUTF8StringEncoding, error: nil) {
             let parser = OPMLParser(text: text)
             parser.success {items in
@@ -87,7 +87,7 @@ class OPMLManager {
         return ret
     }
 
-    func writeOPML() {
+    public func writeOPML() {
         let opmlLocation = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
         self.generateOPMLContents(dataManager.feeds()).writeToFile(opmlLocation, atomically: true,
             encoding: NSUTF8StringEncoding, error: nil)

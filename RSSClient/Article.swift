@@ -1,70 +1,70 @@
 import Foundation
 
-class Article: Equatable, Hashable {
-    var title: String {
+public class Article: Equatable, Hashable {
+    public var title: String {
         willSet {
             if newValue != title {
                 self.updated = true
             }
         }
     }
-    var link: NSURL? {
+    public var link: NSURL? {
         willSet {
             if newValue != link {
                 self.updated = true
             }
         }
     }
-    var summary: String {
+    public var summary: String {
         willSet {
             if newValue != summary {
                 self.updated = true
             }
         }
     }
-    var author: String {
+    public var author: String {
         willSet {
             if newValue != author {
                 self.updated = true
             }
         }
     }
-    var published: NSDate {
+    public var published: NSDate {
         willSet {
             if newValue != published {
                 self.updated = true
             }
         }
     }
-    var updatedAt: NSDate? {
+    public var updatedAt: NSDate? {
         willSet {
             if newValue != updatedAt {
                 self.updated = true
             }
         }
     }
-    var identifier: String {
+    public var identifier: String {
         willSet {
             if newValue != identifier {
                 self.updated = true
             }
         }
     }
-    var content: String {
+    public var content: String {
         willSet {
             if newValue != content {
                 self.updated = true
             }
         }
     }
-    var read: Bool {
+    public var read: Bool {
         willSet {
             if newValue != read {
                 self.updated = true
             }
         }
     }
-    var feed: Feed? {
+    public var feed: Feed? {
         willSet {
             if newValue != feed {
                 self.updated = true
@@ -77,12 +77,12 @@ class Article: Equatable, Hashable {
             }
         }
     }
-    internal private(set) var flags: [String] = []
-    internal private(set) var enclosures: [Enclosure] = []
+    public private(set) var flags: [String] = []
+    public private(set) var enclosures: [Enclosure] = []
 
-    internal private(set) var updated: Bool = false
+    public private(set) var updated: Bool = false
 
-    var hashValue: Int {
+    public var hashValue: Int {
         if let id = articleID {
             return id.URIRepresentation().hash
         }
@@ -98,7 +98,7 @@ class Article: Equatable, Hashable {
         return nonNilHashValues ^ flagsHashValues ^ possiblyNilHashValues
     }
 
-    init(title: String, link: NSURL?, summary: String, author: String, published: NSDate,
+    public init(title: String, link: NSURL?, summary: String, author: String, published: NSDate,
         updatedAt: NSDate?, identifier: String, content: String, read: Bool, feed: Feed?,
         flags: [String], enclosures: [Enclosure]) {
             self.title = title
@@ -119,9 +119,9 @@ class Article: Equatable, Hashable {
             }
     }
 
-    private(set) var articleID: NSManagedObjectID? = nil
+    public private(set) var articleID: NSManagedObjectID? = nil
 
-    init(article: CoreDataArticle, feed: Feed?) {
+    public init(article: CoreDataArticle, feed: Feed?) {
         title = article.title ?? ""
         if let articleLink = article.link {
             link = NSURL(string: articleLink)
@@ -150,21 +150,21 @@ class Article: Equatable, Hashable {
         articleID = article.objectID
     }
 
-    func addFlag(flag: String) {
+    public func addFlag(flag: String) {
         if !contains(self.flags, flag) {
             self.flags.append(flag)
             updated = true
         }
     }
 
-    func removeFlag(flag: String) {
+    public func removeFlag(flag: String) {
         if contains(self.flags, flag) {
             self.flags = self.flags.filter { $0 != flag }
             updated = true
         }
     }
 
-    func addEnclosure(enclosure: Enclosure) {
+    public func addEnclosure(enclosure: Enclosure) {
         if !contains(self.enclosures, enclosure) {
             self.enclosures.append(enclosure)
             if let otherArticle = enclosure.article {
@@ -175,7 +175,7 @@ class Article: Equatable, Hashable {
         }
     }
 
-    func removeEnclosure(enclosure: Enclosure) {
+    public func removeEnclosure(enclosure: Enclosure) {
         if contains(self.enclosures, enclosure) {
             self.enclosures = self.enclosures.filter { $0 != enclosure }
             if enclosure.article == self {
@@ -186,7 +186,7 @@ class Article: Equatable, Hashable {
     }
 }
 
-func ==(a: Article, b: Article) -> Bool {
+public func ==(a: Article, b: Article) -> Bool {
     if let aID = a.articleID, let bID = b.articleID {
         return aID.URIRepresentation() == bID.URIRepresentation()
     }

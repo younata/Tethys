@@ -1,8 +1,9 @@
 import Foundation
 import Ra
+import rNews
 
-class SpecInjectorModule : InjectorModule {
-    override func configureInjector(injector: Injector) {
+public class SpecInjectorModule : rNews.InjectorModule {
+    public override func configureInjector(injector: Injector) {
         super.configureInjector(injector)
         let dataManager = DataManagerMock()
         injector.bind(DataManager.self, to: dataManager)

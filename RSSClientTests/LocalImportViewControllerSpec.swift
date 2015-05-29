@@ -2,6 +2,7 @@ import Quick
 import Nimble
 import Ra
 import Muon
+import rNews
 
 private func createOPMLWithFeeds(feeds: [(url: String, title: String)], location: String) {
     var opml = "<opml><body>"

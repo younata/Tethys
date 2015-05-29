@@ -1,57 +1,57 @@
 import Foundation
 
 #if os(iOS)
-    typealias Image=UIImage
+    public typealias Image=UIImage
 #else
-    typealias Image=NSImage
+    public typealias Image=NSImage
 #endif
 
-class Feed: Equatable, Hashable {
-    var title: String {
+public class Feed: Equatable, Hashable {
+    public var title: String {
         willSet {
             if newValue != title {
                 self.updated = true
             }
         }
     }
-    var url: NSURL? {
+    public var url: NSURL? {
         willSet {
             if newValue != url {
                 self.updated = true
             }
         }
     }
-    var summary: String {
+    public var summary: String {
         willSet {
             if newValue != summary {
                 self.updated = true
             }
         }
     }
-    var query: String? {
+    public var query: String? {
         willSet {
             if newValue != query {
                 self.updated = true
             }
         }
     }
-    internal private(set) var tags: [String]
-    var waitPeriod: Int? {
+    public private(set) var tags: [String]
+    public var waitPeriod: Int? {
         willSet {
             if newValue != waitPeriod {
                 self.updated = true
             }
         }
     }
-    var remainingWait: Int? {
+    public var remainingWait: Int? {
         willSet {
             if newValue != remainingWait {
                 self.updated = true
             }
         }
     }
-    internal private(set) var articles: [Article] = []
-    var image: Image? {
+    public private(set) var articles: [Article] = []
+    public var image: Image? {
         willSet {
             if newValue != image {
                 self.updated = true
@@ -59,9 +59,9 @@ class Feed: Equatable, Hashable {
         }
     }
 
-    var isQueryFeed: Bool { return query != nil }
+    public var isQueryFeed: Bool { return query != nil }
 
-    var hashValue: Int {
+    public var hashValue: Int {
         if let id = feedID {
             return id.URIRepresentation().hash
         }
@@ -78,9 +78,9 @@ class Feed: Equatable, Hashable {
         return nonNilHashValues ^ possiblyNilHashValues ^ tagsHashValues
     }
 
-    internal private(set) var updated = false
+    public private(set) var updated = false
 
-    func waitPeriodInRefreshes() -> Int {
+    public func waitPeriodInRefreshes() -> Int {
         var ret = 0, next = 1
         if let waitPeriod = waitPeriod {
             let wait = max(0, waitPeriod - 2)
@@ -91,11 +91,11 @@ class Feed: Equatable, Hashable {
         return ret
     }
 
-    func unreadArticles() -> [Article] {
+    public func unreadArticles() -> [Article] {
         return articles.filter { !$0.read }
     }
 
-    func addArticle(article: Article) {
+    public func addArticle(article: Article) {
         if !contains(self.articles, article) {
             updated = true
             articles.append(article)
@@ -106,7 +106,7 @@ class Feed: Equatable, Hashable {
         }
     }
 
-    func removeArticle(article: Article) {
+    public func removeArticle(article: Article) {
         if contains(self.articles, article) {
             updated = true
             self.articles = self.articles.filter { $0 != article }
@@ -116,21 +116,21 @@ class Feed: Equatable, Hashable {
         }
     }
 
-    func addTag(tag: String) {
+    public func addTag(tag: String) {
         if !contains(tags, tag) {
             updated = true
             tags.append(tag)
         }
     }
 
-    func removeTag(tag: String) {
+    public func removeTag(tag: String) {
         if contains(tags, tag) {
             updated = true
             tags = tags.filter { $0 != tag }
         }
     }
 
-    init(title: String, url: NSURL?, summary: String, query: String?, tags: [String],
+    public init(title: String, url: NSURL?, summary: String, query: String?, tags: [String],
         waitPeriod: Int?, remainingWait: Int?, articles: [Article], image: Image?) {
             self.title = title
             self.url = url
@@ -146,9 +146,9 @@ class Feed: Equatable, Hashable {
             }
     }
 
-    private(set) var feedID: NSManagedObjectID? = nil
+    public private(set) var feedID: NSManagedObjectID? = nil
 
-    init(feed: CoreDataFeed) {
+    public init(feed: CoreDataFeed) {
         title = feed.title ?? ""
         let url: NSURL?
         if let feedURL = feed.url {
@@ -171,7 +171,7 @@ class Feed: Equatable, Hashable {
     }
 }
 
-func ==(a: Feed, b: Feed) -> Bool {
+public func ==(a: Feed, b: Feed) -> Bool {
     if let aID = a.feedID, let bID = b.feedID {
         return aID.URIRepresentation() == bID.URIRepresentation()
     }

@@ -5,11 +5,11 @@ import JavaScriptCore
 import Alamofire
 import Muon
 
-class DataManager: NSObject {
+public class DataManager: NSObject {
 
     // MARK: OPML
 
-    func importOPML(opml: NSURL, progress: (Double) -> Void, completion: ([Feed]) -> Void) {
+    public func importOPML(opml: NSURL, progress: (Double) -> Void, completion: ([Feed]) -> Void) {
         if let text = NSString(contentsOfURL: opml, encoding: NSUTF8StringEncoding, error: nil) {
             let opmlParser = OPMLParser(text: text as String)
             opmlParser.failure {(error) in
@@ -70,7 +70,7 @@ class DataManager: NSObject {
 
     // MARK: CoreDataFeeds
 
-    func allTags() -> [String] {
+    public func allTags() -> [String] {
         let feedsWithTags = DataUtility.feedsWithPredicate(NSPredicate(format: "tags != nil"),
             managedObjectContext: self.backgroundObjectContext)
 
@@ -81,14 +81,14 @@ class DataManager: NSObject {
         return Array(setOfTags).sorted { return $0.lowercaseString < $1.lowercaseString }
     }
 
-    func feeds() -> [Feed] {
+    public func feeds() -> [Feed] {
         return DataUtility.feedsWithPredicate(NSPredicate(value: true),
             managedObjectContext: self.backgroundObjectContext).sorted {
                 return $0.title < $1.title
         }
     }
 
-    func feedsMatchingTag(tag: String?) -> [Feed] {
+    public func feedsMatchingTag(tag: String?) -> [Feed] {
         if let theTag = (tag == "" ? nil : tag) {
             return feeds().filter {
                 let tags = $0.tags
@@ -104,7 +104,7 @@ class DataManager: NSObject {
         }
     }
 
-    func newFeed(feedURL: String, completion: (NSError?) -> (Void)) -> Feed {
+    public func newFeed(feedURL: String, completion: (NSError?) -> (Void)) -> Feed {
         let predicate = NSPredicate(format: "url = %@", feedURL)
         let feed: Feed
         if let theFeed = DataUtility.entities("Feed", matchingPredicate: predicate,
@@ -126,7 +126,7 @@ class DataManager: NSObject {
         return feed
     }
 
-    func newQueryFeed(title: String, code: String, summary: String? = nil) -> Feed {
+    public func newQueryFeed(title: String, code: String, summary: String? = nil) -> Feed {
         let predicate = NSPredicate(format: "title = %@", title)
         var feed: CoreDataFeed! = nil
         if let theFeed = DataUtility.entities("Feed", matchingPredicate: predicate,
@@ -165,11 +165,11 @@ class DataManager: NSObject {
 //        self.writeOPML()
     }
 
-    func updateFeeds(completion: (NSError?)->(Void)) {
+    public func updateFeeds(completion: (NSError?)->(Void)) {
         updateFeeds(feeds(), completion: completion)
     }
 
-    func updateFeedsInBackground(completion: (NSError?)->(Void)) {
+    public func updateFeedsInBackground(completion: (NSError?)->(Void)) {
         updateFeeds(feeds(), completion: completion, backgroundFetch: true)
     }
 
@@ -216,7 +216,7 @@ class DataManager: NSObject {
         return Manager(configuration: config)
     }()
 
-    func updateFeeds(feeds: [Feed], backgroundFetch: Bool = false, completion: (NSError?)->(Void) = {_ in }) {
+    public func updateFeeds(feeds: [Feed], backgroundFetch: Bool = false, completion: (NSError?)->(Void) = {_ in }) {
         let feedIds = feeds.filter { !$0.isQueryFeed && $0.feedID != nil }.map { $0.feedID! }
 
         if feedIds.count == 0 {
@@ -619,7 +619,7 @@ class DataManager: NSObject {
         }
         return persistentStore
     }()
-    lazy var backgroundObjectContext: NSManagedObjectContext = {
+    public lazy var backgroundObjectContext: NSManagedObjectContext = {
         let ctx = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
         ctx.persistentStoreCoordinator = self.persistentStoreCoordinator
         return ctx
@@ -647,7 +647,7 @@ class DataManager: NSObject {
         managedObjectContextDidSave() // update all the query feeds.
     }
 
-    override init() {
+    public override init() {
         super.init()
         NSNotificationCenter.defaultCenter().addObserver(self,
             selector: "managedObjectContextDidSave",

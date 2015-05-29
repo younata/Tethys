@@ -2,7 +2,7 @@ import UIKit
 import Ra
 import Muon
 
-class LocalImportViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+public class LocalImportViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     private class TableViewCell: UITableViewCell {
         required init(coder aDecoder: NSCoder) {
@@ -18,7 +18,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
     var feeds: [(String, Muon.Feed)] = []
     var contentsOfDirectory: [String] = []
 
-    let tableViewController = UITableViewController(style: .Plain)
+    public let tableViewController = UITableViewController(style: .Plain)
 
     var tableViewTopOffset: NSLayoutConstraint!
 
@@ -26,7 +26,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
 
     lazy var backgroundQueue: NSOperationQueue = { self.injector!.create(kBackgroundQueue) as! NSOperationQueue }()
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         self.view.addSubview(self.tableViewController.tableView)
@@ -50,7 +50,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
         self.tableViewController.tableView.dataSource = self
     }
 
-    override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation,
+    public override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation,
         duration: NSTimeInterval) {
             super.willRotateToInterfaceOrientation(toInterfaceOrientation, duration: duration)
             let landscape = UIInterfaceOrientationIsLandscape(toInterfaceOrientation)
@@ -70,7 +70,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
 
-    func reloadItems() {
+    public func reloadItems() {
         if let fileManager = self.injector?.create(NSFileManager.self) as? NSFileManager,
             let contents = fileManager.contentsOfDirectoryAtPath(documentsDirectory(), error: nil) as? [String] {
                 for path in contents {
@@ -116,11 +116,11 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
 
     // MARK: - Table view data source
 
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 2
     }
 
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch (section) {
         case 0: return opmls.count
         case 1: return feeds.count
@@ -128,7 +128,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
         }
     }
 
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
 
         if indexPath.section == 0 {
@@ -144,7 +144,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
         return cell
     }
 
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    public func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch (section) {
         case 0: return "Feed Lists"
         case 1: return "Individual Feeds"
@@ -152,7 +152,7 @@ class LocalImportViewController: UIViewController, UITableViewDataSource, UITabl
         }
     }
 
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         if indexPath.section == 0 {
             let path = opmls[indexPath.row].0

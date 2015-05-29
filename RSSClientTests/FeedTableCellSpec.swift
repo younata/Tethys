@@ -1,6 +1,7 @@
 import Quick
 import Nimble
 import UIKit
+import rNews
 
 class FeedTableCellConfiguration : QuickConfiguration {
     override class func configure(configuration: Configuration) {

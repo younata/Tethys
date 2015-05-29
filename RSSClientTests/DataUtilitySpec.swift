@@ -3,6 +3,7 @@ import Nimble
 import Foundation
 import Alamofire
 import Muon
+import rNews
 
 class DataUtilitySpec: QuickSpec {
     override func spec() {

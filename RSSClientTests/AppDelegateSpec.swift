@@ -1,6 +1,7 @@
 import Quick
 import Nimble
 import Ra
+import rNews
 
 class AppDelegateSpec: QuickSpec {
     override func spec() {

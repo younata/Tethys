@@ -2,7 +2,7 @@ import UIKit
 import BreakOutToRefresh
 import MAKDropDownMenu
 
-class FeedsTableViewController: UIViewController, UITableViewDelegate,
+public class FeedsTableViewController: UIViewController, UITableViewDelegate,
 UITableViewDataSource, MAKDropDownMenuDelegate, UITextFieldDelegate,
 UISearchBarDelegate, BreakOutToRefreshDelegate {
 
@@ -31,7 +31,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
 
     lazy var dataManager: DataManager = { self.injector!.create(DataManager.self) as! DataManager }()
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         self.addChildViewController(tableViewController)
@@ -82,7 +82,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 
-    override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation,
+    public override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation,
         duration: NSTimeInterval) {
             super.willRotateToInterfaceOrientation(toInterfaceOrientation, duration: duration)
             let landscape = UIInterfaceOrientationIsLandscape(toInterfaceOrientation)
@@ -98,12 +98,12 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
             }
     }
 
-    override func viewWillAppear(animated: Bool) {
+    public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.reload()
     }
 
-    override func viewWillDisappear(animated: Bool) {
+    public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         if let rc = self.tableViewController.refreshControl where rc.refreshing {
             rc.endRefreshing()
@@ -140,7 +140,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         }
     }
 
-    func dropDownMenu(menu: MAKDropDownMenu!, itemDidSelect itemIndex: UInt) {
+    public func dropDownMenu(menu: MAKDropDownMenu!, itemDidSelect itemIndex: UInt) {
         var klass: AnyClass! = nil
         if itemIndex == 0 {
             klass = FindFeedViewController.self
@@ -164,7 +164,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         menu.closeAnimated(true)
     }
 
-    func dropDownMenuDidTapOutsideOfItem(menu: MAKDropDownMenu!) {
+    public func dropDownMenuDidTapOutsideOfItem(menu: MAKDropDownMenu!) {
         menu.closeAnimated(true)
     }
 
@@ -214,18 +214,18 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
 
     // MARK: - BreakOutToRefreshDelegate
 
-    func refreshViewDidRefresh(refreshView: BreakOutToRefreshView) {
+    public func refreshViewDidRefresh(refreshView: BreakOutToRefreshView) {
         refresh()
     }
 
     // MARK: - UIScrollViewDelegate
 
-    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+    public func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         self.searchBar.resignFirstResponder()
         refreshView.scrollViewWillBeginDragging(scrollView)
     }
 
-    func scrollViewWillEndDragging(scrollView: UIScrollView,
+    public func scrollViewWillEndDragging(scrollView: UIScrollView,
         withVelocity velocity: CGPoint,
         targetContentOffset: UnsafeMutablePointer<CGPoint>) {
             refreshView.scrollViewWillEndDragging(scrollView,
@@ -233,21 +233,21 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
                 targetContentOffset: targetContentOffset)
     }
 
-    func scrollViewDidScroll(scrollView: UIScrollView) {
+    public func scrollViewDidScroll(scrollView: UIScrollView) {
         refreshView.scrollViewDidScroll(scrollView)
     }
 
     // MARK: - Table view data source
 
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
 
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return feeds.count
     }
 
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let feed = feedAtIndexPath(indexPath)
         let strToUse = (feed.unreadArticles().isEmpty ? "unread" : "read")
         // Prevents a green triangle which'll (dis)appear depending on
@@ -259,20 +259,20 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         return cell
     }
 
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
 
         showFeeds([feedAtIndexPath(indexPath)])
     }
 
-    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    public func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return true
     }
 
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle,
+    public func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle,
         forRowAtIndexPath indexPath: NSIndexPath) {}
 
-    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+    public func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
         let deleteTitle = NSLocalizedString("Delete", comment: "")
         let delete = UITableViewRowAction(style: .Default, title: deleteTitle, handler: {(_, indexPath: NSIndexPath!) in
             let feed = self.feedAtIndexPath(indexPath)
@@ -310,7 +310,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
 
     // MARK: UISearchBarDelegate
 
-    func searchBar(searchBar: UISearchBar, textDidChange text: String) {
+    public func searchBar(searchBar: UISearchBar, textDidChange text: String) {
         self.reload(text)
     }
 }

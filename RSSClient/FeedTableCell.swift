@@ -1,8 +1,8 @@
 import UIKit
 import PureLayout_iOS
 
-class FeedTableCell: UITableViewCell {
-    var feed: Feed? = nil {
+public class FeedTableCell: UITableViewCell {
+    public var feed: Feed? = nil {
         didSet {
             if let f = feed {
                 nameLabel.text = f.title
@@ -26,7 +26,7 @@ class FeedTableCell: UITableViewCell {
         }
     }
 
-    lazy var nameLabel: UILabel = {
+    public lazy var nameLabel: UILabel = {
         let label = UILabel(forAutoLayout: ())
 
         label.numberOfLines = 0
@@ -40,7 +40,7 @@ class FeedTableCell: UITableViewCell {
         return label
     }()
 
-    lazy var summaryLabel: UILabel = {
+    public lazy var summaryLabel: UILabel = {
         let label = UILabel(forAutoLayout: ())
 
         label.numberOfLines = 0
@@ -56,7 +56,7 @@ class FeedTableCell: UITableViewCell {
         return label
     }()
 
-    lazy var unreadCounter: UnreadCounter = {
+    public lazy var unreadCounter: UnreadCounter = {
         let counter = UnreadCounter(frame: CGRectZero)
 
         counter.setTranslatesAutoresizingMaskIntoConstraints(false)
@@ -71,7 +71,7 @@ class FeedTableCell: UITableViewCell {
         return counter
     }()
 
-    lazy var iconView: UIImageView = {
+    public lazy var iconView: UIImageView = {
         let imageView = UIImageView(forAutoLayout: ())
 
         imageView.contentMode = .ScaleAspectFit
@@ -85,11 +85,11 @@ class FeedTableCell: UITableViewCell {
         return imageView
     }()
 
-    lazy var iconWidth: NSLayoutConstraint = {
+    public lazy var iconWidth: NSLayoutConstraint = {
         return self.iconView.autoSetDimension(.Width, toSize: 45)
     }()
 
-    lazy var iconHeight: NSLayoutConstraint = {
+    public lazy var iconHeight: NSLayoutConstraint = {
         return self.iconView.autoSetDimension(.Height, toSize: 0)
     }()
 

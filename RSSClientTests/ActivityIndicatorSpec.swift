@@ -1,6 +1,7 @@
 import Quick
 import Nimble
 import UIKit
+import rNews
 
 class ActivityIndicatorSpec: QuickSpec {
     override func spec() {

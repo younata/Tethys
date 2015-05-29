@@ -1,5 +1,6 @@
 import Foundation
 import Ra
+import rNews
 
 func injector() -> Injector {
     let injector = Ra.Injector()

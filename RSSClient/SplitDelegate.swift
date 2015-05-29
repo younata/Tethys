@@ -8,7 +8,7 @@ public class SplitDelegate: NSObject, UISplitViewControllerDelegate {
 
     private let splitController: UISplitViewController
 
-    init(splitViewController: UISplitViewController) {
+    public init(splitViewController: UISplitViewController) {
         self.splitController = splitViewController
     }
 

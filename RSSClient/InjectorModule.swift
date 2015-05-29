@@ -1,13 +1,13 @@
 import Foundation
 import Ra
 
-let kBackgroundManagedObjectContext = "kBackgroundManagedObjectContext"
+public let kBackgroundManagedObjectContext = "kBackgroundManagedObjectContext"
 
-let kMainQueue = "kMainQueue"
-let kBackgroundQueue = "kBackgroundQueue"
+public let kMainQueue = "kMainQueue"
+public let kBackgroundQueue = "kBackgroundQueue"
 
-class InjectorModule : Ra.InjectorModule {
-    func configureInjector(injector: Injector) {
+public class InjectorModule : Ra.InjectorModule {
+    public func configureInjector(injector: Injector) {
         // Operation Queues
         injector.bind(kMainQueue, to: NSOperationQueue.mainQueue())
 
@@ -45,4 +45,6 @@ class InjectorModule : Ra.InjectorModule {
             return tagPicker
         }
     }
+
+    public init() {}
 }

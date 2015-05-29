@@ -1,6 +1,6 @@
 import UIKit
 
-class NotificationHandler: NSObject {
+public class NotificationHandler: NSObject {
 
     func enableNotifications(application: UIApplication) {
         let markReadAction = UIMutableUserNotificationAction()

@@ -3,16 +3,16 @@ import WebKit
 import Alamofire
 import Muon
 
-class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFieldDelegate {
-    let webContent = WKWebView(forAutoLayout: ())
-    let loadingBar = UIProgressView(progressViewStyle: .Bar)
-    let navField = UITextField(frame: CGRectMake(0, 0, 200, 30))
+public class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFieldDelegate {
+    public let webContent = WKWebView(forAutoLayout: ())
+    public let loadingBar = UIProgressView(progressViewStyle: .Bar)
+    public let navField = UITextField(frame: CGRectMake(0, 0, 200, 30))
     private var rssLink: String? = nil
 
-    var addFeedButton: UIBarButtonItem! = nil
+    public var addFeedButton: UIBarButtonItem! = nil
     var back: UIBarButtonItem! = nil
     var forward: UIBarButtonItem! = nil
-    var reload: UIBarButtonItem! = nil
+    public var reload: UIBarButtonItem! = nil
     var cancelTextEntry: UIBarButtonItem! = nil
 
     var lookForFeeds: Bool = true
@@ -31,7 +31,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         return self.injector!.create(kBackgroundQueue) as! NSOperationQueue
     }()
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         self.edgesForExtendedLayout = .None
@@ -89,7 +89,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         loadingBar.progressTintColor = UIColor.darkGreenColor()
     }
 
-    override func viewDidAppear(animated: Bool) {
+    public override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         if (lookForFeeds) {
             feeds = dataManager.feeds().reduce([], combine: {
@@ -143,7 +143,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         }
     }
 
-    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject,
+    public override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject,
         change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
         if (keyPath == "estimatedProgress" && object as? NSObject == webContent) {
             loadingBar.progress = Float(webContent.estimatedProgress)
@@ -152,11 +152,11 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
 
     // MARK: - UITextFieldDelegate
 
-    func textFieldDidBeginEditing(textField: UITextField) {
+    public func textFieldDidBeginEditing(textField: UITextField) {
         self.navigationItem.setRightBarButtonItem(cancelTextEntry, animated: true)
     }
 
-    func textFieldDidEndEditing(textField: UITextField) {
+    public func textFieldDidEndEditing(textField: UITextField) {
         var button: UIBarButtonItem? = nil
         if (webContent.estimatedProgress >= 1.0) {
             button = reload
@@ -164,7 +164,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         self.navigationItem.setRightBarButtonItem(button, animated: true)
     }
 
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    public func textFieldShouldReturn(textField: UITextField) -> Bool {
         let whitespace = NSCharacterSet.whitespaceAndNewlineCharacterSet()
         textField.text = textField.text.stringByTrimmingCharactersInSet(whitespace)
         if !textField.text.lowercaseString.hasPrefix("http") {
@@ -181,7 +181,7 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
 
     // MARK: - WKNavigationDelegate
 
-    func webView(webView: WKWebView, didFinishNavigation _: WKNavigation!) {
+    public func webView(webView: WKWebView, didFinishNavigation _: WKNavigation!) {
 //        self.navigationItem.titleView = self.navField
         loadingBar.hidden = true
         navField.placeholder = webView.title
@@ -208,17 +208,17 @@ class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFiel
         }
     }
 
-    func webView(webView: WKWebView, didFailNavigation _: WKNavigation!, withError error: NSError) {
+    public func webView(webView: WKWebView, didFailNavigation _: WKNavigation!, withError error: NSError) {
 //        self.navigationItem.titleView = self.navField
         loadingBar.hidden = true
     }
 
-    func webView(webView: WKWebView, didFailProvisionalNavigation _: WKNavigation!, withError error: NSError) {
+    public func webView(webView: WKWebView, didFailProvisionalNavigation _: WKNavigation!, withError error: NSError) {
 //        self.navigationItem.titleView = self.navField
         loadingBar.hidden = true
     }
 
-    func webView(webView: WKWebView, didStartProvisionalNavigation _: WKNavigation!) {
+    public func webView(webView: WKWebView, didStartProvisionalNavigation _: WKNavigation!) {
         loadingBar.progress = 0
         loadingBar.hidden = false
         navField.text = ""

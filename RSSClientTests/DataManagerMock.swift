@@ -1,4 +1,5 @@
 import Foundation
+import rNews
 
 class DataManagerMock : DataManager {
     var importOPMLURL : NSURL? = nil

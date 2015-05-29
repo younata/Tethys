@@ -60,7 +60,7 @@ class DataManagerSpec: QuickSpec {
 
         describe("allTags") {
             it("should return a list of all tags used") {
-                expect(subject.allTags()).to(equal(["a", "b", "c", "d"]))
+                expect(subject.allTags()).to(equal(["a", "b", "c", "d", "dad"]))
             }
         }
 

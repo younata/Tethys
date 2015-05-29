@@ -7,12 +7,13 @@ import rNews
 
 class DataUtilitySpec: QuickSpec {
     override func spec() {
-        let ctx = managedObjectContext()
-        var feed : CoreDataFeed! = nil
+        var ctx: NSManagedObjectContext! = nil
+        var feed: CoreDataFeed! = nil
 
-        var info : Muon.Feed! = nil
+        var info: Muon.Feed! = nil
 
         beforeEach {
+            ctx = managedObjectContext()
             feed = createFeed(ctx)
         }
 

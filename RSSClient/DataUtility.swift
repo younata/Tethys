@@ -102,7 +102,7 @@ public class DataUtility {
             let feeds = DataUtility.entities("Feed",
                 matchingPredicate: predicate,
                 managedObjectContext: managedObjectContext,
-                sortDescriptors: []) as? [CoreDataFeed] ?? []
+                sortDescriptors: sortDescriptors) as? [CoreDataFeed] ?? []
             return map(feeds) {
                 Feed(feed: $0)
             }
@@ -114,7 +114,7 @@ public class DataUtility {
             let articles = DataUtility.entities("Article",
                 matchingPredicate: predicate,
                 managedObjectContext: managedObjectContext,
-                sortDescriptors: []) as? [CoreDataArticle] ?? []
+                sortDescriptors: sortDescriptors) as? [CoreDataArticle] ?? []
             return map(articles) {
                 Article(article: $0, feed: nil)
             }

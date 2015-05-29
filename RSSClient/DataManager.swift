@@ -75,7 +75,7 @@ public class DataManager: NSObject {
             managedObjectContext: self.backgroundObjectContext)
 
         let setOfTags = feedsWithTags.reduce(Set<String>()) {set, feed in
-            return set.intersect(Set(feed.tags))
+            return set.union(Set(feed.tags))
         }
 
         return Array(setOfTags).sorted { return $0.lowercaseString < $1.lowercaseString }

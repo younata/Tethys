@@ -6,7 +6,7 @@ import Foundation
     public typealias Image=NSImage
 #endif
 
-public class Feed: Equatable, Hashable {
+public class Feed: Equatable, Hashable, Printable {
     public var title: String {
         willSet {
             if newValue != title {
@@ -76,6 +76,10 @@ public class Feed: Equatable, Hashable {
         }
         let tagsHashValues = tags.map({$0.hashValue}).reduce(0, combine: ^)
         return nonNilHashValues ^ possiblyNilHashValues ^ tagsHashValues
+    }
+
+    public var description: String {
+        return "Feed: title: \(title), url: \(url), summary: \(summary), query: \(query), tags: \(tags)\n"
     }
 
     public private(set) var updated = false

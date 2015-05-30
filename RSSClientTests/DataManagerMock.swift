@@ -28,8 +28,11 @@ class DataManagerMock : DataManager {
         return feedsList
     }
 
+    var didUpdateFeeds = false
+    var updateFeedsCompletion: (NSError?) -> (Void) = {_ in }
     override func updateFeeds(completion: (NSError?) -> (Void)) {
-        completion(nil)
+        didUpdateFeeds = true
+        updateFeedsCompletion = completion
     }
 
     override func updateFeedsInBackground(completion: (NSError?) -> (Void)) {

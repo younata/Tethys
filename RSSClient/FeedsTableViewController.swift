@@ -6,11 +6,7 @@ public class FeedsTableViewController: UIViewController, UITableViewDelegate,
 UITableViewDataSource, MAKDropDownMenuDelegate, UITextFieldDelegate,
 UISearchBarDelegate, BreakOutToRefreshDelegate {
 
-    var feeds: [Feed] = []
-
-    let tableViewController = UITableViewController(style: .Plain)
-
-    lazy var tableView: UITableView = {
+    public lazy var tableView: UITableView = {
         let tableView = self.tableViewController.tableView
         tableView.tableHeaderView = self.searchBar
         tableView.tableFooterView = UIView()
@@ -50,9 +46,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         return searchBar
     }()
 
-    var menuTopOffset: NSLayoutConstraint!
-
-    lazy var refreshView: BreakOutToRefreshView = {
+    public lazy var refreshView: BreakOutToRefreshView = {
         let refreshView = BreakOutToRefreshView(scrollView: self.tableView)
         refreshView.delegate = self
         refreshView.scenebackgroundColor = UIColor.whiteColor()
@@ -62,7 +56,13 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         return refreshView
     }()
 
-    lazy var dataManager: DataManager = { self.injector!.create(DataManager.self) as! DataManager }()
+    private var feeds: [Feed] = []
+
+    private let tableViewController = UITableViewController(style: .Plain)
+
+    private var menuTopOffset: NSLayoutConstraint!
+
+    private lazy var dataManager: DataManager = { self.injector!.create(DataManager.self) as! DataManager }()
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,11 +76,13 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         dropDownMenu.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
         menuTopOffset = dropDownMenu.autoPinEdgeToSuperviewEdge(.Top)
 
-        let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "addFeed")
+        let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "didTapAddFeed")
         self.navigationItem.rightBarButtonItems = [addButton, tableViewController.editButtonItem()]
         self.navigationItem.title = NSLocalizedString("Feeds", comment: "")
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
+
+        self.reload(nil)
     }
 
     deinit {
@@ -103,47 +105,48 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
             }
     }
 
-    public override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        self.reload()
-    }
-
     public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        if let rc = self.tableViewController.refreshControl where rc.refreshing {
-            rc.endRefreshing()
-        }
+        self.refreshView.endRefreshing()
     }
 
-    func showSettings() {
-        let settings = UINavigationController(rootViewController: UIViewController())
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-            let popover = UIPopoverController(contentViewController: settings)
-            popover.popoverContentSize = CGSizeMake(600, 800)
-            popover.presentPopoverFromBarButtonItem(navigationItem.leftBarButtonItem!,
-                permittedArrowDirections: .Any, animated: true)
-        } else {
-            presentViewController(settings, animated: true, completion: nil)
-        }
+    // MARK: - BreakOutToRefreshDelegate
+
+    public func refreshViewDidRefresh(refreshView: BreakOutToRefreshView) {
+        dataManager.updateFeeds({error in
+            if let err = error {
+                let alertTitle = NSLocalizedString("Unable to update feeds", comment: "")
+                let alertMessage = error?.localizedFailureReason
+                let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: {_ in
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                }))
+                self.presentViewController(alert, animated: true, completion: nil)
+            }
+            self.reload(nil)
+        })
     }
 
-    func addFeed() {
-        if (self.navigationController!.visibleViewController != self) {
-            return
-        }
+    // MARK: - UIScrollViewDelegate
 
-        dropDownMenu.titles = [NSLocalizedString("Add from Web", comment: ""),
-                               NSLocalizedString("Add from Local", comment: ""),
-                               NSLocalizedString("Create Query Feed", comment: "")]
-        let navBarHeight = CGRectGetHeight(self.navigationController!.navigationBar.frame)
-        let statusBarHeight = CGRectGetHeight(UIApplication.sharedApplication().statusBarFrame)
-        menuTopOffset.constant = navBarHeight + statusBarHeight
-        if dropDownMenu.isOpen {
-            dropDownMenu.closeAnimated(true)
-        } else {
-            dropDownMenu.openAnimated(true)
-        }
+    public func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        self.searchBar.resignFirstResponder()
+        refreshView.scrollViewWillBeginDragging(scrollView)
     }
+
+    public func scrollViewWillEndDragging(scrollView: UIScrollView,
+        withVelocity velocity: CGPoint,
+        targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+            refreshView.scrollViewWillEndDragging(scrollView,
+                withVelocity: velocity,
+                targetContentOffset: targetContentOffset)
+    }
+
+    public func scrollViewDidScroll(scrollView: UIScrollView) {
+        refreshView.scrollViewDidScroll(scrollView)
+    }
+
+    // MARK: MAKDropDownMenuDelegate
 
     public func dropDownMenu(menu: MAKDropDownMenu!, itemDidSelect itemIndex: UInt) {
         var klass: AnyClass! = nil
@@ -175,73 +178,10 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         menu.closeAnimated(true)
     }
 
-    func reload() {
-        self.reload(nil)
-    }
+    // MARK: UISearchBarDelegate
 
-    func reload(tag: String?) {
-        let oldFeeds = feeds
-        feeds = dataManager.feedsMatchingTag(tag).sorted {(f1: Feed, f2: Feed) in
-            let f1Unread = f1.unreadArticles().count
-            let f2Unread = f2.unreadArticles().count
-            if f1Unread != f2Unread {
-                return f1Unread > f2Unread
-            }
-            return f1.title.lowercaseString < f2.title.lowercaseString
-        }
-
-        if refreshView.isRefreshing {
-            refreshView.endRefreshing()
-        }
-
-        self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
-    }
-
-    func refresh() {
-        dataManager.updateFeeds({(_) in
-            self.reload()
-        })
-    }
-
-    func feedAtIndexPath(indexPath: NSIndexPath) -> Feed! {
-        return feeds[indexPath.row]
-    }
-
-    func showFeeds(feeds: [Feed]) -> ArticleListController {
-        return showFeeds(feeds, animated: true)
-    }
-
-    func showFeeds(feeds: [Feed], animated: Bool) -> ArticleListController {
-        let al = ArticleListController(style: .Plain)
-        al.dataManager = dataManager
-        al.feeds = feeds
-        self.navigationController?.pushViewController(al, animated: animated)
-        return al
-    }
-
-    // MARK: - BreakOutToRefreshDelegate
-
-    public func refreshViewDidRefresh(refreshView: BreakOutToRefreshView) {
-        refresh()
-    }
-
-    // MARK: - UIScrollViewDelegate
-
-    public func scrollViewWillBeginDragging(scrollView: UIScrollView) {
-        self.searchBar.resignFirstResponder()
-        refreshView.scrollViewWillBeginDragging(scrollView)
-    }
-
-    public func scrollViewWillEndDragging(scrollView: UIScrollView,
-        withVelocity velocity: CGPoint,
-        targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-            refreshView.scrollViewWillEndDragging(scrollView,
-                withVelocity: velocity,
-                targetContentOffset: targetContentOffset)
-    }
-
-    public func scrollViewDidScroll(scrollView: UIScrollView) {
-        refreshView.scrollViewDidScroll(scrollView)
+    public func searchBar(searchBar: UISearchBar, textDidChange text: String) {
+        self.reload(text)
     }
 
     // MARK: - Table view data source
@@ -271,7 +211,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
     public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
 
-        showFeeds([feedAtIndexPath(indexPath)])
+        showFeeds([feedAtIndexPath(indexPath)], animated: true)
     }
 
     public func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -286,18 +226,18 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         let delete = UITableViewRowAction(style: .Default, title: deleteTitle, handler: {(_, indexPath: NSIndexPath!) in
             let feed = self.feedAtIndexPath(indexPath)
 //            self.dataManager.deleteFeed(feed)
-            self.reload()
+            self.reload(nil)
         })
 
         let readTitle = NSLocalizedString("Mark\nRead", comment: "")
-        let markRead = UITableViewRowAction(style: .Normal, title: readTitle, handler: {(_, indexPath: NSIndexPath!) in
+        let markRead = UITableViewRowAction(style: .Normal, title: readTitle, handler: {_, indexPath in
             let feed = self.feedAtIndexPath(indexPath)
 //            self.dataManager.readArticles(feed.allArticles(self.dataManager))
-            self.reload()
+            self.reload(nil)
         })
 
         let editTitle = NSLocalizedString("Edit", comment: "")
-        let edit = UITableViewRowAction(style: .Normal, title: editTitle, handler: {(_, indexPath: NSIndexPath!) in
+        let edit = UITableViewRowAction(style: .Normal, title: editTitle, handler: {_, indexPath in
             let feed = self.feedAtIndexPath(indexPath)
             var klass: AnyClass? = nil
             var viewController: UIViewController! = nil
@@ -317,9 +257,53 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         return [delete, markRead, edit]
     }
 
-    // MARK: UISearchBarDelegate
+    // MARK - Private
 
-    public func searchBar(searchBar: UISearchBar, textDidChange text: String) {
-        self.reload(text)
+    private func reload(tag: String?) {
+        let oldFeeds = feeds
+        feeds = dataManager.feedsMatchingTag(tag).sorted {(f1: Feed, f2: Feed) in
+            let f1Unread = f1.unreadArticles().count
+            let f2Unread = f2.unreadArticles().count
+            if f1Unread != f2Unread {
+                return f1Unread > f2Unread
+            }
+            return f1.title.lowercaseString < f2.title.lowercaseString
+        }
+
+        if refreshView.isRefreshing {
+            refreshView.endRefreshing()
+        }
+
+        self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+    }
+
+    private func didTapAddFeed() {
+        if (self.navigationController!.visibleViewController != self) {
+            return
+        }
+
+        dropDownMenu.titles = [NSLocalizedString("Add from Web", comment: ""),
+            NSLocalizedString("Add from Local", comment: ""),
+            NSLocalizedString("Create Query Feed", comment: "")]
+        let navBarHeight = CGRectGetHeight(self.navigationController!.navigationBar.frame)
+        let statusBarHeight = CGRectGetHeight(UIApplication.sharedApplication().statusBarFrame)
+        menuTopOffset.constant = navBarHeight + statusBarHeight
+        if dropDownMenu.isOpen {
+            dropDownMenu.closeAnimated(true)
+        } else {
+            dropDownMenu.openAnimated(true)
+        }
+    }
+
+    private func feedAtIndexPath(indexPath: NSIndexPath) -> Feed! {
+        return feeds[indexPath.row]
+    }
+
+    private func showFeeds(feeds: [Feed], animated: Bool) -> ArticleListController {
+        let al = ArticleListController(style: .Plain)
+        al.dataManager = dataManager
+        al.feeds = feeds
+        self.navigationController?.pushViewController(al, animated: animated)
+        return al
     }
 }

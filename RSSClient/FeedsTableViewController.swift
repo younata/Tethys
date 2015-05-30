@@ -10,12 +10,45 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
 
     let tableViewController = UITableViewController(style: .Plain)
 
-    var tableView: UITableView {
-        return self.tableViewController.tableView
-    }
+    lazy var tableView: UITableView = {
+        let tableView = self.tableViewController.tableView
+        tableView.tableHeaderView = self.searchBar
+        tableView.tableFooterView = UIView()
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 80
+        tableView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        tableView.delegate = self
+        tableView.dataSource = self;
 
-    let dropDownMenu = MAKDropDownMenu(forAutoLayout: ())
-    let searchBar = UISearchBar(frame: CGRectMake(0, 0, 320, 32))
+        tableView.registerClass(FeedTableCell.self, forCellReuseIdentifier: "read")
+        tableView.registerClass(FeedTableCell.self, forCellReuseIdentifier: "unread")
+        // Prevents a green triangle which'll (dis)appear depending on
+        // whether new feed loaded into it has unread articles or not.
+
+        return tableView
+    }()
+
+    lazy var dropDownMenu: MAKDropDownMenu = {
+        let dropDownMenu = MAKDropDownMenu(forAutoLayout: ())
+
+        dropDownMenu.delegate = self
+        dropDownMenu.separatorHeight = 1.0 / UIScreen.mainScreen().scale
+        dropDownMenu.buttonsInsets = UIEdgeInsetsMake(dropDownMenu.separatorHeight, 0, 0, 0)
+        dropDownMenu.tintColor = UIColor.darkGreenColor()
+        dropDownMenu.backgroundColor = UIColor(white: 0.75, alpha: 0.5)
+        dropDownMenu.hidden = true
+
+        return dropDownMenu
+    }()
+
+    lazy var searchBar: UISearchBar = {
+        let searchBar = UISearchBar(frame: CGRectMake(0, 0, 320, 32))
+        searchBar.autocorrectionType = .No
+        searchBar.autocapitalizationType = .None
+        searchBar.delegate = self
+        searchBar.placeholder = NSLocalizedString("Filter by Tag", comment: "")
+        return searchBar
+    }()
 
     var menuTopOffset: NSLayoutConstraint!
 
@@ -36,44 +69,16 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
 
         self.addChildViewController(tableViewController)
         self.view.addSubview(tableView)
-        tableView.setTranslatesAutoresizingMaskIntoConstraints(false)
         tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
-
-        tableView.tableHeaderView = searchBar
-
-        searchBar.autocorrectionType = .No
-        searchBar.autocapitalizationType = .None
-        searchBar.delegate = self
-        searchBar.placeholder = NSLocalizedString("Filter by Tag", comment: "")
+        tableView.addSubview(self.refreshView)
 
         self.view.addSubview(dropDownMenu)
-        dropDownMenu.delegate = self
-        dropDownMenu.separatorHeight = 1.0 / UIScreen.mainScreen().scale
-        dropDownMenu.buttonsInsets = UIEdgeInsetsMake(dropDownMenu.separatorHeight, 0, 0, 0)
         dropDownMenu.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
-        dropDownMenu.tintColor = UIColor.darkGreenColor()
-        dropDownMenu.backgroundColor = UIColor(white: 0.75, alpha: 0.5)
         menuTopOffset = dropDownMenu.autoPinEdgeToSuperviewEdge(.Top)
-        dropDownMenu.hidden = true
-
-        self.tableView.registerClass(FeedTableCell.self, forCellReuseIdentifier: "read")
-        self.tableView.registerClass(FeedTableCell.self, forCellReuseIdentifier: "unread")
-        // Prevents a green triangle which'll (dis)appear depending on
-        // whether new feed loaded into it has unread articles or not.
 
         let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "addFeed")
         self.navigationItem.rightBarButtonItems = [addButton, tableViewController.editButtonItem()]
         self.navigationItem.title = NSLocalizedString("Feeds", comment: "")
-
-        self.tableView.rowHeight = UITableViewAutomaticDimension
-        self.tableView.estimatedRowHeight = 80
-
-        self.tableView.addSubview(self.refreshView)
-
-        self.tableView.delegate = self
-        self.tableView.dataSource = self;
-
-        self.tableView.tableFooterView = UIView()
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
     }
@@ -152,14 +157,16 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
             menu.closeAnimated(true)
             return
         }
-        let nc = UINavigationController(rootViewController: self.injector!.create(klass) as! UIViewController)
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-            let popover = UIPopoverController(contentViewController: nc)
-            popover.popoverContentSize = CGSizeMake(600, 800)
-            popover.presentPopoverFromBarButtonItem(self.navigationItem.rightBarButtonItem!,
-                permittedArrowDirections: .Any, animated: true)
-        } else {
-            self.presentViewController(nc, animated: true, completion: nil)
+        if let viewController = self.injector?.create(klass) as? UIViewController {
+            let nc = UINavigationController(rootViewController: viewController)
+            if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+                let popover = UIPopoverController(contentViewController: nc)
+                popover.popoverContentSize = CGSizeMake(600, 800)
+                popover.presentPopoverFromBarButtonItem(self.navigationItem.rightBarButtonItem!,
+                    permittedArrowDirections: .Any, animated: true)
+            } else {
+                self.presentViewController(nc, animated: true, completion: nil)
+            }
         }
         menu.closeAnimated(true)
     }
@@ -253,10 +260,12 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         // Prevents a green triangle which'll (dis)appear depending on
         // whether new feed loaded into it has unread articles or not.
 
-        let cell = tableView.dequeueReusableCellWithIdentifier(strToUse, forIndexPath: indexPath) as! FeedTableCell
-        cell.dataManager = dataManager
-        cell.feed = feed
-        return cell
+        if let cell = tableView.dequeueReusableCellWithIdentifier(strToUse, forIndexPath: indexPath) as? FeedTableCell {
+            cell.dataManager = dataManager
+            cell.feed = feed
+            return cell
+        }
+        return UITableViewCell()
     }
 
     public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {

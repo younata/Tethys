@@ -148,6 +148,10 @@ public class DataManager: NSObject {
             inManagedObjectContext: backgroundObjectContext) as! CoreDataFeed
     }
 
+    public func saveFeed(feed: Feed) {
+        // TODO: this.
+    }
+
     public func deleteFeed(feed: Feed) {
         // TODO: yeah.
     }

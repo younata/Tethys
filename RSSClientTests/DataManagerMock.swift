@@ -23,6 +23,11 @@ class DataManagerMock : DataManager {
         return Feed(title: title, url: nil, summary: summary ?? "", query: code, tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
     }
 
+    var lastSavedFeed: Feed? = nil
+    override func saveFeed(feed: Feed) {
+        lastSavedFeed = feed
+    }
+
     var lastDeletedFeed: Feed? = nil
     override func deleteFeed(feed: Feed) {
         lastDeletedFeed = feed

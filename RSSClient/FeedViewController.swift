@@ -34,6 +34,10 @@ public class FeedViewController: UITableViewController {
         return self.injector!.create(DataManager.self) as! DataManager
     }()
 
+    lazy var manager: NSURLSession = {
+        return self.injector!.create(NSURLSession.self) as! NSURLSession
+    }()
+
     let intervalFormatter = NSDateIntervalFormatter()
 
     public override func viewDidLoad() {

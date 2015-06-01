@@ -7,7 +7,6 @@
 #import "UIGestureRecognizer+Spec.h"
 #import "UIImagePickerController+Spec.h"
 #import "UIPopoverController+Spec.h"
-#import "UITabBarController+Spec.h"
 #import "UITableViewRowAction+Spec.h"
 #import "UIView+StubbedAnimation.h"
 #import "UIView+StubbedGestureRecognizers.h"

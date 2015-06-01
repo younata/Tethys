@@ -24,7 +24,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         return tableView
     }()
 
-    lazy var dropDownMenu: MAKDropDownMenu = {
+    public lazy var dropDownMenu: MAKDropDownMenu = {
         let dropDownMenu = MAKDropDownMenu(forAutoLayout: ())
 
         dropDownMenu.delegate = self
@@ -37,7 +37,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         return dropDownMenu
     }()
 
-    lazy var searchBar: UISearchBar = {
+    public lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar(frame: CGRectMake(0, 0, 320, 32))
         searchBar.autocorrectionType = .No
         searchBar.autocapitalizationType = .None
@@ -119,7 +119,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
                 let alertMessage = error?.localizedFailureReason
                 let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: {_ in
-                    self.dismissViewControllerAnimated(true, completion: nil)
+                    alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
                 }))
                 self.presentViewController(alert, animated: true, completion: nil)
             }
@@ -225,14 +225,14 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         let deleteTitle = NSLocalizedString("Delete", comment: "")
         let delete = UITableViewRowAction(style: .Default, title: deleteTitle, handler: {(_, indexPath: NSIndexPath!) in
             let feed = self.feedAtIndexPath(indexPath)
-//            self.dataManager.deleteFeed(feed)
+            self.dataManager.deleteFeed(feed)
             self.reload(nil)
         })
 
         let readTitle = NSLocalizedString("Mark\nRead", comment: "")
         let markRead = UITableViewRowAction(style: .Normal, title: readTitle, handler: {_, indexPath in
             let feed = self.feedAtIndexPath(indexPath)
-//            self.dataManager.readArticles(feed.allArticles(self.dataManager))
+            self.dataManager.markFeedAsRead(feed)
             self.reload(nil)
         })
 
@@ -257,7 +257,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         return [delete, markRead, edit]
     }
 
-    // MARK - Private
+    // MARK - Private/Internal
 
     private func reload(tag: String?) {
         let oldFeeds = feeds
@@ -277,7 +277,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
     }
 
-    private func didTapAddFeed() {
+    internal func didTapAddFeed() {
         if (self.navigationController!.visibleViewController != self) {
             return
         }

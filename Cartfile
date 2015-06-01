@@ -1,5 +1,5 @@
 github "alamofire/alamofire"
-github "younata/Ra"
+github "younata/Ra" "master"
 github "younata/Muon"
 github "smileyborg/PureLayout"
 github "younata/BreakOutToRefresh" "master"

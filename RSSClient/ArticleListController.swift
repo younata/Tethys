@@ -1,9 +1,9 @@
 import UIKit
 
-class ArticleListController: UITableViewController {
+public class ArticleListController: UITableViewController {
 
     var articles: [Article] = []
-    var feeds: [Feed]? = nil
+    public var feeds: [Feed]? = nil
     let queue = dispatch_queue_create("articleController", nil)
 
     var dataManager: DataManager? = nil
@@ -14,7 +14,7 @@ class ArticleListController: UITableViewController {
         self.injector!.create(kMainQueue) as! NSOperationQueue
     }()
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         self.navigationItem.rightBarButtonItem = self.editButtonItem()
@@ -45,7 +45,7 @@ class ArticleListController: UITableViewController {
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
     }
 
-    override func viewDidAppear(animated: Bool) {
+    public override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         if !previewMode {
             self.refreshControl?.beginRefreshing()
@@ -113,15 +113,15 @@ class ArticleListController: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    public override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return articles.count
     }
 
-    override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath _: NSIndexPath) -> CGFloat {
+    public override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath _: NSIndexPath) -> CGFloat {
 //        let article = articleForIndexPath(indexPath)
 
 //        if article.content == nil {
@@ -130,7 +130,7 @@ class ArticleListController: UITableViewController {
         return 40
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let article = articleForIndexPath(indexPath)
         let strToUse = (article.read ? "read" : "unread")
         // Prevents a green triangle which'll (dis)appear depending
@@ -142,7 +142,7 @@ class ArticleListController: UITableViewController {
         return cell
     }
 
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    public override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
 
         if !previewMode {
@@ -150,15 +150,15 @@ class ArticleListController: UITableViewController {
         }
     }
 
-    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    public override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return true
     }
 
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle,
+    public override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle,
         forRowAtIndexPath indexPath: NSIndexPath) {
     }
 
-    override func tableView(tableView: UITableView,
+    public override func tableView(tableView: UITableView,
         editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
             if previewMode {
                 return nil

@@ -23,8 +23,6 @@ public class InjectorModule : Ra.InjectorModule {
             injector.bind(kBackgroundManagedObjectContext, to: dataManager.backgroundObjectContext)
         }
 
-        injector.bind(NSFileManager.self, to: NSFileManager.defaultManager())
-
         // Views
 
         injector.bind(UnreadCounter.self) {

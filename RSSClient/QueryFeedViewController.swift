@@ -1,6 +1,6 @@
 import UIKit
 
-class QueryFeedViewController: UITableViewController {
+public class QueryFeedViewController: UITableViewController {
 
     var feed: Feed? = nil {
         didSet {
@@ -16,7 +16,7 @@ class QueryFeedViewController: UITableViewController {
         return self.injector!.create(DataManager.self) as! DataManager
     }()
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         let dismissTitle = NSLocalizedString("Done", comment: "")
@@ -36,7 +36,7 @@ class QueryFeedViewController: UITableViewController {
         tableView.tableFooterView = UIView()
     }
 
-    override func viewWillAppear(animated: Bool) {
+    public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         tableView.reloadData()
     }
@@ -73,18 +73,18 @@ class QueryFeedViewController: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    public override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return feed == nil ? 3 : 4
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section != 3 {
             return 1
         }
         return (feed?.tags.count ?? 0) + 1
     }
 
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    public override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
         case 0:
             return NSLocalizedString("Title", comment: "")
@@ -99,7 +99,7 @@ class QueryFeedViewController: UITableViewController {
         }
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if indexPath.section == 3 {
             let cell = tableView.dequeueReusableCellWithIdentifier("tags", forIndexPath: indexPath) as! UITableViewCell
             if let tags = feed?.tags {
@@ -159,7 +159,7 @@ class QueryFeedViewController: UITableViewController {
         }
     }
 
-    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    public override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         if indexPath.section == 3 {
             return indexPath.row < (feed?.tags.count ?? 1)
         } else if indexPath.section == 2 {
@@ -168,11 +168,11 @@ class QueryFeedViewController: UITableViewController {
         return false
     }
 
-    override func tableView(tableView: UITableView,
+    public override func tableView(tableView: UITableView,
         commitEditingStyle _: UITableViewCellEditingStyle,
         forRowAtIndexPath _: NSIndexPath) {}
 
-    override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+    public override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
         if feed == nil && indexPath.section < 2 && feed?.tags.count == indexPath.row {
             return nil
         }
@@ -210,7 +210,7 @@ class QueryFeedViewController: UITableViewController {
         return nil
     }
 
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    public override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
 
         if indexPath.section == 3,

@@ -148,6 +148,14 @@ public class DataManager: NSObject {
             inManagedObjectContext: backgroundObjectContext) as! CoreDataFeed
     }
 
+    public func deleteFeed(feed: Feed) {
+        // TODO: yeah.
+    }
+
+    public func markFeedAsRead(feed: Feed) {
+        // TODO: this
+    }
+
     func deleteFeed(feed: CoreDataFeed) {
         for article in feed.articles {
             if let article = article as? CoreDataArticle {

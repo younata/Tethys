@@ -22,9 +22,11 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
 
     var tableViewTopOffset: NSLayoutConstraint!
 
-    lazy var dataManager: DataManager = { self.injector!.create(DataManager.self) as! DataManager }()
+    lazy var dataManager: DataManager = { self.injector?.create(DataManager.self) as! DataManager }()
 
-    lazy var backgroundQueue: NSOperationQueue = { self.injector!.create(kBackgroundQueue) as! NSOperationQueue }()
+    lazy var backgroundQueue: NSOperationQueue = {
+        return self.injector?.create(kBackgroundQueue) as? NSOperationQueue ?? NSOperationQueue()
+    }()
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -71,11 +73,11 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
     }
 
     public func reloadItems() {
-        if let fileManager = self.injector?.create(NSFileManager.self) as? NSFileManager,
-            let contents = fileManager.contentsOfDirectoryAtPath(documentsDirectory(), error: nil) as? [String] {
-                for path in contents {
-                    verifyIfFeedOrOPML(path)
-                }
+        let fileManager = NSFileManager.defaultManager()
+        if let contents = fileManager.contentsOfDirectoryAtPath(documentsDirectory(), error: nil) as? [String] {
+            for path in contents {
+                verifyIfFeedOrOPML(path)
+            }
         }
 
         self.tableViewController.refreshControl?.endRefreshing()

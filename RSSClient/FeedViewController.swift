@@ -22,7 +22,7 @@ private enum FeedSections: Int {
     }
 }
 
-class FeedViewController: UITableViewController {
+public class FeedViewController: UITableViewController {
     var feed: Feed? = nil {
         didSet {
             self.navigationItem.title = self.feed?.title ?? ""
@@ -36,7 +36,7 @@ class FeedViewController: UITableViewController {
 
     let intervalFormatter = NSDateIntervalFormatter()
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         let dismissTitle = NSLocalizedString("Dismiss", comment: "")
@@ -57,7 +57,7 @@ class FeedViewController: UITableViewController {
         intervalFormatter.timeStyle = .ShortStyle
     }
 
-    override func viewWillAppear(animated: Bool) {
+    public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         tableView.reloadData()
     }
@@ -85,12 +85,12 @@ class FeedViewController: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    public override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         let numSection = 4
         return (feed == nil ? 0 : numSection)
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection sectionNum: Int) -> Int {
+    public override func tableView(tableView: UITableView, numberOfRowsInSection sectionNum: Int) -> Int {
         if feed == nil {
             return 0
         }
@@ -100,14 +100,14 @@ class FeedViewController: UITableViewController {
         return 1
     }
 
-    override func tableView(tableView: UITableView, titleForHeaderInSection sectionNum: Int) -> String? {
+    public override func tableView(tableView: UITableView, titleForHeaderInSection sectionNum: Int) -> String? {
         if let section = FeedSections(rawValue: sectionNum) {
             return section.titleForSection
         }
         return nil
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
 
         cell.textLabel?.textColor = UIColor.blackColor()
@@ -164,14 +164,14 @@ class FeedViewController: UITableViewController {
         return cell
     }
 
-    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    public override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         let isTagsSection = FeedSections(rawValue: indexPath.section) == .Tags
         let isEditableTag = indexPath.row != (tableView.numberOfRowsInSection(FeedSections.Tags.rawValue) - 1)
 
         return isTagsSection && isEditableTag
     }
 
-    override func tableView(tableView: UITableView,
+    public override func tableView(tableView: UITableView,
         editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
             if feed == nil || FeedSections(rawValue: indexPath.section) != .Tags {
                 return nil
@@ -198,11 +198,11 @@ class FeedViewController: UITableViewController {
             return [delete, edit]
     }
 
-    override func tableView(tableView: UITableView,
+    public override func tableView(tableView: UITableView,
         commitEditingStyle _: UITableViewCellEditingStyle,
         forRowAtIndexPath _: NSIndexPath) {}
 
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    public override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
 
         if FeedSections(rawValue: indexPath.section) == .Tags,

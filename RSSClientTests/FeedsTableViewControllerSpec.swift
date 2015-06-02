@@ -247,7 +247,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     }
                 }
 
-                fdescribe("exposing edit actions") {
+                describe("exposing edit actions") {
                     var actions: [UITableViewRowAction] = []
                     var action: UITableViewRowAction! = nil
                     let indexPath = NSIndexPath(forRow: 0, inSection: 0)

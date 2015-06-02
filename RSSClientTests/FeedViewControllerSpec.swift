@@ -2,6 +2,7 @@ import Quick
 import Nimble
 import rNews
 import Ra
+import Robot
 
 class FeedViewControllerSpec: QuickSpec {
     override func spec() {
@@ -35,16 +36,23 @@ class FeedViewControllerSpec: QuickSpec {
             window = UIWindow()
             presentingController = UIViewController()
             window.rootViewController = presentingController
+            RBTimeLapse.advanceMainRunLoop()
             presentingController.presentViewController(navigationController, animated: false, completion: nil)
 
+            feed = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "", query: nil,
+                tags: ["a", "b", "c"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+
+            subject.feed = feed
+
             subject.view.layoutIfNeeded()
+            RBTimeLapse.advanceMainRunLoop()
         }
 
-        fit("should have a save button") {
-            expect(subject.navigationItem.leftBarButtonItem?.title).to(equal("Save"))
+        it("should have a save button") {
+            expect(subject.navigationItem.rightBarButtonItem?.title).to(equal("Save"))
         }
 
-        fdescribe("tapping 'save'") {
+        describe("tapping 'save'") {
             beforeEach {
                 let saveButton = subject.navigationItem.rightBarButtonItem
                 saveButton?.tap()
@@ -59,11 +67,11 @@ class FeedViewControllerSpec: QuickSpec {
             }
         }
 
-        fit("should have a dismiss button") {
+        it("should have a dismiss button") {
             expect(subject.navigationItem.leftBarButtonItem?.title).to(equal("Dismiss"))
         }
 
-        fdescribe("tapping 'dismiss'") {
+        describe("tapping 'dismiss'") {
             beforeEach {
                 let dismissButton = subject.navigationItem.leftBarButtonItem
                 dismissButton?.tap()

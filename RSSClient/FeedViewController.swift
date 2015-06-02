@@ -23,7 +23,7 @@ private enum FeedSections: Int {
 }
 
 public class FeedViewController: UITableViewController {
-    var feed: Feed? = nil {
+    public var feed: Feed? = nil {
         didSet {
             self.navigationItem.title = self.feed?.title ?? ""
             self.tableView.reloadData()
@@ -71,8 +71,9 @@ public class FeedViewController: UITableViewController {
     }
 
     func save() {
-//        feed?.managedObjectContext?.save(nil)
-//        dataManager.writeOPML()
+        if let theFeed = feed {
+            dataManager.saveFeed(theFeed)
+        }
         dismiss()
     }
 

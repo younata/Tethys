@@ -5,7 +5,7 @@ end
 namespace "test" do
   desc "Run unit tests for all iOS targets"
   task :ios do |t|
-    run "xcodebuild -project RSSClient.xcodeproj -scheme RSSClientTests -destination 'platform=iOS Simulator,name=iPhone 5s,OS=8.3' test | xcpretty -c -t"
+    run "xcodebuild -project RSSClient.xcodeproj -scheme RSSClientTests -destination 'platform=iOS Simulator,name=iPhone 6,OS=8.3' test | xcpretty -c"
   end
 
   desc "Run unit tests for all OS X targets"

@@ -88,22 +88,22 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
-
-    public override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation,
-        duration: NSTimeInterval) {
-            super.willRotateToInterfaceOrientation(toInterfaceOrientation, duration: duration)
-            let landscape = UIInterfaceOrientationIsLandscape(toInterfaceOrientation)
-            let statusBarHeight: CGFloat = (landscape ? 0 : 20)
-            if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-                let navBarHeight: CGFloat = (landscape ? 32 : 44)
-                menuTopOffset.constant = navBarHeight + statusBarHeight
-            } else {
-                menuTopOffset.constant = 44 + statusBarHeight
-            }
-            UIView.animateWithDuration(duration) {
-                self.view.layoutIfNeeded()
-            }
-    }
+//
+//    public override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation,
+//        duration: NSTimeInterval) {
+//            super.willRotateToInterfaceOrientation(toInterfaceOrientation, duration: duration)
+//            let landscape = UIInterfaceOrientationIsLandscape(toInterfaceOrientation)
+//            let statusBarHeight: CGFloat = (landscape ? 0 : 20)
+//            if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
+//                let navBarHeight: CGFloat = (landscape ? 32 : 44)
+//                menuTopOffset.constant = navBarHeight + statusBarHeight
+//            } else {
+//                menuTopOffset.constant = 44 + statusBarHeight
+//            }
+//            UIView.animateWithDuration(duration) {
+//                self.view.layoutIfNeeded()
+//            }
+//    }
 
     public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
@@ -119,7 +119,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
                 let alertMessage = error?.localizedFailureReason
                 let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: {_ in
-                    alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+                    self.dismissViewControllerAnimated(true, completion: nil)
                 }))
                 self.presentViewController(alert, animated: true, completion: nil)
             }

@@ -52,21 +52,21 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
         self.tableViewController.tableView.dataSource = self
     }
 
-    public override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation,
-        duration: NSTimeInterval) {
-            super.willRotateToInterfaceOrientation(toInterfaceOrientation, duration: duration)
-            let landscape = UIInterfaceOrientationIsLandscape(toInterfaceOrientation)
-            let statusBarHeight: CGFloat = (landscape ? 0 : 20)
-            if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-                let navBarHeight: CGFloat = (landscape ? 32 : 44)
-                tableViewTopOffset.constant = navBarHeight + statusBarHeight
-            } else {
-                tableViewTopOffset.constant = 44 + statusBarHeight
-            }
-            UIView.animateWithDuration(duration) {
-                self.view.layoutIfNeeded()
-            }
-    }
+//    public override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation,
+//        duration: NSTimeInterval) {
+//            super.willRotateToInterfaceOrientation(toInterfaceOrientation, duration: duration)
+//            let landscape = UIInterfaceOrientationIsLandscape(toInterfaceOrientation)
+//            let statusBarHeight: CGFloat = (landscape ? 0 : 20)
+//            if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
+//                let navBarHeight: CGFloat = (landscape ? 32 : 44)
+//                tableViewTopOffset.constant = navBarHeight + statusBarHeight
+//            } else {
+//                tableViewTopOffset.constant = 44 + statusBarHeight
+//            }
+//            UIView.animateWithDuration(duration) {
+//                self.view.layoutIfNeeded()
+//            }
+//    }
 
     func dismiss() {
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)

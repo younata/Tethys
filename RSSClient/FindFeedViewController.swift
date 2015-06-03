@@ -92,12 +92,12 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
     public override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         if (lookForFeeds) {
-            feeds = dataManager.feeds().reduce([], combine: {
-                if let url = $1.url?.absoluteString {
-                    return $0 + [url]
-                }
-                return $0
-            })
+//            feeds = dataManager.feeds().reduce([], combine: {
+//                if let url = $1.url?.absoluteString {
+//                    return $0 + [url]
+//                }
+//                return $0
+//            })
         }
     }
 

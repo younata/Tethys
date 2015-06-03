@@ -11,6 +11,7 @@ class FeedViewControllerSpec: QuickSpec {
         var injector: Injector! = nil
         var dataManager: DataManagerMock! = nil
         var feed: Feed! = nil
+        var otherFeed: Feed! = nil
         var urlSession: FakeURLSession! = nil
         var backgroundQueue: FakeOperationQueue! = nil
         var window: UIWindow! = nil
@@ -39,7 +40,9 @@ class FeedViewControllerSpec: QuickSpec {
             RBTimeLapse.advanceMainRunLoop()
             presentingController.presentViewController(navigationController, animated: false, completion: nil)
 
-            feed = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "", query: nil,
+            feed = Feed(title: "title", url: NSURL(string: "http://example.com/feed"), summary: "summary", query: nil,
+                tags: ["a", "b", "c"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+            otherFeed = Feed(title: "", url: NSURL(string: "http://example.com/feed"), summary: "", query: nil,
                 tags: ["a", "b", "c"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
 
             subject.feed = feed
@@ -82,7 +85,7 @@ class FeedViewControllerSpec: QuickSpec {
             }
         }
 
-        fdescribe("the tableView") {
+        describe("the tableView") {
             it("should should have 4 sections") {
                 expect(subject.tableView.numberOfSections()).to(equal(4))
             }
@@ -104,6 +107,10 @@ class FeedViewControllerSpec: QuickSpec {
                     var cell: UITableViewCell! = nil
                     context("when the feed has no title preconfigured") {
                         beforeEach {
+                            subject.feed = otherFeed
+                            subject.view.layoutIfNeeded()
+                            RBTimeLapse.advanceMainRunLoop()
+
                             cell = subject.tableView.visibleCells()[0] as! UITableViewCell
                         }
 
@@ -163,11 +170,12 @@ class FeedViewControllerSpec: QuickSpec {
                         }
 
                         context("when the request succeeds") {
+                            let urlResponse = NSHTTPURLResponse(URL: NSURL(string: "")!, statusCode: 200, HTTPVersion: nil, headerFields: nil)
                             context("if the response (text) is a valid feed") {
                                 beforeEach {
                                     let rss = NSBundle(forClass: self.classForCoder).pathForResource("feed2", ofType: "rss")!
                                     let data = NSData(contentsOfFile: rss)
-                                    urlSession.lastCompletionHandler(data, nil, nil)
+                                    urlSession.lastCompletionHandler(data, urlResponse, nil)
                                 }
                                 
                                 it("should mark the field as valid") {
@@ -178,7 +186,7 @@ class FeedViewControllerSpec: QuickSpec {
                             context("if the response is not a valid feed") {
                                 beforeEach {
                                     let data = "Hello World".dataUsingEncoding(NSUTF8StringEncoding)
-                                    urlSession.lastCompletionHandler(data, nil, nil)
+                                    urlSession.lastCompletionHandler(data, urlResponse, nil)
                                 }
 
                                 it("should mark the field as invalid") {
@@ -216,7 +224,11 @@ class FeedViewControllerSpec: QuickSpec {
 
                 context("when the feed has no summary preconfigured") {
                     beforeEach {
-                        cell = subject.tableView.visibleCells()[0] as! UITableViewCell
+                        subject.feed = otherFeed
+                        subject.view.layoutIfNeeded()
+                        RBTimeLapse.advanceMainRunLoop()
+
+                        cell = subject.tableView.visibleCells()[2] as! UITableViewCell
                     }
 
                     it("should have a label title 'No summary available'") {
@@ -230,7 +242,7 @@ class FeedViewControllerSpec: QuickSpec {
 
                 context("when the feed has a summary preconfigured") {
                     beforeEach {
-                        cell = subject.tableView.visibleCells()[0] as! UITableViewCell
+                        cell = subject.tableView.visibleCells()[2] as! UITableViewCell
                     }
 
                     it("should have a label title equal to the feed's") {
@@ -241,7 +253,7 @@ class FeedViewControllerSpec: QuickSpec {
 
             describe("the fourth section") {
                 it("should have n+1 rows") {
-                    expect(subject.tableView.numberOfRowsInSection(2)).to(equal(feed.tags.count + 1))
+                    expect(subject.tableView.numberOfRowsInSection(3)).to(equal(feed.tags.count + 1))
                 }
 
                 it("should be titled 'Tags'") {

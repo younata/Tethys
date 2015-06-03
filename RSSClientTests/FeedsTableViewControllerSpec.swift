@@ -204,8 +204,6 @@ class FeedsTableViewControllerSpec: QuickSpec {
                         expect(actions.count).to(equal(1))
                         if let action = actions.first {
                             expect(action.title).to(equal("OK"))
-                            action.handler()(action)
-                            expect(subject.presentedViewController).to(beNil())
                         }
                     }
                 }
@@ -315,7 +313,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             }
 
                             it("should bring up a feed edit screen") {
-                                expect(navigationController.topViewController).to(beAnInstanceOf(FeedViewController.self))
+                                expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedViewController.self))
                             }
                         }
                     }

@@ -34,8 +34,12 @@ public class FeedViewController: UITableViewController {
         return self.injector!.create(DataManager.self) as! DataManager
     }()
 
-    lazy var manager: NSURLSession = {
+    lazy var urlSession: NSURLSession = {
         return self.injector!.create(NSURLSession.self) as! NSURLSession
+    }()
+
+    lazy var operationQueue: NSOperationQueue = {
+        return self.injector!.create(kBackgroundQueue) as! NSOperationQueue
     }()
 
     let intervalFormatter = NSDateIntervalFormatter()
@@ -134,16 +138,27 @@ public class FeedViewController: UITableViewController {
             tc.textField.text = feed?.url?.absoluteString
             tc.showValidator = true
             tc.onTextChange = {(text) in
-                if let txt = text {
-                    request(.GET, txt).responseString {(_, _, str, error) in
-                        if let err = error {
+                if let txt = text, url = NSURL(string: txt) {
+                    self.urlSession.dataTaskWithURL(url) {data, response, error in
+                        if let response = response as? NSHTTPURLResponse {
+                            if let data = data,
+                               let nstext = NSString(data: data, encoding: NSUTF8StringEncoding) where response.statusCode == 200 {
+                                let string = String(nstext)
+                                let fp = Muon.FeedParser(string: string)
+                                fp.failure {_ in
+                                    tc.setValid(false)
+                                }
+                                fp.success {_ in
+                                    tc.setValid(true)
+                                }
+                                self.operationQueue.addOperation(fp)
+                            } else {
+                                tc.setValid(false)
+                            }
+                        } else {
                             tc.setValid(false)
-                        } else if let s = str {
-                            let fp = Muon.FeedParser(string: s)
-                            fp.failure {(_) in tc.setValid(false)}
-                            fp.success {(_) in tc.setValid(true)}
                         }
-                    }
+                    }.resume()
                 }
                 return
             }

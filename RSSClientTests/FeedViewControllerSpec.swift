@@ -6,12 +6,16 @@ import Robot
 
 class FeedViewControllerSpec: QuickSpec {
     override func spec() {
+        var feed = Feed(title: "title", url: NSURL(string: "http://example.com/feed"), summary: "summary", query: nil,
+            tags: ["a", "b", "c"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+        let otherFeed = Feed(title: "", url: NSURL(string: "http://example.com/feed"), summary: "", query: nil,
+            tags: ["a", "b", "c"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+
         var navigationController: UINavigationController!
         var subject: FeedViewController! = nil
         var injector: Injector! = nil
         var dataManager: DataManagerMock! = nil
-        var feed: Feed! = nil
-        var otherFeed: Feed! = nil
+
         var urlSession: FakeURLSession! = nil
         var backgroundQueue: FakeOperationQueue! = nil
         var window: UIWindow! = nil
@@ -41,8 +45,6 @@ class FeedViewControllerSpec: QuickSpec {
             presentingController.presentViewController(navigationController, animated: false, completion: nil)
 
             feed = Feed(title: "title", url: NSURL(string: "http://example.com/feed"), summary: "summary", query: nil,
-                tags: ["a", "b", "c"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
-            otherFeed = Feed(title: "", url: NSURL(string: "http://example.com/feed"), summary: "", query: nil,
                 tags: ["a", "b", "c"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
 
             subject.feed = feed
@@ -258,6 +260,108 @@ class FeedViewControllerSpec: QuickSpec {
 
                 it("should be titled 'Tags'") {
                     expect(subject.tableView(subject.tableView, titleForHeaderInSection: 0)).to(equal("Title"))
+                }
+
+                describe("the first row") {
+                    var cell: UITableViewCell! = nil
+                    let tagIndex: Int = 0
+
+                    beforeEach {
+                        cell = subject.tableView.visibleCells()[3] as! UITableViewCell
+                    }
+
+                    it("should be titled for the row") {
+                        expect(cell.textLabel?.text).to(equal(feed.tags[tagIndex]))
+                    }
+
+                    it("should be editable") {
+                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: NSIndexPath(forRow: tagIndex, inSection: 3))).to(beTruthy())
+                    }
+
+                    describe("edit actions") {
+                        var editActions: [UITableViewRowAction] = []
+                        beforeEach {
+                            editActions = subject.tableView(subject.tableView,
+                                editActionsForRowAtIndexPath: NSIndexPath(forRow: tagIndex, inSection: 3)) as? [UITableViewRowAction] ?? []
+                        }
+
+                        it("should have 2 edit actions") {
+                            expect(editActions.count).to(equal(2))
+                        }
+
+                        describe("the first action") {
+                            var action: UITableViewRowAction! = nil
+
+                            beforeEach {
+                                action = editActions.first
+                            }
+
+                            it("should is titled 'Delete'") {
+                                expect(action.title).to(equal("Delete"))
+                            }
+
+                            it("should removes the tag when tapped") {
+                                let tag = feed.tags[tagIndex]
+                                action.handler()(action, NSIndexPath(forRow: tagIndex, inSection: 3))
+                                expect(feed.tags).toNot(contain(tag))
+                            }
+                        }
+
+                        describe("the second action") {
+                            var action: UITableViewRowAction! = nil
+
+                            beforeEach {
+                                action = editActions.last
+                            }
+
+                            it("should is titled 'Edit'") {
+                                expect(action.title).to(equal("Edit"))
+                            }
+
+                            it("should removes the tag when tapped") {
+                                action.handler()(action, NSIndexPath(forRow: tagIndex, inSection: 3))
+                                RBTimeLapse.advanceMainRunLoop()
+                                expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
+                                if let tagEditor = navigationController.topViewController as? TagEditorViewController {
+                                    expect(tagEditor.tagIndex).to(equal(tagIndex))
+                                    expect(tagEditor.feed).to(equal(feed))
+                                }
+                            }
+                        }
+                    }
+                }
+
+                describe("the last row") {
+                    var cell: UITableViewCell! = nil
+                    var indexPath: NSIndexPath! = nil
+
+                    beforeEach {
+                        indexPath = NSIndexPath(forRow: feed.tags.count, inSection: 3)
+                        cell = subject.tableView.visibleCells().last as! UITableViewCell
+                    }
+
+                    it("should be titled 'Add Tag'") {
+                        expect(cell.textLabel?.text).to(equal("Add Tag"))
+                    }
+
+                    it("should not be editable") {
+                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)).to(beFalsy())
+                    }
+
+                    describe("when tapped") {
+                        beforeEach {
+                            subject.tableView(subject.tableView, didSelectRowAtIndexPath: indexPath)
+                        }
+
+                        it("should bring up the tag editor screen") {
+                            RBTimeLapse.advanceMainRunLoop()
+                            expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
+                            if let tagEditor = navigationController.topViewController as? TagEditorViewController {
+                                expect(tagEditor.tagIndex).to(beNil())
+                                expect(tagEditor.feed).to(equal(feed))
+                            }
+                        }
+                    }
                 }
             }
         }

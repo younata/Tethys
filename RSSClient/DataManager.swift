@@ -661,10 +661,10 @@ public class DataManager: NSObject {
 
     public override init() {
         super.init()
-        NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: "managedObjectContextDidSave",
-            name: NSManagedObjectContextDidSaveNotification,
-            object: backgroundObjectContext)
+//        NSNotificationCenter.defaultCenter().addObserver(self,
+//            selector: "managedObjectContextDidSave",
+//            name: NSManagedObjectContextDidSaveNotification,
+//            object: backgroundObjectContext)
     }
 
     deinit {

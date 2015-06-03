@@ -1,15 +1,15 @@
 import UIKit
 
-class TagEditorViewController: UIViewController {
+public class TagEditorViewController: UIViewController {
 
-    var feed: Feed? = nil
+    public var feed: Feed? = nil
     var tag: String? = nil {
         didSet {
             self.navigationItem.rightBarButtonItem?.enabled = self.feed != nil && tag != nil
         }
     }
 
-    var tagIndex: Int? = nil
+    public var tagIndex: Int? = nil
     let tagLabel = UILabel(forAutoLayout: ())
     let tagPicker = TagPickerView(frame: CGRectZero)
 
@@ -17,7 +17,7 @@ class TagEditorViewController: UIViewController {
         self.injector!.create(DataManager.self) as! DataManager
     }()
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         self.edgesForExtendedLayout = .None

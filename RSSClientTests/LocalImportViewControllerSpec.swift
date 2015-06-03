@@ -40,11 +40,12 @@ class LocalImportViewControllerSpec: QuickSpec {
 
         var tableView : UITableView! = nil
 
-        var dataManager = DataManagerMock()
+        var dataManager: DataManagerMock! = nil
         var backgroundQueue : FakeOperationQueue! = nil
 
         beforeEach {
             injector = Ra.Injector(module: SpecInjectorModule())
+            dataManager = DataManagerMock()
             injector.bind(DataManager.self, to: dataManager)
             backgroundQueue = injector.create(kBackgroundQueue) as! FakeOperationQueue
             backgroundQueue.runSynchronously = true

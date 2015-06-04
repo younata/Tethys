@@ -8,7 +8,7 @@ public class ArticleListController: UITableViewController {
 
     var dataManager: DataManager? = nil
 
-    var previewMode: Bool = false
+    public var previewMode: Bool = false
 
     lazy var mainQueue: NSOperationQueue! = {
         self.injector!.create(kMainQueue) as! NSOperationQueue

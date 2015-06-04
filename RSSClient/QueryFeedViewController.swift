@@ -2,7 +2,7 @@ import UIKit
 
 public class QueryFeedViewController: UITableViewController {
 
-    var feed: Feed? = nil {
+    public var feed: Feed? = nil {
         didSet {
             self.navigationItem.title = self.feed?.title ?? NSLocalizedString("New Query Feed", comment: "")
             self.tableView.reloadData()

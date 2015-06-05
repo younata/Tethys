@@ -477,7 +477,7 @@ public class DataManager: NSObject {
     private var queryFeedResults: [Feed: [Article]]? = nil
     private var reloading = false
 
-    func articlesMatchingQuery(query: String, feed: Feed? = nil) -> [Article] {
+    public func articlesMatchingQuery(query: String, feed: Feed? = nil) -> [Article] {
         if let f = feed {
             if let res = self.queryFeedResults {
                 if let results = res[f] {

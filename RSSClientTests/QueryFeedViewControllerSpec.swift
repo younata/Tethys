@@ -37,6 +37,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
             window = UIWindow()
             presentingController = UIViewController()
             window.rootViewController = presentingController
+            window.makeKeyAndVisible()
             RBTimeLapse.advanceMainRunLoop()
             presentingController.presentViewController(navigationController, animated: false, completion: nil)
 
@@ -102,45 +103,46 @@ class QueryFeedViewControllerSpec: QuickSpec {
                 }
 
                 describe("the cell") {
-                    var cell: UITableViewCell! = nil
+                    var cell: TextFieldCell? = nil
                     context("when the feed has no title preconfigured") {
                         beforeEach {
                             subject.feed = otherFeed
                             subject.view.layoutIfNeeded()
                             RBTimeLapse.advanceMainRunLoop()
 
-                            cell = subject.tableView.visibleCells()[0] as! UITableViewCell
+                            cell = subject.tableView.visibleCells().first as? TextFieldCell
                         }
 
                         it("should have a label title 'No title available'") {
-                            expect(cell.textLabel?.text).to(equal("No title available"))
+                            expect(cell?.textLabel?.text).to(equal("No title available"))
                         }
 
                         it("should re-color the text gray") {
-                            expect(cell.textLabel?.textColor).to(equal(UIColor.grayColor()))
+                            expect(cell?.textLabel?.textColor).to(equal(UIColor.grayColor()))
                         }
                     }
 
                     context("when the feed has a title preconfigured") {
                         beforeEach {
-                            cell = subject.tableView.visibleCells()[0] as! UITableViewCell
+                            cell = subject.tableView.visibleCells().first as? TextFieldCell
                         }
 
                         it("should have a label title equal to the feed's") {
-                            expect(cell.textLabel?.text).to(equal(feed.title))
+                            expect(cell?.textLabel?.text).to(equal(feed.title))
                         }
                     }
 
                     describe("the cell") {
-                        var cell: TextFieldCell! = nil
                         beforeEach {
-                            cell = subject.tableView.visibleCells()[0] as! TextFieldCell
+                            cell = subject.tableView.visibleCells().first as? TextFieldCell
                         }
 
                         describe("on change") {
                             beforeEach {
                                 let range = NSMakeRange(0, 7)
-                                cell.textField(cell.textField, shouldChangeCharactersInRange: range, replacementString: "a title")
+                                if let textField = cell?.textField {
+                                    cell?.textField(textField, shouldChangeCharactersInRange: range, replacementString: "a title")
+                                }
                             }
 
                             it("should change the feed's title") {
@@ -152,7 +154,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
             }
 
             describe("the second section") {
-                var cell: TextFieldCell! = nil
+                var cell: TextFieldCell? = nil
 
                 it("should have 1 row") {
                     expect(subject.tableView.numberOfRowsInSection(1)).to(equal(1))
@@ -172,38 +174,45 @@ class QueryFeedViewControllerSpec: QuickSpec {
                         subject.view.layoutIfNeeded()
                         RBTimeLapse.advanceMainRunLoop()
 
-                        cell = subject.tableView.visibleCells()[1] as! TextFieldCell
+                        if (subject.tableView.visibleCells().count >= 2) {
+                            cell = subject.tableView.visibleCells()[1] as? TextFieldCell
+                        }
                     }
 
                     it("should have a label title 'No summary available'") {
-                        expect(cell.textLabel?.text).to(equal("No summary available"))
+                        expect(cell?.textLabel?.text).to(equal("No summary available"))
                     }
 
                     it("should re-color the text gray") {
-                        expect(cell.textLabel?.textColor).to(equal(UIColor.grayColor()))
+                        expect(cell?.textLabel?.textColor).to(equal(UIColor.grayColor()))
                     }
                 }
 
                 context("when the feed has a summary preconfigured") {
                     beforeEach {
-                        cell = subject.tableView.visibleCells()[1] as! TextFieldCell
+                        if (subject.tableView.visibleCells().count >= 2) {
+                            cell = subject.tableView.visibleCells()[1] as? TextFieldCell
+                        }
                     }
 
                     it("should have a label title equal to the feed's") {
-                        expect(cell.textLabel?.text).to(equal(feed.summary))
+                        expect(cell?.textLabel?.text).to(equal(feed.summary))
                     }
                 }
 
                 describe("the cell") {
-                    var cell: TextFieldCell! = nil
                     beforeEach {
-                        cell = subject.tableView.visibleCells()[1] as! TextFieldCell
+                        if (subject.tableView.visibleCells().count >= 2) {
+                            cell = subject.tableView.visibleCells()[1] as? TextFieldCell
+                        }
                     }
 
                     describe("on change") {
                         beforeEach {
                             let range = NSMakeRange(0, 9)
-                            cell.textField(cell.textField, shouldChangeCharactersInRange: range, replacementString: "a summary")
+                            if let textField = cell?.textField {
+                                cell?.textField(textField, shouldChangeCharactersInRange: range, replacementString: "a summary")
+                            }
                         }
 
                         it("should change the feed's summary") {
@@ -214,7 +223,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
             }
 
             describe("the third section") {
-                var cell: TextFieldCell! = nil
+                var cell: TextFieldCell? = nil
                 it("should have 1 row") {
                     expect(subject.tableView.numberOfRowsInSection(2)).to(equal(1))
                 }
@@ -229,17 +238,21 @@ class QueryFeedViewControllerSpec: QuickSpec {
 
                 describe("the cell") {
                     beforeEach {
-                        cell = subject.tableView.visibleCells()[2] as! TextFieldCell
+                        if (subject.tableView.visibleCells().count >= 2) {
+                            cell = subject.tableView.visibleCells()[2] as? TextFieldCell
+                        }
                     }
 
                     it("should have a label title equal to the feed's") {
-                        expect(cell.textLabel?.text).to(equal(feed.query))
+                        expect(cell?.textLabel?.text).to(equal(feed.query))
                     }
 
                     describe("on change") {
                         beforeEach {
                             let range = NSMakeRange(0, 9)
-                            cell.textField(cell.textField, shouldChangeCharactersInRange: range, replacementString: "a summary")
+                            if let textField = cell?.textField {
+                                cell?.textField(textField, shouldChangeCharactersInRange: range, replacementString: "a summary")
+                            }
                         }
 
                         it("should change the feed's query") {

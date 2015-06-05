@@ -38,9 +38,14 @@ class DataManagerMock : DataManager {
         lastFeedMarkedRead = feed
     }
 
-    var feedsList : [Feed] = []
+    var feedsList: [Feed] = []
     override func feeds() -> [Feed] {
         return feedsList
+    }
+
+    var articlesList: [Article] = []
+    override func articlesMatchingQuery(query: String, feed: Feed? = nil) -> [Article] {
+        return articlesList
     }
 
     var didUpdateFeeds = false

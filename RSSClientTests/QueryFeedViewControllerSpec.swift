@@ -6,9 +6,9 @@ import Robot
 
 class QueryFeedViewControllerSpec: QuickSpec {
     override func spec() {
-        var feed = Feed(title: "title", url: nil, summary: "summary", query: "",
+        var feed = Feed(title: "title", url: nil, summary: "summary", query: "function(article) {return !article.read;}",
             tags: ["a", "b", "c"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
-        let otherFeed = Feed(title: "", url: nil, summary: "", query: "",
+        let otherFeed = Feed(title: "", url: nil, summary: "", query: "function(article) {return !article.read;}",
             tags: ["a", "b", "c"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
 
         var navigationController: UINavigationController!
@@ -41,7 +41,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
             RBTimeLapse.advanceMainRunLoop()
             presentingController.presentViewController(navigationController, animated: false, completion: nil)
 
-            feed = Feed(title: "title", url: NSURL(string: "http://example.com/feed"), summary: "summary", query: nil,
+            feed = Feed(title: "title", url: nil, summary: "summary", query: "function(article) {return !article.read;}",
                 tags: ["a", "b", "c"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
 
             subject.feed = feed
@@ -103,14 +103,14 @@ class QueryFeedViewControllerSpec: QuickSpec {
                 }
 
                 describe("the cell") {
-                    var cell: TextFieldCell? = nil
+                    var cell: TextViewCell? = nil
                     context("when the feed has no title preconfigured") {
                         beforeEach {
                             subject.feed = otherFeed
                             subject.view.layoutIfNeeded()
                             RBTimeLapse.advanceMainRunLoop()
 
-                            cell = subject.tableView.visibleCells().first as? TextFieldCell
+                            cell = subject.tableView.visibleCells().first as? TextViewCell
                         }
 
                         it("should have a label title 'No title available'") {
@@ -124,7 +124,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
 
                     context("when the feed has a title preconfigured") {
                         beforeEach {
-                            cell = subject.tableView.visibleCells().first as? TextFieldCell
+                            cell = subject.tableView.visibleCells().first as? TextViewCell
                         }
 
                         it("should have a label title equal to the feed's") {
@@ -134,7 +134,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
 
                     describe("the cell") {
                         beforeEach {
-                            cell = subject.tableView.visibleCells().first as? TextFieldCell
+                            cell = subject.tableView.visibleCells().first as? TextViewCell
                         }
 
                         describe("on change") {
@@ -154,7 +154,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
             }
 
             describe("the second section") {
-                var cell: TextFieldCell? = nil
+                var cell: TextViewCell? = nil
 
                 it("should have 1 row") {
                     expect(subject.tableView.numberOfRowsInSection(1)).to(equal(1))
@@ -175,7 +175,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                         RBTimeLapse.advanceMainRunLoop()
 
                         if (subject.tableView.visibleCells().count >= 2) {
-                            cell = subject.tableView.visibleCells()[1] as? TextFieldCell
+                            cell = subject.tableView.visibleCells()[1] as? TextViewCell
                         }
                     }
 
@@ -191,7 +191,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                 context("when the feed has a summary preconfigured") {
                     beforeEach {
                         if (subject.tableView.visibleCells().count >= 2) {
-                            cell = subject.tableView.visibleCells()[1] as? TextFieldCell
+                            cell = subject.tableView.visibleCells()[1] as? TextViewCell
                         }
                     }
 
@@ -203,7 +203,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                 describe("the cell") {
                     beforeEach {
                         if (subject.tableView.visibleCells().count >= 2) {
-                            cell = subject.tableView.visibleCells()[1] as? TextFieldCell
+                            cell = subject.tableView.visibleCells()[1] as? TextViewCell
                         }
                     }
 
@@ -223,7 +223,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
             }
 
             describe("the third section") {
-                var cell: TextFieldCell? = nil
+                var cell: TextViewCell? = nil
                 it("should have 1 row") {
                     expect(subject.tableView.numberOfRowsInSection(2)).to(equal(1))
                 }
@@ -239,7 +239,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                 describe("the cell") {
                     beforeEach {
                         if (subject.tableView.visibleCells().count >= 2) {
-                            cell = subject.tableView.visibleCells()[2] as? TextFieldCell
+                            cell = subject.tableView.visibleCells()[2] as? TextViewCell
                         }
                     }
 

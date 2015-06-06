@@ -2,26 +2,6 @@ import UIKit
 import Alamofire
 import Muon
 
-private enum FeedSections: Int {
-    case Title = 0
-    case URL = 1
-    case Summary = 2
-    case Tags = 3
-
-    var titleForSection: String {
-        switch self {
-        case .Title:
-            return NSLocalizedString("Title", comment: "")
-        case .URL:
-            return NSLocalizedString("URL", comment: "")
-        case .Summary:
-            return NSLocalizedString("Summary", comment: "")
-        case .Tags:
-            return NSLocalizedString("Tags", comment: "")
-        }
-    }
-}
-
 public class FeedViewController: UITableViewController {
     public var feed: Feed? = nil {
         didSet {
@@ -30,19 +10,39 @@ public class FeedViewController: UITableViewController {
         }
     }
 
-    lazy var dataManager: DataManager = {
+    private enum FeedSections: Int {
+        case Title = 0
+        case URL = 1
+        case Summary = 2
+        case Tags = 3
+
+        var titleForSection: String {
+            switch self {
+            case .Title:
+                return NSLocalizedString("Title", comment: "")
+            case .URL:
+                return NSLocalizedString("URL", comment: "")
+            case .Summary:
+                return NSLocalizedString("Summary", comment: "")
+            case .Tags:
+                return NSLocalizedString("Tags", comment: "")
+            }
+        }
+    }
+
+    private lazy var dataManager: DataManager = {
         return self.injector!.create(DataManager.self) as! DataManager
     }()
 
-    lazy var urlSession: NSURLSession = {
+    private lazy var urlSession: NSURLSession = {
         return self.injector!.create(NSURLSession.self) as! NSURLSession
     }()
 
-    lazy var operationQueue: NSOperationQueue = {
+    private lazy var operationQueue: NSOperationQueue = {
         return self.injector!.create(kBackgroundQueue) as! NSOperationQueue
     }()
 
-    let intervalFormatter = NSDateIntervalFormatter()
+    private let intervalFormatter = NSDateIntervalFormatter()
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,18 +70,18 @@ public class FeedViewController: UITableViewController {
         tableView.reloadData()
     }
 
-    func dismiss() {
+    private func dismiss() {
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
 
-    func save() {
+    private func save() {
         if let theFeed = feed {
             dataManager.saveFeed(theFeed)
         }
         dismiss()
     }
 
-    func showTagEditor(tagIndex: Int) -> TagEditorViewController {
+    private func showTagEditor(tagIndex: Int) -> TagEditorViewController {
         let tagEditor = self.injector!.create(TagEditorViewController.self) as! TagEditorViewController
         tagEditor.feed = feed
         if tagIndex < feed?.tags.count {

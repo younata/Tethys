@@ -5,14 +5,34 @@ public class QueryFeedViewController: UITableViewController {
     public var feed: Feed? = nil {
         didSet {
             self.navigationItem.title = self.feed?.title ?? NSLocalizedString("New Query Feed", comment: "")
-            self.tableView.reloadData()
             if feed?.query == nil {
                 feed?.query = "function(article) {\n    return !article.read;\n}"
+            }
+            self.tableView.reloadData()
+        }
+    }
+
+    private enum FeedSections: Int {
+        case Title = 0
+        case Summary = 1
+        case Query = 2
+        case Tags = 3
+
+        var titleForSection: String {
+            switch self {
+            case .Title:
+                return NSLocalizedString("Title", comment: "")
+            case .Summary:
+                return NSLocalizedString("Summary", comment: "")
+            case .Query:
+                return NSLocalizedString("Query", comment: "")
+            case .Tags:
+                return NSLocalizedString("Tags", comment: "")
             }
         }
     }
 
-    lazy var dataManager: DataManager = {
+    private lazy var dataManager: DataManager = {
         return self.injector!.create(DataManager.self) as! DataManager
     }()
 
@@ -68,26 +88,18 @@ public class QueryFeedViewController: UITableViewController {
         return feed == nil ? 3 : 4
     }
 
-    public override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section != 3 {
-            return 1
+    public override func tableView(tableView: UITableView, numberOfRowsInSection sectionNum: Int) -> Int {
+        if let theFeed = feed, let section = FeedSections(rawValue: sectionNum) where section == .Tags {
+            return theFeed.tags.count + 1
         }
-        return (feed?.tags.count ?? 0) + 1
+        return 1
     }
 
-    public override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        switch section {
-        case 0:
-            return NSLocalizedString("Title", comment: "")
-        case 1:
-            return NSLocalizedString("Summary", comment: "")
-        case 2:
-            return NSLocalizedString("Query", comment: "")
-        case 3:
-            return NSLocalizedString("Tags", comment: "")
-        default:
-            return nil
+    public override func tableView(tableView: UITableView, titleForHeaderInSection sectionNum: Int) -> String? {
+        if let section = FeedSections(rawValue: sectionNum) {
+            return section.titleForSection
         }
+        return nil
     }
 
     public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -151,10 +163,12 @@ public class QueryFeedViewController: UITableViewController {
     }
 
     public override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        if indexPath.section == 3 {
-            return indexPath.row < (feed?.tags.count ?? 1)
-        } else if indexPath.section == 2 {
-            return true
+        if let section = FeedSections(rawValue: indexPath.section) {
+            if section == .Tags {
+                return indexPath.row < (feed?.tags.count ?? 1)
+            } else if section == .Query {
+                return true
+            }
         }
         return false
     }

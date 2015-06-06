@@ -126,7 +126,9 @@ public class FeedViewController: UITableViewController {
 
         switch (section) {
         case .Title:
-            if let title = ((feed?.title.isEmpty ?? true) ? nil : feed?.title) {
+            if let title = feed?.tags.filter({$0.hasPrefix("~")}).first {
+                cell.textLabel?.text = title.substringFromIndex(title.startIndex.successor())
+            } else if let title = ((feed?.title.isEmpty ?? true) ? nil : feed?.title) {
                 cell.textLabel?.text = title
             } else {
                 cell.textLabel?.text = NSLocalizedString("No title available", comment: "")
@@ -164,7 +166,9 @@ public class FeedViewController: UITableViewController {
             }
             return tc
         case .Summary:
-            if let summary = ((feed?.summary.isEmpty ?? true) ? nil : feed?.summary)  {
+            if let summary = feed?.tags.filter({$0.hasPrefix("`")}).first {
+                cell.textLabel?.text = summary.substringFromIndex(summary.startIndex.successor())
+            } else if let summary = ((feed?.summary.isEmpty ?? true) ? nil : feed?.summary)  {
                 cell.textLabel?.text = summary
             } else {
                 cell.textLabel?.text = NSLocalizedString("No summary available", comment: "")

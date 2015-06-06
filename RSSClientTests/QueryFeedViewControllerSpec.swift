@@ -118,6 +118,19 @@ class QueryFeedViewControllerSpec: QuickSpec {
                     }
                 }
 
+                context("when the feed has a tag that starts with '~'") {
+                    beforeEach {
+                        subject.feed = Feed(title: "a title", url: nil, summary: "", query: "a query",
+                            tags: ["~custom title"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+                        cell = subject.tableView(subject.tableView,
+                            cellForRowAtIndexPath: indexPath) as? TextViewCell
+                    }
+
+                    it("should use that tag as the title, minus the leading '~'") {
+                        expect(cell?.textView?.text).to(equal("custom title"))
+                    }
+                }
+
                 context("when the feed has a title preconfigured") {
                     beforeEach {
                         cell = subject.tableView(subject.tableView,
@@ -185,6 +198,19 @@ class QueryFeedViewControllerSpec: QuickSpec {
 
                     it("should re-color the text gray") {
                         expect(cell?.textView?.textColor).to(equal(UIColor.grayColor()))
+                    }
+                }
+
+                context("when the feed has a tag that starts with '`'") {
+                    beforeEach {
+                        subject.feed = Feed(title: "a title", url: nil, summary: "a summary", query: "a query",
+                            tags: ["`custom summary"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+                        cell = subject.tableView(subject.tableView,
+                            cellForRowAtIndexPath: indexPath) as? TextViewCell
+                    }
+
+                    it("should use that tag as the title, minus the leading '`'") {
+                        expect(cell?.textView?.text).to(equal("custom summary"))
                     }
                 }
 

@@ -125,39 +125,8 @@ public class QueryFeedViewController: UITableViewController {
         forRowAtIndexPath _: NSIndexPath) {}
 
     public override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
-        if feed == nil && indexPath.section < 2 && feed?.tags.count == indexPath.row {
-            return nil
-        }
-        if indexPath.section == 2 {
-            let previewTitle = NSLocalizedString("Preview", comment: "")
-            let preview = UITableViewRowAction(style: .Normal, title: previewTitle, handler: {(_, _) in
-                let articleList = ArticleListController(style: .Plain)
-                articleList.previewMode = true
-                articleList.articles = self.dataManager.articlesMatchingQuery(self.feed?.query ?? "")
-                self.navigationController?.pushViewController(articleList, animated: true)
-            })
-            return [preview]
-        } else if indexPath.section == 3 {
-            let deleteTitle = NSLocalizedString("Delete", comment: "")
-            let delete = UITableViewRowAction(style: .Default, title: deleteTitle, handler: {(_, indexPath) in
-                if var feed = self.feed {
-                    let tag = feed.tags[indexPath.row]
-                    feed.removeTag(tag)
-                    tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-                    if tag.hasPrefix("~") {
-                        let ip = NSIndexPath(forRow: 0, inSection: 0)
-                        tableView.reloadRowsAtIndexPaths([ip], withRowAnimation: .None)
-                    } else if tag.hasPrefix("`") {
-                        let ip = NSIndexPath(forRow: 0, inSection: 1)
-                        tableView.reloadRowsAtIndexPaths([ip], withRowAnimation: .None)
-                    }
-                }
-            })
-            let editTitle = NSLocalizedString("Edit", comment: "")
-            let edit = UITableViewRowAction(style: .Normal, title: editTitle, handler: {(_, indexPath) in
-                self.showTagEditor(indexPath.row)
-            })
-            return [delete, edit]
+        if let section = FeedSections(rawValue: indexPath.section) {
+            return editActionsForSection(section, indexPath: indexPath)
         }
         return nil
     }
@@ -165,7 +134,7 @@ public class QueryFeedViewController: UITableViewController {
     public override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
 
-        if indexPath.section == 3,
+        if FeedSections(rawValue: indexPath.section) == .Tags,
             let count = feed?.tags.count where indexPath.row == count {
                 showTagEditor(indexPath.row)
         }
@@ -178,7 +147,9 @@ public class QueryFeedViewController: UITableViewController {
         case .Title:
             let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextViewCell
             cell.textView.textColor = UIColor.blackColor()
-            if let title = (feed?.title == "" ? nil : feed?.title) {
+            if let title = feed?.tags.filter({$0.hasPrefix("~")}).first {
+                cell.textView?.text = title.substringFromIndex(title.startIndex.successor())
+            } else if let title = (feed?.title == "" ? nil : feed?.title) {
                 cell.textView.text = title
             } else {
                 cell.textView.text = NSLocalizedString("No title available", comment: "")
@@ -194,7 +165,9 @@ public class QueryFeedViewController: UITableViewController {
         case .Summary:
             let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextViewCell
             cell.textView.textColor = UIColor.blackColor()
-            if let summary = (feed?.summary == "" ? nil : feed?.summary)  {
+            if let summary = feed?.tags.filter({$0.hasPrefix("`")}).first {
+                cell.textView?.text = summary.substringFromIndex(summary.startIndex.successor())
+            } else if let summary = (feed?.summary == "" ? nil : feed?.summary)  {
                 cell.textView.text = summary
             } else {
                 cell.textView.text = NSLocalizedString("No summary available", comment: "")
@@ -233,6 +206,49 @@ public class QueryFeedViewController: UITableViewController {
                 }
             }
             return cell
+        }
+    }
+
+    private func editActionsForSection(section: FeedSections, indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+        if feed == nil {
+            return nil
+        }
+        switch section {
+        case .Query:
+            let previewTitle = NSLocalizedString("Preview", comment: "")
+            let preview = UITableViewRowAction(style: .Normal, title: previewTitle, handler: {(_, _) in
+                let articleList = ArticleListController(style: .Plain)
+                articleList.previewMode = true
+                articleList.articles = self.dataManager.articlesMatchingQuery(self.feed?.query ?? "")
+                self.navigationController?.pushViewController(articleList, animated: true)
+            })
+            return [preview]
+        case .Tags:
+            if indexPath.row == feed?.tags.count {
+                return nil
+            }
+            let deleteTitle = NSLocalizedString("Delete", comment: "")
+            let delete = UITableViewRowAction(style: .Default, title: deleteTitle, handler: {(_, indexPath) in
+                if var feed = self.feed {
+                    let tag = feed.tags[indexPath.row]
+                    feed.removeTag(tag)
+                    self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                    if tag.hasPrefix("~") {
+                        let ip = NSIndexPath(forRow: 0, inSection: 0)
+                        self.tableView.reloadRowsAtIndexPaths([ip], withRowAnimation: .None)
+                    } else if tag.hasPrefix("`") {
+                        let ip = NSIndexPath(forRow: 0, inSection: 1)
+                        self.tableView.reloadRowsAtIndexPaths([ip], withRowAnimation: .None)
+                    }
+                }
+            })
+            let editTitle = NSLocalizedString("Edit", comment: "")
+            let edit = UITableViewRowAction(style: .Normal, title: editTitle, handler: {(_, indexPath) in
+                self.showTagEditor(indexPath.row)
+            })
+            return [delete, edit]
+        default:
+            return nil
         }
     }
 }

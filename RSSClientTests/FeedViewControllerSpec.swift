@@ -125,6 +125,21 @@ class FeedViewControllerSpec: QuickSpec {
                         }
                     }
 
+                    context("when the feed has a tag that starts with '~'") {
+                        beforeEach {
+                            subject.feed = Feed(title: "a title", url: NSURL(string: ""), summary: "", query: nil,
+                                tags: ["~custom title"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+                            subject.view.layoutIfNeeded()
+                            RBTimeLapse.advanceMainRunLoop()
+
+                            cell = subject.tableView.visibleCells()[0] as! UITableViewCell
+                        }
+
+                        it("should use that tag as the title, minus the leading '~'") {
+                            expect(cell.textLabel?.text).to(equal("custom title"))
+                        }
+                    }
+
                     context("when the feed has a title preconfigured") {
                         beforeEach {
                             cell = subject.tableView.visibleCells()[0] as! UITableViewCell
@@ -239,6 +254,21 @@ class FeedViewControllerSpec: QuickSpec {
 
                     it("should re-color the text gray") {
                         expect(cell.textLabel?.textColor).to(equal(UIColor.grayColor()))
+                    }
+                }
+
+                context("when the feed has a tag that starts with '`'") {
+                    beforeEach {
+                        subject.feed = Feed(title: "a title", url: NSURL(string: ""), summary: "a summary", query: nil,
+                            tags: ["`custom summary"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+                        subject.view.layoutIfNeeded()
+                        RBTimeLapse.advanceMainRunLoop()
+
+                        cell = subject.tableView.visibleCells()[2] as! UITableViewCell
+                    }
+
+                    it("should use that tag as the summary, minus the leading '`'") {
+                        expect(cell.textLabel?.text).to(equal("custom summary"))
                     }
                 }
 

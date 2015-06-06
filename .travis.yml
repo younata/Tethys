@@ -5,5 +5,5 @@ before_install:
  - git submodule update --init --recursive
  - brew update
  - brew install carthage
- - carthage update --platform ios
+ - carthage update --platform ios --verbose --configuration Debug
 script: "rake"

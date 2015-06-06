@@ -143,7 +143,7 @@ class FeedViewControllerSpec: QuickSpec {
                 }
 
                 it("should be titled 'URL'") {
-                    expect(subject.tableView(subject.tableView, titleForHeaderInSection: 0)).to(equal("Title"))
+                    expect(subject.tableView(subject.tableView, titleForHeaderInSection: 1)).to(equal("URL"))
                 }
 
                 it("should not be editable") {
@@ -217,7 +217,7 @@ class FeedViewControllerSpec: QuickSpec {
                 }
 
                 it("should be titled 'Summary'") {
-                    expect(subject.tableView(subject.tableView, titleForHeaderInSection: 0)).to(equal("Title"))
+                    expect(subject.tableView(subject.tableView, titleForHeaderInSection: 2)).to(equal("Summary"))
                 }
 
                 it("should not be editable") {
@@ -259,7 +259,7 @@ class FeedViewControllerSpec: QuickSpec {
                 }
 
                 it("should be titled 'Tags'") {
-                    expect(subject.tableView(subject.tableView, titleForHeaderInSection: 0)).to(equal("Title"))
+                    expect(subject.tableView(subject.tableView, titleForHeaderInSection: 3)).to(equal("Tags"))
                 }
 
                 describe("the first row") {

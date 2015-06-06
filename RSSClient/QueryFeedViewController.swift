@@ -103,63 +103,10 @@ public class QueryFeedViewController: UITableViewController {
     }
 
     public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        if indexPath.section == 3 {
-            let cell = tableView.dequeueReusableCellWithIdentifier("tags", forIndexPath: indexPath) as! UITableViewCell
-            if let tags = feed?.tags {
-                if indexPath.row == tags.count {
-                    cell.textLabel?.text = NSLocalizedString("Add Tag", comment: "")
-                    cell.textLabel?.textColor = UIColor.darkGreenColor()
-                } else {
-                    cell.textLabel?.text = tags[indexPath.row]
-                }
-            }
-            return cell
-        } else {
-            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextViewCell
-            cell.textView.textColor = UIColor.blackColor()
-            switch (indexPath.section) {
-            case 0:
-                if let title = (feed?.title == "" ? nil : feed?.title) {
-                    cell.textView.text = title
-                } else {
-                    cell.textView.text = NSLocalizedString("No title available", comment: "")
-                    cell.textView.textColor = UIColor.grayColor()
-                }
-                cell.onTextChange = {
-                    if var feed = self.feed {
-                        feed.title = $0 ?? ""
-                    }
-                    self.navigationItem.rightBarButtonItem?.enabled = self.feed?.title != nil && self.feed?.query != nil
-                }
-            case 1:
-                if let summary = (feed?.summary == "" ? nil : feed?.summary)  {
-                    cell.textView.text = summary
-                } else {
-                    cell.textView.text = NSLocalizedString("No summary available", comment: "")
-                    cell.textView.textColor = UIColor.grayColor()
-                }
-                cell.onTextChange = {
-                    if var feed = self.feed {
-                        feed.summary = $0 ?? ""
-                    }
-                }
-            case 2:
-                if let query = feed?.query {
-                    cell.textView.text = query
-                } else {
-                    cell.textView.text = "function(article) {\n    return !article.read;\n}"
-                }
-                cell.onTextChange = {
-                    if var feed = self.feed {
-                        feed.query = $0 ?? ""
-                    }
-                    self.navigationItem.rightBarButtonItem?.enabled = self.feed?.title != nil && self.feed?.query != nil
-                }
-            default:
-                break
-            }
-            return cell
+        if let section = FeedSections(rawValue: indexPath.section) {
+            return cellForSection(section, tableView: tableView, indexPath: indexPath)
         }
+        return UITableViewCell()
     }
 
     public override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -221,6 +168,71 @@ public class QueryFeedViewController: UITableViewController {
         if indexPath.section == 3,
             let count = feed?.tags.count where indexPath.row == count {
                 showTagEditor(indexPath.row)
+        }
+    }
+
+    // MARK: - Private
+
+    private func cellForSection(section: FeedSections, tableView: UITableView, indexPath: NSIndexPath) -> UITableViewCell {
+        switch (section) {
+        case .Title:
+            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextViewCell
+            cell.textView.textColor = UIColor.blackColor()
+            if let title = (feed?.title == "" ? nil : feed?.title) {
+                cell.textView.text = title
+            } else {
+                cell.textView.text = NSLocalizedString("No title available", comment: "")
+                cell.textView.textColor = UIColor.grayColor()
+            }
+            cell.onTextChange = {
+                if var feed = self.feed {
+                    feed.title = $0 ?? ""
+                }
+                self.navigationItem.rightBarButtonItem?.enabled = self.feed?.title != nil && self.feed?.query != nil
+            }
+            return cell
+        case .Summary:
+            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextViewCell
+            cell.textView.textColor = UIColor.blackColor()
+            if let summary = (feed?.summary == "" ? nil : feed?.summary)  {
+                cell.textView.text = summary
+            } else {
+                cell.textView.text = NSLocalizedString("No summary available", comment: "")
+                cell.textView.textColor = UIColor.grayColor()
+            }
+            cell.onTextChange = {
+                if var feed = self.feed {
+                    feed.summary = $0 ?? ""
+                }
+            }
+            return cell
+        case .Query:
+            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextViewCell
+            cell.textView.textColor = UIColor.blackColor()
+            if let query = feed?.query {
+                cell.textView.text = query
+            } else {
+                cell.textView.text = "function(article) {\n    return !article.read;\n}"
+            }
+            cell.onTextChange = {
+                if var feed = self.feed {
+                    feed.query = $0 ?? ""
+                }
+                self.navigationItem.rightBarButtonItem?.enabled = self.feed?.title != nil && self.feed?.query != nil
+            }
+            return cell
+        case .Tags:
+            let cell = tableView.dequeueReusableCellWithIdentifier("tags", forIndexPath: indexPath) as! UITableViewCell
+            if let tags = feed?.tags {
+                if indexPath.row == tags.count {
+                    cell.textLabel?.text = NSLocalizedString("Add Tag", comment: "")
+                    cell.textLabel?.textColor = UIColor.darkGreenColor()
+                } else {
+                    cell.textLabel?.text = tags[indexPath.row]
+                    cell.textLabel?.textColor = UIColor.blackColor()
+                }
+            }
+            return cell
         }
     }
 }

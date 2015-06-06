@@ -9,7 +9,7 @@
 
     NSMethodSignature *methodSignature = [target methodSignatureForSelector:action];
     if (methodSignature == nil) {
-        NSLog(@"================> %@, %@", target, NSStringFromSelector(action));
+        NSLog(@"================> unrecognized selector: %@, %@", target, NSStringFromSelector(action));
         return;
     }
     if (methodSignature.numberOfArguments == 1) {

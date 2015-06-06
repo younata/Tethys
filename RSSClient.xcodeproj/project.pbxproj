@@ -660,10 +660,10 @@
 			isa = PBXGroup;
 			children = (
 				89C509EF1A2EB18300CBD000 /* FeedViewController.swift */,
+				89DA7D2B1A66111E0050685B /* TextFieldCell.swift */,
 				89C509F91A2F865F00CBD000 /* QueryFeedViewController.swift */,
 				89C509F61A2F825400CBD000 /* TextViewCell.swift */,
 				89DA7D2D1A6613100050685B /* ValidatorView.swift */,
-				89DA7D2B1A66111E0050685B /* TextFieldCell.swift */,
 				89EF4FE21A97DA270052A82F /* Tags */,
 			);
 			name = "Editing Feeds";

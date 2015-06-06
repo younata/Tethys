@@ -1,14 +1,14 @@
 import UIKit
 
-class TextViewCell: UITableViewCell, UITextViewDelegate {
+public class TextViewCell: UITableViewCell, UITextViewDelegate {
 
-    let textView = UITextView(forAutoLayout: ())
+    public let textView = UITextView(forAutoLayout: ())
 
     var onTextChange: (String?) -> Void = {(_) in }
 
     var placeholderText = ""
 
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         self.contentView.addSubview(textView)
@@ -18,17 +18,17 @@ class TextViewCell: UITableViewCell, UITextViewDelegate {
         textView.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
     }
 
-    required init(coder: NSCoder) {
+    public required init(coder: NSCoder) {
         fatalError("")
     }
 
     // MARK: UITextViewDelegate
 
-    func textViewDidChange(textView: UITextView) {
+    public func textViewDidChange(textView: UITextView) {
         self.onTextChange(textView.text)
     }
 
-    func textViewDidBeginEditing(textView: UITextView) {
+    public func textViewDidBeginEditing(textView: UITextView) {
         if textView.textColor != UIColor.blackColor() {
             textView.textColor = UIColor.blackColor()
             placeholderText = textView.text
@@ -36,7 +36,7 @@ class TextViewCell: UITableViewCell, UITextViewDelegate {
         }
     }
 
-    func textViewDidEndEditing(textView: UITextView) {
+    public func textViewDidEndEditing(textView: UITextView) {
         if textView.text == nil || textView.text == "" {
             textView.textColor = UIColor.grayColor()
             textView.text = placeholderText

@@ -74,7 +74,7 @@ public class FeedViewController: UITableViewController {
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
 
-    private func save() {
+    internal func save() {
         if let theFeed = feed {
             dataManager.saveFeed(theFeed)
         }

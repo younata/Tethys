@@ -17,7 +17,6 @@ class QueryFeedViewControllerSpec: QuickSpec {
         var dataManager: DataManagerMock! = nil
 
         var backgroundQueue: FakeOperationQueue! = nil
-        var window: UIWindow! = nil
         var presentingController: UIViewController! = nil
 
         beforeEach {
@@ -34,12 +33,9 @@ class QueryFeedViewControllerSpec: QuickSpec {
 
             navigationController = UINavigationController(rootViewController: subject)
 
-            window = UIWindow()
             presentingController = UIViewController()
-            window.rootViewController = presentingController
-            window.makeKeyAndVisible()
-            RBTimeLapse.advanceMainRunLoop()
             presentingController.presentViewController(navigationController, animated: false, completion: nil)
+            RBTimeLapse.advanceMainRunLoop()
 
             feed = Feed(title: "title", url: nil, summary: "summary", query: "function(article) {return !article.read;}",
                 tags: ["a", "b", "c"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
@@ -90,6 +86,9 @@ class QueryFeedViewControllerSpec: QuickSpec {
             }
 
             describe("the first section") {
+                var cell: TextViewCell? = nil
+                let indexPath = NSIndexPath(forRow: 0, inSection: 0)
+
                 it("should have 1 row") {
                     expect(subject.tableView.numberOfRowsInSection(0)).to(equal(1))
                 }
@@ -99,119 +98,118 @@ class QueryFeedViewControllerSpec: QuickSpec {
                 }
 
                 it("should not be editable") {
-                    expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 0))).to(beFalsy())
+                    expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)).to(beFalsy())
+                }
+
+                context("when the feed has no title preconfigured") {
+                    beforeEach {
+                        subject.feed = otherFeed
+
+                        cell = subject.tableView(subject.tableView,
+                            cellForRowAtIndexPath: indexPath) as? TextViewCell
+                    }
+
+                    it("should have a label title 'No title available'") {
+                        expect(cell?.textView?.text).to(equal("No title available"))
+                    }
+
+                    it("should re-color the text gray") {
+                        expect(cell?.textView?.textColor).to(equal(UIColor.grayColor()))
+                    }
+                }
+
+                context("when the feed has a title preconfigured") {
+                    beforeEach {
+                        cell = subject.tableView(subject.tableView,
+                            cellForRowAtIndexPath: indexPath) as? TextViewCell
+                    }
+
+                    it("should have a label title equal to the feed's") {
+                        expect(cell?.textView?.text).to(equal(feed.title))
+                    }
                 }
 
                 describe("the cell") {
-                    var cell: TextViewCell? = nil
-                    context("when the feed has no title preconfigured") {
+                    beforeEach {
+                        cell = subject.tableView(subject.tableView,
+                            cellForRowAtIndexPath: indexPath) as? TextViewCell
+                    }
+
+                    describe("on change") {
                         beforeEach {
-                            subject.feed = otherFeed
-                            subject.view.layoutIfNeeded()
-                            RBTimeLapse.advanceMainRunLoop()
-
-                            cell = subject.tableView.visibleCells().first as? TextViewCell
+                            cell?.textView?.text = "a title"
+                            if let textView = cell?.textView {
+                                cell?.textViewDidChange(textView)
+                            }
                         }
 
-                        it("should have a label title 'No title available'") {
-                            expect(cell?.textLabel?.text).to(equal("No title available"))
-                        }
-
-                        it("should re-color the text gray") {
-                            expect(cell?.textLabel?.textColor).to(equal(UIColor.grayColor()))
+                        it("should change the feed's title") {
+                            expect(feed.title).to(equal("a title"))
                         }
                     }
 
-                    context("when the feed has a title preconfigured") {
-                        beforeEach {
-                            cell = subject.tableView.visibleCells().first as? TextViewCell
-                        }
-
-                        it("should have a label title equal to the feed's") {
-                            expect(cell?.textLabel?.text).to(equal(feed.title))
-                        }
-                    }
-
-                    describe("the cell") {
-                        beforeEach {
-                            cell = subject.tableView.visibleCells().first as? TextViewCell
-                        }
-
-                        describe("on change") {
-                            beforeEach {
-                                let range = NSMakeRange(0, 7)
-                                if let textField = cell?.textField {
-                                    cell?.textField(textField, shouldChangeCharactersInRange: range, replacementString: "a title")
-                                }
-                            }
-
-                            it("should change the feed's title") {
-                                expect(feed.summary).to(equal("a title"))
-                            }
-                        }
+                    it("should have no edit actions") {
+                        let editActions = subject.tableView(subject.tableView,
+                            editActionsForRowAtIndexPath: indexPath)
+                        expect(editActions).to(beNil())
                     }
                 }
             }
 
             describe("the second section") {
                 var cell: TextViewCell? = nil
+                let indexPath = NSIndexPath(forRow: 0, inSection: 1)
 
                 it("should have 1 row") {
                     expect(subject.tableView.numberOfRowsInSection(1)).to(equal(1))
                 }
 
                 it("should be titled 'Summary'") {
-                    expect(subject.tableView(subject.tableView, titleForHeaderInSection: 0)).to(equal("Summary"))
+                    expect(subject.tableView(subject.tableView, titleForHeaderInSection: 1)).to(equal("Summary"))
                 }
 
                 it("should not be editable") {
-                    expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 1))).to(beFalsy())
+                    expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)).to(beFalsy())
                 }
 
                 context("when the feed has no summary preconfigured") {
                     beforeEach {
                         subject.feed = otherFeed
-                        subject.view.layoutIfNeeded()
-                        RBTimeLapse.advanceMainRunLoop()
-
-                        if (subject.tableView.visibleCells().count >= 2) {
-                            cell = subject.tableView.visibleCells()[1] as? TextViewCell
-                        }
+                        cell = subject.tableView(subject.tableView,
+                            cellForRowAtIndexPath: indexPath) as? TextViewCell
                     }
 
                     it("should have a label title 'No summary available'") {
-                        expect(cell?.textLabel?.text).to(equal("No summary available"))
+                        expect(cell?.textView?.text).to(equal("No summary available"))
                     }
 
                     it("should re-color the text gray") {
-                        expect(cell?.textLabel?.textColor).to(equal(UIColor.grayColor()))
+                        expect(cell?.textView?.textColor).to(equal(UIColor.grayColor()))
                     }
                 }
 
                 context("when the feed has a summary preconfigured") {
                     beforeEach {
-                        if (subject.tableView.visibleCells().count >= 2) {
-                            cell = subject.tableView.visibleCells()[1] as? TextViewCell
-                        }
+                        cell = subject.tableView(subject.tableView,
+                            cellForRowAtIndexPath: indexPath) as? TextViewCell
                     }
 
                     it("should have a label title equal to the feed's") {
-                        expect(cell?.textLabel?.text).to(equal(feed.summary))
+                        expect(cell?.textView?.text).to(equal(feed.summary))
                     }
                 }
 
                 describe("the cell") {
                     beforeEach {
-                        if (subject.tableView.visibleCells().count >= 2) {
-                            cell = subject.tableView.visibleCells()[1] as? TextViewCell
-                        }
+                        cell = subject.tableView(subject.tableView,
+                            cellForRowAtIndexPath: indexPath) as? TextViewCell
                     }
 
                     describe("on change") {
                         beforeEach {
-                            let range = NSMakeRange(0, 9)
-                            if let textField = cell?.textField {
-                                cell?.textField(textField, shouldChangeCharactersInRange: range, replacementString: "a summary")
+                            cell?.textView?.text = "a summary"
+                            if let textView = cell?.textView {
+                                cell?.textViewDidChange(textView)
                             }
                         }
 
@@ -219,44 +217,50 @@ class QueryFeedViewControllerSpec: QuickSpec {
                             expect(feed.summary).to(equal("a summary"))
                         }
                     }
+
+                    it("should have no edit actions") {
+                        let editActions = subject.tableView(subject.tableView,
+                            editActionsForRowAtIndexPath: indexPath)
+                        expect(editActions).to(beNil())
+                    }
                 }
             }
 
             describe("the third section") {
                 var cell: TextViewCell? = nil
+                let indexPath = NSIndexPath(forRow: 0, inSection: 2)
                 it("should have 1 row") {
                     expect(subject.tableView.numberOfRowsInSection(2)).to(equal(1))
                 }
 
                 it("should be titled 'Query'") {
-                    expect(subject.tableView(subject.tableView, titleForHeaderInSection: 0)).to(equal("Title"))
+                    expect(subject.tableView(subject.tableView, titleForHeaderInSection: 2)).to(equal("Query"))
                 }
 
                 it("should be editable") {
-                    expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 2))).to(beTruthy())
+                    expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)).to(beTruthy())
                 }
 
                 describe("the cell") {
                     beforeEach {
-                        if (subject.tableView.visibleCells().count >= 2) {
-                            cell = subject.tableView.visibleCells()[2] as? TextViewCell
-                        }
+                        cell = subject.tableView(subject.tableView,
+                            cellForRowAtIndexPath: indexPath) as? TextViewCell
                     }
 
                     it("should have a label title equal to the feed's") {
-                        expect(cell?.textLabel?.text).to(equal(feed.query))
+                        expect(cell?.textView?.text).to(equal(feed.query))
                     }
 
                     describe("on change") {
                         beforeEach {
-                            let range = NSMakeRange(0, 9)
-                            if let textField = cell?.textField {
-                                cell?.textField(textField, shouldChangeCharactersInRange: range, replacementString: "a summary")
+                            cell?.textView?.text = "a query"
+                            if let textView = cell?.textView {
+                                cell?.textViewDidChange(textView)
                             }
                         }
 
                         it("should change the feed's query") {
-                            expect(feed.summary).to(equal("a summary"))
+                            expect(feed.query).to(equal("a query"))
                         }
                     }
 
@@ -264,7 +268,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                         var editActions: [UITableViewRowAction] = []
                         beforeEach {
                             editActions = subject.tableView(subject.tableView,
-                                editActionsForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 2)) as? [UITableViewRowAction] ?? []
+                                editActionsForRowAtIndexPath: indexPath) as? [UITableViewRowAction] ?? []
                         }
 
                         it("should have 1 edit action") {
@@ -272,18 +276,18 @@ class QueryFeedViewControllerSpec: QuickSpec {
                         }
 
                         describe("the action") {
-                            var action: UITableViewRowAction! = nil
+                            var action: UITableViewRowAction? = nil
 
                             beforeEach {
                                 action = editActions.first
                             }
 
                             it("should be titled 'Preview'") {
-                                expect(action.title).to(equal("Preview"))
+                                expect(action?.title).to(equal("Preview"))
                             }
 
                             it("should show a preview of all articles it captures when tapped") {
-                                action.handler()(action, NSIndexPath(forRow: 0, inSection: 2))
+                                action?.handler()(action, indexPath)
                                 RBTimeLapse.advanceMainRunLoop()
                                 expect(navigationController.topViewController).to(beAnInstanceOf(ArticleListController.self))
                                 if let articleList = navigationController.topViewController as? ArticleListController {
@@ -296,117 +300,120 @@ class QueryFeedViewControllerSpec: QuickSpec {
                 }
             }
 
-//            describe("the fourth section") {
-//                it("should have n+1 rows") {
-//                    expect(subject.tableView.numberOfRowsInSection(3)).to(equal(feed.tags.count + 1))
-//                }
-//
-//                it("should be titled 'Tags'") {
-//                    expect(subject.tableView(subject.tableView, titleForHeaderInSection: 0)).to(equal("Title"))
-//                }
-//
-//                describe("the first row") {
-//                    var cell: UITableViewCell! = nil
-//                    let tagIndex: Int = 0
-//
-//                    beforeEach {
-//                        cell = subject.tableView.visibleCells()[3] as! UITableViewCell
-//                    }
-//
-//                    it("should be titled for the row") {
-//                        expect(cell.textLabel?.text).to(equal(feed.tags[tagIndex]))
-//                    }
-//
-//                    it("should be editable") {
-//                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: NSIndexPath(forRow: tagIndex, inSection: 3))).to(beTruthy())
-//                    }
-//
-//                    describe("edit actions") {
-//                        var editActions: [UITableViewRowAction] = []
-//                        beforeEach {
-//                            editActions = subject.tableView(subject.tableView,
-//                                editActionsForRowAtIndexPath: NSIndexPath(forRow: tagIndex, inSection: 3)) as? [UITableViewRowAction] ?? []
-//                        }
-//
-//                        it("should have 2 edit actions") {
-//                            expect(editActions.count).to(equal(2))
-//                        }
-//
-//                        describe("the first action") {
-//                            var action: UITableViewRowAction! = nil
-//
-//                            beforeEach {
-//                                action = editActions.first
-//                            }
-//
-//                            it("should is titled 'Delete'") {
-//                                expect(action.title).to(equal("Delete"))
-//                            }
-//
-//                            it("should removes the tag when tapped") {
-//                                let tag = feed.tags[tagIndex]
-//                                action.handler()(action, NSIndexPath(forRow: tagIndex, inSection: 3))
-//                                expect(feed.tags).toNot(contain(tag))
-//                            }
-//                        }
-//
-//                        describe("the second action") {
-//                            var action: UITableViewRowAction! = nil
-//
-//                            beforeEach {
-//                                action = editActions.last
-//                            }
-//
-//                            it("should is titled 'Edit'") {
-//                                expect(action.title).to(equal("Edit"))
-//                            }
-//
-//                            it("should removes the tag when tapped") {
-//                                action.handler()(action, NSIndexPath(forRow: tagIndex, inSection: 3))
-//                                RBTimeLapse.advanceMainRunLoop()
-//                                expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
-//                                if let tagEditor = navigationController.topViewController as? TagEditorViewController {
-//                                    expect(tagEditor.tagIndex).to(equal(tagIndex))
-//                                    expect(tagEditor.feed).to(equal(feed))
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                describe("the last row") {
-//                    var cell: UITableViewCell! = nil
-//                    var indexPath: NSIndexPath! = nil
-//
-//                    beforeEach {
-//                        indexPath = NSIndexPath(forRow: feed.tags.count, inSection: 3)
-//                        cell = subject.tableView.visibleCells().last as! UITableViewCell
-//                    }
-//                    
-//                    it("should be titled 'Add Tag'") {
-//                        expect(cell.textLabel?.text).to(equal("Add Tag"))
-//                    }
-//                    
-//                    it("should not be editable") {
-//                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)).to(beFalsy())
-//                    }
-//                    
-//                    describe("when tapped") {
-//                        beforeEach {
-//                            subject.tableView(subject.tableView, didSelectRowAtIndexPath: indexPath)
-//                        }
-//                        
-//                        it("should bring up the tag editor screen") {
-//                            RBTimeLapse.advanceMainRunLoop()
-//                            expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
-//                            if let tagEditor = navigationController.topViewController as? TagEditorViewController {
-//                                expect(tagEditor.tagIndex).to(beNil())
-//                                expect(tagEditor.feed).to(equal(feed))
-//                            }
-//                        }
-//                    }
-//                }
-//            }
+            describe("the fourth section") {
+                it("should have n+1 rows") {
+                    expect(subject.tableView.numberOfRowsInSection(3)).to(equal(feed.tags.count + 1))
+                }
+
+                it("should be titled 'Tags'") {
+                    expect(subject.tableView(subject.tableView, titleForHeaderInSection: 3)).to(equal("Tags"))
+                }
+
+                describe("the first row") {
+                    var cell: UITableViewCell? = nil
+                    let tagIndex: Int = 0
+                    let indexPath = NSIndexPath(forRow: 0, inSection: 3)
+
+                    beforeEach {
+                        cell = subject.tableView(subject.tableView,
+                            cellForRowAtIndexPath: indexPath)
+                    }
+
+                    it("should be titled for the row") {
+                        expect(cell?.textLabel?.text).to(equal(feed.tags[tagIndex]))
+                    }
+
+                    it("should be editable") {
+                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: NSIndexPath(forRow: tagIndex, inSection: 3))).to(beTruthy())
+                    }
+
+                    describe("edit actions") {
+                        var editActions: [UITableViewRowAction] = []
+                        beforeEach {
+                            editActions = subject.tableView(subject.tableView,
+                                editActionsForRowAtIndexPath: indexPath) as? [UITableViewRowAction] ?? []
+                        }
+
+                        it("should have 2 edit actions") {
+                            expect(editActions.count).to(equal(2))
+                        }
+
+                        describe("the first action") {
+                            var action: UITableViewRowAction! = nil
+
+                            beforeEach {
+                                action = editActions.first
+                            }
+
+                            it("should is titled 'Delete'") {
+                                expect(action.title).to(equal("Delete"))
+                            }
+
+                            it("should removes the tag when tapped") {
+                                let tag = feed.tags[tagIndex]
+                                action.handler()(action, NSIndexPath(forRow: tagIndex, inSection: 3))
+                                expect(feed.tags).toNot(contain(tag))
+                            }
+                        }
+
+                        describe("the second action") {
+                            var action: UITableViewRowAction! = nil
+
+                            beforeEach {
+                                action = editActions.last
+                            }
+
+                            it("should is titled 'Edit'") {
+                                expect(action.title).to(equal("Edit"))
+                            }
+
+                            it("should removes the tag when tapped") {
+                                action.handler()(action, NSIndexPath(forRow: tagIndex, inSection: 3))
+                                RBTimeLapse.advanceMainRunLoop()
+                                expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
+                                if let tagEditor = navigationController.topViewController as? TagEditorViewController {
+                                    expect(tagEditor.tagIndex).to(equal(tagIndex))
+                                    expect(tagEditor.feed).to(equal(feed))
+                                }
+                            }
+                        }
+                    }
+                }
+
+                describe("the last row") {
+                    var cell: UITableViewCell? = nil
+                    var indexPath: NSIndexPath! = nil
+
+                    beforeEach {
+                        indexPath = NSIndexPath(forRow: feed.tags.count, inSection: 3)
+                        cell = subject.tableView(subject.tableView,
+                            cellForRowAtIndexPath: indexPath)
+                    }
+
+                    it("should be titled 'Add Tag'") {
+                        expect(cell?.textLabel?.text).to(equal("Add Tag"))
+                    }
+
+                    it("should not be editable") {
+                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)).to(beFalsy())
+                    }
+
+                    describe("when tapped") {
+                        beforeEach {
+                            subject.tableView(subject.tableView, didSelectRowAtIndexPath: indexPath)
+                        }
+
+                        it("should bring up the tag editor screen") {
+                            RBTimeLapse.advanceMainRunLoop()
+                            expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
+                            if let tagEditor = navigationController.topViewController as? TagEditorViewController {
+                                expect(tagEditor.tagIndex).to(beNil())
+                                expect(tagEditor.feed).to(equal(feed))
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

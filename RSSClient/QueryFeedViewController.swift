@@ -19,7 +19,7 @@ public class QueryFeedViewController: UITableViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        let dismissTitle = NSLocalizedString("Done", comment: "")
+        let dismissTitle = NSLocalizedString("Dismiss", comment: "")
         let dismissButton = UIBarButtonItem(title: dismissTitle, style: .Plain, target: self, action: "dismiss")
         self.navigationItem.leftBarButtonItem = dismissButton
 
@@ -42,22 +42,13 @@ public class QueryFeedViewController: UITableViewController {
     }
 
     func dismiss() {
-        if let feed = self.feed {
-            if feed.title.isEmpty && feed.query == nil {
-//                dataManager.deleteFeed(feed)
-            }
-        }
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
 
     func save() {
         if let feed = self.feed {
-            if feed.title.isEmpty && feed.query == nil {
-//                dataManager.deleteFeed(feed)
-            }
-//            feed.managedObjectContext?.save(nil)
+            dataManager.saveFeed(feed)
         }
-//        dataManager.writeOPML()
         dismiss()
     }
 

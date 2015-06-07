@@ -6,12 +6,10 @@ class NotificationHandlerSpec: QuickSpec {
     override func spec() {
         
         let app = UIApplication.sharedApplication()
-        
-        let window = UIWindow()
-        
-        var subject : NotificationHandler! = nil
 
-        var ctx : NSManagedObjectContext! = nil
+        var subject: NotificationHandler! = nil
+
+        var ctx: NSManagedObjectContext! = nil
 
         var article: CoreDataArticle? = nil
         var feed: CoreDataFeed? = nil

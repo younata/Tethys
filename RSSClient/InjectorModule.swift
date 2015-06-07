@@ -31,12 +31,6 @@ public class InjectorModule : Ra.InjectorModule {
             return unreadCounter;
         }
 
-        injector.bind(LoadingView.self) {
-            let loadingView = LoadingView(frame: CGRectZero)
-            loadingView.setTranslatesAutoresizingMaskIntoConstraints(false)
-            return loadingView
-        }
-
         injector.bind(TagPickerView.self) {
             let tagPicker = TagPickerView(frame: CGRectZero)
             tagPicker.setTranslatesAutoresizingMaskIntoConstraints(false)

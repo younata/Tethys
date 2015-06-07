@@ -7,9 +7,9 @@ class FindFeedViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: FindFeedViewController! = nil
 
-        var navController : UINavigationController! = nil
+        var navController: UINavigationController! = nil
 
-        var injector : Ra.Injector! = nil
+        var injector: Ra.Injector! = nil
 
         beforeEach {
             injector = Ra.Injector(module: SpecInjectorModule())

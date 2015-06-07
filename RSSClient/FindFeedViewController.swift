@@ -119,13 +119,14 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
     func save(link: String, opml: Bool = false) {
         // show something to indicate we're doing work...
-        let loading = LoadingView(frame: self.view.bounds)
-        self.view.addSubview(loading)
-        let loadingMessage = NSLocalizedString("Loading feed at %@", comment: "")
-        loading.msg = NSString.localizedStringWithFormat(loadingMessage, link) as String
+        let indicator = ActivityIndicator(forAutoLayout: ())
+        self.view.addSubview(indicator)
+        let messageTemplate = NSLocalizedString("Loading feed at %@", comment: "")
+        let message = NSString.localizedStringWithFormat(messageTemplate, link) as String
+        indicator.configureWithMessage(message)
         if opml {
             dataManager.importOPML(NSURL(string: link)!, progress: {(_) in }) {(_) in
-                loading.removeFromSuperview()
+                indicator.removeFromSuperview()
                 self.navigationController?.toolbarHidden = false
                 self.navigationController?.navigationBarHidden = false
                 self.dismiss()
@@ -135,7 +136,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
                 if let err = error {
                     println("\(err)")
                 }
-                loading.removeFromSuperview()
+                indicator.removeFromSuperview()
                 self.navigationController?.toolbarHidden = false
                 self.navigationController?.navigationBarHidden = false
                 self.dismiss()

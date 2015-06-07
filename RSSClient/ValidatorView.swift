@@ -1,21 +1,29 @@
 import UIKit
 import PureLayout_iOS
 
-class ValidatorView: UIView {
+public class ValidatorView: UIView {
 
-    enum ValidatorState {
+    public enum ValidatorState {
         case Invalid
         case Valid
         case Validating
     }
 
-    var state: ValidatorState = .Invalid
+    public private(set) var state: ValidatorState = .Invalid
 
-    let progressIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+    public private(set) lazy var progressIndicator: UIActivityIndicatorView = {
+        let progressIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+        progressIndicator.setTranslatesAutoresizingMaskIntoConstraints(false)
 
-    let checkMark = CAShapeLayer()
+        self.addSubview(progressIndicator)
 
-    func beginValidating() {
+        progressIndicator.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
+        return progressIndicator
+    }()
+
+    private let checkMark = CAShapeLayer()
+
+    public func beginValidating() {
         state = .Validating
         checkMark.removeFromSuperlayer()
 
@@ -24,7 +32,7 @@ class ValidatorView: UIView {
         progressIndicator.startAnimating()
     }
 
-    func endValidating(valid: Bool = true) {
+    public func endValidating(valid: Bool = true) {
         state = valid ? .Valid : .Invalid
 
         progressIndicator.stopAnimating()
@@ -46,7 +54,7 @@ class ValidatorView: UIView {
         })
     }
 
-    func checkmarkPath(frame: CGRect, checkmarkWidth: CGFloat) -> CGPath {
+    private func checkmarkPath(frame: CGRect, checkmarkWidth: CGFloat) -> CGPath {
         let path = CGPathCreateMutable()
 
         let x = frame.origin.x
@@ -68,7 +76,7 @@ class ValidatorView: UIView {
         return path
     }
 
-    func xPath(frame: CGRect, xWidth: CGFloat) -> CGPath {
+    private func xPath(frame: CGRect, xWidth: CGFloat) -> CGPath {
         let path = CGPathCreateMutable()
 
         let x = frame.origin.x
@@ -94,17 +102,5 @@ class ValidatorView: UIView {
         CGPathAddLineToPoint(path, nil, 0, h / 2 + xm)
 
         return path
-    }
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-
-        progressIndicator.setTranslatesAutoresizingMaskIntoConstraints(false)
-        self.addSubview(progressIndicator)
-        progressIndicator.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
-    }
-
-    required init(coder: NSCoder) {
-        fatalError("")
     }
 }

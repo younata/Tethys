@@ -11,9 +11,13 @@ class FindFeedViewControllerSpec: QuickSpec {
 
         var injector: Ra.Injector! = nil
 
+        var webView: FakeWebView! = nil
+
         beforeEach {
             injector = Ra.Injector(module: SpecInjectorModule())
             subject = injector.create(FindFeedViewController.self) as! FindFeedViewController
+            webView = FakeWebView()
+            subject.webContent = webView
 
             navController = UINavigationController(rootViewController: subject)
 

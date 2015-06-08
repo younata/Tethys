@@ -10,8 +10,8 @@ public class ArticleListController: UITableViewController {
 
     public var previewMode: Bool = false
 
-    lazy var mainQueue: NSOperationQueue! = {
-        self.injector!.create(kMainQueue) as! NSOperationQueue
+    lazy var mainQueue: NSOperationQueue? = {
+        self.injector?.create(kMainQueue) as? NSOperationQueue
     }()
 
     public override func viewDidLoad() {
@@ -62,7 +62,7 @@ public class ArticleListController: UITableViewController {
 
     func refresh() {
         if let feeds = self.feeds {
-            mainQueue.addOperationWithBlock {
+            mainQueue?.addOperationWithBlock {
                 let articles = feeds.reduce(Array<Article>()) { return $0 + $1.articles }
                 let newArticles = Set<Article>(articles)
                 let oldArticles = Set<Article>(self.articles)

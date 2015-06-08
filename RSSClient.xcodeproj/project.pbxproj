@@ -18,12 +18,8 @@
 		894C0C371A1329FB008229A4 /* AMPopTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 894C0C361A1329FB008229A4 /* AMPopTip.m */; };
 		895779A519E62CC500548418 /* findFeeds.js in Resources */ = {isa = PBXBuildFile; fileRef = 89C830B919D8904A009924DA /* findFeeds.js */; };
 		895779A619E62CC500548418 /* FindICO.js in Resources */ = {isa = PBXBuildFile; fileRef = 89C830BD19D89722009924DA /* FindICO.js */; };
-		895782411A3CC0130022F345 /* CircularProgressLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895782401A3CC0130022F345 /* CircularProgressLayer.swift */; };
-		895782431A3CC0130022F345 /* CircularProgressLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895782401A3CC0130022F345 /* CircularProgressLayer.swift */; };
 		895901A51A30BCB7002E2C62 /* CoreDataEnclosure.m in Sources */ = {isa = PBXBuildFile; fileRef = 895901A41A30BCB7002E2C62 /* CoreDataEnclosure.m */; };
 		895901A71A30BCB7002E2C62 /* CoreDataEnclosure.m in Sources */ = {isa = PBXBuildFile; fileRef = 895901A41A30BCB7002E2C62 /* CoreDataEnclosure.m */; };
-		895901A91A30C5D1002E2C62 /* EnclosuresView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895901A81A30C5D1002E2C62 /* EnclosuresView.swift */; };
-		895901AC1A30C6B7002E2C62 /* EnclosureCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895901AB1A30C6B7002E2C62 /* EnclosureCell.swift */; };
 		895901B31A32B61A002E2C62 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 895901AF1A32B61A002E2C62 /* Localizable.strings */; };
 		895901B41A32B61A002E2C62 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 895901AF1A32B61A002E2C62 /* Localizable.strings */; };
 		895901B51A32B61A002E2C62 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 895901B11A32B61A002E2C62 /* Localizable.stringsdict */; };
@@ -57,7 +53,6 @@
 		8978D4E91B05AB4300EDD6D0 /* EnclosureSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4E81B05AB4300EDD6D0 /* EnclosureSpec.swift */; };
 		897CD85C1A213F0900C97ECC /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89635F911A13C2E30052C248 /* MainMenu.xib */; };
 		897CD85E1A21C49000C97ECC /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897CD85D1A21C49000C97ECC /* FeedView.swift */; };
-		897F70F21A38AFE500ECE1A1 /* EnclosuresViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897F70F11A38AFE500ECE1A1 /* EnclosuresViewController.swift */; };
 		897F70FD1A3A4E7700ECE1A1 /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897F70FC1A3A4E7700ECE1A1 /* UnreadCounter.swift */; };
 		897F71001A3A57A300ECE1A1 /* NSColor+RSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 897F70FF1A3A57A300ECE1A1 /* NSColor+RSSClient.m */; };
 		898046D51A1C385A00EB29F0 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898046D41A1C385A00EB29F0 /* MainController.swift */; };
@@ -77,6 +72,7 @@
 		8997C7F71B25074900972930 /* ValidatorViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C7F61B25074900972930 /* ValidatorViewSpec.swift */; };
 		8997C7F91B250FD200972930 /* TextViewCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C7F81B250FD200972930 /* TextViewCellSpec.swift */; };
 		8997C7FB1B25169E00972930 /* TextFieldCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C7FA1B25169E00972930 /* TextFieldCellSpec.swift */; };
+		8997C8511B255A1900972930 /* TagPickerViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C8501B255A1900972930 /* TagPickerViewSpec.swift */; };
 		899C47FB1A9A864700F57B96 /* DataManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */; };
 		899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */; };
 		89A3417C1B1435750000C60B /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A3417B1B1435750000C60B /* Helpers.swift */; };
@@ -206,13 +202,10 @@
 		894C0C351A1329FB008229A4 /* AMPopTip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMPopTip.h; sourceTree = "<group>"; };
 		894C0C361A1329FB008229A4 /* AMPopTip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMPopTip.m; sourceTree = "<group>"; };
 		8957799D19E62C7100548418 /* RSSClientTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSSClientTests-Bridging-Header.h"; sourceTree = "<group>"; };
-		895782401A3CC0130022F345 /* CircularProgressLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircularProgressLayer.swift; sourceTree = "<group>"; };
 		895901A11A2FFDDD002E2C62 /* RSSClient 1. 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1. 2.xcdatamodel"; sourceTree = "<group>"; };
 		895901A21A30BA9C002E2C62 /* RSSClient 1. 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1. 3.xcdatamodel"; sourceTree = "<group>"; };
 		895901A31A30BCB7002E2C62 /* CoreDataEnclosure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDataEnclosure.h; sourceTree = "<group>"; };
 		895901A41A30BCB7002E2C62 /* CoreDataEnclosure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDataEnclosure.m; sourceTree = "<group>"; };
-		895901A81A30C5D1002E2C62 /* EnclosuresView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnclosuresView.swift; sourceTree = "<group>"; };
-		895901AB1A30C6B7002E2C62 /* EnclosureCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnclosureCell.swift; sourceTree = "<group>"; };
 		895901B01A32B61A002E2C62 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Localizable.strings; sourceTree = "<group>"; };
 		895901B21A32B61A002E2C62 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = en; path = Localizable.stringsdict; sourceTree = "<group>"; };
 		89635F891A13C2E30052C248 /* rNews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rNews.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -238,7 +231,6 @@
 		8978D4E61B05AB3800EDD6D0 /* ArticleSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleSpec.swift; sourceTree = "<group>"; };
 		8978D4E81B05AB4300EDD6D0 /* EnclosureSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnclosureSpec.swift; sourceTree = "<group>"; };
 		897CD85D1A21C49000C97ECC /* FeedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
-		897F70F11A38AFE500ECE1A1 /* EnclosuresViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnclosuresViewController.swift; sourceTree = "<group>"; };
 		897F70FC1A3A4E7700ECE1A1 /* UnreadCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounter.swift; sourceTree = "<group>"; };
 		897F70FE1A3A57A300ECE1A1 /* NSColor+RSSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSColor+RSSClient.h"; sourceTree = "<group>"; };
 		897F70FF1A3A57A300ECE1A1 /* NSColor+RSSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSColor+RSSClient.m"; sourceTree = "<group>"; };
@@ -258,6 +250,7 @@
 		8997C7F61B25074900972930 /* ValidatorViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidatorViewSpec.swift; sourceTree = "<group>"; };
 		8997C7F81B250FD200972930 /* TextViewCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextViewCellSpec.swift; sourceTree = "<group>"; };
 		8997C7FA1B25169E00972930 /* TextFieldCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldCellSpec.swift; sourceTree = "<group>"; };
+		8997C8501B255A1900972930 /* TagPickerViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagPickerViewSpec.swift; sourceTree = "<group>"; };
 		899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManagerSpec.swift; sourceTree = "<group>"; };
 		899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindFeedViewControllerSpec.swift; sourceTree = "<group>"; };
 		89A3417B1B1435750000C60B /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
@@ -545,6 +538,7 @@
 				8997C7F61B25074900972930 /* ValidatorViewSpec.swift */,
 				8997C7F81B250FD200972930 /* TextViewCellSpec.swift */,
 				8997C7FA1B25169E00972930 /* TextFieldCellSpec.swift */,
+				8997C8501B255A1900972930 /* TagPickerViewSpec.swift */,
 				89EF4FDB1A9790350052A82F /* Parsers */,
 				89EF4FD51A9682170052A82F /* OPMLParserSpec.swift */,
 				899C48181A9AC0F000F57B96 /* UI */,
@@ -605,7 +599,6 @@
 			children = (
 				89EF4FE11A97D9E60052A82F /* Viewing articles */,
 				89EF4FE01A97D9DF0052A82F /* Reading an article */,
-				89EF4FDF1A97D9D20052A82F /* Enclosures */,
 			);
 			name = Articles;
 			sourceTree = "<group>";
@@ -698,17 +691,6 @@
 				89C830C919DA37FB009924DA /* FeedTableCell.swift */,
 			);
 			name = "Viewing Feeds";
-			sourceTree = "<group>";
-		};
-		89EF4FDF1A97D9D20052A82F /* Enclosures */ = {
-			isa = PBXGroup;
-			children = (
-				897F70F11A38AFE500ECE1A1 /* EnclosuresViewController.swift */,
-				895901A81A30C5D1002E2C62 /* EnclosuresView.swift */,
-				895901AB1A30C6B7002E2C62 /* EnclosureCell.swift */,
-				895782401A3CC0130022F345 /* CircularProgressLayer.swift */,
-			);
-			name = Enclosures;
 			sourceTree = "<group>";
 		};
 		89EF4FE01A97D9DF0052A82F /* Reading an article */ = {
@@ -950,7 +932,6 @@
 				897CD85E1A21C49000C97ECC /* FeedView.swift in Sources */,
 				898047641A206CB100EB29F0 /* FeedsList.swift in Sources */,
 				897F70FD1A3A4E7700ECE1A1 /* UnreadCounter.swift in Sources */,
-				895782431A3CC0130022F345 /* CircularProgressLayer.swift in Sources */,
 				89635FAD1A13C41C0052C248 /* RSSClient.xcdatamodeld in Sources */,
 				89635FAF1A13C4210052C248 /* CoreDataFeed.m in Sources */,
 				895901A71A30BCB7002E2C62 /* CoreDataEnclosure.m in Sources */,
@@ -975,9 +956,6 @@
 				89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */,
 				89A3417C1B1435750000C60B /* Helpers.swift in Sources */,
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
-				895901A91A30C5D1002E2C62 /* EnclosuresView.swift in Sources */,
-				895782411A3CC0130022F345 /* CircularProgressLayer.swift in Sources */,
-				895901AC1A30C6B7002E2C62 /* EnclosureCell.swift in Sources */,
 				89C830B619D7DE97009924DA /* ArticleViewController.swift in Sources */,
 				898F6E121B129AB6000D343D /* ActivityIndicator.swift in Sources */,
 				894C0C371A1329FB008229A4 /* AMPopTip.m in Sources */,
@@ -985,7 +963,6 @@
 				89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */,
 				89C830C319D89E46009924DA /* CoreDataArticle.m in Sources */,
 				89C509F71A2F825400CBD000 /* TextViewCell.swift in Sources */,
-				897F70F21A38AFE500ECE1A1 /* EnclosuresViewController.swift in Sources */,
 				89C204C41A7400D100C792D2 /* NotificationHandler.swift in Sources */,
 				890E47591AA19D69007F217C /* DataUtility.swift in Sources */,
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
@@ -1026,6 +1003,7 @@
 				89C204C21A73FEDA00C792D2 /* SplitDelegateSpec.swift in Sources */,
 				8978D4E91B05AB4300EDD6D0 /* EnclosureSpec.swift in Sources */,
 				89F516571B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m in Sources */,
+				8997C8511B255A1900972930 /* TagPickerViewSpec.swift in Sources */,
 				89EF4FD61A9682170052A82F /* OPMLParserSpec.swift in Sources */,
 				89F5170A1B2014470005AB04 /* QueryFeedViewControllerSpec.swift in Sources */,
 				AE4355FE1A7AB7D900A961B9 /* SpecHelper.swift in Sources */,

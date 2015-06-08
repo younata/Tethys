@@ -4,7 +4,8 @@ import Alamofire
 import Muon
 
 public class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFieldDelegate {
-    public let webContent = WKWebView(forAutoLayout: ())
+    public lazy var webContent = WKWebView(forAutoLayout: ())
+
     public let loadingBar = UIProgressView(progressViewStyle: .Bar)
     public let navField = UITextField(frame: CGRectMake(0, 0, 200, 30))
     private var rssLink: String? = nil

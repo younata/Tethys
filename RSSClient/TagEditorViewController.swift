@@ -13,8 +13,8 @@ public class TagEditorViewController: UIViewController {
     let tagLabel = UILabel(forAutoLayout: ())
     let tagPicker = TagPickerView(frame: CGRectZero)
 
-    lazy var dataManager: DataManager = {
-        self.injector!.create(DataManager.self) as! DataManager
+    lazy var dataManager: DataManager? = {
+        self.injector?.create(DataManager.self) as? DataManager
     }()
 
     public override func viewDidLoad() {
@@ -29,12 +29,11 @@ public class TagEditorViewController: UIViewController {
         self.navigationItem.title = self.feed?.title ?? ""
 
         tagPicker.setTranslatesAutoresizingMaskIntoConstraints(false)
-        self.view.addSubview(tagPicker)
-        tagPicker.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(16, 8, 0, 8), excludingEdge: .Bottom)
-        tagPicker.allTags = dataManager.allTags()
-        tagPicker.didSelect = {
+        tagPicker.configureWithTags(dataManager?.allTags() ?? []) {
             self.tag = $0
         }
+        self.view.addSubview(tagPicker)
+        tagPicker.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(16, 8, 0, 8), excludingEdge: .Bottom)
 
         self.view.addSubview(tagLabel)
         tagLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)

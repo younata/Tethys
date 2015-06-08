@@ -58,7 +58,6 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
 
     var shareButton: UIBarButtonItem? = nil
     var toggleContentButton: UIBarButtonItem? = nil
-    var showEnclosuresButton: UIBarButtonItem? = nil
     let contentString = NSLocalizedString("Content", comment: "")
     let linkString = NSLocalizedString("Link", comment: "")
 
@@ -94,11 +93,6 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
                     } else {
                         self.toolbarItems = [spacer(), shareButton!, spacer()]
                     }
-                    if let ec = showEnclosuresButton {
-                        if a.enclosures.count > 0 {
-                            self.toolbarItems! += [ec, spacer()]
-                        }
-                    }
                 }
             } else {
                 self.toolbarItems = []
@@ -114,17 +108,11 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
             webView.loadHTMLString(articleCSS + title + content + "</body></html>", baseURL: article.feed?.url!)
             if let sb = shareButton {
                 self.toolbarItems = [spacer(), sb, spacer(), toggleContentButton!, spacer()]
-                if let ec = showEnclosuresButton where article.enclosures.count > 0 {
-                    self.toolbarItems! += [ec, spacer()]
-                }
             }
         } else {
             webView.loadRequest(NSURLRequest(URL: article.link!))
             if let sb = shareButton {
                 self.toolbarItems = [spacer(), sb, spacer()]
-                if let ec = showEnclosuresButton where article.enclosures.count > 0 {
-                    self.toolbarItems! += [ec, spacer()]
-                }
             }
         }
     }
@@ -178,9 +166,6 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
                 self.toolbarItems = [spacer(), shareButton!, spacer(), toggleContentButton!, spacer()]
             } else {
                 self.toolbarItems = [spacer(), shareButton!, spacer()]
-            }
-            if a.enclosures.count > 0 && showEnclosuresButton != nil {
-                self.toolbarItems! += [showEnclosuresButton!, spacer()]
             }
         }
 
@@ -390,23 +375,6 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
 //            self.userActivity?.userInfo?["url"] = NSURL(string: self.article?.link ?? "")!
         }
         self.userActivity?.needsSave = true
-    }
-
-    func showEnclosures() {
-        if let enclosures = article?.enclosures {
-            let activity = EnclosuresViewController()
-            activity.dataManager = dataManager
-
-            let navController = UINavigationController(rootViewController: activity)
-
-            if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-                let popover = UIPopoverController(contentViewController: navController)
-                popover.presentPopoverFromBarButtonItem(showEnclosuresButton!,
-                    permittedArrowDirections: .Any, animated: true)
-            } else {
-                self.presentViewController(navController, animated: true, completion: nil)
-            }
-        }
     }
 
     public override func observeValueForKeyPath(keyPath: String,

@@ -24,8 +24,8 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
 
     lazy var dataManager: DataManager = { self.injector?.create(DataManager.self) as! DataManager }()
 
-    lazy var backgroundQueue: NSOperationQueue = {
-        return self.injector?.create(kBackgroundQueue) as? NSOperationQueue ?? NSOperationQueue()
+    lazy var backgroundQueue: NSOperationQueue? = {
+        return self.injector?.create(kBackgroundQueue) as? NSOperationQueue
     }()
 
     public override func viewDidLoad() {
@@ -112,7 +112,7 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
                 feedParser.cancel()
                 self.reload()
             }
-            backgroundQueue.addOperations([opmlParser, feedParser], waitUntilFinished: false)
+            backgroundQueue?.addOperations([opmlParser, feedParser], waitUntilFinished: false)
         }
     }
 

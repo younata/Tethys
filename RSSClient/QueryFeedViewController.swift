@@ -148,7 +148,7 @@ public class QueryFeedViewController: UITableViewController {
             let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextViewCell
             cell.textView.textColor = UIColor.blackColor()
             if let title = feed?.tags.filter({$0.hasPrefix("~")}).first {
-                cell.textView?.text = title.substringFromIndex(title.startIndex.successor())
+                cell.textView.text = title.substringFromIndex(title.startIndex.successor())
             } else if let title = (feed?.title == "" ? nil : feed?.title) {
                 cell.textView.text = title
             } else {
@@ -166,7 +166,7 @@ public class QueryFeedViewController: UITableViewController {
             let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextViewCell
             cell.textView.textColor = UIColor.blackColor()
             if let summary = feed?.tags.filter({$0.hasPrefix("`")}).first {
-                cell.textView?.text = summary.substringFromIndex(summary.startIndex.successor())
+                cell.textView.text = summary.substringFromIndex(summary.startIndex.successor())
             } else if let summary = (feed?.summary == "" ? nil : feed?.summary)  {
                 cell.textView.text = summary
             } else {

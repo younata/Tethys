@@ -110,11 +110,11 @@ class QueryFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should have a label title 'No title available'") {
-                        expect(cell?.textView?.text).to(equal("No title available"))
+                        expect(cell?.textView.text).to(equal("No title available"))
                     }
 
                     it("should re-color the text gray") {
-                        expect(cell?.textView?.textColor).to(equal(UIColor.grayColor()))
+                        expect(cell?.textView.textColor).to(equal(UIColor.grayColor()))
                     }
                 }
 
@@ -127,7 +127,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should use that tag as the title, minus the leading '~'") {
-                        expect(cell?.textView?.text).to(equal("custom title"))
+                        expect(cell?.textView.text).to(equal("custom title"))
                     }
                 }
 
@@ -138,7 +138,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should have a label title equal to the feed's") {
-                        expect(cell?.textView?.text).to(equal(feed.title))
+                        expect(cell?.textView.text).to(equal(feed.title))
                     }
                 }
 
@@ -150,7 +150,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
 
                     describe("on change") {
                         beforeEach {
-                            cell?.textView?.text = "a title"
+                            cell?.textView.text = "a title"
                             if let textView = cell?.textView {
                                 cell?.textViewDidChange(textView)
                             }
@@ -193,11 +193,11 @@ class QueryFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should have a label title 'No summary available'") {
-                        expect(cell?.textView?.text).to(equal("No summary available"))
+                        expect(cell?.textView.text).to(equal("No summary available"))
                     }
 
                     it("should re-color the text gray") {
-                        expect(cell?.textView?.textColor).to(equal(UIColor.grayColor()))
+                        expect(cell?.textView.textColor).to(equal(UIColor.grayColor()))
                     }
                 }
 
@@ -210,7 +210,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should use that tag as the title, minus the leading '`'") {
-                        expect(cell?.textView?.text).to(equal("custom summary"))
+                        expect(cell?.textView.text).to(equal("custom summary"))
                     }
                 }
 
@@ -221,7 +221,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should have a label title equal to the feed's") {
-                        expect(cell?.textView?.text).to(equal(feed.summary))
+                        expect(cell?.textView.text).to(equal(feed.summary))
                     }
                 }
 
@@ -233,7 +233,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
 
                     describe("on change") {
                         beforeEach {
-                            cell?.textView?.text = "a summary"
+                            cell?.textView.text = "a summary"
                             if let textView = cell?.textView {
                                 cell?.textViewDidChange(textView)
                             }
@@ -274,12 +274,12 @@ class QueryFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should have a label title equal to the feed's") {
-                        expect(cell?.textView?.text).to(equal(feed.query))
+                        expect(cell?.textView.text).to(equal(feed.query))
                     }
 
                     describe("on change") {
                         beforeEach {
-                            cell?.textView?.text = "a query"
+                            cell?.textView.text = "a query"
                             if let textView = cell?.textView {
                                 cell?.textViewDidChange(textView)
                             }

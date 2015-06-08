@@ -2,45 +2,40 @@ import UIKit
 
 public class TextFieldCell: UITableViewCell, UITextFieldDelegate {
 
-    public let textField = UITextField(forAutoLayout: ())
+    public lazy var textField: UITextField = {
+        let textField = UITextField(forAutoLayout: ())
+        textField.delegate = self
+        textField.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+        self.contentView.addSubview(textField)
 
-    var onTextChange: (String?) -> Void = {(_) in }
+        textField.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Right)
+        return textField
+    }()
 
-    var showValidator: Bool = false {
+    public var onTextChange: (String?) -> Void = {(_) in }
+
+    public var showValidator: Bool = false {
         didSet {
             validView.hidden = !showValidator
         }
     }
-    var validate: (String) -> Bool = {(_) in return false}
 
-    let validView = ValidatorView(frame: CGRectZero)
+    public lazy var validView: ValidatorView = {
+        let validView = ValidatorView(frame: CGRectZero)
+        self.contentView.addSubview(validView)
+
+        validView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        validView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Left)
+        validView.autoPinEdge(.Left, toEdge: .Right, ofView: self.textField)
+        return validView
+    }()
 
     public var isValid: Bool {
         return validView.state == .Valid
     }
 
-    func setValid(valid: Bool) {
+    public func setValid(valid: Bool) {
         validView.endValidating(valid: valid)
-    }
-
-    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-
-        self.contentView.addSubview(textField)
-        textField.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Right)
-        textField.delegate = self
-        textField.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-
-        self.contentView.addSubview(validView)
-        validView.setTranslatesAutoresizingMaskIntoConstraints(false)
-        validView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Left)
-        validView.autoPinEdge(.Left, toEdge: .Right, ofView: textField)
-
-        showValidator = false
-    }
-
-    public required init(coder: NSCoder) {
-        fatalError("")
     }
 
     // MARK: UITextFieldDelegate

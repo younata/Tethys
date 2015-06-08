@@ -75,6 +75,8 @@
 		898F6E121B129AB6000D343D /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F6E111B129AB6000D343D /* ActivityIndicator.swift */; };
 		8997C7F51B248D5A00972930 /* FakeWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C7F41B248D5A00972930 /* FakeWebView.swift */; };
 		8997C7F71B25074900972930 /* ValidatorViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C7F61B25074900972930 /* ValidatorViewSpec.swift */; };
+		8997C7F91B250FD200972930 /* TextViewCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C7F81B250FD200972930 /* TextViewCellSpec.swift */; };
+		8997C7FB1B25169E00972930 /* TextFieldCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C7FA1B25169E00972930 /* TextFieldCellSpec.swift */; };
 		899C47FB1A9A864700F57B96 /* DataManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */; };
 		899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */; };
 		89A3417C1B1435750000C60B /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A3417B1B1435750000C60B /* Helpers.swift */; };
@@ -254,6 +256,8 @@
 		898F6E111B129AB6000D343D /* ActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
 		8997C7F41B248D5A00972930 /* FakeWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeWebView.swift; sourceTree = "<group>"; };
 		8997C7F61B25074900972930 /* ValidatorViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidatorViewSpec.swift; sourceTree = "<group>"; };
+		8997C7F81B250FD200972930 /* TextViewCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextViewCellSpec.swift; sourceTree = "<group>"; };
+		8997C7FA1B25169E00972930 /* TextFieldCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldCellSpec.swift; sourceTree = "<group>"; };
 		899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManagerSpec.swift; sourceTree = "<group>"; };
 		899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindFeedViewControllerSpec.swift; sourceTree = "<group>"; };
 		89A3417B1B1435750000C60B /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
@@ -539,6 +543,8 @@
 				89CB98491B12C50000C87160 /* ActivityIndicatorSpec.swift */,
 				893F93E31B237EBC00B52194 /* UnreadCounterSpec.swift */,
 				8997C7F61B25074900972930 /* ValidatorViewSpec.swift */,
+				8997C7F81B250FD200972930 /* TextViewCellSpec.swift */,
+				8997C7FA1B25169E00972930 /* TextFieldCellSpec.swift */,
 				89EF4FDB1A9790350052A82F /* Parsers */,
 				89EF4FD51A9682170052A82F /* OPMLParserSpec.swift */,
 				899C48181A9AC0F000F57B96 /* UI */,
@@ -1002,6 +1008,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8997C7FB1B25169E00972930 /* TextFieldCellSpec.swift in Sources */,
 				8997C7F51B248D5A00972930 /* FakeWebView.swift in Sources */,
 				89CB98BF1B13947800C87160 /* FeedTableCellSpec.swift in Sources */,
 				8997C7F71B25074900972930 /* ValidatorViewSpec.swift in Sources */,
@@ -1026,6 +1033,7 @@
 				890E47671AA19F7F007F217C /* DataUtilitySpec.swift in Sources */,
 				AE4356001A7ABA4F00A961B9 /* DataManagerMock.swift in Sources */,
 				899C47FB1A9A864700F57B96 /* DataManagerSpec.swift in Sources */,
+				8997C7F91B250FD200972930 /* TextViewCellSpec.swift in Sources */,
 				89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */,
 				898131781AFC877A0090FA7F /* LocalImportViewControllerSpec.swift in Sources */,
 				89F517001B1BA1B70005AB04 /* PCKMethodRedirector.m in Sources */,

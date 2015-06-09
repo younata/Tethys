@@ -10,10 +10,11 @@ public class DataUtility {
         let data = info.description.dataUsingEncoding(NSUTF8StringEncoding,
             allowLossyConversion: false)!
         let options = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
-        if let aString = NSAttributedString(data: data, options: options,
-            documentAttributes: nil, error: nil) {
+        do {
+            let aString = try NSAttributedString(data: data, options: options,
+                documentAttributes: nil)
                 summary = aString.string
-        } else {
+        } catch _ {
             summary = info.description
         }
         feed.title = info.title
@@ -30,7 +31,10 @@ public class DataUtility {
                 if let d = data as? NSData {
                     if let image = Image(data: d) {
                         feed.image = image
-                        feed.managedObjectContext?.save(nil)
+                        do {
+                            try feed.managedObjectContext?.save()
+                        } catch _ {
+                        }
                     }
                 }
             }
@@ -49,7 +53,7 @@ public class DataUtility {
         article.updatedAt = item.updated
         article.summary = item.description
         article.content = item.content
-        let author = join(", ", item.authors.map { author in
+        let author = ", ".join(item.authors.map { author in
             if let email = author.email {
                 return "\(author.name) <\(author.email)>"
             }
@@ -87,12 +91,11 @@ public class DataUtility {
             request.predicate = predicate
             request.sortDescriptors = sortDescriptors
 
-            var error: NSError? = nil
-            if let ret = managedObjectContext.executeFetchRequest(request,
-                error: &error) as? [NSManagedObject] {
+            let error: NSError? = nil
+            if let ret = managedObjectContext.executeFetchRequest(request) as? [NSManagedObject] {
                     return ret
             }
-            println("Error executing fetch request: \(error)")
+            print("Error executing fetch request: \(error)")
             return []
     }
 
@@ -103,7 +106,7 @@ public class DataUtility {
                 matchingPredicate: predicate,
                 managedObjectContext: managedObjectContext,
                 sortDescriptors: sortDescriptors) as? [CoreDataFeed] ?? []
-            return map(feeds) {
+            return feeds.map {
                 Feed(feed: $0)
             }
     }
@@ -115,7 +118,7 @@ public class DataUtility {
                 matchingPredicate: predicate,
                 managedObjectContext: managedObjectContext,
                 sortDescriptors: sortDescriptors) as? [CoreDataArticle] ?? []
-            return map(articles) {
+            return articles.map {
                 Article(article: $0, feed: nil)
             }
     }

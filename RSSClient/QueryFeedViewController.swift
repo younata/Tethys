@@ -124,7 +124,7 @@ public class QueryFeedViewController: UITableViewController {
         commitEditingStyle _: UITableViewCellEditingStyle,
         forRowAtIndexPath _: NSIndexPath) {}
 
-    public override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+    public override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         if let section = FeedSections(rawValue: indexPath.section) {
             return editActionsForSection(section, indexPath: indexPath)
         }
@@ -156,7 +156,7 @@ public class QueryFeedViewController: UITableViewController {
                 cell.textView.textColor = UIColor.grayColor()
             }
             cell.onTextChange = {
-                if var feed = self.feed {
+                if let feed = self.feed {
                     feed.title = $0 ?? ""
                 }
                 self.navigationItem.rightBarButtonItem?.enabled = self.feed?.title != nil && self.feed?.query != nil
@@ -174,7 +174,7 @@ public class QueryFeedViewController: UITableViewController {
                 cell.textView.textColor = UIColor.grayColor()
             }
             cell.onTextChange = {
-                if var feed = self.feed {
+                if let feed = self.feed {
                     feed.summary = $0 ?? ""
                 }
             }
@@ -188,14 +188,14 @@ public class QueryFeedViewController: UITableViewController {
                 cell.textView.text = "function(article) {\n    return !article.read;\n}"
             }
             cell.onTextChange = {
-                if var feed = self.feed {
+                if let feed = self.feed {
                     feed.query = $0 ?? ""
                 }
                 self.navigationItem.rightBarButtonItem?.enabled = self.feed?.title != nil && self.feed?.query != nil
             }
             return cell
         case .Tags:
-            let cell = tableView.dequeueReusableCellWithIdentifier("tags", forIndexPath: indexPath) as! UITableViewCell
+            let cell = tableView.dequeueReusableCellWithIdentifier("tags", forIndexPath: indexPath) as UITableViewCell
             if let tags = feed?.tags {
                 if indexPath.row == tags.count {
                     cell.textLabel?.text = NSLocalizedString("Add Tag", comment: "")
@@ -229,7 +229,7 @@ public class QueryFeedViewController: UITableViewController {
             }
             let deleteTitle = NSLocalizedString("Delete", comment: "")
             let delete = UITableViewRowAction(style: .Default, title: deleteTitle, handler: {(_, indexPath) in
-                if var feed = self.feed {
+                if let feed = self.feed {
                     let tag = feed.tags[indexPath.row]
                     feed.removeTag(tag)
                     self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)

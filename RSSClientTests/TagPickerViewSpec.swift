@@ -29,7 +29,7 @@ class TagPickerViewSpec: QuickSpec {
                 let delegate = subject.picker.delegate {
                     expect(dataSource.numberOfComponentsInPickerView(subject.picker)).to(equal(1))
                     expect(dataSource.pickerView(subject.picker, numberOfRowsInComponent: 0)).to(equal(tagsList.count))
-                    for (idx, tag) in enumerate(tagsList) {
+                    for (idx, tag) in tagsList.enumerate() {
                         expect(delegate.pickerView!(subject.picker, titleForRow: idx, forComponent: 0)).to(equal(tag))
                     }
             }

@@ -27,13 +27,13 @@ public class InjectorModule : Ra.InjectorModule {
 
         injector.bind(UnreadCounter.self) {
             let unreadCounter = UnreadCounter(frame: CGRectZero);
-            unreadCounter.setTranslatesAutoresizingMaskIntoConstraints(false);
+            unreadCounter.translatesAutoresizingMaskIntoConstraints = false;
             return unreadCounter;
         }
 
         injector.bind(TagPickerView.self) {
             let tagPicker = TagPickerView(frame: CGRectZero)
-            tagPicker.setTranslatesAutoresizingMaskIntoConstraints(false)
+            tagPicker.translatesAutoresizingMaskIntoConstraints = false
             return tagPicker
         }
     }

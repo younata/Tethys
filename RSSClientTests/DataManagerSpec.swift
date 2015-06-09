@@ -53,9 +53,12 @@ class DataManagerSpec: QuickSpec {
             feed3 = createFeed(moc)
             feed3.title = "e"
             feed3.tags = ["dad"]
-            moc.save(nil)
+            do {
+                try moc.save()
+            } catch _ {
+            }
 
-            feeds = map([feed1, feed2, feed3]) { Feed(feed: $0) }
+            feeds = [feed1, feed2, feed3].map { Feed(feed: $0) }
         }
 
         describe("allTags") {
@@ -77,7 +80,7 @@ class DataManagerSpec: QuickSpec {
             }
 
             it("should return feeds that partially match a tag") {
-                let subFeeds = map([feed1, feed3]) { Feed(feed: $0) }
+                let subFeeds = [feed1, feed3].map { Feed(feed: $0) }
                 expect(subject.feedsMatchingTag("a")).to(equal(subFeeds))
             }
         }

@@ -68,10 +68,10 @@ public class Article: Equatable, Hashable {
         willSet {
             if newValue != feed {
                 self.updated = true
-                if let oldValue = feed where contains(oldValue.articles, self) {
+                if let oldValue = feed where oldValue.articles.contains(self) {
                     oldValue.removeArticle(self)
                 }
-                if let nv = newValue where !contains(nv.articles, self) {
+                if let nv = newValue where !nv.articles.contains(self) {
                     nv.addArticle(self)
                 }
             }
@@ -151,21 +151,21 @@ public class Article: Equatable, Hashable {
     }
 
     public func addFlag(flag: String) {
-        if !contains(self.flags, flag) {
+        if !self.flags.contains(flag.characters) {
             self.flags.append(flag)
             updated = true
         }
     }
 
     public func removeFlag(flag: String) {
-        if contains(self.flags, flag) {
+        if self.flags.contains(flag.characters) {
             self.flags = self.flags.filter { $0 != flag }
             updated = true
         }
     }
 
     public func addEnclosure(enclosure: Enclosure) {
-        if !contains(self.enclosures, enclosure) {
+        if !self.enclosures.contains(enclosure) {
             self.enclosures.append(enclosure)
             if let otherArticle = enclosure.article {
                 otherArticle.removeEnclosure(enclosure)
@@ -176,7 +176,7 @@ public class Article: Equatable, Hashable {
     }
 
     public func removeEnclosure(enclosure: Enclosure) {
-        if contains(self.enclosures, enclosure) {
+        if self.enclosures.contains(enclosure) {
             self.enclosures = self.enclosures.filter { $0 != enclosure }
             if enclosure.article == self {
                 enclosure.article = nil

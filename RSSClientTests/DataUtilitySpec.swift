@@ -46,7 +46,10 @@ class DataUtilitySpec: QuickSpec {
             context("when the feed has an existing image") {
                 beforeEach {
                     feed.image = UIImage(named: "AppIcon60x60")
-                    feed.managedObjectContext?.save(nil)
+                    do {
+                        try feed.managedObjectContext?.save()
+                    } catch _ {
+                    }
                 }
                 it("should not update the feed image") {
                     DataUtility.updateFeedImage(feed, info: info, manager: Manager.sharedInstance)
@@ -61,7 +64,10 @@ class DataUtilitySpec: QuickSpec {
             var item : Muon.Article! = nil
             beforeEach {
                 article = createArticle(ctx)
-                ctx.save(nil)
+                do {
+                    try ctx.save()
+                } catch _ {
+                }
 
                 let author = Muon.Author(name: "me", email: nil, uri: nil)
 
@@ -90,7 +96,10 @@ class DataUtilitySpec: QuickSpec {
                 context("and the article title has not previously been set") {
                     beforeEach {
                         article.title = nil
-                        ctx.save(nil)
+                        do {
+                            try ctx.save()
+                        } catch _ {
+                        }
                     }
                     it("should set the article title to 'unknown'") {
                         DataUtility.updateArticle(article, item: item)
@@ -100,7 +109,10 @@ class DataUtilitySpec: QuickSpec {
                 context("and the article title has previously been set") {
                     beforeEach {
                         article.title = "a title"
-                        ctx.save(nil)
+                        do {
+                            try ctx.save()
+                        } catch _ {
+                        }
                     }
                     it("should not change the title") {
                         DataUtility.updateArticle(article, item: item)
@@ -112,7 +124,10 @@ class DataUtilitySpec: QuickSpec {
             context("when the article has just been created") {
                 it("should set 'read' to false") {
                     article.read = true
-                    ctx.save(nil)
+                    do {
+                        try ctx.save()
+                    } catch _ {
+                    }
                     DataUtility.updateArticle(article, item: item)
                     expect(article.read).to(beFalsy())
                 }
@@ -137,7 +152,10 @@ class DataUtilitySpec: QuickSpec {
                     enc.url = "http://example.com/enclosure.txt"
                     enc.kind = "text/text"
 
-                    ctx.save(nil)
+                    do {
+                        try ctx.save()
+                    } catch _ {
+                    }
                 }
 
                 it("should not insert another enclosure item") {
@@ -171,7 +189,10 @@ class DataUtilitySpec: QuickSpec {
                 let otherFeed = createFeed(ctx)
                 otherFeed.title = "example"
                 otherFeed.summary = "other"
-                ctx.save(nil)
+                do {
+                    try ctx.save()
+                } catch _ {
+                }
             }
 
             it("should return all objects that match the given predicate") {
@@ -197,7 +218,10 @@ class DataUtilitySpec: QuickSpec {
                 otherFeed = createFeed(ctx)
                 otherFeed.title = "example"
                 otherFeed.summary = "other"
-                ctx.save(nil)
+                do {
+                    try ctx.save()
+                } catch _ {
+                }
             }
 
             it("should return all feeds that match the given predicate") {
@@ -226,7 +250,10 @@ class DataUtilitySpec: QuickSpec {
                 otherArticle = createArticle(ctx)
                 otherArticle.title = "example"
                 otherArticle.summary = "other"
-                ctx.save(nil)
+                do {
+                    try ctx.save()
+                } catch _ {
+                }
             }
 
             it("should return all articles that match the given predicate") {

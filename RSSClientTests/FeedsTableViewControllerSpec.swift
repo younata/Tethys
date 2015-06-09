@@ -52,7 +52,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
             it("should filter feeds down to only those with tags that match the search string") {
                 expect(subject.tableView.numberOfRowsInSection(0)).to(equal(1))
 
-                if let cell = subject.tableView.visibleCells()[0] as? FeedTableCell {
+                if let cell = subject.tableView.visibleCells[0] as? FeedTableCell {
                     expect(cell.feed).to(equal(feeds[0]))
                 }
             }
@@ -220,7 +220,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 var feed: Feed! = nil
 
                 beforeEach {
-                    cell = subject.tableView.visibleCells().first as? FeedTableCell
+                    cell = subject.tableView.visibleCells.first as? FeedTableCell
                     feed = feeds[0]
 
                     expect(cell).to(beAnInstanceOf(FeedTableCell.self))

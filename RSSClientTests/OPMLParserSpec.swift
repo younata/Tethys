@@ -5,7 +5,7 @@ import rNews
 class OPMLParserSpec: QuickSpec {
     override func spec() {
         let bundle = NSBundle(forClass: OPMLParserSpec.self)
-        let str = String(contentsOfFile: bundle.pathForResource("test", ofType: "opml")!, encoding: NSUTF8StringEncoding, error: nil)!
+        let str = try! String(contentsOfFile: bundle.pathForResource("test", ofType: "opml")!, encoding: NSUTF8StringEncoding)
         
         
         describe("Parsing a string") {

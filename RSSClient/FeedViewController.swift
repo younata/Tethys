@@ -117,7 +117,7 @@ public class FeedViewController: UITableViewController {
     }
 
     public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
 
         cell.textLabel?.textColor = UIColor.blackColor()
         cell.textLabel?.text = ""
@@ -196,13 +196,13 @@ public class FeedViewController: UITableViewController {
     }
 
     public override func tableView(tableView: UITableView,
-        editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+        editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
             if feed == nil || FeedSections(rawValue: indexPath.section) != .Tags {
                 return nil
             }
             let deleteTitle = NSLocalizedString("Delete", comment: "")
             let delete = UITableViewRowAction(style: .Default, title: deleteTitle, handler: {(_, indexPath) in
-                if var feed = self.feed {
+                if let feed = self.feed {
                     let tag = feed.tags[indexPath.row]
                     feed.removeTag(tag)
                     tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)

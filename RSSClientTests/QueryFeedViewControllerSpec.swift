@@ -82,7 +82,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
 
         describe("the tableView") {
             it("should should have 4 sections") {
-                expect(subject.tableView.numberOfSections()).to(equal(4))
+                expect(subject.tableView.numberOfSections).to(equal(4))
             }
 
             describe("the first section") {

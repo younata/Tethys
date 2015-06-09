@@ -28,7 +28,7 @@ public class TagEditorViewController: UIViewController {
         self.navigationItem.rightBarButtonItem?.enabled = false
         self.navigationItem.title = self.feed?.title ?? ""
 
-        tagPicker.setTranslatesAutoresizingMaskIntoConstraints(false)
+        tagPicker.translatesAutoresizingMaskIntoConstraints = false
         tagPicker.configureWithTags(dataManager?.allTags() ?? []) {
             self.tag = $0
         }
@@ -49,7 +49,7 @@ public class TagEditorViewController: UIViewController {
     }
 
     func save() {
-        if var feed = self.feed, let tag = tag {
+        if let feed = self.feed, let tag = tag {
             feed.addTag(tag)
             self.feed = feed
         }

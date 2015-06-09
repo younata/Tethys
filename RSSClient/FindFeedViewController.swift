@@ -81,7 +81,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         navField.keyboardType = .URL
         navField.clearsOnBeginEditing = true
 
-        loadingBar.setTranslatesAutoresizingMaskIntoConstraints(false)
+        loadingBar.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(loadingBar)
         loadingBar.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
         loadingBar.autoSetDimension(.Height, toSize: 1)
@@ -135,7 +135,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         } else {
             dataManager.newFeed(link) {(error) in
                 if let err = error {
-                    println("\(err)")
+                    print("\(err)")
                 }
                 indicator.removeFromSuperview()
                 self.navigationController?.toolbarHidden = false
@@ -145,8 +145,8 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         }
     }
 
-    public override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject,
-        change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
+    public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?,
+        change: [NSObject : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if (keyPath == "estimatedProgress" && object as? NSObject == webContent) {
             loadingBar.progress = Float(webContent.estimatedProgress)
         }
@@ -193,10 +193,10 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
         if let findFeedsJS = NSBundle.mainBundle().pathForResource("findFeeds", ofType: "js"),
            let discover = String(contentsOfFile: findFeedsJS,
-            encoding: NSUTF8StringEncoding, error: nil) where lookForFeeds {
+            encoding: NSUTF8StringEncoding) where lookForFeeds {
                 webView.evaluateJavaScript(discover, completionHandler: {(res: AnyObject!, error: NSError?) in
                     if let str = res as? String {
-                        if (!contains(self.feeds, str)) {
+                        if (!self.feeds.contains(str.characters)) {
                             self.rssLink = str
                             self.addFeedButton.enabled = true
                         }
@@ -204,7 +204,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
                         self.rssLink = nil
                     }
                     if (error != nil) {
-                        println("Error executing javascript: \(error)")
+                        print("Error executing javascript: \(error)")
                     }
                 })
         }
@@ -255,7 +255,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
                     feedParser.success {info in
                         let string = info.link.absoluteString ?? text
                         opmlParser.cancel()
-                        if (!contains(self.feeds, text)) {
+                        if (!self.feeds.contains(text.characters)) {
                             let detected = NSLocalizedString("Feed Detected", comment: "")
                             let saveFormatString = NSLocalizedString("Save %@?", comment: "")
                             let saveFeed = String.localizedStringWithFormat(saveFormatString, text)

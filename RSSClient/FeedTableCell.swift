@@ -7,7 +7,7 @@ public class FeedTableCell: UITableViewCell {
             if let f = feed {
                 nameLabel.text = f.title
                 summaryLabel.text = f.summary
-                unreadCounter.unread = UInt(filter(f.articles, {return $0.read == false}).count)
+                unreadCounter.unread = UInt(f.articles.filter({return $0.read == false}).count)
             } else {
                 nameLabel.text = ""
                 summaryLabel.text = ""
@@ -59,7 +59,7 @@ public class FeedTableCell: UITableViewCell {
     public lazy var unreadCounter: UnreadCounter = {
         let counter = UnreadCounter(frame: CGRectZero)
 
-        counter.setTranslatesAutoresizingMaskIntoConstraints(false)
+        counter.translatesAutoresizingMaskIntoConstraints = false
         self.contentView.addSubview(counter)
 
         counter.autoPinEdgeToSuperviewEdge(.Top)

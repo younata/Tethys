@@ -13,7 +13,7 @@ public class ValidatorView: UIView {
 
     public private(set) lazy var progressIndicator: UIActivityIndicatorView = {
         let progressIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
-        progressIndicator.setTranslatesAutoresizingMaskIntoConstraints(false)
+        progressIndicator.translatesAutoresizingMaskIntoConstraints = false
 
         self.addSubview(progressIndicator)
 

@@ -16,7 +16,11 @@ func managedObjectContext() -> NSManagedObjectContext {
 
     let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
     var error : NSError? = nil
-    persistentStoreCoordinator.addPersistentStoreWithType(NSInMemoryStoreType, configuration: nil, URL: nil, options: nil, error: &error)
+    do {
+        try persistentStoreCoordinator.addPersistentStoreWithType(NSInMemoryStoreType, configuration: nil, URL: nil, options: nil)
+    } catch var error1 as NSError {
+        error = error1
+    }
     assert(error == nil, "\(error!)")
 
     let managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)

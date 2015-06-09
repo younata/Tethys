@@ -14,7 +14,7 @@ public class ActivityIndicator: UIView {
 
     private lazy var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(activityIndicatorStyle: .White)
-        indicator.setTranslatesAutoresizingMaskIntoConstraints(false)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(indicator)
         indicator.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
         indicator.autoPinEdge(.Bottom, toEdge: .Top, ofView: self.label)

@@ -14,7 +14,7 @@ public class NotificationHandler: NSObject {
         category.setActions([markReadAction], forContext: .Minimal)
         category.setActions([markReadAction], forContext: .Default)
 
-        let notificationSettings = UIUserNotificationSettings(forTypes: .Badge | .Alert | .Sound,
+        let notificationSettings = UIUserNotificationSettings(forTypes: [.Badge, .Alert, .Sound],
             categories: Set<NSObject>([category]))
         application.registerUserNotificationSettings(notificationSettings)
     }

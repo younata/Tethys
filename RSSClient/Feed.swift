@@ -6,7 +6,7 @@ import Foundation
     public typealias Image=NSImage
 #endif
 
-public class Feed: Equatable, Hashable, Printable {
+public class Feed: Equatable, Hashable, CustomStringConvertible {
     public var title: String {
         willSet {
             if newValue != title {
@@ -100,7 +100,7 @@ public class Feed: Equatable, Hashable, Printable {
     }
 
     public func addArticle(article: Article) {
-        if !contains(self.articles, article) {
+        if !self.articles.contains(article) {
             updated = true
             articles.append(article)
             if let otherFeed = article.feed where otherFeed != self {
@@ -111,7 +111,7 @@ public class Feed: Equatable, Hashable, Printable {
     }
 
     public func removeArticle(article: Article) {
-        if contains(self.articles, article) {
+        if self.articles.contains(article) {
             updated = true
             self.articles = self.articles.filter { $0 != article }
             if article.feed == self {
@@ -121,14 +121,14 @@ public class Feed: Equatable, Hashable, Printable {
     }
 
     public func addTag(tag: String) {
-        if !contains(tags, tag) {
+        if !tags.contains(tag.characters) {
             updated = true
             tags.append(tag)
         }
     }
 
     public func removeTag(tag: String) {
-        if contains(tags, tag) {
+        if tags.contains(tag.characters) {
             updated = true
             tags = tags.filter { $0 != tag }
         }

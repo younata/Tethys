@@ -13,7 +13,8 @@ public class OPMLManager {
     }
 
     public func importOPML(opml: NSURL, completion: ([Feed]) -> Void) {
-        if let text = String(contentsOfURL: opml, encoding: NSUTF8StringEncoding, error: nil) {
+        do {
+            let text = try String(contentsOfURL: opml, encoding: NSUTF8StringEncoding)
             let parser = OPMLParser(text: text)
             parser.success {items in
                 var feeds : [Feed] = []
@@ -49,7 +50,7 @@ public class OPMLManager {
             }
 
             importQueue.addOperation(parser)
-        } else {
+        } catch _ {
             completion([])
         }
     }
@@ -80,7 +81,7 @@ public class OPMLManager {
             } else {
                 tags = ""
             }
-            var line = "<outline \(url) \(title) \(tags) type=\"rss\"/>"
+            let line = "<outline \(url) \(title) \(tags) type=\"rss\"/>"
             ret += "        \(line)\n"
         }
         ret += "    </body>\n</opml>"
@@ -89,7 +90,10 @@ public class OPMLManager {
 
     public func writeOPML() {
         let opmlLocation = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
-        self.generateOPMLContents(dataManager.feeds()).writeToFile(opmlLocation, atomically: true,
-            encoding: NSUTF8StringEncoding, error: nil)
+        do {
+            try self.generateOPMLContents(dataManager.feeds()).writeToFile(opmlLocation, atomically: true,
+                encoding: NSUTF8StringEncoding)
+        } catch _ {
+        }
     }
 }

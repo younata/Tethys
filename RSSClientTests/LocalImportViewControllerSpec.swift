@@ -12,12 +12,18 @@ private func createOPMLWithFeeds(feeds: [(url: String, title: String)], location
     opml += "</body></opml>"
 
     let path = documentsDirectory().stringByAppendingPathComponent(location)
-    opml.writeToFile(path, atomically: true, encoding: NSUTF8StringEncoding, error: nil)
+    do {
+        try opml.writeToFile(path, atomically: true, encoding: NSUTF8StringEncoding)
+    } catch _ {
+    }
 }
 
 private func deleteAtLocation(location: String) {
     let path = documentsDirectory().stringByAppendingPathComponent(location)
-    NSFileManager.defaultManager().removeItemAtPath(path, error: nil)
+    do {
+        try NSFileManager.defaultManager().removeItemAtPath(path)
+    } catch _ {
+    }
 }
 
 private func createFeed(feed: (url: String, title: String, articles: [String]), location: String) {
@@ -28,7 +34,10 @@ private func createFeed(feed: (url: String, title: String, articles: [String]), 
     str += "</channel></rss>"
 
     let path = documentsDirectory().stringByAppendingPathComponent(location)
-    str.writeToFile(path, atomically: true, encoding: NSUTF8StringEncoding, error: nil)
+    do {
+        try str.writeToFile(path, atomically: true, encoding: NSUTF8StringEncoding)
+    } catch _ {
+    }
 }
 
 class LocalImportViewControllerSpec: QuickSpec {

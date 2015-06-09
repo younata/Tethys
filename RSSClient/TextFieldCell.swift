@@ -24,7 +24,7 @@ public class TextFieldCell: UITableViewCell, UITextFieldDelegate {
         let validView = ValidatorView(frame: CGRectZero)
         self.contentView.addSubview(validView)
 
-        validView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        validView.translatesAutoresizingMaskIntoConstraints = false
         validView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Left)
         validView.autoPinEdge(.Left, toEdge: .Right, ofView: self.textField)
         return validView
@@ -35,7 +35,7 @@ public class TextFieldCell: UITableViewCell, UITextFieldDelegate {
     }
 
     public func setValid(valid: Bool) {
-        validView.endValidating(valid: valid)
+        validView.endValidating(valid)
     }
 
     // MARK: UITextFieldDelegate

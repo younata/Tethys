@@ -47,7 +47,7 @@ class OPMLManagerSpec: QuickSpec {
                 if (feeds.count != 3) {
                     return;
                 }
-                feeds.sort { $0.title < $1.title }
+                feeds.sortInPlace { $0.title < $1.title }
                 let first = feeds[0]
                 expect(first.url).to(equal(NSURL(string: "http://example.com/feedWithTag")))
 
@@ -85,7 +85,7 @@ class OPMLManagerSpec: QuickSpec {
                 let file = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
                 expect(fileManager.fileExistsAtPath(file)).to(beTruthy())
 
-                let text = String(contentsOfFile: file, encoding: NSUTF8StringEncoding, error: nil)!
+                let text = try! String(contentsOfFile: file, encoding: NSUTF8StringEncoding)
 
                 let parser = OPMLParser(text: text)
 

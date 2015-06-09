@@ -79,20 +79,19 @@ public class OPMLParser: NSOperation, NSXMLParserDelegate {
 
     public func parser(parser: NSXMLParser, parseErrorOccurred parseError: NSError) {
         isOPML = false
-        println("\(parseError)")
         onFailure(parseError)
     }
 
     public func parser(parser: NSXMLParser, didStartElement elementName: String,
         namespaceURI: String?, qualifiedName qName: String?,
-        attributes attributeDict: [NSObject : AnyObject]) {
+        attributes attributeDict: [String: String]) {
             if elementName.lowercaseString == "xml" { return }
             if elementName.lowercaseString == "opml" { isOPML = true }
             if (!isOPML) { return }
 
             let isOPMLObject = elementName.lowercaseString.hasPrefix("outline")
             if let attributes = attributeDict as? [String: String] where isOPMLObject {
-                var item = OPMLItem()
+                let item = OPMLItem()
                 let whitespaceSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
                 for (k, value) in attributes {
                     let key = k.lowercaseString

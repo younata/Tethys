@@ -68,7 +68,7 @@ public class ArticleListController: UITableViewController {
                 let oldArticles = Set<Article>(self.articles)
                 if newArticles != oldArticles {
                     self.articles = (articles as [Article])
-                    self.articles.sort({(a: Article, b: Article) in
+                    self.articles.sortInPlace({(a: Article, b: Article) in
                         let da = a.updatedAt ?? a.published
                         let db = b.updatedAt ?? b.published
                         return da.timeIntervalSince1970 > db.timeIntervalSince1970
@@ -159,7 +159,7 @@ public class ArticleListController: UITableViewController {
     }
 
     public override func tableView(tableView: UITableView,
-        editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+        editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
             if previewMode {
                 return nil
             }

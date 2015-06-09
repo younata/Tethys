@@ -89,7 +89,7 @@ class FeedViewControllerSpec: QuickSpec {
 
         describe("the tableView") {
             it("should should have 4 sections") {
-                expect(subject.tableView.numberOfSections()).to(equal(4))
+                expect(subject.tableView.numberOfSections).to(equal(4))
             }
 
             describe("the first section") {
@@ -113,7 +113,7 @@ class FeedViewControllerSpec: QuickSpec {
                             subject.view.layoutIfNeeded()
                             RBTimeLapse.advanceMainRunLoop()
 
-                            cell = subject.tableView.visibleCells()[0] as! UITableViewCell
+                            cell = subject.tableView.visibleCells[0] as! UITableViewCell
                         }
 
                         it("should have a label title 'No title available'") {
@@ -132,7 +132,7 @@ class FeedViewControllerSpec: QuickSpec {
                             subject.view.layoutIfNeeded()
                             RBTimeLapse.advanceMainRunLoop()
 
-                            cell = subject.tableView.visibleCells()[0] as! UITableViewCell
+                            cell = subject.tableView.visibleCells[0] as! UITableViewCell
                         }
 
                         it("should use that tag as the title, minus the leading '~'") {
@@ -142,7 +142,7 @@ class FeedViewControllerSpec: QuickSpec {
 
                     context("when the feed has a title preconfigured") {
                         beforeEach {
-                            cell = subject.tableView.visibleCells()[0] as! UITableViewCell
+                            cell = subject.tableView.visibleCells[0] as! UITableViewCell
                         }
 
                         it("should have a label title equal to the feed's") {
@@ -168,7 +168,7 @@ class FeedViewControllerSpec: QuickSpec {
                 describe("the cell") {
                     var cell: TextFieldCell! = nil
                     beforeEach {
-                        cell = subject.tableView.visibleCells()[1] as! TextFieldCell
+                        cell = subject.tableView.visibleCells[1] as! TextFieldCell
                     }
 
                     it("should be preconfigured with the feed's url") {
@@ -245,7 +245,7 @@ class FeedViewControllerSpec: QuickSpec {
                         subject.view.layoutIfNeeded()
                         RBTimeLapse.advanceMainRunLoop()
 
-                        cell = subject.tableView.visibleCells()[2] as! UITableViewCell
+                        cell = subject.tableView.visibleCells[2] as! UITableViewCell
                     }
 
                     it("should have a label title 'No summary available'") {
@@ -264,7 +264,7 @@ class FeedViewControllerSpec: QuickSpec {
                         subject.view.layoutIfNeeded()
                         RBTimeLapse.advanceMainRunLoop()
 
-                        cell = subject.tableView.visibleCells()[2] as! UITableViewCell
+                        cell = subject.tableView.visibleCells[2] as! UITableViewCell
                     }
 
                     it("should use that tag as the summary, minus the leading '`'") {
@@ -274,7 +274,7 @@ class FeedViewControllerSpec: QuickSpec {
 
                 context("when the feed has a summary preconfigured") {
                     beforeEach {
-                        cell = subject.tableView.visibleCells()[2] as! UITableViewCell
+                        cell = subject.tableView.visibleCells[2] as! UITableViewCell
                     }
 
                     it("should have a label title equal to the feed's") {
@@ -297,7 +297,7 @@ class FeedViewControllerSpec: QuickSpec {
                     let tagIndex: Int = 0
 
                     beforeEach {
-                        cell = subject.tableView.visibleCells()[3] as! UITableViewCell
+                        cell = subject.tableView.visibleCells[3] as! UITableViewCell
                     }
 
                     it("should be titled for the row") {
@@ -367,7 +367,7 @@ class FeedViewControllerSpec: QuickSpec {
 
                     beforeEach {
                         indexPath = NSIndexPath(forRow: feed.tags.count, inSection: 3)
-                        cell = subject.tableView.visibleCells().last as! UITableViewCell
+                        cell = subject.tableView.visibleCells.last as! UITableViewCell
                     }
 
                     it("should be titled 'Add Tag'") {

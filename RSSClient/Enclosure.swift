@@ -26,10 +26,10 @@ public class Enclosure: Equatable {
         willSet {
             if newValue != article {
                 self.updated = true
-                if let oldValue = article where contains(oldValue.enclosures, self) {
+                if let oldValue = article where oldValue.enclosures.contains(self) {
                     oldValue.removeEnclosure(self)
                 }
-                if let nv = newValue where !contains(nv.enclosures, self) {
+                if let nv = newValue where !nv.enclosures.contains(self) {
                     nv.addEnclosure(self)
                 }
             }

@@ -12,7 +12,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         tableView.tableFooterView = UIView()
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 80
-        tableView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.delegate = self
         tableView.dataSource = self;
 
@@ -221,7 +221,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
     public func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle,
         forRowAtIndexPath indexPath: NSIndexPath) {}
 
-    public func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+    public func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         let deleteTitle = NSLocalizedString("Delete", comment: "")
         let delete = UITableViewRowAction(style: .Default, title: deleteTitle, handler: {(_, indexPath: NSIndexPath!) in
             let feed = self.feedAtIndexPath(indexPath)
@@ -261,7 +261,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
 
     private func reload(tag: String?) {
         let oldFeeds = feeds
-        feeds = dataManager.feedsMatchingTag(tag).sorted {(f1: Feed, f2: Feed) in
+        feeds = dataManager.feedsMatchingTag(tag).sort {(f1: Feed, f2: Feed) in
             let f1Unread = f1.unreadArticles().count
             let f2Unread = f2.unreadArticles().count
             if f1Unread != f2Unread {

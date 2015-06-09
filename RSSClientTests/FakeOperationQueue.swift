@@ -25,7 +25,7 @@ class FakeOperationQueue : NSOperationQueue {
         }
     }
 
-    override func addOperations(operations: [AnyObject], waitUntilFinished wait: Bool) {
+    override func addOperations(operations: [NSOperation], waitUntilFinished wait: Bool) {
         let oldRunSynchronously = runSynchronously
         runSynchronously = runSynchronously || wait
         if let ops = operations as? [NSOperation] {

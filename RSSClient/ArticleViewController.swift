@@ -68,8 +68,10 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
 
     var articleCSS: String {
         if let loc = NSBundle.mainBundle().URLForResource("article", withExtension: "css") {
-            if let str = NSString(contentsOfURL: loc, encoding: NSUTF8StringEncoding, error: nil) {
+            do {
+                let str = try NSString(contentsOfURL: loc, encoding: NSUTF8StringEncoding)
                 return "<html><head><style type=\"text/css\">\(str)</style></head><body>"
+            } catch _ {
             }
         }
         return "<html><body>"
@@ -135,7 +137,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         }
 
         self.view.addSubview(loadingBar)
-        loadingBar.setTranslatesAutoresizingMaskIntoConstraints(false)
+        loadingBar.translatesAutoresizingMaskIntoConstraints = false
         loadingBar.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
         loadingBar.autoSetDimension(.Height, toSize: 1)
         loadingBar.progressTintColor = UIColor.darkGreenColor()
@@ -210,9 +212,9 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
 
     func removeObserverFromContent(obj: WKWebView) {
         var idx: Int? = nil
-        do {
+        repeat {
             idx = nil
-            for (i, x) in enumerate(objectsBeingObserved) {
+            for (i, x) in objectsBeingObserved.enumerate() {
                 if x == obj {
                     idx = i
                     x.removeObserver(self, forKeyPath: "estimatedProgress")
@@ -243,21 +245,9 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     var nextContent: WKWebView = WKWebView(forAutoLayout: ())
     var nextContentRight: NSLayoutConstraint! = nil
 
-    func showPopTip(text: String, fromPoint point: CGPoint, fromDirection direction: AMPopTipDirection) {
-        let poptip = AMPopTip()
-        poptip.popoverColor = UIColor.lightGrayColor()
-        let rect = CGRectMake(point.x, point.y, 0, 0)
-        let font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
-        let attributedText = NSAttributedString(string: text, attributes: [NSFontAttributeName: font])
-
-        poptip.showAttributedText(attributedText, direction: direction, maxWidth: 120, inView: self.view,
-            fromFrame: rect, duration: 2)
-    }
 
     func back(gesture: UIScreenEdgePanGestureRecognizer) {
         if lastArticleIndex == 0 {
-            showPopTip(NSLocalizedString("No previous article", comment: ""),
-                fromPoint: gesture.locationInView(self.view), fromDirection: .Right)
             return
         }
         let width = CGRectGetWidth(self.view.bounds)
@@ -301,11 +291,6 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
 
     func next(gesture: UIScreenEdgePanGestureRecognizer) {
         if lastArticleIndex + 1 >= articles.count {
-            if gesture.state == .Began {
-                let point = CGPointMake(self.view.bounds.width, gesture.locationInView(self.view).y)
-                showPopTip(NSLocalizedString("End of article list", comment: ""),
-                    fromPoint: point, fromDirection: .Left)
-            }
             return;
         }
         let width = CGRectGetWidth(self.view.bounds)
@@ -377,8 +362,8 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         self.userActivity?.needsSave = true
     }
 
-    public override func observeValueForKeyPath(keyPath: String,
-        ofObject object: AnyObject, change: [NSObject : AnyObject],
+    public override func observeValueForKeyPath(keyPath: String?,
+        ofObject object: AnyObject?, change: [NSObject : AnyObject]?,
         context: UnsafeMutablePointer<Void>) {
             if (keyPath == "estimatedProgress" && (object as? NSObject) == content) {
                 loadingBar.progress = Float(content.estimatedProgress)
@@ -398,7 +383,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     public func webView(webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         loadingBar.progress = 0
         loadingBar.hidden = false
-        if !contains(objectsBeingObserved, webView) {
+        if !objectsBeingObserved.contains(webView) {
             webView.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
             objectsBeingObserved.append(webView)
         }

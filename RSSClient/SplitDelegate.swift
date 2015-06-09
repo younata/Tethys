@@ -13,8 +13,8 @@ public class SplitDelegate: NSObject, UISplitViewControllerDelegate {
     }
 
     public func splitViewController(splitViewController: UISplitViewController,
-        collapseSecondaryViewController secondaryViewController: UIViewController!,
-        ontoPrimaryViewController primaryViewController: UIViewController!) -> Bool {
+        collapseSecondaryViewController secondaryViewController: UIViewController,
+        ontoPrimaryViewController primaryViewController: UIViewController) -> Bool {
             return collapseDetailViewController
     }
 }

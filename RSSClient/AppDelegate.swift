@@ -115,7 +115,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
     public func application(application: UIApplication,
         continueUserActivity userActivity: NSUserActivity,
-        restorationHandler: ([AnyObject]!) -> Void) -> Bool {
+        restorationHandler: ([AnyObject]?) -> Void) -> Bool {
             var handled = false
 
             let type = userActivity.activityType

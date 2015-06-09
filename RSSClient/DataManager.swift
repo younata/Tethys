@@ -10,7 +10,8 @@ public class DataManager: NSObject {
     // MARK: OPML
 
     public func importOPML(opml: NSURL, progress: (Double) -> Void, completion: ([Feed]) -> Void) {
-        if let text = NSString(contentsOfURL: opml, encoding: NSUTF8StringEncoding, error: nil) {
+        do {
+            let text = try NSString(contentsOfURL: opml, encoding: NSUTF8StringEncoding)
             let opmlParser = OPMLParser(text: text as String)
             opmlParser.failure {(error) in
                 completion([])
@@ -25,7 +26,7 @@ public class DataManager: NSObject {
                     self.mainQueue.addOperationWithBlock {
                         if item.isQueryFeed() {
                             if let query = item.query {
-                                var newFeed = self.newQueryFeed(item.title!, code: query, summary: item.summary)
+                                let newFeed = self.newQueryFeed(item.title!, code: query, summary: item.summary)
                                 for tag in (item.tags ?? []) {
                                     newFeed.addTag(tag)
                                 }
@@ -65,6 +66,7 @@ public class DataManager: NSObject {
                 }
             }
             backgroundQueue.addOperation(opmlParser)
+        } catch _ {
         }
     }
 
@@ -78,12 +80,12 @@ public class DataManager: NSObject {
             return set.union(Set(feed.tags))
         }
 
-        return Array(setOfTags).sorted { return $0.lowercaseString < $1.lowercaseString }
+        return Array(setOfTags).sort { return $0.lowercaseString < $1.lowercaseString }
     }
 
     public func feeds() -> [Feed] {
         return DataUtility.feedsWithPredicate(NSPredicate(value: true),
-            managedObjectContext: self.backgroundObjectContext).sorted {
+            managedObjectContext: self.backgroundObjectContext).sort {
                 return $0.title < $1.title
         }
     }
@@ -114,7 +116,10 @@ public class DataManager: NSObject {
             let cdfeed = newFeed()
             cdfeed.url = feedURL
             feed = Feed(feed: cdfeed)
-            self.backgroundObjectContext.save(nil)
+            do {
+                try self.backgroundObjectContext.save()
+            } catch _ {
+            }
             NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: cdfeed)
         }
         #if os(iOS)
@@ -137,7 +142,10 @@ public class DataManager: NSObject {
             feed.title = title
             feed.query = code
             feed.summary = summary
-            self.backgroundObjectContext.save(nil)
+            do {
+                try self.backgroundObjectContext.save()
+            } catch _ {
+            }
             NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
         }
         return Feed(feed: feed)
@@ -167,7 +175,10 @@ public class DataManager: NSObject {
             }
         }
         self.backgroundObjectContext.deleteObject(feed)
-        self.backgroundObjectContext.save(nil)
+        do {
+            try self.backgroundObjectContext.save()
+        } catch _ {
+        }
         if (feeds().count == 0) {
             #if os(iOS)
                 let app = UIApplication.sharedApplication()
@@ -187,12 +198,12 @@ public class DataManager: NSObject {
 
     var stats : [(parseTime: Double, importTime: Double)] = []
 
-    func finishedUpdatingFeed(error: NSError?, var feed: Feed,
+    func finishedUpdatingFeed(error: NSError?, feed: Feed,
         managedObjectContext: NSManagedObjectContext, inout feedsLeft: Int,
         completion: (NSError?) -> (Void)) {
             feedsLeft--
             if error != nil {
-                println("Errored loading: \(error)")
+                print("Errored loading: \(error)")
             }
             if (error == nil) {
                 if feed.waitPeriod == nil || feed.waitPeriod != 0 {
@@ -207,7 +218,10 @@ public class DataManager: NSObject {
             }
             if feedsLeft == 0 {
                 if backgroundObjectContext.hasChanges {
-                    backgroundObjectContext.save(nil)
+                    do {
+                        try backgroundObjectContext.save()
+                    } catch _ {
+                    }
                 }
                 mainQueue.addOperationWithBlock {
                     completion(error)
@@ -250,7 +264,7 @@ public class DataManager: NSObject {
                 if wait != 0 {
 //                    feed.remainingWait = wait - 1
 //                    ctx.save(nil)
-                    println("Skipping feed at \(feed.url)")
+                    print("Skipping feed at \(feed.url)")
                     feedsLeft--
                     if (feedsLeft == 0) {
                         completion(nil)
@@ -288,7 +302,7 @@ public class DataManager: NSObject {
         // But for now, it's ok.
         let times: [NSTimeInterval] = feed.articles.map {
             return $0.published.timeIntervalSince1970
-        }.sorted { return $0 < $1 }
+        }.sort { return $0 < $1 }
 
         if times.count < 2 {
             return (nil, 0)
@@ -299,7 +313,7 @@ public class DataManager: NSObject {
         }
 
         var intervals: [NSTimeInterval] = []
-        for (i, t) in enumerate(times) {
+        for (i, t) in times.enumerate() {
             if i == (times.count - 1) {
                 break
             }
@@ -311,7 +325,7 @@ public class DataManager: NSObject {
             return sqrt(mean(values.map { pow($0 - average, 2) }))
         }
 
-        let standardDeviation = stdev(intervals, averageTimeInterval)
+        let standardDeviation = stdev(intervals, average: averageTimeInterval)
 
         let d = NSDate(timeIntervalSince1970: times.last! + averageTimeInterval)
         let end = d.dateByAddingTimeInterval(standardDeviation)
@@ -343,7 +357,7 @@ public class DataManager: NSObject {
             matchingPredicate: NSPredicate(value: true),
             managedObjectContext: self.backgroundObjectContext) as? [CoreDataEnclosure] ?? []
 
-        return dataEnclosures.sorted {a, b in
+        return dataEnclosures.sort {a, b in
             if let da = a.url, let db = b.url {
                 return da.lastPathComponent < db.lastPathComponent
             }
@@ -434,7 +448,10 @@ public class DataManager: NSObject {
 
     func readArticle(article: CoreDataArticle, read: Bool = true) {
         article.read = read
-        article.managedObjectContext?.save(nil)
+        do {
+            try article.managedObjectContext?.save()
+        } catch _ {
+        }
         setApplicationBadgeCount()
     }
 
@@ -442,7 +459,10 @@ public class DataManager: NSObject {
         for article in articles {
             article.read = read
         }
-        articles.first?.managedObjectContext?.save(nil)
+        do {
+            try articles.first?.managedObjectContext?.save()
+        } catch _ {
+        }
         setApplicationBadgeCount()
     }
 
@@ -457,7 +477,7 @@ public class DataManager: NSObject {
         let coreDataObjects = DataUtility.entities("Article",
             matchingPredicate: NSPredicate(value: true),
             managedObjectContext: self.backgroundObjectContext)
-        theArticles = (coreDataObjects as? [CoreDataArticle] ?? []).sorted {a, b in
+        theArticles = (coreDataObjects as? [CoreDataArticle] ?? []).sort {a, b in
             if let da = a.updatedAt ?? a.published, let db = b.updatedAt ?? b.published {
                 return da.timeIntervalSince1970 > db.timeIntervalSince1970
             }
@@ -524,11 +544,11 @@ public class DataManager: NSObject {
 
     private func setUpContext(ctx: JSContext) -> JSContext {
         ctx.exceptionHandler = {(context, value) in
-            println("Javascript exception: \(value)")
+            print("Javascript exception: \(value)")
         }
         ctx.evaluateScript("var console = {}")
         let console = ctx.objectForKeyedSubscript("console")
-        var block : @objc_block (NSString) -> Void = {(message: NSString) in println("\(message)")}
+        let block : @objc_block (NSString) -> Void = {(message: NSString) in print("\(message)")}
         console.setObject(unsafeBitCast(block, AnyObject.self), forKeyedSubscript: "log")
         let script = "var include = function(article) { return true }"
         ctx.evaluateScript(script)
@@ -538,7 +558,7 @@ public class DataManager: NSObject {
     private func console(ctx: JSContext) {
         ctx.evaluateScript("var console = {}")
         let console = ctx.objectForKeyedSubscript("console")
-        var block : @objc_block (NSString) -> Void = {(message: NSString) in println("\(message)")}
+        let block : @objc_block (NSString) -> Void = {(message: NSString) in print("\(message)")}
         console.setObject(unsafeBitCast(block, AnyObject.self), forKeyedSubscript: "log")
     }
 
@@ -568,7 +588,7 @@ public class DataManager: NSObject {
     func updateBackgroundThreads(feeds: [NSManagedObjectID]) {
         let articles = DataUtility.entities("Article", matchingPredicate: NSPredicate(value: true),
             managedObjectContext: backgroundObjectContext) as? [CoreDataArticle] ?? []
-        var articleIDs: [NSManagedObjectID: [NSManagedObjectID]] = [:]
+        let articleIDs: [NSManagedObjectID: [NSManagedObjectID]] = [:]
         for feed in feeds {
             let feedPredicate = NSPredicate(format: "self == %@", feed)
             let theFeed = DataUtility.entities("Feed", matchingPredicate: feedPredicate,
@@ -615,17 +635,32 @@ public class DataManager: NSObject {
         var error: NSError? = nil
         var options: [String: AnyObject] = [NSMigratePersistentStoresAutomaticallyOption: true,
                                             NSInferMappingModelAutomaticallyOption: true]
-        persistentStore.addPersistentStoreWithType(NSSQLiteStoreType,
-            configuration: self.managedObjectModel.configurations.last as? String,
-            URL: storeURL, options: options, error: &error)
-        if (error != nil) {
-            NSFileManager.defaultManager().removeItemAtURL(storeURL!, error: nil)
-            error = nil
-            persistentStore.addPersistentStoreWithType(NSSQLiteStoreType,
+        do {
+            try persistentStore.addPersistentStoreWithType(NSSQLiteStoreType,
                 configuration: self.managedObjectModel.configurations.last as? String,
-                URL: storeURL, options: options, error: &error)
+                URL: storeURL, options: options)
+        } catch var error1 as NSError {
+            error = error1
+        } catch {
+            fatalError()
+        }
+        if (error != nil) {
+            do {
+                try NSFileManager.defaultManager().removeItemAtURL(storeURL)
+            } catch _ {
+            }
+            error = nil
+            do {
+                try persistentStore.addPersistentStoreWithType(NSSQLiteStoreType,
+                    configuration: self.managedObjectModel.configurations.last as? String,
+                    URL: storeURL, options: options)
+            } catch var error1 as NSError {
+                error = error1
+            } catch {
+                fatalError()
+            }
             if let err = error {
-                println("Fatal error adding persistent data store: \(err)")
+                print("Fatal error adding persistent data store: \(err)")
                 fatalError("")
             }
         }

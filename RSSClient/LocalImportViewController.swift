@@ -74,7 +74,7 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
 
     public func reloadItems() {
         let fileManager = NSFileManager.defaultManager()
-        if let contents = fileManager.contentsOfDirectoryAtPath(documentsDirectory(), error: nil) as? [String] {
+        if let contents = fileManager.contentsOfDirectoryAtPath(documentsDirectory()) as? [String] {
             for path in contents {
                 verifyIfFeedOrOPML(path)
             }
@@ -84,21 +84,22 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
     }
 
     func reload() {
-        self.feeds.sort { $0.0 < $1.0 }
-        self.opmls.sort { $0.0 < $1.0 }
+        self.feeds.sortInPlace { $0.0 < $1.0 }
+        self.opmls.sortInPlace { $0.0 < $1.0 }
         let sections = NSIndexSet(indexesInRange: NSMakeRange(0, 2))
         self.tableViewController.tableView.reloadSections(sections, withRowAnimation: .Automatic)
     }
 
     private func verifyIfFeedOrOPML(path: String) {
-        if contains(contentsOfDirectory, path) {
+        if contentsOfDirectory.contains(path.characters) {
             return;
         }
 
         contentsOfDirectory.append(path)
 
         let location = documentsDirectory().stringByAppendingPathComponent(path)
-        if let text = NSString(contentsOfFile: location, encoding: NSUTF8StringEncoding, error: nil) {
+        do {
+            let text = try NSString(contentsOfFile: location, encoding: NSUTF8StringEncoding)
             let opmlParser = OPMLParser(text: text as String)
             let feedParser = FeedParser(string: text as String)
             feedParser.completion = {feed in
@@ -113,6 +114,7 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
                 self.reload()
             }
             backgroundQueue?.addOperations([opmlParser, feedParser], waitUntilFinished: false)
+        } catch _ {
         }
     }
 
@@ -131,7 +133,7 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
     }
 
     public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
 
         if indexPath.section == 0 {
             let (path, items) = opmls[indexPath.row]

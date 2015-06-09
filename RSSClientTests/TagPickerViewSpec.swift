@@ -24,7 +24,7 @@ class TagPickerViewSpec: QuickSpec {
             }
         }
 
-        var pickerListsTags: ([String]) -> (Void) = {tagsList in
+        let pickerListsTags: ([String]) -> (Void) = {tagsList in
             if let dataSource = subject.picker.dataSource,
                 let delegate = subject.picker.delegate {
                     expect(dataSource.numberOfComponentsInPickerView(subject.picker)).to(equal(1))

@@ -5,17 +5,17 @@ import rNews
 class NotificationHandlerSpec: QuickSpec {
     override func spec() {
         
-        let app = UIApplication.sharedApplication()
-
-        var subject: NotificationHandler! = nil
-
-        var ctx: NSManagedObjectContext! = nil
-
-        var article: CoreDataArticle? = nil
-        var feed: CoreDataFeed? = nil
+//        let app = UIApplication.sharedApplication()
+//
+//        var subject: NotificationHandler! = nil
+//
+//        var ctx: NSManagedObjectContext! = nil
+//
+//        var article: CoreDataArticle? = nil
+//        var feed: CoreDataFeed? = nil
 
         beforeEach {
-            subject = NotificationHandler()
+//            subject = NotificationHandler()
 
 
 //            feed = FeedObject(tuple: ("example feed", "http://example.com/feed", "", nil, [], 0, 0, nil), objectID: feedID)

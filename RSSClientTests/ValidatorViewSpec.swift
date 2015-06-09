@@ -26,7 +26,7 @@ class ValidatorViewSpec: QuickSpec {
 
             context("upon successful validation") {
                 beforeEach {
-                    subject.endValidating(valid: true)
+                    subject.endValidating(true)
                 }
 
                 it("should move to a successful validating state") {
@@ -45,7 +45,7 @@ class ValidatorViewSpec: QuickSpec {
 
             context("upon failing to validate") {
                 beforeEach {
-                    subject.endValidating(valid: false)
+                    subject.endValidating(false)
                 }
 
                 it("should move to an invalid validating state") {

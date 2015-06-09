@@ -87,8 +87,8 @@ class LocalImportViewControllerSpec: QuickSpec {
             let rssFeed : (url: String, title: String, articles: [String]) = ("http://example.com/feed", "feed", ["article1", "article2"])
 
             beforeEach {
-                createOPMLWithFeeds(opmlFeeds, "opml")
-                createFeed(rssFeed, "feed")
+                createOPMLWithFeeds(opmlFeeds, location: "opml")
+                createFeed(rssFeed, location: "feed")
                 subject.reloadItems()
             }
 

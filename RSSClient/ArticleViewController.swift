@@ -10,7 +10,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
 //                self.dataManager?.readArticle(a, read: true)
 //                NSNotificationCenter.defaultCenter().postNotificationName("ArticleWasRead", object: a)
 //                a.managedObjectContext?.save(nil)
-                let url = a.link
+//                let url = a.link
                 showArticle(a, onWebView: content)
 
                 self.navigationItem.title = a.title ?? ""
@@ -31,7 +31,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
                 self.userActivity?.needsSave = true
 
                 let localNotes = UIApplication.sharedApplication().scheduledLocalNotifications
-                if let scheduledNotes = localNotes as? [UILocalNotification] {
+                if let scheduledNotes = localNotes {
                     let notes = scheduledNotes.filter {note in
                         if let ui = note.userInfo,
                             let feed: String = ui["feed"] as? String,
@@ -234,7 +234,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     func configureContent() {
         content.navigationDelegate = self
         self.view.bringSubviewToFront(self.loadingBar)
-        if let items = self.navigationItem.rightBarButtonItems as? [UIBarButtonItem] {
+        if let items = self.navigationItem.rightBarButtonItems {
             let forward = items[0]
             let back = items[1]
             forward.enabled = content.canGoForward
@@ -387,14 +387,14 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
             webView.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
             objectsBeingObserved.append(webView)
         }
-        if let wvu = webView.URL {
+        if let _ = webView.URL {
 //            if wvu != NSURL(string: self.article?.feed?.url ?? "") {
 //                self.userActivity?.userInfo?["url"] = wvu
 //                self.userActivity?.needsSave = true
 //                self.userActivity?.webpageURL = wvu
 //            }
         }
-        if let items = self.navigationItem.rightBarButtonItems as? [UIBarButtonItem] {
+        if let items = self.navigationItem.rightBarButtonItems {
             let forward = items[0]
             let back = items[1]
             forward.enabled = content.canGoForward

@@ -52,33 +52,18 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
         self.tableViewController.tableView.dataSource = self
     }
 
-//    public override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation,
-//        duration: NSTimeInterval) {
-//            super.willRotateToInterfaceOrientation(toInterfaceOrientation, duration: duration)
-//            let landscape = UIInterfaceOrientationIsLandscape(toInterfaceOrientation)
-//            let statusBarHeight: CGFloat = (landscape ? 0 : 20)
-//            if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-//                let navBarHeight: CGFloat = (landscape ? 32 : 44)
-//                tableViewTopOffset.constant = navBarHeight + statusBarHeight
-//            } else {
-//                tableViewTopOffset.constant = 44 + statusBarHeight
-//            }
-//            UIView.animateWithDuration(duration) {
-//                self.view.layoutIfNeeded()
-//            }
-//    }
-
     func dismiss() {
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
 
     public func reloadItems() {
         let fileManager = NSFileManager.defaultManager()
-        if let contents = fileManager.contentsOfDirectoryAtPath(documentsDirectory()) as? [String] {
+        do {
+            let contents = try fileManager.contentsOfDirectoryAtPath(documentsDirectory())
             for path in contents {
                 verifyIfFeedOrOPML(path)
             }
-        }
+        } catch _ {}
 
         self.tableViewController.refreshControl?.endRefreshing()
     }
@@ -91,7 +76,7 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
     }
 
     private func verifyIfFeedOrOPML(path: String) {
-        if contentsOfDirectory.contains(path.characters) {
+        if contentsOfDirectory.contains(path) {
             return;
         }
 
@@ -172,11 +157,8 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
 
             let activityIndicator = disableInteractionWithMessage(NSLocalizedString("Importing feed", comment: ""))
 
-            if let url = feed.link.absoluteString {
-                self.dataManager.newFeed(url) {_ in
-                    self.reenableInteractionAndDismiss(activityIndicator)
-                }
-            } else {
+            let url = feed.link.absoluteString
+            self.dataManager.newFeed(url) {_ in
                 self.reenableInteractionAndDismiss(activityIndicator)
             }
         }

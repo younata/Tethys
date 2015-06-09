@@ -42,7 +42,8 @@ public class TextFieldCell: UITableViewCell, UITextFieldDelegate {
 
     public func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange,
         replacementString string: String) -> Bool {
-            let text = (textField.text as NSString).stringByReplacingCharactersInRange(range, withString: string)
+            guard let string = textField.text else { return true }
+            let text = (string as NSString).stringByReplacingCharactersInRange(range, withString: string)
 
             if showValidator {
                 validView.beginValidating()

@@ -122,8 +122,8 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             if type == "com.rachelbrindle.rssclient.article",
                 let splitView = self.window?.rootViewController as? UISplitViewController,
                 let nc = splitView.viewControllers.first as? UINavigationController,
-                let ftvc = nc.viewControllers.first as? FeedsTableViewController,
-                let userInfo = userActivity.userInfo {
+                let _ = nc.viewControllers.first as? FeedsTableViewController,
+                let _ = userActivity.userInfo {
                     nc.popToRootViewControllerAnimated(false)
 //                    let feedTitle = userInfo["feed"] as! String
 //                    let feed : Feed = dataManager.feeds().filter{ return $0.title == feedTitle; }.first!
@@ -131,9 +131,9 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 //                    let article : Article = feed.articles.filter({
 //                    return $0.objectID.URIRepresentation() == articleID }).first!
 //                    let al = ftvc.showFeeds([feed], animated: false)
-                    var controllers: [AnyObject] = []
+//                    var controllers: [AnyObject] = []
 //                    controllers = [al.showArticle(article)]
-                    restorationHandler(controllers)
+                    restorationHandler([])
                     handled = true
             }
             return handled

@@ -18,7 +18,7 @@ func managedObjectContext() -> NSManagedObjectContext {
     var error : NSError? = nil
     do {
         try persistentStoreCoordinator.addPersistentStoreWithType(NSInMemoryStoreType, configuration: nil, URL: nil, options: nil)
-    } catch var error1 as NSError {
+    } catch let error1 as NSError {
         error = error1
     }
     assert(error == nil, "\(error!)")

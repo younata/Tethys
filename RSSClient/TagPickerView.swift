@@ -53,8 +53,8 @@ public class TagPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
         return existingSolutions.count
     }
 
-    public func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
-        return existingSolutions[row] ?? ""
+    public func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return existingSolutions[row]
     }
 
     public func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
@@ -69,7 +69,10 @@ public class TagPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
 
     public func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange,
         replacementString string: String) -> Bool {
-            let text = (textField.text as NSString).stringByReplacingCharactersInRange(range, withString: string)
+            guard let string = textField.text else {
+                return false
+            }
+            let text = (string as NSString).stringByReplacingCharactersInRange(range, withString: string)
             return textFieldDidChange(text)
     }
 

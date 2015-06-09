@@ -151,14 +151,14 @@ public class Article: Equatable, Hashable {
     }
 
     public func addFlag(flag: String) {
-        if !self.flags.contains(flag.characters) {
+        if !self.flags.contains(flag) {
             self.flags.append(flag)
             updated = true
         }
     }
 
     public func removeFlag(flag: String) {
-        if self.flags.contains(flag.characters) {
+        if self.flags.contains(flag) {
             self.flags = self.flags.filter { $0 != flag }
             updated = true
         }

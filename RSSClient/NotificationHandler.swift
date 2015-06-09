@@ -14,14 +14,15 @@ public class NotificationHandler: NSObject {
         category.setActions([markReadAction], forContext: .Minimal)
         category.setActions([markReadAction], forContext: .Default)
 
-        let notificationSettings = UIUserNotificationSettings(forTypes: [.Badge, .Alert, .Sound],
-            categories: Set<NSObject>([category]))
+        let types = UIUserNotificationType.Badge.union(.Alert).union(.Sound)
+        let notificationSettings = UIUserNotificationSettings(forTypes: types,
+            categories: Set<UIUserNotificationCategory>([category]))
         application.registerUserNotificationSettings(notificationSettings)
     }
 
     func handleLocalNotification(notification: UILocalNotification, window: UIWindow) {
         if let userInfo = notification.userInfo {
-            let (feed, article) = feedAndArticleFromUserInfo(userInfo)
+            let (_, article) = feedAndArticleFromUserInfo(userInfo)
             showArticle(article, window: window)
         }
     }
@@ -29,9 +30,9 @@ public class NotificationHandler: NSObject {
     func handleAction(identifier: String?, notification: UILocalNotification,
         window: UIWindow, completionHandler: () -> Void) {
             if let userInfo = notification.userInfo {
-                let (feed, article) = feedAndArticleFromUserInfo(userInfo)
+                let (_, article) = feedAndArticleFromUserInfo(userInfo)
                 if identifier == "read" {
-                    let dataManager = self.injector!.create(DataManager.self) as! DataManager
+//                    let dataManager = self.injector!.create(DataManager.self) as! DataManager
 //                    dataManager.readArticle(article)
                 } else if identifier == "view" {
                     showArticle(article, window: window)
@@ -51,7 +52,7 @@ public class NotificationHandler: NSObject {
 //        note.userInfo = dict
         note.fireDate = NSDate()
         note.category = "default"
-        if let existingNotes = application.scheduledLocalNotifications as? [UILocalNotification] {
+        if let existingNotes = application.scheduledLocalNotifications {
             application.scheduledLocalNotifications = existingNotes + [note]
         }
         application.presentLocalNotificationNow(note)
@@ -73,9 +74,9 @@ public class NotificationHandler: NSObject {
     private func showArticle(article: Article, window: UIWindow) {
         let splitView = window.rootViewController as? UISplitViewController
         if let nc = splitView?.viewControllers.first as? UINavigationController,
-            let ftvc = nc.viewControllers.first as? FeedsTableViewController {
+            let _ = nc.viewControllers.first as? FeedsTableViewController {
                 nc.popToRootViewControllerAnimated(false)
-                if let feed = article.feed {
+                if let _ = article.feed {
 //                    let al = ftvc.showFeeds([feed], animated: false)
 //                    al.showArticle(article)
                 }

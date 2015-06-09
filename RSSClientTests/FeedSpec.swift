@@ -53,10 +53,10 @@ class FeedSpec: QuickSpec {
                 return Article(title: name, link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: read, feed: nil, flags: [], enclosures: [])
             }
 
-            let a = article("a", true)
-            let b = article("b", false)
-            let c = article("c", false)
-            let d = article("d", true)
+            let a = article("a", read: true)
+            let b = article("b", read: false)
+            let c = article("c", read: false)
+            let d = article("d", read: true)
 
             subject.addArticle(a)
             subject.addArticle(b)

@@ -57,8 +57,6 @@ public class ValidatorView: UIView {
     private func checkmarkPath(frame: CGRect, checkmarkWidth: CGFloat) -> CGPath {
         let path = CGPathCreateMutable()
 
-        let x = frame.origin.x
-        let y = frame.origin.y
         let w = frame.width
         let h = frame.height
 
@@ -79,8 +77,6 @@ public class ValidatorView: UIView {
     private func xPath(frame: CGRect, xWidth: CGFloat) -> CGPath {
         let path = CGPathCreateMutable()
 
-        let x = frame.origin.x
-        let y = frame.origin.y
         let w = frame.width
         let h = frame.height
 

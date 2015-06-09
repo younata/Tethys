@@ -1,7 +1,7 @@
 import UIKit
 import PureLayout_iOS
 
-public class UnreadCounter: UIView, UIAppearanceContainer {
+public class UnreadCounter: UIView {
 
     private lazy var triangleLayer: CAShapeLayer = {
         let layer = CAShapeLayer()

@@ -2,7 +2,6 @@ import Foundation
 import CoreData
 import WebKit
 import JavaScriptCore
-import Alamofire
 import Muon
 
 public class DataManager: NSObject {
@@ -230,17 +229,17 @@ public class DataManager: NSObject {
             }
     }
 
-    let mainManager: Manager = {
-        let config = NSURLSessionConfiguration.defaultSessionConfiguration()
-        config.timeoutIntervalForRequest = 30.0
-        return Alamofire.Manager(configuration: config)
-    }()
-    lazy var backgroundManager: Manager = {
-        let ident = "com.rachelbrindle.rNews.background"
-        let config = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier(ident)
-        config.timeoutIntervalForRequest = 30.0
-        return Manager(configuration: config)
-    }()
+//    let mainManager: Manager = {
+//        let config = NSURLSessionConfiguration.defaultSessionConfiguration()
+//        config.timeoutIntervalForRequest = 30.0
+//        return Alamofire.Manager(configuration: config)
+//    }()
+//    lazy var backgroundManager: Manager = {
+//        let ident = "com.rachelbrindle.rNews.background"
+//        let config = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier(ident)
+//        config.timeoutIntervalForRequest = 30.0
+//        return Manager(configuration: config)
+//    }()
 
     public func updateFeeds(feeds: [Feed], backgroundFetch: Bool = false, completion: (NSError?)->(Void) = {_ in }) {
         let feedIds = feeds.filter { !$0.isQueryFeed && $0.feedID != nil }.map { $0.feedID! }
@@ -259,7 +258,7 @@ public class DataManager: NSObject {
             self.stats = []
 
             for feed in theFeeds {
-                let manager = backgroundFetch ? self.backgroundManager : self.mainManager
+//                let manager = backgroundFetch ? self.backgroundManager : self.mainManager
                 let wait = feed.remainingWait ?? 0
                 if wait != 0 {
 //                    feed.remainingWait = wait - 1
@@ -273,16 +272,16 @@ public class DataManager: NSObject {
                     continue
                 }
 
-                FeedRepository.loadFeed(feed.url!.absoluteString!, downloadManager: manager,
+                FeedRepository.loadFeed(feed.url!.absoluteString, urlSession: NSURLSession.sharedSession(),
                     operationQueue: self.backgroundQueue) {muonFeed, error in
-                        if let err = error {
+                        if let _ = error {
                             self.finishedUpdatingFeed(error, feed: feed, managedObjectContext: ctx,
                                 feedsLeft: &feedsLeft, completion: completion)
                         } else if let info = muonFeed {
                             // DataUtility.updateFeed(feed, info: info)
                             // DataUtility.updateFeedImage(feed, info: info, manager: manager)
                             for item in info.articles {
-                                if var article = self.upsertArticle(item, context: ctx) {
+                                if let _ = self.upsertArticle(item, context: ctx) {
                                     // feed.addArticle(article)
                                     // article.feed = feed
                                 }
@@ -398,22 +397,22 @@ public class DataManager: NSObject {
     func downloadEnclosure(enclosure: CoreDataEnclosure, progress: (Double) -> (Void) = {(_) in },
         completion: (CoreDataEnclosure, NSError?) -> (Void) = {(_) in }) {
             let downloaded = enclosure.downloaded?.boolValue ?? false
-            if let url = enclosure.url where !downloaded {
-                mainManager.request(.GET, url).response {(_, _, response, error) in
-                    if let err = error {
-                        completion(enclosure, err)
-                    } else if let response = response as? NSData {
-                        enclosure.data = response
-                        completion(enclosure, nil)
-                    } else {
-                        completion(enclosure, nil)
-                    }
-                    self.enclosureProgress.removeValueForKey(enclosure.objectID)
-                    }.progress {(_, bytesRead, totalBytes) in
-                        let p = Double(bytesRead) / Double(totalBytes)
-                        self.updateEnclosure(enclosure, progress: p)
-                        progress(p)
-                }
+            if let _ = enclosure.url where !downloaded {
+//                mainManager.request(.GET, url).response {(_, _, response, error) in
+//                    if let err = error {
+//                        completion(enclosure, err)
+//                    } else if let response = response as? NSData {
+//                        enclosure.data = response
+//                        completion(enclosure, nil)
+//                    } else {
+//                        completion(enclosure, nil)
+//                    }
+//                    self.enclosureProgress.removeValueForKey(enclosure.objectID)
+//                    }.progress {(_, bytesRead, totalBytes) in
+//                        let p = Double(bytesRead) / Double(totalBytes)
+//                        self.updateEnclosure(enclosure, progress: p)
+//                        progress(p)
+//                }
             } else {
                 completion(enclosure, nil)
             }
@@ -421,7 +420,7 @@ public class DataManager: NSObject {
 
     // MARK: Articles
 
-    func upsertArticle(item: Muon.Article, var context ctx: NSManagedObjectContext! = nil) -> Article? {
+    func upsertArticle(item: Muon.Article, context ctx: NSManagedObjectContext! = nil) -> Article? {
         let predicate = NSPredicate(format: "link = %@", item.link ?? "")
         if let article = DataUtility.entities("Article", matchingPredicate: predicate,
             managedObjectContext: ctx).last as? CoreDataArticle {
@@ -548,7 +547,7 @@ public class DataManager: NSObject {
         }
         ctx.evaluateScript("var console = {}")
         let console = ctx.objectForKeyedSubscript("console")
-        let block : @objc_block (NSString) -> Void = {(message: NSString) in print("\(message)")}
+        let block: @convention(block) (NSString) -> Void = {(message: NSString) in print("\(message)")}
         console.setObject(unsafeBitCast(block, AnyObject.self), forKeyedSubscript: "log")
         let script = "var include = function(article) { return true }"
         ctx.evaluateScript(script)
@@ -558,7 +557,7 @@ public class DataManager: NSObject {
     private func console(ctx: JSContext) {
         ctx.evaluateScript("var console = {}")
         let console = ctx.objectForKeyedSubscript("console")
-        let block : @objc_block (NSString) -> Void = {(message: NSString) in print("\(message)")}
+        let block: @convention(block) (NSString) -> Void = {(message: NSString) in print("\(message)")}
         console.setObject(unsafeBitCast(block, AnyObject.self), forKeyedSubscript: "log")
     }
 
@@ -571,7 +570,7 @@ public class DataManager: NSObject {
 
     func reloadQFR() {
         backgroundQueue.cancelAllOperations()
-        if let qfr = queryFeedResults {
+        if let _ = queryFeedResults {
             reloading = true
             var feeds: [NSManagedObjectID] = []
             for feed in self.feeds() {
@@ -586,43 +585,43 @@ public class DataManager: NSObject {
     }
 
     func updateBackgroundThreads(feeds: [NSManagedObjectID]) {
-        let articles = DataUtility.entities("Article", matchingPredicate: NSPredicate(value: true),
-            managedObjectContext: backgroundObjectContext) as? [CoreDataArticle] ?? []
-        let articleIDs: [NSManagedObjectID: [NSManagedObjectID]] = [:]
-        for feed in feeds {
-            let feedPredicate = NSPredicate(format: "self == %@", feed)
-            let theFeed = DataUtility.entities("Feed", matchingPredicate: feedPredicate,
-                managedObjectContext: backgroundObjectContext).last as? CoreDataFeed
-            if let query = theFeed?.query {
-                let res = articlesFromQuery(query, articles: articles, context: self.backgroundContext)
-                let array: [NSManagedObjectID] = []
+//        let articles = DataUtility.entities("Article", matchingPredicate: NSPredicate(value: true),
+//            managedObjectContext: backgroundObjectContext) as? [CoreDataArticle] ?? []
+//        let articleIDs: [NSManagedObjectID: [NSManagedObjectID]] = [:]
+//        for feed in feeds {
+//            let feedPredicate = NSPredicate(format: "self == %@", feed)
+//            let theFeed = DataUtility.entities("Feed", matchingPredicate: feedPredicate,
+//                managedObjectContext: backgroundObjectContext).last as? CoreDataFeed
+//            if let query = theFeed?.query {
+//                let res = articlesFromQuery(query, articles: articles, context: self.backgroundContext)
+//                let array: [NSManagedObjectID] = []
 //                articleIDs[feed] = res.filter(array) { list, article in
 //                    if let objectID = article.objectID {
 //                        return list + [objectID]
 //                    }
 //                    return list
 //                }
-            }
-        }
-        mainQueue.addOperationWithBlock {
-            var queryFeedResults: [Feed: [Article]] = [:]
-            for (key, value) in articleIDs {
-                let feedPredicate = NSPredicate(format: "self == %@", (key as NSManagedObjectID))
-                let theFeed = DataUtility.feedsWithPredicate(feedPredicate,
-                    managedObjectContext: self.backgroundObjectContext).last
-
-                let articlePredicate = NSPredicate(format: "self IN %@", value)
-                let articles = DataUtility.articlesWithPredicate(articlePredicate,
-                    managedObjectContext: self.backgroundObjectContext)
-
-                if let feed = theFeed {
-                    queryFeedResults[feed] = articles
-                }
-            }
-            self.queryFeedResults = queryFeedResults
-            self.reloading = false
-            NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: nil)
-        }
+//            }
+//        }
+//        mainQueue.addOperationWithBlock {
+//            var queryFeedResults: [Feed: [Article]] = [:]
+//            for (key, value) in articleIDs {
+//                let feedPredicate = NSPredicate(format: "self == %@", (key as NSManagedObjectID))
+//                let theFeed = DataUtility.feedsWithPredicate(feedPredicate,
+//                    managedObjectContext: self.backgroundObjectContext).last
+//
+//                let articlePredicate = NSPredicate(format: "self IN %@", value)
+//                let articles = DataUtility.articlesWithPredicate(articlePredicate,
+//                    managedObjectContext: self.backgroundObjectContext)
+//
+//                if let feed = theFeed {
+//                    queryFeedResults[feed] = articles
+//                }
+//            }
+//            self.queryFeedResults = queryFeedResults
+//            self.reloading = false
+//            NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: nil)
+//        }
     }
 
     lazy var managedObjectModel: NSManagedObjectModel = {
@@ -637,7 +636,7 @@ public class DataManager: NSObject {
                                             NSInferMappingModelAutomaticallyOption: true]
         do {
             try persistentStore.addPersistentStoreWithType(NSSQLiteStoreType,
-                configuration: self.managedObjectModel.configurations.last as? String,
+                configuration: self.managedObjectModel.configurations.last,
                 URL: storeURL, options: options)
         } catch var error1 as NSError {
             error = error1
@@ -652,7 +651,7 @@ public class DataManager: NSObject {
             error = nil
             do {
                 try persistentStore.addPersistentStoreWithType(NSSQLiteStoreType,
-                    configuration: self.managedObjectModel.configurations.last as? String,
+                    configuration: self.managedObjectModel.configurations.last,
                     URL: storeURL, options: options)
             } catch var error1 as NSError {
                 error = error1

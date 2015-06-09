@@ -88,7 +88,7 @@ public class Feed: Equatable, Hashable, CustomStringConvertible {
         var ret = 0, next = 1
         if let waitPeriod = waitPeriod {
             let wait = max(0, waitPeriod - 2)
-            for i in 0..<wait {
+            for _ in 0..<wait {
                 (ret, next) = (next, ret+next)
             }
         }
@@ -121,14 +121,14 @@ public class Feed: Equatable, Hashable, CustomStringConvertible {
     }
 
     public func addTag(tag: String) {
-        if !tags.contains(tag.characters) {
+        if !tags.contains(tag) {
             updated = true
             tags.append(tag)
         }
     }
 
     public func removeTag(tag: String) {
-        if tags.contains(tag.characters) {
+        if tags.contains(tag) {
             updated = true
             tags = tags.filter { $0 != tag }
         }
@@ -160,6 +160,7 @@ public class Feed: Equatable, Hashable, CustomStringConvertible {
         } else {
             url = nil
         }
+        self.url = url
         summary = feed.summary ?? ""
         query = feed.query
         tags = feed.tags as? [String] ?? []

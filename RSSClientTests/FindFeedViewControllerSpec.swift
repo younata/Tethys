@@ -47,9 +47,10 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             describe("Failing to load the page") {
+                let err = NSError(domain: "", code: 0, userInfo: [:])
                 context("before loading the page (network error)") {
                     beforeEach {
-                        subject.webView(subject.webContent, didFailProvisionalNavigation: nil, withError: NSError())
+                        subject.webView(subject.webContent, didFailProvisionalNavigation: nil, withError: err)
                     }
 
                     it("should hide the webview") {
@@ -59,7 +60,7 @@ class FindFeedViewControllerSpec: QuickSpec {
 
                 context("trying to load the content (html rendering error)") {
                     beforeEach {
-                        subject.webView(subject.webContent, didFailNavigation: nil, withError: NSError())
+                        subject.webView(subject.webContent, didFailNavigation: nil, withError: err)
                     }
 
                     it("should hide the webview") {

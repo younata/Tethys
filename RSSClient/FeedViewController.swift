@@ -1,5 +1,4 @@
 import UIKit
-import Alamofire
 import Muon
 
 public class FeedViewController: UITableViewController {
@@ -160,7 +159,7 @@ public class FeedViewController: UITableViewController {
                         } else {
                             tc.setValid(false)
                         }
-                    }.resume()
+                    }?.resume()
                 }
                 return
             }

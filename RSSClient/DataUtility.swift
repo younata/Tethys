@@ -1,6 +1,5 @@
 import Foundation
 import CoreData
-import Alamofire
 import Muon
 
 public class DataUtility {
@@ -22,13 +21,13 @@ public class DataUtility {
         feed.summary = summary
     }
 
-    public class func updateFeedImage(feed: CoreDataFeed, info: Muon.Feed, manager: Alamofire.Manager) {
+    public class func updateFeedImage(feed: CoreDataFeed, info: Muon.Feed, urlSession: NSURLSession) {
         if let imageURL = info.imageURL where feed.image == nil {
-            manager.request(.GET, imageURL).response {(_, _, data, error) in
+            urlSession.dataTaskWithURL(imageURL) {data, _, error in
                 if error != nil {
                     return
                 }
-                if let d = data as? NSData {
+                if let d = data {
                     if let image = Image(data: d) {
                         feed.image = image
                         do {
@@ -55,7 +54,7 @@ public class DataUtility {
         article.content = item.content
         let author = ", ".join(item.authors.map { author in
             if let email = author.email {
-                return "\(author.name) <\(author.email)>"
+                return "\(author.name) <\(email)>"
             }
             return author.name
         })
@@ -92,8 +91,8 @@ public class DataUtility {
             request.sortDescriptors = sortDescriptors
 
             let error: NSError? = nil
-            if let ret = managedObjectContext.executeFetchRequest(request) as? [NSManagedObject] {
-                    return ret
+            if let ret = try! managedObjectContext.executeFetchRequest(request) as? [NSManagedObject] {
+                return ret
             }
             print("Error executing fetch request: \(error)")
             return []

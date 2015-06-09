@@ -1,7 +1,6 @@
 import Quick
 import Nimble
 import Foundation
-import Alamofire
 import Muon
 import rNews
 
@@ -29,7 +28,7 @@ class DataUtilitySpec: QuickSpec {
             }
         }
 
-        describe("updateFeedImage:info:manager") {
+        describe("updateFeedImage:info:urlSession:") {
             beforeEach {
                 let imageURL = NSURL(string: "https://raw.githubusercontent.com/younata/RSSClient/master/RSSClient/Images.xcassets/AppIcon.appiconset/Icon@2x.png")!
                 info = Muon.Feed(title: "example", link: NSURL(string: "http://example.com")!, description: "example", articles: [], imageURL: imageURL)
@@ -37,7 +36,7 @@ class DataUtilitySpec: QuickSpec {
 
             context("when the feed doesn't have an existing image") {
                 it("should download the image pointed at by info.imageURL and set it as the feed image") {
-                    DataUtility.updateFeedImage(feed, info: info, manager: Alamofire.Manager.sharedInstance)
+                    DataUtility.updateFeedImage(feed, info: info, urlSession: NSURLSession.sharedSession())
 
                     expect(feed.hasChanges).toEventually(beTruthy(), timeout: 60)
                     expect(feed.image).toEventuallyNot(beNil(), timeout: 60)
@@ -52,7 +51,7 @@ class DataUtilitySpec: QuickSpec {
                     }
                 }
                 it("should not update the feed image") {
-                    DataUtility.updateFeedImage(feed, info: info, manager: Manager.sharedInstance)
+                    DataUtility.updateFeedImage(feed, info: info, urlSession: NSURLSession.sharedSession())
 
                     expect(feed.hasChanges).to(beFalsy())
                 }

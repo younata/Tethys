@@ -114,7 +114,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
 
     public func refreshViewDidRefresh(refreshView: BreakOutToRefreshView) {
         dataManager.updateFeeds({error in
-            if let err = error {
+            if let _ = error {
                 let alertTitle = NSLocalizedString("Unable to update feeds", comment: "")
                 let alertMessage = error?.localizedFailureReason
                 let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
@@ -239,7 +239,6 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         let editTitle = NSLocalizedString("Edit", comment: "")
         let edit = UITableViewRowAction(style: .Normal, title: editTitle, handler: {_, indexPath in
             let feed = self.feedAtIndexPath(indexPath)
-            var klass: AnyClass? = nil
             var viewController: UIViewController! = nil
             if feed.isQueryFeed {
                 let vc = self.injector!.create(QueryFeedViewController.self) as! QueryFeedViewController
@@ -260,7 +259,6 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
     // MARK - Private/Internal
 
     private func reload(tag: String?) {
-        let oldFeeds = feeds
         feeds = dataManager.feedsMatchingTag(tag).sort {(f1: Feed, f2: Feed) in
             let f1Unread = f1.unreadArticles().count
             let f2Unread = f2.unreadArticles().count

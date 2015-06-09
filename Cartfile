@@ -1,7 +1,9 @@
-github "alamofire/alamofire"
-github "younata/Ra" "master"
-github "younata/Muon"
+# swift
+github "younata/Ra" "swift_2"
+github "younata/Muon" "swift_2"
+github "younata/BreakOutToRefresh" "swift_2"
+
+# objc
 github "smileyborg/PureLayout"
-github "younata/BreakOutToRefresh" "master"
 github "younata/TOBrowserActivityKit" "master"
 github "younata/DropDownMenu" "master"

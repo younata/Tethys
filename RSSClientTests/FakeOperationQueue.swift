@@ -28,10 +28,8 @@ class FakeOperationQueue : NSOperationQueue {
     override func addOperations(operations: [NSOperation], waitUntilFinished wait: Bool) {
         let oldRunSynchronously = runSynchronously
         runSynchronously = runSynchronously || wait
-        if let ops = operations as? [NSOperation] {
-            for op in ops {
-                addOperation(op)
-            }
+        for op in operations {
+            addOperation(op)
         }
         runSynchronously = oldRunSynchronously
     }

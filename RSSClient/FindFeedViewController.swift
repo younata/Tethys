@@ -168,8 +168,8 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
     public func textFieldShouldReturn(textField: UITextField) -> Bool {
         let whitespace = NSCharacterSet.whitespaceAndNewlineCharacterSet()
         textField.text = textField.text?.stringByTrimmingCharactersInSet(whitespace)
-        if textField.text?.lowercaseString.hasPrefix("http") == false {
-            textField.text = "http://\(textField.text)"
+        if let text = textField.text where text.lowercaseString.hasPrefix("http") == false {
+            textField.text = "http://\(text)"
         }
         if let text = textField.text, let url = NSURL(string: text) {
             self.webContent.loadRequest(NSURLRequest(URL: url))

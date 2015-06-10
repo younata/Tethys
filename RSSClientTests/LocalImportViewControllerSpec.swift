@@ -71,7 +71,7 @@ class LocalImportViewControllerSpec: QuickSpec {
         }
 
         it("should start out with 0 rows in each section") {
-            expect(subject.tableView(tableView, numberOfRowsInSection: 0)).to(equal(2)) // feeds.opml & rnews.opml
+            expect(subject.tableView(tableView, numberOfRowsInSection: 0)).to(equal(1)) // feeds.opml & rnews.opml
             expect(subject.tableView(tableView, numberOfRowsInSection: 1)).to(equal(0))
         }
 
@@ -87,7 +87,7 @@ class LocalImportViewControllerSpec: QuickSpec {
             let rssFeed : (url: String, title: String, articles: [String]) = ("http://example.com/feed", "feed", ["article1", "article2"])
 
             beforeEach {
-                createOPMLWithFeeds(opmlFeeds, location: "opml")
+                createOPMLWithFeeds(opmlFeeds, location: "rnews.opml")
                 createFeed(rssFeed, location: "feed")
                 subject.reloadItems()
             }
@@ -98,7 +98,7 @@ class LocalImportViewControllerSpec: QuickSpec {
             }
 
             it("should with 1 row in each section") {
-                expect(subject.tableView(tableView, numberOfRowsInSection: 0)).to(equal(3))
+                expect(subject.tableView(tableView, numberOfRowsInSection: 0)).to(equal(1))
                 expect(subject.tableView(tableView, numberOfRowsInSection: 1)).to(equal(1))
             }
 
@@ -110,7 +110,7 @@ class LocalImportViewControllerSpec: QuickSpec {
                 }
 
                 it("should be named for the file name") {
-                    expect(cell.textLabel?.text).to(equal("opml"))
+                    expect(cell.textLabel?.text).to(equal("rnews.opml"))
                 }
 
                 it("should list how many feeds are in this opml file") {

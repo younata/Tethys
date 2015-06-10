@@ -294,7 +294,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                         var editActions: [UITableViewRowAction] = []
                         beforeEach {
                             editActions = subject.tableView(subject.tableView,
-                                editActionsForRowAtIndexPath: indexPath) as? [UITableViewRowAction] ?? []
+                                editActionsForRowAtIndexPath: indexPath) ?? []
                         }
 
                         it("should have 1 edit action") {
@@ -357,7 +357,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                         var editActions: [UITableViewRowAction] = []
                         beforeEach {
                             editActions = subject.tableView(subject.tableView,
-                                editActionsForRowAtIndexPath: indexPath) as? [UITableViewRowAction] ?? []
+                                editActionsForRowAtIndexPath: indexPath) ?? []
                         }
 
                         it("should have 2 edit actions") {

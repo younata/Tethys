@@ -145,10 +145,9 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         if indexPath.section == 0 {
             let path = opmls[indexPath.row].0
-            let location = documentsDirectory().stringByAppendingPathComponent(path)
-
             let activityIndicator = disableInteractionWithMessage(NSLocalizedString("Importing feeds", comment: ""))
 
+            let location = documentsDirectory().stringByAppendingPathComponent(path)
             dataManager.importOPML(NSURL(string: "file://" + location)!, progress: {_ in }, completion: {(_) in
                     self.reenableInteractionAndDismiss(activityIndicator)
             })

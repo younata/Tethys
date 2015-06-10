@@ -32,17 +32,13 @@
 		8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963F4331A280F8E00B447D6 /* TagPickerView.swift */; };
 		8967DA061A4092A6000424F4 /* ArticlesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8967DA051A4092A6000424F4 /* ArticlesList.swift */; };
 		8967DA081A409433000424F4 /* ArticleListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8967DA071A409433000424F4 /* ArticleListView.swift */; };
-		89718F281AE0C942004C3CB4 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F261AE0C942004C3CB4 /* Alamofire.framework */; };
 		89718F2A1AE0C942004C3CB4 /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F271AE0C942004C3CB4 /* Ra.framework */; };
-		89718F2C1AE0C9A1004C3CB4 /* Alamofire.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F261AE0C942004C3CB4 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89718F2D1AE0C9A1004C3CB4 /* Ra.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F271AE0C942004C3CB4 /* Ra.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89718F301AE0C9B4004C3CB4 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; };
 		89718F311AE0C9B4004C3CB4 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2F1AE0C9B4004C3CB4 /* Quick.framework */; };
 		89718F331AE0C9D6004C3CB4 /* Nimble.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89718F341AE0C9D6004C3CB4 /* Quick.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2F1AE0C9B4004C3CB4 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		89718F351AE0D953004C3CB4 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F261AE0C942004C3CB4 /* Alamofire.framework */; };
 		89718F361AE0D953004C3CB4 /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F271AE0C942004C3CB4 /* Ra.framework */; };
-		89718F371AE0DD51004C3CB4 /* Alamofire.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F261AE0C942004C3CB4 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89718F381AE0DD51004C3CB4 /* Ra.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F271AE0C942004C3CB4 /* Ra.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8978D4DC1B0533B600EDD6D0 /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4DB1B0533B600EDD6D0 /* Feed.swift */; };
 		8978D4DF1B0535EB00EDD6D0 /* Article.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4DE1B0535EB00EDD6D0 /* Article.swift */; };
@@ -153,7 +149,6 @@
 			files = (
 				898F6E0D1B128751000D343D /* PureLayout_iOS.framework in Copy Frameworks */,
 				898131691AF880A70090FA7F /* Muon.framework in Copy Frameworks */,
-				89718F2C1AE0C9A1004C3CB4 /* Alamofire.framework in Copy Frameworks */,
 				89CB986E1B12CCE800C87160 /* BreakOutToRefresh.framework in Copy Frameworks */,
 				89CB98951B12DFBA00C87160 /* TOBrowserActivityKit.framework in Copy Frameworks */,
 				89718F2D1AE0C9A1004C3CB4 /* Ra.framework in Copy Frameworks */,
@@ -169,7 +164,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				89F516521B1A44EA0005AB04 /* Robot.framework in Copy Frameworks */,
-				89718F371AE0DD51004C3CB4 /* Alamofire.framework in Copy Frameworks */,
 				89718F381AE0DD51004C3CB4 /* Ra.framework in Copy Frameworks */,
 				89718F331AE0C9D6004C3CB4 /* Nimble.framework in Copy Frameworks */,
 				89718F341AE0C9D6004C3CB4 /* Quick.framework in Copy Frameworks */,
@@ -219,7 +213,6 @@
 		8963F4331A280F8E00B447D6 /* TagPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagPickerView.swift; sourceTree = "<group>"; };
 		8967DA051A4092A6000424F4 /* ArticlesList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticlesList.swift; sourceTree = "<group>"; };
 		8967DA071A409433000424F4 /* ArticleListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListView.swift; sourceTree = "<group>"; };
-		89718F261AE0C942004C3CB4 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = SOURCE_ROOT; };
 		89718F271AE0C942004C3CB4 /* Ra.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Ra.framework; path = Carthage/Build/iOS/Ra.framework; sourceTree = SOURCE_ROOT; };
 		89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/iOS/Nimble.framework; sourceTree = SOURCE_ROOT; };
 		89718F2F1AE0C9B4004C3CB4 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/iOS/Quick.framework; sourceTree = SOURCE_ROOT; };
@@ -332,7 +325,6 @@
 				89CB986D1B12CCE800C87160 /* BreakOutToRefresh.framework in Frameworks */,
 				898F6E0A1B128736000D343D /* PureLayout_iOS.framework in Frameworks */,
 				89CB98941B12DFBA00C87160 /* TOBrowserActivityKit.framework in Frameworks */,
-				89718F281AE0C942004C3CB4 /* Alamofire.framework in Frameworks */,
 				89718F2A1AE0C942004C3CB4 /* Ra.framework in Frameworks */,
 				89CB98B91B12E9D300C87160 /* MAKDropDownMenu.framework in Frameworks */,
 				898131681AF880400090FA7F /* Muon.framework in Frameworks */,
@@ -349,7 +341,6 @@
 				89718F311AE0C9B4004C3CB4 /* Quick.framework in Frameworks */,
 				89F516511B1A44D20005AB04 /* Robot.framework in Frameworks */,
 				898F6E0B1B128741000D343D /* PureLayout_iOS.framework in Frameworks */,
-				89718F351AE0D953004C3CB4 /* Alamofire.framework in Frameworks */,
 				89718F301AE0C9B4004C3CB4 /* Nimble.framework in Frameworks */,
 				89CB98931B12DFB100C87160 /* TOBrowserActivityKit.framework in Frameworks */,
 				89718F361AE0D953004C3CB4 /* Ra.framework in Frameworks */,
@@ -612,7 +603,6 @@
 				89CB98911B12DFB100C87160 /* TOBrowserActivityKit.framework */,
 				89CB986A1B12CCD700C87160 /* BreakOutToRefresh.framework */,
 				898F6E091B128736000D343D /* PureLayout_iOS.framework */,
-				89718F261AE0C942004C3CB4 /* Alamofire.framework */,
 				89718F271AE0C942004C3CB4 /* Ra.framework */,
 				898131671AF880400090FA7F /* Muon.framework */,
 			);

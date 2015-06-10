@@ -8,10 +8,10 @@ import Robot
 class FeedsTableViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: FeedsTableViewController! = nil
-        var injector : Injector! = nil
+        var injector : Injector? = nil
         var dataManager: DataManagerMock! = nil
         var navigationController: UINavigationController! = nil
-        var window: UIWindow! = nil
+        var window: UIWindow? = nil
 
         var feed1: Feed! = nil
         var feed2: Feed! = nil
@@ -21,16 +21,16 @@ class FeedsTableViewControllerSpec: QuickSpec {
         beforeEach {
             injector = Injector()
             dataManager = DataManagerMock()
-            injector.bind(kBackgroundQueue, to: FakeOperationQueue())
-            injector.bind(DataManager.self, to: dataManager)
+            injector?.bind(kBackgroundQueue, to: FakeOperationQueue())
+            injector?.bind(DataManager.self, to: dataManager)
 
-            subject = injector.create(FeedsTableViewController.self) as! FeedsTableViewController
+            subject = injector?.create(FeedsTableViewController.self) as? FeedsTableViewController
 
             navigationController = UINavigationController(rootViewController: subject)
 
             window = UIWindow()
-            window.makeKeyAndVisible()
-            window.rootViewController = navigationController
+            window?.makeKeyAndVisible()
+            window?.rootViewController = navigationController
 
             feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "", query: nil,
                 tags: ["a", "b", "c"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
@@ -42,6 +42,15 @@ class FeedsTableViewControllerSpec: QuickSpec {
             dataManager.feedsList = feeds
 
             expect(subject.view).toNot(beNil())
+        }
+
+        afterEach {
+            window?.rootViewController = nil
+            window?.resignKeyWindow()
+            window = nil
+            injector = nil
+            subject = nil
+            navigationController = nil
         }
 
         describe("typing in the searchbar") {
@@ -62,7 +71,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
             var addButton: UIBarButtonItem! = nil
             var buttons: [UIButton] = []
             beforeEach {
-                addButton = subject.navigationItem.rightBarButtonItems?.first as? UIBarButtonItem
+                addButton = subject.navigationItem.rightBarButtonItems?.first
                 addButton.tap()
                 buttons = subject.dropDownMenu.valueForKey("_buttons") as? [UIButton] ?? []
                 expect(buttons.count).toNot(equal(0))
@@ -200,7 +209,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 }
 
                 it("should dismiss the alert when tapping the single (OK) button") {
-                    if let actions = alert?.actions as? [UIAlertAction] {
+                    if let actions = alert?.actions {
                         expect(actions.count).to(equal(1))
                         if let action = actions.first {
                             expect(action.title).to(equal("OK"))
@@ -250,7 +259,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     var action: UITableViewRowAction! = nil
                     let indexPath = NSIndexPath(forRow: 0, inSection: 0)
                     beforeEach {
-                        actions = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath) as? [UITableViewRowAction] ?? []
+                        actions = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath) ?? []
                     }
 
                     it("should have 3 actions") {

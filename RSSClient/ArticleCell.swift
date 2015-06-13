@@ -2,8 +2,7 @@ import UIKit
 import WebKit
 
 public class ArticleCell: UITableViewCell, UITextViewDelegate {
-
-    var article: Article? {
+    public var article: Article? {
         didSet {
             title.text = article?.title ?? ""
             let publishedDate = article?.updatedAt ?? article?.published ?? NSDate()
@@ -15,14 +14,14 @@ public class ArticleCell: UITableViewCell, UITextViewDelegate {
         }
     }
 
-    let title = UILabel(forAutoLayout: ())
-    let published = UILabel(forAutoLayout: ())
-    let author = UILabel(forAutoLayout: ())
-    let unread = UnreadCounter(forAutoLayout: ())
+    public let title = UILabel(forAutoLayout: ())
+    public let published = UILabel(forAutoLayout: ())
+    public let author = UILabel(forAutoLayout: ())
+    public let unread = UnreadCounter(forAutoLayout: ())
 
-    var unreadWidth: NSLayoutConstraint! = nil
+    private var unreadWidth: NSLayoutConstraint! = nil
 
-    lazy var dateFormatter: NSDateFormatter = {
+    private lazy var dateFormatter: NSDateFormatter = {
         let dateFormatter = NSDateFormatter()
 
         dateFormatter.timeStyle = .NoStyle

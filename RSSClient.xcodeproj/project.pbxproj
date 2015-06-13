@@ -442,6 +442,15 @@
 			name = Articles;
 			sourceTree = "<group>";
 		};
+		899823AA1B2C837400818755 /* Tags */ = {
+			isa = PBXGroup;
+			children = (
+				8997C8501B255A1900972930 /* TagPickerViewSpec.swift */,
+				899823A81B2C76B800818755 /* TagEditorViewControllerSpec.swift */,
+			);
+			name = Tags;
+			sourceTree = "<group>";
+		};
 		899C48021A9AB6A900F57B96 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
@@ -462,6 +471,7 @@
 				89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */,
 				898ECDE01B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift */,
 				89F517011B1C070C0005AB04 /* FeedViewControllerSpec.swift */,
+				899823AA1B2C837400818755 /* Tags */,
 				89F517091B2014470005AB04 /* QueryFeedViewControllerSpec.swift */,
 				8997C8521B2566A600972930 /* ArticleCellSpec.swift */,
 			);
@@ -533,8 +543,6 @@
 				8997C7F61B25074900972930 /* ValidatorViewSpec.swift */,
 				8997C7F81B250FD200972930 /* TextViewCellSpec.swift */,
 				8997C7FA1B25169E00972930 /* TextFieldCellSpec.swift */,
-				8997C8501B255A1900972930 /* TagPickerViewSpec.swift */,
-				899823A81B2C76B800818755 /* TagEditorViewControllerSpec.swift */,
 				89EF4FDB1A9790350052A82F /* Parsers */,
 				89EF4FD51A9682170052A82F /* OPMLParserSpec.swift */,
 				899C48181A9AC0F000F57B96 /* UI */,

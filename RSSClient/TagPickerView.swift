@@ -69,11 +69,11 @@ public class TagPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
 
     public func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange,
         replacementString string: String) -> Bool {
-            guard let string = textField.text else {
+            guard let text = textField.text else {
                 return false
             }
-            let text = (string as NSString).stringByReplacingCharactersInRange(range, withString: string)
-            return textFieldDidChange(text)
+            let replacedText = (text as NSString).stringByReplacingCharactersInRange(range, withString: string)
+            return textFieldDidChange(replacedText)
     }
 
     // Mark: - Private

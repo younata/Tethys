@@ -9,7 +9,11 @@ class OPMLParserSpec: QuickSpec {
         
         
         describe("Parsing a string") {
-            let parser = OPMLParser(text: str)
+            var parser: OPMLParser! = nil
+
+            beforeEach {
+                parser = OPMLParser(text: str)
+            }
             
             it("pulls out regular feeds") {
                 parser.success {(items) in

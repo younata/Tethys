@@ -103,18 +103,24 @@ class LocalImportViewControllerSpec: QuickSpec {
             }
 
             describe("the cell in section 0") {
-                var cell : UITableViewCell! = nil
-                let indexPath = NSIndexPath(forRow: 1, inSection: 0)
+                var cell : UITableViewCell? = nil
+                let indexPath = NSIndexPath(forRow: 0, inSection: 0)
                 beforeEach {
-                    cell = subject.tableView(tableView, cellForRowAtIndexPath: indexPath)
+                    expect(subject.numberOfSectionsInTableView(tableView)).to(beGreaterThan(indexPath.section))
+                    if subject.numberOfSectionsInTableView(tableView) > indexPath.section {
+                        expect(subject.tableView(tableView, numberOfRowsInSection: indexPath.section)).to(beGreaterThan(indexPath.row))
+                        if subject.tableView(tableView, numberOfRowsInSection: indexPath.section) > indexPath.row {
+                            cell = subject.tableView(tableView, cellForRowAtIndexPath: indexPath)
+                        }
+                    }
                 }
 
                 it("should be named for the file name") {
-                    expect(cell.textLabel?.text).to(equal("rnews.opml"))
+                    expect(cell?.textLabel?.text).to(equal("rnews.opml"))
                 }
 
                 it("should list how many feeds are in this opml file") {
-                    expect(cell.detailTextLabel?.text).to(equal("2 feeds"))
+                    expect(cell?.detailTextLabel?.text).to(equal("2 feeds"))
                 }
 
                 describe("selecting it") {
@@ -145,7 +151,7 @@ class LocalImportViewControllerSpec: QuickSpec {
                     }
 
                     it("should import the feeds") {
-                        let expectedLocation = documentsDirectory().stringByAppendingPathComponent("opml")
+                        let expectedLocation = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
                         expect(dataManager.importOPMLURL).to(equal(NSURL(string: "file://" + expectedLocation)))
                     }
 

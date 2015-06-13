@@ -26,20 +26,13 @@ class OPMLManagerSpec: QuickSpec {
         describe("Importing OPML Files") {
             var feeds : [Feed] = []
             beforeEach {
-                // write the opml file
-
-                let expectation = self.expectationWithDescription("import opml")
-
                 let opmlUrl = NSBundle(forClass: self.classForCoder).URLForResource("test", withExtension: "opml")!
 
                 subject.importOPML(opmlUrl) {otherFeeds in
                     feeds = otherFeeds
-                    expectation.fulfill()
                 }
 
-                self.waitForExpectationsWithTimeout(1) {error in
-                    expect(error).to(beNil())
-                }
+                expect(feeds.count).toEventuallyNot(beNil(), timeout: 5)
             }
 
             it("should return a list of feeds imported") {
@@ -89,9 +82,10 @@ class OPMLManagerSpec: QuickSpec {
 
                 let parser = OPMLParser(text: text)
 
-                let expectation = self.expectationWithDescription("opml parsing")
+                var testItems: [OPMLItem] = []
 
                 parser.success {items in
+                    testItems = items
                     expect(items.count).to(equal(2))
                     if (items.count != 2) {
                         return
@@ -102,15 +96,11 @@ class OPMLManagerSpec: QuickSpec {
                     let c = items[1]
                     expect(c.title).to(equal("e"))
                     expect(c.tags).to(equal(["dad"]))
-
-                    expectation.fulfill()
                 }
 
                 parser.main()
 
-                self.waitForExpectationsWithTimeout(1) {error in
-                    expect(error).to(beNil())
-                }
+                expect(testItems.count).toEventuallyNot(equal(0))
             }
         }
     }

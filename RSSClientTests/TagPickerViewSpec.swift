@@ -9,19 +9,15 @@ class TagPickerViewSpec: QuickSpec {
         var lastSelectedText: String? = nil
 
         beforeEach {
-            let expectation = self.expectationWithDescription("onSelect callback")
             subject = TagPickerView()
+            lastSelectedText = nil
             subject.configureWithTags(tags, onSelect: {text in
                 lastSelectedText = text
-                expectation.fulfill()
             })
         }
 
         it("should not call the onSelect callback") {
             expect(lastSelectedText).to(beNil())
-            self.waitForExpectationsWithTimeout(1e-6) {error in
-                expect(error).toNot(beNil())
-            }
         }
 
         let pickerListsTags: ([String]) -> (Void) = {tagsList in
@@ -42,7 +38,7 @@ class TagPickerViewSpec: QuickSpec {
         describe("filtering results") {
             beforeEach {
                 if let delegate = subject.textField.delegate {
-                    delegate.textField!(subject.textField, shouldChangeCharactersInRange: NSMakeRange(0, 0), replacementString: "a")
+                    delegate.textField?(subject.textField, shouldChangeCharactersInRange: NSMakeRange(0, 0), replacementString: "a")
                 }
             }
 

@@ -11,19 +11,19 @@ class TextFieldCellSpec: QuickSpec {
         }
 
         describe("onTextChange") {
-            var expectation: XCTestExpectation! = nil
+            var textChangeString: String? = nil
             beforeEach {
-                expectation = self.expectationWithDescription("onTextChanged")
+                textChangeString = nil
                 subject.onTextChange = {str in
-                    expect(str).to(equal("textChanged"))
-                    expectation.fulfill()
+                    textChangeString = str
                 }
             }
+
             context("when showValidator is true") {
                 beforeEach {
                     subject.showValidator = true
                     if let delegate = subject.textField.delegate {
-                        delegate.textField!(subject.textField, shouldChangeCharactersInRange: NSMakeRange(0, 0), replacementString: "textChanged")
+                        delegate.textField?(subject.textField, shouldChangeCharactersInRange: NSMakeRange(0, 0), replacementString: "textChanged")
                     }
                 }
 
@@ -33,23 +33,19 @@ class TextFieldCellSpec: QuickSpec {
                 }
 
                 it("should call onTextChange") {
-                    self.waitForExpectationsWithTimeout(1) { error in
-                        expect(error).to(beNil())
-                    }
+                    expect(textChangeString).to(equal("textChanged"))
                 }
             }
 
             context("when showValidator is false") {
                 beforeEach {
                     if let delegate = subject.textField.delegate {
-                        delegate.textField!(subject.textField, shouldChangeCharactersInRange: NSMakeRange(0, 0), replacementString: "textChanged")
+                        delegate.textField?(subject.textField, shouldChangeCharactersInRange: NSMakeRange(0, 0), replacementString: "textChanged")
                     }
                 }
 
-                it("should call onTextChange") {
-                    self.waitForExpectationsWithTimeout(1) { error in
-                        expect(error).to(beNil())
-                    }
+                it("should still call onTextChange") {
+                    expect(textChangeString).to(equal("textChanged"))
                 }
             }
         }

@@ -44,15 +44,6 @@ class FeedsTableViewControllerSpec: QuickSpec {
             expect(subject.view).toNot(beNil())
         }
 
-        afterEach {
-            window?.rootViewController = nil
-            window?.resignKeyWindow()
-            window = nil
-            injector = nil
-            subject = nil
-            navigationController = nil
-        }
-
         describe("typing in the searchbar") {
             beforeEach {
                 subject.searchBar.delegate?.searchBar?(subject.searchBar, textDidChange: "a")

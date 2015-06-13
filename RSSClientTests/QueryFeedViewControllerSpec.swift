@@ -17,7 +17,6 @@ class QueryFeedViewControllerSpec: QuickSpec {
         var dataManager: DataManagerMock! = nil
 
         var backgroundQueue: FakeOperationQueue! = nil
-        var presentingController: UIViewController! = nil
 
         beforeEach {
             injector = Injector()
@@ -33,10 +32,6 @@ class QueryFeedViewControllerSpec: QuickSpec {
 
             navigationController = UINavigationController(rootViewController: subject)
 
-            presentingController = UIViewController()
-            presentingController.presentViewController(navigationController, animated: false, completion: nil)
-            RBTimeLapse.advanceMainRunLoop()
-
             feed = Feed(title: "title", url: nil, summary: "summary", query: "function(article) {return !article.read;}",
                 tags: ["a", "b", "c"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
 
@@ -51,7 +46,11 @@ class QueryFeedViewControllerSpec: QuickSpec {
         }
 
         describe("tapping 'save'") {
+            var presentingController: UIViewController? = nil
             beforeEach {
+                presentingController = UIViewController()
+                presentingController?.presentViewController(navigationController, animated: false, completion: nil)
+
                 let saveButton = subject.navigationItem.rightBarButtonItem
                 saveButton?.tap()
             }
@@ -61,7 +60,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
             }
 
             it("should dismiss itself") {
-                expect(presentingController.presentedViewController).to(beNil())
+                expect(presentingController?.presentedViewController).to(beNil())
             }
         }
 
@@ -70,13 +69,17 @@ class QueryFeedViewControllerSpec: QuickSpec {
         }
 
         describe("tapping 'dismiss'") {
+            var presentingController: UIViewController? = nil
             beforeEach {
+                presentingController = UIViewController()
+                presentingController?.presentViewController(navigationController, animated: false, completion: nil)
+
                 let dismissButton = subject.navigationItem.leftBarButtonItem
                 dismissButton?.tap()
             }
 
             it("should dismiss itself") {
-                expect(presentingController.presentedViewController).to(beNil())
+                expect(presentingController?.presentedViewController).to(beNil())
             }
         }
 

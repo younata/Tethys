@@ -3,17 +3,16 @@ import UIKit
 public class TagEditorViewController: UIViewController {
 
     public var feed: Feed? = nil
-    var tag: String? = nil {
+    public var tagIndex: Int? = nil
+    public let tagPicker = TagPickerView(frame: CGRectZero)
+
+    private let tagLabel = UILabel(forAutoLayout: ())
+    private var tag: String? = nil {
         didSet {
             self.navigationItem.rightBarButtonItem?.enabled = self.feed != nil && tag != nil
         }
     }
-
-    public var tagIndex: Int? = nil
-    let tagLabel = UILabel(forAutoLayout: ())
-    let tagPicker = TagPickerView(frame: CGRectZero)
-
-    lazy var dataManager: DataManager? = {
+    private lazy var dataManager: DataManager? = {
         self.injector?.create(DataManager.self) as? DataManager
     }()
 
@@ -51,6 +50,7 @@ public class TagEditorViewController: UIViewController {
     func save() {
         if let feed = self.feed, let tag = tag {
             feed.addTag(tag)
+            self.dataManager?.saveFeed(feed)
             self.feed = feed
         }
 

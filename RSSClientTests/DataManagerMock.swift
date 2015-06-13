@@ -38,6 +38,11 @@ class DataManagerMock : DataManager {
         lastFeedMarkedRead = feed
     }
 
+    var tagsList: [String] = []
+    override func allTags() -> [String] {
+        return tagsList
+    }
+
     var feedsList: [Feed] = []
     override func feeds() -> [Feed] {
         return feedsList

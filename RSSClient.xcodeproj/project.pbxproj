@@ -70,6 +70,7 @@
 		8997C8511B255A1900972930 /* TagPickerViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C8501B255A1900972930 /* TagPickerViewSpec.swift */; };
 		8997C8531B2566A600972930 /* ArticleCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C8521B2566A600972930 /* ArticleCellSpec.swift */; };
 		899823A91B2C76B800818755 /* TagEditorViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899823A81B2C76B800818755 /* TagEditorViewControllerSpec.swift */; };
+		899823AC1B2C883B00818755 /* ArticleListControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899823AB1B2C883B00818755 /* ArticleListControllerSpec.swift */; };
 		899C47FB1A9A864700F57B96 /* DataManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */; };
 		899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */; };
 		89A3417C1B1435750000C60B /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A3417B1B1435750000C60B /* Helpers.swift */; };
@@ -247,6 +248,7 @@
 		8997C8501B255A1900972930 /* TagPickerViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagPickerViewSpec.swift; sourceTree = "<group>"; };
 		8997C8521B2566A600972930 /* ArticleCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleCellSpec.swift; sourceTree = "<group>"; };
 		899823A81B2C76B800818755 /* TagEditorViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagEditorViewControllerSpec.swift; sourceTree = "<group>"; };
+		899823AB1B2C883B00818755 /* ArticleListControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListControllerSpec.swift; sourceTree = "<group>"; };
 		899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManagerSpec.swift; sourceTree = "<group>"; };
 		899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindFeedViewControllerSpec.swift; sourceTree = "<group>"; };
 		89A3417B1B1435750000C60B /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
@@ -474,6 +476,7 @@
 				899823AA1B2C837400818755 /* Tags */,
 				89F517091B2014470005AB04 /* QueryFeedViewControllerSpec.swift */,
 				8997C8521B2566A600972930 /* ArticleCellSpec.swift */,
+				899823AB1B2C883B00818755 /* ArticleListControllerSpec.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -1013,6 +1016,7 @@
 				AE4355FE1A7AB7D900A961B9 /* SpecHelper.swift in Sources */,
 				89CB984A1B12C50000C87160 /* ActivityIndicatorSpec.swift in Sources */,
 				890E47671AA19F7F007F217C /* DataUtilitySpec.swift in Sources */,
+				899823AC1B2C883B00818755 /* ArticleListControllerSpec.swift in Sources */,
 				AE4356001A7ABA4F00A961B9 /* DataManagerMock.swift in Sources */,
 				899C47FB1A9A864700F57B96 /* DataManagerSpec.swift in Sources */,
 				8997C7F91B250FD200972930 /* TextViewCellSpec.swift in Sources */,

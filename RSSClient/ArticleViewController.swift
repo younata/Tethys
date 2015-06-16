@@ -3,7 +3,7 @@ import WebKit
 import TOBrowserActivityKit
 
 public class ArticleViewController: UIViewController, WKNavigationDelegate {
-    var article: Article? = nil {
+    public var article: Article? = nil {
         didSet {
             self.navigationController?.setToolbarHidden(false, animated: false)
             if let a = article {
@@ -61,7 +61,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     let contentString = NSLocalizedString("Content", comment: "")
     let linkString = NSLocalizedString("Link", comment: "")
 
-    var articles: [Article] = []
+    public var articles: [Article] = []
     var lastArticleIndex = 0
 
     var dataManager: DataManager? = nil

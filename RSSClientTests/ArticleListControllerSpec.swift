@@ -15,7 +15,7 @@ func fakeArticle(feed: Feed, isUpdated: Bool = false, read: Bool = false) -> Art
         publishDate = NSDate(timeIntervalSinceReferenceDate: NSTimeInterval(publishedOffset))
         updatedDate = nil
     }
-    return Article(title: "article \(publishedOffset)", link: nil, summary: "", author: "Rachel", published: publishDate, updatedAt: updatedDate, identifier: "\(publishedOffset)", content: "", read: read, feed: feed, flags: [], enclosures: [])
+    return Article(title: "article \(publishedOffset)", link: NSURL(string: "http://example.com"), summary: "", author: "Rachel", published: publishDate, updatedAt: updatedDate, identifier: "\(publishedOffset)", content: "", read: read, feed: feed, flags: [], enclosures: [])
 }
 
 class ArticleListControllerSpec: QuickSpec {
@@ -42,12 +42,16 @@ class ArticleListControllerSpec: QuickSpec {
             publishedOffset = 0
 
             feed = Feed(title: "", url: NSURL(string: "https://example.com"), summary: "", query: nil, tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
-            let a = fakeArticle(feed)
-            let b = fakeArticle(feed, read: true)
-            let c = fakeArticle(feed, isUpdated: true)
             let d = fakeArticle(feed)
+            let c = fakeArticle(feed, read: true)
+            let b = fakeArticle(feed, isUpdated: true)
+            let a = fakeArticle(feed)
             articles = [d, c, b, a]
             sortedArticles = [a, b, c, d]
+
+            for article in articles {
+                feed.addArticle(article)
+            }
 
             subject = injector.create(ArticleListController.self) as! ArticleListController
             subject.feeds = [feed]
@@ -56,9 +60,6 @@ class ArticleListControllerSpec: QuickSpec {
 
             subject.view.layoutIfNeeded()
         }
-
-        // displays a list of articles.
-        // when in preview mode, there is no user-interaction
 
         describe("the table") {
             it("should have 1 secton") {
@@ -70,7 +71,7 @@ class ArticleListControllerSpec: QuickSpec {
             }
 
             describe("the cells") {
-                it("should be sorted") {
+                it("should be sorted with newest at the top") {
                     for (idx, article) in sortedArticles.enumerate() {
                         let indexPath = NSIndexPath(forRow: idx, inSection: 0)
                         let cell = subject.tableView(subject.tableView, cellForRowAtIndexPath: indexPath) as! ArticleCell
@@ -132,7 +133,6 @@ class ArticleListControllerSpec: QuickSpec {
                     }
 
                     describe("the edit actions") {
-
                         it("should delete the article with the first action item") {
                             let indexPath = NSIndexPath(forRow: 0, inSection: 0)
                             if let delete = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.first {
@@ -147,18 +147,21 @@ class ArticleListControllerSpec: QuickSpec {
                                 let indexPath = NSIndexPath(forRow: 0, inSection: 0)
                                 if let markRead = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.last {
                                     expect(markRead.title).to(equal("Mark\nRead"))
-                                    // no idea.
-//                                    markRead.handler()(markRead, indexPath)
-//                                    expect(dataManager.lastDeletedArticle).to(equal(sortedArticles.first))
+                                    markRead.handler()(markRead, indexPath)
+                                    expect(dataManager.lastArticleMarkedRead).to(equal(sortedArticles.first))
+                                    expect(sortedArticles.first?.read).to(beTruthy())
                                 }
                             }
                         }
 
                         describe("for a read article") {
                             it("should mark the article as unread with the second action item") {
-                                let indexPath = NSIndexPath(forRow: 0, inSection: 0)
-                                if let markRead = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.last {
-                                    expect(markRead.title).to(equal("Mark\nRead"))
+                                let indexPath = NSIndexPath(forRow: 2, inSection: 0)
+                                if let markUnread = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.last {
+                                    expect(markUnread.title).to(equal("Mark\nUnread"))
+                                    markUnread.handler()(markUnread, indexPath)
+                                    expect(dataManager.lastArticleMarkedRead).to(equal(sortedArticles[2]))
+                                    expect(sortedArticles[2].read).to(beFalsy())
                                 }
                             }
                         }
@@ -170,10 +173,11 @@ class ArticleListControllerSpec: QuickSpec {
                         }
 
                         it("should navigate to an ArticleViewController") {
-                            expect(navigationController.topViewController).to(beAnInstanceOf(ArticleViewController.self))
-//                            if let articleController = navigationController.topViewController as? ArticleViewController {
-//                                expect(articleController.art).to(<#Matcher#>)
-//                            }
+                            expect(navigationController.topViewController).toEventually(beAnInstanceOf(ArticleViewController.self))
+                            if let articleController = navigationController.topViewController as? ArticleViewController {
+                                expect(articleController.article).to(equal(sortedArticles.first))
+                                expect(articleController.articles).to(equal(sortedArticles))
+                            }
                         }
                     }
                 }

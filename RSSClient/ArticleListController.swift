@@ -5,25 +5,22 @@ public class ArticleListController: UITableViewController {
     internal var articles: [Article] = []
     public var feeds: [Feed] = [] {
         didSet {
-            let articles = self.feeds.reduce(Array<Article>()) { return $0 + $1.articles }
-            let newArticles = Set<Article>(articles)
-            let oldArticles = Set<Article>(self.articles)
-            if newArticles != oldArticles {
-                self.articles = (articles as [Article])
-                self.articles.sortInPlace({(a: Article, b: Article) in
-                    let da = a.updatedAt ?? a.published
-                    let db = b.updatedAt ?? b.published
-                    return da.timeIntervalSince1970 > db.timeIntervalSince1970
-                })
-                self.tableView.reloadData()
+            let articles: [Article] = self.feeds.reduce(Array<Article>()) { return $0 + $1.articles }
+            self.articles = articles.sort {a, b in
+                let da = a.updatedAt ?? a.published
+                let db = b.updatedAt ?? b.published
+                return da.timeIntervalSince1970 > db.timeIntervalSince1970
             }
+            self.tableView.reloadData()
         }
     }
 
-    var dataManager: DataManager? = nil
 
     public var previewMode: Bool = false
 
+    lazy var dataManager: DataManager? = {
+        self.injector?.create(DataManager.self) as? DataManager
+    }()
     lazy var mainQueue: NSOperationQueue? = {
         self.injector?.create(kMainQueue) as? NSOperationQueue
     }()
@@ -119,7 +116,7 @@ public class ArticleListController: UITableViewController {
     }
 
     public override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
+        return !previewMode
     }
 
     public override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle,
@@ -133,15 +130,14 @@ public class ArticleListController: UITableViewController {
             let article = self.articleForIndexPath(indexPath)
             let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""),
                 handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
-//                    article.managedObjectContext?.deleteObject(article)
-//                    article.managedObjectContext?.save(nil)
+                    self.dataManager?.deleteArticle(article)
             })
             let unread = NSLocalizedString("Mark\nUnread", comment: "")
             let read = NSLocalizedString("Mark\nRead", comment: "")
             let toggleText = article.read ? unread : read
             let toggle = UITableViewRowAction(style: .Normal, title: toggleText,
                 handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
-//                    self.dataManager?.readArticle(article)
+                    self.dataManager?.markArticle(article, asRead: !article.read)
                     tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
             })
             return [delete, toggle]

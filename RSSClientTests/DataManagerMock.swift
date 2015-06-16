@@ -53,7 +53,18 @@ class DataManagerMock : DataManager {
         return articlesList
     }
 
+    var lastArticleMarkedRead: Article? = nil
+    override func markArticle(article: Article, asRead read: Bool) {
+        lastArticleMarkedRead = article
+        article.read = read
+    }
+
     var lastDeletedArticle: Article? = nil
+    override func deleteArticle(article: Article) {
+        lastDeletedArticle = article
+        article.feed?.removeArticle(article)
+        article.feed = nil
+    }
 
     var didUpdateFeeds = false
     var updateFeedsCompletion: (NSError?) -> (Void) = {_ in }

@@ -167,6 +167,14 @@ public class DataManager: NSObject {
         // TODO: this
     }
 
+    public func deleteArticle(article: Article) {
+
+    }
+
+    public func markArticle(article: Article, asRead read: Bool) {
+
+    }
+
     func deleteFeed(feed: CoreDataFeed) {
         for article in feed.articles {
             if let article = article as? CoreDataArticle {

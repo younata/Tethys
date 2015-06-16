@@ -1,6 +1,6 @@
 import Foundation
 
-public class Article: Equatable, Hashable {
+public class Article: Equatable, Hashable, CustomStringConvertible {
     public var title: String {
         willSet {
             if newValue != title {
@@ -96,6 +96,10 @@ public class Article: Equatable, Hashable {
             possiblyNilHashValues = 0
         }
         return nonNilHashValues ^ flagsHashValues ^ possiblyNilHashValues
+    }
+
+    public var description: String {
+        return "Article: title: \(title), link: \(link), summary: \(summary), author: \(author), published: \(published), updated: \(updatedAt), identifier: \(identifier), content: \(content), read: \(read)\n"
     }
 
     public init(title: String, link: NSURL?, summary: String, author: String, published: NSDate,

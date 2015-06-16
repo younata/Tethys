@@ -62,7 +62,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     let linkString = NSLocalizedString("Link", comment: "")
 
     public var articles: [Article] = []
-    var lastArticleIndex = 0
+    public var lastArticleIndex = 0
 
     var dataManager: DataManager? = nil
 

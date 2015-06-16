@@ -169,14 +169,15 @@ class ArticleListControllerSpec: QuickSpec {
 
                     describe("when tapped") {
                         beforeEach {
-                            subject.tableView(subject.tableView, didSelectRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 0))
+                            subject.tableView(subject.tableView, didSelectRowAtIndexPath: NSIndexPath(forRow: 1, inSection: 0))
                         }
 
                         it("should navigate to an ArticleViewController") {
                             expect(navigationController.topViewController).toEventually(beAnInstanceOf(ArticleViewController.self))
                             if let articleController = navigationController.topViewController as? ArticleViewController {
-                                expect(articleController.article).to(equal(sortedArticles.first))
+                                expect(articleController.article).to(equal(sortedArticles[1]))
                                 expect(articleController.articles).to(equal(sortedArticles))
+                                expect(articleController.lastArticleIndex).to(equal(1))
                             }
                         }
                     }

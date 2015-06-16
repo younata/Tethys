@@ -74,7 +74,7 @@ public class ArticleListController: UITableViewController {
         avc.article = article
         avc.articles = self.articles
         if (self.articles.count != 0) {
-//            avc.lastArticleIndex = (self.articles as NSArray).indexOfObject(article)
+            avc.lastArticleIndex = self.articles.indexOf(article) ?? 0
         } else {
             avc.lastArticleIndex = 0
         }

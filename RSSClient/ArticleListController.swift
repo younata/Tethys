@@ -2,7 +2,7 @@ import UIKit
 
 public class ArticleListController: UITableViewController {
 
-    private var articles: [Article] = []
+    internal var articles: [Article] = []
     public var feeds: [Feed] = [] {
         didSet {
             let articles = self.feeds.reduce(Array<Article>()) { return $0 + $1.articles }

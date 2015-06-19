@@ -11,6 +11,7 @@ class ArticleViewControllerSpec: QuickSpec {
         var injector: Injector! = nil
         var navigationController: UINavigationController! = nil
         var dataManager: DataManagerMock! = nil
+        var fakeWebView: FakeWebView! = nil
 
         beforeEach {
             injector = Injector()
@@ -18,6 +19,9 @@ class ArticleViewControllerSpec: QuickSpec {
             injector.bind(DataManager.self, to: dataManager)
 
             subject = injector.create(ArticleViewController.self) as! ArticleViewController
+
+            fakeWebView = FakeWebView()
+            subject.content = fakeWebView
 
             navigationController = UINavigationController(rootViewController: subject)
 
@@ -29,15 +33,6 @@ class ArticleViewControllerSpec: QuickSpec {
             if let activity = subject.userActivity {
                 expect(activity.activityType).to(equal("com.rachelbrindle.rssclient.article"))
                 expect(activity.title).to(equal("Reading Article"))
-            }
-        }
-
-        it("should invalidate the user activity upon dealloc") {
-            if let activity = subject.userActivity {
-                navigationController = nil
-                injector = nil
-                subject = nil
-                expect(activity.valid).to(beFalsy())
             }
         }
 
@@ -59,7 +54,7 @@ class ArticleViewControllerSpec: QuickSpec {
         }
 
         describe("setting the article") {
-            let article = Article(title: "article", link: NSURL(string: "https://example.com"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, feed: nil, flags: [], enclosures: [])
+            let article = Article(title: "article", link: NSURL(string: "https://example.com/"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, feed: nil, flags: [], enclosures: [])
 
             beforeEach {
                 subject.article = article
@@ -83,7 +78,7 @@ class ArticleViewControllerSpec: QuickSpec {
                         expect(userInfo["showingContent"] as? Bool).to(beTruthy())
                     }
 
-                    expect(activity.webpageURL).to(equal(NSURL(string: "https://example.com")))
+                    expect(activity.webpageURL).to(equal(article.link))
                     expect(activity.needsSave).to(beTruthy())
 
                     navigationController = nil
@@ -94,19 +89,30 @@ class ArticleViewControllerSpec: QuickSpec {
             }
 
             describe("tapping the share button") {
+                var window: UIWindow! = nil
                 beforeEach {
+                    window = UIWindow()
+                    window.makeKeyAndVisible()
+                    window.rootViewController = navigationController
                     subject.shareButton.tap()
+                }
+
+                afterEach {
+                    window.resignKeyWindow()
+                    window = nil
                 }
 
                 it("should bring up an activity view controller") {
                     expect(subject.presentedViewController).toEventually(beAnInstanceOf(UIActivityViewController.self))
                     if let activityViewController = subject.presentedViewController as? UIActivityViewController {
                         expect(activityViewController.activityItems().count).to(equal(1))
-                        expect(activityViewController.activityItems().first as? NSURL).to(equal(NSURL(string: "https://example.com")))
+                        expect(activityViewController.activityItems().first as? NSURL).to(equal(article.link))
 
-                        let safari = TOActivitySafari()
-                        let chrome = TOActivityChrome()
-                        expect(activityViewController.applicationActivities() as? [NSObject]).to(equal([safari, chrome])) // Fixme: test for popover controller and use that.
+                        expect(activityViewController.applicationActivities() as? [NSObject]).toNot(beNil())
+                        if let activities = activityViewController.applicationActivities() as? [NSObject] {
+                            expect(activities.first).to(beAnInstanceOf(TOActivitySafari.self))
+                            expect(activities.last).to(beAnInstanceOf(TOActivityChrome.self))
+                        }
                     }
                 }
             }
@@ -121,17 +127,17 @@ class ArticleViewControllerSpec: QuickSpec {
                 }
 
                 it("should show the link") {
-                    expect(subject.content.URL).to(equal(NSURL(string: "https://example.com")))
+                    expect(subject.content.URL).toEventually(equal(article.link))
                 }
 
                 it("should update it's title") {
-                    expect(subject.toggleContentButton.title).toEventually(equal("Content"))
+                    expect(subject.toggleContentButton.title).to(equal("Content"))
                 }
 
                 it("should update the userActivity") {
-                    if let userInfo = subject.userActivity?.userInfo {
-                        expect(userInfo["showingContent"] as? Bool).to(beTruthy())
-                        expect(userInfo["url"]).to(beNil())
+                    if let activity = subject.userActivity, let userInfo = activity.userInfo {
+                        expect(userInfo["showingContent"] as? Bool).to(beFalsy())
+                        expect(activity.webpageURL).to(equal(article.link))
                     }
                 }
 
@@ -141,7 +147,7 @@ class ArticleViewControllerSpec: QuickSpec {
                     }
 
                     it("should show the content again") {
-                        expect(subject.content.URL).toEventually(beNil())
+                        expect(subject.content.URL).toEventually(equal(NSURL(string: "about:blank")))
                     }
 
                     it("should update it's title") {
@@ -149,9 +155,9 @@ class ArticleViewControllerSpec: QuickSpec {
                     }
 
                     it("should update the userActivity") {
-                        if let userInfo = subject.userActivity?.userInfo {
-                            expect(userInfo["showingContent"] as? Bool).to(beFalsy())
-                            expect(userInfo["url"] as? NSURL).to(equal(article.link))
+                        if let activity = subject.userActivity, let userInfo = activity.userInfo {
+                            expect(userInfo["showingContent"] as? Bool).to(beTruthy())
+                            expect(activity.webpageURL).to(equal(article.link))
                         }
                     }
                 }
@@ -174,15 +180,9 @@ class ArticleViewControllerSpec: QuickSpec {
                         expect(subject.loadingBar.hidden).to(beFalsy())
                     }
 
-                    it("should enable the forward/back if it can") {
-                        if let items = subject.navigationItem.rightBarButtonItems, forward = items.first, back = items.last {
-                            expect(forward.enabled).to(equal(webView.canGoForward))
-                            expect(back.enabled).to(equal(webView.canGoBack))
-                        }
-                    }
-
                     context("successfully navigating") {
                         beforeEach {
+                            fakeWebView.url = NSURL(string: "https://example.com/link")
                             webView.navigationDelegate?.webView?(webView, didFinishNavigation: nil)
                         }
 
@@ -192,8 +192,14 @@ class ArticleViewControllerSpec: QuickSpec {
 
                         it("should update the userActivity") {
                             if let activity = subject.userActivity {
-                                expect(activity.userInfo?["url"] as? NSURL).to(equal(webView.URL))
                                 expect(activity.webpageURL).to(equal(webView.URL))
+                            }
+                        }
+
+                        it("should enable the forward/back if it can") {
+                            if let items = subject.navigationItem.rightBarButtonItems, forward = items.first, back = items.last {
+                                expect(forward.enabled).to(equal(webView.canGoForward))
+                                expect(back.enabled).to(equal(webView.canGoBack))
                             }
                         }
                     }

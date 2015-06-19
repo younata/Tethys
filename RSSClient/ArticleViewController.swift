@@ -8,7 +8,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         didSet {
             self.navigationController?.setToolbarHidden(false, animated: false)
             if let a = article {
-//                self.dataManager?.readArticle(a, read: true)
+                self.dataManager?.markArticle(a, asRead: true)
 //                NSNotificationCenter.defaultCenter().postNotificationName("ArticleWasRead", object: a)
 //                a.managedObjectContext?.save(nil)
 //                let url = a.link
@@ -22,12 +22,11 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
                     userActivity?.title = NSLocalizedString("Reading Article", comment: "")
                     userActivity?.becomeCurrent()
                 }
-                /*
+
                 userActivity?.userInfo = ["feed": a.feed?.title ?? "",
-                                          "article": a.objectID.URIRepresentation(),
-                                          "showingContent": true,
-                                          "url": a.link!]
-                */
+                                          "article": a.identifier,
+                                          "showingContent": true]
+
                 userActivity?.webpageURL = a.link
                 self.userActivity?.needsSave = true
             }
@@ -39,7 +38,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         case Link;
     }
 
-    public private(set) var content = WKWebView(forAutoLayout: ())
+    public var content = WKWebView(forAutoLayout: ())
     public let loadingBar = UIProgressView(progressViewStyle: .Bar)
 
     public private(set) lazy var shareButton: UIBarButtonItem = {
@@ -54,7 +53,9 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     public var articles: [Article] = []
     public var lastArticleIndex = 0
 
-    public var dataManager: DataManager? = nil
+    public lazy var dataManager: DataManager? = {
+        return self.injector?.create(DataManager.self) as? DataManager
+    }()
 
     private var articleCSS: String {
         if let loc = NSBundle.mainBundle().URLForResource("article", withExtension: "css") {
@@ -118,6 +119,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         if userActivity == nil {
             userActivity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
             userActivity?.title = NSLocalizedString("Reading Article", comment: "")
+            userActivity?.becomeCurrent()
         }
 
         self.view.addSubview(loadingBar)
@@ -266,7 +268,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         }
     }
 
-    private func share() {
+    internal func share() {
         if let link = article?.link {
             let safari = TOActivitySafari()
             let chrome = TOActivityChrome()
@@ -282,16 +284,14 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         }
     }
 
-    private func toggleContentLink() {
+    internal func toggleContentLink() {
         switch (self.contentType) {
         case .Link:
             self.contentType = .Content
             self.userActivity?.userInfo?["showingContent"] = true
-            self.userActivity?.userInfo?.removeValueForKey("url")
         case .Content:
             self.contentType = .Link
             self.userActivity?.userInfo?["showingContent"] = false
-//            self.userActivity?.userInfo?["url"] = NSURL(string: self.article?.link ?? "")!
         }
         self.userActivity?.needsSave = true
     }
@@ -307,6 +307,12 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     public func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
         loadingBar.hidden = true
         self.removeObserverFromContent(webView)
+        userActivity?.webpageURL = webView.URL
+
+        if let items = self.navigationItem.rightBarButtonItems, forward = items.first, back = items.last {
+            forward.enabled = content.canGoForward
+            back.enabled = content.canGoBack
+        }
     }
 
     public func webView(webView: WKWebView, didFailNavigation _: WKNavigation!, withError _: NSError) {
@@ -320,17 +326,6 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         if !objectsBeingObserved.contains(webView) {
             webView.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
             objectsBeingObserved.append(webView)
-        }
-        if let _ = webView.URL {
-//            if wvu != NSURL(string: self.article?.feed?.url ?? "") {
-//                self.userActivity?.userInfo?["url"] = wvu
-//                self.userActivity?.needsSave = true
-//                self.userActivity?.webpageURL = wvu
-//            }
-        }
-        if let items = self.navigationItem.rightBarButtonItems, forward = items.first, back = items.last {
-            forward.enabled = content.canGoForward
-            back.enabled = content.canGoBack
         }
     }
 }

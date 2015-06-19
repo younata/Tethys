@@ -15,17 +15,17 @@ static char * kValidKey;
 
 + (void)load {
     [PCKMethodRedirector redirectSelector:@selector(becomeCurrent)
-                                 forClass:objc_getMetaClass(class_getName([self class]))
+                                 forClass:[self class]
                                        to:@selector(_becomeCurrent)
                             andRenameItTo:@selector(original_becomeCurrent)];
 
     [PCKMethodRedirector redirectSelector:@selector(resignCurrent)
-                                 forClass:objc_getMetaClass(class_getName([self class]))
+                                 forClass:[self class]
                                        to:@selector(_resignCurrent)
                             andRenameItTo:@selector(original_resignCurrent)];
 
     [PCKMethodRedirector redirectSelector:@selector(invalidate)
-                                 forClass:objc_getMetaClass(class_getName([self class]))
+                                 forClass:[self class]
                                        to:@selector(_invalidate)
                             andRenameItTo:@selector(original_invalidate)];
 }

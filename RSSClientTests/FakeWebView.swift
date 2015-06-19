@@ -21,6 +21,9 @@ class FakeWebView: WKWebView {
         return nil
     }
 
+    var url: NSURL? = nil
+    override var URL: NSURL? { return url ?? super.URL }
+
     var lastRequestLoaded: NSURLRequest? = nil
     override func loadRequest(request: NSURLRequest) -> WKNavigation? {
         lastRequestLoaded = request

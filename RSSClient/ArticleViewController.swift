@@ -208,6 +208,10 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     }
 
     deinit {
+        for obj in objectsBeingObserved {
+            obj.removeObserver(self, forKeyPath: "estimatedProgress")
+        }
+        objectsBeingObserved = []
         userActivity?.invalidate()
     }
 
@@ -307,7 +311,9 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     public func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
         loadingBar.hidden = true
         self.removeObserverFromContent(webView)
-        userActivity?.webpageURL = webView.URL
+        if webView.URL?.scheme != "about" {
+            userActivity?.webpageURL = webView.URL
+        }
 
         if let items = self.navigationItem.rightBarButtonItems, forward = items.first, back = items.last {
             forward.enabled = content.canGoForward

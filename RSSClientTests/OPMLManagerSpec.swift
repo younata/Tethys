@@ -32,7 +32,7 @@ class OPMLManagerSpec: QuickSpec {
                     feeds = otherFeeds
                 }
 
-                expect(feeds.count).toEventuallyNot(beNil(), timeout: 5)
+                expect(feeds.count).to(equal(3))
             }
 
             it("should return a list of feeds imported") {
@@ -100,7 +100,7 @@ class OPMLManagerSpec: QuickSpec {
 
                 parser.main()
 
-                expect(testItems.count).toEventuallyNot(equal(0))
+                expect(testItems.count).toNot(equal(0))
             }
         }
     }

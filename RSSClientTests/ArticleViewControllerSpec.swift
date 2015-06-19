@@ -54,7 +54,7 @@ class ArticleViewControllerSpec: QuickSpec {
         }
 
         describe("setting the article") {
-            let article = Article(title: "article", link: NSURL(string: "https://example.com/"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, feed: nil, flags: [], enclosures: [])
+            let article = Article(title: "article", link: NSURL(string: "https://google.com/"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, feed: nil, flags: [], enclosures: [])
 
             beforeEach {
                 subject.article = article
@@ -127,7 +127,7 @@ class ArticleViewControllerSpec: QuickSpec {
                 }
 
                 it("should show the link") {
-                    expect(subject.content.URL).toEventually(equal(article.link))
+                    expect(fakeWebView.lastRequestLoaded?.URL).to(equal(article.link))
                 }
 
                 it("should update it's title") {

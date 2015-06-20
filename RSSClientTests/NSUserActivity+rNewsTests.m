@@ -6,9 +6,9 @@ static char * kCurrentKey;
 static char * kValidKey;
 
 @interface NSUserActivity (rNewsTestsPrivate)
-+ (instancetype)original_becomeCurrent;
-+ (instancetype)original_resignCurrent;
-+ (instancetype)original_invalidate;
+- (void)original_becomeCurrent;
+- (void)original_resignCurrent;
+- (void)original_invalidate;
 @end
 
 @implementation NSUserActivity (rNewsTests)

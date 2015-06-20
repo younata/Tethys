@@ -57,6 +57,11 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         return self.injector?.create(DataManager.self) as? DataManager
     }()
 
+    public lazy var swipeRight: UIScreenEdgePanGestureRecognizer = {
+        return UIScreenEdgePanGestureRecognizer(target: self, action: "next:")
+    }()
+
+
     private var articleCSS: String {
         if let loc = NSBundle.mainBundle().URLForResource("article", withExtension: "css") {
             do {
@@ -154,7 +159,6 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
             }
         }
 
-        let swipeRight = UIScreenEdgePanGestureRecognizer(target: self, action: "next:")
         swipeRight.edges = .Right
         self.view.addGestureRecognizer(swipeRight)
     }
@@ -162,13 +166,13 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     public override func restoreUserActivityState(activity: NSUserActivity) {
         super.restoreUserActivityState(activity)
 
-        if let ui = activity.userInfo, let showingContent = ui["showingContent"] as? Bool {
+        if let userInfo = activity.userInfo, let showingContent = userInfo["showingContent"] as? Bool {
             if showingContent {
                 self.contentType = .Content
             } else {
                 self.contentType = .Link
             }
-            if let url = ui["url"] as? NSURL {
+            if let url = activity.webpageURL {
                 self.content.loadRequest(NSURLRequest(URL: url))
             }
         }

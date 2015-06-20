@@ -11,7 +11,6 @@ class ArticleViewControllerSpec: QuickSpec {
         var injector: Injector! = nil
         var navigationController: UINavigationController! = nil
         var dataManager: DataManagerMock! = nil
-        var fakeWebView: FakeWebView! = nil
 
         beforeEach {
             injector = Injector()
@@ -19,9 +18,6 @@ class ArticleViewControllerSpec: QuickSpec {
             injector.bind(DataManager.self, to: dataManager)
 
             subject = injector.create(ArticleViewController.self) as! ArticleViewController
-
-            fakeWebView = FakeWebView()
-            subject.content = fakeWebView
 
             navigationController = UINavigationController(rootViewController: subject)
 
@@ -37,20 +33,72 @@ class ArticleViewControllerSpec: QuickSpec {
         }
 
         describe("continuing from user activity") {
-//            let article = Article(title: "article", link: NSURL(string: "https://example.com"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, feed: nil, flags: [], enclosures: [])
+            let article = Article(title: "article", link: NSURL(string: "https://example.com/article"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, feed: nil, flags: [], enclosures: [])
 
             beforeEach {
-                let activityType = "com.rachelbrindle.rssclient.article"
-                let userActivity = NSUserActivity(activityType: activityType)
-                userActivity.title = NSLocalizedString("Reading Article", comment: "")
-
-                subject.restoreUserActivityState(userActivity)
+                subject.article = article
             }
 
-            // TODO: this
-//            it("should load up the old article") {
-//
-//            }
+            context("when we were showing the content") {
+                beforeEach {
+                    let activityType = "com.rachelbrindle.rssclient.article"
+                    let userActivity = NSUserActivity(activityType: activityType)
+                    userActivity.title = NSLocalizedString("Reading Article", comment: "")
+
+                    userActivity.userInfo = [
+                        "feed": "",
+                        "article": "",
+                        "showingContent": true
+                    ]
+
+                    subject.restoreUserActivityState(userActivity)
+                }
+
+                it("should show the content") {
+                    expect(subject.toggleContentButton.title).to(equal("Link"))
+                }
+            }
+
+            context("when we were showing a link") {
+                beforeEach {
+                    let activityType = "com.rachelbrindle.rssclient.article"
+                    let userActivity = NSUserActivity(activityType: activityType)
+                    userActivity.title = NSLocalizedString("Reading Article", comment: "")
+
+                    userActivity.userInfo = [
+                        "feed": "",
+                        "article": "",
+                        "showingContent": false
+                    ]
+
+                    subject.restoreUserActivityState(userActivity)
+                }
+
+                it("should load the article's link") {
+                    expect(subject.content.lastRequestLoaded?.URL).to(equal(NSURL(string: "https://example.com/article")))
+                }
+            }
+
+            context("when we had a webpageURL") {
+                beforeEach {
+                    let activityType = "com.rachelbrindle.rssclient.article"
+                    let userActivity = NSUserActivity(activityType: activityType)
+                    userActivity.title = NSLocalizedString("Reading Article", comment: "")
+
+                    userActivity.userInfo = [
+                        "feed": "",
+                        "article": "",
+                        "showingContent": true
+                    ]
+                    userActivity.webpageURL = NSURL(string: "http://example.com/resumeURL")
+
+                    subject.restoreUserActivityState(userActivity)
+                }
+
+                it("should load the webpage") {
+                    expect(subject.content.lastRequestLoaded?.URL).to(equal(NSURL(string: "http://example.com/resumeURL")))
+                }
+            }
         }
 
         describe("setting the article") {
@@ -127,7 +175,7 @@ class ArticleViewControllerSpec: QuickSpec {
                 }
 
                 it("should show the link") {
-                    expect(fakeWebView.lastRequestLoaded?.URL).to(equal(article.link))
+                    expect(subject.content.lastRequestLoaded?.URL).to(equal(article.link))
                 }
 
                 it("should update it's title") {
@@ -147,7 +195,7 @@ class ArticleViewControllerSpec: QuickSpec {
                     }
 
                     it("should show the content again") {
-                        expect(subject.content.URL).toEventually(equal(NSURL(string: "about:blank")))
+                        expect(subject.content.URL).to(beNil())
                     }
 
                     it("should update it's title") {
@@ -182,7 +230,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
                     context("successfully navigating") {
                         beforeEach {
-                            fakeWebView.url = NSURL(string: "https://example.com/link")
+                            webView.currentURL = NSURL(string: "https://example.com/link")
                             webView.navigationDelegate?.webView?(webView, didFinishNavigation: nil)
                         }
 
@@ -192,7 +240,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
                         it("should update the userActivity") {
                             if let activity = subject.userActivity {
-                                expect(activity.webpageURL).to(equal(webView.URL))
+                                expect(activity.webpageURL).to(equal(webView.currentURL))
                             }
                         }
 

@@ -114,6 +114,7 @@
 		89CB98BA1B12E9D300C87160 /* MAKDropDownMenu.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB98B61B12E9C900C87160 /* MAKDropDownMenu.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89CB98BF1B13947800C87160 /* FeedTableCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */; };
 		89D06A1B19FDBC52003909A3 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89D06A1A19FDBC52003909A3 /* Launch Screen.xib */; };
+		89D970BB1B35BF6500ED84B8 /* WKWebView+rNewsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D970BA1B35BF6500ED84B8 /* WKWebView+rNewsTests.m */; };
 		89DA7D2C1A66111E0050685B /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2B1A66111E0050685B /* TextFieldCell.swift */; };
 		89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2D1A6613100050685B /* ValidatorView.swift */; };
 		89DBDA9A1A9EBB0C00959AC7 /* feed.rss in Resources */ = {isa = PBXBuildFile; fileRef = 89DBDA991A9EBB0C00959AC7 /* feed.rss */; };
@@ -297,6 +298,8 @@
 		89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCellSpec.swift; sourceTree = "<group>"; };
 		89D06A1A19FDBC52003909A3 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		89D135101A5944A200B6937A /* RSSClient 1.4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.4.xcdatamodel"; sourceTree = "<group>"; };
+		89D970B91B35BF6400ED84B8 /* WKWebView+rNewsTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WKWebView+rNewsTests.h"; sourceTree = "<group>"; };
+		89D970BA1B35BF6500ED84B8 /* WKWebView+rNewsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "WKWebView+rNewsTests.m"; sourceTree = "<group>"; };
 		89DA7D2B1A66111E0050685B /* TextFieldCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldCell.swift; sourceTree = "<group>"; };
 		89DA7D2D1A6613100050685B /* ValidatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidatorView.swift; sourceTree = "<group>"; };
 		89DBDA991A9EBB0C00959AC7 /* feed.rss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = feed.rss; sourceTree = "<group>"; };
@@ -758,6 +761,8 @@
 				89F516561B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m */,
 				899823AF1B30BA7E00818755 /* NSUserActivity+rNewsTests.h */,
 				899823B01B30BA7E00818755 /* NSUserActivity+rNewsTests.m */,
+				89D970B91B35BF6400ED84B8 /* WKWebView+rNewsTests.h */,
+				89D970BA1B35BF6500ED84B8 /* WKWebView+rNewsTests.m */,
 			);
 			name = Mocks;
 			sourceTree = "<group>";
@@ -1015,6 +1020,7 @@
 				89F516FD1B1BA1960005AB04 /* UITableViewRowAction+Spec.m in Sources */,
 				899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */,
 				89A341821B150DA90000C60B /* OPMLManagerSpec.swift in Sources */,
+				89D970BB1B35BF6500ED84B8 /* WKWebView+rNewsTests.m in Sources */,
 				89C204C21A73FEDA00C792D2 /* SplitDelegateSpec.swift in Sources */,
 				8978D4E91B05AB4300EDD6D0 /* EnclosureSpec.swift in Sources */,
 				89F516571B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m in Sources */,

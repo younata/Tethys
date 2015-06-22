@@ -1,8 +1,13 @@
 import UIKit
+import Ra
 
 public class NotificationHandler: NSObject {
 
-    func enableNotifications(application: UIApplication) {
+    private lazy var dataManager: DataManager? = {
+        return self.injector?.create(DataManager.self) as? DataManager
+    }()
+
+    public func enableNotifications(application: UIApplication) {
         let markReadAction = UIMutableUserNotificationAction()
         markReadAction.identifier = "read"
         markReadAction.title = NSLocalizedString("Mark Read", comment: "")
@@ -20,27 +25,25 @@ public class NotificationHandler: NSObject {
         application.registerUserNotificationSettings(notificationSettings)
     }
 
-    func handleLocalNotification(notification: UILocalNotification, window: UIWindow) {
+    public func handleLocalNotification(notification: UILocalNotification, window: UIWindow) {
         if let userInfo = notification.userInfo {
             let (_, article) = feedAndArticleFromUserInfo(userInfo)
             showArticle(article, window: window)
         }
     }
 
-    func handleAction(identifier: String?, notification: UILocalNotification,
+    public func handleAction(identifier: String?, notification: UILocalNotification,
         window: UIWindow, completionHandler: () -> Void) {
             if let userInfo = notification.userInfo {
                 let (_, article) = feedAndArticleFromUserInfo(userInfo)
                 if identifier == "read" {
 //                    let dataManager = self.injector!.create(DataManager.self) as! DataManager
 //                    dataManager.readArticle(article)
-                } else if identifier == "view" {
-                    showArticle(article, window: window)
                 }
             }
     }
 
-    func sendLocalNotification(application: UIApplication, article: Article) {
+    public func sendLocalNotification(application: UIApplication, article: Article) {
         let note = UILocalNotification()
         note.alertBody = NSString.localizedStringWithFormat("New article in %@: %@",
             article.feed?.title ?? "", article.title ?? "") as String

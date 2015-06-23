@@ -68,10 +68,8 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
     public func application(application: UIApplication, handleActionWithIdentifier identifier: String?,
         forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
-            if let window = self.window {
-                notificationHandler.handleAction(identifier, notification: notification,
-                    window: window, completionHandler: completionHandler)
-            }
+            notificationHandler.handleAction(identifier, notification: notification)
+            completionHandler()
     }
 
     public func application(application: UIApplication,

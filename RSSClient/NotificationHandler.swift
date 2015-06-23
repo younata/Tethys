@@ -32,15 +32,14 @@ public class NotificationHandler: NSObject {
         }
     }
 
-    public func handleAction(identifier: String?, notification: UILocalNotification,
-        window: UIWindow, completionHandler: () -> Void) {
-            if let userInfo = notification.userInfo {
-                let (_, article) = feedAndArticleFromUserInfo(userInfo)
-                if identifier == "read" {
+    public func handleAction(identifier: String?, notification: UILocalNotification) {
+//            if let userInfo = notification.userInfo {
+//                let (_, article) = feedAndArticleFromUserInfo(userInfo)
+//                if identifier == "read" {
 //                    let dataManager = self.injector!.create(DataManager.self) as! DataManager
 //                    dataManager.readArticle(article)
-                }
-            }
+//                }
+//            }
     }
 
     public func sendLocalNotification(application: UIApplication, article: Article) {

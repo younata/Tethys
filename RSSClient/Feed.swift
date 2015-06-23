@@ -59,6 +59,8 @@ public class Feed: Equatable, Hashable, CustomStringConvertible {
         }
     }
 
+    public private(set) var identifier: String
+
     public var isQueryFeed: Bool { return query != nil }
 
     public var hashValue: Int {
@@ -135,7 +137,7 @@ public class Feed: Equatable, Hashable, CustomStringConvertible {
     }
 
     public init(title: String, url: NSURL?, summary: String, query: String?, tags: [String],
-        waitPeriod: Int?, remainingWait: Int?, articles: [Article], image: Image?) {
+        waitPeriod: Int?, remainingWait: Int?, articles: [Article], image: Image?, identifier: String = "") {
             self.title = title
             self.url = url
             self.summary = summary
@@ -145,6 +147,7 @@ public class Feed: Equatable, Hashable, CustomStringConvertible {
             self.remainingWait = remainingWait
             self.image = image
             self.articles = articles
+            self.identifier = identifier
             for article in articles {
                 article.feed = self
             }
@@ -166,6 +169,7 @@ public class Feed: Equatable, Hashable, CustomStringConvertible {
         tags = feed.tags as? [String] ?? []
         waitPeriod = feed.waitPeriod?.integerValue
         remainingWait = feed.remainingWait?.integerValue
+        self.identifier = feed.objectID.URIRepresentation().description
         if let feedArticles = feed.articles as? Set<CoreDataArticle> {
             let articlesList = Array(feedArticles)
             articles = articlesList.map { Article(article: $0, feed: self) }

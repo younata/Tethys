@@ -1,10 +1,7 @@
 import UIKit
 
 public class SplitDelegate: NSObject, UISplitViewControllerDelegate {
-    public var collapseDetailViewController: Bool = true {
-        didSet {
-        }
-    }
+    public var collapseDetailViewController: Bool = true
 
     private let splitController: UISplitViewController
 

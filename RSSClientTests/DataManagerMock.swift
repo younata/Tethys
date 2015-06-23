@@ -73,8 +73,10 @@ class DataManagerMock : DataManager {
         updateFeedsCompletion = completion
     }
 
+    var updateFeedsInBackgroundCalled: Bool = false
     override func updateFeedsInBackground(completion: (NSError?) -> (Void)) {
-        completion(nil)
+        updateFeedsInBackgroundCalled = true
+        self.updateFeeds(completion)
     }
 
     override func updateFeeds(feeds: [Feed], backgroundFetch: Bool, completion: (NSError?)->(Void)) {

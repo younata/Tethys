@@ -115,6 +115,10 @@
 		89CB98BF1B13947800C87160 /* FeedTableCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */; };
 		89D06A1B19FDBC52003909A3 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89D06A1A19FDBC52003909A3 /* Launch Screen.xib */; };
 		89D970BB1B35BF6500ED84B8 /* WKWebView+rNewsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D970BA1B35BF6500ED84B8 /* WKWebView+rNewsTests.m */; };
+		89D970BD1B3929A600ED84B8 /* BackgroundFetchHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D970BC1B3929A600ED84B8 /* BackgroundFetchHandler.swift */; };
+		89D970BF1B3929D600ED84B8 /* BackgroundFetchHandlerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D970BE1B3929D600ED84B8 /* BackgroundFetchHandlerSpec.swift */; };
+		89D970C11B392AD400ED84B8 /* FakeNotificationSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D970C01B392AD400ED84B8 /* FakeNotificationSource.swift */; };
+		89D970C31B392B0300ED84B8 /* LocalNotificationSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D970C21B392B0300ED84B8 /* LocalNotificationSource.swift */; };
 		89DA7D2C1A66111E0050685B /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2B1A66111E0050685B /* TextFieldCell.swift */; };
 		89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2D1A6613100050685B /* ValidatorView.swift */; };
 		89DBDA9A1A9EBB0C00959AC7 /* feed.rss in Resources */ = {isa = PBXBuildFile; fileRef = 89DBDA991A9EBB0C00959AC7 /* feed.rss */; };
@@ -300,6 +304,10 @@
 		89D135101A5944A200B6937A /* RSSClient 1.4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.4.xcdatamodel"; sourceTree = "<group>"; };
 		89D970B91B35BF6400ED84B8 /* WKWebView+rNewsTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WKWebView+rNewsTests.h"; sourceTree = "<group>"; };
 		89D970BA1B35BF6500ED84B8 /* WKWebView+rNewsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "WKWebView+rNewsTests.m"; sourceTree = "<group>"; };
+		89D970BC1B3929A600ED84B8 /* BackgroundFetchHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundFetchHandler.swift; sourceTree = "<group>"; };
+		89D970BE1B3929D600ED84B8 /* BackgroundFetchHandlerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundFetchHandlerSpec.swift; sourceTree = "<group>"; };
+		89D970C01B392AD400ED84B8 /* FakeNotificationSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeNotificationSource.swift; sourceTree = "<group>"; };
+		89D970C21B392B0300ED84B8 /* LocalNotificationSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalNotificationSource.swift; sourceTree = "<group>"; };
 		89DA7D2B1A66111E0050685B /* TextFieldCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldCell.swift; sourceTree = "<group>"; };
 		89DA7D2D1A6613100050685B /* ValidatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidatorView.swift; sourceTree = "<group>"; };
 		89DBDA991A9EBB0C00959AC7 /* feed.rss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = feed.rss; sourceTree = "<group>"; };
@@ -550,6 +558,7 @@
 				89C204B41A73811000C792D2 /* AppDelegateSpec.swift */,
 				89C204C11A73FEDA00C792D2 /* SplitDelegateSpec.swift */,
 				89C204C61A740D8900C792D2 /* NotificationHandlerSpec.swift */,
+				89D970BE1B3929D600ED84B8 /* BackgroundFetchHandlerSpec.swift */,
 				89CB98491B12C50000C87160 /* ActivityIndicatorSpec.swift */,
 				893F93E31B237EBC00B52194 /* UnreadCounterSpec.swift */,
 				8997C7F61B25074900972930 /* ValidatorViewSpec.swift */,
@@ -742,6 +751,8 @@
 				AE4356301A7AE4FE00A961B9 /* InjectorModule.swift */,
 				89C204BC1A73F72800C792D2 /* SplitDelegate.swift */,
 				89C204C31A7400D100C792D2 /* NotificationHandler.swift */,
+				89D970C21B392B0300ED84B8 /* LocalNotificationSource.swift */,
+				89D970BC1B3929A600ED84B8 /* BackgroundFetchHandler.swift */,
 			);
 			name = Application;
 			sourceTree = "<group>";
@@ -750,6 +761,7 @@
 			isa = PBXGroup;
 			children = (
 				AE4355FF1A7ABA4F00A961B9 /* DataManagerMock.swift */,
+				89D970C01B392AD400ED84B8 /* FakeNotificationSource.swift */,
 				8997C7F41B248D5A00972930 /* FakeWebView.swift */,
 				898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */,
 				89F517071B1C12A30005AB04 /* FakeURLSession.swift */,
@@ -967,6 +979,7 @@
 				89C830C619D8A058009924DA /* CoreDataFeed.m in Sources */,
 				8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */,
 				89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */,
+				89D970BD1B3929A600ED84B8 /* BackgroundFetchHandler.swift in Sources */,
 				8981316B1AFB1ED70090FA7F /* FeedRepository.swift in Sources */,
 				894896EC1A16F1130030EB6E /* LocalImportViewController.swift in Sources */,
 				89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */,
@@ -981,6 +994,7 @@
 				895901A51A30BCB7002E2C62 /* CoreDataEnclosure.m in Sources */,
 				89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */,
 				89C830C319D89E46009924DA /* CoreDataArticle.m in Sources */,
+				89D970C31B392B0300ED84B8 /* LocalNotificationSource.swift in Sources */,
 				89C509F71A2F825400CBD000 /* TextViewCell.swift in Sources */,
 				89C204C41A7400D100C792D2 /* NotificationHandler.swift in Sources */,
 				890E47591AA19D69007F217C /* DataUtility.swift in Sources */,
@@ -1014,6 +1028,7 @@
 				8978D4E71B05AB3800EDD6D0 /* ArticleSpec.swift in Sources */,
 				898F670C1B000451004A7BE3 /* FakeOperationQueue.swift in Sources */,
 				89F517081B1C12A30005AB04 /* FakeURLSession.swift in Sources */,
+				89D970C11B392AD400ED84B8 /* FakeNotificationSource.swift in Sources */,
 				899823A91B2C76B800818755 /* TagEditorViewControllerSpec.swift in Sources */,
 				89F517021B1C070C0005AB04 /* FeedViewControllerSpec.swift in Sources */,
 				898ECDE11B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift in Sources */,
@@ -1030,6 +1045,7 @@
 				89F5170A1B2014470005AB04 /* QueryFeedViewControllerSpec.swift in Sources */,
 				AE4355FE1A7AB7D900A961B9 /* SpecHelper.swift in Sources */,
 				89CB984A1B12C50000C87160 /* ActivityIndicatorSpec.swift in Sources */,
+				89D970BF1B3929D600ED84B8 /* BackgroundFetchHandlerSpec.swift in Sources */,
 				890E47671AA19F7F007F217C /* DataUtilitySpec.swift in Sources */,
 				899823AC1B2C883B00818755 /* ArticleListControllerSpec.swift in Sources */,
 				AE4356001A7ABA4F00A961B9 /* DataManagerMock.swift in Sources */,

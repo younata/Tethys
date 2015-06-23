@@ -19,8 +19,12 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
     lazy var dataManager: DataManager = { return self.anInjector.create(DataManager.self) as! DataManager }()
 
-    lazy var notificationHandler: NotificationHandler = {
-        self.anInjector.create(NotificationHandler.self) as! NotificationHandler
+    lazy var notificationHandler: NotificationHandler? = {
+        self.anInjector.create(NotificationHandler.self) as? NotificationHandler
+    }()
+
+    lazy var backgroundFetchHandler: BackgroundFetchHandler? = {
+        self.anInjector.create(BackgroundFetchHandler.self) as? BackgroundFetchHandler
     }()
 
     lazy var splitDelegate: SplitDelegate = {
@@ -49,7 +53,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             splitView.delegate = splitDelegate
             self.window?.rootViewController = splitView
 
-            notificationHandler.enableNotifications(application)
+            notificationHandler?.enableNotifications(application)
 
             if dataManager.feeds().count > 0 {
                 application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
@@ -62,53 +66,21 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
     public func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
         if let window = self.window {
-            notificationHandler.handleLocalNotification(notification, window: window)
+            notificationHandler?.handleLocalNotification(notification, window: window)
         }
     }
 
     public func application(application: UIApplication, handleActionWithIdentifier identifier: String?,
         forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
-            notificationHandler.handleAction(identifier, notification: notification)
+            notificationHandler?.handleAction(identifier, notification: notification)
             completionHandler()
     }
 
     public func application(application: UIApplication,
         performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-//        let originalList: [NSManagedObjectID?] = (dataManager.feeds().reduce([],
-//            combine: {return $0 + ($1.allArticles())}) as [Article]).map { $0.articleID }
-//        if originalList.count == 0 {
-//            completionHandler(.Failed)
-//            return
-//        }
-//        dataManager.updateFeedsInBackground({(error: NSError?) in
-//            if (error != nil) {
-//                completionHandler(.Failed)
-//                return
-//            }
-//            let al : [NSManagedObjectID?] = (self.dataManager.feeds().reduce([],
-//            combine: {return $0 + ($1.allArticles())}) as [Article]).map { return $0.articleID }
-//            if (al.count == originalList.count) {
-//                completionHandler(.NoData)
-//                return
-//            }
-//            let alist: [NSManagedObjectID?] = al.filter({
-//                return !contains(originalList, $0)
-//            })
-//
-//            let settings = application.currentUserNotificationSettings()
-//            if settings.types & UIUserNotificationType.Alert == .Alert {
-//                let articles = DataUtility.articlesWithPredicate(NSPredicate(format: "self IN %@", alist),
-//            managedObjectContext: self.dataManager.managedObjectContext)
-//                for article in articles {
-//                    self.notificationHandler.sendLocalNotification(application, article: article)
-//                }
-//            }
-//            if (alist.count > 0) {
-//                completionHandler(.NewData)
-//            } else {
-//                completionHandler(.NoData)
-//            }
-//        })
+            if let noteHandler = self.notificationHandler {
+                self.backgroundFetchHandler?.performFetch(noteHandler, notificationSource: application, completionHandler: completionHandler)
+            }
     }
 
     public func application(application: UIApplication,

@@ -103,8 +103,8 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
             let title = "<h2>\(article.title)</h2>"
             webView.loadHTMLString(articleCSS + title + content + "</body></html>", baseURL: article.feed?.url!)
             self.toolbarItems = [spacer(), shareButton, spacer(), toggleContentButton, spacer()]
-        } else {
-            webView.loadRequest(NSURLRequest(URL: article.link!))
+        } else if let link = article.link {
+            webView.loadRequest(NSURLRequest(URL: link))
             self.toolbarItems = [spacer(), shareButton, spacer()]
         }
     }

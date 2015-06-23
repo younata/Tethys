@@ -4,54 +4,44 @@ import rNews
 import UIKit
 import Ra
 
-private class ApplicationMock: UIApplication {
-    private var notificationSettings: UIUserNotificationSettings? = nil
-    private override func registerUserNotificationSettings(notificationSettings: UIUserNotificationSettings) {
-        self.notificationSettings = notificationSettings
+private class FakeNotificationSource: LocalNotificationSource {
+    var scheduledNotes: [UILocalNotification] = []
+    var notificationSettings: UIUserNotificationSettings? = nil
+
+    func scheduleNote(note: UILocalNotification) {
+        scheduledNotes.append(note)
     }
 
-    private var scheduledNotes: [UILocalNotification] = []
-    private override func presentLocalNotificationNow(notification: UILocalNotification) {
-        scheduledNotes.append(notification)
-    }
-
-    override init() {
-    }
+    init() {}
 }
 
 class NotificationHandlerSpec: QuickSpec {
     override func spec() {
-        
         var injector: Injector! = nil
-        var app: ApplicationMock! = nil
         var dataManager: DataManagerMock! = nil
 
+        var notificationSource: FakeNotificationSource! = nil
+
         var subject: NotificationHandler! = nil
-//
-//        var article: CoreDataArticle? = nil
-//        var feed: CoreDataFeed? = nil
 
         beforeEach {
             injector = Injector()
             dataManager = DataManagerMock()
             injector.bind(DataManager.self, to: dataManager)
 
-            app = ApplicationMock()
-
             subject = injector.create(NotificationHandler.self) as! NotificationHandler
 
-//            feed = FeedObject(tuple: ("example feed", "http://example.com/feed", "", nil, [], 0, 0, nil), objectID: feedID)
-//            article = ArticleObject(tuple: ("example article", "http://example.com/article", "", "", NSDate(), nil, "", false, [], feed, []), objectID: articleID)
+            notificationSource = FakeNotificationSource()
         }
 
         describe("enabling notifications") {
             beforeEach {
-                subject.enableNotifications(app)
+                subject.enableNotifications(notificationSource)
             }
 
             it("should enable local notifications for marking something as read") {
-                expect(app.notificationSettings?.types).to(equal(UIUserNotificationType.Badge.union(.Alert).union(.Sound)))
-                if let categories = app.notificationSettings?.categories {
+                expect(notificationSource.notificationSettings?.types).to(equal(UIUserNotificationType.Badge.union(.Alert).union(.Sound)))
+                if let categories = notificationSource.notificationSettings?.categories {
                     expect(categories.count).to(equal(1))
                     if let category = categories.first {
                         expect(category.identifier).to(equal("default"))
@@ -83,11 +73,14 @@ class NotificationHandlerSpec: QuickSpec {
                 note.userInfo = ["feed": "feedIdentifier", "article": "articleIdentifier"]
 
                 let splitVC = UISplitViewController()
-                navController = UINavigationController(rootViewController: FeedsTableViewController())
+                navController = UINavigationController(rootViewController: injector.create(FeedsTableViewController.self) as! UIViewController)
                 splitVC.viewControllers = [navController]
 
                 let feed = Feed(title: "feedTitle", url: nil, summary: "", query: "", tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil, identifier: "feedIdentifier")
                 article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, feed: feed, flags: [], enclosures: [])
+                feed.addArticle(article)
+
+                dataManager.feedsList = [feed]
 
                 window = UIWindow()
                 window.rootViewController = splitVC
@@ -97,7 +90,7 @@ class NotificationHandlerSpec: QuickSpec {
 
             it("should open the app and show the article") {
                 expect(navController.viewControllers.count).to(equal(2))
-                if let articleController = navController.viewControllers.last as? ArticleViewController {
+                if let articleController = navController.visibleViewController as? ArticleViewController {
                     expect(articleController.article).to(equal(article))
                 }
             }
@@ -108,14 +101,19 @@ class NotificationHandlerSpec: QuickSpec {
             beforeEach {
                 let feed = Feed(title: "feedTitle", url: nil, summary: "", query: "", tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil, identifier: "feedIdentifier")
                 article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, feed: feed, flags: [], enclosures: [])
+                feed.addArticle(article)
+
+                dataManager.feedsList = [feed]
             }
+
             describe("read") {
                 beforeEach {
                     let note = UILocalNotification()
                     note.category = "default"
                     note.userInfo = ["feed": "feedIdentifier", "article": "articleIdentifier"]
-                    subject.handleAction("", notification: note)
+                    subject.handleAction("read", notification: note)
                 }
+
                 it("should set the article's read value to true") {
                     expect(article.read).to(beTruthy())
                     expect(dataManager.lastArticleMarkedRead).to(equal(article))
@@ -128,12 +126,16 @@ class NotificationHandlerSpec: QuickSpec {
             beforeEach {
                 let feed = Feed(title: "feedTitle", url: nil, summary: "", query: "", tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil, identifier: "feedIdentifier")
                 article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, feed: feed, flags: [], enclosures: [])
-                subject.sendLocalNotification(app, article: article)
+                feed.addArticle(article)
+
+                dataManager.feedsList = [feed]
+
+                subject.sendLocalNotification(notificationSource, article: article)
             }
 
             it("should add a local notification for that article") {
-                expect(app.scheduledNotes.count).to(equal(1))
-                if let note = app.scheduledNotes.first {
+                expect(notificationSource.scheduledNotes.count).to(equal(1))
+                if let note = notificationSource.scheduledNotes.first {
                     expect(note.category).to(equal("default"))
                     let feedTitle = article.feed?.title ?? ""
                     expect(note.alertBody).to(equal("New article in \(feedTitle): \(article.title)"))

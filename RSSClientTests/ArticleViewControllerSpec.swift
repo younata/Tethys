@@ -29,6 +29,10 @@ class ArticleViewControllerSpec: QuickSpec {
             if let activity = subject.userActivity {
                 expect(activity.activityType).to(equal("com.rachelbrindle.rssclient.article"))
                 expect(activity.title).to(equal("Reading Article"))
+                if #available(iOS 9.0, *) {
+                    expect(activity.eligibleForSearch).to(beTruthy())
+                    expect(activity.eligibleForPublicIndexing).to(beTruthy())
+                }
             }
         }
 
@@ -102,7 +106,7 @@ class ArticleViewControllerSpec: QuickSpec {
         }
 
         describe("setting the article") {
-            let article = Article(title: "article", link: NSURL(string: "https://google.com/"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, feed: nil, flags: [], enclosures: [])
+            let article = Article(title: "article", link: NSURL(string: "https://google.com/"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, feed: nil, flags: ["a"], enclosures: [])
 
             beforeEach {
                 subject.article = article
@@ -128,6 +132,10 @@ class ArticleViewControllerSpec: QuickSpec {
 
                     expect(activity.webpageURL).to(equal(article.link))
                     expect(activity.needsSave).to(beTruthy())
+
+                    if #available(iOS 9.0, *) {
+                        expect(activity.keywords).to(equal(Set(["article", "summary", "rachel",  "a"])))
+                    }
 
                     navigationController = nil
                     injector = nil

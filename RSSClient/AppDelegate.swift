@@ -17,7 +17,9 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         return Ra.Injector(module: self.injectorModule)
     }()
 
-    lazy var dataManager: DataManager = { return self.anInjector.create(DataManager.self) as! DataManager }()
+    lazy var dataManager: DataManager? = {
+        return self.anInjector.create(DataManager.self) as? DataManager
+    }()
 
     lazy var notificationHandler: NotificationHandler? = {
         self.anInjector.create(NotificationHandler.self) as? NotificationHandler
@@ -55,7 +57,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
             notificationHandler?.enableNotifications(application)
 
-            if dataManager.feeds().count > 0 {
+            if dataManager?.feeds().count > 0 {
                 application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
             } else {
                 application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
@@ -92,18 +94,15 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             if type == "com.rachelbrindle.rssclient.article",
                 let splitView = self.window?.rootViewController as? UISplitViewController,
                 let nc = splitView.viewControllers.first as? UINavigationController,
-                let _ = nc.viewControllers.first as? FeedsTableViewController,
-                let _ = userActivity.userInfo {
+                let feedsViewController = nc.viewControllers.first as? FeedsTableViewController,
+                let userInfo = userActivity.userInfo,
+                let feedIdentifier = userInfo["feed"] as? String,
+                let articleIdentifier = userInfo["article"] as? String,
+                let feed = self.dataManager?.feeds().filter({ return $0.identifier == feedIdentifier }).first,
+                let article = feed.articles.filter({ $0.identifier == articleIdentifier }).first {
                     nc.popToRootViewControllerAnimated(false)
-//                    let feedTitle = userInfo["feed"] as! String
-//                    let feed : Feed = dataManager.feeds().filter{ return $0.title == feedTitle; }.first!
-//                    let articleID = userInfo["article"] as! NSURL
-//                    let article : Article = feed.articles.filter({
-//                    return $0.objectID.URIRepresentation() == articleID }).first!
-//                    let al = ftvc.showFeeds([feed], animated: false)
-//                    var controllers: [AnyObject] = []
-//                    controllers = [al.showArticle(article)]
-                    restorationHandler([])
+                    let al = feedsViewController.showFeeds([feed], animated: false)
+                    restorationHandler([al.showArticle(article)])
                     handled = true
             }
             return handled

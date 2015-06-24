@@ -26,6 +26,8 @@ private class FakeBackgroundFetchHandler: BackgroundFetchHandler {
     private override func performFetch(notificationHandler: NotificationHandler, notificationSource: LocalNotificationSource, completionHandler: (UIBackgroundFetchResult) -> Void) {
         performFetchCalled = true
     }
+
+    private var handleEventsCalled = false
 }
 
 class AppDelegateSpec: QuickSpec {
@@ -35,6 +37,8 @@ class AppDelegateSpec: QuickSpec {
         let application = UIApplication.sharedApplication()
         var injector : Ra.Injector! = nil
 
+        var dataManager: DataManagerMock! = nil
+
         var notificationHandler: FakeNotificationHandler! = nil
         var backgroundFetchHandler: FakeBackgroundFetchHandler! = nil
         
@@ -42,10 +46,8 @@ class AppDelegateSpec: QuickSpec {
             subject = AppDelegate()
 
             injector = Ra.Injector()
-            let dataManager = DataManagerMock()
-            injector.bind(DataManager.self) {
-                dataManager
-            }
+            dataManager = DataManagerMock()
+            injector.bind(DataManager.self, to: dataManager)
             injector.bind(kBackgroundManagedObjectContext, to: dataManager.backgroundObjectContext)
 
             notificationHandler = FakeNotificationHandler()
@@ -151,6 +153,39 @@ class AppDelegateSpec: QuickSpec {
 
             it("should forward the call to the backgroundFetchHandler") {
                 expect(backgroundFetchHandler.performFetchCalled).to(beTruthy())
+            }
+        }
+
+        describe("user activities") {
+            var responderArray: [UIResponder] = []
+            var article: Article! = nil
+            beforeEach {
+                let feed = Feed(title: "title", url: nil, summary: "", query: nil, tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil, identifier: "feed")
+                article = Article(title: "title", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, feed: feed, flags: [], enclosures: [])
+                feed.addArticle(article)
+                dataManager.feedsList = [feed]
+                let activity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
+                activity.userInfo = [
+                    "feed": "feed",
+                    "article": "identifier",
+                ]
+                subject.application(UIApplication.sharedApplication(), didFinishLaunchingWithOptions: nil)
+                expect(subject.application(UIApplication.sharedApplication(), continueUserActivity: activity) {responders in
+                    responderArray = responders as? [UIResponder] ?? []
+                }).to(beTruthy())
+            }
+
+            it("should set the responderArray") {
+                expect(responderArray.count).to(equal(1))
+                if let item = responderArray.first {
+                    expect(item).to(beAnInstanceOf(ArticleViewController.self))
+                }
+            }
+
+            it("should show the article") {
+                if let item = responderArray.first as? ArticleViewController {
+                    expect(item.article).to(equal(article))
+                }
             }
         }
     }

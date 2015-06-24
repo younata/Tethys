@@ -9,9 +9,6 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
             self.navigationController?.setToolbarHidden(false, animated: false)
             if let a = article {
                 self.dataManager?.markArticle(a, asRead: true)
-//                NSNotificationCenter.defaultCenter().postNotificationName("ArticleWasRead", object: a)
-//                a.managedObjectContext?.save(nil)
-//                let url = a.link
                 showArticle(a, onWebView: content)
 
                 self.navigationItem.title = a.title ?? ""
@@ -26,6 +23,10 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
                 userActivity?.userInfo = ["feed": a.feed?.title ?? "",
                                           "article": a.identifier,
                                           "showingContent": true]
+
+                if #available(iOS 9.0, *) {
+                    userActivity?.keywords = Set<String>([a.title, a.summary, a.author] + a.flags)
+                }
 
                 userActivity?.webpageURL = a.link
                 self.userActivity?.needsSave = true
@@ -124,6 +125,10 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         if userActivity == nil {
             userActivity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
             userActivity?.title = NSLocalizedString("Reading Article", comment: "")
+            if #available(iOS 9.0, *) {
+                userActivity?.eligibleForPublicIndexing = true
+                userActivity?.eligibleForSearch = true
+            }
             userActivity?.becomeCurrent()
         }
 

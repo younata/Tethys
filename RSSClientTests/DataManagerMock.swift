@@ -2,15 +2,6 @@ import Foundation
 import rNews
 
 class DataManagerMock : DataManager {
-    var importOPMLURL : NSURL? = nil
-    var importOPMLProgress : (Double) -> Void = {_ in }
-    var importOPMLCompletion : ([Feed]) -> Void = {_ in }
-    override func importOPML(opml: NSURL, progress: (Double) -> Void, completion: ([Feed]) -> Void) {
-        importOPMLURL = opml
-        importOPMLProgress = progress
-        importOPMLCompletion = completion
-    }
-
     var newFeedURL: String? = nil
     var newFeedCompletion : (NSError?) -> Void = {_ in }
     override func newFeed(feedURL: String, completion: (NSError?) -> (Void)) -> Feed {
@@ -77,9 +68,5 @@ class DataManagerMock : DataManager {
     override func updateFeedsInBackground(completion: (NSError?) -> (Void)) {
         updateFeedsInBackgroundCalled = true
         self.updateFeeds(completion)
-    }
-
-    override func updateFeeds(feeds: [Feed], backgroundFetch: Bool, completion: (NSError?)->(Void)) {
-        completion(nil)
     }
 }

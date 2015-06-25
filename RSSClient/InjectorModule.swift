@@ -17,7 +17,6 @@ public class InjectorModule : Ra.InjectorModule {
 
         // DataManager
         if let dataManager = injector.create(DataManager.self) as? DataManager {
-            dataManager.configure()
             injector.bind(DataManager.self, to: dataManager)
 
             injector.bind(kBackgroundManagedObjectContext, to: dataManager.backgroundObjectContext)

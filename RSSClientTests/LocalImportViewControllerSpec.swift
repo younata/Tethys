@@ -50,12 +50,15 @@ class LocalImportViewControllerSpec: QuickSpec {
         var tableView : UITableView! = nil
 
         var dataManager: DataManagerMock! = nil
+        var opmlManager: OPMLManagerMock! = nil
         var backgroundQueue : FakeOperationQueue! = nil
 
         beforeEach {
             injector = Ra.Injector(module: SpecInjectorModule())
             dataManager = DataManagerMock()
             injector.bind(DataManager.self, to: dataManager)
+            opmlManager = OPMLManagerMock()
+            injector.bind(OPMLManager.self, to: opmlManager)
             backgroundQueue = injector.create(kBackgroundQueue) as! FakeOperationQueue
             backgroundQueue.runSynchronously = true
             subject = injector.create(LocalImportViewController.self) as! LocalImportViewController
@@ -152,12 +155,12 @@ class LocalImportViewControllerSpec: QuickSpec {
 
                     it("should import the feeds") {
                         let expectedLocation = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
-                        expect(dataManager.importOPMLURL).to(equal(NSURL(string: "file://" + expectedLocation)))
+                        expect(opmlManager.importOPMLURL).to(equal(NSURL(string: "file://" + expectedLocation)))
                     }
 
                     describe("when it's done importing the feeds") {
                         beforeEach {
-                            dataManager.importOPMLCompletion([])
+                            opmlManager.importOPMLCompletion([])
                         }
 
                         it("should remove the activity indicator") {

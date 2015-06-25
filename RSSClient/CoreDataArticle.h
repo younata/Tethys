@@ -17,7 +17,7 @@
 @property (nonatomic) BOOL read;
 @property (nullable, nonatomic, retain) CoreDataFeed *feed;
 @property (nullable, nonatomic, retain) id flags;
-@property (nonnull, nonatomic, retain) NSSet *enclosures;
+@property (nonnull, nonatomic, retain) NSSet <CoreDataEnclosure *> *enclosures;
 
 @end
 
@@ -25,7 +25,7 @@
 
 - (void)addEnclosuresObject:(nonnull CoreDataEnclosure *)value;
 - (void)removeEnclosuresObject:(nonnull CoreDataEnclosure *)value;
-- (void)addEnclosures:(nonnull NSSet *)values;
-- (void)removeEnclosures:(nonnull NSSet *)values;
+- (void)addEnclosures:(nonnull NSSet <CoreDataEnclosure *> *)values;
+- (void)removeEnclosures:(nonnull NSSet <CoreDataEnclosure *> *)values;
 
 @end

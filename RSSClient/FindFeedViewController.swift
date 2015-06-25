@@ -19,16 +19,20 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
     var feeds: [String] = []
 
-    lazy var dataManager: DataManager = {
-        return self.injector!.create(DataManager.self) as! DataManager
+    lazy var dataManager: DataManager? = {
+        return self.injector!.create(DataManager.self) as? DataManager
     }()
 
-    lazy var mainQueue: NSOperationQueue = {
-        return self.injector!.create(kMainQueue) as! NSOperationQueue
+    lazy var opmlManager: OPMLManager? = {
+        return self.injector?.create(OPMLManager.self) as? OPMLManager
     }()
 
-    lazy var backgroundQueue: NSOperationQueue = {
-        return self.injector!.create(kBackgroundQueue) as! NSOperationQueue
+    lazy var mainQueue: NSOperationQueue? = {
+        return self.injector?.create(kMainQueue) as? NSOperationQueue
+    }()
+
+    lazy var backgroundQueue: NSOperationQueue? = {
+        return self.injector?.create(kBackgroundQueue) as? NSOperationQueue
     }()
 
     public override func viewDidLoad() {
@@ -125,14 +129,14 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         let message = NSString.localizedStringWithFormat(messageTemplate, link) as String
         indicator.configureWithMessage(message)
         if opml {
-            dataManager.importOPML(NSURL(string: link)!, progress: {(_) in }) {(_) in
+            opmlManager?.importOPML(NSURL(string: link)!) {(_) in
                 indicator.removeFromSuperview()
                 self.navigationController?.toolbarHidden = false
                 self.navigationController?.navigationBarHidden = false
                 self.dismiss()
             }
         } else {
-            dataManager.newFeed(link) {(error) in
+            dataManager?.newFeed(link) {(error) in
                 if let err = error {
                     print("\(err)")
                 }

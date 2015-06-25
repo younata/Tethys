@@ -12,7 +12,7 @@
 @property (nullable, nonatomic, retain) id tags;
 @property (nullable, nonatomic, retain) NSNumber * waitPeriod;
 @property (nullable, nonatomic, retain) NSNumber * remainingWait;
-@property (nonnull, nonatomic, retain) NSSet *articles;
+@property (nonnull, nonatomic, retain) NSSet <CoreDataArticle *> *articles;
 @property (nullable, nonatomic, retain) id image;
 
 @end
@@ -21,7 +21,7 @@
 
 - (void)addArticlesObject:(nonnull CoreDataArticle *)value;
 - (void)removeArticlesObject:(nonnull CoreDataArticle *)value;
-- (void)addArticles:(nonnull NSSet *)values;
-- (void)removeArticles:(nonnull NSSet *)values;
+- (void)addArticles:(nonnull NSSet <CoreDataArticle *> *)values;
+- (void)removeArticles:(nonnull NSSet <CoreDataArticle *> *)values;
 
 @end

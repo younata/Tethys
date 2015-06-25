@@ -142,12 +142,8 @@ public class Article: Equatable, Hashable, CustomStringConvertible {
         read = article.read
         self.feed = feed
         flags = article.flags as? [String] ?? []
-        if let articleEnclosures = article.enclosures as? Set<CoreDataEnclosure> {
-            let enclosuresList = Array(articleEnclosures)
-            enclosures = enclosuresList.map { Enclosure(enclosure: $0, article: self) }
-        } else {
-            enclosures = []
-        }
+        let enclosuresList = Array(article.enclosures)
+        enclosures = enclosuresList.map { Enclosure(enclosure: $0, article: self) }
 
         updated = false
 

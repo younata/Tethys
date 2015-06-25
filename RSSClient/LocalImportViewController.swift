@@ -22,7 +22,13 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
 
     var tableViewTopOffset: NSLayoutConstraint!
 
-    lazy var dataManager: DataManager = { self.injector?.create(DataManager.self) as! DataManager }()
+    lazy var dataManager: DataManager? = {
+        return self.injector?.create(DataManager.self) as? DataManager
+    }()
+
+    lazy var opmlManager: OPMLManager? = {
+        return self.injector?.create(OPMLManager.self) as? OPMLManager
+    }()
 
     lazy var backgroundQueue: NSOperationQueue? = {
         return self.injector?.create(kBackgroundQueue) as? NSOperationQueue
@@ -148,8 +154,8 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
             let activityIndicator = disableInteractionWithMessage(NSLocalizedString("Importing feeds", comment: ""))
 
             let location = documentsDirectory().stringByAppendingPathComponent(path)
-            dataManager.importOPML(NSURL(string: "file://" + location)!, progress: {_ in }, completion: {(_) in
-                    self.reenableInteractionAndDismiss(activityIndicator)
+            opmlManager?.importOPML(NSURL(string: "file://" + location)!, completion: {(_) in
+                self.reenableInteractionAndDismiss(activityIndicator)
             })
         } else if indexPath.section == 1 {
             let feed = feeds[indexPath.row].1
@@ -157,7 +163,7 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
             let activityIndicator = disableInteractionWithMessage(NSLocalizedString("Importing feed", comment: ""))
 
             let url = feed.link.absoluteString
-            self.dataManager.newFeed(url) {_ in
+            self.dataManager?.newFeed(url) {_ in
                 self.reenableInteractionAndDismiss(activityIndicator)
             }
         }

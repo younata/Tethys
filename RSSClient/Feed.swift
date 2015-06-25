@@ -170,10 +170,9 @@ public class Feed: Equatable, Hashable, CustomStringConvertible {
         waitPeriod = feed.waitPeriod?.integerValue
         remainingWait = feed.remainingWait?.integerValue
         self.identifier = feed.objectID.URIRepresentation().description
-        if let feedArticles = feed.articles as? Set<CoreDataArticle> {
-            let articlesList = Array(feedArticles)
-            articles = articlesList.map { Article(article: $0, feed: self) }
-        }
+
+        let articlesList = Array(feed.articles)
+        articles = articlesList.map { Article(article: $0, feed: self) }
         image = feed.image as? Image
 
         feedID = feed.objectID

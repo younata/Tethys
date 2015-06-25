@@ -1,7 +1,6 @@
 import Muon
 
 class FeedRepository {
-
     typealias FeedRepositoryCallback = (Muon.Feed?, NSError?) -> (Void)
 
     class func loadFeed(url: String, urlSession: NSURLSession,

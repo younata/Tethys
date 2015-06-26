@@ -52,11 +52,8 @@ public class DataManager: NSObject {
             let cdfeed = newFeed()
             cdfeed.url = feedURL
             feed = Feed(feed: cdfeed)
-            do {
-                try self.backgroundObjectContext.save()
-            } catch _ {
-            }
-            NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: cdfeed)
+            save()
+//            NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: cdfeed)
         }
         #if os(iOS)
             let app = UIApplication.sharedApplication()
@@ -78,11 +75,8 @@ public class DataManager: NSObject {
             feed.title = title
             feed.query = code
             feed.summary = summary
-            do {
-                try self.backgroundObjectContext.save()
-            } catch _ {
-            }
-            NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
+            save()
+//            NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
         }
         return Feed(feed: feed)
     }
@@ -116,19 +110,40 @@ public class DataManager: NSObject {
     }
 
     public func deleteFeed(feed: Feed) {
-        // TODO: yeah.
+        guard let feedID = feed.feedID else {
+            return
+        }
+        if let cdfeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feedID), managedObjectContext: self.backgroundObjectContext).first as? CoreDataFeed {
+            deleteFeed(cdfeed)
+        }
     }
 
     public func markFeedAsRead(feed: Feed) {
-        // TODO: this
+        for article in feed.articles {
+            markArticle(article, asRead: true)
+        }
     }
 
     public func deleteArticle(article: Article) {
-
+        guard let articleID = article.articleID else {
+            return
+        }
+        if let cdarticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", articleID), managedObjectContext: self.backgroundObjectContext).first as? CoreDataArticle {
+            cdarticle.feed?.removeArticlesObject(cdarticle)
+            cdarticle.feed = nil
+            self.backgroundObjectContext.deleteObject(cdarticle)
+            save()
+        }
     }
 
     public func markArticle(article: Article, asRead read: Bool) {
-
+        guard let articleID = article.articleID else {
+            return
+        }
+        if let cdarticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", articleID), managedObjectContext: self.backgroundObjectContext).first as? CoreDataArticle {
+            cdarticle.read = read
+            save()
+        }
     }
 
     public func articlesMatchingQuery(query: String, feed: Feed? = nil) -> [Article] {
@@ -145,25 +160,33 @@ public class DataManager: NSObject {
 
     // MARK: Private API
 
+    private func save() {
+        do {
+            try self.backgroundObjectContext.save()
+        } catch {
+
+        }
+    }
+
     private func updateFeeds(feeds: [Feed], backgroundFetch: Bool = false, completion: (NSError?)->(Void) = {_ in }) {
         let feedIds = feeds.filter { $0.url != nil && $0.feedID != nil }.map { $0.feedID! }
 
-        guard let backgroundQueue = self.backgroundQueue where feedIds.count != 0 else {
+        guard let backgroundQueue = self.backgroundQueue, let urlSession = self.urlSession where feedIds.count != 0 else {
             completion(nil);
             return;
         }
 
         backgroundQueue.addOperationWithBlock {
             let ctx = self.backgroundObjectContext
-            let theFeeds = DataUtility.feedsWithPredicate(NSPredicate(format: "self in %@", feedIds),
-                managedObjectContext: ctx)
+            let theFeeds = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self in %@", feedIds),
+                managedObjectContext: ctx) as? [CoreDataFeed] ?? []
             var feedsLeft = theFeeds.count
 
             for feed in theFeeds {
-                let wait = feed.remainingWait ?? 0
+                let wait = feed.remainingWait?.integerValue ?? 0
                 if wait != 0 {
-                    feed.remainingWait = wait - 1
-                    self.saveFeed(feed)
+                    feed.remainingWait = NSNumber(integer: wait - 1)
+                    self.save()
                     feedsLeft--
                     if (feedsLeft == 0) {
                         completion(nil)
@@ -172,18 +195,18 @@ public class DataManager: NSObject {
                     continue
                 }
 
-                FeedRepository.loadFeed(feed.url!.absoluteString, urlSession: NSURLSession.sharedSession(),
+                FeedRepository.loadFeed(feed.url!, urlSession: urlSession,
                     operationQueue: backgroundQueue) {muonFeed, error in
                         if let _ = error {
                             self.finishedUpdatingFeed(error, feed: feed, managedObjectContext: ctx,
                                 feedsLeft: &feedsLeft, completion: completion)
                         } else if let info = muonFeed {
-                            // DataUtility.updateFeed(feed, info: info)
-                            // DataUtility.updateFeedImage(feed, info: info, manager: manager)
+                            DataUtility.updateFeed(feed, info: info)
+                            DataUtility.updateFeedImage(feed, info: info, urlSession: urlSession)
                             for item in info.articles {
-                                if let _ = self.upsertArticle(item, context: ctx) {
-                                    // feed.addArticle(article)
-                                    // article.feed = feed
+                                if let article = self.upsertArticle(item, context: ctx) {
+                                    feed.addArticlesObject(article)
+                                    article.feed = feed
                                 }
                             }
                             self.finishedUpdatingFeed(nil, feed: feed, managedObjectContext: ctx,
@@ -192,6 +215,22 @@ public class DataManager: NSObject {
                 }
             }
         }
+    }
+
+    private func updateFeed(feed: Feed, muonFeed: Muon.Feed) {
+        feed.title = muonFeed.title
+        let summary: String
+        let data = muonFeed.description.dataUsingEncoding(NSUTF8StringEncoding,
+            allowLossyConversion: false)!
+        let options = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
+        do {
+            let aString = try NSAttributedString(data: data, options: options,
+                documentAttributes: nil)
+            summary = aString.string
+        } catch _ {
+            summary = muonFeed.description
+        }
+        feed.summary = summary
     }
 
     private func setApplicationBadgeCount() {
@@ -207,7 +246,7 @@ public class DataManager: NSObject {
         #endif
     }
 
-    private func finishedUpdatingFeed(error: NSError?, feed: Feed,
+    private func finishedUpdatingFeed(error: NSError?, feed: CoreDataFeed,
         managedObjectContext: NSManagedObjectContext, inout feedsLeft: Int,
         completion: (NSError?) -> (Void)) {
             feedsLeft--
@@ -216,14 +255,15 @@ public class DataManager: NSObject {
             }
             if (error == nil) {
                 if feed.waitPeriod == nil || feed.waitPeriod != 0 {
-                    feed.waitPeriod = 0
-                    feed.remainingWait = 0
-                    //                    feed.managedObjectContext?.save(nil)
+                    feed.waitPeriod = NSNumber(integer: 0)
+                    feed.remainingWait = NSNumber(integer: 0)
+                    save()
                 }
             } else if let err = error where (err.domain == NSURLErrorDomain && err.code > 0) {
-                feed.waitPeriod = (feed.waitPeriod ?? 0) + 1
-                feed.remainingWait = feed.waitPeriodInRefreshes()
-                //                feed.managedObjectContext?.save(nil)
+                let waitPeriod = (feed.waitPeriod?.integerValue ?? 0) + 1
+                feed.waitPeriod = NSNumber(integer: waitPeriod)
+                feed.remainingWait = NSNumber(integer: max(0, waitPeriod - 2))
+                save()
             }
             if feedsLeft == 0 {
                 if backgroundObjectContext.hasChanges {
@@ -232,6 +272,7 @@ public class DataManager: NSObject {
                     } catch _ {
                     }
                 }
+                self.save()
                 mainQueue?.addOperationWithBlock {
                     completion(error)
                     self.setApplicationBadgeCount()
@@ -289,7 +330,7 @@ public class DataManager: NSObject {
         }
     }
 
-    private func upsertArticle(item: Muon.Article, context ctx: NSManagedObjectContext! = nil) -> Article? {
+    private func upsertArticle(item: Muon.Article, context ctx: NSManagedObjectContext! = nil) -> CoreDataArticle? {
         let predicate = NSPredicate(format: "link = %@", item.link ?? "")
         if let article = DataUtility.entities("Article", matchingPredicate: predicate,
             managedObjectContext: ctx).last as? CoreDataArticle {
@@ -310,7 +351,7 @@ public class DataManager: NSObject {
             for enclosure in item.enclosures {
                 DataUtility.insertEnclosureFromItem(enclosure, article: article)
             }
-            return Article(article: article, feed: nil)
+            return article
         }
     }
 
@@ -386,6 +427,10 @@ public class DataManager: NSObject {
         let ctx = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
         ctx.persistentStoreCoordinator = self.persistentStoreCoordinator
         return ctx
+    }()
+
+    private lazy var urlSession: NSURLSession? = {
+        return self.injector?.create(NSURLSession.self) as? NSURLSession
     }()
 
     private lazy var mainQueue: NSOperationQueue? = {

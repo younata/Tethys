@@ -4,6 +4,7 @@
     <title>objc.io</title>
     <description>A periodical about best practices and advanced techniques for iOS and OS X development.</description>
     <link>http://www.objc.io</link>
+    <icon>http://example.org/icon.png</icon>
     <atom:link href="http://www.objc.io/feed.xml" rel="self" type="application/rss+xml" />
     
     

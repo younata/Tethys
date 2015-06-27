@@ -50,16 +50,16 @@ public class DataManager: NSObject {
         }
         let cdfeed = newFeed()
         cdfeed.url = feedURL
-        let feed = Feed(feed: cdfeed)
         save()
 //        NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: cdfeed)
-        #if os(iOS)
-            let app = UIApplication.sharedApplication()
-            app.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
-        #endif
-        self.updateFeeds([feed], completion: completion)
+//        #if os(iOS)
+//            let app = UIApplication.sharedApplication()
+//            app.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+//        #endif
+        var feedsLeft = 1
+        self.updateCoreDataFeed(cdfeed, feedsLeft: &feedsLeft, completion: completion)
 //        self.writeOPML()
-        return feed
+        return Feed(feed: cdfeed)
     }
 
     public func newQueryFeed(title: String, code: String, summary: String? = nil) -> Feed {
@@ -169,7 +169,7 @@ public class DataManager: NSObject {
     private func updateFeeds(feeds: [Feed], backgroundFetch: Bool = false, completion: (NSError?)->(Void) = {_ in }) {
         let feedIds = feeds.filter { $0.url != nil && $0.feedID != nil }.map { $0.feedID! }
 
-        guard let backgroundQueue = self.backgroundQueue, let urlSession = self.urlSession where feedIds.count != 0 else {
+        guard let backgroundQueue = self.backgroundQueue where feedIds.count != 0 else {
             completion(nil);
             return;
         }
@@ -181,36 +181,46 @@ public class DataManager: NSObject {
             var feedsLeft = theFeeds.count
 
             for feed in theFeeds {
-                let wait = feed.remainingWait?.integerValue ?? 0
-                if wait != 0 {
-                    feed.remainingWait = NSNumber(integer: wait - 1)
-                    self.save()
-                    feedsLeft--
-                    if (feedsLeft == 0) {
-                        completion(nil)
-                        return
-                    }
-                    continue
-                }
+                self.updateCoreDataFeed(feed, feedsLeft: &feedsLeft, completion: completion)
+            }
+        }
+    }
 
-                FeedRepository.loadFeed(feed.url!, urlSession: urlSession,
-                    operationQueue: backgroundQueue) {muonFeed, error in
-                        if let _ = error {
-                            self.finishedUpdatingFeed(error, feed: feed, managedObjectContext: ctx,
-                                feedsLeft: &feedsLeft, completion: completion)
-                        } else if let info = muonFeed {
-                            DataUtility.updateFeed(feed, info: info)
-                            DataUtility.updateFeedImage(feed, info: info, urlSession: urlSession)
-                            for item in info.articles {
-                                if let article = self.upsertArticle(item, context: ctx) {
-                                    feed.addArticlesObject(article)
-                                    article.feed = feed
-                                }
-                            }
-                            self.finishedUpdatingFeed(nil, feed: feed, managedObjectContext: ctx,
-                                feedsLeft: &feedsLeft, completion: completion)
-                        }
+    private func updateCoreDataFeed(feed: CoreDataFeed, inout feedsLeft: Int, completion: (NSError?)->(Void) = {_ in }) {
+        guard let backgroundQueue = self.backgroundQueue, let urlSession = self.urlSession else {
+            completion(nil);
+            return;
+        }
+        backgroundQueue.addOperationWithBlock {
+            let wait = feed.remainingWait?.integerValue ?? 0
+            if wait != 0 {
+                feed.remainingWait = NSNumber(integer: wait - 1)
+                self.save()
+                feedsLeft--
+                if (feedsLeft == 0) {
+                    completion(nil)
                 }
+                return
+            }
+
+            FeedRepository.loadFeed(feed.url!, urlSession: urlSession,
+                operationQueue: backgroundQueue) {muonFeed, error in
+                    let ctx = self.backgroundObjectContext
+                    if let _ = error {
+                        self.finishedUpdatingFeed(error, feed: feed, managedObjectContext: ctx,
+                            feedsLeft: &feedsLeft, completion: completion)
+                    } else if let info = muonFeed {
+                        DataUtility.updateFeed(feed, info: info)
+                        DataUtility.updateFeedImage(feed, info: info, urlSession: urlSession)
+                        for item in info.articles {
+                            if let article = self.upsertArticle(item, context: ctx) {
+                                feed.addArticlesObject(article)
+                                article.feed = feed
+                            }
+                        }
+                        self.finishedUpdatingFeed(nil, feed: feed, managedObjectContext: ctx,
+                            feedsLeft: &feedsLeft, completion: completion)
+                    }
             }
         }
     }
@@ -248,9 +258,6 @@ public class DataManager: NSObject {
         managedObjectContext: NSManagedObjectContext, inout feedsLeft: Int,
         completion: (NSError?) -> (Void)) {
             feedsLeft--
-            if error != nil {
-                print("Errored loading: \(error)")
-            }
             if (error == nil) {
                 if feed.waitPeriod == nil || feed.waitPeriod != 0 {
                     feed.waitPeriod = NSNumber(integer: 0)

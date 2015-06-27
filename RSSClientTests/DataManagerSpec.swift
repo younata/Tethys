@@ -123,8 +123,15 @@ class DataManagerSpec: QuickSpec {
                     }
 
                     it("should return a bare feed") {
-                        let expectedFeed = Feed(title: "", url: NSURL(string: "https://example.com/rnews.feed"), summary: "", query: nil, tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
-                        expect(createdFeed).to(equal(expectedFeed))
+                        expect(createdFeed.title).to(equal(""))
+                        expect(createdFeed.url).to(equal(NSURL(string: "https://example.com/rnews.feed")))
+                        expect(createdFeed.summary).to(equal(""))
+                        expect(createdFeed.query).to(beNil())
+                        expect(createdFeed.tags).to(equal([]))
+                        expect(createdFeed.waitPeriod).to(equal(0))
+                        expect(createdFeed.remainingWait).to(equal(0))
+                        expect(createdFeed.articles).to(equal([]))
+                        expect(createdFeed.image).to(beNil())
                     }
 
                     context("when the network call succeeds") {
@@ -341,6 +348,7 @@ class DataManagerSpec: QuickSpec {
             var callbackError: NSError? = nil
             beforeEach {
                 didCallCallback = false
+                callbackError = nil
                 subject.updateFeeds {error in
                     didCallCallback = true
                     callbackError = error
@@ -395,7 +403,7 @@ class DataManagerSpec: QuickSpec {
             }
 
             context("when the network call fails due to a network error") {
-                let error = NSError(domain: "", code: 1, userInfo: nil)
+                let error = NSError(domain: "", code: 0, userInfo: [:])
                 beforeEach {
                     urlSession.lastCompletionHandler(nil, nil, error)
                 }
@@ -412,7 +420,6 @@ class DataManagerSpec: QuickSpec {
                 }
 
                 it("should call the completion handler to let the caller know of an error updating the feed") {
-                    expect(callbackError).toNot(beNil())
                     expect(callbackError?.code).to(equal(400))
                 }
             }

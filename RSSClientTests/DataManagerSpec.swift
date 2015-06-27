@@ -94,7 +94,7 @@ class DataManagerSpec: QuickSpec {
                 }
             }
 
-            fdescribe("newFeed") {
+            describe("newFeed") {
                 var callbackError: NSError? = nil
                 var didCallCallback = false
 
@@ -196,7 +196,7 @@ class DataManagerSpec: QuickSpec {
             }
 
             describe("newQueryFeed") {
-                xcontext("when there is not an existing feed with that title") {
+                context("when there is not an existing feed with that title") {
                     var createdFeed: Feed! = nil
                     beforeEach {
                         createdFeed = subject.newQueryFeed("query feed", code: "return true", summary: "a summary")
@@ -374,24 +374,20 @@ class DataManagerSpec: QuickSpec {
 
                     context("when the feed contains an image") { // which it does
                         it("should try to download it") {
-                            expect(urlSession.lastURL?.absoluteString).toNot(beNil())//(equal("http://example.org/icon.png"))
+                            expect(urlSession.lastURL?.absoluteString).to(equal("http://example.org/icon.png"))
                         }
 
                         context("if that succeeds") {
                             var expectedImageData: NSData! = nil
-                            var expectedImage: UIImage! = nil
                             beforeEach {
-                                expectedImageData = NSData(contentsOfURL: NSURL(string: "https://avatars3.githubusercontent.com/u/285321?v=3&s=40")!)!
-                                expectedImage = UIImage(data: expectedImageData)
+                                let bundle = NSBundle(forClass: self.classForCoder)
+                                expectedImageData = NSData(contentsOfURL: bundle.URLForResource("test", withExtension: "jpg")!)
                                 urlSession.lastCompletionHandler(expectedImageData, nil, nil)
                             }
                             it("should set the feed's image to that image") {
                                 let updatedFeed = DataUtility.feedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
                                     managedObjectContext: moc).first
                                 expect(updatedFeed?.image).toNot(beNil())
-                                if let actualImage = updatedFeed?.image {
-                                    expect(actualImage).to(equal(expectedImage))
-                                }
                             }
                         }
                     }

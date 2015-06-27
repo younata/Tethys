@@ -44,17 +44,15 @@ public class DataManager: NSObject {
 
     public func newFeed(feedURL: String, completion: (NSError?) -> (Void)) -> Feed {
         let predicate = NSPredicate(format: "url = %@", feedURL)
-        let feed: Feed
         if let theFeed = DataUtility.entities("Feed", matchingPredicate: predicate,
             managedObjectContext: self.backgroundObjectContext).last as? CoreDataFeed {
                 return Feed(feed: theFeed)
-        } else {
-            let cdfeed = newFeed()
-            cdfeed.url = feedURL
-            feed = Feed(feed: cdfeed)
-            save()
-//            NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: cdfeed)
         }
+        let cdfeed = newFeed()
+        cdfeed.url = feedURL
+        let feed = Feed(feed: cdfeed)
+        save()
+//        NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: cdfeed)
         #if os(iOS)
             let app = UIApplication.sharedApplication()
             app.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
@@ -281,8 +279,8 @@ public class DataManager: NSObject {
     }
 
     private func newFeed() -> CoreDataFeed {
-        return NSEntityDescription.insertNewObjectForEntityForName("Feed",
-            inManagedObjectContext: backgroundObjectContext) as! CoreDataFeed
+        let entityDescription = NSEntityDescription.entityForName("Feed", inManagedObjectContext: backgroundObjectContext)!
+        return CoreDataFeed(entity: entityDescription, insertIntoManagedObjectContext: backgroundObjectContext)
     }
 
     private func deleteFeed(feed: CoreDataFeed) {

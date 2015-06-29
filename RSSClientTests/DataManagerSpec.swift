@@ -5,20 +5,25 @@ import rNews
 
 class DataManagerSpec: QuickSpec {
     override func spec() {
-        var subject : DataManager! = nil
-        var injector : Ra.Injector! = nil
+        var subject: DataManager! = nil
+        var injector: Ra.Injector! = nil
 
-        var moc : NSManagedObjectContext! = nil
+        var moc: NSManagedObjectContext! = nil
 
-        var backgroundQueue : FakeOperationQueue! = nil
-        var mainQueue : FakeOperationQueue! = nil
+        var backgroundQueue: FakeOperationQueue! = nil
+        var mainQueue: FakeOperationQueue! = nil
 
         var urlSession: FakeURLSession! = nil
 
-        var feeds : [Feed] = []
-        var feed1 : CoreDataFeed! = nil
-        var feed2 : CoreDataFeed! = nil
-        var feed3 : CoreDataFeed! = nil
+        var feeds: [Feed] = []
+        var feed1: CoreDataFeed! = nil
+        var feed2: CoreDataFeed! = nil
+        var feed3: CoreDataFeed! = nil
+
+        var article1: CoreDataArticle! = nil
+        var article2: CoreDataArticle! = nil
+
+        var searchIndex: FakeSearchIndex! = nil
 
         beforeEach {
             moc = managedObjectContext()
@@ -35,6 +40,11 @@ class DataManagerSpec: QuickSpec {
             urlSession = FakeURLSession()
             injector.bind(NSURLSession.self, to: urlSession)
 
+            if #available(iOS 9.0, *) {
+                searchIndex = FakeSearchIndex()
+                injector.bind(SearchIndex.self, to: searchIndex)
+            }
+
             subject = injector.create(DataManager.self) as! DataManager
             subject.backgroundObjectContext = moc
 
@@ -44,18 +54,21 @@ class DataManagerSpec: QuickSpec {
             feed1.title = "a"
             feed1.url = "https://example.com/feed1.feed"
             feed1.tags = ["a", "b", "c"]
-            let b = createArticle(moc)
-            b.title = "b"
-            let c = createArticle(moc)
-            c.title = "c"
-            feed1.addArticlesObject(b)
-            feed1.addArticlesObject(c)
-            b.feed = feed1
-            c.feed = feed1
+            article1 = createArticle(moc)
+            article1.title = "b"
+            article2 = createArticle(moc)
+            article2.title = "c"
+            article2.read = true
+            feed1.addArticlesObject(article1)
+            feed1.addArticlesObject(article2)
+            article1.feed = feed1
+            article2.feed = feed1
+
             feed2 = createFeed(moc) // query feed
             feed2.title = "d"
             feed2.tags = ["b", "d"]
             feed2.query = "return true"
+
             feed3 = createFeed(moc)
             feed3.title = "e"
             feed3.url = "https://example.com/feed3.feed"
@@ -338,7 +351,8 @@ class DataManagerSpec: QuickSpec {
 
             describe("articlesMatchingQuery") {
                 it("should return an array of articles matching the javascript query") {
-                    // later
+                    let articles = subject.articlesMatchingQuery("return !article.read") // returns unread articles
+                    expect(articles).to(equal([Article(article: article1, feed: nil)]))
                 }
             }
         }
@@ -378,6 +392,17 @@ class DataManagerSpec: QuickSpec {
                             managedObjectContext: moc).first
                         expect(updatedFeed).toNot(beNil())
                         expect(updatedFeed?.title).to(equal("objc.io"))
+                    }
+
+                    it("should set the app badge number to the amount of unread articles") {
+                        let app = UIApplication.sharedApplication()
+                        expect(app.applicationIconBadgeNumber).to(equal(12))
+                    }
+
+                    it("should, on ios 9, add spotlight entries for each added article") {
+                        if #available(iOS 9.0, *) {
+                            expect(searchIndex.lastItemsAdded.count).toNot(equal(0))
+                        }
                     }
 
                     context("when the feed contains an image") { // which it does

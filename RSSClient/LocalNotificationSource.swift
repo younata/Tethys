@@ -7,7 +7,7 @@ public protocol LocalNotificationSource {
     func scheduleNote(note: UILocalNotification)
 }
 
-extension UIApplication : LocalNotificationSource {
+extension UIApplication: LocalNotificationSource {
     public var scheduledNotes: [UILocalNotification] {
         return self.scheduledLocalNotifications ?? []
     }

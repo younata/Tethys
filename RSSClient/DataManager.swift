@@ -279,6 +279,7 @@ public class DataManager: NSObject {
                 }
                 self.save()
                 mainQueue?.addOperationWithBlock {
+                    print("error: \(error)")
                     completion(error)
                     self.setApplicationBadgeCount()
                 }
@@ -444,5 +445,10 @@ public class DataManager: NSObject {
 
     private lazy var backgroundQueue: NSOperationQueue? = {
         return self.injector?.create(kBackgroundQueue) as? NSOperationQueue
+    }()
+
+    @available(iOS 9.0, *)
+    private lazy var searchIndex: SearchIndex? = {
+        return self.injector?.create(SearchIndex.self) as? SearchIndex
     }()
 }

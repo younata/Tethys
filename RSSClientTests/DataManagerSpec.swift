@@ -283,9 +283,6 @@ class DataManagerSpec: QuickSpec {
             
             describe("markFeedAsRead") {
                 beforeEach {
-                    for article in feed1.articles {
-                        expect(article.read).to(beFalsy())
-                    }
                     subject.markFeedAsRead(Feed(feed: feed1))
                 }
                 it("should mark every article in the feed as read") {

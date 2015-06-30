@@ -3,6 +3,8 @@ import CoreData
 import WebKit
 import JavaScriptCore
 import Muon
+import CoreSpotlight
+import MobileCoreServices
 
 public class DataManager: NSObject {
 
@@ -212,10 +214,37 @@ public class DataManager: NSObject {
                     } else if let info = muonFeed {
                         DataUtility.updateFeed(feed, info: info)
                         DataUtility.updateFeedImage(feed, info: info, urlSession: urlSession)
+
+                        var articles: [CoreDataArticle] = [] // caching for batch insert
                         for item in info.articles {
                             if let article = self.upsertArticle(item, context: ctx) {
                                 feed.addArticlesObject(article)
                                 article.feed = feed
+
+                                articles.append(article)
+                            }
+                        }
+
+                        if #available(iOS 9.0, *) {
+                            if let searchIndex = self.searchIndex {
+                                self.save()
+                                let items: [CSSearchableItem] = articles.map {article in
+                                    let attributes = CSSearchableItemAttributeSet(itemContentType: kUTTypeHTML as String)
+                                    attributes.title = article.title
+                                    attributes.textContent = article.content ?? article.summary
+                                    attributes.timestamp = article.updatedAt ?? article.published
+                                    attributes.creator = article.author
+                                    attributes.contentURL = NSURL(string: article.link ?? "")
+                                    attributes.contentDescription = article.summary
+                                    attributes.keywords = article.flags as? [String]
+                                    let identifier = article.objectID.URIRepresentation().absoluteString
+                                    let feedTitle = article.feed?.title ?? "feed"
+                                    let articleTitle = article.title ?? "article"
+                                    let domain = "com.rachelbrindle.rssclient.\(feedTitle).\(articleTitle)"
+                                    let item = CSSearchableItem(uniqueIdentifier: identifier, domainIdentifier: domain, attributeSet: attributes)
+                                    return item
+                                }
+                                searchIndex.addItemsToIndex(items, completionHandler: {_ in })
                             }
                         }
                         self.finishedUpdatingFeed(nil, feed: feed, managedObjectContext: ctx,
@@ -279,7 +308,6 @@ public class DataManager: NSObject {
                 }
                 self.save()
                 mainQueue?.addOperationWithBlock {
-                    print("error: \(error)")
                     completion(error)
                     self.setApplicationBadgeCount()
                 }

@@ -6,7 +6,100 @@ import Muon
 import CoreSpotlight
 import MobileCoreServices
 
+private func loadFeed(url: String, urlSession: NSURLSession, operationQueue: NSOperationQueue, callback: (Muon.Feed?, NSError?) -> (Void)) {
+    operationQueue.addOperationWithBlock {
+        guard let url = NSURL(string: url) else {
+            callback(nil, NSError(domain: "", code: 0, userInfo: [:]))
+            return
+        }
+        urlSession.dataTaskWithURL(url) {data, response, error in
+            if let err = error {
+                callback(nil, err)
+            } else if let data = data, let s = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
+                let feedParser = Muon.FeedParser(string: s)
+                feedParser.success { callback($0, nil) }.failure { callback(nil, $0) }
+                operationQueue.addOperation(feedParser)
+            } else {
+                let error: NSError
+                if let response = response as? NSHTTPURLResponse where response.statusCode != 200 {
+                    error = NSError(domain: response.URL?.absoluteString ?? "com.rachelbrindle.rssclient.unknown", code: response.statusCode, userInfo: [NSLocalizedFailureReasonErrorKey: NSHTTPURLResponse.localizedStringForStatusCode(response.statusCode)])
+                } else {
+                    error = NSError(domain: "com.rachelbrindle.rssclient.unknown", code: 1, userInfo: [NSLocalizedFailureReasonErrorKey: "Unknown"])
+                }
+                callback(nil, error)
+            }
+        }
+    }
+}
+
 public class DataManager: NSObject {
+
+    // MARK: Properties
+
+    private lazy var managedObjectModel: NSManagedObjectModel = {
+        let modelURL = NSBundle(forClass: self.classForCoder).URLForResource("RSSClient", withExtension: "momd")!
+        return NSManagedObjectModel(contentsOfURL: modelURL)!
+    }()
+
+    private lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
+        let storeURL = NSURL.fileURLWithPath(documentsDirectory().stringByAppendingPathComponent("RSSClient.sqlite"))
+        let persistentStore = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
+        var error: NSError? = nil
+        var options: [String: AnyObject] = [NSMigratePersistentStoresAutomaticallyOption: true,
+            NSInferMappingModelAutomaticallyOption: true]
+        do {
+            try persistentStore.addPersistentStoreWithType(NSSQLiteStoreType,
+                configuration: self.managedObjectModel.configurations.last,
+                URL: storeURL, options: options)
+        } catch var error1 as NSError {
+            error = error1
+        } catch {
+            fatalError()
+        }
+        if (error != nil) {
+            do {
+                try NSFileManager.defaultManager().removeItemAtURL(storeURL)
+            } catch _ {
+            }
+            error = nil
+            do {
+                try persistentStore.addPersistentStoreWithType(NSSQLiteStoreType,
+                    configuration: self.managedObjectModel.configurations.last,
+                    URL: storeURL, options: options)
+            } catch var error1 as NSError {
+                error = error1
+            } catch {
+                fatalError()
+            }
+            if let err = error {
+                print("Fatal error adding persistent data store: \(err)")
+                fatalError()
+            }
+        }
+        return persistentStore
+    }()
+
+    public lazy var backgroundObjectContext: NSManagedObjectContext = {
+        let ctx = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+        ctx.persistentStoreCoordinator = self.persistentStoreCoordinator
+        return ctx
+    }()
+
+    private lazy var urlSession: NSURLSession? = {
+        return self.injector?.create(NSURLSession.self) as? NSURLSession
+    }()
+
+    private lazy var mainQueue: NSOperationQueue? = {
+        return self.injector?.create(kMainQueue) as? NSOperationQueue
+    }()
+
+    private lazy var backgroundQueue: NSOperationQueue? = {
+        return self.injector?.create(kBackgroundQueue) as? NSOperationQueue
+    }()
+
+    private lazy var searchIndex: SearchIndex? = {
+        return self.injector?.create(SearchIndex.self) as? SearchIndex
+    }()
 
     // MARK: Public API
 
@@ -205,7 +298,7 @@ public class DataManager: NSObject {
                 return
             }
 
-            FeedRepository.loadFeed(feed.url!, urlSession: urlSession,
+            loadFeed(feed.url!, urlSession: urlSession,
                 operationQueue: backgroundQueue) {muonFeed, error in
                     let ctx = self.backgroundObjectContext
                     if let _ = error {
@@ -391,10 +484,7 @@ public class DataManager: NSObject {
 
     private func readArticle(article: CoreDataArticle, read: Bool = true) {
         article.read = read
-        do {
-            try article.managedObjectContext?.save()
-        } catch _ {
-        }
+        save()
         setApplicationBadgeCount()
     }
 
@@ -402,10 +492,7 @@ public class DataManager: NSObject {
         for article in articles {
             article.read = read
         }
-        do {
-            try articles.first?.managedObjectContext?.save()
-        } catch _ {
-        }
+        save()
         setApplicationBadgeCount()
     }
 
@@ -413,70 +500,4 @@ public class DataManager: NSObject {
         return NSEntityDescription.insertNewObjectForEntityForName("Article",
             inManagedObjectContext: self.backgroundObjectContext) as! CoreDataArticle
     }
-
-    private lazy var managedObjectModel: NSManagedObjectModel = {
-        let modelURL = NSBundle(forClass: self.classForCoder).URLForResource("RSSClient", withExtension: "momd")!
-        return NSManagedObjectModel(contentsOfURL: modelURL)!
-    }()
-
-    private lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
-        let storeURL = NSURL.fileURLWithPath(documentsDirectory().stringByAppendingPathComponent("RSSClient.sqlite"))
-        let persistentStore = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
-        var error: NSError? = nil
-        var options: [String: AnyObject] = [NSMigratePersistentStoresAutomaticallyOption: true,
-                                            NSInferMappingModelAutomaticallyOption: true]
-        do {
-            try persistentStore.addPersistentStoreWithType(NSSQLiteStoreType,
-                configuration: self.managedObjectModel.configurations.last,
-                URL: storeURL, options: options)
-        } catch var error1 as NSError {
-            error = error1
-        } catch {
-            fatalError()
-        }
-        if (error != nil) {
-            do {
-                try NSFileManager.defaultManager().removeItemAtURL(storeURL)
-            } catch _ {
-            }
-            error = nil
-            do {
-                try persistentStore.addPersistentStoreWithType(NSSQLiteStoreType,
-                    configuration: self.managedObjectModel.configurations.last,
-                    URL: storeURL, options: options)
-            } catch var error1 as NSError {
-                error = error1
-            } catch {
-                fatalError()
-            }
-            if let err = error {
-                print("Fatal error adding persistent data store: \(err)")
-                fatalError()
-            }
-        }
-        return persistentStore
-    }()
-
-    public lazy var backgroundObjectContext: NSManagedObjectContext = {
-        let ctx = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
-        ctx.persistentStoreCoordinator = self.persistentStoreCoordinator
-        return ctx
-    }()
-
-    private lazy var urlSession: NSURLSession? = {
-        return self.injector?.create(NSURLSession.self) as? NSURLSession
-    }()
-
-    private lazy var mainQueue: NSOperationQueue? = {
-        return self.injector?.create(kMainQueue) as? NSOperationQueue
-    }()
-
-    private lazy var backgroundQueue: NSOperationQueue? = {
-        return self.injector?.create(kBackgroundQueue) as? NSOperationQueue
-    }()
-
-    @available(iOS 9.0, *)
-    private lazy var searchIndex: SearchIndex? = {
-        return self.injector?.create(SearchIndex.self) as? SearchIndex
-    }()
 }

@@ -53,6 +53,10 @@ class FakeOperationQueue : NSOperationQueue {
 
     var internalOperations : [NSOperation] = []
 
+    override var operationCount: Int {
+        return internalOperations.count
+    }
+
     private func performOperationAndWait(op: NSOperation) {
         op.start()
         op.waitUntilFinished()

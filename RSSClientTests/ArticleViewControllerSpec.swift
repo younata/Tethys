@@ -31,7 +31,7 @@ class ArticleViewControllerSpec: QuickSpec {
                 expect(activity.title).to(equal("Reading Article"))
                 if #available(iOS 9.0, *) {
                     expect(activity.eligibleForSearch).to(beTruthy())
-                    expect(activity.eligibleForPublicIndexing).to(beTruthy())
+                    expect(activity.eligibleForPublicIndexing).to(beFalsy())
                 }
             }
         }

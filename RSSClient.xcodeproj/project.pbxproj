@@ -54,12 +54,13 @@
 		898047641A206CB100EB29F0 /* FeedsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898047631A206CB100EB29F0 /* FeedsList.swift */; };
 		898131681AF880400090FA7F /* Muon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; };
 		898131691AF880A70090FA7F /* Muon.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		8981316B1AFB1ED70090FA7F /* FeedRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8981316A1AFB1ED60090FA7F /* FeedRepository.swift */; };
 		898131781AFC877A0090FA7F /* LocalImportViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898131771AFC877A0090FA7F /* LocalImportViewControllerSpec.swift */; };
 		898C48C21B3A7CCC0097045A /* OPMLManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C11B3A7CCC0097045A /* OPMLManagerMock.swift */; };
 		898C48C51B3D98F60097045A /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 898C48C41B3D98F60097045A /* test.jpg */; };
 		898C48C71B40D2AC0097045A /* SearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C61B40D2AC0097045A /* SearchIndex.swift */; };
 		898C48C91B40FBE00097045A /* FakeSearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C81B40FBE00097045A /* FakeSearchIndex.swift */; };
+		898C48CB1B425F8C0097045A /* DataRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48CA1B425F8C0097045A /* DataRepository.swift */; };
+		898C48CD1B42605A0097045A /* DataRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48CC1B42605A0097045A /* DataRepositorySpec.swift */; };
 		898ECDE11B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898ECDE01B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift */; };
 		898F670C1B000451004A7BE3 /* FakeOperationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */; };
 		898F670E1B0007F4004A7BE3 /* SpecInjectorModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F670D1B0007F4004A7BE3 /* SpecInjectorModule.swift */; };
@@ -245,12 +246,13 @@
 		898046D41A1C385A00EB29F0 /* MainController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		898047631A206CB100EB29F0 /* FeedsList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FeedsList.swift; path = "RSSClient-OSX/FeedsList.swift"; sourceTree = SOURCE_ROOT; };
 		898131671AF880400090FA7F /* Muon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Muon.framework; path = ../Carthage/Build/iOS/Muon.framework; sourceTree = "<group>"; };
-		8981316A1AFB1ED60090FA7F /* FeedRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedRepository.swift; sourceTree = "<group>"; };
 		898131771AFC877A0090FA7F /* LocalImportViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalImportViewControllerSpec.swift; sourceTree = "<group>"; };
 		898C48C11B3A7CCC0097045A /* OPMLManagerMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLManagerMock.swift; sourceTree = "<group>"; };
 		898C48C41B3D98F60097045A /* test.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = test.jpg; sourceTree = "<group>"; };
 		898C48C61B40D2AC0097045A /* SearchIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchIndex.swift; sourceTree = "<group>"; };
 		898C48C81B40FBE00097045A /* FakeSearchIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeSearchIndex.swift; sourceTree = "<group>"; };
+		898C48CA1B425F8C0097045A /* DataRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataRepository.swift; sourceTree = "<group>"; };
+		898C48CC1B42605A0097045A /* DataRepositorySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataRepositorySpec.swift; sourceTree = "<group>"; };
 		898ECDE01B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsTableViewControllerSpec.swift; sourceTree = "<group>"; };
 		898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeOperationQueue.swift; sourceTree = "<group>"; };
 		898F670D1B0007F4004A7BE3 /* SpecInjectorModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpecInjectorModule.swift; sourceTree = "<group>"; };
@@ -482,6 +484,7 @@
 			children = (
 				89A341811B150DA90000C60B /* OPMLManagerSpec.swift */,
 				899C47FA1A9A864700F57B96 /* DataManagerSpec.swift */,
+				898C48CC1B42605A0097045A /* DataRepositorySpec.swift */,
 				890E47661AA19F7F007F217C /* DataUtilitySpec.swift */,
 				8978D4E41B05AB2800EDD6D0 /* FeedSpec.swift */,
 				8978D4E61B05AB3800EDD6D0 /* ArticleSpec.swift */,
@@ -600,9 +603,9 @@
 		89C830AC19D7BDE0009924DA /* Domain */ = {
 			isa = PBXGroup;
 			children = (
-				8981316A1AFB1ED60090FA7F /* FeedRepository.swift */,
 				89A3417E1B150D1B0000C60B /* OPMLManager.swift */,
 				89C830A819D7B890009924DA /* DataManager.swift */,
+				898C48CA1B425F8C0097045A /* DataRepository.swift */,
 				890E47581AA19D69007F217C /* DataUtility.swift */,
 				89C8307A19D730E9009924DA /* RSSClient.xcdatamodeld */,
 				89C830C119D89E46009924DA /* CoreDataArticle.h */,
@@ -993,7 +996,6 @@
 				8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */,
 				89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */,
 				89D970BD1B3929A600ED84B8 /* BackgroundFetchHandler.swift in Sources */,
-				8981316B1AFB1ED70090FA7F /* FeedRepository.swift in Sources */,
 				894896EC1A16F1130030EB6E /* LocalImportViewController.swift in Sources */,
 				89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */,
 				89A3417F1B150D1B0000C60B /* OPMLManager.swift in Sources */,
@@ -1009,6 +1011,7 @@
 				89C830C319D89E46009924DA /* CoreDataArticle.m in Sources */,
 				89D970C31B392B0300ED84B8 /* LocalNotificationSource.swift in Sources */,
 				89C509F71A2F825400CBD000 /* TextViewCell.swift in Sources */,
+				898C48CB1B425F8C0097045A /* DataRepository.swift in Sources */,
 				89C204C41A7400D100C792D2 /* NotificationHandler.swift in Sources */,
 				890E47591AA19D69007F217C /* DataUtility.swift in Sources */,
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
@@ -1055,6 +1058,7 @@
 				89F516571B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m in Sources */,
 				8997C8511B255A1900972930 /* TagPickerViewSpec.swift in Sources */,
 				899823B11B30BA7E00818755 /* NSUserActivity+rNewsTests.m in Sources */,
+				898C48CD1B42605A0097045A /* DataRepositorySpec.swift in Sources */,
 				89EF4FD61A9682170052A82F /* OPMLParserSpec.swift in Sources */,
 				89F5170A1B2014470005AB04 /* QueryFeedViewControllerSpec.swift in Sources */,
 				AE4355FE1A7AB7D900A961B9 /* SpecHelper.swift in Sources */,

@@ -126,7 +126,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
             userActivity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
             userActivity?.title = NSLocalizedString("Reading Article", comment: "")
             if #available(iOS 9.0, *) {
-                userActivity?.eligibleForPublicIndexing = true
+                userActivity?.eligibleForPublicIndexing = false
                 userActivity?.eligibleForSearch = true
             }
             userActivity?.becomeCurrent()

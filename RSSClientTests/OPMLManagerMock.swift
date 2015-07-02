@@ -9,6 +9,11 @@ class OPMLManagerMock: OPMLManager {
         importOPMLCompletion = completion
     }
 
+    var didReceiveWriteOPML = false
+    override func writeOPML() {
+        didReceiveWriteOPML = true
+    }
+
     init() {
         super.init(dataManager: DataManagerMock(), mainQueue: NSOperationQueue(), importQueue: NSOperationQueue())
     }

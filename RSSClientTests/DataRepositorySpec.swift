@@ -2,10 +2,14 @@ import Quick
 import Nimble
 import rNews
 import Ra
+import CoreSpotlight
+#if os(iOS)
+    import MobileCoreServices
+#endif
 
 class FeedRepositorySpec: QuickSpec {
     override func spec() {
-        var subject: FeedRepository! = nil
+        var subject: DataRepository! = nil
 
         var mainQueue: FakeOperationQueue! = nil
         var backgroundQueue: FakeOperationQueue! = nil
@@ -20,6 +24,10 @@ class FeedRepositorySpec: QuickSpec {
         var article1: CoreDataArticle! = nil
         var article2: CoreDataArticle! = nil
 
+        var searchIndex: FakeSearchIndex? = nil
+
+        var opmlManager: OPMLManagerMock! = nil
+
         beforeEach {
             moc = managedObjectContext()
 
@@ -29,6 +37,7 @@ class FeedRepositorySpec: QuickSpec {
             feed1.tags = ["a", "b", "c"]
             article1 = createArticle(moc)
             article1.title = "b"
+            article1.link = "https://example.com/article1.html"
             article2 = createArticle(moc)
             article2.title = "c"
             article2.read = true
@@ -54,9 +63,12 @@ class FeedRepositorySpec: QuickSpec {
 
             feeds = [feed1, feed2, feed3].map { Feed(feed: $0) }
 
+            searchIndex = FakeSearchIndex()
+
             mainQueue = FakeOperationQueue()
             backgroundQueue = FakeOperationQueue()
-            subject = FeedRepository(objectContext: moc, mainQueue: mainQueue, backgroundQueue: backgroundQueue)
+            opmlManager = OPMLManagerMock()
+            subject = DataRepository(objectContext: moc, mainQueue: mainQueue, backgroundQueue: backgroundQueue, opmlManager: opmlManager, searchIndex: searchIndex)
         }
 
         describe("as a DataRetriever") {
@@ -263,8 +275,10 @@ class FeedRepositorySpec: QuickSpec {
 
             describe("deleteFeed") {
                 var feed: Feed! = nil
+                var articleIDs: [String] = []
                 beforeEach {
                     feed = Feed(feed: feed1)
+                    articleIDs = feed.articles.map { return $0.articleID!.URIRepresentation().absoluteString }
                     subject.deleteFeed(feed)
                     backgroundQueue.runNextOperation()
                 }
@@ -279,6 +293,16 @@ class FeedRepositorySpec: QuickSpec {
                     let articleTitles = articles.map { $0.title }
                     expect(articleTitles).toNot(contain("b"))
                     expect(articleTitles).toNot(contain("c"))
+                }
+
+                it("should write a new opml file") {
+                    expect(opmlManager.didReceiveWriteOPML).to(beTruthy())
+                }
+
+                it("should, on iOS 9, remove the articles from the search index") {
+                    if #available(iOS 9.0, *) {
+                        expect(searchIndex?.lastItemsDeleted).to(equal(articleIDs))
+                    }
                 }
             }
 
@@ -319,6 +343,27 @@ class FeedRepositorySpec: QuickSpec {
                         expect(Article(article: updated, feed: nil)).to(equal(article))
                     }
                 }
+
+                it("should, on iOS 9, update the search index") {
+                    if #available(iOS 9.0, *) {
+                        expect(searchIndex?.lastItemsAdded.count).to(equal(1))
+                        if let item = searchIndex?.lastItemsAdded.first as? CSSearchableItem {
+                            let identifier = article.articleID!.URIRepresentation().absoluteString
+                            expect(item.uniqueIdentifier).to(equal(identifier))
+                            expect(item.domainIdentifier).to(beNil())
+                            expect(item.expirationDate).to(equal(NSDate.distantFuture()))
+                            let attributes = item.attributeSet
+                            expect(attributes.contentType).to(equal(kUTTypeHTML as String))
+                            expect(attributes.title).to(equal(article.title))
+                            let keywords = ["article"] + article.feed!.title.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                            expect(attributes.keywords).to(equal(keywords))
+                            expect(attributes.URL).to(equal(article.link))
+                            expect(attributes.timestamp).to(equal(article.updatedAt ?? article.published))
+                            expect(attributes.authorNames).to(equal([article.author]))
+                            expect(attributes.contentDescription).to(equal(article.summary))
+                        }
+                    }
+                }
             }
 
             describe("deleteArticle") {
@@ -339,6 +384,13 @@ class FeedRepositorySpec: QuickSpec {
                     let coreDataArticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
                         managedObjectContext: moc).first
                     expect(coreDataArticle).to(beNil())
+                }
+
+                it("should, on iOS 9, remove the article from the search index") {
+                    if #available(iOS 9.0, *) {
+                        let identifier = article.articleID!.URIRepresentation().absoluteString
+                        expect(searchIndex?.lastItemsDeleted).to(equal([identifier]))
+                    }
                 }
             }
 
@@ -377,6 +429,10 @@ class FeedRepositorySpec: QuickSpec {
                         }
                     }
                 }
+            }
+
+            describe("updateFeeds") {
+                //
             }
         }
     }

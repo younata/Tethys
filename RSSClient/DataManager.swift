@@ -146,14 +146,12 @@ public class DataManager: NSObject {
         let cdfeed = newFeed()
         cdfeed.url = feedURL
         save()
-//        NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: cdfeed)
 //        #if os(iOS)
 //            let app = UIApplication.sharedApplication()
 //            app.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
 //        #endif
         var feedsLeft = 1
         self.updateCoreDataFeed(cdfeed, feedsLeft: &feedsLeft, completion: completion)
-//        self.writeOPML()
         return Feed(feed: cdfeed)
     }
 
@@ -169,7 +167,6 @@ public class DataManager: NSObject {
             feed.query = code
             feed.summary = summary
             save()
-//            NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFeed", object: feed)
         }
         return Feed(feed: feed)
     }
@@ -417,15 +414,12 @@ public class DataManager: NSObject {
             self.backgroundObjectContext.deleteObject(article)
         }
         self.backgroundObjectContext.deleteObject(feed)
-        do {
-            try self.backgroundObjectContext.save()
-        } catch _ {
-        }
+        save()
         if (feeds().count == 0) {
-            #if os(iOS)
-                let app = UIApplication.sharedApplication()
-                app.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
-            #endif
+//            #if os(iOS)
+//                let app = UIApplication.sharedApplication()
+//                app.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
+//            #endif
         }
 //        self.writeOPML()
     }

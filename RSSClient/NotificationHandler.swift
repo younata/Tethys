@@ -3,8 +3,8 @@ import Ra
 
 public class NotificationHandler: NSObject {
 
-    private lazy var dataManager: DataManager? = {
-        return self.injector?.create(DataManager.self) as? DataManager
+    private lazy var dataRepository: DataRepository? = {
+        return self.injector?.create(DataRepository.self) as? DataRepository
     }()
 
     public func enableNotifications(var notificationSource: LocalNotificationSource) {
@@ -28,16 +28,20 @@ public class NotificationHandler: NSObject {
 
     public func handleLocalNotification(notification: UILocalNotification, window: UIWindow) {
         if let userInfo = notification.userInfo {
-            let (_, article) = feedAndArticleFromUserInfo(userInfo)
-            showArticle(article, window: window)
+            self.feedAndArticleFromUserInfo(userInfo) {_, article in
+                if let article = article {
+                    self.showArticle(article, window: window)
+                }
+            }
         }
     }
 
     public func handleAction(identifier: String?, notification: UILocalNotification) {
-        if let userInfo = notification.userInfo {
-            let (_, article) = feedAndArticleFromUserInfo(userInfo)
-            if identifier == "read" {
-                dataManager?.markArticle(article, asRead: true)
+        if let userInfo = notification.userInfo where identifier == "read" {
+            self.feedAndArticleFromUserInfo(userInfo) {_, article in
+                if let article = article {
+                    self.dataRepository?.markArticle(article, asRead: true)
+                }
             }
         }
     }
@@ -57,17 +61,18 @@ public class NotificationHandler: NSObject {
         notificationSource.scheduleNote(note)
     }
 
-    private func feedAndArticleFromUserInfo(userInfo: [NSObject : AnyObject]) -> (Feed, Article) {
-        let feedID = (userInfo["feed"] as! String)
-        let dataManager = self.injector!.create(DataManager.self) as! DataManager
-        let feed: Feed = dataManager.feeds().filter {
-            return $0.identifier == feedID
-        }.first!
-        let articleID = (userInfo["article"] as! String)
-        let article: Article = feed.articles.filter {
-            return $0.identifier == articleID
-        }.first!
-        return (feed, article)
+    private func feedAndArticleFromUserInfo(userInfo: [NSObject : AnyObject], callback: (Feed?, Article?) -> (Void)) {
+        guard let _ = self.dataRepository,
+              let feedID = userInfo["feed"] as? String,
+              let articleID = userInfo["article"] as? String else {
+                callback(nil, nil)
+                return
+        }
+        self.dataRepository?.feeds {feeds in
+            let feed = feeds.filter({ $0.identifier == feedID }).first
+            let article = feed?.articles.filter({ $0.identifier == articleID }).first
+            callback(feed, article)
+        }
     }
 
     private func showArticle(article: Article, window: UIWindow) {

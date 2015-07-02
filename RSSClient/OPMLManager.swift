@@ -3,11 +3,13 @@ import Foundation
 public class OPMLManager {
 
     private let dataManager: DataManager
+    private let dataRetriever: DataRetriever
     private let mainQueue: NSOperationQueue
     private let importQueue: NSOperationQueue
 
-    public init(dataManager: DataManager, mainQueue: NSOperationQueue, importQueue: NSOperationQueue) {
+    public init(dataManager: DataManager, dataRetriever: DataRetriever, mainQueue: NSOperationQueue, importQueue: NSOperationQueue) {
         self.dataManager = dataManager
+        self.dataRetriever = dataRetriever
         self.mainQueue = mainQueue
         self.importQueue = importQueue
     }
@@ -90,10 +92,11 @@ public class OPMLManager {
 
     public func writeOPML() {
         let opmlLocation = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
-        do {
-            try self.generateOPMLContents(dataManager.feeds()).writeToFile(opmlLocation, atomically: true,
-                encoding: NSUTF8StringEncoding)
-        } catch _ {
+        dataRetriever.feeds {feeds in
+            do {
+                try self.generateOPMLContents(feeds).writeToFile(opmlLocation, atomically: true,
+                    encoding: NSUTF8StringEncoding)
+            } catch _ {}
         }
     }
 }

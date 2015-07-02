@@ -92,6 +92,4 @@ public class FeedTableCell: UITableViewCell {
     public lazy var iconHeight: NSLayoutConstraint = {
         return self.iconView.autoSetDimension(.Height, toSize: 0)
     }()
-
-    var dataManager: DataManager? = nil
 }

@@ -12,8 +12,8 @@ public class TagEditorViewController: UIViewController {
             self.navigationItem.rightBarButtonItem?.enabled = self.feed != nil && tag != nil
         }
     }
-    private lazy var dataManager: DataManager? = {
-        self.injector?.create(DataManager.self) as? DataManager
+    private lazy var dataRepository: DataRepository? = {
+        self.injector?.create(DataRepository.self) as? DataRepository
     }()
 
     public override func viewDidLoad() {
@@ -28,8 +28,10 @@ public class TagEditorViewController: UIViewController {
         self.navigationItem.title = self.feed?.title ?? ""
 
         tagPicker.translatesAutoresizingMaskIntoConstraints = false
-        tagPicker.configureWithTags(dataManager?.allTags() ?? []) {
-            self.tag = $0
+        dataRepository?.allTags { tags in
+            self.tagPicker.configureWithTags(tags) {
+                self.tag = $0
+            }
         }
         self.view.addSubview(tagPicker)
         tagPicker.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(16, 8, 0, 8), excludingEdge: .Bottom)
@@ -50,7 +52,7 @@ public class TagEditorViewController: UIViewController {
     func save() {
         if let feed = self.feed, let tag = tag {
             feed.addTag(tag)
-            self.dataManager?.saveFeed(feed)
+            self.dataRepository?.saveFeed(feed)
             self.feed = feed
         }
 

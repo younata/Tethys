@@ -62,7 +62,9 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
 
     private var menuTopOffset: NSLayoutConstraint!
 
-    private lazy var dataManager: DataManager = { self.injector!.create(DataManager.self) as! DataManager }()
+    private lazy var dataRepository: DataRepository = {
+        return self.injector!.create(DataRepository.self) as! DataRepository
+    }()
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -97,7 +99,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
     // MARK: - BreakOutToRefreshDelegate
 
     public func refreshViewDidRefresh(refreshView: BreakOutToRefreshView) {
-        dataManager.updateFeeds({error in
+        dataRepository.updateFeeds({error in
             if let _ = error {
                 let alertTitle = NSLocalizedString("Unable to update feeds", comment: "")
                 let alertMessage = error?.localizedFailureReason
@@ -185,7 +187,6 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         // whether new feed loaded into it has unread articles or not.
 
         if let cell = tableView.dequeueReusableCellWithIdentifier(strToUse, forIndexPath: indexPath) as? FeedTableCell {
-            cell.dataManager = dataManager
             cell.feed = feed
             return cell
         }
@@ -209,14 +210,14 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         let deleteTitle = NSLocalizedString("Delete", comment: "")
         let delete = UITableViewRowAction(style: .Default, title: deleteTitle, handler: {(_, indexPath: NSIndexPath!) in
             let feed = self.feedAtIndexPath(indexPath)
-            self.dataManager.deleteFeed(feed)
+            self.dataRepository.deleteFeed(feed)
             self.reload(nil)
         })
 
         let readTitle = NSLocalizedString("Mark\nRead", comment: "")
         let markRead = UITableViewRowAction(style: .Normal, title: readTitle, handler: {_, indexPath in
             let feed = self.feedAtIndexPath(indexPath)
-            self.dataManager.markFeedAsRead(feed)
+            self.dataRepository.markFeedAsRead(feed)
             self.reload(nil)
         })
 
@@ -243,20 +244,22 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
     // MARK - Private/Internal
 
     private func reload(tag: String?) {
-        feeds = dataManager.feedsMatchingTag(tag).sort {(f1: Feed, f2: Feed) in
-            let f1Unread = f1.unreadArticles().count
-            let f2Unread = f2.unreadArticles().count
-            if f1Unread != f2Unread {
-                return f1Unread > f2Unread
+        dataRepository.feedsMatchingTag(tag) {feeds in
+            self.feeds = feeds.sort {(f1: Feed, f2: Feed) in
+                let f1Unread = f1.unreadArticles().count
+                let f2Unread = f2.unreadArticles().count
+                if f1Unread != f2Unread {
+                    return f1Unread > f2Unread
+                }
+                return f1.title.lowercaseString < f2.title.lowercaseString
             }
-            return f1.title.lowercaseString < f2.title.lowercaseString
-        }
 
-        if refreshView.isRefreshing {
-            refreshView.endRefreshing()
-        }
+            if self.refreshView.isRefreshing {
+                self.refreshView.endRefreshing()
+            }
 
-        self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+            self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+        }
     }
 
     internal func didTapAddFeed() {
@@ -283,7 +286,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
 
     internal func showFeeds(feeds: [Feed], animated: Bool) -> ArticleListController {
         let al = ArticleListController(style: .Plain)
-        al.dataManager = dataManager
+        al.dataWriter = dataRepository
         al.feeds = feeds
         self.navigationController?.pushViewController(al, animated: animated)
         return al

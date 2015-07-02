@@ -32,8 +32,8 @@ public class QueryFeedViewController: UITableViewController {
         }
     }
 
-    private lazy var dataManager: DataManager = {
-        return self.injector!.create(DataManager.self) as! DataManager
+    private lazy var dataRepository: DataRepository = {
+        return self.injector!.create(DataRepository.self) as! DataRepository
     }()
 
     public override func viewDidLoad() {
@@ -67,7 +67,7 @@ public class QueryFeedViewController: UITableViewController {
 
     func save() {
         if let feed = self.feed {
-            dataManager.saveFeed(feed)
+            dataRepository.saveFeed(feed)
         }
         dismiss()
     }
@@ -219,7 +219,9 @@ public class QueryFeedViewController: UITableViewController {
             let preview = UITableViewRowAction(style: .Normal, title: previewTitle, handler: {(_, _) in
                 let articleList = ArticleListController(style: .Plain)
                 articleList.previewMode = true
-                articleList.articles = self.dataManager.articlesMatchingQuery(self.feed?.query ?? "")
+                self.dataRepository.articlesMatchingQuery(self.feed?.query ?? "") {articles in
+                    articleList.articles = articles
+                }
                 self.navigationController?.pushViewController(articleList, animated: true)
             })
             return [preview]

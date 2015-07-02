@@ -8,7 +8,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         didSet {
             self.navigationController?.setToolbarHidden(false, animated: false)
             if let a = article {
-                self.dataManager?.markArticle(a, asRead: true)
+                self.dataWriter?.markArticle(a, asRead: true)
                 showArticle(a, onWebView: content)
 
                 self.navigationItem.title = a.title ?? ""
@@ -54,8 +54,8 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     public var articles: [Article] = []
     public var lastArticleIndex = 0
 
-    public lazy var dataManager: DataManager? = {
-        return self.injector?.create(DataManager.self) as? DataManager
+    public lazy var dataWriter: DataWriter? = {
+        return self.injector?.create(DataWriter.self) as? DataWriter
     }()
 
     public lazy var swipeRight: UIScreenEdgePanGestureRecognizer = {

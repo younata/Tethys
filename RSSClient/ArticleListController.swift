@@ -18,8 +18,8 @@ public class ArticleListController: UITableViewController {
 
     public var previewMode: Bool = false
 
-    lazy var dataManager: DataManager? = {
-        self.injector?.create(DataManager.self) as? DataManager
+    lazy var dataWriter: DataWriter? = {
+        self.injector?.create(DataWriter.self) as? DataWriter
     }()
     lazy var mainQueue: NSOperationQueue? = {
         self.injector?.create(kMainQueue) as? NSOperationQueue
@@ -70,7 +70,7 @@ public class ArticleListController: UITableViewController {
     func showArticle(article: Article, animated: Bool) -> ArticleViewController {
         let avc = splitViewController?.viewControllers.last as? ArticleViewController ??
             ArticleViewController()
-        avc.dataManager = dataManager
+        avc.dataWriter = dataWriter
         avc.article = article
         avc.articles = self.articles
         if (self.articles.count != 0) {
@@ -130,14 +130,14 @@ public class ArticleListController: UITableViewController {
             let article = self.articleForIndexPath(indexPath)
             let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""),
                 handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
-                    self.dataManager?.deleteArticle(article)
+                    self.dataWriter?.deleteArticle(article)
             })
             let unread = NSLocalizedString("Mark\nUnread", comment: "")
             let read = NSLocalizedString("Mark\nRead", comment: "")
             let toggleText = article.read ? unread : read
             let toggle = UITableViewRowAction(style: .Normal, title: toggleText,
                 handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
-                    self.dataManager?.markArticle(article, asRead: !article.read)
+                    self.dataWriter?.markArticle(article, asRead: !article.read)
                     tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
             })
             return [delete, toggle]

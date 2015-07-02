@@ -40,6 +40,7 @@ class FeedRepositorySpec: QuickSpec {
             article1.link = "https://example.com/article1.html"
             article2 = createArticle(moc)
             article2.title = "c"
+            article1.link = "https://example.com/article2.html"
             article2.read = true
             feed1.addArticlesObject(article1)
             feed1.addArticlesObject(article2)

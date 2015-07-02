@@ -17,8 +17,8 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         return Ra.Injector(module: self.injectorModule)
     }()
 
-    lazy var dataManager: DataManager? = {
-        return self.anInjector.create(DataManager.self) as? DataManager
+    lazy var dataRetriever: DataRetriever? = {
+        return self.anInjector.create(DataRetriever.self) as? DataRetriever
     }()
 
     lazy var notificationHandler: NotificationHandler? = {
@@ -57,12 +57,6 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
             notificationHandler?.enableNotifications(application)
 
-            if dataManager?.feeds().count > 0 {
-                application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
-            } else {
-                application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
-            }
-
             return true
     }
 
@@ -97,12 +91,15 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 let feedsViewController = nc.viewControllers.first as? FeedsTableViewController,
                 let userInfo = userActivity.userInfo,
                 let feedIdentifier = userInfo["feed"] as? String,
-                let articleIdentifier = userInfo["article"] as? String,
-                let feed = self.dataManager?.feeds().filter({ return $0.identifier == feedIdentifier }).first,
-                let article = feed.articles.filter({ $0.identifier == articleIdentifier }).first {
-                    nc.popToRootViewControllerAnimated(false)
-                    let al = feedsViewController.showFeeds([feed], animated: false)
-                    restorationHandler([al.showArticle(article)])
+                let articleIdentifier = userInfo["article"] as? String {
+                    self.dataRetriever?.feeds {feeds in
+                        if let feed = feeds.filter({ return $0.identifier == feedIdentifier }).first,
+                            let article = feed.articles.filter({ $0.identifier == articleIdentifier }).first {
+                                nc.popToRootViewControllerAnimated(false)
+                                let al = feedsViewController.showFeeds([feed], animated: false)
+                                restorationHandler([al.showArticle(article)])
+                        }
+                    }
                     handled = true
             }
             return handled

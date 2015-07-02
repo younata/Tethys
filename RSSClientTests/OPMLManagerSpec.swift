@@ -9,16 +9,20 @@ class OPMLManagerSpec: QuickSpec {
         var moc : NSManagedObjectContext! = nil
 
         var dataManager : DataManagerMock! = nil
+        var dataRetriever: DataRetriever! = nil
         var importQueue : FakeOperationQueue! = nil
         var mainQueue : FakeOperationQueue! = nil
 
         beforeEach {
             dataManager = DataManagerMock()
+
             importQueue = FakeOperationQueue()
             importQueue.runSynchronously = true
+
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
-            subject = OPMLManager(dataManager: dataManager, mainQueue: mainQueue, importQueue: importQueue)
+
+            subject = OPMLManager(dataManager: dataManager, dataRetriever: dataRetriever, mainQueue: mainQueue, importQueue: importQueue)
 
             moc = managedObjectContext()
         }

@@ -29,8 +29,8 @@ public class FeedViewController: UITableViewController {
         }
     }
 
-    private lazy var dataManager: DataManager = {
-        return self.injector!.create(DataManager.self) as! DataManager
+    private lazy var dataWriter: DataWriter? = {
+        return self.injector?.create(DataWriter.self) as? DataWriter
     }()
 
     private lazy var urlSession: NSURLSession = {
@@ -75,7 +75,7 @@ public class FeedViewController: UITableViewController {
 
     internal func save() {
         if let theFeed = feed {
-            dataManager.saveFeed(theFeed)
+            dataWriter?.saveFeed(theFeed)
         }
         dismiss()
     }

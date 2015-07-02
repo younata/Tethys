@@ -103,40 +103,6 @@ public class DataManager: NSObject {
 
     // MARK: Public API
 
-    public func allTags() -> [String] {
-        let feedsWithTags = DataUtility.feedsWithPredicate(NSPredicate(format: "tags != nil"),
-            managedObjectContext: self.backgroundObjectContext)
-
-        let setOfTags = feedsWithTags.reduce(Set<String>()) {set, feed in
-            return set.union(Set(feed.tags))
-        }
-
-        return Array(setOfTags).sort { return $0.lowercaseString < $1.lowercaseString }
-    }
-
-    public func feeds() -> [Feed] {
-        return DataUtility.feedsWithPredicate(NSPredicate(value: true),
-            managedObjectContext: self.backgroundObjectContext).sort {
-                return $0.title < $1.title
-        }
-    }
-
-    public func feedsMatchingTag(tag: String?) -> [Feed] {
-        if let theTag = (tag == "" ? nil : tag) {
-            return feeds().filter {
-                let tags = $0.tags
-                for t in tags {
-                    if t.rangeOfString(theTag) != nil {
-                        return true
-                    }
-                }
-                return false
-            }
-        } else {
-            return feeds()
-        }
-    }
-
     public func newFeed(feedURL: String, completion: (NSError?) -> (Void)) -> Feed {
         let predicate = NSPredicate(format: "url = %@", feedURL)
         if let theFeed = DataUtility.entities("Feed", matchingPredicate: predicate,
@@ -171,81 +137,12 @@ public class DataManager: NSObject {
         return Feed(feed: feed)
     }
 
-    public func saveFeed(feed: Feed) {
-        guard let feedID = feed.feedID where feed.updated else {
-            return
-        }
-        if let cdfeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feedID), managedObjectContext: self.backgroundObjectContext).first as? CoreDataFeed {
-            cdfeed.title = feed.title
-            cdfeed.url = feed.url?.absoluteString
-            cdfeed.summary = feed.summary
-            cdfeed.query = feed.query
-            cdfeed.tags = feed.tags
-            if let waitPeriod = feed.waitPeriod {
-                cdfeed.waitPeriod = NSNumber(integer: waitPeriod)
-            } else {
-                cdfeed.waitPeriod = nil
-            }
-            if let remainingWait = feed.remainingWait {
-                cdfeed.remainingWait = NSNumber(integer: remainingWait)
-            } else {
-                cdfeed.remainingWait = nil
-            }
-            cdfeed.image = feed.image
-
-            for article in feed.articles {
-                saveArticle(article, feed: cdfeed)
-            }
-        }
-    }
-
-    public func deleteFeed(feed: Feed) {
-        guard let feedID = feed.feedID else {
-            return
-        }
-        if let cdfeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feedID), managedObjectContext: self.backgroundObjectContext).first as? CoreDataFeed {
-            deleteFeed(cdfeed)
-        }
-    }
-
-    public func markFeedAsRead(feed: Feed) {
-        for article in feed.articles {
-            markArticle(article, asRead: true)
-        }
-    }
-
-    public func deleteArticle(article: Article) {
-        guard let articleID = article.articleID else {
-            return
-        }
-        if let cdarticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", articleID), managedObjectContext: self.backgroundObjectContext).first as? CoreDataArticle {
-            cdarticle.feed?.removeArticlesObject(cdarticle)
-            cdarticle.feed = nil
-            self.backgroundObjectContext.deleteObject(cdarticle)
-            save()
-        }
-    }
-
-    public func markArticle(article: Article, asRead read: Bool) {
-        guard let articleID = article.articleID else {
-            return
-        }
-        if let cdarticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", articleID), managedObjectContext: self.backgroundObjectContext).first as? CoreDataArticle {
-            cdarticle.read = read
-            save()
-        }
-    }
-
-    public func articlesMatchingQuery(query: String, feed: Feed? = nil) -> [Article] {
-        return []
-    }
-
     public func updateFeeds(completion: (NSError?)->(Void)) {
-        updateFeeds(feeds(), completion: completion)
+        updateFeeds([], completion: completion)
     }
 
     public func updateFeedsInBackground(completion: (NSError?)->(Void)) {
-        updateFeeds(feeds(), completion: completion, backgroundFetch: true)
+        updateFeeds([], completion: completion, backgroundFetch: true)
     }
 
     // MARK: Private API
@@ -361,16 +258,16 @@ public class DataManager: NSObject {
     }
 
     private func setApplicationBadgeCount() {
-        let num = feeds().filter {
-            return !$0.isQueryFeed
-        }.reduce(0) {
-            return $0 + $1.unreadArticles().count
-        }
-        #if os(iOS)
-            UIApplication.sharedApplication().applicationIconBadgeNumber = num
-        #elseif os(OSX)
-            NSApplication.sharedApplication().dockTile.badgeLabel = "\(num)"
-        #endif
+//        let num = feeds().filter {
+//            return !$0.isQueryFeed
+//        }.reduce(0) {
+//            return $0 + $1.unreadArticles().count
+//        }
+//        #if os(iOS)
+//            UIApplication.sharedApplication().applicationIconBadgeNumber = num
+//        #elseif os(OSX)
+//            NSApplication.sharedApplication().dockTile.badgeLabel = "\(num)"
+//        #endif
     }
 
     private func finishedUpdatingFeed(error: NSError?, feed: CoreDataFeed,
@@ -415,41 +312,16 @@ public class DataManager: NSObject {
         }
         self.backgroundObjectContext.deleteObject(feed)
         save()
-        if (feeds().count == 0) {
+//        if (feeds().count == 0) {
 //            #if os(iOS)
 //                let app = UIApplication.sharedApplication()
 //                app.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
 //            #endif
-        }
+//        }
 //        self.writeOPML()
     }
 
     // MARK: Articles
-
-    private func saveArticle(article: Article, feed: CoreDataFeed) {
-        guard let articleID = article.articleID where article.updated else {
-            return
-        }
-        if let cdarticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", articleID), managedObjectContext: self.backgroundObjectContext).first as? CoreDataArticle {
-            cdarticle.title = article.title
-            cdarticle.link = article.link?.absoluteString
-            cdarticle.summary = article.summary
-            cdarticle.author = article.author
-            cdarticle.published = article.published
-            cdarticle.updatedAt = article.updatedAt
-            cdarticle.content = article.content
-            cdarticle.read = article.read
-            cdarticle.flags = article.flags
-            cdarticle.feed = feed
-
-            let feedarticles = feed.articles.map { $0.objectID }
-            if let articleID = article.articleID {
-                if !feedarticles.contains(articleID) {
-                    feed.addArticlesObject(cdarticle)
-                }
-            }
-        }
-    }
 
     private func upsertArticle(item: Muon.Article, context ctx: NSManagedObjectContext! = nil) -> CoreDataArticle? {
         let predicate = NSPredicate(format: "link = %@", item.link ?? "")
@@ -474,20 +346,6 @@ public class DataManager: NSObject {
             }
             return article
         }
-    }
-
-    private func readArticle(article: CoreDataArticle, read: Bool = true) {
-        article.read = read
-        save()
-        setApplicationBadgeCount()
-    }
-
-    private func readArticles(articles: [CoreDataArticle], read: Bool = true) {
-        for article in articles {
-            article.read = read
-        }
-        save()
-        setApplicationBadgeCount()
     }
 
     private func newArticle() -> CoreDataArticle {

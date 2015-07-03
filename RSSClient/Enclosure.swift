@@ -1,4 +1,5 @@
 import Foundation
+import CoreData
 
 public class Enclosure: Equatable {
     public var url: NSURL {
@@ -51,7 +52,7 @@ public class Enclosure: Equatable {
 
     public private(set) var enclosureID: NSManagedObjectID? = nil
 
-    public init(enclosure: CoreDataEnclosure, article: Article?) {
+    internal init(enclosure: CoreDataEnclosure, article: Article?) {
         url = NSURL(string: enclosure.url ?? "") ?? NSURL()
         kind = enclosure.kind ?? ""
         data = enclosure.data

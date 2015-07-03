@@ -2,7 +2,8 @@ import Quick
 import Nimble
 import Foundation
 import Muon
-import rNews
+import CoreData
+@testable import rNewsKit
 
 class DataUtilitySpec: QuickSpec {
     override func spec() {
@@ -171,9 +172,9 @@ class DataUtilitySpec: QuickSpec {
                     DataUtility.insertEnclosureFromItem(enclosure, article: article)
 
                     expect(article.enclosures.count).to(equal(1))
-                    if let enclosure = article.enclosures.first as? NSManagedObject {
-                        expect(enclosure.valueForKey("url") as? String).to(equal("http://example.com/enclosure.txt"))
-                        expect(enclosure.valueForKey("kind") as? String).to(equal("text/text"))
+                    if let enclosure = article.enclosures.first {
+                        expect(enclosure.url).to(equal("http://example.com/enclosure.txt"))
+                        expect(enclosure.kind).to(equal("text/text"))
                     } else {
                         expect(false).to(beTruthy())
                     }

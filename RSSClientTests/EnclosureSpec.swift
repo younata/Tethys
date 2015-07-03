@@ -1,6 +1,7 @@
 import Quick
 import Nimble
-import rNews
+import CoreData
+@testable import rNewsKit
 
 class EnclosureSpec: QuickSpec {
     override func spec() {

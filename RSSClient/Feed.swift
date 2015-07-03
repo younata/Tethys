@@ -1,4 +1,5 @@
 import Foundation
+import CoreData
 
 #if os(iOS)
     public typealias Image=UIImage
@@ -155,7 +156,7 @@ public class Feed: Equatable, Hashable, CustomStringConvertible {
 
     public private(set) var feedID: NSManagedObjectID? = nil
 
-    public init(feed: CoreDataFeed) {
+    internal init(feed: CoreDataFeed) {
         title = feed.title ?? ""
         let url: NSURL?
         if let feedURL = feed.url {
@@ -166,9 +167,9 @@ public class Feed: Equatable, Hashable, CustomStringConvertible {
         self.url = url
         summary = feed.summary ?? ""
         query = feed.query
-        tags = feed.tags as? [String] ?? []
-        waitPeriod = feed.waitPeriod?.integerValue
-        remainingWait = feed.remainingWait?.integerValue
+        tags = feed.tags
+        waitPeriod = feed.waitPeriod
+        remainingWait = feed.remainingWait
         self.identifier = feed.objectID.URIRepresentation().description
 
         let articlesList = Array(feed.articles)

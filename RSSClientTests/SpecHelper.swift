@@ -1,14 +1,7 @@
 import Foundation
 import Ra
-import rNews
-
-func injector() -> Injector {
-    let injector = Ra.Injector()
-    injector.bind(DataManager.self) {
-        return DataManagerMock()
-    }
-    return injector
-}
+import CoreData
+@testable import rNewsKit
 
 func managedObjectContext() -> NSManagedObjectContext {
     let modelURL = NSBundle.mainBundle().URLForResource("RSSClient", withExtension: "momd")!

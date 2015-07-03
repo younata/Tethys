@@ -1,7 +1,7 @@
 import Quick
 import Nimble
 import Ra
-import rNews
+@testable import rNewsKit
 
 class DataManagerSpec: QuickSpec {
     override func spec() {

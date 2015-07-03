@@ -1,6 +1,6 @@
 import Quick
 import Nimble
-import rNews
+@testable import rNewsKit
 import Ra
 import CoreSpotlight
 #if os(iOS)

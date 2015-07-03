@@ -1,6 +1,7 @@
 import Foundation
 import Ra
 import CoreSpotlight
+import CoreData
 #if os(iOS)
     import MobileCoreServices
 #endif
@@ -118,14 +119,14 @@ public class DataRepository: DataRetriever, DataWriter {
                 cdfeed.query = feed.query
                 cdfeed.tags = feed.tags
                 if let waitPeriod = feed.waitPeriod {
-                    cdfeed.waitPeriod = NSNumber(integer: waitPeriod)
+                    cdfeed.waitPeriod = waitPeriod
                 } else {
-                    cdfeed.waitPeriod = nil
+                    cdfeed.waitPeriod = 0
                 }
                 if let remainingWait = feed.remainingWait {
-                    cdfeed.remainingWait = NSNumber(integer: remainingWait)
+                    cdfeed.remainingWait = remainingWait
                 } else {
-                    cdfeed.remainingWait = nil
+                    cdfeed.remainingWait = 0
                 }
                 cdfeed.image = feed.image
 
@@ -226,13 +227,6 @@ public class DataRepository: DataRetriever, DataWriter {
             cdarticle.read = article.read
             cdarticle.flags = article.flags
             cdarticle.feed = feed
-
-            let feedarticles = feed.articles.map { $0.objectID }
-            if let articleID = article.articleID {
-                if !feedarticles.contains(articleID) {
-                    feed.addArticlesObject(cdarticle)
-                }
-            }
 
             if #available(iOS 9.0, *) {
                 let identifier = cdarticle.objectID.URIRepresentation().absoluteString

@@ -2,9 +2,9 @@ import Foundation
 import CoreData
 import Muon
 
-public class DataUtility {
+internal class DataUtility {
     // Just a collection of class functions, grouped under a class for namespacing reasons
-    public class func updateFeed(feed: CoreDataFeed, info: Muon.Feed) {
+    internal class func updateFeed(feed: CoreDataFeed, info: Muon.Feed) {
         let summary: String
         let data = info.description.dataUsingEncoding(NSUTF8StringEncoding,
             allowLossyConversion: false)!
@@ -21,7 +21,7 @@ public class DataUtility {
         feed.summary = summary
     }
 
-    public class func updateFeedImage(feed: CoreDataFeed, info: Muon.Feed, urlSession: NSURLSession) {
+    internal class func updateFeedImage(feed: CoreDataFeed, info: Muon.Feed, urlSession: NSURLSession) {
         if let imageURL = info.imageURL where feed.image == nil {
             urlSession.dataTaskWithURL(imageURL) {data, _, error in
                 if error != nil {
@@ -40,7 +40,7 @@ public class DataUtility {
         }
     }
 
-    public class func updateArticle(article: CoreDataArticle, item: Muon.Article) {
+    internal class func updateArticle(article: CoreDataArticle, item: Muon.Article) {
         article.title = item.title ?? article.title ?? "unknown"
         article.link = item.link?.absoluteString ?? ""
         if article.published == nil {
@@ -62,7 +62,7 @@ public class DataUtility {
         article.identifier = item.guid
     }
 
-    public class func insertEnclosureFromItem(item: Muon.Enclosure, article: CoreDataArticle) {
+    internal class func insertEnclosureFromItem(item: Muon.Enclosure, article: CoreDataArticle) {
         let url = item.url.absoluteString
         for enclosure in article.enclosures {
             if (enclosure.valueForKey("url") as? NSObject) == url {
@@ -77,10 +77,9 @@ public class DataUtility {
         enclosure.url = url
         enclosure.kind = item.type
         enclosure.article = article
-        article.addEnclosuresObject(enclosure)
     }
 
-    public class func entities(entity: String,
+    internal class func entities(entity: String,
         matchingPredicate predicate: NSPredicate,
         managedObjectContext: NSManagedObjectContext,
         sortDescriptors: [NSSortDescriptor] = []) -> [NSManagedObject] {
@@ -98,7 +97,7 @@ public class DataUtility {
             return []
     }
 
-    public class func feedsWithPredicate(predicate: NSPredicate,
+    internal class func feedsWithPredicate(predicate: NSPredicate,
         managedObjectContext: NSManagedObjectContext,
         sortDescriptors: [NSSortDescriptor] = []) -> [Feed] {
             let feeds = DataUtility.entities("Feed",
@@ -110,7 +109,7 @@ public class DataUtility {
             }
     }
 
-    public class func articlesWithPredicate(predicate: NSPredicate,
+    internal class func articlesWithPredicate(predicate: NSPredicate,
         managedObjectContext: NSManagedObjectContext,
         sortDescriptors: [NSSortDescriptor] = []) -> [Article] {
             let articles = DataUtility.entities("Article",

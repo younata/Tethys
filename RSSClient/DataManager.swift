@@ -181,9 +181,9 @@ public class DataManager: NSObject {
             return;
         }
         backgroundQueue.addOperationWithBlock {
-            let wait = feed.remainingWait?.integerValue ?? 0
+            let wait = feed.remainingWait
             if wait != 0 {
-                feed.remainingWait = NSNumber(integer: wait - 1)
+                feed.remainingWait = wait - 1
                 self.save()
                 feedsLeft--
                 if (feedsLeft == 0) {
@@ -205,7 +205,6 @@ public class DataManager: NSObject {
                         var articles: [CoreDataArticle] = [] // caching for batch insert
                         for item in info.articles {
                             if let article = self.upsertArticle(item, context: ctx) {
-                                feed.addArticlesObject(article)
                                 article.feed = feed
 
                                 articles.append(article)
@@ -223,7 +222,7 @@ public class DataManager: NSObject {
                                     attributes.creator = article.author
                                     attributes.contentURL = NSURL(string: article.link ?? "")
                                     attributes.contentDescription = article.summary
-                                    attributes.keywords = article.flags as? [String]
+                                    attributes.keywords = article.flags
                                     let identifier = article.objectID.URIRepresentation().absoluteString
                                     let feedTitle = article.feed?.title ?? "feed"
                                     let articleTitle = article.title ?? "article"
@@ -275,15 +274,15 @@ public class DataManager: NSObject {
         completion: (NSError?) -> (Void)) {
             feedsLeft--
             if (error == nil) {
-                if feed.waitPeriod == nil || feed.waitPeriod != 0 {
-                    feed.waitPeriod = NSNumber(integer: 0)
-                    feed.remainingWait = NSNumber(integer: 0)
+                if feed.waitPeriod != 0 {
+                    feed.waitPeriod = 0
+                    feed.remainingWait = 0
                     save()
                 }
             } else if let err = error where (err.domain == NSURLErrorDomain && err.code > 0) {
-                let waitPeriod = (feed.waitPeriod?.integerValue ?? 0) + 1
-                feed.waitPeriod = NSNumber(integer: waitPeriod)
-                feed.remainingWait = NSNumber(integer: max(0, waitPeriod - 2))
+                let waitPeriod = feed.waitPeriod + 1
+                feed.waitPeriod = waitPeriod
+                feed.remainingWait = max(0, waitPeriod - 2)
                 save()
             }
             if feedsLeft == 0 {

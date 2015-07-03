@@ -1,4 +1,5 @@
 import Foundation
+import CoreData
 
 public class Article: Equatable, Hashable, CustomStringConvertible {
     public var title: String {
@@ -125,7 +126,7 @@ public class Article: Equatable, Hashable, CustomStringConvertible {
 
     public private(set) var articleID: NSManagedObjectID? = nil
 
-    public init(article: CoreDataArticle, feed: Feed?) {
+    internal init(article: CoreDataArticle, feed: Feed?) {
         title = article.title ?? ""
         if let articleLink = article.link {
             link = NSURL(string: articleLink)
@@ -141,7 +142,7 @@ public class Article: Equatable, Hashable, CustomStringConvertible {
         content = article.content ?? ""
         read = article.read
         self.feed = feed
-        flags = article.flags as? [String] ?? []
+        flags = article.flags
         let enclosuresList = Array(article.enclosures)
         enclosures = enclosuresList.map { Enclosure(enclosure: $0, article: self) }
 

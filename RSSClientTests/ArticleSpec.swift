@@ -1,6 +1,6 @@
 import Quick
 import Nimble
-import rNews
+@testable import rNewsKit
 
 class ArticleSpec: QuickSpec {
     override func spec() {

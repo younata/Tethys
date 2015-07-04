@@ -1,5 +1,5 @@
 import Foundation
-import rNewsKit
+@testable import rNewsKit
 import Ra
 
 class OPMLManagerMock: OPMLManager {
@@ -17,6 +17,8 @@ class OPMLManagerMock: OPMLManager {
 
     convenience init() {
         let injector = Injector()
+        injector.bind(kMainQueue, to: NSOperationQueue())
+        injector.bind(kBackgroundQueue, to: NSOperationQueue())
         self.init(injector: injector)
     }
 

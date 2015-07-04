@@ -1,4 +1,5 @@
 import Foundation
+import CoreData
 @testable import rNewsKit
 
 class FakeDataRepository : DataRepository {
@@ -33,13 +34,13 @@ class FakeDataRepository : DataRepository {
     }
 
     var feedsList: [Feed] = []
-    override func feeds() -> [Feed] {
-        return feedsList
+    override func feeds(callback: ([Feed]) -> (Void)) {
+        return callback(feedsList)
     }
 
     var articlesList: [Article] = []
-    override func articlesMatchingQuery(query: String, feed: Feed? = nil) -> [Article] {
-        return articlesList
+    override func articlesMatchingQuery(query: String, callback: ([Article]) -> (Void)) {
+        return callback(articlesList)
     }
 
     var lastArticleMarkedRead: Article? = nil

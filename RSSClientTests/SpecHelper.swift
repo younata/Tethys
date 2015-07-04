@@ -4,7 +4,8 @@ import CoreData
 @testable import rNewsKit
 
 func managedObjectContext() -> NSManagedObjectContext {
-    let modelURL = NSBundle.mainBundle().URLForResource("RSSClient", withExtension: "momd")!
+    let bundle = NSBundle(forClass: DataRepository.self)
+    let modelURL = bundle.URLForResource("RSSClient", withExtension: "momd")!
     let managedObjectModel = NSManagedObjectModel(contentsOfURL: modelURL)!
 
     let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)

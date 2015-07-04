@@ -146,7 +146,6 @@ class DataUtilitySpec: QuickSpec {
             context("when the article has an existing enclosure for this item") {
                 beforeEach {
                     let enc = createEnclosure(ctx)
-                    article.addEnclosuresObject(enc)
                     enc.article = article
 
                     enc.url = "http://example.com/enclosure.txt"

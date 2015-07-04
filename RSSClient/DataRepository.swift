@@ -14,6 +14,7 @@ public protocol DataRetriever {
 }
 
 public protocol DataWriter {
+    func newFeed(callback: (Feed) -> (Void))
     func saveFeed(feed: Feed)
     func deleteFeed(feed: Feed)
     func markFeedAsRead(feed: Feed)
@@ -22,10 +23,10 @@ public protocol DataWriter {
     func deleteArticle(article: Article)
     func markArticle(article: Article, asRead: Bool)
 
-    func updateFeeds(callback: (NSError?) -> (Void))
+    func updateFeeds(callback: ([Feed], NSError?) -> (Void))
 }
 
-public class DataRepository: DataRetriever, DataWriter {
+internal class DataRepository: DataRetriever, DataWriter {
     private let objectContext: NSManagedObjectContext
     private let mainQueue: NSOperationQueue
     private let backgroundQueue: NSOperationQueue
@@ -33,7 +34,7 @@ public class DataRepository: DataRetriever, DataWriter {
 
     private let searchIndex: SearchIndex?
 
-    public init(objectContext: NSManagedObjectContext, mainQueue: NSOperationQueue, backgroundQueue: NSOperationQueue, opmlManager: OPMLManager, searchIndex: SearchIndex?) {
+    internal init(objectContext: NSManagedObjectContext, mainQueue: NSOperationQueue, backgroundQueue: NSOperationQueue, opmlManager: OPMLManager, searchIndex: SearchIndex?) {
         self.objectContext = objectContext
         self.mainQueue = mainQueue
         self.backgroundQueue = backgroundQueue
@@ -43,7 +44,7 @@ public class DataRepository: DataRetriever, DataWriter {
 
     //MARK: - DataRetriever
 
-    public func allTags(callback: ([String]) -> (Void)) {
+    internal func allTags(callback: ([String]) -> (Void)) {
         self.backgroundQueue.addOperationWithBlock {
             let feedsWithTags = DataUtility.feedsWithPredicate(NSPredicate(format: "tags != nil"), managedObjectContext: self.objectContext)
 
@@ -58,7 +59,7 @@ public class DataRepository: DataRetriever, DataWriter {
         }
     }
 
-    public func feeds(callback: ([Feed]) -> (Void)) {
+    internal func feeds(callback: ([Feed]) -> (Void)) {
         allFeedsOnBackgroundQueue { feeds in
             self.mainQueue.addOperationWithBlock {
                 callback(feeds)
@@ -66,7 +67,7 @@ public class DataRepository: DataRetriever, DataWriter {
         }
     }
 
-    public func feedsMatchingTag(tag: String?, callback: ([Feed]) -> (Void)) {
+    internal func feedsMatchingTag(tag: String?, callback: ([Feed]) -> (Void)) {
         if let theTag = tag where !theTag.isEmpty {
             self.feeds { allFeeds in
                 let feeds = allFeeds.filter { feed in
@@ -85,7 +86,7 @@ public class DataRepository: DataRetriever, DataWriter {
         }
     }
 
-    public func articlesMatchingQuery(query: String, callback: ([Article]) -> (Void)) {
+    internal func articlesMatchingQuery(query: String, callback: ([Article]) -> (Void)) {
         allFeedsOnBackgroundQueue { feeds in
             self.mainQueue.addOperationWithBlock {
                 callback([])
@@ -107,7 +108,11 @@ public class DataRepository: DataRetriever, DataWriter {
 
     // MARK: DataWriter
 
-    public func saveFeed(feed: Feed) {
+    internal func newFeed(callback: (Feed) -> (Void)) {
+
+    }
+
+    internal func saveFeed(feed: Feed) {
         guard let feedID = feed.feedID where feed.updated else {
             return
         }
@@ -137,7 +142,7 @@ public class DataRepository: DataRetriever, DataWriter {
         }
     }
 
-    public func deleteFeed(feed: Feed) {
+    internal func deleteFeed(feed: Feed) {
         guard let feedID = feed.feedID else {
             return
         }
@@ -159,7 +164,7 @@ public class DataRepository: DataRetriever, DataWriter {
         }
     }
 
-    public func markFeedAsRead(feed: Feed) {
+    internal func markFeedAsRead(feed: Feed) {
         self.backgroundQueue.addOperationWithBlock {
             for article in feed.articles {
                 self.privateMarkArticle(article, asRead: true)
@@ -167,7 +172,7 @@ public class DataRepository: DataRetriever, DataWriter {
         }
     }
 
-    public func saveArticle(article: Article) {
+    internal func saveArticle(article: Article) {
         guard let feedID = article.feed?.feedID where article.updated else {
             return
         }
@@ -178,7 +183,7 @@ public class DataRepository: DataRetriever, DataWriter {
         }
     }
 
-    public func deleteArticle(article: Article) {
+    internal func deleteArticle(article: Article) {
         guard let articleID = article.articleID else {
             return
         }
@@ -194,17 +199,24 @@ public class DataRepository: DataRetriever, DataWriter {
         }
     }
 
-    public func markArticle(article: Article, asRead: Bool) {
+    internal func markArticle(article: Article, asRead: Bool) {
         self.backgroundQueue.addOperationWithBlock {
             self.privateMarkArticle(article, asRead: asRead)
         }
     }
 
-    public func updateFeeds(callback: (NSError?) -> (Void)) {
+    internal func updateFeeds(callback: ([Feed], NSError?) -> (Void)) {
 
     }
 
     //MARK: Private (DataWriter)
+
+    internal func synchronousNewFeed() -> Feed {
+        // Do not call this on the main thread
+        let entityDescription = NSEntityDescription.entityForName("Feed", inManagedObjectContext: self.objectContext)!
+        let cdfeed = CoreDataFeed(entity: entityDescription, insertIntoManagedObjectContext: self.objectContext)
+        return Feed(feed: cdfeed)
+    }
 
     private func save() {
         do {

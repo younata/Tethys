@@ -3,6 +3,7 @@ import Nimble
 @testable import rNewsKit
 import Ra
 import CoreSpotlight
+import CoreData
 #if os(iOS)
     import MobileCoreServices
 #endif
@@ -42,8 +43,6 @@ class FeedRepositorySpec: QuickSpec {
             article2.title = "c"
             article1.link = "https://example.com/article2.html"
             article2.read = true
-            feed1.addArticlesObject(article1)
-            feed1.addArticlesObject(article2)
             article1.feed = feed1
             article2.feed = feed1
 
@@ -55,7 +54,7 @@ class FeedRepositorySpec: QuickSpec {
             feed3 = createFeed(moc)
             feed3.title = "e"
             feed3.url = "https://example.com/feed3.feed"
-            feed3.remainingWait = NSNumber(int: 1)
+            feed3.remainingWait = 1
             feed3.tags = ["dad"]
             do {
                 try moc.save()

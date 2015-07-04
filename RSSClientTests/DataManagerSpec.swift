@@ -1,6 +1,7 @@
 import Quick
 import Nimble
 import Ra
+import CoreData
 @testable import rNewsKit
 
 class DataManagerSpec: QuickSpec {
@@ -58,8 +59,6 @@ class DataManagerSpec: QuickSpec {
             article2 = createArticle(moc)
             article2.title = "c"
             article2.read = true
-            feed1.addArticlesObject(article1)
-            feed1.addArticlesObject(article2)
             article1.feed = feed1
             article2.feed = feed1
 
@@ -71,7 +70,7 @@ class DataManagerSpec: QuickSpec {
             feed3 = createFeed(moc)
             feed3.title = "e"
             feed3.url = "https://example.com/feed3.feed"
-            feed3.remainingWait = NSNumber(int: 1)
+            feed3.remainingWait = 1
             feed3.tags = ["dad"]
             do {
                 try moc.save()

@@ -1,5 +1,6 @@
 import Foundation
-import rNews
+import rNewsKit
+import Ra
 
 class OPMLManagerMock: OPMLManager {
     var importOPMLURL : NSURL? = nil
@@ -14,7 +15,12 @@ class OPMLManagerMock: OPMLManager {
         didReceiveWriteOPML = true
     }
 
-    init() {
-        super.init(dataManager: DataManagerMock(), mainQueue: NSOperationQueue(), importQueue: NSOperationQueue())
+    convenience init() {
+        let injector = Injector()
+        self.init(injector: injector)
+    }
+
+    required init(injector: Injector) {
+        super.init(injector: injector)
     }
 }

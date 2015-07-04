@@ -2,10 +2,10 @@ import Foundation
 import Ra
 import CoreSpotlight
 
-public let kBackgroundManagedObjectContext = "kBackgroundManagedObjectContext"
+internal let kBackgroundManagedObjectContext = "kBackgroundManagedObjectContext"
 
-public let kMainQueue = "kMainQueue"
-public let kBackgroundQueue = "kBackgroundQueue"
+internal let kMainQueue = "kMainQueue"
+internal let kBackgroundQueue = "kBackgroundQueue"
 
 public class InjectorModule : Ra.InjectorModule {
     public func configureInjector(injector: Injector) {

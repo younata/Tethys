@@ -1,6 +1,6 @@
 import Foundation
 import CoreSpotlight
-import rNews
+import rNewsKit
 
 class FakeSearchIndex: SearchIndex {
     var lastItemsAdded: [NSObject] = []

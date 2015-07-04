@@ -1,6 +1,8 @@
 import Quick
 import Nimble
-import rNewsKit
+import CoreData
+import Ra
+@testable import rNewsKit
 
 class OPMLManagerSpec: QuickSpec {
     override func spec() {
@@ -8,13 +10,13 @@ class OPMLManagerSpec: QuickSpec {
 
         var moc : NSManagedObjectContext! = nil
 
-        var dataManager : DataManagerMock! = nil
+        var dataManager : FakeDataRepository! = nil
         var dataRetriever: DataRetriever! = nil
         var importQueue : FakeOperationQueue! = nil
         var mainQueue : FakeOperationQueue! = nil
 
         beforeEach {
-            dataManager = DataManagerMock()
+            dataManager = FakeDataRepository()
 
             importQueue = FakeOperationQueue()
             importQueue.runSynchronously = true
@@ -22,7 +24,12 @@ class OPMLManagerSpec: QuickSpec {
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
 
-            subject = OPMLManager(dataManager: dataManager, dataRetriever: dataRetriever, mainQueue: mainQueue, importQueue: importQueue)
+            let injector = Injector()
+            injector.bind(kMainQueue, to: mainQueue)
+            injector.bind(kBackgroundQueue, to: importQueue)
+            injector.bind(DataRepository.self, to: dataManager)
+
+            subject = OPMLManager(injector: injector)
 
             moc = managedObjectContext()
         }

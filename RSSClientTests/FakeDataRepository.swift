@@ -1,17 +1,15 @@
 import Foundation
-import rNews
+@testable import rNewsKit
 
-class DataManagerMock : DataManager {
-    var newFeedURL: String? = nil
-    var newFeedCompletion : (NSError?) -> Void = {_ in }
-    override func newFeed(feedURL: String, completion: (NSError?) -> (Void)) -> Feed {
-        newFeedURL = feedURL
-        newFeedCompletion = completion
-        return Feed(title: "", url: NSURL(string: feedURL), summary: "", query: nil, tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+class FakeDataRepository : DataRepository {
+
+    init() {
+        super.init(objectContext: NSManagedObjectContext(), mainQueue: NSOperationQueue(), backgroundQueue: NSOperationQueue(), opmlManager: OPMLManagerMock(), searchIndex: nil)
     }
 
-    override func newQueryFeed(title: String, code: String, summary: String?) -> Feed {
-        return Feed(title: title, url: nil, summary: summary ?? "", query: code, tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+    var newFeedCompletion : (Feed) -> Void = {_ in }
+    override func newFeed(callback: (Feed) -> (Void)) {
+        newFeedCompletion = callback
     }
 
     var lastSavedFeed: Feed? = nil
@@ -30,8 +28,8 @@ class DataManagerMock : DataManager {
     }
 
     var tagsList: [String] = []
-    override func allTags() -> [String] {
-        return tagsList
+    override func allTags(callback: ([String]) -> (Void)) {
+        callback(tagsList)
     }
 
     var feedsList: [Feed] = []
@@ -58,15 +56,9 @@ class DataManagerMock : DataManager {
     }
 
     var didUpdateFeeds = false
-    var updateFeedsCompletion: (NSError?) -> (Void) = {_ in }
-    override func updateFeeds(completion: (NSError?) -> (Void)) {
+    var updateFeedsCompletion: ([Feed], NSError?) -> (Void) = {_ in }
+    override func updateFeeds(callback: ([Feed], NSError?) -> (Void)) {
         didUpdateFeeds = true
-        updateFeedsCompletion = completion
-    }
-
-    var updateFeedsInBackgroundCalled: Bool = false
-    override func updateFeedsInBackground(completion: (NSError?) -> (Void)) {
-        updateFeedsInBackgroundCalled = true
-        self.updateFeeds(completion)
+        updateFeedsCompletion = callback
     }
 }

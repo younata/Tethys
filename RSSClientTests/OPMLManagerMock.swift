@@ -17,6 +17,7 @@ class OPMLManagerMock: OPMLManager {
 
     convenience init() {
         let injector = Injector()
+        injector.bind(DataRepository.self, to: FakeDataRepository())
         injector.bind(kMainQueue, to: NSOperationQueue())
         injector.bind(kBackgroundQueue, to: NSOperationQueue())
         self.init(injector: injector)

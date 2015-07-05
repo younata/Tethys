@@ -87,7 +87,7 @@ class FeedSpec: QuickSpec {
         }
 
         describe("Hashable") {
-            it("should report two feeds created with a coredatafeed with the same feedID as having the same hashValue") {
+            fit("should report two feeds created with a coredatafeed with the same feedID as having the same hashValue") {
                 let ctx = managedObjectContext()
                 let a = createFeed(ctx)
                 let b = createFeed(ctx)

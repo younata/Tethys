@@ -5,7 +5,7 @@ import CoreData
 class FakeDataRepository : DataRepository {
 
     init() {
-        super.init(objectContext: NSManagedObjectContext(), mainQueue: NSOperationQueue(), backgroundQueue: NSOperationQueue(), opmlManager: OPMLManagerMock(), searchIndex: nil)
+        super.init(objectContext: NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType), mainQueue: NSOperationQueue(), backgroundQueue: NSOperationQueue(), opmlManager: OPMLManagerMock(), searchIndex: nil)
     }
 
     var newFeedCompletion : (Feed) -> Void = {_ in }

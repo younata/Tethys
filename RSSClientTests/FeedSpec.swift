@@ -8,7 +8,7 @@ class FeedSpec: QuickSpec {
 
         beforeEach {
             subject = Feed(title: "", url: nil, summary: "", query: nil, tags: [],
-                waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+                waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
         }
 
         describe("waitPeriodInRefreshes") {
@@ -77,9 +77,9 @@ class FeedSpec: QuickSpec {
             }
 
             it("should report two feeds not created with coredatafeeds with the same property equality as equal") {
-                let a = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
-                let b = Feed(title: "blah", url: nil, summary: "", query: nil, tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
-                let c = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+                let a = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let b = Feed(title: "blah", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let c = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                 expect(a).toNot(equal(b))
                 expect(a).to(equal(c))
@@ -97,9 +97,9 @@ class FeedSpec: QuickSpec {
             }
 
             it("should report two feeds not created with coredatafeeds with the same property equality as having the same hashValue") {
-                let a = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
-                let b = Feed(title: "blah", url: nil, summary: "", query: nil, tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
-                let c = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+                let a = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let b = Feed(title: "blah", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let c = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                 expect(a.hashValue).toNot(equal(b.hashValue))
                 expect(a.hashValue).to(equal(c.hashValue))
@@ -285,16 +285,16 @@ class FeedSpec: QuickSpec {
                 }
 
                 it("waitPeriod") {
-                    subject.waitPeriod = nil
-                    expect(subject.updated).to(beFalsy())
                     subject.waitPeriod = 0
+                    expect(subject.updated).to(beFalsy())
+                    subject.waitPeriod = 1
                     expect(subject.updated).to(beTruthy())
                 }
 
                 it("remainingWait") {
-                    subject.remainingWait = nil
-                    expect(subject.updated).to(beFalsy())
                     subject.remainingWait = 0
+                    expect(subject.updated).to(beFalsy())
+                    subject.remainingWait = 1
                     expect(subject.updated).to(beTruthy())
                 }
 

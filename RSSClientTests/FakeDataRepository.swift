@@ -47,8 +47,8 @@ class FakeDataRepository : DataRepository {
     }
 
     var didUpdateFeeds = false
-    var updateFeedsCompletion: ([Feed], NSError?) -> (Void) = {_ in }
-    override func updateFeeds(callback: ([Feed], NSError?) -> (Void)) {
+    var updateFeedsCompletion: ([Feed], [NSError]) -> (Void) = {_ in }
+    override func updateFeeds(callback: ([Feed], [NSError]) -> (Void)) {
         didUpdateFeeds = true
         updateFeedsCompletion = callback
     }

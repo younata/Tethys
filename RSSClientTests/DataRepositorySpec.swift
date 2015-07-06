@@ -29,6 +29,8 @@ class FeedRepositorySpec: QuickSpec {
 
         var opmlManager: OPMLManagerMock! = nil
 
+        var urlSession: FakeURLSession! = nil
+
         beforeEach {
             moc = managedObjectContext()
 
@@ -65,10 +67,12 @@ class FeedRepositorySpec: QuickSpec {
 
             searchIndex = FakeSearchIndex()
 
+            urlSession = FakeURLSession()
+
             mainQueue = FakeOperationQueue()
             backgroundQueue = FakeOperationQueue()
             opmlManager = OPMLManagerMock()
-            subject = DataRepository(objectContext: moc, mainQueue: mainQueue, backgroundQueue: backgroundQueue, opmlManager: opmlManager, searchIndex: searchIndex)
+            subject = DataRepository(objectContext: moc, mainQueue: mainQueue, backgroundQueue: backgroundQueue, opmlManager: opmlManager, urlSession: urlSession, searchIndex: searchIndex)
         }
 
         describe("as a DataRetriever") {
@@ -432,7 +436,118 @@ class FeedRepositorySpec: QuickSpec {
             }
 
             describe("updateFeeds") {
-                //
+                var didCallCallback = false
+                var callbackErrors: [NSError] = []
+                beforeEach {
+                    didCallCallback = false
+                    callbackErrors = []
+                    backgroundQueue.runSynchronously = true
+                    subject.updateFeeds {feeds, errors in
+                        didCallCallback = true
+                        callbackErrors = errors
+                    }
+                }
+
+                it("should make a network request for every feed in the data store w/ a url and a remaining wait of 0") {
+                    expect(urlSession.lastURL?.absoluteString).to(equal("https://example.com/feed1.feed"))
+                }
+
+                it("should decrement the remainingWait of every feed that did have a remaining wait of > 0") {
+                    let updatedFeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feed3.objectID),
+                        managedObjectContext: moc).first as? CoreDataFeed
+                    expect(updatedFeed?.remainingWait).to(equal(NSNumber(integer: 0)))
+                }
+
+                context("when the network request succeeds") {
+                    context("when the network call succeeds") {
+                        beforeEach {
+                            let urlResponse = NSHTTPURLResponse(URL: NSURL(string: "https://example.com/feed1.feed")!, statusCode: 200, HTTPVersion: nil, headerFields: [:])
+                            let bundle = NSBundle(forClass: OPMLParserSpec.self)
+                            let data = NSData(contentsOfFile: bundle.pathForResource("feed2", ofType: "rss")!)
+                            urlSession.lastCompletionHandler(data, urlResponse, nil)
+                            mainQueue.runNextOperation()
+                        }
+
+                        it("should call the completion handler without an error") {
+                            expect(didCallCallback).to(beTruthy())
+                            expect(callbackErrors).to(equal([]))
+                        }
+
+                        it("should update the feed data now") {
+                            let updatedFeed = DataUtility.feedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
+                                managedObjectContext: moc).first
+                            expect(updatedFeed?.title).to(equal("objc.io"))
+                        }
+
+                        it("should, on ios 9, add spotlight entries for each added article") {
+                            if #available(iOS 9.0, *) {
+                                expect(searchIndex?.lastItemsAdded.count).to(equal(13))
+                            }
+                        }
+
+                        context("when the feed contains an image") { // which it does
+                            it("should try to download it") {
+                                expect(urlSession.lastURL?.absoluteString).to(equal("http://example.org/icon.png"))
+                            }
+
+                            context("if that succeeds") {
+                                var expectedImageData: NSData! = nil
+                                beforeEach {
+                                    let bundle = NSBundle(forClass: self.classForCoder)
+                                    expectedImageData = NSData(contentsOfURL: bundle.URLForResource("test", withExtension: "jpg")!)
+                                    urlSession.lastCompletionHandler(expectedImageData, nil, nil)
+                                }
+                                it("should set the feed's image to that image") {
+                                    let updatedFeed = DataUtility.feedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
+                                        managedObjectContext: moc).first
+                                    expect(updatedFeed?.image).toNot(beNil())
+                                }
+                            }
+                        }
+                    }
+                }
+
+                context("when the network call fails due to a network error") {
+                    let error = NSError(domain: "", code: 0, userInfo: [:])
+                    beforeEach {
+                        urlSession.lastCompletionHandler(nil, nil, error)
+                        mainQueue.runNextOperation()
+                    }
+
+                    it("should call the completion handler to let the caller know of an error updating the feed") {
+                        expect(callbackErrors).to(equal([error]))
+                    }
+                }
+
+                context("when the network call fails due to a client/server error") {
+                    beforeEach {
+                        let urlResponse = NSHTTPURLResponse(URL: NSURL(string: "https://example.com/rnews.feed")!, statusCode: 400, HTTPVersion: nil, headerFields: [:])
+                        urlSession.lastCompletionHandler(nil, urlResponse, nil)
+                        mainQueue.runNextOperation()
+                    }
+                    
+                    it("should call the completion handler to let the caller know of an error updating the feeds") {
+                        expect(callbackErrors.first?.domain).to(equal("com.rachelbrindle.rssclient.server"))
+                        expect(callbackErrors.first?.code).to(equal(400))
+                    }
+
+                    it("should increment the remainingWait of the feed") {
+                        let updatedFeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feed1.objectID),
+                            managedObjectContext: moc).first as? CoreDataFeed
+                        expect(updatedFeed?.remainingWait).to(equal(NSNumber(integer: 1)))
+                    }
+                }
+
+                context("when there is an unknown error (no data) - should not happen") {
+                    beforeEach {
+                        urlSession.lastCompletionHandler(nil, nil, nil)
+                        mainQueue.runNextOperation()
+                    }
+
+                    it("should call the completion handler to let the caller know of an error updating the feeds") {
+                        expect(callbackErrors.first?.domain).to(equal("com.rachelbrindle.rssclient.unknown"))
+                    }
+                }
             }
         }
     }

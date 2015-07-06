@@ -11,7 +11,7 @@ class FakeSearchIndex: SearchIndex {
         } else {
             fatalError("not available on iOS <9.0")
         }
-        lastItemsAdded = items
+        lastItemsAdded += items
         lastAddCompletionHandler = completionHandler
     }
 

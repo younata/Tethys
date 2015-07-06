@@ -37,14 +37,14 @@ public class Feed: Equatable, Hashable, CustomStringConvertible {
         }
     }
     public private(set) var tags: [String]
-    public var waitPeriod: Int? {
+    public var waitPeriod: Int {
         willSet {
             if newValue != waitPeriod {
                 self.updated = true
             }
         }
     }
-    public var remainingWait: Int? {
+    public var remainingWait: Int {
         willSet {
             if newValue != remainingWait {
                 self.updated = true
@@ -68,12 +68,10 @@ public class Feed: Equatable, Hashable, CustomStringConvertible {
         if let id = feedID {
             return id.URIRepresentation().hash
         }
-        let nonNilHashValues = title.hashValue ^ summary.hashValue
+        let nonNilHashValues = title.hashValue ^ summary.hashValue ^ waitPeriod.hashValue ^ remainingWait.hashValue
         let possiblyNilHashValues: Int
-        if let link = url, query = query, waitPeriod = waitPeriod,
-            remainingWait = remainingWait, image = image {
-                possiblyNilHashValues = link.hash ^ query.hashValue ^
-                    waitPeriod.hashValue ^ remainingWait.hashValue ^ image.hash
+        if let link = url, query = query, image = image {
+                possiblyNilHashValues = link.hash ^ query.hashValue ^ image.hash
         } else {
             possiblyNilHashValues = 0
         }
@@ -89,11 +87,9 @@ public class Feed: Equatable, Hashable, CustomStringConvertible {
 
     public func waitPeriodInRefreshes() -> Int {
         var ret = 0, next = 1
-        if let waitPeriod = waitPeriod {
-            let wait = max(0, waitPeriod - 2)
-            for _ in 0..<wait {
-                (ret, next) = (next, ret+next)
-            }
+        let wait = max(0, waitPeriod - 2)
+        for _ in 0..<wait {
+            (ret, next) = (next, ret+next)
         }
         return ret
     }
@@ -138,7 +134,7 @@ public class Feed: Equatable, Hashable, CustomStringConvertible {
     }
 
     public init(title: String, url: NSURL?, summary: String, query: String?, tags: [String],
-        waitPeriod: Int?, remainingWait: Int?, articles: [Article], image: Image?, identifier: String = "") {
+        waitPeriod: Int, remainingWait: Int, articles: [Article], image: Image?, identifier: String = "") {
             self.title = title
             self.url = url
             self.summary = summary

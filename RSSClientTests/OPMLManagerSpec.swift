@@ -19,7 +19,7 @@ class OPMLManagerSpec: QuickSpec {
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
 
-            dataRepository = FakeDataRepository(objectContext: managedObjectContext(), mainQueue: mainQueue, backgroundQueue: importQueue, opmlManager: OPMLManagerMock(), searchIndex: nil)
+            dataRepository = FakeDataRepository(objectContext: managedObjectContext(), mainQueue: mainQueue, backgroundQueue: importQueue, opmlManager: OPMLManagerMock(), urlSession: FakeURLSession(), searchIndex: nil)
 
             let injector = Injector()
             injector.bind(kMainQueue, to: mainQueue)
@@ -68,11 +68,11 @@ class OPMLManagerSpec: QuickSpec {
 
             beforeEach {
                 feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "", query: nil,
-                    tags: ["a", "b", "c"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+                    tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                 feed2 = Feed(title: "d", url: nil, summary: "", query: "", tags: [],
-                    waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+                    waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                 feed3 = Feed(title: "e", url: NSURL(string: "http://example.com/otherfeed"), summary: "", query: nil,
-                    tags: ["dad"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+                    tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                 dataRepository.feedsList = [feed1, feed2, feed3]
 

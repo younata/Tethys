@@ -3,17 +3,21 @@ import Ra
 
 public class OPMLManager: Injectable {
 
-    private let dataRepository: DataRepository
-    private let mainQueue: NSOperationQueue
-    private let importQueue: NSOperationQueue
+    private let dataRepository: DataRepository?
+    private let mainQueue: NSOperationQueue?
+    private let importQueue: NSOperationQueue?
 
     required public init(injector: Injector) {
-        dataRepository = injector.create(DataRepository.self) as! DataRepository
-        mainQueue = injector.create(kMainQueue) as! NSOperationQueue
-        importQueue = injector.create(kBackgroundQueue) as! NSOperationQueue
+        dataRepository = injector.create(DataRepository.self) as? DataRepository
+        mainQueue = injector.create(kMainQueue) as? NSOperationQueue
+        importQueue = injector.create(kBackgroundQueue) as? NSOperationQueue
     }
 
     public func importOPML(opml: NSURL, completion: ([Feed]) -> Void) {
+        guard let dataRepository = self.dataRepository else {
+            completion([])
+            return
+        }
         do {
             let text = try String(contentsOfURL: opml, encoding: NSUTF8StringEncoding)
             let parser = OPMLParser(text: text)
@@ -23,7 +27,7 @@ public class OPMLManager: Injectable {
                 for item in items {
                     if item.isQueryFeed() {
                         if let title = item.title, let query = item.query {
-                            let newFeed = self.dataRepository.synchronousNewFeed()
+                            let newFeed = dataRepository.synchronousNewFeed()
                             newFeed.title = title
                             newFeed.query = query
                             newFeed.summary = item.summary ?? ""
@@ -34,7 +38,7 @@ public class OPMLManager: Injectable {
                         }
                     } else {
                         if let feedURL = item.xmlURL {
-                            let newFeed = self.dataRepository.synchronousNewFeed()
+                            let newFeed = dataRepository.synchronousNewFeed()
                             newFeed.url = NSURL(string: feedURL)
                             for tag in item.tags ?? [] {
                                 newFeed.addTag(tag)
@@ -43,17 +47,17 @@ public class OPMLManager: Injectable {
                         }
                     }
                 }
-                self.mainQueue.addOperationWithBlock {
+                self.mainQueue?.addOperationWithBlock {
                     completion(feeds)
                 }
             }
             parser.failure {error in
-                self.mainQueue.addOperationWithBlock {
+                self.mainQueue?.addOperationWithBlock {
                     completion([])
                 }
             }
 
-            importQueue.addOperation(parser)
+            importQueue?.addOperation(parser)
         } catch _ {
             completion([])
         }
@@ -94,7 +98,7 @@ public class OPMLManager: Injectable {
 
     public func writeOPML() {
         let opmlLocation = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
-        dataRepository.feeds {feeds in
+        dataRepository?.feeds {feeds in
             do {
                 try self.generateOPMLContents(feeds).writeToFile(opmlLocation, atomically: true,
                     encoding: NSUTF8StringEncoding)

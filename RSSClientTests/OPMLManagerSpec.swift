@@ -8,30 +8,25 @@ class OPMLManagerSpec: QuickSpec {
     override func spec() {
         var subject : OPMLManager! = nil
 
-        var moc : NSManagedObjectContext! = nil
-
-        var dataManager : FakeDataRepository! = nil
-        var dataRetriever: DataRetriever! = nil
+        var dataRepository : FakeDataRepository! = nil
         var importQueue : FakeOperationQueue! = nil
         var mainQueue : FakeOperationQueue! = nil
 
         beforeEach {
-            dataManager = FakeDataRepository()
-
             importQueue = FakeOperationQueue()
             importQueue.runSynchronously = true
 
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
 
+            dataRepository = FakeDataRepository(objectContext: managedObjectContext(), mainQueue: mainQueue, backgroundQueue: importQueue, opmlManager: OPMLManagerMock(), searchIndex: nil)
+
             let injector = Injector()
             injector.bind(kMainQueue, to: mainQueue)
             injector.bind(kBackgroundQueue, to: importQueue)
-            injector.bind(DataRepository.self, to: dataManager)
+            injector.bind(DataRepository.self, to: dataRepository)
 
             subject = OPMLManager(injector: injector)
-
-            moc = managedObjectContext()
         }
 
         describe("Importing OPML Files") {
@@ -79,7 +74,7 @@ class OPMLManagerSpec: QuickSpec {
                 feed3 = Feed(title: "e", url: NSURL(string: "http://example.com/otherfeed"), summary: "", query: nil,
                     tags: ["dad"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
 
-                dataManager.feedsList = [feed1, feed2, feed3]
+                dataRepository.feedsList = [feed1, feed2, feed3]
 
                 subject.writeOPML()
             }

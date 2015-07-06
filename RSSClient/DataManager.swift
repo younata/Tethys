@@ -181,9 +181,9 @@ public class DataManager: NSObject {
             return;
         }
         backgroundQueue.addOperationWithBlock {
-            let wait = feed.remainingWait
+            let wait = feed.remainingWaitInt
             if wait != 0 {
-                feed.remainingWait = wait - 1
+                feed.remainingWaitInt = wait - 1
                 self.save()
                 feedsLeft--
                 if (feedsLeft == 0) {
@@ -280,8 +280,8 @@ public class DataManager: NSObject {
                     save()
                 }
             } else if let err = error where (err.domain == NSURLErrorDomain && err.code > 0) {
-                let waitPeriod = feed.waitPeriod + 1
-                feed.waitPeriod = waitPeriod
+                let waitPeriod = feed.waitPeriodInt + 1
+                feed.waitPeriodInt = waitPeriod
                 feed.remainingWait = max(0, waitPeriod - 2)
                 save()
             }

@@ -168,8 +168,8 @@ public class Feed: Equatable, Hashable, CustomStringConvertible {
         summary = feed.summary ?? ""
         query = feed.query
         tags = feed.tags
-        waitPeriod = feed.waitPeriod
-        remainingWait = feed.remainingWait
+        waitPeriod = feed.waitPeriodInt
+        remainingWait = feed.remainingWaitInt
         self.identifier = feed.objectID.URIRepresentation().description
 
         let articlesList = Array(feed.articles)

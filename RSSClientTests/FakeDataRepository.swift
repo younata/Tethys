@@ -3,16 +3,6 @@ import CoreData
 @testable import rNewsKit
 
 class FakeDataRepository : DataRepository {
-
-    init() {
-        super.init(objectContext: NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType), mainQueue: NSOperationQueue(), backgroundQueue: NSOperationQueue(), opmlManager: OPMLManagerMock(), searchIndex: nil)
-    }
-
-    var newFeedCompletion : (Feed) -> Void = {_ in }
-    override func newFeed(callback: (Feed) -> (Void)) {
-        newFeedCompletion = callback
-    }
-
     var lastSavedFeed: Feed? = nil
     override func saveFeed(feed: Feed) {
         lastSavedFeed = feed

@@ -2,6 +2,7 @@ import UIKit
 import WebKit
 import TOBrowserActivityKit
 import Ra
+import rNewsKit
 
 public class ArticleViewController: UIViewController, WKNavigationDelegate {
     public var article: Article? = nil {

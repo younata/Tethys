@@ -1,4 +1,5 @@
 import UIKit
+import rNewsKit
 
 public class ArticleListController: UITableViewController {
 
@@ -14,7 +15,6 @@ public class ArticleListController: UITableViewController {
             self.tableView.reloadData()
         }
     }
-
 
     public var previewMode: Bool = false
 

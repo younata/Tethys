@@ -2,6 +2,7 @@ import Quick
 import Nimble
 import Ra
 import rNews
+import rNewsKit
 
 private var publishedOffset = -1
 func fakeArticle(feed: Feed, isUpdated: Bool = false, read: Bool = false) -> Article {
@@ -27,7 +28,7 @@ class ArticleListControllerSpec: QuickSpec {
         var navigationController: UINavigationController! = nil
         var articles: [Article] = []
         var sortedArticles: [Article] = []
-        var dataManager: DataManagerMock! = nil
+        var dataReadWriter: FakeDataReadWriter! = nil
 
         beforeEach {
             injector = Injector()
@@ -36,12 +37,13 @@ class ArticleListControllerSpec: QuickSpec {
             mainQueue.runSynchronously = true
             injector.bind(kMainQueue, to: mainQueue)
 
-            dataManager = DataManagerMock()
-            injector.bind(DataManager.self, to: dataManager)
+            dataReadWriter = FakeDataReadWriter()
+            injector.bind(DataRetriever.self, to: dataReadWriter)
+            injector.bind(DataWriter.self, to: dataReadWriter)
 
             publishedOffset = 0
 
-            feed = Feed(title: "", url: NSURL(string: "https://example.com"), summary: "", query: nil, tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+            feed = Feed(title: "", url: NSURL(string: "https://example.com"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
             let d = fakeArticle(feed)
             let c = fakeArticle(feed, read: true)
             let b = fakeArticle(feed, isUpdated: true)
@@ -138,7 +140,7 @@ class ArticleListControllerSpec: QuickSpec {
                             if let delete = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.first {
                                 expect(delete.title).to(equal("Delete"))
                                 delete.handler()(delete, indexPath)
-                                expect(dataManager.lastDeletedArticle).to(equal(sortedArticles.first))
+                                expect(dataReadWriter.lastDeletedArticle).to(equal(sortedArticles.first))
                             }
                         }
 
@@ -148,7 +150,7 @@ class ArticleListControllerSpec: QuickSpec {
                                 if let markRead = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.last {
                                     expect(markRead.title).to(equal("Mark\nRead"))
                                     markRead.handler()(markRead, indexPath)
-                                    expect(dataManager.lastArticleMarkedRead).to(equal(sortedArticles.first))
+                                    expect(dataReadWriter.lastArticleMarkedRead).to(equal(sortedArticles.first))
                                     expect(sortedArticles.first?.read).to(beTruthy())
                                 }
                             }
@@ -160,7 +162,7 @@ class ArticleListControllerSpec: QuickSpec {
                                 if let markUnread = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.last {
                                     expect(markUnread.title).to(equal("Mark\nUnread"))
                                     markUnread.handler()(markUnread, indexPath)
-                                    expect(dataManager.lastArticleMarkedRead).to(equal(sortedArticles[2]))
+                                    expect(dataReadWriter.lastArticleMarkedRead).to(equal(sortedArticles[2]))
                                     expect(sortedArticles[2].read).to(beFalsy())
                                 }
                             }

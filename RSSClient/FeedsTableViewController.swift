@@ -1,6 +1,7 @@
 import UIKit
 import BreakOutToRefresh
 import MAKDropDownMenu
+import rNewsKit
 
 public class FeedsTableViewController: UIViewController, UITableViewDelegate,
 UITableViewDataSource, MAKDropDownMenuDelegate, UITextFieldDelegate,
@@ -62,8 +63,12 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
 
     private var menuTopOffset: NSLayoutConstraint!
 
-    private lazy var dataRepository: DataRepository = {
-        return self.injector!.create(DataRepository.self) as! DataRepository
+    private lazy var dataWriter: DataWriter = {
+        return self.injector!.create(DataWriter.self) as! DataWriter
+    }()
+
+    private lazy var dataRetriever: DataRetriever = {
+        return self.injector!.create(DataRetriever.self) as! DataRetriever
     }()
 
     public override func viewDidLoad() {
@@ -99,10 +104,10 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
     // MARK: - BreakOutToRefreshDelegate
 
     public func refreshViewDidRefresh(refreshView: BreakOutToRefreshView) {
-        dataRepository.updateFeeds({error in
-            if let _ = error {
+        dataWriter.updateFeeds({feeds, errors in
+            if !errors.isEmpty {
                 let alertTitle = NSLocalizedString("Unable to update feeds", comment: "")
-                let alertMessage = error?.localizedFailureReason
+                let alertMessage = ""//error?.localizedFailureReason
                 let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: {_ in
                     self.dismissViewControllerAnimated(true, completion: nil)
@@ -210,14 +215,14 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         let deleteTitle = NSLocalizedString("Delete", comment: "")
         let delete = UITableViewRowAction(style: .Default, title: deleteTitle, handler: {(_, indexPath: NSIndexPath!) in
             let feed = self.feedAtIndexPath(indexPath)
-            self.dataRepository.deleteFeed(feed)
+            self.dataWriter.deleteFeed(feed)
             self.reload(nil)
         })
 
         let readTitle = NSLocalizedString("Mark\nRead", comment: "")
         let markRead = UITableViewRowAction(style: .Normal, title: readTitle, handler: {_, indexPath in
             let feed = self.feedAtIndexPath(indexPath)
-            self.dataRepository.markFeedAsRead(feed)
+            self.dataWriter.markFeedAsRead(feed)
             self.reload(nil)
         })
 
@@ -244,7 +249,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
     // MARK - Private/Internal
 
     private func reload(tag: String?) {
-        dataRepository.feedsMatchingTag(tag) {feeds in
+        dataRetriever.feedsMatchingTag(tag) {feeds in
             self.feeds = feeds.sort {(f1: Feed, f2: Feed) in
                 let f1Unread = f1.unreadArticles().count
                 let f2Unread = f2.unreadArticles().count
@@ -286,7 +291,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
 
     internal func showFeeds(feeds: [Feed], animated: Bool) -> ArticleListController {
         let al = ArticleListController(style: .Plain)
-        al.dataWriter = dataRepository
+        al.dataWriter = dataWriter
         al.feeds = feeds
         self.navigationController?.pushViewController(al, animated: animated)
         return al

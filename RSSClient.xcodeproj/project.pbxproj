@@ -35,7 +35,7 @@
 		894304241B45089A000078DC /* rNewsKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 894304231B45089A000078DC /* rNewsKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8943042B1B45089A000078DC /* rNewsKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 894304211B45089A000078DC /* rNewsKit.framework */; };
 		894304361B45089B000078DC /* rNewsKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 894304211B45089A000078DC /* rNewsKit.framework */; };
-		894304371B45089B000078DC /* rNewsKit.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 894304211B45089A000078DC /* rNewsKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		894304371B45089B000078DC /* rNewsKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 894304211B45089A000078DC /* rNewsKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		894304411B450A00000078DC /* OPMLManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A3417E1B150D1B0000C60B /* OPMLManager.swift */; };
 		894304431B450A00000078DC /* DataRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48CA1B425F8C0097045A /* DataRepository.swift */; };
 		894304441B450A00000078DC /* DataUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890E47581AA19D69007F217C /* DataUtility.swift */; };
@@ -64,7 +64,7 @@
 		8967DA061A4092A6000424F4 /* ArticlesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8967DA051A4092A6000424F4 /* ArticlesList.swift */; };
 		8967DA081A409433000424F4 /* ArticleListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8967DA071A409433000424F4 /* ArticleListView.swift */; };
 		89718F2A1AE0C942004C3CB4 /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F271AE0C942004C3CB4 /* Ra.framework */; };
-		89718F2D1AE0C9A1004C3CB4 /* Ra.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F271AE0C942004C3CB4 /* Ra.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		89718F2D1AE0C9A1004C3CB4 /* Ra.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F271AE0C942004C3CB4 /* Ra.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89718F301AE0C9B4004C3CB4 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; };
 		89718F311AE0C9B4004C3CB4 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2F1AE0C9B4004C3CB4 /* Quick.framework */; };
 		89718F331AE0C9D6004C3CB4 /* Nimble.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -77,7 +77,7 @@
 		898046D51A1C385A00EB29F0 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898046D41A1C385A00EB29F0 /* MainController.swift */; };
 		898047641A206CB100EB29F0 /* FeedsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898047631A206CB100EB29F0 /* FeedsList.swift */; };
 		898131681AF880400090FA7F /* Muon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; };
-		898131691AF880A70090FA7F /* Muon.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		898131691AF880A70090FA7F /* Muon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		898131781AFC877A0090FA7F /* LocalImportViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898131771AFC877A0090FA7F /* LocalImportViewControllerSpec.swift */; };
 		898C48C51B3D98F60097045A /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 898C48C41B3D98F60097045A /* test.jpg */; };
 		898ECDE11B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898ECDE01B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift */; };
@@ -85,7 +85,7 @@
 		898F670E1B0007F4004A7BE3 /* SpecInjectorModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F670D1B0007F4004A7BE3 /* SpecInjectorModule.swift */; };
 		898F6E0A1B128736000D343D /* PureLayout_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898F6E091B128736000D343D /* PureLayout_iOS.framework */; };
 		898F6E0B1B128741000D343D /* PureLayout_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898F6E091B128736000D343D /* PureLayout_iOS.framework */; };
-		898F6E0D1B128751000D343D /* PureLayout_iOS.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 898F6E091B128736000D343D /* PureLayout_iOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		898F6E0D1B128751000D343D /* PureLayout_iOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898F6E091B128736000D343D /* PureLayout_iOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		898F6E121B129AB6000D343D /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F6E111B129AB6000D343D /* ActivityIndicator.swift */; };
 		8997C7F51B248D5A00972930 /* FakeWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C7F41B248D5A00972930 /* FakeWebView.swift */; };
 		8997C7F71B25074900972930 /* ValidatorViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C7F61B25074900972930 /* ValidatorViewSpec.swift */; };
@@ -128,13 +128,13 @@
 		89CB984A1B12C50000C87160 /* ActivityIndicatorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CB98491B12C50000C87160 /* ActivityIndicatorSpec.swift */; };
 		89CB986C1B12CCD700C87160 /* BreakOutToRefresh.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB986A1B12CCD700C87160 /* BreakOutToRefresh.framework */; };
 		89CB986D1B12CCE800C87160 /* BreakOutToRefresh.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB986A1B12CCD700C87160 /* BreakOutToRefresh.framework */; };
-		89CB986E1B12CCE800C87160 /* BreakOutToRefresh.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB986A1B12CCD700C87160 /* BreakOutToRefresh.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		89CB986E1B12CCE800C87160 /* BreakOutToRefresh.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB986A1B12CCD700C87160 /* BreakOutToRefresh.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89CB98931B12DFB100C87160 /* TOBrowserActivityKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB98911B12DFB100C87160 /* TOBrowserActivityKit.framework */; };
 		89CB98941B12DFBA00C87160 /* TOBrowserActivityKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB98911B12DFB100C87160 /* TOBrowserActivityKit.framework */; };
-		89CB98951B12DFBA00C87160 /* TOBrowserActivityKit.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB98911B12DFB100C87160 /* TOBrowserActivityKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		89CB98951B12DFBA00C87160 /* TOBrowserActivityKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB98911B12DFB100C87160 /* TOBrowserActivityKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89CB98B81B12E9C900C87160 /* MAKDropDownMenu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB98B61B12E9C900C87160 /* MAKDropDownMenu.framework */; };
 		89CB98B91B12E9D300C87160 /* MAKDropDownMenu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB98B61B12E9C900C87160 /* MAKDropDownMenu.framework */; };
-		89CB98BA1B12E9D300C87160 /* MAKDropDownMenu.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB98B61B12E9C900C87160 /* MAKDropDownMenu.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		89CB98BA1B12E9D300C87160 /* MAKDropDownMenu.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB98B61B12E9C900C87160 /* MAKDropDownMenu.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89CB98BF1B13947800C87160 /* FeedTableCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */; };
 		89CC81FF1B4615A100648367 /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F271AE0C942004C3CB4 /* Ra.framework */; };
 		89CC82001B46198200648367 /* SearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C61B40D2AC0097045A /* SearchIndex.swift */; };
@@ -152,6 +152,8 @@
 		89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2D1A6613100050685B /* ValidatorView.swift */; };
 		89DBDA9A1A9EBB0C00959AC7 /* feed.rss in Resources */ = {isa = PBXBuildFile; fileRef = 89DBDA991A9EBB0C00959AC7 /* feed.rss */; };
 		89DBDA9C1A9FBCB200959AC7 /* feed2.rss in Resources */ = {isa = PBXBuildFile; fileRef = 89DBDA9B1A9FBC4100959AC7 /* feed2.rss */; };
+		89EA6C361B4B2D8400456892 /* FakeDataReadWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EA6C351B4B2D8400456892 /* FakeDataReadWriter.swift */; };
+		89EA6C371B4B308F00456892 /* OPMLManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C11B3A7CCC0097045A /* OPMLManagerMock.swift */; };
 		89EF4FD81A96852D0052A82F /* test.opml in Resources */ = {isa = PBXBuildFile; fileRef = 89EF4FD71A96852D0052A82F /* test.opml */; };
 		89F516511B1A44D20005AB04 /* Robot.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89F516501B1A44D20005AB04 /* Robot.framework */; };
 		89F516521B1A44EA0005AB04 /* Robot.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 89F516501B1A44D20005AB04 /* Robot.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -189,21 +191,21 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		8933E92219ECD20600ECFF3F /* Copy Frameworks */ = {
+		8933E92219ECD20600ECFF3F /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				898F6E0D1B128751000D343D /* PureLayout_iOS.framework in Copy Frameworks */,
-				898131691AF880A70090FA7F /* Muon.framework in Copy Frameworks */,
-				894304371B45089B000078DC /* rNewsKit.framework in Copy Frameworks */,
-				89CB986E1B12CCE800C87160 /* BreakOutToRefresh.framework in Copy Frameworks */,
-				89CB98951B12DFBA00C87160 /* TOBrowserActivityKit.framework in Copy Frameworks */,
-				89718F2D1AE0C9A1004C3CB4 /* Ra.framework in Copy Frameworks */,
-				89CB98BA1B12E9D300C87160 /* MAKDropDownMenu.framework in Copy Frameworks */,
+				898F6E0D1B128751000D343D /* PureLayout_iOS.framework in Embed Frameworks */,
+				898131691AF880A70090FA7F /* Muon.framework in Embed Frameworks */,
+				894304371B45089B000078DC /* rNewsKit.framework in Embed Frameworks */,
+				89CB986E1B12CCE800C87160 /* BreakOutToRefresh.framework in Embed Frameworks */,
+				89CB98951B12DFBA00C87160 /* TOBrowserActivityKit.framework in Embed Frameworks */,
+				89718F2D1AE0C9A1004C3CB4 /* Ra.framework in Embed Frameworks */,
+				89CB98BA1B12E9D300C87160 /* MAKDropDownMenu.framework in Embed Frameworks */,
 			);
-			name = "Copy Frameworks";
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		8935F5D11B462720000FFD5D /* Embed Frameworks */ = {
@@ -386,6 +388,7 @@
 		89DA7D2D1A6613100050685B /* ValidatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidatorView.swift; sourceTree = "<group>"; };
 		89DBDA991A9EBB0C00959AC7 /* feed.rss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = feed.rss; sourceTree = "<group>"; };
 		89DBDA9B1A9FBC4100959AC7 /* feed2.rss */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = feed2.rss; sourceTree = "<group>"; };
+		89EA6C351B4B2D8400456892 /* FakeDataReadWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDataReadWriter.swift; sourceTree = "<group>"; };
 		89EF4FD51A9682170052A82F /* OPMLParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OPMLParserSpec.swift; path = ../RSSClientTests/OPMLParserSpec.swift; sourceTree = "<group>"; };
 		89EF4FD71A96852D0052A82F /* test.opml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = test.opml; sourceTree = "<group>"; };
 		89F516501B1A44D20005AB04 /* Robot.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Robot.framework; path = Carthage/Build/iOS/Robot.framework; sourceTree = SOURCE_ROOT; };
@@ -880,6 +883,7 @@
 				899823B01B30BA7E00818755 /* NSUserActivity+rNewsTests.m */,
 				89D970B91B35BF6400ED84B8 /* WKWebView+rNewsTests.h */,
 				89D970BA1B35BF6500ED84B8 /* WKWebView+rNewsTests.m */,
+				89EA6C351B4B2D8400456892 /* FakeDataReadWriter.swift */,
 			);
 			name = Mocks;
 			sourceTree = "<group>";
@@ -961,7 +965,7 @@
 				89C8306F19D730E9009924DA /* Sources */,
 				89C8307019D730E9009924DA /* Frameworks */,
 				89C8307119D730E9009924DA /* Resources */,
-				8933E92219ECD20600ECFF3F /* Copy Frameworks */,
+				8933E92219ECD20600ECFF3F /* Embed Frameworks */,
 				89CB98C01B13A0ED00C87160 /* Lint */,
 			);
 			buildRules = (
@@ -1230,6 +1234,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8997C7FB1B25169E00972930 /* TextFieldCellSpec.swift in Sources */,
+				89EA6C361B4B2D8400456892 /* FakeDataReadWriter.swift in Sources */,
 				8997C7F51B248D5A00972930 /* FakeWebView.swift in Sources */,
 				89CB98BF1B13947800C87160 /* FeedTableCellSpec.swift in Sources */,
 				8997C7F71B25074900972930 /* ValidatorViewSpec.swift in Sources */,
@@ -1241,6 +1246,7 @@
 				89F517021B1C070C0005AB04 /* FeedViewControllerSpec.swift in Sources */,
 				898ECDE11B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift in Sources */,
 				89F516FD1B1BA1960005AB04 /* UITableViewRowAction+Spec.m in Sources */,
+				89EA6C371B4B308F00456892 /* OPMLManagerMock.swift in Sources */,
 				899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */,
 				89D970BB1B35BF6500ED84B8 /* WKWebView+rNewsTests.m in Sources */,
 				89C204C21A73FEDA00C792D2 /* SplitDelegateSpec.swift in Sources */,

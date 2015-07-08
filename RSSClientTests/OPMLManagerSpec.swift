@@ -19,7 +19,7 @@ class OPMLManagerSpec: QuickSpec {
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
 
-            dataRepository = FakeDataRepository(objectContext: managedObjectContext(), mainQueue: mainQueue, backgroundQueue: importQueue, opmlManager: OPMLManagerMock(), urlSession: FakeURLSession(), searchIndex: nil)
+            dataRepository = FakeDataRepository(objectContext: managedObjectContext(), mainQueue: mainQueue, backgroundQueue: importQueue, urlSession: FakeURLSession(), searchIndex: nil)
 
             let injector = Injector()
             injector.bind(kMainQueue, to: mainQueue)

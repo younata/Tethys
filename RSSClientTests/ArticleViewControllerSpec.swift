@@ -4,18 +4,20 @@ import Ra
 import rNews
 import TOBrowserActivityKit
 import WebKit
+import rNewsKit
 
 class ArticleViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: ArticleViewController! = nil
         var injector: Injector! = nil
         var navigationController: UINavigationController! = nil
-        var dataManager: DataManagerMock! = nil
+        var dataWriter: FakeDataReadWriter! = nil
 
         beforeEach {
             injector = Injector()
-            dataManager = DataManagerMock()
-            injector.bind(DataManager.self, to: dataManager)
+
+            dataWriter = FakeDataReadWriter()
+            injector.bind(DataWriter.self, to: dataWriter)
 
             subject = injector.create(ArticleViewController.self) as! ArticleViewController
 
@@ -114,7 +116,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
             it("should mark the article as read") {
                 expect(article.read).to(beTruthy())
-                expect(dataManager.lastArticleMarkedRead).to(equal(article))
+                expect(dataWriter.lastArticleMarkedRead).to(equal(article))
             }
 
             it("should update the user activity") {

@@ -3,6 +3,7 @@ import Nimble
 import Ra
 import Muon
 import rNews
+import rNewsKit
 
 private func createOPMLWithFeeds(feeds: [(url: String, title: String)], location: String) {
     var opml = "<opml><body>"
@@ -49,18 +50,23 @@ class LocalImportViewControllerSpec: QuickSpec {
 
         var tableView : UITableView! = nil
 
-        var dataManager: DataManagerMock! = nil
+        var dataReadWriter: FakeDataReadWriter! = nil
         var opmlManager: OPMLManagerMock! = nil
         var backgroundQueue : FakeOperationQueue! = nil
 
         beforeEach {
             injector = Ra.Injector(module: SpecInjectorModule())
-            dataManager = DataManagerMock()
-            injector.bind(DataManager.self, to: dataManager)
+
+            dataReadWriter = FakeDataReadWriter()
+            injector.bind(DataRetriever.self, to: dataReadWriter)
+            injector.bind(DataWriter.self, to: dataReadWriter)
+
             opmlManager = OPMLManagerMock()
             injector.bind(OPMLManager.self, to: opmlManager)
+
             backgroundQueue = injector.create(kBackgroundQueue) as! FakeOperationQueue
             backgroundQueue.runSynchronously = true
+
             subject = injector.create(LocalImportViewController.self) as! LocalImportViewController
 
             navigationController = UINavigationController(rootViewController: subject)
@@ -228,12 +234,12 @@ class LocalImportViewControllerSpec: QuickSpec {
                     }
 
                     it("should import the feed") {
-                        expect(dataManager.newFeedURL).to(equal("http://example.com/feed"))
+                        expect(dataReadWriter.didUpdateFeeds).to(beTruthy())
                     }
 
                     describe("when it's done importing the feeds") {
                         beforeEach {
-                            dataManager.newFeedCompletion(nil)
+                            dataReadWriter.updateFeedsCompletion([], [])
                         }
 
                         it("should remove the activity indicator") {

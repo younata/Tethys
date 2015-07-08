@@ -1,5 +1,6 @@
 import UIKit
 import WebKit
+import rNewsKit
 
 public class ArticleCell: UITableViewCell, UITextViewDelegate {
     public var article: Article? {

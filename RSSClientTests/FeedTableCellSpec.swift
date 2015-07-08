@@ -2,6 +2,7 @@ import Quick
 import Nimble
 import UIKit
 import rNews
+import rNewsKit
 
 class FeedTableCellConfiguration : QuickConfiguration {
     override class func configure(configuration: Configuration) {
@@ -34,7 +35,7 @@ class FeedTableCellSpec: QuickSpec {
             context("with a feed that has no unread articles") {
                 beforeEach {
                     feed = Feed(title: "Hello", url: nil, summary: "World", query: nil, tags: [],
-                        waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+                        waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     subject.feed = feed
                 }
 
@@ -57,7 +58,7 @@ class FeedTableCellSpec: QuickSpec {
                         published: NSDate(), updatedAt: nil, identifier: "", content: "",
                         read: false, feed: nil, flags: [], enclosures: [])
                     feed = Feed(title: "Hello", url: nil, summary: "World", query: nil, tags: [],
-                        waitPeriod: nil, remainingWait: nil, articles: [article1, article2], image: nil)
+                        waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
                     subject.feed = feed
                 }
                 itBehavesLike("a standard feed cell") {
@@ -76,7 +77,7 @@ class FeedTableCellSpec: QuickSpec {
                     let data = NSData(contentsOfURL: NSURL(string: "https://avatars3.githubusercontent.com/u/285321?v=3&s=40")!)!
                     image = UIImage(data: data)
                     feed = Feed(title: "Hello", url: nil, summary: "World", query: nil, tags: [],
-                        waitPeriod: nil, remainingWait: nil, articles: [], image: image)
+                        waitPeriod: 0, remainingWait: 0, articles: [], image: image)
                     subject.feed = feed
                 }
 
@@ -98,7 +99,7 @@ class FeedTableCellSpec: QuickSpec {
             context("with a feed that doesn't have an image") {
                 beforeEach {
                     feed = Feed(title: "Hello", url: nil, summary: "World", query: nil, tags: [],
-                        waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+                        waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     subject.feed = feed
                 }
 

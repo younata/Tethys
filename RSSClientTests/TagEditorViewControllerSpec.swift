@@ -3,27 +3,28 @@ import Nimble
 import Ra
 import rNews
 import Robot
+import rNewsKit
 
 class TagEditorViewControllerSpec: QuickSpec {
     override func spec() {
         var injector: Injector! = nil
-        var dataManager = DataManagerMock()
+        var dataRetriever = FakeDataReadWriter()
         var subject: TagEditorViewController! = nil
         var navigationController: UINavigationController! = nil
         let rootViewController = UIViewController()
 
-        var feed = Feed(title: "title", url: NSURL(string: ""), summary: "", query: nil, tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+        var feed = Feed(title: "title", url: NSURL(string: ""), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
         beforeEach {
             injector = Injector()
-            dataManager = DataManagerMock()
-            injector.bind(DataManager.self, to: dataManager)
+            dataRetriever = FakeDataReadWriter()
+            injector.bind(DataRetriever.self, to: dataRetriever)
 
             subject = injector.create(TagEditorViewController.self) as! TagEditorViewController
             navigationController = UINavigationController(rootViewController: rootViewController)
             navigationController.pushViewController(subject, animated: false)
 
-            feed = Feed(title: "title", url: NSURL(string: ""), summary: "", query: nil, tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+            feed = Feed(title: "title", url: NSURL(string: ""), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
             subject.feed = feed
 
             subject.view.layoutIfNeeded()
@@ -46,8 +47,8 @@ class TagEditorViewControllerSpec: QuickSpec {
                 }
 
                 it("should save the feed, with the added tag") {
-                    let newFeed = Feed(title: "title", url: NSURL(string: ""), summary: "", query: nil, tags: ["a"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
-                    expect(dataManager.lastSavedFeed).to(equal(newFeed))
+                    let newFeed = Feed(title: "title", url: NSURL(string: ""), summary: "", query: nil, tags: ["a"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    expect(dataRetriever.lastSavedFeed).to(equal(newFeed))
                 }
 
                 it("should pop the navigation controller") {

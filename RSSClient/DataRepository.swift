@@ -31,17 +31,15 @@ internal class DataRepository: DataRetriever, DataWriter {
     private let objectContext: NSManagedObjectContext
     private let mainQueue: NSOperationQueue
     private let backgroundQueue: NSOperationQueue
-    private let opmlManager: OPMLManager
     private let urlSession: NSURLSession
 
     private let searchIndex: SearchIndex?
 
     internal init(objectContext: NSManagedObjectContext, mainQueue: NSOperationQueue, backgroundQueue: NSOperationQueue,
-                  opmlManager: OPMLManager, urlSession: NSURLSession, searchIndex: SearchIndex?) {
+                  urlSession: NSURLSession, searchIndex: SearchIndex?) {
         self.objectContext = objectContext
         self.mainQueue = mainQueue
         self.backgroundQueue = backgroundQueue
-        self.opmlManager = opmlManager
         self.urlSession = urlSession
         self.searchIndex = searchIndex
     }
@@ -143,7 +141,6 @@ internal class DataRepository: DataRetriever, DataWriter {
                     }
                 }
             }
-            self.opmlManager.writeOPML()
         }
     }
 

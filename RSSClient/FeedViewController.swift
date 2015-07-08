@@ -1,8 +1,9 @@
 import UIKit
 import Muon
+import rNewsKit
 
 public class FeedViewController: UITableViewController {
-    public var feed: Feed? = nil {
+    public var feed: rNewsKit.Feed? = nil {
         didSet {
             self.navigationItem.title = self.feed?.title ?? ""
             self.tableView.reloadData()

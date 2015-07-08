@@ -1,10 +1,15 @@
 import UIKit
 import Ra
+import rNewsKit
 
 public class NotificationHandler: NSObject {
 
-    private lazy var dataRepository: DataRepository? = {
-        return self.injector?.create(DataRepository.self) as? DataRepository
+    private lazy var dataRetriever: DataRetriever? = {
+        return self.injector?.create(DataRetriever.self) as? DataRetriever
+    }()
+
+    private lazy var dataWriter: DataWriter? = {
+        return self.injector?.create(DataWriter.self) as? DataWriter
     }()
 
     public func enableNotifications(var notificationSource: LocalNotificationSource) {
@@ -40,7 +45,7 @@ public class NotificationHandler: NSObject {
         if let userInfo = notification.userInfo where identifier == "read" {
             self.feedAndArticleFromUserInfo(userInfo) {_, article in
                 if let article = article {
-                    self.dataRepository?.markArticle(article, asRead: true)
+                    self.dataWriter?.markArticle(article, asRead: true)
                 }
             }
         }
@@ -62,13 +67,13 @@ public class NotificationHandler: NSObject {
     }
 
     private func feedAndArticleFromUserInfo(userInfo: [NSObject : AnyObject], callback: (Feed?, Article?) -> (Void)) {
-        guard let _ = self.dataRepository,
+        guard let _ = self.dataRetriever,
               let feedID = userInfo["feed"] as? String,
               let articleID = userInfo["article"] as? String else {
                 callback(nil, nil)
                 return
         }
-        self.dataRepository?.feeds {feeds in
+        self.dataRetriever?.feeds {feeds in
             let feed = feeds.filter({ $0.identifier == feedID }).first
             let article = feed?.articles.filter({ $0.identifier == articleID }).first
             callback(feed, article)

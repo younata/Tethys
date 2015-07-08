@@ -3,18 +3,19 @@ import Nimble
 import rNews
 import Ra
 import Robot
+import rNewsKit
 
 class FeedViewControllerSpec: QuickSpec {
     override func spec() {
         var feed = Feed(title: "title", url: NSURL(string: "http://example.com/feed"), summary: "summary", query: nil,
-            tags: ["a", "b", "c"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+            tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
         let otherFeed = Feed(title: "", url: NSURL(string: "http://example.com/feed"), summary: "", query: nil,
-            tags: ["a", "b", "c"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+            tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
         var navigationController: UINavigationController!
         var subject: FeedViewController! = nil
         var injector: Injector! = nil
-        var dataManager: DataManagerMock! = nil
+        var dataReadWriter: FakeDataReadWriter! = nil
 
         var urlSession: FakeURLSession! = nil
         var backgroundQueue: FakeOperationQueue! = nil
@@ -31,8 +32,9 @@ class FeedViewControllerSpec: QuickSpec {
             backgroundQueue.runSynchronously = true
             injector.bind(kBackgroundQueue, to: backgroundQueue)
 
-            dataManager = DataManagerMock()
-            injector.bind(DataManager.self, to: dataManager)
+            dataReadWriter = FakeDataReadWriter()
+            injector.bind(DataRetriever.self, to: dataReadWriter)
+            injector.bind(DataWriter.self, to: dataReadWriter)
 
             subject = injector.create(FeedViewController.self) as! FeedViewController
 
@@ -45,7 +47,7 @@ class FeedViewControllerSpec: QuickSpec {
             presentingController.presentViewController(navigationController, animated: false, completion: nil)
 
             feed = Feed(title: "title", url: NSURL(string: "http://example.com/feed"), summary: "summary", query: nil,
-                tags: ["a", "b", "c"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+                tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             subject.feed = feed
 
@@ -64,7 +66,7 @@ class FeedViewControllerSpec: QuickSpec {
             }
 
             it("should save the changes to the dataManager") {
-                expect(dataManager.lastSavedFeed).to(equal(feed))
+                expect(dataReadWriter.lastSavedFeed).to(equal(feed))
             }
 
             it("should dismiss itself") {
@@ -128,7 +130,7 @@ class FeedViewControllerSpec: QuickSpec {
                     context("when the feed has a tag that starts with '~'") {
                         beforeEach {
                             subject.feed = Feed(title: "a title", url: NSURL(string: ""), summary: "", query: nil,
-                                tags: ["~custom title"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+                                tags: ["~custom title"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                             subject.view.layoutIfNeeded()
                             RBTimeLapse.advanceMainRunLoop()
 
@@ -260,7 +262,7 @@ class FeedViewControllerSpec: QuickSpec {
                 context("when the feed has a tag that starts with '`'") {
                     beforeEach {
                         subject.feed = Feed(title: "a title", url: NSURL(string: ""), summary: "a summary", query: nil,
-                            tags: ["`custom summary"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+                            tags: ["`custom summary"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                         subject.view.layoutIfNeeded()
                         RBTimeLapse.advanceMainRunLoop()
 

@@ -1,4 +1,5 @@
 import UIKit
+import rNewsKit
 
 public class QueryFeedViewController: UITableViewController {
 
@@ -32,8 +33,12 @@ public class QueryFeedViewController: UITableViewController {
         }
     }
 
-    private lazy var dataRepository: DataRepository = {
-        return self.injector!.create(DataRepository.self) as! DataRepository
+    private lazy var dataWriter: DataWriter? = {
+        return self.injector?.create(DataWriter.self) as? DataWriter
+    }()
+
+    private lazy var dataRetriever: DataRetriever? = {
+        return self.injector?.create(DataRetriever.self) as? DataRetriever
     }()
 
     public override func viewDidLoad() {
@@ -67,7 +72,7 @@ public class QueryFeedViewController: UITableViewController {
 
     func save() {
         if let feed = self.feed {
-            dataRepository.saveFeed(feed)
+            dataWriter?.saveFeed(feed)
         }
         dismiss()
     }
@@ -219,7 +224,7 @@ public class QueryFeedViewController: UITableViewController {
             let preview = UITableViewRowAction(style: .Normal, title: previewTitle, handler: {(_, _) in
                 let articleList = ArticleListController(style: .Plain)
                 articleList.previewMode = true
-                self.dataRepository.articlesMatchingQuery(self.feed?.query ?? "") {articles in
+                self.dataRetriever?.articlesMatchingQuery(self.feed?.query ?? "") {articles in
                     articleList.articles = articles
                 }
                 self.navigationController?.pushViewController(articleList, animated: true)

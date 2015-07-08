@@ -1,4 +1,5 @@
 import UIKit
+import rNewsKit
 
 public class TagEditorViewController: UIViewController {
 
@@ -12,8 +13,12 @@ public class TagEditorViewController: UIViewController {
             self.navigationItem.rightBarButtonItem?.enabled = self.feed != nil && tag != nil
         }
     }
-    private lazy var dataRepository: DataRepository? = {
-        self.injector?.create(DataRepository.self) as? DataRepository
+    private lazy var dataWriter: DataWriter? = {
+        self.injector?.create(DataWriter.self) as? DataWriter
+    }()
+
+    private lazy var dataRetriever: DataRetriever? = {
+        self.injector?.create(DataRetriever.self) as? DataRetriever
     }()
 
     public override func viewDidLoad() {
@@ -28,7 +33,7 @@ public class TagEditorViewController: UIViewController {
         self.navigationItem.title = self.feed?.title ?? ""
 
         tagPicker.translatesAutoresizingMaskIntoConstraints = false
-        dataRepository?.allTags { tags in
+        dataRetriever?.allTags { tags in
             self.tagPicker.configureWithTags(tags) {
                 self.tag = $0
             }
@@ -52,7 +57,7 @@ public class TagEditorViewController: UIViewController {
     func save() {
         if let feed = self.feed, let tag = tag {
             feed.addTag(tag)
-            self.dataRepository?.saveFeed(feed)
+            self.dataWriter?.saveFeed(feed)
             self.feed = feed
         }
 

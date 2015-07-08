@@ -1,5 +1,6 @@
 import UIKit
 import Ra
+import rNewsKit
 
 @UIApplicationMain
 public class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -11,10 +12,10 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         return window
     }()
 
-    private lazy var injectorModule: InjectorModule = InjectorModule()
-
     public lazy var anInjector: Ra.Injector = {
-        return Ra.Injector(module: self.injectorModule)
+        let appModule = InjectorModule()
+        let kitModule = KitModule()
+        return Ra.Injector(module: appModule, kitModule)
     }()
 
     lazy var dataRetriever: DataRetriever? = {

@@ -1,6 +1,7 @@
 import UIKit
 import WebKit
 import Muon
+import rNewsKit
 
 public class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFieldDelegate {
     public lazy var webContent = WKWebView(forAutoLayout: ())
@@ -19,8 +20,8 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
     var feeds: [String] = []
 
-    lazy var dataManager: DataManager? = {
-        return self.injector!.create(DataManager.self) as? DataManager
+    lazy var dataWriter: DataWriter? = {
+        return self.injector!.create(DataWriter.self) as? DataWriter
     }()
 
     lazy var opmlManager: OPMLManager? = {
@@ -136,14 +137,15 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
                 self.dismiss()
             }
         } else {
-            dataManager?.newFeed(link) {(error) in
-                if let err = error {
-                    print("\(err)")
+            dataWriter?.newFeed {newFeed in
+                newFeed.url = NSURL(string: link)
+                self.dataWriter?.saveFeed(newFeed)
+                self.dataWriter?.updateFeeds {_ in
+                    indicator.removeFromSuperview()
+                    self.navigationController?.toolbarHidden = false
+                    self.navigationController?.navigationBarHidden = false
+                    self.dismiss()
                 }
-                indicator.removeFromSuperview()
-                self.navigationController?.toolbarHidden = false
-                self.navigationController?.navigationBarHidden = false
-                self.dismiss()
             }
         }
     }

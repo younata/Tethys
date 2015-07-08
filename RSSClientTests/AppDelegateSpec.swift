@@ -2,6 +2,7 @@ import Quick
 import Nimble
 import Ra
 import rNews
+import rNewsKit
 
 private class FakeNotificationHandler: NotificationHandler {
     private var didEnableNotifications = false
@@ -37,7 +38,7 @@ class AppDelegateSpec: QuickSpec {
         let application = UIApplication.sharedApplication()
         var injector : Ra.Injector! = nil
 
-        var dataManager: DataManagerMock! = nil
+        var dataReadWriter: FakeDataReadWriter! = nil
 
         var notificationHandler: FakeNotificationHandler! = nil
         var backgroundFetchHandler: FakeBackgroundFetchHandler! = nil
@@ -46,9 +47,12 @@ class AppDelegateSpec: QuickSpec {
             subject = AppDelegate()
 
             injector = Ra.Injector()
-            dataManager = DataManagerMock()
-            injector.bind(DataManager.self, to: dataManager)
-            injector.bind(kBackgroundManagedObjectContext, to: dataManager.backgroundObjectContext)
+
+            dataReadWriter = FakeDataReadWriter()
+            injector.bind(DataRetriever.self, to: dataReadWriter)
+            injector.bind(DataWriter.self, to: dataReadWriter)
+
+//            injector.bind(kBackgroundManagedObjectContext, to: dataReadWriter.backgroundObjectContext)
 
             notificationHandler = FakeNotificationHandler()
             injector.bind(NotificationHandler.self, to: notificationHandler)
@@ -160,10 +164,10 @@ class AppDelegateSpec: QuickSpec {
             var responderArray: [UIResponder] = []
             var article: Article! = nil
             beforeEach {
-                let feed = Feed(title: "title", url: nil, summary: "", query: nil, tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil, identifier: "feed")
+                let feed = Feed(title: "title", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
                 article = Article(title: "title", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, feed: feed, flags: [], enclosures: [])
                 feed.addArticle(article)
-                dataManager.feedsList = [feed]
+                dataReadWriter.feedsList = [feed]
                 let activity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
                 activity.userInfo = [
                     "feed": "feed",

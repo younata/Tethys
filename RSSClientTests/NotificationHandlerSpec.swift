@@ -3,11 +3,12 @@ import Nimble
 import rNews
 import UIKit
 import Ra
+import rNewsKit
 
 class NotificationHandlerSpec: QuickSpec {
     override func spec() {
         var injector: Injector! = nil
-        var dataManager: DataManagerMock! = nil
+        var dataReadWriter: FakeDataReadWriter! = nil
 
         var notificationSource: FakeNotificationSource! = nil
 
@@ -15,8 +16,10 @@ class NotificationHandlerSpec: QuickSpec {
 
         beforeEach {
             injector = Injector()
-            dataManager = DataManagerMock()
-            injector.bind(DataManager.self, to: dataManager)
+
+            dataReadWriter = FakeDataReadWriter()
+            injector.bind(DataRetriever.self, to: dataReadWriter)
+            injector.bind(DataWriter.self, to: dataReadWriter)
 
             subject = injector.create(NotificationHandler.self) as! NotificationHandler
 
@@ -65,11 +68,11 @@ class NotificationHandlerSpec: QuickSpec {
                 navController = UINavigationController(rootViewController: injector.create(FeedsTableViewController.self) as! UIViewController)
                 splitVC.viewControllers = [navController]
 
-                let feed = Feed(title: "feedTitle", url: nil, summary: "", query: "", tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil, identifier: "feedIdentifier")
+                let feed = Feed(title: "feedTitle", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")
                 article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, feed: feed, flags: [], enclosures: [])
                 feed.addArticle(article)
 
-                dataManager.feedsList = [feed]
+                dataReadWriter.feedsList = [feed]
 
                 window = UIWindow()
                 window.rootViewController = splitVC
@@ -88,11 +91,11 @@ class NotificationHandlerSpec: QuickSpec {
         describe("handling actions") {
             var article: Article! = nil
             beforeEach {
-                let feed = Feed(title: "feedTitle", url: nil, summary: "", query: "", tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil, identifier: "feedIdentifier")
+                let feed = Feed(title: "feedTitle", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")
                 article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, feed: feed, flags: [], enclosures: [])
                 feed.addArticle(article)
 
-                dataManager.feedsList = [feed]
+                dataReadWriter.feedsList = [feed]
             }
 
             describe("read") {
@@ -105,7 +108,7 @@ class NotificationHandlerSpec: QuickSpec {
 
                 it("should set the article's read value to true") {
                     expect(article.read).to(beTruthy())
-                    expect(dataManager.lastArticleMarkedRead).to(equal(article))
+                    expect(dataReadWriter.lastArticleMarkedRead).to(equal(article))
                 }
             }
         }
@@ -113,11 +116,11 @@ class NotificationHandlerSpec: QuickSpec {
         describe("sending notifications") {
             var article: Article! = nil
             beforeEach {
-                let feed = Feed(title: "feedTitle", url: nil, summary: "", query: "", tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil, identifier: "feedIdentifier")
+                let feed = Feed(title: "feedTitle", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")
                 article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, feed: feed, flags: [], enclosures: [])
                 feed.addArticle(article)
 
-                dataManager.feedsList = [feed]
+                dataReadWriter.feedsList = [feed]
 
                 subject.sendLocalNotification(notificationSource, article: article)
             }

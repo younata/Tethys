@@ -1,5 +1,6 @@
 import UIKit
 import PureLayout_iOS
+import rNewsKit
 
 public class FeedTableCell: UITableViewCell {
     public var feed: Feed? = nil {

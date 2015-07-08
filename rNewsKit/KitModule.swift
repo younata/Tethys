@@ -1,32 +1,54 @@
 import Foundation
 import Ra
+import CoreData
 import CoreSpotlight
 
 internal let kBackgroundManagedObjectContext = "kBackgroundManagedObjectContext"
 
-internal let kMainQueue = "kMainQueue"
-internal let kBackgroundQueue = "kBackgroundQueue"
+public let kMainQueue = "kMainQueue"
+public let kBackgroundQueue = "kBackgroundQueue"
 
-public class InjectorModule : Ra.InjectorModule {
+public class KitModule: NSObject, Ra.InjectorModule {
     public func configureInjector(injector: Injector) {
         // Operation Queues
-        injector.bind(kMainQueue, to: NSOperationQueue.mainQueue())
+        let mainQueue = NSOperationQueue.mainQueue()
+        injector.bind(kMainQueue, to: mainQueue)
+
+        var searchIndex: SearchIndex? = nil
 
         if #available(iOS 9.0, *) {
-            injector.bind(SearchIndex.self, to: CSSearchableIndex.defaultSearchableIndex())
+            searchIndex = CSSearchableIndex.defaultSearchableIndex()
         }
+        injector.bind(SearchIndex.self, to: searchIndex)
 
         let backgroundQueue = NSOperationQueue()
         backgroundQueue.qualityOfService = NSQualityOfService.Utility
+        backgroundQueue.maxConcurrentOperationCount = 1
         injector.bind(kBackgroundQueue, to: backgroundQueue)
 
-        // DataManager
-        if let dataManager = injector.create(DataManager.self) as? DataManager {
-            injector.bind(DataManager.self, to: dataManager)
+        let dataRepository = DataRepository(objectContext: ManagedObjectContext(), mainQueue: mainQueue, backgroundQueue: backgroundQueue, urlSession: NSURLSession.sharedSession(), searchIndex: searchIndex)
 
-            injector.bind(kBackgroundManagedObjectContext, to: dataManager.backgroundObjectContext)
-        }
+        injector.bind(DataRetriever.self, to: dataRepository)
+        injector.bind(DataWriter.self, to: dataRepository)
     }
 
-    public init() {}
+    private func ManagedObjectContext() -> NSManagedObjectContext {
+        let modelURL = NSBundle(forClass: self.classForCoder).URLForResource("RSSClient", withExtension: "momd")!
+        let managedObjectModel = NSManagedObjectModel(contentsOfURL: modelURL)!
+
+        let storeURL = NSURL.fileURLWithPath(documentsDirectory().stringByAppendingPathComponent("RSSClient.sqlite"))
+        let persistentStore = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
+        let options: [String: AnyObject] = [NSMigratePersistentStoresAutomaticallyOption: true,
+            NSInferMappingModelAutomaticallyOption: true]
+        do {
+            try persistentStore.addPersistentStoreWithType(NSSQLiteStoreType,
+                configuration: managedObjectModel.configurations.last,
+                URL: storeURL, options: options)
+        } catch {
+            fatalError()
+        }
+        let ctx = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+        ctx.persistentStoreCoordinator = persistentStore
+        return ctx
+    }
 }

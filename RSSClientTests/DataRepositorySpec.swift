@@ -27,8 +27,6 @@ class FeedRepositorySpec: QuickSpec {
 
         var searchIndex: FakeSearchIndex? = nil
 
-        var opmlManager: OPMLManagerMock! = nil
-
         var urlSession: FakeURLSession! = nil
 
         beforeEach {
@@ -71,8 +69,7 @@ class FeedRepositorySpec: QuickSpec {
 
             mainQueue = FakeOperationQueue()
             backgroundQueue = FakeOperationQueue()
-            opmlManager = OPMLManagerMock()
-            subject = DataRepository(objectContext: moc, mainQueue: mainQueue, backgroundQueue: backgroundQueue, opmlManager: opmlManager, urlSession: urlSession, searchIndex: searchIndex)
+            subject = DataRepository(objectContext: moc, mainQueue: mainQueue, backgroundQueue: backgroundQueue, urlSession: urlSession, searchIndex: searchIndex)
         }
 
         describe("as a DataRetriever") {
@@ -297,10 +294,6 @@ class FeedRepositorySpec: QuickSpec {
                     let articleTitles = articles.map { $0.title }
                     expect(articleTitles).toNot(contain("b"))
                     expect(articleTitles).toNot(contain("c"))
-                }
-
-                it("should write a new opml file") {
-                    expect(opmlManager.didReceiveWriteOPML).to(beTruthy())
                 }
 
                 it("should, on iOS 9, remove the articles from the search index") {

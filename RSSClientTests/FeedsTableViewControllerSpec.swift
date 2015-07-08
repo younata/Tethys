@@ -4,12 +4,13 @@ import Ra
 import rNews
 import BreakOutToRefresh
 import Robot
+import rNewsKit
 
 class FeedsTableViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: FeedsTableViewController! = nil
         var injector : Injector? = nil
-        var dataManager: DataManagerMock! = nil
+        var dataReadWriter: FakeDataReadWriter! = nil
         var navigationController: UINavigationController! = nil
         var window: UIWindow? = nil
 
@@ -20,9 +21,12 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
         beforeEach {
             injector = Injector()
-            dataManager = DataManagerMock()
+
+            dataReadWriter = FakeDataReadWriter()
+            injector?.bind(DataRetriever.self, to: dataReadWriter)
+            injector?.bind(DataWriter.self, to: dataReadWriter)
+
             injector?.bind(kBackgroundQueue, to: FakeOperationQueue())
-            injector?.bind(DataManager.self, to: dataManager)
 
             subject = injector?.create(FeedsTableViewController.self) as? FeedsTableViewController
 
@@ -33,13 +37,13 @@ class FeedsTableViewControllerSpec: QuickSpec {
             window?.rootViewController = navigationController
 
             feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "", query: nil,
-                tags: ["a", "b", "c"], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+                tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
             feed2 = Feed(title: "d", url: nil, summary: "", query: "", tags: [],
-                waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+                waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             feeds = [feed1, feed2]
 
-            dataManager.feedsList = feeds
+            dataReadWriter.feedsList = feeds
 
             expect(subject.view).toNot(beNil())
         }
@@ -148,13 +152,13 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
         describe("pull to refresh") {
             beforeEach {
-                expect(dataManager.didUpdateFeeds).to(beFalsy())
+                expect(dataReadWriter.didUpdateFeeds).to(beFalsy())
                 subject.refreshView.beginRefreshing()
                 subject.refreshViewDidRefresh(subject.refreshView)
             }
 
             it("should tell the dataManager to updateFeeds") {
-                expect(dataManager.didUpdateFeeds).to(beTruthy())
+                expect(dataReadWriter.didUpdateFeeds).to(beTruthy())
             }
 
             it("should be refreshing") {
@@ -165,9 +169,9 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 var feed3: Feed! = nil
                 beforeEach {
                     feed3 = Feed(title: "d", url: nil, summary: "", query: "", tags: [],
-                        waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
-                    dataManager.feedsList = feeds + [feed3]
-                    dataManager.updateFeedsCompletion(nil)
+                        waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    dataReadWriter.feedsList = feeds + [feed3]
+                    dataReadWriter.updateFeedsCompletion([], [])
                 }
 
                 it("should end refreshing") {
@@ -183,7 +187,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 var alert: UIAlertController? = nil
                 beforeEach {
                     let error = NSError(domain: "spec", code: 666, userInfo: [NSLocalizedFailureReasonErrorKey: "Bad Connection"])
-                    dataManager.updateFeedsCompletion(error)
+                    dataReadWriter.updateFeedsCompletion([], [error])
                     alert = subject.presentedViewController as? UIAlertController
                 }
 
@@ -272,7 +276,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             }
 
                             it("should delete the feed from the data store") {
-                                expect(dataManager.lastDeletedFeed).to(equal(feed))
+                                expect(dataReadWriter.lastDeletedFeed).to(equal(feed))
                             }
                         }
                     }
@@ -292,7 +296,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             }
 
                             it("should mark all articles of that feed as read") {
-                                expect(dataManager.lastFeedMarkedRead).to(equal(feed))
+                                expect(dataReadWriter.lastFeedMarkedRead).to(equal(feed))
                             }
                         }
                     }

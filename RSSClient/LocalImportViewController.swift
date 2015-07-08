@@ -1,6 +1,7 @@
 import UIKit
 import Ra
 import Muon
+import rNewsKit
 
 public class LocalImportViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
@@ -22,8 +23,8 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
 
     var tableViewTopOffset: NSLayoutConstraint!
 
-    lazy var dataManager: DataManager? = {
-        return self.injector?.create(DataManager.self) as? DataManager
+    lazy var dataWriter: DataWriter? = {
+        return self.injector?.create(DataWriter.self) as? DataWriter
     }()
 
     lazy var opmlManager: OPMLManager? = {
@@ -98,7 +99,7 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
                 opmlParser.cancel()
                 self.reload()
             }
-            opmlParser.callback = {items in
+            opmlParser.success {items in
                 let toAdd = (path, items)
                 self.opmls.append(toAdd)
                 feedParser.cancel()
@@ -162,9 +163,12 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
 
             let activityIndicator = disableInteractionWithMessage(NSLocalizedString("Importing feed", comment: ""))
 
-            let url = feed.link.absoluteString
-            self.dataManager?.newFeed(url) {_ in
-                self.reenableInteractionAndDismiss(activityIndicator)
+            self.dataWriter?.newFeed {newFeed in
+                newFeed.url = feed.link
+                self.dataWriter?.saveFeed(newFeed)
+                self.dataWriter?.updateFeeds {_ in
+                    self.reenableInteractionAndDismiss(activityIndicator)
+                }
             }
         }
     }

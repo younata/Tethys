@@ -2,18 +2,20 @@ import Quick
 import Nimble
 import Ra
 import rNews
+import rNewsKit
 
 class BackgroundFetchHandlerSpec: QuickSpec {
     override func spec() {
         var injector: Injector! = nil
-        var dataManager: DataManagerMock! = nil
+        var dataReadWriter: FakeDataReadWriter! = nil
 
         var subject: BackgroundFetchHandler! = nil
 
         beforeEach {
             injector = Injector()
-            dataManager = DataManagerMock()
-            injector.bind(DataManager.self, to: dataManager)
+            dataReadWriter = FakeDataReadWriter()
+            injector.bind(DataRetriever.self, to: dataReadWriter)
+            injector.bind(DataWriter.self, to: dataReadWriter)
             subject = injector.create(BackgroundFetchHandler.self) as! BackgroundFetchHandler
         }
 
@@ -32,15 +34,15 @@ class BackgroundFetchHandlerSpec: QuickSpec {
             }
 
             it("should make a network request") {
-                expect(dataManager.updateFeedsInBackgroundCalled).to(beTruthy())
+                expect(dataReadWriter.didUpdateFeeds).to(beTruthy())
             }
 
             context("when new articles are found") {
                 var articles: [Article] = []
                 var feeds: [Feed] = []
                 beforeEach {
-                    let feed1 = Feed(title: "a", url: nil, summary: "", query: "", tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
-                    let feed2 = Feed(title: "b", url: nil, summary: "", query: "", tags: [], waitPeriod: nil, remainingWait: nil, articles: [], image: nil)
+                    let feed1 = Feed(title: "a", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feed2 = Feed(title: "b", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                     let article1 = Article(title: "a", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "a", content: "", read: false, feed: feed1, flags: [], enclosures: [])
                     let article2 = Article(title: "b", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "b", content: "", read: false, feed: feed1, flags: [], enclosures: [])
@@ -55,8 +57,8 @@ class BackgroundFetchHandlerSpec: QuickSpec {
                     feeds = [feed1, feed2]
                     articles = [article1, article2, article3, article4]
 
-                    dataManager.feedsList = feeds // TODO: more than 1
-                    dataManager.updateFeedsCompletion(nil)
+                    dataReadWriter.feedsList = feeds // TODO: more than 1
+                    dataReadWriter.updateFeedsCompletion([], [])
                 }
 
                 it("should send local notifications for each new article") {
@@ -70,7 +72,7 @@ class BackgroundFetchHandlerSpec: QuickSpec {
 
             context("when no new articles are found") {
                 beforeEach {
-                    dataManager.updateFeedsCompletion(nil)
+                    dataReadWriter.updateFeedsCompletion([], [])
                 }
 
                 it("should not send any new local notifications") {
@@ -84,7 +86,7 @@ class BackgroundFetchHandlerSpec: QuickSpec {
 
             context("when there is an error updating feeds") {
                 beforeEach {
-                    dataManager.updateFeedsCompletion(NSError(domain: "", code: 0, userInfo: nil))
+                    dataReadWriter.updateFeedsCompletion([], [NSError(domain: "", code: 0, userInfo: nil)])
                 }
 
                 it("should not send any new local notifications") {

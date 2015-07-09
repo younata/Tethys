@@ -8,7 +8,7 @@ import rNewsKit
 class TagEditorViewControllerSpec: QuickSpec {
     override func spec() {
         var injector: Injector! = nil
-        var dataRetriever = FakeDataReadWriter()
+        var dataReadWriter = FakeDataReadWriter()
         var subject: TagEditorViewController! = nil
         var navigationController: UINavigationController! = nil
         let rootViewController = UIViewController()
@@ -17,8 +17,9 @@ class TagEditorViewControllerSpec: QuickSpec {
 
         beforeEach {
             injector = Injector()
-            dataRetriever = FakeDataReadWriter()
-            injector.bind(DataRetriever.self, to: dataRetriever)
+            dataReadWriter = FakeDataReadWriter()
+            injector.bind(DataRetriever.self, to: dataReadWriter)
+            injector.bind(DataWriter.self, to: dataReadWriter)
 
             subject = injector.create(TagEditorViewController.self) as! TagEditorViewController
             navigationController = UINavigationController(rootViewController: rootViewController)
@@ -48,7 +49,7 @@ class TagEditorViewControllerSpec: QuickSpec {
 
                 it("should save the feed, with the added tag") {
                     let newFeed = Feed(title: "title", url: NSURL(string: ""), summary: "", query: nil, tags: ["a"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    expect(dataRetriever.lastSavedFeed).to(equal(newFeed))
+                    expect(dataReadWriter.lastSavedFeed).to(equal(newFeed))
                 }
 
                 it("should pop the navigation controller") {

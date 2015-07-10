@@ -18,10 +18,12 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
     var lookForFeeds: Bool = true
 
-    var feeds: [String] = []
+    private lazy var feedFinder: FeedFinder? = {
+        self.injector?.create(FeedFinder.self) as? FeedFinder
+    }()
 
     lazy var dataWriter: DataWriter? = {
-        return self.injector!.create(DataWriter.self) as? DataWriter
+        return self.injector?.create(DataWriter.self) as? DataWriter
     }()
 
     lazy var opmlManager: OPMLManager? = {
@@ -110,11 +112,11 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         webContent.removeObserver(self, forKeyPath: "estimatedProgress")
     }
 
-    func dismiss() {
+    internal func dismiss() {
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
 
-    func save() {
+    internal func save() {
         if let rl = rssLink {
             save(rl)
         } else {
@@ -122,28 +124,25 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         }
     }
 
-    func save(link: String, opml: Bool = false) {
+    private func save(link: String, opml: Bool = false) {
         // show something to indicate we're doing work...
         let indicator = ActivityIndicator(forAutoLayout: ())
-        self.view.addSubview(indicator)
+        self.navigationController?.view.addSubview(indicator)
+        indicator.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
         let messageTemplate = NSLocalizedString("Loading feed at %@", comment: "")
         let message = NSString.localizedStringWithFormat(messageTemplate, link) as String
         indicator.configureWithMessage(message)
         if opml {
             opmlManager?.importOPML(NSURL(string: link)!) {(_) in
                 indicator.removeFromSuperview()
-                self.navigationController?.toolbarHidden = false
-                self.navigationController?.navigationBarHidden = false
                 self.dismiss()
             }
         } else {
             dataWriter?.newFeed {newFeed in
                 newFeed.url = NSURL(string: link)
                 self.dataWriter?.saveFeed(newFeed)
-                self.dataWriter?.updateFeeds {_ in
+                self.dataWriter?.updateFeeds {_, _ in
                     indicator.removeFromSuperview()
-                    self.navigationController?.toolbarHidden = false
-                    self.navigationController?.navigationBarHidden = false
                     self.dismiss()
                 }
             }
@@ -196,21 +195,13 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         back.enabled = webView.canGoBack
         self.navigationItem.rightBarButtonItem = reload
 
-        if let findFeedsJS = NSBundle.mainBundle().pathForResource("findFeeds", ofType: "js") where lookForFeeds {
-            let discover = try! String(contentsOfFile: findFeedsJS, encoding: NSUTF8StringEncoding)
-            webView.evaluateJavaScript(discover, completionHandler: {res, error in
-                if let str = res as? String {
-                    if (!self.feeds.contains(str)) {
-                        self.rssLink = str
-                        self.addFeedButton.enabled = true
-                    }
-                } else {
-                    self.rssLink = nil
-                }
-                if (error != nil) {
-                    print("Error executing javascript: \(error)")
-                }
-            })
+        guard self.lookForFeeds else {
+            return
+        }
+
+        self.feedFinder?.findUnknownFeedInCurrentWebView(webView) {feedUrl in
+            self.rssLink = feedUrl
+            self.addFeedButton.enabled = feedUrl != nil
         }
     }
 

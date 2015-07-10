@@ -233,25 +233,36 @@ class LocalImportViewControllerSpec: QuickSpec {
                         expect(subject.view.userInteractionEnabled).to(beFalsy())
                     }
 
-                    it("should import the feed") {
-                        expect(dataReadWriter.didUpdateFeeds).to(beTruthy())
+                    it("should create a feed") {
+                        expect(dataReadWriter.didCreateFeed).to(beTruthy())
                     }
 
-                    describe("when it's done importing the feeds") {
+                    describe("after the feed is created") {
                         beforeEach {
-                            dataReadWriter.updateFeedsCompletion([], [])
+                            let feed = rNewsKit.Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                            dataReadWriter.newFeedCallback(feed)
                         }
 
-                        it("should remove the activity indicator") {
-                            expect(subject.view.subviews).toNot(contain(ActivityIndicator.self))
+                        it("should import the feed") {
+                            expect(dataReadWriter.didUpdateFeeds).to(beTruthy())
                         }
 
-                        it("should re-enable user interaction") {
-                            expect(subject.view.userInteractionEnabled).to(beTruthy())
-                        }
+                        describe("when it's done importing the feeds") {
+                            beforeEach {
+                                dataReadWriter.updateFeedsCompletion([], [])
+                            }
 
-                        it("should re-enable the dismiss button") {
-                            expect(subject.navigationItem.leftBarButtonItem?.enabled).to(beTruthy())
+                            it("should remove the activity indicator") {
+                                expect(subject.view.subviews).toNot(contain(ActivityIndicator.self))
+                            }
+
+                            it("should re-enable user interaction") {
+                                expect(subject.view.userInteractionEnabled).to(beTruthy())
+                            }
+
+                            it("should re-enable the dismiss button") {
+                                expect(subject.navigationItem.leftBarButtonItem?.enabled).to(beTruthy())
+                            }
                         }
                     }
                 }

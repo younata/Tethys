@@ -238,7 +238,7 @@ class FeedRepositorySpec: QuickSpec {
                         backgroundQueue.runNextOperation()
                     }
                     
-                    it("should let the caller know... on the main thread") {
+                    fit("should let the caller know... on the main thread") {
                         expect(backgroundQueue.operationCount).to(equal(0))
                         expect(mainQueue.operationCount).to(equal(1))
                         

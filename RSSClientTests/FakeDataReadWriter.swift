@@ -15,7 +15,21 @@ class FakeDataReadWriter : DataRetriever, DataWriter {
     }
 
     func feedsMatchingTag(tag: String?, callback: ([Feed]) -> (Void)) {
-        return callback(feedsList)
+        guard let theTag = tag where !theTag.isEmpty else {
+            return callback(feedsList)
+        }
+
+        let feeds = feedsList.filter {feed in
+            let tags = feed.tags
+            for t in tags {
+                if t.rangeOfString(theTag) != nil {
+                    return true
+                }
+            }
+            return false
+        }
+
+        return callback(feeds)
     }
 
     var articlesList: [Article] = []
@@ -26,7 +40,9 @@ class FakeDataReadWriter : DataRetriever, DataWriter {
     // MARK: DataWriter
 
     var newFeedCallback: (Feed) -> (Void) = {_ in }
+    var didCreateFeed = false
     func newFeed(callback: (Feed) -> (Void)) {
+        didCreateFeed = true
         self.newFeedCallback = callback
     }
 

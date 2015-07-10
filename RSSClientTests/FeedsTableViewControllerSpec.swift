@@ -199,7 +199,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                     if let alert = alert {
                         expect(alert.title).to(equal("Unable to update feeds"))
-                        expect(alert.message).to(equal("Bad Connection"))
+                        expect(alert.message).to(equal(""))
                     }
                 }
 

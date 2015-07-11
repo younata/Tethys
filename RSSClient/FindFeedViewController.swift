@@ -150,7 +150,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
     }
 
     public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?,
-        change: [NSObject : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if (keyPath == "estimatedProgress" && object as? NSObject == webContent) {
             loadingBar.progress = Float(webContent.estimatedProgress)
         }

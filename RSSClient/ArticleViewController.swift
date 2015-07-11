@@ -311,7 +311,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     }
 
     public override func observeValueForKeyPath(keyPath: String?,
-        ofObject object: AnyObject?, change: [NSObject : AnyObject]?,
+        ofObject object: AnyObject?, change: [String : AnyObject]?,
         context: UnsafeMutablePointer<Void>) {
             if (keyPath == "estimatedProgress" && (object as? NSObject) == content) {
                 loadingBar.progress = Float(content.estimatedProgress)

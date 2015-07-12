@@ -48,6 +48,11 @@ class FeedsTableViewControllerSpec: QuickSpec {
             expect(subject.view).toNot(beNil())
         }
 
+        afterEach {
+            window?.hidden = true
+            window = nil
+        }
+
         describe("typing in the searchbar") {
             beforeEach {
                 subject.searchBar.delegate?.searchBar?(subject.searchBar, textDidChange: "a")

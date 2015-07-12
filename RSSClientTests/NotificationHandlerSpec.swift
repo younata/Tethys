@@ -80,6 +80,11 @@ class NotificationHandlerSpec: QuickSpec {
                 subject.handleLocalNotification(note, window: window)
             }
 
+            afterEach {
+                window.hidden = true
+                window = nil
+            }
+
             it("should open the app and show the article") {
                 expect(navController.viewControllers.count).to(equal(2))
                 if let articleController = navController.visibleViewController as? ArticleViewController {

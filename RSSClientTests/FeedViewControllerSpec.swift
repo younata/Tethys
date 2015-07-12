@@ -55,6 +55,11 @@ class FeedViewControllerSpec: QuickSpec {
             RBTimeLapse.advanceMainRunLoop()
         }
 
+        afterEach {
+            window.hidden = true
+            window = nil
+        }
+
         it("should have a save button") {
             expect(subject.navigationItem.rightBarButtonItem?.title).to(equal("Save"))
         }

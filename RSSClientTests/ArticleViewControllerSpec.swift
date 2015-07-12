@@ -156,7 +156,7 @@ class ArticleViewControllerSpec: QuickSpec {
                 }
 
                 afterEach {
-                    window.resignKeyWindow()
+                    window.hidden = true
                     window = nil
                 }
 

@@ -194,11 +194,11 @@ import JavaScriptCore
         tags = feed.tags
         waitPeriod = feed.waitPeriodInt
         remainingWait = feed.remainingWaitInt
-        self.identifier = feed.objectID.URIRepresentation().description
 
         let articlesList = Array(feed.articles)
         image = feed.image as? Image
         feedID = feed.objectID
+        identifier = feedID?.URIRepresentation().absoluteString ?? ""
         super.init()
         articles = articlesList.map { Article(article: $0, feed: self) }
 

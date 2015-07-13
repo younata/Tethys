@@ -3,6 +3,7 @@ import Nimble
 import Ra
 import rNews
 import rNewsKit
+import CoreSpotlight
 
 private class FakeNotificationHandler: NotificationHandler {
     private var didEnableNotifications = false
@@ -52,8 +53,6 @@ class AppDelegateSpec: QuickSpec {
             injector.bind(DataRetriever.self, to: dataReadWriter)
             injector.bind(DataWriter.self, to: dataReadWriter)
 
-//            injector.bind(kBackgroundManagedObjectContext, to: dataReadWriter.backgroundObjectContext)
-
             notificationHandler = FakeNotificationHandler()
             injector.bind(NotificationHandler.self, to: notificationHandler)
 
@@ -68,7 +67,6 @@ class AppDelegateSpec: QuickSpec {
         describe("-application:didFinishLaunchingWithOptions:") {
             beforeEach {
                 subject.application(application, didFinishLaunchingWithOptions: nil)
-                return
             }
 
             it("should enable notifications") {
@@ -163,32 +161,69 @@ class AppDelegateSpec: QuickSpec {
         describe("user activities") {
             var responderArray: [UIResponder] = []
             var article: Article! = nil
+
             beforeEach {
                 let feed = Feed(title: "title", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
                 article = Article(title: "title", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, feed: feed, flags: [], enclosures: [])
                 feed.addArticle(article)
                 dataReadWriter.feedsList = [feed]
-                let activity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
-                activity.userInfo = [
-                    "feed": "feed",
-                    "article": "identifier",
-                ]
                 subject.application(UIApplication.sharedApplication(), didFinishLaunchingWithOptions: nil)
-                expect(subject.application(UIApplication.sharedApplication(), continueUserActivity: activity) {responders in
-                    responderArray = responders as? [UIResponder] ?? []
-                }).to(beTruthy())
             }
 
-            it("should set the responderArray") {
-                expect(responderArray.count).to(equal(1))
-                if let item = responderArray.first {
-                    expect(item).to(beAnInstanceOf(ArticleViewController.self))
+            describe("normal user activities") {
+                beforeEach {
+                    let activity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
+                    activity.userInfo = [
+                        "feed": "feed",
+                        "article": "identifier",
+                    ]
+                    expect(subject.application(UIApplication.sharedApplication(), continueUserActivity: activity) {responders in
+                        responderArray = responders as? [UIResponder] ?? []
+                    }).to(beTruthy())
+                }
+
+                it("should set the responderArray") {
+                    expect(responderArray.count).to(equal(1))
+                    if let item = responderArray.first {
+                        expect(item).to(beAnInstanceOf(ArticleViewController.self))
+                    }
+                }
+
+                it("should show the article") {
+                    if let item = responderArray.first as? ArticleViewController {
+                        expect(item.article).to(equal(article))
+                    }
                 }
             }
 
-            it("should show the article") {
-                if let item = responderArray.first as? ArticleViewController {
-                    expect(item.article).to(equal(article))
+            describe("searchable user activities (iOS 9)") {
+                beforeEach {
+                    if #available(iOS 9.0, *) {
+                        let activity = NSUserActivity(activityType: CSSearchableItemActionType)
+                        activity.userInfo = [CSSearchableItemActivityIdentifier: "identifier"]
+                        expect(subject.application(UIApplication.sharedApplication(), continueUserActivity: activity) {responders in
+                            responderArray = responders as? [UIResponder] ?? []
+                        }).to(beTruthy())
+                    }
+                }
+
+                it("should set the responderArray") {
+                    guard #available(iOS 9.0, *) else {
+                        return
+                    }
+                    expect(responderArray.count).to(equal(1))
+                    if let item = responderArray.first {
+                        expect(item).to(beAnInstanceOf(ArticleViewController.self))
+                    }
+                }
+
+                it("should show the article") {
+                    guard #available(iOS 9.0, *) else {
+                        return
+                    }
+                    if let item = responderArray.first as? ArticleViewController {
+                        expect(item.article).to(equal(article))
+                    }
                 }
             }
         }

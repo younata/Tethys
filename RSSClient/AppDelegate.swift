@@ -1,6 +1,7 @@
 import UIKit
 import Ra
 import rNewsKit
+import CoreSpotlight
 
 @UIApplicationMain
 public class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -83,27 +84,46 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
     public func application(application: UIApplication,
         continueUserActivity userActivity: NSUserActivity,
         restorationHandler: ([AnyObject]?) -> Void) -> Bool {
-            var handled = false
-
             let type = userActivity.activityType
             if type == "com.rachelbrindle.rssclient.article",
                 let splitView = self.window?.rootViewController as? UISplitViewController,
-                let nc = splitView.viewControllers.first as? UINavigationController,
-                let feedsViewController = nc.viewControllers.first as? FeedsTableViewController,
+                let navController = splitView.viewControllers.first as? UINavigationController,
+                let feedsViewController = navController.viewControllers.first as? FeedsTableViewController,
                 let userInfo = userActivity.userInfo,
-                let feedIdentifier = userInfo["feed"] as? String,
-                let articleIdentifier = userInfo["article"] as? String {
+                let feedID = userInfo["feed"] as? String,
+                let articleID = userInfo["article"] as? String {
                     self.dataRetriever?.feeds {feeds in
-                        if let feed = feeds.filter({ return $0.identifier == feedIdentifier }).first,
-                            let article = feed.articles.filter({ $0.identifier == articleIdentifier }).first {
-                                nc.popToRootViewControllerAnimated(false)
+                        if let feed = feeds.filter({ return $0.identifier == feedID }).first,
+                            let article = feed.articles.filter({ $0.identifier == articleID }).first {
+                                navController.popToRootViewControllerAnimated(false)
                                 let al = feedsViewController.showFeeds([feed], animated: false)
                                 restorationHandler([al.showArticle(article)])
                         }
                     }
-                    handled = true
+                    return true
             }
-            return handled
+            if #available(iOS 9.0, *) {
+                if type == CSSearchableItemActionType,
+                    let uniqueID = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String,
+                    let splitView = self.window?.rootViewController as? UISplitViewController,
+                    let navController = splitView.viewControllers.first as? UINavigationController,
+                    let feedsViewController = navController.viewControllers.first as? FeedsTableViewController {
+                        self.dataRetriever?.feeds {feeds in
+                            guard let article = feeds.reduce(Array<Article>(), combine: {articles, feed in
+                                return articles + feed.articles
+                            }).filter({ article in
+                                    return article.identifier == uniqueID
+                            }).first, let feed = article.feed else {
+                                return
+                            }
+                            navController.popToRootViewControllerAnimated(false)
+                            let al = feedsViewController.showFeeds([feed], animated: false)
+                            restorationHandler([al.showArticle(article)])
+                        }
+                        return true
+                }
+            }
+            return false
     }
 
     public func applicationDidEnterBackground(application: UIApplication) {

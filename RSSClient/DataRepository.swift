@@ -2,6 +2,7 @@ import Foundation
 import Ra
 import CoreSpotlight
 import CoreData
+import JavaScriptCore
 import Muon
 #if os(iOS)
     import MobileCoreServices
@@ -90,8 +91,31 @@ internal class DataRepository: DataRetriever, DataWriter {
 
     internal func articlesMatchingQuery(query: String, callback: ([Article]) -> (Void)) {
         allFeedsOnBackgroundQueue { feeds in
+            let articles = feeds.reduce(Array<Article>()) {articles, feed in
+                return articles + feed.articles
+            }
+            let context = JSContext()
+            context.exceptionHandler = { context, exception in
+                print("JS Error: \(exception)")
+            }
+            let script = "var query = function(article) { \(query) }\n" +
+                         "var include = function(articles) {\n" +
+                         "  var ret = [];\n" +
+                         "  for (var i = 0; i < articles.length; i++) {\n" +
+                         "    var article = articles[i];\n" +
+                         "    if (query(article)) { ret.push(article) }\n" +
+                         "  }\n" +
+                         "  return ret\n" +
+                         "}"
+            context.evaluateScript(script)
+            let include = context.objectForKeyedSubscript("include")
+            let res = include.callWithArguments([articles]).toArray()
             self.mainQueue.addOperationWithBlock {
-                callback([])
+                if let matched = res as? [Article] {
+                    callback(matched)
+                } else {
+                    callback([])
+                }
             }
         }
     }

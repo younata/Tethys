@@ -1,29 +1,38 @@
 import Foundation
 import CoreData
+import JavaScriptCore
 
-public class Enclosure: Equatable {
-    public var url: NSURL {
+@objc public protocol EnclosureJSExport: JSExport {
+    var url: NSURL { get set }
+    var kind: String { get set }
+    var data: NSData? { get set }
+    var article: Article? { get set }
+    var downloaded: Bool { get }
+}
+
+@objc public class Enclosure: NSObject, EnclosureJSExport {
+    dynamic public var url: NSURL {
         willSet {
             if newValue != url {
                 self.updated = true
             }
         }
     }
-    public var kind: String {
+    dynamic public var kind: String {
         willSet {
             if newValue != kind {
                 self.updated = true
             }
         }
     }
-    public var data: NSData? {
+    dynamic public var data: NSData? {
         willSet {
             if newValue != data {
                 self.updated = true
             }
         }
     }
-    public var article: Article? {
+    dynamic public var article: Article? {
         willSet {
             if newValue != article {
                 self.updated = true
@@ -39,8 +48,18 @@ public class Enclosure: Equatable {
 
     public private(set) var updated: Bool = false
 
-    public var downloaded: Bool {
+    dynamic public var downloaded: Bool {
         return data == nil
+    }
+
+    public override func isEqual(object: AnyObject?) -> Bool {
+        guard let b = object as? Enclosure else {
+            return false
+        }
+        if let aEID = self.enclosureID, let bEID = b.enclosureID {
+            return aEID.URIRepresentation() == bEID.URIRepresentation()
+        }
+        return self.url == b.url && self.kind == b.kind && self.data == b.data
     }
 
     public init(url: NSURL, kind: String, data: NSData?, article: Article?) {
@@ -59,11 +78,4 @@ public class Enclosure: Equatable {
         self.article = article
         enclosureID = enclosure.objectID
     }
-}
-
-public func ==(a: Enclosure, b: Enclosure) -> Bool {
-    if let aEID = a.enclosureID, let bEID = b.enclosureID {
-        return aEID.URIRepresentation() == bEID.URIRepresentation()
-    }
-    return a.url == b.url && a.kind == b.kind && a.data == b.data
 }

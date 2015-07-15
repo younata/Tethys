@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import JavaScriptCore
 
 #if os(iOS)
     public typealias Image=UIImage
@@ -7,51 +8,65 @@ import CoreData
     public typealias Image=NSImage
 #endif
 
-public class Feed: Equatable, Hashable, CustomStringConvertible {
-    public var title: String {
+@objc public protocol FeedJSExport: JSExport {
+    var title: String { get set }
+    var url: NSURL? { get set }
+    var summary: String { get set }
+    var query: String? { get set }
+    var tags: [String] { get }
+    var waitPeriod: Int { get set }
+    var remainingWait: Int { get set }
+    var articles: [Article] { get }
+    var identifier: String { get }
+    var isQueryFeed: Bool { get }
+    func unreadArticles() -> [Article]
+}
+
+@objc public class Feed: NSObject, FeedJSExport {
+    dynamic public var title: String {
         willSet {
             if newValue != title {
                 self.updated = true
             }
         }
     }
-    public var url: NSURL? {
+    dynamic public var url: NSURL? {
         willSet {
             if newValue != url {
                 self.updated = true
             }
         }
     }
-    public var summary: String {
+    dynamic public var summary: String {
         willSet {
             if newValue != summary {
                 self.updated = true
             }
         }
     }
-    public var query: String? {
+    dynamic public var query: String? {
         willSet {
             if newValue != query {
                 self.updated = true
             }
         }
     }
-    public private(set) var tags: [String]
-    public var waitPeriod: Int {
+    dynamic public private(set) var tags: [String]
+    dynamic public var waitPeriod: Int {
         willSet {
             if newValue != waitPeriod {
                 self.updated = true
             }
         }
     }
-    public var remainingWait: Int {
+    dynamic public var remainingWait: Int {
         willSet {
             if newValue != remainingWait {
                 self.updated = true
             }
         }
     }
-    public private(set) var articles: [Article] = []
+    dynamic public private(set) var articles: [Article] = []
     public var image: Image? {
         willSet {
             if newValue != image {
@@ -60,11 +75,11 @@ public class Feed: Equatable, Hashable, CustomStringConvertible {
         }
     }
 
-    public private(set) var identifier: String
+    dynamic public private(set) var identifier: String
 
-    public var isQueryFeed: Bool { return query != nil }
+    dynamic public var isQueryFeed: Bool { return query != nil }
 
-    public var hashValue: Int {
+    public override var hashValue: Int {
         if let id = feedID {
             return id.URIRepresentation().hash
         }
@@ -79,8 +94,20 @@ public class Feed: Equatable, Hashable, CustomStringConvertible {
         return nonNilHashValues ^ possiblyNilHashValues ^ tagsHashValues
     }
 
-    public var description: String {
+    public override var description: String {
         return "Feed: title: \(title), url: \(url), summary: \(summary), query: \(query), tags: \(tags)\n"
+    }
+
+    public override func isEqual(object: AnyObject?) -> Bool {
+        guard let b = object as? Feed else {
+            return false
+        }
+        if let aID = self.feedID, let bID = b.feedID {
+            return aID.URIRepresentation() == bID.URIRepresentation()
+        }
+        return self.title == b.title && self.url == b.url && self.summary == b.summary &&
+            self.query == b.query && self.tags == b.tags && self.waitPeriod == b.waitPeriod &&
+            self.remainingWait == b.remainingWait && self.image == b.image
     }
 
     public private(set) var updated = false
@@ -145,6 +172,7 @@ public class Feed: Equatable, Hashable, CustomStringConvertible {
             self.image = image
             self.articles = articles
             self.identifier = identifier
+            super.init()
             for article in articles {
                 article.feed = self
             }
@@ -169,18 +197,11 @@ public class Feed: Equatable, Hashable, CustomStringConvertible {
         self.identifier = feed.objectID.URIRepresentation().description
 
         let articlesList = Array(feed.articles)
-        articles = articlesList.map { Article(article: $0, feed: self) }
         image = feed.image as? Image
-
         feedID = feed.objectID
-    }
-}
+        super.init()
+        articles = articlesList.map { Article(article: $0, feed: self) }
 
-public func ==(a: Feed, b: Feed) -> Bool {
-    if let aID = a.feedID, let bID = b.feedID {
-        return aID.URIRepresentation() == bID.URIRepresentation()
+        updated = false
     }
-    return a.title == b.title && a.url == b.url && a.summary == b.summary &&
-        a.query == b.query && a.tags == b.tags && a.waitPeriod == b.waitPeriod &&
-        a.remainingWait == b.remainingWait && a.image == b.image
 }

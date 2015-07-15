@@ -1,71 +1,87 @@
 import Foundation
 import CoreData
+import JavaScriptCore
 
-public class Article: Equatable, Hashable, CustomStringConvertible {
-    public var title: String {
+@objc public protocol ArticleJSExport: JSExport {
+    var title: String { get set }
+    var link: NSURL? { get set }
+    var summary: String { get set }
+    var author: String { get set }
+    var published: NSDate { get set }
+    var updatedAt: NSDate? { get set }
+    var identifier: String { get set }
+    var content: String { get set }
+    var read: Bool { get set }
+    var feed: Feed? { get set }
+    var flags: [String] { get }
+    var enclosures: [Enclosure] { get }
+}
+
+@objc public class Article: NSObject, ArticleJSExport {
+    dynamic public var title: String {
         willSet {
             if newValue != title {
                 self.updated = true
             }
         }
     }
-    public var link: NSURL? {
+    dynamic public var link: NSURL? {
         willSet {
             if newValue != link {
                 self.updated = true
             }
         }
     }
-    public var summary: String {
+    dynamic public var summary: String {
         willSet {
             if newValue != summary {
                 self.updated = true
             }
         }
     }
-    public var author: String {
+    dynamic public var author: String {
         willSet {
             if newValue != author {
                 self.updated = true
             }
         }
     }
-    public var published: NSDate {
+    dynamic public var published: NSDate {
         willSet {
             if newValue != published {
                 self.updated = true
             }
         }
     }
-    public var updatedAt: NSDate? {
+    dynamic public var updatedAt: NSDate? {
         willSet {
             if newValue != updatedAt {
                 self.updated = true
             }
         }
     }
-    public var identifier: String {
+    dynamic public var identifier: String {
         willSet {
             if newValue != identifier {
                 self.updated = true
             }
         }
     }
-    public var content: String {
+    dynamic public var content: String {
         willSet {
             if newValue != content {
                 self.updated = true
             }
         }
     }
-    public var read: Bool {
+    dynamic public var read: Bool {
         willSet {
             if newValue != read {
                 self.updated = true
             }
         }
     }
-    public var feed: Feed? {
+    dynamic public var feed: Feed? {
         willSet {
             if newValue != feed {
                 self.updated = true
@@ -78,12 +94,12 @@ public class Article: Equatable, Hashable, CustomStringConvertible {
             }
         }
     }
-    public private(set) var flags: [String] = []
-    public private(set) var enclosures: [Enclosure] = []
+    dynamic public private(set) var flags: [String] = []
+    dynamic public private(set) var enclosures: [Enclosure] = []
 
-    public private(set) var updated: Bool = false
+    internal private(set) var updated: Bool = false
 
-    public var hashValue: Int {
+    public override var hashValue: Int {
         if let id = articleID {
             return id.URIRepresentation().hash
         }
@@ -99,7 +115,20 @@ public class Article: Equatable, Hashable, CustomStringConvertible {
         return nonNilHashValues ^ flagsHashValues ^ possiblyNilHashValues
     }
 
-    public var description: String {
+    public override func isEqual(object: AnyObject?) -> Bool {
+        guard let b = object as? Article else {
+            return false
+        }
+        if let aID = self.articleID, let bID = b.articleID {
+            return aID.URIRepresentation() == bID.URIRepresentation()
+        }
+        return self.title == b.title && self.link == b.link && self.summary == b.summary &&
+            self.author == b.author && self.published == b.published && self.updatedAt == b.updatedAt &&
+            self.identifier == b.identifier && self.content == b.content && self.read == b.read &&
+            self.flags == b.flags
+    }
+
+    public override var description: String {
         return "Article: title: \(title), link: \(link), summary: \(summary), author: \(author), published: \(published), updated: \(updatedAt), identifier: \(identifier), content: \(content), read: \(read)\n"
     }
 
@@ -119,6 +148,7 @@ public class Article: Equatable, Hashable, CustomStringConvertible {
             self.flags = flags
             self.enclosures = enclosures
             updated = false
+            super.init()
             for enclosure in enclosures {
                 enclosure.article = self
             }
@@ -144,11 +174,12 @@ public class Article: Equatable, Hashable, CustomStringConvertible {
         self.feed = feed
         flags = article.flags
         let enclosuresList = Array(article.enclosures)
+        super.init()
         enclosures = enclosuresList.map { Enclosure(enclosure: $0, article: self) }
 
-        updated = false
-
         articleID = article.objectID
+
+        updated = false
     }
 
     public func addFlag(flag: String) {
@@ -185,14 +216,4 @@ public class Article: Equatable, Hashable, CustomStringConvertible {
             updated = true
         }
     }
-}
-
-public func ==(a: Article, b: Article) -> Bool {
-    if let aID = a.articleID, let bID = b.articleID {
-        return aID.URIRepresentation() == bID.URIRepresentation()
-    }
-    return a.title == b.title && a.link == b.link && a.summary == b.summary &&
-        a.author == b.author && a.published == b.published && a.updatedAt == b.updatedAt &&
-        a.identifier == b.identifier && a.content == b.content && a.read == b.read &&
-        a.flags == b.flags
 }

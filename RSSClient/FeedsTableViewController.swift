@@ -107,7 +107,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         dataWriter.updateFeeds({feeds, errors in
             if !errors.isEmpty {
                 let alertTitle = NSLocalizedString("Unable to update feeds", comment: "")
-                let alertMessage = ""//error?.localizedFailureReason
+                let alertMessage = ""
                 let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: {_ in
                     self.dismissViewControllerAnimated(true, completion: nil)

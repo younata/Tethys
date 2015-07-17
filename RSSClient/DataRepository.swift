@@ -212,6 +212,12 @@ internal class DataRepository: DataRetriever, DataWriter {
     internal func updateFeeds(callback: ([Feed], [NSError]) -> (Void)) {
         self.allFeedsOnBackgroundQueue {feeds in
             var feedsLeft = feeds.count
+            guard feedsLeft != 0 else {
+                self.mainQueue.addOperationWithBlock {
+                    callback([], [])
+                }
+                return
+            }
             for feed in feeds {
                 guard let url = feed.url where feed.remainingWait == 0 else {
                     feed.remainingWait--

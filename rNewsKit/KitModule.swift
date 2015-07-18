@@ -14,6 +14,8 @@ public class KitModule: NSObject, Ra.InjectorModule {
         let mainQueue = NSOperationQueue.mainQueue()
         injector.bind(kMainQueue, to: mainQueue)
 
+        injector.bind(NSURLSession.self, to: NSURLSession.sharedSession())
+
         var searchIndex: SearchIndex? = nil
 
         if #available(iOS 9.0, *) {

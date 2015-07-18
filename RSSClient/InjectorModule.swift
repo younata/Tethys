@@ -15,6 +15,9 @@ public class InjectorModule : Ra.InjectorModule {
             tagPicker.translatesAutoresizingMaskIntoConstraints = false
             return tagPicker
         }
+
+        let feedFinder = WebFeedFinder()
+        injector.bind(FeedFinder.self, to: feedFinder)
     }
 
     public init() {}

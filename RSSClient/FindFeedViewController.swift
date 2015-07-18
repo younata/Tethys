@@ -99,19 +99,6 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         loadingBar.hidden = true
         loadingBar.progressTintColor = UIColor.darkGreenColor()
     }
-
-    public override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        if (lookForFeeds) {
-//            feeds = dataManager.feeds().reduce([], combine: {
-//                if let url = $1.url?.absoluteString {
-//                    return $0 + [url]
-//                }
-//                return $0
-//            })
-        }
-    }
-
     deinit {
         webContent.removeObserver(self, forKeyPath: "estimatedProgress")
     }
@@ -279,25 +266,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
                 self.backgroundQueue?.addOperation(opmlParser)
                 self.backgroundQueue?.addOperation(feedParser)
-            }
+            }?.resume()
         }
-//        if let text = webView.URL?.absoluteString where lookForFeeds {
-//            Alamofire.request(.GET, text).responseString {(_, _, response, error) in
-//                if let txt = response {
-//
-//                    let feedParser = Muon.FeedParser(string: txt)
-//                    let opmlParser = OPMLParser(text: txt).success{(_) in
-//                        feedParser.cancel()
-//                    }
-//                    feedParser.success {info in
-//                        let string = info.link.absoluteString ?? text
-//                        opmlParser.cancel()
-//                        if (!self.feeds.contains(text.characters)) {
-//                        }
-//                    }
-//                    self.backgroundQueue.addOperations([opmlParser, feedParser], waitUntilFinished: false)
-//                }
-//            }
-//        }
     }
 }

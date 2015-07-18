@@ -33,7 +33,6 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         dropDownMenu.buttonsInsets = UIEdgeInsetsMake(dropDownMenu.separatorHeight, 0, 0, 0)
         dropDownMenu.tintColor = UIColor.darkGreenColor()
         dropDownMenu.backgroundColor = UIColor(white: 0.75, alpha: 0.5)
-        dropDownMenu.hidden = true
 
         return dropDownMenu
     }()
@@ -272,15 +271,15 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
             return
         }
 
-        dropDownMenu.titles = [NSLocalizedString("Add from Web", comment: ""),
-            NSLocalizedString("Add from Local", comment: ""),
-            NSLocalizedString("Create Query Feed", comment: "")]
-        let navBarHeight = CGRectGetHeight(self.navigationController!.navigationBar.frame)
-        let statusBarHeight = CGRectGetHeight(UIApplication.sharedApplication().statusBarFrame)
-        menuTopOffset.constant = navBarHeight + statusBarHeight
         if dropDownMenu.isOpen {
             dropDownMenu.closeAnimated(true)
         } else {
+            dropDownMenu.titles = [NSLocalizedString("Add from Web", comment: ""),
+                NSLocalizedString("Add from Local", comment: ""),
+                NSLocalizedString("Create Query Feed", comment: "")]
+            let navBarHeight = CGRectGetHeight(self.navigationController!.navigationBar.frame)
+            let statusBarHeight = CGRectGetHeight(UIApplication.sharedApplication().statusBarFrame)
+            menuTopOffset.constant = navBarHeight + statusBarHeight
             dropDownMenu.openAnimated(true)
         }
     }

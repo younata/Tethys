@@ -192,6 +192,8 @@ public class QueryFeedViewController: UITableViewController {
             } else {
                 cell.textView.text = "function(article) {\n    return !article.read;\n}"
             }
+            cell.onTextChange = {_ in }
+            cell.applyStyling()
             cell.onTextChange = {
                 if let feed = self.feed {
                     feed.query = $0 ?? ""

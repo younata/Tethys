@@ -104,6 +104,10 @@
 		8999873C1B483332003C1AF5 /* test.opml in Resources */ = {isa = PBXBuildFile; fileRef = 89EF4FD71A96852D0052A82F /* test.opml */; };
 		899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */; };
 		89A3417C1B1435750000C60B /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A3417B1B1435750000C60B /* Helpers.swift */; };
+		89AA8A8E1B536B98000E2C88 /* SyntaxKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89AA8A8C1B536B90000E2C88 /* SyntaxKit.framework */; };
+		89AA8A8F1B536B98000E2C88 /* SyntaxKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89AA8A8C1B536B90000E2C88 /* SyntaxKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		89AA8A911B536BEB000E2C88 /* JavaScript.tmLanguage in Resources */ = {isa = PBXBuildFile; fileRef = 89AA8A901B536BEB000E2C88 /* JavaScript.tmLanguage */; };
+		89AA8A931B537048000E2C88 /* mac_classic.tmTheme in Resources */ = {isa = PBXBuildFile; fileRef = 89AA8A921B537048000E2C88 /* mac_classic.tmTheme */; };
 		89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204B41A73811000C792D2 /* AppDelegateSpec.swift */; };
 		89C204BD1A73F72800C792D2 /* SplitDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204BC1A73F72800C792D2 /* SplitDelegate.swift */; };
 		89C204C21A73FEDA00C792D2 /* SplitDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204C11A73FEDA00C792D2 /* SplitDelegateSpec.swift */; };
@@ -203,6 +207,7 @@
 				89CB986E1B12CCE800C87160 /* BreakOutToRefresh.framework in Embed Frameworks */,
 				89CB98951B12DFBA00C87160 /* TOBrowserActivityKit.framework in Embed Frameworks */,
 				89718F2D1AE0C9A1004C3CB4 /* Ra.framework in Embed Frameworks */,
+				89AA8A8F1B536B98000E2C88 /* SyntaxKit.framework in Embed Frameworks */,
 				89CB98BA1B12E9D300C87160 /* MAKDropDownMenu.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -341,6 +346,9 @@
 		89A3417B1B1435750000C60B /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		89A3417E1B150D1B0000C60B /* OPMLManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OPMLManager.swift; path = ../RSSClient/OPMLManager.swift; sourceTree = "<group>"; };
 		89A341811B150DA90000C60B /* OPMLManagerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OPMLManagerSpec.swift; path = ../RSSClientTests/OPMLManagerSpec.swift; sourceTree = "<group>"; };
+		89AA8A8C1B536B90000E2C88 /* SyntaxKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SyntaxKit.framework; path = Carthage/Build/iOS/SyntaxKit.framework; sourceTree = SOURCE_ROOT; };
+		89AA8A901B536BEB000E2C88 /* JavaScript.tmLanguage */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = JavaScript.tmLanguage; sourceTree = "<group>"; };
+		89AA8A921B537048000E2C88 /* mac_classic.tmTheme */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = mac_classic.tmTheme; sourceTree = "<group>"; };
 		89C204B41A73811000C792D2 /* AppDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateSpec.swift; sourceTree = "<group>"; };
 		89C204BC1A73F72800C792D2 /* SplitDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitDelegate.swift; sourceTree = "<group>"; };
 		89C204C11A73FEDA00C792D2 /* SplitDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitDelegateSpec.swift; sourceTree = "<group>"; };
@@ -446,6 +454,7 @@
 				89CB98941B12DFBA00C87160 /* TOBrowserActivityKit.framework in Frameworks */,
 				89718F2A1AE0C942004C3CB4 /* Ra.framework in Frameworks */,
 				89CB98B91B12E9D300C87160 /* MAKDropDownMenu.framework in Frameworks */,
+				89AA8A8E1B536B98000E2C88 /* SyntaxKit.framework in Frameworks */,
 				898131681AF880400090FA7F /* Muon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -691,6 +700,8 @@
 			children = (
 				895901AE1A32B61A002E2C62 /* en.lproj */,
 				89C8307719D730E9009924DA /* Info.plist */,
+				89AA8A921B537048000E2C88 /* mac_classic.tmTheme */,
+				89AA8A901B536BEB000E2C88 /* JavaScript.tmLanguage */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -752,6 +763,7 @@
 		89CB98BB1B13921200C87160 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				89AA8A8C1B536B90000E2C88 /* SyntaxKit.framework */,
 				89CB98B61B12E9C900C87160 /* MAKDropDownMenu.framework */,
 				89CB98911B12DFB100C87160 /* TOBrowserActivityKit.framework */,
 				89CB986A1B12CCD700C87160 /* BreakOutToRefresh.framework */,
@@ -1094,11 +1106,13 @@
 			files = (
 				89C8308319D730E9009924DA /* Images.xcassets in Resources */,
 				8924D8E91A094CF5003B7529 /* article.css in Resources */,
+				89AA8A931B537048000E2C88 /* mac_classic.tmTheme in Resources */,
 				89D06A1B19FDBC52003909A3 /* Launch Screen.xib in Resources */,
 				895901B31A32B61A002E2C62 /* Localizable.strings in Resources */,
 				89C830BF19D89722009924DA /* FindICO.js in Resources */,
 				89C830BB19D8904A009924DA /* findFeeds.js in Resources */,
 				895901B51A32B61A002E2C62 /* Localizable.stringsdict in Resources */,
+				89AA8A911B536BEB000E2C88 /* JavaScript.tmLanguage in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

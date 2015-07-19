@@ -7,17 +7,18 @@ public class ActivityIndicator: UIView {
     }
 
     public func configureWithMessage(message: String) {
-        label.text = message
-        activityIndicator.startAnimating()
-        backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.7)
+        self.label.text = message
+        self.activityIndicator.startAnimating()
+        self.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.7)
     }
 
     private lazy var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(activityIndicatorStyle: .White)
         indicator.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(indicator)
-        indicator.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
-        indicator.autoPinEdge(.Bottom, toEdge: .Top, ofView: self.label)
+        indicator.autoPinEdgeToSuperviewEdge(.Leading)
+        indicator.autoPinEdgeToSuperviewEdge(.Trailing)
+        indicator.autoPinEdgeToSuperviewEdge(.Top, withInset: 0, relation: .GreaterThanOrEqual)
         return indicator
     }()
 
@@ -25,7 +26,12 @@ public class ActivityIndicator: UIView {
         let label = UILabel(forAutoLayout: ())
         label.textColor = UIColor.whiteColor()
         self.addSubview(label)
-        label.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
+        label.autoCenterInSuperview()
+        label.autoPinEdgeToSuperviewMargin(.Leading)
+        label.autoPinEdgeToSuperviewMargin(.Trailing)
+        label.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.activityIndicator, withOffset: 8)
+        label.textAlignment = .Center
+        label.numberOfLines = 0
         return label
     }()
 }

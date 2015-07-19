@@ -40,9 +40,6 @@ public class ArticleListController: UITableViewController {
         if !previewMode {
             self.navigationItem.rightBarButtonItem = self.editButtonItem()
 
-            self.refreshControl = UIRefreshControl(frame: CGRectZero)
-            self.refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
-            self.refreshControl?.beginRefreshing()
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "articleRead:",
                 name: "ArticleWasRead", object: nil)
             if feeds.count == 1 {

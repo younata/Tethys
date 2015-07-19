@@ -135,7 +135,12 @@ internal class DataRepository: DataRetriever, DataWriter {
     // MARK: DataWriter
 
     internal func newFeed(callback: (Feed) -> (Void)) {
-
+        self.backgroundQueue.addOperationWithBlock {
+            let feed = self.synchronousNewFeed()
+            self.mainQueue.addOperationWithBlock {
+                callback(feed)
+            }
+        }
     }
 
     internal func saveFeed(feed: Feed) {
@@ -312,6 +317,7 @@ internal class DataRepository: DataRetriever, DataWriter {
             for article in feed.articles {
                 self.saveArticle(article, feed: cdfeed)
             }
+            self.save()
         }
     }
 
@@ -348,6 +354,7 @@ internal class DataRepository: DataRetriever, DataWriter {
                 self.searchIndex?.addItemsToIndex([item]) {error in
                 }
             }
+            self.save()
         }
     }
 
@@ -411,5 +418,5 @@ private func loadFeed(url: NSURL, urlSession: NSURLSession, queue: NSOperationQu
             }
             callback(nil, error)
         }
-    }
+    }?.resume()
 }

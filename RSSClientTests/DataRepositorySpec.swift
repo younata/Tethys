@@ -255,6 +255,39 @@ class FeedRepositorySpec: QuickSpec {
         }
 
         describe("as a DataWriter") {
+            describe("newFeed") {
+                var createdFeed: Feed? = nil
+                beforeEach {
+                    subject.newFeed {feed in
+                        createdFeed = feed
+                    }
+                }
+
+                it("should enqueue an operation on the background queue") {
+                    expect(backgroundQueue.operationCount).to(equal(1))
+                }
+
+                describe("when the operation completes") {
+                    beforeEach {
+                        backgroundQueue.runNextOperation()
+                    }
+
+                    it("should enqueue an operation on the mainqueue") {
+                        expect(mainQueue.operationCount).to(equal(1))
+                    }
+
+                    describe("when the main queue operation completes") {
+                        beforeEach {
+                            mainQueue.runNextOperation()
+                        }
+
+                        it("should call back with a created feed") {
+                            expect(createdFeed?.feedID).toNot(beNil())
+                        }
+                    }
+                }
+            }
+
             describe("saveFeed") {
                 var feed: Feed! = nil
                 beforeEach {

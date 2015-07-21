@@ -541,7 +541,7 @@ class FeedRepositorySpec: QuickSpec {
 
                             it("should, on ios 9, add spotlight entries for each added article") {
                                 if #available(iOS 9.0, *) {
-                                    expect(searchIndex?.lastItemsAdded.count).to(equal(13))
+                                    expect(searchIndex?.lastItemsAdded.count).to(equal(2))
                                 }
                             }
 

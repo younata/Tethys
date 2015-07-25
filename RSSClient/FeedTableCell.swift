@@ -59,6 +59,7 @@ public class FeedTableCell: UITableViewCell {
 
     public lazy var unreadCounter: UnreadCounter = {
         let counter = UnreadCounter(frame: CGRectZero)
+        counter.hideUnreadText = false
 
         counter.translatesAutoresizingMaskIntoConstraints = false
         self.contentView.addSubview(counter)

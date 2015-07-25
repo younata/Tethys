@@ -2,27 +2,9 @@ import UIKit
 import PureLayout_iOS
 
 public class UnreadCounter: UIView {
+    private let triangleLayer = CAShapeLayer()
 
-    private lazy var triangleLayer: CAShapeLayer = {
-        let layer = CAShapeLayer()
-        layer.strokeColor = UIColor.clearColor().CGColor
-        self.layer.addSublayer(layer)
-        return layer
-    }()
-
-    public lazy var countLabel: UILabel = {
-        let label = UILabel(forAutoLayout: ())
-        label.hidden = true
-        label.textAlignment = .Right
-        label.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-        label.textColor = self.countColor
-
-        self.addSubview(label)
-        label.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
-        label.autoPinEdgeToSuperviewEdge(.Right, withInset: 4)
-
-        return label
-    }()
+    public let countLabel = UILabel(forAutoLayout: ())
 
     public var triangleColor = UIColor.darkGreenColor() {
         didSet {
@@ -44,6 +26,7 @@ public class UnreadCounter: UIView {
             self.countLabel.hidden = newValue
         }
     }
+
     public var unread: UInt = 0 {
         didSet {
             unreadDidChange()
@@ -62,11 +45,25 @@ public class UnreadCounter: UIView {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
+
         self.backgroundColor = UIColor.clearColor()
+
+        triangleLayer.strokeColor = UIColor.clearColor().CGColor
+        triangleLayer.fillColor = self.triangleColor.CGColor
+        self.layer.addSublayer(triangleLayer)
+
+        countLabel.hidden = true
+        countLabel.textAlignment = .Right
+        countLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+        countLabel.textColor = self.countColor
+
+        self.addSubview(countLabel)
+        countLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
+        countLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 4)
     }
 
-    public required init(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("not supported")
     }
 
     // MARK: - Private

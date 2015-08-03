@@ -52,7 +52,8 @@ class LocalImportViewControllerSpec: QuickSpec {
 
         var dataReadWriter: FakeDataReadWriter! = nil
         var opmlManager: OPMLManagerMock! = nil
-        var backgroundQueue : FakeOperationQueue! = nil
+        var mainQueue: FakeOperationQueue! = nil
+        var backgroundQueue: FakeOperationQueue! = nil
 
         beforeEach {
             injector = Ra.Injector(module: SpecInjectorModule())
@@ -63,6 +64,9 @@ class LocalImportViewControllerSpec: QuickSpec {
 
             opmlManager = OPMLManagerMock()
             injector.bind(OPMLManager.self, to: opmlManager)
+
+            mainQueue = injector.create(kMainQueue) as! FakeOperationQueue
+            mainQueue.runSynchronously = true
 
             backgroundQueue = injector.create(kBackgroundQueue) as! FakeOperationQueue
             backgroundQueue.runSynchronously = true

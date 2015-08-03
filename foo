@@ -1,6 +1,6 @@
 git filter-branch --env-filter \
-    'if [ $GIT_COMMIT = a7114d20808749b34169bf98e0b3a6cddbe7e27d ]
+    'if [ $GIT_COMMIT = 36ac65c276749c2762fd495ce0972571c721ff12 ]
      then
-         export GIT_AUTHOR_DATE="Fri Jul 24 07:58:11 2015 -0700"
-         export GIT_COMMITTER_DATE="Fri Jul 24 07:58:11 2015 -0700"
+         export GIT_AUTHOR_DATE="Sat Aug 1 23:39:49 2015 -0700"
+         export GIT_COMMITTER_DATE="Sat Aug 1 23:39:49 2015 -0700"
      fi'

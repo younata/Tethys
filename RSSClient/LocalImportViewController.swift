@@ -31,6 +31,10 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
         return self.injector?.create(OPMLManager.self) as? OPMLManager
     }()
 
+    lazy var mainQueue: NSOperationQueue? = {
+        return self.injector?.create(kMainQueue) as? NSOperationQueue
+    }()
+
     lazy var backgroundQueue: NSOperationQueue? = {
         return self.injector?.create(kBackgroundQueue) as? NSOperationQueue
     }()
@@ -97,13 +101,17 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
             feedParser.completion = {feed in
                 self.feeds.append((path, feed))
                 opmlParser.cancel()
-                self.reload()
+                self.mainQueue?.addOperationWithBlock {
+                    self.reload()
+                }
             }
             opmlParser.success {items in
                 let toAdd = (path, items)
                 self.opmls.append(toAdd)
                 feedParser.cancel()
-                self.reload()
+                self.mainQueue?.addOperationWithBlock {
+                    self.reload()
+                }
             }
             backgroundQueue?.addOperations([opmlParser, feedParser], waitUntilFinished: false)
         } catch _ {

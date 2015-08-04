@@ -95,6 +95,11 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 
+    public override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        self.reload(self.searchBar.text)
+    }
+
     public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         self.refreshView.endRefreshing()

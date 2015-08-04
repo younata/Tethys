@@ -239,7 +239,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     private var nextContent: WKWebView = WKWebView(forAutoLayout: ())
     private var nextContentRight: NSLayoutConstraint! = nil
 
-    private func next(gesture: UIScreenEdgePanGestureRecognizer) {
+    internal func next(gesture: UIScreenEdgePanGestureRecognizer) {
         if lastArticleIndex + 1 >= articles.count {
             return;
         }

@@ -46,6 +46,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
             dataReadWriter.feedsList = feeds
 
             expect(subject.view).toNot(beNil())
+            subject.viewWillAppear(false)
         }
 
         afterEach {

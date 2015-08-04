@@ -90,9 +90,11 @@ internal class DataUtility {
             request.sortDescriptors = sortDescriptors
 
             let error: NSError? = nil
-            if let ret = try! managedObjectContext.executeFetchRequest(request) as? [NSManagedObject] {
-                return ret
-            }
+            do {
+                if let ret = try managedObjectContext.executeFetchRequest(request) as? [NSManagedObject] {
+                    return ret
+                }
+            } catch { }
             print("Error executing fetch request: \(error)")
             return []
     }
@@ -104,9 +106,10 @@ internal class DataUtility {
                 matchingPredicate: predicate,
                 managedObjectContext: managedObjectContext,
                 sortDescriptors: sortDescriptors) as? [CoreDataFeed] ?? []
-            return feeds.map {
+            let feedStructs = feeds.map {
                 Feed(feed: $0)
             }
+            return feedStructs
     }
 
     internal class func articlesWithPredicate(predicate: NSPredicate,

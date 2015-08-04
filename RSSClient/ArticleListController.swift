@@ -134,7 +134,8 @@ public class ArticleListController: UITableViewController {
             let toggleText = article.read ? unread : read
             let toggle = UITableViewRowAction(style: .Normal, title: toggleText,
                 handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
-                    self.dataWriter?.markArticle(article, asRead: !article.read)
+                    article.read = !article.read
+                    self.dataWriter?.markArticle(article, asRead: article.read)
                     tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
             })
             return [delete, toggle]

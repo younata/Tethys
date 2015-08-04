@@ -277,11 +277,12 @@ internal class DataRepository: DataRetriever, DataWriter {
     }
 
     private func upsertArticle(muonArticle: Muon.Article, feed: Feed) -> Article? {
-        let predicate = NSPredicate(format: "link = %@ && feed = %@", muonArticle.link?.absoluteString ?? "", feed.feedID!)
+        let predicate = NSPredicate(format: "link = %@ && title == %@ && feed == %@", muonArticle.link?.absoluteString ?? "", muonArticle.title ?? "", feed.feedID!)
         if let article = DataUtility.entities("Article", matchingPredicate: predicate,
             managedObjectContext: self.objectContext).last as? CoreDataArticle {
                 if article.updatedAt != muonArticle.updated {
                     DataUtility.updateArticle(article, item: muonArticle)
+                    self.save()
                 }
                 return nil
         } else {
@@ -289,7 +290,8 @@ internal class DataRepository: DataRetriever, DataWriter {
             let article = NSEntityDescription.insertNewObjectForEntityForName("Article",
                 inManagedObjectContext: self.objectContext) as! CoreDataArticle
             DataUtility.updateArticle(article, item: muonArticle)
-            return Article(article: article, feed: feed)
+            self.save()
+            return Article(article: article, feed: nil)
         }
     }
 

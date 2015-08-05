@@ -39,6 +39,11 @@ class FakeDataReadWriter : DataRetriever, DataWriter {
 
     // MARK: DataWriter
 
+    var subscribers = Array<DataSubscriber>()
+    func addSubscriber(subscriber: DataSubscriber) {
+        subscribers.append(subscriber)
+    }
+
     var newFeedCallback: (Feed) -> (Void) = {_ in }
     var didCreateFeed = false
     func newFeed(callback: (Feed) -> (Void)) {

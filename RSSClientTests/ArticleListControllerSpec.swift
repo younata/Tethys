@@ -63,6 +63,29 @@ class ArticleListControllerSpec: QuickSpec {
             subject.view.layoutIfNeeded()
         }
 
+        describe("as a DataSubscriber") {
+            describe("markedArticle:asRead:") {
+                beforeEach {
+                    subject.view.layoutSubviews()
+                    let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 3, inSection: 0)) as! ArticleCell
+
+                    expect(cell.unread.unread).to(equal(1))
+
+                    articles[0].read = true
+                    for subscriber in dataReadWriter.subscribers {
+                        subscriber.markedArticle(articles[0], asRead: true)
+                    }
+                }
+
+                it("should reload the tableViwe") {
+                    subject.view.layoutSubviews()
+                    let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 3, inSection: 0)) as! ArticleCell
+
+                    expect(cell.unread.unread).to(equal(0))
+                }
+            }
+        }
+
         describe("the table") {
             it("should have 1 secton") {
                 expect(subject.tableView.numberOfSections).to(equal(1))

@@ -8,6 +8,17 @@ import CoreData
     import MobileCoreServices
 #endif
 
+private class FakeDataSubscriber: DataSubscriber {
+    private var markedArticle: Article? = nil
+    private var read: Bool? = nil
+    private func markedArticle(article: Article, asRead: Bool) {
+        markedArticle = article
+        read = asRead
+    }
+
+    init() {}
+}
+
 class FeedRepositorySpec: QuickSpec {
     override func spec() {
         var subject: DataRepository! = nil
@@ -28,6 +39,8 @@ class FeedRepositorySpec: QuickSpec {
         var searchIndex: FakeSearchIndex? = nil
 
         var urlSession: FakeURLSession! = nil
+
+        var dataSubscriber: FakeDataSubscriber! = nil
 
         beforeEach {
             moc = managedObjectContext()
@@ -70,6 +83,9 @@ class FeedRepositorySpec: QuickSpec {
             mainQueue = FakeOperationQueue()
             backgroundQueue = FakeOperationQueue()
             subject = DataRepository(objectContext: moc, mainQueue: mainQueue, backgroundQueue: backgroundQueue, urlSession: urlSession, searchIndex: searchIndex)
+
+            dataSubscriber = FakeDataSubscriber()
+            subject.addSubscriber(dataSubscriber)
         }
 
         describe("as a DataRetriever") {
@@ -433,6 +449,7 @@ class FeedRepositorySpec: QuickSpec {
 
                     subject.markArticle(article, asRead: true)
                     backgroundQueue.runNextOperation()
+                    mainQueue.runNextOperation()
                 }
 
                 it("should mark the article as read in the data store") {
@@ -444,10 +461,18 @@ class FeedRepositorySpec: QuickSpec {
                     }
                 }
 
+                it("should inform any subscribers") {
+                    expect(dataSubscriber.markedArticle).to(equal(article))
+                    expect(dataSubscriber.read).to(beTruthy())
+                }
+
                 describe("and marking it as unread again") {
                     beforeEach {
+                        dataSubscriber.markedArticle = nil
+                        dataSubscriber.read = nil
                         subject.markArticle(article, asRead: false)
                         backgroundQueue.runNextOperation()
+                        mainQueue.runNextOperation()
                     }
 
                     it("should mark the article as unread in the data store") {
@@ -457,6 +482,11 @@ class FeedRepositorySpec: QuickSpec {
                         if let cda = coreDataArticle as? CoreDataArticle {
                             expect(cda.read).to(beFalsy())
                         }
+                    }
+
+                    it("should inform any subscribers") {
+                        expect(dataSubscriber.markedArticle).to(equal(article))
+                        expect(dataSubscriber.read).to(beFalsy())
                     }
                 }
             }

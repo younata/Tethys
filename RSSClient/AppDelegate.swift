@@ -97,7 +97,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                             let article = feed.articles.filter({ $0.identifier == articleID }).first {
                                 navController.popToRootViewControllerAnimated(false)
                                 let al = feedsViewController.showFeeds([feed], animated: false)
-                                restorationHandler([al.showArticle(article)])
+                                restorationHandler([al.showArticle(article, animated: false)])
                         }
                     }
                     return true
@@ -118,7 +118,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                             }
                             navController.popToRootViewControllerAnimated(false)
                             let al = feedsViewController.showFeeds([feed], animated: false)
-                            restorationHandler([al.showArticle(article)])
+                            restorationHandler([al.showArticle(article, animated: false)])
                         }
                         return true
                 }

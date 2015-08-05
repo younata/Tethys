@@ -1,7 +1,7 @@
 import UIKit
 import rNewsKit
 
-public class ArticleListController: UITableViewController {
+public class ArticleListController: UITableViewController, DataSubscriber {
 
     internal var articles: [Article] = []
     public var feeds: [Feed] = [] {
@@ -40,31 +40,22 @@ public class ArticleListController: UITableViewController {
         if !previewMode {
             self.navigationItem.rightBarButtonItem = self.editButtonItem()
 
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: "articleRead:",
-                name: "ArticleWasRead", object: nil)
             if feeds.count == 1 {
                 self.navigationItem.title = feeds.first?.title
             }
         }
     }
 
-    deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-    }
+    public func markedArticle(article: Article, asRead read: Bool) {
 
-    func articleRead(note: NSNotification) {
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
     }
 
-    func articleForIndexPath(indexPath: NSIndexPath) -> Article {
+    private func articleForIndexPath(indexPath: NSIndexPath) -> Article {
         return articles[indexPath.row]
     }
 
-    func showArticle(article: Article) -> ArticleViewController {
-        return showArticle(article, animated: true)
-    }
-
-    func showArticle(article: Article, animated: Bool) -> ArticleViewController {
+    public func showArticle(article: Article, animated: Bool = true) -> ArticleViewController {
         let avc = splitViewController?.viewControllers.last as? ArticleViewController ??
             ArticleViewController()
         avc.dataWriter = dataWriter

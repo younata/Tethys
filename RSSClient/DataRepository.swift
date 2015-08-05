@@ -15,7 +15,13 @@ public protocol DataRetriever {
     func articlesMatchingQuery(query: String, callback: ([Article]) -> (Void))
 }
 
+public protocol DataSubscriber {
+    func markedArticle(article: Article, asRead read: Bool)
+}
+
 public protocol DataWriter {
+    func addSubscriber(subscriber: DataSubscriber)
+
     func newFeed(callback: (Feed) -> (Void))
     func saveFeed(feed: Feed)
     func deleteFeed(feed: Feed)
@@ -134,6 +140,12 @@ internal class DataRepository: DataRetriever, DataWriter {
 
     // MARK: DataWriter
 
+    private var subscribers = Array<DataSubscriber>()
+
+    internal func addSubscriber(subscriber: DataSubscriber) {
+        subscribers.append(subscriber)
+    }
+
     internal func newFeed(callback: (Feed) -> (Void)) {
         self.backgroundQueue.addOperationWithBlock {
             let feed = self.synchronousNewFeed()
@@ -211,6 +223,11 @@ internal class DataRepository: DataRetriever, DataWriter {
     internal func markArticle(article: Article, asRead: Bool) {
         self.backgroundQueue.addOperationWithBlock {
             self.privateMarkArticle(article, asRead: asRead)
+            self.mainQueue.addOperationWithBlock {
+                for subscriber in self.subscribers {
+                    subscriber.markedArticle(article, asRead: asRead)
+                }
+            }
         }
     }
 

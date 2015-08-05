@@ -6,7 +6,7 @@ import rNewsKit
 
 class FeedTableCellConfiguration : QuickConfiguration {
     override class func configure(configuration: Configuration) {
-        sharedExamples("a standard feed cell") {ctx in
+        sharedExamples("a standard feed cell") {(ctx: SharedExampleContext) in
             var subject: FeedTableCell! = nil
             it("sets the title") {
                 subject = ctx()["subject"] as! FeedTableCell

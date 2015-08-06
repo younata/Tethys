@@ -413,6 +413,7 @@ internal class DataRepository: DataRetriever, DataWriter {
         guard let articleID = article.articleID else {
             return
         }
+        article.read = read
         if let cdarticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", articleID), managedObjectContext: self.objectContext).first as? CoreDataArticle {
             cdarticle.read = read
             save()

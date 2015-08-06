@@ -12,7 +12,7 @@ public class ArticleListController: UITableViewController, DataSubscriber {
                 let db = b.updatedAt ?? b.published
                 return da.timeIntervalSince1970 > db.timeIntervalSince1970
             }
-            self.tableView.reloadData()
+            self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
         }
     }
 
@@ -37,6 +37,8 @@ public class ArticleListController: UITableViewController, DataSubscriber {
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.tableFooterView = UIView()
 
+        self.dataWriter?.addSubscriber(self)
+
         if !previewMode {
             self.navigationItem.rightBarButtonItem = self.editButtonItem()
 
@@ -47,7 +49,6 @@ public class ArticleListController: UITableViewController, DataSubscriber {
     }
 
     public func markedArticle(article: Article, asRead read: Bool) {
-
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
     }
 

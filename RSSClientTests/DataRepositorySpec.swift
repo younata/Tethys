@@ -452,6 +452,10 @@ class FeedRepositorySpec: QuickSpec {
                     mainQueue.runNextOperation()
                 }
 
+                it("should mark the article object as read") {
+                    expect(article.read).to(beTruthy())
+                }
+
                 it("should mark the article as read in the data store") {
                     let coreDataArticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
                         managedObjectContext: moc).first

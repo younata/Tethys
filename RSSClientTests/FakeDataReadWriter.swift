@@ -10,7 +10,9 @@ class FakeDataReadWriter : DataRetriever, DataWriter {
     }
 
     var feedsList: [Feed] = []
+    var didAskForFeeds = false
     func feeds(callback: ([Feed]) -> (Void)) {
+        didAskForFeeds = true
         return callback(feedsList)
     }
 

@@ -1,8 +1,8 @@
 import Cocoa
 import rNewsKit
 
-class FeedView: NSTableRowView {
-    var feed: Feed? = nil {
+public class FeedView: NSTableRowView {
+    public var feed: Feed? = nil {
         didSet {
             if let f = feed {
                 nameLabel.string = f.title
@@ -24,7 +24,7 @@ class FeedView: NSTableRowView {
     
     var nameHeight : NSLayoutConstraint? = nil
 
-    override init(frame: NSRect) {
+    public override init(frame: NSRect) {
         super.init(frame: frame)
         
         self.addSubview(nameLabel)
@@ -54,7 +54,7 @@ class FeedView: NSTableRowView {
         }
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }

@@ -138,6 +138,8 @@
 		898979DD1B71DFDF00218498 /* Ra.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8989795D1B70845A00218498 /* Ra.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		898979DE1B72578A00218498 /* FakeDataReadWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EA6C351B4B2D8400456892 /* FakeDataReadWriter.swift */; };
 		898979DF1B72579C00218498 /* OPMLManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C11B3A7CCC0097045A /* OPMLManagerMock.swift */; };
+		898979E11B72A63100218498 /* FeedsViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898979E01B72A63100218498 /* FeedsViewControllerSpec.swift */; };
+		898979E31B72FF9A00218498 /* AppDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898979E21B72FF9A00218498 /* AppDelegateSpec.swift */; };
 		898C48C51B3D98F60097045A /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 898C48C41B3D98F60097045A /* test.jpg */; };
 		898ECDE11B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898ECDE01B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift */; };
 		898F670C1B000451004A7BE3 /* FakeOperationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */; };
@@ -453,6 +455,8 @@
 		898979CA1B7155D700218498 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		898979D21B71CC5200218498 /* NSColor+RSSClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSColor+RSSClient.swift"; sourceTree = "<group>"; };
 		898979D41B71CE3A00218498 /* MainControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainControllerSpec.swift; sourceTree = "<group>"; };
+		898979E01B72A63100218498 /* FeedsViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsViewControllerSpec.swift; sourceTree = "<group>"; };
+		898979E21B72FF9A00218498 /* AppDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateSpec.swift; sourceTree = "<group>"; };
 		898C48C11B3A7CCC0097045A /* OPMLManagerMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLManagerMock.swift; sourceTree = "<group>"; };
 		898C48C41B3D98F60097045A /* test.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = test.jpg; sourceTree = "<group>"; };
 		898C48C61B40D2AC0097045A /* SearchIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SearchIndex.swift; path = ../RSSClient/SearchIndex.swift; sourceTree = "<group>"; };
@@ -791,7 +795,9 @@
 		898979C71B7155D700218498 /* rNews-OSXTests */ = {
 			isa = PBXGroup;
 			children = (
+				898979E21B72FF9A00218498 /* AppDelegateSpec.swift */,
 				898979D41B71CE3A00218498 /* MainControllerSpec.swift */,
+				898979E01B72A63100218498 /* FeedsViewControllerSpec.swift */,
 				898979CA1B7155D700218498 /* Info.plist */,
 			);
 			path = "rNews-OSXTests";
@@ -1536,7 +1542,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				898979DF1B72579C00218498 /* OPMLManagerMock.swift in Sources */,
+				898979E11B72A63100218498 /* FeedsViewControllerSpec.swift in Sources */,
 				898979D51B71CE3A00218498 /* MainControllerSpec.swift in Sources */,
+				898979E31B72FF9A00218498 /* AppDelegateSpec.swift in Sources */,
 				898979DE1B72578A00218498 /* FakeDataReadWriter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -1,8 +1,9 @@
 import Cocoa
 import rNewsKit
+import Ra
 
 @NSApplicationMain
-class AppDelegate: NSObject, NSApplicationDelegate {
+public class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet weak var window: NSWindow? {
         didSet {
@@ -10,20 +11,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    @IBOutlet var mainController: MainController? = nil
+    @IBOutlet public var mainController: MainController? = nil
 
     var windowController: NSWindowController? = nil
 
-    func applicationDidFinishLaunching(aNotification: NSNotification) {
-        NSUserDefaults.standardUserDefaults().setBool(false, forKey: "NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints")
-        
+    public func applicationDidFinishLaunching(aNotification: NSNotification) {
+        let injector = Injector(module: KitModule())
         mainController?.window = window
+        mainController?.configure(injector)
     }
 
-    func applicationWillTerminate(aNotification: NSNotification) {
+    public func applicationWillTerminate(aNotification: NSNotification) {
     }
     
-    func applicationDockMenu(sender: NSApplication) -> NSMenu? {
+    public func applicationDockMenu(sender: NSApplication) -> NSMenu? {
         return nil
     }
     
@@ -49,12 +50,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
     
-    func application(sender: NSApplication, openFile filename: String) -> Bool {
+    public func application(sender: NSApplication, openFile filename: String) -> Bool {
         return false
         //return openFile(filename) {(feeds) in }
     }
     
-    func application(sender: AnyObject, openFileWithoutUI filename: String) -> Bool {
+    public func application(sender: AnyObject, openFileWithoutUI filename: String) -> Bool {
         return openFile(filename) {(_) in }
     }
 }

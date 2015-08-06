@@ -24,7 +24,7 @@ public class MainController: NSViewController {
         }
     }
 
-    private var raInjector: Injector? = nil
+    public private(set) var raInjector: Injector? = nil
 
     private lazy var opmlManager: OPMLManager? = {
         return self.raInjector?.create(OPMLManager.self) as? OPMLManager
@@ -36,6 +36,7 @@ public class MainController: NSViewController {
 
     public func configure(injector: Injector) {
         self.raInjector = injector
+        self.feedsList.configure(injector)
     }
 
     public override func viewDidLoad() {

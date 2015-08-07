@@ -357,11 +357,13 @@ class FeedRepositorySpec: QuickSpec {
                     expect(articleTitles).toNot(contain("c"))
                 }
 
-                it("should, on iOS 9, remove the articles from the search index") {
-                    if #available(iOS 9.0, *) {
-                        expect(searchIndex?.lastItemsDeleted).to(equal(articleIDs))
+                #if os(iOS)
+                    it("should, on iOS 9, remove the articles from the search index") {
+                        if #available(iOS 9.0, *) {
+                            expect(searchIndex?.lastItemsDeleted).to(equal(articleIDs))
+                        }
                     }
-                }
+                #endif
             }
 
             describe("markFeedAsRead") {
@@ -452,12 +454,14 @@ class FeedRepositorySpec: QuickSpec {
                     expect(coreDataArticle).to(beNil())
                 }
 
-                it("should, on iOS 9, remove the article from the search index") {
-                    if #available(iOS 9.0, *) {
-                        let identifier = article.articleID!.URIRepresentation().absoluteString
-                        expect(searchIndex?.lastItemsDeleted).to(equal([identifier]))
+                #if os(iOS)
+                    it("should, on iOS 9, remove the article from the search index") {
+                        if #available(iOS 9.0, *) {
+                            let identifier = article.articleID!.URIRepresentation().absoluteString
+                            expect(searchIndex?.lastItemsDeleted).to(equal([identifier]))
+                        }
                     }
-                }
+                #endif
 
                 it("should inform any subscribes") {
                     mainQueue.runNextOperation()
@@ -598,11 +602,13 @@ class FeedRepositorySpec: QuickSpec {
                                 expect(updatedFeed?.title).to(equal("objc.io"))
                             }
 
-                            it("should, on ios 9, add spotlight entries for each added article") {
-                                if #available(iOS 9.0, *) {
-                                    expect(searchIndex?.lastItemsAdded.count).to(equal(13))
+                            #if os(iOS)
+                                it("should, on ios 9, add spotlight entries for each added article") {
+                                    if #available(iOS 9.0, *) {
+                                        expect(searchIndex?.lastItemsAdded.count).to(equal(13))
+                                    }
                                 }
-                            }
+                            #endif
 
                             it("should inform any subscribers") {
                                 expect(dataSubscriber.updatedFeeds).toNot(beNil())

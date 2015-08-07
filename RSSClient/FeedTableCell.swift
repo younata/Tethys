@@ -76,7 +76,7 @@ public class FeedTableCell: UITableViewCell {
     public lazy var iconView: UIImageView = {
         let imageView = UIImageView(forAutoLayout: ())
 
-        imageView.contentMode = .Center
+        imageView.contentMode = .ScaleAspectFit
 
         self.contentView.addSubview(imageView)
 

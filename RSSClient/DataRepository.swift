@@ -6,7 +6,8 @@ import Muon
 #if os(iOS)
     import CoreSpotlight
     import MobileCoreServices
-#else
+    import UIKit
+#elseif os(OSX)
     import Cocoa
 #endif
 

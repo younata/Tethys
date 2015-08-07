@@ -45,17 +45,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             UIBarButtonItem.appearance().tintColor = UIColor.darkGreenColor()
             UITabBar.appearance().tintColor = UIColor.darkGreenColor()
 
-            let feeds = self.anInjector.create(FeedsTableViewController.self) as! FeedsTableViewController
-            let master = UINavigationController(rootViewController: feeds)
-            let detail = UINavigationController(rootViewController: ArticleViewController())
-
-            for nc in [master, detail] {
-                nc.navigationBar.translucent = true
-            }
-
-            splitView.viewControllers = [master, detail]
-            splitView.delegate = splitDelegate
-            self.window?.rootViewController = splitView
+            self.createControllerHierarchy()
 
             notificationHandler?.enableNotifications(application)
 
@@ -86,28 +76,20 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         restorationHandler: ([AnyObject]?) -> Void) -> Bool {
             let type = userActivity.activityType
             if type == "com.rachelbrindle.rssclient.article",
-                let splitView = self.window?.rootViewController as? UISplitViewController,
-                let navController = splitView.viewControllers.first as? UINavigationController,
-                let feedsViewController = navController.viewControllers.first as? FeedsTableViewController,
                 let userInfo = userActivity.userInfo,
                 let feedID = userInfo["feed"] as? String,
                 let articleID = userInfo["article"] as? String {
                     self.dataRetriever?.feeds {feeds in
                         if let feed = feeds.filter({ return $0.identifier == feedID }).first,
                             let article = feed.articles.filter({ $0.identifier == articleID }).first {
-                                navController.popToRootViewControllerAnimated(false)
-                                let al = feedsViewController.showFeeds([feed], animated: false)
-                                restorationHandler([al.showArticle(article, animated: false)])
+                                self.createControllerHierarchy(feed, article: article)
                         }
                     }
                     return true
             }
             if #available(iOS 9.0, *) {
                 if type == CSSearchableItemActionType,
-                    let uniqueID = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String,
-                    let splitView = self.window?.rootViewController as? UISplitViewController,
-                    let navController = splitView.viewControllers.first as? UINavigationController,
-                    let feedsViewController = navController.viewControllers.first as? FeedsTableViewController {
+                    let uniqueID = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
                         self.dataRetriever?.feeds {feeds in
                             guard let article = feeds.reduce(Array<Article>(), combine: {articles, feed in
                                 return articles + feed.articles
@@ -116,9 +98,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                             }).first, let feed = article.feed else {
                                 return
                             }
-                            navController.popToRootViewControllerAnimated(false)
-                            let al = feedsViewController.showFeeds([feed], animated: false)
-                            restorationHandler([al.showArticle(article, animated: false)])
+                            self.createControllerHierarchy(feed, article: article)
                         }
                         return true
                 }
@@ -126,12 +106,22 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             return false
     }
 
-    public func applicationDidEnterBackground(application: UIApplication) {
-//        dataManager.backgroundObjectContext.save(nil)
-    }
+    private func createControllerHierarchy(feed: Feed? = nil, article: Article? = nil) {
+        let feeds = self.anInjector.create(FeedsTableViewController.self) as! FeedsTableViewController
+        let master = UINavigationController(rootViewController: feeds)
 
-    public func applicationWillTerminate(application: UIApplication) {
-//        dataManager.backgroundObjectContext.save(nil)
+
+        if let feedToShow = feed, let articleToShow = article {
+            splitView.viewControllers = [master]
+            let al = feeds.showFeeds([feedToShow], animated: false)
+            al.showArticle(articleToShow, animated: false)
+        } else {
+            let detail = UINavigationController(rootViewController: ArticleViewController())
+            splitView.viewControllers = [master, detail]
+        }
+
+        splitView.delegate = splitDelegate
+        self.window?.rootViewController = splitView
     }
 }
 

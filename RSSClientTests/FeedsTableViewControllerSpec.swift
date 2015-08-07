@@ -130,7 +130,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 addButton = subject.navigationItem.rightBarButtonItems?.first
                 addButton.tap()
                 buttons = subject.dropDownMenu.valueForKey("_buttons") as? [UIButton] ?? []
-                expect(buttons.count).toNot(equal(0))
+                expect(buttons).toNot(beEmpty())
             }
 
             afterEach {

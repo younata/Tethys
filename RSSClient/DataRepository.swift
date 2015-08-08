@@ -361,7 +361,12 @@ internal class DataRepository: DataRetriever, DataWriter {
 
                 let attributes = CSSearchableItemAttributeSet(itemContentType: kUTTypeHTML as String)
                 attributes.title = article.title
-                attributes.contentDescription = article.summary
+                if let articleSummaryData = (article.summary as NSString).dataUsingEncoding(NSUTF8StringEncoding) {
+                    do {
+                        let summary = try NSAttributedString(data: articleSummaryData, options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
+                        attributes.contentDescription = summary.string.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                    } catch {}
+                }
                 let feedTitleWords = article.feed?.title.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
                 attributes.keywords = ["article"] + (feedTitleWords ?? [])
                 attributes.URL = article.link

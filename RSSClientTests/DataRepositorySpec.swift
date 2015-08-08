@@ -52,9 +52,11 @@ class FeedRepositorySpec: QuickSpec {
             article1 = createArticle(moc)
             article1.title = "b"
             article1.link = "https://example.com/article1.html"
+            article1.summary = "<p>Hello world!</p>"
             article2 = createArticle(moc)
             article2.title = "c"
-            article1.link = "https://example.com/article2.html"
+            article2.link = "https://example.com/article2.html"
+            article2.summary = "<p>Hello world!</p>"
             article2.read = true
             article1.feed = feed1
             article2.feed = feed1
@@ -406,7 +408,7 @@ class FeedRepositorySpec: QuickSpec {
                             expect(attributes.URL).to(equal(article.link))
                             expect(attributes.timestamp).to(equal(article.updatedAt ?? article.published))
                             expect(attributes.authorNames).to(equal([article.author]))
-                            expect(attributes.contentDescription).to(equal(article.summary))
+                            expect(attributes.contentDescription).to(equal("Hello world!"))
                         }
                     }
                 }

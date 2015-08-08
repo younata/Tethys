@@ -25,7 +25,7 @@ public class SettingsViewController: UIViewController {
     }
 
     internal func didTapDismiss() {
-        self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+        self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
 
     internal func didTapSave() {

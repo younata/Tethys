@@ -11,7 +11,6 @@ class FeedsTableViewControllerSpec: QuickSpec {
         var injector : Injector? = nil
         var dataReadWriter: FakeDataReadWriter! = nil
         var navigationController: UINavigationController! = nil
-        var window: UIWindow? = nil
 
         var feed1: Feed! = nil
         var feed2: Feed! = nil
@@ -31,10 +30,6 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
             navigationController = UINavigationController(rootViewController: subject)
 
-            window = UIWindow()
-            window?.makeKeyAndVisible()
-            window?.rootViewController = navigationController
-
             feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "", query: nil,
                 tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
             feed2 = Feed(title: "d", url: nil, summary: "", query: "", tags: [],
@@ -46,12 +41,6 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
             expect(subject.view).toNot(beNil())
             subject.viewWillAppear(false)
-        }
-
-        afterEach {
-            window?.hidden = true
-            window?.rootViewController = nil
-            window = nil
         }
 
         describe("Key Commands") {
@@ -134,7 +123,6 @@ class FeedsTableViewControllerSpec: QuickSpec {
             }
 
             afterEach {
-                // seriously?
                 navigationController.popToRootViewControllerAnimated(false)
                 subject.dropDownMenu.closeAnimated(false)
             }
@@ -160,6 +148,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 beforeEach {
                     let button = buttons[0]
                     button.sendActionsForControlEvents(UIControlEvents.TouchUpInside)
+                    (subject.presentedViewController as? UINavigationController)?.topViewController?.view.layoutIfNeeded()
                 }
 
                 it("should close the dropDownMenu") {
@@ -299,7 +288,6 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     beforeEach {
                         let indexPath = NSIndexPath(forRow: 0, inSection: 0)
                         subject.tableView(subject.tableView, didSelectRowAtIndexPath: indexPath)
-                        NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
                     }
 
                     it("should navigate to an ArticleListViewController for that feed") {
@@ -374,11 +362,14 @@ class FeedsTableViewControllerSpec: QuickSpec {
                         describe("tapping it") {
                             beforeEach {
                                 action.handler()(action, indexPath)
-                                NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
                             }
 
                             it("should bring up a feed edit screen") {
-                                expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedViewController.self))
+                                expect(navigationController.visibleViewController).to(beAnInstanceOf(UINavigationController.self))
+                                if let nc = navigationController.visibleViewController as? UINavigationController {
+                                    expect(nc.viewControllers.count).to(equal(1))
+                                    expect(nc.topViewController).to(beAnInstanceOf(FeedViewController.self))
+                                }
                             }
                         }
                     }

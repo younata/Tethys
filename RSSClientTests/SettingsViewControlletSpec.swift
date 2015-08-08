@@ -28,28 +28,16 @@ class SettingsViewControllerSpec: QuickSpec {
 
         describe("tapping the cancel button") {
             var rootViewController: UIViewController! = nil
-            var window: UIWindow? = nil
             beforeEach {
-                window = UIWindow()
-                window?.makeKeyAndVisible()
                 rootViewController = UIViewController()
-                window?.rootViewController = rootViewController
                 rootViewController.presentViewController(navigationController, animated: false, completion: nil)
-                NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
                 expect(rootViewController.presentedViewController).to(beIdenticalTo(navigationController))
 
                 subject.navigationItem.leftBarButtonItem?.tap()
-                NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 2))
-            }
-
-            afterEach {
-                window?.hidden = true
-                window?.rootViewController = nil
-                window = nil
             }
 
             it("dismisses itself") {
-                expect(rootViewController.presentedViewController).toEventually(beNil())
+                expect(rootViewController.presentedViewController).to(beNil())
             }
         }
 
@@ -60,23 +48,12 @@ class SettingsViewControllerSpec: QuickSpec {
 
             describe("tapping the save button") {
                 var rootViewController: UIViewController! = nil
-                var window: UIWindow? = nil
                 beforeEach {
-                    window = UIWindow()
-                    window?.makeKeyAndVisible()
                     rootViewController = UIViewController()
-                    window?.rootViewController = rootViewController
                     rootViewController.presentViewController(navigationController, animated: false, completion: nil)
                     expect(rootViewController.presentedViewController).toNot(beNil())
 
                     subject.navigationItem.leftBarButtonItem?.tap()
-                    NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 2))
-                }
-
-                afterEach {
-                    window?.hidden = true
-                    window?.rootViewController = nil
-                    window = nil
                 }
 
                 it("dismisses itself") {

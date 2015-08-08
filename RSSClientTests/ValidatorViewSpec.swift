@@ -37,7 +37,6 @@ class ValidatorViewSpec: QuickSpec {
                 }
 
                 it("should hide the progressIndicator") {
-                    NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
                     expect(subject.progressIndicator.hidden).to(beTruthy())
                 }
             }
@@ -56,7 +55,6 @@ class ValidatorViewSpec: QuickSpec {
                 }
 
                 it("should hide the progressIndicator") {
-                    NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
                     expect(subject.progressIndicator.hidden).to(beTruthy())
                 }
             }

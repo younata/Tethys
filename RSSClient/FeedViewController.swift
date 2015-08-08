@@ -70,7 +70,7 @@ public class FeedViewController: UITableViewController {
         tableView.reloadData()
     }
 
-    private func dismiss() {
+    internal func dismiss() {
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
 

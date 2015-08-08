@@ -303,18 +303,8 @@ class ArticleViewControllerSpec: QuickSpec {
             }
 
             describe("tapping the share button") {
-                var window: UIWindow! = nil
                 beforeEach {
-                    window = UIWindow()
-                    window.makeKeyAndVisible()
-                    window.rootViewController = navigationController
                     subject.shareButton.tap()
-                    NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
-                }
-
-                afterEach {
-                    window.hidden = true
-                    window = nil
                 }
 
                 it("should bring up an activity view controller") {

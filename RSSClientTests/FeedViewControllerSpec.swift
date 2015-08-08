@@ -18,7 +18,6 @@ class FeedViewControllerSpec: QuickSpec {
 
         var urlSession: FakeURLSession! = nil
         var backgroundQueue: FakeOperationQueue! = nil
-        var window: UIWindow! = nil
         var presentingController: UIViewController! = nil
 
         beforeEach {
@@ -39,10 +38,7 @@ class FeedViewControllerSpec: QuickSpec {
 
             navigationController = UINavigationController(rootViewController: subject)
 
-            window = UIWindow()
             presentingController = UIViewController()
-            window.rootViewController = presentingController
-            NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
             presentingController.presentViewController(navigationController, animated: false, completion: nil)
 
             feed = Feed(title: "title", url: NSURL(string: "http://example.com/feed"), summary: "summary", query: nil,
@@ -51,12 +47,6 @@ class FeedViewControllerSpec: QuickSpec {
             subject.feed = feed
 
             subject.view.layoutIfNeeded()
-            NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
-        }
-
-        afterEach {
-            window.hidden = true
-            window = nil
         }
 
         it("should have a save button") {
@@ -117,7 +107,6 @@ class FeedViewControllerSpec: QuickSpec {
                         beforeEach {
                             subject.feed = otherFeed
                             subject.view.layoutIfNeeded()
-                            NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
 
                             cell = subject.tableView.visibleCells[0]
                         }
@@ -136,7 +125,6 @@ class FeedViewControllerSpec: QuickSpec {
                             subject.feed = Feed(title: "a title", url: NSURL(string: ""), summary: "", query: nil,
                                 tags: ["~custom title"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                             subject.view.layoutIfNeeded()
-                            NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
 
                             cell = subject.tableView.visibleCells[0]
                         }
@@ -249,7 +237,6 @@ class FeedViewControllerSpec: QuickSpec {
                     beforeEach {
                         subject.feed = otherFeed
                         subject.view.layoutIfNeeded()
-                        NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
 
                         cell = subject.tableView.visibleCells[2]
                     }
@@ -268,7 +255,6 @@ class FeedViewControllerSpec: QuickSpec {
                         subject.feed = Feed(title: "a title", url: NSURL(string: ""), summary: "a summary", query: nil,
                             tags: ["`custom summary"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                         subject.view.layoutIfNeeded()
-                        NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
 
                         cell = subject.tableView.visibleCells[2]
                     }
@@ -356,7 +342,6 @@ class FeedViewControllerSpec: QuickSpec {
 
                             it("should removes the tag when tapped") {
                                 action.handler()(action, NSIndexPath(forRow: tagIndex, inSection: 3))
-                                NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
                                 expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
                                 if let tagEditor = navigationController.topViewController as? TagEditorViewController {
                                     expect(tagEditor.tagIndex).to(equal(tagIndex))
@@ -390,7 +375,6 @@ class FeedViewControllerSpec: QuickSpec {
                         }
 
                         it("should bring up the tag editor screen") {
-                            NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
                             expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
                             if let tagEditor = navigationController.topViewController as? TagEditorViewController {
                                 expect(tagEditor.tagIndex).to(beNil())

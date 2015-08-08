@@ -41,11 +41,13 @@ public class FeedView: NSTableRowView {
         nameLabel.autoPinEdge(.Right, toEdge: .Left, ofView: unreadCounter, withOffset: -8)
         nameLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         nameHeight = nameLabel.autoSetDimension(.Height, toSize: 22)
+        nameLabel.backgroundColor = NSColor.clearColor()
         
         summaryLabel.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
         summaryLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
         summaryLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: nameLabel, withOffset: 8, relation: .GreaterThanOrEqual)
         summaryLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
+        summaryLabel.backgroundColor = NSColor.clearColor()
         
         for textView in [nameLabel, summaryLabel] {
             textView.textContainerInset = NSMakeSize(0, 0)

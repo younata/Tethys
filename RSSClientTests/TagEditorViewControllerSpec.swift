@@ -27,7 +27,7 @@ class TagEditorViewControllerSpec: QuickSpec {
             feed = Feed(title: "title", url: NSURL(string: ""), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
             subject.feed = feed
 
-            subject.view.layoutIfNeeded()
+            expect(subject.view).toNot(beNil())
             expect(navigationController.topViewController).to(equal(subject))
         }
 
@@ -52,7 +52,7 @@ class TagEditorViewControllerSpec: QuickSpec {
                 }
 
                 it("should pop the navigation controller") {
-                    expect(navigationController.topViewController).toEventually(equal(rootViewController))
+                    expect(navigationController.topViewController).to(equal(rootViewController))
                 }
             }
 

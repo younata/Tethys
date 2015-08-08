@@ -60,13 +60,12 @@ class ArticleListControllerSpec: QuickSpec {
 
             navigationController = UINavigationController(rootViewController: subject)
 
-            subject.view.layoutIfNeeded()
+            expect(subject.view).toNot(beNil())
         }
 
         describe("as a DataSubscriber") {
             describe("markedArticle:asRead:") {
                 beforeEach {
-                    subject.view.layoutSubviews()
                     let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 3, inSection: 0)) as! ArticleCell
 
                     expect(cell.unread.unread).to(equal(1))
@@ -78,7 +77,6 @@ class ArticleListControllerSpec: QuickSpec {
                 }
 
                 it("should reload the tableViwe") {
-                    subject.view.layoutSubviews()
                     let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 3, inSection: 0)) as! ArticleCell
 
                     expect(cell.unread.unread).to(equal(0))
@@ -198,7 +196,7 @@ class ArticleListControllerSpec: QuickSpec {
                         }
 
                         it("should navigate to an ArticleViewController") {
-                            expect(navigationController.topViewController).toEventually(beAnInstanceOf(ArticleViewController.self))
+                            expect(navigationController.topViewController).to(beAnInstanceOf(ArticleViewController.self))
                             if let articleController = navigationController.topViewController as? ArticleViewController {
                                 expect(articleController.article).to(equal(sortedArticles[1]))
                                 expect(articleController.articles).to(equal(sortedArticles))

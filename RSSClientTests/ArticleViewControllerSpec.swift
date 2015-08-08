@@ -23,7 +23,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
             navigationController = UINavigationController(rootViewController: subject)
 
-            subject.view.layoutIfNeeded()
+            expect(subject.view).toNot(beNil())
         }
 
         describe("Key Commands") {
@@ -308,7 +308,7 @@ class ArticleViewControllerSpec: QuickSpec {
                 }
 
                 it("should bring up an activity view controller") {
-                    expect(subject.presentedViewController).toEventually(beAnInstanceOf(UIActivityViewController.self))
+                    expect(subject.presentedViewController).to(beAnInstanceOf(UIActivityViewController.self))
                     if let activityViewController = subject.presentedViewController as? UIActivityViewController {
                         expect(activityViewController.activityItems().count).to(equal(1))
                         expect(activityViewController.activityItems().first as? NSURL).to(equal(article.link))

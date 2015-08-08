@@ -38,7 +38,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
 
             subject.feed = feed
 
-            subject.view.layoutIfNeeded()
+            expect(subject.view).toNot(beNil())
         }
 
         it("should have a save button") {

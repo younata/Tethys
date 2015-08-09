@@ -11,7 +11,7 @@ public class FeedsViewController: NSViewController {
         tableView.setDelegate(self)
         tableView.setDataSource(self)
         tableView.headerView = nil
-        tableView.addTableColumn(NSTableColumn(identifier: "column"))
+        tableView.addTableColumn(NSTableColumn())
         tableView.usesAlternatingRowBackgroundColors = true
         return tableView
     }()
@@ -22,7 +22,6 @@ public class FeedsViewController: NSViewController {
         let scrollView = NSScrollView(forAutoLayout: ())
         scrollView.hasVerticalScroller = true
         scrollView.documentView = self.tableView
-        scrollView.verticalScroller?.target = self.tableView
         return scrollView
     }()
 
@@ -44,6 +43,12 @@ public class FeedsViewController: NSViewController {
 
         self.dataWriter?.addSubscriber(self)
         self.reload()
+    }
+
+    public override func viewWillLayout() {
+        super.viewWillAppear()
+
+        self.tableView.reloadData()
     }
 
     internal func reload() {
@@ -90,13 +95,12 @@ extension FeedsViewController: NSTableViewDataSource {
 
 extension FeedsViewController: NSTableViewDelegate {
     public func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        let feed = self.feeds[row]
         var feedView = tableView.makeViewWithIdentifier("feed", owner: self) as? FeedView
         if feedView == nil {
             feedView = FeedView(frame: NSZeroRect)
             feedView?.identifier = "feed"
         }
-        feedView?.feed = feed
+        feedView?.feed = self.feeds[row]
         return feedView
     }
 

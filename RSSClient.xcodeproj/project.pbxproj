@@ -216,6 +216,7 @@
 		89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2D1A6613100050685B /* ValidatorView.swift */; };
 		89DBDA9A1A9EBB0C00959AC7 /* feed.rss in Resources */ = {isa = PBXBuildFile; fileRef = 89DBDA991A9EBB0C00959AC7 /* feed.rss */; };
 		89DBDA9C1A9FBCB200959AC7 /* feed2.rss in Resources */ = {isa = PBXBuildFile; fileRef = 89DBDA9B1A9FBC4100959AC7 /* feed2.rss */; };
+		89DFAA601B7684A0004CD9CA /* FeedViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DFAA5F1B7684A0004CD9CA /* FeedViewSpec.swift */; };
 		89E2A33D1B6A856900A40D4E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E2A33C1B6A856900A40D4E /* SettingsViewController.swift */; };
 		89E2A33F1B6AA5F300A40D4E /* SettingsViewControlletSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E2A33E1B6AA5F300A40D4E /* SettingsViewControlletSpec.swift */; };
 		89E2A3431B6C2A2C00A40D4E /* UIKit+PivotalSpecHelperStubs-iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89E2A3421B6C2A2C00A40D4E /* UIKit+PivotalSpecHelperStubs-iOS.framework */; };
@@ -531,6 +532,7 @@
 		89DBDA9B1A9FBC4100959AC7 /* feed2.rss */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = feed2.rss; sourceTree = "<group>"; };
 		89DFAA5D1B75CE65004CD9CA /* PCKMethodRedirector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PCKMethodRedirector.h; sourceTree = "<group>"; };
 		89DFAA5E1B75CE9B004CD9CA /* UITableViewRowAction+Spec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITableViewRowAction+Spec.h"; sourceTree = "<group>"; };
+		89DFAA5F1B7684A0004CD9CA /* FeedViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewSpec.swift; sourceTree = "<group>"; };
 		89E2A33C1B6A856900A40D4E /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		89E2A33E1B6AA5F300A40D4E /* SettingsViewControlletSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewControlletSpec.swift; sourceTree = "<group>"; };
 		89E2A3421B6C2A2C00A40D4E /* UIKit+PivotalSpecHelperStubs-iOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "UIKit+PivotalSpecHelperStubs-iOS.framework"; path = "Vendor/UIKit+PivotalSpecHelperStubs-iOS.framework"; sourceTree = SOURCE_ROOT; };
@@ -794,6 +796,7 @@
 				898979E21B72FF9A00218498 /* AppDelegateSpec.swift */,
 				898979D41B71CE3A00218498 /* MainControllerSpec.swift */,
 				898979E01B72A63100218498 /* FeedsViewControllerSpec.swift */,
+				89DFAA5F1B7684A0004CD9CA /* FeedViewSpec.swift */,
 				898979CA1B7155D700218498 /* Info.plist */,
 			);
 			path = "rNews-OSXTests";
@@ -1538,6 +1541,7 @@
 				898979DF1B72579C00218498 /* OPMLManagerMock.swift in Sources */,
 				898979E11B72A63100218498 /* FeedsViewControllerSpec.swift in Sources */,
 				898979D51B71CE3A00218498 /* MainControllerSpec.swift in Sources */,
+				89DFAA601B7684A0004CD9CA /* FeedViewSpec.swift in Sources */,
 				898979E31B72FF9A00218498 /* AppDelegateSpec.swift in Sources */,
 				898979DE1B72578A00218498 /* FakeDataReadWriter.swift in Sources */,
 			);

@@ -1,5 +1,5 @@
 import Foundation
 
-public func documentsDirectory() -> String {
-    return NSHomeDirectory().stringByAppendingPathComponent("Documents")
+public func documentsDirectory() -> NSString {
+    return (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents")
 }

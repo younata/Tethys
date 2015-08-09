@@ -1,7 +1,7 @@
 import Cocoa
 import rNewsKit
 
-public class FeedView: NSTableRowView {
+public class FeedView: NSView {
     public var feed: Feed? = nil {
         didSet {
             if let f = feed {
@@ -10,6 +10,7 @@ public class FeedView: NSTableRowView {
                 nameHeight?.constant = ceil(NSAttributedString(string: nameLabel.string!, attributes: [NSFontAttributeName: font]).size().height)
                 summaryLabel.string = f.summary
                 unreadCounter.unread = UInt(f.articles.filter({return $0.read == false}).count)
+                imageView.image = f.image
             } else {
                 nameLabel.string = ""
                 summaryLabel.string = ""
@@ -18,9 +19,10 @@ public class FeedView: NSTableRowView {
         }
     }
     
-    let nameLabel = NSTextView(forAutoLayout: ())
-    let summaryLabel = NSTextView(forAutoLayout: ())
-    let unreadCounter = UnreadCounter()
+    public let nameLabel = NSTextView(forAutoLayout: ())
+    public let summaryLabel = NSTextView(forAutoLayout: ())
+    public let unreadCounter = UnreadCounter()
+    public let imageView = NSImageView(forAutoLayout: ())
     
     var nameHeight : NSLayoutConstraint? = nil
 
@@ -30,6 +32,7 @@ public class FeedView: NSTableRowView {
         self.addSubview(nameLabel)
         self.addSubview(summaryLabel)
         self.addSubview(unreadCounter)
+        self.addSubview(self.imageView)
         unreadCounter.translatesAutoresizingMaskIntoConstraints = false
         
         unreadCounter.autoPinEdgeToSuperviewEdge(.Top)
@@ -52,6 +55,7 @@ public class FeedView: NSTableRowView {
         for textView in [nameLabel, summaryLabel] {
             textView.textContainerInset = NSMakeSize(0, 0)
             textView.editable = false
+            textView.selectable = false
             textView.font = NSFont.systemFontOfSize(12)
         }
     }

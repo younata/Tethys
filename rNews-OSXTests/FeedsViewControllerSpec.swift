@@ -59,7 +59,48 @@ class FeedsViewControllerSpec: QuickSpec {
                 }
 
                 it("should be configured for the feed") {
-                    expect(row?.feed).to(equal(feeds[0]))
+                    expect(row?.feed).to(equal(feed1))
+                }
+
+                describe("the row's delegate") {
+                    var delegate: FeedViewDelegate? = nil
+
+                    beforeEach {
+                        delegate = row?.delegate
+                        expect(delegate).toNot(beNil())
+                    }
+
+                    it("should forward a click event to the MainController") {
+                        var clickedFeed: Feed? = nil
+                        subject.onFeedSelection = {feed in
+                            clickedFeed = feed
+                        }
+                        delegate?.didClickFeed(feed1)
+                        expect(clickedFeed).to(equal(feed1))
+                    }
+
+                    describe("for a secondary click") {
+                        it("should return menu options") {
+                            let menuOptions = ["Delete"]
+                            expect(delegate?.menuOptionsForFeed(feed1)).to(equal(menuOptions))
+                        }
+
+                        describe("selecting Delete in the menu option") {
+                            let updatedFeeds = [feed2]
+                            beforeEach {
+                                dataReadWriter.feedsList = updatedFeeds
+                                delegate?.didSelectMenuOption("Delete", forFeed: feed1)
+                            }
+
+                            it("should delete the feed when the 'delete' option is selected") {
+                                expect(dataReadWriter.lastDeletedFeed).to(equal(feed1))
+                            }
+
+                            it("should update the feeds") {
+                                expect(dataSource.numberOfRowsInTableView?(subject.tableView)).to(equal(updatedFeeds.count))
+                            }
+                        }
+                    }
                 }
             }
         }

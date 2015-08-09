@@ -1,8 +1,15 @@
 import Cocoa
 import rNewsKit
 
+public protocol FeedViewDelegate {
+    func didClickFeed(feed: Feed)
+    func menuOptionsForFeed(feed: Feed) -> [String]
+    func didSelectMenuOption(menuOption: String, forFeed: Feed)
+
+}
+
 public class FeedView: NSView {
-    public var feed: Feed? = nil {
+    public private(set) var feed: Feed? = nil {
         didSet {
             if let f = feed {
                 self.nameLabel.string = f.title
@@ -18,6 +25,13 @@ public class FeedView: NSView {
             }
         }
     }
+
+    public private(set) var delegate: FeedViewDelegate? = nil
+
+    public func configure(feed: Feed, delegate: FeedViewDelegate) {
+        self.feed = feed
+        self.delegate = delegate
+    }
     
     public let nameLabel = NSTextView(forAutoLayout: ())
     public let summaryLabel = NSTextView(forAutoLayout: ())
@@ -25,6 +39,34 @@ public class FeedView: NSView {
     public let imageView = NSImageView(forAutoLayout: ())
     
     var nameHeight : NSLayoutConstraint? = nil
+
+    public override func mouseUp(theEvent: NSEvent) {
+        if let feed = self.feed {
+            self.delegate?.didClickFeed(feed)
+        }
+    }
+
+    public override func menuForEvent(event: NSEvent) -> NSMenu? {
+        guard let feed = self.feed else {
+            return nil
+        }
+        let menu = NSMenu(title: "OogaBooga")
+        if let menuOptions = self.delegate?.menuOptionsForFeed(feed) {
+            for option in menuOptions {
+                let menuItem = NSMenuItem(title: option, action: "didSelectMenuItem:", keyEquivalent: "")
+                menuItem.target = self
+                menu.addItem(menuItem)
+            }
+        }
+        return menu
+    }
+
+    internal func didSelectMenuItem(menuItem: NSMenuItem) {
+        guard let feed = self.feed else {
+            return
+        }
+        self.delegate?.didSelectMenuOption(menuItem.title, forFeed: feed)
+    }
 
     public override init(frame: NSRect) {
         super.init(frame: frame)

@@ -5,16 +5,16 @@ public class FeedView: NSView {
     public var feed: Feed? = nil {
         didSet {
             if let f = feed {
-                nameLabel.string = f.title
+                self.nameLabel.string = f.title
                 let font : NSFont = nameLabel.font!
-                nameHeight?.constant = ceil(NSAttributedString(string: nameLabel.string!, attributes: [NSFontAttributeName: font]).size().height)
-                summaryLabel.string = f.summary
-                unreadCounter.unread = UInt(f.articles.filter({return $0.read == false}).count)
-                imageView.image = f.image
+                self.nameHeight?.constant = ceil(NSAttributedString(string: nameLabel.string!, attributes: [NSFontAttributeName: font]).size().height)
+                self.summaryLabel.string = f.summary
+                self.unreadCounter.unread = UInt(f.articles.filter({return $0.read == false}).count)
+                self.imageView.image = f.image
             } else {
-                nameLabel.string = ""
-                summaryLabel.string = ""
-                unreadCounter.unread = 0
+                self.nameLabel.string = ""
+                self.summaryLabel.string = ""
+                self.unreadCounter.unread = 0
             }
         }
     }
@@ -29,30 +29,35 @@ public class FeedView: NSView {
     public override init(frame: NSRect) {
         super.init(frame: frame)
         
-        self.addSubview(nameLabel)
-        self.addSubview(summaryLabel)
-        self.addSubview(unreadCounter)
+        self.addSubview(self.nameLabel)
+        self.addSubview(self.summaryLabel)
         self.addSubview(self.imageView)
-        unreadCounter.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(self.unreadCounter)
+        self.unreadCounter.translatesAutoresizingMaskIntoConstraints = false
         
-        unreadCounter.autoPinEdgeToSuperviewEdge(.Top)
-        unreadCounter.autoPinEdgeToSuperviewEdge(.Right)
-        unreadCounter.autoSetDimensionsToSize(CGSizeMake(30, 30))
-        unreadCounter.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0, relation: .GreaterThanOrEqual)
+        self.unreadCounter.autoPinEdgeToSuperviewEdge(.Top)
+        self.unreadCounter.autoPinEdgeToSuperviewEdge(.Right)
+        self.unreadCounter.autoSetDimensionsToSize(CGSizeMake(30, 30))
+        self.unreadCounter.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0, relation: .GreaterThanOrEqual)
         
-        nameLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
-        nameLabel.autoPinEdge(.Right, toEdge: .Left, ofView: unreadCounter, withOffset: -8)
-        nameLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-        nameHeight = nameLabel.autoSetDimension(.Height, toSize: 22)
-        nameLabel.backgroundColor = NSColor.clearColor()
+        self.nameLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
+        self.nameLabel.autoPinEdge(.Right, toEdge: .Left, ofView: unreadCounter, withOffset: -8)
+        self.nameLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
+        self.nameHeight = nameLabel.autoSetDimension(.Height, toSize: 22)
+        self.nameLabel.backgroundColor = NSColor.clearColor()
         
-        summaryLabel.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
-        summaryLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
-        summaryLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: nameLabel, withOffset: 8, relation: .GreaterThanOrEqual)
-        summaryLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-        summaryLabel.backgroundColor = NSColor.clearColor()
+        self.summaryLabel.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
+        self.summaryLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
+        self.summaryLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: nameLabel, withOffset: 8, relation: .GreaterThanOrEqual)
+        self.summaryLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
+        self.summaryLabel.backgroundColor = NSColor.clearColor()
+
+        self.imageView.autoPinEdgeToSuperviewEdge(.Trailing)
+        self.imageView.autoPinEdgeToSuperviewEdge(.Top, withInset: 0, relation: .GreaterThanOrEqual)
+        self.imageView.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0, relation: .GreaterThanOrEqual)
+        self.imageView.autoAlignAxisToSuperviewAxis(.Horizontal)
         
-        for textView in [nameLabel, summaryLabel] {
+        for textView in [self.nameLabel, self.summaryLabel] {
             textView.textContainerInset = NSMakeSize(0, 0)
             textView.editable = false
             textView.selectable = false

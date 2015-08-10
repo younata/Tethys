@@ -16,7 +16,7 @@ public class AppDelegate: NSObject, NSApplicationDelegate {
     var windowController: NSWindowController? = nil
 
     public func applicationDidFinishLaunching(aNotification: NSNotification) {
-        let injector = Injector(module: KitModule())
+        let injector = Injector(module: KitModule(), AppModule())
         mainController?.window = window
         mainController?.configure(injector)
     }

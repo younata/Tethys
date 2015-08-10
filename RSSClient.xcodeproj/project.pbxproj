@@ -29,6 +29,8 @@
 		8935F5E01B462B7A000FFD5D /* FakeURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F517071B1C12A30005AB04 /* FakeURLSession.swift */; };
 		8935F5E11B462B8C000FFD5D /* OPMLManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C11B3A7CCC0097045A /* OPMLManagerMock.swift */; };
 		8935F5E21B462B8F000FFD5D /* FakeDataRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4355FF1A7ABA4F00A961B9 /* FakeDataRepository.swift */; };
+		8937F6B51B77AD780044A442 /* AppModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8937F6B41B77AD780044A442 /* AppModule.swift */; };
+		8937F6B71B77AE5F0044A442 /* AppModuleSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8937F6B61B77AE5F0044A442 /* AppModuleSpec.swift */; };
 		893F93E41B237EBC00B52194 /* UnreadCounterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893F93E31B237EBC00B52194 /* UnreadCounterSpec.swift */; };
 		894304241B45089A000078DC /* rNewsKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 894304231B45089A000078DC /* rNewsKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8943042B1B45089A000078DC /* rNewsKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 894304211B45089A000078DC /* rNewsKit.framework */; };
@@ -397,6 +399,8 @@
 		8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OPMLParser.swift; path = ../RSSClient/OPMLParser.swift; sourceTree = "<group>"; };
 		8933E93219EE33F700ECFF3F /* UIColor+RSSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+RSSClient.h"; sourceTree = "<group>"; };
 		8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+RSSClient.m"; sourceTree = "<group>"; };
+		8937F6B41B77AD780044A442 /* AppModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppModule.swift; sourceTree = "<group>"; };
+		8937F6B61B77AE5F0044A442 /* AppModuleSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppModuleSpec.swift; sourceTree = "<group>"; };
 		893F93E31B237EBC00B52194 /* UnreadCounterSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounterSpec.swift; sourceTree = "<group>"; };
 		894304211B45089A000078DC /* rNewsKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = rNewsKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		894304231B45089A000078DC /* rNewsKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rNewsKit.h; sourceTree = "<group>"; };
@@ -731,6 +735,7 @@
 			children = (
 				89635F8D1A13C2E30052C248 /* AppDelegate.swift */,
 				898046D41A1C385A00EB29F0 /* MainController.swift */,
+				8937F6B41B77AD780044A442 /* AppModule.swift */,
 				8967DA041A409274000424F4 /* Feeds */,
 				8967DA091A40979D000424F4 /* Articles */,
 				897F70FC1A3A4E7700ECE1A1 /* UnreadCounter.swift */,
@@ -794,6 +799,7 @@
 			isa = PBXGroup;
 			children = (
 				898979E21B72FF9A00218498 /* AppDelegateSpec.swift */,
+				8937F6B61B77AE5F0044A442 /* AppModuleSpec.swift */,
 				898979D41B71CE3A00218498 /* MainControllerSpec.swift */,
 				898979E01B72A63100218498 /* FeedsViewControllerSpec.swift */,
 				89DFAA5F1B7684A0004CD9CA /* FeedViewSpec.swift */,
@@ -1490,6 +1496,7 @@
 				897F70FD1A3A4E7700ECE1A1 /* UnreadCounter.swift in Sources */,
 				898979D31B71CC5200218498 /* NSColor+RSSClient.swift in Sources */,
 				89635F8E1A13C2E30052C248 /* AppDelegate.swift in Sources */,
+				8937F6B51B77AD780044A442 /* AppModule.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1542,6 +1549,7 @@
 				898979E11B72A63100218498 /* FeedsViewControllerSpec.swift in Sources */,
 				898979D51B71CE3A00218498 /* MainControllerSpec.swift in Sources */,
 				89DFAA601B7684A0004CD9CA /* FeedViewSpec.swift in Sources */,
+				8937F6B71B77AE5F0044A442 /* AppModuleSpec.swift in Sources */,
 				898979E31B72FF9A00218498 /* AppDelegateSpec.swift in Sources */,
 				898979DE1B72578A00218498 /* FakeDataReadWriter.swift in Sources */,
 			);

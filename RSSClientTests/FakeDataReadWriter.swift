@@ -59,12 +59,16 @@ class FakeDataReadWriter : DataRetriever, DataWriter {
     }
 
     var lastDeletedFeed: Feed? = nil
+    var deletedFeeds = Array<Feed>()
     func deleteFeed(feed: Feed) {
+        deletedFeeds.append(feed)
         lastDeletedFeed = feed
     }
 
     var lastFeedMarkedRead: Feed? = nil
+    var markedReadFeeds = Array<Feed>()
     func markFeedAsRead(feed: Feed) {
+        markedReadFeeds.append(feed)
         lastFeedMarkedRead = feed
     }
 

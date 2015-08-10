@@ -11,7 +11,7 @@ public class MainController: NSViewController {
         return feedsList
     }()
 
-    public lazy var splitViewController : NSSplitViewController = {
+    public lazy var splitViewController: NSSplitViewController = {
         let controller = NSSplitViewController()
         controller.splitView.vertical = false
         self.addChildViewController(controller)
@@ -59,7 +59,6 @@ public class MainController: NSViewController {
     }
 
     @IBAction public func openDocument(sender: AnyObject) {
-        // open an opml file and import that...
         guard let injector = self.raInjector,
               let panel = injector.create(NSOpenPanel.self) as? NSOpenPanel else {
                 return

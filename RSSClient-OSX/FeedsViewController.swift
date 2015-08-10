@@ -49,7 +49,7 @@ public class FeedsViewController: NSViewController {
         self.reload()
 
         if self.mainMenu?.itemWithTitle("Feeds") == nil {
-            let menuItem = NSMenuItem(title: "Feeds", action: "foo", keyEquivalent: "")
+            let menuItem = NSMenuItem(title: "Feeds", action: "unused", keyEquivalent: "")
             menuItem.target = self
             let submenu = NSMenu(title: "Feeds")
 
@@ -76,7 +76,7 @@ public class FeedsViewController: NSViewController {
         self.tableView.reloadData()
     }
 
-    internal func foo() {}
+    internal func unused() {}
 
     internal func didSelectDeleteAllFeeds() {
         for feed in self.feeds {

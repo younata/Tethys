@@ -16,6 +16,16 @@ private class FakeDataSubscriber: DataSubscriber {
         read = asRead
     }
 
+    private var deletedArticle: Article? = nil
+    private func deletedArticle(article: Article) {
+        deletedArticle = article
+    }
+
+    private var updatedFeeds: [Feed]? = nil
+    private func updatedFeeds(feeds: [Feed]) {
+        updatedFeeds = feeds
+    }
+
     init() {}
 }
 
@@ -440,6 +450,11 @@ class FeedRepositorySpec: QuickSpec {
                         expect(searchIndex?.lastItemsDeleted).to(equal([identifier]))
                     }
                 }
+
+                it("should inform any subscribes") {
+                    mainQueue.runNextOperation()
+                    expect(dataSubscriber.deletedArticle).to(equal(article))
+                }
             }
 
             describe("markArticle:asRead:") {
@@ -579,6 +594,10 @@ class FeedRepositorySpec: QuickSpec {
                                 if #available(iOS 9.0, *) {
                                     expect(searchIndex?.lastItemsAdded.count).to(equal(13))
                                 }
+                            }
+
+                            it("should inform any subscribers") {
+                                expect(dataSubscriber.updatedFeeds).toNot(beNil())
                             }
 
                             context("when the feed contains an image") { // which it does

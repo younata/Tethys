@@ -3,6 +3,24 @@ import Ra
 import rNewsKit
 import CoreSpotlight
 
+extension UIApplication: DataSubscriber {
+    public func markedArticle(article: Article, asRead read: Bool) {
+        let incrementBy = read ? -1 : 1
+        self.applicationIconBadgeNumber += incrementBy
+    }
+
+    public func deletedArticle(article: Article) {
+        if (!article.read) {
+            self.applicationIconBadgeNumber -= 1
+        }
+    }
+
+    public func updatedFeeds(feeds: [Feed]) {
+        let unreadCount = feeds.reduce(0) { $0 + $1.unreadArticles().count }
+        self.applicationIconBadgeNumber = unreadCount
+    }
+}
+
 @UIApplicationMain
 public class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -46,6 +64,10 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             UITabBar.appearance().tintColor = UIColor.darkGreenColor()
 
             self.createControllerHierarchy()
+
+            if let dataWriter = self.anInjector.create(DataWriter.self) as? DataWriter {
+                dataWriter.addSubscriber(application)
+            }
 
             notificationHandler?.enableNotifications(application)
 

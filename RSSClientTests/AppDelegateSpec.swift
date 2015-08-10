@@ -73,6 +73,17 @@ class AppDelegateSpec: QuickSpec {
                 expect(notificationHandler.didEnableNotifications).to(beTruthy())
             }
 
+            it("should add the UIApplication object to the dataWriter's subscribers") {
+                var applicationInSubscribers = false
+                for subscriber in dataReadWriter.subscribers {
+                    if subscriber is UIApplication {
+                        applicationInSubscribers = true
+                        break
+                    }
+                }
+                expect(applicationInSubscribers).to(beTruthy())
+            }
+
             describe("window view controllers") {
                 var splitViewController: UISplitViewController! = nil
                 
@@ -182,11 +193,8 @@ class AppDelegateSpec: QuickSpec {
                     }).to(beTruthy())
                 }
 
-                it("should set the responderArray") {
-                    expect(responderArray.count).to(equal(1))
-                    if let item = responderArray.first {
-                        expect(item).to(beAnInstanceOf(ArticleViewController.self))
-                    }
+                it("should not set the responderArray") {
+                    expect(responderArray.count).to(equal(0))
                 }
 
                 it("should show the article") {
@@ -207,14 +215,11 @@ class AppDelegateSpec: QuickSpec {
                     }
                 }
 
-                it("should set the responderArray") {
+                it("should not set the responderArray") {
                     guard #available(iOS 9.0, *) else {
                         return
                     }
-                    expect(responderArray.count).to(equal(1))
-                    if let item = responderArray.first {
-                        expect(item).to(beAnInstanceOf(ArticleViewController.self))
-                    }
+                    expect(responderArray.count).to(equal(0))
                 }
 
                 it("should show the article") {

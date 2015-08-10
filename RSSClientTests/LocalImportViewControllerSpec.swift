@@ -84,7 +84,7 @@ class LocalImportViewControllerSpec: QuickSpec {
         }
 
         it("should start out with 0 rows in each section") {
-            expect(subject.tableView(tableView, numberOfRowsInSection: 0)).to(equal(0))
+            expect(subject.tableView(tableView, numberOfRowsInSection: 0)).to(equal(1))
             expect(subject.tableView(tableView, numberOfRowsInSection: 1)).to(equal(0))
         }
 

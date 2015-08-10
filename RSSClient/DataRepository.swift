@@ -17,6 +17,10 @@ public protocol DataRetriever {
 
 public protocol DataSubscriber {
     func markedArticle(article: Article, asRead read: Bool)
+
+    func deletedArticle(article: Article)
+
+    func updatedFeeds(feeds: [Feed])
 }
 
 public protocol DataWriter {
@@ -216,6 +220,11 @@ internal class DataRepository: DataRetriever, DataWriter {
                     self.searchIndex?.deleteIdentifierFromIndex([identifier]) {error in
                     }
                 }
+                self.mainQueue.addOperationWithBlock {
+                    for subscriber in self.subscribers {
+                        subscriber.deletedArticle(article)
+                    }
+                }
             }
         }
     }
@@ -277,6 +286,9 @@ internal class DataRepository: DataRetriever, DataWriter {
                     if (feedsLeft == 0) {
                         self.mainQueue.addOperationWithBlock {
                             callback(feeds, errors)
+                            for subscriber in self.subscribers {
+                                subscriber.updatedFeeds(feeds)
+                            }
                         }
                     }
                 }

@@ -50,7 +50,7 @@ public class FeedView: NSView {
         guard let feed = self.feed else {
             return nil
         }
-        let menu = NSMenu(title: "OogaBooga")
+        let menu = NSMenu(title: "")
         if let menuOptions = self.delegate?.menuOptionsForFeed(feed) {
             for option in menuOptions {
                 let menuItem = NSMenuItem(title: option, action: "didSelectMenuItem:", keyEquivalent: "")

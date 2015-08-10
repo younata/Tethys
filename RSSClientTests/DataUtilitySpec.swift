@@ -30,29 +30,39 @@ class DataUtilitySpec: QuickSpec {
         }
 
         describe("updateFeedImage:info:urlSession:") {
+            let imageURL = NSURL(string: "https://raw.githubusercontent.com/younata/RSSClient/master/RSSClient/Images.xcassets/AppIcon.appiconset/Icon@2x.png")!
             beforeEach {
-                let imageURL = NSURL(string: "https://raw.githubusercontent.com/younata/RSSClient/master/RSSClient/Images.xcassets/AppIcon.appiconset/Icon@2x.png")!
                 info = Muon.Feed(title: "example", link: NSURL(string: "http://example.com")!, description: "example", articles: [], imageURL: imageURL)
             }
 
             context("when the feed doesn't have an existing image") {
                 it("should download the image pointed at by info.imageURL and set it as the feed image") {
-                    DataUtility.updateFeedImage(feed, info: info, urlSession: NSURLSession.sharedSession())
+                    let urlSession = FakeURLSession()
+                    DataUtility.updateFeedImage(feed, info: info, urlSession: urlSession)
+                    let image = NSBundle(forClass: self.classForCoder).imageForResource("AppIcon")!
+                    #if os(OSX)
+                        let data = image.TIFFRepresentation
+                    #elseif os(iOS)
+                        let data = UIImagePNGRepresentation(image)
+                    #endif
+                    urlSession.lastCompletionHandler(data, nil, nil)
 
-                    expect(feed.hasChanges).toEventually(beTruthy(), timeout: 60)
-                    expect(feed.image).toEventuallyNot(beNil(), timeout: 60)
+                    expect(feed.image).toNot(beNil())
                 }
             }
             context("when the feed has an existing image") {
                 beforeEach {
-                    feed.image = Image(named: "AppIcon60x60")
+                    feed.image = NSBundle(forClass: self.classForCoder).imageForResource("AppIcon")!
                     do {
                         try feed.managedObjectContext?.save()
                     } catch _ {
                     }
                 }
+
                 it("should not update the feed image") {
-                    DataUtility.updateFeedImage(feed, info: info, urlSession: NSURLSession.sharedSession())
+                    let urlSession = FakeURLSession()
+                    DataUtility.updateFeedImage(feed, info: info, urlSession: urlSession)
+                    expect(urlSession.lastURL).to(beNil())
 
                     expect(feed.hasChanges).to(beFalsy())
                 }

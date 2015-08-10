@@ -34,8 +34,8 @@ internal class DataUtility {
                 }
                 if let d = data {
                     if let image = Image(data: d) {
-                        feed.image = image
                         feed.managedObjectContext?.performBlockAndWait {
+                            feed.image = image
                             do {
                                 try feed.managedObjectContext?.save()
                             } catch {}

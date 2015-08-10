@@ -189,6 +189,7 @@ internal class DataRepository: DataRetriever, DataWriter {
                 if #available(iOS 9.0, *) {
                     self.searchIndex?.deleteIdentifierFromIndex(articleIDsToDelete) {_ in }
                 }
+                self.save()
             }
         }
     }
@@ -231,6 +232,7 @@ internal class DataRepository: DataRetriever, DataWriter {
                         subscriber.deletedArticle(article)
                     }
                 }
+                self.save()
             }
         }
     }

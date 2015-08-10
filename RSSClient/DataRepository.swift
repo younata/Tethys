@@ -232,11 +232,6 @@ internal class DataRepository: DataRetriever, DataWriter {
     internal func markArticle(article: Article, asRead: Bool) {
         self.backgroundQueue.addOperationWithBlock {
             self.privateMarkArticle(article, asRead: asRead)
-            self.mainQueue.addOperationWithBlock {
-                for subscriber in self.subscribers {
-                    subscriber.markedArticle(article, asRead: asRead)
-                }
-            }
         }
     }
 
@@ -249,6 +244,8 @@ internal class DataRepository: DataRetriever, DataWriter {
                 }
                 return
             }
+            var updatedFeeds: [Feed] = []
+            var errors: [NSError] = []
             for feed in feeds {
                 guard let url = feed.url where feed.remainingWait == 0 else {
                     feed.remainingWait--
@@ -256,8 +253,6 @@ internal class DataRepository: DataRetriever, DataWriter {
                     feedsLeft--
                     continue
                 }
-                var errors: [NSError] = []
-                var feeds: [Feed] = []
                 loadFeed(url, urlSession: self.urlSession, queue: self.backgroundQueue) {muonFeed, error in
                     if let err = error {
                         if err.domain == "com.rachelbrindle.rssclient.server" {
@@ -279,15 +274,15 @@ internal class DataRepository: DataRetriever, DataWriter {
 
                         self.synchronousSaveFeed(feed)
 
-                        feeds.append(feed)
+                        updatedFeeds.append(feed)
                     }
 
                     feedsLeft--
                     if (feedsLeft == 0) {
                         self.mainQueue.addOperationWithBlock {
-                            callback(feeds, errors)
+                            callback(updatedFeeds, errors)
                             for subscriber in self.subscribers {
-                                subscriber.updatedFeeds(feeds)
+                                subscriber.updatedFeeds(updatedFeeds)
                             }
                         }
                     }
@@ -434,6 +429,11 @@ internal class DataRepository: DataRetriever, DataWriter {
         if let cdarticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", articleID), managedObjectContext: self.objectContext).first as? CoreDataArticle {
             cdarticle.read = read
             save()
+        }
+        self.mainQueue.addOperationWithBlock {
+            for subscriber in self.subscribers {
+                subscriber.markedArticle(article, asRead: read)
+            }
         }
     }
 }

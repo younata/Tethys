@@ -376,6 +376,12 @@ class FeedRepositorySpec: QuickSpec {
                         expect(article.read).to(beTruthy())
                     }
                 }
+
+                it("should inform any subscribers") {
+                    mainQueue.runNextOperation()
+                    expect(dataSubscriber.markedArticle).toNot(beNil())
+                    expect(dataSubscriber.read).to(beTruthy())
+                }
             }
 
             describe("saveArticle") {

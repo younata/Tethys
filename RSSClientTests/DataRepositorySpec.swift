@@ -327,7 +327,7 @@ class FeedRepositorySpec: QuickSpec {
 
                 it("should update the data store") {
                     let updatedFeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feed1.objectID),
-                        managedObjectContext: moc).first as? CoreDataFeed
+                        managedObjectContext: moc, sortDescriptors: []).first as? CoreDataFeed
                     expect(updatedFeed?.summary).to(equal(feed.summary))
                     if let updated = updatedFeed {
                         expect(Feed(feed: updated)).to(equal(feed))
@@ -394,7 +394,7 @@ class FeedRepositorySpec: QuickSpec {
                     article = feed.articles.first
 
                     let coreDataArticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
-                        managedObjectContext: moc).first
+                        managedObjectContext: moc, sortDescriptors: []).first
                     expect(coreDataArticle).toNot(beNil())
                     article.title = "hello"
                     subject.saveArticle(article)
@@ -403,7 +403,7 @@ class FeedRepositorySpec: QuickSpec {
 
                 it("should update the data store") {
                     let updatedArticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
-                        managedObjectContext: moc).first as? CoreDataArticle
+                        managedObjectContext: moc, sortDescriptors: []).first as? CoreDataArticle
                     expect(updatedArticle?.title).to(equal(article.title))
                     if let updated = updatedArticle {
                         expect(Article(article: updated, feed: nil)).to(equal(article))
@@ -442,7 +442,7 @@ class FeedRepositorySpec: QuickSpec {
                     article = feed.articles.first
 
                     let coreDataArticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
-                        managedObjectContext: moc).first
+                        managedObjectContext: moc, sortDescriptors: []).first
                     expect(coreDataArticle).toNot(beNil())
                     subject.deleteArticle(article)
                     backgroundQueue.runNextOperation()
@@ -450,7 +450,7 @@ class FeedRepositorySpec: QuickSpec {
 
                 it("should remove the article from the data store") {
                     let coreDataArticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
-                        managedObjectContext: moc).first
+                        managedObjectContext: moc, sortDescriptors: []).first
                     expect(coreDataArticle).to(beNil())
                 }
 
@@ -487,7 +487,7 @@ class FeedRepositorySpec: QuickSpec {
 
                 it("should mark the article as read in the data store") {
                     let coreDataArticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
-                        managedObjectContext: moc).first
+                        managedObjectContext: moc, sortDescriptors: []).first
                     expect(coreDataArticle).toNot(beNil())
                     if let cda = coreDataArticle as? CoreDataArticle {
                         expect(cda.read).to(beTruthy())
@@ -510,7 +510,7 @@ class FeedRepositorySpec: QuickSpec {
 
                     it("should mark the article as unread in the data store") {
                         let coreDataArticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
-                            managedObjectContext: moc).first
+                            managedObjectContext: moc, sortDescriptors: []).first
                         expect(coreDataArticle).toNot(beNil())
                         if let cda = coreDataArticle as? CoreDataArticle {
                             expect(cda.read).to(beFalsy())
@@ -577,7 +577,7 @@ class FeedRepositorySpec: QuickSpec {
 
                     it("should decrement the remainingWait of every feed that did have a remaining wait of > 0") {
                         let updatedFeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feed3.objectID),
-                            managedObjectContext: moc).first as? CoreDataFeed
+                            managedObjectContext: moc, sortDescriptors: []).first as? CoreDataFeed
                         expect(updatedFeed?.remainingWait).to(equal(NSNumber(integer: 0)))
                     }
 
@@ -662,7 +662,7 @@ class FeedRepositorySpec: QuickSpec {
 
                         it("should increment the remainingWait of the feed") {
                             let updatedFeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feed1.objectID),
-                                managedObjectContext: moc).first as? CoreDataFeed
+                                managedObjectContext: moc, sortDescriptors: []).first as? CoreDataFeed
                             expect(updatedFeed?.remainingWait).to(equal(NSNumber(integer: 1)))
                         }
                     }

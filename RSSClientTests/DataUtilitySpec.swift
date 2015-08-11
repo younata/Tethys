@@ -198,7 +198,7 @@ class DataUtilitySpec: QuickSpec {
             }
         }
 
-        describe("entities:matchingPredicate:managedObjectContext:sortDescriptors") {
+        describe("entities:matchingPredicate:managedObjectContext:sortDescriptors:mapper:") {
             beforeEach {
                 feed.title = "example"
                 feed.summary = "example"
@@ -213,16 +213,29 @@ class DataUtilitySpec: QuickSpec {
 
             it("should return all objects that match the given predicate") {
                 let predicate = NSPredicate(format: "title = %@", "example")
-                let ret = DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: ctx)
+                let ret = DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: ctx, sortDescriptors: []) { return $0 }
                 expect(ret.count).to(equal(2))
             }
 
             it("should sort the results if you ask it to") {
                 let predicate = NSPredicate(format: "title = %@", "example")
                 let sortDescriptor = NSSortDescriptor(key: "summary", ascending: true)
-                let ret = DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: ctx, sortDescriptors: [sortDescriptor])
+                let ret = DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: ctx, sortDescriptors: [sortDescriptor]) { return $0 }
                 expect(ret.first?.valueForKey("summary") as? String).to(equal("example"))
                 expect(ret.last?.valueForKey("summary") as? String).to(equal("other"))
+            }
+
+            it("should omit objects that return nil in the mapper") {
+                let predicate = NSPredicate(format: "title = %@", "example")
+                var omit = true
+                let ret = DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: ctx, sortDescriptors: []) {
+                    if omit {
+                        omit = false
+                        return nil
+                    }
+                    return $0
+                }
+                expect(ret.count).to(equal(1))
             }
         }
 

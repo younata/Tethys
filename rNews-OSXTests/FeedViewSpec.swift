@@ -145,7 +145,7 @@ class FeedViewSpec: QuickSpec {
             itBehavesLike("a configured feedView") {
                 return [
                     "title": feed.title,
-                    "summary": feed.summary,
+                    "summary": feed.displaySummary,
                     "unread": 0
                 ]
             }
@@ -168,7 +168,7 @@ class FeedViewSpec: QuickSpec {
             itBehavesLike("a configured feedView") {
                 return [
                     "title": feed.title,
-                    "summary": feed.summary,
+                    "summary": feed.displaySummary,
                     "unread": 1
                 ]
             }
@@ -188,7 +188,7 @@ class FeedViewSpec: QuickSpec {
             itBehavesLike("a configured feedView") {
                 return [
                     "title": feed.title,
-                    "summary": feed.summary,
+                    "summary": feed.displaySummary,
                     "unread": 0,
                     "image": feed.image!
                 ]

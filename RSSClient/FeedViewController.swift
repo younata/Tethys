@@ -5,7 +5,7 @@ import rNewsKit
 public class FeedViewController: UITableViewController {
     public var feed: rNewsKit.Feed? = nil {
         didSet {
-            self.navigationItem.title = self.feed?.title ?? ""
+            self.navigationItem.title = self.feed?.displayTitle ?? ""
             self.tableView.reloadData()
         }
     }
@@ -54,7 +54,7 @@ public class FeedViewController: UITableViewController {
         let saveTitle = NSLocalizedString("Save", comment: "")
         let saveButton = UIBarButtonItem(title: saveTitle, style: .Plain, target: self, action: "save")
         self.navigationItem.rightBarButtonItem = saveButton
-        self.navigationItem.title = self.feed?.title ?? ""
+        self.navigationItem.title = self.feed?.displayTitle ?? ""
 
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.registerClass(TextFieldCell.self, forCellReuseIdentifier: "text")
@@ -128,7 +128,7 @@ public class FeedViewController: UITableViewController {
         case .Title:
             if let title = feed?.tags.filter({$0.hasPrefix("~")}).first {
                 cell.textLabel?.text = title.substringFromIndex(title.startIndex.successor())
-            } else if let title = ((feed?.title.isEmpty ?? true) ? nil : feed?.title) {
+            } else if let title = feed?.displayTitle where !title.isEmpty {
                 cell.textLabel?.text = title
             } else {
                 cell.textLabel?.text = NSLocalizedString("No title available", comment: "")
@@ -168,7 +168,7 @@ public class FeedViewController: UITableViewController {
         case .Summary:
             if let summary = feed?.tags.filter({$0.hasPrefix("`")}).first {
                 cell.textLabel?.text = summary.substringFromIndex(summary.startIndex.successor())
-            } else if let summary = ((feed?.summary.isEmpty ?? true) ? nil : feed?.summary)  {
+            } else if let summary = feed?.displaySummary where !summary.isEmpty  {
                 cell.textLabel?.text = summary
             } else {
                 cell.textLabel?.text = NSLocalizedString("No summary available", comment: "")

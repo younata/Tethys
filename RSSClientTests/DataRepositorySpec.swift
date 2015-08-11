@@ -46,7 +46,7 @@ class FeedRepositorySpec: QuickSpec {
         var article1: CoreDataArticle! = nil
         var article2: CoreDataArticle! = nil
 
-        var searchIndex: FakeSearchIndex? = nil
+        var searchIndex: FakeSearchIndex! = nil
 
         var urlSession: FakeURLSession! = nil
 

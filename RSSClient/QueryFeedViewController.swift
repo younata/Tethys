@@ -51,7 +51,7 @@ public class QueryFeedViewController: UITableViewController {
         let saveTitle = NSLocalizedString("Save", comment: "")
         let saveButton = UIBarButtonItem(title: saveTitle, style: .Plain, target: self, action: "save")
         self.navigationItem.rightBarButtonItem = saveButton
-        self.navigationItem.title = self.feed?.title ?? NSLocalizedString("New Query Feed", comment: "")
+        self.navigationItem.title = self.feed?.displayTitle ?? NSLocalizedString("New Query Feed", comment: "")
 
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tags")
         tableView.registerClass(TextViewCell.self, forCellReuseIdentifier: "cell")
@@ -154,7 +154,7 @@ public class QueryFeedViewController: UITableViewController {
             cell.textView.textColor = UIColor.blackColor()
             if let title = feed?.tags.filter({$0.hasPrefix("~")}).first {
                 cell.textView.text = title.substringFromIndex(title.startIndex.successor())
-            } else if let title = (feed?.title == "" ? nil : feed?.title) {
+            } else if let title = feed?.displayTitle where !title.isEmpty {
                 cell.textView.text = title
             } else {
                 cell.textView.text = NSLocalizedString("No title available", comment: "")
@@ -172,7 +172,7 @@ public class QueryFeedViewController: UITableViewController {
             cell.textView.textColor = UIColor.blackColor()
             if let summary = feed?.tags.filter({$0.hasPrefix("`")}).first {
                 cell.textView.text = summary.substringFromIndex(summary.startIndex.successor())
-            } else if let summary = (feed?.summary == "" ? nil : feed?.summary)  {
+            } else if let summary = feed?.displaySummary where !summary.isEmpty {
                 cell.textView.text = summary
             } else {
                 cell.textView.text = NSLocalizedString("No summary available", comment: "")

@@ -58,7 +58,7 @@ class FeedRepositorySpec: QuickSpec {
             feed1 = createFeed(moc)
             feed1.title = "a"
             feed1.url = "https://example.com/feed1.feed"
-            feed1.tags = ["a", "b", "c"]
+            feed1.tags = ["a", "b", "c", "~d"]
             article1 = createArticle(moc)
             article1.title = "b"
             article1.link = "https://example.com/article1.html"
@@ -134,7 +134,7 @@ class FeedRepositorySpec: QuickSpec {
 
                         expect(mainQueue.operationCount).to(equal(0))
                         expect(calledHandler).to(beTruthy())
-                        expect(tags).to(equal(["a", "b", "c", "d", "dad"]))
+                        expect(tags).to(equal(["a", "b", "c", "d", "dad", "~d"]))
                     }
                 }
             }

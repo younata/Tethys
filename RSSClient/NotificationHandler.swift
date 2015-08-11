@@ -54,7 +54,7 @@ public class NotificationHandler: NSObject {
     public func sendLocalNotification(notificationSource: LocalNotificationSource, article: Article) {
         let note = UILocalNotification()
         note.alertBody = NSString.localizedStringWithFormat("New article in %@: %@",
-            article.feed?.title ?? "", article.title ?? "") as String
+            article.feed?.displayTitle ?? "", article.title ?? "") as String
 
         let feedID = article.feed?.identifier ?? ""
         let articleID = article.identifier

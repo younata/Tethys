@@ -43,7 +43,7 @@ public class ArticleListController: UITableViewController, DataSubscriber {
             self.navigationItem.rightBarButtonItem = self.editButtonItem()
 
             if feeds.count == 1 {
-                self.navigationItem.title = feeds.first?.title
+                self.navigationItem.title = feeds.first?.displayTitle
             }
         }
     }

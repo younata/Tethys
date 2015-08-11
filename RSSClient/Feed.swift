@@ -12,8 +12,10 @@ import JavaScriptCore
 
 @objc public protocol FeedJSExport: JSExport {
     var title: String { get set }
+    var displayTitle: String { get }
     var url: NSURL? { get set }
     var summary: String { get set }
+    var displaySummary: String { get }
     var query: String? { get set }
     var tags: [String] { get }
     var waitPeriod: Int { get set }
@@ -32,6 +34,14 @@ import JavaScriptCore
             }
         }
     }
+
+    public var displayTitle: String {
+        if let tagTitle = self.tags.filter({$0.hasPrefix("~")}).last {
+            return tagTitle.substringFromIndex(tagTitle.startIndex.successor())
+        }
+        return self.title
+    }
+
     dynamic public var url: NSURL? {
         willSet {
             if newValue != url {
@@ -46,6 +56,14 @@ import JavaScriptCore
             }
         }
     }
+
+    public var displaySummary: String {
+        if let tagSummary = self.tags.filter({$0.hasPrefix("_")}).last {
+            return tagSummary.substringFromIndex(tagSummary.startIndex.successor())
+        }
+        return self.summary
+    }
+
     dynamic public var query: String? {
         willSet {
             if newValue != query {
@@ -183,7 +201,7 @@ import JavaScriptCore
     public private(set) var feedID: NSManagedObjectID? = nil
 
     internal init(feed: CoreDataFeed) {
-        title = feed.title ?? ""
+        self.title = feed.title ?? ""
         let url: NSURL?
         if let feedURL = feed.url {
             url = NSURL(string: feedURL)
@@ -191,19 +209,19 @@ import JavaScriptCore
             url = nil
         }
         self.url = url
-        summary = feed.summary ?? ""
-        query = feed.query
-        tags = feed.tags
-        waitPeriod = feed.waitPeriodInt
-        remainingWait = feed.remainingWaitInt
+        self.summary = feed.summary ?? ""
+        self.query = feed.query
+        self.tags = feed.tags
+        self.waitPeriod = feed.waitPeriodInt
+        self.remainingWait = feed.remainingWaitInt
 
         let articlesList = Array(feed.articles)
-        image = feed.image as? Image
-        feedID = feed.objectID
-        identifier = feedID?.URIRepresentation().absoluteString ?? ""
+        self.image = feed.image as? Image
+        self.feedID = feed.objectID
+        self.identifier = feedID?.URIRepresentation().absoluteString ?? ""
         super.init()
-        articles = articlesList.map { Article(article: $0, feed: self) }
+        self.articles = articlesList.map { Article(article: $0, feed: self) }
 
-        updated = false
+        self.updated = false
     }
 }

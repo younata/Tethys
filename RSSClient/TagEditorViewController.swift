@@ -30,7 +30,7 @@ public class TagEditorViewController: UIViewController {
         let saveButton = UIBarButtonItem(title: saveTitle, style: .Plain, target: self, action: "save")
         self.navigationItem.rightBarButtonItem = saveButton
         self.navigationItem.rightBarButtonItem?.enabled = false
-        self.navigationItem.title = self.feed?.title ?? ""
+        self.navigationItem.title = self.feed?.displayTitle ?? ""
 
         tagPicker.translatesAutoresizingMaskIntoConstraints = false
         dataRetriever?.allTags { tags in

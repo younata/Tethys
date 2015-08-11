@@ -88,7 +88,7 @@ internal class DataUtility {
     internal class func entities(entity: String,
         matchingPredicate predicate: NSPredicate,
         managedObjectContext: NSManagedObjectContext,
-        sortDescriptors: [NSSortDescriptor] = []) -> [NSManagedObject] {
+        sortDescriptors: [NSSortDescriptor]) -> [NSManagedObject] {
             let request = NSFetchRequest()
             request.entity = NSEntityDescription.entityForName(entity,
                 inManagedObjectContext: managedObjectContext)
@@ -110,28 +110,56 @@ internal class DataUtility {
             return entities
     }
 
+    internal class func entities(entity: String,
+        matchingPredicate predicate: NSPredicate,
+        managedObjectContext: NSManagedObjectContext,
+        sortDescriptors: [NSSortDescriptor],
+        mapper: (NSManagedObject) -> (NSObject?)) -> [NSObject] {
+            let request = NSFetchRequest()
+            request.entity = NSEntityDescription.entityForName(entity,
+                inManagedObjectContext: managedObjectContext)
+            request.predicate = predicate
+            request.sortDescriptors = sortDescriptors
+
+            var entities = Array<NSObject>()
+
+            managedObjectContext.performBlockAndWait {
+                let error: NSError? = nil
+                do {
+                    if let ret = try managedObjectContext.executeFetchRequest(request) as? [NSManagedObject] {
+                        entities = ret.reduce(Array<NSObject>()) {
+                            if let obj = mapper($1) {
+                                return $0 + [obj]
+                            }
+                            return $0
+                        }
+                        return
+                    }
+                } catch { }
+                print("Error executing fetch request: \(error)")
+            }
+            return entities
+    }
+
     internal class func feedsWithPredicate(predicate: NSPredicate,
         managedObjectContext: NSManagedObjectContext,
         sortDescriptors: [NSSortDescriptor] = []) -> [Feed] {
-            let feeds = DataUtility.entities("Feed",
-                matchingPredicate: predicate,
-                managedObjectContext: managedObjectContext,
-                sortDescriptors: sortDescriptors) as? [CoreDataFeed] ?? []
-            let feedStructs = feeds.map {
-                Feed(feed: $0)
-            }
-            return feedStructs
+            return DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: managedObjectContext, sortDescriptors: sortDescriptors) {managedObject in
+                guard let coreDataFeed = managedObject as? CoreDataFeed else {
+                    return nil
+                }
+                return Feed(feed: coreDataFeed)
+            } as? [Feed] ?? []
     }
 
     internal class func articlesWithPredicate(predicate: NSPredicate,
         managedObjectContext: NSManagedObjectContext,
         sortDescriptors: [NSSortDescriptor] = []) -> [Article] {
-            let articles = DataUtility.entities("Article",
-                matchingPredicate: predicate,
-                managedObjectContext: managedObjectContext,
-                sortDescriptors: sortDescriptors) as? [CoreDataArticle] ?? []
-            return articles.map {
-                Article(article: $0, feed: nil)
-            }
+            return DataUtility.entities("Article", matchingPredicate: predicate, managedObjectContext: managedObjectContext, sortDescriptors: sortDescriptors) {managedObject in
+                guard let coreDataArticle = managedObject as? CoreDataArticle else {
+                    return nil
+                }
+                return Article(article: coreDataArticle, feed: nil)
+            } as? [Article] ?? []
     }
 }

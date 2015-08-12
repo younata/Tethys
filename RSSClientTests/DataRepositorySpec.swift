@@ -358,8 +358,8 @@ class FeedRepositorySpec: QuickSpec {
                 }
 
                 #if os(iOS)
-                    it("should, on iOS 9, remove the articles from the search index") {
-                        if #available(iOS 9.0, *) {
+                    if #available(iOS 9.0, *) {
+                        it("should, on iOS 9, remove the articles from the search index") {
                             expect(searchIndex?.lastItemsDeleted).to(equal(articleIDs))
                         }
                     }
@@ -388,9 +388,16 @@ class FeedRepositorySpec: QuickSpec {
 
             describe("saveArticle") {
                 var article: Article! = nil
+                var image: Image! = nil
 
                 beforeEach {
                     let feed = Feed(feed: feed1)
+
+                    let bundle = NSBundle(forClass: OPMLParserSpec.self)
+                    let imageData = NSData(contentsOfURL: bundle.URLForResource("test", withExtension: "jpg")!)
+                    image = Image(data: imageData!)
+                    feed.image = image
+
                     article = feed.articles.first
 
                     let coreDataArticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
@@ -411,8 +418,8 @@ class FeedRepositorySpec: QuickSpec {
                 }
 
                 #if os(iOS)
-                    it("should, on iOS 9, update the search index") {
-                        if #available(iOS 9.0, *) {
+                    if #available(iOS 9.0, *) {
+                        it("should, on iOS 9, update the search index") {
                             expect(searchIndex?.lastItemsAdded.count).to(equal(1))
                             if let item = searchIndex?.lastItemsAdded.first as? CSSearchableItem {
                                 let identifier = article.articleID!.URIRepresentation().absoluteString
@@ -428,6 +435,8 @@ class FeedRepositorySpec: QuickSpec {
                                 expect(attributes.timestamp).to(equal(article.updatedAt ?? article.published))
                                 expect(attributes.authorNames).to(equal([article.author]))
                                 expect(attributes.contentDescription).to(equal("Hello world!"))
+                                let imageData = UIImagePNGRepresentation(image!)
+                                expect(attributes.thumbnailData).to(equal(imageData))
                             }
                         }
                     }
@@ -455,8 +464,8 @@ class FeedRepositorySpec: QuickSpec {
                 }
 
                 #if os(iOS)
-                    it("should, on iOS 9, remove the article from the search index") {
-                        if #available(iOS 9.0, *) {
+                    if #available(iOS 9.0, *) {
+                        it("should, on iOS 9, remove the article from the search index") {
                             let identifier = article.articleID!.URIRepresentation().absoluteString
                             expect(searchIndex?.lastItemsDeleted).to(equal([identifier]))
                         }
@@ -603,8 +612,8 @@ class FeedRepositorySpec: QuickSpec {
                             }
 
                             #if os(iOS)
-                                it("should, on ios 9, add spotlight entries for each added article") {
-                                    if #available(iOS 9.0, *) {
+                                if #available(iOS 9.0, *) {
+                                    it("should, on ios 9, add spotlight entries for each added article") {
                                         expect(searchIndex?.lastItemsAdded.count).to(equal(13))
                                     }
                                 }
@@ -622,15 +631,31 @@ class FeedRepositorySpec: QuickSpec {
                                 context("if that succeeds") {
                                     var expectedImageData: NSData! = nil
                                     beforeEach {
+                                        searchIndex?.lastItemsAdded = []
                                         let bundle = NSBundle(forClass: self.classForCoder)
                                         expectedImageData = NSData(contentsOfURL: bundle.URLForResource("test", withExtension: "jpg")!)
                                         urlSession.lastCompletionHandler(expectedImageData, nil, nil)
                                     }
+
                                     it("should set the feed's image to that image") {
                                         let updatedFeed = DataUtility.feedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
                                             managedObjectContext: moc).first
                                         expect(updatedFeed?.image).toNot(beNil())
                                     }
+
+                                    #if os(iOS)
+                                        if #available(iOS 9.0, *) {
+                                            it("should, on ios 9, update all spotlight entries for this feed's articles to have this image") {
+                                                let items = searchIndex?.lastItemsAdded as? [CSSearchableItem]
+                                                expect(items).toNot(beNil())
+                                                if let searchItems = items {
+                                                    for searchItem in searchItems {
+                                                        expect(searchItem.attributeSet.thumbnailData).toNot(beNil())
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    #endif
                                 }
                             }
                         }

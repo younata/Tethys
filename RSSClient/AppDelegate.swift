@@ -16,6 +16,7 @@ extension UIApplication: DataSubscriber {
     }
 
     public func willUpdateFeeds() {}
+    public func didUpdateFeedsProgress(finished: Int, total: Int) {}
 
     public func didUpdateFeeds(feeds: [Feed]) {
         let unreadCount = feeds.reduce(0) { $0 + $1.unreadArticles().count }

@@ -43,6 +43,51 @@ class FeedsTableViewControllerSpec: QuickSpec {
             subject.viewWillAppear(false)
         }
 
+        it("should add a subscriber to the dataWriter") {
+            expect(dataReadWriter.subscribers).toNot(beEmpty())
+        }
+
+        describe("responding to data subscriber (feed) update events") {
+            var subscriber: DataSubscriber? = nil
+            beforeEach {
+                subscriber = dataReadWriter.subscribers.last
+            }
+
+            context("when the feeds start refreshing") {
+                beforeEach {
+                    subscriber?.willUpdateFeeds()
+                }
+
+                it("should unhide the updateBar") {
+                    expect(subject.updateBar.hidden).to(beFalsy())
+                }
+
+                it("should set the updateBar progress to 0") {
+                    expect(subject.updateBar.progress).to(equal(0))
+                }
+
+                context("as progress continues") {
+                    beforeEach {
+                        subscriber?.didUpdateFeedsProgress(1, total: 2)
+                    }
+
+                    it("should set the updateBar progress to progress / total") {
+                        expect(subject.updateBar.progress).to(equal(0.5))
+                    }
+
+                    context("when it finishes") {
+                        beforeEach {
+                            subscriber?.didUpdateFeeds([])
+                        }
+
+                        it("should hide the updateBar") {
+                            expect(subject.updateBar.hidden).to(beTruthy())
+                        }
+                    }
+                }
+            }
+        }
+
         describe("Key Commands") {
             it("can become first responder") {
                 expect(subject.canBecomeFirstResponder()).to(beTruthy())

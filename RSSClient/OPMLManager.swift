@@ -18,50 +18,69 @@ public class OPMLManager: Injectable {
             completion([])
             return
         }
-        do {
-            let text = try String(contentsOfURL: opml, encoding: NSUTF8StringEncoding)
-            let parser = OPMLParser(text: text)
-            parser.success {items in
-                var feeds : [Feed] = []
-
-                for item in items {
-                    if item.isQueryFeed() {
-                        if let title = item.title, let query = item.query {
-                            let newFeed = dataRepository.synchronousNewFeed()
-                            newFeed.title = title
-                            newFeed.query = query
-                            newFeed.summary = item.summary ?? ""
-                            for tag in (item.tags ?? []) {
-                                newFeed.addTag(tag)
-                            }
-                            dataRepository.saveFeed(newFeed)
-                            feeds.append(newFeed)
-                        }
+        dataRepository.feeds {existingFeeds in
+            let feedAlreadyExists: (OPMLItem) -> (Bool) = {item in
+                return existingFeeds.filter({
+                    let titleMatches = item.title == $0.title
+                    let queryMatches = item.query == $0.query
+                    let tagsMatches = (item.tags ?? []) == $0.tags
+                    let urlMatches: Bool
+                    if let urlString = item.xmlURL {
+                        urlMatches = NSURL(string: urlString) == $0.url
                     } else {
-                        if let feedURL = item.xmlURL {
-                            let newFeed = dataRepository.synchronousNewFeed()
-                            newFeed.url = NSURL(string: feedURL)
-                            for tag in item.tags ?? [] {
-                                newFeed.addTag(tag)
+                        urlMatches = $0.url == nil
+                    }
+                    return titleMatches && queryMatches && tagsMatches && urlMatches
+                }).isEmpty == false
+            }
+            do {
+                let text = try String(contentsOfURL: opml, encoding: NSUTF8StringEncoding)
+                let parser = OPMLParser(text: text)
+                parser.success {items in
+                    var feeds : [Feed] = []
+
+                    for item in items {
+                        if feedAlreadyExists(item) {
+                            continue;
+                        }
+                        if item.isQueryFeed() {
+                            if let title = item.title, let query = item.query {
+                                let newFeed = dataRepository.synchronousNewFeed()
+                                newFeed.title = title
+                                newFeed.query = query
+                                newFeed.summary = item.summary ?? ""
+                                for tag in (item.tags ?? []) {
+                                    newFeed.addTag(tag)
+                                }
+                                dataRepository.saveFeed(newFeed)
+                                feeds.append(newFeed)
                             }
-                            dataRepository.saveFeed(newFeed)
-                            feeds.append(newFeed)
+                        } else {
+                            if let feedURL = item.xmlURL {
+                                let newFeed = dataRepository.synchronousNewFeed()
+                                newFeed.url = NSURL(string: feedURL)
+                                for tag in item.tags ?? [] {
+                                    newFeed.addTag(tag)
+                                }
+                                dataRepository.saveFeed(newFeed)
+                                feeds.append(newFeed)
+                            }
                         }
                     }
+                    self.mainQueue?.addOperationWithBlock {
+                        completion(feeds)
+                    }
                 }
-                self.mainQueue?.addOperationWithBlock {
-                    completion(feeds)
+                parser.failure {error in
+                    self.mainQueue?.addOperationWithBlock {
+                        completion([])
+                    }
                 }
-            }
-            parser.failure {error in
-                self.mainQueue?.addOperationWithBlock {
-                    completion([])
-                }
-            }
 
-            importQueue?.addOperation(parser)
-        } catch _ {
-            completion([])
+                self.importQueue?.addOperation(parser)
+            } catch _ {
+                completion([])
+            }
         }
     }
 

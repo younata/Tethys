@@ -80,18 +80,19 @@ public class FeedTableCell: UITableViewCell {
 
         self.contentView.addSubview(imageView)
 
-        imageView.autoPinEdgeToSuperviewEdge(.Top)
+        imageView.autoPinEdgeToSuperviewEdge(.Top, withInset: 0, relation: .GreaterThanOrEqual)
         imageView.autoPinEdgeToSuperviewEdge(.Right)
         imageView.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0, relation: .GreaterThanOrEqual)
+        imageView.autoAlignAxisToSuperviewAxis(.Horizontal)
 
         return imageView
     }()
 
     public lazy var iconWidth: NSLayoutConstraint = {
-        return self.iconView.autoSetDimension(.Width, toSize: 45)
+        return self.iconView.autoSetDimension(.Width, toSize: 45, relation: .LessThanOrEqual)
     }()
 
     public lazy var iconHeight: NSLayoutConstraint = {
-        return self.iconView.autoSetDimension(.Height, toSize: 0)
+        return self.iconView.autoSetDimension(.Height, toSize: 0, relation: .LessThanOrEqual)
     }()
 }

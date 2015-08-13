@@ -18,7 +18,7 @@ class OPMLParserSpec: QuickSpec {
             it("pulls out regular feeds") {
                 parser.success {(items) in
                     let regularFeeds = items.filter { !$0.isQueryFeed() }
-                    expect(regularFeeds.count).to(equal(2))
+                    expect(regularFeeds.count).to(equal(3))
                     if let feed = regularFeeds.first {
                         expect(feed.title).to(equal("nil"))
                         expect(feed.summary).to(beNil())

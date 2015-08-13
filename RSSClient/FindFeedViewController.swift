@@ -266,7 +266,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
                 self.backgroundQueue?.addOperation(opmlParser)
                 self.backgroundQueue?.addOperation(feedParser)
-            }?.resume()
+            }.resume()
         }
     }
 }

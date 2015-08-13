@@ -36,7 +36,7 @@ internal class DataUtility {
                         }
                     }
                 }
-            }?.resume()
+            }.resume()
         }
     }
 

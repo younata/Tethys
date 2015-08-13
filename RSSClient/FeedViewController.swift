@@ -160,7 +160,7 @@ public class FeedViewController: UITableViewController {
                         } else {
                             tc.setValid(false)
                         }
-                    }?.resume()
+                    }.resume()
                 }
                 return
             }

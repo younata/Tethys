@@ -417,7 +417,7 @@ internal class DataRepository: DataRetriever, DataWriter {
                         self.synchronousSaveFeed(feed)
                     }
                 }
-            }?.resume()
+            }.resume()
         }
     }
 
@@ -455,5 +455,5 @@ private func loadFeed(url: NSURL, urlSession: NSURLSession, queue: NSOperationQu
             }
             callback(nil, error)
         }
-    }?.resume()
+    }.resume()
 }

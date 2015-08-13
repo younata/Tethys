@@ -21,8 +21,13 @@ private class FakeDataSubscriber: DataSubscriber {
         deletedArticle = article
     }
 
+    private var didStartUpdatingFeeds = false
+    private func willUpdateFeeds() {
+        didStartUpdatingFeeds = true
+    }
+
     private var updatedFeeds: [Feed]? = nil
-    private func updatedFeeds(feeds: [Feed]) {
+    private func didUpdateFeeds(feeds: [Feed]) {
         updatedFeeds = feeds
     }
 
@@ -542,7 +547,7 @@ class FeedRepositorySpec: QuickSpec {
                     backgroundQueue.runSynchronously = true
                 }
 
-                context("when there are no feeds to update") {
+                context("when there are no feeds in the data store") {
                     beforeEach {
                         moc.deleteObject(feed1)
                         moc.deleteObject(feed2)
@@ -552,6 +557,10 @@ class FeedRepositorySpec: QuickSpec {
                             didCallCallback = true
                             callbackErrors = errors
                         }
+                    }
+
+                    it("should not inform any subscribers") {
+                        expect(dataSubscriber.didStartUpdatingFeeds).to(beFalsy())
                     }
 
                     it("should immediately add an operation to the main queue") {
@@ -567,9 +576,13 @@ class FeedRepositorySpec: QuickSpec {
                             expect(didCallCallback).to(beTruthy())
                             expect(callbackErrors).to(beEmpty())
                         }
+
+                        it("should not inform any subscribers") {
+                            expect(dataSubscriber.updatedFeeds).to(beNil())
+                        }
                     }
                 }
-                context("when there are feeds to update") {
+                context("when there are feeds in the data story") {
                     beforeEach {
                         didCallCallback = false
                         callbackErrors = []
@@ -578,6 +591,10 @@ class FeedRepositorySpec: QuickSpec {
                             didCallCallback = true
                             callbackErrors = errors
                         }
+                    }
+
+                    it("should inform any subscribers") {
+                        expect(dataSubscriber.didStartUpdatingFeeds).to(beTruthy())
                     }
 
                     it("should make a network request for every feed in the data store w/ a url and a remaining wait of 0") {
@@ -590,8 +607,32 @@ class FeedRepositorySpec: QuickSpec {
                         expect(updatedFeed?.remainingWait).to(equal(NSNumber(integer: 0)))
                     }
 
-                    context("when the network request succeeds") {
-                        context("when the network call succeeds") {
+                    context("trying to update feeds while a request is still in progress") {
+                        var didCallUpdateCallback = false
+
+                        beforeEach {
+                            urlSession.lastURL = nil
+                            didCallUpdateCallback = false
+                            dataSubscriber.didStartUpdatingFeeds = false
+
+                            subject.updateFeeds {feeds, errors in
+                                didCallUpdateCallback = true
+                            }
+                        }
+
+                        it("should not inform any subscribers") {
+                            expect(dataSubscriber.didStartUpdatingFeeds).to(beFalsy())
+                        }
+
+                        it("should not make any network requests") {
+                            expect(urlSession.lastURL).to(beNil())
+                        }
+
+                        it("should not immediately call the callback") {
+                            expect(didCallUpdateCallback).to(beFalsy())
+                        }
+
+                        context("when the original network call finishes") {
                             beforeEach {
                                 let urlResponse = NSHTTPURLResponse(URL: NSURL(string: "https://example.com/feed1.feed")!, statusCode: 200, HTTPVersion: nil, headerFields: [:])
                                 let bundle = NSBundle(forClass: OPMLParserSpec.self)
@@ -600,63 +641,79 @@ class FeedRepositorySpec: QuickSpec {
                                 mainQueue.runNextOperation()
                             }
 
-                            it("should call the completion handler without an error") {
+                            it("should call both completion handlers") {
                                 expect(didCallCallback).to(beTruthy())
                                 expect(callbackErrors).to(equal([]))
+                                expect(didCallUpdateCallback).to(beTruthy())
                             }
+                        }
+                    }
 
-                            it("should update the feed data now") {
-                                let updatedFeed = DataUtility.feedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
-                                    managedObjectContext: moc).first
-                                expect(updatedFeed?.title).to(equal("objc.io"))
-                            }
+                    context("when the network request succeeds") {
+                        beforeEach {
+                            let urlResponse = NSHTTPURLResponse(URL: NSURL(string: "https://example.com/feed1.feed")!, statusCode: 200, HTTPVersion: nil, headerFields: [:])
+                            let bundle = NSBundle(forClass: OPMLParserSpec.self)
+                            let data = NSData(contentsOfFile: bundle.pathForResource("feed2", ofType: "rss")!)
+                            urlSession.lastCompletionHandler(data, urlResponse, nil)
+                            mainQueue.runNextOperation()
+                        }
 
-                            #if os(iOS)
-                                if #available(iOS 9.0, *) {
-                                    it("should, on ios 9, add spotlight entries for each added article") {
-                                        expect(searchIndex?.lastItemsAdded.count).to(equal(13))
-                                    }
+                        it("should call the completion handler without an error") {
+                            expect(didCallCallback).to(beTruthy())
+                            expect(callbackErrors).to(equal([]))
+                        }
+
+                        it("should update the feed data now") {
+                            let updatedFeed = DataUtility.feedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
+                                managedObjectContext: moc).first
+                            expect(updatedFeed?.title).to(equal("objc.io"))
+                        }
+
+                        #if os(iOS)
+                            if #available(iOS 9.0, *) {
+                                it("should, on ios 9, add spotlight entries for each added article") {
+                                    expect(searchIndex?.lastItemsAdded.count).to(equal(13))
                                 }
-                            #endif
+                            }
+                        #endif
 
-                            it("should inform any subscribers") {
-                                expect(dataSubscriber.updatedFeeds).toNot(beNil())
+                        it("should inform any subscribers") {
+                            expect(dataSubscriber.updatedFeeds).toNot(beNil())
+                        }
+
+                        context("when the feed contains an image") { // which it does
+                            it("should try to download it") {
+                                expect(urlSession.lastURL?.absoluteString).to(equal("http://example.org/icon.png"))
                             }
 
-                            context("when the feed contains an image") { // which it does
-                                it("should try to download it") {
-                                    expect(urlSession.lastURL?.absoluteString).to(equal("http://example.org/icon.png"))
+                            context("if that succeeds") {
+                                var expectedImageData: NSData! = nil
+                                beforeEach {
+                                    searchIndex?.lastItemsAdded = []
+                                    let bundle = NSBundle(forClass: self.classForCoder)
+                                    expectedImageData = NSData(contentsOfURL: bundle.URLForResource("test", withExtension: "jpg")!)
+                                    urlSession.lastCompletionHandler(expectedImageData, nil, nil)
                                 }
 
-                                context("if that succeeds") {
-                                    var expectedImageData: NSData! = nil
-                                    beforeEach {
-                                        searchIndex?.lastItemsAdded = []
-                                        let bundle = NSBundle(forClass: self.classForCoder)
-                                        expectedImageData = NSData(contentsOfURL: bundle.URLForResource("test", withExtension: "jpg")!)
-                                        urlSession.lastCompletionHandler(expectedImageData, nil, nil)
-                                    }
+                                it("should set the feed's image to that image") {
+                                    let updatedFeed = DataUtility.feedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
+                                        managedObjectContext: moc).first
+                                    expect(updatedFeed?.image).toNot(beNil())
+                                }
 
-                                    it("should set the feed's image to that image") {
-                                        let updatedFeed = DataUtility.feedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
-                                            managedObjectContext: moc).first
-                                        expect(updatedFeed?.image).toNot(beNil())
-                                    }
-
-                                    #if os(iOS)
-                                        if #available(iOS 9.0, *) {
-                                            it("should, on ios 9, update all spotlight entries for this feed's articles to have this image") {
-                                                let items = searchIndex?.lastItemsAdded as? [CSSearchableItem]
-                                                expect(items).toNot(beNil())
-                                                if let searchItems = items {
-                                                    for searchItem in searchItems {
-                                                        expect(searchItem.attributeSet.thumbnailData).toNot(beNil())
-                                                    }
+                                #if os(iOS)
+                                    if #available(iOS 9.0, *) {
+                                        it("should, on ios 9, update all spotlight entries for this feed's articles to have this image") {
+                                            let items = searchIndex?.lastItemsAdded as? [CSSearchableItem]
+                                            expect(items).toNot(beNil())
+                                            if let searchItems = items {
+                                                for searchItem in searchItems {
+                                                    expect(searchItem.attributeSet.thumbnailData).toNot(beNil())
                                                 }
                                             }
                                         }
-                                    #endif
-                                }
+                                    }
+                                #endif
                             }
                         }
                     }

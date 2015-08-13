@@ -50,7 +50,8 @@ public class ArticleListController: UITableViewController, DataSubscriber {
 
     public func deletedArticle(article: Article) {}
 
-    public func updatedFeeds(feeds: [Feed]) {}
+    public func willUpdateFeeds() {}
+    public func didUpdateFeeds(feeds: [Feed]) {}
 
     public func markedArticle(article: Article, asRead read: Bool) {
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)

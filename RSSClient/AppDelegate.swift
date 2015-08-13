@@ -15,7 +15,9 @@ extension UIApplication: DataSubscriber {
         }
     }
 
-    public func updatedFeeds(feeds: [Feed]) {
+    public func willUpdateFeeds() {}
+
+    public func didUpdateFeeds(feeds: [Feed]) {
         let unreadCount = feeds.reduce(0) { $0 + $1.unreadArticles().count }
         self.applicationIconBadgeNumber = unreadCount
     }

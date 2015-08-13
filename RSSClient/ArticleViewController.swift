@@ -91,8 +91,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
                 switch (self.contentType) {
                 case .Content:
                     self.toggleContentButton.title = self.linkString
-                    let content = a.content ?? a.summary ?? ""
-                    self.content.loadHTMLString(self.articleCSS + content + self.prismJS + "</body></html>", baseURL: a.feed?.url)
+                    self.showArticle(a, onWebView: self.content)
                 case .Link:
                     self.toggleContentButton.title = self.contentString
                     self.content.loadRequest(NSURLRequest(URL: a.link!))
@@ -363,7 +362,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     }
 
     internal func share() {
-        if let link = article?.link {
+        if let link = self.content.URL ?? article?.link {
             let safari = TOActivitySafari()
             let chrome = TOActivityChrome()
 

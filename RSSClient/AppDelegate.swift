@@ -15,10 +15,13 @@ extension UIApplication: DataSubscriber {
         }
     }
 
-    public func willUpdateFeeds() {}
+    public func willUpdateFeeds() {
+        self.networkActivityIndicatorVisible = true
+    }
     public func didUpdateFeedsProgress(finished: Int, total: Int) {}
 
     public func didUpdateFeeds(feeds: [Feed]) {
+        self.networkActivityIndicatorVisible = false
         let unreadCount = feeds.reduce(0) { $0 + $1.unreadArticles().count }
         self.applicationIconBadgeNumber = unreadCount
     }

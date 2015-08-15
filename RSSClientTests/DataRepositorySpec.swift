@@ -546,6 +546,166 @@ class FeedRepositorySpec: QuickSpec {
                 }
             }
 
+            describe("updateFeed:callback:") {
+                var didCallCallback = false
+                var callbackError: NSError? = nil
+                var feed: Feed! = nil
+                var updatedFeed: Feed? = nil
+                beforeEach {
+                    didCallCallback = false
+                    callbackError = nil
+                    updatedFeed = nil
+                    backgroundQueue.runSynchronously = true
+
+                    feed = Feed(feed: feed1)
+
+                    subject.updateFeed(feed) {changedFeed?, error in
+                        didCallCallback = true
+                        updatedFeed = changedFeed
+                        callbackError = error
+                    }
+                    mainQueue.runNextOperation()
+                }
+
+                it("should inform any subscribers") {
+                    expect(dataSubscriber.didStartUpdatingFeeds).to(beTruthy())
+                }
+
+                it("should make a network request for the feed if it has a remaniing wait of 0") {
+                    expect(urlSession.lastURL?).to(equal(feed.url))
+                }
+
+                context("when the network request succeeds") {
+                    beforeEach {
+                        let urlResponse = NSHTTPURLResponse(URL: NSURL(string: "https://example.com/feed1.feed")!, statusCode: 200, HTTPVersion: nil, headerFields: [:])
+                        let bundle = NSBundle(forClass: OPMLParserSpec.self)
+                        let data = NSData(contentsOfFile: bundle.pathForResource("feed2", ofType: "rss")!)
+                        backgroundQueue.runSynchronously = false
+                        urlSession.lastCompletionHandler(data, urlResponse, nil)
+                        mainQueue.runNextOperation()
+                    }
+
+                    it("should inform subscribers that we downloaded a thing and are about to process it") {
+                        expect(dataSubscriber.updateFeedsProgressFinished).to(equal(1))
+                        expect(dataSubscriber.updateFeedsProgressTotal).to(equal(2))
+                    }
+
+                    describe("when the last operation completes") {
+                        beforeEach {
+                            backgroundQueue.runNextOperation()
+                            mainQueue.runNextOperation()
+                            mainQueue.runNextOperation()
+                        }
+
+                        it("should inform subscribers that we updated our datastore for that feed") {
+                            expect(dataSubscriber.updateFeedsProgressFinished).to(equal(2))
+                            expect(dataSubscriber.updateFeedsProgressTotal).to(equal(2))
+                        }
+
+                        it("should call the completion handler without an error") {
+                            expect(didCallCallback).to(beTruthy())
+                            expect(callbackError).to(beNil())
+                        }
+
+                        it("should update the feed data now") {
+                            let updatedFeed = DataUtility.feedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
+                                managedObjectContext: moc).first
+                            expect(updatedFeed?.title).to(equal("objc.io"))
+                        }
+
+                        #if os(iOS)
+                            if #available(iOS 9.0, *) {
+                                it("should, on ios 9, add spotlight entries for each added article") {
+                                    expect(searchIndex?.lastItemsAdded.count).to(equal(13))
+                                }
+                            }
+                        #endif
+
+                        it("should inform any subscribers") {
+                            expect(dataSubscriber.updatedFeeds).toNot(beNil())
+                        }
+
+                        context("when the feed contains an image") { // which it does
+                            it("should try to download it") {
+                                expect(urlSession.lastURL?.absoluteString).to(equal("http://example.org/icon.png"))
+                            }
+
+                            context("if that succeeds") {
+                                var expectedImageData: NSData! = nil
+                                beforeEach {
+                                    searchIndex?.lastItemsAdded = []
+                                    let bundle = NSBundle(forClass: self.classForCoder)
+                                    expectedImageData = NSData(contentsOfURL: bundle.URLForResource("test", withExtension: "jpg")!)
+                                    urlSession.lastCompletionHandler(expectedImageData, nil, nil)
+                                }
+
+                                it("should set the feed's image to that image") {
+                                    let updatedFeed = DataUtility.feedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
+                                        managedObjectContext: moc).first
+                                    expect(updatedFeed?.image).toNot(beNil())
+                                }
+
+                                #if os(iOS)
+                                    if #available(iOS 9.0, *) {
+                                        it("should, on ios 9, update all spotlight entries for this feed's articles to have this image") {
+                                            let items = searchIndex?.lastItemsAdded as? [CSSearchableItem]
+                                            expect(items).toNot(beNil())
+                                            if let searchItems = items {
+                                                for searchItem in searchItems {
+                                                    expect(searchItem.attributeSet.thumbnailData).toNot(beNil())
+                                                }
+                                            }
+                                        }
+                                    }
+                                #endif
+                            }
+                        }
+                    }
+                }
+
+                context("when the network call fails due to a network error") {
+                    let error = NSError(domain: "", code: 0, userInfo: [:])
+                    beforeEach {
+                        mainQueue.runSynchronously = true
+                        urlSession.lastCompletionHandler(nil, nil, error)
+                    }
+
+                    it("should call the completion handler to let the caller know of an error updating the feed") {
+                        expect(callbackError).to(equal(error))
+                    }
+                }
+
+                context("when the network call fails due to a client/server error") {
+                    beforeEach {
+                        mainQueue.runSynchronously = true
+                        let urlResponse = NSHTTPURLResponse(URL: NSURL(string: "https://example.com/rnews.feed")!, statusCode: 400, HTTPVersion: nil, headerFields: [:])
+                        urlSession.lastCompletionHandler(nil, urlResponse, nil)
+                    }
+
+                    it("should call the completion handler to let the caller know of an error updating the feeds") {
+                        expect(callbackError?.domain).to(equal("com.rachelbrindle.rssclient.server"))
+                        expect(callbackError?.code).to(equal(400))
+                    }
+
+                    it("should increment the remainingWait of the feed") {
+                        let updatedFeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feed1.objectID),
+                            managedObjectContext: moc, sortDescriptors: []).first as? CoreDataFeed
+                        expect(updatedFeed?.remainingWait).to(equal(NSNumber(integer: 1)))
+                    }
+                }
+
+                context("when there is an unknown error (no data) - should not happen") {
+                    beforeEach {
+                        mainQueue.runSynchronously = true
+                        urlSession.lastCompletionHandler(nil, nil, nil)
+                    }
+
+                    it("should call the completion handler to let the caller know of an error updating the feeds") {
+                        expect(callbackError?.domain).to(equal("com.rachelbrindle.rssclient.unknown"))
+                    }
+                }
+            }
+
             describe("updateFeeds") {
                 var didCallCallback = false
                 var callbackErrors: [NSError] = []

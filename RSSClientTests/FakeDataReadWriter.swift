@@ -95,4 +95,11 @@ class FakeDataReadWriter : DataRetriever, DataWriter {
         didUpdateFeeds = true
         updateFeedsCompletion = callback
     }
+
+    var didUpdateFeed: Feed? = nil
+    var updateSingleFeedCallback: (Feed, NSError?) -> (Void) = {_ in }
+    func updateFeed(feed: Feed, callback: (Feed?, NSError?) -> (Void)) {
+        didUpdateFeed = feed
+        updateSingleFeedCallback = callback
+    }
 }

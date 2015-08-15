@@ -43,19 +43,19 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         return Ra.Injector(module: appModule, kitModule)
     }()
 
-    lazy var dataRetriever: DataRetriever? = {
+    private lazy var dataRetriever: DataRetriever? = {
         return self.anInjector.create(DataRetriever.self) as? DataRetriever
     }()
 
-    lazy var notificationHandler: NotificationHandler? = {
+    private lazy var notificationHandler: NotificationHandler? = {
         self.anInjector.create(NotificationHandler.self) as? NotificationHandler
     }()
 
-    lazy var backgroundFetchHandler: BackgroundFetchHandler? = {
+    private lazy var backgroundFetchHandler: BackgroundFetchHandler? = {
         self.anInjector.create(BackgroundFetchHandler.self) as? BackgroundFetchHandler
     }()
 
-    lazy var splitDelegate: SplitDelegate = {
+    internal lazy var splitDelegate: SplitDelegate = {
         let splitDelegate = SplitDelegate(splitViewController: self.splitView)
         self.anInjector.bind(SplitDelegate.self, to: splitDelegate)
         return splitDelegate
@@ -80,6 +80,8 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             return true
     }
 
+    // MARK: Local Notifications
+
     public func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
         if let window = self.window {
             notificationHandler?.handleLocalNotification(notification, window: window)
@@ -92,12 +94,16 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             completionHandler()
     }
 
+    // MARK: Background Fetch
+
     public func application(application: UIApplication,
         performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
             if let noteHandler = self.notificationHandler {
                 self.backgroundFetchHandler?.performFetch(noteHandler, notificationSource: application, completionHandler: completionHandler)
             }
     }
+
+    // MARK: - User Activities
 
     public func application(application: UIApplication,
         continueUserActivity userActivity: NSUserActivity,
@@ -133,6 +139,8 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             return false
     }
+
+    // MARK: - Private
 
     private func createControllerHierarchy(feed: Feed? = nil, article: Article? = nil) {
         let feeds = self.anInjector.create(FeedsTableViewController.self) as! FeedsTableViewController

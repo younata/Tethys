@@ -2,7 +2,6 @@ import Quick
 import Nimble
 import rNews
 import Ra
-import Robot
 import rNewsKit
 
 class QueryFeedViewControllerSpec: QuickSpec {
@@ -40,7 +39,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
             subject.feed = feed
 
             subject.view.layoutIfNeeded()
-            RBTimeLapse.advanceMainRunLoop()
+            NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
         }
 
         it("should have a save button") {
@@ -319,7 +318,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
 
                             it("should show a preview of all articles it captures when tapped") {
                                 action?.handler()(action, indexPath)
-                                RBTimeLapse.advanceMainRunLoop()
+                                NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
                                 expect(navigationController.topViewController).to(beAnInstanceOf(ArticleListController.self))
                                 if let articleList = navigationController.topViewController as? ArticleListController {
                                     expect(articleList.previewMode).to(beTruthy())
@@ -400,7 +399,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
 
                             it("should removes the tag when tapped") {
                                 action.handler()(action, NSIndexPath(forRow: tagIndex, inSection: 3))
-                                RBTimeLapse.advanceMainRunLoop()
+                                NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
                                 expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
                                 if let tagEditor = navigationController.topViewController as? TagEditorViewController {
                                     expect(tagEditor.tagIndex).to(equal(tagIndex))
@@ -435,7 +434,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                         }
 
                         it("should bring up the tag editor screen") {
-                            RBTimeLapse.advanceMainRunLoop()
+                            NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
                             expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
                             if let tagEditor = navigationController.topViewController as? TagEditorViewController {
                                 expect(tagEditor.tagIndex).to(beNil())

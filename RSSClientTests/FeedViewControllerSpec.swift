@@ -2,7 +2,6 @@ import Quick
 import Nimble
 import rNews
 import Ra
-import Robot
 import rNewsKit
 
 class FeedViewControllerSpec: QuickSpec {
@@ -43,7 +42,7 @@ class FeedViewControllerSpec: QuickSpec {
             window = UIWindow()
             presentingController = UIViewController()
             window.rootViewController = presentingController
-            RBTimeLapse.advanceMainRunLoop()
+            NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
             presentingController.presentViewController(navigationController, animated: false, completion: nil)
 
             feed = Feed(title: "title", url: NSURL(string: "http://example.com/feed"), summary: "summary", query: nil,
@@ -52,7 +51,7 @@ class FeedViewControllerSpec: QuickSpec {
             subject.feed = feed
 
             subject.view.layoutIfNeeded()
-            RBTimeLapse.advanceMainRunLoop()
+            NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
         }
 
         afterEach {
@@ -118,7 +117,7 @@ class FeedViewControllerSpec: QuickSpec {
                         beforeEach {
                             subject.feed = otherFeed
                             subject.view.layoutIfNeeded()
-                            RBTimeLapse.advanceMainRunLoop()
+                            NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
 
                             cell = subject.tableView.visibleCells[0]
                         }
@@ -137,7 +136,7 @@ class FeedViewControllerSpec: QuickSpec {
                             subject.feed = Feed(title: "a title", url: NSURL(string: ""), summary: "", query: nil,
                                 tags: ["~custom title"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                             subject.view.layoutIfNeeded()
-                            RBTimeLapse.advanceMainRunLoop()
+                            NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
 
                             cell = subject.tableView.visibleCells[0]
                         }
@@ -250,7 +249,7 @@ class FeedViewControllerSpec: QuickSpec {
                     beforeEach {
                         subject.feed = otherFeed
                         subject.view.layoutIfNeeded()
-                        RBTimeLapse.advanceMainRunLoop()
+                        NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
 
                         cell = subject.tableView.visibleCells[2]
                     }
@@ -269,7 +268,7 @@ class FeedViewControllerSpec: QuickSpec {
                         subject.feed = Feed(title: "a title", url: NSURL(string: ""), summary: "a summary", query: nil,
                             tags: ["`custom summary"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                         subject.view.layoutIfNeeded()
-                        RBTimeLapse.advanceMainRunLoop()
+                        NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
 
                         cell = subject.tableView.visibleCells[2]
                     }
@@ -357,7 +356,7 @@ class FeedViewControllerSpec: QuickSpec {
 
                             it("should removes the tag when tapped") {
                                 action.handler()(action, NSIndexPath(forRow: tagIndex, inSection: 3))
-                                RBTimeLapse.advanceMainRunLoop()
+                                NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
                                 expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
                                 if let tagEditor = navigationController.topViewController as? TagEditorViewController {
                                     expect(tagEditor.tagIndex).to(equal(tagIndex))
@@ -391,7 +390,7 @@ class FeedViewControllerSpec: QuickSpec {
                         }
 
                         it("should bring up the tag editor screen") {
-                            RBTimeLapse.advanceMainRunLoop()
+                            NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
                             expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
                             if let tagEditor = navigationController.topViewController as? TagEditorViewController {
                                 expect(tagEditor.tagIndex).to(beNil())

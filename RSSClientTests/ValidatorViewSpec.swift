@@ -1,7 +1,6 @@
 import Quick
 import Nimble
 import rNews
-import Robot
 
 class ValidatorViewSpec: QuickSpec {
     override func spec() {
@@ -38,7 +37,7 @@ class ValidatorViewSpec: QuickSpec {
                 }
 
                 it("should hide the progressIndicator") {
-                    RBTimeLapse.advanceMainRunLoop()
+                    NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
                     expect(subject.progressIndicator.hidden).to(beTruthy())
                 }
             }
@@ -57,7 +56,7 @@ class ValidatorViewSpec: QuickSpec {
                 }
 
                 it("should hide the progressIndicator") {
-                    RBTimeLapse.advanceMainRunLoop()
+                    NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
                     expect(subject.progressIndicator.hidden).to(beTruthy())
                 }
             }

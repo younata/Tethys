@@ -157,7 +157,6 @@
 		89EA6C361B4B2D8400456892 /* FakeDataReadWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EA6C351B4B2D8400456892 /* FakeDataReadWriter.swift */; };
 		89EA6C371B4B308F00456892 /* OPMLManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C11B3A7CCC0097045A /* OPMLManagerMock.swift */; };
 		89EF4FD81A96852D0052A82F /* test.opml in Resources */ = {isa = PBXBuildFile; fileRef = 89EF4FD71A96852D0052A82F /* test.opml */; };
-		89F516511B1A44D20005AB04 /* Robot.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89F516501B1A44D20005AB04 /* Robot.framework */; };
 		89F516521B1A44EA0005AB04 /* Robot.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 89F516501B1A44D20005AB04 /* Robot.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89F516571B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89F516561B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m */; };
 		89F516E61B1B9BC40005AB04 /* UIKit+PivotalSpecHelperStubs-iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89F516E51B1B9BC40005AB04 /* UIKit+PivotalSpecHelperStubs-iOS.framework */; };
@@ -467,7 +466,6 @@
 				89CB986C1B12CCD700C87160 /* BreakOutToRefresh.framework in Frameworks */,
 				89F516E61B1B9BC40005AB04 /* UIKit+PivotalSpecHelperStubs-iOS.framework in Frameworks */,
 				89718F311AE0C9B4004C3CB4 /* Quick.framework in Frameworks */,
-				89F516511B1A44D20005AB04 /* Robot.framework in Frameworks */,
 				898F6E0B1B128741000D343D /* PureLayout_iOS.framework in Frameworks */,
 				89718F301AE0C9B4004C3CB4 /* Nimble.framework in Frameworks */,
 				89CB98931B12DFB100C87160 /* TOBrowserActivityKit.framework in Frameworks */,
@@ -626,13 +624,6 @@
 			name = Tags;
 			sourceTree = "<group>";
 		};
-		899C48021A9AB6A900F57B96 /* Domain */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Domain;
-			sourceTree = "<group>";
-		};
 		899C48181A9AC0F000F57B96 /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -720,7 +711,6 @@
 				8997C7F81B250FD200972930 /* TextViewCellSpec.swift */,
 				8997C7FA1B25169E00972930 /* TextFieldCellSpec.swift */,
 				899C48181A9AC0F000F57B96 /* UI */,
-				899C48021A9AB6A900F57B96 /* Domain */,
 				898F670D1B0007F4004A7BE3 /* SpecInjectorModule.swift */,
 				AE4356071A7ABAD500A961B9 /* Mocks */,
 				8957799D19E62C7100548418 /* RSSClientTests-Bridging-Header.h */,

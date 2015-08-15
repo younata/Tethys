@@ -3,7 +3,6 @@ import Nimble
 import Ra
 import rNews
 import BreakOutToRefresh
-import Robot
 import rNewsKit
 
 class FeedsTableViewControllerSpec: QuickSpec {
@@ -244,7 +243,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     beforeEach {
                         let indexPath = NSIndexPath(forRow: 0, inSection: 0)
                         subject.tableView(subject.tableView, didSelectRowAtIndexPath: indexPath)
-                        RBTimeLapse.advanceMainRunLoop()
+                        NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
                     }
 
                     it("should navigate to an ArticleListViewController for that feed") {
@@ -319,7 +318,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                         describe("tapping it") {
                             beforeEach {
                                 action.handler()(action, indexPath)
-                                RBTimeLapse.advanceMainRunLoop()
+                                NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
                             }
 
                             it("should bring up a feed edit screen") {

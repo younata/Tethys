@@ -2,7 +2,6 @@ import Quick
 import Nimble
 import Ra
 import rNews
-import Robot
 import rNewsKit
 
 class TagEditorViewControllerSpec: QuickSpec {

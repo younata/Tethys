@@ -61,7 +61,6 @@ class AppDelegateSpec: QuickSpec {
 
             subject.anInjector = injector
             subject.window = UIWindow(frame: CGRectMake(0, 0, 320, 480))
-            // Apparently, calling "-makeKeyAndVisible" on a window in test will cause a crash.
         }
         
         describe("-application:didFinishLaunchingWithOptions:") {

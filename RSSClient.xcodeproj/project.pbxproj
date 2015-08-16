@@ -66,8 +66,8 @@
 		89718F2D1AE0C9A1004C3CB4 /* Ra.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F271AE0C942004C3CB4 /* Ra.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89718F301AE0C9B4004C3CB4 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; };
 		89718F311AE0C9B4004C3CB4 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2F1AE0C9B4004C3CB4 /* Quick.framework */; };
-		89718F331AE0C9D6004C3CB4 /* Nimble.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		89718F341AE0C9D6004C3CB4 /* Quick.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2F1AE0C9B4004C3CB4 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		89718F331AE0C9D6004C3CB4 /* Nimble.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		89718F341AE0C9D6004C3CB4 /* Quick.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2F1AE0C9B4004C3CB4 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89718F361AE0D953004C3CB4 /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F271AE0C942004C3CB4 /* Ra.framework */; };
 		897CD85C1A213F0900C97ECC /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89635F911A13C2E30052C248 /* MainMenu.xib */; };
 		897CD85E1A21C49000C97ECC /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897CD85D1A21C49000C97ECC /* FeedView.swift */; };
@@ -157,7 +157,6 @@
 		89EA6C361B4B2D8400456892 /* FakeDataReadWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EA6C351B4B2D8400456892 /* FakeDataReadWriter.swift */; };
 		89EA6C371B4B308F00456892 /* OPMLManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C11B3A7CCC0097045A /* OPMLManagerMock.swift */; };
 		89EF4FD81A96852D0052A82F /* test.opml in Resources */ = {isa = PBXBuildFile; fileRef = 89EF4FD71A96852D0052A82F /* test.opml */; };
-		89F516521B1A44EA0005AB04 /* Robot.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 89F516501B1A44D20005AB04 /* Robot.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89F516571B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89F516561B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m */; };
 		89F516E61B1B9BC40005AB04 /* UIKit+PivotalSpecHelperStubs-iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89F516E51B1B9BC40005AB04 /* UIKit+PivotalSpecHelperStubs-iOS.framework */; };
 		89F516FD1B1BA1960005AB04 /* UITableViewRowAction+Spec.m in Sources */ = {isa = PBXBuildFile; fileRef = 89F516FC1B1BA1960005AB04 /* UITableViewRowAction+Spec.m */; };
@@ -238,17 +237,16 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		89718F321AE0C9C2004C3CB4 /* Copy Frameworks */ = {
+		89718F321AE0C9C2004C3CB4 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				89F516521B1A44EA0005AB04 /* Robot.framework in Copy Frameworks */,
-				89718F331AE0C9D6004C3CB4 /* Nimble.framework in Copy Frameworks */,
-				89718F341AE0C9D6004C3CB4 /* Quick.framework in Copy Frameworks */,
+				89718F331AE0C9D6004C3CB4 /* Nimble.framework in Embed Frameworks */,
+				89718F341AE0C9D6004C3CB4 /* Quick.framework in Embed Frameworks */,
 			);
-			name = "Copy Frameworks";
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		898046D91A1C38AE00EB29F0 /* Copy Frameworks */ = {
@@ -987,7 +985,7 @@
 				89C8308719D730E9009924DA /* Sources */,
 				89C8308819D730E9009924DA /* Frameworks */,
 				89C8308919D730E9009924DA /* Resources */,
-				89718F321AE0C9C2004C3CB4 /* Copy Frameworks */,
+				89718F321AE0C9C2004C3CB4 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

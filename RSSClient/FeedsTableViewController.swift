@@ -3,9 +3,7 @@ import BreakOutToRefresh
 import MAKDropDownMenu
 import rNewsKit
 
-public class FeedsTableViewController: UIViewController, UITableViewDelegate,
-UITableViewDataSource, MAKDropDownMenuDelegate, UITextFieldDelegate,
-UISearchBarDelegate, BreakOutToRefreshDelegate {
+public class FeedsTableViewController: UIViewController {
 
     public lazy var tableView: UITableView = {
         let tableView = self.tableViewController.tableView
@@ -105,57 +103,51 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         self.refreshView.endRefreshing()
     }
 
-    // MARK: - BreakOutToRefreshDelegate
+    public override func canBecomeFirstResponder() -> Bool {
+        return true
+    }
 
-    public func refreshViewDidRefresh(refreshView: BreakOutToRefreshView) {
-        dataWriter.updateFeeds({feeds, errors in
-            if !errors.isEmpty {
-                let alertTitle = NSLocalizedString("Unable to update feeds", comment: "")
-                let alertMessage = ""
-                let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: {_ in
-                    self.dismissViewControllerAnimated(true, completion: nil)
-                }))
-                self.presentViewController(alert, animated: true, completion: nil)
+    public override var keyCommands: [UIKeyCommand]? {
+        let commands = [
+            UIKeyCommand(input: "f", modifierFlags: .Command, action: "search"),
+            UIKeyCommand(input: "i", modifierFlags: .Command, action: "importFromWeb"),
+            UIKeyCommand(input: "i", modifierFlags: [.Command, .Shift], action: "importFromLocal"),
+            UIKeyCommand(input: "i", modifierFlags: [.Command, .Alternate], action: "createQueryFeed"),
+        ]
+        if #available(iOS 9.0, *) {
+            let discoverabilityTitles = [
+                NSLocalizedString("Filter by tags", comment: ""),
+                NSLocalizedString("Import from web", comment: ""),
+                NSLocalizedString("Import from local", comment: ""),
+                NSLocalizedString("Create query feed", comment: ""),
+            ]
+            for (idx, cmd) in commands.enumerate() {
+                cmd.discoverabilityTitle = discoverabilityTitles[idx]
             }
-            self.reload(nil)
-        })
-    }
-
-    // MARK: - UIScrollViewDelegate
-
-    public func scrollViewWillBeginDragging(scrollView: UIScrollView) {
-        self.searchBar.resignFirstResponder()
-        refreshView.scrollViewWillBeginDragging(scrollView)
-    }
-
-    public func scrollViewWillEndDragging(scrollView: UIScrollView,
-        withVelocity velocity: CGPoint,
-        targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-            refreshView.scrollViewWillEndDragging(scrollView,
-                withVelocity: velocity,
-                targetContentOffset: targetContentOffset)
-    }
-
-    public func scrollViewDidScroll(scrollView: UIScrollView) {
-        refreshView.scrollViewDidScroll(scrollView)
-    }
-
-    // MARK: MAKDropDownMenuDelegate
-
-    public func dropDownMenu(menu: MAKDropDownMenu!, itemDidSelect itemIndex: UInt) {
-        var klass: AnyClass! = nil
-        if itemIndex == 0 {
-            klass = FindFeedViewController.self
-        } else if itemIndex == 1 {
-            klass = LocalImportViewController.self
-        } else if itemIndex == 2 {
-            klass = QueryFeedViewController.self
-        } else {
-            menu.closeAnimated(true)
-            return
         }
-        if let viewController = self.injector?.create(klass) as? UIViewController {
+        return commands
+    }
+
+    // MARK - Private/Internal
+
+    internal func importFromWeb() {
+        self.presentController(FindFeedViewController.self)
+    }
+
+    internal func importFromLocal() {
+        self.presentController(LocalImportViewController.self)
+    }
+
+    internal func createQueryFeed() {
+        self.presentController(QueryFeedViewController.self)
+    }
+
+    internal func search() {
+        self.searchBar.becomeFirstResponder()
+    }
+
+    private func presentController(controller: NSObject.Type) {
+        if let viewController = self.injector?.create(controller) as? UIViewController {
             let nc = UINavigationController(rootViewController: viewController)
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                 let popover = UIPopoverController(contentViewController: nc)
@@ -166,91 +158,7 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
                 self.presentViewController(nc, animated: true, completion: nil)
             }
         }
-        menu.closeAnimated(true)
     }
-
-    public func dropDownMenuDidTapOutsideOfItem(menu: MAKDropDownMenu!) {
-        menu.closeAnimated(true)
-    }
-
-    // MARK: UISearchBarDelegate
-
-    public func searchBar(searchBar: UISearchBar, textDidChange text: String) {
-        self.reload(text)
-    }
-
-    // MARK: - Table view data source
-
-    public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
-    }
-
-    public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return feeds.count
-    }
-
-    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let feed = feedAtIndexPath(indexPath)
-        let strToUse = (feed.unreadArticles().isEmpty ? "unread" : "read")
-        // Prevents a green triangle which'll (dis)appear depending on
-        // whether new feed loaded into it has unread articles or not.
-
-        if let cell = tableView.dequeueReusableCellWithIdentifier(strToUse, forIndexPath: indexPath) as? FeedTableCell {
-            cell.feed = feed
-            return cell
-        }
-        return UITableViewCell()
-    }
-
-    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: false)
-
-        showFeeds([feedAtIndexPath(indexPath)], animated: true)
-    }
-
-    public func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
-
-    public func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle,
-        forRowAtIndexPath indexPath: NSIndexPath) {}
-
-    public func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-        let deleteTitle = NSLocalizedString("Delete", comment: "")
-        let delete = UITableViewRowAction(style: .Default, title: deleteTitle, handler: {(_, indexPath: NSIndexPath!) in
-            let feed = self.feedAtIndexPath(indexPath)
-            self.dataWriter.deleteFeed(feed)
-            self.reload(nil)
-        })
-
-        let readTitle = NSLocalizedString("Mark\nRead", comment: "")
-        let markRead = UITableViewRowAction(style: .Normal, title: readTitle, handler: {_, indexPath in
-            let feed = self.feedAtIndexPath(indexPath)
-            self.dataWriter.markFeedAsRead(feed)
-            self.reload(nil)
-        })
-
-        let editTitle = NSLocalizedString("Edit", comment: "")
-        let edit = UITableViewRowAction(style: .Normal, title: editTitle, handler: {_, indexPath in
-            let feed = self.feedAtIndexPath(indexPath)
-            var viewController: UIViewController! = nil
-            if feed.isQueryFeed {
-                let vc = self.injector!.create(QueryFeedViewController.self) as! QueryFeedViewController
-                vc.feed = feed
-                viewController = vc
-            } else {
-                let vc = self.injector!.create(FeedViewController.self) as! FeedViewController
-                vc.feed = feed
-                viewController = vc
-            }
-            self.presentViewController(UINavigationController(rootViewController: viewController),
-                animated: true, completion: nil)
-        })
-        edit.backgroundColor = UIColor.blueColor()
-        return [delete, markRead, edit]
-    }
-
-    // MARK - Private/Internal
 
     private func reload(tag: String?) {
         dataRetriever.feedsMatchingTag(tag) {feeds in
@@ -299,5 +207,135 @@ UISearchBarDelegate, BreakOutToRefreshDelegate {
         al.feeds = feeds
         self.navigationController?.pushViewController(al, animated: animated)
         return al
+    }
+}
+
+extension FeedsTableViewController: UISearchBarDelegate {
+    public func searchBar(searchBar: UISearchBar, textDidChange text: String) {
+        self.reload(text)
+    }
+}
+
+extension FeedsTableViewController: MAKDropDownMenuDelegate {
+    public func dropDownMenu(menu: MAKDropDownMenu!, itemDidSelect itemIndex: UInt) {
+        if itemIndex == 0 {
+            self.importFromWeb()
+        } else if itemIndex == 1 {
+            self.importFromLocal()
+        } else if itemIndex == 2 {
+            self.createQueryFeed()
+        }
+        menu.closeAnimated(true)
+    }
+
+    public func dropDownMenuDidTapOutsideOfItem(menu: MAKDropDownMenu!) {
+        menu.closeAnimated(true)
+    }
+}
+
+extension FeedsTableViewController: BreakOutToRefreshDelegate, UIScrollViewDelegate {
+    public func refreshViewDidRefresh(refreshView: BreakOutToRefreshView) {
+        dataWriter.updateFeeds({feeds, errors in
+            if !errors.isEmpty {
+                let alertTitle = NSLocalizedString("Unable to update feeds", comment: "")
+                let alertMessage = ""
+                let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: {_ in
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                }))
+                self.presentViewController(alert, animated: true, completion: nil)
+            }
+            self.reload(nil)
+        })
+    }
+
+    public func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        self.searchBar.resignFirstResponder()
+        refreshView.scrollViewWillBeginDragging(scrollView)
+    }
+
+    public func scrollViewWillEndDragging(scrollView: UIScrollView,
+        withVelocity velocity: CGPoint,
+        targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+            refreshView.scrollViewWillEndDragging(scrollView,
+                withVelocity: velocity,
+                targetContentOffset: targetContentOffset)
+    }
+
+    public func scrollViewDidScroll(scrollView: UIScrollView) {
+        refreshView.scrollViewDidScroll(scrollView)
+    }
+}
+
+extension FeedsTableViewController: UITableViewDataSource {
+    public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
+
+    public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return feeds.count
+    }
+
+    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let feed = feedAtIndexPath(indexPath)
+        let strToUse = (feed.unreadArticles().isEmpty ? "unread" : "read")
+        // Prevents a green triangle which'll (dis)appear depending on
+        // whether new feed loaded into it has unread articles or not.
+
+        if let cell = tableView.dequeueReusableCellWithIdentifier(strToUse, forIndexPath: indexPath) as? FeedTableCell {
+            cell.feed = feed
+            return cell
+        }
+        return UITableViewCell()
+    }
+}
+
+extension FeedsTableViewController: UITableViewDelegate {
+    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.deselectRowAtIndexPath(indexPath, animated: false)
+
+        showFeeds([feedAtIndexPath(indexPath)], animated: true)
+    }
+
+    public func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return true
+    }
+
+    public func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle,
+        forRowAtIndexPath indexPath: NSIndexPath) {}
+
+    public func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+        let deleteTitle = NSLocalizedString("Delete", comment: "")
+        let delete = UITableViewRowAction(style: .Default, title: deleteTitle, handler: {(_, indexPath: NSIndexPath!) in
+            let feed = self.feedAtIndexPath(indexPath)
+            self.dataWriter.deleteFeed(feed)
+            self.reload(nil)
+        })
+
+        let readTitle = NSLocalizedString("Mark\nRead", comment: "")
+        let markRead = UITableViewRowAction(style: .Normal, title: readTitle, handler: {_, indexPath in
+            let feed = self.feedAtIndexPath(indexPath)
+            self.dataWriter.markFeedAsRead(feed)
+            self.reload(nil)
+        })
+
+        let editTitle = NSLocalizedString("Edit", comment: "")
+        let edit = UITableViewRowAction(style: .Normal, title: editTitle, handler: {_, indexPath in
+            let feed = self.feedAtIndexPath(indexPath)
+            var viewController: UIViewController! = nil
+            if feed.isQueryFeed {
+                let vc = self.injector!.create(QueryFeedViewController.self) as! QueryFeedViewController
+                vc.feed = feed
+                viewController = vc
+            } else {
+                let vc = self.injector!.create(FeedViewController.self) as! FeedViewController
+                vc.feed = feed
+                viewController = vc
+            }
+            self.presentViewController(UINavigationController(rootViewController: viewController),
+                animated: true, completion: nil)
+        })
+        edit.backgroundColor = UIColor.blueColor()
+        return [delete, markRead, edit]
     }
 }

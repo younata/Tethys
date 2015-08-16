@@ -53,6 +53,46 @@ class FeedsTableViewControllerSpec: QuickSpec {
             window = nil
         }
 
+        describe("Key Commands") {
+            it("can become first responder") {
+                expect(subject.canBecomeFirstResponder()).to(beTruthy())
+            }
+
+            it("have a list of key commands") {
+                let keyCommands = subject.keyCommands
+                expect(keyCommands).toNot(beNil())
+                guard let commands = keyCommands else {
+                    return
+                }
+
+                // cmd+f, cmd+i, cmd+shift+i, cmd+opt+i
+                let expectedCommands = [
+                    UIKeyCommand(input: "f", modifierFlags: .Command, action: ""),
+                    UIKeyCommand(input: "i", modifierFlags: .Command, action: ""),
+                    UIKeyCommand(input: "i", modifierFlags: [.Command, .Shift], action: ""),
+                    UIKeyCommand(input: "i", modifierFlags: [.Command, .Alternate], action: ""),
+                ]
+                let expectedDiscoverabilityTitles = [
+                    "Filter by tags",
+                    "Import from web",
+                    "Import from local",
+                    "Create query feed",
+                ]
+
+                expect(commands.count).to(equal(expectedCommands.count))
+                for (idx, cmd) in commands.enumerate() {
+                    let expectedCmd = expectedCommands[idx]
+                    expect(cmd.input).to(equal(expectedCmd.input))
+                    expect(cmd.modifierFlags).to(equal(expectedCmd.modifierFlags))
+
+                    if #available(iOS 9.0, *) {
+                        let expectedTitle = expectedDiscoverabilityTitles[idx]
+                        expect(cmd.discoverabilityTitle).to(equal(expectedTitle))
+                    }
+                }
+            }
+        }
+
         describe("typing in the searchbar") {
             beforeEach {
                 subject.searchBar.delegate?.searchBar?(subject.searchBar, textDidChange: "a")

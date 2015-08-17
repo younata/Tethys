@@ -95,6 +95,60 @@ class LocalImportViewControllerSpec: QuickSpec {
             expect(feedHeader!).to(equal("Individual Feeds"))
         }
 
+        sharedExamples("showing explanation message") {
+            it("shows the explanationLabel") {
+                expect(subject.explanationLabel.superview).toNot(beNil())
+            }
+
+            context("when feeds are added") {
+                let opmlFeeds : [(url: String, title: String)] = [("http://example.com/feed1", "feed1"), ("http://example.com/feed2", "feed2")]
+                let rssFeed : (url: String, title: String, articles: [String]) = ("http://example.com/feed", "feed", ["article1", "article2"])
+
+                beforeEach {
+                    createOPMLWithFeeds(opmlFeeds, location: "rnews.opml")
+                    createFeed(rssFeed, location: "feed")
+                    subject.reloadItems()
+                }
+
+                afterEach {
+                    deleteAtLocation("opml")
+                    deleteAtLocation("feed")
+                }
+
+                it("removes the explanationLabel from the view hierarchy") {
+                    expect(subject.explanationLabel.superview).to(beNil())
+                }
+            }
+        }
+
+        context("when there are no files to list") {
+            itBehavesLike("showing explanation message")
+        }
+
+        context("when there is only the rnews.opml file to list") {
+            itBehavesLike("showing explanation message")
+        }
+
+        context("when there are multiple files to list") {
+            let opmlFeeds : [(url: String, title: String)] = [("http://example.com/feed1", "feed1"), ("http://example.com/feed2", "feed2")]
+            let rssFeed : (url: String, title: String, articles: [String]) = ("http://example.com/feed", "feed", ["article1", "article2"])
+
+            beforeEach {
+                createOPMLWithFeeds(opmlFeeds, location: "rnews.opml")
+                createFeed(rssFeed, location: "feed")
+                subject.reloadItems()
+            }
+
+            afterEach {
+                deleteAtLocation("opml")
+                deleteAtLocation("feed")
+            }
+
+            it("does not show the explanationLabel") {
+                expect(subject.explanationLabel.superview).to(beNil())
+            }
+        }
+
         describe("reloading objects") {
             let opmlFeeds : [(url: String, title: String)] = [("http://example.com/feed1", "feed1"), ("http://example.com/feed2", "feed2")]
             let rssFeed : (url: String, title: String, articles: [String]) = ("http://example.com/feed", "feed", ["article1", "article2"])

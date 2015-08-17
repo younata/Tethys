@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8918D4A41B8115F800DCDE0E /* ExplanationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8918D4A31B8115F800DCDE0E /* ExplanationView.swift */; };
 		8924D8E91A094CF5003B7529 /* article.css in Resources */ = {isa = PBXBuildFile; fileRef = 8924D8E81A094CF5003B7529 /* article.css */; };
 		8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */; };
 		8935F5CD1B462702000FFD5D /* Muon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; };
@@ -401,6 +402,7 @@
 /* Begin PBXFileReference section */
 		890E47581AA19D69007F217C /* DataUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataUtility.swift; path = ../RSSClient/DataUtility.swift; sourceTree = "<group>"; };
 		890E47661AA19F7F007F217C /* DataUtilitySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataUtilitySpec.swift; path = ../RSSClientTests/DataUtilitySpec.swift; sourceTree = "<group>"; };
+		8918D4A31B8115F800DCDE0E /* ExplanationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExplanationView.swift; sourceTree = "<group>"; };
 		8924D8E81A094CF5003B7529 /* article.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = article.css; sourceTree = "<group>"; };
 		8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OPMLParser.swift; path = ../RSSClient/OPMLParser.swift; sourceTree = "<group>"; };
 		8933E93219EE33F700ECFF3F /* UIColor+RSSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+RSSClient.h"; sourceTree = "<group>"; };
@@ -886,6 +888,7 @@
 				898F6E111B129AB6000D343D /* ActivityIndicator.swift */,
 				89A3417B1B1435750000C60B /* Helpers.swift */,
 				89E2A33C1B6A856900A40D4E /* SettingsViewController.swift */,
+				8918D4A31B8115F800DCDE0E /* ExplanationView.swift */,
 				89C830B119D7D2B7009924DA /* Feeds */,
 				89C830B419D7D2D2009924DA /* Articles */,
 				89C8308219D730E9009924DA /* Images.xcassets */,
@@ -1586,6 +1589,7 @@
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
 				89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */,
 				89A3417C1B1435750000C60B /* Helpers.swift in Sources */,
+				8918D4A41B8115F800DCDE0E /* ExplanationView.swift in Sources */,
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
 				89C830B619D7DE97009924DA /* ArticleViewController.swift in Sources */,
 				898F6E121B129AB6000D343D /* ActivityIndicator.swift in Sources */,

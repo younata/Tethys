@@ -32,7 +32,6 @@ public class ExplanationView: UIView {
         self.titleLabel.numberOfLines = 0
         self.titleLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
 
-
         self.detailLabel.textAlignment = .Center
         self.detailLabel.numberOfLines = 0
         self.detailLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)

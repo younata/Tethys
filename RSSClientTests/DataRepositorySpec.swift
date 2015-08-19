@@ -550,18 +550,15 @@ class FeedRepositorySpec: QuickSpec {
                 var didCallCallback = false
                 var callbackError: NSError? = nil
                 var feed: Feed! = nil
-                var updatedFeed: Feed? = nil
                 beforeEach {
                     didCallCallback = false
                     callbackError = nil
-                    updatedFeed = nil
                     backgroundQueue.runSynchronously = true
 
                     feed = Feed(feed: feed1)
 
-                    subject.updateFeed(feed) {changedFeed?, error in
+                    subject.updateFeed(feed) {changedFeed, error in
                         didCallCallback = true
-                        updatedFeed = changedFeed
                         callbackError = error
                     }
                     mainQueue.runNextOperation()
@@ -572,7 +569,7 @@ class FeedRepositorySpec: QuickSpec {
                 }
 
                 it("should make a network request for the feed if it has a remaniing wait of 0") {
-                    expect(urlSession.lastURL?).to(equal(feed.url))
+                    expect(urlSession.lastURL).to(equal(feed.url))
                 }
 
                 context("when the network request succeeds") {
@@ -620,10 +617,6 @@ class FeedRepositorySpec: QuickSpec {
                                 }
                             }
                         #endif
-
-                        it("should inform any subscribers") {
-                            expect(dataSubscriber.updatedFeeds).toNot(beNil())
-                        }
 
                         context("when the feed contains an image") { // which it does
                             it("should try to download it") {
@@ -706,7 +699,7 @@ class FeedRepositorySpec: QuickSpec {
                 }
             }
 
-            describe("updateFeeds") {
+            describe("updateFeeds:") {
                 var didCallCallback = false
                 var callbackErrors: [NSError] = []
                 beforeEach {

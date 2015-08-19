@@ -255,6 +255,15 @@ internal class DataRepository: DataRetriever, DataWriter {
         }
 
         self.allFeedsOnBackgroundQueue {feeds in
+            if feeds.isEmpty {
+                self.mainQueue.addOperationWithBlock {
+                    for updateCallback in self.updatingFeedsCallbacks {
+                        updateCallback([], [])
+                    }
+                    self.updatingFeedsCallbacks = []
+                }
+                return
+            }
             self.privateUpdateFeeds(feeds) {updatedFeeds, errors in
                 self.mainQueue.addOperationWithBlock {
                     for updateCallback in self.updatingFeedsCallbacks {
@@ -265,7 +274,6 @@ internal class DataRepository: DataRetriever, DataWriter {
                     }
                     self.updatingFeedsCallbacks = []
                 }
-                self.updatingFeedsCallbacks = []
             }
         }
     }
@@ -273,7 +281,9 @@ internal class DataRepository: DataRetriever, DataWriter {
     internal func updateFeed(feed: Feed, callback: (Feed?, NSError?) -> (Void)) {
         self.backgroundQueue.addOperationWithBlock {
             self.privateUpdateFeeds([feed]) {feeds, errors in
-                callback(feeds.first, errors.first)
+                self.mainQueue.addOperationWithBlock {
+                    callback(feeds.first, errors.first)
+                }
             }
         }
     }

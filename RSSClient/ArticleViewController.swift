@@ -188,6 +188,47 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         super.viewWillAppear(animated)
     }
 
+    public override func canBecomeFirstResponder() -> Bool {
+        return true
+    }
+
+    public override var keyCommands: [UIKeyCommand]? {
+        let addTitleToCmd: (UIKeyCommand, String) -> (Void) = {cmd, title in
+            if #available(iOS 9.0, *) {
+                cmd.discoverabilityTitle = title
+            }
+        }
+
+        var commands: [UIKeyCommand] = []
+        if self.lastArticleIndex != 0 {
+            let cmd = UIKeyCommand(input: "p", modifierFlags: .Control, action: "")
+            addTitleToCmd(cmd, NSLocalizedString("Previous article", comment: ""))
+            commands.append(cmd)
+        }
+
+        if self.lastArticleIndex < (self.articles.count - 1) {
+            let cmd = UIKeyCommand(input: "n", modifierFlags: .Control, action: "")
+            addTitleToCmd(cmd, NSLocalizedString("Next article", comment: ""))
+            commands.append(cmd)
+        }
+
+        let markAsRead = UIKeyCommand(input: "r", modifierFlags: .Shift, action: "")
+        addTitleToCmd(markAsRead, NSLocalizedString("Toggle read", comment: ""))
+        commands.append(markAsRead)
+
+        if let _ = self.article?.link {
+            let cmd = UIKeyCommand(input: "l", modifierFlags: .Command, action: "")
+            addTitleToCmd(cmd, NSLocalizedString("Toggle view content/link", comment: ""))
+            commands.append(cmd)
+        }
+
+        let showShareSheet = UIKeyCommand(input: "s", modifierFlags: .Command, action: "")
+        addTitleToCmd(showShareSheet, NSLocalizedString("Open share sheet", comment: ""))
+        commands.append(showShareSheet)
+
+        return commands
+    }
+
     private var objectsBeingObserved: [WKWebView] = []
 
     public override func viewWillDisappear(animated: Bool) {

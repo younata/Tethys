@@ -26,6 +26,162 @@ class ArticleViewControllerSpec: QuickSpec {
             subject.view.layoutIfNeeded()
         }
 
+        describe("Key Commands") {
+            it("can become first responder") {
+                expect(subject.canBecomeFirstResponder()).to(beTruthy())
+            }
+
+            func hasKindsOfKeyCommands(expectedCommands: [UIKeyCommand], discoveryTitles: [String]) {
+                let keyCommands = subject.keyCommands
+                expect(keyCommands).toNot(beNil())
+                guard let commands = keyCommands else {
+                    return
+                }
+
+                expect(commands.count).to(equal(expectedCommands.count))
+                for (idx, cmd) in commands.enumerate() {
+                    let expectedCmd = expectedCommands[idx]
+                    expect(cmd.input).to(equal(expectedCmd.input))
+                    expect(cmd.modifierFlags).to(equal(expectedCmd.modifierFlags))
+
+                    if #available(iOS 9.0, *) {
+                        let expectedTitle = discoveryTitles[idx]
+                        expect(cmd.discoverabilityTitle).to(equal(expectedTitle))
+                    }
+                }
+            }
+
+            let article = Article(title: "article", link: NSURL(string: "https://example.com/article"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, feed: nil, flags: [], enclosures: [])
+            let article1 = Article(title: "article1", link: nil, summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier1", content: "<h1>hi</h1>", read: false, feed: nil, flags: [], enclosures: [])
+            let article2 = Article(title: "article2", link: NSURL(string: "https://example.com/article"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier2", content: "<h1>hi</h1>", read: false, feed: nil, flags: [], enclosures: [])
+            let article3 = Article(title: "article3", link: NSURL(string: "https://example.com/article"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier3", content: "<h1>hi</h1>", read: false, feed: nil, flags: [], enclosures: [])
+
+            context("when there is only one article") {
+                beforeEach {
+                    subject.article = article
+                    subject.articles = [article]
+                    subject.lastArticleIndex = 0
+                }
+
+                it("should not list the next/previous article commands") {
+                    let expectedCommands = [
+                        UIKeyCommand(input: "r", modifierFlags: .Shift, action: ""),
+                        UIKeyCommand(input: "l", modifierFlags: .Command, action: ""),
+                        UIKeyCommand(input: "s", modifierFlags: .Command, action: ""),
+                    ]
+                    let expectedDiscoverabilityTitles = [
+                        "Toggle read",
+                        "Toggle view content/link",
+                        "Open share sheet",
+                    ]
+
+                    hasKindsOfKeyCommands(expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
+                }
+            }
+
+            context("when at the beginning of an article list") {
+                beforeEach {
+                    subject.article = article2
+                    subject.articles = [article, article1, article2, article3]
+                    subject.lastArticleIndex = 0
+                }
+
+                it("should not list the previous article command") {
+                    let expectedCommands = [
+                        UIKeyCommand(input: "n", modifierFlags: .Control, action: ""),
+                        UIKeyCommand(input: "r", modifierFlags: .Shift, action: ""),
+                        UIKeyCommand(input: "l", modifierFlags: .Command, action: ""),
+                        UIKeyCommand(input: "s", modifierFlags: .Command, action: ""),
+                    ]
+                    let expectedDiscoverabilityTitles = [
+                        "Next article",
+                        "Toggle read",
+                        "Toggle view content/link",
+                        "Open share sheet",
+                    ]
+
+                    hasKindsOfKeyCommands(expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
+                }
+            }
+
+            context("when at the end of an article list") {
+                beforeEach {
+                    subject.article = article3
+                    subject.articles = [article, article1, article2, article3]
+                    subject.lastArticleIndex = 3
+                }
+
+                it("should not list the next article command") {
+                    let expectedCommands = [
+                        UIKeyCommand(input: "p", modifierFlags: .Control, action: ""),
+                        UIKeyCommand(input: "r", modifierFlags: .Shift, action: ""),
+                        UIKeyCommand(input: "l", modifierFlags: .Command, action: ""),
+                        UIKeyCommand(input: "s", modifierFlags: .Command, action: ""),
+                    ]
+                    let expectedDiscoverabilityTitles = [
+                        "Previous article",
+                        "Toggle read",
+                        "Toggle view content/link",
+                        "Open share sheet",
+                    ]
+
+                    hasKindsOfKeyCommands(expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
+                }
+            }
+
+            context("when viewing an article that does not have a link") {
+                beforeEach {
+                    subject.article = article1
+                    subject.articles = [article, article1, article2, article3]
+                    subject.lastArticleIndex = 1
+                }
+
+                it("should not list the next article command") {
+                    let expectedCommands = [
+                        UIKeyCommand(input: "p", modifierFlags: .Control, action: ""),
+                        UIKeyCommand(input: "n", modifierFlags: .Control, action: ""),
+                        UIKeyCommand(input: "r", modifierFlags: .Shift, action: ""),
+                        UIKeyCommand(input: "s", modifierFlags: .Command, action: ""),
+                    ]
+                    let expectedDiscoverabilityTitles = [
+                        "Previous article",
+                        "Next article",
+                        "Toggle read",
+                        "Open share sheet",
+                    ]
+
+                    hasKindsOfKeyCommands(expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
+                }
+            }
+
+            context("when in the middle of an article list") {
+                beforeEach {
+                    subject.article = article2
+                    subject.articles = [article, article1, article2, article3]
+                    subject.lastArticleIndex = 2
+                }
+
+                it("should list the complete list of key commands") {
+                    let expectedCommands = [
+                        UIKeyCommand(input: "p", modifierFlags: .Control, action: ""),
+                        UIKeyCommand(input: "n", modifierFlags: .Control, action: ""),
+                        UIKeyCommand(input: "r", modifierFlags: .Shift, action: ""),
+                        UIKeyCommand(input: "l", modifierFlags: .Command, action: ""),
+                        UIKeyCommand(input: "s", modifierFlags: .Command, action: ""),
+                    ]
+                    let expectedDiscoverabilityTitles = [
+                        "Previous article",
+                        "Next article",
+                        "Toggle read",
+                        "Toggle view content/link",
+                        "Open share sheet",
+                    ]
+
+                    hasKindsOfKeyCommands(expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
+                }
+            }
+        }
+
         it("should create/set a user activity") {
             expect(subject.userActivity).toNot(beNil())
             if let activity = subject.userActivity {

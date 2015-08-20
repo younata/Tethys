@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		8918D4A41B8115F800DCDE0E /* ExplanationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8918D4A31B8115F800DCDE0E /* ExplanationView.swift */; };
-		8924D8E91A094CF5003B7529 /* article.css in Resources */ = {isa = PBXBuildFile; fileRef = 8924D8E81A094CF5003B7529 /* article.css */; };
+		8918D4D41B84593100DCDE0E /* ClearnessDark.css in Resources */ = {isa = PBXBuildFile; fileRef = 8918D4D31B84593100DCDE0E /* ClearnessDark.css */; };
+		8924D8E91A094CF5003B7529 /* github2.css in Resources */ = {isa = PBXBuildFile; fileRef = 8924D8E81A094CF5003B7529 /* github2.css */; };
 		8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */; };
 		8935F5CD1B462702000FFD5D /* Muon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; };
 		8935F5CE1B462702000FFD5D /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; };
@@ -403,7 +404,8 @@
 		890E47581AA19D69007F217C /* DataUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataUtility.swift; path = ../RSSClient/DataUtility.swift; sourceTree = "<group>"; };
 		890E47661AA19F7F007F217C /* DataUtilitySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataUtilitySpec.swift; path = ../RSSClientTests/DataUtilitySpec.swift; sourceTree = "<group>"; };
 		8918D4A31B8115F800DCDE0E /* ExplanationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExplanationView.swift; sourceTree = "<group>"; };
-		8924D8E81A094CF5003B7529 /* article.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = article.css; sourceTree = "<group>"; };
+		8918D4D31B84593100DCDE0E /* ClearnessDark.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = ClearnessDark.css; sourceTree = "<group>"; };
+		8924D8E81A094CF5003B7529 /* github2.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = github2.css; sourceTree = "<group>"; };
 		8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OPMLParser.swift; path = ../RSSClient/OPMLParser.swift; sourceTree = "<group>"; };
 		8933E93219EE33F700ECFF3F /* UIColor+RSSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+RSSClient.h"; sourceTree = "<group>"; };
 		8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+RSSClient.m"; sourceTree = "<group>"; };
@@ -1045,7 +1047,8 @@
 			isa = PBXGroup;
 			children = (
 				89C830B519D7DE97009924DA /* ArticleViewController.swift */,
-				8924D8E81A094CF5003B7529 /* article.css */,
+				8924D8E81A094CF5003B7529 /* github2.css */,
+				8918D4D31B84593100DCDE0E /* ClearnessDark.css */,
 				8937F6BD1B7996F50044A442 /* prism.js.html */,
 			);
 			name = "Reading an article";
@@ -1416,13 +1419,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				89C8308319D730E9009924DA /* Images.xcassets in Resources */,
-				8924D8E91A094CF5003B7529 /* article.css in Resources */,
+				8924D8E91A094CF5003B7529 /* github2.css in Resources */,
 				89AA8A931B537048000E2C88 /* mac_classic.tmTheme in Resources */,
 				89D06A1B19FDBC52003909A3 /* Launch Screen.xib in Resources */,
 				895901B31A32B61A002E2C62 /* Localizable.strings in Resources */,
 				89C830BF19D89722009924DA /* FindICO.js in Resources */,
 				89C830BB19D8904A009924DA /* findFeeds.js in Resources */,
 				895901B51A32B61A002E2C62 /* Localizable.stringsdict in Resources */,
+				8918D4D41B84593100DCDE0E /* ClearnessDark.css in Resources */,
 				8937F6BE1B7996F50044A442 /* prism.js.html in Resources */,
 				89AA8A911B536BEB000E2C88 /* JavaScript.tmLanguage in Resources */,
 			);

@@ -41,9 +41,9 @@ class FakeDataReadWriter : DataRetriever, DataWriter {
 
     // MARK: DataWriter
 
-    var subscribers = Array<DataSubscriber>()
+    let subscribers = NSHashTable.weakObjectsHashTable()
     func addSubscriber(subscriber: DataSubscriber) {
-        subscribers.append(subscriber)
+        self.subscribers.addObject(subscriber)
     }
 
     var newFeedCallback: (Feed) -> (Void) = {_ in }

@@ -8,7 +8,7 @@ import CoreData
     import MobileCoreServices
 #endif
 
-private class FakeDataSubscriber: DataSubscriber {
+private class FakeDataSubscriber: NSObject, DataSubscriber {
     private var markedArticle: Article? = nil
     private var read: Bool? = nil
     private func markedArticle(article: Article, asRead: Bool) {
@@ -38,8 +38,6 @@ private class FakeDataSubscriber: DataSubscriber {
     private func didUpdateFeeds(feeds: [Feed]) {
         updatedFeeds = feeds
     }
-
-    init() {}
 }
 
 class FeedRepositorySpec: QuickSpec {

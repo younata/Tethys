@@ -65,7 +65,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
 
 
     private lazy var articleCSS: String = {
-        if let loc = NSBundle.mainBundle().URLForResource("github2", withExtension: "css") {
+        if let loc = NSBundle.mainBundle().URLForResource("darkhub2", withExtension: "css") {
             do {
                 let str = try NSString(contentsOfURL: loc, encoding: NSUTF8StringEncoding)
                 return "<html><head><style type=\"text/css\">\(str)</style></head><body>"

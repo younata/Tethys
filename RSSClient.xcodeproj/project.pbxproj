@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		8918D4A41B8115F800DCDE0E /* ExplanationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8918D4A31B8115F800DCDE0E /* ExplanationView.swift */; };
 		8918D4D41B84593100DCDE0E /* ClearnessDark.css in Resources */ = {isa = PBXBuildFile; fileRef = 8918D4D31B84593100DCDE0E /* ClearnessDark.css */; };
+		8918D4D91B85887E00DCDE0E /* darkhub2.css in Resources */ = {isa = PBXBuildFile; fileRef = 8918D4D81B85887E00DCDE0E /* darkhub2.css */; };
+		8918D4DB1B8598D100DCDE0E /* ThemeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8918D4DA1B8598D100DCDE0E /* ThemeRepository.swift */; };
+		8918D4DD1B859D3B00DCDE0E /* ThemeRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8918D4DC1B859D3B00DCDE0E /* ThemeRepositorySpec.swift */; };
 		8924D8E91A094CF5003B7529 /* github2.css in Resources */ = {isa = PBXBuildFile; fileRef = 8924D8E81A094CF5003B7529 /* github2.css */; };
 		8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */; };
 		8935F5CD1B462702000FFD5D /* Muon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; };
@@ -405,6 +408,9 @@
 		890E47661AA19F7F007F217C /* DataUtilitySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataUtilitySpec.swift; path = ../RSSClientTests/DataUtilitySpec.swift; sourceTree = "<group>"; };
 		8918D4A31B8115F800DCDE0E /* ExplanationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExplanationView.swift; sourceTree = "<group>"; };
 		8918D4D31B84593100DCDE0E /* ClearnessDark.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = ClearnessDark.css; sourceTree = "<group>"; };
+		8918D4D81B85887E00DCDE0E /* darkhub2.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = darkhub2.css; sourceTree = "<group>"; };
+		8918D4DA1B8598D100DCDE0E /* ThemeRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeRepository.swift; sourceTree = "<group>"; };
+		8918D4DC1B859D3B00DCDE0E /* ThemeRepositorySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeRepositorySpec.swift; sourceTree = "<group>"; };
 		8924D8E81A094CF5003B7529 /* github2.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = github2.css; sourceTree = "<group>"; };
 		8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OPMLParser.swift; path = ../RSSClient/OPMLParser.swift; sourceTree = "<group>"; };
 		8933E93219EE33F700ECFF3F /* UIColor+RSSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+RSSClient.h"; sourceTree = "<group>"; };
@@ -890,6 +896,7 @@
 				898F6E111B129AB6000D343D /* ActivityIndicator.swift */,
 				89A3417B1B1435750000C60B /* Helpers.swift */,
 				89E2A33C1B6A856900A40D4E /* SettingsViewController.swift */,
+				8918D4DA1B8598D100DCDE0E /* ThemeRepository.swift */,
 				8918D4A31B8115F800DCDE0E /* ExplanationView.swift */,
 				89C830B119D7D2B7009924DA /* Feeds */,
 				89C830B419D7D2D2009924DA /* Articles */,
@@ -921,6 +928,7 @@
 				89C204B41A73811000C792D2 /* AppDelegateSpec.swift */,
 				8953B1571B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift */,
 				89C204C11A73FEDA00C792D2 /* SplitDelegateSpec.swift */,
+				8918D4DC1B859D3B00DCDE0E /* ThemeRepositorySpec.swift */,
 				89C204C61A740D8900C792D2 /* NotificationHandlerSpec.swift */,
 				89D970BE1B3929D600ED84B8 /* BackgroundFetchHandlerSpec.swift */,
 				89CB98491B12C50000C87160 /* ActivityIndicatorSpec.swift */,
@@ -1048,6 +1056,7 @@
 			children = (
 				89C830B519D7DE97009924DA /* ArticleViewController.swift */,
 				8924D8E81A094CF5003B7529 /* github2.css */,
+				8918D4D81B85887E00DCDE0E /* darkhub2.css */,
 				8918D4D31B84593100DCDE0E /* ClearnessDark.css */,
 				8937F6BD1B7996F50044A442 /* prism.js.html */,
 			);
@@ -1428,6 +1437,7 @@
 				895901B51A32B61A002E2C62 /* Localizable.stringsdict in Resources */,
 				8918D4D41B84593100DCDE0E /* ClearnessDark.css in Resources */,
 				8937F6BE1B7996F50044A442 /* prism.js.html in Resources */,
+				8918D4D91B85887E00DCDE0E /* darkhub2.css in Resources */,
 				89AA8A911B536BEB000E2C88 /* JavaScript.tmLanguage in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1600,6 +1610,7 @@
 				89F83F341B4D6D33003F8F6C /* FeedFinder.swift in Sources */,
 				89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */,
 				89D970C31B392B0300ED84B8 /* LocalNotificationSource.swift in Sources */,
+				8918D4DB1B8598D100DCDE0E /* ThemeRepository.swift in Sources */,
 				89C509F71A2F825400CBD000 /* TextViewCell.swift in Sources */,
 				89C204C41A7400D100C792D2 /* NotificationHandler.swift in Sources */,
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
@@ -1643,6 +1654,7 @@
 				8953B1581B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift in Sources */,
 				89F5170A1B2014470005AB04 /* QueryFeedViewControllerSpec.swift in Sources */,
 				89CB984A1B12C50000C87160 /* ActivityIndicatorSpec.swift in Sources */,
+				8918D4DD1B859D3B00DCDE0E /* ThemeRepositorySpec.swift in Sources */,
 				89D970BF1B3929D600ED84B8 /* BackgroundFetchHandlerSpec.swift in Sources */,
 				899823AC1B2C883B00818755 /* ArticleListControllerSpec.swift in Sources */,
 				899823AE1B30B64000818755 /* ArticleViewControllerSpec.swift in Sources */,

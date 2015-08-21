@@ -18,7 +18,7 @@ public protocol DataRetriever {
     func articlesMatchingQuery(query: String, callback: ([Article]) -> (Void))
 }
 
-public protocol DataSubscriber {
+public protocol DataSubscriber: NSObjectProtocol {
     func markedArticle(article: Article, asRead read: Bool)
 
     func deletedArticle(article: Article)
@@ -151,10 +151,10 @@ internal class DataRepository: DataRetriever, DataWriter {
 
     // MARK: DataWriter
 
-    private var subscribers = Array<DataSubscriber>()
+    private let subscribers = NSHashTable.weakObjectsHashTable()
 
     internal func addSubscriber(subscriber: DataSubscriber) {
-        subscribers.append(subscriber)
+        subscribers.addObject(subscriber)
     }
 
     internal func newFeed(callback: (Feed) -> (Void)) {
@@ -232,8 +232,10 @@ internal class DataRepository: DataRetriever, DataWriter {
                     }
                 }
                 self.mainQueue.addOperationWithBlock {
-                    for subscriber in self.subscribers {
-                        subscriber.deletedArticle(article)
+                    for object in self.subscribers.allObjects {
+                        if let subscriber = object as? DataSubscriber {
+                            subscriber.deletedArticle(article)
+                        }
                     }
                 }
                 self.save()
@@ -269,8 +271,10 @@ internal class DataRepository: DataRetriever, DataWriter {
                     for updateCallback in self.updatingFeedsCallbacks {
                         updateCallback(updatedFeeds, errors)
                     }
-                    for subscriber in self.subscribers {
-                        subscriber.didUpdateFeeds(updatedFeeds)
+                    for object in self.subscribers.allObjects {
+                        if let subscriber = object as? DataSubscriber {
+                            subscriber.didUpdateFeeds(updatedFeeds)
+                        }
                     }
                     self.updatingFeedsCallbacks = []
                 }
@@ -439,8 +443,10 @@ internal class DataRepository: DataRetriever, DataWriter {
             save()
         }
         self.mainQueue.addOperationWithBlock {
-            for subscriber in self.subscribers {
-                subscriber.markedArticle(article, asRead: read)
+            for object in self.subscribers.allObjects {
+                if let subscriber = object as? DataSubscriber {
+                    subscriber.markedArticle(article, asRead: read)
+                }
             }
         }
     }
@@ -452,8 +458,10 @@ internal class DataRepository: DataRetriever, DataWriter {
             return
         }
         self.mainQueue.addOperationWithBlock {
-            for subscriber in self.subscribers {
-                subscriber.willUpdateFeeds()
+            for object in self.subscribers.allObjects {
+                if let subscriber = object as? DataSubscriber {
+                    subscriber.willUpdateFeeds()
+                }
             }
         }
 
@@ -467,8 +475,10 @@ internal class DataRepository: DataRetriever, DataWriter {
             let dataTask = self.urlSession.dataTaskWithURL(url) {data, response, error in
                 currentProgress++
                 self.mainQueue.addOperationWithBlock {
-                    for subscriber in self.subscribers {
-                        subscriber.didUpdateFeedsProgress(currentProgress, total: totalProgress)
+                    for object in self.subscribers.allObjects {
+                        if let subscriber = object as? DataSubscriber {
+                            subscriber.didUpdateFeedsProgress(currentProgress, total: totalProgress)
+                        }
                     }
                 }
                 if let error = error {
@@ -525,8 +535,10 @@ internal class DataRepository: DataRetriever, DataWriter {
 
                 currentProgress++
                 self.mainQueue.addOperationWithBlock {
-                    for subscriber in self.subscribers {
-                        subscriber.didUpdateFeedsProgress(currentProgress, total: totalProgress)
+                    for object in self.subscribers.allObjects {
+                        if let subscriber = object as? DataSubscriber {
+                            subscriber.didUpdateFeedsProgress(currentProgress, total: totalProgress)
+                        }
                     }
                 }
 

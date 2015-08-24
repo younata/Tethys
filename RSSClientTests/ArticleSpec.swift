@@ -213,7 +213,7 @@ class ArticleSpec: QuickSpec {
             it("should remove subject from the feed's articls list when that gets unset") {
                 subject.feed = nil
 
-                expect(feed.articles).toNot(contain(self))
+                expect(feed.articles).toNot(contain(subject))
             }
 
             it("should remove from the old and add to the new when changing feeds") {
@@ -223,6 +223,14 @@ class ArticleSpec: QuickSpec {
 
                 expect(feed.articles).toNot(contain(subject))
                 expect(newFeed.articles).to(contain(subject))
+            }
+
+            it("should no-op when trying to change the feed to a query feed") {
+                let query = Feed(title: "blah", url: nil, summary: "", query: "true", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+
+                subject.feed = query
+
+                expect(feed.articles).to(contain(subject))
             }
         }
 

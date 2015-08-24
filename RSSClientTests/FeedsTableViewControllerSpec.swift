@@ -32,7 +32,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
             feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "", query: nil,
                 tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-            feed2 = Feed(title: "d", url: nil, summary: "", query: "", tags: [],
+            feed2 = Feed(title: "d", url: nil, summary: "", query: "article.read == false;", tags: [],
                 waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             feeds = [feed1, feed2]
@@ -360,102 +360,208 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     var cell: FeedTableCell! = nil
                     var feed: Feed! = nil
 
-                    beforeEach {
-                        cell = subject.tableView.visibleCells.first as? FeedTableCell
-                        feed = feeds[0]
-
-                        expect(cell).to(beAnInstanceOf(FeedTableCell.self))
-                    }
-
-                    it("should be configured with the feed") {
-                        expect(cell.feed).to(equal(feed))
-                    }
-
-                    describe("tapping on a cell") {
+                    context("for a regular feed") {
                         beforeEach {
+                            cell = subject.tableView.visibleCells.first as? FeedTableCell
+                            feed = feeds[0]
+
+                            expect(cell).to(beAnInstanceOf(FeedTableCell.self))
+                        }
+
+                        it("should be configured with the feed") {
+                            expect(cell.feed).to(equal(feed))
+                        }
+
+                        describe("tapping on a cell") {
+                            beforeEach {
+                                let indexPath = NSIndexPath(forRow: 0, inSection: 0)
+                                subject.tableView(subject.tableView, didSelectRowAtIndexPath: indexPath)
+                            }
+
+                            it("should navigate to an ArticleListViewController for that feed") {
+                                expect(navigationController.topViewController).to(beAnInstanceOf(ArticleListController.self))
+                                if let articleList = navigationController.topViewController as? ArticleListController {
+                                    expect(articleList.feeds).to(equal([feed]))
+                                }
+                            }
+                        }
+
+                        describe("exposing edit actions") {
+                            var actions: [UITableViewRowAction] = []
+                            var action: UITableViewRowAction! = nil
                             let indexPath = NSIndexPath(forRow: 0, inSection: 0)
-                            subject.tableView(subject.tableView, didSelectRowAtIndexPath: indexPath)
-                        }
+                            beforeEach {
+                                actions = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath) ?? []
+                            }
 
-                        it("should navigate to an ArticleListViewController for that feed") {
-                            expect(navigationController.topViewController).to(beAnInstanceOf(ArticleListController.self))
-                            if let articleList = navigationController.topViewController as? ArticleListController {
-                                expect(articleList.feeds).to(equal([feed]))
+                            it("should have 3 actions") {
+                                expect(actions.count).to(equal(3))
+                            }
+
+                            describe("the first action") {
+                                beforeEach {
+                                    action = actions[0]
+                                }
+
+                                it("should state it deletes the feed") {
+                                    expect(action.title).to(equal("Delete"))
+                                }
+
+                                describe("tapping it") {
+                                    beforeEach {
+                                        action.handler()(action, indexPath)
+                                    }
+
+                                    it("should delete the feed from the data store") {
+                                        expect(dataReadWriter.lastDeletedFeed).to(equal(feed))
+                                    }
+                                }
+                            }
+
+                            describe("the second action") {
+                                beforeEach {
+                                    action = actions[1]
+                                }
+
+                                it("should state it marks all items in the feed as read") {
+                                    expect(action.title).to(equal("Mark\nRead"))
+                                }
+
+                                describe("tapping it") {
+                                    beforeEach {
+                                        action.handler()(action, indexPath)
+                                    }
+
+                                    it("should mark all articles of that feed as read") {
+                                        expect(dataReadWriter.lastFeedMarkedRead).to(equal(feed))
+                                    }
+                                }
+                            }
+
+                            describe("the second action") {
+                                beforeEach {
+                                    action = actions[2]
+                                }
+
+                                it("should state it edits the feed") {
+                                    expect(action.title).to(equal("Edit"))
+                                }
+
+                                describe("tapping it") {
+                                    beforeEach {
+                                        action.handler()(action, indexPath)
+                                    }
+                                    
+                                    it("should bring up a feed edit screen") {
+                                        expect(navigationController.visibleViewController).to(beAnInstanceOf(UINavigationController.self))
+                                        if let nc = navigationController.visibleViewController as? UINavigationController {
+                                            expect(nc.viewControllers.count).to(equal(1))
+                                            expect(nc.topViewController).to(beAnInstanceOf(FeedViewController.self))
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
 
-                    describe("exposing edit actions") {
-                        var actions: [UITableViewRowAction] = []
-                        var action: UITableViewRowAction! = nil
-                        let indexPath = NSIndexPath(forRow: 0, inSection: 0)
+                    context("for a query feed") {
                         beforeEach {
-                            actions = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath) ?? []
+                            cell = subject.tableView.visibleCells.last as? FeedTableCell
+                            feed = feeds[1]
+
+                            expect(cell).to(beAnInstanceOf(FeedTableCell.self))
                         }
 
-                        it("should have 3 actions") {
-                            expect(actions.count).to(equal(3))
+                        it("should be configured with the feed") {
+                            expect(cell.feed).to(equal(feed))
                         }
 
-                        describe("the first action") {
+                        describe("tapping on a cell") {
                             beforeEach {
-                                action = actions[0]
+                                let indexPath = NSIndexPath(forRow: 1, inSection: 0)
+                                subject.tableView(subject.tableView, didSelectRowAtIndexPath: indexPath)
                             }
 
-                            it("should state it deletes the feed") {
-                                expect(action.title).to(equal("Delete"))
-                            }
-
-                            describe("tapping it") {
-                                beforeEach {
-                                    action.handler()(action, indexPath)
-                                }
-
-                                it("should delete the feed from the data store") {
-                                    expect(dataReadWriter.lastDeletedFeed).to(equal(feed))
+                            it("should navigate to an ArticleListViewController for that feed") {
+                                expect(navigationController.topViewController).to(beAnInstanceOf(ArticleListController.self))
+                                if let articleList = navigationController.topViewController as? ArticleListController {
+                                    expect(articleList.feeds).to(equal([feed]))
                                 }
                             }
                         }
 
-                        describe("the second action") {
+                        describe("exposing edit actions") {
+                            var actions: [UITableViewRowAction] = []
+                            var action: UITableViewRowAction! = nil
+                            let indexPath = NSIndexPath(forRow: 1, inSection: 0)
                             beforeEach {
-                                action = actions[1]
+                                actions = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath) ?? []
                             }
 
-                            it("should state it marks all items in the feed as read") {
-                                expect(action.title).to(equal("Mark\nRead"))
+                            it("should have 3 actions") {
+                                expect(actions.count).to(equal(3))
                             }
 
-                            describe("tapping it") {
+                            describe("the first action") {
                                 beforeEach {
-                                    action.handler()(action, indexPath)
+                                    action = actions[0]
                                 }
 
-                                it("should mark all articles of that feed as read") {
-                                    expect(dataReadWriter.lastFeedMarkedRead).to(equal(feed))
+                                it("should state it deletes the feed") {
+                                    expect(action.title).to(equal("Delete"))
+                                }
+
+                                describe("tapping it") {
+                                    beforeEach {
+                                        action.handler()(action, indexPath)
+                                    }
+
+                                    it("should delete the feed from the data store") {
+                                        expect(dataReadWriter.lastDeletedFeed).to(equal(feed))
+                                    }
                                 }
                             }
-                        }
 
-                        describe("the second action") {
-                            beforeEach {
-                                action = actions[2]
-                            }
-
-                            it("should state it edits the feed") {
-                                expect(action.title).to(equal("Edit"))
-                            }
-
-                            describe("tapping it") {
+                            describe("the second action") {
                                 beforeEach {
-                                    action.handler()(action, indexPath)
+                                    action = actions[1]
                                 }
 
-                                it("should bring up a feed edit screen") {
-                                    expect(navigationController.visibleViewController).to(beAnInstanceOf(UINavigationController.self))
-                                    if let nc = navigationController.visibleViewController as? UINavigationController {
-                                        expect(nc.viewControllers.count).to(equal(1))
-                                        expect(nc.topViewController).to(beAnInstanceOf(FeedViewController.self))
+                                it("should state it marks all items in the feed as read") {
+                                    expect(action.title).to(equal("Mark\nRead"))
+                                }
+
+                                describe("tapping it") {
+                                    beforeEach {
+                                        action.handler()(action, indexPath)
+                                    }
+
+                                    it("should mark all articles of that feed as read") {
+                                        expect(dataReadWriter.lastFeedMarkedRead).to(equal(feed))
+                                    }
+                                }
+                            }
+
+                            describe("the second action") {
+                                beforeEach {
+                                    action = actions[2]
+                                }
+
+                                it("should state it edits the feed") {
+                                    expect(action.title).to(equal("Edit"))
+                                }
+
+                                describe("tapping it") {
+                                    beforeEach {
+                                        action.handler()(action, indexPath)
+                                    }
+
+                                    it("should bring up a feed edit screen") {
+                                        expect(navigationController.visibleViewController).to(beAnInstanceOf(UINavigationController.self))
+                                        if let nc = navigationController.visibleViewController as? UINavigationController {
+                                            expect(nc.viewControllers.count).to(equal(1))
+                                            expect(nc.topViewController).to(beAnInstanceOf(QueryFeedViewController.self))
+                                        }
                                     }
                                 }
                             }

@@ -108,31 +108,9 @@ internal class DataRepository: DataRetriever, DataWriter {
 
     internal func articlesMatchingQuery(query: String, callback: ([Article]) -> (Void)) {
         allFeedsOnBackgroundQueue { feeds in
-            let articles = feeds.reduce(Array<Article>()) {articles, feed in
-                return articles + feed.articles
-            }
-            let context = JSContext()
-            context.exceptionHandler = { context, exception in
-                print("JS Error: \(exception)")
-            }
-            let script = "var query = function(article) { \(query) }\n" +
-                         "var include = function(articles) {\n" +
-                         "  var ret = [];\n" +
-                         "  for (var i = 0; i < articles.length; i++) {\n" +
-                         "    var article = articles[i];\n" +
-                         "    if (query(article)) { ret.push(article) }\n" +
-                         "  }\n" +
-                         "  return ret\n" +
-                         "}"
-            context.evaluateScript(script)
-            let include = context.objectForKeyedSubscript("include")
-            let res = include.callWithArguments([articles]).toArray()
+            let queriedArticles = self.privateArticlesMatchingQuery(query, feeds: feeds)
             self.mainQueue.addOperationWithBlock {
-                if let matched = res as? [Article] {
-                    callback(matched)
-                } else {
-                    callback([])
-                }
+                callback(queriedArticles)
             }
         }
     }
@@ -145,8 +123,58 @@ internal class DataRepository: DataRetriever, DataWriter {
                 managedObjectContext: self.objectContext).sort {
                     return $0.title < $1.title
             }
+            let nonQueryFeeds = feeds.reduce(Array<Feed>()) {
+                if $1.isQueryFeed {
+                    return $0
+                } else {
+                    return $0 + [$1]
+                }
+            }
+            let queryFeeds = feeds.reduce(Array<Feed>()) {
+                if $1.isQueryFeed {
+                    return $0 + [$1]
+                } else {
+                    return $0
+                }
+            }
+            for feed in queryFeeds {
+                let articles = self.privateArticlesMatchingQuery(feed.query!, feeds: nonQueryFeeds)
+                for article in articles {
+                    feed.addArticle(article)
+                }
+            }
             callback(feeds)
         }
+    }
+
+    private func privateArticlesMatchingQuery(query: String, feeds: [Feed]) -> [Article] {
+        let nonQueryFeeds = feeds.reduce(Array<Feed>()) {
+            if $1.isQueryFeed {
+                return $0
+            } else {
+                return $0 + [$1]
+            }
+        }
+        let articles = nonQueryFeeds.reduce(Array<Article>()) {articles, feed in
+            return articles + feed.articles
+        }
+        let context = JSContext()
+        context.exceptionHandler = { context, exception in
+            print("JS Error: \(exception)")
+        }
+        let script = "var query = function(article) { \(query) }\n" +
+            "var include = function(articles) {\n" +
+            "  var ret = [];\n" +
+            "  for (var i = 0; i < articles.length; i++) {\n" +
+            "    var article = articles[i];\n" +
+            "    if (query(article)) { ret.push(article) }\n" +
+            "  }\n" +
+            "  return ret\n" +
+        "}"
+        context.evaluateScript(script)
+        let include = context.objectForKeyedSubscript("include")
+        let res = include.callWithArguments([articles]).toArray()
+        return res as? [Article] ?? []
     }
 
     // MARK: DataWriter
@@ -346,7 +374,7 @@ internal class DataRepository: DataRetriever, DataWriter {
             cdfeed.remainingWaitInt = feed.remainingWait
             cdfeed.image = feed.image
 
-            for article in feed.articles {
+            for article in feed.articles where !feed.isQueryFeed {
                 self.saveArticle(article, feed: cdfeed)
             }
             self.save()
@@ -354,7 +382,7 @@ internal class DataRepository: DataRetriever, DataWriter {
     }
 
     private func saveArticle(article: Article, feed: CoreDataFeed) {
-        guard let articleID = article.articleID else {
+        guard let articleID = article.articleID where article.updated else {
             return
         }
         if let cdarticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", articleID), managedObjectContext: self.objectContext, sortDescriptors: []).first as? CoreDataArticle {

@@ -92,7 +92,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
             describe("responding to data subscriber (feed) update events") {
                 var subscriber: DataSubscriber? = nil
                 beforeEach {
-                    subscriber = dataReadWriter.subscribers.last
+                    subscriber = dataReadWriter.subscribers.anyObject as? DataSubscriber
                 }
 
                 context("when the feeds start refreshing") {

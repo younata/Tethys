@@ -112,47 +112,67 @@ class FeedSpec: QuickSpec {
                 article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
             }
 
-            context("when the article is not associated with any article") {
-                it("should add the article and set the article's feed if it's not set already") {
-                    subject.addArticle(article)
+            context("to a regular feed") {
+                context("when the article is not associated with any article") {
+                    it("should add the article and set the article's feed if it's not set already") {
+                        subject.addArticle(article)
 
-                    expect(subject.updated).to(beTruthy())
-                    expect(article.updated).to(beTruthy())
-                    expect(article.feed).to(equal(subject))
-                    expect(subject.articles).to(contain(article))
+                        expect(subject.updated).to(beTruthy())
+                        expect(article.updated).to(beTruthy())
+                        expect(article.feed).to(equal(subject))
+                        expect(subject.articles).to(contain(article))
+                    }
+                }
+
+                context("when the article is already associated with this feed") {
+                    beforeEach {
+                        subject = Feed(title: "", url: nil, summary: "", query: nil, tags: [],
+                            waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
+                    }
+
+                    it("essentially no-ops") {
+                        subject.addArticle(article)
+                        expect(subject.updated).to(beFalsy())
+                        expect(article.feed).to(equal(subject))
+                        expect(subject.articles).to(contain(article))
+                    }
+                }
+
+                context("when the article is associated with a different feed") {
+                    var otherFeed : Feed! = nil
+                    beforeEach {
+                        otherFeed = Feed(title: "blah", url: nil, summary: "", query: nil, tags: [],
+                            waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
+                    }
+
+                    it("should remove the article from the other feed and add it to this feed") {
+                        subject.addArticle(article)
+
+                        expect(subject.updated).to(beTruthy())
+                        expect(article.updated).to(beTruthy())
+                        expect(otherFeed.updated).to(beTruthy())
+                        expect(article.feed).to(equal(subject))
+                        expect(subject.articles).to(contain(article))
+                        expect(otherFeed.articles).toNot(contain(article))
+                    }
                 }
             }
 
-            context("when the article is already associated with this feed") {
+            context("to a query feed") {
                 beforeEach {
-                    subject = Feed(title: "", url: nil, summary: "", query: nil, tags: [],
-                        waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
+                    subject = Feed(title: "title", url: nil, summary: "summary", query: "true", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+
+                    subject.addArticle(article)
                 }
 
-                it("essentially no-ops") {
-                    subject.addArticle(article)
+                it("should not set 'updated' for either the feed nor article") {
                     expect(subject.updated).to(beFalsy())
-                    expect(article.feed).to(equal(subject))
-                    expect(subject.articles).to(contain(article))
-                }
-            }
-
-            context("when the article is associated with a different feed") {
-                var otherFeed : Feed! = nil
-                beforeEach {
-                    otherFeed = Feed(title: "blah", url: nil, summary: "", query: nil, tags: [],
-                        waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
+                    expect(article.updated).to(beFalsy())
                 }
 
-                it("should remove the article from the other feed and add it to this feed") {
-                    subject.addArticle(article)
-
-                    expect(subject.updated).to(beTruthy())
-                    expect(article.updated).to(beTruthy())
-                    expect(otherFeed.updated).to(beTruthy())
-                    expect(article.feed).to(equal(subject))
+                it("should add the article to the feed's articles, but not (re)set the feed property on the article") {
+                    expect(article.feed).to(beNil())
                     expect(subject.articles).to(contain(article))
-                    expect(otherFeed.articles).toNot(contain(article))
                 }
             }
         }
@@ -163,38 +183,57 @@ class FeedSpec: QuickSpec {
                 article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
             }
 
-            context("when the article is not associated with any article") {
-                it("essentially no-ops") {
-                    subject.removeArticle(article)
-                    expect(subject.updated).to(beFalsy())
+            context("from a regular feed") {
+                context("when the article is not associated with any article") {
+                    it("essentially no-ops") {
+                        subject.removeArticle(article)
+                        expect(subject.updated).to(beFalsy())
+                    }
+                }
+
+                context("when the article is associated with this feed") {
+                    beforeEach {
+                        subject = Feed(title: "", url: nil, summary: "", query: nil, tags: [],
+                            waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
+                    }
+
+                    it("removes the article and unsets the article's feed") {
+                        subject.removeArticle(article)
+                        expect(subject.updated).to(beTruthy())
+                        expect(article.feed).to(beNil())
+                        expect(subject.articles).toNot(contain(article))
+                    }
+                }
+
+                context("when the article is associated with a different feed") {
+                    var otherFeed : Feed! = nil
+                    beforeEach {
+                        otherFeed = Feed(title: "blah", url: nil, summary: "", query: nil, tags: [],
+                            waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
+                    }
+
+                    it("essentially no-ops") {
+                        subject.removeArticle(article)
+                        expect(subject.updated).to(beFalsy())
+                        expect(otherFeed.updated).to(beFalsy())
+                    }
                 }
             }
 
-            context("when the article is associated with this feed") {
+            context("from a query feed") {
                 beforeEach {
-                    subject = Feed(title: "", url: nil, summary: "", query: nil, tags: [],
-                        waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
+                    subject = Feed(title: "title", url: nil, summary: "summary", query: "true", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+
+                    subject.addArticle(article)
+
+                    expect(subject.articles).to(contain(article))
                 }
 
-                it("removes the article and unsets the article's feed") {
+                it("removes the article from the feed, without marking the feed for updating") {
                     subject.removeArticle(article)
-                    expect(subject.updated).to(beTruthy())
-                    expect(article.feed).to(beNil())
+                    expect(subject.updated).to(beFalsy())
+
                     expect(subject.articles).toNot(contain(article))
-                }
-            }
-
-            context("when the article is associated with a different feed") {
-                var otherFeed : Feed! = nil
-                beforeEach {
-                    otherFeed = Feed(title: "blah", url: nil, summary: "", query: nil, tags: [],
-                        waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
-                }
-
-                it("essentially no-ops") {
-                    subject.removeArticle(article)
-                    expect(subject.updated).to(beFalsy())
-                    expect(otherFeed.updated).to(beFalsy())
                 }
             }
         }

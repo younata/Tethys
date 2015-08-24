@@ -4,8 +4,13 @@ import UIKit
 import rNews
 import rNewsKit
 
-class FeedTableCellConfiguration : QuickConfiguration {
-    override class func configure(configuration: Configuration) {
+class FeedTableCellSpec: QuickSpec {
+    override func spec() {
+        var subject: FeedTableCell! = nil
+        beforeEach {
+            subject = FeedTableCell(style: .Default, reuseIdentifier: nil)
+        }
+
         sharedExamples("a standard feed cell") {(ctx: SharedExampleContext) in
             var subject: FeedTableCell! = nil
             it("sets the title") {
@@ -19,15 +24,6 @@ class FeedTableCellConfiguration : QuickConfiguration {
                 let summary = ctx()["summary"] as? String ?? ""
                 expect(subject.summaryLabel.text).to(equal(summary))
             }
-        }
-    }
-}
-
-class FeedTableCellSpec: QuickSpec {
-    override func spec() {
-        var subject: FeedTableCell! = nil
-        beforeEach {
-            subject = FeedTableCell(style: .Default, reuseIdentifier: nil)
         }
 
         describe("setting feed") {

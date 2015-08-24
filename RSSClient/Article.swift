@@ -83,7 +83,7 @@ import JavaScriptCore
     }
     dynamic public var feed: Feed? {
         willSet {
-            if newValue != feed {
+            if newValue != feed && newValue?.isQueryFeed != true {
                 self.updated = true
                 if let oldValue = feed where oldValue.articles.contains(self) {
                     oldValue.removeArticle(self)

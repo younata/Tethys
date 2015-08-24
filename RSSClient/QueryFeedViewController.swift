@@ -54,7 +54,8 @@ public class QueryFeedViewController: UITableViewController {
         self.navigationItem.title = self.feed?.displayTitle ?? NSLocalizedString("New Query Feed", comment: "")
 
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tags")
-        tableView.registerClass(TextViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.registerClass(TextFieldCell.self, forCellReuseIdentifier: "cell")
+        tableView.registerClass(TextViewCell.self, forCellReuseIdentifier: "query")
 
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 64
@@ -150,15 +151,11 @@ public class QueryFeedViewController: UITableViewController {
     private func cellForSection(section: FeedSections, tableView: UITableView, indexPath: NSIndexPath) -> UITableViewCell {
         switch (section) {
         case .Title:
-            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextViewCell
-            cell.textView.textColor = UIColor.blackColor()
-            if let title = feed?.tags.filter({$0.hasPrefix("~")}).first {
-                cell.textView.text = title.substringFromIndex(title.startIndex.successor())
-            } else if let title = feed?.displayTitle where !title.isEmpty {
-                cell.textView.text = title
+            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextFieldCell
+            if let title = feed?.displayTitle where !title.isEmpty {
+                cell.textField.text = title
             } else {
-                cell.textView.text = NSLocalizedString("No title available", comment: "")
-                cell.textView.textColor = UIColor.grayColor()
+                cell.textField.placeholder = NSLocalizedString("Enter a title", comment: "")
             }
             cell.onTextChange = {
                 if let feed = self.feed {
@@ -168,15 +165,11 @@ public class QueryFeedViewController: UITableViewController {
             }
             return cell
         case .Summary:
-            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextViewCell
-            cell.textView.textColor = UIColor.blackColor()
-            if let summary = feed?.tags.filter({$0.hasPrefix("`")}).first {
-                cell.textView.text = summary.substringFromIndex(summary.startIndex.successor())
-            } else if let summary = feed?.displaySummary where !summary.isEmpty {
-                cell.textView.text = summary
+            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextFieldCell
+            if let summary = feed?.displaySummary where !summary.isEmpty {
+                cell.textField.text = summary
             } else {
-                cell.textView.text = NSLocalizedString("No summary available", comment: "")
-                cell.textView.textColor = UIColor.grayColor()
+                cell.textField.placeholder = NSLocalizedString("Enter a summary", comment: "")
             }
             cell.onTextChange = {
                 if let feed = self.feed {
@@ -185,7 +178,7 @@ public class QueryFeedViewController: UITableViewController {
             }
             return cell
         case .Query:
-            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextViewCell
+            let cell = tableView.dequeueReusableCellWithIdentifier("query", forIndexPath: indexPath) as! TextViewCell
             cell.textView.textColor = UIColor.blackColor()
             if let query = feed?.query {
                 cell.textView.text = query

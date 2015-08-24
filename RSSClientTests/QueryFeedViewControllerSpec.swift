@@ -89,7 +89,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
             }
 
             describe("the first section") {
-                var cell: TextViewCell? = nil
+                var cell: TextFieldCell? = nil
                 let indexPath = NSIndexPath(forRow: 0, inSection: 0)
 
                 it("should have 1 row") {
@@ -109,15 +109,11 @@ class QueryFeedViewControllerSpec: QuickSpec {
                         subject.feed = otherFeed
 
                         cell = subject.tableView(subject.tableView,
-                            cellForRowAtIndexPath: indexPath) as? TextViewCell
+                            cellForRowAtIndexPath: indexPath) as? TextFieldCell
                     }
 
-                    it("should have a label title 'No title available'") {
-                        expect(cell?.textView.text).to(equal("No title available"))
-                    }
-
-                    it("should re-color the text gray") {
-                        expect(cell?.textView.textColor).to(equal(UIColor.grayColor()))
+                    it("should have a placeholder inviting the user to create a title") {
+                        expect(cell?.textField.placeholder).to(equal("Enter a title"))
                     }
                 }
 
@@ -126,37 +122,35 @@ class QueryFeedViewControllerSpec: QuickSpec {
                         subject.feed = Feed(title: "a title", url: nil, summary: "", query: "a query",
                             tags: ["~custom title"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                         cell = subject.tableView(subject.tableView,
-                            cellForRowAtIndexPath: indexPath) as? TextViewCell
+                            cellForRowAtIndexPath: indexPath) as? TextFieldCell
                     }
 
                     it("should use that tag as the title, minus the leading '~'") {
-                        expect(cell?.textView.text).to(equal("custom title"))
+                        expect(cell?.textField.text).to(equal("custom title"))
                     }
                 }
 
                 context("when the feed has a title preconfigured") {
                     beforeEach {
                         cell = subject.tableView(subject.tableView,
-                            cellForRowAtIndexPath: indexPath) as? TextViewCell
+                            cellForRowAtIndexPath: indexPath) as? TextFieldCell
                     }
 
                     it("should have a label title equal to the feed's") {
-                        expect(cell?.textView.text).to(equal(feed.title))
+                        expect(cell?.textField.text).to(equal(feed.title))
                     }
                 }
 
                 describe("the cell") {
                     beforeEach {
                         cell = subject.tableView(subject.tableView,
-                            cellForRowAtIndexPath: indexPath) as? TextViewCell
+                            cellForRowAtIndexPath: indexPath) as? TextFieldCell
                     }
 
                     describe("on change") {
                         beforeEach {
-                            cell?.textView.text = "a title"
-                            if let textView = cell?.textView {
-                                cell?.textViewDidChange(textView)
-                            }
+                            cell?.textField.text = "a title"
+                            cell?.onTextChange("a title")
                         }
 
                         it("should change the feed's title") {
@@ -173,7 +167,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
             }
 
             describe("the second section") {
-                var cell: TextViewCell? = nil
+                var cell: TextFieldCell? = nil
                 let indexPath = NSIndexPath(forRow: 0, inSection: 1)
 
                 it("should have 1 row") {
@@ -192,54 +186,48 @@ class QueryFeedViewControllerSpec: QuickSpec {
                     beforeEach {
                         subject.feed = otherFeed
                         cell = subject.tableView(subject.tableView,
-                            cellForRowAtIndexPath: indexPath) as? TextViewCell
+                            cellForRowAtIndexPath: indexPath) as? TextFieldCell
                     }
 
-                    it("should have a label title 'No summary available'") {
-                        expect(cell?.textView.text).to(equal("No summary available"))
-                    }
-
-                    it("should re-color the text gray") {
-                        expect(cell?.textView.textColor).to(equal(UIColor.grayColor()))
+                    it("should invite the user to set the summary") {
+                        expect(cell?.textField.placeholder).to(equal("Enter a summary"))
                     }
                 }
 
-                context("when the feed has a tag that starts with '`'") {
+                context("when the feed has a tag that starts with '_'") {
                     beforeEach {
                         subject.feed = Feed(title: "a title", url: nil, summary: "a summary", query: "a query",
-                            tags: ["`custom summary"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                            tags: ["_custom summary"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                         cell = subject.tableView(subject.tableView,
-                            cellForRowAtIndexPath: indexPath) as? TextViewCell
+                            cellForRowAtIndexPath: indexPath) as? TextFieldCell
                     }
 
-                    it("should use that tag as the title, minus the leading '`'") {
-                        expect(cell?.textView.text).to(equal("custom summary"))
+                    it("should use that tag as the title, minus the leading '_'") {
+                        expect(cell?.textField.text).to(equal("custom summary"))
                     }
                 }
 
                 context("when the feed has a summary preconfigured") {
                     beforeEach {
                         cell = subject.tableView(subject.tableView,
-                            cellForRowAtIndexPath: indexPath) as? TextViewCell
+                            cellForRowAtIndexPath: indexPath) as? TextFieldCell
                     }
 
                     it("should have a label title equal to the feed's") {
-                        expect(cell?.textView.text).to(equal(feed.summary))
+                        expect(cell?.textField.text).to(equal(feed.summary))
                     }
                 }
 
                 describe("the cell") {
                     beforeEach {
                         cell = subject.tableView(subject.tableView,
-                            cellForRowAtIndexPath: indexPath) as? TextViewCell
+                            cellForRowAtIndexPath: indexPath) as? TextFieldCell
                     }
 
                     describe("on change") {
                         beforeEach {
-                            cell?.textView.text = "a summary"
-                            if let textView = cell?.textView {
-                                cell?.textViewDidChange(textView)
-                            }
+                            cell?.textField.text = "a summary"
+                            cell?.onTextChange("a summary")
                         }
 
                         it("should change the feed's summary") {

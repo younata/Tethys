@@ -9,6 +9,9 @@ public class QueryFeedViewController: UITableViewController {
             if feed?.query == nil {
                 feed?.query = "function(article) {\n    return !article.read;\n}"
             }
+            self.feedTitle = feed?.displayTitle ?? ""
+            self.feedSummary = feed?.displaySummary ?? ""
+            self.feedQuery = feed?.query ?? ""
             self.tableView.reloadData()
         }
     }
@@ -41,6 +44,10 @@ public class QueryFeedViewController: UITableViewController {
         return self.injector?.create(DataRetriever.self) as? DataRetriever
     }()
 
+    private var feedTitle = ""
+    private var feedSummary = ""
+    private var feedQuery = "function(article) {\n    return !article.read;\n}"
+
     public override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -50,35 +57,52 @@ public class QueryFeedViewController: UITableViewController {
 
         let saveTitle = NSLocalizedString("Save", comment: "")
         let saveButton = UIBarButtonItem(title: saveTitle, style: .Plain, target: self, action: "save")
+        saveButton.enabled = self.feed != nil
         self.navigationItem.rightBarButtonItem = saveButton
         self.navigationItem.title = self.feed?.displayTitle ?? NSLocalizedString("New Query Feed", comment: "")
 
-        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tags")
-        tableView.registerClass(TextFieldCell.self, forCellReuseIdentifier: "cell")
-        tableView.registerClass(TextViewCell.self, forCellReuseIdentifier: "query")
+        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tags")
+        self.tableView.registerClass(TextFieldCell.self, forCellReuseIdentifier: "cell")
+        self.tableView.registerClass(TextViewCell.self, forCellReuseIdentifier: "query")
 
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 64
-        tableView.tableFooterView = UIView()
+        self.tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.estimatedRowHeight = 64
+        self.tableView.tableFooterView = UIView()
     }
 
     public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        tableView.reloadData()
+        self.tableView.reloadData()
     }
 
-    func dismiss() {
+    internal func dismiss() {
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
 
-    func save() {
-        if let feed = self.feed {
-            dataWriter?.saveFeed(feed)
+    internal func save() {
+        let saveFeed: (Feed) -> (Void) = {feed in
+            if !self.feedTitle.isEmpty {
+                feed.title = self.feedTitle
+            }
+            if !self.feedSummary.isEmpty {
+                feed.summary = self.feedSummary
+            }
+            if !self.feedQuery.isEmpty {
+                feed.query = self.feedQuery
+            }
+            self.dataWriter?.saveFeed(feed)
+            self.dismiss()
         }
-        dismiss()
+        if let feed = self.feed {
+            saveFeed(feed)
+        } else {
+            self.dataWriter?.newFeed {feed in
+                saveFeed(feed)
+            }
+        }
     }
 
-    func showTagEditor(tagIndex: Int) {
+    private func showTagEditor(tagIndex: Int) {
         let tagEditor = self.injector!.create(TagEditorViewController.self) as! TagEditorViewController
         tagEditor.feed = feed
         if tagIndex < feed?.tags.count {
@@ -152,51 +176,35 @@ public class QueryFeedViewController: UITableViewController {
         switch (section) {
         case .Title:
             let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextFieldCell
-            if let title = feed?.displayTitle where !title.isEmpty {
-                cell.textField.text = title
-            } else {
-                cell.textField.placeholder = NSLocalizedString("Enter a title", comment: "")
-            }
+            cell.textField.text = self.feedTitle
+            cell.textField.placeholder = NSLocalizedString("Enter a title", comment: "")
             cell.onTextChange = {
-                if let feed = self.feed {
-                    feed.title = $0 ?? ""
-                }
-                self.navigationItem.rightBarButtonItem?.enabled = self.feed?.title != nil && self.feed?.query != nil
+                self.feedTitle = $0 ?? ""
+                self.navigationItem.rightBarButtonItem?.enabled = !self.feedTitle.isEmpty && !self.feedQuery.isEmpty
             }
             return cell
         case .Summary:
             let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextFieldCell
-            if let summary = feed?.displaySummary where !summary.isEmpty {
-                cell.textField.text = summary
-            } else {
-                cell.textField.placeholder = NSLocalizedString("Enter a summary", comment: "")
-            }
+            cell.textField.text = self.feedSummary
+            cell.textField.placeholder = NSLocalizedString("Enter a summary", comment: "")
             cell.onTextChange = {
-                if let feed = self.feed {
-                    feed.summary = $0 ?? ""
-                }
+                self.feedSummary = $0 ?? ""
             }
             return cell
         case .Query:
             let cell = tableView.dequeueReusableCellWithIdentifier("query", forIndexPath: indexPath) as! TextViewCell
             cell.textView.textColor = UIColor.blackColor()
-            if let query = feed?.query {
-                cell.textView.text = query
-            } else {
-                cell.textView.text = "function(article) {\n    return !article.read;\n}"
-            }
+            cell.textView.text = self.feedQuery
             cell.onTextChange = {_ in }
             cell.applyStyling()
             cell.onTextChange = {
-                if let feed = self.feed {
-                    feed.query = $0 ?? ""
-                }
-                self.navigationItem.rightBarButtonItem?.enabled = self.feed?.title != nil && self.feed?.query != nil
+                self.feedQuery = $0 ?? ""
+                self.navigationItem.rightBarButtonItem?.enabled = !self.feedTitle.isEmpty && !self.feedQuery.isEmpty
             }
             return cell
         case .Tags:
             let cell = tableView.dequeueReusableCellWithIdentifier("tags", forIndexPath: indexPath) as UITableViewCell
-            if let tags = feed?.tags {
+            if let tags = self.feed?.tags {
                 if indexPath.row == tags.count {
                     cell.textLabel?.text = NSLocalizedString("Add Tag", comment: "")
                     cell.textLabel?.textColor = UIColor.darkGreenColor()
@@ -210,16 +218,13 @@ public class QueryFeedViewController: UITableViewController {
     }
 
     private func editActionsForSection(section: FeedSections, indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-        if feed == nil {
-            return nil
-        }
         switch section {
         case .Query:
             let previewTitle = NSLocalizedString("Preview", comment: "")
             let preview = UITableViewRowAction(style: .Normal, title: previewTitle, handler: {(_, _) in
                 let articleList = ArticleListController(style: .Plain)
                 articleList.previewMode = true
-                self.dataRetriever?.articlesMatchingQuery(self.feed?.query ?? "") {articles in
+                self.dataRetriever?.articlesMatchingQuery(self.feedQuery) {articles in
                     articleList.articles = articles
                 }
                 self.navigationController?.pushViewController(articleList, animated: true)

@@ -50,6 +50,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
         afterEach {
             window?.hidden = true
+            window?.rootViewController = nil
             window = nil
         }
 
@@ -71,12 +72,14 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     UIKeyCommand(input: "i", modifierFlags: .Command, action: ""),
                     UIKeyCommand(input: "i", modifierFlags: [.Command, .Shift], action: ""),
                     UIKeyCommand(input: "i", modifierFlags: [.Command, .Alternate], action: ""),
+                    UIKeyCommand(input: ",", modifierFlags: .Command, action: ""),
                 ]
                 let expectedDiscoverabilityTitles = [
                     "Filter by tags",
                     "Import from web",
                     "Import from local",
                     "Create query feed",
+                    "Open settings",
                 ]
 
                 expect(commands.count).to(equal(expectedCommands.count))
@@ -103,6 +106,19 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                 if let cell = subject.tableView.visibleCells[0] as? FeedTableCell {
                     expect(cell.feed).to(equal(feeds[0]))
+                }
+            }
+        }
+
+        describe("tapping the settings button") {
+            beforeEach {
+                subject.navigationItem.leftBarButtonItem?.tap()
+            }
+
+            it("should present a settings page") {
+                expect(subject.presentedViewController).to(beAnInstanceOf(UINavigationController.self))
+                if let nc = subject.presentedViewController as? UINavigationController {
+                    expect(nc.topViewController).to(beAnInstanceOf(SettingsViewController.self))
                 }
             }
         }

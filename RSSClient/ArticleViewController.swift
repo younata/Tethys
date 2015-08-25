@@ -201,32 +201,61 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
 
         var commands: [UIKeyCommand] = []
         if self.lastArticleIndex != 0 {
-            let cmd = UIKeyCommand(input: "p", modifierFlags: .Control, action: "")
+            let cmd = UIKeyCommand(input: "p", modifierFlags: .Control, action: "showPreviousArticle")
             addTitleToCmd(cmd, NSLocalizedString("Previous article", comment: ""))
             commands.append(cmd)
         }
 
         if self.lastArticleIndex < (self.articles.count - 1) {
-            let cmd = UIKeyCommand(input: "n", modifierFlags: .Control, action: "")
+            let cmd = UIKeyCommand(input: "n", modifierFlags: .Control, action: "showNextArticle")
             addTitleToCmd(cmd, NSLocalizedString("Next article", comment: ""))
             commands.append(cmd)
         }
 
-        let markAsRead = UIKeyCommand(input: "r", modifierFlags: .Shift, action: "")
+        let markAsRead = UIKeyCommand(input: "r", modifierFlags: .Shift, action: "toggleArticleRead")
         addTitleToCmd(markAsRead, NSLocalizedString("Toggle read", comment: ""))
         commands.append(markAsRead)
 
         if let _ = self.article?.link {
-            let cmd = UIKeyCommand(input: "l", modifierFlags: .Command, action: "")
+            let cmd = UIKeyCommand(input: "l", modifierFlags: .Command, action: "toggleContentLink")
             addTitleToCmd(cmd, NSLocalizedString("Toggle view content/link", comment: ""))
             commands.append(cmd)
         }
 
-        let showShareSheet = UIKeyCommand(input: "s", modifierFlags: .Command, action: "")
+        let showShareSheet = UIKeyCommand(input: "s", modifierFlags: .Command, action: "share")
         addTitleToCmd(showShareSheet, NSLocalizedString("Open share sheet", comment: ""))
         commands.append(showShareSheet)
 
         return commands
+    }
+
+    internal func showPreviousArticle() {
+        guard self.lastArticleIndex > 0 else {
+            return
+        }
+        self.lastArticleIndex--
+        self.article = self.articles[lastArticleIndex]
+        if let article = self.article {
+            self.showArticle(article, onWebView: self.content)
+        }
+    }
+
+    internal func showNextArticle() {
+        guard self.lastArticleIndex < self.articles.count else {
+            return
+        }
+        self.lastArticleIndex++
+        self.article = self.articles[lastArticleIndex]
+        if let article = self.article {
+            self.showArticle(article, onWebView: self.content)
+        }
+    }
+
+    internal func toggleArticleRead() {
+        guard let article = self.article else {
+            return
+        }
+        self.dataWriter?.markArticle(article, asRead: !article.read)
     }
 
     private var objectsBeingObserved: [WKWebView] = []

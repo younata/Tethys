@@ -82,6 +82,10 @@ public class FeedsTableViewController: UIViewController {
 
         let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "didTapAddFeed")
         self.navigationItem.rightBarButtonItems = [addButton, tableViewController.editButtonItem()]
+
+        let settingsButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Organize, target: self, action: "presentSettings")
+        self.navigationItem.leftBarButtonItem = settingsButton
+
         self.navigationItem.title = NSLocalizedString("Feeds", comment: "")
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
@@ -113,6 +117,7 @@ public class FeedsTableViewController: UIViewController {
             UIKeyCommand(input: "i", modifierFlags: .Command, action: "importFromWeb"),
             UIKeyCommand(input: "i", modifierFlags: [.Command, .Shift], action: "importFromLocal"),
             UIKeyCommand(input: "i", modifierFlags: [.Command, .Alternate], action: "createQueryFeed"),
+            UIKeyCommand(input: ",", modifierFlags: .Command, action: "presentSettings"),
         ]
         if #available(iOS 9.0, *) {
             let discoverabilityTitles = [
@@ -120,6 +125,7 @@ public class FeedsTableViewController: UIViewController {
                 NSLocalizedString("Import from web", comment: ""),
                 NSLocalizedString("Import from local", comment: ""),
                 NSLocalizedString("Create query feed", comment: ""),
+                NSLocalizedString("Open settings", comment: ""),
             ]
             for (idx, cmd) in commands.enumerate() {
                 cmd.discoverabilityTitle = discoverabilityTitles[idx]
@@ -144,6 +150,10 @@ public class FeedsTableViewController: UIViewController {
 
     internal func search() {
         self.searchBar.becomeFirstResponder()
+    }
+
+    internal func presentSettings() {
+        self.presentController(SettingsViewController.self)
     }
 
     private func presentController(controller: NSObject.Type) {

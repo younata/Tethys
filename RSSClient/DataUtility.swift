@@ -58,12 +58,12 @@ internal class DataUtility {
         article.updatedAt = item.updated
         article.summary = item.description
         article.content = item.content
-        let author = ", ".join(item.authors.map { author in
+        let author = item.authors.map({ author in
             if let email = author.email {
                 return "\(author.name) <\(email)>"
             }
             return author.name
-        })
+        }).joinWithSeparator(", ")
         article.author = author
         article.identifier = item.guid
     }

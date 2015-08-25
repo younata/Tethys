@@ -105,7 +105,7 @@ public class OPMLManager: Injectable {
             let url = "xmlUrl=\"\(sanitize(feed.url?.absoluteString))\""
             let tags: String
             if feed.tags.count != 0 {
-                let tagsList: String = ",".join(feed.tags)
+                let tagsList: String = feed.tags.joinWithSeparator(",")
                 tags = "tags=\"\(tagsList)\""
             } else {
                 tags = ""

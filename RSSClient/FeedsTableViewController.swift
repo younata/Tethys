@@ -116,8 +116,6 @@ public class FeedsTableViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
 
         self.dataWriter.addSubscriber(self)
-
-        self.reload(nil)
     }
 
     deinit {
@@ -199,7 +197,7 @@ public class FeedsTableViewController: UIViewController {
 
     private func reload(tag: String?) {
         self.dataRetriever.feedsMatchingTag(tag) {feeds in
-            self.feeds = feeds.sort {(f1: Feed, f2: Feed) in
+            let sortedFeeds = feeds.sort {(f1: Feed, f2: Feed) in
                 let f1Unread = f1.unreadArticles().count
                 let f2Unread = f2.unreadArticles().count
                 if f1Unread != f2Unread {
@@ -213,13 +211,16 @@ public class FeedsTableViewController: UIViewController {
             }
 
             self.onboardingView.removeFromSuperview()
-            if self.feeds.isEmpty {
+            if sortedFeeds.isEmpty {
                 self.view.addSubview(self.onboardingView)
                 self.onboardingView.autoCenterInSuperview()
                 self.onboardingView.autoMatchDimension(.Width, toDimension: .Width, ofView: self.view, withMultiplier: 0.75)
             }
 
-            self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+            if sortedFeeds != self.feeds {
+                self.feeds = sortedFeeds
+                self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+            }
         }
     }
 

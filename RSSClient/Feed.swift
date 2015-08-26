@@ -127,7 +127,7 @@ import JavaScriptCore
         }
         return self.title == b.title && self.url == b.url && self.summary == b.summary &&
             self.query == b.query && self.tags == b.tags && self.waitPeriod == b.waitPeriod &&
-            self.remainingWait == b.remainingWait && self.image == b.image
+            self.remainingWait == b.remainingWait && self.image == b.image && self.articles == b.articles
     }
 
     public private(set) var updated = false

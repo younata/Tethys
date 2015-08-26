@@ -25,10 +25,11 @@ public class SettingsViewController: UIViewController {
     }
 
     internal func didTapDismiss() {
-        self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+        self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
 
     internal func didTapSave() {
+        self.userDefaults.setBool(self.enableNightModeSwitch.on, forKey: "nightMode")
         self.didTapDismiss()
     }
 

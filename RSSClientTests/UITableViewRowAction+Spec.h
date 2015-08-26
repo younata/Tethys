@@ -2,7 +2,7 @@
 
 typedef void (^PCKTableViewRowActionHandler)(UITableViewRowAction *action, NSIndexPath *indexPath);
 
-@interface UITableViewRowAction (Spec)
+@interface UITableViewRowAction (rNewsSpec)
 
 - (PCKTableViewRowActionHandler)handler;
 

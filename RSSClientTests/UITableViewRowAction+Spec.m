@@ -4,11 +4,11 @@
 
 static char * kHandlerKey;
 
-@interface UITableViewRowAction (SpecPrivate)
+@interface UITableViewRowAction (rNewsSpecPrivate)
 + (instancetype)original_rowActionWithStyle:(UITableViewRowActionStyle)style title:(NSString *)title handler:(void (^)(UITableViewRowAction *, NSIndexPath *))handler;
 @end
 
-@implementation UITableViewRowAction (Spec)
+@implementation UITableViewRowAction (rNewsSpec)
 
 + (void)load {
     [PCKMethodRedirector redirectSelector:@selector(rowActionWithStyle:title:handler:)

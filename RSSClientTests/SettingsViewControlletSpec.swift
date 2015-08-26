@@ -36,9 +36,10 @@ class SettingsViewControllerSpec: QuickSpec {
                 window?.rootViewController = rootViewController
                 rootViewController.presentViewController(navigationController, animated: false, completion: nil)
                 NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
+                expect(rootViewController.presentedViewController).to(beIdenticalTo(navigationController))
 
                 subject.navigationItem.leftBarButtonItem?.tap()
-                NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
+                NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 2))
             }
 
             afterEach {
@@ -48,7 +49,7 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             it("dismisses itself") {
-                expect(rootViewController.presentedViewController).to(beNil())
+                expect(rootViewController.presentedViewController).toEventually(beNil())
             }
         }
 
@@ -66,9 +67,10 @@ class SettingsViewControllerSpec: QuickSpec {
                     rootViewController = UIViewController()
                     window?.rootViewController = rootViewController
                     rootViewController.presentViewController(navigationController, animated: false, completion: nil)
+                    expect(rootViewController.presentedViewController).toNot(beNil())
 
                     subject.navigationItem.leftBarButtonItem?.tap()
-                    NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
+                    NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 2))
                 }
 
                 afterEach {
@@ -78,7 +80,7 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
 
                 it("dismisses itself") {
-                    expect(rootViewController.presentedViewController).to(beNil())
+                    expect(rootViewController.presentedViewController).toEventually(beNil())
                 }
 
                 it("saves the change to the userDefaults") {

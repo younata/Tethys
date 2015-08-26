@@ -134,7 +134,7 @@ class FindFeedViewControllerSpec: QuickSpec {
 
                                 it("should dismiss itself") {
                                     NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 2))
-                                    expect(rootViewController.presentedViewController).to(beNil())
+                                    expect(rootViewController.presentedViewController).toEventually(beNil())
                                 }
                             }
                         }

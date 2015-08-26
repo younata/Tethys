@@ -309,6 +309,7 @@ class ArticleViewControllerSpec: QuickSpec {
                     window.makeKeyAndVisible()
                     window.rootViewController = navigationController
                     subject.shareButton.tap()
+                    NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
                 }
 
                 afterEach {

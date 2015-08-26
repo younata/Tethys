@@ -94,7 +94,7 @@ public class LocalImportViewController: UIViewController {
         self.feeds.sortInPlace { $0.0 < $1.0 }
         self.opmls.sortInPlace { $0.0 < $1.0 }
         self.explanationLabel.removeFromSuperview()
-        let opmlIsEmptyOrHasOnlyRNews: Bool// = (self.opmls.isEmpty || String(string: NSString(string: self.opmls.first?.0).lastPathComponent) == "rnews.opml")
+        let opmlIsEmptyOrHasOnlyRNews: Bool
         if self.opmls.isEmpty {
             opmlIsEmptyOrHasOnlyRNews = true
         } else if let opmlPathString = self.opmls.first?.0 where self.opmls.count == 1 {

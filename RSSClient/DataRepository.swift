@@ -162,7 +162,7 @@ internal class DataRepository: DataRetriever, DataWriter {
         context.exceptionHandler = { context, exception in
             print("JS Error: \(exception)")
         }
-        let script = "var query = function(article) { \(query) }\n" +
+        let script = "var query = \(query)\n" +
             "var include = function(articles) {\n" +
             "  var ret = [];\n" +
             "  for (var i = 0; i < articles.length; i++) {\n" +
@@ -314,6 +314,11 @@ internal class DataRepository: DataRetriever, DataWriter {
         self.backgroundQueue.addOperationWithBlock {
             self.privateUpdateFeeds([feed]) {feeds, errors in
                 self.mainQueue.addOperationWithBlock {
+                    for object in self.subscribers.allObjects {
+                        if let subscriber = object as? DataSubscriber {
+                            subscriber.didUpdateFeeds(feeds)
+                        }
+                    }
                     callback(feeds.first, errors.first)
                 }
             }

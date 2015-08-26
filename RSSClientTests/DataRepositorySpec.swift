@@ -85,7 +85,7 @@ class FeedRepositorySpec: QuickSpec {
             feed2 = createFeed(moc) // query feed
             feed2.title = "d"
             feed2.tags = ["b", "d"]
-            feed2.query = "return true"
+            feed2.query = "function(article) {return true;}"
 
             feed3 = createFeed(moc)
             feed3.title = "e"
@@ -270,7 +270,7 @@ class FeedRepositorySpec: QuickSpec {
                 beforeEach {
                     calledHandler = false
 
-                    subject.articlesMatchingQuery("return !article.read") {
+                    subject.articlesMatchingQuery("function(article) {return !article.read;}") {
                         calledHandler = true
                         calledArticles = $0
                     }
@@ -605,6 +605,7 @@ class FeedRepositorySpec: QuickSpec {
                         it("should inform subscribers that we updated our datastore for that feed") {
                             expect(dataSubscriber.updateFeedsProgressFinished).to(equal(2))
                             expect(dataSubscriber.updateFeedsProgressTotal).to(equal(2))
+                            expect(dataSubscriber.updatedFeeds).to(beTruthy())
                         }
 
                         it("should call the completion handler without an error") {

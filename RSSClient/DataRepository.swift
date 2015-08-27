@@ -80,7 +80,7 @@ internal class DataRepository: DataRetriever, DataWriter {
     }
 
     internal func feeds(callback: ([Feed]) -> (Void)) {
-        allFeedsOnBackgroundQueue { feeds in
+        self.allFeedsOnBackgroundQueue { feeds in
             self.mainQueue.addOperationWithBlock {
                 callback(feeds)
             }
@@ -121,7 +121,7 @@ internal class DataRepository: DataRetriever, DataWriter {
         self.backgroundQueue.addOperationWithBlock {
             let feeds = DataUtility.feedsWithPredicate(NSPredicate(value: true),
                 managedObjectContext: self.objectContext).sort {
-                    return $0.title < $1.title
+                    return $0.displayTitle < $1.displayTitle
             }
             let nonQueryFeeds = feeds.reduce(Array<Feed>()) {
                 if $1.isQueryFeed {

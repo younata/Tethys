@@ -43,7 +43,7 @@ class FeedsViewControllerSpec: QuickSpec {
         }
 
         it("should add a subscriber to the dataWriter") {
-            expect(dataReadWriter.subscribers.isEmpty).to(beFalsy())
+            expect(dataReadWriter.subscribers.allObjects.isEmpty).to(beFalsy())
         }
 
         describe("the main menu") {
@@ -219,8 +219,10 @@ class FeedsViewControllerSpec: QuickSpec {
 
             beforeEach {
                 dataReadWriter.feedsList = updatedFeeds
-                for subscriber in dataReadWriter.subscribers {
-                    subscriber.updatedFeeds([])
+                for object in dataReadWriter.subscribers.allObjects {
+                    if let subscriber = object as? DataSubscriber {
+                        subscriber.didUpdateFeeds([])
+                    }
                 }
 
                 dataSource = subject.tableView.dataSource()

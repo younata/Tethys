@@ -83,7 +83,8 @@ public class FeedsTableViewController: UIViewController {
         let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "didTapAddFeed")
         self.navigationItem.rightBarButtonItems = [addButton, tableViewController.editButtonItem()]
 
-        let settingsButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Organize, target: self, action: "presentSettings")
+        let settingsTitle = NSLocalizedString("Settings", comment: "")
+        let settingsButton = UIBarButtonItem(title: settingsTitle, style: .Plain, target: self, action: "presentSettings")
         self.navigationItem.leftBarButtonItem = settingsButton
 
         self.navigationItem.title = NSLocalizedString("Feeds", comment: "")

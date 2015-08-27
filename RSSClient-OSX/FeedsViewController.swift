@@ -12,7 +12,6 @@ public class FeedsViewController: NSViewController {
         tableView.setDataSource(self)
         tableView.headerView = nil
         tableView.addTableColumn(NSTableColumn())
-        tableView.usesAlternatingRowBackgroundColors = true
         return tableView
     }()
 
@@ -127,7 +126,9 @@ extension FeedsViewController: DataSubscriber {
 
     public func deletedArticle(article: Article) {}
 
-    public func updatedFeeds(feeds: [Feed]) {
+    public func willUpdateFeeds() {}
+    public func didUpdateFeedsProgress(finished: Int, total: Int) {}
+    public func didUpdateFeeds(feeds: [Feed]) {
         self.reload()
     }
 }

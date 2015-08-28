@@ -82,11 +82,6 @@ public class MainController: NSViewController {
         }
     }
 
-    var articleTableView : NSTableView? = nil
-    var articleScrollView : NSScrollView? = nil
-    let articleList = ArticlesList()
-    var articleListConstraint : NSLayoutConstraint? = nil
-
     func showArticles(feed: Feed) {
         let articlesList = ArticleListViewController()
         articlesList.configure(feed.articles)
@@ -95,9 +90,5 @@ public class MainController: NSViewController {
         self.splitViewController.addChildViewController(articlesList)
 
         self.articlesList = articlesList
-    }
-
-    func showArticle(article: Article) {
-        print("Show \(article.title)")
     }
 }

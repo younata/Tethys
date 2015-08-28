@@ -11,6 +11,8 @@ public class MainController: NSViewController {
         return feedsList
     }()
 
+    public private(set) var articlesList: ArticleListViewController? = nil
+
     public lazy var splitViewController: NSSplitViewController = {
         let controller = NSSplitViewController()
         controller.splitView.vertical = false
@@ -52,10 +54,10 @@ public class MainController: NSViewController {
 
         self.feedsList.view.autoPinEdgesToSuperviewEdgesWithInsets(NSEdgeInsetsZero)
 
-        feedsList.reload()
-        feedsList.onFeedSelection = showArticles
+        self.feedsList.reload()
+        self.feedsList.onFeedSelection = showArticles
 
-        window?.makeFirstResponder(self)
+        self.window?.makeFirstResponder(self)
     }
 
     @IBAction public func openDocument(sender: AnyObject) {
@@ -86,9 +88,13 @@ public class MainController: NSViewController {
     var articleListConstraint : NSLayoutConstraint? = nil
 
     func showArticles(feed: Feed) {
-    }
+        let articlesList = ArticleListViewController()
+        articlesList.configure(feed.articles)
+        let articlesSplitViewItem = NSSplitViewItem(viewController: articlesList)
+        self.splitViewController.addSplitViewItem(articlesSplitViewItem)
+        self.splitViewController.addChildViewController(articlesList)
 
-    @IBAction func showFeeds(sender: NSObject) {
+        self.articlesList = articlesList
     }
 
     func showArticle(article: Article) {

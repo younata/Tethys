@@ -47,8 +47,22 @@ class MainControllerSpec: QuickSpec {
 
         describe("showing articles") {
             let feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            let articles = [Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: NSDate(), identifier: "", content: "", read: true, feed: nil, flags: [], enclosures: [])]
             beforeEach {
+                feed.addArticle(articles[0])
                 subject.feedsList.onFeedSelection(feed)
+            }
+
+            it("creates an ArticleListViewController") {
+                expect(subject.articlesList).toNot(beNil())
+                expect(subject.articlesList?.articles).to(equal(articles))
+            }
+
+            it("adds an item to the splitView") {
+                expect(subject.splitViewController.splitViewItems.count).to(equal(2))
+                if let articlesList = subject.articlesList {
+                    expect(subject.splitViewController.splitViewItemForViewController(articlesList)).toNot(beNil())
+                }
             }
         }
 

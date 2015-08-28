@@ -14,6 +14,7 @@
 		8918D4DD1B859D3B00DCDE0E /* ThemeRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8918D4DC1B859D3B00DCDE0E /* ThemeRepositorySpec.swift */; };
 		892152001B8FA31800CBF7E4 /* X.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 892151FF1B8FA31800CBF7E4 /* X.framework */; };
 		892152011B8FA33900CBF7E4 /* X.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 892151FF1B8FA31800CBF7E4 /* X.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		892152031B8FA93C00CBF7E4 /* ArticleListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892152021B8FA93C00CBF7E4 /* ArticleListViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		8924D8E91A094CF5003B7529 /* github2.css in Resources */ = {isa = PBXBuildFile; fileRef = 8924D8E81A094CF5003B7529 /* github2.css */; };
 		8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */; };
 		8935F5CD1B462702000FFD5D /* Muon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; };
@@ -418,6 +419,7 @@
 		8918D4DA1B8598D100DCDE0E /* ThemeRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeRepository.swift; sourceTree = "<group>"; };
 		8918D4DC1B859D3B00DCDE0E /* ThemeRepositorySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeRepositorySpec.swift; sourceTree = "<group>"; };
 		892151FF1B8FA31800CBF7E4 /* X.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = X.framework; path = ../Carthage/Build/Mac/X.framework; sourceTree = "<group>"; };
+		892152021B8FA93C00CBF7E4 /* ArticleListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListViewController.swift; sourceTree = "<group>"; };
 		8924D8E81A094CF5003B7529 /* github2.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = github2.css; sourceTree = "<group>"; };
 		8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OPMLParser.swift; path = ../RSSClient/OPMLParser.swift; sourceTree = "<group>"; };
 		8933E93219EE33F700ECFF3F /* UIColor+RSSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+RSSClient.h"; sourceTree = "<group>"; };
@@ -800,6 +802,7 @@
 		8967DA091A40979D000424F4 /* Articles */ = {
 			isa = PBXGroup;
 			children = (
+				892152021B8FA93C00CBF7E4 /* ArticleListViewController.swift */,
 				8967DA051A4092A6000424F4 /* ArticlesList.swift */,
 				8967DA071A409433000424F4 /* ArticleListView.swift */,
 			);
@@ -1542,6 +1545,7 @@
 				898047641A206CB100EB29F0 /* FeedsViewController.swift in Sources */,
 				897F70FD1A3A4E7700ECE1A1 /* UnreadCounter.swift in Sources */,
 				898979D31B71CC5200218498 /* NSColor+RSSClient.swift in Sources */,
+				892152031B8FA93C00CBF7E4 /* ArticleListViewController.swift in Sources */,
 				89635F8E1A13C2E30052C248 /* AppDelegate.swift in Sources */,
 				8937F6B51B77AD780044A442 /* AppModule.swift in Sources */,
 			);

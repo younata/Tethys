@@ -1,15 +1,7 @@
 import UIKit
 import PureLayout_iOS
 
-public let kNightModeEnabled = "nightMode"
-
 public class SettingsViewController: UIViewController {
-    public private(set) lazy var enableNightModeSwitch: UISwitch = {
-        let theSwitch = UISwitch(forAutoLayout: ())
-        theSwitch.on = self.userDefaults.boolForKey(kNightModeEnabled)
-        theSwitch.addTarget(self, action: "didChangeNightMode", forControlEvents: .ValueChanged)
-        return theSwitch
-    }()
 
     public lazy var userDefaults = NSUserDefaults.standardUserDefaults()
 
@@ -37,18 +29,11 @@ public class SettingsViewController: UIViewController {
     }
 
     internal func didTapSave() {
-        self.userDefaults.setBool(self.enableNightModeSwitch.on, forKey: kNightModeEnabled)
-
         self.didTapDismiss()
     }
 
     internal func didChangeNightMode() {
         self.navigationItem.rightBarButtonItem?.enabled = true
-    }
-
-    private func changeTextColors() {
-        UILabel.appearance().textColor = self.enableNightModeSwitch.on ? UIColor.blueColor() : UIColor.blackColor()
-        self.view.layoutSubviews()
     }
 
     enum SettingsSection: Int, CustomStringConvertible {
@@ -69,7 +54,7 @@ extension SettingsViewController: UITableViewDataSource {
     }
 
     public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return 0
     }
 
     public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -80,7 +65,6 @@ extension SettingsViewController: UITableViewDataSource {
         case .NightMode:
             let cell = tableView.dequeueReusableCellWithIdentifier("nightMode", forIndexPath: indexPath)
             cell.textLabel?.text = NSLocalizedString("Enabled", comment: "")
-            cell.accessoryView = self.enableNightModeSwitch
             cell.selectionStyle = .None
             return cell
         }

@@ -89,19 +89,5 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
             }
         }
-
-        describe("enabling night mode") {
-            beforeEach {
-                subject.enableNightModeSwitch.on = true
-                subject.enableNightModeSwitch.sendActionsForControlEvents(.ValueChanged)
-            }
-
-            itBehavesLike("a changed setting") {
-                let nightModeSavedToUserDefaults = NSBlockOperation {
-                    expect(userDefaults.boolForKey("nightMode")).to(beTruthy())
-                }
-                return ["saveToUserDefaults": nightModeSavedToUserDefaults];
-            }
-        }
     }
 }

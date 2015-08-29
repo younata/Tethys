@@ -177,13 +177,14 @@ internal class DataRepository: DataRetriever, DataWriter {
                 let articleIDsToDelete = cdfeed.articles.map {
                     return $0.objectID.URIRepresentation().absoluteString
                 }
-                for article in cdfeed.articles {
-                    self.objectContext.deleteObject(article)
-                }
-                self.objectContext.deleteObject(cdfeed)
-                if #available(iOS 9.0, *) {
-                    self.searchIndex?.deleteIdentifierFromIndex(articleIDsToDelete) {error in
+                self.objectContext.performBlockAndWait {
+                    for article in cdfeed.articles {
+                        self.objectContext.deleteObject(article)
                     }
+                    self.objectContext.deleteObject(cdfeed)
+                }
+                if #available(iOS 9.0, *) {
+                    self.searchIndex?.deleteIdentifierFromIndex(articleIDsToDelete) {_ in }
                 }
             }
         }
@@ -215,7 +216,9 @@ internal class DataRepository: DataRetriever, DataWriter {
         self.backgroundQueue.addOperationWithBlock {
             if let cdarticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", articleID), managedObjectContext: self.objectContext).first as? CoreDataArticle {
                 let identifier = cdarticle.objectID.URIRepresentation().absoluteString
-                self.objectContext.deleteObject(cdarticle)
+                self.objectContext.performBlockAndWait {
+                    self.objectContext.deleteObject(cdarticle)
+                }
                 if #available(iOS 9.0, *) {
                     self.searchIndex?.deleteIdentifierFromIndex([identifier]) {error in
                     }
@@ -297,6 +300,9 @@ internal class DataRepository: DataRetriever, DataWriter {
         // Do not call this on the main thread
         let entityDescription = NSEntityDescription.entityForName("Feed", inManagedObjectContext: self.objectContext)!
         let cdfeed = CoreDataFeed(entity: entityDescription, insertIntoManagedObjectContext: self.objectContext)
+        self.objectContext.performBlockAndWait {
+            do { try self.objectContext.save() } catch { }
+        }
         return Feed(feed: cdfeed)
     }
 
@@ -320,9 +326,11 @@ internal class DataRepository: DataRetriever, DataWriter {
     }
 
     private func save() {
-        do {
-            try self.objectContext.save()
-        } catch {}
+        self.objectContext.performBlockAndWait {
+            do {
+                try self.objectContext.save()
+            } catch {}
+        }
     }
 
     private func synchronousSaveFeed(feed: Feed) {

@@ -32,6 +32,7 @@ public class KitModule: NSObject, Ra.InjectorModule {
 
         injector.bind(DataRetriever.self, to: dataRepository)
         injector.bind(DataWriter.self, to: dataRepository)
+        injector.bind(DataRepository.self, to: dataRepository)
     }
 
     private func ManagedObjectContext() -> NSManagedObjectContext {

@@ -106,7 +106,7 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
                 }
             }
             opmlParser.success {items in
-                let toAdd = (path, items)
+                let toAdd = (location, items)
                 self.opmls.append(toAdd)
                 feedParser.cancel()
                 self.mainQueue?.addOperationWithBlock {
@@ -137,7 +137,7 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
 
         if indexPath.section == 0 {
             let (path, items) = opmls[indexPath.row]
-            cell.textLabel?.text = path
+            cell.textLabel?.text = path.lastPathComponent
             cell.detailTextLabel?.text = "\(items.count) feeds"
         } else if indexPath.section == 1 {
             let (path, item) = feeds[indexPath.row]
@@ -162,8 +162,7 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
             let path = opmls[indexPath.row].0
             let activityIndicator = disableInteractionWithMessage(NSLocalizedString("Importing feeds", comment: ""))
 
-            let location = documentsDirectory().stringByAppendingPathComponent(path)
-            opmlManager?.importOPML(NSURL(string: "file://" + location)!, completion: {(_) in
+            self.opmlManager?.importOPML(NSURL(string: "file://" + path)!, completion: {(_) in
                 self.reenableInteractionAndDismiss(activityIndicator)
             })
         } else if indexPath.section == 1 {
@@ -188,7 +187,7 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
         activityIndicator.backgroundColor = UIColor.clearColor()
 
         self.view.addSubview(activityIndicator)
-        activityIndicator.autoCenterInSuperview()
+        activityIndicator.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
 
         UIView.animateWithDuration(0.3, animations: {activityIndicator.backgroundColor = color})
         self.navigationItem.leftBarButtonItem?.enabled = false

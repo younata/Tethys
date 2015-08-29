@@ -30,9 +30,10 @@ internal class DataUtility {
                 if let d = data {
                     if let image = Image(data: d) {
                         feed.image = image
-                        do {
-                            try feed.managedObjectContext?.save()
-                        } catch _ {
+                        feed.managedObjectContext?.performBlockAndWait {
+                            do {
+                                try feed.managedObjectContext?.save()
+                            } catch {}
                         }
                     }
                 }
@@ -89,14 +90,19 @@ internal class DataUtility {
             request.predicate = predicate
             request.sortDescriptors = sortDescriptors
 
-            let error: NSError? = nil
-            do {
-                if let ret = try managedObjectContext.executeFetchRequest(request) as? [NSManagedObject] {
-                    return ret
-                }
-            } catch { }
-            print("Error executing fetch request: \(error)")
-            return []
+            var entities = Array<NSManagedObject>()
+
+            managedObjectContext.performBlockAndWait {
+                let error: NSError? = nil
+                do {
+                    if let ret = try managedObjectContext.executeFetchRequest(request) as? [NSManagedObject] {
+                        entities = ret
+                        return
+                    }
+                } catch { }
+                print("Error executing fetch request: \(error)")
+            }
+            return entities
     }
 
     internal class func feedsWithPredicate(predicate: NSPredicate,

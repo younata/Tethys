@@ -34,6 +34,7 @@ public class OPMLManager: Injectable {
                             for tag in (item.tags ?? []) {
                                 newFeed.addTag(tag)
                             }
+                            dataRepository.saveFeed(newFeed)
                             feeds.append(newFeed)
                         }
                     } else {
@@ -43,6 +44,7 @@ public class OPMLManager: Injectable {
                             for tag in item.tags ?? [] {
                                 newFeed.addTag(tag)
                             }
+                            dataRepository.saveFeed(newFeed)
                             feeds.append(newFeed)
                         }
                     }

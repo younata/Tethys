@@ -50,7 +50,7 @@ public class SettingsViewController: UIViewController {
 
 extension SettingsViewController: UITableViewDataSource {
     public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return 0
     }
 
     public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

@@ -24,6 +24,8 @@ class FindFeedViewControllerSpec: QuickSpec {
 
         var opmlManager: OPMLManagerMock! = nil
 
+        var themeRepository: FakeThemeRepository! = nil
+
         beforeEach {
             injector = Ra.Injector(module: SpecInjectorModule())
 
@@ -45,6 +47,9 @@ class FindFeedViewControllerSpec: QuickSpec {
             opmlManager = OPMLManagerMock()
             injector.bind(OPMLManager.self, to: opmlManager)
 
+            themeRepository = FakeThemeRepository()
+            injector.bind(ThemeRepository.self, to: themeRepository)
+
             subject = injector.create(FindFeedViewController.self) as! FindFeedViewController
             webView = FakeWebView()
             subject.webContent = webView
@@ -56,6 +61,24 @@ class FindFeedViewControllerSpec: QuickSpec {
 
         afterEach {
             objc_removeAssociatedObjects(subject)
+        }
+
+        describe("changing the theme") {
+            beforeEach {
+                themeRepository.theme = .Dark
+            }
+
+            it("should update the navigation bar background") {
+                expect(subject.navigationController?.navigationBar.barStyle).to(equal(UIBarStyle.Black))
+            }
+
+            it("should update the toolbar") {
+                expect(subject.navigationController?.toolbar.barStyle).to(equal(UIBarStyle.Black))
+            }
+
+            it("should update the webView's background color") {
+                expect(subject.webContent.backgroundColor).to(equal(themeRepository.backgroundColor))
+            }
         }
 
         describe("Looking up feeds on the interwebs") {

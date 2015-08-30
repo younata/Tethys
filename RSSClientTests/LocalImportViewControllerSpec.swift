@@ -54,6 +54,7 @@ class LocalImportViewControllerSpec: QuickSpec {
         var opmlManager: OPMLManagerMock! = nil
         var mainQueue: FakeOperationQueue! = nil
         var backgroundQueue: FakeOperationQueue! = nil
+        var themeRepository: FakeThemeRepository! = nil
 
         beforeEach {
             injector = Ra.Injector(module: SpecInjectorModule())
@@ -71,6 +72,9 @@ class LocalImportViewControllerSpec: QuickSpec {
             backgroundQueue = injector.create(kBackgroundQueue) as! FakeOperationQueue
             backgroundQueue.runSynchronously = true
 
+            themeRepository = FakeThemeRepository()
+            injector.bind(ThemeRepository.self, to: themeRepository)
+
             subject = injector.create(LocalImportViewController.self) as! LocalImportViewController
 
             navigationController = UINavigationController(rootViewController: subject)
@@ -79,20 +83,35 @@ class LocalImportViewControllerSpec: QuickSpec {
             tableView = subject.tableViewController.tableView
         }
 
+        describe("changing the theme") {
+            beforeEach {
+                themeRepository.theme = .Dark
+            }
+
+            it("should update the tableView") {
+                expect(subject.tableViewController.tableView.backgroundColor).to(equal(themeRepository.backgroundColor))
+                expect(subject.tableViewController.tableView.separatorColor).to(equal(themeRepository.textColor))
+            }
+
+            it("should update the navigation bar background") {
+                expect(subject.navigationController?.navigationBar.barStyle).to(equal(UIBarStyle.Black))
+            }
+        }
+
         it("should have 2 sections") {
             expect(subject.numberOfSectionsInTableView(tableView)).to(equal(2))
         }
 
         it("should start out with 0 rows in each section") {
-            expect(subject.tableView(tableView, numberOfRowsInSection: 0)).to(equal(1))
+            expect(subject.tableView(tableView, numberOfRowsInSection: 0)).to(equal(0))
             expect(subject.tableView(tableView, numberOfRowsInSection: 1)).to(equal(0))
         }
 
         it("should list OPML first, then RSS feeds") {
             let opmlHeader = subject.tableView(tableView, titleForHeaderInSection: 0)
             let feedHeader = subject.tableView(tableView, titleForHeaderInSection: 1)
-            expect(opmlHeader!).to(equal("Feed Lists"))
-            expect(feedHeader!).to(equal("Individual Feeds"))
+            expect(opmlHeader).to(beNil())
+            expect(feedHeader).to(beNil())
         }
 
         sharedExamples("showing explanation message") {
@@ -167,6 +186,13 @@ class LocalImportViewControllerSpec: QuickSpec {
             it("should with 1 row in each section") {
                 expect(subject.tableView(tableView, numberOfRowsInSection: 0)).to(equal(1))
                 expect(subject.tableView(tableView, numberOfRowsInSection: 1)).to(equal(1))
+            }
+
+            it("should now label sections") {
+                let opmlHeader = subject.tableView(tableView, titleForHeaderInSection: 0)
+                let feedHeader = subject.tableView(tableView, titleForHeaderInSection: 1)
+                expect(opmlHeader).to(equal("Feed Lists"))
+                expect(feedHeader).to(equal("Individual Feeds"))
             }
 
             describe("the cell in section 0") {

@@ -21,6 +21,12 @@ public class ExplanationView: UIView {
         }
     }
 
+    internal var themeRepository: ThemeRepository? = nil {
+        didSet {
+            self.themeRepository?.addSubscriber(self)
+        }
+    }
+
     private let titleLabel = UILabel(forAutoLayout: ())
 
     private let detailLabel = UILabel(forAutoLayout: ())
@@ -52,5 +58,12 @@ public class ExplanationView: UIView {
 
     public required init?(coder aDecoder: NSCoder) {
         fatalError()
+    }
+}
+
+extension ExplanationView: ThemeRepositorySubscriber {
+    public func didChangeTheme() {
+        self.titleLabel.textColor = self.themeRepository?.textColor
+        self.detailLabel.textColor = self.themeRepository?.textColor
     }
 }

@@ -42,6 +42,10 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         return self.injector?.create(NSURLSession.self) as? NSURLSession
     }()
 
+    private lazy var themeRepository: ThemeRepository? = {
+        return self.injector?.create(ThemeRepository.self) as? ThemeRepository
+    }()
+
     private lazy var placeholderAttributes: [String: AnyObject] = [NSForegroundColorAttributeName: UIColor.blackColor()]
 
     public override func viewDidLoad() {
@@ -76,7 +80,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         func spacer() -> UIBarButtonItem {
             return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: "")
         }
-        if (lookForFeeds) {
+        if (self.lookForFeeds) {
             self.toolbarItems = [self.back, self.forward, spacer(), dismiss, spacer(), self.addFeedButton]
         } else {
             self.toolbarItems = [self.back, self.forward, spacer(), dismiss]
@@ -100,6 +104,8 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         self.loadingBar.progress = 0
         self.loadingBar.hidden = true
         self.loadingBar.progressTintColor = UIColor.darkGreenColor()
+
+        self.themeRepository?.addSubscriber(self)
     }
     deinit {
         self.webContent.removeObserver(self, forKeyPath: "estimatedProgress")
@@ -273,5 +279,14 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
                 self.backgroundQueue?.addOperation(feedParser)
             }.resume()
         }
+    }
+}
+
+extension FindFeedViewController: ThemeRepositorySubscriber {
+    public func didChangeTheme() {
+        self.navigationController?.navigationBar.barStyle = self.themeRepository?.theme == .Default ? .Default : .Black
+        self.navigationController?.toolbar.barStyle = self.themeRepository?.theme == .Default ? .Default : .Black
+
+        self.webContent.backgroundColor = self.themeRepository?.backgroundColor
     }
 }

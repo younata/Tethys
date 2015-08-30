@@ -1,14 +1,36 @@
 import UIKit
 import PureLayout_iOS
 
+private class OutlinedLabel: UILabel {
+    private var outlineColor = UIColor.darkGreenColor()
+
+    private override func drawTextInRect(rect: CGRect) {
+        let textColor = self.textColor
+        let context = UIGraphicsGetCurrentContext()
+        CGContextSetLineWidth(context, 2);
+        CGContextSetLineJoin(context, .Round)
+
+        CGContextSetTextDrawingMode(context, .Stroke)
+        self.textColor = self.outlineColor
+        super.drawTextInRect(rect)
+
+        CGContextSetTextDrawingMode(context, .Fill);
+        self.textColor = textColor
+        super.drawTextInRect(rect)
+    }
+}
+
 public class UnreadCounter: UIView {
     private let triangleLayer = CAShapeLayer()
 
-    public let countLabel = UILabel(forAutoLayout: ())
+    private let outlineLabel = OutlinedLabel(forAutoLayout: ())
+
+    public var countLabel: UILabel { return self.outlineLabel }
 
     public var triangleColor = UIColor.darkGreenColor() {
         didSet {
             self.triangleLayer.fillColor = triangleColor.CGColor
+            self.outlineLabel.outlineColor = triangleColor
         }
     }
 
@@ -59,7 +81,7 @@ public class UnreadCounter: UIView {
 
         self.addSubview(countLabel)
         countLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
-        countLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 4)
+        countLabel.autoPinEdgeToSuperviewEdge(.Trailing, withInset: 4)
     }
 
     public required init?(coder aDecoder: NSCoder) {

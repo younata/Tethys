@@ -65,7 +65,7 @@ class AppDelegateSpec: QuickSpec {
         
         describe("-application:didFinishLaunchingWithOptions:") {
             beforeEach {
-                subject.application(application, didFinishLaunchingWithOptions: nil)
+                subject.application(application, didFinishLaunchingWithOptions: ["test": true])
             }
 
             it("should enable notifications") {

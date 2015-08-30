@@ -69,6 +69,11 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             UIBarButtonItem.appearance().tintColor = UIColor.darkGreenColor()
             UITabBar.appearance().tintColor = UIColor.darkGreenColor()
 
+            if NSClassFromString("XCTestCase") != nil && launchOptions?["test"] as? Bool != true {
+                self.window?.rootViewController = UIViewController()
+                return true
+            }
+
             self.createControllerHierarchy()
 
             if let dataWriter = self.anInjector.create(DataWriter.self) as? DataWriter {

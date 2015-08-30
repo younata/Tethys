@@ -29,6 +29,7 @@ class ArticleListControllerSpec: QuickSpec {
         var articles: [Article] = []
         var sortedArticles: [Article] = []
         var dataReadWriter: FakeDataReadWriter! = nil
+        var themeRepository: FakeThemeRepository! = nil
 
         beforeEach {
             injector = Injector()
@@ -36,6 +37,9 @@ class ArticleListControllerSpec: QuickSpec {
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
             injector.bind(kMainQueue, to: mainQueue)
+
+            themeRepository = FakeThemeRepository()
+            injector.bind(ThemeRepository.self, to: themeRepository)
 
             dataReadWriter = FakeDataReadWriter()
             injector.bind(DataRetriever.self, to: dataReadWriter)
@@ -61,6 +65,21 @@ class ArticleListControllerSpec: QuickSpec {
             navigationController = UINavigationController(rootViewController: subject)
 
             expect(subject.view).toNot(beNil())
+        }
+
+        describe("listening to theme repository updates") {
+            beforeEach {
+                themeRepository.theme = .Dark
+            }
+
+            it("should update the tableView") {
+                expect(subject.tableView.backgroundColor).to(equal(themeRepository.backgroundColor))
+                expect(subject.tableView.separatorColor).to(equal(themeRepository.textColor))
+            }
+
+            it("should update the navigation bar background") {
+                expect(subject.navigationController?.navigationBar.barStyle).to(equal(UIBarStyle.Black))
+            }
         }
 
         describe("as a DataSubscriber") {
@@ -96,11 +115,12 @@ class ArticleListControllerSpec: QuickSpec {
             }
 
             describe("the cells") {
-                it("should be sorted with newest at the top") {
+                it("should be sorted with newest at the top, each having a theme repository") {
                     for (idx, article) in sortedArticles.enumerate() {
                         let indexPath = NSIndexPath(forRow: idx, inSection: 0)
                         let cell = subject.tableView(subject.tableView, cellForRowAtIndexPath: indexPath) as! ArticleCell
                         expect(cell.article).to(equal(article))
+                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
                     }
                 }
 

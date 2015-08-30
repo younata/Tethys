@@ -2,16 +2,16 @@ import UIKit
 import WebKit
 import rNewsKit
 
-public class ArticleCell: UITableViewCell, UITextViewDelegate {
+public class ArticleCell: UITableViewCell {
     public var article: Article? {
         didSet {
-            title.text = article?.title ?? ""
-            let publishedDate = article?.updatedAt ?? article?.published ?? NSDate()
-            published.text = dateFormatter.stringFromDate(publishedDate) ?? ""
-            author.text = article?.author ?? ""
-            let hasNotRead = article?.read != true
-            unread.unread = hasNotRead ? 1 : 0
-            unreadWidth.constant = (hasNotRead ? 30 : 0)
+            self.title.text = self.article?.title ?? ""
+            let publishedDate = self.article?.updatedAt ?? self.article?.published ?? NSDate()
+            self.published.text = self.dateFormatter.stringFromDate(publishedDate) ?? ""
+            self.author.text = self.article?.author ?? ""
+            let hasNotRead = self.article?.read != true
+            self.unread.unread = hasNotRead ? 1 : 0
+            self.unreadWidth.constant = (hasNotRead ? 30 : 0)
         }
     }
 
@@ -19,6 +19,12 @@ public class ArticleCell: UITableViewCell, UITextViewDelegate {
     public let published = UILabel(forAutoLayout: ())
     public let author = UILabel(forAutoLayout: ())
     public let unread = UnreadCounter(forAutoLayout: ())
+
+    public var themeRepository: ThemeRepository? = nil {
+        didSet {
+            self.themeRepository?.addSubscriber(self)
+        }
+    }
 
     private var unreadWidth: NSLayoutConstraint! = nil
 
@@ -35,48 +41,53 @@ public class ArticleCell: UITableViewCell, UITextViewDelegate {
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
-        self.contentView.addSubview(title)
-        self.contentView.addSubview(author)
-        self.contentView.addSubview(published)
-        self.contentView.addSubview(unread)
+        self.contentView.addSubview(self.title)
+        self.contentView.addSubview(self.author)
+        self.contentView.addSubview(self.published)
+        self.contentView.addSubview(self.unread)
 
-        title.numberOfLines = 0
-        title.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
+        self.title.numberOfLines = 0
+        self.title.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
 
-        title.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-        title.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
+        self.title.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
+        self.title.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
 
-        author.numberOfLines = 0
-        author.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
+        self.author.numberOfLines = 0
+        self.author.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
 
-        author.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-        author.autoPinEdge(.Top, toEdge: .Bottom, ofView: title, withOffset: 8)
-        author.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
+        self.author.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
+        self.author.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.title, withOffset: 8)
+        self.author.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
 
-        unread.hideUnreadText = true
+        self.unread.hideUnreadText = true
 
-        unread.autoPinEdgeToSuperviewEdge(.Top)
-        unread.autoPinEdgeToSuperviewEdge(.Right)
-        unread.autoSetDimension(.Height, toSize: 30)
-        unreadWidth = unread.autoSetDimension(.Width, toSize: 30)
+        self.unread.autoPinEdgeToSuperviewEdge(.Top)
+        self.unread.autoPinEdgeToSuperviewEdge(.Right)
+        self.unread.autoSetDimension(.Height, toSize: 30)
+        self.unreadWidth = unread.autoSetDimension(.Width, toSize: 30)
 
-        published.textAlignment = .Right
-        published.numberOfLines = 0
-        published.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
+        self.published.textAlignment = .Right
+        self.published.numberOfLines = 0
+        self.published.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
 
-        published.autoPinEdge(.Right, toEdge: .Left, ofView: unread, withOffset: -8)
-        published.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
-        published.autoPinEdge(.Left, toEdge: .Right, ofView: title, withOffset: 8)
-        published.autoMatchDimension(.Width, toDimension: .Width,
-            ofView: published.superview, withMultiplier: 0.25)
+        self.published.autoPinEdge(.Right, toEdge: .Left, ofView: unread, withOffset: -8)
+        self.published.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
+        self.published.autoPinEdge(.Left, toEdge: .Right, ofView: title, withOffset: 8)
+        self.published.autoMatchDimension(.Width, toDimension: .Width,
+            ofView: self.published.superview, withMultiplier: 0.25)
     }
 
     public required init(coder aDecoder: NSCoder) {
         fatalError("")
     }
+}
 
-    public func textView(textView: UITextView, shouldInteractWithURL URL: NSURL,
-        inRange characterRange: NSRange) -> Bool {
-        return false
+extension ArticleCell: ThemeRepositorySubscriber {
+    public func didChangeTheme() {
+        self.title.textColor = self.themeRepository?.textColor
+        self.published.textColor = self.themeRepository?.textColor
+        self.author.textColor = self.themeRepository?.textColor
+
+        self.backgroundColor = self.themeRepository?.backgroundColor
     }
 }

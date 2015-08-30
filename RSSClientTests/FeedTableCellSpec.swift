@@ -7,8 +7,26 @@ import rNewsKit
 class FeedTableCellSpec: QuickSpec {
     override func spec() {
         var subject: FeedTableCell! = nil
+        var themeRepository: FakeThemeRepository! = nil
         beforeEach {
             subject = FeedTableCell(style: .Default, reuseIdentifier: nil)
+            themeRepository = FakeThemeRepository()
+            subject.themeRepository = themeRepository
+        }
+
+        describe("changing the theme") {
+            beforeEach {
+                themeRepository.theme = .Dark
+            }
+
+            it("updates the labels") {
+                expect(subject.nameLabel.textColor).to(equal(themeRepository.textColor))
+                expect(subject.summaryLabel.textColor).to(equal(themeRepository.textColor))
+            }
+
+            it("changes the background color") {
+                expect(subject.backgroundColor).to(equal(themeRepository.backgroundColor))
+            }
         }
 
         sharedExamples("a standard feed cell") {(ctx: SharedExampleContext) in

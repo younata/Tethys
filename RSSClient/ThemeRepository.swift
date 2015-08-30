@@ -5,7 +5,7 @@ public protocol ThemeRepositorySubscriber: NSObjectProtocol {
     func didChangeTheme()
 }
 
-public class ThemeRepository: Injectable {
+public class ThemeRepository: NSObject, Injectable {
     public private(set) var backgroundColor: UIColor {
         get {
             let color = self.colorForKey("backgroundColor")
@@ -36,6 +36,16 @@ public class ThemeRepository: Injectable {
         }
     }
 
+    public private(set) var tintColor: UIColor {
+        get {
+            let color = self.colorForKey("tintColor")
+            return color ?? UIColor.whiteColor()
+        }
+        set {
+            self.setColor(newValue, forKey: "tintColor")
+        }
+    }
+
     public enum Theme: Int {
         case Default = 0
         case Dark = 1
@@ -48,10 +58,12 @@ public class ThemeRepository: Injectable {
                 self.backgroundColor = UIColor.whiteColor()
                 self.textColor = UIColor.blackColor()
                 self.articleCSSFileName = "github2"
+                self.tintColor = UIColor.whiteColor()
             case .Dark:
                 self.backgroundColor = UIColor.blackColor()
                 self.textColor = UIColor.whiteColor()
                 self.articleCSSFileName = "darkhub2"
+                self.tintColor = UIColor.darkGrayColor()
             }
 
             for case let subscriber in self.subscribers.allObjects {
@@ -72,6 +84,7 @@ public class ThemeRepository: Injectable {
 
     public func addSubscriber(subscriber: ThemeRepositorySubscriber) {
         self.subscribers.addObject(subscriber)
+        subscriber.didChangeTheme()
     }
 
     private func colorForKey(key: String) -> UIColor? {

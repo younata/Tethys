@@ -10,7 +10,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
             self.navigationController?.setToolbarHidden(false, animated: false)
             if let a = article {
                 self.dataWriter?.markArticle(a, asRead: true)
-                showArticle(a, onWebView: content)
+                self.showArticle(a, onWebView: self.content)
 
                 self.navigationItem.title = a.title ?? ""
 
@@ -59,13 +59,16 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         return self.injector?.create(DataWriter.self) as? DataWriter
     }()
 
+    public lazy var themeRepository: ThemeRepository? = {
+        return self.injector?.create(ThemeRepository.self) as? ThemeRepository
+    }()
+
     public lazy var swipeRight: UIScreenEdgePanGestureRecognizer = {
         return UIScreenEdgePanGestureRecognizer(target: self, action: "next:")
     }()
 
-
-    private lazy var articleCSS: String = {
-        if let loc = NSBundle.mainBundle().URLForResource("github2", withExtension: "css") {
+    private func loadArticleCSS() -> String {
+        if let cssFileName = self.themeRepository?.articleCSSFileName, let loc = NSBundle.mainBundle().URLForResource(cssFileName, withExtension: "css") {
             do {
                 let str = try NSString(contentsOfURL: loc, encoding: NSUTF8StringEncoding)
                 return "<html><head><style type=\"text/css\">\(str)</style></head><body>"
@@ -73,6 +76,10 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
             }
         }
         return "<html><body>"
+    }
+
+    private lazy var articleCSS: String = {
+        return self.loadArticleCSS()
     }()
 
     private lazy var prismJS: String = {
@@ -176,6 +183,8 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
 
         self.swipeRight.edges = .Right
         self.view.addGestureRecognizer(self.swipeRight)
+
+        self.themeRepository?.addSubscriber(self)
     }
 
     public override func restoreUserActivityState(activity: NSUserActivity) {
@@ -315,7 +324,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         }
     }
 
-    private var nextContent: WKWebView = WKWebView(forAutoLayout: ())
+    private var nextContent: WKWebView? = nil
     private var nextContentRight: NSLayoutConstraint! = nil
 
     internal func next(gesture: UIScreenEdgePanGestureRecognizer) {
@@ -327,17 +336,19 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         if gesture.state == .Began {
             let a = articles[lastArticleIndex+1]
             self.nextContent = WKWebView(forAutoLayout: ())
-            self.view.addSubview(nextContent)
-            self.showArticle(a, onWebView: nextContent)
-            self.nextContent.autoPinEdgeToSuperviewEdge(.Top)
-            self.nextContent.autoPinEdgeToSuperviewEdge(.Bottom)
-            self.nextContent.autoMatchDimension(.Width, toDimension: .Width, ofView: self.view)
-            self.nextContentRight = nextContent.autoPinEdgeToSuperviewEdge(.Right, withInset: translation)
+            self.nextContent?.backgroundColor = self.themeRepository?.backgroundColor
+            self.view.addSubview(self.nextContent!)
+            self.showArticle(a, onWebView: self.nextContent!)
+            self.nextContent?.autoPinEdgeToSuperviewEdge(.Top)
+            self.nextContent?.autoPinEdgeToSuperviewEdge(.Bottom)
+            self.nextContent?.autoMatchDimension(.Width, toDimension: .Width, ofView: self.view)
+            self.nextContentRight = nextContent!.autoPinEdgeToSuperviewEdge(.Right, withInset: translation)
         } else if gesture.state == .Changed {
             self.nextContentRight.constant = translation
         } else if gesture.state == .Cancelled {
-            self.nextContent.removeFromSuperview()
-            self.removeObserverFromContent(nextContent)
+            self.nextContent?.removeFromSuperview()
+            self.removeObserverFromContent(self.nextContent!)
+            self.nextContent = nil
         } else if gesture.state == .Ended {
             let speed = gesture.velocityInView(self.view).x * -1
             if speed >= 0 {
@@ -355,8 +366,9 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
                     self.removeObserverFromContent(oldContent)
                 })
             } else {
-                self.nextContent.removeFromSuperview()
-                self.removeObserverFromContent(self.nextContent)
+                self.nextContent?.removeFromSuperview()
+                self.removeObserverFromContent(self.nextContent!)
+                self.nextContent = nil
             }
         }
     }
@@ -422,5 +434,19 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
             webView.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
             self.objectsBeingObserved.append(webView)
         }
+    }
+}
+
+extension ArticleViewController: ThemeRepositorySubscriber {
+    public func didChangeTheme() {
+        self.articleCSS = self.loadArticleCSS()
+        self.content.reload()
+        self.nextContent?.reload()
+
+        self.content.backgroundColor = self.themeRepository?.backgroundColor
+        self.nextContent?.backgroundColor = self.themeRepository?.backgroundColor
+
+        self.navigationController?.navigationBar.barStyle = self.themeRepository?.theme == .Default ? .Default : .Black
+        self.navigationController?.toolbar.barStyle = self.themeRepository?.theme == .Default ? .Default : .Black
     }
 }

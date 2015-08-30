@@ -12,6 +12,7 @@ class ArticleViewControllerSpec: QuickSpec {
         var injector: Injector! = nil
         var navigationController: UINavigationController! = nil
         var dataWriter: FakeDataReadWriter! = nil
+        var themeRepository: FakeThemeRepository! = nil
 
         beforeEach {
             injector = Injector()
@@ -19,11 +20,32 @@ class ArticleViewControllerSpec: QuickSpec {
             dataWriter = FakeDataReadWriter()
             injector.bind(DataWriter.self, to: dataWriter)
 
+            themeRepository = FakeThemeRepository()
+            injector.bind(ThemeRepository.self, to: themeRepository)
+
             subject = injector.create(ArticleViewController.self) as! ArticleViewController
 
             navigationController = UINavigationController(rootViewController: subject)
 
             expect(subject.view).toNot(beNil())
+        }
+
+        describe("changing the theme") {
+            beforeEach {
+                themeRepository.theme = .Dark
+            }
+
+            it("should update the navigation bar background") {
+                expect(subject.navigationController?.navigationBar.barStyle).to(equal(UIBarStyle.Black))
+            }
+
+            it("should update the content's background color") {
+                expect(subject.content.backgroundColor).to(equal(themeRepository.backgroundColor))
+            }
+
+            it("should update the toolbar") {
+                expect(subject.navigationController?.toolbar.barStyle).to(equal(UIBarStyle.Black))
+            }
         }
 
         describe("Key Commands") {

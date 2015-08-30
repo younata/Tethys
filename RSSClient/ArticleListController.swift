@@ -18,11 +18,12 @@ public class ArticleListController: UITableViewController, DataSubscriber {
 
     public var previewMode: Bool = false
 
-    lazy var dataWriter: DataWriter? = {
+    internal lazy var dataWriter: DataWriter? = {
         self.injector?.create(DataWriter.self) as? DataWriter
     }()
-    lazy var mainQueue: NSOperationQueue? = {
-        self.injector?.create(kMainQueue) as? NSOperationQueue
+
+    internal lazy var themeRepository: ThemeRepository? = {
+        self.injector?.create(ThemeRepository.self) as? ThemeRepository
     }()
 
     public override func viewDidLoad() {
@@ -38,6 +39,8 @@ public class ArticleListController: UITableViewController, DataSubscriber {
         self.tableView.tableFooterView = UIView()
 
         self.dataWriter?.addSubscriber(self)
+
+        self.themeRepository?.addSubscriber(self)
 
         if !previewMode {
             self.navigationItem.rightBarButtonItem = self.editButtonItem()
@@ -55,7 +58,9 @@ public class ArticleListController: UITableViewController, DataSubscriber {
     public func didUpdateFeeds(feeds: [Feed]) {}
 
     public func markedArticle(article: Article, asRead read: Bool) {
-        self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+        if (self.navigationController?.visibleViewController != self) {
+            self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
+        }
     }
 
     private func articleForIndexPath(indexPath: NSIndexPath) -> Article {
@@ -65,7 +70,8 @@ public class ArticleListController: UITableViewController, DataSubscriber {
     public func showArticle(article: Article, animated: Bool = true) -> ArticleViewController {
         let avc = splitViewController?.viewControllers.last as? ArticleViewController ??
             ArticleViewController()
-        avc.dataWriter = dataWriter
+        avc.dataWriter = self.dataWriter
+        avc.themeRepository = self.themeRepository
         avc.article = article
         avc.articles = self.articles
         if (self.articles.count != 0) {
@@ -97,6 +103,7 @@ public class ArticleListController: UITableViewController, DataSubscriber {
         // on whether article loaded into it is read or not.
         let cell = tableView.dequeueReusableCellWithIdentifier(strToUse, forIndexPath: indexPath) as! ArticleCell
 
+        cell.themeRepository = self.themeRepository
         cell.article = article
 
         return cell
@@ -126,6 +133,8 @@ public class ArticleListController: UITableViewController, DataSubscriber {
             let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""),
                 handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
                     self.dataWriter?.deleteArticle(article)
+                    self.articles.removeAtIndex(indexPath.row)
+                    self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             })
             let unread = NSLocalizedString("Mark\nUnread", comment: "")
             let read = NSLocalizedString("Mark\nRead", comment: "")
@@ -134,8 +143,17 @@ public class ArticleListController: UITableViewController, DataSubscriber {
                 handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
                     article.read = !article.read
                     self.dataWriter?.markArticle(article, asRead: article.read)
-                    tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
+                    tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             })
             return [delete, toggle]
+    }
+}
+
+extension ArticleListController: ThemeRepositorySubscriber {
+    public func didChangeTheme() {
+        self.tableView.backgroundColor = self.themeRepository?.backgroundColor
+        self.tableView.separatorColor = self.themeRepository?.textColor
+
+        self.navigationController?.navigationBar.barStyle = self.themeRepository?.theme == .Default ? .Default : .Black
     }
 }

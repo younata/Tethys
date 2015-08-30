@@ -5,13 +5,26 @@ import rNewsKit
 
 public class LocalImportViewController: UIViewController {
 
-    private class TableViewCell: UITableViewCell {
+    private class TableViewCell: UITableViewCell, ThemeRepositorySubscriber {
         required init(coder aDecoder: NSCoder) {
             fatalError("not supported")
         }
 
         override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
             super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
+        }
+
+        private var themeRepository: ThemeRepository? = nil {
+            didSet {
+                self.themeRepository?.addSubscriber(self)
+            }
+        }
+
+        private func didChangeTheme() {
+            self.textLabel?.textColor = self.themeRepository?.textColor
+            self.detailTextLabel?.textColor = self.themeRepository?.textColor
+
+            self.backgroundColor = self.themeRepository?.backgroundColor
         }
     }
 
@@ -39,8 +52,13 @@ public class LocalImportViewController: UIViewController {
         return self.injector?.create(kBackgroundQueue) as? NSOperationQueue
     }()
 
+    private lazy var themeRepository: ThemeRepository? = {
+        return self.injector?.create(ThemeRepository.self) as? ThemeRepository
+    }()
+
     public lazy var explanationLabel: ExplanationView = {
         let label = ExplanationView(forAutoLayout: ())
+        label.themeRepository = self.themeRepository
         label.title = NSLocalizedString("Local Import", comment: "")
         label.detail = NSLocalizedString("To use Local Import, go into iTunes, select your phone, select apps, scroll down to installed apps, select rNews, and then click '+' to add an opml or rss feed to this app, refresh this page, and it'll automatically show up here so that you can import it.", comment: "")
         label.backgroundColor = UIColor.lightGrayColor()
@@ -70,6 +88,8 @@ public class LocalImportViewController: UIViewController {
         self.tableViewController.tableView.delegate = self
         self.tableViewController.tableView.dataSource = self
         self.tableViewController.tableView.tableFooterView = UIView()
+
+        self.themeRepository?.addSubscriber(self)
     }
 
     internal func dismiss() {
@@ -166,6 +186,15 @@ public class LocalImportViewController: UIViewController {
     }
 }
 
+extension LocalImportViewController: ThemeRepositorySubscriber {
+    public func didChangeTheme() {
+        self.tableViewController.tableView.backgroundColor = self.themeRepository?.backgroundColor
+        self.tableViewController.tableView.separatorColor = self.themeRepository?.textColor
+
+        self.navigationController?.navigationBar.barStyle = self.themeRepository?.theme == .Default ? .Default : .Black
+    }
+}
+
 extension LocalImportViewController: UITableViewDataSource {
     public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 2
@@ -192,14 +221,16 @@ extension LocalImportViewController: UITableViewDataSource {
             cell.detailTextLabel?.text = "\(item.articles.count) articles"
         }
 
+        (cell as? TableViewCell)?.themeRepository = self.themeRepository
+
         return cell
     }
 
     public func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch (section) {
-        case 0: return "Feed Lists"
-        case 1: return "Individual Feeds"
-        default: return ""
+        case 0: return self.opmls.isEmpty ? nil : "Feed Lists"
+        case 1: return self.feeds.isEmpty ? nil : "Individual Feeds"
+        default: return nil
         }
     }
 }
@@ -217,7 +248,7 @@ extension LocalImportViewController: UITableViewDelegate {
         } else if indexPath.section == 1 {
             let feed = feeds[indexPath.row].1
 
-            let activityIndicator = disableInteractionWithMessage(NSLocalizedString("Importing feed", comment: ""))
+            let activityIndicator = self.disableInteractionWithMessage(NSLocalizedString("Importing feed", comment: ""))
 
             self.dataWriter?.newFeed {newFeed in
                 newFeed.url = feed.link

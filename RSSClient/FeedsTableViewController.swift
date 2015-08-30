@@ -67,6 +67,7 @@ public class FeedsTableViewController: UIViewController {
         let view = ExplanationView(forAutoLayout: ())
         view.title = NSLocalizedString("Welcome to rNews!", comment: "")
         view.detail = NSLocalizedString("Tap the '+' button to find feeds to follow.", comment: "")
+        view.themeRepository = self.themeRepository
         return view
     }()
 

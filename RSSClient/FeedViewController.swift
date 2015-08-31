@@ -2,7 +2,7 @@ import UIKit
 import Muon
 import rNewsKit
 
-public class FeedViewController: UITableViewController {
+public class FeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     public var feed: rNewsKit.Feed? = nil {
         didSet {
             self.navigationItem.title = self.feed?.displayTitle ?? ""
@@ -29,6 +29,16 @@ public class FeedViewController: UITableViewController {
             }
         }
     }
+
+    public lazy var tableView: UITableView = {
+        let tableView = UITableView(forAutoLayout: ())
+        tableView.registerClass(TableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.registerClass(TextFieldCell.self, forCellReuseIdentifier: "text")
+        tableView.tableFooterView = UIView()
+        tableView.dataSource = self
+        tableView.delegate = self
+        return tableView
+    }()
 
     private lazy var dataWriter: DataWriter? = {
         return self.injector?.create(DataWriter.self) as? DataWriter
@@ -60,9 +70,8 @@ public class FeedViewController: UITableViewController {
         self.navigationItem.rightBarButtonItem = saveButton
         self.navigationItem.title = self.feed?.displayTitle ?? ""
 
-        tableView.registerClass(TableViewCell.self, forCellReuseIdentifier: "cell")
-        tableView.registerClass(TextFieldCell.self, forCellReuseIdentifier: "text")
-        tableView.tableFooterView = UIView()
+        self.view.addSubview(tableView)
+        tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
 
         self.intervalFormatter.calendar = NSCalendar.currentCalendar()
         self.intervalFormatter.dateStyle = .MediumStyle
@@ -100,12 +109,12 @@ public class FeedViewController: UITableViewController {
 
     // MARK: - Table view data source
 
-    public override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         let numSection = 4
         return (feed == nil ? 0 : numSection)
     }
 
-    public override func tableView(tableView: UITableView, numberOfRowsInSection sectionNum: Int) -> Int {
+    public func tableView(tableView: UITableView, numberOfRowsInSection sectionNum: Int) -> Int {
         if feed == nil {
             return 0
         }
@@ -115,33 +124,32 @@ public class FeedViewController: UITableViewController {
         return 1
     }
 
-    public override func tableView(tableView: UITableView, titleForHeaderInSection sectionNum: Int) -> String? {
+    public func tableView(tableView: UITableView, titleForHeaderInSection sectionNum: Int) -> String? {
         if let section = FeedSections(rawValue: sectionNum) {
             return section.titleForSection
         }
         return nil
     }
 
-    public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TableViewCell
-
-        cell.textLabel?.text = ""
-
+    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let section = FeedSections(rawValue: indexPath.section) ?? .Title
 
         switch (section) {
         case .Title:
+            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TableViewCell
+            cell.textLabel?.text = ""
             cell.themeRepository = self.themeRepository
             if let title = feed?.tags.filter({$0.hasPrefix("~")}).first {
                 cell.textLabel?.text = title.substringFromIndex(title.startIndex.successor())
             } else if let title = feed?.displayTitle where !title.isEmpty {
                 cell.textLabel?.text = title
             }
+            return cell
         case .URL:
             let tc = tableView.dequeueReusableCellWithIdentifier("text", forIndexPath: indexPath) as! TextFieldCell
             tc.onTextChange = {(_) in } // remove any previous onTextChange for setting stuff here.
             tc.themeRepository = self.themeRepository
-            tc.textField.text = feed?.url?.absoluteString
+            tc.textField.text = self.feed?.url?.absoluteString
             tc.showValidator = true
             tc.onTextChange = {(text) in
                 if let txt = text, url = NSURL(string: txt) {
@@ -170,6 +178,8 @@ public class FeedViewController: UITableViewController {
             }
             return tc
         case .Summary:
+            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TableViewCell
+            cell.textLabel?.text = ""
             cell.themeRepository = self.themeRepository
             if let summary = feed?.tags.filter({$0.hasPrefix("`")}).first {
                 cell.textLabel?.text = summary.substringFromIndex(summary.startIndex.successor())
@@ -179,7 +189,10 @@ public class FeedViewController: UITableViewController {
                 cell.textLabel?.text = NSLocalizedString("No summary available", comment: "")
                 cell.textLabel?.textColor = UIColor.grayColor()
             }
+            return cell
         case .Tags:
+            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TableViewCell
+            cell.textLabel?.text = ""
             cell.themeRepository = self.themeRepository
             if let tags = feed?.tags {
                 if indexPath.row == tags.count {
@@ -189,19 +202,18 @@ public class FeedViewController: UITableViewController {
                     cell.textLabel?.text = tags[indexPath.row]
                 }
             }
+            return cell
         }
-
-        return cell
     }
 
-    public override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    public func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         let isTagsSection = FeedSections(rawValue: indexPath.section) == .Tags
         let isEditableTag = indexPath.row != (tableView.numberOfRowsInSection(FeedSections.Tags.rawValue) - 1)
 
         return isTagsSection && isEditableTag
     }
 
-    public override func tableView(tableView: UITableView,
+    public func tableView(tableView: UITableView,
         editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
             if feed == nil || FeedSections(rawValue: indexPath.section) != .Tags {
                 return nil
@@ -228,11 +240,11 @@ public class FeedViewController: UITableViewController {
             return [delete, edit]
     }
 
-    public override func tableView(tableView: UITableView,
+    public func tableView(tableView: UITableView,
         commitEditingStyle _: UITableViewCellEditingStyle,
         forRowAtIndexPath _: NSIndexPath) {}
 
-    public override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
 
         if FeedSections(rawValue: indexPath.section) == .Tags,
@@ -247,6 +259,6 @@ extension FeedViewController: ThemeRepositorySubscriber {
         self.tableView.backgroundColor = self.themeRepository.backgroundColor
         self.tableView.separatorColor = self.themeRepository.textColor
 
-        self.navigationController?.navigationBar.barStyle = self.themeRepository.theme == .Default ? .Default : .Black
+        self.navigationController?.navigationBar.barStyle = self.themeRepository.barStyle
     }
 }

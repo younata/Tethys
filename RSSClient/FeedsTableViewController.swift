@@ -264,12 +264,12 @@ public class FeedsTableViewController: UIViewController {
 
 extension FeedsTableViewController: ThemeRepositorySubscriber {
     public func didChangeTheme() {
-        self.navigationController?.navigationBar.barStyle = self.themeRepository.theme == .Default ? .Default : .Black
+        self.navigationController?.navigationBar.barStyle = self.themeRepository.barStyle
 
         self.tableView.backgroundColor = self.themeRepository.backgroundColor
         self.tableView.separatorColor = self.themeRepository.textColor
 
-        self.searchBar.barStyle = self.themeRepository.theme == .Default ? .Default : .Black
+        self.searchBar.barStyle = self.themeRepository.barStyle
         self.searchBar.backgroundColor = self.themeRepository.backgroundColor
 
         self.dropDownMenu.buttonBackgroundColor = self.themeRepository.tintColor

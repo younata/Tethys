@@ -18,6 +18,8 @@ class QueryFeedViewControllerSpec: QuickSpec {
 
         var backgroundQueue: FakeOperationQueue! = nil
 
+        var themeRepository: FakeThemeRepository! = nil
+
         beforeEach {
             injector = Injector()
 
@@ -29,9 +31,27 @@ class QueryFeedViewControllerSpec: QuickSpec {
             injector.bind(DataRetriever.self, to: dataReadWriter)
             injector.bind(DataWriter.self, to: dataReadWriter)
 
+            themeRepository = FakeThemeRepository()
+            injector.bind(ThemeRepository.self, to: themeRepository)
+
             subject = injector.create(QueryFeedViewController.self) as! QueryFeedViewController
 
             navigationController = UINavigationController(rootViewController: subject)
+        }
+
+        describe("changing the theme") {
+            beforeEach {
+                themeRepository.theme = .Dark
+            }
+
+            it("should update the tableView") {
+                expect(subject.tableView.backgroundColor).to(equal(themeRepository.backgroundColor))
+                expect(subject.tableView.separatorColor).to(equal(themeRepository.textColor))
+            }
+
+            it("should update the navigation bar") {
+                expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
+            }
         }
 
         it("should have a save button") {
@@ -123,6 +143,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
         context("when we're creating a new feed") {
             beforeEach {
                 expect(subject.view).toNot(beNil())
+                subject.tableView.reloadData()
             }
 
             it("should not enable the save button") {

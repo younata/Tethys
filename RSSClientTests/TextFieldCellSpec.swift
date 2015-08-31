@@ -13,7 +13,7 @@ class TextFieldCellSpec: QuickSpec {
             subject.themeRepository = themeRepository
         }
 
-        fdescribe("changing the theme") {
+        describe("changing the theme") {
             beforeEach {
                 themeRepository.theme = .Dark
             }

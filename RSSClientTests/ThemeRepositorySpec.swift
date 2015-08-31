@@ -58,6 +58,14 @@ class ThemeRepositorySpec: QuickSpec {
             expect(subject.tintColor).to(equal(UIColor.whiteColor()))
         }
 
+        it("uses 'mac_classic' as the default syntax highlight file name") {
+            expect(subject.syntaxHighlightFile).to(equal("mac_classic"))
+        }
+
+        it("uses UIBarStyleDefault as the default barstyle") {
+            expect(subject.barStyle).to(equal(UIBarStyle.Default))
+        }
+
         describe("setting the theme") {
             sharedExamples("a changed theme") {(sharedContext: SharedExampleContext) in
                 it("changes the background color") {
@@ -84,6 +92,18 @@ class ThemeRepositorySpec: QuickSpec {
                     expect(subject.articleCSSFileName).to(equal(expectedCss))
                 }
 
+                it("changes the syntax highlight file name") {
+                    let expectedSyntax = sharedContext()["syntax"] as? String
+                    expect(expectedSyntax).toNot(beNil())
+                    expect(subject.syntaxHighlightFile).to(equal(expectedSyntax))
+                }
+
+                it("changes the barstyle") {
+                    let expectedBarStyle = UIBarStyle(rawValue: sharedContext()["barStyle"] as! Int)
+                    expect(expectedBarStyle).toNot(beNil())
+                    expect(subject.barStyle).to(equal(expectedBarStyle))
+                }
+
                 it("informs subscribers") {
                     expect(subscriber.didCallChangeTheme).to(beTruthy())
                 }
@@ -103,10 +123,18 @@ class ThemeRepositorySpec: QuickSpec {
                     let expectedTint = sharedContext()["tint"] as? UIColor
                     expect(expectedTint).toNot(beNil())
 
+                    let expectedSyntax = sharedContext()["syntax"] as? String
+                    expect(expectedSyntax).toNot(beNil())
+
+                    let expectedBarStyle = UIBarStyle(rawValue: sharedContext()["barStyle"] as! Int)
+                    expect(expectedBarStyle).toNot(beNil())
+
                     expect(otherRepo.backgroundColor).to(equal(expectedBackground))
                     expect(otherRepo.textColor).to(equal(expectedText))
                     expect(otherRepo.articleCSSFileName).to(equal(expectedCss))
                     expect(otherRepo.tintColor).to(equal(expectedTint))
+                    expect(otherRepo.syntaxHighlightFile).to(equal(expectedSyntax))
+                    expect(otherRepo.barStyle).to(equal(expectedBarStyle))
                 }
             }
 
@@ -121,6 +149,8 @@ class ThemeRepositorySpec: QuickSpec {
                         "text": UIColor.whiteColor(),
                         "article": "darkhub2",
                         "tint": UIColor.darkGrayColor(),
+                        "syntax": "twilight",
+                        "barStyle": UIBarStyle.Black.rawValue,
                     ]
                 }
             }
@@ -136,6 +166,8 @@ class ThemeRepositorySpec: QuickSpec {
                         "text": UIColor.blackColor(),
                         "article": "github2",
                         "tint": UIColor.whiteColor(),
+                        "syntax": "mac_classic",
+                        "barStyle": UIBarStyle.Default.rawValue,
                     ]
                 }
             }

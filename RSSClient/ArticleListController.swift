@@ -154,6 +154,8 @@ extension ArticleListController: ThemeRepositorySubscriber {
         self.tableView.backgroundColor = self.themeRepository?.backgroundColor
         self.tableView.separatorColor = self.themeRepository?.textColor
 
-        self.navigationController?.navigationBar.barStyle = self.themeRepository?.theme == .Default ? .Default : .Black
+        if let themeRepository = self.themeRepository {
+            self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
+        }
     }
 }

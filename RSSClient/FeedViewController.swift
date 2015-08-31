@@ -42,6 +42,10 @@ public class FeedViewController: UITableViewController {
         return self.injector!.create(kBackgroundQueue) as! NSOperationQueue
     }()
 
+    private lazy var themeRepository: ThemeRepository = {
+        return self.injector!.create(ThemeRepository.self) as! ThemeRepository
+    }()
+
     private let intervalFormatter = NSDateIntervalFormatter()
 
     public override func viewDidLoad() {
@@ -56,13 +60,15 @@ public class FeedViewController: UITableViewController {
         self.navigationItem.rightBarButtonItem = saveButton
         self.navigationItem.title = self.feed?.displayTitle ?? ""
 
-        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.registerClass(TableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.registerClass(TextFieldCell.self, forCellReuseIdentifier: "text")
         tableView.tableFooterView = UIView()
 
-        intervalFormatter.calendar = NSCalendar.currentCalendar()
-        intervalFormatter.dateStyle = .MediumStyle
-        intervalFormatter.timeStyle = .ShortStyle
+        self.intervalFormatter.calendar = NSCalendar.currentCalendar()
+        self.intervalFormatter.dateStyle = .MediumStyle
+        self.intervalFormatter.timeStyle = .ShortStyle
+
+        self.themeRepository.addSubscriber(self)
     }
 
     public override func viewWillAppear(animated: Bool) {
@@ -83,10 +89,10 @@ public class FeedViewController: UITableViewController {
 
     private func showTagEditor(tagIndex: Int) -> TagEditorViewController {
         let tagEditor = self.injector!.create(TagEditorViewController.self) as! TagEditorViewController
-        tagEditor.feed = feed
-        if tagIndex < feed?.tags.count {
+        tagEditor.feed = self.feed
+        if tagIndex < self.feed?.tags.count {
             tagEditor.tagIndex = tagIndex
-            tagEditor.tagPicker.textField.text = feed?.tags[tagIndex]
+            tagEditor.tagPicker.textField.text = self.feed?.tags[tagIndex]
         }
         self.navigationController?.pushViewController(tagEditor, animated: true)
         return tagEditor
@@ -117,26 +123,24 @@ public class FeedViewController: UITableViewController {
     }
 
     public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TableViewCell
 
-        cell.textLabel?.textColor = UIColor.blackColor()
         cell.textLabel?.text = ""
 
         let section = FeedSections(rawValue: indexPath.section) ?? .Title
 
         switch (section) {
         case .Title:
+            cell.themeRepository = self.themeRepository
             if let title = feed?.tags.filter({$0.hasPrefix("~")}).first {
                 cell.textLabel?.text = title.substringFromIndex(title.startIndex.successor())
             } else if let title = feed?.displayTitle where !title.isEmpty {
                 cell.textLabel?.text = title
-            } else {
-                cell.textLabel?.text = NSLocalizedString("No title available", comment: "")
-                cell.textLabel?.textColor = UIColor.grayColor()
             }
         case .URL:
             let tc = tableView.dequeueReusableCellWithIdentifier("text", forIndexPath: indexPath) as! TextFieldCell
             tc.onTextChange = {(_) in } // remove any previous onTextChange for setting stuff here.
+            tc.themeRepository = self.themeRepository
             tc.textField.text = feed?.url?.absoluteString
             tc.showValidator = true
             tc.onTextChange = {(text) in
@@ -166,6 +170,7 @@ public class FeedViewController: UITableViewController {
             }
             return tc
         case .Summary:
+            cell.themeRepository = self.themeRepository
             if let summary = feed?.tags.filter({$0.hasPrefix("`")}).first {
                 cell.textLabel?.text = summary.substringFromIndex(summary.startIndex.successor())
             } else if let summary = feed?.displaySummary where !summary.isEmpty  {
@@ -175,6 +180,7 @@ public class FeedViewController: UITableViewController {
                 cell.textLabel?.textColor = UIColor.grayColor()
             }
         case .Tags:
+            cell.themeRepository = self.themeRepository
             if let tags = feed?.tags {
                 if indexPath.row == tags.count {
                     cell.textLabel?.text = NSLocalizedString("Add Tag", comment: "")
@@ -233,5 +239,14 @@ public class FeedViewController: UITableViewController {
             let count = feed?.tags.count where indexPath.row == count {
                 showTagEditor(indexPath.row)
         }
+    }
+}
+
+extension FeedViewController: ThemeRepositorySubscriber {
+    public func didChangeTheme() {
+        self.tableView.backgroundColor = self.themeRepository.backgroundColor
+        self.tableView.separatorColor = self.themeRepository.textColor
+
+        self.navigationController?.navigationBar.barStyle = self.themeRepository.theme == .Default ? .Default : .Black
     }
 }

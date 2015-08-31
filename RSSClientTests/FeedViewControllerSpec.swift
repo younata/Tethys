@@ -19,12 +19,16 @@ class FeedViewControllerSpec: QuickSpec {
         var urlSession: FakeURLSession! = nil
         var backgroundQueue: FakeOperationQueue! = nil
         var presentingController: UIViewController! = nil
+        var themeRepository: FakeThemeRepository! = nil
 
         beforeEach {
             injector = Injector()
 
             urlSession = FakeURLSession()
             injector.bind(NSURLSession.self, to: urlSession)
+
+            themeRepository = FakeThemeRepository()
+            injector.bind(ThemeRepository.self, to: themeRepository)
 
             backgroundQueue = FakeOperationQueue()
             backgroundQueue.runSynchronously = true
@@ -83,6 +87,21 @@ class FeedViewControllerSpec: QuickSpec {
             }
         }
 
+        describe("changing the theme") {
+            beforeEach {
+                themeRepository.theme = .Dark
+            }
+
+            it("should change the tableView") {
+                expect(subject.tableView.backgroundColor).to(equal(themeRepository.backgroundColor))
+                expect(subject.tableView.separatorColor).to(equal(themeRepository.textColor))
+            }
+
+            it("should update the navigation bar styling") {
+                expect(subject.navigationController?.navigationBar.barStyle).to(equal(UIBarStyle.Black))
+            }
+        }
+
         describe("the tableView") {
             it("should should have 4 sections") {
                 expect(subject.tableView.numberOfSections).to(equal(4))
@@ -102,43 +121,36 @@ class FeedViewControllerSpec: QuickSpec {
                 }
 
                 describe("the cell") {
-                    var cell: UITableViewCell! = nil
-                    context("when the feed has no title preconfigured") {
-                        beforeEach {
-                            subject.feed = otherFeed
-
-                            cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 0))
-                        }
-
-                        it("should have a label title 'No title available'") {
-                            expect(cell.textLabel?.text).to(equal("No title available"))
-                        }
-
-                        it("should re-color the text gray") {
-                            expect(cell.textLabel?.textColor).to(equal(UIColor.grayColor()))
-                        }
-                    }
+                    var cell: TableViewCell! = nil
 
                     context("when the feed has a tag that starts with '~'") {
                         beforeEach {
                             subject.feed = Feed(title: "a title", url: NSURL(string: ""), summary: "", query: nil,
                                 tags: ["~custom title"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-                            cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 0))
+                            cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 0)) as! TableViewCell
                         }
 
                         it("should use that tag as the title, minus the leading '~'") {
                             expect(cell.textLabel?.text).to(equal("custom title"))
                         }
+
+                        it("should set the cell's themeRepository") {
+                            expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
+                        }
                     }
 
                     context("when the feed has a title preconfigured") {
                         beforeEach {
-                            cell = subject.tableView.visibleCells[0]
+                            cell = subject.tableView.visibleCells[0] as! TableViewCell
                         }
 
                         it("should have a label title equal to the feed's") {
                             expect(cell.textLabel?.text).to(equal(feed.displayTitle))
+                        }
+
+                        it("should set the cell's themeRepository") {
+                            expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
                         }
                     }
                 }
@@ -165,6 +177,10 @@ class FeedViewControllerSpec: QuickSpec {
 
                     it("should be preconfigured with the feed's url") {
                         expect(cell.textField.text).to(equal(feed.url?.absoluteString))
+                    }
+
+                    it("should set the cell's themeRepository") {
+                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
                     }
 
                     describe("on change") {
@@ -218,7 +234,7 @@ class FeedViewControllerSpec: QuickSpec {
             }
 
             describe("the third section") {
-                var cell: UITableViewCell! = nil
+                var cell: TableViewCell! = nil
                 it("should have 1 row") {
                     expect(subject.tableView.numberOfRowsInSection(2)).to(equal(1))
                 }
@@ -235,7 +251,11 @@ class FeedViewControllerSpec: QuickSpec {
                     beforeEach {
                         subject.feed = otherFeed
 
-                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 2))
+                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 2)) as! TableViewCell
+                    }
+
+                    it("should set the cell's themeRepository") {
+                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
                     }
 
                     it("should have a label title 'No summary available'") {
@@ -252,21 +272,29 @@ class FeedViewControllerSpec: QuickSpec {
                         subject.feed = Feed(title: "a title", url: NSURL(string: ""), summary: "a summary", query: nil,
                             tags: ["`custom summary"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 2))
+                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 2)) as! TableViewCell
                     }
 
                     it("should use that tag as the summary, minus the leading '`'") {
                         expect(cell.textLabel?.text).to(equal("custom summary"))
                     }
+
+                    it("should set the cell's themeRepository") {
+                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
+                    }
                 }
 
                 context("when the feed has a summary preconfigured") {
                     beforeEach {
-                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 2))
+                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 2)) as! TableViewCell
                     }
 
                     it("should have a label title equal to the feed's") {
                         expect(cell.textLabel?.text).to(equal(feed.displaySummary))
+                    }
+
+                    it("should set the cell's themeRepository") {
+                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
                     }
                 }
             }
@@ -281,11 +309,11 @@ class FeedViewControllerSpec: QuickSpec {
                 }
 
                 describe("the first row") {
-                    var cell: UITableViewCell! = nil
+                    var cell: TableViewCell! = nil
                     let tagIndex: Int = 0
 
                     beforeEach {
-                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 3))
+                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 3)) as! TableViewCell
                     }
 
                     it("should be titled for the row") {
@@ -294,6 +322,10 @@ class FeedViewControllerSpec: QuickSpec {
 
                     it("should be editable") {
                         expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: NSIndexPath(forRow: tagIndex, inSection: 3))).to(beTruthy())
+                    }
+
+                    it("should set the cell's themeRepository") {
+                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
                     }
 
                     describe("edit actions") {
@@ -349,12 +381,12 @@ class FeedViewControllerSpec: QuickSpec {
                 }
 
                 describe("the last row") {
-                    var cell: UITableViewCell! = nil
+                    var cell: TableViewCell! = nil
                     var indexPath: NSIndexPath! = nil
 
                     beforeEach {
                         indexPath = NSIndexPath(forRow: feed.tags.count, inSection: 3)
-                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: indexPath)
+                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: indexPath) as! TableViewCell
                     }
 
                     it("should be titled 'Add Tag'") {
@@ -363,6 +395,10 @@ class FeedViewControllerSpec: QuickSpec {
 
                     it("should not be editable") {
                         expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)).to(beFalsy())
+                    }
+
+                    it("should set the cell's themeRepository") {
+                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
                     }
 
                     describe("when tapped") {

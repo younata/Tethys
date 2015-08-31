@@ -98,7 +98,7 @@ class FeedViewControllerSpec: QuickSpec {
             }
 
             it("should update the navigation bar styling") {
-                expect(subject.navigationController?.navigationBar.barStyle).to(equal(UIBarStyle.Black))
+                expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
             }
         }
 
@@ -142,7 +142,7 @@ class FeedViewControllerSpec: QuickSpec {
 
                     context("when the feed has a title preconfigured") {
                         beforeEach {
-                            cell = subject.tableView.visibleCells[0] as! TableViewCell
+                            cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 0)) as! TableViewCell
                         }
 
                         it("should have a label title equal to the feed's") {

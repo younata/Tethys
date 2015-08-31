@@ -32,6 +32,26 @@ class FakeThemeRepository: ThemeRepository {
         }
     }
 
+    private var _syntaxFileName = "mac_classic"
+    override var syntaxHighlightFile: String {
+        get {
+            return self._syntaxFileName
+        }
+        set {
+            self._syntaxFileName = newValue
+        }
+    }
+
+    private var _barStyle = UIBarStyle.Default
+    override var barStyle: UIBarStyle {
+        get {
+            return self._barStyle
+        }
+        set {
+            self._barStyle = newValue
+        }
+    }
+
     private var _tintColor = UIColor.whiteColor()
     override var tintColor: UIColor {
         get {

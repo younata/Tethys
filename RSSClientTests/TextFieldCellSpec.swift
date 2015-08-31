@@ -5,9 +5,26 @@ import rNews
 class TextFieldCellSpec: QuickSpec {
     override func spec() {
         var subject: TextFieldCell! = nil
+        var themeRepository: FakeThemeRepository! = nil
 
         beforeEach {
             subject = TextFieldCell()
+            themeRepository = FakeThemeRepository()
+            subject.themeRepository = themeRepository
+        }
+
+        fdescribe("changing the theme") {
+            beforeEach {
+                themeRepository.theme = .Dark
+            }
+
+            it("should change the background") {
+                expect(subject.backgroundColor).to(equal(themeRepository.backgroundColor))
+            }
+
+            it("should change the textField's textcolor") {
+                expect(subject.textField.textColor).to(equal(themeRepository.textColor))
+            }
         }
 
         describe("onTextChange") {

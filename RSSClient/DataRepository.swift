@@ -1,11 +1,13 @@
 import Foundation
 import Ra
-import CoreSpotlight
 import CoreData
 import JavaScriptCore
 import Muon
 #if os(iOS)
+    import CoreSpotlight
     import MobileCoreServices
+#else
+    import Cocoa
 #endif
 
 public protocol DataRetriever {
@@ -371,28 +373,30 @@ internal class DataRepository: DataRetriever, DataWriter {
             cdarticle.flags = article.flags
             cdarticle.feed = feed
 
-            if #available(iOS 9.0, *) {
-                let identifier = cdarticle.objectID.URIRepresentation().absoluteString
+            #if os(iOS)
+                if #available(iOS 9.0, *) {
+                    let identifier = cdarticle.objectID.URIRepresentation().absoluteString
 
-                let attributes = CSSearchableItemAttributeSet(itemContentType: kUTTypeHTML as String)
-                attributes.title = article.title
-                if let articleSummaryData = (article.summary as NSString).dataUsingEncoding(NSUTF8StringEncoding) {
-                    do {
-                        let summary = try NSAttributedString(data: articleSummaryData, options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
-                        attributes.contentDescription = summary.string.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                    } catch {}
-                }
-                let feedTitleWords = article.feed?.title.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                attributes.keywords = ["article"] + (feedTitleWords ?? [])
-                attributes.URL = article.link
-                attributes.timestamp = article.updatedAt ?? article.published
-                attributes.authorNames = [article.author]
+                    let attributes = CSSearchableItemAttributeSet(itemContentType: kUTTypeHTML as String)
+                    attributes.title = article.title
+                    if let articleSummaryData = (article.summary as NSString).dataUsingEncoding(NSUTF8StringEncoding) {
+                        do {
+                            let summary = try NSAttributedString(data: articleSummaryData, options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
+                            attributes.contentDescription = summary.string.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                        } catch {}
+                    }
+                    let feedTitleWords = article.feed?.title.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                    attributes.keywords = ["article"] + (feedTitleWords ?? [])
+                    attributes.URL = article.link
+                    attributes.timestamp = article.updatedAt ?? article.published
+                    attributes.authorNames = [article.author]
 
-                let item = CSSearchableItem(uniqueIdentifier: identifier, domainIdentifier: nil, attributeSet: attributes)
-                item.expirationDate = NSDate.distantFuture()
-                self.searchIndex?.addItemsToIndex([item]) {error in
+                    let item = CSSearchableItem(uniqueIdentifier: identifier, domainIdentifier: nil, attributeSet: attributes)
+                    item.expirationDate = NSDate.distantFuture()
+                    self.searchIndex?.addItemsToIndex([item]) {error in
+                    }
                 }
-            }
+            #endif
             self.save()
         }
     }

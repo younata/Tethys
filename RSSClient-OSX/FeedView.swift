@@ -1,22 +1,15 @@
-//
-//  FeedView.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 11/22/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import Cocoa
+import rNewsKit
 
 class FeedView: NSTableRowView {
     var feed: Feed? = nil {
         didSet {
             if let f = feed {
-                nameLabel.string = f.feedTitle()
+                nameLabel.string = f.title
                 let font : NSFont = nameLabel.font!
-                nameHeight?.constant = ceil(NSAttributedString(string: nameLabel.string!, attributes: [NSFontAttributeName: font]).size.height)
-                summaryLabel.string = f.feedSummary() ?? ""
-                unreadCounter.unread = UInt(filter(f.allArticles(dataManager!), {return $0.read == false}).count)
+                nameHeight?.constant = ceil(NSAttributedString(string: nameLabel.string!, attributes: [NSFontAttributeName: font]).size().height)
+                summaryLabel.string = f.summary
+                unreadCounter.unread = UInt(f.articles.filter({return $0.read == false}).count)
             } else {
                 nameLabel.string = ""
                 summaryLabel.string = ""
@@ -30,9 +23,7 @@ class FeedView: NSTableRowView {
     let unreadCounter = UnreadCounter()
     
     var nameHeight : NSLayoutConstraint? = nil
-    
-    var dataManager: DataManager? = nil
-    
+
     override init(frame: NSRect) {
         super.init(frame: frame)
         

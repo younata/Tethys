@@ -3,8 +3,10 @@ import CoreData
 import JavaScriptCore
 
 #if os(iOS)
+    import UIKit
     public typealias Image=UIImage
 #else
+    import Cocoa
     public typealias Image=NSImage
 #endif
 

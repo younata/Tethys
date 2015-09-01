@@ -1,12 +1,5 @@
-//
-//  AppDelegate.swift
-//  RSSClient-OSX
-//
-//  Created by Rachel Brindle on 11/12/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import Cocoa
+import rNewsKit
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -14,8 +7,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var window: NSWindow!
     
     @IBOutlet var mainController: MainController? = nil
-    
-    var dataManager = DataManager() // var is only because of testing...
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         // Insert code here to initialize your application
@@ -23,7 +14,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSUserDefaults.standardUserDefaults().setBool(false, forKey: "NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints")
         
         mainController?.window = window
-        mainController?.configure(dataManager)
     }
 
     func applicationWillTerminate(aNotification: NSNotification) {

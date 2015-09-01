@@ -1,6 +1,9 @@
 import Foundation
 import CoreData
 import Muon
+#if os(OSX)
+    import Cocoa
+#endif
 
 internal class DataUtility {
     // Just a collection of class functions, grouped under a class for namespacing reasons

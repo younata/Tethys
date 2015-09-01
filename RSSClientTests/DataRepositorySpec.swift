@@ -2,9 +2,9 @@ import Quick
 import Nimble
 @testable import rNewsKit
 import Ra
-import CoreSpotlight
 import CoreData
 #if os(iOS)
+    import CoreSpotlight
     import MobileCoreServices
 #endif
 
@@ -408,26 +408,28 @@ class FeedRepositorySpec: QuickSpec {
                     }
                 }
 
-                it("should, on iOS 9, update the search index") {
-                    if #available(iOS 9.0, *) {
-                        expect(searchIndex?.lastItemsAdded.count).to(equal(1))
-                        if let item = searchIndex?.lastItemsAdded.first as? CSSearchableItem {
-                            let identifier = article.articleID!.URIRepresentation().absoluteString
-                            expect(item.uniqueIdentifier).to(equal(identifier))
-                            expect(item.domainIdentifier).to(beNil())
-                            expect(item.expirationDate).to(equal(NSDate.distantFuture()))
-                            let attributes = item.attributeSet
-                            expect(attributes.contentType).to(equal(kUTTypeHTML as String))
-                            expect(attributes.title).to(equal(article.title))
-                            let keywords = ["article"] + article.feed!.title.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                            expect(attributes.keywords).to(equal(keywords))
-                            expect(attributes.URL).to(equal(article.link))
-                            expect(attributes.timestamp).to(equal(article.updatedAt ?? article.published))
-                            expect(attributes.authorNames).to(equal([article.author]))
-                            expect(attributes.contentDescription).to(equal("Hello world!"))
+                #if os(iOS)
+                    it("should, on iOS 9, update the search index") {
+                        if #available(iOS 9.0, *) {
+                            expect(searchIndex?.lastItemsAdded.count).to(equal(1))
+                            if let item = searchIndex?.lastItemsAdded.first as? CSSearchableItem {
+                                let identifier = article.articleID!.URIRepresentation().absoluteString
+                                expect(item.uniqueIdentifier).to(equal(identifier))
+                                expect(item.domainIdentifier).to(beNil())
+                                expect(item.expirationDate).to(equal(NSDate.distantFuture()))
+                                let attributes = item.attributeSet
+                                expect(attributes.contentType).to(equal(kUTTypeHTML as String))
+                                expect(attributes.title).to(equal(article.title))
+                                let keywords = ["article"] + article.feed!.title.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                                expect(attributes.keywords).to(equal(keywords))
+                                expect(attributes.URL).to(equal(article.link))
+                                expect(attributes.timestamp).to(equal(article.updatedAt ?? article.published))
+                                expect(attributes.authorNames).to(equal([article.author]))
+                                expect(attributes.contentDescription).to(equal("Hello world!"))
+                            }
                         }
                     }
-                }
+                #endif
             }
 
             describe("deleteArticle") {

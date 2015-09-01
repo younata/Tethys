@@ -19,10 +19,19 @@ namespace "test" do
   desc "Run unit tests for all iOS targets"
   task :ios=> ["ios:app", "ios:kit"]
 
-  desc "Run unit tests for all OS X targets"
-  task :osx do |t|
-    run "xcodebuild -project RSSClient.xcodeproj -scheme RSSClient-OSX test"
+  namespace "osx" do
+    desc "Run unit tests for the OS X app"
+    task :app do |t|
+      run "xcodebuild -project RSSClient.xcodeproj -scheme RSSClient-OSX test"
+    end
+
+    desc "Run unit tests for the OS X kit"
+    task :kit do |t|
+      run "xcodebuild -project RSSClient.xcodeproj -scheme rNewsKit-OSX test"
+    end
   end
+  desc "Run unit tests for all OS X targets"
+  task :osx => ["osx:app", "osx:kit"]
 end
 
 task default: ["test:ios"]

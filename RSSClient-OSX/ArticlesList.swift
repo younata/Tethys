@@ -1,12 +1,5 @@
-//
-//  ArticlesList.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 12/16/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import Cocoa
+import rNewsKit
 
 class ArticlesList: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     var feeds : [Feed] = [] {
@@ -24,22 +17,21 @@ class ArticlesList: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         }
     }
     
-    var dataManager : DataManager? = nil
     var onSelection : (Article) -> Void = {(_) in }
     
     func reload() {
         let feeds = self.feeds
         dispatch_async(dispatch_get_main_queue()) {
-            let articles = feeds.reduce([] as [Article]) { return $0 + $1.allArticles(self.dataManager!) }
+            let articles = feeds.reduce([] as [Article]) { return $0 + $1.articles }
             let newArticles = NSSet(array: articles)
             let oldArticles = NSSet(array: self.articles)
             self.articles = (articles as [Article])
             if newArticles != oldArticles {
-                self.articles.sort({(a : Article, b: Article) in
+                self.articles.sortInPlace {a, b in
                     let da = a.updatedAt ?? a.published
                     let db = b.updatedAt ?? b.published
-                    return da!.timeIntervalSince1970 > db!.timeIntervalSince1970
-                })
+                    return da.timeIntervalSince1970 > db.timeIntervalSince1970
+                }
             }
             if newArticles != oldArticles {
                 self.tableView?.reloadData()
@@ -48,7 +40,7 @@ class ArticlesList: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     }
     
     func heightForArticle(article: Article, width: CGFloat) -> CGFloat {
-        var height : CGFloat = 16.0
+        let height : CGFloat = 16.0
         let titleAttributes = [NSFontAttributeName: NSFont.systemFontOfSize(14)]
         let authorAttributes = [NSFontAttributeName: NSFont.systemFontOfSize(12)]
         

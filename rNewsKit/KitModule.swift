@@ -1,7 +1,9 @@
 import Foundation
 import Ra
 import CoreData
-import CoreSpotlight
+#if os(iOS)
+    import CoreSpotlight
+#endif
 
 internal let kBackgroundManagedObjectContext = "kBackgroundManagedObjectContext"
 
@@ -18,10 +20,12 @@ public class KitModule: NSObject, Ra.InjectorModule {
 
         var searchIndex: SearchIndex? = nil
 
-        if #available(iOS 9.0, *) {
-            searchIndex = CSSearchableIndex.defaultSearchableIndex()
-        }
-        injector.bind(SearchIndex.self, to: searchIndex)
+        #if os(iOS)
+            if #available(iOS 9.0, *) {
+                searchIndex = CSSearchableIndex.defaultSearchableIndex()
+            }
+            injector.bind(SearchIndex.self, to: searchIndex)
+        #endif
 
         let backgroundQueue = NSOperationQueue()
         backgroundQueue.qualityOfService = NSQualityOfService.Utility

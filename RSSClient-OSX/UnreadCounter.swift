@@ -1,12 +1,6 @@
-//
-//  UnreadCounter.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 12/11/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import Cocoa
+import PureLayout_Mac
+import rNewsKit
 
 class UnreadCounter: NSView {
     
@@ -43,14 +37,14 @@ class UnreadCounter: NSView {
         super.layout()
     }
     
-    override init() {
+    override init(frame: NSRect) {
         super.init(frame: NSMakeRect(0, 0, 0, 0))
 
         self.addSubview(countLabel)
         countLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 4)
         countLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
         countLabel.editable = false
-        countLabel.alignment = .RightTextAlignment
+        countLabel.alignment = .Right
         countLabel.textColor = countColor
     }
 

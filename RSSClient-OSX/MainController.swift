@@ -1,12 +1,5 @@
-//
-//  MainController.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 11/18/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import Cocoa
+import rNewsKit
 
 class MainController: NSResponder, NSTextViewDelegate {
     @IBOutlet var window : NSWindow? = nil
@@ -26,8 +19,8 @@ class MainController: NSResponder, NSTextViewDelegate {
     let commandView = NSTextView(forAutoLayout: ())
     var commandHeight : NSLayoutConstraint? = nil
     
-    var dataManager : DataManager? = nil
-    
+//    var dataManager : DataManager? = nil
+
     @IBOutlet var rightView : NSView? = nil
     
     let rightNavBar = BackgroundView(forAutoLayout: ())
@@ -39,9 +32,9 @@ class MainController: NSResponder, NSTextViewDelegate {
         }
     }
     
-    func configure(dataManager: DataManager) {
-        self.dataManager = dataManager
-        feedsList.dataManager = dataManager
+    func configure() {
+//        self.dataManager = dataManager
+//        feedsList.dataManager = dataManager
         feedsList.tableView = tableView!
         feedsList.reload()
         feedsList.onFeedSelection = showArticles
@@ -71,7 +64,8 @@ class MainController: NSResponder, NSTextViewDelegate {
         panel.beginSheetModalForWindow(self.window!) {(result) in
             if result == NSFileHandlingPanelOKButton {
                 for url in panel.URLs as [NSURL] {
-                    self.dataManager?.importOPML(url)
+                    print("\(url)")
+//                    self.dataManager?.importOPML(url)
                 }
             }
         }
@@ -109,7 +103,6 @@ class MainController: NSResponder, NSTextViewDelegate {
         articleScrollView?.documentView = articleTableView
         articleScrollView?.hasVerticalScroller = true
         
-        articleList.dataManager = dataManager
         articleList.tableView = articleTableView
         articleList.feeds = [feed]
         articleList.onSelection = showArticle
@@ -150,22 +143,22 @@ class MainController: NSResponder, NSTextViewDelegate {
     }
     
     func showArticle(article: Article) {
-        println("Show \(article.title)")
+        print("Show \(article.title)")
     }
     
     // MARK: NSTextViewDelegate
     
-    func textView(textView: NSTextView, completions words: [AnyObject], forPartialWordRange charRange: NSRange, indexOfSelectedItem index: UnsafeMutablePointer<Int>) -> [AnyObject] {
+    func textView(textView: NSTextView, completions words: [String], forPartialWordRange charRange: NSRange, indexOfSelectedItem index: UnsafeMutablePointer<Int>) -> [String] {
         return []
     }
     
-    func textView(textView: NSTextView, shouldChangeTextInRange affectedCharRange: NSRange, replacementString: String) -> Bool {
-        let text = (textView.string! as NSString).stringByReplacingCharactersInRange(affectedCharRange, withString: replacementString)
+    func textView(textView: NSTextView, shouldChangeTextInRange affectedCharRange: NSRange, replacementString: String?) -> Bool {
+        let text = (textView.string! as NSString).stringByReplacingCharactersInRange(affectedCharRange, withString: replacementString ?? "")
         if let font = textView.font {
-            let height = (text as NSString).sizeWithAttributes([NSFontAttributeName as NSString: font]).height
+            let height = (text as NSString).sizeWithAttributes([NSFontAttributeName: font]).height
             commandHeight?.constant = height
         }
-        if replacementString.rangeOfString("\n") != nil {
+        if replacementString?.rangeOfString("\n") != nil {
             // extract and execute the command.
         }
         return true

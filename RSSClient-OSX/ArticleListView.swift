@@ -1,12 +1,5 @@
-//
-//  ArticleListView.swift
-//  RSSClient
-//
-//  Created by Rachel Brindle on 12/16/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 import Cocoa
+import rNewsKit
 
 class ArticleListView: NSTableRowView {
     var article: Article? = nil {
@@ -14,7 +7,7 @@ class ArticleListView: NSTableRowView {
             if let a = article {
                 title.string = a.title ?? ""
                 let date = a.updatedAt ?? a.published
-                published.string = (date == nil ? "" : dateFormatter.stringFromDate(a.updatedAt ?? a.published))
+                published.string = dateFormatter.stringFromDate(date)
                 author.string = a.author ?? ""
                 
                 let hasNotRead = a.read != true
@@ -41,7 +34,7 @@ class ArticleListView: NSTableRowView {
     let dateFormatter = NSDateFormatter()
     
     override func layout() {
-        titleHeight?.constant = ceil(NSAttributedString(string: title.string!, attributes: [NSFontAttributeName: title.font!]).size.height)
+        titleHeight?.constant = ceil(NSAttributedString(string: title.string!, attributes: [NSFontAttributeName: title.font!]).size().height)
         //authorHeight?.constant = ceil(NSAttributedString(string: author.string!, attributes: [NSFontAttributeName: author.font!]).size.height)
         
         super.layout()
@@ -90,7 +83,7 @@ class ArticleListView: NSTableRowView {
             tv.editable = false
         }
         published.font = NSFont.systemFontOfSize(12)
-        published.alignment = .RightTextAlignment
+        published.alignment = .Right
     }
     
     required init?(coder: NSCoder) {

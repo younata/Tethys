@@ -45,7 +45,7 @@ class DataUtilitySpec: QuickSpec {
             }
             context("when the feed has an existing image") {
                 beforeEach {
-                    feed.image = UIImage(named: "AppIcon60x60")
+                    feed.image = Image(named: "AppIcon60x60")
                     do {
                         try feed.managedObjectContext?.save()
                     } catch _ {

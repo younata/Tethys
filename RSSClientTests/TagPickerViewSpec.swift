@@ -26,7 +26,7 @@ class TagPickerViewSpec: QuickSpec {
                     expect(dataSource.numberOfComponentsInPickerView(subject.picker)).to(equal(1))
                     expect(dataSource.pickerView(subject.picker, numberOfRowsInComponent: 0)).to(equal(tagsList.count))
                     for (idx, tag) in tagsList.enumerate() {
-                        expect(delegate.pickerView!(subject.picker, titleForRow: idx, forComponent: 0)).to(equal(tag))
+                        expect(delegate.pickerView!(subject.picker, attributedTitleForRow: idx, forComponent: 0)?.string).to(equal(tag))
                     }
             }
         }

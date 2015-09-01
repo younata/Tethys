@@ -35,12 +35,18 @@ public class TagPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
         }
     }
 
-    public func configureWithTags(tags: [String], onSelect: (String) -> Void) {
-        allTags = tags
-        didSelect = onSelect
+    internal var themeRepository: ThemeRepository? = nil {
+        didSet {
+            self.themeRepository?.addSubscriber(self)
+        }
+    }
 
-        picker.reloadComponent(0)
-        textFieldDidChange("")
+    public func configureWithTags(tags: [String], onSelect: (String) -> Void) {
+        self.allTags = tags
+        self.didSelect = onSelect
+
+        self.picker.reloadComponent(0)
+        self.textFieldDidChange("")
     }
 
     // MARK: - UIPickerView protocols
@@ -50,18 +56,19 @@ public class TagPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
     }
 
     public func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return existingSolutions.count
+        return self.existingSolutions.count
     }
 
-    public func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return existingSolutions[row]
+    public func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+        let textColor = self.themeRepository?.textColor ?? UIColor.blackColor()
+        return NSAttributedString(string: self.existingSolutions[row], attributes: [NSForegroundColorAttributeName: textColor])
     }
 
     public func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        if row < existingSolutions.count {
-            let solution = existingSolutions[row]
-            textField.text = solution
-            textFieldDidChange(solution)
+        if row < self.existingSolutions.count {
+            let solution = self.existingSolutions[row]
+            self.textField.text = solution
+            self.textFieldDidChange(solution)
         }
     }
 
@@ -81,14 +88,20 @@ public class TagPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
     private func textFieldDidChange(text: String) -> Bool {
         let solutions: [String]
         if text.isEmpty {
-            solutions = allTags
+            solutions = self.allTags
         } else {
-            solutions = allTags.filter {
+            solutions = self.allTags.filter {
                 return $0.rangeOfString(text) != nil
             }
-            didSelect(text)
+            self.didSelect(text)
         }
-        existingSolutions = solutions
+        self.existingSolutions = solutions
         return true
+    }
+}
+
+extension TagPickerView: ThemeRepositorySubscriber {
+    public func didChangeTheme() {
+        self.picker.reloadComponent(0)
     }
 }

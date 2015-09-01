@@ -10,7 +10,7 @@ public class TagEditorViewController: UIViewController {
     private let tagLabel = UILabel(forAutoLayout: ())
     private var tag: String? = nil {
         didSet {
-            self.navigationItem.rightBarButtonItem?.enabled = self.feed != nil && tag != nil
+            self.navigationItem.rightBarButtonItem?.enabled = self.feed != nil && self.tag != nil
         }
     }
     private lazy var dataWriter: DataWriter? = {
@@ -19,6 +19,10 @@ public class TagEditorViewController: UIViewController {
 
     private lazy var dataRetriever: DataRetriever? = {
         self.injector?.create(DataRetriever.self) as? DataRetriever
+    }()
+
+    private lazy var themeRepository: ThemeRepository? = {
+        self.injector?.create(ThemeRepository.self) as? ThemeRepository
     }()
 
     public override func viewDidLoad() {
@@ -32,22 +36,25 @@ public class TagEditorViewController: UIViewController {
         self.navigationItem.rightBarButtonItem?.enabled = false
         self.navigationItem.title = self.feed?.displayTitle ?? ""
 
-        tagPicker.translatesAutoresizingMaskIntoConstraints = false
-        dataRetriever?.allTags { tags in
+        self.tagPicker.translatesAutoresizingMaskIntoConstraints = false
+        self.tagPicker.themeRepository = self.themeRepository
+        self.dataRetriever?.allTags { tags in
             self.tagPicker.configureWithTags(tags) {
                 self.tag = $0
             }
         }
-        self.view.addSubview(tagPicker)
-        tagPicker.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(16, 8, 0, 8), excludingEdge: .Bottom)
+        self.view.addSubview(self.tagPicker)
+        self.tagPicker.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(16, 8, 0, 8), excludingEdge: .Bottom)
 
-        self.view.addSubview(tagLabel)
-        tagLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-        tagLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
-        tagLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: tagPicker, withOffset: 8)
-        tagLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-        tagLabel.numberOfLines = 0
-        tagLabel.text = NSLocalizedString("Prefixing a tag with '~' will set the title to that, minus the leading ~. Prefixing a tag with '`' will set the summary to that, minus the leading `. Tags cannot contain commas (,)", comment: "")
+        self.view.addSubview(self.tagLabel)
+        self.tagLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
+        self.tagLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
+        self.tagLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: tagPicker, withOffset: 8)
+        self.tagLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+        self.tagLabel.numberOfLines = 0
+        self.tagLabel.text = NSLocalizedString("Prefixing a tag with '~' will set the title to that, minus the leading ~. Prefixing a tag with '`' will set the summary to that, minus the leading `. Tags cannot contain commas (,)", comment: "")
+
+        self.themeRepository?.addSubscriber(self)
     }
 
     func dismiss() {
@@ -62,5 +69,18 @@ public class TagEditorViewController: UIViewController {
         }
 
         self.dismiss()
+    }
+}
+
+extension TagEditorViewController: ThemeRepositorySubscriber {
+    public func didChangeTheme() {
+        self.view.backgroundColor = self.themeRepository?.backgroundColor
+
+        self.tagPicker.picker.tintColor = self.themeRepository?.textColor
+        self.tagPicker.textField.textColor = self.themeRepository?.textColor
+
+        self.tagLabel.textColor = self.themeRepository?.textColor
+
+        self.navigationController?.navigationBar.barTintColor = self.themeRepository?.backgroundColor
     }
 }

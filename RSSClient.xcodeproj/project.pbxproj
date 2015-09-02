@@ -390,7 +390,6 @@
 		89635F8D1A13C2E30052C248 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		89635F8F1A13C2E30052C248 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		89635F921A13C2E30052C248 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		89635F9D1A13C2E30052C248 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8963F42C1A2660DF00B447D6 /* RSSClient 1.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.1.xcdatamodel"; sourceTree = "<group>"; };
 		8963F4331A280F8E00B447D6 /* TagPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagPickerView.swift; sourceTree = "<group>"; };
 		8967DA051A4092A6000424F4 /* ArticlesList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticlesList.swift; sourceTree = "<group>"; };
@@ -713,22 +712,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		89635F9B1A13C2E30052C248 /* RSSClient-OSXTests */ = {
-			isa = PBXGroup;
-			children = (
-				89635F9C1A13C2E30052C248 /* Supporting Files */,
-			);
-			path = "RSSClient-OSXTests";
-			sourceTree = "<group>";
-		};
-		89635F9C1A13C2E30052C248 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				89635F9D1A13C2E30052C248 /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 		8967DA041A409274000424F4 /* Feeds */ = {
 			isa = PBXGroup;
 			children = (
@@ -803,7 +786,6 @@
 				894304221B45089A000078DC /* rNewsKit */,
 				894304301B45089A000078DC /* rNewsKitTests */,
 				89635F8A1A13C2E30052C248 /* RSSClient-OSX */,
-				89635F9B1A13C2E30052C248 /* RSSClient-OSXTests */,
 				898979251B707FAD00218498 /* rNewsKit-OSX */,
 				898979331B707FAE00218498 /* rNewsKit-OSXTests */,
 				89C8307419D730E9009924DA /* Products */,
@@ -2078,6 +2060,7 @@
 				8989793C1B707FAE00218498 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		898979401B707FAE00218498 /* Build configuration list for PBXNativeTarget "rNewsKit-OSXTests" */ = {
 			isa = XCConfigurationList;
@@ -2086,6 +2069,7 @@
 				8989793E1B707FAE00218498 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		89C8306E19D730E9009924DA /* Build configuration list for PBXProject "RSSClient" */ = {
 			isa = XCConfigurationList;

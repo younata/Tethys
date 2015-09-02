@@ -22,6 +22,28 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>Web site URL</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>http</string>
+                <string>https</string>
+            </array>
+        </dict>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>RSS Feed URL</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>feed</string>
+            </array>
+            <key>LSIsAppleDefaultForScheme</key>
+            <true/>
+        </dict>
+    </array>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.utilities</string>
 	<key>LSMinimumSystemVersion</key>

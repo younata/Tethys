@@ -1,7 +1,7 @@
 import Cocoa
 import rNewsKit
 
-class MainController: NSResponder, NSTextViewDelegate {
+class MainController: NSViewController, NSTextViewDelegate {
     @IBOutlet var window : NSWindow? = nil
     
     let feedsList = FeedsList()
@@ -32,7 +32,7 @@ class MainController: NSResponder, NSTextViewDelegate {
         }
     }
     
-    func configure() {
+    override func viewDidLoad() {
 //        self.dataManager = dataManager
 //        feedsList.dataManager = dataManager
         feedsList.tableView = tableView!

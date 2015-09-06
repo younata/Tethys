@@ -2,7 +2,7 @@
 github "younata/Ra" "swift_2"
 github "younata/Muon" "swift_2"
 github "younata/BreakOutToRefresh" "swift_2"
-github "younata/SyntaxKit" "xcode7b6"
+github "soffes/SyntaxKit"
 
 # objc
 github "smileyborg/PureLayout"

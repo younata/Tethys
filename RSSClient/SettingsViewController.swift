@@ -75,8 +75,7 @@ extension SettingsViewController: ThemeRepositorySubscriber {
         self.tableView.backgroundColor = self.themeRepository.theme == .Default ? nil : self.themeRepository.backgroundColor
         for section in 0..<self.tableView.numberOfSections {
             let headerView = self.tableView.headerViewForSection(section)
-            headerView?.tintColor = self.themeRepository.theme == .Default ? nil : self.themeRepository.tintColor
-            headerView?.textLabel?.textColor = self.themeRepository.theme == .Default ? nil : self.themeRepository.textColor
+            headerView?.textLabel?.textColor = self.themeRepository.theme == .Default ? nil : self.themeRepository.tintColor
         }
     }
 }

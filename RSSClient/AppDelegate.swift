@@ -55,13 +55,11 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         self.anInjector.create(BackgroundFetchHandler.self) as? BackgroundFetchHandler
     }()
 
-    internal lazy var splitDelegate: SplitDelegate = {
-        let splitDelegate = SplitDelegate(splitViewController: self.splitView)
-        self.anInjector.bind(SplitDelegate.self, to: splitDelegate)
-        return splitDelegate
+    internal lazy var splitView: SplitViewController = {
+        let splitView = self.anInjector.create(SplitViewController.self) as! SplitViewController
+        self.anInjector.bind(SplitViewController.self, to: splitView)
+        return splitView
     }()
-
-    private lazy var splitView: UISplitViewController = UISplitViewController()
 
     public func application(application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
@@ -157,11 +155,9 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             let al = feeds.showFeeds([feedToShow], animated: false)
             al.showArticle(articleToShow, animated: false)
         } else {
-            let detail = UINavigationController(rootViewController: ArticleViewController())
-            splitView.viewControllers = [master, detail]
+            splitView.viewControllers = [master]
         }
 
-        splitView.delegate = splitDelegate
         self.window?.rootViewController = splitView
     }
 }

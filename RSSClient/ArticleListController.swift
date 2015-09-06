@@ -81,7 +81,7 @@ public class ArticleListController: UITableViewController, DataSubscriber {
         }
         if let splitView = self.splitViewController {
             let delegate = UIApplication.sharedApplication().delegate as? AppDelegate
-            delegate?.splitDelegate.collapseDetailViewController = false
+            delegate?.splitView.collapseDetailViewController = false
             splitView.showDetailViewController(UINavigationController(rootViewController: avc),
                 sender: self)
         } else {

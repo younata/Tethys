@@ -151,11 +151,12 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
         if let feedToShow = feed, let articleToShow = article {
-            splitView.viewControllers = [master]
+            self.splitView.viewControllers = [master]
             let al = feeds.showFeeds([feedToShow], animated: false)
             al.showArticle(articleToShow, animated: false)
         } else {
-            splitView.viewControllers = [master]
+            let detail = UINavigationController(rootViewController: ArticleViewController())
+            self.splitView.viewControllers = [master, detail]
         }
 
         self.window?.rootViewController = splitView

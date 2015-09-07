@@ -90,8 +90,11 @@ class AppDelegateSpec: QuickSpec {
                     splitViewController = subject.window!.rootViewController as! UISplitViewController
                 }
 
-                it("should have a splitViewController as the rootViewController") {
-                    expect(subject.window!.rootViewController).to(beAnInstanceOf(UISplitViewController.self))
+                it("should have a splitViewController with a single subviewcontroller as the rootViewController") {
+                    expect(subject.window!.rootViewController).to(beAnInstanceOf(SplitViewController.self))
+                    if let splitView = subject.window?.rootViewController as? SplitViewController {
+                        expect(splitView.viewControllers.count).to(equal(1))
+                    }
                 }
                 
                 describe("master view controller") {
@@ -108,23 +111,6 @@ class AppDelegateSpec: QuickSpec {
                     it("should have a FeedsTableViewController as the root controller") {
                         let nc = vc as! UINavigationController
                         expect(nc.viewControllers.first).to(beAnInstanceOf(FeedsTableViewController.self))
-                    }
-                }
-
-                describe("detail view controller") {
-                    var vc: UIViewController! = nil
-                    
-                    beforeEach {
-                        vc = splitViewController.viewControllers[1]
-                    }
-                    
-                    it("should be an instance of UINavigationController") {
-                        expect(vc).to(beAnInstanceOf(UINavigationController.self))
-                    }
-                    
-                    it("should have an ArticleViewController as the root controller") {
-                        let nc = vc as! UINavigationController
-                        expect(nc.viewControllers.first).to(beAnInstanceOf(ArticleViewController.self))
                     }
                 }
             }

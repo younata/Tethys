@@ -63,8 +63,8 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         return self.injector?.create(ThemeRepository.self) as? ThemeRepository
     }()
 
-    public lazy var swipeRight: UIScreenEdgePanGestureRecognizer = {
-        return UIScreenEdgePanGestureRecognizer(target: self, action: "next:")
+    public lazy var swipeRight: UIPanGestureRecognizer = {
+        return UIPanGestureRecognizer(target: self, action: "next:")
     }()
 
     private func loadArticleCSS() -> String {
@@ -159,12 +159,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         self.content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
         self.configureContent()
 
-        let is6Plus = UIScreen.mainScreen().scale == UIScreen.mainScreen().nativeScale &&
-                      UIScreen.mainScreen().scale > 2
-        let isiPad = UIDevice.currentDevice().userInterfaceIdiom == .Pad
-        if let splitView = self.splitViewController where isiPad || is6Plus {
-            self.navigationItem.leftBarButtonItem = splitView.displayModeButtonItem()
-        }
+        self.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
 
         let back = UIBarButtonItem(title: "<", style: .Plain, target: content, action: "goBack")
         let forward = UIBarButtonItem(title: ">", style: .Plain, target: content, action: "goForward")
@@ -181,7 +176,6 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
             }
         }
 
-        self.swipeRight.edges = .Right
         self.view.addGestureRecognizer(self.swipeRight)
 
         self.themeRepository?.addSubscriber(self)
@@ -327,7 +321,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     private var nextContent: WKWebView? = nil
     private var nextContentRight: NSLayoutConstraint! = nil
 
-    internal func next(gesture: UIScreenEdgePanGestureRecognizer) {
+    internal func next(gesture: UIPanGestureRecognizer) {
         if lastArticleIndex + 1 >= articles.count {
             return;
         }

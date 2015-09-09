@@ -254,6 +254,9 @@
 		89F98BA61BA07DC6005C3CA8 /* SettingsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA51BA07DC6005C3CA8 /* SettingsRepository.swift */; settings = {ASSET_TAGS = (); }; };
 		89F98BA81BA07E50005C3CA8 /* SettingsRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA71BA07E50005C3CA8 /* SettingsRepositorySpec.swift */; settings = {ASSET_TAGS = (); }; };
 		89F98BAA1BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA91BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift */; settings = {ASSET_TAGS = (); }; };
+		89F98BAC1BA0E428005C3CA8 /* DocumentationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BAB1BA0E428005C3CA8 /* DocumentationViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		89F98BAE1BA0E449005C3CA8 /* DocumentationViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BAD1BA0E449005C3CA8 /* DocumentationViewControllerSpec.swift */; settings = {ASSET_TAGS = (); }; };
+		89F98BB11BA0EDF1005C3CA8 /* queryFeedDocumentation.html in Resources */ = {isa = PBXBuildFile; fileRef = 89F98BB01BA0EDF1005C3CA8 /* queryFeedDocumentation.html */; settings = {ASSET_TAGS = (); }; };
 		89FAE2741B92893E009A3604 /* FakeThemeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FAE2731B92893E009A3604 /* FakeThemeRepository.swift */; settings = {ASSET_TAGS = (); }; };
 		AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4356301A7AE4FE00A961B9 /* InjectorModule.swift */; };
 /* End PBXBuildFile section */
@@ -596,6 +599,9 @@
 		89F98BA51BA07DC6005C3CA8 /* SettingsRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsRepository.swift; sourceTree = "<group>"; };
 		89F98BA71BA07E50005C3CA8 /* SettingsRepositorySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsRepositorySpec.swift; sourceTree = "<group>"; };
 		89F98BA91BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCellSpec.swift; sourceTree = "<group>"; };
+		89F98BAB1BA0E428005C3CA8 /* DocumentationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationViewController.swift; sourceTree = "<group>"; };
+		89F98BAD1BA0E449005C3CA8 /* DocumentationViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationViewControllerSpec.swift; sourceTree = "<group>"; };
+		89F98BB01BA0EDF1005C3CA8 /* queryFeedDocumentation.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = queryFeedDocumentation.html; sourceTree = "<group>"; };
 		89FAE2731B92893E009A3604 /* FakeThemeRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeThemeRepository.swift; sourceTree = "<group>"; };
 		AE4355FD1A7AB7D900A961B9 /* SpecHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SpecHelper.swift; path = ../RSSClientTests/SpecHelper.swift; sourceTree = "<group>"; };
 		AE4355FF1A7ABA4F00A961B9 /* FakeDataRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FakeDataRepository.swift; path = ../RSSClientTests/FakeDataRepository.swift; sourceTree = "<group>"; };
@@ -873,6 +879,7 @@
 		899C48181A9AC0F000F57B96 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				89F98BAD1BA0E449005C3CA8 /* DocumentationViewControllerSpec.swift */,
 				89E2A33E1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift */,
 				89CB98BD1B13945500C87160 /* Importing Feeds */,
 				89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */,
@@ -931,6 +938,7 @@
 				8918D4DA1B8598D100DCDE0E /* ThemeRepository.swift */,
 				89F98BA51BA07DC6005C3CA8 /* SettingsRepository.swift */,
 				8918D4A31B8115F800DCDE0E /* ExplanationView.swift */,
+				89F98BAF1BA0E694005C3CA8 /* Documentation */,
 				89C830B119D7D2B7009924DA /* Feeds */,
 				89C830B419D7D2D2009924DA /* Articles */,
 				89C8308219D730E9009924DA /* Images.xcassets */,
@@ -1139,6 +1147,15 @@
 				89F98BA31BA079EA005C3CA8 /* TableViewCell.swift */,
 			);
 			name = Cells;
+			sourceTree = "<group>";
+		};
+		89F98BAF1BA0E694005C3CA8 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				89F98BAB1BA0E428005C3CA8 /* DocumentationViewController.swift */,
+				89F98BB01BA0EDF1005C3CA8 /* queryFeedDocumentation.html */,
+			);
+			name = Documentation;
 			sourceTree = "<group>";
 		};
 		AE4356071A7ABAD500A961B9 /* Mocks */ = {
@@ -1477,6 +1494,7 @@
 			files = (
 				89C8308319D730E9009924DA /* Images.xcassets in Resources */,
 				8924D8E91A094CF5003B7529 /* github2.css in Resources */,
+				89F98BB11BA0EDF1005C3CA8 /* queryFeedDocumentation.html in Resources */,
 				89AA8A931B537048000E2C88 /* mac_classic.tmTheme in Resources */,
 				89B8BBDD1B9C5B1000B2C112 /* Launch Screen.xib in Resources */,
 				895901B31A32B61A002E2C62 /* Localizable.strings in Resources */,
@@ -1669,6 +1687,7 @@
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
 				89F98BA41BA079EA005C3CA8 /* TableViewCell.swift in Sources */,
+				89F98BAC1BA0E428005C3CA8 /* DocumentationViewController.swift in Sources */,
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
 				89DA7D2C1A66111E0050685B /* TextFieldCell.swift in Sources */,
 				89C204BD1A73F72800C792D2 /* SplitViewController.swift in Sources */,
@@ -1700,6 +1719,7 @@
 				899823A91B2C76B800818755 /* TagEditorViewControllerSpec.swift in Sources */,
 				89F517021B1C070C0005AB04 /* FeedViewControllerSpec.swift in Sources */,
 				898ECDE11B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift in Sources */,
+				89F98BAE1BA0E449005C3CA8 /* DocumentationViewControllerSpec.swift in Sources */,
 				89EA6C371B4B308F00456892 /* OPMLManagerMock.swift in Sources */,
 				899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */,
 				89D970BB1B35BF6500ED84B8 /* WKWebView+rNewsTests.m in Sources */,

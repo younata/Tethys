@@ -237,7 +237,7 @@
 		89DBDA9C1A9FBCB200959AC7 /* feed2.rss in Resources */ = {isa = PBXBuildFile; fileRef = 89DBDA9B1A9FBC4100959AC7 /* feed2.rss */; };
 		89DFAA601B7684A0004CD9CA /* FeedViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DFAA5F1B7684A0004CD9CA /* FeedViewSpec.swift */; };
 		89E2A33D1B6A856900A40D4E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E2A33C1B6A856900A40D4E /* SettingsViewController.swift */; };
-		89E2A33F1B6AA5F300A40D4E /* SettingsViewControlletSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E2A33E1B6AA5F300A40D4E /* SettingsViewControlletSpec.swift */; };
+		89E2A33F1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E2A33E1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift */; };
 		89E2A3431B6C2A2C00A40D4E /* UIKit+PivotalSpecHelperStubs-iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89E2A3421B6C2A2C00A40D4E /* UIKit+PivotalSpecHelperStubs-iOS.framework */; };
 		89E2A3441B6C2A4900A40D4E /* UIKit+PivotalSpecHelperStubs-iOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89E2A3421B6C2A2C00A40D4E /* UIKit+PivotalSpecHelperStubs-iOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89EA6C361B4B2D8400456892 /* FakeDataReadWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EA6C351B4B2D8400456892 /* FakeDataReadWriter.swift */; };
@@ -249,6 +249,11 @@
 		89F83F341B4D6D33003F8F6C /* FeedFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F83F331B4D6D33003F8F6C /* FeedFinder.swift */; };
 		89F83F361B4DB390003F8F6C /* FakeFeedFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F83F351B4DB390003F8F6C /* FakeFeedFinder.swift */; };
 		89F98B9F1B9FC65A005C3CA8 /* ScreenEdgePanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98B9E1B9FC659005C3CA8 /* ScreenEdgePanGestureRecognizer.swift */; settings = {ASSET_TAGS = (); }; };
+		89F98BA11BA079A3005C3CA8 /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA01BA079A3005C3CA8 /* SwitchTableViewCell.swift */; settings = {ASSET_TAGS = (); }; };
+		89F98BA41BA079EA005C3CA8 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA31BA079EA005C3CA8 /* TableViewCell.swift */; settings = {ASSET_TAGS = (); }; };
+		89F98BA61BA07DC6005C3CA8 /* SettingsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA51BA07DC6005C3CA8 /* SettingsRepository.swift */; settings = {ASSET_TAGS = (); }; };
+		89F98BA81BA07E50005C3CA8 /* SettingsRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA71BA07E50005C3CA8 /* SettingsRepositorySpec.swift */; settings = {ASSET_TAGS = (); }; };
+		89F98BAA1BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA91BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift */; settings = {ASSET_TAGS = (); }; };
 		89FAE2741B92893E009A3604 /* FakeThemeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FAE2731B92893E009A3604 /* FakeThemeRepository.swift */; settings = {ASSET_TAGS = (); }; };
 		AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4356301A7AE4FE00A961B9 /* InjectorModule.swift */; };
 /* End PBXBuildFile section */
@@ -573,7 +578,7 @@
 		89DFAA5E1B75CE9B004CD9CA /* UITableViewRowAction+Spec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITableViewRowAction+Spec.h"; sourceTree = "<group>"; };
 		89DFAA5F1B7684A0004CD9CA /* FeedViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewSpec.swift; sourceTree = "<group>"; };
 		89E2A33C1B6A856900A40D4E /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		89E2A33E1B6AA5F300A40D4E /* SettingsViewControlletSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewControlletSpec.swift; sourceTree = "<group>"; };
+		89E2A33E1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewControllerSpec.swift; sourceTree = "<group>"; };
 		89E2A3421B6C2A2C00A40D4E /* UIKit+PivotalSpecHelperStubs-iOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "UIKit+PivotalSpecHelperStubs-iOS.framework"; path = "Vendor/UIKit+PivotalSpecHelperStubs-iOS.framework"; sourceTree = SOURCE_ROOT; };
 		89EA6C351B4B2D8400456892 /* FakeDataReadWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDataReadWriter.swift; sourceTree = "<group>"; };
 		89EF4FD51A9682170052A82F /* OPMLParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OPMLParserSpec.swift; path = ../RSSClientTests/OPMLParserSpec.swift; sourceTree = "<group>"; };
@@ -586,6 +591,11 @@
 		89F83F331B4D6D33003F8F6C /* FeedFinder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedFinder.swift; sourceTree = "<group>"; };
 		89F83F351B4DB390003F8F6C /* FakeFeedFinder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeFeedFinder.swift; sourceTree = "<group>"; };
 		89F98B9E1B9FC659005C3CA8 /* ScreenEdgePanGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScreenEdgePanGestureRecognizer.swift; sourceTree = "<group>"; };
+		89F98BA01BA079A3005C3CA8 /* SwitchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCell.swift; sourceTree = "<group>"; };
+		89F98BA31BA079EA005C3CA8 /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
+		89F98BA51BA07DC6005C3CA8 /* SettingsRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsRepository.swift; sourceTree = "<group>"; };
+		89F98BA71BA07E50005C3CA8 /* SettingsRepositorySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsRepositorySpec.swift; sourceTree = "<group>"; };
+		89F98BA91BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCellSpec.swift; sourceTree = "<group>"; };
 		89FAE2731B92893E009A3604 /* FakeThemeRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeThemeRepository.swift; sourceTree = "<group>"; };
 		AE4355FD1A7AB7D900A961B9 /* SpecHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SpecHelper.swift; path = ../RSSClientTests/SpecHelper.swift; sourceTree = "<group>"; };
 		AE4355FF1A7ABA4F00A961B9 /* FakeDataRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FakeDataRepository.swift; path = ../RSSClientTests/FakeDataRepository.swift; sourceTree = "<group>"; };
@@ -863,7 +873,7 @@
 		899C48181A9AC0F000F57B96 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				89E2A33E1B6AA5F300A40D4E /* SettingsViewControlletSpec.swift */,
+				89E2A33E1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift */,
 				89CB98BD1B13945500C87160 /* Importing Feeds */,
 				89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */,
 				898ECDE01B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift */,
@@ -917,7 +927,9 @@
 				898F6E111B129AB6000D343D /* ActivityIndicator.swift */,
 				89A3417B1B1435750000C60B /* Helpers.swift */,
 				89E2A33C1B6A856900A40D4E /* SettingsViewController.swift */,
+				89F98BA21BA079DE005C3CA8 /* Cells */,
 				8918D4DA1B8598D100DCDE0E /* ThemeRepository.swift */,
+				89F98BA51BA07DC6005C3CA8 /* SettingsRepository.swift */,
 				8918D4A31B8115F800DCDE0E /* ExplanationView.swift */,
 				89C830B119D7D2B7009924DA /* Feeds */,
 				89C830B419D7D2D2009924DA /* Articles */,
@@ -951,11 +963,13 @@
 				8953B1571B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift */,
 				89C204C11A73FEDA00C792D2 /* SplitViewControllerSpec.swift */,
 				8918D4DC1B859D3B00DCDE0E /* ThemeRepositorySpec.swift */,
+				89F98BA71BA07E50005C3CA8 /* SettingsRepositorySpec.swift */,
 				89C204C61A740D8900C792D2 /* NotificationHandlerSpec.swift */,
 				89D970BE1B3929D600ED84B8 /* BackgroundFetchHandlerSpec.swift */,
 				89CB98491B12C50000C87160 /* ActivityIndicatorSpec.swift */,
 				893F93E31B237EBC00B52194 /* UnreadCounterSpec.swift */,
 				8997C7F61B25074900972930 /* ValidatorViewSpec.swift */,
+				89F98BA91BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift */,
 				8997C7F81B250FD200972930 /* TextViewCellSpec.swift */,
 				8997C7FA1B25169E00972930 /* TextFieldCellSpec.swift */,
 				899C48181A9AC0F000F57B96 /* UI */,
@@ -1116,6 +1130,15 @@
 				89D970BC1B3929A600ED84B8 /* BackgroundFetchHandler.swift */,
 			);
 			name = Application;
+			sourceTree = "<group>";
+		};
+		89F98BA21BA079DE005C3CA8 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				89F98BA01BA079A3005C3CA8 /* SwitchTableViewCell.swift */,
+				89F98BA31BA079EA005C3CA8 /* TableViewCell.swift */,
+			);
+			name = Cells;
 			sourceTree = "<group>";
 		};
 		AE4356071A7ABAD500A961B9 /* Mocks */ = {
@@ -1626,6 +1649,7 @@
 				89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */,
 				89D970BD1B3929A600ED84B8 /* BackgroundFetchHandler.swift in Sources */,
 				894896EC1A16F1130030EB6E /* LocalImportViewController.swift in Sources */,
+				89F98BA61BA07DC6005C3CA8 /* SettingsRepository.swift in Sources */,
 				89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */,
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
 				89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */,
@@ -1639,10 +1663,12 @@
 				89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */,
 				89D970C31B392B0300ED84B8 /* LocalNotificationSource.swift in Sources */,
 				8918D4DB1B8598D100DCDE0E /* ThemeRepository.swift in Sources */,
+				89F98BA11BA079A3005C3CA8 /* SwitchTableViewCell.swift in Sources */,
 				89C509F71A2F825400CBD000 /* TextViewCell.swift in Sources */,
 				89C204C41A7400D100C792D2 /* NotificationHandler.swift in Sources */,
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
+				89F98BA41BA079EA005C3CA8 /* TableViewCell.swift in Sources */,
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
 				89DA7D2C1A66111E0050685B /* TextFieldCell.swift in Sources */,
 				89C204BD1A73F72800C792D2 /* SplitViewController.swift in Sources */,
@@ -1661,6 +1687,7 @@
 				8997C7FB1B25169E00972930 /* TextFieldCellSpec.swift in Sources */,
 				89EA6C361B4B2D8400456892 /* FakeDataReadWriter.swift in Sources */,
 				8997C7F51B248D5A00972930 /* FakeWebView.swift in Sources */,
+				89F98BA81BA07E50005C3CA8 /* SettingsRepositorySpec.swift in Sources */,
 				89CB98BF1B13947800C87160 /* FeedTableCellSpec.swift in Sources */,
 				8997C7F71B25074900972930 /* ValidatorViewSpec.swift in Sources */,
 				898F670E1B0007F4004A7BE3 /* SpecInjectorModule.swift in Sources */,
@@ -1668,6 +1695,7 @@
 				89FAE2741B92893E009A3604 /* FakeThemeRepository.swift in Sources */,
 				898F670C1B000451004A7BE3 /* FakeOperationQueue.swift in Sources */,
 				89F83F361B4DB390003F8F6C /* FakeFeedFinder.swift in Sources */,
+				89F98BAA1BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift in Sources */,
 				89D970C11B392AD400ED84B8 /* FakeNotificationSource.swift in Sources */,
 				899823A91B2C76B800818755 /* TagEditorViewControllerSpec.swift in Sources */,
 				89F517021B1C070C0005AB04 /* FeedViewControllerSpec.swift in Sources */,
@@ -1676,7 +1704,7 @@
 				899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */,
 				89D970BB1B35BF6500ED84B8 /* WKWebView+rNewsTests.m in Sources */,
 				89C204C21A73FEDA00C792D2 /* SplitViewControllerSpec.swift in Sources */,
-				89E2A33F1B6AA5F300A40D4E /* SettingsViewControlletSpec.swift in Sources */,
+				89E2A33F1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift in Sources */,
 				89F516571B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m in Sources */,
 				8997C8511B255A1900972930 /* TagPickerViewSpec.swift in Sources */,
 				899823B11B30BA7E00818755 /* NSUserActivity+rNewsTests.m in Sources */,

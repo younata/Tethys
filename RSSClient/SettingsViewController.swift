@@ -4,11 +4,14 @@ import PureLayout_iOS
 public class SettingsViewController: UIViewController {
     private enum SettingsSection: Int, CustomStringConvertible {
         case Theme = 0
+        case Advanced = 1
 
         private var description: String {
             switch self {
             case .Theme:
                 return NSLocalizedString("Theme", comment: "")
+            case .Advanced:
+                return NSLocalizedString("Advanced", comment: "")
             }
         }
     }
@@ -19,6 +22,14 @@ public class SettingsViewController: UIViewController {
 
     private lazy var actualThemeRepository: ThemeRepository = {
         return self.injector!.create(ThemeRepository.self) as! ThemeRepository
+    }()
+
+    private lazy var settingsRepository: SettingsRepository = {
+        return self.injector!.create(SettingsRepository.self) as! SettingsRepository
+    }()
+
+    private lazy var queryFeedsEnabled: Bool = {
+        return self.settingsRepository.queryFeedsEnabled
     }()
 
     private var ephemeralThemeRepository: ThemeRepository? = nil {
@@ -46,6 +57,7 @@ public class SettingsViewController: UIViewController {
         self.tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
 
         self.tableView.registerClass(TableViewCell.self, forCellReuseIdentifier: "cell")
+        self.tableView.registerClass(SwitchTableViewCell.self, forCellReuseIdentifier: "switch")
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.allowsMultipleSelection = true
@@ -65,6 +77,7 @@ public class SettingsViewController: UIViewController {
         if let themeRepository = self.ephemeralThemeRepository {
             self.actualThemeRepository.theme = themeRepository.theme
         }
+        self.settingsRepository.queryFeedsEnabled = self.queryFeedsEnabled
     }
 }
 
@@ -82,11 +95,19 @@ extension SettingsViewController: ThemeRepositorySubscriber {
 
 extension SettingsViewController: UITableViewDataSource {
     public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return 2
     }
 
-    public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+    public func tableView(tableView: UITableView, numberOfRowsInSection sectionNum: Int) -> Int {
+        guard let section = SettingsSection(rawValue: sectionNum) else {
+            return 0
+        }
+        switch (section) {
+        case .Theme:
+            return 2
+        case .Advanced:
+            return 1
+        }
     }
 
     public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -101,6 +122,17 @@ extension SettingsViewController: UITableViewDataSource {
             }
             cell.themeRepository = self.themeRepository
             cell.textLabel?.text = theme.description
+            return cell
+        case .Advanced:
+            let cell = tableView.dequeueReusableCellWithIdentifier("switch", forIndexPath: indexPath) as! SwitchTableViewCell
+            cell.textLabel?.text = NSLocalizedString("Enable Query Feeds", comment: "")
+            cell.themeRepository = self.themeRepository
+            cell.onTapSwitch = {_ in }
+            cell.theSwitch.on = self.queryFeedsEnabled
+            cell.onTapSwitch = {aSwitch in
+                self.queryFeedsEnabled = aSwitch.on
+                self.navigationItem.rightBarButtonItem?.enabled = true
+            }
             return cell
         }
     }
@@ -127,6 +159,8 @@ extension SettingsViewController: UITableViewDelegate {
             self.ephemeralThemeRepository?.theme = theme
             self.ephemeralThemeRepository?.addSubscriber(self)
             self.navigationItem.rightBarButtonItem?.enabled = true
+        case .Advanced:
+            return
         }
         self.tableView.reloadData()
     }

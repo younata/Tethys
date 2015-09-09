@@ -8,10 +8,10 @@ import rNewsKit
 class FeedsTableViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: FeedsTableViewController! = nil
-        var injector : Injector? = nil
         var dataReadWriter: FakeDataReadWriter! = nil
         var navigationController: UINavigationController! = nil
         var themeRepository: FakeThemeRepository! = nil
+        var settingsRepository: SettingsRepository! = nil
 
         var feed1: Feed! = nil
         var feed2: Feed! = nil
@@ -19,18 +19,21 @@ class FeedsTableViewControllerSpec: QuickSpec {
         var feeds: [Feed] = []
 
         beforeEach {
-            injector = Injector()
+            let injector = Injector()
 
             dataReadWriter = FakeDataReadWriter()
-            injector?.bind(DataRetriever.self, to: dataReadWriter)
-            injector?.bind(DataWriter.self, to: dataReadWriter)
+            injector.bind(DataRetriever.self, to: dataReadWriter)
+            injector.bind(DataWriter.self, to: dataReadWriter)
+
+            settingsRepository = SettingsRepository(userDefaults: nil)
+            injector.bind(SettingsRepository.self, to: settingsRepository)
 
             themeRepository = FakeThemeRepository()
-            injector?.bind(ThemeRepository.self, to: themeRepository)
+            injector.bind(ThemeRepository.self, to: themeRepository)
 
-            injector?.bind(kBackgroundQueue, to: FakeOperationQueue())
+            injector.bind(kBackgroundQueue, to: FakeOperationQueue())
 
-            subject = injector?.create(FeedsTableViewController.self) as? FeedsTableViewController
+            subject = injector.create(FeedsTableViewController.self) as? FeedsTableViewController
 
             navigationController = UINavigationController(rootViewController: subject)
 
@@ -167,38 +170,84 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     expect(subject.canBecomeFirstResponder()).to(beTruthy())
                 }
 
-                it("have a list of key commands") {
-                    let keyCommands = subject.keyCommands
-                    expect(keyCommands).toNot(beNil())
-                    guard let commands = keyCommands else {
-                        return
+                context("when query feeds are enabled") {
+                    beforeEach {
+                        settingsRepository.queryFeedsEnabled = true
                     }
 
-                    // cmd+f, cmd+i, cmd+shift+i, cmd+opt+i
-                    let expectedCommands = [
-                        UIKeyCommand(input: "f", modifierFlags: .Command, action: ""),
-                        UIKeyCommand(input: "i", modifierFlags: .Command, action: ""),
-                        UIKeyCommand(input: "i", modifierFlags: [.Command, .Shift], action: ""),
-                        UIKeyCommand(input: "i", modifierFlags: [.Command, .Alternate], action: ""),
-                        UIKeyCommand(input: ",", modifierFlags: .Command, action: ""),
-                    ]
-                    let expectedDiscoverabilityTitles = [
-                        "Filter by tags",
-                        "Import from web",
-                        "Import from local",
-                        "Create query feed",
-                        "Open settings",
-                    ]
+                    it("have a list of key commands") {
+                        let keyCommands = subject.keyCommands
+                        expect(keyCommands).toNot(beNil())
+                        guard let commands = keyCommands else {
+                            return
+                        }
 
-                    expect(commands.count).to(equal(expectedCommands.count))
-                    for (idx, cmd) in commands.enumerate() {
-                        let expectedCmd = expectedCommands[idx]
-                        expect(cmd.input).to(equal(expectedCmd.input))
-                        expect(cmd.modifierFlags).to(equal(expectedCmd.modifierFlags))
+                        // cmd+f, cmd+i, cmd+shift+i, cmd+opt+i
+                        let expectedCommands = [
+                            UIKeyCommand(input: "f", modifierFlags: .Command, action: ""),
+                            UIKeyCommand(input: "i", modifierFlags: .Command, action: ""),
+                            UIKeyCommand(input: "i", modifierFlags: [.Command, .Shift], action: ""),
+                            UIKeyCommand(input: "i", modifierFlags: [.Command, .Alternate], action: ""),
+                            UIKeyCommand(input: ",", modifierFlags: .Command, action: ""),
+                        ]
+                        let expectedDiscoverabilityTitles = [
+                            "Filter by tags",
+                            "Import from web",
+                            "Import from local",
+                            "Create query feed",
+                            "Open settings",
+                        ]
 
-                        if #available(iOS 9.0, *) {
-                            let expectedTitle = expectedDiscoverabilityTitles[idx]
-                            expect(cmd.discoverabilityTitle).to(equal(expectedTitle))
+                        expect(commands.count).to(equal(expectedCommands.count))
+                        for (idx, cmd) in commands.enumerate() {
+                            let expectedCmd = expectedCommands[idx]
+                            expect(cmd.input).to(equal(expectedCmd.input))
+                            expect(cmd.modifierFlags).to(equal(expectedCmd.modifierFlags))
+
+                            if #available(iOS 9.0, *) {
+                                let expectedTitle = expectedDiscoverabilityTitles[idx]
+                                expect(cmd.discoverabilityTitle).to(equal(expectedTitle))
+                            }
+                        }
+                    }
+                }
+
+                context("when query feeds are disabled") {
+                    beforeEach {
+                        settingsRepository.queryFeedsEnabled = false
+                    }
+
+                    it("have a list of key commands") {
+                        let keyCommands = subject.keyCommands
+                        expect(keyCommands).toNot(beNil())
+                        guard let commands = keyCommands else {
+                            return
+                        }
+
+                        // cmd+f, cmd+i, cmd+shift+i, cmd+opt+i
+                        let expectedCommands = [
+                            UIKeyCommand(input: "f", modifierFlags: .Command, action: ""),
+                            UIKeyCommand(input: "i", modifierFlags: .Command, action: ""),
+                            UIKeyCommand(input: "i", modifierFlags: [.Command, .Shift], action: ""),
+                            UIKeyCommand(input: ",", modifierFlags: .Command, action: ""),
+                        ]
+                        let expectedDiscoverabilityTitles = [
+                            "Filter by tags",
+                            "Import from web",
+                            "Import from local",
+                            "Open settings",
+                        ]
+
+                        expect(commands.count).to(equal(expectedCommands.count))
+                        for (idx, cmd) in commands.enumerate() {
+                            let expectedCmd = expectedCommands[idx]
+                            expect(cmd.input).to(equal(expectedCmd.input))
+                            expect(cmd.modifierFlags).to(equal(expectedCmd.modifierFlags))
+
+                            if #available(iOS 9.0, *) {
+                                let expectedTitle = expectedDiscoverabilityTitles[idx]
+                                expect(cmd.discoverabilityTitle).to(equal(expectedTitle))
+                            }
                         }
                     }
                 }
@@ -248,9 +297,44 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                 it("should bring up the dropDownMenu") {
                     expect(subject.dropDownMenu.isOpen).to(beTruthy())
-                    let expectedTitles = ["Add from Web", "Add from Local", "Create Query Feed"]
-                    let titles: [String] = buttons.map { $0.titleForState(.Normal) ?? "" }
-                    expect(titles).to(equal(expectedTitles))
+                }
+
+                context("when query feeds are available") {
+                    beforeEach {
+                        settingsRepository.queryFeedsEnabled = true
+                    }
+
+                    it("should have 3 options") {
+                        subject.dropDownMenu.closeAnimated(false)
+
+                        addButton = subject.navigationItem.rightBarButtonItems?.first
+                        addButton.tap()
+                        buttons = subject.dropDownMenu.valueForKey("_buttons") as? [UIButton] ?? []
+                        expect(buttons).toNot(beEmpty())
+
+                        let expectedTitles = ["Add from Web", "Add from Local", "Create Query Feed"]
+                        let titles: [String] = buttons.map { $0.titleForState(.Normal) ?? "" }
+                        expect(titles).to(equal(expectedTitles))
+                    }
+                }
+
+                context("when query feeds are not available") {
+                    beforeEach {
+                        settingsRepository.queryFeedsEnabled = false
+                    }
+
+                    it("should have 2 options") {
+                        subject.dropDownMenu.closeAnimated(false)
+
+                        addButton = subject.navigationItem.rightBarButtonItems?.first
+                        addButton.tap()
+                        buttons = subject.dropDownMenu.valueForKey("_buttons") as? [UIButton] ?? []
+                        expect(buttons).toNot(beEmpty())
+
+                        let expectedTitles = ["Add from Web", "Add from Local"]
+                        let titles: [String] = buttons.map { $0.titleForState(.Normal) ?? "" }
+                        expect(titles).to(equal(expectedTitles))
+                    }
                 }
 
                 context("tapping on the add feed button again") {
@@ -302,6 +386,14 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                 context("tapping on create query feed") {
                     beforeEach {
+                        subject.dropDownMenu.closeAnimated(false)
+
+                        settingsRepository.queryFeedsEnabled = true
+                        addButton = subject.navigationItem.rightBarButtonItems?.first
+                        addButton.tap()
+                        buttons = subject.dropDownMenu.valueForKey("_buttons") as? [UIButton] ?? []
+                        expect(buttons.count).to(beGreaterThan(2))
+
                         let button = buttons[2]
                         button.sendActionsForControlEvents(UIControlEvents.TouchUpInside)
                     }

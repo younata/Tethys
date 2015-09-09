@@ -16,7 +16,8 @@ class SplitViewControllerSpec: QuickSpec {
 
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, to: themeRepository)
-            subject = injector.getInstance(SplitViewController.self) as! SplitViewController
+
+            subject = injector.create(SplitViewController.self) as! SplitViewController
             subject.viewControllers = [master, detail]
         }
 
@@ -26,7 +27,7 @@ class SplitViewControllerSpec: QuickSpec {
             }
 
             it("should change the preferred status bar styling") {
-                expect(subject.preferredStatusBarStyle()).to(equal(.LightContent))
+                expect(subject.preferredStatusBarStyle()).to(equal(UIStatusBarStyle.LightContent))
             }
         }
         

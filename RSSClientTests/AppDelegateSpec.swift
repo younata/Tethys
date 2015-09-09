@@ -93,7 +93,7 @@ class AppDelegateSpec: QuickSpec {
                 it("should have a splitViewController with a single subviewcontroller as the rootViewController") {
                     expect(subject.window!.rootViewController).to(beAnInstanceOf(SplitViewController.self))
                     if let splitView = subject.window?.rootViewController as? SplitViewController {
-                        expect(splitView.viewControllers.count).to(equal(1))
+                        expect(splitView.viewControllers.count).to(equal(2))
                     }
                 }
                 

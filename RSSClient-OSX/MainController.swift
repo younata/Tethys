@@ -1,67 +1,54 @@
 import Cocoa
 import rNewsKit
 
-class MainController: NSViewController, NSTextViewDelegate {
+class MainController: NSViewController {
     @IBOutlet var window : NSWindow? = nil
-    
-    let feedsList = FeedsList()
-    
-    @IBOutlet var tableView : NSTableView? = nil
-    
-    @IBOutlet var splitView : NSSplitView? = nil
-    
-    @IBOutlet var leftView : NSView? = nil
-    @IBOutlet var navigationBar : BackgroundView? = nil
-    @IBOutlet var navigationTitle : NSTextField? = nil
-    
-    @IBOutlet var backButton : NSButton? = nil
-    
-    let commandView = NSTextView(forAutoLayout: ())
-    var commandHeight : NSLayoutConstraint? = nil
-    
-//    var dataManager : DataManager? = nil
 
-    @IBOutlet var rightView : NSView? = nil
-    
-    let rightNavBar = BackgroundView(forAutoLayout: ())
-    let rightNavTitle = NSTextField(forAutoLayout: ())
-    
+    lazy var feedsList: FeedsViewController = {
+        let feedsList = FeedsViewController()
+        feedsList.configure()
+        return feedsList
+    }()
+
+    lazy var splitViewController : NSSplitViewController = {
+        let controller = NSSplitViewController()
+        controller.splitView.vertical = false
+        self.addChildViewController(controller)
+        return controller
+    }()
+
     override var acceptsFirstResponder : Bool {
         get {
             return true
         }
     }
-    
+
     override func viewDidLoad() {
-//        self.dataManager = dataManager
-//        feedsList.dataManager = dataManager
-        feedsList.tableView = tableView!
+        super.viewDidLoad()
+
+        let feedsSplitViewItem = NSSplitViewItem(viewController: self.feedsList)
+        self.splitViewController.addSplitViewItem(feedsSplitViewItem)
+        self.splitViewController.addChildViewController(self.feedsList)
+
+        self.splitViewController.splitView.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(self.splitViewController.view)
+        self.splitViewController.view.autoPinEdgesToSuperviewEdgesWithInsets(NSEdgeInsetsZero)
+
+        self.feedsList.view.autoPinEdgesToSuperviewEdgesWithInsets(NSEdgeInsetsZero)
+
         feedsList.reload()
         feedsList.onFeedSelection = showArticles
-        
+
         window?.makeFirstResponder(self)
-        
-        for view in [tableView, splitView, leftView, navigationBar, navigationTitle, backButton, commandView] {
-            if let v = view {
-                v.wantsLayer = true
-            }
-        }
-        
-        // add everything on top of this...
-        window?.contentView.addSubview(commandView)
-        commandView.autoPinEdgesToSuperviewEdgesWithInsets(NSEdgeInsetsZero, excludingEdge: .Top)
-        commandHeight = commandView.autoSetDimension(.Height, toSize: 0)
-        
-        navigationBar?.alphaValue = 1.0
     }
-    
+
     @IBAction func openDocument(sender: AnyObject) {
         // open a feed or opml file and import that...
         let panel = NSOpenPanel()
         panel.canChooseDirectories = false
         panel.allowsMultipleSelection = true
         panel.allowedFileTypes = ["xml", "opml"]
-        panel.beginSheetModalForWindow(self.window!) {(result) in
+        panel.beginSheetModalForWindow(self.window!) {result in
             if result == NSFileHandlingPanelOKButton {
                 for url in panel.URLs as [NSURL] {
                     print("\(url)")
@@ -70,97 +57,19 @@ class MainController: NSViewController, NSTextViewDelegate {
             }
         }
     }
-    
+
     var articleTableView : NSTableView? = nil
     var articleScrollView : NSScrollView? = nil
     let articleList = ArticlesList()
     var articleListConstraint : NSLayoutConstraint? = nil
-    
+
     func showArticles(feed: Feed) {
-        if articleTableView != nil {
-            return
-        }
-        articleScrollView = NSScrollView(forAutoLayout: ())
-        leftView?.addSubview(articleScrollView!)
-        
-        articleTableView = NSTableView(forAutoLayout: ())
-        articleTableView?.wantsLayer = true
-        articleTableView?.gridStyleMask = .SolidHorizontalGridLineMask
-        articleScrollView?.addSubview(articleTableView!)
-        articleTableView?.autoPinEdgesToSuperviewEdgesWithInsets(NSEdgeInsetsZero)
-        
-        articleScrollView?.autoPinEdge(.Top, toEdge: .Bottom, ofView: navigationBar)
-        articleScrollView?.autoPinEdgeToSuperviewEdge(.Bottom)
-        articleScrollView?.autoMatchDimension(.Width, toDimension: .Width, ofView: leftView!)
-        let inset = -(leftView!.bounds.width)
-        let rightConstraint = articleScrollView?.autoPinEdgeToSuperviewEdge(.Right, withInset: inset)
-        
-        let tableColumn = NSTableColumn(identifier: "articles")
-        tableColumn.resizingMask = .AutoresizingMask
-        
-        articleTableView?.addTableColumn(tableColumn)
-        
-        articleScrollView?.documentView = articleTableView
-        articleScrollView?.hasVerticalScroller = true
-        
-        articleList.tableView = articleTableView
-        articleList.feeds = [feed]
-        articleList.onSelection = showArticle
-        backButton?.alphaValue = 0.0
-        backButton?.hidden = false
-        navigationTitle?.stringValue = NSLocalizedString("Articles", comment: "")
-        leftView?.layout()
-        rightConstraint?.constant = 0
-        NSAnimationContext.runAnimationGroup({(ctx) in
-            ctx.duration = 0.2
-            self.leftView?.needsLayout = true
-            self.backButton?.alphaValue = 1.0
-        }) {
-            self.articleList.reload()
-        }
-        articleListConstraint = rightConstraint
     }
-    
+
     @IBAction func showFeeds(sender: NSObject) {
-        if articleTableView == nil {
-            return
-        }
-        let inset = -(leftView!.bounds.width)
-        articleListConstraint?.constant = inset
-        NSAnimationContext.runAnimationGroup({(ctx) in
-            ctx.duration = 0.2
-            self.leftView?.needsLayout = true
-            self.backButton?.alphaValue = 0.0
-        }) {
-            print("")
-            self.articleScrollView?.removeFromSuperview()
-            self.articleScrollView = nil
-            self.articleTableView?.removeFromSuperview()
-            self.articleTableView = nil
-            self.backButton?.hidden = true
-            self.navigationTitle?.stringValue = NSLocalizedString("Feeds", comment: "")
-        }
     }
-    
+
     func showArticle(article: Article) {
         print("Show \(article.title)")
-    }
-    
-    // MARK: NSTextViewDelegate
-    
-    func textView(textView: NSTextView, completions words: [String], forPartialWordRange charRange: NSRange, indexOfSelectedItem index: UnsafeMutablePointer<Int>) -> [String] {
-        return []
-    }
-    
-    func textView(textView: NSTextView, shouldChangeTextInRange affectedCharRange: NSRange, replacementString: String?) -> Bool {
-        let text = (textView.string! as NSString).stringByReplacingCharactersInRange(affectedCharRange, withString: replacementString ?? "")
-        if let font = textView.font {
-            let height = (text as NSString).sizeWithAttributes([NSFontAttributeName: font]).height
-            commandHeight?.constant = height
-        }
-        if replacementString?.rangeOfString("\n") != nil {
-            // extract and execute the command.
-        }
-        return true
     }
 }

@@ -160,6 +160,10 @@ extension SettingsViewController: UITableViewDelegate {
             self.ephemeralThemeRepository?.addSubscriber(self)
             self.navigationItem.rightBarButtonItem?.enabled = true
         case .Advanced:
+            if let documentation = injector?.create(DocumentationViewController.self) as? DocumentationViewController {
+                documentation.configure(.QueryFeed)
+                self.navigationController?.pushViewController(documentation, animated: true)
+            }
             return
         }
         self.tableView.reloadData()

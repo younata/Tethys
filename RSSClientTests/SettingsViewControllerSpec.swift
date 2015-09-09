@@ -250,7 +250,10 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
 
                         it("should navigate to a leaf page describing what query feeds are and why they're awesome") {
-                            // bleh.
+                            expect(navigationController.topViewController).to(beAnInstanceOf(DocumentationViewController.self))
+                            if let documentation = navigationController.topViewController as? DocumentationViewController {
+                                expect(documentation.document).to(equal(DocumentationViewController.Document.QueryFeed))
+                            }
                         }
                     }
                 }

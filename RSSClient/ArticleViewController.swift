@@ -69,12 +69,10 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     }()
 
     private func loadArticleCSS() -> String {
-        if let cssFileName = self.themeRepository?.articleCSSFileName, let loc = NSBundle.mainBundle().URLForResource(cssFileName, withExtension: "css") {
-            do {
-                let str = try NSString(contentsOfURL: loc, encoding: NSUTF8StringEncoding)
-                return "<html><head><style type=\"text/css\">\(str)</style></head><body>"
-            } catch _ {
-            }
+        if let cssFileName = self.themeRepository?.articleCSSFileName,
+            let loc = NSBundle.mainBundle().URLForResource(cssFileName, withExtension: "css"),
+            let cssNSString = try? NSString(contentsOfURL: loc, encoding: NSUTF8StringEncoding) {
+                return "<html><head><style type=\"text/css\">\(String(cssNSString))</style></head><body>"
         }
         return "<html><body>"
     }
@@ -84,11 +82,9 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     }()
 
     private lazy var prismJS: String = {
-        if let loc = NSBundle.mainBundle().URLForResource("prism.js", withExtension: "html") {
-            do {
-                return try NSString(contentsOfURL: loc, encoding: NSUTF8StringEncoding) as String
-            } catch _ {
-            }
+        if let loc = NSBundle.mainBundle().URLForResource("prism.js", withExtension: "html"),
+            let prismJS = try? NSString(contentsOfURL: loc, encoding: NSUTF8StringEncoding) as String {
+                return prismJS
         }
         return ""
     }()

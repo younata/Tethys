@@ -1,0 +1,205 @@
+<p>Query Feeds are a meta-feed - a feed whose source is not a website, but other feeds. Query feeds work by querying each article to see if it belongs. For example, to create a feed that only consists of unread articles, you might write a script that only includes the article if <code>article.read == true</code>.</p>
+
+<p>In rNews, Query feeds are written in JavaScript. You just need to return a function that takes a single argument (an Article object) and returns a boolean value:</p>
+
+<pre><code class="language-javascript">function(article) {
+  // Returns true if you haven&#39;t yet read the article
+  return !article.read
+}</code></pre>
+
+<p>The <code>Article</code> object is a javascript object with the following properties:</p>
+
+<table>
+<thead>
+<tr>
+<th>name</th>
+<th>type</th>
+<th>get/set?</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>title</td>
+<td>String</td>
+<td>get/set</td>
+</tr>
+<tr>
+<td>link</td>
+<td>String</td>
+<td>get/set</td>
+</tr>
+<tr>
+<td>summary</td>
+<td>String</td>
+<td>get/set</td>
+</tr>
+<tr>
+<td>author</td>
+<td>String</td>
+<td>get/set</td>
+</tr>
+<tr>
+<td>published</td>
+<td>NSDate</td>
+<td>get/set</td>
+</tr>
+<tr>
+<td>updatedAt</td>
+<td>NSDate?</td>
+<td>get/set</td>
+</tr>
+<tr>
+<td>identifier</td>
+<td>String</td>
+<td>get/set</td>
+</tr>
+<tr>
+<td>content</td>
+<td>String</td>
+<td>get/set</td>
+</tr>
+<tr>
+<td>read</td>
+<td>Bool</td>
+<td>get/set</td>
+</tr>
+<tr>
+<td>feed</td>
+<td>Feed?</td>
+<td>get/set</td>
+</tr>
+<tr>
+<td>flags</td>
+<td>Array&lt;String&gt;</td>
+<td>get</td>
+</tr>
+<tr>
+<td>enclosures</td>
+<td>Array&lt;Enclosure&gt;</td>
+<td>get</td>
+</tr>
+</tbody>
+</table>
+
+<p>The <code>Feed</code> object is a javascript object with the following properties:</p>
+
+<table>
+<thead>
+<tr>
+<th>name</th>
+<th>type</th>
+<th>get/set?</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>title</td>
+<td>String</td>
+<td>get set</td>
+</tr>
+<tr>
+<td>displayTitle</td>
+<td>String</td>
+<td>get</td>
+</tr>
+<tr>
+<td>url</td>
+<td>NSURL?</td>
+<td>get set</td>
+</tr>
+<tr>
+<td>summary</td>
+<td>String</td>
+<td>get set</td>
+</tr>
+<tr>
+<td>displaySummary</td>
+<td>String</td>
+<td>get</td>
+</tr>
+<tr>
+<td>query</td>
+<td>String?</td>
+<td>get set</td>
+</tr>
+<tr>
+<td>tags</td>
+<td>Array&lt;String&gt;</td>
+<td>get</td>
+</tr>
+<tr>
+<td>waitPeriod</td>
+<td>Int</td>
+<td>get set</td>
+</tr>
+<tr>
+<td>remainingWait</td>
+<td>Int</td>
+<td>get set</td>
+</tr>
+<tr>
+<td>articles</td>
+<td>Array&lt;Article&gt;</td>
+<td>get</td>
+</tr>
+<tr>
+<td>identifier</td>
+<td>String</td>
+<td>get</td>
+</tr>
+<tr>
+<td>isQueryFeed</td>
+<td>Bool</td>
+<td>get</td>
+</tr>
+<tr>
+<td>unreadArticles</td>
+<td>Function returning Array&lt;Article&gt;</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<p>And finally, the <code>Enclosure</code> object is a javascript object with the following properties:</p>
+
+<table>
+<thead>
+<tr>
+<th>name</th>
+<th>type</th>
+<th>get/set?</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>url</td>
+<td>NSURL</td>
+<td>get set</td>
+</tr>
+<tr>
+<td>kind</td>
+<td>String</td>
+<td>get set</td>
+</tr>
+<tr>
+<td>data</td>
+<td>Data?</td>
+<td>get set</td>
+</tr>
+<tr>
+<td>article</td>
+<td>Article?</td>
+<td>get set</td>
+</tr>
+<tr>
+<td>downloaded</td>
+<td>Bool</td>
+<td>get</td>
+</tr>
+</tbody>
+</table>
+
+<p>The conversion is done using Apple&#39;s JavaScriptCore APIs.</p>

@@ -6,4 +6,6 @@ Pretty much the newsbeuter for mobile, or the mutt of visual feed readers.
 
 This project requires Swift 2/Xcode 7 to build.
 
-[https://www.pivotaltracker.com/n/projects/1423142](This project uses Pivotal Tracker for it's backlog)
+####Backlog
+
+[This project uses Pivotal Tracker for it's backlog](https://www.pivotaltracker.com/n/projects/1423142).

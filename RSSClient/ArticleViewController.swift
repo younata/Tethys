@@ -1,5 +1,6 @@
 import UIKit
 import WebKit
+import PureLayout
 import TOBrowserActivityKit
 import Ra
 import rNewsKit
@@ -63,8 +64,8 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         return self.injector?.create(ThemeRepository.self) as? ThemeRepository
     }()
 
-    public lazy var swipeRight: UIPanGestureRecognizer = {
-        return UIPanGestureRecognizer(target: self, action: "next:")
+    public lazy var panGestureRecognizer: ScreenEdgePanGestureRecognizer = {
+        return ScreenEdgePanGestureRecognizer(target: self, action: "didSwipe:")
     }()
 
     private func loadArticleCSS() -> String {
@@ -176,7 +177,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
             }
         }
 
-        self.view.addGestureRecognizer(self.swipeRight)
+        self.view.addGestureRecognizer(self.panGestureRecognizer)
 
         self.themeRepository?.addSubscriber(self)
     }
@@ -321,14 +322,15 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     private var nextContent: WKWebView? = nil
     private var nextContentRight: NSLayoutConstraint! = nil
 
-    internal func next(gesture: UIPanGestureRecognizer) {
-        if lastArticleIndex + 1 >= articles.count {
+    private func didSwipeFromLeft(gesture: ScreenEdgePanGestureRecognizer) {
+        if self.lastArticleIndex == 0 {
             return;
         }
-        let width = CGRectGetWidth(self.view.bounds)
-        let translation = width + gesture.translationInView(self.view).x
+        let width = self.view.bounds.width
+        let translation = -width + gesture.translationInView(self.view).x
+        let nextArticleIndex = self.lastArticleIndex - 1
         if gesture.state == .Began {
-            let a = articles[lastArticleIndex+1]
+            let a = self.articles[nextArticleIndex]
             self.nextContent = WKWebView(forAutoLayout: ())
             self.nextContent?.backgroundColor = self.themeRepository?.backgroundColor
             self.view.addSubview(self.nextContent!)
@@ -336,7 +338,54 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
             self.nextContent?.autoPinEdgeToSuperviewEdge(.Top)
             self.nextContent?.autoPinEdgeToSuperviewEdge(.Bottom)
             self.nextContent?.autoMatchDimension(.Width, toDimension: .Width, ofView: self.view)
-            self.nextContentRight = nextContent!.autoPinEdgeToSuperviewEdge(.Right, withInset: translation)
+            self.nextContentRight = self.nextContent!.autoPinEdgeToSuperviewEdge(.Leading, withInset: translation)
+        } else if gesture.state == .Changed {
+            self.nextContentRight.constant = translation
+        } else if gesture.state == .Cancelled {
+            self.nextContent?.removeFromSuperview()
+            self.removeObserverFromContent(self.nextContent!)
+            self.nextContent = nil
+        } else if gesture.state == .Ended {
+            let speed = gesture.velocityInView(self.view).x
+            if speed >= 0 {
+                self.lastArticleIndex = nextArticleIndex
+                self.article = self.articles[self.lastArticleIndex]
+                self.nextContentRight.constant = 0
+                let oldContent = content
+                self.content = self.nextContent!
+                self.configureContent()
+                UIView.animateWithDuration(0.2, animations: {
+                    self.view.layoutIfNeeded()
+                    }, completion: {(completed) in
+                        self.view.bringSubviewToFront(self.loadingBar)
+                        oldContent.removeFromSuperview()
+                        self.removeObserverFromContent(oldContent)
+                })
+            } else {
+                self.nextContent?.removeFromSuperview()
+                self.removeObserverFromContent(self.nextContent!)
+                self.nextContent = nil
+            }
+        }
+    }
+
+    private func didSwipeFromRight(gesture: ScreenEdgePanGestureRecognizer) {
+        if self.lastArticleIndex + 1 >= self.articles.count {
+            return;
+        }
+        let width = CGRectGetWidth(self.view.bounds)
+        let translation = width + gesture.translationInView(self.view).x
+        let nextArticleIndex = self.lastArticleIndex + 1
+        if gesture.state == .Began {
+            let a = self.articles[nextArticleIndex]
+            self.nextContent = WKWebView(forAutoLayout: ())
+            self.nextContent?.backgroundColor = self.themeRepository?.backgroundColor
+            self.view.addSubview(self.nextContent!)
+            self.showArticle(a, onWebView: self.nextContent!)
+            self.nextContent?.autoPinEdgeToSuperviewEdge(.Top)
+            self.nextContent?.autoPinEdgeToSuperviewEdge(.Bottom)
+            self.nextContent?.autoMatchDimension(.Width, toDimension: .Width, ofView: self.view)
+            self.nextContentRight = self.nextContent!.autoPinEdgeToSuperviewEdge(.Trailing, withInset: translation)
         } else if gesture.state == .Changed {
             self.nextContentRight.constant = translation
         } else if gesture.state == .Cancelled {
@@ -346,24 +395,38 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         } else if gesture.state == .Ended {
             let speed = gesture.velocityInView(self.view).x * -1
             if speed >= 0 {
-                self.lastArticleIndex++
-                self.article = articles[lastArticleIndex]
+                self.lastArticleIndex = nextArticleIndex
+                self.article = self.articles[self.lastArticleIndex]
                 self.nextContentRight.constant = 0
                 let oldContent = content
-                self.content = self.nextContent
+                self.content = self.nextContent!
                 self.configureContent()
                 UIView.animateWithDuration(0.2, animations: {
                     self.view.layoutIfNeeded()
-                }, completion: {(completed) in
-                    self.view.bringSubviewToFront(self.loadingBar)
-                    oldContent.removeFromSuperview()
-                    self.removeObserverFromContent(oldContent)
+                    }, completion: {(completed) in
+                        self.view.bringSubviewToFront(self.loadingBar)
+                        oldContent.removeFromSuperview()
+                        self.removeObserverFromContent(oldContent)
                 })
             } else {
                 self.nextContent?.removeFromSuperview()
                 self.removeObserverFromContent(self.nextContent!)
                 self.nextContent = nil
             }
+        }
+    }
+
+    internal func didSwipe(gesture: ScreenEdgePanGestureRecognizer) {
+        if gesture.startDirection == .None {
+            return;
+        }
+        switch (gesture.startDirection) {
+        case .None:
+            return;
+        case .Left:
+            self.didSwipeFromLeft(gesture)
+        case .Right:
+            self.didSwipeFromRight(gesture)
         }
     }
 

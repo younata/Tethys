@@ -130,6 +130,12 @@
 		898979D01B71563600218498 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898979AD1B708E8F00218498 /* Nimble.framework */; };
 		898979D11B71563600218498 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898979AE1B708E8F00218498 /* Quick.framework */; };
 		898979D31B71CC5200218498 /* NSColor+RSSClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898979D21B71CC5200218498 /* NSColor+RSSClient.swift */; };
+		898979D51B71CE3A00218498 /* MainControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898979D41B71CE3A00218498 /* MainControllerSpec.swift */; };
+		898979D81B71DDE100218498 /* Nimble.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898979AD1B708E8F00218498 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		898979D91B71DDE100218498 /* Quick.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898979AE1B708E8F00218498 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		898979DA1B71DF8300218498 /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8989795D1B70845A00218498 /* Ra.framework */; };
+		898979DC1B71DFD500218498 /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8989795D1B70845A00218498 /* Ra.framework */; };
+		898979DD1B71DFDF00218498 /* Ra.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8989795D1B70845A00218498 /* Ra.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		898C48C51B3D98F60097045A /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 898C48C41B3D98F60097045A /* test.jpg */; };
 		898ECDE11B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898ECDE01B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift */; };
 		898F670C1B000451004A7BE3 /* FakeOperationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */; };
@@ -332,6 +338,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				898979DD1B71DFDF00218498 /* Ra.framework in Embed Frameworks */,
 				898979A21B70898000218498 /* PureLayout_Mac.framework in Embed Frameworks */,
 				8989793A1B707FAE00218498 /* rNewsKit.framework in Embed Frameworks */,
 			);
@@ -362,6 +369,18 @@
 				898979BC1B708FA000218498 /* Ra.framework in Embed Frameworks */,
 				898979B41B708EB100218498 /* Nimble.framework in Embed Frameworks */,
 				898979B51B708EB100218498 /* Quick.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		898979D71B71DDCB00218498 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				898979D81B71DDE100218498 /* Nimble.framework in Embed Frameworks */,
+				898979D91B71DDE100218498 /* Quick.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -431,6 +450,7 @@
 		898979C61B7155D700218498 /* rNews-OSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "rNews-OSXTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		898979CA1B7155D700218498 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		898979D21B71CC5200218498 /* NSColor+RSSClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSColor+RSSClient.swift"; sourceTree = "<group>"; };
+		898979D41B71CE3A00218498 /* MainControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainControllerSpec.swift; sourceTree = "<group>"; };
 		898C48C11B3A7CCC0097045A /* OPMLManagerMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLManagerMock.swift; sourceTree = "<group>"; };
 		898C48C41B3D98F60097045A /* test.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = test.jpg; sourceTree = "<group>"; };
 		898C48C61B40D2AC0097045A /* SearchIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SearchIndex.swift; path = ../RSSClient/SearchIndex.swift; sourceTree = "<group>"; };
@@ -553,6 +573,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				898979DC1B71DFD500218498 /* Ra.framework in Frameworks */,
 				898979A11B70896A00218498 /* PureLayout_Mac.framework in Frameworks */,
 				898979391B707FAE00218498 /* rNewsKit.framework in Frameworks */,
 			);
@@ -585,6 +606,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				898979DA1B71DF8300218498 /* Ra.framework in Frameworks */,
 				898979D01B71563600218498 /* Nimble.framework in Frameworks */,
 				898979D11B71563600218498 /* Quick.framework in Frameworks */,
 			);
@@ -767,6 +789,7 @@
 		898979C71B7155D700218498 /* rNews-OSXTests */ = {
 			isa = PBXGroup;
 			children = (
+				898979D41B71CE3A00218498 /* MainControllerSpec.swift */,
 				898979CA1B7155D700218498 /* Info.plist */,
 			);
 			path = "rNews-OSXTests";
@@ -1177,6 +1200,7 @@
 				898979C21B7155D700218498 /* Sources */,
 				898979C31B7155D700218498 /* Frameworks */,
 				898979C41B7155D700218498 /* Resources */,
+				898979D71B71DDCB00218498 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1509,6 +1533,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				898979D51B71CE3A00218498 /* MainControllerSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1895,6 +1920,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
@@ -1909,6 +1935,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.rachelbrindle.rNews-OSXTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/rNews.app/Contents/MacOS/rNews";
 			};
 			name = Debug;
@@ -1917,6 +1944,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -2184,6 +2212,7 @@
 				898979CF1B7155D700218498 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		89C8306E19D730E9009924DA /* Build configuration list for PBXProject "RSSClient" */ = {
 			isa = XCConfigurationList;

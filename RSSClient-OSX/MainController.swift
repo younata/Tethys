@@ -1,29 +1,36 @@
 import Cocoa
 import rNewsKit
+import Ra
 
-class MainController: NSViewController {
-    @IBOutlet var window : NSWindow? = nil
+public class MainController: NSViewController {
+    @IBOutlet public var window : NSWindow? = nil
 
-    lazy var feedsList: FeedsViewController = {
+    public lazy var feedsList: FeedsViewController = {
         let feedsList = FeedsViewController()
         feedsList.configure()
         return feedsList
     }()
 
-    lazy var splitViewController : NSSplitViewController = {
+    public lazy var splitViewController : NSSplitViewController = {
         let controller = NSSplitViewController()
         controller.splitView.vertical = false
         self.addChildViewController(controller)
         return controller
     }()
 
-    override var acceptsFirstResponder : Bool {
+    public override var acceptsFirstResponder : Bool {
         get {
             return true
         }
     }
 
-    override func viewDidLoad() {
+    private var raInjector: Injector? = nil
+
+    public func configure(injector: Injector) {
+        self.raInjector = injector
+    }
+
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         let feedsSplitViewItem = NSSplitViewItem(viewController: self.feedsList)
@@ -42,7 +49,7 @@ class MainController: NSViewController {
         window?.makeFirstResponder(self)
     }
 
-    @IBAction func openDocument(sender: AnyObject) {
+    @IBAction public func openDocument(sender: AnyObject) {
         // open a feed or opml file and import that...
         let panel = NSOpenPanel()
         panel.canChooseDirectories = false

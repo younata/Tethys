@@ -2,7 +2,7 @@ import Cocoa
 import PureLayout_Mac
 import rNewsKit
 
-class FeedsViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
+public class FeedsViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
     var feeds : [Feed] = []
 
     lazy var tableView: NSTableView = {
@@ -12,7 +12,7 @@ class FeedsViewController: NSViewController, NSTableViewDataSource, NSTableViewD
         return tableView
     }()
 
-    var onFeedSelection : (Feed) -> Void = {(_) in }
+    public var onFeedSelection : (Feed) -> Void = {(_) in }
 
     func configure() {
         self.view = self.tableView
@@ -59,25 +59,25 @@ class FeedsViewController: NSViewController, NSTableViewDataSource, NSTableViewD
 
     // MARK: NSTableViewDelegate
 
-    func tableView(tableView: NSTableView, rowViewForRow row: Int) -> NSTableRowView? {
+    public func tableView(tableView: NSTableView, rowViewForRow row: Int) -> NSTableRowView? {
         let feed = feeds[row]
         let feedView = FeedView(frame: NSMakeRect(0, 0, tableView.bounds.width, heightForFeed(feed, width: tableView.bounds.width - 16)))
         feedView.feed = feed
         return feedView
     }
 
-    func tableView(tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
+    public func tableView(tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
         return heightForFeed(feeds[row], width: tableView.bounds.width - 16)
     }
 
-    func tableView(tableView: NSTableView, shouldSelectRow rowIndex: Int) -> Bool {
+    public func tableView(tableView: NSTableView, shouldSelectRow rowIndex: Int) -> Bool {
         onFeedSelection(feeds[rowIndex])
         return false
     }
 
     // MARK: NSTableViewDataSource
 
-    func numberOfRowsInTableView(tableView: NSTableView) -> Int {
+    public func numberOfRowsInTableView(tableView: NSTableView) -> Int {
         return feeds.count
     }
 }

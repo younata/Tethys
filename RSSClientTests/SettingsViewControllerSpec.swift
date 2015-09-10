@@ -2,6 +2,7 @@ import Quick
 import Nimble
 import rNews
 import Ra
+import SafariServices
 
 private class FakeUrlOpener: UrlOpener {
 
@@ -311,8 +312,18 @@ class SettingsViewControllerSpec: QuickSpec {
                             delegate.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
                         }
 
-                        it("should navigate outside the app to my twitter handle") {
-                            expect(urlOpener.url).to(equal(NSURL(string: "https://twitter.com/younata")))
+                        if #available(iOS 9.0, *) {
+                            context("on iOS 9") {
+                                it("should present an SFSafariViewController pointing at that url") {
+                                    expect(subject.presentedViewController).to(beAnInstanceOf(SFSafariViewController.self))
+                                }
+                            }
+                        } else {
+                            context("on iOS 8") {
+                                it("should navigate outside the app to my twitter handle") {
+                                    expect(urlOpener.url).to(equal(NSURL(string: "https://twitter.com/younata")))
+                                }
+                            }
                         }
                     }
                 }

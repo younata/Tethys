@@ -1,5 +1,6 @@
 import UIKit
 import PureLayout_iOS
+import SafariServices
 
 public class SettingsViewController: UIViewController {
     private enum SettingsSection: Int, CustomStringConvertible {
@@ -181,7 +182,15 @@ extension SettingsViewController: UITableViewDelegate {
             }
             return
         case .Credits:
-            self.urlOpener.openURL(NSURL(string: "https://twitter.com/younata")!)
+            guard let url = NSURL(string: "https://twitter.com/younata") else {
+                return
+            }
+            if #available(iOS 9.0, *) {
+                let viewController = SFSafariViewController(URL: url)
+                self.presentViewController(viewController, animated: true, completion: nil)
+            } else {
+                self.urlOpener.openURL(url)
+            }
             return
         }
         self.tableView.reloadData()

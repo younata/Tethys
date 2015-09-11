@@ -136,6 +136,8 @@
 		898979DA1B71DF8300218498 /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8989795D1B70845A00218498 /* Ra.framework */; };
 		898979DC1B71DFD500218498 /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8989795D1B70845A00218498 /* Ra.framework */; };
 		898979DD1B71DFDF00218498 /* Ra.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8989795D1B70845A00218498 /* Ra.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		898979DE1B72578A00218498 /* FakeDataReadWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EA6C351B4B2D8400456892 /* FakeDataReadWriter.swift */; };
+		898979DF1B72579C00218498 /* OPMLManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C11B3A7CCC0097045A /* OPMLManagerMock.swift */; };
 		898C48C51B3D98F60097045A /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 898C48C41B3D98F60097045A /* test.jpg */; };
 		898ECDE11B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898ECDE01B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift */; };
 		898F670C1B000451004A7BE3 /* FakeOperationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */; };
@@ -1533,7 +1535,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				898979DF1B72579C00218498 /* OPMLManagerMock.swift in Sources */,
 				898979D51B71CE3A00218498 /* MainControllerSpec.swift in Sources */,
+				898979DE1B72578A00218498 /* FakeDataReadWriter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

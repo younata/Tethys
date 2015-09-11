@@ -1,20 +1,24 @@
 import Cocoa
 import PureLayout_Mac
 import rNewsKit
+import Ra
 
 public class FeedsViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
     var feeds : [Feed] = []
 
-    lazy var tableView: NSTableView = {
+    public lazy var tableView: NSTableView = {
         let tableView = NSTableView(forAutoLayout: ())
         tableView.setDelegate(self)
         tableView.setDataSource(self)
         return tableView
     }()
 
+    public var raInjector: Injector? = nil
+
     public var onFeedSelection : (Feed) -> Void = {(_) in }
 
-    func configure() {
+    func configure(injector: Injector?) {
+        self.raInjector = injector
         self.view = self.tableView
     }
 

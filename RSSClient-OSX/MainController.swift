@@ -7,7 +7,7 @@ public class MainController: NSViewController {
 
     public lazy var feedsList: FeedsViewController = {
         let feedsList = FeedsViewController()
-        feedsList.configure()
+        feedsList.configure(self.raInjector)
         return feedsList
     }()
 
@@ -25,6 +25,14 @@ public class MainController: NSViewController {
     }
 
     private var raInjector: Injector? = nil
+
+    private lazy var opmlManager: OPMLManager? = {
+        return self.raInjector?.create(OPMLManager.self) as? OPMLManager
+    }()
+
+    private lazy var dataWriter: DataWriter? = {
+        return self.raInjector?.create(DataWriter.self) as? DataWriter
+    }()
 
     public func configure(injector: Injector) {
         self.raInjector = injector
@@ -50,16 +58,23 @@ public class MainController: NSViewController {
     }
 
     @IBAction public func openDocument(sender: AnyObject) {
-        // open a feed or opml file and import that...
-        let panel = NSOpenPanel()
+        // open an opml file and import that...
+        guard let injector = self.raInjector,
+              let panel = injector.create(NSOpenPanel.self) as? NSOpenPanel else {
+                return
+        }
         panel.canChooseDirectories = false
         panel.allowsMultipleSelection = true
-        panel.allowedFileTypes = ["xml", "opml"]
+        panel.allowedFileTypes = ["opml", "xml"]
         panel.beginSheetModalForWindow(self.window!) {result in
-            if result == NSFileHandlingPanelOKButton {
-                for url in panel.URLs as [NSURL] {
-                    print("\(url)")
-//                    self.dataManager?.importOPML(url)
+            guard result == NSFileHandlingPanelOKButton else {
+                return
+            }
+            for url in panel.URLs as [NSURL] {
+                self.opmlManager?.importOPML(url) {feeds in
+                    if !feeds.isEmpty {
+                        self.dataWriter?.updateFeeds {_ in }
+                    }
                 }
             }
         }

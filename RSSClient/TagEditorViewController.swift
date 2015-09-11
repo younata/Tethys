@@ -30,7 +30,7 @@ public class TagEditorViewController: UIViewController {
 
         self.edgesForExtendedLayout = .None
 
-        let saveTitle = NSLocalizedString("Save", comment: "")
+        let saveTitle = NSLocalizedString("Generic_Save", comment: "")
         let saveButton = UIBarButtonItem(title: saveTitle, style: .Plain, target: self, action: "save")
         self.navigationItem.rightBarButtonItem = saveButton
         self.navigationItem.rightBarButtonItem?.enabled = false
@@ -52,7 +52,7 @@ public class TagEditorViewController: UIViewController {
         self.tagLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: tagPicker, withOffset: 8)
         self.tagLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
         self.tagLabel.numberOfLines = 0
-        self.tagLabel.text = NSLocalizedString("Prefixing a tag with '~' will set the title to that, minus the leading ~. Prefixing a tag with '`' will set the summary to that, minus the leading `. Tags cannot contain commas (,)", comment: "")
+        self.tagLabel.text = NSLocalizedString("TagEditorViewController_Explanation", comment: "")
 
         self.themeRepository?.addSubscriber(self)
     }

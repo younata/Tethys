@@ -18,7 +18,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
                 if self.userActivity == nil {
                     let activityType = "com.rachelbrindle.rssclient.article"
                     self.userActivity = NSUserActivity(activityType: activityType)
-                    self.userActivity?.title = NSLocalizedString("Reading Article", comment: "")
+                    self.userActivity?.title = NSLocalizedString("ArticleViewController_UserActivity_Title", comment: "")
                     self.userActivity?.becomeCurrent()
                 }
 
@@ -50,8 +50,8 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     public private(set) lazy var toggleContentButton: UIBarButtonItem = {
         return UIBarButtonItem(title: self.linkString, style: .Plain, target: self, action: "toggleContentLink")
     }()
-    private let contentString = NSLocalizedString("Content", comment: "")
-    private let linkString = NSLocalizedString("Link", comment: "")
+    private let contentString = NSLocalizedString("ArticleViewController_TabBar_ViewContent", comment: "")
+    private let linkString = NSLocalizedString("ArticleViewController_TabBar_ViewLink", comment: "")
 
     public var articles: [Article] = []
     public var lastArticleIndex = 0
@@ -138,7 +138,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
 
         if userActivity == nil {
             userActivity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
-            userActivity?.title = NSLocalizedString("Reading Article", comment: "")
+            userActivity?.title = NSLocalizedString("ArticleViewController_UserActivity_Title", comment: "")
             if #available(iOS 9.0, *) {
                 userActivity?.eligibleForPublicIndexing = false
                 userActivity?.eligibleForSearch = true
@@ -211,28 +211,28 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         var commands: [UIKeyCommand] = []
         if self.lastArticleIndex != 0 {
             let cmd = UIKeyCommand(input: "p", modifierFlags: .Control, action: "showPreviousArticle")
-            addTitleToCmd(cmd, NSLocalizedString("Previous article", comment: ""))
+            addTitleToCmd(cmd, NSLocalizedString("ArticleViewController_Command_ViewPreviousArticle", comment: ""))
             commands.append(cmd)
         }
 
         if self.lastArticleIndex < (self.articles.count - 1) {
             let cmd = UIKeyCommand(input: "n", modifierFlags: .Control, action: "showNextArticle")
-            addTitleToCmd(cmd, NSLocalizedString("Next article", comment: ""))
+            addTitleToCmd(cmd, NSLocalizedString("ArticleViewController_Command_ViewNextArticle", comment: ""))
             commands.append(cmd)
         }
 
         let markAsRead = UIKeyCommand(input: "r", modifierFlags: .Shift, action: "toggleArticleRead")
-        addTitleToCmd(markAsRead, NSLocalizedString("Toggle read", comment: ""))
+        addTitleToCmd(markAsRead, NSLocalizedString("ArticleViewController_Command_ToggleRead", comment: ""))
         commands.append(markAsRead)
 
         if let _ = self.article?.link {
             let cmd = UIKeyCommand(input: "l", modifierFlags: .Command, action: "toggleContentLink")
-            addTitleToCmd(cmd, NSLocalizedString("Toggle view content/link", comment: ""))
+            addTitleToCmd(cmd, NSLocalizedString("ArticleViewController_Command_ToggleViewContentLink", comment: ""))
             commands.append(cmd)
         }
 
         let showShareSheet = UIKeyCommand(input: "s", modifierFlags: .Command, action: "share")
-        addTitleToCmd(showShareSheet, NSLocalizedString("Open share sheet", comment: ""))
+        addTitleToCmd(showShareSheet, NSLocalizedString("ArticleViewController_Command_OpenShareSheet", comment: ""))
         commands.append(showShareSheet)
 
         return commands

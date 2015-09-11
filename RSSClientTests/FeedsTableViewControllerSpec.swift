@@ -192,9 +192,9 @@ class FeedsTableViewControllerSpec: QuickSpec {
                         ]
                         let expectedDiscoverabilityTitles = [
                             "Filter by tags",
-                            "Import from web",
-                            "Import from local",
-                            "Create query feed",
+                            "Add from Web",
+                            "Add from Local",
+                            "Create Query Feed",
                             "Open settings",
                         ]
 
@@ -233,8 +233,8 @@ class FeedsTableViewControllerSpec: QuickSpec {
                         ]
                         let expectedDiscoverabilityTitles = [
                             "Filter by tags",
-                            "Import from web",
-                            "Import from local",
+                            "Add from Web",
+                            "Add from Local",
                             "Open settings",
                         ]
 

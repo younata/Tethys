@@ -41,6 +41,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
 
         describe("changing the theme") {
             beforeEach {
+                subject.view.layoutIfNeeded()
                 themeRepository.theme = .Dark
             }
 

@@ -19,13 +19,13 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
         var titleForSection: String {
             switch self {
             case .Title:
-                return NSLocalizedString("Title", comment: "")
+                return NSLocalizedString("FeedViewController_Table_Header_Title", comment: "")
             case .URL:
-                return NSLocalizedString("URL", comment: "")
+                return NSLocalizedString("FeedViewController_Table_Header_URL", comment: "")
             case .Summary:
-                return NSLocalizedString("Summary", comment: "")
+                return NSLocalizedString("FeedViewController_Table_Header_Summary", comment: "")
             case .Tags:
-                return NSLocalizedString("Tags", comment: "")
+                return NSLocalizedString("FeedViewController_Table_Header_Tags", comment: "")
             }
         }
     }
@@ -61,11 +61,11 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        let dismissTitle = NSLocalizedString("Dismiss", comment: "")
+        let dismissTitle = NSLocalizedString("Generic_Dismiss", comment: "")
         let dismissButton = UIBarButtonItem(title: dismissTitle, style: .Plain, target: self, action: "dismiss")
         self.navigationItem.leftBarButtonItem = dismissButton
 
-        let saveTitle = NSLocalizedString("Save", comment: "")
+        let saveTitle = NSLocalizedString("Generic_Save", comment: "")
         let saveButton = UIBarButtonItem(title: saveTitle, style: .Plain, target: self, action: "save")
         self.navigationItem.rightBarButtonItem = saveButton
         self.navigationItem.title = self.feed?.displayTitle ?? ""
@@ -186,7 +186,7 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
             } else if let summary = feed?.displaySummary where !summary.isEmpty  {
                 cell.textLabel?.text = summary
             } else {
-                cell.textLabel?.text = NSLocalizedString("No summary available", comment: "")
+                cell.textLabel?.text = NSLocalizedString("FeedViewController_Cell_Summary_Placeholder", comment: "")
                 cell.textLabel?.textColor = UIColor.grayColor()
             }
             return cell
@@ -196,7 +196,7 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
             cell.themeRepository = self.themeRepository
             if let tags = feed?.tags {
                 if indexPath.row == tags.count {
-                    cell.textLabel?.text = NSLocalizedString("Add Tag", comment: "")
+                    cell.textLabel?.text = NSLocalizedString("FeedViewController_Cell_AddTag", comment: "")
                     cell.textLabel?.textColor = UIColor.darkGreenColor()
                 } else {
                     cell.textLabel?.text = tags[indexPath.row]
@@ -218,7 +218,7 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
             if feed == nil || FeedSections(rawValue: indexPath.section) != .Tags {
                 return nil
             }
-            let deleteTitle = NSLocalizedString("Delete", comment: "")
+            let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
             let delete = UITableViewRowAction(style: .Default, title: deleteTitle, handler: {(_, indexPath) in
                 if let feed = self.feed {
                     let tag = feed.tags[indexPath.row]
@@ -233,7 +233,7 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
                     }
                 }
             })
-            let editTitle = NSLocalizedString("Edit", comment: "")
+            let editTitle = NSLocalizedString("Generic_Edit", comment: "")
             let edit = UITableViewRowAction(style: .Normal, title: editTitle, handler: {(_, indexPath) in
                 self.showTagEditor(indexPath.row)
             })

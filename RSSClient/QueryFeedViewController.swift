@@ -5,7 +5,7 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
 
     public var feed: Feed? = nil {
         didSet {
-            self.navigationItem.title = self.feed?.title ?? NSLocalizedString("New Query Feed", comment: "")
+            self.navigationItem.title = self.feed?.title ?? NSLocalizedString("QueryFeedViewController_Title_New", comment: "")
             if feed?.query == nil {
                 feed?.query = "function(article) {\n    return !article.read;\n}"
             }
@@ -25,13 +25,13 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
         var titleForSection: String {
             switch self {
             case .Title:
-                return NSLocalizedString("Title", comment: "")
+                return NSLocalizedString("FeedViewController_Table_Header_Title", comment: "")
             case .Summary:
-                return NSLocalizedString("Summary", comment: "")
+                return NSLocalizedString("FeedViewController_Table_Header_Summary", comment: "")
             case .Query:
-                return NSLocalizedString("Query", comment: "")
+                return NSLocalizedString("QueryFeedViewController_Table_Header_Query", comment: "")
             case .Tags:
-                return NSLocalizedString("Tags", comment: "")
+                return NSLocalizedString("FeedViewController_Table_Header_Tags", comment: "")
             }
         }
     }
@@ -71,11 +71,11 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        let dismissTitle = NSLocalizedString("Dismiss", comment: "")
+        let dismissTitle = NSLocalizedString("Generic_Dismiss", comment: "")
         let dismissButton = UIBarButtonItem(title: dismissTitle, style: .Plain, target: self, action: "dismiss")
         self.navigationItem.leftBarButtonItem = dismissButton
 
-        let saveTitle = NSLocalizedString("Save", comment: "")
+        let saveTitle = NSLocalizedString("Generic_Save", comment: "")
         let saveButton = UIBarButtonItem(title: saveTitle, style: .Plain, target: self, action: "save")
         saveButton.enabled = self.feed != nil
         self.navigationItem.rightBarButtonItem = saveButton
@@ -194,7 +194,7 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
         case .Title:
             let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextFieldCell
             cell.textField.text = self.feedTitle
-            cell.textField.placeholder = NSLocalizedString("Enter a title", comment: "")
+            cell.textField.placeholder = NSLocalizedString("QueryFeedViewController_Cell_Title_Placeholder", comment: "")
             cell.themeRepository = self.themeRepository
             cell.onTextChange = {
                 self.feedTitle = $0 ?? ""
@@ -205,7 +205,7 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
             let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextFieldCell
             cell.textField.text = self.feedSummary
             cell.themeRepository = self.themeRepository
-            cell.textField.placeholder = NSLocalizedString("Enter a summary", comment: "")
+            cell.textField.placeholder = NSLocalizedString("QueryFeedViewController_Cell_Summary_Placeholder", comment: "")
             cell.onTextChange = {
                 self.feedSummary = $0 ?? ""
             }
@@ -227,7 +227,7 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
             cell.themeRepository = self.themeRepository
             if let tags = self.feed?.tags {
                 if indexPath.row == tags.count {
-                    cell.textLabel?.text = NSLocalizedString("Add Tag", comment: "")
+                    cell.textLabel?.text = NSLocalizedString("FeedViewController_Cell_AddTag", comment: "")
                     cell.textLabel?.textColor = UIColor.darkGreenColor()
                 } else {
                     cell.textLabel?.text = tags[indexPath.row]
@@ -241,7 +241,7 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
     private func editActionsForSection(section: FeedSections, indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         switch section {
         case .Query:
-            let previewTitle = NSLocalizedString("Preview", comment: "")
+            let previewTitle = NSLocalizedString("QueryFeedViewController_Cell_Action_Preview", comment: "")
             let preview = UITableViewRowAction(style: .Normal, title: previewTitle, handler: {(_, _) in
                 let articleList = ArticleListController(style: .Plain)
                 articleList.previewMode = true
@@ -255,7 +255,7 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
             if indexPath.row == feed?.tags.count {
                 return nil
             }
-            let deleteTitle = NSLocalizedString("Delete", comment: "")
+            let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
             let delete = UITableViewRowAction(style: .Default, title: deleteTitle, handler: {(_, indexPath) in
                 if let feed = self.feed {
                     let tag = feed.tags[indexPath.row]
@@ -270,7 +270,7 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
                     }
                 }
             })
-            let editTitle = NSLocalizedString("Edit", comment: "")
+            let editTitle = NSLocalizedString("Generic_Edit", comment: "")
             let edit = UITableViewRowAction(style: .Normal, title: editTitle, handler: {(_, indexPath) in
                 self.showTagEditor(indexPath.row)
             })

@@ -11,11 +11,11 @@ public class SettingsViewController: UIViewController {
         private var description: String {
             switch self {
             case .Theme:
-                return NSLocalizedString("Theme", comment: "")
+                return NSLocalizedString("SettingsViewController_Table_Header_Theme", comment: "")
             case .Advanced:
-                return NSLocalizedString("Advanced", comment: "")
+                return NSLocalizedString("SettingsViewController_Table_Header_Advanced", comment: "")
             case .Credits:
-                return NSLocalizedString("Credits", comment: "")
+                return NSLocalizedString("SettingsViewController_Table_Header_Credits", comment: "")
             }
         }
     }
@@ -55,7 +55,7 @@ public class SettingsViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.navigationItem.title = NSLocalizedString("Settings", comment: "")
+        self.navigationItem.title = NSLocalizedString("SettingsViewController_Title", comment: "")
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Save, target: self, action: "didTapSave")
         self.navigationItem.rightBarButtonItem?.enabled = false
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapDismiss")
@@ -135,7 +135,7 @@ extension SettingsViewController: UITableViewDataSource {
             return cell
         case .Advanced:
             let cell = tableView.dequeueReusableCellWithIdentifier("switch", forIndexPath: indexPath) as! SwitchTableViewCell
-            cell.textLabel?.text = NSLocalizedString("Enable Query Feeds", comment: "")
+            cell.textLabel?.text = NSLocalizedString("SettingsViewController_Advanced_EnableQueryFeeds", comment: "")
             cell.themeRepository = self.themeRepository
             cell.onTapSwitch = {_ in }
             cell.theSwitch.on = self.queryFeedsEnabled
@@ -147,8 +147,8 @@ extension SettingsViewController: UITableViewDataSource {
         case .Credits:
             let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TableViewCell
             cell.themeRepository = self.themeRepository
-            cell.textLabel?.text = "Rachel Brindle"
-            cell.detailTextLabel?.text = "Developer"
+            cell.textLabel?.text = NSLocalizedString("SettingsViewController_Credits_MainDeveloper_Name", comment: "")
+            cell.detailTextLabel?.text = NSLocalizedString("SettingsViewController_Credits_MainDeveloper_Detail", comment: "")
             return cell
         }
     }

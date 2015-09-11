@@ -9,7 +9,7 @@ public class DocumentationViewController: UIViewController {
         private var description: String {
             switch self {
             case .QueryFeed:
-                return NSLocalizedString("Query Feeds", comment: "")
+                return NSLocalizedString("DocumentationViewController_DocumentTitle_QueryFeeds", comment: "")
             }
         }
     }

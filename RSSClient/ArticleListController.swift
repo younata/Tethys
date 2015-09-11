@@ -98,10 +98,10 @@ public class ArticleListController: UITableViewController, DataSubscriber {
 
     public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let article = articleForIndexPath(indexPath)
-        let strToUse = (article.read ? "read" : "unread")
+        let cellTypeToUse = (article.read ? "read" : "unread")
         // Prevents a green triangle which'll (dis)appear depending
         // on whether article loaded into it is read or not.
-        let cell = tableView.dequeueReusableCellWithIdentifier(strToUse, forIndexPath: indexPath) as! ArticleCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(cellTypeToUse, forIndexPath: indexPath) as! ArticleCell
 
         cell.themeRepository = self.themeRepository
         cell.article = article
@@ -130,14 +130,14 @@ public class ArticleListController: UITableViewController, DataSubscriber {
                 return nil
             }
             let article = self.articleForIndexPath(indexPath)
-            let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Delete", comment: ""),
+            let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Generic_Delete", comment: ""),
                 handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
                     self.dataWriter?.deleteArticle(article)
                     self.articles.removeAtIndex(indexPath.row)
                     self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             })
-            let unread = NSLocalizedString("Mark\nUnread", comment: "")
-            let read = NSLocalizedString("Mark\nRead", comment: "")
+            let unread = NSLocalizedString("ArticleListController_Cell_EditAction_MarkUnread", comment: "")
+            let read = NSLocalizedString("ArticleListController_Cell_EditAction_MarkRead", comment: "")
             let toggleText = article.read ? unread : read
             let toggle = UITableViewRowAction(style: .Normal, title: toggleText,
                 handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in

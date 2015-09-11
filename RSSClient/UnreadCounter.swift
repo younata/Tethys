@@ -29,14 +29,14 @@ public class UnreadCounter: UIView {
 
     public var triangleColor = UIColor.darkGreenColor() {
         didSet {
-            self.triangleLayer.fillColor = triangleColor.CGColor
-            self.outlineLabel.outlineColor = triangleColor
+            self.triangleLayer.fillColor = self.triangleColor.CGColor
+            self.outlineLabel.outlineColor = self.triangleColor
         }
     }
 
     public var countColor = UIColor.whiteColor() {
         didSet {
-            countLabel.textColor = countColor
+            self.countLabel.textColor = self.countColor
         }
     }
 
@@ -51,7 +51,7 @@ public class UnreadCounter: UIView {
 
     public var unread: UInt = 0 {
         didSet {
-            unreadDidChange()
+            self.unreadDidChange()
         }
     }
 
@@ -62,26 +62,28 @@ public class UnreadCounter: UIView {
         CGPathAddLineToPoint(path, nil, CGRectGetWidth(self.bounds), 0)
         CGPathAddLineToPoint(path, nil, CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds))
         CGPathAddLineToPoint(path, nil, 0, 0)
-        triangleLayer.path = path
+        self.triangleLayer.path = path
     }
+
+    private let numberFormatter = NSNumberFormatter()
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
 
         self.backgroundColor = UIColor.clearColor()
 
-        triangleLayer.strokeColor = UIColor.clearColor().CGColor
-        triangleLayer.fillColor = self.triangleColor.CGColor
-        self.layer.addSublayer(triangleLayer)
+        self.triangleLayer.strokeColor = UIColor.clearColor().CGColor
+        self.triangleLayer.fillColor = self.triangleColor.CGColor
+        self.layer.addSublayer(self.triangleLayer)
 
-        countLabel.hidden = true
-        countLabel.textAlignment = .Right
-        countLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-        countLabel.textColor = self.countColor
+        self.countLabel.hidden = true
+        self.countLabel.textAlignment = .Right
+        self.countLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+        self.countLabel.textColor = self.countColor
 
-        self.addSubview(countLabel)
-        countLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
-        countLabel.autoPinEdgeToSuperviewEdge(.Trailing, withInset: 4)
+        self.addSubview(self.countLabel)
+        self.countLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
+        self.countLabel.autoPinEdgeToSuperviewEdge(.Trailing, withInset: 4)
     }
 
     public required init?(coder aDecoder: NSCoder) {
@@ -91,10 +93,10 @@ public class UnreadCounter: UIView {
     // MARK: - Private
 
     private func unreadDidChange() {
-        if unread == 0 {
+        if self.unread == 0 {
             self.hidden = true
         } else {
-            countLabel.text = "\(unread)"
+            self.countLabel.text = self.numberFormatter.stringFromNumber(self.unread)
             self.hidden = false
         }
     }

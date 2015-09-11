@@ -257,7 +257,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     it("should present an alert") {
                         expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                         if let alert = subject.presentedViewController as? UIAlertController {
-                            expect(alert.title).to(equal("Feed list Detected"))
+                            expect(alert.title).to(equal("Feed List Detected"))
                             expect(alert.message).to(equal("Import?"))
 
                             expect(alert.actions.count).to(equal(2))

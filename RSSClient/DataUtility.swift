@@ -98,14 +98,12 @@ internal class DataUtility {
             var entities = Array<NSManagedObject>()
 
             managedObjectContext.performBlockAndWait {
-                let error: NSError? = nil
                 do {
                     if let ret = try managedObjectContext.executeFetchRequest(request) as? [NSManagedObject] {
                         entities = ret
                         return
                     }
                 } catch { }
-                print("Error executing fetch request: \(error)")
             }
             return entities
     }
@@ -124,7 +122,6 @@ internal class DataUtility {
             var entities = Array<NSObject>()
 
             managedObjectContext.performBlockAndWait {
-                let error: NSError? = nil
                 do {
                     if let ret = try managedObjectContext.executeFetchRequest(request) as? [NSManagedObject] {
                         entities = ret.reduce(Array<NSObject>()) {
@@ -136,7 +133,6 @@ internal class DataUtility {
                         return
                     }
                 } catch { }
-                print("Error executing fetch request: \(error)")
             }
             return entities
     }

@@ -18,5 +18,37 @@
             <string>%lu enclosures</string>
         </dict>
     </dict>
+    <key>LocalImportViewController_Cell_FeedList_FeedCount</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@lu_feeds@</string>
+        <key>lu_feeds</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>lu</string>
+            <key>one</key>
+            <string>%lu feed</string>
+            <key>other</key>
+            <string>%lu feeds</string>
+        </dict>
+    </dict>
+    <key>LocalImportViewController_Cell_Feed_ArticleCount</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@lu_articles@</string>
+        <key>lu_articles</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>lu</string>
+            <key>one</key>
+            <string>%lu article</string>
+            <key>other</key>
+            <string>%lu articles</string>
+        </dict>
+    </dict>
 </dict>
 </plist>

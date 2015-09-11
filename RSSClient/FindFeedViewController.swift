@@ -62,17 +62,17 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         self.back = UIBarButtonItem(title: "<", style: .Plain, target: self.webContent, action: "goBack")
         self.forward = UIBarButtonItem(title: ">", style: .Plain, target: self.webContent, action: "goForward")
 
-        let addFeedTitle = NSLocalizedString("Add Feed", comment: "")
+        let addFeedTitle = NSLocalizedString("FindFeedViewController_AddFeed", comment: "")
         self.addFeedButton = UIBarButtonItem(title: addFeedTitle, style: .Plain, target: self, action: "save")
         self.back.enabled = false
         self.forward.enabled = false
         self.addFeedButton.enabled = false
 
-        let dismissTitle = NSLocalizedString("Dismiss", comment: "")
+        let dismissTitle = NSLocalizedString("Generic_Dismiss", comment: "")
         let dismiss = UIBarButtonItem(title: dismissTitle, style: .Plain, target: self, action: "dismiss")
         self.reload = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self.webContent, action: "reload")
 
-        let cancelTitle = NSLocalizedString("Cancel", comment: "")
+        let cancelTitle = NSLocalizedString("FindFeedViewController_Cancel", comment: "")
         self.cancelTextEntry = UIBarButtonItem(title: cancelTitle, style: .Plain,
             target: self.navField, action: "resignFirstResponder")
 
@@ -89,7 +89,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         self.navigationItem.titleView = self.navField
         self.navField.frame = CGRectMake(0, 0, self.view.bounds.size.width * 0.8, 32)
         self.navField.delegate = self
-        self.navField.attributedPlaceholder = NSAttributedString(string: "Enter URL", attributes: self.placeholderAttributes)
+        self.navField.attributedPlaceholder = NSAttributedString(string: NSLocalizedString("FindFeedViewController_URLBar_Placeholder", comment: ""), attributes: self.placeholderAttributes)
         self.navField.backgroundColor = UIColor(white: 0.8, alpha: 0.75)
         self.navField.layer.cornerRadius = 5
         self.navField.autocorrectionType = .No
@@ -134,8 +134,8 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         let indicator = ActivityIndicator(forAutoLayout: ())
         self.navigationController?.view.addSubview(indicator)
         indicator.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
-        let feedMessageTemplate = NSLocalizedString("Loading feed at %@", comment: "")
-        let opmlMessageTemplate = NSLocalizedString("Loading feed list at %@", comment: "")
+        let feedMessageTemplate = NSLocalizedString("FindFeedViewController_Save_Feed", comment: "")
+        let opmlMessageTemplate = NSLocalizedString("FindFeedViewController_Save_Feed_List", comment: "")
 
         let messageTemplate = opml ? opmlMessageTemplate : feedMessageTemplate
         let message = NSString.localizedStringWithFormat(messageTemplate, link) as String
@@ -187,7 +187,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         if let text = textField.text, let url = NSURL(string: text) {
             self.self.webContent.loadRequest(NSURLRequest(URL: url))
         }
-        textField.attributedPlaceholder = NSAttributedString(string: NSLocalizedString("Loading", comment: ""), attributes: self.placeholderAttributes)
+        textField.attributedPlaceholder = NSAttributedString(string: NSLocalizedString("FindFeedViewController_URLBar_Loading", comment: ""), attributes: self.placeholderAttributes)
         textField.resignFirstResponder()
 
         return true
@@ -224,7 +224,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         self.loadingBar.progress = 0
         self.loadingBar.hidden = false
         self.navField.text = ""
-        self.navField.attributedPlaceholder = NSAttributedString(string: NSLocalizedString("Loading", comment: ""), attributes: self.placeholderAttributes)
+        self.navField.attributedPlaceholder = NSAttributedString(string: NSLocalizedString("FindFeedViewController_URLBar_Loading", comment: ""), attributes: self.placeholderAttributes)
         self.addFeedButton.enabled = false
         if let url = webView.URL where lookForFeeds {
             self.urlSession?.dataTaskWithURL(url) {data, response, error in
@@ -232,15 +232,15 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
                     return
                 }
 
-                let doNotSave = NSLocalizedString("Don't Import", comment: "")
-                let save = NSLocalizedString("Import", comment: "")
+                let doNotSave = NSLocalizedString("FindFeedViewController_FoundFeed_Decline", comment: "")
+                let save = NSLocalizedString("FindFeedViewController_FoundFeed_Accept", comment: "")
 
                 let feedParser = FeedParser(string: text)
                 let opmlParser = OPMLParser(text: text).success {_ in
                     feedParser.cancel()
 
-                    let detected = NSLocalizedString("Feed list Detected", comment: "")
-                    let shouldImport = NSLocalizedString("Import?", comment: "")
+                    let detected = NSLocalizedString("FindFeedViewController_FoundFeed_List_Title", comment: "")
+                    let shouldImport = NSLocalizedString("FindFeedViewController_FoundFeed_List_Subtitle", comment: "")
 
                     let alert = UIAlertController(title: detected, message: shouldImport, preferredStyle: .Alert)
                     alert.addAction(UIAlertAction(title: doNotSave, style: .Cancel,
@@ -258,8 +258,8 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
                 feedParser.success {feed in
                     opmlParser.cancel()
 
-                    let detected = NSLocalizedString("Feed Detected", comment: "")
-                    let saveFormatString = NSLocalizedString("Import %@?", comment: "")
+                    let detected = NSLocalizedString("FindFeedViewController_FoundFeed_Title", comment: "")
+                    let saveFormatString = NSLocalizedString("FindFeedViewController_FoundFeed_Subtitle", comment: "")
                     let saveFeed = String.localizedStringWithFormat(saveFormatString, feed.title)
                     let alert = UIAlertController(title: detected, message: saveFeed, preferredStyle: .Alert)
                     alert.addAction(UIAlertAction(title: doNotSave, style: .Cancel,

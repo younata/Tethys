@@ -15,7 +15,7 @@ public class NotificationHandler: NSObject {
     public func enableNotifications(var notificationSource: LocalNotificationSource) {
         let markReadAction = UIMutableUserNotificationAction()
         markReadAction.identifier = "read"
-        markReadAction.title = NSLocalizedString("Mark Read", comment: "")
+        markReadAction.title = NSLocalizedString("NotificationHandler_LocalNotification_MarkRead_Action", comment: "")
         markReadAction.activationMode = .Background
         markReadAction.authenticationRequired = false
 
@@ -53,7 +53,7 @@ public class NotificationHandler: NSObject {
 
     public func sendLocalNotification(notificationSource: LocalNotificationSource, article: Article) {
         let note = UILocalNotification()
-        note.alertBody = NSString.localizedStringWithFormat("New article in %@: %@",
+        note.alertBody = NSString.localizedStringWithFormat(NSLocalizedString("NotificationHandler_LocalNotification_MarkRead_Title", comment: ""),
             article.feed?.displayTitle ?? "", article.title ?? "") as String
 
         let feedID = article.feed?.identifier ?? ""

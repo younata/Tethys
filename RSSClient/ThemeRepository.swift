@@ -32,7 +32,7 @@ public class ThemeRepository: NSObject, Injectable {
             return fname ?? "github2"
         }
         set {
-            self.userDefaults?.setObject(newValue, forKey: "articleCss")
+            self.privateSetValue(newValue, forKey: "articleCss")
         }
     }
 
@@ -61,7 +61,7 @@ public class ThemeRepository: NSObject, Injectable {
     public private(set) var tintColor: UIColor {
         get {
             let color = self.colorForKey("tintColor")
-            return color ?? UIColor.darkGrayColor()
+            return color ?? UIColor.whiteColor()
         }
         set {
             self.setColor(newValue, forKey: "tintColor")

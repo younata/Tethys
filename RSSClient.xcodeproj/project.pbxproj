@@ -197,6 +197,8 @@
 		89C509F41A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F31A2EE56E00CBD000 /* TagEditorViewController.swift */; };
 		89C509F71A2F825400CBD000 /* TextViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F61A2F825400CBD000 /* TextViewCell.swift */; };
 		89C509FA1A2F865F00CBD000 /* QueryFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F91A2F865F00CBD000 /* QueryFeedViewController.swift */; };
+		89C676541BA264F40037A224 /* FakeUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C676531BA264F40037A224 /* FakeUserDefaults.swift */; settings = {ASSET_TAGS = (); }; };
+		89C676561BA28FE60037A224 /* FakeFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C676551BA28FE60037A224 /* FakeFileManager.swift */; settings = {ASSET_TAGS = (); }; };
 		89C8307919D730E9009924DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307819D730E9009924DA /* AppDelegate.swift */; };
 		89C8308319D730E9009924DA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89C8308219D730E9009924DA /* Images.xcassets */; };
 		89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830AD19D7CB8E009924DA /* ArticleListController.swift */; };
@@ -457,7 +459,7 @@
 		8957799D19E62C7100548418 /* RSSClientTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSSClientTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		895901A11A2FFDDD002E2C62 /* RSSClient 1. 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1. 2.xcdatamodel"; sourceTree = "<group>"; };
 		895901A21A30BA9C002E2C62 /* RSSClient 1. 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1. 3.xcdatamodel"; sourceTree = "<group>"; };
-		895901B01A32B61A002E2C62 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Localizable.strings; sourceTree = "<group>"; };
+		895901B01A32B61A002E2C62 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = Localizable.strings; sourceTree = "<group>"; };
 		895901B21A32B61A002E2C62 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = en; path = Localizable.stringsdict; sourceTree = "<group>"; };
 		89635F891A13C2E30052C248 /* rNews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rNews.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89635F8C1A13C2E30052C248 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -542,6 +544,8 @@
 		89C509F31A2EE56E00CBD000 /* TagEditorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagEditorViewController.swift; sourceTree = "<group>"; };
 		89C509F61A2F825400CBD000 /* TextViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextViewCell.swift; sourceTree = "<group>"; };
 		89C509F91A2F865F00CBD000 /* QueryFeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryFeedViewController.swift; sourceTree = "<group>"; };
+		89C676531BA264F40037A224 /* FakeUserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeUserDefaults.swift; sourceTree = "<group>"; };
+		89C676551BA28FE60037A224 /* FakeFileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeFileManager.swift; sourceTree = "<group>"; };
 		89C8307319D730E9009924DA /* rNews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rNews.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89C8307719D730E9009924DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89C8307819D730E9009924DA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -1169,6 +1173,8 @@
 				8997C7F41B248D5A00972930 /* FakeWebView.swift */,
 				898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */,
 				89F517071B1C12A30005AB04 /* FakeURLSession.swift */,
+				89C676531BA264F40037A224 /* FakeUserDefaults.swift */,
+				89C676551BA28FE60037A224 /* FakeFileManager.swift */,
 				89F516551B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.h */,
 				89F516561B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m */,
 				899823AF1B30BA7E00818755 /* NSUserActivity+rNewsTests.h */,
@@ -1708,6 +1714,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8997C7FB1B25169E00972930 /* TextFieldCellSpec.swift in Sources */,
+				89C676541BA264F40037A224 /* FakeUserDefaults.swift in Sources */,
 				89EA6C361B4B2D8400456892 /* FakeDataReadWriter.swift in Sources */,
 				8997C7F51B248D5A00972930 /* FakeWebView.swift in Sources */,
 				89F98BA81BA07E50005C3CA8 /* SettingsRepositorySpec.swift in Sources */,
@@ -1740,6 +1747,7 @@
 				899823AC1B2C883B00818755 /* ArticleListControllerSpec.swift in Sources */,
 				899823AE1B30B64000818755 /* ArticleViewControllerSpec.swift in Sources */,
 				8997C7F91B250FD200972930 /* TextViewCellSpec.swift in Sources */,
+				89C676561BA28FE60037A224 /* FakeFileManager.swift in Sources */,
 				89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */,
 				898131781AFC877A0090FA7F /* LocalImportViewControllerSpec.swift in Sources */,
 				89C204C71A740D8900C792D2 /* NotificationHandlerSpec.swift in Sources */,

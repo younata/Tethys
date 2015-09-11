@@ -12,12 +12,11 @@ private class FakeSettingsRepositorySubscriber: NSObject, SettingsRepositorySubs
 class SettingsRepositorySpec: QuickSpec {
     override func spec() {
         var subject: SettingsRepository! = nil
-        var userDefaults: NSUserDefaults! = nil
+        var userDefaults: FakeUserDefaults! = nil
         var subscriber: FakeSettingsRepositorySubscriber! = nil
 
         beforeEach {
-            userDefaults = NSUserDefaults()
-            userDefaults.setBool(false, forKey: "queryFeedsEnabled")
+            userDefaults = FakeUserDefaults()
             subject = SettingsRepository(userDefaults: userDefaults)
 
             subscriber = FakeSettingsRepositorySubscriber()

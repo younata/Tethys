@@ -58,9 +58,7 @@ public class ArticleListController: UITableViewController, DataSubscriber {
     public func didUpdateFeeds(feeds: [Feed]) {}
 
     public func markedArticle(article: Article, asRead read: Bool) {
-        if (self.navigationController?.visibleViewController != self) {
-            self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
-        }
+        self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
     }
 
     private func articleForIndexPath(indexPath: NSIndexPath) -> Article {

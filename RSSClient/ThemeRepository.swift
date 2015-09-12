@@ -58,6 +58,18 @@ public class ThemeRepository: NSObject, Injectable {
         }
     }
 
+    public private(set) var statusBarStyle: UIStatusBarStyle {
+        get {
+            if let rawValue = self.privateValueForKey("statusBarStyle") as? Int, barStyle = UIStatusBarStyle(rawValue: rawValue) {
+                return barStyle
+            }
+            return UIStatusBarStyle.Default
+        }
+        set {
+            self.privateSetValue(newValue.rawValue, forKey: "statusBarStyle")
+        }
+    }
+
     public private(set) var tintColor: UIColor {
         get {
             let color = self.colorForKey("tintColor")
@@ -100,6 +112,7 @@ public class ThemeRepository: NSObject, Injectable {
                 self.tintColor = UIColor.whiteColor()
                 self.syntaxHighlightFile = "mac_classic"
                 self.barStyle = .Default
+                self.statusBarStyle = .Default
             case .Dark:
                 self.backgroundColor = UIColor.blackColor()
                 self.textColor = UIColor.whiteColor()
@@ -107,6 +120,7 @@ public class ThemeRepository: NSObject, Injectable {
                 self.tintColor = UIColor.darkGrayColor()
                 self.syntaxHighlightFile = "twilight"
                 self.barStyle = .Black
+                self.statusBarStyle = .LightContent
             }
 
 

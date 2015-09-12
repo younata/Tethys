@@ -16,10 +16,26 @@ public class TableViewCell: UITableViewCell, ThemeRepositorySubscriber {
         }
     }
 
+    public override func prepareForReuse() {
+        super.prepareForReuse()
+        self.textLabel?.text = nil
+        self.detailTextLabel?.text = nil
+    }
+
     public func didChangeTheme() {
         self.textLabel?.textColor = self.themeRepository?.textColor
         self.detailTextLabel?.textColor = self.themeRepository?.textColor
 
-        self.backgroundColor = self.themeRepository?.backgroundColor
+        self.updateBackgroundColor(self.selected)
+    }
+
+    public override func setSelected(selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+
+        self.updateBackgroundColor(selected)
+    }
+
+    private func updateBackgroundColor(selected: Bool) {
+        self.backgroundColor = selected ? UIColor.darkGreenColor() : self.themeRepository?.backgroundColor
     }
 }

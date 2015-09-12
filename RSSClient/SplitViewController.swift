@@ -8,22 +8,15 @@ public class SplitViewController: UISplitViewController {
     }()
 
     public override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return self.themeRepository?.theme == .Dark ? .LightContent : super.preferredStatusBarStyle()
+        return self.themeRepository?.statusBarStyle ?? super.preferredStatusBarStyle()
     }
 
-    public init() {
-        super.init(nibName: nil, bundle: nil)
+    public override func viewDidLoad() {
+        super.viewDidLoad()
 
+        self.themeRepository?.addSubscriber(self)
         self.delegate = self
         self.preferredDisplayMode = .PrimaryOverlay
-    }
-
-    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-    }
-
-    public required init?(coder aDecoder: NSCoder) {
-        fatalError()
     }
 }
 

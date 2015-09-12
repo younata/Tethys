@@ -7,7 +7,7 @@ class SplitViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: SplitViewController! = nil
         var themeRepository: FakeThemeRepository! = nil
-        
+
         let master = UIViewController()
         let detail = UIViewController()
 
@@ -18,6 +18,7 @@ class SplitViewControllerSpec: QuickSpec {
             injector.bind(ThemeRepository.self, to: themeRepository)
 
             subject = injector.create(SplitViewController.self) as! SplitViewController
+            subject.view.layoutIfNeeded()
             subject.viewControllers = [master, detail]
         }
 
@@ -27,7 +28,7 @@ class SplitViewControllerSpec: QuickSpec {
             }
 
             it("should change the preferred status bar styling") {
-                expect(subject.preferredStatusBarStyle()).to(equal(UIStatusBarStyle.LightContent))
+                expect(subject.preferredStatusBarStyle()).to(equal(themeRepository.statusBarStyle))
             }
         }
         

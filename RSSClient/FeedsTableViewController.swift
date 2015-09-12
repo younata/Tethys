@@ -307,6 +307,7 @@ extension FeedsTableViewController: DataSubscriber {
     public func willUpdateFeeds() {
         self.updateBar.hidden = false
         self.updateBar.progress = 0
+        self.refreshView.beginRefreshing()
     }
 
     public func didUpdateFeedsProgress(finished: Int, total: Int) {
@@ -315,6 +316,7 @@ extension FeedsTableViewController: DataSubscriber {
 
     public func didUpdateFeeds(feeds: [Feed]) {
         self.updateBar.hidden = true
+        self.refreshView.endRefreshing()
     }
 }
 

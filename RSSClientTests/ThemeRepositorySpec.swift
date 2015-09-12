@@ -68,6 +68,10 @@ class ThemeRepositorySpec: QuickSpec {
             expect(subject.barStyle).to(equal(UIBarStyle.Default))
         }
 
+        it("uses UIStatusBarStyleDefault as the default statusBarStyle") {
+            expect(subject.statusBarStyle).to(equal(UIStatusBarStyle.Default))
+        }
+
         sharedExamples("a changed theme") {(sharedContext: SharedExampleContext) in
             it("changes the background color") {
                 let expectedColor = sharedContext()["background"] as? UIColor
@@ -105,6 +109,12 @@ class ThemeRepositorySpec: QuickSpec {
                 expect(subject.barStyle).to(equal(expectedBarStyle))
             }
 
+            it("changes the statusBarStyle") {
+                let expectedBarStyle = UIStatusBarStyle(rawValue: sharedContext()["statusBar"] as! Int)
+                expect(expectedBarStyle).toNot(beNil())
+                expect(subject.statusBarStyle).to(equal(expectedBarStyle))
+            }
+
             it("informs subscribers") {
                 expect(subscriber.didCallChangeTheme).to(beTruthy())
             }
@@ -130,19 +140,8 @@ class ThemeRepositorySpec: QuickSpec {
                     let expectedBarStyle = UIBarStyle(rawValue: sharedContext()["barStyle"] as! Int)
                     expect(expectedBarStyle).toNot(beNil())
 
-                    expect(otherRepo.backgroundColor).to(equal(expectedBackground))
-                    expect(otherRepo.textColor).to(equal(expectedText))
-                    expect(otherRepo.articleCSSFileName).to(equal(expectedCss))
-                    expect(otherRepo.tintColor).to(equal(expectedTint))
-                    expect(otherRepo.syntaxHighlightFile).to(equal(expectedSyntax))
-                    expect(otherRepo.barStyle).to(equal(expectedBarStyle))
-                } else {
-                    let expectedBackground = UIColor.whiteColor()
-                    let expectedText = UIColor.blackColor()
-                    let expectedCss = "github2"
-                    let expectedTint = UIColor.whiteColor()
-                    let expectedSyntax = "mac_classic"
-                    let expectedBarStyle = UIBarStyle.Default
+                    let expectedStatusBarStyle = UIStatusBarStyle(rawValue: sharedContext()["statusBar"] as! Int)
+                    expect(expectedStatusBarStyle).toNot(beNil())
 
                     expect(otherRepo.backgroundColor).to(equal(expectedBackground))
                     expect(otherRepo.textColor).to(equal(expectedText))
@@ -150,6 +149,23 @@ class ThemeRepositorySpec: QuickSpec {
                     expect(otherRepo.tintColor).to(equal(expectedTint))
                     expect(otherRepo.syntaxHighlightFile).to(equal(expectedSyntax))
                     expect(otherRepo.barStyle).to(equal(expectedBarStyle))
+                    expect(otherRepo.statusBarStyle).to(equal(expectedStatusBarStyle))
+                } else {
+                    let expectedBackground = UIColor.whiteColor()
+                    let expectedText = UIColor.blackColor()
+                    let expectedCss = "github2"
+                    let expectedTint = UIColor.whiteColor()
+                    let expectedSyntax = "mac_classic"
+                    let expectedBarStyle = UIBarStyle.Default
+                    let expectedStatusBarStyle = UIStatusBarStyle.Default
+
+                    expect(otherRepo.backgroundColor).to(equal(expectedBackground))
+                    expect(otherRepo.textColor).to(equal(expectedText))
+                    expect(otherRepo.articleCSSFileName).to(equal(expectedCss))
+                    expect(otherRepo.tintColor).to(equal(expectedTint))
+                    expect(otherRepo.syntaxHighlightFile).to(equal(expectedSyntax))
+                    expect(otherRepo.barStyle).to(equal(expectedBarStyle))
+                    expect(otherRepo.statusBarStyle).to(equal(expectedStatusBarStyle))
                 }
             }
         }
@@ -169,6 +185,7 @@ class ThemeRepositorySpec: QuickSpec {
                             "tint": UIColor.darkGrayColor(),
                             "syntax": "twilight",
                             "barStyle": UIBarStyle.Black.rawValue,
+                            "statusBar": UIStatusBarStyle.LightContent.rawValue,
                         ]
                     }
                 }
@@ -186,6 +203,7 @@ class ThemeRepositorySpec: QuickSpec {
                             "tint": UIColor.whiteColor(),
                             "syntax": "mac_classic",
                             "barStyle": UIBarStyle.Default.rawValue,
+                            "statusBar": UIStatusBarStyle.Default.rawValue,
                         ]
                     }
                 }
@@ -213,6 +231,7 @@ class ThemeRepositorySpec: QuickSpec {
                             "tint": UIColor.darkGrayColor(),
                             "syntax": "twilight",
                             "barStyle": UIBarStyle.Black.rawValue,
+                            "statusBar": UIStatusBarStyle.LightContent.rawValue,
                             "ephemeral": true,
                         ]
                     }
@@ -231,6 +250,7 @@ class ThemeRepositorySpec: QuickSpec {
                             "tint": UIColor.whiteColor(),
                             "syntax": "mac_classic",
                             "barStyle": UIBarStyle.Default.rawValue,
+                            "statusBar": UIStatusBarStyle.Default.rawValue,
                             "ephemeral": true,
                         ]
                     }

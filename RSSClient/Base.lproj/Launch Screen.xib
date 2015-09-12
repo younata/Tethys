@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8187.4" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8151.3"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
         <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
     </dependencies>
     <objects>
@@ -20,7 +20,7 @@
                     <color key="tintColor" red="0.0" green="0.75" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <items>
                         <navigationItem title="Feeds" id="Fuw-43-eH9">
-                            <barButtonItem key="backBarButtonItem" title="Settings" id="OM5-p1-UTO"/>
+                            <barButtonItem key="leftBarButtonItem" title="Settings" id="9tv-yK-lFM"/>
                             <rightBarButtonItems>
                                 <barButtonItem systemItem="add" id="WoB-Sc-8tK"/>
                                 <barButtonItem systemItem="edit" id="7as-iI-5s3"/>
@@ -76,12 +76,6 @@
                     <exclude reference="dMM-uC-3uu"/>
                 </mask>
                 <mask key="constraints">
-                    <exclude reference="Csj-3T-WFF"/>
-                    <exclude reference="TrZ-zx-fYD"/>
-                    <exclude reference="Tug-gj-LWg"/>
-                    <exclude reference="VoP-U2-m9m"/>
-                    <exclude reference="XI7-4B-56U"/>
-                    <exclude reference="wc7-B1-ojF"/>
                     <exclude reference="5ef-Vj-Tsx"/>
                     <exclude reference="7JW-Ls-K8L"/>
                     <exclude reference="C2C-B2-n2Z"/>
@@ -89,6 +83,12 @@
                     <exclude reference="qCW-l5-Y3n"/>
                     <exclude reference="tNb-kf-p7t"/>
                     <exclude reference="vMC-R0-NUp"/>
+                    <exclude reference="Csj-3T-WFF"/>
+                    <exclude reference="TrZ-zx-fYD"/>
+                    <exclude reference="Tug-gj-LWg"/>
+                    <exclude reference="VoP-U2-m9m"/>
+                    <exclude reference="XI7-4B-56U"/>
+                    <exclude reference="wc7-B1-ojF"/>
                 </mask>
             </variation>
             <variation key="heightClass=regular-widthClass=compact">
@@ -97,12 +97,12 @@
                     <include reference="dMM-uC-3uu"/>
                 </mask>
                 <mask key="constraints">
-                    <include reference="Csj-3T-WFF"/>
-                    <include reference="VoP-U2-m9m"/>
-                    <include reference="XI7-4B-56U"/>
                     <include reference="ZJZ-RA-Qbw"/>
                     <include reference="tNb-kf-p7t"/>
                     <include reference="vMC-R0-NUp"/>
+                    <include reference="Csj-3T-WFF"/>
+                    <include reference="VoP-U2-m9m"/>
+                    <include reference="XI7-4B-56U"/>
                 </mask>
             </variation>
             <variation key="heightClass=regular-widthClass=regular">
@@ -111,13 +111,13 @@
                     <include reference="dMM-uC-3uu"/>
                 </mask>
                 <mask key="constraints">
-                    <include reference="TrZ-zx-fYD"/>
-                    <include reference="Tug-gj-LWg"/>
-                    <include reference="wc7-B1-ojF"/>
                     <exclude reference="5ef-Vj-Tsx"/>
                     <include reference="7JW-Ls-K8L"/>
                     <include reference="C2C-B2-n2Z"/>
                     <include reference="qCW-l5-Y3n"/>
+                    <include reference="TrZ-zx-fYD"/>
+                    <include reference="Tug-gj-LWg"/>
+                    <include reference="wc7-B1-ojF"/>
                 </mask>
             </variation>
             <point key="canvasLocation" x="404" y="445"/>

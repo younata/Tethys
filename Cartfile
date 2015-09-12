@@ -1,10 +1,10 @@
 # swift
-github "younata/Ra" "swift_2"
-github "younata/Muon" "swift_2"
+github "younata/Ra"
+github "younata/Muon"
 github "younata/BreakOutToRefresh" "swift_2"
 github "soffes/SyntaxKit"
 
 # objc
-github "smileyborg/PureLayout"
+github "PureLayout/PureLayout"
 github "younata/TOBrowserActivityKit" "master"
 github "younata/DropDownMenu" "master"

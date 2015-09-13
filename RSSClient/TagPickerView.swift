@@ -1,5 +1,5 @@
 import UIKit
-import PureLayout_iOS
+import PureLayout
 
 public class TagPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate {
     public lazy var textField: UITextField = {

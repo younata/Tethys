@@ -1,5 +1,5 @@
 # swift
-github "younata/Ra"
+github "younata/Ra" "master"
 github "younata/Muon"
 github "younata/BreakOutToRefresh" "swift_2"
 github "soffes/SyntaxKit"

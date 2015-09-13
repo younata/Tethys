@@ -289,6 +289,7 @@ extension FeedsTableViewController: ThemeRepositorySubscriber {
         self.dropDownMenu.backgroundColor = self.themeRepository.backgroundColor.colorWithAlphaComponent(0.5)
 
         self.refreshView.scenebackgroundColor = self.themeRepository.backgroundColor
+        self.refreshView.textColor = self.themeRepository.textColor
 
         self.setNeedsStatusBarAppearanceUpdate()
     }

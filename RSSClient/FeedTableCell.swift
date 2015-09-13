@@ -1,5 +1,5 @@
 import UIKit
-import PureLayout_iOS
+import PureLayout
 import rNewsKit
 
 public class FeedTableCell: UITableViewCell {

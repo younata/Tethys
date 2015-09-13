@@ -1,5 +1,5 @@
 import UIKit
-import PureLayout_iOS
+import PureLayout
 
 private class OutlinedLabel: UILabel {
     private var outlineColor = UIColor.darkGreenColor()

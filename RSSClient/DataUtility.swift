@@ -3,6 +3,8 @@ import CoreData
 import Muon
 #if os(OSX)
     import Cocoa
+#elseif os(iOS)
+    import UIKit
 #endif
 
 internal class DataUtility {

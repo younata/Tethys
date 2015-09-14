@@ -3,7 +3,7 @@ import PureLayout_Mac
 import rNewsKit
 import Ra
 
-public class FeedsViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
+public class FeedsViewController: NSViewController {
     var feeds : [Feed] = []
 
     public lazy var tableView: NSTableView = {
@@ -13,34 +13,31 @@ public class FeedsViewController: NSViewController, NSTableViewDataSource, NSTab
         return tableView
     }()
 
-    public var raInjector: Injector? = nil
+    public private(set) var raInjector: Injector? = nil
 
     public var onFeedSelection : (Feed) -> Void = {(_) in }
 
-    func configure(injector: Injector?) {
+    private var dataReader: DataRetriever? {
+        return self.raInjector?.create(DataRetriever.self) as? DataRetriever
+    }
+
+    private var dataWriter: DataWriter? {
+        return self.raInjector?.create(DataWriter.self) as? DataWriter
+    }
+
+    public func configure(injector: Injector?) {
         self.raInjector = injector
         self.view = self.tableView
+
+        self.dataWriter?.addSubscriber(self)
+        self.reload()
     }
 
     func reload() {
-        feeds = []
-//        feeds = dataManager?.feeds().sorted {(f1: Feed, f2: Feed) in
-//            let f1Unread = f1.unreadArticles(self.dataManager!)
-//            let f2Unread = f2.unreadArticles(self.dataManager!)
-//            if f1Unread != f2Unread {
-//                return f1Unread > f2Unread
-//            }
-//            if f1.title == nil {
-//                return true
-//            } else if f2.title == nil {
-//                return false
-//            }
-//            return f1.title < f2.title
-//        } ?? []
-        if feeds.count == 0 {
-
+        self.dataReader?.feeds {feeds in
+            self.feeds = feeds
+            self.tableView.reloadData()
         }
-        tableView.reloadData()
     }
 
     func heightForFeed(feed: Feed, width: CGFloat) -> CGFloat {
@@ -60,9 +57,25 @@ public class FeedsViewController: NSViewController, NSTableViewDataSource, NSTab
 
         return max(30, height)
     }
+}
 
-    // MARK: NSTableViewDelegate
+extension FeedsViewController: DataSubscriber {
+    public func markedArticle(article: Article, asRead read: Bool) {}
 
+    public func deletedArticle(article: Article) {}
+
+    public func updatedFeeds(feeds: [Feed]) {
+        self.reload()
+    }
+}
+
+extension FeedsViewController: NSTableViewDataSource {
+    public func numberOfRowsInTableView(tableView: NSTableView) -> Int {
+        return feeds.count
+    }
+}
+
+extension FeedsViewController: NSTableViewDelegate {
     public func tableView(tableView: NSTableView, rowViewForRow row: Int) -> NSTableRowView? {
         let feed = feeds[row]
         let feedView = FeedView(frame: NSMakeRect(0, 0, tableView.bounds.width, heightForFeed(feed, width: tableView.bounds.width - 16)))
@@ -77,11 +90,5 @@ public class FeedsViewController: NSViewController, NSTableViewDataSource, NSTab
     public func tableView(tableView: NSTableView, shouldSelectRow rowIndex: Int) -> Bool {
         onFeedSelection(feeds[rowIndex])
         return false
-    }
-
-    // MARK: NSTableViewDataSource
-
-    public func numberOfRowsInTableView(tableView: NSTableView) -> Int {
-        return feeds.count
     }
 }

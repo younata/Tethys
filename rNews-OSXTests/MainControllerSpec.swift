@@ -11,7 +11,7 @@ class MainControllerSpec: QuickSpec {
         var window: NSWindow? = nil
         var injector: Injector! = nil
         var opmlManager: OPMLManagerMock! = nil
-        var dataReadWriter: FakeDataReadWriter! = nil
+        var dataWriter: FakeDataReadWriter! = nil
 
         beforeEach {
             window = NSWindow()
@@ -25,9 +25,8 @@ class MainControllerSpec: QuickSpec {
             opmlManager = OPMLManagerMock()
             injector.bind(OPMLManager.self, to: opmlManager)
 
-            dataReadWriter = FakeDataReadWriter()
-            injector.bind(DataRetriever.self, to: dataReadWriter)
-            injector.bind(DataWriter.self, to: dataReadWriter)
+            dataWriter = FakeDataReadWriter()
+            injector.bind(DataWriter.self, to: dataWriter)
 
             subject.view = NSView()
             subject.viewDidLoad()
@@ -102,7 +101,7 @@ class MainControllerSpec: QuickSpec {
                     }
 
                     it("should ask the dataWriter to update feeds") {
-                        expect(dataReadWriter.didUpdateFeeds).to(beTruthy())
+                        expect(dataWriter.didUpdateFeeds).to(beTruthy())
                     }
 
                     // show something to indicate that things are going fine
@@ -114,7 +113,7 @@ class MainControllerSpec: QuickSpec {
                     }
 
                     it("should not ask the dataWriter to update feeds") {
-                        expect(dataReadWriter.didUpdateFeeds).to(beFalsy())
+                        expect(dataWriter.didUpdateFeeds).to(beFalsy())
                     }
 
                     // pop up something to let the user know they dun goofed.

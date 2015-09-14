@@ -109,6 +109,120 @@ class SettingsViewControllerSpec: QuickSpec {
             }
         }
 
+        describe("key commands") {
+            it("can become first responder") {
+                expect(subject.canBecomeFirstResponder()).to(beTruthy())
+            }
+
+            it("has (number of themes - 1) + 2 commands") {
+                let keyCommands = subject.keyCommands
+                expect(keyCommands?.count).to(equal(3))
+            }
+
+            describe("the first (number of themes - 1) commands") {
+                context("when .Default is the current theme") {
+                    beforeEach {
+                        themeRepository.theme = .Default
+                    }
+
+                    it("lists every other theme but .Default") {
+                        let keyCommands = subject.keyCommands
+                        expect(keyCommands).toNot(beNil())
+                        guard let commands = keyCommands else {
+                            return
+                        }
+
+                        let expectedCommands = [
+                            UIKeyCommand(input: "2", modifierFlags: .Command, action: ""),
+                        ]
+                        let expectedDiscoverabilityTitles = [
+                            "Change Theme to 'Dark'",
+                        ]
+
+                        for (idx, expectedCmd) in expectedCommands.enumerate() {
+                            let cmd = commands[idx]
+                            expect(cmd.input).to(equal(expectedCmd.input))
+                            expect(cmd.modifierFlags).to(equal(expectedCmd.modifierFlags))
+
+                            if #available(iOS 9.0, *) {
+                                let expectedTitle = expectedDiscoverabilityTitles[idx]
+                                expect(cmd.discoverabilityTitle).to(equal(expectedTitle))
+                            }
+                        }
+                    }
+                }
+
+                context("when .Dark is the current theme") {
+                    beforeEach {
+                        themeRepository.theme = .Dark
+                    }
+
+                    it("lists every other theme but .Dark") {
+                        let keyCommands = subject.keyCommands
+                        expect(keyCommands).toNot(beNil())
+                        guard let commands = keyCommands else {
+                            return
+                        }
+
+                        let expectedCommands = [
+                            UIKeyCommand(input: "1", modifierFlags: .Command, action: ""),
+                        ]
+                        let expectedDiscoverabilityTitles = [
+                            "Change Theme to 'Default'",
+                        ]
+
+                        for (idx, expectedCmd) in expectedCommands.enumerate() {
+                            let cmd = commands[idx]
+                            expect(cmd.input).to(equal(expectedCmd.input))
+                            expect(cmd.modifierFlags).to(equal(expectedCmd.modifierFlags))
+
+                            if #available(iOS 9.0, *) {
+                                let expectedTitle = expectedDiscoverabilityTitles[idx]
+                                expect(cmd.discoverabilityTitle).to(equal(expectedTitle))
+                            }
+                        }
+                    }
+                }
+            }
+
+            describe("the last two commands") {
+                it("it has commands for dismissing/saving") {
+                    let keyCommands = subject.keyCommands
+                    expect(keyCommands).toNot(beNil())
+                    guard let allCommands = keyCommands else {
+                        return
+                    }
+
+                    let commands = allCommands[allCommands.count - 2..<allCommands.count]
+
+                    let expectedCommands = [
+                        UIKeyCommand(input: "s", modifierFlags: .Command, action: ""),
+                        UIKeyCommand(input: "w", modifierFlags: .Command, action: ""),
+                    ]
+                    let expectedDiscoverabilityTitles = [
+                        "Save and dismiss",
+                        "Dismiss without saving",
+                    ]
+
+                    expect(commands.count).to(equal(expectedCommands.count))
+                    for (idx, cmd) in commands.enumerate() {
+                        let expectedCmd = expectedCommands[idx]
+                        expect(cmd.input).to(equal(expectedCmd.input))
+                        expect(cmd.modifierFlags).to(equal(expectedCmd.modifierFlags))
+
+                        if #available(iOS 9.0, *) {
+                            let expectedTitle = expectedDiscoverabilityTitles[idx]
+                            expect(cmd.discoverabilityTitle).to(equal(expectedTitle))
+                        }
+                    }
+                }
+            }
+
+            it("has a list of commands") {
+
+            }
+        }
+
         describe("the tableView") {
             var delegate: UITableViewDelegate! = nil
             var dataSource: UITableViewDataSource! = nil
@@ -157,8 +271,6 @@ class SettingsViewControllerSpec: QuickSpec {
                     it("should have no edit actions") {
                         expect(delegate.tableView?(subject.tableView, editActionsForRowAtIndexPath: indexPath)).to(beNil())
                     }
-
-                    // not selectable because it's currently selected.
                 }
 
                 describe("the second cell") {

@@ -69,6 +69,43 @@ public class SettingsViewController: UIViewController {
         self.oldTheme = self.themeRepository.theme
     }
 
+    public override func canBecomeFirstResponder() -> Bool {
+        return true
+    }
+
+    public override var keyCommands: [UIKeyCommand]? {
+        var commands: [UIKeyCommand] = []
+
+        for (idx, theme) in ThemeRepository.Theme.array().enumerate() {
+            guard theme != self.themeRepository.theme else {
+                continue
+            }
+
+            let keyCommand = UIKeyCommand(input: "\(idx+1)", modifierFlags: .Command, action: "didHitChangeTheme:")
+            if #available(iOS 9, *) {
+                keyCommand.discoverabilityTitle = String(NSString.localizedStringWithFormat(NSLocalizedString("SettingsViewController_Commands_Theme", comment: ""), theme.description))
+            }
+            commands.append(keyCommand)
+        }
+
+        let save = UIKeyCommand(input: "s", modifierFlags: .Command, action: "didTapSave")
+        let dismiss = UIKeyCommand(input: "w", modifierFlags: .Command, action: "didTapDismiss")
+
+        if #available(iOS 9, *) {
+            save.discoverabilityTitle = NSLocalizedString("SettingsViewController_Commands_Save", comment: "")
+            dismiss.discoverabilityTitle = NSLocalizedString("SettingsViewController_Commands_Dismiss", comment: "")
+        }
+
+        commands.append(save)
+        commands.append(dismiss)
+
+        return commands
+    }
+
+    internal func didHitChangeTheme(keyCommand: UIKeyCommand) {
+
+    }
+
     internal func didTapDismiss() {
         if self.oldTheme != self.themeRepository.theme {
             self.themeRepository.theme = self.oldTheme

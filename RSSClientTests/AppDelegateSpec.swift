@@ -194,7 +194,7 @@ class AppDelegateSpec: QuickSpec {
                 }
 
                 it("should not set the responderArray") {
-                    expect(responderArray.count).to(equal(0))
+                    expect(responderArray).to(beEmpty())
                 }
 
                 it("should show the article") {
@@ -219,7 +219,7 @@ class AppDelegateSpec: QuickSpec {
                     guard #available(iOS 9.0, *) else {
                         return
                     }
-                    expect(responderArray.count).to(equal(0))
+                    expect(responderArray).to(beEmpty())
                 }
 
                 it("should show the article") {

@@ -556,7 +556,7 @@ class FeedRepositorySpec: QuickSpec {
 
                         it("should call the callback with no errors") {
                             expect(didCallCallback).to(beTruthy())
-                            expect(callbackErrors.count).to(equal(0))
+                            expect(callbackErrors).to(beEmpty())
                         }
                     }
                 }

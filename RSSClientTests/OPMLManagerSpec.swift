@@ -106,7 +106,7 @@ class OPMLManagerSpec: QuickSpec {
 
                 parser.main()
 
-                expect(testItems.count).toNot(equal(0))
+                expect(testItems).toNot(beEmpty())
             }
         }
     }

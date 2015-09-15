@@ -76,7 +76,7 @@ class BackgroundFetchHandlerSpec: QuickSpec {
                 }
 
                 it("should not send any new local notifications") {
-                    expect(notificationSource.scheduledNotes.count).to(equal(0))
+                    expect(notificationSource.scheduledNotes).to(beEmpty())
                 }
 
                 it("should call the completion handler and indicate that there was no new data found") {
@@ -90,7 +90,7 @@ class BackgroundFetchHandlerSpec: QuickSpec {
                 }
 
                 it("should not send any new local notifications") {
-                    expect(notificationSource.scheduledNotes.count).to(equal(0))
+                    expect(notificationSource.scheduledNotes).to(beEmpty())
                 }
 
                 it("should call the completion handler and indicate that there was an error") {

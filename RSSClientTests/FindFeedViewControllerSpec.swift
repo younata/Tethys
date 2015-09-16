@@ -91,52 +91,48 @@ class FindFeedViewControllerSpec: QuickSpec {
                 expect(rootViewController.presentedViewController).toNot(beNil())
             }
 
-            class FeedImportationSharedExamplesConfiguration: QuickConfiguration {
-                override class func configure(configuration: Configuration) {
-                    sharedExamples("importing a feed") {
-                        it("should create a new feed") {
-                            expect(dataWriter.didCreateFeed).to(beTruthy())
+            sharedExamples("importing a feed") {
+                it("should create a new feed") {
+                    expect(dataWriter.didCreateFeed).to(beTruthy())
+                }
+
+                it("should show an indicator that we're doing things") {
+                    let indicator = navController.view.subviews.filter {
+                        return $0.isKindOfClass(ActivityIndicator.classForCoder())
+                        }.first as? ActivityIndicator
+                    expect(indicator?.message).to(equal("Loading feed at https://example.com/feed.xml"))
+                }
+
+                describe("when the feed is created") {
+                    beforeEach {
+                        let feed = Feed(title: "", url: NSURL(string: ""), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                        dataWriter.newFeedCallback(feed)
+                    }
+
+                    it("should save the new feed") {
+                        let feed = Feed(title: "", url: NSURL(string: "https://example.com/feed.xml"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                        expect(dataWriter.lastSavedFeed).to(equal(feed))
+                    }
+
+                    it("should try to update feeds") {
+                        expect(dataWriter.didUpdateFeeds).to(beTruthy())
+                    }
+
+                    describe("when the feeds update") {
+                        beforeEach {
+                            dataWriter.updateFeedsCompletion([], [])
                         }
 
-                        it("should show an indicator that we're doing things") {
+                        it("should remove the indicator") {
                             let indicator = navController.view.subviews.filter {
                                 return $0.isKindOfClass(ActivityIndicator.classForCoder())
-                                }.first as? ActivityIndicator
-                            expect(indicator?.message).to(equal("Loading feed at https://example.com/feed.xml"))
+                                }.first
+                            expect(indicator).to(beNil())
                         }
 
-                        describe("when the feed is created") {
-                            beforeEach {
-                                let feed = Feed(title: "", url: NSURL(string: ""), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                                dataWriter.newFeedCallback(feed)
-                            }
-
-                            it("should save the new feed") {
-                                let feed = Feed(title: "", url: NSURL(string: "https://example.com/feed.xml"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                                expect(dataWriter.lastSavedFeed).to(equal(feed))
-                            }
-
-                            it("should try to update feeds") {
-                                expect(dataWriter.didUpdateFeeds).to(beTruthy())
-                            }
-
-                            describe("when the feeds update") {
-                                beforeEach {
-                                    dataWriter.updateFeedsCompletion([], [])
-                                }
-
-                                it("should remove the indicator") {
-                                    let indicator = navController.view.subviews.filter {
-                                        return $0.isKindOfClass(ActivityIndicator.classForCoder())
-                                        }.first
-                                    expect(indicator).to(beNil())
-                                }
-
-                                it("should dismiss itself") {
-                                    NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 2))
-                                    expect(rootViewController.presentedViewController).toEventually(beNil())
-                                }
-                            }
+                        it("should dismiss itself") {
+                            NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
+                            expect(rootViewController.presentedViewController).toEventually(beNil())
                         }
                     }
                 }
@@ -172,10 +168,11 @@ class FindFeedViewControllerSpec: QuickSpec {
                         backgroundQueue.runNextOperation()
                         backgroundQueue.runNextOperation()
                         mainQueue.runNextOperation()
-                        NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 1))
+                        NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.3))
                     }
 
                     it("should present an alert") {
+                        NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.3))
                         expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                         if let alert = subject.presentedViewController as? UIAlertController {
                             expect(alert.title).to(equal("Feed Detected"))
@@ -196,11 +193,11 @@ class FindFeedViewControllerSpec: QuickSpec {
                             if let alert = subject.presentedViewController as? UIAlertController,
                                 let action = alert.actions.first {
                                     action.handler()(action)
-                                    NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 2))
                             }
                         }
 
                         it("should dismiss the alert") {
+                            NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 1))
                             expect(subject.presentedViewController).to(beNil())
                         }
                     }
@@ -210,11 +207,12 @@ class FindFeedViewControllerSpec: QuickSpec {
                             if let alert = subject.presentedViewController as? UIAlertController,
                                 let action = alert.actions.last {
                                     action.handler()(action)
-                                    NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 2))
+                                    NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.5))
                             }
                         }
 
                         it("should dismiss the alert") {
+                            NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.5))
                             expect(subject.presentedViewController).to(beNil())
                         }
 

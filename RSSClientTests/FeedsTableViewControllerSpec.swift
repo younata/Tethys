@@ -176,6 +176,30 @@ class FeedsTableViewControllerSpec: QuickSpec {
                         }
                     }
                 }
+
+                context("marking an article as read") {
+                    beforeEach {
+                        dataReadWriter.didAskForFeeds = false
+                        let article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
+                        subscriber?.markedArticle(article, asRead: true)
+                    }
+
+                    it("should refresh it's feed cache") {
+                        expect(dataReadWriter.didAskForFeeds).to(beTruthy())
+                    }
+                }
+
+                context("deleting an article") {
+                    beforeEach {
+                        dataReadWriter.didAskForFeeds = false
+                        let article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
+                        subscriber?.deletedArticle(article)
+                    }
+
+                    it("should refresh it's feed cache") {
+                        expect(dataReadWriter.didAskForFeeds).to(beTruthy())
+                    }
+                }
             }
 
             describe("Key Commands") {

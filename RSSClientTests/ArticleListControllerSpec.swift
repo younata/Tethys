@@ -80,6 +80,11 @@ class ArticleListControllerSpec: QuickSpec {
             it("should update the navigation bar background") {
                 expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
             }
+
+            it("should update the searchbar") {
+                expect(subject.searchBar.barStyle).to(equal(themeRepository.barStyle))
+                expect(subject.searchBar.backgroundColor).to(equal(themeRepository.backgroundColor))
+            }
         }
 
         describe("as a DataSubscriber") {
@@ -159,6 +164,36 @@ class ArticleListControllerSpec: QuickSpec {
                 }
 
                 context("out of preview mode") {
+                    describe("typing in the search bar") {
+                        beforeEach {
+                            subject.searchBar.becomeFirstResponder()
+                            subject.searchBar.text = "\(publishedOffset)"
+                            dataReadWriter.articlesOfFeedList = [articles.last!]
+                            subject.searchBar.delegate?.searchBar?(subject.searchBar, textDidChange: "\(publishedOffset)")
+                        }
+
+                        it("should resign first responder when the tableView is scrolled") {
+                            subject.tableView.delegate?.scrollViewDidScroll?(subject.tableView)
+
+                            expect(subject.searchBar.isFirstResponder()).to(beFalsy())
+                        }
+
+                        it("should filter the articles down to those that match the query") {
+                            expect(subject.tableView(subject.tableView, numberOfRowsInSection: 0)).to(equal(1))
+                        }
+
+                        describe("clearing the searchbar") {
+                            beforeEach {
+                                subject.searchBar.text = ""
+                                subject.searchBar.delegate?.searchBar?(subject.searchBar, textDidChange: "")
+                            }
+
+                            it("should reset the articles") {
+                                expect(subject.tableView(subject.tableView, numberOfRowsInSection: 0)).to(equal(articles.count))
+                            }
+                        }
+                    }
+
                     it("should be editable") {
                         for section in 0..<subject.tableView.numberOfSections {
                             for row in 0..<subject.tableView.numberOfRowsInSection(section) {

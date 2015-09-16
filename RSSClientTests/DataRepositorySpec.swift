@@ -267,6 +267,46 @@ class FeedRepositorySpec: QuickSpec {
                 }
             }
 
+            describe("articlesOfFeeds:MatchingSearchQuery:callback:") {
+                var calledHandler = false
+                var calledArticles: [Article] = []
+
+                beforeEach {
+                    calledHandler = false
+                    calledArticles = []
+
+                    subject.articlesOfFeeds(feeds, matchingSearchQuery: "article1") {articles in
+                        calledHandler = true
+                        calledArticles = articles
+                    }
+                }
+
+                it("should make an asynch call") {
+                    expect(calledHandler).to(beFalsy())
+                    expect(backgroundQueue.operationCount).to(equal(1))
+                    expect(mainQueue.operationCount).to(equal(0))
+                }
+
+                describe("when the call finishes") {
+                    beforeEach {
+                        backgroundQueue.runNextOperation()
+                    }
+
+                    it("should let the caller know... on the main thread") {
+                        expect(backgroundQueue.operationCount).to(equal(0))
+                        expect(mainQueue.operationCount).to(equal(1))
+
+                        expect(calledHandler).to(beFalsy())
+
+                        mainQueue.runNextOperation()
+
+                        expect(mainQueue.operationCount).to(equal(0))
+                        expect(calledHandler).to(beTruthy())
+                        expect(calledArticles).to(equal([Article(article: article1, feed: nil)]))
+                    }
+                }
+            }
+
             describe("articlesMatchingQuery") {
                 var calledHandler = false
                 var calledArticles: [Article] = []

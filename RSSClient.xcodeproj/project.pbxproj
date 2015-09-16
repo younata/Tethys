@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8916880B1BA8856400F9FFE0 /* rNewsKit.framework in Embed rNewsKit */ = {isa = PBXBuildFile; fileRef = 894304211B45089A000078DC /* rNewsKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8918D4A41B8115F800DCDE0E /* ExplanationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8918D4A31B8115F800DCDE0E /* ExplanationView.swift */; };
 		8918D4D41B84593100DCDE0E /* ClearnessDark.css in Resources */ = {isa = PBXBuildFile; fileRef = 8918D4D31B84593100DCDE0E /* ClearnessDark.css */; };
 		8918D4D91B85887E00DCDE0E /* darkhub2.css in Resources */ = {isa = PBXBuildFile; fileRef = 8918D4D81B85887E00DCDE0E /* darkhub2.css */; };
@@ -299,6 +300,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		8916880A1BA8854E00F9FFE0 /* Embed rNewsKit */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				8916880B1BA8856400F9FFE0 /* rNewsKit.framework in Embed rNewsKit */,
+			);
+			name = "Embed rNewsKit";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8935F5D11B462720000FFD5D /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1292,6 +1304,7 @@
 				89C8307119D730E9009924DA /* Resources */,
 				89CB98C01B13A0ED00C87160 /* Lint */,
 				89CAD4C01BA3D36E006D79FC /* Clean Carthage Libraries */,
+				8916880A1BA8854E00F9FFE0 /* Embed rNewsKit */,
 			);
 			buildRules = (
 			);

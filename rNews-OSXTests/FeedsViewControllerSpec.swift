@@ -54,7 +54,7 @@ class FeedsViewControllerSpec: QuickSpec {
                 var row: FeedView? = nil
 
                 beforeEach {
-                    row = delegate.tableView?(subject.tableView, rowViewForRow: 0) as? FeedView
+                    row = delegate.tableView?(subject.tableView, viewForTableColumn: nil, row: 0) as? FeedView
                     expect(row).toNot(beNil())
                 }
 

@@ -64,7 +64,7 @@ class UnreadCounter: NSView {
         CGPathAddLineToPoint(path, nil, width, 0)
         CGPathAddLineToPoint(path, nil, 0, height)
         CGContextAddPath(ctx?.CGContext, path)
-        CGContextSetFillColorWithColor(ctx?.CGContext, color.CGColor)
+        CGContextSetFillColorWithColor(ctx?.CGContext, self.color.CGColor)
         CGContextFillPath(ctx?.CGContext)
     }
 }

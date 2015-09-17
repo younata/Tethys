@@ -7,10 +7,23 @@ public class FeedsViewController: NSViewController {
     var feeds : [Feed] = []
 
     public lazy var tableView: NSTableView = {
-        let tableView = NSTableView(forAutoLayout: ())
+        let tableView = NSTableView()
         tableView.setDelegate(self)
         tableView.setDataSource(self)
+        tableView.headerView = nil
+        tableView.addTableColumn(NSTableColumn(identifier: "column"))
+        tableView.usesAlternatingRowBackgroundColors = true
         return tableView
+    }()
+
+    private lazy var tableHeightConstraint: NSLayoutConstraint? = nil
+
+    private lazy var scrollView: NSScrollView = {
+        let scrollView = NSScrollView(forAutoLayout: ())
+        scrollView.hasVerticalScroller = true
+        scrollView.documentView = self.tableView
+        scrollView.verticalScroller?.target = self.tableView
+        return scrollView
     }()
 
     public private(set) var raInjector: Injector? = nil
@@ -27,20 +40,20 @@ public class FeedsViewController: NSViewController {
 
     public func configure(injector: Injector?) {
         self.raInjector = injector
-        self.view = self.tableView
+        self.view = self.scrollView
 
         self.dataWriter?.addSubscriber(self)
         self.reload()
     }
 
-    func reload() {
+    internal func reload() {
         self.dataReader?.feeds {feeds in
             self.feeds = feeds
             self.tableView.reloadData()
         }
     }
 
-    func heightForFeed(feed: Feed, width: CGFloat) -> CGFloat {
+    private func heightForFeed(feed: Feed, width: CGFloat) -> CGFloat {
         var height : CGFloat = 16.0
         let attributes = [NSFontAttributeName: NSFont.systemFontOfSize(12)]
         let title = NSAttributedString(string: feed.title, attributes: attributes)
@@ -55,7 +68,7 @@ public class FeedsViewController: NSViewController {
         height += titleHeight
         height += summaryHeight
 
-        return max(30, height)
+        return max(45, height)
     }
 }
 
@@ -76,10 +89,14 @@ extension FeedsViewController: NSTableViewDataSource {
 }
 
 extension FeedsViewController: NSTableViewDelegate {
-    public func tableView(tableView: NSTableView, rowViewForRow row: Int) -> NSTableRowView? {
-        let feed = feeds[row]
-        let feedView = FeedView(frame: NSMakeRect(0, 0, tableView.bounds.width, heightForFeed(feed, width: tableView.bounds.width - 16)))
-        feedView.feed = feed
+    public func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        let feed = self.feeds[row]
+        var feedView = tableView.makeViewWithIdentifier("feed", owner: self) as? FeedView
+        if feedView == nil {
+            feedView = FeedView(frame: NSZeroRect)
+            feedView?.identifier = "feed"
+        }
+        feedView?.feed = feed
         return feedView
     }
 

@@ -2,6 +2,6 @@ import Cocoa
 
 extension NSColor {
     class func darkGreenColor() -> NSColor {
-        return NSColor(calibratedHue: 0, saturation: 0.5, brightness: 0, alpha: 1.0)
+        return NSColor(calibratedRed: 0, green: 0.5, blue: 0, alpha: 1.0)
     }
 }

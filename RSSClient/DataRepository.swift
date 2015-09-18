@@ -376,7 +376,7 @@ internal class DataRepository: DataRetriever, DataWriter {
     }
 
     private func upsertArticle(muonArticle: Muon.Article, feed: Feed) -> Article? {
-        let predicate = NSPredicate(format: "link = %@ && title == %@ && feed == %@", muonArticle.link?.absoluteString ?? "", muonArticle.title ?? "", feed.feedID!)
+        let predicate = NSPredicate(format: "link = %@ && identifier == %@ && feed == %@", muonArticle.link?.absoluteString ?? "", muonArticle.guid ?? "", feed.feedID!)
         if let article = DataUtility.entities("Article", matchingPredicate: predicate,
             managedObjectContext: self.objectContext, sortDescriptors: []).last as? CoreDataArticle {
                 if article.updatedAt != muonArticle.updated {

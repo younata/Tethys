@@ -54,6 +54,10 @@ class FindFeedViewControllerSpec: QuickSpec {
             expect(subject.view).toNot(beNil())
         }
 
+        afterEach {
+            objc_removeAssociatedObjects(subject)
+        }
+
         describe("Looking up feeds on the interwebs") {
             beforeEach {
                 subject.navField.text = "example.com"
@@ -70,22 +74,13 @@ class FindFeedViewControllerSpec: QuickSpec {
         }
 
         describe("WKWebView and Delegates") {
-            var window: UIWindow? = nil
             beforeEach {
                 webView.fakeUrl = NSURL(string: "https://example.com/feed.xml")
                 subject.webView(subject.webContent, didStartProvisionalNavigation: nil)
             }
 
-            afterEach {
-                window?.hidden = false
-                window = nil
-            }
-
             let showRootController: (Void) -> (Void) = {
-                window = UIWindow(frame: CGRectZero)
-                window?.makeKeyAndVisible()
                 rootViewController = UIViewController()
-                window?.rootViewController = rootViewController
 
                 rootViewController.presentViewController(navController, animated: false, completion: nil)
                 expect(rootViewController.presentedViewController).toNot(beNil())
@@ -131,8 +126,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                         }
 
                         it("should dismiss itself") {
-                            NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
-                            expect(rootViewController.presentedViewController).toEventually(beNil())
+                            expect(rootViewController.presentedViewController).to(beNil())
                         }
                     }
                 }
@@ -168,11 +162,9 @@ class FindFeedViewControllerSpec: QuickSpec {
                         backgroundQueue.runNextOperation()
                         backgroundQueue.runNextOperation()
                         mainQueue.runNextOperation()
-                        NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.3))
                     }
 
                     it("should present an alert") {
-                        NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.3))
                         expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                         if let alert = subject.presentedViewController as? UIAlertController {
                             expect(alert.title).to(equal("Feed Detected"))
@@ -197,7 +189,6 @@ class FindFeedViewControllerSpec: QuickSpec {
                         }
 
                         it("should dismiss the alert") {
-                            NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 1))
                             expect(subject.presentedViewController).to(beNil())
                         }
                     }
@@ -207,12 +198,10 @@ class FindFeedViewControllerSpec: QuickSpec {
                             if let alert = subject.presentedViewController as? UIAlertController,
                                 let action = alert.actions.last {
                                     action.handler()(action)
-                                    NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.5))
                             }
                         }
 
                         it("should dismiss the alert") {
-                            NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.5))
                             expect(subject.presentedViewController).to(beNil())
                         }
 
@@ -238,7 +227,6 @@ class FindFeedViewControllerSpec: QuickSpec {
                         backgroundQueue.runNextOperation()
                         backgroundQueue.runNextOperation()
                         mainQueue.runNextOperation()
-                        NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 1))
                     }
 
                     it("should present an alert") {
@@ -262,7 +250,6 @@ class FindFeedViewControllerSpec: QuickSpec {
                             if let alert = subject.presentedViewController as? UIAlertController,
                                 let action = alert.actions.first {
                                     action.handler()(action)
-                                    NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 1))
                             }
                         }
 
@@ -276,7 +263,6 @@ class FindFeedViewControllerSpec: QuickSpec {
                             if let alert = subject.presentedViewController as? UIAlertController,
                                 let action = alert.actions.last {
                                     action.handler()(action)
-                                    NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 1))
                             }
                         }
 
@@ -308,8 +294,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                             }
 
                             it("should dismiss itself") {
-                                NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 1))
-                                expect(rootViewController.presentedViewController).toEventually(beNil())
+                                expect(rootViewController.presentedViewController).to(beNil())
                             }
                         }
                     }

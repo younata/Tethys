@@ -86,8 +86,8 @@ class NotificationHandlerSpec: QuickSpec {
             }
 
             it("should open the app and show the article") {
-                expect(navController.viewControllers.count).to(equal(2))
-                if let articleController = navController.visibleViewController as? ArticleViewController {
+                expect(navController.viewControllers.count).to(equal(3))
+                if let articleController = (navController.topViewController as? UINavigationController)?.topViewController as? ArticleViewController {
                     expect(articleController.article).to(equal(article))
                 }
             }

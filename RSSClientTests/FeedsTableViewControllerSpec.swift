@@ -470,6 +470,11 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                         dataReadWriter.feedsList = feeds + [feed3]
                         dataReadWriter.updateFeedsCompletion([], [])
+                        for object in dataReadWriter.subscribers.allObjects {
+                            if let subscriber = object as? DataSubscriber {
+                                subscriber.didUpdateFeeds([])
+                            }
+                        }
                     }
 
                     it("should end refreshing") {
@@ -484,8 +489,13 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 context("when the call fails") {
                     var alert: UIAlertController? = nil
                     beforeEach {
-                        let error = NSError(domain: "spec", code: 666, userInfo: [NSLocalizedFailureReasonErrorKey: "Bad Connection"])
+                        let error = NSError(domain: "NSURLErrorDomain", code: -1001, userInfo: [NSLocalizedFailureReasonErrorKey: "The request timed out.", "feedTitle": "foo"])
                         dataReadWriter.updateFeedsCompletion([], [error])
+                        for object in dataReadWriter.subscribers.allObjects {
+                            if let subscriber = object as? DataSubscriber {
+                                subscriber.didUpdateFeeds([])
+                            }
+                        }
                         alert = subject.presentedViewController as? UIAlertController
                     }
 
@@ -497,7 +507,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                         expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                         if let alert = alert {
                             expect(alert.title).to(equal("Unable to update feeds"))
-                            expect(alert.message).to(equal(""))
+                            expect(alert.message).to(equal("foo: The request timed out."))
                         }
                     }
 

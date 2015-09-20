@@ -15,7 +15,7 @@ class SettingsViewControllerSpec: QuickSpec {
 
             navigationController = UINavigationController(rootViewController: subject)
 
-            subject.view.layoutIfNeeded()
+            expect(subject.view).toNot(beNil())
         }
 
         it("is titled 'Settings'") {
@@ -57,7 +57,7 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
 
                 it("dismisses itself") {
-                    expect(rootViewController.presentedViewController).toEventually(beNil())
+                    expect(rootViewController.presentedViewController).to(beNil())
                 }
 
                 it("saves the change to the userDefaults") {

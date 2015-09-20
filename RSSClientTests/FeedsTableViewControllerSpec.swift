@@ -148,7 +148,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 beforeEach {
                     let button = buttons[0]
                     button.sendActionsForControlEvents(UIControlEvents.TouchUpInside)
-                    (subject.presentedViewController as? UINavigationController)?.topViewController?.view.layoutIfNeeded()
+                    (subject.presentedViewController as? UINavigationController)?.topViewController?.view
                 }
 
                 it("should close the dropDownMenu") {

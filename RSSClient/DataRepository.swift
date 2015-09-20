@@ -157,32 +157,36 @@ internal class DataRepository: DataRetriever, DataWriter {
 
     private func allFeedsOnBackgroundQueue(callback: ([Feed] -> (Void))) {
         self.backgroundQueue.addOperationWithBlock {
-            let feeds = DataUtility.feedsWithPredicate(NSPredicate(value: true),
-                managedObjectContext: self.objectContext).sort {
-                    return $0.displayTitle < $1.displayTitle
-            }
-            let nonQueryFeeds = feeds.reduce(Array<Feed>()) {
-                if $1.isQueryFeed {
-                    return $0
-                } else {
-                    return $0 + [$1]
-                }
-            }
-            let queryFeeds = feeds.reduce(Array<Feed>()) {
-                if $1.isQueryFeed {
-                    return $0 + [$1]
-                } else {
-                    return $0
-                }
-            }
-            for feed in queryFeeds {
-                let articles = self.privateArticlesMatchingQuery(feed.query!, feeds: nonQueryFeeds)
-                for article in articles {
-                    feed.addArticle(article)
-                }
-            }
-            callback(feeds)
+            callback(self.synchronousAllFeeds())
         }
+    }
+
+    private func synchronousAllFeeds() -> [Feed] {
+        let feeds = DataUtility.feedsWithPredicate(NSPredicate(value: true),
+            managedObjectContext: self.objectContext).sort {
+                return $0.displayTitle < $1.displayTitle
+        }
+        let nonQueryFeeds = feeds.reduce(Array<Feed>()) {
+            if $1.isQueryFeed {
+                return $0
+            } else {
+                return $0 + [$1]
+            }
+        }
+        let queryFeeds = feeds.reduce(Array<Feed>()) {
+            if $1.isQueryFeed {
+                return $0 + [$1]
+            } else {
+                return $0
+            }
+        }
+        for feed in queryFeeds {
+            let articles = self.privateArticlesMatchingQuery(feed.query!, feeds: nonQueryFeeds)
+            for article in articles {
+                feed.addArticle(article)
+            }
+        }
+        return feeds
     }
 
     private func privateArticlesMatchingQuery(query: String, feeds: [Feed]) -> [Article] {
@@ -615,7 +619,7 @@ internal class DataRepository: DataRetriever, DataWriter {
 
                 feedsLeft--
                 if (feedsLeft == 0) {
-                    callback(updatedFeeds, errors)
+                    callback(self.synchronousAllFeeds(), errors)
                 }
             }
         }

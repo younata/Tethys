@@ -91,7 +91,9 @@ public class ArticleListController: UITableViewController, DataSubscriber {
             splitView.showDetailViewController(UINavigationController(rootViewController: avc),
                 sender: self)
         } else {
-            self.navigationController?.pushViewController(avc, animated: animated)
+            if avc != self.navigationController?.topViewController {
+                self.navigationController?.pushViewController(avc, animated: animated)
+            }
         }
         return avc
     }

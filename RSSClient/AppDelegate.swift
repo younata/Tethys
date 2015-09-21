@@ -114,11 +114,11 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             let type = userActivity.activityType
             if type == "com.rachelbrindle.rssclient.article",
                 let userInfo = userActivity.userInfo,
-                let feedID = userInfo["feed"] as? String,
+                let feedTitle = userInfo["feed"] as? String,
                 let articleID = userInfo["article"] as? String {
                     self.dataRetriever?.feeds {feeds in
-                        if let feed = feeds.filter({ return $0.identifier == feedID }).first,
-                            let article = feed.articles.filter({ $0.identifier == articleID }).first {
+                        if let feed = feeds.filter({ return $0.title == feedTitle }).first,
+                            let article = feed.articles.filter({ $0.articleID?.URIRepresentation().absoluteString == articleID }).first {
                                 self.createControllerHierarchy(feed, article: article)
                         }
                     }

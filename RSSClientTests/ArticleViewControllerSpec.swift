@@ -208,7 +208,7 @@ class ArticleViewControllerSpec: QuickSpec {
             expect(subject.userActivity).toNot(beNil())
             if let activity = subject.userActivity {
                 expect(activity.activityType).to(equal("com.rachelbrindle.rssclient.article"))
-                expect(activity.title).to(equal("Reading Article"))
+                expect(activity.delegate).toNot(beNil())
                 if #available(iOS 9.0, *) {
                     expect(activity.eligibleForSearch).to(beTruthy())
                     expect(activity.eligibleForPublicIndexing).to(beFalsy())
@@ -306,12 +306,13 @@ class ArticleViewControllerSpec: QuickSpec {
                     if let userInfo = activity.userInfo {
                         expect(userInfo.keys.count).to(equal(3))
                         expect(userInfo["feed"] as? String).to(equal(""))
-                        expect(userInfo["article"] as? String).to(equal("identifier"))
+                        expect(userInfo["article"] as? String).to(equal(""))
                         expect(userInfo["showingContent"] as? Bool).to(beTruthy())
                     }
 
                     expect(activity.webpageURL).to(equal(article.link))
                     expect(activity.needsSave).to(beTruthy())
+                    expect(activity.title).to(equal(article.title))
 
                     if #available(iOS 9.0, *) {
                         expect(activity.keywords).to(equal(Set(["article", "summary", "rachel",  "a"])))
@@ -321,6 +322,29 @@ class ArticleViewControllerSpec: QuickSpec {
                     injector = nil
                     subject = nil
                     expect(activity.valid).to(beFalsy())
+                }
+            }
+
+            describe("saving the user activity") {
+                beforeEach {
+                    expect(subject.userActivity).toNot(beNil())
+                    if let activity = subject.userActivity {
+                        activity.userInfo = nil
+
+                        activity.delegate?.userActivityWillSave?(activity)
+                    }
+                }
+
+                it("actually writes the data to disk") {
+                    if let activity = subject.userActivity {
+                        expect(activity.userInfo).toNot(beNil())
+                        if let userInfo = activity.userInfo {
+                            expect(userInfo.keys.count).to(equal(3))
+                            expect(userInfo["feed"] as? String).to(equal(""))
+                            expect(userInfo["article"] as? String).to(equal(""))
+                            expect(userInfo["showingContent"] as? Bool).to(beTruthy())
+                        }
+                    }
                 }
             }
 

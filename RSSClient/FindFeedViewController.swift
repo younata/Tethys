@@ -1,6 +1,7 @@
 import UIKit
 import WebKit
 import Muon
+import Lepton
 import rNewsKit
 
 public class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFieldDelegate {
@@ -236,7 +237,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
                 let save = NSLocalizedString("FindFeedViewController_FoundFeed_Accept", comment: "")
 
                 let feedParser = FeedParser(string: text)
-                let opmlParser = OPMLParser(text: text).success {_ in
+                let opmlParser = Lepton.Parser(text: text).success {_ in
                     feedParser.cancel()
 
                     let detected = NSLocalizedString("FindFeedViewController_FoundFeed_List_Title", comment: "")

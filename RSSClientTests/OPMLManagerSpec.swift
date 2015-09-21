@@ -2,6 +2,7 @@ import Quick
 import Nimble
 import CoreData
 import Ra
+import Lepton
 @testable import rNewsKit
 
 class OPMLManagerSpec: QuickSpec {
@@ -88,9 +89,9 @@ class OPMLManagerSpec: QuickSpec {
 
                 let text = try! String(contentsOfFile: file, encoding: NSUTF8StringEncoding)
 
-                let parser = OPMLParser(text: text)
+                let parser = Lepton.Parser(text: text)
 
-                var testItems: [OPMLItem] = []
+                var testItems: [Lepton.Item] = []
 
                 parser.success {items in
                     testItems = items

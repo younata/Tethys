@@ -1,10 +1,11 @@
 import UIKit
 import Ra
 import Muon
+import Lepton
 import rNewsKit
 
 public class LocalImportViewController: UIViewController {
-    private var opmls: [(String, [OPMLItem])] = []
+    private var opmls: [(String, [Lepton.Item])] = []
     private var feeds: [(String, Muon.Feed)] = []
     private var contentsOfDirectory: [String] = []
 
@@ -129,7 +130,7 @@ public class LocalImportViewController: UIViewController {
         let location = documentsDirectory().stringByAppendingPathComponent(path)
         do {
             let text = try NSString(contentsOfFile: location, encoding: NSUTF8StringEncoding)
-            let opmlParser = OPMLParser(text: text as String)
+            let opmlParser = Lepton.Parser(text: text as String)
             let feedParser = FeedParser(string: text as String)
             feedParser.completion = {feed in
                 self.feeds.append((path, feed))

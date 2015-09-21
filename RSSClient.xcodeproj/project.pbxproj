@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8902D5461BB07389003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5451BB07389003D7C22 /* Lepton.framework */; };
+		8902D5471BB0753E003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5451BB07389003D7C22 /* Lepton.framework */; };
+		8902D5491BB0754F003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5481BB0754F003D7C22 /* Lepton.framework */; };
+		8902D54A1BB075D6003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5451BB07389003D7C22 /* Lepton.framework */; };
+		8902D54B1BB075E1003D7C22 /* Lepton.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5451BB07389003D7C22 /* Lepton.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8902D54C1BB075E9003D7C22 /* Lepton.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5481BB0754F003D7C22 /* Lepton.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8902D54D1BB075F7003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5481BB0754F003D7C22 /* Lepton.framework */; };
+		8902D54E1BB07712003D7C22 /* Lepton.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5481BB0754F003D7C22 /* Lepton.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8916880B1BA8856400F9FFE0 /* rNewsKit.framework in Embed rNewsKit */ = {isa = PBXBuildFile; fileRef = 894304211B45089A000078DC /* rNewsKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8918D4A41B8115F800DCDE0E /* ExplanationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8918D4A31B8115F800DCDE0E /* ExplanationView.swift */; };
 		8918D4D41B84593100DCDE0E /* ClearnessDark.css in Resources */ = {isa = PBXBuildFile; fileRef = 8918D4D31B84593100DCDE0E /* ClearnessDark.css */; };
@@ -24,7 +32,6 @@
 		8935F5D01B462702000FFD5D /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F271AE0C942004C3CB4 /* Ra.framework */; };
 		8935F5D21B46273D000FFD5D /* Nimble.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8935F5D31B46273D000FFD5D /* Quick.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2F1AE0C9B4004C3CB4 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		8935F5D41B4628B3000FFD5D /* OPMLParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EF4FD51A9682170052A82F /* OPMLParserSpec.swift */; };
 		8935F5D51B4628B3000FFD5D /* OPMLManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A341811B150DA90000C60B /* OPMLManagerSpec.swift */; };
 		8935F5D71B4628B3000FFD5D /* DataRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48CC1B42605A0097045A /* DataRepositorySpec.swift */; };
 		8935F5D81B4628B3000FFD5D /* DataUtilitySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890E47661AA19F7F007F217C /* DataUtilitySpec.swift */; };
@@ -91,7 +98,6 @@
 		8989794E1B70808300218498 /* SearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C61B40D2AC0097045A /* SearchIndex.swift */; };
 		8989794F1B70808300218498 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82031B461A2B00648367 /* Helpers.swift */; };
 		898979501B70808300218498 /* KitModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82051B461A5500648367 /* KitModule.swift */; };
-		898979511B70808300218498 /* OPMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */; };
 		898979521B70808300218498 /* OPMLManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A3417E1B150D1B0000C60B /* OPMLManager.swift */; };
 		898979531B70808300218498 /* DataRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48CA1B425F8C0097045A /* DataRepository.swift */; };
 		898979541B70808300218498 /* DataUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890E47581AA19D69007F217C /* DataUtility.swift */; };
@@ -116,7 +122,6 @@
 		898979A31B708E7800218498 /* SpecHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4355FD1A7AB7D900A961B9 /* SpecHelper.swift */; };
 		898979A41B708E7800218498 /* FakeSearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C81B40FBE00097045A /* FakeSearchIndex.swift */; };
 		898979A51B708E7800218498 /* FakeDataRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4355FF1A7ABA4F00A961B9 /* FakeDataRepository.swift */; };
-		898979A61B708E7800218498 /* OPMLParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EF4FD51A9682170052A82F /* OPMLParserSpec.swift */; };
 		898979A71B708E7800218498 /* OPMLManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A341811B150DA90000C60B /* OPMLManagerSpec.swift */; };
 		898979A81B708E7800218498 /* DataRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48CC1B42605A0097045A /* DataRepositorySpec.swift */; };
 		898979A91B708E7800218498 /* DataUtilitySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890E47661AA19F7F007F217C /* DataUtilitySpec.swift */; };
@@ -214,7 +219,6 @@
 		89CB98BF1B13947800C87160 /* FeedTableCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */; };
 		89CC81FF1B4615A100648367 /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F271AE0C942004C3CB4 /* Ra.framework */; };
 		89CC82001B46198200648367 /* SearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C61B40D2AC0097045A /* SearchIndex.swift */; };
-		89CC82021B4619F400648367 /* OPMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */; };
 		89CC82041B461A2B00648367 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82031B461A2B00648367 /* Helpers.swift */; };
 		89CC82061B461A5500648367 /* KitModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82051B461A5500648367 /* KitModule.swift */; };
 		89D428031B8D0734006CD81C /* X.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89D428021B8D0734006CD81C /* X.framework */; };
@@ -317,6 +321,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				8902D54B1BB075E1003D7C22 /* Lepton.framework in Embed Frameworks */,
 				899987381B483256003C1AF5 /* Ra.framework in Embed Frameworks */,
 				899987371B483248003C1AF5 /* Muon.framework in Embed Frameworks */,
 				8935F5D21B46273D000FFD5D /* Nimble.framework in Embed Frameworks */,
@@ -357,6 +362,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				8902D54E1BB07712003D7C22 /* Lepton.framework in Embed Frameworks */,
 				892152011B8FA33900CBF7E4 /* X.framework in Embed Frameworks */,
 				898979A01B70883300218498 /* Muon.framework in Embed Frameworks */,
 				898979631B70847F00218498 /* PureLayout_Mac.framework in Embed Frameworks */,
@@ -372,6 +378,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				8902D54C1BB075E9003D7C22 /* Lepton.framework in Embed Frameworks */,
 				898979BB1B708FA000218498 /* Muon.framework in Embed Frameworks */,
 				898979BC1B708FA000218498 /* Ra.framework in Embed Frameworks */,
 				898979B41B708EB100218498 /* Nimble.framework in Embed Frameworks */,
@@ -395,6 +402,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8902D5451BB07389003D7C22 /* Lepton.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lepton.framework; path = ../Carthage/Build/iOS/Lepton.framework; sourceTree = "<group>"; };
+		8902D5481BB0754F003D7C22 /* Lepton.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lepton.framework; path = ../Carthage/Build/Mac/Lepton.framework; sourceTree = "<group>"; };
 		890E47581AA19D69007F217C /* DataUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataUtility.swift; path = ../RSSClient/DataUtility.swift; sourceTree = "<group>"; };
 		890E47661AA19F7F007F217C /* DataUtilitySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataUtilitySpec.swift; path = ../RSSClientTests/DataUtilitySpec.swift; sourceTree = "<group>"; };
 		8918D4A31B8115F800DCDE0E /* ExplanationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExplanationView.swift; sourceTree = "<group>"; };
@@ -405,7 +414,6 @@
 		892151FF1B8FA31800CBF7E4 /* X.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = X.framework; path = ../Carthage/Build/Mac/X.framework; sourceTree = "<group>"; };
 		892152021B8FA93C00CBF7E4 /* ArticleListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListViewController.swift; sourceTree = "<group>"; };
 		8924D8E81A094CF5003B7529 /* github2.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = github2.css; sourceTree = "<group>"; };
-		8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OPMLParser.swift; path = ../RSSClient/OPMLParser.swift; sourceTree = "<group>"; };
 		8933E93219EE33F700ECFF3F /* UIColor+RSSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+RSSClient.h"; sourceTree = "<group>"; };
 		8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+RSSClient.m"; sourceTree = "<group>"; };
 		8937F6B41B77AD780044A442 /* AppModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppModule.swift; sourceTree = "<group>"; };
@@ -559,7 +567,6 @@
 		89E2A33E1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewControllerSpec.swift; sourceTree = "<group>"; };
 		89E2A3421B6C2A2C00A40D4E /* UIKit+PivotalSpecHelperStubs-iOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "UIKit+PivotalSpecHelperStubs-iOS.framework"; path = "Vendor/UIKit+PivotalSpecHelperStubs-iOS.framework"; sourceTree = SOURCE_ROOT; };
 		89EA6C351B4B2D8400456892 /* FakeDataReadWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDataReadWriter.swift; sourceTree = "<group>"; };
-		89EF4FD51A9682170052A82F /* OPMLParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OPMLParserSpec.swift; path = ../RSSClientTests/OPMLParserSpec.swift; sourceTree = "<group>"; };
 		89EF4FD71A96852D0052A82F /* test.opml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = test.opml; sourceTree = "<group>"; };
 		89F516551B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIBarButtonItem+rNewsTests.h"; sourceTree = "<group>"; };
 		89F516561B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIBarButtonItem+rNewsTests.m"; sourceTree = "<group>"; };
@@ -589,6 +596,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8902D5471BB0753E003D7C22 /* Lepton.framework in Frameworks */,
 				89CAD4C11BA3DB7F006D79FC /* Muon.framework in Frameworks */,
 				89CC81FF1B4615A100648367 /* Ra.framework in Frameworks */,
 			);
@@ -598,6 +606,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8902D54A1BB075D6003D7C22 /* Lepton.framework in Frameworks */,
 				8935F5CD1B462702000FFD5D /* Muon.framework in Frameworks */,
 				8935F5CE1B462702000FFD5D /* Nimble.framework in Frameworks */,
 				8935F5CF1B462702000FFD5D /* Quick.framework in Frameworks */,
@@ -620,6 +629,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8902D5491BB0754F003D7C22 /* Lepton.framework in Frameworks */,
 				892152001B8FA31800CBF7E4 /* X.framework in Frameworks */,
 				8989799F1B70882D00218498 /* Muon.framework in Frameworks */,
 				8989795F1B70845A00218498 /* PureLayout_Mac.framework in Frameworks */,
@@ -632,6 +642,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8902D54D1BB075F7003D7C22 /* Lepton.framework in Frameworks */,
 				898979B91B708F8F00218498 /* Muon.framework in Frameworks */,
 				898979BA1B708F8F00218498 /* Ra.framework in Frameworks */,
 				898979AF1B708E8F00218498 /* Nimble.framework in Frameworks */,
@@ -663,6 +674,7 @@
 				89CB98B91B12E9D300C87160 /* MAKDropDownMenu.framework in Frameworks */,
 				89AA8A8E1B536B98000E2C88 /* SyntaxKit.framework in Frameworks */,
 				898131681AF880400090FA7F /* Muon.framework in Frameworks */,
+				8902D5461BB07389003D7C22 /* Lepton.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -700,7 +712,6 @@
 				898C48C61B40D2AC0097045A /* SearchIndex.swift */,
 				89CC82031B461A2B00648367 /* Helpers.swift */,
 				89CC82051B461A5500648367 /* KitModule.swift */,
-				8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */,
 				89A3417E1B150D1B0000C60B /* OPMLManager.swift */,
 				898C48CA1B425F8C0097045A /* DataRepository.swift */,
 				890E47581AA19D69007F217C /* DataUtility.swift */,
@@ -722,7 +733,6 @@
 				898C48C81B40FBE00097045A /* FakeSearchIndex.swift */,
 				AE4355FF1A7ABA4F00A961B9 /* FakeDataRepository.swift */,
 				8937F6BF1B79D0800044A442 /* KitModuleSpec.swift */,
-				89EF4FD51A9682170052A82F /* OPMLParserSpec.swift */,
 				89A341811B150DA90000C60B /* OPMLManagerSpec.swift */,
 				898C48CC1B42605A0097045A /* DataRepositorySpec.swift */,
 				890E47661AA19F7F007F217C /* DataUtilitySpec.swift */,
@@ -811,6 +821,7 @@
 		898979251B707FAD00218498 /* rNewsKit-OSX */ = {
 			isa = PBXGroup;
 			children = (
+				8902D5481BB0754F003D7C22 /* Lepton.framework */,
 				8989799E1B70882D00218498 /* Muon.framework */,
 				8989795D1B70845A00218498 /* Ra.framework */,
 				8989795E1B70845A00218498 /* SyntaxKit.framework */,
@@ -999,6 +1010,7 @@
 		89CB98BB1B13921200C87160 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8902D5451BB07389003D7C22 /* Lepton.framework */,
 				89CAD4C21BA483C9006D79FC /* PureLayout.framework */,
 				89D428021B8D0734006CD81C /* X.framework */,
 				89AA8A8C1B536B90000E2C88 /* SyntaxKit.framework */,
@@ -1520,6 +1532,7 @@
 				"$(SRCROOT)/Carthage/Build/iOS/SyntaxKit.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/TOBrowserActivityKit.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/X.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Lepton.framework",
 			);
 			name = "Clean Carthage Libraries";
 			outputPaths = (
@@ -1561,7 +1574,6 @@
 				894304441B450A00000078DC /* DataUtility.swift in Sources */,
 				894304501B450BFB000078DC /* CoreDataArticle.swift in Sources */,
 				894304521B450C19000078DC /* CoreDataFeed.swift in Sources */,
-				89CC82021B4619F400648367 /* OPMLParser.swift in Sources */,
 				898979661B70849000218498 /* DataRepository.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1582,7 +1594,6 @@
 				8935F5DA1B4628B3000FFD5D /* ArticleSpec.swift in Sources */,
 				8935F5DC1B4629E6000FFD5D /* SpecHelper.swift in Sources */,
 				8935F5E21B462B8F000FFD5D /* FakeDataRepository.swift in Sources */,
-				8935F5D41B4628B3000FFD5D /* OPMLParserSpec.swift in Sources */,
 				8935F5DD1B462AD2000FFD5D /* FakeSearchIndex.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1608,7 +1619,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				898979511B70808300218498 /* OPMLParser.swift in Sources */,
 				8989794E1B70808300218498 /* SearchIndex.swift in Sources */,
 				898979561B70808300218498 /* CoreDataFeed.swift in Sources */,
 				898979521B70808300218498 /* OPMLManager.swift in Sources */,
@@ -1640,7 +1650,6 @@
 				898979A91B708E7800218498 /* DataUtilitySpec.swift in Sources */,
 				898979A51B708E7800218498 /* FakeDataRepository.swift in Sources */,
 				898979A41B708E7800218498 /* FakeSearchIndex.swift in Sources */,
-				898979A61B708E7800218498 /* OPMLParserSpec.swift in Sources */,
 				898979A71B708E7800218498 /* OPMLManagerSpec.swift in Sources */,
 				898979AC1B708E7800218498 /* EnclosureSpec.swift in Sources */,
 			);

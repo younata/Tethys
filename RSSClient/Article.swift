@@ -12,7 +12,7 @@ import JavaScriptCore
     var identifier: String { get set }
     var content: String { get set }
     var read: Bool { get set }
-    var feed: Feed? { get set }
+    weak var feed: Feed? { get set }
     var flags: [String] { get }
     var enclosures: [Enclosure] { get }
 }
@@ -81,7 +81,7 @@ import JavaScriptCore
             }
         }
     }
-    dynamic public var feed: Feed? {
+    weak dynamic public var feed: Feed? {
         willSet {
             if newValue != feed && newValue?.isQueryFeed != true {
                 self.updated = true

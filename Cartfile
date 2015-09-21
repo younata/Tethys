@@ -7,5 +7,5 @@ github "soffes/SyntaxKit"
 
 # objc
 github "PureLayout/PureLayout"
-github "younata/TOBrowserActivityKit" "master"
+github "TimOliver/TOBrowserActivityKit" "master"
 github "younata/DropDownMenu" "master"

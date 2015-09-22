@@ -2,7 +2,7 @@ import Cocoa
 import PureLayout_Mac
 import rNewsKit
 
-class UnreadCounter: NSView {
+public class UnreadCounter: NSView {
     
     let countLabel = NSText(forAutoLayout: ())
     
@@ -15,8 +15,8 @@ class UnreadCounter: NSView {
     
     private var color : NSColor = NSColor.darkGreenColor()
     
-    var hideUnreadText = false
-    var unread : UInt = 0 {
+    public var hideUnreadText = false
+    public var unread : UInt = 0 {
         didSet {
             if unread == 0 {
                 countLabel.string = ""
@@ -33,11 +33,11 @@ class UnreadCounter: NSView {
         }
     }
     
-    override func layout() {
+    public override func layout() {
         super.layout()
     }
     
-    override init(frame: NSRect) {
+    public override init(frame: NSRect) {
         super.init(frame: NSMakeRect(0, 0, 0, 0))
 
         self.addSubview(countLabel)
@@ -48,11 +48,11 @@ class UnreadCounter: NSView {
         countLabel.textColor = countColor
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func drawRect(dirtyRect: NSRect) {
+    public override func drawRect(dirtyRect: NSRect) {
         super.drawRect(dirtyRect)
         
         let ctx = NSGraphicsContext.currentContext()

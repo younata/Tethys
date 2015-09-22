@@ -70,7 +70,7 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
     public func reloadItems() {
         let fileManager = NSFileManager.defaultManager()
         do {
-            let contents = try fileManager.contentsOfDirectoryAtPath(documentsDirectory())
+            let contents = try fileManager.contentsOfDirectoryAtPath(documentsDirectory() as String)
             for path in contents {
                 verifyIfFeedOrOPML(path)
             }
@@ -137,7 +137,7 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
 
         if indexPath.section == 0 {
             let (path, items) = opmls[indexPath.row]
-            cell.textLabel?.text = path.lastPathComponent
+            cell.textLabel?.text = NSString(string: path).lastPathComponent as String
             cell.detailTextLabel?.text = "\(items.count) feeds"
         } else if indexPath.section == 1 {
             let (path, item) = feeds[indexPath.row]

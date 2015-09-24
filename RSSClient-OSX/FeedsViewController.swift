@@ -100,16 +100,36 @@ extension FeedsViewController: NSTableViewDelegate {
             feedView = FeedView(frame: NSZeroRect)
             feedView?.identifier = "feed"
         }
-        feedView?.feed = self.feeds[row]
+        feedView?.configure(self.feeds[row], delegate: self)
         return feedView
     }
 
     public func tableView(tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
         return heightForFeed(feeds[row], width: tableView.bounds.width - 16)
     }
+}
 
-    public func tableView(tableView: NSTableView, shouldSelectRow rowIndex: Int) -> Bool {
-        onFeedSelection(feeds[rowIndex])
-        return false
+extension FeedsViewController: FeedViewDelegate {
+    public func didClickFeed(feed: Feed) {
+        self.onFeedSelection(feed)
+    }
+
+    private enum FeedsMenuOption: String {
+        case Delete = "Delete"
+    }
+
+    public func menuOptionsForFeed(feed: Feed) -> [String] {
+        return [FeedsMenuOption.Delete.rawValue]
+    }
+
+    public func didSelectMenuOption(menuOption: String, forFeed feed: Feed) {
+        guard let feedsMenuOption = FeedsMenuOption(rawValue: menuOption) else {
+            return
+        }
+        switch feedsMenuOption {
+        case .Delete:
+            self.dataWriter?.deleteFeed(feed)
+            self.reload()
+        }
     }
 }

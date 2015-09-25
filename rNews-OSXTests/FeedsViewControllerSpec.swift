@@ -16,6 +16,8 @@ class FeedsViewControllerSpec: QuickSpec {
 
         let feeds = [feed1, feed2]
 
+        var mainMenu: NSMenu? = nil
+
         beforeEach {
             subject = FeedsViewController()
 
@@ -24,6 +26,12 @@ class FeedsViewControllerSpec: QuickSpec {
             dataReadWriter = FakeDataReadWriter()
             injector.bind(DataWriter.self, to: dataReadWriter)
             injector.bind(DataRetriever.self, to: dataReadWriter)
+
+            mainMenu = NSMenu(title: "")
+            mainMenu?.addItemWithTitle("a", action: "", keyEquivalent: "")
+            mainMenu?.addItemWithTitle("b", action: "", keyEquivalent: "")
+            mainMenu?.addItemWithTitle("c", action: "", keyEquivalent: "")
+            injector.bind(kMainMenu, to: mainMenu!)
 
             dataReadWriter.feedsList = feeds
 
@@ -36,6 +44,93 @@ class FeedsViewControllerSpec: QuickSpec {
 
         it("should add a subscriber to the dataWriter") {
             expect(dataReadWriter.subscribers.isEmpty).to(beFalsy())
+        }
+
+        describe("the main menu") {
+            var feedsMenuItem: NSMenuItem? = nil
+            beforeEach {
+                feedsMenuItem = mainMenu?.itemWithTitle("Feeds")
+            }
+
+            it("should add 'feeds' menu item to the main menu") {
+                expect(feedsMenuItem).toNot(beNil())
+                expect(feedsMenuItem?.target as? NSObject).toNot(beNil())
+                if let target = feedsMenuItem?.target as? NSObject,
+                   let action = feedsMenuItem?.action {
+                    expect(target.respondsToSelector(action)).to(beTruthy())
+                }
+            }
+
+            it("should add a submenu to the 'feeds' menu item") {
+                expect(feedsMenuItem?.submenu).toNot(beNil())
+            }
+
+            describe("the 'feeds' section") {
+                var feedsSubMenu: NSMenu? = nil
+                beforeEach {
+                    feedsSubMenu = feedsMenuItem?.submenu
+                }
+
+                it("has an option for deleting all feeds") {
+                    let deleteAllItem = feedsSubMenu?.itemWithTitle("Delete all feeds")
+                    expect(deleteAllItem).toNot(beNil())
+                    guard let deleteItem = deleteAllItem else {
+                        return
+                    }
+
+                    expect(deleteItem.keyEquivalent).to(equal("D"))
+                    expect(deleteItem.enabled).to(beTruthy())
+                    expect(deleteItem.target as? NSObject).toNot(beNil())
+
+                    if let target = deleteItem.target as? NSObject {
+                        dataReadWriter.feedsList = []
+                        target.performSelector(deleteItem.action)
+
+                        expect(dataReadWriter.deletedFeeds).to(equal(feeds))
+
+                        expect(subject.tableView.dataSource()?.numberOfRowsInTableView?(subject.tableView)).to(equal(0))
+                    }
+                }
+
+                it("has an option for reloading feeds") {
+                    let reloadAllItem = feedsSubMenu?.itemWithTitle("Refresh feeds")
+                    expect(reloadAllItem).toNot(beNil())
+                    guard let reloadItem = reloadAllItem else {
+                        return
+                    }
+
+                    expect(reloadItem.keyEquivalent).to(equal("r"))
+                    expect(reloadItem.enabled).to(beTruthy())
+                    expect(reloadItem.target as? NSObject).toNot(beNil())
+
+                    if let target = reloadItem.target as? NSObject {
+                        target.performSelector(reloadItem.action)
+
+                        expect(dataReadWriter.didUpdateFeeds).to(beTruthy())
+                    }
+                }
+
+                it("has an option for marking all feeds as read") {
+                    let markAllReadItem = feedsSubMenu?.itemWithTitle("Mark all feeds as read")
+                    expect(markAllReadItem).toNot(beNil())
+                    guard let markReadItem = markAllReadItem else {
+                        return
+                    }
+
+                    expect(markReadItem.keyEquivalent).to(equal("R"))
+                    expect(markReadItem.enabled).to(beTruthy())
+                    expect(markReadItem.target as? NSObject).toNot(beNil())
+
+                    if let target = markReadItem.target as? NSObject {
+                        dataReadWriter.feedsList = [] // tests that it reloads data
+                        target.performSelector(markReadItem.action)
+
+                        expect(dataReadWriter.markedReadFeeds).to(equal(feeds))
+
+                        expect(subject.tableView.dataSource()?.numberOfRowsInTableView?(subject.tableView)).to(equal(0))
+                    }
+                }
+            }
         }
 
         describe("the tableview") {
@@ -81,11 +176,21 @@ class FeedsViewControllerSpec: QuickSpec {
 
                     describe("for a secondary click") {
                         it("should return menu options") {
-                            let menuOptions = ["Delete"]
+                            let menuOptions = ["Mark as Read", "Delete"]
                             expect(delegate?.menuOptionsForFeed(feed1)).to(equal(menuOptions))
                         }
 
-                        describe("selecting Delete in the menu option") {
+                        describe("selecting 'Mark as Read' as the menu option") {
+                            beforeEach {
+                                delegate?.didSelectMenuOption("Mark as Read", forFeed: feed1)
+                            }
+
+                            it("should mark the contents of the feed as read") {
+                                expect(dataReadWriter.lastFeedMarkedRead).to(equal(feed1))
+                            }
+                        }
+
+                        describe("selecting 'Delete' as the menu option") {
                             let updatedFeeds = [feed2]
                             beforeEach {
                                 dataReadWriter.feedsList = updatedFeeds

@@ -39,11 +39,11 @@ class DataUtilitySpec: QuickSpec {
                 it("should download the image pointed at by info.imageURL and set it as the feed image") {
                     let urlSession = FakeURLSession()
                     DataUtility.updateFeedImage(feed, info: info, urlSession: urlSession)
-                    let image = NSBundle(forClass: self.classForCoder).imageForResource("AppIcon")!
                     #if os(OSX)
+                        let image = NSBundle(forClass: self.classForCoder).imageForResource("AppIcon")!
                         let data = image.TIFFRepresentation
                     #elseif os(iOS)
-                        let data = UIImagePNGRepresentation(image)
+                        let data = NSData(contentsOfURL: NSBundle(forClass: self.classForCoder).URLForResource("AppIcon", withExtension: "png")!)
                     #endif
                     urlSession.lastCompletionHandler(data, nil, nil)
 
@@ -52,7 +52,14 @@ class DataUtilitySpec: QuickSpec {
             }
             context("when the feed has an existing image") {
                 beforeEach {
-                    feed.image = NSBundle(forClass: self.classForCoder).imageForResource("AppIcon")!
+                    let image: Image
+                    #if os(OSX)
+                        image = NSBundle(forClass: self.classForCoder).imageForResource("AppIcon")!
+                    #elseif os(iOS)
+                        let data = NSData(contentsOfURL: NSBundle(forClass: self.classForCoder).URLForResource("AppIcon", withExtension: "png")!)!
+                        image = UIImage(data: data)!
+                    #endif
+                    feed.image = image
                     do {
                         try feed.managedObjectContext?.save()
                     } catch _ {

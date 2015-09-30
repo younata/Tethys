@@ -33,6 +33,7 @@
 		8937F6B71B77AE5F0044A442 /* AppModuleSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8937F6B61B77AE5F0044A442 /* AppModuleSpec.swift */; };
 		8937F6BB1B793CA40044A442 /* AppIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8937F6BA1B793CA40044A442 /* AppIcon.png */; };
 		8937F6BC1B793CA40044A442 /* AppIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8937F6BA1B793CA40044A442 /* AppIcon.png */; };
+		8937F6BE1B7996F50044A442 /* prism.js.html in Resources */ = {isa = PBXBuildFile; fileRef = 8937F6BD1B7996F50044A442 /* prism.js.html */; };
 		893F93E41B237EBC00B52194 /* UnreadCounterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893F93E31B237EBC00B52194 /* UnreadCounterSpec.swift */; };
 		894304241B45089A000078DC /* rNewsKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 894304231B45089A000078DC /* rNewsKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8943042B1B45089A000078DC /* rNewsKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 894304211B45089A000078DC /* rNewsKit.framework */; };
@@ -404,6 +405,7 @@
 		8937F6B41B77AD780044A442 /* AppModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppModule.swift; sourceTree = "<group>"; };
 		8937F6B61B77AE5F0044A442 /* AppModuleSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppModuleSpec.swift; sourceTree = "<group>"; };
 		8937F6BA1B793CA40044A442 /* AppIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = AppIcon.png; path = Images/AppIcon.png; sourceTree = SOURCE_ROOT; };
+		8937F6BD1B7996F50044A442 /* prism.js.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = prism.js.html; sourceTree = "<group>"; };
 		893F93E31B237EBC00B52194 /* UnreadCounterSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounterSpec.swift; sourceTree = "<group>"; };
 		894304211B45089A000078DC /* rNewsKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = rNewsKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		894304231B45089A000078DC /* rNewsKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rNewsKit.h; sourceTree = "<group>"; };
@@ -1034,6 +1036,7 @@
 			children = (
 				89C830B519D7DE97009924DA /* ArticleViewController.swift */,
 				8924D8E81A094CF5003B7529 /* article.css */,
+				8937F6BD1B7996F50044A442 /* prism.js.html */,
 			);
 			name = "Reading an article";
 			sourceTree = "<group>";
@@ -1410,6 +1413,7 @@
 				89C830BF19D89722009924DA /* FindICO.js in Resources */,
 				89C830BB19D8904A009924DA /* findFeeds.js in Resources */,
 				895901B51A32B61A002E2C62 /* Localizable.stringsdict in Resources */,
+				8937F6BE1B7996F50044A442 /* prism.js.html in Resources */,
 				89AA8A911B536BEB000E2C88 /* JavaScript.tmLanguage in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

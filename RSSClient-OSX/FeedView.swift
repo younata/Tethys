@@ -12,10 +12,10 @@ public class FeedView: NSView {
     public private(set) var feed: Feed? = nil {
         didSet {
             if let f = feed {
-                self.nameLabel.string = f.title
+                self.nameLabel.string = f.displayTitle
                 let font : NSFont = nameLabel.font!
                 self.nameHeight?.constant = ceil(NSAttributedString(string: nameLabel.string!, attributes: [NSFontAttributeName: font]).size().height)
-                self.summaryLabel.string = f.summary
+                self.summaryLabel.string = f.displaySummary
                 self.unreadCounter.unread = UInt(f.articles.filter({return $0.read == false}).count)
                 self.imageView.image = f.image
             } else {

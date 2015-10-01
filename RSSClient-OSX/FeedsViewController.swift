@@ -106,8 +106,8 @@ public class FeedsViewController: NSViewController {
     private func heightForFeed(feed: Feed, width: CGFloat) -> CGFloat {
         var height : CGFloat = 16.0
         let attributes = [NSFontAttributeName: NSFont.systemFontOfSize(12)]
-        let title = NSAttributedString(string: feed.title, attributes: attributes)
-        let summary = NSAttributedString(string: feed.summary, attributes: attributes)
+        let title = NSAttributedString(string: feed.displayTitle, attributes: attributes)
+        let summary = NSAttributedString(string: feed.displaySummary, attributes: attributes)
 
         let titleBounds = title.boundingRectWithSize(NSMakeSize(width, CGFloat.max), options: NSStringDrawingOptions.UsesFontLeading)
         let summaryBounds = summary.boundingRectWithSize(NSMakeSize(width, CGFloat.max), options: NSStringDrawingOptions.UsesFontLeading)

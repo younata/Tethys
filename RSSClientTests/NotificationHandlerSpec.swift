@@ -134,7 +134,7 @@ class NotificationHandlerSpec: QuickSpec {
                 expect(notificationSource.scheduledNotes.count).to(equal(1))
                 if let note = notificationSource.scheduledNotes.first {
                     expect(note.category).to(equal("default"))
-                    let feedTitle = article.feed?.title ?? ""
+                    let feedTitle = article.feed?.displayTitle ?? ""
                     expect(note.alertBody).to(equal("New article in \(feedTitle): \(article.title)"))
                     expect(note.userInfo?.count).to(equal(2))
                     expect(note.userInfo?["feed"] as? String).to(equal(article.feed?.identifier))

@@ -138,7 +138,7 @@ class FeedViewControllerSpec: QuickSpec {
                         }
 
                         it("should have a label title equal to the feed's") {
-                            expect(cell.textLabel?.text).to(equal(feed.title))
+                            expect(cell.textLabel?.text).to(equal(feed.displayTitle))
                         }
                     }
                 }
@@ -266,7 +266,7 @@ class FeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should have a label title equal to the feed's") {
-                        expect(cell.textLabel?.text).to(equal(feed.summary))
+                        expect(cell.textLabel?.text).to(equal(feed.displaySummary))
                     }
                 }
             }

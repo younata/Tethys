@@ -176,7 +176,7 @@ internal class DataRepository: DataRetriever, DataWriter {
             return
         }
         self.backgroundQueue.addOperationWithBlock {
-            if let cdfeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feedID), managedObjectContext: self.objectContext).first as? CoreDataFeed {
+            if let cdfeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feedID), managedObjectContext: self.objectContext, sortDescriptors: []).first as? CoreDataFeed {
                 let articleIDsToDelete = cdfeed.articles.map {
                     return $0.objectID.URIRepresentation().absoluteString
                 }
@@ -207,7 +207,7 @@ internal class DataRepository: DataRetriever, DataWriter {
             return
         }
         self.backgroundQueue.addOperationWithBlock {
-            if let cdfeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feedID), managedObjectContext: self.objectContext).first as? CoreDataFeed {
+            if let cdfeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feedID), managedObjectContext: self.objectContext, sortDescriptors: []).first as? CoreDataFeed {
                 self.saveArticle(article, feed: cdfeed)
             }
         }
@@ -218,7 +218,7 @@ internal class DataRepository: DataRetriever, DataWriter {
             return
         }
         self.backgroundQueue.addOperationWithBlock {
-            if let cdarticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", articleID), managedObjectContext: self.objectContext).first as? CoreDataArticle {
+            if let cdarticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", articleID), managedObjectContext: self.objectContext, sortDescriptors: []).first as? CoreDataArticle {
                 let identifier = cdarticle.objectID.URIRepresentation().absoluteString
                 self.objectContext.performBlockAndWait {
                     self.objectContext.deleteObject(cdarticle)
@@ -314,7 +314,7 @@ internal class DataRepository: DataRetriever, DataWriter {
     private func upsertArticle(muonArticle: Muon.Article, feed: Feed) -> Article? {
         let predicate = NSPredicate(format: "link = %@ && title == %@ && feed == %@", muonArticle.link?.absoluteString ?? "", muonArticle.title ?? "", feed.feedID!)
         if let article = DataUtility.entities("Article", matchingPredicate: predicate,
-            managedObjectContext: self.objectContext).last as? CoreDataArticle {
+            managedObjectContext: self.objectContext, sortDescriptors: []).last as? CoreDataArticle {
                 if article.updatedAt != muonArticle.updated {
                     DataUtility.updateArticle(article, item: muonArticle)
                     self.save()
@@ -343,7 +343,7 @@ internal class DataRepository: DataRetriever, DataWriter {
         guard let feedID = feed.feedID where feed.updated else {
             return
         }
-        if let cdfeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feedID), managedObjectContext: self.objectContext).first as? CoreDataFeed {
+        if let cdfeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feedID), managedObjectContext: self.objectContext, sortDescriptors: []).first as? CoreDataFeed {
             cdfeed.title = feed.title
             cdfeed.url = feed.url?.absoluteString
             cdfeed.summary = feed.summary
@@ -364,7 +364,7 @@ internal class DataRepository: DataRetriever, DataWriter {
         guard let articleID = article.articleID else {
             return
         }
-        if let cdarticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", articleID), managedObjectContext: self.objectContext).first as? CoreDataArticle {
+        if let cdarticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", articleID), managedObjectContext: self.objectContext, sortDescriptors: []).first as? CoreDataArticle {
             cdarticle.title = article.title
             cdarticle.link = article.link?.absoluteString
             cdarticle.summary = article.summary
@@ -441,7 +441,7 @@ internal class DataRepository: DataRetriever, DataWriter {
             return
         }
         article.read = read
-        if let cdarticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", articleID), managedObjectContext: self.objectContext).first as? CoreDataArticle {
+        if let cdarticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", articleID), managedObjectContext: self.objectContext, sortDescriptors: []).first as? CoreDataArticle {
             cdarticle.read = read
             save()
         }

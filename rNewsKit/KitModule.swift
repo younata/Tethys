@@ -23,9 +23,9 @@ public class KitModule: NSObject, Ra.InjectorModule {
         #if os(iOS)
             if #available(iOS 9.0, *) {
                 searchIndex = CSSearchableIndex.defaultSearchableIndex()
+                injector.bind(SearchIndex.self, to: searchIndex!)
             }
         #endif
-        injector.bind(SearchIndex.self, to: searchIndex)
 
         let backgroundQueue = NSOperationQueue()
         backgroundQueue.qualityOfService = NSQualityOfService.Utility

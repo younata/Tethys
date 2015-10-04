@@ -394,10 +394,13 @@ internal class DataRepository: DataRetriever, DataWriter {
                     attributes.timestamp = article.updatedAt ?? article.published
                     attributes.authorNames = [article.author]
 
+                    if let image = article.feed?.image, let data = UIImagePNGRepresentation(image) {
+                        attributes.thumbnailData = data
+                    }
+
                     let item = CSSearchableItem(uniqueIdentifier: identifier, domainIdentifier: nil, attributeSet: attributes)
                     item.expirationDate = NSDate.distantFuture()
-                    self.searchIndex?.addItemsToIndex([item]) {error in
-                    }
+                    self.searchIndex?.addItemsToIndex([item]) {_ in }
                 }
             #endif
             self.save()
@@ -429,6 +432,7 @@ internal class DataRepository: DataRetriever, DataWriter {
                 if let d = data {
                     if let image = Image(data: d) {
                         feed.image = image
+
                         self.synchronousSaveFeed(feed)
                     }
                 }

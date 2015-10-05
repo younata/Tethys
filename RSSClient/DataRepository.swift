@@ -23,7 +23,8 @@ public protocol DataSubscriber {
 
     func deletedArticle(article: Article)
 
-    func updatedFeeds(feeds: [Feed])
+    func willUpdateFeeds()
+    func didUpdateFeeds(feeds: [Feed])
 }
 
 public protocol DataWriter {
@@ -243,14 +244,24 @@ internal class DataRepository: DataRetriever, DataWriter {
         }
     }
 
+    private var updatingFeedsCallbacks = Array<([Feed], [NSError]) -> (Void)>()
+
     internal func updateFeeds(callback: ([Feed], [NSError]) -> (Void)) {
+        self.updatingFeedsCallbacks.append(callback)
+        if self.updatingFeedsCallbacks.count != 1 {
+            return
+        }
         self.allFeedsOnBackgroundQueue {feeds in
             var feedsLeft = feeds.count
             guard feedsLeft != 0 else {
                 self.mainQueue.addOperationWithBlock {
                     callback([], [])
                 }
+                self.updatingFeedsCallbacks = []
                 return
+            }
+            for subscriber in self.subscribers {
+                subscriber.willUpdateFeeds()
             }
             var updatedFeeds: [Feed] = []
             var errors: [NSError] = []
@@ -288,10 +299,13 @@ internal class DataRepository: DataRetriever, DataWriter {
                     feedsLeft--
                     if (feedsLeft == 0) {
                         self.mainQueue.addOperationWithBlock {
-                            callback(updatedFeeds, errors)
-                            for subscriber in self.subscribers {
-                                subscriber.updatedFeeds(updatedFeeds)
+                            for updateCallback in self.updatingFeedsCallbacks {
+                                updateCallback(updatedFeeds, errors)
                             }
+                            for subscriber in self.subscribers {
+                                subscriber.didUpdateFeeds(updatedFeeds)
+                            }
+                            self.updatingFeedsCallbacks = []
                         }
                     }
                 }
@@ -304,11 +318,12 @@ internal class DataRepository: DataRetriever, DataWriter {
     internal func synchronousNewFeed() -> Feed {
         // Do not call this on the main thread
         let entityDescription = NSEntityDescription.entityForName("Feed", inManagedObjectContext: self.objectContext)!
-        let cdfeed = CoreDataFeed(entity: entityDescription, insertIntoManagedObjectContext: self.objectContext)
+        var cdfeed: CoreDataFeed? = nil
         self.objectContext.performBlockAndWait {
+            cdfeed = CoreDataFeed(entity: entityDescription, insertIntoManagedObjectContext: self.objectContext)
             do { try self.objectContext.save() } catch { }
         }
-        return Feed(feed: cdfeed)
+        return Feed(feed: cdfeed!)
     }
 
     private func upsertArticle(muonArticle: Muon.Article, feed: Feed) -> Article? {

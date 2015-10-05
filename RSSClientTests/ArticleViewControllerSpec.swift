@@ -311,7 +311,7 @@ class ArticleViewControllerSpec: QuickSpec {
                     expect(subject.presentedViewController).to(beAnInstanceOf(UIActivityViewController.self))
                     if let activityViewController = subject.presentedViewController as? UIActivityViewController {
                         expect(activityViewController.activityItems().count).to(equal(1))
-                        expect(activityViewController.activityItems().first as? NSURL).to(equal(article.link))
+                        expect(activityViewController.activityItems().first as? NSURL).to(equal(subject.content.URL ?? article.link))
 
                         expect(activityViewController.applicationActivities() as? [NSObject]).toNot(beNil())
                         if let activities = activityViewController.applicationActivities() as? [NSObject] {

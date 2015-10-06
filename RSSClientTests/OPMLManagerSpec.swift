@@ -26,6 +26,10 @@ class OPMLManagerSpec: QuickSpec {
             injector.bind(kBackgroundQueue, to: importQueue)
             injector.bind(DataRepository.self, to: dataRepository)
 
+            let previouslyImportedFeed = Feed(title: "imported", url: NSURL(string: "http://example.com/previouslyImportedFeed"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+
+            dataRepository.feedsList = [previouslyImportedFeed]
+
             subject = OPMLManager(injector: injector)
         }
 
@@ -37,14 +41,12 @@ class OPMLManagerSpec: QuickSpec {
                 subject.importOPML(opmlUrl) {otherFeeds in
                     feeds = otherFeeds
                 }
-
-                expect(feeds.count).to(equal(3))
             }
 
             it("should return a list of feeds imported") {
                 expect(feeds.count).to(equal(3))
-                if (feeds.count != 3) {
-                    return;
+                guard feeds.count == 3 else {
+                    return
                 }
                 feeds.sortInPlace { $0.title < $1.title }
                 let first = feeds[0]

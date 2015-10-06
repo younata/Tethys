@@ -316,7 +316,6 @@ internal class DataRepository: DataRetriever, DataWriter {
     //MARK: Private (DataWriter)
 
     internal func synchronousNewFeed() -> Feed {
-        // Do not call this on the main thread
         let entityDescription = NSEntityDescription.entityForName("Feed", inManagedObjectContext: self.objectContext)!
         var cdfeed: CoreDataFeed? = nil
         self.objectContext.performBlockAndWait {

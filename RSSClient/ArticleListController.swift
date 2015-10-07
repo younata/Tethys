@@ -51,6 +51,7 @@ public class ArticleListController: UITableViewController, DataSubscriber {
     public func deletedArticle(article: Article) {}
 
     public func willUpdateFeeds() {}
+    public func didUpdateFeedsProgress(finished: Int, total: Int) {}
     public func didUpdateFeeds(feeds: [Feed]) {}
 
     public func markedArticle(article: Article, asRead read: Bool) {

@@ -24,6 +24,7 @@ public protocol DataSubscriber {
     func deletedArticle(article: Article)
 
     func willUpdateFeeds()
+    func didUpdateFeedsProgress(finished: Int, total: Int)
     func didUpdateFeeds(feeds: [Feed])
 }
 
@@ -251,6 +252,7 @@ internal class DataRepository: DataRetriever, DataWriter {
         if self.updatingFeedsCallbacks.count != 1 {
             return
         }
+
         self.allFeedsOnBackgroundQueue {feeds in
             var feedsLeft = feeds.count
             guard feedsLeft != 0 else {
@@ -260,27 +262,60 @@ internal class DataRepository: DataRetriever, DataWriter {
                 self.updatingFeedsCallbacks = []
                 return
             }
-            for subscriber in self.subscribers {
-                subscriber.willUpdateFeeds()
+            self.mainQueue.addOperationWithBlock {
+                for subscriber in self.subscribers {
+                    subscriber.willUpdateFeeds()
+                }
             }
+
             var updatedFeeds: [Feed] = []
             var errors: [NSError] = []
+
+            var totalProgress = feedsLeft * 2
+            var currentProgress = 0
+
+            let loadFeed = {(url: NSURL, callback: (Muon.Feed?, NSError?) -> (Void)) -> (Void) in
+                let dataTask = self.urlSession.dataTaskWithURL(url) {data, response, error in
+                    currentProgress++
+                    self.mainQueue.addOperationWithBlock {
+                        for subscriber in self.subscribers {
+                            subscriber.didUpdateFeedsProgress(currentProgress, total: totalProgress)
+                        }
+                    }
+                    if let error = error {
+                        callback(nil, error)
+                    } else if let data = data, string = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
+                        let feedParser = Muon.FeedParser(string: string)
+                        feedParser.success { callback($0, nil) }.failure { callback(nil, $0) }
+                        self.backgroundQueue.addOperation(feedParser)
+                    } else {
+                        let error: NSError
+                        if let response = response as? NSHTTPURLResponse where response.statusCode != 200 {
+                            error = NSError(domain: "com.rachelbrindle.rssclient.server", code: response.statusCode, userInfo: [NSLocalizedFailureReasonErrorKey: NSHTTPURLResponse.localizedStringForStatusCode(response.statusCode)])
+                        } else {
+                            error = NSError(domain: "com.rachelbrindle.rssclient.unknown", code: 1, userInfo: [NSLocalizedFailureReasonErrorKey: "Unknown"])
+                        }
+                        callback(nil, error)
+                    }
+                }
+                dataTask.resume()
+            }
             for feed in feeds {
                 guard let url = feed.url where feed.remainingWait == 0 else {
                     feed.remainingWait--
                     self.synchronousSaveFeed(feed)
                     feedsLeft--
+                    totalProgress -= 2
                     continue
                 }
-                loadFeed(url, urlSession: self.urlSession, queue: self.backgroundQueue) {muonFeed, error in
+                loadFeed(url) {muonFeed, error in
                     if let err = error {
                         if err.domain == "com.rachelbrindle.rssclient.server" {
                             feed.remainingWait++
                             self.synchronousSaveFeed(feed)
                         }
                         errors.append(err)
-                    }
-                    if let item = muonFeed {
+                    } else if let item = muonFeed {
                         self.updateFeed(feed, muonFeed: item)
                         self.updateFeedImage(feed, muonFeed: item)
 
@@ -294,6 +329,13 @@ internal class DataRepository: DataRetriever, DataWriter {
                         self.synchronousSaveFeed(feed)
 
                         updatedFeeds.append(feed)
+                    }
+
+                    currentProgress++
+                    self.mainQueue.addOperationWithBlock {
+                        for subscriber in self.subscribers {
+                            subscriber.didUpdateFeedsProgress(currentProgress, total: totalProgress)
+                        }
                     }
 
                     feedsLeft--
@@ -469,24 +511,4 @@ internal class DataRepository: DataRetriever, DataWriter {
             }
         }
     }
-}
-
-private func loadFeed(url: NSURL, urlSession: NSURLSession, queue: NSOperationQueue, callback: (Muon.Feed?, NSError?) -> (Void)) {
-    urlSession.dataTaskWithURL(url) {data, response, error in
-        if let error = error {
-            callback(nil, error)
-        } else if let data = data, string = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
-            let feedParser = Muon.FeedParser(string: string)
-            feedParser.success { callback($0, nil) }.failure { callback(nil, $0) }
-            queue.addOperation(feedParser)
-        } else {
-            let error: NSError
-            if let response = response as? NSHTTPURLResponse where response.statusCode != 200 {
-                error = NSError(domain: "com.rachelbrindle.rssclient.server", code: response.statusCode, userInfo: [NSLocalizedFailureReasonErrorKey: NSHTTPURLResponse.localizedStringForStatusCode(response.statusCode)])
-            } else {
-                error = NSError(domain: "com.rachelbrindle.rssclient.unknown", code: 1, userInfo: [NSLocalizedFailureReasonErrorKey: "Unknown"])
-            }
-            callback(nil, error)
-        }
-    }.resume()
 }

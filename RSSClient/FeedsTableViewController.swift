@@ -44,6 +44,15 @@ public class FeedsTableViewController: UIViewController {
         return searchBar
     }()
 
+    public lazy var updateBar: UIProgressView = {
+        let updateBar = UIProgressView(progressViewStyle: .Default)
+        updateBar.translatesAutoresizingMaskIntoConstraints = false
+        updateBar.progressTintColor = UIColor.darkGreenColor()
+        updateBar.trackTintColor = UIColor.clearColor()
+        updateBar.hidden = true
+        return updateBar
+    }()
+
     public lazy var refreshView: BreakOutToRefreshView = {
         let refreshView = BreakOutToRefreshView(scrollView: self.tableView)
         refreshView.delegate = self
@@ -71,17 +80,25 @@ public class FeedsTableViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.addChildViewController(tableViewController)
-        self.view.addSubview(tableView)
-        tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
-        tableView.addSubview(self.refreshView)
+        self.addChildViewController(self.tableViewController)
+        self.view.addSubview(self.tableView)
+        self.tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
+        self.tableView.addSubview(self.refreshView)
 
-        self.view.addSubview(dropDownMenu)
-        dropDownMenu.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
-        menuTopOffset = dropDownMenu.autoPinEdgeToSuperviewEdge(.Top)
+        self.view.addSubview(self.updateBar)
+        if let _ = self.updateBar.superview {
+            self.updateBar.autoPinEdgeToSuperviewEdge(.Leading)
+            self.updateBar.autoPinEdgeToSuperviewEdge(.Trailing)
+            self.updateBar.autoPinEdgeToSuperviewEdge(.Top, withInset: 64)
+            self.updateBar.autoSetDimension(.Height, toSize: 3)
+        }
+
+        self.view.addSubview(self.dropDownMenu)
+        self.dropDownMenu.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
+        self.menuTopOffset = self.dropDownMenu.autoPinEdgeToSuperviewEdge(.Top)
 
         let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "didTapAddFeed")
-        self.navigationItem.rightBarButtonItems = [addButton, tableViewController.editButtonItem()]
+        self.navigationItem.rightBarButtonItems = [addButton, self.tableViewController.editButtonItem()]
 
         let settingsTitle = NSLocalizedString("Settings", comment: "")
         let settingsButton = UIBarButtonItem(title: settingsTitle, style: .Plain, target: self, action: "presentSettings")
@@ -90,6 +107,8 @@ public class FeedsTableViewController: UIViewController {
         self.navigationItem.title = NSLocalizedString("Feeds", comment: "")
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
+
+        self.dataWriter.addSubscriber(self)
 
         self.reload(nil)
     }
@@ -224,6 +243,24 @@ public class FeedsTableViewController: UIViewController {
 extension FeedsTableViewController: UISearchBarDelegate {
     public func searchBar(searchBar: UISearchBar, textDidChange text: String) {
         self.reload(text)
+    }
+}
+
+extension FeedsTableViewController: DataSubscriber {
+    public func markedArticle(article: Article, asRead read: Bool) {}
+    public func deletedArticle(article: Article) {}
+
+    public func willUpdateFeeds() {
+        self.updateBar.hidden = false
+        self.updateBar.progress = 0
+    }
+
+    public func didUpdateFeedsProgress(finished: Int, total: Int) {
+        self.updateBar.progress = Float(finished) / Float(total)
+    }
+
+    public func didUpdateFeeds(feeds: [Feed]) {
+        self.updateBar.hidden = true
     }
 }
 

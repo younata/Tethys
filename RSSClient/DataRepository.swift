@@ -41,6 +41,8 @@ public protocol DataWriter {
     func markArticle(article: Article, asRead: Bool)
 
     func updateFeeds(callback: ([Feed], [NSError]) -> (Void))
+
+    func updateFeed(feed: Feed, callback: (Feed?, NSError?) -> (Void))
 }
 
 internal class DataRepository: DataRetriever, DataWriter {
@@ -246,7 +248,6 @@ internal class DataRepository: DataRetriever, DataWriter {
     }
 
     private var updatingFeedsCallbacks = Array<([Feed], [NSError]) -> (Void)>()
-
     internal func updateFeeds(callback: ([Feed], [NSError]) -> (Void)) {
         self.updatingFeedsCallbacks.append(callback)
         if self.updatingFeedsCallbacks.count != 1 {
@@ -254,103 +255,25 @@ internal class DataRepository: DataRetriever, DataWriter {
         }
 
         self.allFeedsOnBackgroundQueue {feeds in
-            var feedsLeft = feeds.count
-            guard feedsLeft != 0 else {
+            self.privateUpdateFeeds(feeds) {updatedFeeds, errors in
                 self.mainQueue.addOperationWithBlock {
-                    callback([], [])
+                    for updateCallback in self.updatingFeedsCallbacks {
+                        updateCallback(updatedFeeds, errors)
+                    }
+                    for subscriber in self.subscribers {
+                        subscriber.didUpdateFeeds(updatedFeeds)
+                    }
+                    self.updatingFeedsCallbacks = []
                 }
                 self.updatingFeedsCallbacks = []
-                return
             }
-            self.mainQueue.addOperationWithBlock {
-                for subscriber in self.subscribers {
-                    subscriber.willUpdateFeeds()
-                }
-            }
+        }
+    }
 
-            var updatedFeeds: [Feed] = []
-            var errors: [NSError] = []
-
-            var totalProgress = feedsLeft * 2
-            var currentProgress = 0
-
-            let loadFeed = {(url: NSURL, callback: (Muon.Feed?, NSError?) -> (Void)) -> (Void) in
-                let dataTask = self.urlSession.dataTaskWithURL(url) {data, response, error in
-                    currentProgress++
-                    self.mainQueue.addOperationWithBlock {
-                        for subscriber in self.subscribers {
-                            subscriber.didUpdateFeedsProgress(currentProgress, total: totalProgress)
-                        }
-                    }
-                    if let error = error {
-                        callback(nil, error)
-                    } else if let data = data, string = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
-                        let feedParser = Muon.FeedParser(string: string)
-                        feedParser.success { callback($0, nil) }.failure { callback(nil, $0) }
-                        self.backgroundQueue.addOperation(feedParser)
-                    } else {
-                        let error: NSError
-                        if let response = response as? NSHTTPURLResponse where response.statusCode != 200 {
-                            error = NSError(domain: "com.rachelbrindle.rssclient.server", code: response.statusCode, userInfo: [NSLocalizedFailureReasonErrorKey: NSHTTPURLResponse.localizedStringForStatusCode(response.statusCode)])
-                        } else {
-                            error = NSError(domain: "com.rachelbrindle.rssclient.unknown", code: 1, userInfo: [NSLocalizedFailureReasonErrorKey: "Unknown"])
-                        }
-                        callback(nil, error)
-                    }
-                }
-                dataTask.resume()
-            }
-            for feed in feeds {
-                guard let url = feed.url where feed.remainingWait == 0 else {
-                    feed.remainingWait--
-                    self.synchronousSaveFeed(feed)
-                    feedsLeft--
-                    totalProgress -= 2
-                    continue
-                }
-                loadFeed(url) {muonFeed, error in
-                    if let err = error {
-                        if err.domain == "com.rachelbrindle.rssclient.server" {
-                            feed.remainingWait++
-                            self.synchronousSaveFeed(feed)
-                        }
-                        errors.append(err)
-                    } else if let item = muonFeed {
-                        self.updateFeed(feed, muonFeed: item)
-                        self.updateFeedImage(feed, muonFeed: item)
-
-                        for muonArticle in item.articles {
-                            if let article = self.upsertArticle(muonArticle, feed: feed) {
-                                feed.addArticle(article)
-                                article.feed = feed
-                            }
-                        }
-
-                        self.synchronousSaveFeed(feed)
-
-                        updatedFeeds.append(feed)
-                    }
-
-                    currentProgress++
-                    self.mainQueue.addOperationWithBlock {
-                        for subscriber in self.subscribers {
-                            subscriber.didUpdateFeedsProgress(currentProgress, total: totalProgress)
-                        }
-                    }
-
-                    feedsLeft--
-                    if (feedsLeft == 0) {
-                        self.mainQueue.addOperationWithBlock {
-                            for updateCallback in self.updatingFeedsCallbacks {
-                                updateCallback(updatedFeeds, errors)
-                            }
-                            for subscriber in self.subscribers {
-                                subscriber.didUpdateFeeds(updatedFeeds)
-                            }
-                            self.updatingFeedsCallbacks = []
-                        }
-                    }
-                }
+    internal func updateFeed(feed: Feed, callback: (Feed?, NSError?) -> (Void)) {
+        self.backgroundQueue.addOperationWithBlock {
+            self.privateUpdateFeeds([feed]) {feeds, errors in
+                callback(feeds.first, errors.first)
             }
         }
     }
@@ -508,6 +431,99 @@ internal class DataRepository: DataRetriever, DataWriter {
         self.mainQueue.addOperationWithBlock {
             for subscriber in self.subscribers {
                 subscriber.markedArticle(article, asRead: read)
+            }
+        }
+    }
+
+    private func privateUpdateFeeds(feeds: [Feed], callback: ([Feed], [NSError]) -> (Void)) {
+        var feedsLeft = feeds.count
+        guard feedsLeft != 0 else {
+            callback([], [])
+            return
+        }
+        self.mainQueue.addOperationWithBlock {
+            for subscriber in self.subscribers {
+                subscriber.willUpdateFeeds()
+            }
+        }
+
+        var updatedFeeds: [Feed] = []
+        var errors: [NSError] = []
+
+        var totalProgress = feedsLeft * 2
+        var currentProgress = 0
+
+        let loadFeed = {(url: NSURL, callback: (Muon.Feed?, NSError?) -> (Void)) -> (Void) in
+            let dataTask = self.urlSession.dataTaskWithURL(url) {data, response, error in
+                currentProgress++
+                self.mainQueue.addOperationWithBlock {
+                    for subscriber in self.subscribers {
+                        subscriber.didUpdateFeedsProgress(currentProgress, total: totalProgress)
+                    }
+                }
+                if let error = error {
+                    callback(nil, error)
+                } else if let data = data, string = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
+                    let feedParser = Muon.FeedParser(string: string)
+                    feedParser.success { callback($0, nil) }.failure { callback(nil, $0) }
+                    self.backgroundQueue.addOperation(feedParser)
+                } else {
+                    let error: NSError
+                    if let response = response as? NSHTTPURLResponse where response.statusCode != 200 {
+                        error = NSError(domain: "com.rachelbrindle.rssclient.server", code: response.statusCode, userInfo: [NSLocalizedFailureReasonErrorKey: NSHTTPURLResponse.localizedStringForStatusCode(response.statusCode)])
+                    } else {
+                        error = NSError(domain: "com.rachelbrindle.rssclient.unknown", code: 1, userInfo: [NSLocalizedFailureReasonErrorKey: "Unknown"])
+                    }
+                    callback(nil, error)
+                }
+            }
+            dataTask.resume()
+        }
+        for feed in feeds {
+            guard let url = feed.url where feed.remainingWait == 0 else {
+                feed.remainingWait--
+                self.synchronousSaveFeed(feed)
+                feedsLeft--
+                totalProgress -= 2
+                if (feedsLeft == 0) {
+                    callback(updatedFeeds, errors)
+                }
+                continue
+            }
+            loadFeed(url) {muonFeed, error in
+                if let err = error {
+                    if err.domain == "com.rachelbrindle.rssclient.server" {
+                        feed.remainingWait++
+                        self.synchronousSaveFeed(feed)
+                    }
+                    errors.append(err)
+                } else if let item = muonFeed {
+                    self.updateFeed(feed, muonFeed: item)
+                    self.updateFeedImage(feed, muonFeed: item)
+
+                    for muonArticle in item.articles {
+                        if let article = self.upsertArticle(muonArticle, feed: feed) {
+                            feed.addArticle(article)
+                            article.feed = feed
+                        }
+                    }
+
+                    self.synchronousSaveFeed(feed)
+
+                    updatedFeeds.append(feed)
+                }
+
+                currentProgress++
+                self.mainQueue.addOperationWithBlock {
+                    for subscriber in self.subscribers {
+                        subscriber.didUpdateFeedsProgress(currentProgress, total: totalProgress)
+                    }
+                }
+
+                feedsLeft--
+                if (feedsLeft == 0) {
+                    callback(updatedFeeds, errors)
+                }
             }
         }
     }

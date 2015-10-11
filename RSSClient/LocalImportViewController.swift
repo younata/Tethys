@@ -3,7 +3,7 @@ import Ra
 import Muon
 import rNewsKit
 
-public class LocalImportViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+public class LocalImportViewController: UIViewController {
 
     private class TableViewCell: UITableViewCell {
         required init(coder aDecoder: NSCoder) {
@@ -15,28 +15,36 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
         }
     }
 
-    var opmls: [(String, [OPMLItem])] = []
-    var feeds: [(String, Muon.Feed)] = []
-    var contentsOfDirectory: [String] = []
+    private var opmls: [(String, [OPMLItem])] = []
+    private var feeds: [(String, Muon.Feed)] = []
+    private var contentsOfDirectory: [String] = []
 
     public let tableViewController = UITableViewController(style: .Plain)
 
-    var tableViewTopOffset: NSLayoutConstraint!
+    private var tableViewTopOffset: NSLayoutConstraint!
 
-    lazy var dataWriter: DataWriter? = {
+    private lazy var dataWriter: DataWriter? = {
         return self.injector?.create(DataWriter.self) as? DataWriter
     }()
 
-    lazy var opmlManager: OPMLManager? = {
+    private lazy var opmlManager: OPMLManager? = {
         return self.injector?.create(OPMLManager.self) as? OPMLManager
     }()
 
-    lazy var mainQueue: NSOperationQueue? = {
+    private lazy var mainQueue: NSOperationQueue? = {
         return self.injector?.create(kMainQueue) as? NSOperationQueue
     }()
 
-    lazy var backgroundQueue: NSOperationQueue? = {
+    private lazy var backgroundQueue: NSOperationQueue? = {
         return self.injector?.create(kBackgroundQueue) as? NSOperationQueue
+    }()
+
+    public lazy var explanationLabel: ExplanationView = {
+        let label = ExplanationView(forAutoLayout: ())
+        label.title = NSLocalizedString("Local Import", comment: "")
+        label.detail = NSLocalizedString("To use Local Import, go into iTunes, select your phone, select apps, scroll down to installed apps, select rNews, and then click '+' to add an opml or rss feed to this app, refresh this page, and it'll automatically show up here so that you can import it.", comment: "")
+        label.backgroundColor = UIColor.lightGrayColor()
+        return label
     }()
 
     public override func viewDidLoad() {
@@ -61,9 +69,10 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
         self.tableViewController.tableView.registerClass(TableViewCell.self, forCellReuseIdentifier: "cell")
         self.tableViewController.tableView.delegate = self
         self.tableViewController.tableView.dataSource = self
+        self.tableViewController.tableView.tableFooterView = UIView()
     }
 
-    func dismiss() {
+    internal func dismiss() {
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
 
@@ -79,9 +88,25 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
         self.tableViewController.refreshControl?.endRefreshing()
     }
 
-    func reload() {
+    // MARK: - Private
+
+    private func reload() {
         self.feeds.sortInPlace { $0.0 < $1.0 }
         self.opmls.sortInPlace { $0.0 < $1.0 }
+        self.explanationLabel.removeFromSuperview()
+        let opmlIsEmptyOrHasOnlyRNews: Bool// = (self.opmls.isEmpty || String(string: NSString(string: self.opmls.first?.0).lastPathComponent) == "rnews.opml")
+        if self.opmls.isEmpty {
+            opmlIsEmptyOrHasOnlyRNews = true
+        } else if let opmlPathString = self.opmls.first?.0 where self.opmls.count == 1 {
+            opmlIsEmptyOrHasOnlyRNews = String(NSString(string: opmlPathString).lastPathComponent) == "rnews.opml"
+        } else {
+            opmlIsEmptyOrHasOnlyRNews = false
+        }
+        if self.feeds.isEmpty && opmlIsEmptyOrHasOnlyRNews {
+            self.view.addSubview(self.explanationLabel)
+            self.explanationLabel.autoCenterInSuperview()
+            self.explanationLabel.autoMatchDimension(.Width, toDimension: .Width, ofView: self.view, withMultiplier: 0.75)
+        }
         let sections = NSIndexSet(indexesInRange: NSMakeRange(0, 2))
         self.tableViewController.tableView.reloadSections(sections, withRowAnimation: .Automatic)
     }
@@ -118,8 +143,30 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
         }
     }
 
-    // MARK: - Table view data source
+    private func disableInteractionWithMessage(message: String) -> ActivityIndicator {
+        let activityIndicator = ActivityIndicator(forAutoLayout: ())
+        activityIndicator.configureWithMessage(message)
+        let color = activityIndicator.backgroundColor
+        activityIndicator.backgroundColor = UIColor.clearColor()
 
+        self.view.addSubview(activityIndicator)
+        activityIndicator.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
+
+        UIView.animateWithDuration(0.3, animations: {activityIndicator.backgroundColor = color})
+        self.navigationItem.leftBarButtonItem?.enabled = false
+        self.view.userInteractionEnabled = false
+        return activityIndicator
+    }
+
+    private func reenableInteractionAndDismiss(activityIndicator: ActivityIndicator) {
+        activityIndicator.removeFromSuperview()
+        view.userInteractionEnabled = true
+        navigationItem.leftBarButtonItem?.enabled = true
+        dismiss()
+    }
+}
+
+extension LocalImportViewController: UITableViewDataSource {
     public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 2
     }
@@ -155,7 +202,9 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
         default: return ""
         }
     }
+}
 
+extension LocalImportViewController: UITableViewDelegate {
     public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         if indexPath.section == 0 {
@@ -178,27 +227,5 @@ public class LocalImportViewController: UIViewController, UITableViewDataSource,
                 }
             }
         }
-    }
-
-    private func disableInteractionWithMessage(message: String) -> ActivityIndicator {
-        let activityIndicator = ActivityIndicator(forAutoLayout: ())
-        activityIndicator.configureWithMessage(message)
-        let color = activityIndicator.backgroundColor
-        activityIndicator.backgroundColor = UIColor.clearColor()
-
-        self.view.addSubview(activityIndicator)
-        activityIndicator.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
-
-        UIView.animateWithDuration(0.3, animations: {activityIndicator.backgroundColor = color})
-        self.navigationItem.leftBarButtonItem?.enabled = false
-        self.view.userInteractionEnabled = false
-        return activityIndicator
-    }
-
-    private func reenableInteractionAndDismiss(activityIndicator: ActivityIndicator) {
-        activityIndicator.removeFromSuperview()
-        view.userInteractionEnabled = true
-        navigationItem.leftBarButtonItem?.enabled = true
-        dismiss()
     }
 }

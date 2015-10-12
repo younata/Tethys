@@ -63,6 +63,11 @@ public class FeedsTableViewController: UIViewController {
         return refreshView
     }()
 
+    public lazy var onboardingView: ExplanationView = {
+        let view = ExplanationView(forAutoLayout: ())
+        return view
+    }()
+
     private var feeds: [Feed] = []
 
     private let tableViewController = UITableViewController(style: .Plain)
@@ -191,7 +196,7 @@ public class FeedsTableViewController: UIViewController {
     }
 
     private func reload(tag: String?) {
-        dataRetriever.feedsMatchingTag(tag) {feeds in
+        self.dataRetriever.feedsMatchingTag(tag) {feeds in
             self.feeds = feeds.sort {(f1: Feed, f2: Feed) in
                 let f1Unread = f1.unreadArticles().count
                 let f2Unread = f2.unreadArticles().count
@@ -203,6 +208,11 @@ public class FeedsTableViewController: UIViewController {
 
             if self.refreshView.isRefreshing {
                 self.refreshView.endRefreshing()
+            }
+
+            self.onboardingView.removeFromSuperview()
+            if self.feeds.isEmpty {
+                self.view.addSubview(self.onboardingView)
             }
 
             self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)

@@ -65,6 +65,8 @@ public class FeedsTableViewController: UIViewController {
 
     public lazy var onboardingView: ExplanationView = {
         let view = ExplanationView(forAutoLayout: ())
+        view.title = NSLocalizedString("Welcome to rNews!", comment: "")
+        view.detail = NSLocalizedString("Tap the '+' button to find feeds to follow.", comment: "")
         return view
     }()
 
@@ -213,6 +215,8 @@ public class FeedsTableViewController: UIViewController {
             self.onboardingView.removeFromSuperview()
             if self.feeds.isEmpty {
                 self.view.addSubview(self.onboardingView)
+                self.onboardingView.autoCenterInSuperview()
+                self.onboardingView.autoMatchDimension(.Width, toDimension: .Width, ofView: self.view, withMultiplier: 0.75)
             }
 
             self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)

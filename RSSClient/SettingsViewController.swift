@@ -1,6 +1,11 @@
 import UIKit
 import PureLayout_iOS
 
+public enum Theme: String {
+    case Light = "Light"
+    case Dark = "Dark"
+}
+
 public class SettingsViewController: UIViewController {
 
     public lazy var userDefaults = NSUserDefaults.standardUserDefaults()

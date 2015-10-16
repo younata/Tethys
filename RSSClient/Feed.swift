@@ -147,21 +147,25 @@ import JavaScriptCore
 
     public func addArticle(article: Article) {
         if !self.articles.contains(article) {
-            updated = true
-            articles.append(article)
-            if let otherFeed = article.feed where otherFeed != self {
-                otherFeed.removeArticle(article)
+            self.articles.append(article)
+            if !self.isQueryFeed {
+                self.updated = true
+                if let otherFeed = article.feed where otherFeed != self {
+                    otherFeed.removeArticle(article)
+                }
+                article.feed = self
             }
-            article.feed = self
         }
     }
 
     public func removeArticle(article: Article) {
         if self.articles.contains(article) {
-            updated = true
             self.articles = self.articles.filter { $0 != article }
-            if article.feed == self {
-                article.feed = nil
+            if !self.isQueryFeed {
+                self.updated = true
+                if article.feed == self {
+                    article.feed = nil
+                }
             }
         }
     }

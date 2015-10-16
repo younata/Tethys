@@ -99,6 +99,12 @@ class FeedRepositorySpec: QuickSpec {
 
             feeds = [feed1, feed2, feed3].map { Feed(feed: $0) }
 
+            let articles = feeds.reduce(Array<Article>()) {return $0 + $1.articles }
+            expect(articles.isEmpty).to(beFalsy())
+            for article in articles {
+                feeds[1].addArticle(article)
+            }
+
             searchIndex = FakeSearchIndex()
 
             urlSession = FakeURLSession()
@@ -185,6 +191,10 @@ class FeedRepositorySpec: QuickSpec {
                         expect(mainQueue.operationCount).to(equal(0))
                         expect(calledHandler).to(beTruthy())
                         expect(calledFeeds).to(equal(feeds))
+                        for (idx, feed) in feeds.enumerate() {
+                            let calledFeed = calledFeeds[idx]
+                            expect(calledFeed.articles).to(equal(feed.articles))
+                        }
                     }
                 }
             }
@@ -611,7 +621,7 @@ class FeedRepositorySpec: QuickSpec {
                         #if os(iOS)
                             if #available(iOS 9.0, *) {
                                 it("should, on ios 9, add spotlight entries for each added article") {
-                                    expect(searchIndex?.lastItemsAdded.count).to(equal(13))
+                                    expect(searchIndex?.lastItemsAdded.count).to(equal(11))
                                 }
                             }
                         #endif
@@ -850,7 +860,7 @@ class FeedRepositorySpec: QuickSpec {
                             #if os(iOS)
                                 if #available(iOS 9.0, *) {
                                     it("should, on ios 9, add spotlight entries for each added article") {
-                                        expect(searchIndex?.lastItemsAdded.count).to(equal(13))
+                                        expect(searchIndex?.lastItemsAdded.count).to(equal(11))
                                     }
                                 }
                             #endif

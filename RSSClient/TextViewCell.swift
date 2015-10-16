@@ -21,7 +21,7 @@ public class TextViewCell: UITableViewCell, UITextViewDelegate {
             let language = Language(dictionary: languagePlist),
             let themePath = bundle.pathForResource("mac_classic", ofType: "tmTheme"),
             let themePlist = NSDictionary(contentsOfFile: themePath) as? [NSObject: AnyObject],
-            let theme = Theme(dictionary: themePlist) {
+            let theme = SyntaxKit.Theme(dictionary: themePlist) {
                 return AttributedParser(language: language, theme: theme)
         }
         return nil

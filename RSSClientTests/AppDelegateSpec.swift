@@ -74,7 +74,7 @@ class AppDelegateSpec: QuickSpec {
 
             it("should add the UIApplication object to the dataWriter's subscribers") {
                 var applicationInSubscribers = false
-                for subscriber in dataReadWriter.subscribers {
+                for subscriber in dataReadWriter.subscribers.allObjects {
                     if subscriber is UIApplication {
                         applicationInSubscribers = true
                         break

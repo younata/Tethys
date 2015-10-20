@@ -99,8 +99,9 @@ class FindFeedViewControllerSpec: QuickSpec {
                 }
 
                 describe("when the feed is created") {
+                    var feed: Feed! = nil
                     beforeEach {
-                        let feed = Feed(title: "", url: NSURL(string: ""), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                        feed = Feed(title: "", url: NSURL(string: ""), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                         dataWriter.newFeedCallback(feed)
                     }
 
@@ -110,12 +111,13 @@ class FindFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should try to update feeds") {
-                        expect(dataWriter.didUpdateFeeds).to(beTruthy())
+                        expect(dataWriter.didUpdateFeed).to(beTruthy())
                     }
 
                     describe("when the feeds update") {
                         beforeEach {
-                            dataWriter.updateFeedsCompletion([], [])
+                            feed = Feed(title: "", url: NSURL(string: "https://example.com/feed.xml"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                            dataWriter.updateSingleFeedCallback(feed, nil)
                         }
 
                         it("should remove the indicator") {

@@ -27,6 +27,12 @@ public class FeedTableCell: UITableViewCell {
         }
     }
 
+    public var themeRepository: ThemeRepository? = nil {
+        didSet {
+            self.themeRepository?.addSubscriber(self)
+        }
+    }
+
     public lazy var nameLabel: UILabel = {
         let label = UILabel(forAutoLayout: ())
 
@@ -95,4 +101,13 @@ public class FeedTableCell: UITableViewCell {
     public lazy var iconHeight: NSLayoutConstraint = {
         return self.iconView.autoSetDimension(.Height, toSize: 0, relation: .LessThanOrEqual)
     }()
+}
+
+extension FeedTableCell: ThemeRepositorySubscriber {
+    public func didChangeTheme() {
+        self.nameLabel.textColor = self.themeRepository?.textColor
+        self.summaryLabel.textColor = self.themeRepository?.textColor
+
+        self.backgroundColor = self.themeRepository?.backgroundColor
+    }
 }

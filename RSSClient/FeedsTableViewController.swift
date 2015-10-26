@@ -84,6 +84,10 @@ public class FeedsTableViewController: UIViewController {
         return self.injector!.create(DataRetriever.self) as! DataRetriever
     }()
 
+    private lazy var themeRepository: ThemeRepository = {
+        return self.injector!.create(ThemeRepository.self) as! ThemeRepository
+    }()
+
     public override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -116,6 +120,7 @@ public class FeedsTableViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
 
         self.dataWriter.addSubscriber(self)
+        self.themeRepository.addSubscriber(self)
     }
 
     deinit {
@@ -225,7 +230,7 @@ public class FeedsTableViewController: UIViewController {
     }
 
     internal func didTapAddFeed() {
-        if (self.navigationController!.visibleViewController != self) {
+        if (self.navigationController?.visibleViewController != self) {
             return
         }
 
@@ -248,10 +253,30 @@ public class FeedsTableViewController: UIViewController {
 
     internal func showFeeds(feeds: [Feed], animated: Bool) -> ArticleListController {
         let al = ArticleListController(style: .Plain)
-        al.dataWriter = dataWriter
+        al.dataWriter = self.dataWriter
+        al.themeRepository = self.themeRepository
         al.feeds = feeds
         self.navigationController?.pushViewController(al, animated: animated)
         return al
+    }
+}
+
+extension FeedsTableViewController: ThemeRepositorySubscriber {
+    public func didChangeTheme() {
+        self.navigationController?.navigationBar.barStyle = self.themeRepository.theme == .Default ? .Default : .Black
+
+        self.tableView.backgroundColor = self.themeRepository.backgroundColor
+        self.tableView.separatorColor = self.themeRepository.textColor
+
+        self.searchBar.barStyle = self.themeRepository.theme == .Default ? .Default : .Black
+        self.searchBar.backgroundColor = self.themeRepository.backgroundColor
+
+        self.dropDownMenu.buttonBackgroundColor = self.themeRepository.tintColor
+        self.dropDownMenu.backgroundColor = self.themeRepository.backgroundColor.colorWithAlphaComponent(0.5)
+
+        self.refreshView.scenebackgroundColor = self.themeRepository.backgroundColor
+
+        self.setNeedsStatusBarAppearanceUpdate()
     }
 }
 
@@ -347,6 +372,7 @@ extension FeedsTableViewController: UITableViewDataSource {
 
         if let cell = tableView.dequeueReusableCellWithIdentifier(strToUse, forIndexPath: indexPath) as? FeedTableCell {
             cell.feed = feed
+            cell.themeRepository = self.themeRepository
             return cell
         }
         return UITableViewCell()
@@ -357,7 +383,7 @@ extension FeedsTableViewController: UITableViewDelegate {
     public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
 
-        showFeeds([feedAtIndexPath(indexPath)], animated: true)
+        self.showFeeds([self.feedAtIndexPath(indexPath)], animated: true)
     }
 
     public func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {

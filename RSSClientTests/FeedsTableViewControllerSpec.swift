@@ -11,6 +11,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
         var injector : Injector? = nil
         var dataReadWriter: FakeDataReadWriter! = nil
         var navigationController: UINavigationController! = nil
+        var themeRepository: FakeThemeRepository! = nil
 
         var feed1: Feed! = nil
         var feed2: Feed! = nil
@@ -23,6 +24,9 @@ class FeedsTableViewControllerSpec: QuickSpec {
             dataReadWriter = FakeDataReadWriter()
             injector?.bind(DataRetriever.self, to: dataReadWriter)
             injector?.bind(DataWriter.self, to: dataReadWriter)
+
+            themeRepository = FakeThemeRepository()
+            injector?.bind(ThemeRepository.self, to: themeRepository)
 
             injector?.bind(kBackgroundQueue, to: FakeOperationQueue())
 
@@ -41,6 +45,35 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
             expect(subject.view).toNot(beNil())
             subject.viewWillAppear(false)
+        }
+
+        describe("listening to theme repository updates") {
+            beforeEach {
+                themeRepository.theme = .Dark
+            }
+
+            it("should update the tableView") {
+                expect(subject.tableView.backgroundColor).to(equal(themeRepository.backgroundColor))
+                expect(subject.tableView.separatorColor).to(equal(themeRepository.textColor))
+            }
+
+            it("should update the navigation bar background") {
+                expect(subject.navigationController?.navigationBar.barStyle).to(equal(UIBarStyle.Black))
+            }
+
+            it("should update the searchbar bar style") {
+                expect(subject.searchBar.barStyle).to(equal(UIBarStyle.Black))
+                expect(subject.searchBar.backgroundColor).to(equal(themeRepository.backgroundColor))
+            }
+
+            it("should update the drop down menu") {
+                expect(subject.dropDownMenu.buttonBackgroundColor).to(equal(themeRepository.tintColor))
+                expect(subject.dropDownMenu.backgroundColor).to(equal(themeRepository.backgroundColor.colorWithAlphaComponent(0.5)))
+            }
+
+            it("should update the refreshView background color") {
+                expect(subject.refreshView.scenebackgroundColor).to(equal(themeRepository.backgroundColor))
+            }
         }
 
         context("when there are no feeds to display") {
@@ -368,6 +401,10 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             expect(cell).to(beAnInstanceOf(FeedTableCell.self))
                         }
 
+                        it("should be configured with the theme repository") {
+                            expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
+                        }
+
                         it("should be configured with the feed") {
                             expect(cell.feed).to(equal(feed))
                         }
@@ -470,6 +507,10 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             feed = feeds[1]
 
                             expect(cell).to(beAnInstanceOf(FeedTableCell.self))
+                        }
+
+                        it("should be configured with the theme repository") {
+                            expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
                         }
 
                         it("should be configured with the feed") {

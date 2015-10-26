@@ -28,6 +28,14 @@ class ThemeRepositorySpec: QuickSpec {
 
             subscriber = FakeThemeSubscriber()
             subject.addSubscriber(subscriber)
+            subscriber.didCallChangeTheme = false
+        }
+
+        it("adding a subscriber should immediately call didChangeTheme on it") {
+            let newSubscriber = FakeThemeSubscriber()
+            subject.addSubscriber(newSubscriber)
+            expect(newSubscriber.didCallChangeTheme).to(beTruthy())
+            expect(subscriber.didCallChangeTheme).to(beFalsy())
         }
 
         it("has a default theme of .Default") {
@@ -46,6 +54,10 @@ class ThemeRepositorySpec: QuickSpec {
             expect(subject.articleCSSFileName).to(equal("github2"))
         }
 
+        it("has a default tint color of white") {
+            expect(subject.tintColor).to(equal(UIColor.whiteColor()))
+        }
+
         describe("setting the theme") {
             sharedExamples("a changed theme") {(sharedContext: SharedExampleContext) in
                 it("changes the background color") {
@@ -58,6 +70,12 @@ class ThemeRepositorySpec: QuickSpec {
                     let expectedColor = sharedContext()["text"] as? UIColor
                     expect(expectedColor).toNot(beNil())
                     expect(subject.textColor).to(equal(expectedColor))
+                }
+
+                it("changes the tint color") {
+                    let expectedColor = sharedContext()["tint"] as? UIColor
+                    expect(expectedColor).toNot(beNil())
+                    expect(subject.tintColor).to(equal(expectedColor))
                 }
 
                 it("changes the articleCss") {
@@ -82,9 +100,13 @@ class ThemeRepositorySpec: QuickSpec {
                     let expectedCss = sharedContext()["article"] as? String
                     expect(expectedCss).toNot(beNil())
 
+                    let expectedTint = sharedContext()["tint"] as? UIColor
+                    expect(expectedTint).toNot(beNil())
+
                     expect(otherRepo.backgroundColor).to(equal(expectedBackground))
                     expect(otherRepo.textColor).to(equal(expectedText))
-                    expect(subject.articleCSSFileName).to(equal(expectedCss))
+                    expect(otherRepo.articleCSSFileName).to(equal(expectedCss))
+                    expect(otherRepo.tintColor).to(equal(expectedTint))
                 }
             }
 
@@ -98,6 +120,7 @@ class ThemeRepositorySpec: QuickSpec {
                         "background": UIColor.blackColor(),
                         "text": UIColor.whiteColor(),
                         "article": "darkhub2",
+                        "tint": UIColor.darkGrayColor(),
                     ]
                 }
             }
@@ -112,6 +135,7 @@ class ThemeRepositorySpec: QuickSpec {
                         "background": UIColor.whiteColor(),
                         "text": UIColor.blackColor(),
                         "article": "github2",
+                        "tint": UIColor.whiteColor(),
                     ]
                 }
             }

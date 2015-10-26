@@ -16,6 +16,9 @@ public class InjectorModule : Ra.InjectorModule {
             return tagPicker
         }
 
+        let themeRepository = ThemeRepository(injector: injector)
+        injector.bind(ThemeRepository.self, to: themeRepository)
+
         let feedFinder = WebFeedFinder()
         injector.bind(FeedFinder.self, to: feedFinder)
     }

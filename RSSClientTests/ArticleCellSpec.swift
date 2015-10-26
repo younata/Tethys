@@ -6,12 +6,32 @@ import rNewsKit
 class ArticleCellSpec: QuickSpec {
     override func spec() {
         var subject: ArticleCell! = nil
+        var themeRepository: FakeThemeRepository! = nil
+
         let unupdatedArticle = Article(title: "title", link: nil, summary: "summary", author: "Rachel", published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, feed: nil, flags: [], enclosures: [])
         let readArticle = Article(title: "title", link: nil, summary: "summary", author: "Rachel", published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: NSDate(timeIntervalSinceReferenceDate: 100000), identifier: "", content: "content", read: true, feed: nil, flags: [], enclosures: [])
 
         beforeEach {
             subject = ArticleCell(style: .Default, reuseIdentifier: nil)
+            themeRepository = FakeThemeRepository()
             subject.article = unupdatedArticle
+            subject.themeRepository = themeRepository
+        }
+
+       describe("changing the theme") {
+            beforeEach {
+                themeRepository.theme = .Dark
+            }
+
+            it("updates each label") {
+                expect(subject.title.textColor).to(equal(themeRepository.textColor))
+                expect(subject.published.textColor).to(equal(themeRepository.textColor))
+                expect(subject.author.textColor).to(equal(themeRepository.textColor))
+            }
+
+            it("changes the cell's background colors") {
+                expect(subject.backgroundColor).to(equal(themeRepository.backgroundColor))
+            }
         }
 
         it("should set the title label") {

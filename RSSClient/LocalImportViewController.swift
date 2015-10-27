@@ -3,31 +3,31 @@ import Ra
 import Muon
 import rNewsKit
 
-public class LocalImportViewController: UIViewController {
+public class TableViewCell: UITableViewCell, ThemeRepositorySubscriber {
+    public required init(coder aDecoder: NSCoder) {
+        fatalError("not supported")
+    }
 
-    private class TableViewCell: UITableViewCell, ThemeRepositorySubscriber {
-        required init(coder aDecoder: NSCoder) {
-            fatalError("not supported")
-        }
+    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
+        self.selectionStyle = .None
+    }
 
-        override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-            super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
-        }
-
-        private var themeRepository: ThemeRepository? = nil {
-            didSet {
-                self.themeRepository?.addSubscriber(self)
-            }
-        }
-
-        private func didChangeTheme() {
-            self.textLabel?.textColor = self.themeRepository?.textColor
-            self.detailTextLabel?.textColor = self.themeRepository?.textColor
-
-            self.backgroundColor = self.themeRepository?.backgroundColor
+    public var themeRepository: ThemeRepository? = nil {
+        didSet {
+            self.themeRepository?.addSubscriber(self)
         }
     }
 
+    public func didChangeTheme() {
+        self.textLabel?.textColor = self.themeRepository?.textColor
+        self.detailTextLabel?.textColor = self.themeRepository?.textColor
+
+        self.backgroundColor = self.themeRepository?.backgroundColor
+    }
+}
+
+public class LocalImportViewController: UIViewController {
     private var opmls: [(String, [OPMLItem])] = []
     private var feeds: [(String, Muon.Feed)] = []
     private var contentsOfDirectory: [String] = []
@@ -210,6 +210,8 @@ extension LocalImportViewController: UITableViewDataSource {
 
     public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
+
+        cell.selectionStyle = .Gray
 
         if indexPath.section == 0 {
             let (path, items) = opmls[indexPath.row]

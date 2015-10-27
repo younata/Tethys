@@ -29,6 +29,8 @@ public class TextViewCell: UITableViewCell, UITextViewDelegate {
 
     public var onTextChange: (String?) -> Void = {(_) in }
 
+    public var themeRepository: ThemeRepository? = nil
+
     internal func applyStyling() {
         if let parser = attributedParser {
             textView.delegate = nil

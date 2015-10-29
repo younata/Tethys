@@ -10,6 +10,7 @@ class TagEditorViewControllerSpec: QuickSpec {
         var dataReadWriter = FakeDataReadWriter()
         var subject: TagEditorViewController! = nil
         var navigationController: UINavigationController! = nil
+        var themeRepository: FakeThemeRepository! = nil
         let rootViewController = UIViewController()
 
         var feed = Feed(title: "title", url: NSURL(string: ""), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
@@ -20,6 +21,9 @@ class TagEditorViewControllerSpec: QuickSpec {
             injector.bind(DataRetriever.self, to: dataReadWriter)
             injector.bind(DataWriter.self, to: dataReadWriter)
 
+            themeRepository = FakeThemeRepository()
+            injector.bind(ThemeRepository.self, to: themeRepository)
+
             subject = injector.create(TagEditorViewController.self) as! TagEditorViewController
             navigationController = UINavigationController(rootViewController: rootViewController)
             navigationController.pushViewController(subject, animated: false)
@@ -29,6 +33,24 @@ class TagEditorViewControllerSpec: QuickSpec {
 
             expect(subject.view).toNot(beNil())
             expect(navigationController.topViewController).to(equal(subject))
+        }
+
+        describe("changing the theme") {
+            beforeEach {
+                themeRepository.theme = .Dark
+            }
+
+            it("should change background color") {
+                expect(subject.view.backgroundColor).to(equal(themeRepository.backgroundColor))
+            }
+
+            it("should change the navigation bar style") {
+                expect(subject.navigationController?.navigationBar.barTintColor).to(equal(themeRepository.backgroundColor))
+            }
+
+            it("should change the tagPicker's textColors") {
+                expect(subject.tagPicker.textField.textColor).to(equal(themeRepository.textColor))
+            }
         }
 
         it("should should set the title to the feed's title") {

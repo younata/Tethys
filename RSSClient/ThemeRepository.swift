@@ -36,6 +36,26 @@ public class ThemeRepository: NSObject, Injectable {
         }
     }
 
+    public private(set) var syntaxHighlightFile: String {
+        get {
+            let fname = self.userDefaults.stringForKey("syntax")
+            return fname ?? "mac_classic"
+        }
+        set {
+            self.userDefaults.setObject(newValue, forKey: "syntax")
+        }
+    }
+
+    public private(set) var barStyle: UIBarStyle {
+        get {
+            let rawValue = self.userDefaults.integerForKey("barStyle")
+            return UIBarStyle(rawValue: rawValue) ?? UIBarStyle.Default
+        }
+        set {
+            self.userDefaults.setInteger(newValue.rawValue, forKey: "barStyle")
+        }
+    }
+
     public private(set) var tintColor: UIColor {
         get {
             let color = self.colorForKey("tintColor")
@@ -59,11 +79,15 @@ public class ThemeRepository: NSObject, Injectable {
                 self.textColor = UIColor.blackColor()
                 self.articleCSSFileName = "github2"
                 self.tintColor = UIColor.whiteColor()
+                self.syntaxHighlightFile = "mac_classic"
+                self.barStyle = .Default
             case .Dark:
                 self.backgroundColor = UIColor.blackColor()
                 self.textColor = UIColor.whiteColor()
                 self.articleCSSFileName = "darkhub2"
                 self.tintColor = UIColor.darkGrayColor()
+                self.syntaxHighlightFile = "twilight"
+                self.barStyle = .Black
             }
 
             for case let subscriber in self.subscribers.allObjects {

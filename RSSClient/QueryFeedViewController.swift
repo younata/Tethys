@@ -1,7 +1,7 @@
 import UIKit
 import rNewsKit
 
-public class QueryFeedViewController: UITableViewController {
+public class QueryFeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     public var feed: Feed? = nil {
         didSet {
@@ -44,6 +44,26 @@ public class QueryFeedViewController: UITableViewController {
         return self.injector?.create(DataRetriever.self) as? DataRetriever
     }()
 
+    private lazy var themeRepository: ThemeRepository? = {
+        return self.injector?.create(ThemeRepository.self) as? ThemeRepository
+    }()
+
+    public lazy var tableView: UITableView = {
+        let tableView = UITableView(forAutoLayout: ())
+
+        tableView.registerClass(TableViewCell.self, forCellReuseIdentifier: "tags")
+        tableView.registerClass(TextFieldCell.self, forCellReuseIdentifier: "cell")
+        tableView.registerClass(TextViewCell.self, forCellReuseIdentifier: "query")
+
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 64
+        tableView.tableFooterView = UIView()
+
+        tableView.dataSource = self
+        tableView.delegate = self
+        return tableView
+    }()
+
     private var feedTitle = ""
     private var feedSummary = ""
     private var feedQuery = "function(article) {\n    return !article.read;\n}"
@@ -61,13 +81,10 @@ public class QueryFeedViewController: UITableViewController {
         self.navigationItem.rightBarButtonItem = saveButton
         self.navigationItem.title = self.feed?.displayTitle ?? NSLocalizedString("New Query Feed", comment: "")
 
-        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tags")
-        self.tableView.registerClass(TextFieldCell.self, forCellReuseIdentifier: "cell")
-        self.tableView.registerClass(TextViewCell.self, forCellReuseIdentifier: "query")
+        self.view.addSubview(self.tableView)
+        self.tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
 
-        self.tableView.rowHeight = UITableViewAutomaticDimension
-        self.tableView.estimatedRowHeight = 64
-        self.tableView.tableFooterView = UIView()
+        self.themeRepository?.addSubscriber(self)
     }
 
     public override func viewWillAppear(animated: Bool) {
@@ -114,32 +131,32 @@ public class QueryFeedViewController: UITableViewController {
 
     // MARK: - Table view data source
 
-    public override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return feed == nil ? 3 : 4
     }
 
-    public override func tableView(tableView: UITableView, numberOfRowsInSection sectionNum: Int) -> Int {
+    public func tableView(tableView: UITableView, numberOfRowsInSection sectionNum: Int) -> Int {
         if let theFeed = feed, let section = FeedSections(rawValue: sectionNum) where section == .Tags {
             return theFeed.tags.count + 1
         }
         return 1
     }
 
-    public override func tableView(tableView: UITableView, titleForHeaderInSection sectionNum: Int) -> String? {
+    public func tableView(tableView: UITableView, titleForHeaderInSection sectionNum: Int) -> String? {
         if let section = FeedSections(rawValue: sectionNum) {
             return section.titleForSection
         }
         return nil
     }
 
-    public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if let section = FeedSections(rawValue: indexPath.section) {
             return cellForSection(section, tableView: tableView, indexPath: indexPath)
         }
         return UITableViewCell()
     }
 
-    public override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    public func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         if let section = FeedSections(rawValue: indexPath.section) {
             if section == .Tags {
                 return indexPath.row < (feed?.tags.count ?? 1)
@@ -150,18 +167,18 @@ public class QueryFeedViewController: UITableViewController {
         return false
     }
 
-    public override func tableView(tableView: UITableView,
+    public func tableView(tableView: UITableView,
         commitEditingStyle _: UITableViewCellEditingStyle,
         forRowAtIndexPath _: NSIndexPath) {}
 
-    public override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+    public func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         if let section = FeedSections(rawValue: indexPath.section) {
             return editActionsForSection(section, indexPath: indexPath)
         }
         return nil
     }
 
-    public override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
 
         if FeedSections(rawValue: indexPath.section) == .Tags,
@@ -178,6 +195,7 @@ public class QueryFeedViewController: UITableViewController {
             let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextFieldCell
             cell.textField.text = self.feedTitle
             cell.textField.placeholder = NSLocalizedString("Enter a title", comment: "")
+            cell.themeRepository = self.themeRepository
             cell.onTextChange = {
                 self.feedTitle = $0 ?? ""
                 self.navigationItem.rightBarButtonItem?.enabled = !self.feedTitle.isEmpty && !self.feedQuery.isEmpty
@@ -186,6 +204,7 @@ public class QueryFeedViewController: UITableViewController {
         case .Summary:
             let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextFieldCell
             cell.textField.text = self.feedSummary
+            cell.themeRepository = self.themeRepository
             cell.textField.placeholder = NSLocalizedString("Enter a summary", comment: "")
             cell.onTextChange = {
                 self.feedSummary = $0 ?? ""
@@ -196,6 +215,7 @@ public class QueryFeedViewController: UITableViewController {
             cell.textView.textColor = UIColor.blackColor()
             cell.textView.text = self.feedQuery
             cell.onTextChange = {_ in }
+            cell.themeRepository = self.themeRepository
             cell.applyStyling()
             cell.onTextChange = {
                 self.feedQuery = $0 ?? ""
@@ -203,7 +223,8 @@ public class QueryFeedViewController: UITableViewController {
             }
             return cell
         case .Tags:
-            let cell = tableView.dequeueReusableCellWithIdentifier("tags", forIndexPath: indexPath) as UITableViewCell
+            let cell = tableView.dequeueReusableCellWithIdentifier("tags", forIndexPath: indexPath) as! TableViewCell
+            cell.themeRepository = self.themeRepository
             if let tags = self.feed?.tags {
                 if indexPath.row == tags.count {
                     cell.textLabel?.text = NSLocalizedString("Add Tag", comment: "")
@@ -256,6 +277,17 @@ public class QueryFeedViewController: UITableViewController {
             return [delete, edit]
         default:
             return nil
+        }
+    }
+}
+
+extension QueryFeedViewController: ThemeRepositorySubscriber {
+    public func didChangeTheme() {
+        self.tableView.backgroundColor = self.themeRepository?.backgroundColor
+        self.tableView.separatorColor = self.themeRepository?.textColor
+
+        if let themeRepository = self.themeRepository {
+            self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
         }
     }
 }

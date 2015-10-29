@@ -36,7 +36,7 @@ class ArticleViewControllerSpec: QuickSpec {
             }
 
             it("should update the navigation bar background") {
-                expect(subject.navigationController?.navigationBar.barStyle).to(equal(UIBarStyle.Black))
+                expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
             }
 
             it("should update the content's background color") {
@@ -44,7 +44,7 @@ class ArticleViewControllerSpec: QuickSpec {
             }
 
             it("should update the toolbar") {
-                expect(subject.navigationController?.toolbar.barStyle).to(equal(UIBarStyle.Black))
+                expect(subject.navigationController?.toolbar.barStyle).to(equal(themeRepository.barStyle))
             }
         }
 

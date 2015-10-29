@@ -284,8 +284,10 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
 extension FindFeedViewController: ThemeRepositorySubscriber {
     public func didChangeTheme() {
-        self.navigationController?.navigationBar.barStyle = self.themeRepository?.theme == .Default ? .Default : .Black
-        self.navigationController?.toolbar.barStyle = self.themeRepository?.theme == .Default ? .Default : .Black
+        if let themeRepository = self.themeRepository {
+            self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
+            self.navigationController?.toolbar.barStyle = themeRepository.barStyle
+        }
 
         self.webContent.backgroundColor = self.themeRepository?.backgroundColor
     }

@@ -58,17 +58,16 @@ class FeedsTableViewControllerSpec: QuickSpec {
             }
 
             it("should update the navigation bar background") {
-                expect(subject.navigationController?.navigationBar.barStyle).to(equal(UIBarStyle.Black))
+                expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
             }
 
             it("should update the searchbar bar style") {
-                expect(subject.searchBar.barStyle).to(equal(UIBarStyle.Black))
+                expect(subject.searchBar.barStyle).to(equal(themeRepository.barStyle))
                 expect(subject.searchBar.backgroundColor).to(equal(themeRepository.backgroundColor))
             }
 
             it("should update the drop down menu") {
                 expect(subject.dropDownMenu.buttonBackgroundColor).to(equal(themeRepository.tintColor))
-                expect(subject.dropDownMenu.backgroundColor).to(equal(themeRepository.backgroundColor.colorWithAlphaComponent(0.5)))
             }
 
             it("should update the refreshView background color") {

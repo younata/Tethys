@@ -186,10 +186,11 @@
 		89AA8A8F1B536B98000E2C88 /* SyntaxKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89AA8A8C1B536B90000E2C88 /* SyntaxKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89AA8A911B536BEB000E2C88 /* JavaScript.tmLanguage in Resources */ = {isa = PBXBuildFile; fileRef = 89AA8A901B536BEB000E2C88 /* JavaScript.tmLanguage */; };
 		89AA8A931B537048000E2C88 /* mac_classic.tmTheme in Resources */ = {isa = PBXBuildFile; fileRef = 89AA8A921B537048000E2C88 /* mac_classic.tmTheme */; };
+		89B8BBDD1B9C5B1000B2C112 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89B8BBDF1B9C5B1000B2C112 /* Launch Screen.xib */; };
 		89BDB1F61B94162600B3D874 /* twilight.tmTheme in Resources */ = {isa = PBXBuildFile; fileRef = 89BDB1F51B94162600B3D874 /* twilight.tmTheme */; settings = {ASSET_TAGS = (); }; };
 		89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204B41A73811000C792D2 /* AppDelegateSpec.swift */; };
-		89C204BD1A73F72800C792D2 /* SplitDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204BC1A73F72800C792D2 /* SplitDelegate.swift */; };
-		89C204C21A73FEDA00C792D2 /* SplitDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204C11A73FEDA00C792D2 /* SplitDelegateSpec.swift */; };
+		89C204BD1A73F72800C792D2 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204BC1A73F72800C792D2 /* SplitViewController.swift */; };
+		89C204C21A73FEDA00C792D2 /* SplitViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204C11A73FEDA00C792D2 /* SplitViewControllerSpec.swift */; };
 		89C204C41A7400D100C792D2 /* NotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204C31A7400D100C792D2 /* NotificationHandler.swift */; };
 		89C204C71A740D8900C792D2 /* NotificationHandlerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204C61A740D8900C792D2 /* NotificationHandlerSpec.swift */; };
 		89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509EF1A2EB18300CBD000 /* FeedViewController.swift */; };
@@ -223,7 +224,6 @@
 		89CC82021B4619F400648367 /* OPMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924D8F11A0E8EEA003B7529 /* OPMLParser.swift */; };
 		89CC82041B461A2B00648367 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82031B461A2B00648367 /* Helpers.swift */; };
 		89CC82061B461A5500648367 /* KitModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82051B461A5500648367 /* KitModule.swift */; };
-		89D06A1B19FDBC52003909A3 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89D06A1A19FDBC52003909A3 /* Launch Screen.xib */; };
 		89D428031B8D0734006CD81C /* X.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89D428021B8D0734006CD81C /* X.framework */; };
 		89D428041B8D0753006CD81C /* X.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89D428021B8D0734006CD81C /* X.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89D970BB1B35BF6500ED84B8 /* WKWebView+rNewsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D970BA1B35BF6500ED84B8 /* WKWebView+rNewsTests.m */; };
@@ -520,10 +520,12 @@
 		89AA8A8C1B536B90000E2C88 /* SyntaxKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SyntaxKit.framework; path = Carthage/Build/iOS/SyntaxKit.framework; sourceTree = SOURCE_ROOT; };
 		89AA8A901B536BEB000E2C88 /* JavaScript.tmLanguage */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = JavaScript.tmLanguage; sourceTree = "<group>"; };
 		89AA8A921B537048000E2C88 /* mac_classic.tmTheme */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = mac_classic.tmTheme; sourceTree = "<group>"; };
+		89B8BBDE1B9C5B1000B2C112 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = "Base.lproj/Launch Screen.xib"; sourceTree = "<group>"; };
+		89B8BBE11B9C5B1500B2C112 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = "en.lproj/Launch Screen.strings"; sourceTree = "<group>"; };
 		89BDB1F51B94162600B3D874 /* twilight.tmTheme */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = twilight.tmTheme; sourceTree = "<group>"; };
 		89C204B41A73811000C792D2 /* AppDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateSpec.swift; sourceTree = "<group>"; };
-		89C204BC1A73F72800C792D2 /* SplitDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitDelegate.swift; sourceTree = "<group>"; };
-		89C204C11A73FEDA00C792D2 /* SplitDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitDelegateSpec.swift; sourceTree = "<group>"; };
+		89C204BC1A73F72800C792D2 /* SplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
+		89C204C11A73FEDA00C792D2 /* SplitViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitViewControllerSpec.swift; sourceTree = "<group>"; };
 		89C204C31A7400D100C792D2 /* NotificationHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationHandler.swift; sourceTree = "<group>"; };
 		89C204C61A740D8900C792D2 /* NotificationHandlerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationHandlerSpec.swift; sourceTree = "<group>"; };
 		89C509EF1A2EB18300CBD000 /* FeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
@@ -554,7 +556,6 @@
 		89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCellSpec.swift; sourceTree = "<group>"; };
 		89CC82031B461A2B00648367 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		89CC82051B461A5500648367 /* KitModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KitModule.swift; sourceTree = "<group>"; };
-		89D06A1A19FDBC52003909A3 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		89D135101A5944A200B6937A /* RSSClient 1.4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.4.xcdatamodel"; sourceTree = "<group>"; };
 		89D428021B8D0734006CD81C /* X.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = X.framework; path = ../Carthage/Build/iOS/X.framework; sourceTree = "<group>"; };
 		89D970B91B35BF6400ED84B8 /* WKWebView+rNewsTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WKWebView+rNewsTests.h"; sourceTree = "<group>"; };
@@ -919,7 +920,7 @@
 				89C830B119D7D2B7009924DA /* Feeds */,
 				89C830B419D7D2D2009924DA /* Articles */,
 				89C8308219D730E9009924DA /* Images.xcassets */,
-				89D06A1A19FDBC52003909A3 /* Launch Screen.xib */,
+				89B8BBDF1B9C5B1000B2C112 /* Launch Screen.xib */,
 				8933E93519EE342F00ECFF3F /* Categories */,
 				89C8309B19D73334009924DA /* RSSClient-Bridging-Header.h */,
 				89C8307619D730E9009924DA /* Supporting Files */,
@@ -946,7 +947,7 @@
 				89C8308F19D730E9009924DA /* Supporting Files */,
 				89C204B41A73811000C792D2 /* AppDelegateSpec.swift */,
 				8953B1571B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift */,
-				89C204C11A73FEDA00C792D2 /* SplitDelegateSpec.swift */,
+				89C204C11A73FEDA00C792D2 /* SplitViewControllerSpec.swift */,
 				8918D4DC1B859D3B00DCDE0E /* ThemeRepositorySpec.swift */,
 				89C204C61A740D8900C792D2 /* NotificationHandlerSpec.swift */,
 				89D970BE1B3929D600ED84B8 /* BackgroundFetchHandlerSpec.swift */,
@@ -1106,7 +1107,7 @@
 			children = (
 				89C8307819D730E9009924DA /* AppDelegate.swift */,
 				AE4356301A7AE4FE00A961B9 /* InjectorModule.swift */,
-				89C204BC1A73F72800C792D2 /* SplitDelegate.swift */,
+				89C204BC1A73F72800C792D2 /* SplitViewController.swift */,
 				89C204C31A7400D100C792D2 /* NotificationHandler.swift */,
 				89D970C21B392B0300ED84B8 /* LocalNotificationSource.swift */,
 				89D970BC1B3929A600ED84B8 /* BackgroundFetchHandler.swift */,
@@ -1451,7 +1452,7 @@
 				89C8308319D730E9009924DA /* Images.xcassets in Resources */,
 				8924D8E91A094CF5003B7529 /* github2.css in Resources */,
 				89AA8A931B537048000E2C88 /* mac_classic.tmTheme in Resources */,
-				89D06A1B19FDBC52003909A3 /* Launch Screen.xib in Resources */,
+				89B8BBDD1B9C5B1000B2C112 /* Launch Screen.xib in Resources */,
 				895901B31A32B61A002E2C62 /* Localizable.strings in Resources */,
 				89C830BF19D89722009924DA /* FindICO.js in Resources */,
 				89C830BB19D8904A009924DA /* findFeeds.js in Resources */,
@@ -1640,7 +1641,7 @@
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
 				89DA7D2C1A66111E0050685B /* TextFieldCell.swift in Sources */,
-				89C204BD1A73F72800C792D2 /* SplitDelegate.swift in Sources */,
+				89C204BD1A73F72800C792D2 /* SplitViewController.swift in Sources */,
 				89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */,
 				89C509FA1A2F865F00CBD000 /* QueryFeedViewController.swift in Sources */,
 				89E2A33D1B6A856900A40D4E /* SettingsViewController.swift in Sources */,
@@ -1670,7 +1671,7 @@
 				89EA6C371B4B308F00456892 /* OPMLManagerMock.swift in Sources */,
 				899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */,
 				89D970BB1B35BF6500ED84B8 /* WKWebView+rNewsTests.m in Sources */,
-				89C204C21A73FEDA00C792D2 /* SplitDelegateSpec.swift in Sources */,
+				89C204C21A73FEDA00C792D2 /* SplitViewControllerSpec.swift in Sources */,
 				89E2A33F1B6AA5F300A40D4E /* SettingsViewControlletSpec.swift in Sources */,
 				89F516571B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m in Sources */,
 				8997C8511B255A1900972930 /* TagPickerViewSpec.swift in Sources */,
@@ -1749,6 +1750,15 @@
 				89635F921A13C2E30052C248 /* Base */,
 			);
 			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		89B8BBDF1B9C5B1000B2C112 /* Launch Screen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				89B8BBDE1B9C5B1000B2C112 /* Base */,
+				89B8BBE11B9C5B1500B2C112 /* en */,
+			);
+			name = "Launch Screen.xib";
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

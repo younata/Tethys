@@ -16,12 +16,17 @@ class ThemeRepositorySpec: QuickSpec {
         var subject: ThemeRepository! = nil
         var injector: Injector! = nil
         var userDefaults: NSUserDefaults! = nil
+        var currentUserDefaults: NSDictionary! = nil
         var subscriber: FakeThemeSubscriber! = nil
+
+
 
         beforeEach {
             injector = Injector()
 
-            userDefaults = NSUserDefaults()
+            currentUserDefaults = NSUserDefaults.standardUserDefaults().dictionaryRepresentation()
+            NSUserDefaults.resetStandardUserDefaults()
+            userDefaults = NSUserDefaults.standardUserDefaults()
             injector.bind(NSUserDefaults.self, to: userDefaults)
 
             subject = injector.create(ThemeRepository.self) as! ThemeRepository
@@ -29,6 +34,12 @@ class ThemeRepositorySpec: QuickSpec {
             subscriber = FakeThemeSubscriber()
             subject.addSubscriber(subscriber)
             subscriber.didCallChangeTheme = false
+        }
+
+        afterEach {
+            for (key, value) in currentUserDefaults {
+                userDefaults.setObject(value, forKey: key as! String)
+            }
         }
 
         it("adding a subscriber should immediately call didChangeTheme on it") {
@@ -66,51 +77,50 @@ class ThemeRepositorySpec: QuickSpec {
             expect(subject.barStyle).to(equal(UIBarStyle.Default))
         }
 
-        describe("setting the theme") {
-            sharedExamples("a changed theme") {(sharedContext: SharedExampleContext) in
-                it("changes the background color") {
-                    let expectedColor = sharedContext()["background"] as? UIColor
-                    expect(expectedColor).toNot(beNil())
-                    expect(subject.backgroundColor).to(equal(expectedColor))
-                }
+        sharedExamples("a changed theme") {(sharedContext: SharedExampleContext) in
+            it("changes the background color") {
+                let expectedColor = sharedContext()["background"] as? UIColor
+                expect(expectedColor).toNot(beNil())
+                expect(subject.backgroundColor).to(equal(expectedColor))
+            }
 
-                it("changes the text color") {
-                    let expectedColor = sharedContext()["text"] as? UIColor
-                    expect(expectedColor).toNot(beNil())
-                    expect(subject.textColor).to(equal(expectedColor))
-                }
+            it("changes the text color") {
+                let expectedColor = sharedContext()["text"] as? UIColor
+                expect(expectedColor).toNot(beNil())
+                expect(subject.textColor).to(equal(expectedColor))
+            }
 
-                it("changes the tint color") {
-                    let expectedColor = sharedContext()["tint"] as? UIColor
-                    expect(expectedColor).toNot(beNil())
-                    expect(subject.tintColor).to(equal(expectedColor))
-                }
+            it("changes the tint color") {
+                let expectedColor = sharedContext()["tint"] as? UIColor
+                expect(expectedColor).toNot(beNil())
+                expect(subject.tintColor).to(equal(expectedColor))
+            }
 
-                it("changes the articleCss") {
-                    let expectedCss = sharedContext()["article"] as? String
-                    expect(expectedCss).toNot(beNil())
-                    expect(subject.articleCSSFileName).to(equal(expectedCss))
-                }
+            it("changes the articleCss") {
+                let expectedCss = sharedContext()["article"] as? String
+                expect(expectedCss).toNot(beNil())
+                expect(subject.articleCSSFileName).to(equal(expectedCss))
+            }
 
-                it("changes the syntax highlight file name") {
-                    let expectedSyntax = sharedContext()["syntax"] as? String
-                    expect(expectedSyntax).toNot(beNil())
-                    expect(subject.syntaxHighlightFile).to(equal(expectedSyntax))
-                }
+            it("changes the syntax highlight file name") {
+                let expectedSyntax = sharedContext()["syntax"] as? String
+                expect(expectedSyntax).toNot(beNil())
+                expect(subject.syntaxHighlightFile).to(equal(expectedSyntax))
+            }
 
-                it("changes the barstyle") {
-                    let expectedBarStyle = UIBarStyle(rawValue: sharedContext()["barStyle"] as! Int)
-                    expect(expectedBarStyle).toNot(beNil())
-                    expect(subject.barStyle).to(equal(expectedBarStyle))
-                }
+            it("changes the barstyle") {
+                let expectedBarStyle = UIBarStyle(rawValue: sharedContext()["barStyle"] as! Int)
+                expect(expectedBarStyle).toNot(beNil())
+                expect(subject.barStyle).to(equal(expectedBarStyle))
+            }
 
-                it("informs subscribers") {
-                    expect(subscriber.didCallChangeTheme).to(beTruthy())
-                }
+            it("informs subscribers") {
+                expect(subscriber.didCallChangeTheme).to(beTruthy())
+            }
 
-                it("persists the change") {
-                    let otherRepo = injector.create(ThemeRepository.self) as! ThemeRepository
-
+            it("persists the change if it is not ephemeral") {
+                let otherRepo = injector.create(ThemeRepository.self) as! ThemeRepository
+                if (sharedContext()["ephemeral"] as? Bool != true) {
                     let expectedBackground = sharedContext()["background"] as? UIColor
                     expect(expectedBackground).toNot(beNil())
 
@@ -135,40 +145,104 @@ class ThemeRepositorySpec: QuickSpec {
                     expect(otherRepo.tintColor).to(equal(expectedTint))
                     expect(otherRepo.syntaxHighlightFile).to(equal(expectedSyntax))
                     expect(otherRepo.barStyle).to(equal(expectedBarStyle))
+                } else {
+                    let expectedBackground = UIColor.whiteColor()
+                    let expectedText = UIColor.blackColor()
+                    let expectedCss = "github2"
+                    let expectedTint = UIColor.whiteColor()
+                    let expectedSyntax = "mac_classic"
+                    let expectedBarStyle = UIBarStyle.Default
+
+                    expect(otherRepo.backgroundColor).to(equal(expectedBackground))
+                    expect(otherRepo.textColor).to(equal(expectedText))
+                    expect(otherRepo.articleCSSFileName).to(equal(expectedCss))
+                    expect(otherRepo.tintColor).to(equal(expectedTint))
+                    expect(otherRepo.syntaxHighlightFile).to(equal(expectedSyntax))
+                    expect(otherRepo.barStyle).to(equal(expectedBarStyle))
+                }
+            }
+        }
+
+        describe("setting the theme") {
+            context("of a persistant repository") {
+                context("to .Dark") {
+                    beforeEach {
+                        subject.theme = .Dark
+                    }
+
+                    itBehavesLike("a changed theme") {
+                        return [
+                            "background": UIColor.blackColor(),
+                            "text": UIColor.whiteColor(),
+                            "article": "darkhub2",
+                            "tint": UIColor.darkGrayColor(),
+                            "syntax": "twilight",
+                            "barStyle": UIBarStyle.Black.rawValue,
+                        ]
+                    }
+                }
+
+                context("to .Default") {
+                    beforeEach {
+                        subject.theme = .Default
+                    }
+
+                    itBehavesLike("a changed theme") {
+                        return [
+                            "background": UIColor.whiteColor(),
+                            "text": UIColor.blackColor(),
+                            "article": "github2",
+                            "tint": UIColor.whiteColor(),
+                            "syntax": "mac_classic",
+                            "barStyle": UIBarStyle.Default.rawValue,
+                        ]
+                    }
                 }
             }
 
-            context("to .Dark") {
+            context("of an ephemeral repository") {
                 beforeEach {
-                    subject.theme = .Dark
+                    subject = ThemeRepository(userDefaults: nil)
+
+                    subscriber = FakeThemeSubscriber()
+                    subject.addSubscriber(subscriber)
+                    subscriber.didCallChangeTheme = false
+                }
+                
+                context("to .Dark") {
+                    beforeEach {
+                        subject.theme = .Dark
+                    }
+
+                    itBehavesLike("a changed theme") {
+                        return [
+                            "background": UIColor.blackColor(),
+                            "text": UIColor.whiteColor(),
+                            "article": "darkhub2",
+                            "tint": UIColor.darkGrayColor(),
+                            "syntax": "twilight",
+                            "barStyle": UIBarStyle.Black.rawValue,
+                            "ephemeral": true,
+                        ]
+                    }
                 }
 
-                itBehavesLike("a changed theme") {
-                    return [
-                        "background": UIColor.blackColor(),
-                        "text": UIColor.whiteColor(),
-                        "article": "darkhub2",
-                        "tint": UIColor.darkGrayColor(),
-                        "syntax": "twilight",
-                        "barStyle": UIBarStyle.Black.rawValue,
-                    ]
-                }
-            }
+                context("to .Default") {
+                    beforeEach {
+                        subject.theme = .Default
+                    }
 
-            context("to .Default") {
-                beforeEach {
-                    subject.theme = .Default
-                }
-
-                itBehavesLike("a changed theme") {
-                    return [
-                        "background": UIColor.whiteColor(),
-                        "text": UIColor.blackColor(),
-                        "article": "github2",
-                        "tint": UIColor.whiteColor(),
-                        "syntax": "mac_classic",
-                        "barStyle": UIBarStyle.Default.rawValue,
-                    ]
+                    itBehavesLike("a changed theme") {
+                        return [
+                            "background": UIColor.whiteColor(),
+                            "text": UIColor.blackColor(),
+                            "article": "github2",
+                            "tint": UIColor.whiteColor(),
+                            "syntax": "mac_classic",
+                            "barStyle": UIBarStyle.Default.rawValue,
+                            "ephemeral": true,
+                        ]
+                    }
                 }
             }
         }

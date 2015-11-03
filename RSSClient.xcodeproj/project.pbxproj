@@ -248,6 +248,7 @@
 		89F5170A1B2014470005AB04 /* QueryFeedViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F517091B2014470005AB04 /* QueryFeedViewControllerSpec.swift */; };
 		89F83F341B4D6D33003F8F6C /* FeedFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F83F331B4D6D33003F8F6C /* FeedFinder.swift */; };
 		89F83F361B4DB390003F8F6C /* FakeFeedFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F83F351B4DB390003F8F6C /* FakeFeedFinder.swift */; };
+		89F98B9F1B9FC65A005C3CA8 /* ScreenEdgePanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98B9E1B9FC659005C3CA8 /* ScreenEdgePanGestureRecognizer.swift */; settings = {ASSET_TAGS = (); }; };
 		89FAE2741B92893E009A3604 /* FakeThemeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FAE2731B92893E009A3604 /* FakeThemeRepository.swift */; settings = {ASSET_TAGS = (); }; };
 		AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4356301A7AE4FE00A961B9 /* InjectorModule.swift */; };
 /* End PBXBuildFile section */
@@ -584,6 +585,7 @@
 		89F517091B2014470005AB04 /* QueryFeedViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryFeedViewControllerSpec.swift; sourceTree = "<group>"; };
 		89F83F331B4D6D33003F8F6C /* FeedFinder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedFinder.swift; sourceTree = "<group>"; };
 		89F83F351B4DB390003F8F6C /* FakeFeedFinder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeFeedFinder.swift; sourceTree = "<group>"; };
+		89F98B9E1B9FC659005C3CA8 /* ScreenEdgePanGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScreenEdgePanGestureRecognizer.swift; sourceTree = "<group>"; };
 		89FAE2731B92893E009A3604 /* FakeThemeRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeThemeRepository.swift; sourceTree = "<group>"; };
 		AE4355FD1A7AB7D900A961B9 /* SpecHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SpecHelper.swift; path = ../RSSClientTests/SpecHelper.swift; sourceTree = "<group>"; };
 		AE4355FF1A7ABA4F00A961B9 /* FakeDataRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FakeDataRepository.swift; path = ../RSSClientTests/FakeDataRepository.swift; sourceTree = "<group>"; };
@@ -1076,6 +1078,7 @@
 			isa = PBXGroup;
 			children = (
 				89C830B519D7DE97009924DA /* ArticleViewController.swift */,
+				89F98B9E1B9FC659005C3CA8 /* ScreenEdgePanGestureRecognizer.swift */,
 				8924D8E81A094CF5003B7529 /* github2.css */,
 				8918D4D81B85887E00DCDE0E /* darkhub2.css */,
 				8918D4D31B84593100DCDE0E /* ClearnessDark.css */,
@@ -1627,6 +1630,7 @@
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
 				89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */,
 				89A3417C1B1435750000C60B /* Helpers.swift in Sources */,
+				89F98B9F1B9FC65A005C3CA8 /* ScreenEdgePanGestureRecognizer.swift in Sources */,
 				8918D4A41B8115F800DCDE0E /* ExplanationView.swift in Sources */,
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
 				89C830B619D7DE97009924DA /* ArticleViewController.swift in Sources */,

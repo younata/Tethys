@@ -117,6 +117,10 @@ class FeedRepositorySpec: QuickSpec {
             subject.addSubscriber(dataSubscriber)
         }
 
+        afterEach {
+            feeds = []
+        }
+
         describe("as a DataRetriever") {
             describe("allTags") {
                 var calledHandler = false

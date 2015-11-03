@@ -1,17 +1,33 @@
 import Quick
 import Nimble
 import rNews
+import Ra
 
 class SplitViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: SplitViewController! = nil
+        var themeRepository: FakeThemeRepository! = nil
         
         let master = UIViewController()
         let detail = UIViewController()
 
         beforeEach {
-            subject = SplitViewController()
+            let injector = Injector()
+
+            themeRepository = FakeThemeRepository()
+            injector.bind(ThemeRepository.self, to: themeRepository)
+            subject = injector.getInstance(SplitViewController.self) as! SplitViewController
             subject.viewControllers = [master, detail]
+        }
+
+        describe("when the theme changes") {
+            beforeEach {
+                themeRepository.theme = .Dark
+            }
+
+            it("should change the preferred status bar styling") {
+                expect(subject.preferredStatusBarStyle()).to(equal(.LightContent))
+            }
         }
         
         it("should hide the detail on startup") {

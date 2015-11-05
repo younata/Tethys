@@ -126,6 +126,10 @@ public class ThemeRepository: NSObject, Injectable {
         self.userDefaults = userDefaults
     }
 
+    deinit {
+        self.userDefaults?.synchronize()
+    }
+
     public required init(injector: Ra.Injector) {
         self.userDefaults = injector.create(NSUserDefaults.self) as? NSUserDefaults ?? NSUserDefaults.standardUserDefaults()
     }

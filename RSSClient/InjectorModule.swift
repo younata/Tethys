@@ -19,6 +19,9 @@ public class InjectorModule : Ra.InjectorModule {
         let themeRepository = ThemeRepository(injector: injector)
         injector.bind(ThemeRepository.self, to: themeRepository)
 
+        let settingsRepository = SettingsRepository(userDefaults: NSUserDefaults.standardUserDefaults())
+        injector.bind(SettingsRepository.self, to: settingsRepository)
+
         let feedFinder = WebFeedFinder()
         injector.bind(FeedFinder.self, to: feedFinder)
     }

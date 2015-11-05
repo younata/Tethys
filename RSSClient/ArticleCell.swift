@@ -74,7 +74,7 @@ public class ArticleCell: UITableViewCell {
         self.published.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
         self.published.autoPinEdge(.Left, toEdge: .Right, ofView: title, withOffset: 8)
         self.published.autoMatchDimension(.Width, toDimension: .Width,
-            ofView: self.published.superview, withMultiplier: 0.25)
+            ofView: self.contentView, withMultiplier: 0.25)
     }
 
     public required init(coder aDecoder: NSCoder) {

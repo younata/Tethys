@@ -89,6 +89,10 @@ public class FeedsTableViewController: UIViewController {
         return self.injector!.create(ThemeRepository.self) as! ThemeRepository
     }()
 
+    private lazy var settingsRepository: SettingsRepository = {
+        return self.injector!.create(SettingsRepository.self) as! SettingsRepository
+    }()
+
     public override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -143,21 +147,25 @@ public class FeedsTableViewController: UIViewController {
     }
 
     public override var keyCommands: [UIKeyCommand]? {
-        let commands = [
+        var commands = [
             UIKeyCommand(input: "f", modifierFlags: .Command, action: "search"),
             UIKeyCommand(input: "i", modifierFlags: .Command, action: "importFromWeb"),
             UIKeyCommand(input: "i", modifierFlags: [.Command, .Shift], action: "importFromLocal"),
-            UIKeyCommand(input: "i", modifierFlags: [.Command, .Alternate], action: "createQueryFeed"),
             UIKeyCommand(input: ",", modifierFlags: .Command, action: "presentSettings"),
         ]
+        if self.settingsRepository.queryFeedsEnabled {
+            commands.insert(UIKeyCommand(input: "i", modifierFlags: [.Command, .Alternate], action: "createQueryFeed"), atIndex: 3)
+        }
         if #available(iOS 9.0, *) {
-            let discoverabilityTitles = [
+            var discoverabilityTitles = [
                 NSLocalizedString("Filter by tags", comment: ""),
                 NSLocalizedString("Import from web", comment: ""),
                 NSLocalizedString("Import from local", comment: ""),
-                NSLocalizedString("Create query feed", comment: ""),
                 NSLocalizedString("Open settings", comment: ""),
             ]
+            if self.settingsRepository.queryFeedsEnabled {
+                discoverabilityTitles.insert(NSLocalizedString("Create query feed", comment: ""), atIndex: 3)
+            }
             for (idx, cmd) in commands.enumerate() {
                 cmd.discoverabilityTitle = discoverabilityTitles[idx]
             }
@@ -235,16 +243,21 @@ public class FeedsTableViewController: UIViewController {
             return
         }
 
-        if dropDownMenu.isOpen {
-            dropDownMenu.closeAnimated(true)
+        if self.dropDownMenu.isOpen {
+            self.dropDownMenu.closeAnimated(true)
         } else {
-            dropDownMenu.titles = [NSLocalizedString("Add from Web", comment: ""),
+            var buttonTitles = [
+                NSLocalizedString("Add from Web", comment: ""),
                 NSLocalizedString("Add from Local", comment: ""),
-                NSLocalizedString("Create Query Feed", comment: "")]
+            ]
+            if self.settingsRepository.queryFeedsEnabled {
+                buttonTitles.append(NSLocalizedString("Create Query Feed", comment: ""))
+            }
+            self.dropDownMenu.titles = buttonTitles
             let navBarHeight = CGRectGetHeight(self.navigationController!.navigationBar.frame)
             let statusBarHeight = CGRectGetHeight(UIApplication.sharedApplication().statusBarFrame)
-            menuTopOffset.constant = navBarHeight + statusBarHeight
-            dropDownMenu.openAnimated(true)
+            self.menuTopOffset.constant = navBarHeight + statusBarHeight
+            self.dropDownMenu.openAnimated(true)
         }
     }
 

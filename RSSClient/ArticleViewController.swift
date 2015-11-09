@@ -156,7 +156,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         self.content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
         self.configureContent()
 
-        self.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
+        self.updateLeftBarButtonItem(self.traitCollection)
 
         let back = UIBarButtonItem(title: "<", style: .Plain, target: content, action: "goBack")
         let forward = UIBarButtonItem(title: ">", style: .Plain, target: content, action: "goForward")
@@ -487,6 +487,21 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
             webView.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
             self.objectsBeingObserved.append(webView)
         }
+    }
+}
+
+extension ArticleViewController {
+    private func updateLeftBarButtonItem(traitCollection: UITraitCollection) {
+        if traitCollection.horizontalSizeClass == .Regular {
+            self.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
+        } else {
+            self.navigationItem.leftBarButtonItem = nil
+        }
+    }
+
+    public override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        self.updateLeftBarButtonItem(self.traitCollection)
     }
 }
 

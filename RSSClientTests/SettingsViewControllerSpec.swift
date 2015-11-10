@@ -3,12 +3,24 @@ import Nimble
 import rNews
 import Ra
 
+private class FakeUrlOpener: UrlOpener {
+
+    private var url: NSURL? = nil
+    private func openURL(url: NSURL) -> Bool {
+        self.url = url
+        return true
+    }
+
+    init() {}
+}
+
 class SettingsViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: SettingsViewController! = nil
         var navigationController: UINavigationController! = nil
         var themeRepository: ThemeRepository! = nil
         var settingsRepository: SettingsRepository! = nil
+        var urlOpener: FakeUrlOpener! = nil
 
         beforeEach {
             let injector = Injector()
@@ -18,6 +30,9 @@ class SettingsViewControllerSpec: QuickSpec {
 
             settingsRepository = SettingsRepository(userDefaults: nil)
             injector.bind(SettingsRepository.self, to: settingsRepository)
+
+            urlOpener = FakeUrlOpener()
+            injector.bind(UrlOpener.self, to: urlOpener)
 
             subject = injector.create(SettingsViewController.self) as! SettingsViewController
 
@@ -102,8 +117,8 @@ class SettingsViewControllerSpec: QuickSpec {
                 dataSource = subject.tableView.dataSource
             }
 
-            it("should have 2 sections") {
-                expect(subject.tableView.numberOfSections).to(equal(2))
+            it("should have 3 sections") {
+                expect(subject.tableView.numberOfSections).to(equal(3))
             }
 
             describe("the theme section") {
@@ -254,6 +269,50 @@ class SettingsViewControllerSpec: QuickSpec {
                             if let documentation = navigationController.topViewController as? DocumentationViewController {
                                 expect(documentation.document).to(equal(DocumentationViewController.Document.QueryFeed))
                             }
+                        }
+                    }
+                }
+            }
+
+            describe("the credits section") {
+                let sectionNumber = 2
+
+                it("should be titled 'Credits'") {
+                    let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
+                    expect(title).to(equal("Credits"))
+                }
+
+                it("should have a single cell") {
+                    expect(subject.tableView.numberOfRowsInSection(sectionNumber)).to(equal(1))
+                }
+
+                describe("the first cell") {
+                    var cell: TableViewCell! = nil
+                    let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
+
+                    beforeEach {
+                        cell = dataSource.tableView(subject.tableView, cellForRowAtIndexPath: indexPath) as! TableViewCell
+                    }
+
+                    it("should be configured with the theme repository") {
+                        expect(cell.themeRepository).to(equal(themeRepository))
+                    }
+
+                    it("should have my name") {
+                        expect(cell.textLabel?.text).to(equal("Rachel Brindle"))
+                    }
+
+                    it("should say that I'm the developer") {
+                        expect(cell.detailTextLabel?.text).to(equal("Developer"))
+                    }
+
+                    describe("tapping it") {
+                        beforeEach {
+                            delegate.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
+                        }
+
+                        it("should navigate outside the app to my twitter handle") {
+                            expect(urlOpener.url).to(equal(NSURL(string: "https://twitter.com/younata")))
                         }
                     }
                 }

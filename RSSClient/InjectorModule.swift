@@ -16,6 +16,8 @@ public class InjectorModule : Ra.InjectorModule {
             return tagPicker
         }
 
+        injector.bind(UrlOpener.self, to: UIApplication.sharedApplication())
+
         let themeRepository = ThemeRepository(injector: injector)
         injector.bind(ThemeRepository.self, to: themeRepository)
 

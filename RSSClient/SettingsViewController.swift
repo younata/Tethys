@@ -5,6 +5,7 @@ public class SettingsViewController: UIViewController {
     private enum SettingsSection: Int, CustomStringConvertible {
         case Theme = 0
         case Advanced = 1
+        case Credits = 2
 
         private var description: String {
             switch self {
@@ -12,6 +13,8 @@ public class SettingsViewController: UIViewController {
                 return NSLocalizedString("Theme", comment: "")
             case .Advanced:
                 return NSLocalizedString("Advanced", comment: "")
+            case .Credits:
+                return NSLocalizedString("Credits", comment: "")
             }
         }
     }
@@ -30,6 +33,10 @@ public class SettingsViewController: UIViewController {
 
     private lazy var queryFeedsEnabled: Bool = {
         return self.settingsRepository.queryFeedsEnabled
+    }()
+
+    private lazy var urlOpener: UrlOpener = {
+        return self.injector!.create(UrlOpener.self) as! UrlOpener
     }()
 
     private var ephemeralThemeRepository: ThemeRepository? = nil {
@@ -95,7 +102,7 @@ extension SettingsViewController: ThemeRepositorySubscriber {
 
 extension SettingsViewController: UITableViewDataSource {
     public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
 
     public func tableView(tableView: UITableView, numberOfRowsInSection sectionNum: Int) -> Int {
@@ -106,6 +113,8 @@ extension SettingsViewController: UITableViewDataSource {
         case .Theme:
             return 2
         case .Advanced:
+            return 1
+        case .Credits:
             return 1
         }
     }
@@ -133,6 +142,12 @@ extension SettingsViewController: UITableViewDataSource {
                 self.queryFeedsEnabled = aSwitch.on
                 self.navigationItem.rightBarButtonItem?.enabled = true
             }
+            return cell
+        case .Credits:
+            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TableViewCell
+            cell.themeRepository = self.themeRepository
+            cell.textLabel?.text = "Rachel Brindle"
+            cell.detailTextLabel?.text = "Developer"
             return cell
         }
     }
@@ -164,6 +179,9 @@ extension SettingsViewController: UITableViewDelegate {
                 documentation.configure(.QueryFeed)
                 self.navigationController?.pushViewController(documentation, animated: true)
             }
+            return
+        case .Credits:
+            self.urlOpener.openURL(NSURL(string: "https://twitter.com/younata")!)
             return
         }
         self.tableView.reloadData()

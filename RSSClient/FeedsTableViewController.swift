@@ -40,7 +40,7 @@ public class FeedsTableViewController: UIViewController {
         searchBar.autocorrectionType = .No
         searchBar.autocapitalizationType = .None
         searchBar.delegate = self
-        searchBar.placeholder = NSLocalizedString("Filter by Tag", comment: "")
+        searchBar.placeholder = NSLocalizedString("FeedsTableViewController_SearchBar_Placeholder", comment: "")
         return searchBar
     }()
 
@@ -65,8 +65,8 @@ public class FeedsTableViewController: UIViewController {
 
     public lazy var onboardingView: ExplanationView = {
         let view = ExplanationView(forAutoLayout: ())
-        view.title = NSLocalizedString("Welcome to rNews!", comment: "")
-        view.detail = NSLocalizedString("Tap the '+' button to find feeds to follow.", comment: "")
+        view.title = NSLocalizedString("FeedsTableViewController_Onboarding_Title", comment: "")
+        view.detail = NSLocalizedString("FeedsTableViewController_Onboarding_Detail", comment: "")
         view.themeRepository = self.themeRepository
         return view
     }()
@@ -116,11 +116,11 @@ public class FeedsTableViewController: UIViewController {
         let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "didTapAddFeed")
         self.navigationItem.rightBarButtonItems = [addButton, self.tableViewController.editButtonItem()]
 
-        let settingsTitle = NSLocalizedString("Settings", comment: "")
+        let settingsTitle = NSLocalizedString("SettingsViewController_Title", comment: "")
         let settingsButton = UIBarButtonItem(title: settingsTitle, style: .Plain, target: self, action: "presentSettings")
         self.navigationItem.leftBarButtonItem = settingsButton
 
-        self.navigationItem.title = NSLocalizedString("Feeds", comment: "")
+        self.navigationItem.title = NSLocalizedString("FeedsTableViewController_Title", comment: "")
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
 
@@ -158,13 +158,13 @@ public class FeedsTableViewController: UIViewController {
         }
         if #available(iOS 9.0, *) {
             var discoverabilityTitles = [
-                NSLocalizedString("Filter by tags", comment: ""),
-                NSLocalizedString("Import from web", comment: ""),
-                NSLocalizedString("Import from local", comment: ""),
-                NSLocalizedString("Open settings", comment: ""),
+                NSLocalizedString("FeedsTableViewController_Command_Search", comment: ""),
+                NSLocalizedString("FeedsTableViewController_Command_ImportWeb", comment: ""),
+                NSLocalizedString("FeedsTableViewController_Command_ImportLocal", comment: ""),
+                NSLocalizedString("FeedsTableViewController_Command_Settings", comment: ""),
             ]
             if self.settingsRepository.queryFeedsEnabled {
-                discoverabilityTitles.insert(NSLocalizedString("Create query feed", comment: ""), atIndex: 3)
+                discoverabilityTitles.insert(NSLocalizedString("FeedsTableViewController_Command_QueryFeed", comment: ""), atIndex: 3)
             }
             for (idx, cmd) in commands.enumerate() {
                 cmd.discoverabilityTitle = discoverabilityTitles[idx]
@@ -247,11 +247,11 @@ public class FeedsTableViewController: UIViewController {
             self.dropDownMenu.closeAnimated(true)
         } else {
             var buttonTitles = [
-                NSLocalizedString("Add from Web", comment: ""),
-                NSLocalizedString("Add from Local", comment: ""),
+                NSLocalizedString("FeedsTableViewController_Command_ImportWeb", comment: ""),
+                NSLocalizedString("FeedsTableViewController_Command_ImportLocal", comment: ""),
             ]
             if self.settingsRepository.queryFeedsEnabled {
-                buttonTitles.append(NSLocalizedString("Create Query Feed", comment: ""))
+                buttonTitles.append(NSLocalizedString("FeedsTableViewController_Command_QueryFeed", comment: ""))
             }
             self.dropDownMenu.titles = buttonTitles
             let navBarHeight = CGRectGetHeight(self.navigationController!.navigationBar.frame)
@@ -339,10 +339,10 @@ extension FeedsTableViewController: BreakOutToRefreshDelegate, UIScrollViewDeleg
     public func refreshViewDidRefresh(refreshView: BreakOutToRefreshView) {
         dataWriter.updateFeeds({feeds, errors in
             if !errors.isEmpty {
-                let alertTitle = NSLocalizedString("Unable to update feeds", comment: "")
+                let alertTitle = NSLocalizedString("FeedsTableViewController_UpdateFeeds_Error_Title", comment: "")
                 let alertMessage = ""
                 let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: {_ in
+                alert.addAction(UIAlertAction(title: NSLocalizedString("FeedsTableViewController_UpdateFeeds_Error_Accept", comment: ""), style: .Default, handler: {_ in
                     self.dismissViewControllerAnimated(true, completion: nil)
                 }))
                 self.presentViewController(alert, animated: true, completion: nil)
@@ -380,11 +380,11 @@ extension FeedsTableViewController: UITableViewDataSource {
 
     public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let feed = feedAtIndexPath(indexPath)
-        let strToUse = (feed.unreadArticles().isEmpty ? "unread" : "read")
+        let cellTypeToUse = (feed.unreadArticles().isEmpty ? "unread" : "read")
         // Prevents a green triangle which'll (dis)appear depending on
         // whether new feed loaded into it has unread articles or not.
 
-        if let cell = tableView.dequeueReusableCellWithIdentifier(strToUse, forIndexPath: indexPath) as? FeedTableCell {
+        if let cell = tableView.dequeueReusableCellWithIdentifier(cellTypeToUse, forIndexPath: indexPath) as? FeedTableCell {
             cell.feed = feed
             cell.themeRepository = self.themeRepository
             return cell
@@ -408,21 +408,21 @@ extension FeedsTableViewController: UITableViewDelegate {
         forRowAtIndexPath indexPath: NSIndexPath) {}
 
     public func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-        let deleteTitle = NSLocalizedString("Delete", comment: "")
+        let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
         let delete = UITableViewRowAction(style: .Default, title: deleteTitle, handler: {(_, indexPath: NSIndexPath!) in
             let feed = self.feedAtIndexPath(indexPath)
             self.dataWriter.deleteFeed(feed)
             self.reload(nil)
         })
 
-        let readTitle = NSLocalizedString("Mark\nRead", comment: "")
+        let readTitle = NSLocalizedString("FeedsTableViewController_Table_EditAction_MarkRead", comment: "")
         let markRead = UITableViewRowAction(style: .Normal, title: readTitle, handler: {_, indexPath in
             let feed = self.feedAtIndexPath(indexPath)
             self.dataWriter.markFeedAsRead(feed)
             self.reload(nil)
         })
 
-        let editTitle = NSLocalizedString("Edit", comment: "")
+        let editTitle = NSLocalizedString("Generic_Edit", comment: "")
         let edit = UITableViewRowAction(style: .Normal, title: editTitle, handler: {_, indexPath in
             let feed = self.feedAtIndexPath(indexPath)
             var viewController: UIViewController! = nil

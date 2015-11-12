@@ -15,8 +15,7 @@ class ThemeRepositorySpec: QuickSpec {
     override func spec() {
         var subject: ThemeRepository! = nil
         var injector: Injector! = nil
-        var userDefaults: NSUserDefaults! = nil
-        var currentUserDefaults: NSDictionary! = nil
+        var userDefaults: FakeUserDefaults! = nil
         var subscriber: FakeThemeSubscriber! = nil
 
 
@@ -24,9 +23,7 @@ class ThemeRepositorySpec: QuickSpec {
         beforeEach {
             injector = Injector()
 
-            currentUserDefaults = NSUserDefaults.standardUserDefaults().dictionaryRepresentation()
-            NSUserDefaults.resetStandardUserDefaults()
-            userDefaults = NSUserDefaults.standardUserDefaults()
+            userDefaults = FakeUserDefaults()
             injector.bind(NSUserDefaults.self, to: userDefaults)
 
             subject = injector.create(ThemeRepository.self) as! ThemeRepository
@@ -34,12 +31,6 @@ class ThemeRepositorySpec: QuickSpec {
             subscriber = FakeThemeSubscriber()
             subject.addSubscriber(subscriber)
             subscriber.didCallChangeTheme = false
-        }
-
-        afterEach {
-            for (key, value) in currentUserDefaults {
-                userDefaults.setObject(value, forKey: key as! String)
-            }
         }
 
         it("adding a subscriber should immediately call didChangeTheme on it") {

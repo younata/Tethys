@@ -258,8 +258,8 @@ class FeedViewControllerSpec: QuickSpec {
                         expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
                     }
 
-                    it("should have a label title 'No summary available'") {
-                        expect(cell.textLabel?.text).to(equal("No summary available"))
+                    it("should have a label title 'No Summary Available'") {
+                        expect(cell.textLabel?.text).to(equal("No Summary Available"))
                     }
 
                     it("should re-color the text gray") {

@@ -26,6 +26,8 @@ public class InjectorModule : Ra.InjectorModule {
 
         let feedFinder = WebFeedFinder()
         injector.bind(FeedFinder.self, to: feedFinder)
+
+        injector.bind(NSFileManager.self, to: NSFileManager.defaultManager())
     }
 
     public init() {}

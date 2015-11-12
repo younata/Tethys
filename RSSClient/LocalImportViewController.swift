@@ -32,11 +32,15 @@ public class LocalImportViewController: UIViewController {
         return self.injector?.create(ThemeRepository.self) as? ThemeRepository
     }()
 
+    private lazy var fileManager: NSFileManager? = {
+        return self.injector?.create(NSFileManager.self) as? NSFileManager
+    }()
+
     public lazy var explanationLabel: ExplanationView = {
         let label = ExplanationView(forAutoLayout: ())
         label.themeRepository = self.themeRepository
-        label.title = NSLocalizedString("Local Import", comment: "")
-        label.detail = NSLocalizedString("To use Local Import, go into iTunes, select your phone, select apps, scroll down to installed apps, select rNews, and then click '+' to add an opml or rss feed to this app, refresh this page, and it'll automatically show up here so that you can import it.", comment: "")
+        label.title = NSLocalizedString("LocalImportViewController_Title", comment: "")
+        label.detail = NSLocalizedString("LocalImportViewController_Onboarding_Detail", comment: "")
         label.backgroundColor = UIColor.lightGrayColor()
         return label
     }()
@@ -55,8 +59,8 @@ public class LocalImportViewController: UIViewController {
         self.tableViewController.refreshControl = UIRefreshControl()
         tableViewController.refreshControl?.addTarget(self, action: "reloadItems", forControlEvents: .ValueChanged)
 
-        self.navigationItem.title = NSLocalizedString("Local Import", comment: "")
-        let dismissTitle = NSLocalizedString("Dismiss", comment: "")
+        self.navigationItem.title = NSLocalizedString("LocalImportViewController_Title", comment: "")
+        let dismissTitle = NSLocalizedString("Generic_Dismiss", comment: "")
         let dismissButton = UIBarButtonItem(title: dismissTitle, style: .Plain, target: self, action: "dismiss")
         self.navigationItem.leftBarButtonItem = dismissButton
 
@@ -73,22 +77,24 @@ public class LocalImportViewController: UIViewController {
     }
 
     public func reloadItems() {
-        let fileManager = NSFileManager.defaultManager()
-        do {
-            let contents = try fileManager.contentsOfDirectoryAtPath(documentsDirectory() as String)
-            for path in contents {
-                verifyIfFeedOrOPML(path)
-            }
-        } catch _ {}
+        guard let fileManager = self.fileManager,
+              let contents = try? fileManager.contentsOfDirectoryAtPath(documentsDirectory() as String) else {
+            return
+        }
+        for path in contents {
+            self.verifyIfFeedOrOPML(path)
+        }
+
+        if contents.isEmpty {
+            self.showExplanationView()
+        }
 
         self.tableViewController.refreshControl?.endRefreshing()
     }
 
     // MARK: - Private
 
-    private func reload() {
-        self.feeds.sortInPlace { $0.0 < $1.0 }
-        self.opmls.sortInPlace { $0.0 < $1.0 }
+    private func showExplanationView() {
         self.explanationLabel.removeFromSuperview()
         let opmlIsEmptyOrHasOnlyRNews: Bool
         if self.opmls.isEmpty {
@@ -103,16 +109,22 @@ public class LocalImportViewController: UIViewController {
             self.explanationLabel.autoCenterInSuperview()
             self.explanationLabel.autoMatchDimension(.Width, toDimension: .Width, ofView: self.view, withMultiplier: 0.75)
         }
+    }
+
+    private func reload() {
+        self.feeds.sortInPlace { $0.0 < $1.0 }
+        self.opmls.sortInPlace { $0.0 < $1.0 }
+        self.showExplanationView()
         let sections = NSIndexSet(indexesInRange: NSMakeRange(0, 2))
         self.tableViewController.tableView.reloadSections(sections, withRowAnimation: .Automatic)
     }
 
     private func verifyIfFeedOrOPML(path: String) {
-        if contentsOfDirectory.contains(path) {
+        if self.contentsOfDirectory.contains(path) {
             return;
         }
 
-        contentsOfDirectory.append(path)
+        self.contentsOfDirectory.append(path)
 
         let location = documentsDirectory().stringByAppendingPathComponent(path)
         do {
@@ -134,7 +146,7 @@ public class LocalImportViewController: UIViewController {
                     self.reload()
                 }
             }
-            backgroundQueue?.addOperations([opmlParser, feedParser], waitUntilFinished: false)
+            self.backgroundQueue?.addOperations([opmlParser, feedParser], waitUntilFinished: false)
         } catch _ {
         }
     }
@@ -194,11 +206,11 @@ extension LocalImportViewController: UITableViewDataSource {
         if indexPath.section == 0 {
             let (path, items) = opmls[indexPath.row]
             cell.textLabel?.text = NSString(string: path).lastPathComponent as String
-            cell.detailTextLabel?.text = "\(items.count) feeds"
+            cell.detailTextLabel?.text = NSString.localizedStringWithFormat(NSLocalizedString("LocalImportViewController_Cell_FeedList_FeedCount", comment: ""), items.count) as String
         } else if indexPath.section == 1 {
             let (path, item) = feeds[indexPath.row]
             cell.textLabel?.text = path
-            cell.detailTextLabel?.text = "\(item.articles.count) articles"
+            cell.detailTextLabel?.text = NSString.localizedStringWithFormat(NSLocalizedString("LocalImportViewController_Cell_Feed_ArticleCount", comment: ""), item.articles.count) as String
         }
 
         (cell as? TableViewCell)?.themeRepository = self.themeRepository
@@ -208,8 +220,8 @@ extension LocalImportViewController: UITableViewDataSource {
 
     public func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch (section) {
-        case 0: return self.opmls.isEmpty ? nil : "Feed Lists"
-        case 1: return self.feeds.isEmpty ? nil : "Individual Feeds"
+        case 0: return self.opmls.isEmpty ? nil : NSLocalizedString("LocalImportViewController_TableHeader_OPMLs", comment: "")
+        case 1: return self.feeds.isEmpty ? nil : NSLocalizedString("LocalImportViewController_TableHeader_Feeds", comment: "")
         default: return nil
         }
     }

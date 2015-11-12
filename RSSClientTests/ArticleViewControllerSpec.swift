@@ -92,9 +92,9 @@ class ArticleViewControllerSpec: QuickSpec {
                         UIKeyCommand(input: "s", modifierFlags: .Command, action: ""),
                     ]
                     let expectedDiscoverabilityTitles = [
-                        "Toggle read",
-                        "Toggle view content/link",
-                        "Open share sheet",
+                        "Toggle Read",
+                        "Toggle View Content/Link",
+                        "Open Share Sheet",
                     ]
 
                     hasKindsOfKeyCommands(expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
@@ -116,10 +116,10 @@ class ArticleViewControllerSpec: QuickSpec {
                         UIKeyCommand(input: "s", modifierFlags: .Command, action: ""),
                     ]
                     let expectedDiscoverabilityTitles = [
-                        "Next article",
-                        "Toggle read",
-                        "Toggle view content/link",
-                        "Open share sheet",
+                        "Next Article",
+                        "Toggle Read",
+                        "Toggle View Content/Link",
+                        "Open Share Sheet",
                     ]
 
                     hasKindsOfKeyCommands(expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
@@ -141,10 +141,10 @@ class ArticleViewControllerSpec: QuickSpec {
                         UIKeyCommand(input: "s", modifierFlags: .Command, action: ""),
                     ]
                     let expectedDiscoverabilityTitles = [
-                        "Previous article",
-                        "Toggle read",
-                        "Toggle view content/link",
-                        "Open share sheet",
+                        "Previous Article",
+                        "Toggle Read",
+                        "Toggle View Content/Link",
+                        "Open Share Sheet",
                     ]
 
                     hasKindsOfKeyCommands(expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
@@ -166,10 +166,10 @@ class ArticleViewControllerSpec: QuickSpec {
                         UIKeyCommand(input: "s", modifierFlags: .Command, action: ""),
                     ]
                     let expectedDiscoverabilityTitles = [
-                        "Previous article",
-                        "Next article",
-                        "Toggle read",
-                        "Open share sheet",
+                        "Previous Article",
+                        "Next Article",
+                        "Toggle Read",
+                        "Open Share Sheet",
                     ]
 
                     hasKindsOfKeyCommands(expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
@@ -192,11 +192,11 @@ class ArticleViewControllerSpec: QuickSpec {
                         UIKeyCommand(input: "s", modifierFlags: .Command, action: ""),
                     ]
                     let expectedDiscoverabilityTitles = [
-                        "Previous article",
-                        "Next article",
-                        "Toggle read",
-                        "Toggle view content/link",
-                        "Open share sheet",
+                        "Previous Article",
+                        "Next Article",
+                        "Toggle Read",
+                        "Toggle View Content/Link",
+                        "Open Share Sheet",
                     ]
 
                     hasKindsOfKeyCommands(expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)

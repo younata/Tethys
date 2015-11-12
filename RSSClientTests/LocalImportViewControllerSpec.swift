@@ -55,6 +55,7 @@ class LocalImportViewControllerSpec: QuickSpec {
         var mainQueue: FakeOperationQueue! = nil
         var backgroundQueue: FakeOperationQueue! = nil
         var themeRepository: FakeThemeRepository! = nil
+        var fileManager: FakeFileManager! = nil
 
         beforeEach {
             injector = Ra.Injector(module: SpecInjectorModule())
@@ -74,6 +75,10 @@ class LocalImportViewControllerSpec: QuickSpec {
 
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, to: themeRepository)
+
+            fileManager = FakeFileManager()
+            fileManager.contentsOfDirectories[documentsDirectory() as String] = []
+            injector.bind(NSFileManager.self, to: fileManager)
 
             subject = injector.create(LocalImportViewController.self) as! LocalImportViewController
 
@@ -126,6 +131,7 @@ class LocalImportViewControllerSpec: QuickSpec {
                 beforeEach {
                     createOPMLWithFeeds(opmlFeeds, location: "rnews.opml")
                     createFeed(rssFeed, location: "feed")
+                    fileManager.contentsOfDirectories[documentsDirectory() as String] = ["rnews.opml", "feed"]
                     subject.reloadItems()
                 }
 
@@ -141,10 +147,18 @@ class LocalImportViewControllerSpec: QuickSpec {
         }
 
         context("when there are no files to list") {
+            beforeEach {
+                fileManager.contentsOfDirectories[documentsDirectory() as String] = []
+                subject.reloadItems()
+            }
             itBehavesLike("showing explanation message")
         }
 
         context("when there is only the rnews.opml file to list") {
+            beforeEach {
+                fileManager.contentsOfDirectories[documentsDirectory() as String] = ["rnews.opml"]
+                subject.reloadItems()
+            }
             itBehavesLike("showing explanation message")
         }
 
@@ -155,6 +169,7 @@ class LocalImportViewControllerSpec: QuickSpec {
             beforeEach {
                 createOPMLWithFeeds(opmlFeeds, location: "rnews.opml")
                 createFeed(rssFeed, location: "feed")
+                fileManager.contentsOfDirectories[documentsDirectory() as String] = ["rnews.opml", "feed"]
                 subject.reloadItems()
             }
 
@@ -175,6 +190,9 @@ class LocalImportViewControllerSpec: QuickSpec {
             beforeEach {
                 createOPMLWithFeeds(opmlFeeds, location: "rnews.opml")
                 createFeed(rssFeed, location: "feed")
+
+                fileManager.contentsOfDirectories[documentsDirectory() as String] = ["rnews.opml", "feed"]
+
                 subject.reloadItems()
             }
 

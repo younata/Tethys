@@ -5,7 +5,7 @@ public class TagPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
     public lazy var textField: UITextField = {
         let textField = UITextField(forAutoLayout: ())
         textField.delegate = self
-        textField.placeholder = NSLocalizedString("Tag", comment: "")
+        textField.placeholder = NSLocalizedString("TagPickerView_Placeholder", comment: "")
         textField.backgroundColor = UIColor(white: 0.8, alpha: 0.75)
         textField.layer.cornerRadius = 5
 

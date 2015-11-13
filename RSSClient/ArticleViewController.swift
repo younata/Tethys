@@ -69,7 +69,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     private let contentString = NSLocalizedString("ArticleViewController_TabBar_ViewContent", comment: "")
     private let linkString = NSLocalizedString("ArticleViewController_TabBar_ViewLink", comment: "")
 
-    public var articles: [Article] = []
+    public var articles = CoreDataBackedArray<Article>()
     public var lastArticleIndex = 0
 
     public lazy var dataWriter: DataWriter? = {

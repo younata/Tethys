@@ -27,7 +27,6 @@ class ArticleListControllerSpec: QuickSpec {
         var subject: ArticleListController! = nil
         var navigationController: UINavigationController! = nil
         var articles: [Article] = []
-        var sortedArticles: [Article] = []
         var dataReadWriter: FakeDataReadWriter! = nil
         var themeRepository: FakeThemeRepository! = nil
 
@@ -52,8 +51,7 @@ class ArticleListControllerSpec: QuickSpec {
             let c = fakeArticle(feed, read: true)
             let b = fakeArticle(feed, isUpdated: true)
             let a = fakeArticle(feed)
-            articles = [d, c, b, a]
-            sortedArticles = [a, b, c, d]
+            articles = [a, b, c, d]
 
             for article in articles {
                 feed.addArticle(article)
@@ -94,15 +92,15 @@ class ArticleListControllerSpec: QuickSpec {
 
                     expect(cell.unread.unread).to(equal(1))
 
-                    articles[0].read = true
+                    articles[3].read = true
                     for object in dataReadWriter.subscribers.allObjects {
                         if let subscriber = object as? DataSubscriber {
-                            subscriber.markedArticles([articles[0]], asRead: true)
+                            subscriber.markedArticles([articles[3]], asRead: true)
                         }
                     }
                 }
 
-                it("should reload the tableViwe") {
+                it("should reload the tableView") {
                     let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 3, inSection: 0)) as! ArticleCell
 
                     expect(cell.unread.unread).to(equal(0))
@@ -120,15 +118,6 @@ class ArticleListControllerSpec: QuickSpec {
             }
 
             describe("the cells") {
-                it("should be sorted with newest at the top, each having a theme repository") {
-                    for (idx, article) in sortedArticles.enumerate() {
-                        let indexPath = NSIndexPath(forRow: idx, inSection: 0)
-                        let cell = subject.tableView(subject.tableView, cellForRowAtIndexPath: indexPath) as! ArticleCell
-                        expect(cell.article).to(equal(article))
-                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
-                    }
-                }
-
                 context("in preview mode") {
                     beforeEach {
                         subject.previewMode = true
@@ -218,7 +207,7 @@ class ArticleListControllerSpec: QuickSpec {
                             if let delete = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.first {
                                 expect(delete.title).to(equal("Delete"))
                                 delete.handler()(delete, indexPath)
-                                expect(dataReadWriter.lastDeletedArticle).to(equal(sortedArticles.first))
+                                expect(dataReadWriter.lastDeletedArticle).to(equal(articles.first))
                             }
                         }
 
@@ -228,8 +217,8 @@ class ArticleListControllerSpec: QuickSpec {
                                 if let markRead = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.last {
                                     expect(markRead.title).to(equal("Mark\nRead"))
                                     markRead.handler()(markRead, indexPath)
-                                    expect(dataReadWriter.lastArticleMarkedRead).to(equal(sortedArticles.first))
-                                    expect(sortedArticles.first?.read).to(beTruthy())
+                                    expect(dataReadWriter.lastArticleMarkedRead).to(equal(articles.first))
+                                    expect(articles.first?.read).to(beTruthy())
                                 }
                             }
                         }
@@ -240,8 +229,8 @@ class ArticleListControllerSpec: QuickSpec {
                                 if let markUnread = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.last {
                                     expect(markUnread.title).to(equal("Mark\nUnread"))
                                     markUnread.handler()(markUnread, indexPath)
-                                    expect(dataReadWriter.lastArticleMarkedRead).to(equal(sortedArticles[2]))
-                                    expect(sortedArticles[2].read).to(beFalsy())
+                                    expect(dataReadWriter.lastArticleMarkedRead).to(equal(articles[2]))
+                                    expect(articles[2].read).to(beFalsy())
                                 }
                             }
                         }
@@ -255,8 +244,8 @@ class ArticleListControllerSpec: QuickSpec {
                         it("should navigate to an ArticleViewController") {
                             expect(navigationController.topViewController).to(beAnInstanceOf(ArticleViewController.self))
                             if let articleController = navigationController.topViewController as? ArticleViewController {
-                                expect(articleController.article).to(equal(sortedArticles[1]))
-                                expect(articleController.articles).to(equal(sortedArticles))
+                                expect(articleController.article).to(equal(articles[1]))
+                                expect(Array(articleController.articles)).to(equal(articles))
                                 expect(articleController.lastArticleIndex).to(equal(1))
                             }
                         }

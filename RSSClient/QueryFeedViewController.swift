@@ -246,7 +246,7 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
                 let articleList = ArticleListController(style: .Plain)
                 articleList.previewMode = true
                 self.dataRetriever?.articlesMatchingQuery(self.feedQuery) {articles in
-                    articleList.articles = articles
+                    articleList.articles = CoreDataBackedArray(articles)
                 }
                 self.navigationController?.pushViewController(articleList, animated: true)
             })

@@ -115,14 +115,14 @@ class CoreDataBackedArraySpec: QuickSpec {
             expect(sortDescriptorOff == subject).toNot(beTruthy())
 
             let expectedArticles = articles.map { Article(article: $0, feed: nil) }
-            let object = CoreDataBackedArray(array: expectedArticles)
+            let object = CoreDataBackedArray(expectedArticles)
             expect(object == subject).to(beTruthy())
         }
 
         it("should allow itself to be created with an array backing it, for testing reasons") {
             let expectedArticles = articles.map { Article(article: $0, feed: nil) }
 
-            let object = CoreDataBackedArray(array: expectedArticles)
+            let object = CoreDataBackedArray(expectedArticles)
             expect(Array(object)).to(equal(expectedArticles))
         }
 
@@ -136,7 +136,7 @@ class CoreDataBackedArraySpec: QuickSpec {
             let expectedArticles = articles.map { Article(article: $0, feed: nil) }
             expect(Array(subject)).to(equal(expectedArticles + [article]))
 
-            let queryList = CoreDataBackedArray(array: expectedArticles)
+            let queryList = CoreDataBackedArray(expectedArticles)
             queryList.append(article)
             expect(Array(queryList)).to(equal(expectedArticles + [article]))
         }
@@ -149,6 +149,38 @@ class CoreDataBackedArraySpec: QuickSpec {
         it("should allow a filter with a predicate") {
             let results = subject.filterWithPredicate(NSPredicate(format: "title == %@", "001"))
             expect(Array(results)).to(equal([Article(article: articles[1], feed: nil)]))
+        }
+
+        it("should allow itself to be combined with another CoreDataBackedArray easily") {
+            expect(Array(subject.combine(subject))).to(equal(Array(subject))) // simple case
+
+            let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+
+            let a = CoreDataBackedArray(entityName: "Article", predicate: NSPredicate(format: "title == %@", "002"), managedObjectContext: moc, conversionFunction: {
+                return Article(article: $0 as! CoreDataArticle, feed: nil)
+            }, sortDescriptors: [sortDescriptor])
+
+            let b = CoreDataBackedArray(entityName: "Article", predicate: NSPredicate(format: "title == %@", "003"), managedObjectContext: moc, conversionFunction: {
+                return Article(article: $0 as! CoreDataArticle, feed: nil)
+            }, sortDescriptors: [sortDescriptor])
+
+            let articles = articles.map({ Article(article: $0, feed: nil) })
+
+            expect(Array(a.combine(b))).to(equal([articles[2], articles[3]]))
+        }
+
+        it("should allow itself to be combined with other predicates") {
+            let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+
+            let a = CoreDataBackedArray(entityName: "Article", predicate: NSPredicate(format: "title == %@", "003"), managedObjectContext: moc, conversionFunction: {
+                return Article(article: $0 as! CoreDataArticle, feed: nil)
+                }, sortDescriptors: [sortDescriptor])
+
+            let predicate = NSPredicate(format: "title == %@", "002")
+
+            let articles = articles.map({ Article(article: $0, feed: nil) })
+
+            expect(Array(a.combineWithPredicate(predicate))).to(equal([articles[2], articles[3]]))
         }
 
         it("should allow an object to be removed from it") {
@@ -167,7 +199,7 @@ class CoreDataBackedArraySpec: QuickSpec {
             expect(subject.remove(article)).to(beTruthy())
             expect(Array(subject)).to(equal(expectedArticles))
 
-            let queryList = CoreDataBackedArray(array: articles)
+            let queryList = CoreDataBackedArray(articles)
             expect(queryList.remove(toRemove)).to(beTruthy())
             expect(Array(queryList)).to(equal(expectedArticles))
         }

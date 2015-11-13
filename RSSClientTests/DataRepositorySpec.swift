@@ -81,11 +81,13 @@ class FeedRepositorySpec: QuickSpec {
             article1.title = "b"
             article1.link = "https://example.com/article1.html"
             article1.summary = "<p>Hello world!</p>"
+
             article2 = createArticle(moc)
             article2.title = "c"
             article2.link = "https://example.com/article2.html"
             article2.summary = "<p>Hello world!</p>"
             article2.read = true
+
             article1.feed = feed1
             article2.feed = feed1
 
@@ -273,11 +275,11 @@ class FeedRepositorySpec: QuickSpec {
 
             describe("articlesOfFeeds:MatchingSearchQuery:callback:") {
                 var calledHandler = false
-                var calledArticles: [Article] = []
+                var calledArticles = CoreDataBackedArray<Article>()
 
                 beforeEach {
                     calledHandler = false
-                    calledArticles = []
+                    calledArticles = CoreDataBackedArray()
 
                     subject.articlesOfFeeds(feeds, matchingSearchQuery: "article1") {articles in
                         calledHandler = true
@@ -306,7 +308,9 @@ class FeedRepositorySpec: QuickSpec {
 
                         expect(mainQueue.operationCount).to(equal(0))
                         expect(calledHandler).to(beTruthy())
-                        expect(calledArticles).to(equal([Article(article: article1, feed: nil)]))
+                        expect(Array(calledArticles)).to(equal([Article(article: article1, feed: nil)]))
+
+                        expect(calledArticles.predicate).toNot(beNil())
                     }
                 }
             }
@@ -441,7 +445,7 @@ class FeedRepositorySpec: QuickSpec {
                 #endif
             }
 
-            xdescribe("markFeedAsRead") {
+            describe("markFeedAsRead") {
                 beforeEach {
                     subject.markFeedAsRead(Feed(feed: feed1))
                     backgroundQueue.runNextOperation()

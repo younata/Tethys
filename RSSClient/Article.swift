@@ -150,7 +150,7 @@ import JavaScriptCore
             self.read = read
             self.feed = feed
             self.flags = flags
-            self.enclosuresArray = CoreDataBackedArray(array: enclosures)
+            self.enclosuresArray = CoreDataBackedArray(enclosures)
             super.init()
             for enclosure in self.enclosuresArray {
                 enclosure.article = self
@@ -177,7 +177,7 @@ import JavaScriptCore
         read = article.read
         self.feed = feed
         self.flags = article.flags
-        self.enclosuresArray = CoreDataBackedArray(array: [])
+        self.enclosuresArray = CoreDataBackedArray()
         super.init()
         self.enclosuresArray = CoreDataBackedArray(entityName: "Enclosure", predicate: NSPredicate(format: "article == %@", self), managedObjectContext: article.managedObjectContext!, conversionFunction: {
             return Enclosure(enclosure: $0 as! CoreDataEnclosure, article: self)

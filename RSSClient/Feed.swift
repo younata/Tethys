@@ -198,7 +198,7 @@ import JavaScriptCore
             self.waitPeriod = waitPeriod
             self.remainingWait = remainingWait
             self.image = image
-            self.articlesArray = CoreDataBackedArray(array: articles)
+            self.articlesArray = CoreDataBackedArray(articles)
             self.identifier = identifier
             super.init()
             for article in articles {
@@ -227,7 +227,7 @@ import JavaScriptCore
         self.image = feed.image as? Image
         self.feedID = feed.objectID
         self.identifier = feedID?.URIRepresentation().absoluteString ?? ""
-        self.articlesArray = CoreDataBackedArray<Article>(array: [])
+        self.articlesArray = CoreDataBackedArray<Article>()
         super.init()
         if !self.isQueryFeed {
             let sortByUpdated = NSSortDescriptor(key: "updatedAt", ascending: false)

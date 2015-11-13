@@ -3,7 +3,7 @@ import rNewsKit
 
 public class ArticleListController: UITableViewController, DataSubscriber {
 
-    internal var articles: [Article] = []
+    internal var articles = CoreDataBackedArray<Article>()
     public var feeds: [Feed] = [] {
         didSet {
             self.resetArticles()
@@ -142,7 +142,7 @@ public class ArticleListController: UITableViewController, DataSubscriber {
             let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Generic_Delete", comment: ""),
                 handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
                     self.dataWriter?.deleteArticle(article)
-                    self.articles.removeAtIndex(indexPath.row)
+                    self.articles.remove(article)
                     self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             })
             let unread = NSLocalizedString("ArticleListController_Cell_EditAction_MarkUnread", comment: "")
@@ -160,12 +160,11 @@ public class ArticleListController: UITableViewController, DataSubscriber {
     // Mark: Private
 
     private func resetArticles() {
-        let articles: [Article] = self.feeds.reduce(Array<Article>()) { return $0 + $1.articlesArray }
-        self.articles = articles.sort {a, b in
-            let da = a.updatedAt ?? a.published
-            let db = b.updatedAt ?? b.published
-            return da.timeIntervalSince1970 > db.timeIntervalSince1970
+        guard var articles = self.feeds.first?.articlesArray else { return }
+        for feed in self.feeds[1..<self.feeds.count] {
+            articles = articles.combine(feed.articlesArray)
         }
+        self.articles = articles
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
     }
 }
@@ -176,8 +175,9 @@ extension ArticleListController: UISearchBarDelegate {
             self.resetArticles()
         } else {
             self.dataReader?.articlesOfFeeds(self.feeds, matchingSearchQuery: searchText) {articles in
-                if (self.articles != articles) {
-                    self.articles = articles
+                let articlesArray = articles
+                if (self.articles != articlesArray) {
+                    self.articles = articlesArray
                     self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
                 }
             }

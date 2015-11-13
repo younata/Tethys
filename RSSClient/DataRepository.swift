@@ -15,7 +15,7 @@ public protocol DataRetriever {
     func allTags(callback: ([String]) -> (Void))
     func feeds(callback: ([Feed]) -> (Void))
     func feedsMatchingTag(tag: String?, callback: ([Feed]) -> (Void))
-    func articlesOfFeeds(feeds: [Feed], matchingSearchQuery: String, callback: ([Article]) -> (Void))
+    func articlesOfFeeds(feeds: [Feed], matchingSearchQuery: String, callback: (CoreDataBackedArray<Article>) -> (Void))
     func articlesMatchingQuery(query: String, callback: ([Article]) -> (Void))
 }
 
@@ -112,11 +112,26 @@ internal class DataRepository: DataRetriever, DataWriter {
     }
 
 
-    internal func articlesOfFeeds(feeds: [Feed], matchingSearchQuery query: String, callback: ([Article]) -> (Void)) {
+    internal func articlesOfFeeds(feeds: [Feed], matchingSearchQuery query: String, callback: (CoreDataBackedArray<Article>) -> (Void)) {
+        let feeds = feeds.filter({return !$0.isQueryFeed})
+        guard !feeds.isEmpty else {
+            self.mainQueue.addOperationWithBlock { callback(CoreDataBackedArray()) }
+            return
+        }
         self.backgroundQueue.addOperationWithBlock {
-            let articles = feeds.reduce(Array<Article>()) { return $0 + $1.articlesArray }
-            let matchingArticlesSet = Set(articles.filter({ return self.article($0, matchesQuery: query) }))
-            let returnValue = Array(matchingArticlesSet)
+            var articles = feeds[0].articlesArray
+            for feed in feeds[1..<feeds.count] {
+                articles = articles.combine(feed.articlesArray)
+            }
+            let titlePredicate = NSPredicate(format: "title CONTAINS %@", query)
+            let summaryPredicate = NSPredicate(format: "summary CONTAINS %@", query)
+            let descriptionPredicate = NSPredicate(format: "description CONTAINS %@", query)
+            let authorPredicate = NSPredicate(format: "author CONTAINS %@", query)
+            let contentPredicate = NSPredicate(format: "content CONTAINS %@", query)
+            let linkPredicate = NSPredicate(format: "link CONTAINS %@", query)
+
+            let predicates = [titlePredicate, summaryPredicate, descriptionPredicate, authorPredicate, contentPredicate, linkPredicate]
+            let returnValue = articles.filterWithPredicate(NSCompoundPredicate(orPredicateWithSubpredicates: predicates))
             self.mainQueue.addOperationWithBlock {
                 callback(returnValue)
             }
@@ -133,31 +148,6 @@ internal class DataRepository: DataRetriever, DataWriter {
     }
 
     // MARK: Private (DataRetriever)
-
-    private func article(article: Article, matchesQuery query: String) -> Bool {
-        if article.title.containsString(query) {
-            return true
-        }
-        if article.summary.containsString(query) {
-            return true
-        }
-        if article.description.containsString(query) {
-            return true
-        }
-        if article.summary.containsString(query) {
-            return true
-        }
-        if article.author.containsString(query) {
-            return true
-        }
-        if article.content.containsString(query) {
-            return true
-        }
-        if article.link?.absoluteString.containsString(query) == true {
-            return true
-        }
-        return false
-    }
 
     private func allFeedsOnBackgroundQueue(callback: ([Feed] -> (Void))) {
         self.backgroundQueue.addOperationWithBlock {

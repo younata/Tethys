@@ -24,7 +24,7 @@ public class SettingsViewController: UIViewController {
 
     public let tableView = UITableView(frame: CGRectZero, style: .Grouped)
 
-    private lazy var actualThemeRepository: ThemeRepository = {
+    private lazy var themeRepository: ThemeRepository = {
         return self.injector!.create(ThemeRepository.self) as! ThemeRepository
     }()
 
@@ -40,17 +40,7 @@ public class SettingsViewController: UIViewController {
         return self.injector!.create(UrlOpener.self) as! UrlOpener
     }()
 
-    private var ephemeralThemeRepository: ThemeRepository? = nil {
-        didSet {
-            if self.ephemeralThemeRepository == nil {
-                self.didChangeTheme()
-            }
-        }
-    }
-
-    private var themeRepository: ThemeRepository {
-        return self.ephemeralThemeRepository ?? self.actualThemeRepository
-    }
+    private var oldTheme: ThemeRepository.Theme = .Default
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,6 +56,7 @@ public class SettingsViewController: UIViewController {
 
         self.tableView.registerClass(TableViewCell.self, forCellReuseIdentifier: "cell")
         self.tableView.registerClass(SwitchTableViewCell.self, forCellReuseIdentifier: "switch")
+
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.allowsMultipleSelection = true
@@ -74,18 +65,21 @@ public class SettingsViewController: UIViewController {
 
         let selectedIndexPath = NSIndexPath(forRow: self.themeRepository.theme.rawValue, inSection: SettingsSection.Theme.rawValue)
         self.tableView.selectRowAtIndexPath(selectedIndexPath, animated: false, scrollPosition: .None)
+
+        self.oldTheme = self.themeRepository.theme
     }
 
     internal func didTapDismiss() {
+        if self.oldTheme != self.themeRepository.theme {
+            self.themeRepository.theme = self.oldTheme
+        }
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
 
     internal func didTapSave() {
-        self.didTapDismiss()
-        if let themeRepository = self.ephemeralThemeRepository {
-            self.actualThemeRepository.theme = themeRepository.theme
-        }
+        self.oldTheme = self.themeRepository.theme
         self.settingsRepository.queryFeedsEnabled = self.queryFeedsEnabled
+        self.didTapDismiss()
     }
 }
 
@@ -162,6 +156,16 @@ extension SettingsViewController: UITableViewDataSource {
 }
 
 extension SettingsViewController: UITableViewDelegate {
+    public func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        guard let section = SettingsSection(rawValue: indexPath.section) else {
+            return
+        }
+
+        if section == .Theme {
+            tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
+        }
+    }
+
     public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         guard let section = SettingsSection(rawValue: indexPath.section) else {
             return
@@ -171,17 +175,17 @@ extension SettingsViewController: UITableViewDelegate {
             guard let theme = ThemeRepository.Theme(rawValue: indexPath.row) else {
                 return
             }
-            self.ephemeralThemeRepository = ThemeRepository(userDefaults: nil)
-            self.ephemeralThemeRepository?.theme = theme
-            self.ephemeralThemeRepository?.addSubscriber(self)
+            self.themeRepository.theme = theme
             self.navigationItem.rightBarButtonItem?.enabled = true
         case .Advanced:
+            tableView.deselectRowAtIndexPath(indexPath, animated: false)
             if let documentation = injector?.create(DocumentationViewController.self) as? DocumentationViewController {
                 documentation.configure(.QueryFeed)
                 self.navigationController?.pushViewController(documentation, animated: true)
             }
             return
         case .Credits:
+            tableView.deselectRowAtIndexPath(indexPath, animated: false)
             guard let url = NSURL(string: "https://twitter.com/younata") else {
                 return
             }
@@ -194,5 +198,6 @@ extension SettingsViewController: UITableViewDelegate {
             return
         }
         self.tableView.reloadData()
+        self.tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
     }
 }

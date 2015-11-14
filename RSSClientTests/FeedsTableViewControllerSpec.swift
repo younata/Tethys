@@ -143,6 +143,10 @@ class FeedsTableViewControllerSpec: QuickSpec {
                         expect(subject.updateBar.progress).to(equal(0))
                     }
 
+                    it("should start the pull to refresh") {
+                        expect(subject.refreshView.isRefreshing).to(beTruthy())
+                    }
+
                     context("as progress continues") {
                         beforeEach {
                             subscriber?.didUpdateFeedsProgress(1, total: 2)
@@ -159,6 +163,10 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                             it("should hide the updateBar") {
                                 expect(subject.updateBar.hidden).to(beTruthy())
+                            }
+
+                            it("should stop the pull to refresh") {
+                                expect(subject.refreshView.isRefreshing).to(beFalsy())
                             }
                         }
                     }

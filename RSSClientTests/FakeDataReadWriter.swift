@@ -17,6 +17,7 @@ class FakeDataReadWriter : DataRetriever, DataWriter {
     }
 
     func feedsMatchingTag(tag: String?, callback: ([Feed]) -> (Void)) {
+        didAskForFeeds = true
         guard let theTag = tag where !theTag.isEmpty else {
             return callback(feedsList)
         }

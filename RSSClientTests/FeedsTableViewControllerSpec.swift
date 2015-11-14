@@ -168,6 +168,10 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             it("should stop the pull to refresh") {
                                 expect(subject.refreshView.isRefreshing).to(beFalsy())
                             }
+
+                            it("should reload the tableView") {
+                                expect(dataReadWriter.didAskForFeeds).to(beTruthy())
+                            }
                         }
                     }
                 }

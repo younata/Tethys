@@ -274,8 +274,8 @@ internal class DataRepository: DataRetriever, DataWriter {
 
     internal func markFeedAsRead(feed: Feed) {
         self.backgroundQueue.addOperationWithBlock {
-            let articles = feed.articlesArray.filter { $0.read == false }
-            self.privateMarkArticles(articles, asRead: true)
+            let articles = feed.articlesArray.filterWithPredicate(NSPredicate(format: "read != 1"))
+            self.privateMarkArticles(Array(articles), asRead: true)
         }
     }
 
@@ -425,7 +425,7 @@ internal class DataRepository: DataRetriever, DataWriter {
                 }
             }
         }
-        if let articleID = existingArticle?.articleID, let article = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "SELF = %@", articleID),
+        if let articleID = existingArticle?.articleID, let article = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", articleID),
             managedObjectContext: self.objectContext, sortDescriptors: []).last as? CoreDataArticle {
                 if article.updatedAt != muonArticle.updated {
                     DataUtility.updateArticle(article, item: muonArticle)
@@ -551,7 +551,7 @@ internal class DataRepository: DataRetriever, DataWriter {
     }
 
     private func privateMarkArticles(articles: [Article], asRead read: Bool) {
-        guard articles.isEmpty == false else {
+        guard articles.count > 0 else {
             return
         }
 

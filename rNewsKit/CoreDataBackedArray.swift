@@ -51,8 +51,14 @@ public class CoreDataBackedArray<T>: CollectionType, CustomDebugStringConvertibl
     public var debugDescription: String {
         var ret = "[ "
         for (idx, object) in self.enumerate() {
-            let reflection = Mirror(reflecting: object)
-            ret += reflection.description
+            let description: String
+            if let describable = object as? CustomDebugStringConvertible {
+                description = describable.debugDescription
+            } else {
+                let reflection = Mirror(reflecting: object)
+                description = reflection.description
+            }
+            ret += description
             if idx < (self.count - 1) {
                 ret += ", "
             }

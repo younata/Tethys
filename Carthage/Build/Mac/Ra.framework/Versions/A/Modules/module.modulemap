@@ -1,0 +1,10 @@
+framework module Ra {
+  umbrella header "Ra.h"
+
+  export *
+  module * { export * }
+}
+
+module Ra.Swift {
+    header "Ra-Swift.h"
+}

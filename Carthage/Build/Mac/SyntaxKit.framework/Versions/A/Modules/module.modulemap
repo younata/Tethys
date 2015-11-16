@@ -1,0 +1,10 @@
+framework module SyntaxKit {
+  umbrella header "SyntaxKit.h"
+
+  export *
+  module * { export * }
+}
+
+module SyntaxKit.Swift {
+    header "SyntaxKit-Swift.h"
+}

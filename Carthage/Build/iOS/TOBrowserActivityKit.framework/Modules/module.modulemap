@@ -1,0 +1,6 @@
+framework module TOBrowserActivityKit {
+  umbrella header "TOBrowserActivityKit.h"
+
+  export *
+  module * { export * }
+}

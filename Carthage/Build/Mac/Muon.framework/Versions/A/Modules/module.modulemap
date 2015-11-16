@@ -1,0 +1,10 @@
+framework module Muon {
+  umbrella header "Muon.h"
+
+  export *
+  module * { export * }
+}
+
+module Muon.Swift {
+    header "Muon-Swift.h"
+}

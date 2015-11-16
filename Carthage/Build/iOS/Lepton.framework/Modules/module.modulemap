@@ -1,0 +1,10 @@
+framework module Lepton {
+  umbrella header "Lepton.h"
+
+  export *
+  module * { export * }
+}
+
+module Lepton.Swift {
+    header "Lepton-Swift.h"
+}

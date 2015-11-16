@@ -1,0 +1,10 @@
+framework module BreakOutToRefresh {
+  umbrella header "BreakOutToRefresh.h"
+
+  export *
+  module * { export * }
+}
+
+module BreakOutToRefresh.Swift {
+    header "BreakOutToRefresh-Swift.h"
+}

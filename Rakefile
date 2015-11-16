@@ -6,14 +6,14 @@ namespace "test" do
   namespace "ios" do
     desc "Run unit tests for the iOS app"
     task :app do |t|
-      puts "runnings tests for the iOS app"
-      run "set -o pipefail && xcodebuild -project RSSClient.xcodeproj -scheme RSSClientTests -destination 'platform=iOS Simulator,name=iPhone 6' test 2>/dev/null | xcpretty -c --formatter scripts/xcpretty-formatter.rb && echo 'iOS App Tests Passed'"
+      puts "running tests for the iOS app"
+      run "set -o pipefail && xcodebuild -project RSSClient.xcodeproj -scheme RSSClientTests -destination 'platform=iOS Simulator,name=iPhone 6' test | xcpretty -c --formatter scripts/xcpretty-formatter.rb && echo 'iOS App Tests Passed'"
     end
 
     desc "Run unit tests for the iOS kit"
     task :kit do |t|
       puts "Running tests for the iOS kit"
-      run "set -o pipefail && xcodebuild -project RSSClient.xcodeproj -scheme rNewsKitTests -destination 'platform=iOS Simulator,name=iPhone 6' test 2>/dev/null | xcpretty -c --formatter scripts/xcpretty-formatter.rb && echo 'iOS Kit tests Passed'"
+      run "set -o pipefail && xcodebuild -project RSSClient.xcodeproj -scheme rNewsKitTests -destination 'platform=iOS Simulator,name=iPhone 6' test | xcpretty -c --formatter scripts/xcpretty-formatter.rb && echo 'iOS Kit tests Passed'"
     end
   end
   desc "Run unit tests for all iOS targets"

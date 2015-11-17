@@ -231,7 +231,7 @@ public class FeedsTableViewController: UIViewController {
 
     private func showLoadingView(message: String) {
         self.loadingView.configureWithMessage(message)
-        self.navigationController?.view.addSubview(self.loadingView)
+        self.view.addSubview(self.loadingView)
         self.loadingView.autoPinEdgesToSuperviewEdges()
     }
 
@@ -392,7 +392,6 @@ extension FeedsTableViewController: BreakOutToRefreshDelegate, UIScrollViewDeleg
     public func refreshViewDidRefresh(refreshView: BreakOutToRefreshView) {
         self.dataWriter.updateFeeds({feeds, errors in
             if !errors.isEmpty {
-                print("errors: \(errors)")
                 let alertTitle = NSLocalizedString("FeedsTableViewController_UpdateFeeds_Error_Title", comment: "")
 
                 let messageString = errors.filter({$0.userInfo["feedTitle"] != nil}).map({(error) -> (String) in
@@ -471,15 +470,16 @@ extension FeedsTableViewController: UITableViewDelegate {
         let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
         let delete = UITableViewRowAction(style: .Default, title: deleteTitle, handler: {(_, indexPath: NSIndexPath!) in
             let feed = self.feedAtIndexPath(indexPath)
-            self.showLoadingView(NSLocalizedString("FeedsTableViewController_Loading_Deleting_Feed", comment: ""))
+            self.feeds = self.feeds.filter { $0 != feed }
             self.dataWriter.deleteFeed(feed)
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
         })
 
         let readTitle = NSLocalizedString("FeedsTableViewController_Table_EditAction_MarkRead", comment: "")
         let markRead = UITableViewRowAction(style: .Normal, title: readTitle, handler: {_, indexPath in
             let feed = self.feedAtIndexPath(indexPath)
-            self.showLoadingView(NSLocalizedString("FeedsTableViewController_Loading_Marking_Feed", comment: ""))
             self.dataWriter.markFeedAsRead(feed)
+            tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
         })
 
         let editTitle = NSLocalizedString("Generic_Edit", comment: "")

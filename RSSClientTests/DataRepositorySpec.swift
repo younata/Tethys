@@ -448,7 +448,6 @@ class FeedRepositorySpec: QuickSpec {
             describe("markFeedAsRead") {
                 beforeEach {
                     subject.markFeedAsRead(Feed(feed: feed1))
-                    backgroundQueue.runNextOperation()
                 }
 
                 it("should mark every article in the feed as read") {
@@ -566,7 +565,6 @@ class FeedRepositorySpec: QuickSpec {
                     article = feed.articlesArray.first
 
                     subject.markArticle(article, asRead: true)
-                    backgroundQueue.runNextOperation()
                     mainQueue.runNextOperation()
                 }
 
@@ -593,7 +591,6 @@ class FeedRepositorySpec: QuickSpec {
                         dataSubscriber.markedArticles = nil
                         dataSubscriber.read = nil
                         subject.markArticle(article, asRead: false)
-                        backgroundQueue.runNextOperation()
                         mainQueue.runNextOperation()
                     }
 

@@ -273,10 +273,8 @@ internal class DataRepository: DataRetriever, DataWriter {
     }
 
     internal func markFeedAsRead(feed: Feed) {
-        self.backgroundQueue.addOperationWithBlock {
-            let articles = feed.articlesArray.filterWithPredicate(NSPredicate(format: "read != 1"))
-            self.privateMarkArticles(Array(articles), asRead: true)
-        }
+        let articles = feed.articlesArray.filterWithPredicate(NSPredicate(format: "read != 1"))
+        self.privateMarkArticles(Array(articles), asRead: true)
     }
 
     internal func saveArticle(article: Article) {
@@ -318,9 +316,7 @@ internal class DataRepository: DataRetriever, DataWriter {
     }
 
     internal func markArticle(article: Article, asRead: Bool) {
-        self.backgroundQueue.addOperationWithBlock {
-            self.privateMarkArticles([article], asRead: asRead)
-        }
+        self.privateMarkArticles([article], asRead: asRead)
     }
 
     private var updatingFeedsCallbacks = Array<([Feed], [NSError]) -> (Void)>()

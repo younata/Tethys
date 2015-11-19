@@ -161,16 +161,14 @@ public class LocalImportViewController: UIViewController {
         self.view.addSubview(activityIndicator)
         activityIndicator.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
 
-        UIView.animateWithDuration(0.3, animations: {activityIndicator.backgroundColor = color})
-        self.navigationItem.leftBarButtonItem?.enabled = false
-        self.view.userInteractionEnabled = false
+        UIView.animateWithDuration(0.3, animations: {
+            activityIndicator.backgroundColor = color
+        })
         return activityIndicator
     }
 
     private func reenableInteractionAndDismiss(activityIndicator: ActivityIndicator) {
         activityIndicator.removeFromSuperview()
-        view.userInteractionEnabled = true
-        navigationItem.leftBarButtonItem?.enabled = true
         dismiss()
     }
 }

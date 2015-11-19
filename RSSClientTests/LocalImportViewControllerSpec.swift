@@ -253,14 +253,6 @@ class LocalImportViewControllerSpec: QuickSpec {
                         }
                     }
 
-                    it("disable the dismiss button") {
-                        expect(subject.navigationItem.leftBarButtonItem?.enabled).to(beFalsy())
-                    }
-
-                    it("should disenable user interaction") {
-                        expect(subject.view.userInteractionEnabled).to(beFalsy())
-                    }
-
                     it("should import the feeds") {
                         let expectedLocation = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
                         expect(opmlManager.importOPMLURL).to(equal(NSURL(string: "file://" + expectedLocation)))
@@ -289,14 +281,6 @@ class LocalImportViewControllerSpec: QuickSpec {
                                     }
                                 }
                                 expect(indicator).to(beNil())
-                            }
-
-                            it("should re-enable user interaction") {
-                                expect(subject.view.userInteractionEnabled).to(beTruthy())
-                            }
-
-                            it("should re-enable the dismiss button") {
-                                expect(subject.navigationItem.leftBarButtonItem?.enabled).to(beTruthy())
                             }
                         }
                     }
@@ -337,14 +321,6 @@ class LocalImportViewControllerSpec: QuickSpec {
                         }
                     }
 
-                    it("disable the dismiss button") {
-                        expect(subject.navigationItem.leftBarButtonItem?.enabled).to(beFalsy())
-                    }
-
-                    it("should disable user interaction") {
-                        expect(subject.view.userInteractionEnabled).to(beFalsy())
-                    }
-
                     it("should create a feed") {
                         expect(dataReadWriter.didCreateFeed).to(beTruthy())
                     }
@@ -366,14 +342,6 @@ class LocalImportViewControllerSpec: QuickSpec {
 
                             it("should remove the activity indicator") {
                                 expect(subject.view.subviews).toNot(contain(ActivityIndicator.self))
-                            }
-
-                            it("should re-enable user interaction") {
-                                expect(subject.view.userInteractionEnabled).to(beTruthy())
-                            }
-
-                            it("should re-enable the dismiss button") {
-                                expect(subject.navigationItem.leftBarButtonItem?.enabled).to(beTruthy())
                             }
                         }
                     }

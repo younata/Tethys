@@ -133,7 +133,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
     private func save(link: String, opml: Bool = false) {
         // show something to indicate we're doing work...
         let indicator = ActivityIndicator(forAutoLayout: ())
-        self.navigationController?.view.addSubview(indicator)
+        self.view.addSubview(indicator)
         indicator.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
         let feedMessageTemplate = NSLocalizedString("FindFeedViewController_Save_Feed", comment: "")
         let opmlMessageTemplate = NSLocalizedString("FindFeedViewController_Save_Feed_List", comment: "")
@@ -209,7 +209,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
         self.feedFinder?.findUnknownFeedInCurrentWebView(webView) {feedUrl in
             self.rssLink = feedUrl
-            self.self.addFeedButton.enabled = feedUrl != nil
+            self.addFeedButton.enabled = feedUrl != nil
         }
     }
 

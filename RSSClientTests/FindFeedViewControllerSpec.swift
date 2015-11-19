@@ -115,7 +115,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                 }
 
                 it("should show an indicator that we're doing things") {
-                    let indicator = navController.view.subviews.filter {
+                    let indicator = subject.view.subviews.filter {
                         return $0.isKindOfClass(ActivityIndicator.classForCoder())
                         }.first as? ActivityIndicator
                     expect(indicator?.message).to(equal("Loading feed at https://example.com/feed.xml"))
@@ -296,7 +296,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                         }
 
                         it("should show an indicator that we're doing things") {
-                            let indicator = navController.view.subviews.filter {
+                            let indicator = subject.view.subviews.filter {
                                 return $0.isKindOfClass(ActivityIndicator.classForCoder())
                             }.first as? ActivityIndicator
                             expect(indicator?.message).to(equal("Loading feed list at https://example.com/feed.xml"))
@@ -312,7 +312,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                             }
 
                             it("should remove the indicator") {
-                                let indicator = navController.view.subviews.filter {
+                                let indicator = subject.view.subviews.filter {
                                     return $0.isKindOfClass(ActivityIndicator.classForCoder())
                                 }.first
                                 expect(indicator).to(beNil())

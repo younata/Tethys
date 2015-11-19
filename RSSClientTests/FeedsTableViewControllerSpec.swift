@@ -598,6 +598,33 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             }
                         }
 
+                        describe("force pressing a cell") {
+                            var viewControllerPreviewing: FakeUIViewControllerPreviewing! = nil
+                            var viewController: UIViewController? = nil
+
+                            beforeEach {
+                                viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRectZero, delegate: subject)
+
+                                let rect = subject.tableView.rectForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0))
+                                let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
+                                viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                            }
+
+                            it("should return an ArticleListController configured with the feed's articles to present to the user") {
+                                expect(viewController).to(beAKindOf(ArticleListController.self))
+                                if let articleVC = viewController as? ArticleListController {
+                                    expect(articleVC.feeds).to(equal([feed]))
+                                }
+                            }
+
+                            it("should push the view controller when commited") {
+                                if let vc = viewController {
+                                    subject.previewingContext(viewControllerPreviewing, commitViewController: vc)
+                                    expect(navigationController.topViewController).to(beIdenticalTo(viewController))
+                                }
+                            }
+                        }
+
                         describe("exposing edit actions") {
                             var actions: [UITableViewRowAction] = []
                             var action: UITableViewRowAction! = nil
@@ -702,6 +729,33 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                 expect(navigationController.topViewController).to(beAnInstanceOf(ArticleListController.self))
                                 if let articleList = navigationController.topViewController as? ArticleListController {
                                     expect(articleList.feeds).to(equal([feed]))
+                                }
+                            }
+                        }
+
+                        describe("force pressing a cell") {
+                            var viewControllerPreviewing: FakeUIViewControllerPreviewing! = nil
+                            var viewController: UIViewController? = nil
+
+                            beforeEach {
+                                viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRectZero, delegate: subject)
+
+                                let rect = subject.tableView.rectForRowAtIndexPath(NSIndexPath(forRow: 1, inSection: 0))
+                                let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
+                                viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                            }
+
+                            it("should return an ArticleListController configured with the feed's articles to present to the user") {
+                                expect(viewController).to(beAKindOf(ArticleListController.self))
+                                if let articleVC = viewController as? ArticleListController {
+                                    expect(articleVC.feeds).to(equal([feed]))
+                                }
+                            }
+
+                            it("should push the view controller when commited") {
+                                if let vc = viewController {
+                                    subject.previewingContext(viewControllerPreviewing, commitViewController: vc)
+                                    expect(navigationController.topViewController).to(beIdenticalTo(viewController))
                                 }
                             }
                         }

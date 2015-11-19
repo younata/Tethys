@@ -133,6 +133,12 @@ public class FeedsTableViewController: UIViewController {
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
 
+        if #available(iOS 9.0, *) {
+            if self.traitCollection.forceTouchCapability == .Available {
+                self.registerForPreviewingWithDelegate(self, sourceView: self.tableView)
+            }
+        }
+
         self.dataWriter.addSubscriber(self)
         self.themeRepository.addSubscriber(self)
     }
@@ -299,13 +305,22 @@ public class FeedsTableViewController: UIViewController {
         return feeds[indexPath.row]
     }
 
-    internal func showFeeds(feeds: [Feed], animated: Bool) -> ArticleListController {
+    private func configuredArticleListWithFeeds(feeds: [Feed]) -> ArticleListController {
         let al = ArticleListController(style: .Plain)
         al.dataWriter = self.dataWriter
         al.dataReader = self.dataRetriever
         al.themeRepository = self.themeRepository
         al.feeds = feeds
-        self.navigationController?.pushViewController(al, animated: animated)
+        return al
+    }
+
+    private func showArticleList(articleListController: ArticleListController, animated: Bool) {
+        self.navigationController?.pushViewController(articleListController, animated: animated)
+    }
+
+    internal func showFeeds(feeds: [Feed], animated: Bool) -> ArticleListController {
+        let al = self.configuredArticleListWithFeeds(feeds)
+        self.showArticleList(al, animated: animated)
         return al
     }
 }
@@ -425,6 +440,21 @@ extension FeedsTableViewController: BreakOutToRefreshDelegate, UIScrollViewDeleg
 
     public func scrollViewDidScroll(scrollView: UIScrollView) {
         refreshView.scrollViewDidScroll(scrollView)
+    }
+}
+
+extension FeedsTableViewController: UIViewControllerPreviewingDelegate {
+    public func previewingContext(previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        if let indexPath = self.tableView.indexPathForRowAtPoint(location), feed = self.feedAtIndexPath(indexPath) {
+            return configuredArticleListWithFeeds([feed])
+        }
+        return nil
+    }
+
+    public func previewingContext(previewingContext: UIViewControllerPreviewing, commitViewController viewControllerToCommit: UIViewController) {
+        if let articleController = viewControllerToCommit as? ArticleListController {
+            self.showArticleList(articleController, animated: true)
+        }
     }
 }
 

@@ -18,6 +18,8 @@ class CoreDataBackedArraySpec: QuickSpec {
 
         let totalObjectCount = 35
 
+        let batchSize = 20
+
         beforeEach {
             moc = managedObjectContext()
 
@@ -65,7 +67,7 @@ class CoreDataBackedArraySpec: QuickSpec {
             expect(subject[0]).to(equal(Article(article: articles[0], feed: nil)))
 
             expect(subject.internalObjects.isEmpty).to(beFalsy())
-            let expectedArticles = Array(articles[0..<25]).map { Article(article: $0, feed: nil) }
+            let expectedArticles = Array(articles[0..<batchSize]).map { Article(article: $0, feed: nil) }
             expect(subject.internalObjects).to(equal(expectedArticles))
         }
 

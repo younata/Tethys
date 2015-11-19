@@ -27,7 +27,7 @@ public class CoreDataBackedArray<T>: CollectionType, CustomDebugStringConvertibl
     let managedObjectContext: NSManagedObjectContext?
     let conversionFunction: ((NSManagedObject) -> T)?
     let sortDescriptors: [NSSortDescriptor]
-    private let batchSize = 25
+    private let batchSize = 20
 
     var internalObjects = [T]()
 

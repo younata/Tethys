@@ -56,6 +56,12 @@ public class ArticleListController: UITableViewController, DataSubscriber {
             if self.feeds.count == 1 {
                 self.navigationItem.title = self.feeds.first?.displayTitle
             }
+
+            if #available(iOS 9.0, *) {
+                if self.traitCollection.forceTouchCapability == .Available {
+                    self.registerForPreviewingWithDelegate(self, sourceView: self.tableView)
+                }
+            }
         }
     }
 
@@ -71,21 +77,31 @@ public class ArticleListController: UITableViewController, DataSubscriber {
     }
 
     private func articleForIndexPath(indexPath: NSIndexPath) -> Article {
-        return articles[indexPath.row]
+        return self.articles[indexPath.row]
     }
 
     public func showArticle(article: Article, animated: Bool = true) -> ArticleViewController {
+        let avc = self.configuredArticleController(article)
+        self.showArticleController(avc, animated: animated)
+        return avc
+    }
+
+    private func configuredArticleController(article: Article, read: Bool = true) -> ArticleViewController {
         let avc = splitViewController?.viewControllers.last as? ArticleViewController ??
             ArticleViewController()
         avc.dataWriter = self.dataWriter
         avc.themeRepository = self.themeRepository
-        avc.article = article
+        avc.setArticle(article, read: read)
         avc.articles = self.articles
         if (self.articles.count != 0) {
             avc.lastArticleIndex = self.articles.indexOf(article) ?? 0
         } else {
             avc.lastArticleIndex = 0
         }
+        return avc
+    }
+
+    private func showArticleController(avc: ArticleViewController, animated: Bool) {
         if let splitView = self.splitViewController {
             let delegate = UIApplication.sharedApplication().delegate as? AppDelegate
             delegate?.splitView.collapseDetailViewController = false
@@ -96,7 +112,6 @@ public class ArticleListController: UITableViewController, DataSubscriber {
                 self.navigationController?.pushViewController(avc, animated: animated)
             }
         }
-        return avc
     }
 
     // MARK: - Table view data source
@@ -181,6 +196,23 @@ extension ArticleListController: UISearchBarDelegate {
                     self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
                 }
             }
+        }
+    }
+}
+
+extension ArticleListController: UIViewControllerPreviewingDelegate {
+    public func previewingContext(previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        if let indexPath = self.tableView.indexPathForRowAtPoint(location) where !self.previewMode {
+            let article = self.articleForIndexPath(indexPath)
+            return self.configuredArticleController(article, read: false)
+        }
+        return nil
+    }
+
+    public func previewingContext(previewingContext: UIViewControllerPreviewing, commitViewController viewControllerToCommit: UIViewController) {
+        if let articleController = viewControllerToCommit as? ArticleViewController, article = articleController.article where !self.previewMode {
+            self.dataWriter?.markArticle(article, asRead: true)
+            self.showArticleController(articleController, animated: true)
         }
     }
 }

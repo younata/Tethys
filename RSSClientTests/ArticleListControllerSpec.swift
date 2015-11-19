@@ -3,6 +3,45 @@ import Nimble
 import Ra
 import rNews
 import rNewsKit
+import UIKit
+
+class FakeUIViewControllerPreviewing: NSObject, UIViewControllerPreviewing {
+    @available(iOS 9.0, *)
+    var previewingGestureRecognizerForFailureRelationship: UIGestureRecognizer {
+        return UIGestureRecognizer()
+    }
+
+    private let _delegate: NSObject?
+
+    @available(iOS 9.0, *)
+    var delegate: UIViewControllerPreviewingDelegate {
+        if let delegate = _delegate as? UIViewControllerPreviewingDelegate {
+            return delegate
+        }
+        return ArticleListController()
+    }
+
+    private let _sourceView: UIView
+
+    @available(iOS 9.0, *)
+    var sourceView: UIView {
+        return _sourceView
+    }
+
+    private var _sourceRect: CGRect
+
+    @available(iOS 9.0, *)
+    var sourceRect: CGRect {
+        get { return _sourceRect }
+        set { _sourceRect = newValue }
+    }
+
+    init(sourceView: UIView, sourceRect: CGRect, delegate: NSObject) {
+        self._sourceView = sourceView
+        self._sourceRect = sourceRect
+        self._delegate = delegate
+    }
+}
 
 private var publishedOffset = -1
 func fakeArticle(feed: Feed, isUpdated: Bool = false, read: Bool = false) -> Article {
@@ -104,6 +143,70 @@ class ArticleListControllerSpec: QuickSpec {
                     let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 3, inSection: 0)) as! ArticleCell
 
                     expect(cell.unread.unread).to(equal(0))
+                }
+            }
+        }
+
+        describe("force pressing a cell") {
+            var viewControllerPreviewing: FakeUIViewControllerPreviewing! = nil
+
+            beforeEach {
+                viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRectZero, delegate: subject)
+            }
+
+            context("in preview mode") {
+                beforeEach {
+                    subject.previewMode = true
+                }
+
+                it("should not return a view controller to present to the user") {
+                    let rect = subject.tableView.rectForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0))
+                    let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
+                    let viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                    expect(viewController).to(beNil())
+                }
+            }
+
+            context("out of preview mode") {
+                var viewController: UIViewController? = nil
+
+                beforeEach {
+                    subject.previewMode = false
+
+                    let rect = subject.tableView.rectForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0))
+                    let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
+                    viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                }
+
+                it("should return an ArticleViewController configured with the article to present to the user") {
+                    expect(viewController).to(beAKindOf(ArticleViewController.self))
+                    if let articleVC = viewController as? ArticleViewController {
+                        expect(articleVC.article).to(equal(articles[0]))
+                        expect(Array(articleVC.articles)).to(equal(articles))
+                        expect(articleVC.lastArticleIndex).to(equal(0))
+                    }
+                }
+
+                it("should not mark the article as read") {
+                    expect(articles[0].read).to(beFalsy())
+                    expect(dataReadWriter.lastArticleMarkedRead).to(beNil())
+                }
+
+                describe("committing that view controller") {
+                    beforeEach {
+                        if let vc = viewController {
+                            subject.previewingContext(viewControllerPreviewing, commitViewController: vc)
+                        }
+                    }
+
+                    it("should push the view controller") {
+                        expect(navigationController.topViewController).to(beIdenticalTo(viewController))
+                    }
+
+                    it("should mark the article as read") {
+                        expect(articles[0].read).to(beTruthy())
+                        expect(dataReadWriter.lastArticleMarkedRead).to(equal(articles[0]))
+                    }
                 }
             }
         }

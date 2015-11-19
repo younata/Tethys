@@ -292,7 +292,7 @@ class ArticleViewControllerSpec: QuickSpec {
             beforeEach {
                 article.feed = feed
                 feed.addArticle(article)
-                subject.article = article
+                subject.setArticle(article)
             }
 
             it("should mark the article as read") {

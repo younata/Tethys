@@ -6,49 +6,50 @@ import Ra
 import rNewsKit
 
 public class ArticleViewController: UIViewController, WKNavigationDelegate {
-    public var article: Article? = nil {
-        didSet {
-            self.navigationController?.setToolbarHidden(false, animated: false)
-            if let a = article {
-                if a.read == false {
-                    self.dataWriter?.markArticle(a, asRead: true)
-                }
-                self.showArticle(a, onWebView: self.content)
+    public var article: Article? = nil
 
-                self.navigationItem.title = a.title ?? ""
+    public func setArticle(article: Article?, read: Bool = true) {
+        self.article = article
+        self.navigationController?.setToolbarHidden(false, animated: false)
+        if let a = article {
+            if a.read == false && read {
+                self.dataWriter?.markArticle(a, asRead: true)
+            }
+            self.showArticle(a, onWebView: self.content)
 
-                if self.userActivity == nil {
-                    let activityType = "com.rachelbrindle.rssclient.article"
-                    self.userActivity = NSUserActivity(activityType: activityType)
+            self.navigationItem.title = a.title ?? ""
 
-                    if #available(iOS 9.0, *) {
-                        self.userActivity?.requiredUserInfoKeys = Set(["feed", "article", "showingContent"])
-                    }
-
-                    self.userActivity?.delegate = self
-
-                    self.userActivity?.becomeCurrent()
-                }
-
-                let userActivityTitle: String
-                if let feedTitle = a.feed?.title {
-                    userActivityTitle = "\(feedTitle): \(a.title)"
-                } else {
-                    userActivityTitle = a.title
-                }
-                self.userActivity?.title = userActivityTitle
-
-                self.userActivity?.userInfo = ["feed": a.feed?.title ?? "",
-                                               "article": a.articleID?.URIRepresentation().absoluteString ?? "",
-                                               "showingContent": true]
+            if self.userActivity == nil {
+                let activityType = "com.rachelbrindle.rssclient.article"
+                self.userActivity = NSUserActivity(activityType: activityType)
 
                 if #available(iOS 9.0, *) {
-                    self.userActivity?.keywords = Set<String>([a.title, a.summary, a.author] + a.flags)
+                    self.userActivity?.requiredUserInfoKeys = Set(["feed", "article", "showingContent"])
                 }
 
-                self.userActivity?.webpageURL = a.link
-                self.userActivity?.needsSave = true
+                self.userActivity?.delegate = self
+
+                self.userActivity?.becomeCurrent()
             }
+
+            let userActivityTitle: String
+            if let feedTitle = a.feed?.title {
+                userActivityTitle = "\(feedTitle): \(a.title)"
+            } else {
+                userActivityTitle = a.title
+            }
+            self.userActivity?.title = userActivityTitle
+
+            self.userActivity?.userInfo = ["feed": a.feed?.title ?? "",
+                "article": a.articleID?.URIRepresentation().absoluteString ?? "",
+                "showingContent": true]
+
+            if #available(iOS 9.0, *) {
+                self.userActivity?.keywords = Set<String>([a.title, a.summary, a.author] + a.flags)
+            }
+
+            self.userActivity?.webpageURL = a.link
+            self.userActivity?.needsSave = true
         }
     }
 
@@ -260,7 +261,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
             return
         }
         self.lastArticleIndex--
-        self.article = self.articles[lastArticleIndex]
+        self.setArticle(self.articles[lastArticleIndex])
         if let article = self.article {
             self.showArticle(article, onWebView: self.content)
         }
@@ -271,7 +272,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
             return
         }
         self.lastArticleIndex++
-        self.article = self.articles[lastArticleIndex]
+        self.setArticle(self.articles[lastArticleIndex])
         if let article = self.article {
             self.showArticle(article, onWebView: self.content)
         }
@@ -362,7 +363,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
             let speed = gesture.velocityInView(self.view).x
             if speed >= 0 {
                 self.lastArticleIndex = nextArticleIndex
-                self.article = self.articles[self.lastArticleIndex]
+                self.setArticle(self.articles[self.lastArticleIndex])
                 self.nextContentRight.constant = 0
                 let oldContent = content
                 self.content = self.nextContent!
@@ -409,7 +410,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
             let speed = gesture.velocityInView(self.view).x * -1
             if speed >= 0 {
                 self.lastArticleIndex = nextArticleIndex
-                self.article = self.articles[self.lastArticleIndex]
+                self.setArticle(self.articles[self.lastArticleIndex])
                 self.nextContentRight.constant = 0
                 let oldContent = content
                 self.content = self.nextContent!

@@ -38,6 +38,9 @@ import JavaScriptCore
         if let tagTitle = self.tags.filter({$0.hasPrefix("~")}).last {
             return tagTitle.substringFromIndex(tagTitle.startIndex.successor())
         }
+        if self.title.isEmpty {
+            return self.url?.absoluteString ?? self.title
+        }
         return self.title
     }
 

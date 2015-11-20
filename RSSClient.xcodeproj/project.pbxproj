@@ -470,7 +470,6 @@
 		898ECDE01B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsTableViewControllerSpec.swift; sourceTree = "<group>"; };
 		898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeOperationQueue.swift; sourceTree = "<group>"; };
 		898F670D1B0007F4004A7BE3 /* SpecInjectorModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpecInjectorModule.swift; sourceTree = "<group>"; };
-		898F6E091B128736000D343D /* PureLayout_iOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PureLayout_iOS.framework; path = Carthage/Build/iOS/PureLayout_iOS.framework; sourceTree = SOURCE_ROOT; };
 		898F6E111B129AB6000D343D /* ActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
 		8997C7F41B248D5A00972930 /* FakeWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeWebView.swift; sourceTree = "<group>"; };
 		8997C7F61B25074900972930 /* ValidatorViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidatorViewSpec.swift; sourceTree = "<group>"; };
@@ -521,7 +520,7 @@
 		89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsTableViewController.swift; sourceTree = "<group>"; };
 		89C830C919DA37FB009924DA /* FeedTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCell.swift; sourceTree = "<group>"; };
 		89C830CC19DC67B9009924DA /* UnreadCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounter.swift; sourceTree = "<group>"; };
-		89CAD4C21BA483C9006D79FC /* PureLayout.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PureLayout.framework; path = Carthage/Build/iOS/PureLayout.framework; sourceTree = "<group>"; };
+		89CAD4C21BA483C9006D79FC /* PureLayout.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PureLayout.framework; path = ../Carthage/Build/iOS/PureLayout.framework; sourceTree = "<group>"; };
 		89CB98491B12C50000C87160 /* ActivityIndicatorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorSpec.swift; sourceTree = "<group>"; };
 		89CB986A1B12CCD700C87160 /* BreakOutToRefresh.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BreakOutToRefresh.framework; path = Carthage/Build/iOS/BreakOutToRefresh.framework; sourceTree = SOURCE_ROOT; };
 		89CB98911B12DFB100C87160 /* TOBrowserActivityKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TOBrowserActivityKit.framework; path = Carthage/Build/iOS/TOBrowserActivityKit.framework; sourceTree = SOURCE_ROOT; };
@@ -862,7 +861,6 @@
 		89C8306A19D730E9009924DA = {
 			isa = PBXGroup;
 			children = (
-				89CAD4C21BA483C9006D79FC /* PureLayout.framework */,
 				89EF4FC61A9681650052A82F /* Vendor */,
 				89C8307519D730E9009924DA /* RSSClient */,
 				89C8308E19D730E9009924DA /* RSSClientTests */,
@@ -989,12 +987,12 @@
 		89CB98BB1B13921200C87160 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				89CAD4C21BA483C9006D79FC /* PureLayout.framework */,
 				89D428021B8D0734006CD81C /* X.framework */,
 				89AA8A8C1B536B90000E2C88 /* SyntaxKit.framework */,
 				89CB98B61B12E9C900C87160 /* MAKDropDownMenu.framework */,
 				89CB98911B12DFB100C87160 /* TOBrowserActivityKit.framework */,
 				89CB986A1B12CCD700C87160 /* BreakOutToRefresh.framework */,
-				898F6E091B128736000D343D /* PureLayout_iOS.framework */,
 				89718F271AE0C942004C3CB4 /* Ra.framework */,
 				898131671AF880400090FA7F /* Muon.framework */,
 			);

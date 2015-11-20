@@ -73,8 +73,9 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 expect(subject.dropDownMenu.buttonBackgroundColor).to(equal(themeRepository.tintColor))
             }
 
-            it("should update the refreshView background color") {
+            it("should update the refreshView colors") {
                 expect(subject.refreshView.scenebackgroundColor).to(equal(themeRepository.backgroundColor))
+                expect(subject.refreshView.textColor).to(equal(themeRepository.textColor))
             }
         }
 

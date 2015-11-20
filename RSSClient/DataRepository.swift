@@ -7,6 +7,7 @@ import Muon
     import CoreSpotlight
     import MobileCoreServices
     import UIKit
+    import Reachability
 #elseif os(OSX)
     import Cocoa
 #endif
@@ -50,6 +51,18 @@ public protocol DataWriter {
     func cancelUpdateFeeds()
 }
 
+internal protocol Reachable {
+    var hasNetworkConnectivity: Bool { get }
+}
+
+#if os(iOS)
+    extension Reachability: Reachable {
+        var hasNetworkConnectivity: Bool {
+            return self.currentReachabilityStatus != .NotReachable
+        }
+    }
+#endif
+
 internal class DataRepository: DataRetriever, DataWriter {
     private let objectContext: NSManagedObjectContext
     private let mainQueue: NSOperationQueue
@@ -58,13 +71,16 @@ internal class DataRepository: DataRetriever, DataWriter {
 
     private let searchIndex: SearchIndex?
 
+    private let reachable: Reachable?
+
     internal init(objectContext: NSManagedObjectContext, mainQueue: NSOperationQueue, backgroundQueue: NSOperationQueue,
-                  urlSession: NSURLSession, searchIndex: SearchIndex?) {
+                  urlSession: NSURLSession, searchIndex: SearchIndex?, reachable: Reachable?) {
         self.objectContext = objectContext
         self.mainQueue = mainQueue
         self.backgroundQueue = backgroundQueue
         self.urlSession = urlSession
         self.searchIndex = searchIndex
+        self.reachable = reachable
     }
 
     //MARK: - DataRetriever
@@ -327,7 +343,7 @@ internal class DataRepository: DataRetriever, DataWriter {
         }
 
         self.allFeedsOnBackgroundQueue {feeds in
-            if feeds.isEmpty {
+            guard feeds.isEmpty == false && self.reachable?.hasNetworkConnectivity == true else {
                 self.mainQueue.addOperationWithBlock {
                     for updateCallback in self.updatingFeedsCallbacks {
                         updateCallback([], [])
@@ -336,6 +352,7 @@ internal class DataRepository: DataRetriever, DataWriter {
                 }
                 return
             }
+
             self.privateUpdateFeeds(feeds) {updatedFeeds, errors in
                 self.mainQueue.addOperationWithBlock {
                     for updateCallback in self.updatingFeedsCallbacks {
@@ -353,6 +370,10 @@ internal class DataRepository: DataRetriever, DataWriter {
     }
 
     internal func updateFeed(feed: Feed, callback: (Feed?, NSError?) -> (Void)) {
+        guard self.reachable?.hasNetworkConnectivity == true else {
+            callback(feed, nil)
+            return
+        }
         self.backgroundQueue.addOperationWithBlock {
             self.privateUpdateFeeds([feed]) {feeds, errors in
                 self.mainQueue.addOperationWithBlock {
@@ -580,6 +601,7 @@ internal class DataRepository: DataRetriever, DataWriter {
             callback([], [])
             return
         }
+
         self.mainQueue.addOperationWithBlock {
             for object in self.subscribers.allObjects {
                 if let subscriber = object as? DataSubscriber {

@@ -15,6 +15,10 @@
 		8902D54C1BB075E9003D7C22 /* Lepton.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5481BB0754F003D7C22 /* Lepton.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8902D54D1BB075F7003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5481BB0754F003D7C22 /* Lepton.framework */; };
 		8902D54E1BB07712003D7C22 /* Lepton.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5481BB0754F003D7C22 /* Lepton.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		890894981BFEC670002848A4 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; };
+		890894991BFEC698002848A4 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; };
+		8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8908949A1BFED7B8002848A4 /* FakeReachable.swift */; };
+		8908949C1BFED826002848A4 /* Reachability.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8916880B1BA8856400F9FFE0 /* rNewsKit.framework in Embed rNewsKit */ = {isa = PBXBuildFile; fileRef = 894304211B45089A000078DC /* rNewsKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8918D4A41B8115F800DCDE0E /* ExplanationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8918D4A31B8115F800DCDE0E /* ExplanationView.swift */; };
 		8918D4D41B84593100DCDE0E /* ClearnessDark.css in Resources */ = {isa = PBXBuildFile; fileRef = 8918D4D31B84593100DCDE0E /* ClearnessDark.css */; };
@@ -323,6 +327,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				8908949C1BFED826002848A4 /* Reachability.framework in Embed Frameworks */,
 				8902D54B1BB075E1003D7C22 /* Lepton.framework in Embed Frameworks */,
 				899987381B483256003C1AF5 /* Ra.framework in Embed Frameworks */,
 				899987371B483248003C1AF5 /* Muon.framework in Embed Frameworks */,
@@ -405,6 +410,8 @@
 /* Begin PBXFileReference section */
 		8902D5451BB07389003D7C22 /* Lepton.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lepton.framework; path = ../Carthage/Build/iOS/Lepton.framework; sourceTree = "<group>"; };
 		8902D5481BB0754F003D7C22 /* Lepton.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lepton.framework; path = ../Carthage/Build/Mac/Lepton.framework; sourceTree = "<group>"; };
+		890894971BFEC670002848A4 /* Reachability.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reachability.framework; path = ../Carthage/Build/iOS/Reachability.framework; sourceTree = "<group>"; };
+		8908949A1BFED7B8002848A4 /* FakeReachable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeReachable.swift; sourceTree = "<group>"; };
 		890E47581AA19D69007F217C /* DataUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataUtility.swift; path = ../RSSClient/DataUtility.swift; sourceTree = "<group>"; };
 		890E47661AA19F7F007F217C /* DataUtilitySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataUtilitySpec.swift; path = ../RSSClientTests/DataUtilitySpec.swift; sourceTree = "<group>"; };
 		8918D4A31B8115F800DCDE0E /* ExplanationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExplanationView.swift; sourceTree = "<group>"; };
@@ -599,6 +606,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				890894981BFEC670002848A4 /* Reachability.framework in Frameworks */,
 				8902D5471BB0753E003D7C22 /* Lepton.framework in Frameworks */,
 				89CAD4C11BA3DB7F006D79FC /* Muon.framework in Frameworks */,
 				89CC81FF1B4615A100648367 /* Ra.framework in Frameworks */,
@@ -609,6 +617,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				890894991BFEC698002848A4 /* Reachability.framework in Frameworks */,
 				8902D54A1BB075D6003D7C22 /* Lepton.framework in Frameworks */,
 				8935F5CD1B462702000FFD5D /* Muon.framework in Frameworks */,
 				8935F5CE1B462702000FFD5D /* Nimble.framework in Frameworks */,
@@ -738,6 +747,7 @@
 				8937F6BF1B79D0800044A442 /* KitModuleSpec.swift */,
 				89A341811B150DA90000C60B /* OPMLManagerSpec.swift */,
 				898C48CC1B42605A0097045A /* DataRepositorySpec.swift */,
+				8908949A1BFED7B8002848A4 /* FakeReachable.swift */,
 				890E47661AA19F7F007F217C /* DataUtilitySpec.swift */,
 				89FF97A01BF05CDC000080F7 /* CoreDataBackedArraySpec.swift */,
 				8978D4E41B05AB2800EDD6D0 /* FeedSpec.swift */,
@@ -1014,6 +1024,7 @@
 		89CB98BB1B13921200C87160 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				890894971BFEC670002848A4 /* Reachability.framework */,
 				8902D5451BB07389003D7C22 /* Lepton.framework */,
 				89CAD4C21BA483C9006D79FC /* PureLayout.framework */,
 				89D428021B8D0734006CD81C /* X.framework */,
@@ -1319,7 +1330,7 @@
 				89C8307019D730E9009924DA /* Frameworks */,
 				89C8307119D730E9009924DA /* Resources */,
 				89CB98C01B13A0ED00C87160 /* Lint */,
-				89CAD4C01BA3D36E006D79FC /* Clean Carthage Libraries */,
+				89CAD4C01BA3D36E006D79FC /* Embed Carthage Libraries */,
 				8916880A1BA8854E00F9FFE0 /* Embed rNewsKit */,
 			);
 			buildRules = (
@@ -1522,7 +1533,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		89CAD4C01BA3D36E006D79FC /* Clean Carthage Libraries */ = {
+		89CAD4C01BA3D36E006D79FC /* Embed Carthage Libraries */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 12;
 			files = (
@@ -1537,8 +1548,9 @@
 				"$(SRCROOT)/Carthage/Build/iOS/TOBrowserActivityKit.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/X.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Lepton.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Reachability.framework",
 			);
-			name = "Clean Carthage Libraries";
+			name = "Embed Carthage Libraries";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1594,6 +1606,7 @@
 				8935F5E11B462B8C000FFD5D /* OPMLManagerMock.swift in Sources */,
 				8935F5D71B4628B3000FFD5D /* DataRepositorySpec.swift in Sources */,
 				8935F5DE1B462AD2000FFD5D /* FakeOperationQueue.swift in Sources */,
+				8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */,
 				8935F5D91B4628B3000FFD5D /* FeedSpec.swift in Sources */,
 				8935F5DF1B462AD2000FFD5D /* FakeURLSession.swift in Sources */,
 				8935F5D51B4628B3000FFD5D /* OPMLManagerSpec.swift in Sources */,

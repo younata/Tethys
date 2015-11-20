@@ -4,6 +4,7 @@ github "younata/Muon"
 github "younata/Lepton"
 github "younata/BreakOutToRefresh" "resizing"
 github "soffes/SyntaxKit"
+github "ashleymills/Reachability.swift"
 
 # objc
 github "PureLayout/PureLayout"

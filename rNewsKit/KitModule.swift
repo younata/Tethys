@@ -3,6 +3,7 @@ import Ra
 import CoreData
 #if os(iOS)
     import CoreSpotlight
+    import Reachability
 #endif
 
 internal let kBackgroundManagedObjectContext = "kBackgroundManagedObjectContext"
@@ -20,11 +21,14 @@ public class KitModule: NSObject, Ra.InjectorModule {
 
         var searchIndex: SearchIndex? = nil
 
+        var reachable: Reachable? = nil
+
         #if os(iOS)
             if #available(iOS 9.0, *) {
                 searchIndex = CSSearchableIndex.defaultSearchableIndex()
                 injector.bind(SearchIndex.self, to: searchIndex!)
             }
+            reachable = try? Reachability.reachabilityForInternetConnection()
         #endif
 
         let backgroundQueue = NSOperationQueue()
@@ -32,7 +36,7 @@ public class KitModule: NSObject, Ra.InjectorModule {
         backgroundQueue.maxConcurrentOperationCount = 1
         injector.bind(kBackgroundQueue, to: backgroundQueue)
 
-        let dataRepository = DataRepository(objectContext: ManagedObjectContext(), mainQueue: mainQueue, backgroundQueue: backgroundQueue, urlSession: NSURLSession.sharedSession(), searchIndex: searchIndex)
+        let dataRepository = DataRepository(objectContext: ManagedObjectContext(), mainQueue: mainQueue, backgroundQueue: backgroundQueue, urlSession: NSURLSession.sharedSession(), searchIndex: searchIndex, reachable: reachable)
 
         injector.bind(DataRetriever.self, to: dataRepository)
         injector.bind(DataWriter.self, to: dataRepository)

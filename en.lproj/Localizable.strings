@@ -12,7 +12,6 @@
 "SettingsViewController_Commands_Save" = "Save and dismiss";
 "SettingsViewController_Commands_Dismiss" = "Dismiss without saving";
 
-
 "DocumentationViewController_DocumentTitle_QueryFeeds" = "Query Feeds";
 
 "FeedsTableViewController_SearchBar_Placeholder" = "Filter by Tag";

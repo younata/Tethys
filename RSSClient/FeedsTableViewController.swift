@@ -100,6 +100,7 @@ public class FeedsTableViewController: UIViewController {
         self.view.addSubview(self.tableView)
         self.tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
         self.tableView.addSubview(self.refreshView)
+        self.updateRefreshViewSize(self.view.bounds.size)
 
         self.view.addSubview(self.updateBar)
         if let _ = self.updateBar.superview {
@@ -130,6 +131,17 @@ public class FeedsTableViewController: UIViewController {
 
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+
+    private func updateRefreshViewSize(size: CGSize) {
+        let height: CGFloat = 100
+        self.refreshView.frame = CGRect(x: 0, y: -height, width: size.width, height: height)
+    }
+
+    public override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
+
+        self.updateRefreshViewSize(size)
     }
 
     public override func viewWillAppear(animated: Bool) {

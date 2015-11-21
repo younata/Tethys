@@ -1,7 +1,7 @@
 # swift
 github "younata/Ra" "master"
 github "younata/Muon"
-github "younata/BreakOutToRefresh" "swift_2"
+github "younata/BreakOutToRefresh" "resizing"
 github "soffes/SyntaxKit"
 
 # objc

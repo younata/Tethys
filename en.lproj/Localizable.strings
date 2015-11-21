@@ -8,6 +8,10 @@
 "SettingsViewController_Advanced_EnableQueryFeeds" = "Enable Query Feeds";
 "SettingsViewController_Credits_MainDeveloper_Name" = "Rachel Brindle"; // My name
 "SettingsViewController_Credits_MainDeveloper_Detail" = "Developer";
+"SettingsViewController_Commands_Theme" = "Change Theme to '%@'";
+"SettingsViewController_Commands_Save" = "Save and dismiss";
+"SettingsViewController_Commands_Dismiss" = "Dismiss without saving";
+
 
 "DocumentationViewController_DocumentTitle_QueryFeeds" = "Query Feeds";
 

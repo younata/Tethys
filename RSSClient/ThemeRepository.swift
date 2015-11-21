@@ -92,6 +92,10 @@ public class ThemeRepository: NSObject, Injectable {
                 return NSLocalizedString("Dark", comment: "")
             }
         }
+
+        public static func array() -> [Theme] {
+            return [.Default, .Dark]
+        }
     }
 
     public var theme: Theme {

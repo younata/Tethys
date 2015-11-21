@@ -98,6 +98,29 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             return true
     }
 
+    // MARK: Quick Actions
+
+    @available(iOS 9, *)
+    public func application(application: UIApplication, performActionForShortcutItem shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
+        guard let navigationController = (self.window?.rootViewController as? UISplitViewController)?.viewControllers.first as? UINavigationController else {
+            completionHandler(false)
+            return
+        }
+        navigationController.popToRootViewControllerAnimated(false)
+
+        guard let feedsViewController = navigationController.topViewController as? FeedsTableViewController else {
+            completionHandler(false)
+            return
+        }
+
+        var handled = false
+        if shortcutItem.type == "com.rachelbrindle.RSSClient.newfeed" {
+            feedsViewController.importFromWeb()
+            handled = true
+        }
+        completionHandler(handled)
+    }
+
     // MARK: Local Notifications
 
     public func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {

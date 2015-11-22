@@ -6,13 +6,7 @@ public class ArticleListController: UITableViewController, DataSubscriber {
     internal var articles: [Article] = []
     public var feeds: [Feed] = [] {
         didSet {
-            let articles: [Article] = self.feeds.reduce(Array<Article>()) { return $0 + $1.articles }
-            self.articles = articles.sort {a, b in
-                let da = a.updatedAt ?? a.published
-                let db = b.updatedAt ?? b.published
-                return da.timeIntervalSince1970 > db.timeIntervalSince1970
-            }
-            self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+            self.resetArticles()
         }
     }
 
@@ -22,8 +16,21 @@ public class ArticleListController: UITableViewController, DataSubscriber {
         self.injector?.create(DataWriter.self) as? DataWriter
     }()
 
+    internal lazy var dataReader: DataRetriever? = {
+        self.injector?.create(DataRetriever.self) as? DataRetriever
+    }()
+
     internal lazy var themeRepository: ThemeRepository? = {
         self.injector?.create(ThemeRepository.self) as? ThemeRepository
+    }()
+
+    public lazy var searchBar: UISearchBar = {
+        let searchBar = UISearchBar(frame: CGRectMake(0, 0, 320, 32))
+        searchBar.autocorrectionType = .No
+        searchBar.autocapitalizationType = .None
+        searchBar.placeholder = NSLocalizedString("ArticleListController_Search", comment: "")
+        searchBar.delegate = self
+        return searchBar
     }()
 
     public override func viewDidLoad() {
@@ -42,11 +49,12 @@ public class ArticleListController: UITableViewController, DataSubscriber {
 
         self.themeRepository?.addSubscriber(self)
 
-        if !previewMode {
+        if !self.previewMode {
+            self.tableView.tableHeaderView = self.searchBar
             self.navigationItem.rightBarButtonItem = self.editButtonItem()
 
-            if feeds.count == 1 {
-                self.navigationItem.title = feeds.first?.displayTitle
+            if self.feeds.count == 1 {
+                self.navigationItem.title = self.feeds.first?.displayTitle
             }
         }
     }
@@ -91,11 +99,11 @@ public class ArticleListController: UITableViewController, DataSubscriber {
     // MARK: - Table view data source
 
     public override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return articles.count
+        return self.articles.count
     }
 
     public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let article = articleForIndexPath(indexPath)
+        let article = self.articleForIndexPath(indexPath)
         let cellTypeToUse = (article.read ? "read" : "unread")
         // Prevents a green triangle which'll (dis)appear depending
         // on whether article loaded into it is read or not.
@@ -110,13 +118,13 @@ public class ArticleListController: UITableViewController, DataSubscriber {
     public override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
 
-        if !previewMode {
-            showArticle(articleForIndexPath(indexPath))
+        if !self.previewMode {
+            self.showArticle(self.articleForIndexPath(indexPath))
         }
     }
 
     public override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return !previewMode
+        return !self.previewMode
     }
 
     public override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle,
@@ -124,7 +132,7 @@ public class ArticleListController: UITableViewController, DataSubscriber {
 
     public override func tableView(tableView: UITableView,
         editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-            if previewMode {
+            if self.previewMode {
                 return nil
             }
             let article = self.articleForIndexPath(indexPath)
@@ -145,6 +153,33 @@ public class ArticleListController: UITableViewController, DataSubscriber {
             })
             return [delete, toggle]
     }
+
+    // Mark: Private
+
+    private func resetArticles() {
+        let articles: [Article] = self.feeds.reduce(Array<Article>()) { return $0 + $1.articles }
+        self.articles = articles.sort {a, b in
+            let da = a.updatedAt ?? a.published
+            let db = b.updatedAt ?? b.published
+            return da.timeIntervalSince1970 > db.timeIntervalSince1970
+        }
+        self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+    }
+}
+
+extension ArticleListController: UISearchBarDelegate {
+    public func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty {
+            self.resetArticles()
+        } else {
+            self.dataReader?.articlesOfFeeds(self.feeds, matchingSearchQuery: searchText) {articles in
+                if (self.articles != articles) {
+                    self.articles = articles
+                    self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+                }
+            }
+        }
+    }
 }
 
 extension ArticleListController: ThemeRepositorySubscriber {
@@ -152,7 +187,11 @@ extension ArticleListController: ThemeRepositorySubscriber {
         self.tableView.backgroundColor = self.themeRepository?.backgroundColor
         self.tableView.separatorColor = self.themeRepository?.textColor
 
+        self.searchBar.backgroundColor = self.themeRepository?.backgroundColor
+
         if let themeRepository = self.themeRepository {
+            self.searchBar.barStyle = themeRepository.barStyle
+
             self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
         }
     }

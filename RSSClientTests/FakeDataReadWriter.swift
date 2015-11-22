@@ -35,6 +35,11 @@ class FakeDataReadWriter : DataRetriever, DataWriter {
         return callback(feeds)
     }
 
+    var articlesOfFeedList = Array<Article>()
+    func articlesOfFeeds(feeds: [Feed], matchingSearchQuery: String, callback: ([Article]) -> (Void)) {
+        return callback(articlesOfFeedList)
+    }
+
     var articlesList: [Article] = []
     func articlesMatchingQuery(query: String, callback: ([Article]) -> (Void)) {
         return callback(articlesList)

@@ -15,6 +15,7 @@ public protocol DataRetriever {
     func allTags(callback: ([String]) -> (Void))
     func feeds(callback: ([Feed]) -> (Void))
     func feedsMatchingTag(tag: String?, callback: ([Feed]) -> (Void))
+    func articlesOfFeeds(feeds: [Feed], matchingSearchQuery: String, callback: ([Article]) -> (Void))
     func articlesMatchingQuery(query: String, callback: ([Article]) -> (Void))
 }
 
@@ -106,8 +107,20 @@ internal class DataRepository: DataRetriever, DataWriter {
         }
     }
 
+
+    internal func articlesOfFeeds(feeds: [Feed], matchingSearchQuery query: String, callback: ([Article]) -> (Void)) {
+        self.backgroundQueue.addOperationWithBlock {
+            let articles = feeds.reduce(Array<Article>()) { return $0 + $1.articles }
+            let matchingArticlesSet = Set(articles.filter({ return self.article($0, matchesQuery: query) }))
+            let returnValue = Array(matchingArticlesSet)
+            self.mainQueue.addOperationWithBlock {
+                callback(returnValue)
+            }
+        }
+    }
+
     internal func articlesMatchingQuery(query: String, callback: ([Article]) -> (Void)) {
-        allFeedsOnBackgroundQueue { feeds in
+        self.allFeedsOnBackgroundQueue { feeds in
             let queriedArticles = self.privateArticlesMatchingQuery(query, feeds: feeds)
             self.mainQueue.addOperationWithBlock {
                 callback(queriedArticles)
@@ -116,6 +129,31 @@ internal class DataRepository: DataRetriever, DataWriter {
     }
 
     // MARK: Private (DataRetriever)
+
+    private func article(article: Article, matchesQuery query: String) -> Bool {
+        if article.title.containsString(query) {
+            return true
+        }
+        if article.summary.containsString(query) {
+            return true
+        }
+        if article.description.containsString(query) {
+            return true
+        }
+        if article.summary.containsString(query) {
+            return true
+        }
+        if article.author.containsString(query) {
+            return true
+        }
+        if article.content.containsString(query) {
+            return true
+        }
+        if article.link?.absoluteString.containsString(query) == true {
+            return true
+        }
+        return false
+    }
 
     private func allFeedsOnBackgroundQueue(callback: ([Feed] -> (Void))) {
         self.backgroundQueue.addOperationWithBlock {
@@ -228,7 +266,7 @@ internal class DataRepository: DataRetriever, DataWriter {
 
     internal func markFeedAsRead(feed: Feed) {
         self.backgroundQueue.addOperationWithBlock {
-            for article in feed.articles {
+            for article in feed.articles where article.read == false {
                 self.privateMarkArticle(article, asRead: true)
             }
         }

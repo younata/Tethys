@@ -101,6 +101,7 @@ public class FeedsTableViewController: UIViewController {
         self.tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
         self.tableView.addSubview(self.refreshView)
         self.updateRefreshViewSize(self.view.bounds.size)
+        self.tableView.delegate = self
 
         self.view.addSubview(self.updateBar)
         if let _ = self.updateBar.superview {
@@ -280,6 +281,7 @@ public class FeedsTableViewController: UIViewController {
     internal func showFeeds(feeds: [Feed], animated: Bool) -> ArticleListController {
         let al = ArticleListController(style: .Plain)
         al.dataWriter = self.dataWriter
+        al.dataReader = self.dataRetriever
         al.themeRepository = self.themeRepository
         al.feeds = feeds
         self.navigationController?.pushViewController(al, animated: animated)

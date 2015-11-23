@@ -316,8 +316,13 @@ extension FeedsTableViewController: UISearchBarDelegate {
 }
 
 extension FeedsTableViewController: DataSubscriber {
-    public func markedArticle(article: Article, asRead read: Bool) {}
-    public func deletedArticle(article: Article) {}
+    public func markedArticle(article: Article, asRead read: Bool) {
+        self.reload(self.searchBar.text)
+    }
+
+    public func deletedArticle(article: Article) {
+        self.reload(self.searchBar.text)
+    }
 
     public func willUpdateFeeds() {
         self.updateBar.hidden = false

@@ -235,7 +235,9 @@ extension LocalImportViewController: UITableViewDelegate {
             let activityIndicator = disableInteractionWithMessage(NSLocalizedString("Importing feeds", comment: ""))
 
             self.opmlManager?.importOPML(NSURL(string: "file://" + path)!, completion: {(_) in
-                self.reenableInteractionAndDismiss(activityIndicator)
+                self.dataWriter?.updateFeeds {_ in
+                    self.reenableInteractionAndDismiss(activityIndicator)
+                }
             })
         } else if indexPath.section == 1 {
             let feed = feeds[indexPath.row].1

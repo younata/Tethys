@@ -110,6 +110,7 @@ SWIFT_CLASS("_TtC12Reachability12Reachability")
 - (BOOL)isReachable;
 - (BOOL)isReachableViaWWAN;
 - (BOOL)isReachableViaWiFi;
+- (BOOL)isConnectionOnTrafficOrDemand:(SCNetworkReachabilityFlags)flags;
 @property (nonatomic, readonly, copy) NSString * __nonnull description;
 @end
 

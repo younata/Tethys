@@ -4,7 +4,7 @@ github "younata/Muon"
 github "younata/Lepton"
 github "younata/BreakOutToRefresh" "resizing"
 github "soffes/SyntaxKit"
-github "ashleymills/Reachability.swift"
+github "younata/Reachability.swift" "master" # "ashleymills/Reachability.swift" is upstream, waiting for pull request to merge in.
 
 # objc
 github "PureLayout/PureLayout"

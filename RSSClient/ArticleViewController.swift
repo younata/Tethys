@@ -5,6 +5,10 @@ import TOBrowserActivityKit
 import Ra
 import rNewsKit
 
+// swiftlint:disable file_length
+// swiftlint:disable type_body_length
+// swiftlint:disable function_body_length
+
 public class ArticleViewController: UIViewController, WKNavigationDelegate {
     public var article: Article? = nil
 
@@ -54,8 +58,8 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     }
 
     private enum ArticleContentType {
-        case Content;
-        case Link;
+        case Content
+        case Link
     }
 
     public var content = WKWebView(forAutoLayout: ())
@@ -109,7 +113,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     private var contentType: ArticleContentType = .Content {
         didSet {
             if let a = self.article {
-                switch (self.contentType) {
+                switch self.contentType {
                 case .Content:
                     self.toggleContentButton.title = self.linkString
                     self.showArticle(a, onWebView: self.content)
@@ -118,7 +122,9 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
                     self.content.loadRequest(NSURLRequest(URL: a.link!))
                 }
                 if (a.content ?? a.summary) != nil {
-                    self.toolbarItems = [self.spacer(), self.shareButton, self.spacer(), self.toggleContentButton, self.spacer()]
+                    self.toolbarItems = [
+                        self.spacer(), self.shareButton, self.spacer(), self.toggleContentButton, self.spacer()
+                    ]
                 } else {
                     self.toolbarItems = [self.spacer(), self.shareButton, self.spacer()]
                 }
@@ -133,8 +139,11 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         let content = article.content.isEmpty ? article.summary : article.content
         if !content.isEmpty {
             let title = "<h2>\(article.title)</h2>"
-            webView.loadHTMLString(self.articleCSS + title + content + self.prismJS + "</body></html>", baseURL: article.feed?.url!)
-            self.toolbarItems = [self.spacer(), self.shareButton, self.spacer(), self.toggleContentButton, self.spacer()]
+            let htmlString = self.articleCSS + title + content + self.prismJS + "</body></html>"
+            webView.loadHTMLString(htmlString, baseURL: article.feed?.url!)
+            self.toolbarItems = [
+                self.spacer(), self.shareButton, self.spacer(), self.toggleContentButton, self.spacer()
+            ]
         } else if let link = article.link {
             webView.loadRequest(NSURLRequest(URL: link))
             self.toolbarItems = [self.spacer(), self.shareButton, self.spacer()]
@@ -185,7 +194,9 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         // share, show (content|link)
         if let a = article {
             if (a.content ?? a.summary) != nil {
-                self.toolbarItems = [self.spacer(), self.shareButton, self.spacer(), self.toggleContentButton, self.spacer()]
+                self.toolbarItems = [
+                    self.spacer(), self.shareButton, self.spacer(), self.toggleContentButton, self.spacer()
+                ]
             } else {
                 self.toolbarItems = [self.spacer(), self.shareButton, self.spacer()]
             }
@@ -338,7 +349,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
 
     private func didSwipeFromLeft(gesture: ScreenEdgePanGestureRecognizer) {
         if self.lastArticleIndex == 0 {
-            return;
+            return
         }
         let width = self.view.bounds.width
         let translation = -width + gesture.translationInView(self.view).x
@@ -385,7 +396,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
 
     private func didSwipeFromRight(gesture: ScreenEdgePanGestureRecognizer) {
         if self.lastArticleIndex + 1 >= self.articles.count {
-            return;
+            return
         }
         let width = CGRectGetWidth(self.view.bounds)
         let translation = width + gesture.translationInView(self.view).x
@@ -432,11 +443,11 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
 
     internal func didSwipe(gesture: ScreenEdgePanGestureRecognizer) {
         if gesture.startDirection == .None {
-            return;
+            return
         }
-        switch (gesture.startDirection) {
+        switch gesture.startDirection {
         case .None:
-            return;
+            return
         case .Left:
             self.didSwipeFromLeft(gesture)
         case .Right:
@@ -446,8 +457,10 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
 
     internal func share() {
         let desiredLink: NSURL?
-        if self.content.URL == nil || self.content.URL?.absoluteString.isEmpty == true || self.content.URL == self.article?.feed?.url {
-            desiredLink = self.article?.link
+        if self.content.URL == nil ||
+            self.content.URL?.absoluteString.isEmpty == true ||
+            self.content.URL == self.article?.feed?.url {
+                desiredLink = self.article?.link
         } else {
             desiredLink = self.content.URL
         }
@@ -467,7 +480,7 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     }
 
     internal func toggleContentLink() {
-        switch (self.contentType) {
+        switch self.contentType {
         case .Link:
             self.contentType = .Content
             self.userActivity?.userInfo?["showingContent"] = true
@@ -481,9 +494,11 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     public override func observeValueForKeyPath(keyPath: String?,
         ofObject object: AnyObject?, change: [String : AnyObject]?,
         context: UnsafeMutablePointer<Void>) {
+            // swiftlint:disable control_statement
             if (keyPath == "estimatedProgress" && (object as? NSObject) == content) {
                 self.loadingBar.progress = Float(content.estimatedProgress)
             }
+            // swiftlint:enable control_statement
     }
 
     public func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {

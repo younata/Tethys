@@ -53,8 +53,10 @@ public class NotificationHandler: NSObject {
 
     public func sendLocalNotification(notificationSource: LocalNotificationSource, article: Article) {
         let note = UILocalNotification()
-        note.alertBody = NSString.localizedStringWithFormat(NSLocalizedString("NotificationHandler_LocalNotification_MarkRead_Title", comment: ""),
-            article.feed?.displayTitle ?? "", article.title ?? "") as String
+        let alertTitle = NSLocalizedString("NotificationHandler_LocalNotification_MarkRead_Title", comment: "")
+        note.alertBody = NSString.localizedStringWithFormat(alertTitle,
+            article.feed?.displayTitle ?? "",
+            article.title ?? "") as String
 
         let feedID = article.feed?.identifier ?? ""
         let articleID = article.identifier
@@ -66,7 +68,7 @@ public class NotificationHandler: NSObject {
         notificationSource.scheduleNote(note)
     }
 
-    private func feedAndArticleFromUserInfo(userInfo: [NSObject : AnyObject], callback: (Feed?, Article?) -> (Void)) {
+    private func feedAndArticleFromUserInfo(userInfo: [NSObject: AnyObject], callback: (Feed?, Article?) -> (Void)) {
         guard let _ = self.dataRetriever,
               let feedID = userInfo["feed"] as? String,
               let articleID = userInfo["article"] as? String else {

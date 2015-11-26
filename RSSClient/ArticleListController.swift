@@ -93,7 +93,7 @@ public class ArticleListController: UITableViewController, DataSubscriber {
         avc.themeRepository = self.themeRepository
         avc.setArticle(article, read: read)
         avc.articles = self.articles
-        if (self.articles.count != 0) {
+        if self.articles.count != 0 {
             avc.lastArticleIndex = self.articles.indexOf(article) ?? 0
         } else {
             avc.lastArticleIndex = 0
@@ -120,15 +120,17 @@ public class ArticleListController: UITableViewController, DataSubscriber {
         return self.articles.count
     }
 
-    public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let article = self.articleForIndexPath(indexPath)
-        let cellTypeToUse = (article.read ? "read" : "unread")
-        // Prevents a green triangle which'll (dis)appear depending
-        // on whether article loaded into it is read or not.
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellTypeToUse, forIndexPath: indexPath) as! ArticleCell
+    public override func tableView(tableView: UITableView,
+        cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+            let article = self.articleForIndexPath(indexPath)
+            let cellTypeToUse = (article.read ? "read" : "unread")
+            // Prevents a green triangle which'll (dis)appear depending
+            // on whether article loaded into it is read or not.
+            let cell = tableView.dequeueReusableCellWithIdentifier(cellTypeToUse,
+                forIndexPath: indexPath) as! ArticleCell
 
-        cell.themeRepository = self.themeRepository
-        cell.article = article
+            cell.themeRepository = self.themeRepository
+            cell.article = article
 
         return cell
     }
@@ -191,7 +193,7 @@ extension ArticleListController: UISearchBarDelegate {
         } else {
             self.dataReader?.articlesOfFeeds(self.feeds, matchingSearchQuery: searchText) {articles in
                 let articlesArray = articles
-                if (self.articles != articlesArray) {
+                if self.articles != articlesArray {
                     self.articles = articlesArray
                     self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
                 }
@@ -201,19 +203,22 @@ extension ArticleListController: UISearchBarDelegate {
 }
 
 extension ArticleListController: UIViewControllerPreviewingDelegate {
-    public func previewingContext(previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-        if let indexPath = self.tableView.indexPathForRowAtPoint(location) where !self.previewMode {
-            let article = self.articleForIndexPath(indexPath)
-            return self.configuredArticleController(article, read: false)
-        }
-        return nil
+    public func previewingContext(previewingContext: UIViewControllerPreviewing,
+        viewControllerForLocation location: CGPoint) -> UIViewController? {
+            if let indexPath = self.tableView.indexPathForRowAtPoint(location) where !self.previewMode {
+                let article = self.articleForIndexPath(indexPath)
+                return self.configuredArticleController(article, read: false)
+            }
+            return nil
     }
 
-    public func previewingContext(previewingContext: UIViewControllerPreviewing, commitViewController viewControllerToCommit: UIViewController) {
-        if let articleController = viewControllerToCommit as? ArticleViewController, article = articleController.article where !self.previewMode {
-            self.dataWriter?.markArticle(article, asRead: true)
-            self.showArticleController(articleController, animated: true)
-        }
+    public func previewingContext(previewingContext: UIViewControllerPreviewing,
+        commitViewController viewControllerToCommit: UIViewController) {
+            if let articleController = viewControllerToCommit as? ArticleViewController,
+                article = articleController.article where !self.previewMode {
+                    self.dataWriter?.markArticle(article, asRead: true)
+                    self.showArticleController(articleController, animated: true)
+            }
     }
 }
 

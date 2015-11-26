@@ -4,7 +4,7 @@ import Nimble
 
 class ArticleSpec: QuickSpec {
     override func spec() {
-        var subject : Article! = nil
+        var subject: Article! = nil
 
         beforeEach {
             subject = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
@@ -53,7 +53,7 @@ class ArticleSpec: QuickSpec {
         }
 
         describe("adding an enclosure") {
-            var enclosure : Enclosure! = nil
+            var enclosure: Enclosure! = nil
 
             beforeEach {
                 enclosure = Enclosure(url: NSURL(string: "http://example.com")!, kind: "", data: nil, article: nil)
@@ -90,7 +90,7 @@ class ArticleSpec: QuickSpec {
             }
 
             context("when the enclosure is associated with a different article") {
-                var otherArticle : Article! = nil
+                var otherArticle: Article! = nil
 
                 beforeEach {
                     otherArticle = Article(title: "blah", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [enclosure])
@@ -110,7 +110,7 @@ class ArticleSpec: QuickSpec {
         }
 
         describe("removing an enclosure") {
-            var enclosure : Enclosure! = nil
+            var enclosure: Enclosure! = nil
 
             beforeEach {
                 enclosure = Enclosure(url: NSURL(string: "http://example.com")!, kind: "", data: nil, article: nil)
@@ -139,7 +139,7 @@ class ArticleSpec: QuickSpec {
             }
 
             context("when the enclosure is associated with a different article") {
-                var otherArticle : Article! = nil
+                var otherArticle: Article! = nil
 
                 beforeEach {
                     otherArticle = Article(title: "blah", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [enclosure])
@@ -198,7 +198,7 @@ class ArticleSpec: QuickSpec {
         }
 
         describe("changing feeds") {
-            var feed : Feed! = nil
+            var feed: Feed! = nil
 
             beforeEach {
                 feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)

@@ -7,14 +7,14 @@ private class OutlinedLabel: UILabel {
     private override func drawTextInRect(rect: CGRect) {
         let textColor = self.textColor
         let context = UIGraphicsGetCurrentContext()
-        CGContextSetLineWidth(context, 2);
+        CGContextSetLineWidth(context, 2)
         CGContextSetLineJoin(context, .Round)
 
         CGContextSetTextDrawingMode(context, .Stroke)
         self.textColor = self.outlineColor
         super.drawTextInRect(rect)
 
-        CGContextSetTextDrawingMode(context, .Fill);
+        CGContextSetTextDrawingMode(context, .Fill)
         self.textColor = textColor
         super.drawTextInRect(rect)
     }

@@ -51,7 +51,8 @@ public class TextViewCell: UITableViewCell {
             } else {
                 baseAttributes = nil
             }
-            self.textView.attributedText = parser.attributedStringForString(textView.text, baseAttributes: baseAttributes)
+            self.textView.attributedText = parser.attributedStringForString(textView.text,
+                baseAttributes: baseAttributes)
             self.textView.selectedRange = selection
             self.textView.delegate = self
         }

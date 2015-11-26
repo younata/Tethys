@@ -4,7 +4,7 @@ import rNewsKit
 import Ra
 
 public class FeedsViewController: NSViewController {
-    var feeds : [Feed] = []
+    var feeds: [Feed] = []
 
     public lazy var tableView: NSTableView = {
         let tableView = NSTableView()
@@ -26,7 +26,7 @@ public class FeedsViewController: NSViewController {
 
     public private(set) var raInjector: Injector? = nil
 
-    public var onFeedSelection : (Feed) -> Void = {(_) in }
+    public var onFeedSelection: (Feed) -> Void = {(_) in }
 
     private var dataReader: DataRetriever? {
         return self.raInjector?.create(DataRetriever.self) as? DataRetriever
@@ -52,11 +52,17 @@ public class FeedsViewController: NSViewController {
             menuItem.target = self
             let submenu = NSMenu(title: "Feeds")
 
-            let deleteAllFeeds = NSMenuItem(title: "Delete all feeds", action: Selector("didSelectDeleteAllFeeds"), keyEquivalent: "D")
+            let deleteAllFeeds = NSMenuItem(title: "Delete all feeds",
+                action: Selector("didSelectDeleteAllFeeds"),
+                keyEquivalent: "D")
             deleteAllFeeds.target = self
-            let markAllFeedsAsRead = NSMenuItem(title: "Mark all feeds as read", action: Selector("didSelectMarkAllAsRead"), keyEquivalent: "R")
+            let markAllFeedsAsRead = NSMenuItem(title: "Mark all feeds as read",
+                action: Selector("didSelectMarkAllAsRead"),
+                keyEquivalent: "R")
             markAllFeedsAsRead.target = self
-            let reloadAllFeeds = NSMenuItem(title: "Refresh feeds", action: Selector("didSelectRefreshAllFeeds"), keyEquivalent: "r")
+            let reloadAllFeeds = NSMenuItem(title: "Refresh feeds",
+                action: Selector("didSelectRefreshAllFeeds"),
+                keyEquivalent: "r")
             reloadAllFeeds.target = self
 
             submenu.addItem(reloadAllFeeds)
@@ -103,13 +109,15 @@ public class FeedsViewController: NSViewController {
     }
 
     private func heightForFeed(feed: Feed, width: CGFloat) -> CGFloat {
-        var height : CGFloat = 16.0
+        var height: CGFloat = 16.0
         let attributes = [NSFontAttributeName: NSFont.systemFontOfSize(12)]
         let title = NSAttributedString(string: feed.displayTitle, attributes: attributes)
         let summary = NSAttributedString(string: feed.displaySummary, attributes: attributes)
 
-        let titleBounds = title.boundingRectWithSize(NSMakeSize(width, CGFloat.max), options: NSStringDrawingOptions.UsesFontLeading)
-        let summaryBounds = summary.boundingRectWithSize(NSMakeSize(width, CGFloat.max), options: NSStringDrawingOptions.UsesFontLeading)
+        let titleBounds = title.boundingRectWithSize(NSMakeSize(width, CGFloat.max),
+            options: NSStringDrawingOptions.UsesFontLeading)
+        let summaryBounds = summary.boundingRectWithSize(NSMakeSize(width, CGFloat.max),
+            options: NSStringDrawingOptions.UsesFontLeading)
 
         let titleHeight = ceil(titleBounds.width / width) * ceil(titleBounds.height)
         let summaryHeight = ceil(summaryBounds.width / width) * ceil(summaryBounds.height)

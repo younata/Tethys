@@ -7,11 +7,11 @@ import Lepton
 
 class OPMLManagerSpec: QuickSpec {
     override func spec() {
-        var subject : OPMLManager! = nil
+        var subject: OPMLManager! = nil
 
-        var dataRepository : FakeDataRepository! = nil
-        var importQueue : FakeOperationQueue! = nil
-        var mainQueue : FakeOperationQueue! = nil
+        var dataRepository: FakeDataRepository! = nil
+        var importQueue: FakeOperationQueue! = nil
+        var mainQueue: FakeOperationQueue! = nil
 
         beforeEach {
             importQueue = FakeOperationQueue()
@@ -35,7 +35,7 @@ class OPMLManagerSpec: QuickSpec {
         }
 
         describe("Importing OPML Files") {
-            var feeds : [Feed] = []
+            var feeds: [Feed] = []
             beforeEach {
                 let opmlUrl = NSBundle(forClass: self.classForCoder).URLForResource("test", withExtension: "opml")!
 
@@ -65,9 +65,9 @@ class OPMLManagerSpec: QuickSpec {
 
         describe("Writing OPML Files") {
 
-            var feed1 : Feed! = nil
-            var feed2 : Feed! = nil
-            var feed3 : Feed! = nil
+            var feed1: Feed! = nil
+            var feed2: Feed! = nil
+            var feed3: Feed! = nil
 
             beforeEach {
                 feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "", query: nil,

@@ -15,6 +15,20 @@ private class FakeUrlOpener: UrlOpener {
     init() {}
 }
 
+private class FakeQuickActionRepository: QuickActionRepository {
+    private var _quickActions = [NSObject]()
+
+    @available (iOS 9, *)
+    private var quickActions: [UIApplicationShortcutItem] {
+        get {
+            return (self._quickActions as? [UIApplicationShortcutItem]) ?? []
+        }
+        set {
+            self._quickActions = newValue
+        }
+    }
+}
+
 class SettingsViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: SettingsViewController! = nil
@@ -22,6 +36,7 @@ class SettingsViewControllerSpec: QuickSpec {
         var themeRepository: ThemeRepository! = nil
         var settingsRepository: SettingsRepository! = nil
         var urlOpener: FakeUrlOpener! = nil
+        var fakeQuickActionRepository: FakeQuickActionRepository! = nil
 
         beforeEach {
             let injector = Injector()
@@ -31,6 +46,9 @@ class SettingsViewControllerSpec: QuickSpec {
 
             settingsRepository = SettingsRepository(userDefaults: nil)
             injector.bind(SettingsRepository.self, to: settingsRepository)
+
+            fakeQuickActionRepository = FakeQuickActionRepository()
+            injector.bind(QuickActionRepository.self, to: fakeQuickActionRepository)
 
             urlOpener = FakeUrlOpener()
             injector.bind(UrlOpener.self, to: urlOpener)
@@ -217,13 +235,9 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
                 }
             }
-
-            it("has a list of commands") {
-
-            }
         }
 
-        describe("the tableView") {
+        fdescribe("the tableView") {
             var delegate: UITableViewDelegate! = nil
             var dataSource: UITableViewDataSource! = nil
 
@@ -232,8 +246,38 @@ class SettingsViewControllerSpec: QuickSpec {
                 dataSource = subject.tableView.dataSource
             }
 
-            it("should have 3 sections") {
-                expect(subject.tableView.numberOfSections).to(equal(3))
+            if #available(iOS 9, *) {
+                context("on iOS 9") {
+                    it("should have 4 sections if force touch is available") {
+                        subject.traitCollection.forceTouchCapability = UIForceTouchCapability.Available
+                        subject.tableView.reloadData()
+                        expect(subject.tableView.numberOfSections).to(equal(4))
+                    }
+
+                    it("should have 3 sections if force touch is not available") {
+                        subject.traitCollection.forceTouchCapability = UIForceTouchCapability.Unavailable
+                        subject.tableView.reloadData()
+                        expect(subject.tableView.numberOfSections).to(equal(3))
+                    }
+                }
+            } else {
+                it("should have 3 section on iOS 8") {
+                    expect(subject.tableView.numberOfSections).to(equal(3))
+                }
+            }
+
+            it("should have 3 sections in iOS 8, 4 in iOS 9 if force touch is available") {
+                let expectedSections: Int
+                if #available(iOS 9, *) {
+                    if subject.traitCollection.forceTouchCapability == .Available {
+                        expectedSections = 4
+                    } else {
+                        expectedSections = 3
+                    }
+                } else {
+                    expectedSections = 3
+                }
+                expect(subject.tableView.numberOfSections).to(equal(expectedSections))
             }
 
             describe("the theme section") {
@@ -326,8 +370,170 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
             }
 
+            if #available(iOS 9, *) {
+                describe("the quick actions section") {
+                    let sectionNumber = 1
+
+                    beforeEach {
+                        subject.traitCollection.forceTouchCapability = UIForceTouchCapability.Available
+                    }
+
+                    it("should be titled 'Quick Actions'") {
+                        let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
+                        expect(title).to(equal("Quick Actions"))
+                    }
+
+                    context("when there are no existing quick actions") {
+                        beforeEach {
+                            fakeQuickActionRepository.quickActions = []
+                            subject.tableView.reloadData()
+                        }
+
+                        it("should have a single cell, inviting the user to add a quick action") {
+                            expect(subject.tableView.numberOfRowsInSection(sectionNumber)).to(equal(1))
+
+                            let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
+                            let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: indexPath)
+
+                            expect(cell?.textLabel?.text).to(equal("Add a Quick Action"))
+                        }
+
+                        it("should bring up a dialog to add a new quick action when the add quick action cell is tapped") {
+                            let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
+
+                            subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
+
+                            expect(subject.presentedViewController).toNot(beNil())
+                        }
+
+                        it("should not have any edit actions") {
+                            let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
+
+                            let editActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAtIndexPath: indexPath)
+                            expect(editActions).to(beNil())
+                        }
+                    }
+
+                    context("when there are one or two existing quick actions") {
+                        beforeEach {
+                            fakeQuickActionRepository.quickActions = [UIApplicationShortcutItem(type: "a", localizedTitle: "a")]
+                            subject.tableView.reloadData()
+                        }
+
+                        it("should show the existing actions, plus an invitation to add one more") {
+                            expect(subject.tableView.numberOfRowsInSection(sectionNumber)).to(equal(2))
+                            let firstIndexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
+                            let firstCell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: firstIndexPath)
+
+                            expect(firstCell?.textLabel?.text).to(equal("a"))
+
+                            let secondIndexPath = NSIndexPath(forRow: 1, inSection: sectionNumber)
+                            let secondCell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: secondIndexPath)
+
+                            expect(secondCell?.textLabel?.text).to(equal("Add a new Quick Action"))
+                        }
+
+                        describe("the cell for an existing quick action") {
+                            let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
+
+                            it("should bring up a dialog to change the feed when one of the existing quick action cells is tapped") {
+                                subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
+
+                                expect(subject.presentedViewController).toNot(beNil())
+                            }
+
+                            it("should have one edit action, which deletes the quick action when selected") {
+                                let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
+
+                                let editActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAtIndexPath: indexPath)
+                                expect(editActions?.count).to(equal(1))
+
+                                if let action = editActions?.first {
+                                    expect(action.title).to(equal("Delete"))
+                                    action.handler()?(action, indexPath)
+
+                                    expect(fakeQuickActionRepository.quickActions).to(beEmpty())
+                                }
+                            }
+                        }
+
+
+                        describe("the cell to add a new quick action") {
+                            let indexPath = NSIndexPath(forRow: 1, inSection: sectionNumber)
+
+                            it("should bring up a dialog to add a new quick action when the add quick action cell is tapped") {
+                                subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
+
+                                expect(subject.presentedViewController).toNot(beNil())
+                            }
+
+                            it("should not have any edit actions") {
+                                let editActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAtIndexPath: indexPath)
+                                expect(editActions).to(beNil())
+                            }
+                        }
+
+                    }
+
+                    context("when there are three existing quick actions") {
+                        let firstShortcut = UIApplicationShortcutItem(type: "a", localizedTitle: "a")
+                        let secondShortcut = UIApplicationShortcutItem(type: "b", localizedTitle: "b")
+                        let thirdShortcut = UIApplicationShortcutItem(type: "c", localizedTitle: "c")
+
+                        beforeEach {
+                            fakeQuickActionRepository.quickActions = [firstShortcut, secondShortcut, thirdShortcut]
+                            subject.tableView.reloadData()
+                        }
+
+                        it("should only have cells for the existing feeds") {
+                            expect(subject.tableView.numberOfRowsInSection(sectionNumber)).to(equal(3))
+
+                            let firstIndexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
+                            let firstCell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: firstIndexPath)
+                            expect(firstCell?.textLabel?.text).to(equal("a"))
+
+                            let secondIndexPath = NSIndexPath(forRow: 1, inSection: sectionNumber)
+                            let secondCell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: secondIndexPath)
+                            expect(secondCell?.textLabel?.text).to(equal("b"))
+
+                            let thirdIndexPath = NSIndexPath(forRow: 2, inSection: sectionNumber)
+                            let thirdCell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: thirdIndexPath)
+                            expect(thirdCell?.textLabel?.text).to(equal("c"))
+                        }
+
+                        it("should bring up a dialog to change the feed when one of the existing quick action cells is tapped") {
+                            let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
+
+                            subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
+
+                            expect(subject.presentedViewController).toNot(beNil())
+                        }
+
+                        it("each should have one edit action, which deletes the quick action when selected") {
+                            let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
+
+                            let editActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAtIndexPath: indexPath)
+                            expect(editActions?.count).to(equal(1))
+
+                            if let action = editActions?.first {
+                                expect(action.title).to(equal("Delete"))
+                                action.handler()?(action, indexPath)
+
+                                expect(fakeQuickActionRepository.quickActions).to(equal([secondShortcut, thirdShortcut]))
+                            }
+                        }
+                    }
+                }
+            }
+
             describe("the advanced section") {
                 let sectionNumber = 1
+
+                beforeEach {
+                    if #available(iOS 9.0, *) {
+                        subject.traitCollection.forceTouchCapability = UIForceTouchCapability.Unavailable
+                    }
+                }
 
                 it("should be titled 'Advanced'") {
                     let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
@@ -390,6 +596,12 @@ class SettingsViewControllerSpec: QuickSpec {
             describe("the credits section") {
                 let sectionNumber = 2
 
+                beforeEach {
+                    if #available(iOS 9.0, *) {
+                        subject.traitCollection.forceTouchCapability = UIForceTouchCapability.Unavailable
+                    }
+                }
+
                 it("should be titled 'Credits'") {
                     let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
                     expect(title).to(equal("Credits"))
@@ -426,8 +638,8 @@ class SettingsViewControllerSpec: QuickSpec {
 
                         if #available(iOS 9.0, *) {
                             context("on iOS 9") {
-                                it("should present an SFSafariViewController pointing at that url") {
-                                    expect(subject.presentedViewController).to(beAnInstanceOf(SFSafariViewController.self))
+                                it("should show an SFSafariViewController pointing at that url") {
+                                    expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
                                 }
                             }
                         } else {

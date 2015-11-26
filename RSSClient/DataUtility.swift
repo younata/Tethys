@@ -47,7 +47,8 @@ internal class DataUtility {
     }
 
     internal class func updateArticle(article: CoreDataArticle, item: Muon.Article) {
-        article.title = (item.title ?? article.title ?? "unknown").stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        let characterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
+        article.title = (item.title ?? article.title ?? "unknown").stringByTrimmingCharactersInSet(characterSet)
         article.link = item.link?.absoluteString ?? ""
         if article.published == nil {
             article.read = false
@@ -140,22 +141,26 @@ internal class DataUtility {
     internal class func feedsWithPredicate(predicate: NSPredicate,
         managedObjectContext: NSManagedObjectContext,
         sortDescriptors: [NSSortDescriptor] = []) -> [Feed] {
-            return DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: managedObjectContext, sortDescriptors: sortDescriptors) {managedObject in
-                guard let coreDataFeed = managedObject as? CoreDataFeed else {
-                    return nil
-                }
-                return Feed(feed: coreDataFeed)
+            return DataUtility.entities("Feed", matchingPredicate: predicate,
+                managedObjectContext: managedObjectContext,
+                sortDescriptors: sortDescriptors) {managedObject in
+                    guard let coreDataFeed = managedObject as? CoreDataFeed else {
+                        return nil
+                    }
+                    return Feed(feed: coreDataFeed)
             } as? [Feed] ?? []
     }
 
     internal class func articlesWithPredicate(predicate: NSPredicate,
         managedObjectContext: NSManagedObjectContext,
         sortDescriptors: [NSSortDescriptor] = []) -> [Article] {
-            return DataUtility.entities("Article", matchingPredicate: predicate, managedObjectContext: managedObjectContext, sortDescriptors: sortDescriptors) {managedObject in
-                guard let coreDataArticle = managedObject as? CoreDataArticle else {
-                    return nil
-                }
-                return Article(article: coreDataArticle, feed: nil)
-            } as? [Article] ?? []
+            return DataUtility.entities("Article", matchingPredicate: predicate,
+                managedObjectContext: managedObjectContext,
+                sortDescriptors: sortDescriptors) {managedObject in
+                    guard let coreDataArticle = managedObject as? CoreDataArticle else {
+                        return nil
+                    }
+                    return Article(article: coreDataArticle, feed: nil)
+                } as? [Article] ?? []
     }
 }

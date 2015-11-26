@@ -44,8 +44,10 @@ public class ExplanationView: UIView {
         self.addSubview(self.titleLabel)
         self.addSubview(self.detailLabel)
 
-        self.titleLabel.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsets(top: 20, left: 20, bottom: 0, right: 20), excludingEdge: .Bottom)
-        self.detailLabel.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsets(top: 0, left: 8, bottom: 8, right: 8), excludingEdge: .Top)
+        self.titleLabel.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsets(top: 20, left: 20, bottom: 0, right: 20),
+            excludingEdge: .Bottom)
+        self.detailLabel.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsets(top: 0, left: 8, bottom: 8, right: 8),
+            excludingEdge: .Top)
 
         self.detailLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.titleLabel, withOffset: 8)
 

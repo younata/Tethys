@@ -5,7 +5,7 @@ import rNews
 
 class ActivityIndicatorSpec: QuickSpec {
     override func spec() {
-        var subject : ActivityIndicator! = nil
+        var subject: ActivityIndicator! = nil
 
         beforeEach {
             subject = ActivityIndicator()

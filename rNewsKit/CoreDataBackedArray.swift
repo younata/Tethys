@@ -1,4 +1,3 @@
-
 import CoreData
 
 public struct CoreDataBackedGenerator<T>: GeneratorType {
@@ -76,11 +75,13 @@ public class CoreDataBackedArray<T>: CollectionType, CustomDebugStringConvertibl
     }
 
     public func filterWithPredicate(predicate: NSPredicate) -> CoreDataBackedArray<T> {
-        guard let currentPredicate = self.predicate, managedObjectContext = self.managedObjectContext, conversionFunction = self.conversionFunction else {
-            let array = self.internalObjects.filter {
-                return predicate.evaluateWithObject($0 as? AnyObject)
-            }
-            return CoreDataBackedArray(array)
+        guard let currentPredicate = self.predicate,
+            managedObjectContext = self.managedObjectContext,
+            conversionFunction = self.conversionFunction else {
+                let array = self.internalObjects.filter {
+                    return predicate.evaluateWithObject($0 as? AnyObject)
+                }
+                return CoreDataBackedArray(array)
         }
         return CoreDataBackedArray(entityName: self.entityName,
             predicate: NSCompoundPredicate(andPredicateWithSubpredicates: [currentPredicate, predicate]),
@@ -90,11 +91,13 @@ public class CoreDataBackedArray<T>: CollectionType, CustomDebugStringConvertibl
     }
 
     public func combineWithPredicate(predicate: NSPredicate) -> CoreDataBackedArray<T> {
-        guard let currentPredicate = self.predicate, managedObjectContext = self.managedObjectContext, conversionFunction = self.conversionFunction else {
-            let array = self.internalObjects.filter {
-                return predicate.evaluateWithObject($0 as? AnyObject)
-            }
-            return CoreDataBackedArray(array)
+        guard let currentPredicate = self.predicate,
+            managedObjectContext = self.managedObjectContext,
+            conversionFunction = self.conversionFunction else {
+                let array = self.internalObjects.filter {
+                    return predicate.evaluateWithObject($0 as? AnyObject)
+                }
+                return CoreDataBackedArray(array)
         }
         return CoreDataBackedArray(entityName: self.entityName,
             predicate: NSCompoundPredicate(orPredicateWithSubpredicates: [currentPredicate, predicate]),
@@ -106,8 +109,10 @@ public class CoreDataBackedArray<T>: CollectionType, CustomDebugStringConvertibl
     public func combine(other: CoreDataBackedArray<T>) -> CoreDataBackedArray<T> {
         guard let currentPredicate = self.predicate, otherPredicate = other.predicate,
             managedObjectContext = self.managedObjectContext, conversionFunction = self.conversionFunction
-            where other.entityName == self.entityName && other.managedObjectContext == self.managedObjectContext && other.sortDescriptors == self.sortDescriptors else {
-                return CoreDataBackedArray(self.internalObjects + Array(other))
+            where other.entityName == self.entityName &&
+                other.managedObjectContext == self.managedObjectContext &&
+                other.sortDescriptors == self.sortDescriptors else {
+                    return CoreDataBackedArray(self.internalObjects + Array(other))
         }
 
         let predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [currentPredicate, otherPredicate])
@@ -161,22 +166,27 @@ public class CoreDataBackedArray<T>: CollectionType, CustomDebugStringConvertibl
         self.internalCount = array.count
     }
 
-    public init(entityName: String, predicate: NSPredicate, managedObjectContext: NSManagedObjectContext, conversionFunction: (NSManagedObject) -> T, sortDescriptors: [NSSortDescriptor] = []) {
-        self.entityName = entityName
-        self.predicate = predicate
-        self.managedObjectContext = managedObjectContext
-        self.conversionFunction = conversionFunction
-        self.sortDescriptors = sortDescriptors
+    public init(entityName: String,
+        predicate: NSPredicate,
+        managedObjectContext: NSManagedObjectContext,
+        conversionFunction: (NSManagedObject) -> T,
+        sortDescriptors: [NSSortDescriptor] = []) {
+            self.entityName = entityName
+            self.predicate = predicate
+            self.managedObjectContext = managedObjectContext
+            self.conversionFunction = conversionFunction
+            self.sortDescriptors = sortDescriptors
     }
 
-    private func fetchUpToPosition(position: Int, wait: Bool = false) {
+    private func fetchUpToPosition(position: Int, wait: Bool) {
         if self.internalObjects.isEmpty {
             let fetchRequest = NSFetchRequest(entityName: self.entityName)
             fetchRequest.predicate = self.predicate
             fetchRequest.sortDescriptors = self.sortDescriptors
             fetchRequest.fetchBatchSize = self.batchSize
             self.managedObjectContext?.performBlockAndWait {
-                guard let array = try? self.managedObjectContext?.executeFetchRequest(fetchRequest) as? [NSManagedObject] else { return }
+                let result = try? self.managedObjectContext?.executeFetchRequest(fetchRequest) as? [NSManagedObject]
+                guard let array = result else { return }
                 self.managedArray = array ?? []
             }
         }
@@ -185,7 +195,7 @@ public class CoreDataBackedArray<T>: CollectionType, CustomDebugStringConvertibl
 
         let block: (Void) -> Void = {
             for i in start..<end {
-                self.internalObjects.append(self.conversionFunction!(self.managedArray[i]))
+                self.internalObjects.insert(self.conversionFunction!(self.managedArray[i]), atIndex: i)
             }
         }
 
@@ -203,13 +213,14 @@ public class CoreDataBackedArray<T>: CollectionType, CustomDebugStringConvertibl
             fetchRequest.predicate = self.predicate
             count = self.managedObjectContext!.countForFetchRequest(fetchRequest, error: nil)
         }
+        self.internalObjects.reserveCapacity(count)
         return count
     }
 }
 
 extension CoreDataBackedArray where T: Equatable {
     public func remove(object: T) -> Bool {
-        self.fetchUpToPosition(self.internalCount - 1)
+        self.fetchUpToPosition(self.internalCount - 1, wait: true)
         var idxToRemove: Int? = nil
         for (idx, obj) in self.appendedObjects.enumerate() {
             if obj == object {
@@ -243,16 +254,16 @@ extension CoreDataBackedArray where T: Equatable {
     }
 }
 
-public func ==<T: Equatable>(a: CoreDataBackedArray<T>, b: CoreDataBackedArray<T>) -> Bool {
-    if a.isCoreDataBacked && b.isCoreDataBacked {
-        return a.count == b.count && a.entityName == b.entityName &&
-            a.predicate == b.predicate && a.managedObjectContext == b.managedObjectContext &&
-            a.sortDescriptors == b.sortDescriptors
+public func ==<T: Equatable>(left: CoreDataBackedArray<T>, right: CoreDataBackedArray<T>) -> Bool {
+    if left.isCoreDataBacked && right.isCoreDataBacked {
+        return left.count == right.count && left.entityName == right.entityName &&
+            left.predicate == right.predicate && left.managedObjectContext == right.managedObjectContext &&
+            left.sortDescriptors == right.sortDescriptors
     } else {
-        return Array(a) == Array(b)
+        return Array(left) == Array(right)
     }
 }
 
-public func !=<T: Equatable>(a: CoreDataBackedArray<T>, b: CoreDataBackedArray<T>) -> Bool {
-    return !(a == b)
+public func !=<T: Equatable>(left: CoreDataBackedArray<T>, right: CoreDataBackedArray<T>) -> Bool {
+    return !(left == right)
 }

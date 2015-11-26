@@ -5,7 +5,7 @@ import CoreData
 
 class EnclosureSpec: QuickSpec {
     override func spec() {
-        var subject : Enclosure? = nil
+        var subject: Enclosure? = nil
 
         beforeEach {
             subject = Enclosure(url: NSURL(string: "http://example.com")!, kind: "", data: nil, article: nil)
@@ -34,7 +34,7 @@ class EnclosureSpec: QuickSpec {
         }
 
         describe("changing article") {
-            var article : Article! = nil
+            var article: Article! = nil
 
             beforeEach {
                 article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])

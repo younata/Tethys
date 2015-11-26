@@ -46,9 +46,9 @@ class LocalImportViewControllerSpec: QuickSpec {
         var subject: LocalImportViewController! = nil
         var injector: Ra.Injector! = nil
 
-        var navigationController : UINavigationController! = nil
+        var navigationController: UINavigationController! = nil
 
-        var tableView : UITableView! = nil
+        var tableView: UITableView! = nil
 
         var dataReadWriter: FakeDataReadWriter! = nil
         var opmlManager: OPMLManagerMock! = nil

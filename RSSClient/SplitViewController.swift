@@ -33,6 +33,7 @@ extension SplitViewController: UISplitViewControllerDelegate {
             return self.collapseDetailViewController
     }
 
+    // swiftlint:disable line_length
     public func primaryViewControllerForCollapsingSplitViewController(splitViewController: UISplitViewController) -> UIViewController? {
         return self.viewControllers.first
     }
@@ -40,4 +41,5 @@ extension SplitViewController: UISplitViewControllerDelegate {
     public func targetDisplayModeForActionInSplitViewController(svc: UISplitViewController) -> UISplitViewControllerDisplayMode {
         return .AllVisible
     }
+    // swiftlint:enable line_length
 }

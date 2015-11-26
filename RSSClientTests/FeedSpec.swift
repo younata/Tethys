@@ -4,7 +4,7 @@ import Nimble
 
 class FeedSpec: QuickSpec {
     override func spec() {
-        var subject : Feed! = nil
+        var subject: Feed! = nil
 
         beforeEach {
             subject = Feed(title: "", url: nil, summary: "", query: nil, tags: [],
@@ -146,7 +146,7 @@ class FeedSpec: QuickSpec {
                 }
 
                 context("when the article is associated with a different feed") {
-                    var otherFeed : Feed! = nil
+                    var otherFeed: Feed! = nil
                     beforeEach {
                         otherFeed = Feed(title: "blah", url: nil, summary: "", query: nil, tags: [],
                             waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
@@ -213,7 +213,7 @@ class FeedSpec: QuickSpec {
                 }
 
                 context("when the article is associated with a different feed") {
-                    var otherFeed : Feed! = nil
+                    var otherFeed: Feed! = nil
                     beforeEach {
                         otherFeed = Feed(title: "blah", url: nil, summary: "", query: nil, tags: [],
                             waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)

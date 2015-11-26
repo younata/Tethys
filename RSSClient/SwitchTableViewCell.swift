@@ -25,9 +25,11 @@ public class SwitchTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         self.contentView.addSubview(self._textLabel)
-        self._textLabel.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsets(top: 4, left: 20, bottom: 4, right: 0), excludingEdge: .Trailing)
+        self._textLabel.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsets(top: 4, left: 20, bottom: 4, right: 0),
+            excludingEdge: .Trailing)
         self.contentView.addSubview(self.theSwitch)
-        self.theSwitch.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsets(top: 5, left: 0, bottom: 4, right: 20), excludingEdge: .Leading)
+        self.theSwitch.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsets(top: 5, left: 0, bottom: 4, right: 20),
+            excludingEdge: .Leading)
         self.theSwitch.autoPinEdge(.Leading, toEdge: .Trailing, ofView: self._textLabel)
 
         self.theSwitch.addTarget(self, action: "didTapSwitch", forControlEvents: .ValueChanged)

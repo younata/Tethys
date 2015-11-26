@@ -131,10 +131,10 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
         return nil
     }
 
+    // swiftlint:disable function_body_length
     public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let section = FeedSections(rawValue: indexPath.section) ?? .Title
-
-        switch (section) {
+        switch section {
         case .Title:
             let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TableViewCell
             cell.textLabel?.text = ""
@@ -156,22 +156,15 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
                     self.urlSession.dataTaskWithURL(url) {data, response, error in
                         if let response = response as? NSHTTPURLResponse {
                             if let data = data,
-                               let nstext = NSString(data: data, encoding: NSUTF8StringEncoding) where response.statusCode == 200 {
-                                let string = String(nstext)
-                                let fp = Muon.FeedParser(string: string)
-                                fp.failure {_ in
-                                    tc.setValid(false)
-                                }
-                                fp.success {_ in
-                                    tc.setValid(true)
-                                }
-                                self.operationQueue.addOperation(fp)
-                            } else {
-                                tc.setValid(false)
-                            }
-                        } else {
-                            tc.setValid(false)
-                        }
+                               let nstext = NSString(data: data, encoding: NSUTF8StringEncoding)
+                                where response.statusCode == 200 {
+                                    let string = String(nstext)
+                                    let fp = Muon.FeedParser(string: string)
+                                    fp.failure {_ in tc.setValid(false) }
+                                    fp.success {_ in tc.setValid(true) }
+                                    self.operationQueue.addOperation(fp)
+                            } else { tc.setValid(false) }
+                        } else { tc.setValid(false) }
                     }.resume()
                 }
                 return
@@ -183,7 +176,7 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
             cell.themeRepository = self.themeRepository
             if let summary = feed?.tags.filter({$0.hasPrefix("`")}).first {
                 cell.textLabel?.text = summary.substringFromIndex(summary.startIndex.successor())
-            } else if let summary = feed?.displaySummary where !summary.isEmpty  {
+            } else if let summary = feed?.displaySummary where !summary.isEmpty {
                 cell.textLabel?.text = summary
             } else {
                 cell.textLabel?.text = NSLocalizedString("FeedViewController_Cell_Summary_Placeholder", comment: "")
@@ -239,6 +232,7 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
             })
             return [delete, edit]
     }
+    // swiftlint:enable function_body_length
 
     public func tableView(tableView: UITableView,
         commitEditingStyle _: UITableViewCellEditingStyle,

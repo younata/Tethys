@@ -3,7 +3,7 @@ import rNewsKit
 import Ra
 
 public class MainController: NSViewController {
-    @IBOutlet public var window : NSWindow? = nil
+    @IBOutlet public var window: NSWindow? = nil
 
     public lazy var feedsList: FeedsViewController = {
         let feedsList = FeedsViewController()
@@ -20,7 +20,7 @@ public class MainController: NSViewController {
         return controller
     }()
 
-    public override var acceptsFirstResponder : Bool {
+    public override var acceptsFirstResponder: Bool {
         get {
             return true
         }

@@ -3,20 +3,20 @@ import PureLayout_Mac
 import rNewsKit
 
 public class UnreadCounter: NSView {
-    
+
     let countLabel = NSText(forAutoLayout: ())
-    
+
     var triangleColor: NSColor = NSColor.darkGreenColor()
     var countColor: NSColor = NSColor.whiteColor() {
         didSet {
             countLabel.textColor = countColor
         }
     }
-    
-    private var color : NSColor = NSColor.darkGreenColor()
-    
+
+    private var color: NSColor = NSColor.darkGreenColor()
+
     public var hideUnreadText = false
-    public var unread : UInt = 0 {
+    public var unread: UInt = 0 {
         didSet {
             if unread == 0 {
                 countLabel.string = ""
@@ -32,11 +32,11 @@ public class UnreadCounter: NSView {
             self.needsDisplay = true
         }
     }
-    
+
     public override func layout() {
         super.layout()
     }
-    
+
     public override init(frame: NSRect) {
         super.init(frame: NSMakeRect(0, 0, 0, 0))
 
@@ -54,7 +54,7 @@ public class UnreadCounter: NSView {
 
     public override func drawRect(dirtyRect: NSRect) {
         super.drawRect(dirtyRect)
-        
+
         let ctx = NSGraphicsContext.currentContext()
         let path = CGPathCreateMutable()
         let height = CGRectGetHeight(self.bounds)

@@ -78,7 +78,7 @@ class DataUtilitySpec: QuickSpec {
 
         describe("updateArticle:item:") {
             var article: CoreDataArticle! = nil
-            var item : Muon.Article! = nil
+            var item: Muon.Article! = nil
             beforeEach {
                 article = createArticle(ctx)
                 do {
@@ -240,7 +240,7 @@ class DataUtilitySpec: QuickSpec {
         }
 
         describe("feedsWithPredicate:managedObjectContext:sortDescriptors") {
-            var otherFeed : CoreDataFeed! = nil
+            var otherFeed: CoreDataFeed! = nil
             beforeEach {
                 feed.title = "example"
                 feed.summary = "example"
@@ -270,8 +270,8 @@ class DataUtilitySpec: QuickSpec {
 
         describe("articlesWithPredicate:managedObjectContext:sortDescriptors") {
 
-            var article : CoreDataArticle! = nil
-            var otherArticle : CoreDataArticle! = nil
+            var article: CoreDataArticle! = nil
+            var otherArticle: CoreDataArticle! = nil
             beforeEach {
                 article = createArticle(ctx)
                 article.title = "example"

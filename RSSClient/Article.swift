@@ -133,7 +133,9 @@ import JavaScriptCore
     }
 
     public override var description: String {
+        // swiftlint:disable line_length
         return "Article: title: \(title), link: \(link), summary: \(summary), author: \(author), published: \(published), updated: \(updatedAt), identifier: \(identifier), content: \(content), read: \(read)\n"
+        // swiftlint:enable line_length
     }
 
     public init(title: String, link: NSURL?, summary: String, author: String, published: NSDate,
@@ -179,8 +181,11 @@ import JavaScriptCore
         self.flags = article.flags
         self.enclosuresArray = CoreDataBackedArray()
         super.init()
-        self.enclosuresArray = CoreDataBackedArray(entityName: "Enclosure", predicate: NSPredicate(format: "article == %@", self), managedObjectContext: article.managedObjectContext!, conversionFunction: {
-            return Enclosure(enclosure: $0 as! CoreDataEnclosure, article: self)
+        self.enclosuresArray = CoreDataBackedArray(entityName: "Enclosure",
+            predicate: NSPredicate(format: "article == %@", self),
+            managedObjectContext: article.managedObjectContext!,
+            conversionFunction: {
+                return Enclosure(enclosure: $0 as! CoreDataEnclosure, article: self)
         })
 
         self.articleID = article.objectID

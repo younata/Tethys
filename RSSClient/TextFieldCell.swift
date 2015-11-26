@@ -42,7 +42,8 @@ public class TextFieldCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         self.contentView.addSubview(self.textField)
-        self.textField.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0), excludingEdge: .Trailing)
+        self.textField.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0),
+            excludingEdge: .Trailing)
 
         self.contentView.addSubview(self.validView)
         self.validView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Leading)

@@ -10,7 +10,7 @@ extension UIApplication: DataSubscriber {
     }
 
     public func deletedArticle(article: Article) {
-        if (!article.read) {
+        if !article.read {
             self.applicationIconBadgeNumber -= 1
         }
     }
@@ -101,24 +101,35 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: Quick Actions
 
     @available(iOS 9, *)
-    public func application(application: UIApplication, performActionForShortcutItem shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
-        guard let navigationController = (self.window?.rootViewController as? UISplitViewController)?.viewControllers.first as? UINavigationController else {
-            completionHandler(false)
-            return
-        }
-        navigationController.popToRootViewControllerAnimated(false)
+    public func application(application: UIApplication,
+        performActionForShortcutItem shortcutItem: UIApplicationShortcutItem,
+        completionHandler: (Bool) -> Void) {
+            let splitView = self.window?.rootViewController as? UISplitViewController
+            guard let navigationController = splitView?.viewControllers.first as? UINavigationController else {
+                completionHandler(false)
+                return
+            }
+            navigationController.popToRootViewControllerAnimated(false)
 
-        guard let feedsViewController = navigationController.topViewController as? FeedsTableViewController else {
-            completionHandler(false)
-            return
-        }
+            guard let feedsViewController = navigationController.topViewController as? FeedsTableViewController else {
+                completionHandler(false)
+                return
+            }
 
-        var handled = false
-        if shortcutItem.type == "com.rachelbrindle.RSSClient.newfeed" {
-            feedsViewController.importFromWeb()
-            handled = true
-        }
-        completionHandler(handled)
+            if shortcutItem.type == "com.rachelbrindle.RSSClient.newfeed" {
+                feedsViewController.importFromWeb()
+                completionHandler(true)
+            } else if let feedTitle = shortcutItem.userInfo?["feed"] as? String
+                where shortcutItem.type == "com.rachelbrindle.RSSClient.viewfeed" {
+                    self.dataRetriever?.feeds {feeds in
+                        if let feed = feeds.filter({ return $0.title == feedTitle }).first {
+                            feedsViewController.showFeeds([feed], animated: false)
+                            completionHandler(true)
+                        }
+                    }
+            } else {
+                completionHandler(false)
+            }
     }
 
     // MARK: Local Notifications
@@ -140,7 +151,9 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
     public func application(application: UIApplication,
         performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
             if let noteHandler = self.notificationHandler {
-                self.backgroundFetchHandler?.performFetch(noteHandler, notificationSource: application, completionHandler: completionHandler)
+                self.backgroundFetchHandler?.performFetch(noteHandler,
+                    notificationSource: application,
+                    completionHandler: completionHandler)
             } else {
                 completionHandler(.NoData)
             }
@@ -157,10 +170,12 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 let feedTitle = userInfo["feed"] as? String,
                 let articleID = userInfo["article"] as? String {
                     self.dataRetriever?.feeds {feeds in
+                        // swiftlint:disable line_length
                         if let feed = feeds.filter({ return $0.title == feedTitle }).first,
                             let article = feed.articlesArray.filter({ $0.articleID?.URIRepresentation().absoluteString == articleID }).first {
                                 self.createControllerHierarchy(feed, article: article)
                         }
+                        // swiftlint:enable line_length
                     }
                     return true
             }
@@ -211,4 +226,3 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window?.rootViewController = splitView
     }
 }
-

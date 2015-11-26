@@ -60,8 +60,9 @@ public class ThemeRepository: NSObject, Injectable {
 
     public private(set) var statusBarStyle: UIStatusBarStyle {
         get {
-            if let rawValue = self.privateValueForKey("statusBarStyle") as? Int, barStyle = UIStatusBarStyle(rawValue: rawValue) {
-                return barStyle
+            if let rawValue = self.privateValueForKey("statusBarStyle") as? Int,
+                barStyle = UIStatusBarStyle(rawValue: rawValue) {
+                    return barStyle
             }
             return UIStatusBarStyle.Default
         }
@@ -85,7 +86,7 @@ public class ThemeRepository: NSObject, Injectable {
         case Dark = 1
 
         public var description: String {
-            switch (self) {
+            switch self {
             case .Default:
                 return NSLocalizedString("Default", comment: "")
             case .Dark:
@@ -100,8 +101,9 @@ public class ThemeRepository: NSObject, Injectable {
 
     public var theme: Theme {
         get {
-            if let themeRawValue = self.privateValueForKey("theme") as? Int, let theme = Theme(rawValue: themeRawValue) {
-                return theme
+            if let themeRawValue = self.privateValueForKey("theme") as? Int,
+                let theme = Theme(rawValue: themeRawValue) {
+                    return theme
             }
             return Theme.Default
         }
@@ -149,7 +151,8 @@ public class ThemeRepository: NSObject, Injectable {
     }
 
     public required init(injector: Ra.Injector) {
-        self.userDefaults = injector.create(NSUserDefaults.self) as? NSUserDefaults ?? NSUserDefaults.standardUserDefaults()
+        self.userDefaults = injector.create(NSUserDefaults.self) as? NSUserDefaults ??
+            NSUserDefaults.standardUserDefaults()
     }
 
     public func addSubscriber(subscriber: ThemeRepositorySubscriber) {

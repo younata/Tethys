@@ -9,7 +9,7 @@ func managedObjectContext() -> NSManagedObjectContext {
     let managedObjectModel = NSManagedObjectModel(contentsOfURL: modelURL)!
 
     let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
-    var error : NSError? = nil
+    var error: NSError? = nil
     do {
         try persistentStoreCoordinator.addPersistentStoreWithType(NSInMemoryStoreType, configuration: nil, URL: nil, options: nil)
     } catch let error1 as NSError {

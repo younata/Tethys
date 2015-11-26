@@ -17,6 +17,7 @@ public class OPMLManager: NSObject, Injectable {
         self.dataRepository?.addSubscriber(self)
     }
 
+    // swiftlint:disable function_body_length
     public func importOPML(opml: NSURL, completion: ([Feed]) -> Void) {
         guard let dataRepository = self.dataRepository else {
             completion([])
@@ -41,11 +42,11 @@ public class OPMLManager: NSObject, Injectable {
                 let text = try String(contentsOfURL: opml, encoding: NSUTF8StringEncoding)
                 let parser = Lepton.Parser(text: text)
                 parser.success {items in
-                    var feeds : [Feed] = []
+                    var feeds: [Feed] = []
 
                     for item in items {
                         if feedAlreadyExists(item) {
-                            continue;
+                            continue
                         }
                         if item.isQueryFeed() {
                             if let title = item.title, let query = item.query {

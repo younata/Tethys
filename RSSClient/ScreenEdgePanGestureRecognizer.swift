@@ -2,9 +2,9 @@ import UIKit
 
 public class ScreenEdgePanGestureRecognizer: UIPanGestureRecognizer {
     public enum ScreenEdgeStartDirection {
-        case Left;
-        case Right;
-        case None;
+        case Left
+        case Right
+        case None
     }
 
     public private(set) var startDirection: ScreenEdgeStartDirection = .None

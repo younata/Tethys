@@ -59,9 +59,12 @@ public class TagPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
         return self.existingSolutions.count
     }
 
-    public func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
-        let textColor = self.themeRepository?.textColor ?? UIColor.blackColor()
-        return NSAttributedString(string: self.existingSolutions[row], attributes: [NSForegroundColorAttributeName: textColor])
+    public func pickerView(pickerView: UIPickerView,
+        attributedTitleForRow row: Int,
+        forComponent component: Int) -> NSAttributedString? {
+            let textColor = self.themeRepository?.textColor ?? UIColor.blackColor()
+            return NSAttributedString(string: self.existingSolutions[row],
+                attributes: [NSForegroundColorAttributeName: textColor])
     }
 
     public func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {

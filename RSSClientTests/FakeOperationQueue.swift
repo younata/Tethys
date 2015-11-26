@@ -3,7 +3,7 @@ import Foundation
 // Because PivotalCoreKit doesn't support Carthage, and I don't want to put in that effort yet.
 
 class FakeOperationQueue : NSOperationQueue {
-    var runSynchronously : Bool = false
+    var runSynchronously: Bool = false
 
     func reset() {
         internalOperations = []
@@ -51,7 +51,7 @@ class FakeOperationQueue : NSOperationQueue {
         reset()
     }
 
-    var internalOperations : [NSOperation] = []
+    var internalOperations: [NSOperation] = []
 
     override var operationCount: Int {
         return internalOperations.count

@@ -235,9 +235,13 @@ import JavaScriptCore
         if !self.isQueryFeed {
             let sortByUpdated = NSSortDescriptor(key: "updatedAt", ascending: false)
             let sortByPublished = NSSortDescriptor(key: "published", ascending: false)
-            self.articlesArray = CoreDataBackedArray(entityName: "Article", predicate: NSPredicate(format: "feed == %@", feed), managedObjectContext: feed.managedObjectContext!, conversionFunction: {
-                return Article(article: $0 as! CoreDataArticle, feed: self)
-                }, sortDescriptors: [sortByUpdated, sortByPublished])
+            self.articlesArray = CoreDataBackedArray(entityName: "Article",
+                predicate: NSPredicate(format: "feed == %@", feed),
+                managedObjectContext: feed.managedObjectContext!,
+                conversionFunction: {
+                    return Article(article: $0 as! CoreDataArticle, feed: self)
+                },
+                sortDescriptors: [sortByUpdated, sortByPublished])
         }
 
         self.updated = false

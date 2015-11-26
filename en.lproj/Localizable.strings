@@ -2,9 +2,12 @@
 "NotificationHandler_LocalNotification_MarkRead_Title" = "New article in %@: %@";
 
 "SettingsViewController_Table_Header_Theme" = "Theme";
+"SettingsViewController_Table_Header_QuickActions" = "Quick Actions";
 "SettingsViewController_Table_Header_Advanced" = "Advanced";
 "SettingsViewController_Table_Header_Credits" = "Credits";
 "SettingsViewController_Title" = "Settings";
+"SettingsViewController_QuickActions_AddFirst" = "Add a Quick Action";
+"SettingsViewController_QuickActions_AddAdditional" = "Add a new Quick Action";
 "SettingsViewController_Advanced_EnableQueryFeeds" = "Enable Query Feeds";
 "SettingsViewController_Credits_MainDeveloper_Name" = "Rachel Brindle"; // My name
 "SettingsViewController_Credits_MainDeveloper_Detail" = "Developer";

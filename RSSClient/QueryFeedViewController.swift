@@ -5,7 +5,8 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
 
     public var feed: Feed? = nil {
         didSet {
-            self.navigationItem.title = self.feed?.title ?? NSLocalizedString("QueryFeedViewController_Title_New", comment: "")
+            let newTitle = NSLocalizedString("QueryFeedViewController_Title_New", comment: "")
+            self.navigationItem.title = self.feed?.title ?? newTitle
             if feed?.query == nil {
                 feed?.query = "function(article) {\n    return !article.read;\n}"
             }
@@ -171,11 +172,12 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
         commitEditingStyle _: UITableViewCellEditingStyle,
         forRowAtIndexPath _: NSIndexPath) {}
 
-    public func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-        if let section = FeedSections(rawValue: indexPath.section) {
-            return editActionsForSection(section, indexPath: indexPath)
-        }
-        return nil
+    public func tableView(tableView: UITableView,
+        editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+            if let section = FeedSections(rawValue: indexPath.section) {
+                return editActionsForSection(section, indexPath: indexPath)
+            }
+            return nil
     }
 
     public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -189,12 +191,16 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
 
     // MARK: - Private
 
+    // swiftlint:disable function_body_length
+    // swiftlint:disable line_length
     private func cellForSection(section: FeedSections, tableView: UITableView, indexPath: NSIndexPath) -> UITableViewCell {
-        switch (section) {
+        // swiftlint:enable line_length
+        switch section {
         case .Title:
             let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextFieldCell
             cell.textField.text = self.feedTitle
-            cell.textField.placeholder = NSLocalizedString("QueryFeedViewController_Cell_Title_Placeholder", comment: "")
+            let placeholder = NSLocalizedString("QueryFeedViewController_Cell_Title_Placeholder", comment: "")
+            cell.textField.placeholder = placeholder
             cell.themeRepository = self.themeRepository
             cell.onTextChange = {
                 self.feedTitle = $0 ?? ""
@@ -205,7 +211,8 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
             let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextFieldCell
             cell.textField.text = self.feedSummary
             cell.themeRepository = self.themeRepository
-            cell.textField.placeholder = NSLocalizedString("QueryFeedViewController_Cell_Summary_Placeholder", comment: "")
+            let placeholder = NSLocalizedString("QueryFeedViewController_Cell_Summary_Placeholder", comment: "")
+            cell.textField.placeholder = placeholder
             cell.onTextChange = {
                 self.feedSummary = $0 ?? ""
             }

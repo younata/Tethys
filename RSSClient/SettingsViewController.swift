@@ -40,15 +40,23 @@ public class SettingsViewController: UIViewController {
         return self.injector!.create(UrlOpener.self) as! UrlOpener
     }()
 
+    private lazy var quickActionRepository: QuickActionRepository = {
+        return self.injector!.create(QuickActionRepository.self) as! QuickActionRepository
+    }()
+
     private var oldTheme: ThemeRepository.Theme = .Default
 
     public override func viewDidLoad() {
         super.viewDidLoad()
 
         self.navigationItem.title = NSLocalizedString("SettingsViewController_Title", comment: "")
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Save, target: self, action: "didTapSave")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Save,
+            target: self,
+            action: "didTapSave")
         self.navigationItem.rightBarButtonItem?.enabled = false
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapDismiss")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel,
+            target: self,
+            action: "didTapDismiss")
 
         self.tableView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(self.tableView)
@@ -63,7 +71,8 @@ public class SettingsViewController: UIViewController {
 
         self.themeRepository.addSubscriber(self)
 
-        let selectedIndexPath = NSIndexPath(forRow: self.themeRepository.theme.rawValue, inSection: SettingsSection.Theme.rawValue)
+        let selectedIndexPath = NSIndexPath(forRow: self.themeRepository.theme.rawValue,
+            inSection: SettingsSection.Theme.rawValue)
         self.tableView.selectRowAtIndexPath(selectedIndexPath, animated: false, scrollPosition: .None)
 
         self.oldTheme = self.themeRepository.theme
@@ -83,7 +92,8 @@ public class SettingsViewController: UIViewController {
 
             let keyCommand = UIKeyCommand(input: "\(idx+1)", modifierFlags: .Command, action: "didHitChangeTheme:")
             if #available(iOS 9, *) {
-                keyCommand.discoverabilityTitle = String(NSString.localizedStringWithFormat(NSLocalizedString("SettingsViewController_Commands_Theme", comment: ""), theme.description))
+                let title = NSLocalizedString("SettingsViewController_Commands_Theme", comment: "")
+                keyCommand.discoverabilityTitle = String(NSString.localizedStringWithFormat(title, theme.description))
             }
             commands.append(keyCommand)
         }
@@ -124,11 +134,13 @@ extension SettingsViewController: ThemeRepositorySubscriber {
     public func didChangeTheme() {
         self.navigationController?.navigationBar.barStyle = self.themeRepository.barStyle
         self.view.backgroundColor = self.themeRepository.backgroundColor
+        // swiftlint:disable line_length
         self.tableView.backgroundColor = self.themeRepository.theme == .Default ? nil : self.themeRepository.backgroundColor
         for section in 0..<self.tableView.numberOfSections {
             let headerView = self.tableView.headerViewForSection(section)
             headerView?.textLabel?.textColor = self.themeRepository.theme == .Default ? nil : self.themeRepository.tintColor
         }
+        // swiftlint:enable line_length
     }
 }
 
@@ -141,7 +153,7 @@ extension SettingsViewController: UITableViewDataSource {
         guard let section = SettingsSection(rawValue: sectionNum) else {
             return 0
         }
-        switch (section) {
+        switch section {
         case .Theme:
             return 2
         case .Advanced:
@@ -165,7 +177,8 @@ extension SettingsViewController: UITableViewDataSource {
             cell.textLabel?.text = theme.description
             return cell
         case .Advanced:
-            let cell = tableView.dequeueReusableCellWithIdentifier("switch", forIndexPath: indexPath) as! SwitchTableViewCell
+            let cell = tableView.dequeueReusableCellWithIdentifier("switch",
+                forIndexPath: indexPath) as! SwitchTableViewCell
             cell.textLabel?.text = NSLocalizedString("SettingsViewController_Advanced_EnableQueryFeeds", comment: "")
             cell.themeRepository = self.themeRepository
             cell.onTapSwitch = {_ in }
@@ -228,7 +241,7 @@ extension SettingsViewController: UITableViewDelegate {
             }
             if #available(iOS 9.0, *) {
                 let viewController = SFSafariViewController(URL: url)
-                self.presentViewController(viewController, animated: true, completion: nil)
+                self.navigationController?.pushViewController(viewController, animated: true)
             } else {
                 self.urlOpener.openURL(url)
             }

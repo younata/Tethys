@@ -32,7 +32,7 @@ class FakeUserDefaults: NSUserDefaults {
         return self.internalDictionary[defaultName] as? [AnyObject]
     }
 
-    override func dictionaryForKey(defaultName: String) -> [String : AnyObject]? {
+    override func dictionaryForKey(defaultName: String) -> [String: AnyObject]? {
         return self.internalDictionary[defaultName] as? [String: AnyObject]
     }
 

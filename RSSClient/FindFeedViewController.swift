@@ -81,7 +81,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         func spacer() -> UIBarButtonItem {
             return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: "")
         }
-        if (self.lookForFeeds) {
+        if self.lookForFeeds {
             self.toolbarItems = [self.back, self.forward, spacer(), dismiss, spacer(), self.addFeedButton]
         } else {
             self.toolbarItems = [self.back, self.forward, spacer(), dismiss]
@@ -90,7 +90,9 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         self.navigationItem.titleView = self.navField
         self.navField.frame = CGRectMake(0, 0, self.view.bounds.size.width * 0.8, 32)
         self.navField.delegate = self
-        self.navField.attributedPlaceholder = NSAttributedString(string: NSLocalizedString("FindFeedViewController_URLBar_Placeholder", comment: ""), attributes: self.placeholderAttributes)
+        let urlPlaceholder = NSLocalizedString("FindFeedViewController_URLBar_Placeholder", comment: "")
+        self.navField.attributedPlaceholder = NSAttributedString(string: urlPlaceholder,
+            attributes: self.placeholderAttributes)
         self.navField.backgroundColor = UIColor(white: 0.8, alpha: 0.75)
         self.navField.layer.cornerRadius = 5
         self.navField.autocorrectionType = .No
@@ -112,10 +114,11 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         self.webContent.removeObserver(self, forKeyPath: "estimatedProgress")
     }
 
-    public override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
+    public override func viewWillTransitionToSize(size: CGSize,
+        withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+            super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
 
-        self.navField.frame = CGRectMake(0, 0, size.width * 0.8, 32)
+            self.navField.frame = CGRectMake(0, 0, size.width * 0.8, 32)
     }
 
     internal func dismiss() {
@@ -160,7 +163,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
     public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?,
         change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if (keyPath == "estimatedProgress" && object as? NSObject == self.webContent) {
+        if keyPath == "estimatedProgress" && object as? NSObject == self.webContent {
             self.loadingBar.progress = Float(self.webContent.estimatedProgress)
         }
     }
@@ -173,7 +176,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
     public func textFieldDidEndEditing(textField: UITextField) {
         var button: UIBarButtonItem? = nil
-        if (self.webContent.estimatedProgress >= 1.0) {
+        if self.webContent.estimatedProgress >= 1.0 {
             button = self.reload
         }
         self.navigationItem.setRightBarButtonItem(button, animated: true)
@@ -188,7 +191,9 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         if let text = textField.text, let url = NSURL(string: text) {
             self.self.webContent.loadRequest(NSURLRequest(URL: url))
         }
-        textField.attributedPlaceholder = NSAttributedString(string: NSLocalizedString("FindFeedViewController_URLBar_Loading", comment: ""), attributes: self.placeholderAttributes)
+        let urlLoading = NSLocalizedString("FindFeedViewController_URLBar_Loading", comment: "")
+        textField.attributedPlaceholder = NSAttributedString(string: urlLoading,
+            attributes: self.placeholderAttributes)
         textField.resignFirstResponder()
 
         return true
@@ -198,7 +203,8 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
     public func webView(webView: WKWebView, didFinishNavigation _: WKNavigation!) {
         self.loadingBar.hidden = true
-        self.navField.attributedPlaceholder = NSAttributedString(string: webView.title ?? "", attributes: self.placeholderAttributes)
+        self.navField.attributedPlaceholder = NSAttributedString(string: webView.title ?? "",
+            attributes: self.placeholderAttributes)
         self.forward.enabled = webView.canGoForward
         self.back.enabled = webView.canGoBack
         self.navigationItem.rightBarButtonItem = self.reload
@@ -225,7 +231,9 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         self.loadingBar.progress = 0
         self.loadingBar.hidden = false
         self.navField.text = ""
-        self.navField.attributedPlaceholder = NSAttributedString(string: NSLocalizedString("FindFeedViewController_URLBar_Loading", comment: ""), attributes: self.placeholderAttributes)
+        let urlLoading = NSLocalizedString("FindFeedViewController_URLBar_Loading", comment: "")
+        self.navField.attributedPlaceholder = NSAttributedString(string: urlLoading,
+            attributes: self.placeholderAttributes)
         self.addFeedButton.enabled = false
         if let url = webView.URL where lookForFeeds {
             self.urlSession?.dataTaskWithURL(url) {data, response, error in
@@ -244,14 +252,13 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
                     let shouldImport = NSLocalizedString("FindFeedViewController_FoundFeed_List_Subtitle", comment: "")
 
                     let alert = UIAlertController(title: detected, message: shouldImport, preferredStyle: .Alert)
-                    alert.addAction(UIAlertAction(title: doNotSave, style: .Cancel,
-                        handler: {_ in
+                    alert.addAction(UIAlertAction(title: doNotSave, style: .Cancel) {_ in
                             alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
-                    }))
-                    alert.addAction(UIAlertAction(title: save, style: .Default, handler: {_ in
+                    })
+                    alert.addAction(UIAlertAction(title: save, style: .Default) {_ in
                         alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
                         self.save(url.absoluteString, opml: true)
-                    }))
+                    })
                     self.mainQueue?.addOperationWithBlock {
                         self.presentViewController(alert, animated: true, completion: nil)
                     }

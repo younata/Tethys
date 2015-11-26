@@ -108,7 +108,10 @@ public class LocalImportViewController: UIViewController {
         if self.feeds.isEmpty && opmlIsEmptyOrHasOnlyRNews {
             self.view.addSubview(self.explanationLabel)
             self.explanationLabel.autoCenterInSuperview()
-            self.explanationLabel.autoMatchDimension(.Width, toDimension: .Width, ofView: self.view, withMultiplier: 0.75)
+            self.explanationLabel.autoMatchDimension(.Width,
+                toDimension: .Width,
+                ofView: self.view,
+                withMultiplier: 0.75)
         }
     }
 
@@ -122,7 +125,7 @@ public class LocalImportViewController: UIViewController {
 
     private func verifyIfFeedOrOPML(path: String) {
         if self.contentsOfDirectory.contains(path) {
-            return;
+            return
         }
 
         self.contentsOfDirectory.append(path)
@@ -190,7 +193,7 @@ extension LocalImportViewController: UITableViewDataSource {
     }
 
     public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch (section) {
+        switch section {
         case 0: return opmls.count
         case 1: return feeds.count
         default: return 0
@@ -205,11 +208,13 @@ extension LocalImportViewController: UITableViewDataSource {
         if indexPath.section == 0 {
             let (path, items) = opmls[indexPath.row]
             cell.textLabel?.text = NSString(string: path).lastPathComponent as String
-            cell.detailTextLabel?.text = NSString.localizedStringWithFormat(NSLocalizedString("LocalImportViewController_Cell_FeedList_FeedCount", comment: ""), items.count) as String
+            let feedCount = NSLocalizedString("LocalImportViewController_Cell_FeedList_FeedCount", comment: "")
+            cell.detailTextLabel?.text = NSString.localizedStringWithFormat(feedCount, items.count) as String
         } else if indexPath.section == 1 {
             let (path, item) = feeds[indexPath.row]
             cell.textLabel?.text = path
-            cell.detailTextLabel?.text = NSString.localizedStringWithFormat(NSLocalizedString("LocalImportViewController_Cell_Feed_ArticleCount", comment: ""), item.articles.count) as String
+            let articleCount = NSLocalizedString("LocalImportViewController_Cell_Feed_ArticleCount", comment: "")
+            cell.detailTextLabel?.text = NSString.localizedStringWithFormat(articleCount, item.articles.count) as String
         }
 
         (cell as? TableViewCell)?.themeRepository = self.themeRepository
@@ -218,9 +223,13 @@ extension LocalImportViewController: UITableViewDataSource {
     }
 
     public func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        switch (section) {
-        case 0: return self.opmls.isEmpty ? nil : NSLocalizedString("LocalImportViewController_TableHeader_OPMLs", comment: "")
-        case 1: return self.feeds.isEmpty ? nil : NSLocalizedString("LocalImportViewController_TableHeader_Feeds", comment: "")
+        switch section {
+        case 0:
+            if self.opmls.isEmpty { return nil }
+            return NSLocalizedString("LocalImportViewController_TableHeader_OPMLs", comment: "")
+        case 1:
+            if self.feeds.isEmpty { return nil }
+            return NSLocalizedString("LocalImportViewController_TableHeader_Feeds", comment: "")
         default: return nil
         }
     }

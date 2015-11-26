@@ -169,9 +169,7 @@ public class FeedsTableViewController: UIViewController {
         self.refreshView.endRefreshing()
     }
 
-    public override func canBecomeFirstResponder() -> Bool {
-        return true
-    }
+    public override func canBecomeFirstResponder() -> Bool { return true }
 
     public override var keyCommands: [UIKeyCommand]? {
         var commands = [
@@ -255,9 +253,7 @@ public class FeedsTableViewController: UIViewController {
                 return f1.displayTitle.lowercaseString < f2.displayTitle.lowercaseString
             }
 
-            if self.refreshView.isRefreshing {
-                self.refreshView.endRefreshing()
-            }
+            if self.refreshView.isRefreshing { self.refreshView.endRefreshing() }
 
             self.loadingView.removeFromSuperview()
             self.onboardingView.removeFromSuperview()
@@ -285,9 +281,7 @@ public class FeedsTableViewController: UIViewController {
     }
 
     internal func didTapAddFeed() {
-        if self.navigationController?.visibleViewController != self {
-            return
-        }
+        guard self.navigationController?.visibleViewController == self else { return }
 
         if self.dropDownMenu.isOpen {
             self.dropDownMenu.closeAnimated(true)
@@ -468,10 +462,6 @@ extension FeedsTableViewController: UIViewControllerPreviewingDelegate {
 }
 
 extension FeedsTableViewController: UITableViewDataSource {
-    public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
-    }
-
     public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return feeds.count
     }

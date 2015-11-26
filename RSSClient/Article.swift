@@ -168,7 +168,7 @@ import JavaScriptCore
         author = article.author ?? ""
         published = article.published ?? NSDate()
         updatedAt = article.updatedAt
-        identifier = article.objectID.URIRepresentation().absoluteString ?? ""
+        identifier = article.identifier ?? ""
         content = article.content ?? ""
         read = article.read
         self.feed = feed

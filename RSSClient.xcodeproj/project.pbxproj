@@ -88,6 +88,10 @@
 		89718F331AE0C9D6004C3CB4 /* Nimble.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89718F341AE0C9D6004C3CB4 /* Quick.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2F1AE0C9B4004C3CB4 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89718F361AE0D953004C3CB4 /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F271AE0C942004C3CB4 /* Ra.framework */; };
+		89735ABC1C0694C70032E09C /* UITraitCollection+rNewsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89735ABB1C0694C70032E09C /* UITraitCollection+rNewsTests.m */; };
+		89735ABE1C0698370032E09C /* QuickActionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89735ABD1C0698370032E09C /* QuickActionRepository.swift */; };
+		89735AC01C06DAA70032E09C /* FeedsListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89735ABF1C06DAA70032E09C /* FeedsListController.swift */; };
+		89735AC21C0771590032E09C /* FeedsListControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89735AC11C0771590032E09C /* FeedsListControllerSpec.swift */; };
 		897CD85C1A213F0900C97ECC /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89635F911A13C2E30052C248 /* MainMenu.xib */; };
 		897CD85E1A21C49000C97ECC /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897CD85D1A21C49000C97ECC /* FeedView.swift */; };
 		897F70FD1A3A4E7700ECE1A1 /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897F70FC1A3A4E7700ECE1A1 /* UnreadCounter.swift */; };
@@ -459,6 +463,11 @@
 		89718F271AE0C942004C3CB4 /* Ra.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Ra.framework; path = Carthage/Build/iOS/Ra.framework; sourceTree = SOURCE_ROOT; };
 		89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/iOS/Nimble.framework; sourceTree = SOURCE_ROOT; };
 		89718F2F1AE0C9B4004C3CB4 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/iOS/Quick.framework; sourceTree = SOURCE_ROOT; };
+		89735ABA1C0694C70032E09C /* UITraitCollection+rNewsTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITraitCollection+rNewsTests.h"; sourceTree = "<group>"; };
+		89735ABB1C0694C70032E09C /* UITraitCollection+rNewsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITraitCollection+rNewsTests.m"; sourceTree = "<group>"; };
+		89735ABD1C0698370032E09C /* QuickActionRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuickActionRepository.swift; sourceTree = "<group>"; };
+		89735ABF1C06DAA70032E09C /* FeedsListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsListController.swift; sourceTree = "<group>"; };
+		89735AC11C0771590032E09C /* FeedsListControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsListControllerSpec.swift; sourceTree = "<group>"; };
 		89744FB71A6970CA000AA7DE /* RSSClient 1.5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.5.xcdatamodel"; sourceTree = "<group>"; };
 		8978D4DB1B0533B600EDD6D0 /* Feed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Feed.swift; path = ../RSSClient/Feed.swift; sourceTree = "<group>"; };
 		8978D4DE1B0535EB00EDD6D0 /* Article.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Article.swift; path = ../RSSClient/Article.swift; sourceTree = "<group>"; };
@@ -935,6 +944,7 @@
 				898F6E111B129AB6000D343D /* ActivityIndicator.swift */,
 				89A3417B1B1435750000C60B /* Helpers.swift */,
 				89E2A33C1B6A856900A40D4E /* SettingsViewController.swift */,
+				89735ABF1C06DAA70032E09C /* FeedsListController.swift */,
 				89F98BA21BA079DE005C3CA8 /* Cells */,
 				8918D4DA1B8598D100DCDE0E /* ThemeRepository.swift */,
 				89F98BA51BA07DC6005C3CA8 /* SettingsRepository.swift */,
@@ -981,6 +991,7 @@
 				89F98BA91BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift */,
 				8997C7F81B250FD200972930 /* TextViewCellSpec.swift */,
 				8997C7FA1B25169E00972930 /* TextFieldCellSpec.swift */,
+				89735AC11C0771590032E09C /* FeedsListControllerSpec.swift */,
 				899C48181A9AC0F000F57B96 /* UI */,
 				898F670D1B0007F4004A7BE3 /* SpecInjectorModule.swift */,
 				AE4356071A7ABAD500A961B9 /* Mocks */,
@@ -1140,6 +1151,7 @@
 				89C204C31A7400D100C792D2 /* NotificationHandler.swift */,
 				89D970C21B392B0300ED84B8 /* LocalNotificationSource.swift */,
 				89D970BC1B3929A600ED84B8 /* BackgroundFetchHandler.swift */,
+				89735ABD1C0698370032E09C /* QuickActionRepository.swift */,
 			);
 			name = Application;
 			sourceTree = "<group>";
@@ -1176,6 +1188,8 @@
 				89F516561B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m */,
 				899823AF1B30BA7E00818755 /* NSUserActivity+rNewsTests.h */,
 				899823B01B30BA7E00818755 /* NSUserActivity+rNewsTests.m */,
+				89735ABA1C0694C70032E09C /* UITraitCollection+rNewsTests.h */,
+				89735ABB1C0694C70032E09C /* UITraitCollection+rNewsTests.m */,
 				89DFAA5D1B75CE65004CD9CA /* PCKMethodRedirector.h */,
 				89DFAA5E1B75CE9B004CD9CA /* UITableViewRowAction+Spec.h */,
 				89D970B91B35BF6400ED84B8 /* WKWebView+rNewsTests.h */,
@@ -1699,6 +1713,7 @@
 				89D970BD1B3929A600ED84B8 /* BackgroundFetchHandler.swift in Sources */,
 				894896EC1A16F1130030EB6E /* LocalImportViewController.swift in Sources */,
 				89F98BA61BA07DC6005C3CA8 /* SettingsRepository.swift in Sources */,
+				89735AC01C06DAA70032E09C /* FeedsListController.swift in Sources */,
 				89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */,
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
 				89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */,
@@ -1711,6 +1726,7 @@
 				898F6E121B129AB6000D343D /* ActivityIndicator.swift in Sources */,
 				89F83F341B4D6D33003F8F6C /* FeedFinder.swift in Sources */,
 				89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */,
+				89735ABE1C0698370032E09C /* QuickActionRepository.swift in Sources */,
 				89D970C31B392B0300ED84B8 /* LocalNotificationSource.swift in Sources */,
 				8918D4DB1B8598D100DCDE0E /* ThemeRepository.swift in Sources */,
 				89F98BA11BA079A3005C3CA8 /* SwitchTableViewCell.swift in Sources */,
@@ -1753,6 +1769,7 @@
 				89F517021B1C070C0005AB04 /* FeedViewControllerSpec.swift in Sources */,
 				898ECDE11B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift in Sources */,
 				89F98BAE1BA0E449005C3CA8 /* DocumentationViewControllerSpec.swift in Sources */,
+				89735ABC1C0694C70032E09C /* UITraitCollection+rNewsTests.m in Sources */,
 				89EA6C371B4B308F00456892 /* OPMLManagerMock.swift in Sources */,
 				899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */,
 				89D970BB1B35BF6500ED84B8 /* WKWebView+rNewsTests.m in Sources */,
@@ -1775,6 +1792,7 @@
 				89C204C71A740D8900C792D2 /* NotificationHandlerSpec.swift in Sources */,
 				8997C8531B2566A600972930 /* ArticleCellSpec.swift in Sources */,
 				8935F5E01B462B7A000FFD5D /* FakeURLSession.swift in Sources */,
+				89735AC21C0771590032E09C /* FeedsListControllerSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

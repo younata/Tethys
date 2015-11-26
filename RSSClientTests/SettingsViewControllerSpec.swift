@@ -1,6 +1,7 @@
 import Quick
 import Nimble
 import rNews
+import rNewsKit
 import Ra
 import SafariServices
 
@@ -34,6 +35,7 @@ class SettingsViewControllerSpec: QuickSpec {
         var subject: SettingsViewController! = nil
         var navigationController: UINavigationController! = nil
         var themeRepository: ThemeRepository! = nil
+        var dataReader: FakeDataReadWriter! = nil
         var settingsRepository: SettingsRepository! = nil
         var urlOpener: FakeUrlOpener! = nil
         var fakeQuickActionRepository: FakeQuickActionRepository! = nil
@@ -52,6 +54,9 @@ class SettingsViewControllerSpec: QuickSpec {
 
             urlOpener = FakeUrlOpener()
             injector.bind(UrlOpener.self, to: urlOpener)
+
+            dataReader = FakeDataReadWriter()
+            injector.bind(DataRetriever.self, to: dataReader)
 
             subject = injector.create(SettingsViewController.self) as! SettingsViewController
 
@@ -237,7 +242,7 @@ class SettingsViewControllerSpec: QuickSpec {
             }
         }
 
-        fdescribe("the tableView") {
+        describe("the tableView") {
             var delegate: UITableViewDelegate! = nil
             var dataSource: UITableViewDataSource! = nil
 
@@ -401,9 +406,27 @@ class SettingsViewControllerSpec: QuickSpec {
                         it("should bring up a dialog to add a new quick action when the add quick action cell is tapped") {
                             let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
 
+                            let feeds = [
+                                Feed(title: "a", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
+                                Feed(title: "b", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                            ]
+                            dataReader.feedsList = feeds
+
                             subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
 
-                            expect(subject.presentedViewController).toNot(beNil())
+                            expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
+
+                            if let feedsList = navigationController.visibleViewController as? FeedsListController {
+                                expect(feedsList.navigationItem.title).to(equal("Add a Quick Action"))
+                                expect(feedsList.feeds).to(equal(feeds))
+                                let feed = feeds[0]
+                                feedsList.tapFeed?(feed, 0)
+                                expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
+                                expect(fakeQuickActionRepository.quickActions.count).to(equal(1))
+                                if let quickAction = fakeQuickActionRepository.quickActions.first {
+                                    expect(quickAction.localizedTitle).to(equal(feed.title))
+                                }
+                            }
                         }
 
                         it("should not have any edit actions") {
@@ -415,7 +438,14 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     context("when there are one or two existing quick actions") {
+                        let feedA = Feed(title: "a", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                        let feedB = Feed(title: "b", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+
+                        let feeds = [feedA, feedB]
+
                         beforeEach {
+                            dataReader.feedsList = feeds
+
                             fakeQuickActionRepository.quickActions = [UIApplicationShortcutItem(type: "a", localizedTitle: "a")]
                             subject.tableView.reloadData()
                         }
@@ -439,7 +469,19 @@ class SettingsViewControllerSpec: QuickSpec {
                             it("should bring up a dialog to change the feed when one of the existing quick action cells is tapped") {
                                 subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
 
-                                expect(subject.presentedViewController).toNot(beNil())
+                                expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
+
+                                if let feedsList = navigationController.visibleViewController as? FeedsListController {
+                                    expect(feedsList.navigationItem.title).to(equal(feedA.title))
+                                    expect(feedsList.feeds).to(equal([feedB]))
+                                    let feed = feeds[1]
+                                    feedsList.tapFeed?(feed, 0)
+                                    expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
+                                    expect(fakeQuickActionRepository.quickActions.count).to(equal(1))
+                                    if let quickAction = fakeQuickActionRepository.quickActions.first {
+                                        expect(quickAction.localizedTitle).to(equal(feed.title))
+                                    }
+                                }
                             }
 
                             it("should have one edit action, which deletes the quick action when selected") {
@@ -464,7 +506,19 @@ class SettingsViewControllerSpec: QuickSpec {
                             it("should bring up a dialog to add a new quick action when the add quick action cell is tapped") {
                                 subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
 
-                                expect(subject.presentedViewController).toNot(beNil())
+                                expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
+
+                                if let feedsList = navigationController.visibleViewController as? FeedsListController {
+                                    expect(feedsList.navigationItem.title).to(equal("Add a new Quick Action"))
+                                    expect(feedsList.feeds).to(equal([feedB]))
+                                    let feed = feeds[1]
+                                    feedsList.tapFeed?(feed, 0)
+                                    expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
+                                    expect(fakeQuickActionRepository.quickActions.count).to(equal(2))
+                                    if let quickAction = fakeQuickActionRepository.quickActions.last {
+                                        expect(quickAction.localizedTitle).to(equal(feed.title))
+                                    }
+                                }
                             }
 
                             it("should not have any edit actions") {
@@ -480,8 +534,17 @@ class SettingsViewControllerSpec: QuickSpec {
                         let secondShortcut = UIApplicationShortcutItem(type: "b", localizedTitle: "b")
                         let thirdShortcut = UIApplicationShortcutItem(type: "c", localizedTitle: "c")
 
+                        let feedA = Feed(title: "a", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                        let feedB = Feed(title: "b", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                        let feedC = Feed(title: "c", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                        let feedD = Feed(title: "d", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+
+                        let feeds = [feedA, feedB, feedC, feedD]
+
                         beforeEach {
                             fakeQuickActionRepository.quickActions = [firstShortcut, secondShortcut, thirdShortcut]
+
+                            dataReader.feedsList = feeds
                             subject.tableView.reloadData()
                         }
 
@@ -506,7 +569,19 @@ class SettingsViewControllerSpec: QuickSpec {
 
                             subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
 
-                            expect(subject.presentedViewController).toNot(beNil())
+                            expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
+
+                            if let feedsList = navigationController.visibleViewController as? FeedsListController {
+                                expect(feedsList.navigationItem.title).to(equal(feedA.title))
+                                expect(feedsList.feeds).to(equal([feedD]))
+                                let feed = feeds[3]
+                                feedsList.tapFeed?(feed, 0)
+                                expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
+                                expect(fakeQuickActionRepository.quickActions.count).to(equal(3))
+                                if let quickAction = fakeQuickActionRepository.quickActions.first {
+                                    expect(quickAction.localizedTitle).to(equal(feed.title))
+                                }
+                            }
                         }
 
                         it("each should have one edit action, which deletes the quick action when selected") {

@@ -134,6 +134,36 @@ class FeedsTableViewControllerSpec: QuickSpec {
             }
         }
 
+        context("when there is just the All Unread feed to display") {
+            beforeEach {
+                feeds = [
+                    Feed(title: "All Unread", url: nil, summary: "All unread articles", query: "function(article) {\n    return !article.read;\n}", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                ]
+
+                dataReadWriter.feedsList = feeds
+
+                expect(subject.view).toNot(beNil())
+                subject.viewWillAppear(false)
+            }
+
+            it("should show the onboarding view") {
+                expect(subject.onboardingView.superview).toNot(beNil())
+            }
+
+            context("when feeds are added") {
+                beforeEach {
+                    feeds = [feed1, feed2]
+
+                    dataReadWriter.feedsList = feeds
+                    subject.searchBar.delegate?.searchBar?(subject.searchBar, textDidChange: "") // just to trigger a reload
+                }
+
+                it("should not show the onboarding view") {
+                    expect(subject.onboardingView.superview).to(beNil())
+                }
+            }
+        }
+
         context("when there are feeds to display") {
             beforeEach {
                 feeds = [feed1, feed2]

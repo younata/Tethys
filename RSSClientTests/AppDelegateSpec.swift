@@ -64,15 +64,43 @@ class AppDelegateSpec: QuickSpec {
         }
         
         describe("-application:didFinishLaunchingWithOptions:") {
-            beforeEach {
+            it("should on first launch add a query feed for all unread articles") {
+                let userDefaults = NSUserDefaults.standardUserDefaults()
+                userDefaults.removeObjectForKey("firstLaunch")
+
                 subject.application(application, didFinishLaunchingWithOptions: ["test": true])
+
+                expect(dataReadWriter.didCreateFeed).to(beTruthy())
+
+                let feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+
+                dataReadWriter.newFeedCallback(feed)
+
+                expect(feed.title).to(equal("All Unread"))
+                expect(feed.summary).to(equal("All unread articles"))
+                expect(feed.query).to(equal("function(article) {\n    return !article.read;\n}"))
+                expect(userDefaults.boolForKey("firstLaunch")).to(beTruthy())
+
+            }
+
+            it("should not add a query feed on any subsequent launches") {
+                let userDefaults = NSUserDefaults.standardUserDefaults()
+                userDefaults.setBool(true, forKey: "firstLaunch")
+
+                subject.application(application, didFinishLaunchingWithOptions: ["test": true])
+
+                expect(dataReadWriter.didCreateFeed).to(beFalsy())
             }
 
             it("should enable notifications") {
+                subject.application(application, didFinishLaunchingWithOptions: ["test": true])
+
                 expect(notificationHandler.didEnableNotifications).to(beTruthy())
             }
 
             it("should add the UIApplication object to the dataWriter's subscribers") {
+                subject.application(application, didFinishLaunchingWithOptions: ["test": true])
+
                 var applicationInSubscribers = false
                 for subscriber in dataReadWriter.subscribers.allObjects {
                     if subscriber is UIApplication {
@@ -87,6 +115,8 @@ class AppDelegateSpec: QuickSpec {
                 var splitViewController: UISplitViewController! = nil
                 
                 beforeEach {
+                    subject.application(application, didFinishLaunchingWithOptions: ["test": true])
+
                     splitViewController = subject.window!.rootViewController as! UISplitViewController
                 }
 

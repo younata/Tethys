@@ -257,7 +257,10 @@ public class FeedsTableViewController: UIViewController {
 
             self.loadingView.removeFromSuperview()
             self.onboardingView.removeFromSuperview()
-            if sortedFeeds.isEmpty && (tag == nil || tag?.isEmpty == true) {
+            let filteredFeeds = sortedFeeds.filter {
+                return $0.title != NSLocalizedString("AppDelegate_UnreadFeed_Title", comment: "")
+            }
+            if filteredFeeds.isEmpty && (tag == nil || tag?.isEmpty == true) {
                 self.view.addSubview(self.onboardingView)
                 self.onboardingView.autoCenterInSuperview()
                 self.onboardingView.autoMatchDimension(.Width,

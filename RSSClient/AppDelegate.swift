@@ -83,6 +83,15 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
             if let dataWriter = self.anInjector.create(DataWriter.self) as? DataWriter {
                 dataWriter.addSubscriber(application)
+                let userDefaults = NSUserDefaults.standardUserDefaults()
+                if !userDefaults.boolForKey("firstLaunch") {
+                    dataWriter.newFeed { feed in
+                        feed.title = NSLocalizedString("AppDelegate_UnreadFeed_Title", comment: "")
+                        feed.summary = NSLocalizedString("AppDelegate_UnreadFeed_Summary", comment: "")
+                        feed.query = "function(article) {\n    return !article.read;\n}"
+                    }
+                    userDefaults.setBool(true, forKey: "firstLaunch")
+                }
             }
 
             self.notificationHandler?.enableNotifications(application)

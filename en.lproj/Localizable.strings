@@ -84,12 +84,14 @@
 "ArticleViewController_Command_ToggleViewContentLink" = "Toggle View Content/Link";
 "ArticleViewController_Command_OpenShareSheet" = "Open Share Sheet";
 
+"AppDelegate_UnreadFeed_Title" = "All Unread";
+"AppDelegate_UnreadFeed_Summary" = "All unread articles";
+
 
 "Generic_Dismiss" = "Dismiss";
 "Generic_Save" = "Save";
 "Generic_Delete" = "Delete";
 "Generic_Edit" = "Edit";
 
-/* No comment provided by engineer. */
 "%ld enclosures" = "%ld enclosures";
 

@@ -960,7 +960,9 @@ class FeedRepositorySpec: QuickSpec {
                         }
 
                         it("should call the completion handler to let the caller know of an error updating the feed") {
-                            expect(callbackErrors).to(equal([error]))
+                            let expectedError = NSError(domain: "", code: 0, userInfo: ["feedTitle": "a"])
+                            expect(callbackErrors).to(equal([expectedError]))
+                            expect(callbackErrors.first?.userInfo["feedTitle"] as? String).to(equal("a"))
                         }
                     }
 
@@ -974,6 +976,7 @@ class FeedRepositorySpec: QuickSpec {
                         it("should call the completion handler to let the caller know of an error updating the feeds") {
                             expect(callbackErrors.first?.domain).to(equal("com.rachelbrindle.rssclient.server"))
                             expect(callbackErrors.first?.code).to(equal(400))
+                            expect(callbackErrors.first?.userInfo["feedTitle"] as? String).to(equal("a"))
                         }
 
                         it("should increment the remainingWait of the feed") {
@@ -991,6 +994,7 @@ class FeedRepositorySpec: QuickSpec {
 
                         it("should call the completion handler to let the caller know of an error updating the feeds") {
                             expect(callbackErrors.first?.domain).to(equal("com.rachelbrindle.rssclient.unknown"))
+                            expect(callbackErrors.first?.userInfo["feedTitle"] as? String).to(equal("a"))
                         }
                     }
                 }

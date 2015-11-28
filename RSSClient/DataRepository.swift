@@ -591,7 +591,10 @@ internal class DataRepository: DataRetriever, DataWriter {
                         feed.remainingWait++
                         self.synchronousSaveFeed(feed)
                     }
-                    errors.append(err)
+                    var userInfo = err.userInfo
+                    userInfo["feedTitle"] = feed.title
+                    let modifiedError = NSError(domain: err.domain, code: err.code, userInfo: userInfo)
+                    errors.append(modifiedError)
                 } else if let item = muonFeed {
                     self.updateFeed(feed, muonFeed: item)
                     self.updateFeedImage(feed, muonFeed: item)

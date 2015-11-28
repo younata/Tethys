@@ -5,10 +5,10 @@ import rNewsKit
 import Ra
 import SafariServices
 
-private class FakeUrlOpener: UrlOpener {
+internal class FakeUrlOpener: UrlOpener {
 
-    private var url: NSURL? = nil
-    private func openURL(url: NSURL) -> Bool {
+    internal var url: NSURL? = nil
+    internal func openURL(url: NSURL) -> Bool {
         self.url = url
         return true
     }

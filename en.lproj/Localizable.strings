@@ -81,7 +81,7 @@
 "ArticleViewController_Command_ViewPreviousArticle" = "Previous Article";
 "ArticleViewController_Command_ViewNextArticle" = "Next Article";
 "ArticleViewController_Command_ToggleRead" = "Toggle Read";
-"ArticleViewController_Command_ToggleViewContentLink" = "Toggle View Content/Link";
+"ArticleViewController_Command_OpenInWebView" = "Open Article in WebView";
 "ArticleViewController_Command_OpenShareSheet" = "Open Share Sheet";
 
 "AppDelegate_UnreadFeed_Title" = "All Unread";

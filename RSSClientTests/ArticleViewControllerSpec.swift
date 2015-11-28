@@ -3,7 +3,7 @@ import Nimble
 import Ra
 import rNews
 import TOBrowserActivityKit
-import WebKit
+import SafariServices
 import rNewsKit
 
 class ArticleViewControllerSpec: QuickSpec {
@@ -13,6 +13,7 @@ class ArticleViewControllerSpec: QuickSpec {
         var navigationController: UINavigationController! = nil
         var dataWriter: FakeDataReadWriter! = nil
         var themeRepository: FakeThemeRepository! = nil
+        var urlOpener: FakeUrlOpener! = nil
 
         beforeEach {
             injector = Injector()
@@ -22,6 +23,9 @@ class ArticleViewControllerSpec: QuickSpec {
 
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, to: themeRepository)
+
+            urlOpener = FakeUrlOpener()
+            injector.bind(UrlOpener.self, to: urlOpener)
 
             subject = injector.create(ArticleViewController.self) as! ArticleViewController
 
@@ -93,7 +97,7 @@ class ArticleViewControllerSpec: QuickSpec {
                     ]
                     let expectedDiscoverabilityTitles = [
                         "Toggle Read",
-                        "Toggle View Content/Link",
+                        "Open Article in WebView",
                         "Open Share Sheet",
                     ]
 
@@ -118,7 +122,7 @@ class ArticleViewControllerSpec: QuickSpec {
                     let expectedDiscoverabilityTitles = [
                         "Next Article",
                         "Toggle Read",
-                        "Toggle View Content/Link",
+                        "Open Article in WebView",
                         "Open Share Sheet",
                     ]
 
@@ -143,7 +147,7 @@ class ArticleViewControllerSpec: QuickSpec {
                     let expectedDiscoverabilityTitles = [
                         "Previous Article",
                         "Toggle Read",
-                        "Toggle View Content/Link",
+                        "Open Article in WebView",
                         "Open Share Sheet",
                     ]
 
@@ -195,10 +199,10 @@ class ArticleViewControllerSpec: QuickSpec {
                         "Previous Article",
                         "Next Article",
                         "Toggle Read",
-                        "Toggle View Content/Link",
+                        "Open Article in WebView",
                         "Open Share Sheet",
                     ]
-
+                    
                     hasKindsOfKeyCommands(expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
                 }
             }
@@ -220,68 +224,22 @@ class ArticleViewControllerSpec: QuickSpec {
             let article = Article(title: "article", link: NSURL(string: "https://example.com/article"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, feed: nil, flags: [], enclosures: [])
 
             beforeEach {
-                subject.article = article
+                subject.setArticle(article)
+
+                let activityType = "com.rachelbrindle.rssclient.article"
+                let userActivity = NSUserActivity(activityType: activityType)
+                userActivity.title = NSLocalizedString("Reading Article", comment: "")
+
+                userActivity.userInfo = [
+                    "feed": "",
+                    "article": ""
+                ]
+
+                subject.restoreUserActivityState(userActivity)
             }
 
-            context("when we were showing the content") {
-                beforeEach {
-                    let activityType = "com.rachelbrindle.rssclient.article"
-                    let userActivity = NSUserActivity(activityType: activityType)
-                    userActivity.title = NSLocalizedString("Reading Article", comment: "")
-
-                    userActivity.userInfo = [
-                        "feed": "",
-                        "article": "",
-                        "showingContent": true
-                    ]
-
-                    subject.restoreUserActivityState(userActivity)
-                }
-
-                it("should show the content") {
-                    expect(subject.toggleContentButton.title).to(equal("Link"))
-                }
-            }
-
-            context("when we were showing a link") {
-                beforeEach {
-                    let activityType = "com.rachelbrindle.rssclient.article"
-                    let userActivity = NSUserActivity(activityType: activityType)
-                    userActivity.title = NSLocalizedString("Reading Article", comment: "")
-
-                    userActivity.userInfo = [
-                        "feed": "",
-                        "article": "",
-                        "showingContent": false
-                    ]
-
-                    subject.restoreUserActivityState(userActivity)
-                }
-
-                it("should load the article's link") {
-                    expect(subject.content.lastRequestLoaded?.URL).to(equal(NSURL(string: "https://example.com/article")))
-                }
-            }
-
-            context("when we had a webpageURL") {
-                beforeEach {
-                    let activityType = "com.rachelbrindle.rssclient.article"
-                    let userActivity = NSUserActivity(activityType: activityType)
-                    userActivity.title = NSLocalizedString("Reading Article", comment: "")
-
-                    userActivity.userInfo = [
-                        "feed": "",
-                        "article": "",
-                        "showingContent": true
-                    ]
-                    userActivity.webpageURL = NSURL(string: "http://example.com/resumeURL")
-
-                    subject.restoreUserActivityState(userActivity)
-                }
-
-                it("should load the webpage") {
-                    expect(subject.content.lastRequestLoaded?.URL).to(equal(NSURL(string: "http://example.com/resumeURL")))
-                }
+            it("should show the content") {
+                expect(subject.content.loadedHTMLString()).to(contain(article.content))
             }
         }
 
@@ -300,6 +258,27 @@ class ArticleViewControllerSpec: QuickSpec {
                 expect(dataWriter.lastArticleMarkedRead).to(equal(article))
             }
 
+            it("should include the share button in the toolbar, and the open in safari button only if we're on iOS 9") {
+                expect(subject.toolbarItems?.contains(subject.shareButton)).to(beTruthy())
+                if #available(iOS 9, *) {
+                    expect(subject.toolbarItems?.contains(subject.openInSafariButton)).to(beTruthy())
+                } else {
+                    expect(subject.toolbarItems?.contains(subject.openInSafariButton)).to(equal(false))
+                }
+            }
+
+            it("should exclude the open in safari button if the article has no associated link") {
+                let article2 = Article(title: "article2", link: nil, summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "<h1>Hello World</h1>", read: false, feed: nil, flags: ["a"], enclosures: [])
+                let feed2 = Feed(title: "feed2", url: NSURL(string: "https://example.com"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
+                article2.feed = feed2
+                feed2.addArticle(article2)
+
+                subject.setArticle(article2)
+
+                expect(subject.toolbarItems?.contains(subject.shareButton)).to(beTruthy())
+                expect(subject.toolbarItems?.contains(subject.openInSafariButton)).to(equal(false))
+            }
+
             it("should update the user activity") {
                 expect(subject.userActivity).toNot(beNil())
                 if let activity = subject.userActivity {
@@ -307,10 +286,9 @@ class ArticleViewControllerSpec: QuickSpec {
 
                     expect(activity.userInfo).toNot(beNil())
                     if let userInfo = activity.userInfo {
-                        expect(userInfo.keys.count).to(equal(3))
+                        expect(userInfo.keys.count).to(equal(2))
                         expect(userInfo["feed"] as? String).to(equal("feed"))
                         expect(userInfo["article"] as? String).to(equal(""))
-                        expect(userInfo["showingContent"] as? Bool).to(beTruthy())
                     }
 
                     expect(activity.webpageURL).to(equal(article.link))
@@ -342,10 +320,9 @@ class ArticleViewControllerSpec: QuickSpec {
                     if let activity = subject.userActivity {
                         expect(activity.userInfo).toNot(beNil())
                         if let userInfo = activity.userInfo {
-                            expect(userInfo.keys.count).to(equal(3))
+                            expect(userInfo.keys.count).to(equal(2))
                             expect(userInfo["feed"] as? String).to(equal("feed"))
                             expect(userInfo["article"] as? String).to(equal(""))
-                            expect(userInfo["showingContent"] as? Bool).to(beTruthy())
                         }
                     }
                 }
@@ -353,7 +330,6 @@ class ArticleViewControllerSpec: QuickSpec {
 
             describe("tapping the share button") {
                 beforeEach {
-                    subject.content.currentURL = feed.url
                     subject.shareButton.tap()
                 }
 
@@ -371,123 +347,25 @@ class ArticleViewControllerSpec: QuickSpec {
                     }
                 }
             }
+            
+            it("should open the article in an SFSafariViewController if the open in safari button is tapped") {
+                subject.openInSafariButton.tap()
 
-            it("should set the the content/link to content") {
-                expect(subject.toggleContentButton.title).to(equal("Link"))
-            }
-
-            describe("tapping content/link button") {
-                beforeEach {
-                    subject.toggleContentButton.tap()
-                }
-
-                it("should show the link") {
-                    expect(subject.content.lastRequestLoaded?.URL).to(equal(article.link))
-                }
-
-                it("should update it's title") {
-                    expect(subject.toggleContentButton.title).to(equal("Content"))
-                }
-
-                it("should update the userActivity") {
-                    if let activity = subject.userActivity, let userInfo = activity.userInfo {
-                        expect(userInfo["showingContent"] as? Bool).to(beFalsy())
-                        expect(activity.webpageURL).to(equal(article.link))
-                    }
-                }
-
-                describe("tapping the share button") {
-                    beforeEach {
-                        subject.shareButton.tap()
-                    }
-
-                    it("should bring up an activity view controller") {
-                        expect(subject.presentedViewController).to(beAnInstanceOf(UIActivityViewController.self))
-                        if let activityViewController = subject.presentedViewController as? UIActivityViewController {
-                            expect(activityViewController.activityItems().count).to(equal(1))
-                            expect(activityViewController.activityItems().first as? NSURL).to(equal(subject.content.lastRequestLoaded?.URL))
-
-                            expect(activityViewController.applicationActivities() as? [NSObject]).toNot(beNil())
-                            if let activities = activityViewController.applicationActivities() as? [NSObject] {
-                                expect(activities.first).to(beAnInstanceOf(TOActivitySafari.self))
-                                expect(activities.last).to(beAnInstanceOf(TOActivityChrome.self))
-                            }
-                        }
-                    }
-                }
-
-                describe("tapping it again") {
-                    beforeEach {
-                        subject.toggleContentButton.tap()
-                    }
-
-                    it("should show the content again") {
-                        expect(subject.content.URL).to(beNil())
-                    }
-
-                    it("should update it's title") {
-                        expect(subject.toggleContentButton.title).to(equal("Link"))
-                    }
-
-                    it("should update the userActivity") {
-                        if let activity = subject.userActivity, let userInfo = activity.userInfo {
-                            expect(userInfo["showingContent"] as? Bool).to(beTruthy())
-                            expect(activity.webpageURL).to(equal(article.link))
-                        }
-                    }
+                if #available(iOS 9, *) {
+                    expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
+                } else {
+                    expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
                 }
             }
 
-            describe("loading article content") {
-                var webView: WKWebView! = nil
-
-                beforeEach {
-                    webView = subject.content
-                }
-
-                describe("begining to navigate") {
-                    beforeEach {
-                        webView.navigationDelegate?.webView?(webView, didStartProvisionalNavigation: nil)
-                    }
-
-                    it("should show a progress bar with 0 progress") {
-                        expect(subject.loadingBar.progress).to(equal(0))
-                        expect(subject.loadingBar.hidden).to(beFalsy())
-                    }
-
-                    context("successfully navigating") {
-                        beforeEach {
-                            webView.currentURL = NSURL(string: "https://example.com/link")
-                            webView.navigationDelegate?.webView?(webView, didFinishNavigation: nil)
-                        }
-
-                        it("should hide the loadingBar") {
-                            expect(subject.loadingBar.hidden).to(beTruthy())
-                        }
-
-                        it("should update the userActivity") {
-                            if let activity = subject.userActivity {
-                                expect(activity.webpageURL).to(equal(webView.currentURL))
-                            }
-                        }
-
-                        it("should enable the forward/back if it can") {
-                            if let items = subject.navigationItem.rightBarButtonItems, forward = items.first, back = items.last {
-                                expect(forward.enabled).to(equal(webView.canGoForward))
-                                expect(back.enabled).to(equal(webView.canGoBack))
-                            }
-                        }
-                    }
-
-                    context("failing to navigate") {
-                        beforeEach {
-                            webView.navigationDelegate?.webView?(webView, didFailNavigation: nil, withError: NSError(domain: "", code: 0, userInfo: [:]))
-                        }
-
-                        it("should hide the loadingBar") {
-                            expect(subject.loadingBar.hidden).to(beTruthy())
-                        }
-                    }
+            it("should open any link tapped in system safari (iOS <9) or an SFSafariViewController (iOS 9+)") {
+                let url = NSURL(string: "https://google.com")!
+                let shouldInteract = subject.content.delegate?.webView?(subject.content, shouldStartLoadWithRequest: NSURLRequest(URL: url), navigationType: .LinkClicked)
+                expect(shouldInteract).to(beFalsy())
+                if #available(iOS 9, *) {
+                    expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
+                } else {
+                    expect(urlOpener.url).to(equal(url))
                 }
             }
         }

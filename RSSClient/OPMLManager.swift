@@ -1,5 +1,6 @@
 import Foundation
 import Ra
+import Lepton
 
 public class OPMLManager: Injectable {
 
@@ -19,7 +20,7 @@ public class OPMLManager: Injectable {
             return
         }
         dataRepository.feeds {existingFeeds in
-            let feedAlreadyExists: (OPMLItem) -> (Bool) = {item in
+            let feedAlreadyExists: (Lepton.Item) -> (Bool) = {item in
                 return existingFeeds.filter({
                     let titleMatches = item.title == $0.title
                     let queryMatches = item.query == $0.query
@@ -35,7 +36,7 @@ public class OPMLManager: Injectable {
             }
             do {
                 let text = try String(contentsOfURL: opml, encoding: NSUTF8StringEncoding)
-                let parser = OPMLParser(text: text)
+                let parser = Lepton.Parser(text: text)
                 parser.success {items in
                     var feeds : [Feed] = []
 

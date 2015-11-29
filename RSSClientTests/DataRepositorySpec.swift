@@ -458,7 +458,7 @@ class FeedRepositorySpec: QuickSpec {
                 beforeEach {
                     let feed = Feed(feed: feed1)
 
-                    let bundle = NSBundle(forClass: OPMLParserSpec.self)
+                    let bundle = NSBundle(forClass: self.classForCoder)
                     let imageData = NSData(contentsOfURL: bundle.URLForResource("test", withExtension: "jpg")!)
                     image = Image(data: imageData!)
                     feed.image = image
@@ -627,7 +627,7 @@ class FeedRepositorySpec: QuickSpec {
                 context("when the network request succeeds") {
                     beforeEach {
                         let urlResponse = NSHTTPURLResponse(URL: NSURL(string: "https://example.com/feed1.feed")!, statusCode: 200, HTTPVersion: nil, headerFields: [:])
-                        let bundle = NSBundle(forClass: OPMLParserSpec.self)
+                        let bundle = NSBundle(forClass: self.classForCoder)
                         let data = NSData(contentsOfFile: bundle.pathForResource("feed2", ofType: "rss")!)
                         backgroundQueue.runSynchronously = false
                         urlSession.lastCompletionHandler(data, urlResponse, nil)
@@ -710,14 +710,15 @@ class FeedRepositorySpec: QuickSpec {
                 }
 
                 context("when the network call fails due to a network error") {
-                    let error = NSError(domain: "", code: 0, userInfo: [:])
                     beforeEach {
                         mainQueue.runSynchronously = true
+                        let error = NSError(domain: "", code: 0, userInfo: [:])
                         urlSession.lastCompletionHandler(nil, nil, error)
                     }
 
                     it("should call the completion handler to let the caller know of an error updating the feed") {
-                        expect(callbackError).to(equal(error))
+                        let expectedError = NSError(domain: "", code: 0, userInfo: ["feedTitle": "a"])
+                        expect(callbackError).to(equal(expectedError))
                     }
                 }
 
@@ -850,7 +851,7 @@ class FeedRepositorySpec: QuickSpec {
                         context("when the original network call finishes") {
                             beforeEach {
                                 let urlResponse = NSHTTPURLResponse(URL: NSURL(string: "https://example.com/feed1.feed")!, statusCode: 200, HTTPVersion: nil, headerFields: [:])
-                                let bundle = NSBundle(forClass: OPMLParserSpec.self)
+                                let bundle = NSBundle(forClass: self.classForCoder)
                                 let data = NSData(contentsOfFile: bundle.pathForResource("feed2", ofType: "rss")!)
                                 mainQueue.runSynchronously = true
                                 urlSession.lastCompletionHandler(data, urlResponse, nil)
@@ -867,7 +868,7 @@ class FeedRepositorySpec: QuickSpec {
                     context("when the network request succeeds") {
                         beforeEach {
                             let urlResponse = NSHTTPURLResponse(URL: NSURL(string: "https://example.com/feed1.feed")!, statusCode: 200, HTTPVersion: nil, headerFields: [:])
-                            let bundle = NSBundle(forClass: OPMLParserSpec.self)
+                            let bundle = NSBundle(forClass: self.classForCoder)
                             let data = NSData(contentsOfFile: bundle.pathForResource("feed2", ofType: "rss")!)
                             backgroundQueue.runSynchronously = false
                             urlSession.lastCompletionHandler(data, urlResponse, nil)

@@ -181,7 +181,6 @@ import JavaScriptCore
 
         updated = false
     }
-
     public func addFlag(flag: String) {
         if !self.flags.contains(flag) {
             self.flags.append(flag)

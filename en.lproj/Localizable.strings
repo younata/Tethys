@@ -70,7 +70,6 @@
 "ArticleListController_Cell_EditAction_MarkUnread" = "Mark\nUnread";
 "ArticleListController_Search" = "Search Articles";
 
-"ArticleViewController_UserActivity_Title" = "Reading Article";
 "ArticleViewController_TabBar_ViewContent" = "Content";
 "ArticleViewController_TabBar_ViewLink" = "Link";
 "ArticleViewController_Command_ViewPreviousArticle" = "Previous Article";

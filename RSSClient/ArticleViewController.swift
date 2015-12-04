@@ -18,12 +18,26 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
                 if self.userActivity == nil {
                     let activityType = "com.rachelbrindle.rssclient.article"
                     self.userActivity = NSUserActivity(activityType: activityType)
-                    self.userActivity?.title = NSLocalizedString("ArticleViewController_UserActivity_Title", comment: "")
+
+                    if #available(iOS 9.0, *) {
+                        self.userActivity?.requiredUserInfoKeys = Set(["feed", "article", "showingContent"])
+                    }
+
+                    self.userActivity?.delegate = self
+
                     self.userActivity?.becomeCurrent()
                 }
 
+                let userActivityTitle: String
+                if let feedTitle = a.feed?.title {
+                    userActivityTitle = "\(feedTitle): \(a.title)"
+                } else {
+                    userActivityTitle = a.title
+                }
+                self.userActivity?.title = userActivityTitle
+
                 self.userActivity?.userInfo = ["feed": a.feed?.title ?? "",
-                                               "article": a.identifier,
+                                               "article": a.articleID?.URIRepresentation().absoluteString ?? "",
                                                "showingContent": true]
 
                 if #available(iOS 9.0, *) {
@@ -136,14 +150,15 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
 
         self.view.backgroundColor = UIColor.whiteColor()
 
-        if userActivity == nil {
-            userActivity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
-            userActivity?.title = NSLocalizedString("ArticleViewController_UserActivity_Title", comment: "")
+        if self.userActivity == nil {
+            self.userActivity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
             if #available(iOS 9.0, *) {
-                userActivity?.eligibleForPublicIndexing = false
-                userActivity?.eligibleForSearch = true
+                self.userActivity?.requiredUserInfoKeys = Set(["feed", "article", "showingContent"])
+                self.userActivity?.eligibleForPublicIndexing = false
+                self.userActivity?.eligibleForSearch = true
             }
-            userActivity?.becomeCurrent()
+            self.userActivity?.delegate = self
+            self.userActivity?.becomeCurrent()
         }
 
         self.view.addSubview(self.loadingBar)
@@ -502,6 +517,17 @@ extension ArticleViewController {
     public override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         self.updateLeftBarButtonItem(self.traitCollection)
+    }
+}
+
+extension ArticleViewController: NSUserActivityDelegate {
+    public func userActivityWillSave(userActivity: NSUserActivity) {
+        if let a = self.article {
+            userActivity.userInfo = [
+                "feed": a.feed?.title ?? "",
+                "article": a.articleID?.URIRepresentation().absoluteString ?? "",
+                "showingContent": true]
+        }
     }
 }
 

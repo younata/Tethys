@@ -6,7 +6,7 @@ import JavaScriptCore
     var url: NSURL { get set }
     var kind: String { get set }
     var data: NSData? { get set }
-    var article: Article? { get set }
+    weak var article: Article? { get set }
     var downloaded: Bool { get }
 }
 
@@ -32,7 +32,7 @@ import JavaScriptCore
             }
         }
     }
-    dynamic public var article: Article? {
+    weak dynamic public var article: Article? {
         willSet {
             if newValue != article {
                 self.updated = true

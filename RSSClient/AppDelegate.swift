@@ -146,9 +146,18 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - Private
 
     private func createControllerHierarchy(feed: Feed? = nil, article: Article? = nil) {
-        let feeds = self.anInjector.create(FeedsTableViewController.self) as! FeedsTableViewController
-        let master = UINavigationController(rootViewController: feeds)
+        let feeds: FeedsTableViewController
+        let master: UINavigationController
 
+        if let masterNC = self.splitView.viewControllers.first as? UINavigationController,
+            let feedsController = masterNC.viewControllers.first as? FeedsTableViewController
+            where self.window?.rootViewController == self.splitView {
+                master = masterNC
+                feeds = feedsController
+        } else {
+            feeds = self.anInjector.create(FeedsTableViewController.self) as! FeedsTableViewController
+            master = UINavigationController(rootViewController: feeds)
+        }
 
         if let feedToShow = feed, let articleToShow = article {
             self.splitView.viewControllers = [master]

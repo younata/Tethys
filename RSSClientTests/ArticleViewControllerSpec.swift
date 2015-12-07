@@ -47,6 +47,10 @@ class ArticleViewControllerSpec: QuickSpec {
                 expect(subject.content.backgroundColor).to(equal(themeRepository.backgroundColor))
             }
 
+            it("should update the scroll indicator style") {
+                expect(subject.content.scrollView.indicatorStyle).to(equal(themeRepository.scrollIndicatorStyle))
+            }
+
             it("should update the toolbar") {
                 expect(subject.navigationController?.toolbar.barStyle).to(equal(themeRepository.barStyle))
             }
@@ -256,6 +260,12 @@ class ArticleViewControllerSpec: QuickSpec {
             it("should mark the article as read") {
                 expect(article.read).to(beTruthy())
                 expect(dataWriter.lastArticleMarkedRead).to(equal(article))
+            }
+
+            if #available(iOS 9, *) {
+                it("should enable link preview with 3d touch on iOS 9") {
+                    expect(subject.content.allowsLinkPreview).to(beTruthy())
+                }
             }
 
             it("should include the share button in the toolbar, and the open in safari button only if we're on iOS 9") {

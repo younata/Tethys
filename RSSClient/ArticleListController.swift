@@ -232,6 +232,8 @@ extension ArticleListController: ThemeRepositorySubscriber {
         if let themeRepository = self.themeRepository {
             self.searchBar.barStyle = themeRepository.barStyle
 
+            self.tableView.indicatorStyle = themeRepository.scrollIndicatorStyle
+
             self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
         }
     }

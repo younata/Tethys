@@ -295,6 +295,7 @@ extension QueryFeedViewController: ThemeRepositorySubscriber {
 
         if let themeRepository = self.themeRepository {
             self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
+            self.tableView.indicatorStyle = themeRepository.scrollIndicatorStyle
         }
     }
 }

@@ -334,6 +334,7 @@ extension FeedsTableViewController: ThemeRepositorySubscriber {
 
         self.tableView.backgroundColor = self.themeRepository.backgroundColor
         self.tableView.separatorColor = self.themeRepository.textColor
+        self.tableView.indicatorStyle = self.themeRepository.scrollIndicatorStyle
 
         self.searchBar.barStyle = self.themeRepository.barStyle
         self.searchBar.backgroundColor = self.themeRepository.backgroundColor

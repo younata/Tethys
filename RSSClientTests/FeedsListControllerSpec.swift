@@ -37,6 +37,10 @@ class FeedsListControllerSpec: QuickSpec {
                 expect(subject.tableView.backgroundColor).to(equal(themeRepository.backgroundColor))
                 expect(subject.tableView.separatorColor).to(equal(themeRepository.textColor))
             }
+
+            it("should update the scroll indicator style") {
+                expect(subject.tableView.indicatorStyle).to(equal(themeRepository.scrollIndicatorStyle))
+            }
         }
 
         it("should have feeds.count number of rows") {

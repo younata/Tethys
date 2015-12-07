@@ -183,6 +183,7 @@ extension LocalImportViewController: ThemeRepositorySubscriber {
 
         if let themeRepository = self.themeRepository {
             self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
+            self.tableViewController.tableView.indicatorStyle = themeRepository.scrollIndicatorStyle
         }
     }
 }

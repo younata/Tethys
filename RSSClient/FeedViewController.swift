@@ -198,6 +198,7 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
             return cell
         }
     }
+    // swiftlint:enable function_body_length
 
     public func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         let isTagsSection = FeedSections(rawValue: indexPath.section) == .Tags
@@ -232,7 +233,6 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
             })
             return [delete, edit]
     }
-    // swiftlint:enable function_body_length
 
     public func tableView(tableView: UITableView,
         commitEditingStyle _: UITableViewCellEditingStyle,
@@ -252,6 +252,7 @@ extension FeedViewController: ThemeRepositorySubscriber {
     public func didChangeTheme() {
         self.tableView.backgroundColor = self.themeRepository.backgroundColor
         self.tableView.separatorColor = self.themeRepository.textColor
+        self.tableView.indicatorStyle = self.themeRepository.scrollIndicatorStyle
 
         self.navigationController?.navigationBar.barStyle = self.themeRepository.barStyle
     }

@@ -98,6 +98,10 @@ class LocalImportViewControllerSpec: QuickSpec {
                 expect(subject.tableViewController.tableView.separatorColor).to(equal(themeRepository.textColor))
             }
 
+            it("should update the scroll indicator style") {
+                expect(subject.tableViewController.tableView.indicatorStyle).to(equal(themeRepository.scrollIndicatorStyle))
+            }
+
             it("should update the navigation bar background") {
                 expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
             }

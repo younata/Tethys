@@ -100,6 +100,10 @@ class FeedViewControllerSpec: QuickSpec {
             it("should update the navigation bar styling") {
                 expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
             }
+
+            it("should update the tableView scroll indicator style") {
+                expect(subject.tableView.indicatorStyle).to(equal(themeRepository.scrollIndicatorStyle))
+            }
         }
 
         describe("the tableView") {

@@ -72,6 +72,10 @@ class ThemeRepositorySpec: QuickSpec {
             expect(subject.statusBarStyle).to(equal(UIStatusBarStyle.Default))
         }
 
+        it("uses UIScrollViewIndicatorStyleBlack as the default scrollIndicatorStyle") {
+            expect(subject.scrollIndicatorStyle).to(equal(UIScrollViewIndicatorStyle.Black))
+        }
+
         sharedExamples("a changed theme") {(sharedContext: SharedExampleContext) in
             it("changes the background color") {
                 let expectedColor = sharedContext()["background"] as? UIColor
@@ -115,6 +119,12 @@ class ThemeRepositorySpec: QuickSpec {
                 expect(subject.statusBarStyle).to(equal(expectedBarStyle))
             }
 
+            it("changes the scrollIndicatorStyle") {
+                let expectedScrollIndicatorStyle = UIScrollViewIndicatorStyle(rawValue: sharedContext()["scrollIndicatorStyle"] as! Int)
+                expect(expectedScrollIndicatorStyle).toNot(beNil())
+                expect(subject.scrollIndicatorStyle).to(equal(expectedScrollIndicatorStyle))
+            }
+
             it("informs subscribers") {
                 expect(subscriber.didCallChangeTheme).to(beTruthy())
             }
@@ -143,21 +153,8 @@ class ThemeRepositorySpec: QuickSpec {
                     let expectedStatusBarStyle = UIStatusBarStyle(rawValue: sharedContext()["statusBar"] as! Int)
                     expect(expectedStatusBarStyle).toNot(beNil())
 
-                    expect(otherRepo.backgroundColor).to(equal(expectedBackground))
-                    expect(otherRepo.textColor).to(equal(expectedText))
-                    expect(otherRepo.articleCSSFileName).to(equal(expectedCss))
-                    expect(otherRepo.tintColor).to(equal(expectedTint))
-                    expect(otherRepo.syntaxHighlightFile).to(equal(expectedSyntax))
-                    expect(otherRepo.barStyle).to(equal(expectedBarStyle))
-                    expect(otherRepo.statusBarStyle).to(equal(expectedStatusBarStyle))
-                } else {
-                    let expectedBackground = UIColor.whiteColor()
-                    let expectedText = UIColor.blackColor()
-                    let expectedCss = "github2"
-                    let expectedTint = UIColor.whiteColor()
-                    let expectedSyntax = "mac_classic"
-                    let expectedBarStyle = UIBarStyle.Default
-                    let expectedStatusBarStyle = UIStatusBarStyle.Default
+                    let expectedScrollIndicatorStyle = UIScrollViewIndicatorStyle(rawValue: sharedContext()["scrollIndicatorStyle"] as! Int)
+                    expect(expectedScrollIndicatorStyle).toNot(beNil())
 
                     expect(otherRepo.backgroundColor).to(equal(expectedBackground))
                     expect(otherRepo.textColor).to(equal(expectedText))
@@ -166,6 +163,25 @@ class ThemeRepositorySpec: QuickSpec {
                     expect(otherRepo.syntaxHighlightFile).to(equal(expectedSyntax))
                     expect(otherRepo.barStyle).to(equal(expectedBarStyle))
                     expect(otherRepo.statusBarStyle).to(equal(expectedStatusBarStyle))
+                    expect(otherRepo.scrollIndicatorStyle).to(equal(expectedScrollIndicatorStyle))
+                } else {
+                    let expectedBackground = UIColor.whiteColor()
+                    let expectedText = UIColor.blackColor()
+                    let expectedCss = "github2"
+                    let expectedTint = UIColor.whiteColor()
+                    let expectedSyntax = "mac_classic"
+                    let expectedBarStyle = UIBarStyle.Default
+                    let expectedStatusBarStyle = UIStatusBarStyle.Default
+                    let expectedScrollIndicatorStyle = UIScrollViewIndicatorStyle.Black
+
+                    expect(otherRepo.backgroundColor).to(equal(expectedBackground))
+                    expect(otherRepo.textColor).to(equal(expectedText))
+                    expect(otherRepo.articleCSSFileName).to(equal(expectedCss))
+                    expect(otherRepo.tintColor).to(equal(expectedTint))
+                    expect(otherRepo.syntaxHighlightFile).to(equal(expectedSyntax))
+                    expect(otherRepo.barStyle).to(equal(expectedBarStyle))
+                    expect(otherRepo.statusBarStyle).to(equal(expectedStatusBarStyle))
+                    expect(otherRepo.scrollIndicatorStyle).to(equal(expectedScrollIndicatorStyle))
                 }
             }
         }
@@ -186,6 +202,7 @@ class ThemeRepositorySpec: QuickSpec {
                             "syntax": "twilight",
                             "barStyle": UIBarStyle.Black.rawValue,
                             "statusBar": UIStatusBarStyle.LightContent.rawValue,
+                            "scrollIndicatorStyle": UIScrollViewIndicatorStyle.White.rawValue,
                         ]
                     }
                 }
@@ -204,6 +221,7 @@ class ThemeRepositorySpec: QuickSpec {
                             "syntax": "mac_classic",
                             "barStyle": UIBarStyle.Default.rawValue,
                             "statusBar": UIStatusBarStyle.Default.rawValue,
+                            "scrollIndicatorStyle": UIScrollViewIndicatorStyle.Black.rawValue,
                         ]
                     }
                 }
@@ -232,6 +250,7 @@ class ThemeRepositorySpec: QuickSpec {
                             "syntax": "twilight",
                             "barStyle": UIBarStyle.Black.rawValue,
                             "statusBar": UIStatusBarStyle.LightContent.rawValue,
+                            "scrollIndicatorStyle": UIScrollViewIndicatorStyle.White.rawValue,
                             "ephemeral": true,
                         ]
                     }
@@ -251,6 +270,7 @@ class ThemeRepositorySpec: QuickSpec {
                             "syntax": "mac_classic",
                             "barStyle": UIBarStyle.Default.rawValue,
                             "statusBar": UIStatusBarStyle.Default.rawValue,
+                            "scrollIndicatorStyle": UIScrollViewIndicatorStyle.Black.rawValue,
                             "ephemeral": true,
                         ]
                     }

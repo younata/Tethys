@@ -60,6 +60,10 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 expect(subject.tableView.separatorColor).to(equal(themeRepository.textColor))
             }
 
+            it("should update the tableView scroll indicator style") {
+                expect(subject.tableView.indicatorStyle).to(equal(themeRepository.scrollIndicatorStyle))
+            }
+
             it("should update the navigation bar background") {
                 expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
             }

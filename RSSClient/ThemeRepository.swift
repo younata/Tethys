@@ -81,6 +81,19 @@ public class ThemeRepository: NSObject, Injectable {
         }
     }
 
+    public private(set) var scrollIndicatorStyle: UIScrollViewIndicatorStyle {
+        get {
+            if let rawValue = self.privateValueForKey("scrollIndicatorStyle") as? Int,
+                scrollIndicatorStyle = UIScrollViewIndicatorStyle(rawValue: rawValue) {
+                    return scrollIndicatorStyle
+            }
+            return .Black
+        }
+        set {
+            self.privateSetValue(newValue.rawValue, forKey: "scrollIndicatorStyle")
+        }
+    }
+
     public enum Theme: Int, CustomStringConvertible {
         case Default = 0
         case Dark = 1
@@ -119,6 +132,7 @@ public class ThemeRepository: NSObject, Injectable {
                 self.syntaxHighlightFile = "mac_classic"
                 self.barStyle = .Default
                 self.statusBarStyle = .Default
+                self.scrollIndicatorStyle = .Black
             case .Dark:
                 self.backgroundColor = UIColor.blackColor()
                 self.textColor = UIColor.whiteColor()
@@ -127,6 +141,7 @@ public class ThemeRepository: NSObject, Injectable {
                 self.syntaxHighlightFile = "twilight"
                 self.barStyle = .Black
                 self.statusBarStyle = .LightContent
+                self.scrollIndicatorStyle = .White
             }
 
 

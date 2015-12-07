@@ -253,6 +253,19 @@ public class ArticleViewController: UIViewController {
 
     private func configureContent() {
         self.content.delegate = self
+
+        self.setThemeForWebView(self.content)
+
+        if #available(iOS 9, *) {
+            self.content.allowsLinkPreview = true
+        }
+    }
+
+    private func setThemeForWebView(webView: UIWebView) {
+        guard let themeRepository = self.themeRepository else { return }
+        webView.backgroundColor = themeRepository.backgroundColor
+
+        webView.scrollView.indicatorStyle = themeRepository.scrollIndicatorStyle
     }
 
     private var nextContent: UIWebView? = nil
@@ -440,8 +453,10 @@ extension ArticleViewController: ThemeRepositorySubscriber {
         self.content.reload()
         self.nextContent?.reload()
 
-        self.content.backgroundColor = self.themeRepository?.backgroundColor
-        self.nextContent?.backgroundColor = self.themeRepository?.backgroundColor
+        self.setThemeForWebView(self.content)
+        if let nextContent = self.nextContent {
+            self.setThemeForWebView(nextContent)
+        }
 
         if let themeRepository = self.themeRepository {
             self.navigationController?.navigationBar.barStyle = themeRepository.barStyle

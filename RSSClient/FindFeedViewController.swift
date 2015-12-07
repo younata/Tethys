@@ -295,6 +295,8 @@ extension FindFeedViewController: ThemeRepositorySubscriber {
         if let themeRepository = self.themeRepository {
             self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
             self.navigationController?.toolbar.barStyle = themeRepository.barStyle
+
+            self.webContent.scrollView.indicatorStyle = themeRepository.scrollIndicatorStyle
         }
 
         self.webContent.backgroundColor = self.themeRepository?.backgroundColor

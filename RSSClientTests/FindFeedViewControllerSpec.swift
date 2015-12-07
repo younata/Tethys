@@ -79,6 +79,10 @@ class FindFeedViewControllerSpec: QuickSpec {
             it("should update the webView's background color") {
                 expect(subject.webContent.backgroundColor).to(equal(themeRepository.backgroundColor))
             }
+
+            it("should update the scroll indicator style") {
+                expect(subject.webContent.scrollView.indicatorStyle).to(equal(themeRepository.scrollIndicatorStyle))
+            }
         }
 
         describe("Looking up feeds on the interwebs") {

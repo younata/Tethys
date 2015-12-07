@@ -36,6 +36,9 @@ extension FeedsListController: ThemeRepositorySubscriber {
     public func didChangeTheme() {
         self.tableView.backgroundColor = self.themeRepository?.backgroundColor
         self.tableView.separatorColor = self.themeRepository?.textColor
+        if let themeRepo = self.themeRepository {
+            self.tableView.indicatorStyle = themeRepo.scrollIndicatorStyle
+        }
     }
 }
 

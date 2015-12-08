@@ -442,7 +442,13 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
     }
 
     internal func share() {
-        if let link = self.content.URL ?? article?.link {
+        let desiredLink: NSURL?
+        if self.content.URL == nil || self.content.URL?.absoluteString.isEmpty == true || self.content.URL == self.article?.feed?.url {
+            desiredLink = self.article?.link
+        } else {
+            desiredLink = self.content.URL
+        }
+        if let link = desiredLink {
             let safari = TOActivitySafari()
             let chrome = TOActivityChrome()
 

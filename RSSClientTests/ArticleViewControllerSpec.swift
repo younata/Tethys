@@ -287,8 +287,11 @@ class ArticleViewControllerSpec: QuickSpec {
 
         describe("setting the article") {
             let article = Article(title: "article", link: NSURL(string: "https://google.com/"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, feed: nil, flags: ["a"], enclosures: [])
+            let feed = Feed(title: "feed", url: NSURL(string: "https://example.com"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
 
             beforeEach {
+                article.feed = feed
+                feed.addArticle(article)
                 subject.article = article
             }
 
@@ -305,14 +308,14 @@ class ArticleViewControllerSpec: QuickSpec {
                     expect(activity.userInfo).toNot(beNil())
                     if let userInfo = activity.userInfo {
                         expect(userInfo.keys.count).to(equal(3))
-                        expect(userInfo["feed"] as? String).to(equal(""))
+                        expect(userInfo["feed"] as? String).to(equal("feed"))
                         expect(userInfo["article"] as? String).to(equal(""))
                         expect(userInfo["showingContent"] as? Bool).to(beTruthy())
                     }
 
                     expect(activity.webpageURL).to(equal(article.link))
                     expect(activity.needsSave).to(beTruthy())
-                    expect(activity.title).to(equal(article.title))
+                    expect(activity.title).to(equal("\(feed.title): \(article.title)"))
 
                     if #available(iOS 9.0, *) {
                         expect(activity.keywords).to(equal(Set(["article", "summary", "rachel",  "a"])))
@@ -340,7 +343,7 @@ class ArticleViewControllerSpec: QuickSpec {
                         expect(activity.userInfo).toNot(beNil())
                         if let userInfo = activity.userInfo {
                             expect(userInfo.keys.count).to(equal(3))
-                            expect(userInfo["feed"] as? String).to(equal(""))
+                            expect(userInfo["feed"] as? String).to(equal("feed"))
                             expect(userInfo["article"] as? String).to(equal(""))
                             expect(userInfo["showingContent"] as? Bool).to(beTruthy())
                         }
@@ -350,6 +353,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
             describe("tapping the share button") {
                 beforeEach {
+                    subject.content.currentURL = feed.url
                     subject.shareButton.tap()
                 }
 
@@ -357,7 +361,7 @@ class ArticleViewControllerSpec: QuickSpec {
                     expect(subject.presentedViewController).to(beAnInstanceOf(UIActivityViewController.self))
                     if let activityViewController = subject.presentedViewController as? UIActivityViewController {
                         expect(activityViewController.activityItems().count).to(equal(1))
-                        expect(activityViewController.activityItems().first as? NSURL).to(equal(subject.content.URL ?? article.link))
+                        expect(activityViewController.activityItems().first as? NSURL).to(equal(article.link))
 
                         expect(activityViewController.applicationActivities() as? [NSObject]).toNot(beNil())
                         if let activities = activityViewController.applicationActivities() as? [NSObject] {
@@ -389,6 +393,26 @@ class ArticleViewControllerSpec: QuickSpec {
                     if let activity = subject.userActivity, let userInfo = activity.userInfo {
                         expect(userInfo["showingContent"] as? Bool).to(beFalsy())
                         expect(activity.webpageURL).to(equal(article.link))
+                    }
+                }
+
+                describe("tapping the share button") {
+                    beforeEach {
+                        subject.shareButton.tap()
+                    }
+
+                    it("should bring up an activity view controller") {
+                        expect(subject.presentedViewController).to(beAnInstanceOf(UIActivityViewController.self))
+                        if let activityViewController = subject.presentedViewController as? UIActivityViewController {
+                            expect(activityViewController.activityItems().count).to(equal(1))
+                            expect(activityViewController.activityItems().first as? NSURL).to(equal(subject.content.lastRequestLoaded?.URL))
+
+                            expect(activityViewController.applicationActivities() as? [NSObject]).toNot(beNil())
+                            if let activities = activityViewController.applicationActivities() as? [NSObject] {
+                                expect(activities.first).to(beAnInstanceOf(TOActivitySafari.self))
+                                expect(activities.last).to(beAnInstanceOf(TOActivityChrome.self))
+                            }
+                        }
                     }
                 }
 

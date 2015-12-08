@@ -47,7 +47,7 @@ internal class DataUtility {
     }
 
     internal class func updateArticle(article: CoreDataArticle, item: Muon.Article) {
-        article.title = item.title ?? article.title ?? "unknown"
+        article.title = (item.title ?? article.title ?? "unknown").stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         article.link = item.link?.absoluteString ?? ""
         if article.published == nil {
             article.read = false

@@ -454,9 +454,10 @@ class FeedRepositorySpec: QuickSpec {
             describe("saveArticle") {
                 var article: Article! = nil
                 var image: Image! = nil
+                var feed: Feed! = nil
 
                 beforeEach {
-                    let feed = Feed(feed: feed1)
+                    feed = Feed(feed: feed1)
 
                     let bundle = NSBundle(forClass: self.classForCoder)
                     let imageData = NSData(contentsOfURL: bundle.URLForResource("test", withExtension: "jpg")!)

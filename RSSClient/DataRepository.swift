@@ -295,6 +295,7 @@ internal class DataRepository: DataRetriever, DataWriter {
             if let cdarticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", articleID), managedObjectContext: self.objectContext, sortDescriptors: []).first as? CoreDataArticle {
                 let identifier = cdarticle.objectID.URIRepresentation().absoluteString
                 self.objectContext.performBlockAndWait {
+                    cdarticle.feed = nil
                     self.objectContext.deleteObject(cdarticle)
                 }
                 if #available(iOS 9.0, *) {
@@ -380,8 +381,25 @@ internal class DataRepository: DataRetriever, DataWriter {
     }
 
     private func upsertArticle(muonArticle: Muon.Article, feed: Feed) -> Article? {
-        let predicate = NSPredicate(format: "link = %@ && title == %@ && feed == %@", muonArticle.link?.absoluteString ?? "", muonArticle.title ?? "", feed.feedID!)
-        if let article = DataUtility.entities("Article", matchingPredicate: predicate,
+        var existingArticle: Article? = nil
+        for article in feed.articles {
+            if let articleLink = article.link, let muonLink = muonArticle.link where articleLink == muonLink {
+                existingArticle = article
+                break
+            }
+            if let muonArticleID = muonArticle.guid where muonArticleID == article.identifier {
+                existingArticle = article
+                break
+            } else {
+                let articleTitle = article.title.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                let muonArticleTitle = muonArticle.title?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                if articleTitle == muonArticleTitle {
+                    existingArticle = article
+                    break
+                }
+            }
+        }
+        if let articleID = existingArticle?.articleID, let article = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "SELF = %@", articleID),
             managedObjectContext: self.objectContext, sortDescriptors: []).last as? CoreDataArticle {
                 if article.updatedAt != muonArticle.updated {
                     DataUtility.updateArticle(article, item: muonArticle)

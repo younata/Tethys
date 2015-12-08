@@ -88,7 +88,7 @@ class DataUtilitySpec: QuickSpec {
 
                 let author = Muon.Author(name: "me", email: nil, uri: nil)
 
-                item = Muon.Article(title: "example", link: NSURL(string: "http://example.com"), description: "summary",
+                item = Muon.Article(title: "\n   example\n   ", link: NSURL(string: "http://example.com"), description: "summary",
                     content: "content", guid: "0xDEADBEEF", published: NSDate(timeIntervalSinceReferenceDate: 0),
                     updated: NSDate(timeIntervalSinceReferenceDate: 10), authors: [author], enclosures: [])
             }

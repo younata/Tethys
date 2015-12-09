@@ -6,23 +6,23 @@ public class FeedTableCell: UITableViewCell {
     public var feed: Feed? = nil {
         didSet {
             if let f = feed {
-                nameLabel.text = f.displayTitle
-                summaryLabel.text = f.displaySummary
-                unreadCounter.unread = UInt(f.unreadArticles().count)
+                self.nameLabel.text = f.displayTitle
+                self.summaryLabel.text = f.displaySummary
+                self.unreadCounter.unread = UInt(f.unreadArticles().count)
             } else {
-                nameLabel.text = ""
-                summaryLabel.text = ""
-                unreadCounter.unread = 0
+                self.nameLabel.text = ""
+                self.summaryLabel.text = ""
+                self.unreadCounter.unread = 0
             }
             if let image = feed?.image {
-                iconView.image = image
+                self.iconView.image = image
                 let scaleRatio = 60 / image.size.width
-                iconWidth.constant = 60
-                iconHeight.constant = image.size.height * scaleRatio
+                self.iconWidth.constant = 60
+                self.iconHeight.constant = image.size.height * scaleRatio
             } else {
-                iconView.image = nil
-                iconWidth.constant = 45
-                iconHeight.constant = 0
+                self.iconView.image = nil
+                self.iconWidth.constant = 45
+                self.iconHeight.constant = 0
             }
         }
     }
@@ -33,74 +33,59 @@ public class FeedTableCell: UITableViewCell {
         }
     }
 
-    public lazy var nameLabel: UILabel = {
-        let label = UILabel(forAutoLayout: ())
+    public let nameLabel = UILabel(forAutoLayout: ())
+    public let summaryLabel = UILabel(forAutoLayout: ())
+    public let unreadCounter = UnreadCounter(frame: CGRectZero)
+    public let iconView = UIImageView(forAutoLayout: ())
 
-        label.numberOfLines = 0
-        label.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
+    public private(set) var iconWidth: NSLayoutConstraint!
 
-        self.contentView.addSubview(label)
+    public private(set) var iconHeight: NSLayoutConstraint!
 
-        label.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
-        label.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-        label.autoPinEdge(.Right, toEdge: .Left, ofView: self.iconView, withOffset: -8)
-        return label
-    }()
+    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
 
-    public lazy var summaryLabel: UILabel = {
-        let label = UILabel(forAutoLayout: ())
+        self.nameLabel.numberOfLines = 0
+        self.nameLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
 
-        label.numberOfLines = 0
-        label.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
+        self.summaryLabel.numberOfLines = 0
+        self.summaryLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
 
-        self.contentView.addSubview(label)
+        self.iconView.contentMode = .ScaleAspectFit
 
-        label.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4, relation: .GreaterThanOrEqual)
-        label.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-        label.autoPinEdge(.Right, toEdge: .Left, ofView: self.iconView, withOffset: -8)
-        label.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.nameLabel, withOffset: 8, relation: .GreaterThanOrEqual)
+        self.unreadCounter.hideUnreadText = false
+        self.unreadCounter.translatesAutoresizingMaskIntoConstraints = false
 
-        return label
-    }()
+        self.contentView.addSubview(self.nameLabel)
+        self.contentView.addSubview(self.summaryLabel)
+        self.contentView.addSubview(self.iconView)
+        self.contentView.addSubview(self.unreadCounter)
 
-    public lazy var unreadCounter: UnreadCounter = {
-        let counter = UnreadCounter(frame: CGRectZero)
-        counter.hideUnreadText = false
+        self.nameLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
+        self.nameLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
+        self.nameLabel.autoPinEdge(.Right, toEdge: .Left, ofView: self.iconView, withOffset: -8)
 
-        counter.translatesAutoresizingMaskIntoConstraints = false
-        self.contentView.addSubview(counter)
+        self.summaryLabel.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4, relation: .GreaterThanOrEqual)
+        self.summaryLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
+        self.summaryLabel.autoPinEdge(.Right, toEdge: .Left, ofView: self.iconView, withOffset: -8)
+        self.summaryLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.nameLabel, withOffset: 8,
+            relation: .GreaterThanOrEqual)
 
-        counter.autoPinEdgeToSuperviewEdge(.Top)
-        counter.autoPinEdgeToSuperviewEdge(.Right)
-        counter.autoSetDimension(.Height, toSize: 45)
-        counter.autoMatchDimension(.Width, toDimension: .Height, ofView: counter)
-        counter.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0, relation: .GreaterThanOrEqual)
+        self.iconView.autoPinEdgeToSuperviewEdge(.Top, withInset: 0, relation: .GreaterThanOrEqual)
+        self.iconView.autoPinEdgeToSuperviewEdge(.Right)
+        self.iconView.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0, relation: .GreaterThanOrEqual)
+        self.iconView.autoAlignAxisToSuperviewAxis(.Horizontal)
+        self.iconWidth = self.iconView.autoSetDimension(.Width, toSize: 45, relation: .LessThanOrEqual)
+        self.iconHeight = self.iconView.autoSetDimension(.Height, toSize: 0, relation: .LessThanOrEqual)
 
-        return counter
-    }()
+        self.unreadCounter.autoPinEdgeToSuperviewEdge(.Top)
+        self.unreadCounter.autoPinEdgeToSuperviewEdge(.Right)
+        self.unreadCounter.autoSetDimension(.Height, toSize: 45)
+        self.unreadCounter.autoMatchDimension(.Width, toDimension: .Height, ofView: self.unreadCounter)
+        self.unreadCounter.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0, relation: .GreaterThanOrEqual)
+    }
 
-    public lazy var iconView: UIImageView = {
-        let imageView = UIImageView(forAutoLayout: ())
-
-        imageView.contentMode = .ScaleAspectFit
-
-        self.contentView.addSubview(imageView)
-
-        imageView.autoPinEdgeToSuperviewEdge(.Top, withInset: 0, relation: .GreaterThanOrEqual)
-        imageView.autoPinEdgeToSuperviewEdge(.Right)
-        imageView.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0, relation: .GreaterThanOrEqual)
-        imageView.autoAlignAxisToSuperviewAxis(.Horizontal)
-
-        return imageView
-    }()
-
-    public lazy var iconWidth: NSLayoutConstraint = {
-        return self.iconView.autoSetDimension(.Width, toSize: 45, relation: .LessThanOrEqual)
-    }()
-
-    public lazy var iconHeight: NSLayoutConstraint = {
-        return self.iconView.autoSetDimension(.Height, toSize: 0, relation: .LessThanOrEqual)
-    }()
+    public required init?(coder aDecoder: NSCoder) { fatalError() }
 }
 
 extension FeedTableCell: ThemeRepositorySubscriber {

@@ -1,7 +1,7 @@
 import UIKit
 import PureLayout
 
-public class TagPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate {
+public class TagPickerView: UIView {
     public lazy var textField: UITextField = {
         let textField = UITextField(forAutoLayout: ())
         textField.delegate = self
@@ -35,7 +35,7 @@ public class TagPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
         }
     }
 
-    internal var themeRepository: ThemeRepository? = nil {
+    public var themeRepository: ThemeRepository? = nil {
         didSet {
             self.themeRepository?.addSubscriber(self)
         }
@@ -49,8 +49,22 @@ public class TagPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
         self.textFieldDidChange("")
     }
 
-    // MARK: - UIPickerView protocols
+    private func textFieldDidChange(text: String) -> Bool {
+        let solutions: [String]
+        if text.isEmpty {
+            solutions = self.allTags
+        } else {
+            solutions = self.allTags.filter {
+                return $0.rangeOfString(text) != nil
+            }
+            self.didSelect(text)
+        }
+        self.existingSolutions = solutions
+        return true
+    }
+}
 
+extension TagPickerView: UIPickerViewDataSource, UIPickerViewDelegate {
     public func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
         return 1
     }
@@ -74,9 +88,9 @@ public class TagPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
             self.textFieldDidChange(solution)
         }
     }
+}
 
-    // Mark: - UITextFieldDelegate
-
+extension TagPickerView: UITextFieldDelegate {
     public func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange,
         replacementString string: String) -> Bool {
             guard let text = textField.text else {
@@ -84,22 +98,6 @@ public class TagPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
             }
             let replacedText = (text as NSString).stringByReplacingCharactersInRange(range, withString: string)
             return textFieldDidChange(replacedText)
-    }
-
-    // Mark: - Private
-
-    private func textFieldDidChange(text: String) -> Bool {
-        let solutions: [String]
-        if text.isEmpty {
-            solutions = self.allTags
-        } else {
-            solutions = self.allTags.filter {
-                return $0.rangeOfString(text) != nil
-            }
-            self.didSelect(text)
-        }
-        self.existingSolutions = solutions
-        return true
     }
 }
 

@@ -1,11 +1,3 @@
-//
-//  UIColor+RSSClient.m
-//  RSSClient
-//
-//  Created by Rachel Brindle on 10/14/14.
-//  Copyright (c) 2014 Rachel Brindle. All rights reserved.
-//
-
 #import "UIColor+RSSClient.h"
 
 @implementation UIColor (RSSClient)

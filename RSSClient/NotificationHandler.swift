@@ -32,23 +32,15 @@ public class NotificationHandler: NSObject {
     }
 
     public func handleLocalNotification(notification: UILocalNotification, window: UIWindow) {
-        if let userInfo = notification.userInfo {
-            self.feedAndArticleFromUserInfo(userInfo) {_, article in
-                if let article = article {
-                    self.showArticle(article, window: window)
-                }
-            }
-        }
+        guard let userInfo = notification.userInfo else { return }
+
+        self.articleFromUserInfo(userInfo) { self.showArticle($0, window: window) }
     }
 
     public func handleAction(identifier: String?, notification: UILocalNotification) {
-        if let userInfo = notification.userInfo where identifier == "read" {
-            self.feedAndArticleFromUserInfo(userInfo) {_, article in
-                if let article = article {
-                    self.dataWriter?.markArticle(article, asRead: true)
-                }
-            }
-        }
+        guard let userInfo = notification.userInfo where identifier == "read" else { return }
+
+        self.articleFromUserInfo(userInfo) { self.dataWriter?.markArticle($0, asRead: true) }
     }
 
     public func sendLocalNotification(notificationSource: LocalNotificationSource, article: Article) {
@@ -68,17 +60,17 @@ public class NotificationHandler: NSObject {
         notificationSource.scheduleNote(note)
     }
 
-    private func feedAndArticleFromUserInfo(userInfo: [NSObject: AnyObject], callback: (Feed?, Article?) -> (Void)) {
+    private func articleFromUserInfo(userInfo: [NSObject: AnyObject], callback: (Article) -> (Void)) {
         guard let _ = self.dataRetriever,
               let feedID = userInfo["feed"] as? String,
               let articleID = userInfo["article"] as? String else {
-                callback(nil, nil)
                 return
         }
         self.dataRetriever?.feeds {feeds in
             let feed = feeds.filter({ $0.identifier == feedID }).first
-            let article = feed?.articlesArray.filter({ $0.identifier == articleID }).first
-            callback(feed, article)
+            if let article = feed?.articlesArray.filter({ $0.identifier == articleID }).first {
+                callback(article)
+            }
         }
     }
 

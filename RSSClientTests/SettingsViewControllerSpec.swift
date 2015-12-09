@@ -638,7 +638,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     describe("tapping the switch on the cell") {
                         beforeEach {
                             cell.theSwitch.on = true
-                            cell.onTapSwitch(cell.theSwitch)
+                            cell.onTapSwitch?(cell.theSwitch)
                         }
 
                         it("should not yet change the settings repository") {

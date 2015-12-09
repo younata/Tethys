@@ -57,11 +57,11 @@ public class TagEditorViewController: UIViewController {
         self.themeRepository?.addSubscriber(self)
     }
 
-    func dismiss() {
+    @objc private func dismiss() {
         self.navigationController?.popViewControllerAnimated(true)
     }
 
-    func save() {
+    @objc private func save() {
         if let feed = self.feed, let tag = tag {
             feed.addTag(tag)
             self.dataWriter?.saveFeed(feed)

@@ -5,70 +5,50 @@ import Ra
 import rNewsKit
 import SafariServices
 
-// swiftlint:disable file_length
-// swiftlint:disable type_body_length
-// swiftlint:disable function_body_length
-
 public class ArticleViewController: UIViewController {
-    public var article: Article? = nil
+    public private(set) var article: Article? = nil
 
     public func setArticle(article: Article?, read: Bool = true, show: Bool = true) {
         self.article = article
         self.navigationController?.setToolbarHidden(false, animated: false)
-        if let a = article {
-            if a.read == false && read {
-                self.dataWriter?.markArticle(a, asRead: true)
-            }
-            if show {
-                self.showArticle(a, onWebView: self.content)
-            }
 
-            self.toolbarItems = [
-                self.spacer(), self.shareButton, self.spacer()
-            ]
-            if #available(iOS 9, *) {
-                if article?.link != nil {
-                    self.toolbarItems = [
-                        self.spacer(), self.shareButton, self.spacer(), self.openInSafariButton, self.spacer()
-                    ]
-                }
-            }
-
-            self.navigationItem.title = a.title ?? ""
-
-            if self.userActivity == nil {
-                let activityType = "com.rachelbrindle.rssclient.article"
-                self.userActivity = NSUserActivity(activityType: activityType)
-
-                if #available(iOS 9.0, *) {
-                    self.userActivity?.requiredUserInfoKeys = Set(["feed", "article"])
-                }
-
-                self.userActivity?.delegate = self
-
-                self.userActivity?.becomeCurrent()
-            }
-
-            let userActivityTitle: String
-            if let feedTitle = a.feed?.title {
-                userActivityTitle = "\(feedTitle): \(a.title)"
-            } else {
-                userActivityTitle = a.title
-            }
-            self.userActivity?.title = userActivityTitle
-
-            self.userActivity?.userInfo = [
-                "feed": a.feed?.title ?? "",
-                "article": a.articleID?.URIRepresentation().absoluteString ?? "",
-            ]
-
-            if #available(iOS 9.0, *) {
-                self.userActivity?.keywords = Set<String>([a.title, a.summary, a.author] + a.flags)
-            }
-
-            self.userActivity?.webpageURL = a.link
-            self.userActivity?.needsSave = true
+        guard let a = article else { return }
+        if a.read == false && read {
+            self.dataWriter?.markArticle(a, asRead: true)
         }
+        if show { self.showArticle(a, onWebView: self.content) }
+
+        self.toolbarItems = [self.spacer(), self.shareButton, self.spacer()]
+        if #available(iOS 9, *) {
+            if article?.link != nil {
+                self.toolbarItems = [
+                    self.spacer(), self.shareButton, self.spacer(), self.openInSafariButton, self.spacer()
+                ]
+            }
+        }
+        self.navigationItem.title = a.title ?? ""
+
+        self.setupUserActivity()
+
+        let userActivityTitle: String
+        if let feedTitle = a.feed?.title {
+            userActivityTitle = "\(feedTitle): \(a.title)"
+        } else {
+            userActivityTitle = a.title
+        }
+        self.userActivity?.title = userActivityTitle
+
+        self.userActivity?.userInfo = [
+            "feed": a.feed?.title ?? "",
+            "article": a.articleID?.URIRepresentation().absoluteString ?? "",
+        ]
+
+        if #available(iOS 9.0, *) {
+            self.userActivity?.keywords = Set<String>([a.title, a.summary, a.author] + a.flags)
+        }
+
+        self.userActivity?.webpageURL = a.link
+        self.userActivity?.needsSave = true
     }
 
     public var content = UIWebView(forAutoLayout: ())
@@ -133,6 +113,18 @@ public class ArticleViewController: UIViewController {
         return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: "")
     }
 
+    private func setupUserActivity() {
+        guard self.userActivity == nil else { return }
+        self.userActivity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
+        if #available(iOS 9.0, *) {
+            self.userActivity?.requiredUserInfoKeys = Set(["feed", "article"])
+            self.userActivity?.eligibleForPublicIndexing = false
+            self.userActivity?.eligibleForSearch = true
+        }
+        self.userActivity?.delegate = self
+        self.userActivity?.becomeCurrent()
+    }
+
     public override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -141,16 +133,7 @@ public class ArticleViewController: UIViewController {
 
         self.view.backgroundColor = UIColor.whiteColor()
 
-        if self.userActivity == nil {
-            self.userActivity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
-            if #available(iOS 9.0, *) {
-                self.userActivity?.requiredUserInfoKeys = Set(["feed", "article"])
-                self.userActivity?.eligibleForPublicIndexing = false
-                self.userActivity?.eligibleForSearch = true
-            }
-            self.userActivity?.delegate = self
-            self.userActivity?.becomeCurrent()
-        }
+        self.setupUserActivity()
 
         self.view.addSubview(self.content)
         self.content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
@@ -163,17 +146,26 @@ public class ArticleViewController: UIViewController {
         self.themeRepository?.addSubscriber(self)
     }
 
-    public override func restoreUserActivityState(activity: NSUserActivity) {
-        super.restoreUserActivityState(activity)
+    public override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.userActivity?.invalidate()
+        self.userActivity = nil
     }
 
-    public override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
+    private func updateLeftBarButtonItem(traitCollection: UITraitCollection) {
+        if traitCollection.horizontalSizeClass == .Regular {
+            self.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
+        } else {
+            self.navigationItem.leftBarButtonItem = nil
+        }
     }
 
-    public override func canBecomeFirstResponder() -> Bool {
-        return true
+    public override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        self.updateLeftBarButtonItem(self.traitCollection)
     }
+
+    public override func canBecomeFirstResponder() -> Bool { return true }
 
     public override var keyCommands: [UIKeyCommand]? {
         let addTitleToCmd: (UIKeyCommand, String) -> (Void) = {cmd, title in
@@ -213,9 +205,7 @@ public class ArticleViewController: UIViewController {
     }
 
     @objc private func showPreviousArticle() {
-        guard self.lastArticleIndex > 0 else {
-            return
-        }
+        guard self.lastArticleIndex > 0 else { return }
         self.lastArticleIndex--
         self.setArticle(self.articles[lastArticleIndex])
         if let article = self.article {
@@ -224,9 +214,7 @@ public class ArticleViewController: UIViewController {
     }
 
     @objc private func showNextArticle() {
-        guard self.lastArticleIndex < self.articles.count else {
-            return
-        }
+        guard self.lastArticleIndex < self.articles.count else { return }
         self.lastArticleIndex++
         self.setArticle(self.articles[lastArticleIndex])
         if let article = self.article {
@@ -235,20 +223,8 @@ public class ArticleViewController: UIViewController {
     }
 
     @objc private func toggleArticleRead() {
-        guard let article = self.article else {
-            return
-        }
+        guard let article = self.article else { return }
         self.dataWriter?.markArticle(article, asRead: !article.read)
-    }
-
-    public override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        self.userActivity?.invalidate()
-        self.userActivity = nil
-    }
-
-    deinit {
-        self.userActivity?.invalidate()
     }
 
     private func configureContent() {
@@ -271,13 +247,15 @@ public class ArticleViewController: UIViewController {
     private var nextContent: UIWebView? = nil
     private var nextContentRight: NSLayoutConstraint? = nil
 
-    private func didSwipeFromLeft(gesture: ScreenEdgePanGestureRecognizer) {
-        if self.lastArticleIndex == 0 {
-            return
-        }
+    private func handleSwipe(gesture: ScreenEdgePanGestureRecognizer, fromLeftDirection left: Bool) {
+        if left && self.lastArticleIndex == 0 { return }
+        if !left && (self.lastArticleIndex + 1) >= self.articles.count { return }
+
+        let offset = left ? -1 : 1
+
         let width = self.view.bounds.width
-        let translation = -width + gesture.translationInView(self.view).x
-        let nextArticleIndex = self.lastArticleIndex - 1
+        let translation = CGFloat(offset) * width + gesture.translationInView(self.view).x
+        let nextArticleIndex = self.lastArticleIndex + offset
         if gesture.state == .Began {
             let a = self.articles[nextArticleIndex]
             self.nextContent = UIWebView(forAutoLayout: ())
@@ -287,14 +265,15 @@ public class ArticleViewController: UIViewController {
             self.nextContent?.autoPinEdgeToSuperviewEdge(.Top)
             self.nextContent?.autoPinEdgeToSuperviewEdge(.Bottom)
             self.nextContent?.autoMatchDimension(.Width, toDimension: .Width, ofView: self.view)
-            self.nextContentRight = self.nextContent!.autoPinEdgeToSuperviewEdge(.Leading, withInset: translation)
+            let edge: ALEdge = left ? .Leading : .Trailing
+            self.nextContentRight = self.nextContent!.autoPinEdgeToSuperviewEdge(edge, withInset: translation)
         } else if gesture.state == .Changed {
             self.nextContentRight?.constant = translation
         } else if gesture.state == .Cancelled {
             self.nextContent?.removeFromSuperview()
             self.nextContent = nil
         } else if gesture.state == .Ended {
-            let speed = gesture.velocityInView(self.view).x
+            let speed = gesture.velocityInView(self.view).x * CGFloat(-offset)
             if speed >= 0 {
                 self.lastArticleIndex = nextArticleIndex
                 self.setArticle(self.articles[self.lastArticleIndex], show: false)
@@ -316,76 +295,30 @@ public class ArticleViewController: UIViewController {
         }
     }
 
+    private func didSwipeFromLeft(gesture: ScreenEdgePanGestureRecognizer) {
+        self.handleSwipe(gesture, fromLeftDirection: true)
+    }
+
     private func didSwipeFromRight(gesture: ScreenEdgePanGestureRecognizer) {
-        if self.lastArticleIndex + 1 >= self.articles.count {
-            return
-        }
-        let width = CGRectGetWidth(self.view.bounds)
-        let translation = width + gesture.translationInView(self.view).x
-        let nextArticleIndex = self.lastArticleIndex + 1
-        if gesture.state == .Began {
-            let a = self.articles[nextArticleIndex]
-            self.nextContent = UIWebView(forAutoLayout: ())
-            self.nextContent?.backgroundColor = self.themeRepository?.backgroundColor
-            self.view.addSubview(self.nextContent!)
-            self.showArticle(a, onWebView: self.nextContent!)
-            self.nextContent?.autoPinEdgeToSuperviewEdge(.Top)
-            self.nextContent?.autoPinEdgeToSuperviewEdge(.Bottom)
-            self.nextContent?.autoMatchDimension(.Width, toDimension: .Width, ofView: self.view)
-            self.nextContentRight = self.nextContent!.autoPinEdgeToSuperviewEdge(.Trailing, withInset: translation)
-        } else if gesture.state == .Changed {
-            self.nextContentRight?.constant = translation
-        } else if gesture.state == .Cancelled {
-            self.nextContent?.removeFromSuperview()
-            self.nextContent = nil
-        } else if gesture.state == .Ended {
-            let speed = gesture.velocityInView(self.view).x * -1
-            if speed >= 0 {
-                self.lastArticleIndex = nextArticleIndex
-                self.setArticle(self.articles[self.lastArticleIndex], show: false)
-                self.nextContentRight?.constant = 0
-                let oldContent = content
-                if let nextContent = self.nextContent {
-                    self.content = nextContent
-                }
-                self.configureContent()
-                UIView.animateWithDuration(0.2, animations: {
-                    self.view.layoutIfNeeded()
-                    }, completion: {(completed) in
-                        oldContent.removeFromSuperview()
-                })
-            } else {
-                self.nextContent?.removeFromSuperview()
-                self.nextContent = nil
-            }
-        }
+        self.handleSwipe(gesture, fromLeftDirection: false)
     }
 
     @objc private func didSwipe(gesture: ScreenEdgePanGestureRecognizer) {
         switch gesture.startDirection {
-        case .None:
-            return
-        case .Left:
-            self.didSwipeFromLeft(gesture)
-        case .Right:
-            self.didSwipeFromRight(gesture)
+        case .None: return
+        case .Left: self.didSwipeFromLeft(gesture)
+        case .Right: self.didSwipeFromRight(gesture)
         }
     }
 
     @objc private func share() {
-        if let link = self.article?.link {
-            let safari = TOActivitySafari()
-            let chrome = TOActivityChrome()
+        guard let link = self.article?.link else { return }
+        let safari = TOActivitySafari()
+        let chrome = TOActivityChrome()
 
-            let activity = UIActivityViewController(activityItems: [link],
-                applicationActivities: [safari, chrome])
-            if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-                let popover = UIPopoverController(contentViewController: activity)
-                popover.presentPopoverFromBarButtonItem(shareButton, permittedArrowDirections: .Any, animated: true)
-            } else {
-                self.presentViewController(activity, animated: true, completion: nil)
-            }
-        }
+        let activity = UIActivityViewController(activityItems: [link],
+            applicationActivities: [safari, chrome])
+        self.presentViewController(activity, animated: true, completion: nil)
     }
 
     @objc private func openInSafari() {
@@ -402,21 +335,6 @@ public class ArticleViewController: UIViewController {
 
         let safari = SFSafariViewController(URL: url)
         self.presentViewController(safari, animated: true, completion: nil)
-    }
-}
-
-extension ArticleViewController {
-    private func updateLeftBarButtonItem(traitCollection: UITraitCollection) {
-        if traitCollection.horizontalSizeClass == .Regular {
-            self.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
-        } else {
-            self.navigationItem.leftBarButtonItem = nil
-        }
-    }
-
-    public override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        self.updateLeftBarButtonItem(self.traitCollection)
     }
 }
 
@@ -438,12 +356,11 @@ extension ArticleViewController: UIWebViewDelegate {
 
 extension ArticleViewController: NSUserActivityDelegate {
     public func userActivityWillSave(userActivity: NSUserActivity) {
-        if let a = self.article {
-            userActivity.userInfo = [
-                "feed": a.feed?.title ?? "",
-                "article": a.articleID?.URIRepresentation().absoluteString ?? "",
-            ]
-        }
+        guard let article = self.article else { return }
+        userActivity.userInfo = [
+            "feed": article.feed?.title ?? "",
+            "article": article.articleID?.URIRepresentation().absoluteString ?? "",
+        ]
     }
 }
 

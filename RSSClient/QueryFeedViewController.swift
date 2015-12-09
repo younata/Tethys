@@ -2,7 +2,6 @@ import UIKit
 import rNewsKit
 
 public class QueryFeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
     public var feed: Feed? = nil {
         didSet {
             let newTitle = NSLocalizedString("QueryFeedViewController_Title_New", comment: "")
@@ -152,7 +151,7 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
 
     public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if let section = FeedSections(rawValue: indexPath.section) {
-            return cellForSection(section, tableView: tableView, indexPath: indexPath)
+            return cellForSection(section, indexPath: indexPath)
         }
         return UITableViewCell()
     }
@@ -189,15 +188,11 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
         }
     }
 
-    // MARK: - Private
-
-    // swiftlint:disable function_body_length
-    // swiftlint:disable line_length
-    private func cellForSection(section: FeedSections, tableView: UITableView, indexPath: NSIndexPath) -> UITableViewCell {
-        // swiftlint:enable line_length
+    private func cellForSection(section: FeedSections, indexPath: NSIndexPath) -> UITableViewCell {
         switch section {
         case .Title:
-            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextFieldCell
+            let cell = self.tableView.dequeueReusableCellWithIdentifier("cell",
+                forIndexPath: indexPath) as! TextFieldCell
             cell.textField.text = self.feedTitle
             let placeholder = NSLocalizedString("QueryFeedViewController_Cell_Title_Placeholder", comment: "")
             cell.textField.placeholder = placeholder
@@ -208,7 +203,8 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
             }
             return cell
         case .Summary:
-            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TextFieldCell
+            let cell = self.tableView.dequeueReusableCellWithIdentifier("cell",
+                forIndexPath: indexPath) as! TextFieldCell
             cell.textField.text = self.feedSummary
             cell.themeRepository = self.themeRepository
             let placeholder = NSLocalizedString("QueryFeedViewController_Cell_Summary_Placeholder", comment: "")
@@ -218,7 +214,8 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
             }
             return cell
         case .Query:
-            let cell = tableView.dequeueReusableCellWithIdentifier("query", forIndexPath: indexPath) as! TextViewCell
+            let cell = self.tableView.dequeueReusableCellWithIdentifier("query",
+                forIndexPath: indexPath) as! TextViewCell
             cell.textView.textColor = UIColor.blackColor()
             cell.textView.text = self.feedQuery
             cell.onTextChange = {_ in }
@@ -230,7 +227,8 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
             }
             return cell
         case .Tags:
-            let cell = tableView.dequeueReusableCellWithIdentifier("tags", forIndexPath: indexPath) as! TableViewCell
+            let cell = self.tableView.dequeueReusableCellWithIdentifier("tags",
+                forIndexPath: indexPath) as! TableViewCell
             cell.themeRepository = self.themeRepository
             if let tags = self.feed?.tags {
                 if indexPath.row == tags.count {

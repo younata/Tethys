@@ -189,7 +189,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                         describe("on change") {
                             beforeEach {
                                 cell?.textField.text = "a title"
-                                cell?.onTextChange("a title")
+                                cell?.onTextChange?("a title")
                             }
 
                             itBehavesLike("saving data") {
@@ -239,11 +239,11 @@ class QueryFeedViewControllerSpec: QuickSpec {
                         describe("on change") {
                             beforeEach {
                                 cell?.textField.text = "a summary"
-                                cell?.onTextChange("a summary")
+                                cell?.onTextChange?("a summary")
 
                                 let otherCell = subject.tableView(subject.tableView,
                                     cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 0)) as? TextFieldCell
-                                otherCell?.onTextChange("a title")
+                                otherCell?.onTextChange?("a title")
 
                                 let otherOtherCell = subject.tableView(subject.tableView,
                                     cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 2)) as? TextViewCell
@@ -304,7 +304,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                                 }
                                 let otherCell = subject.tableView(subject.tableView,
                                     cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 0)) as? TextFieldCell
-                                otherCell?.onTextChange("a title")
+                                otherCell?.onTextChange?("a title")
                             }
 
                             itBehavesLike("saving data") {
@@ -433,7 +433,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
 
                         describe("on change") {
                             beforeEach {
-                                cell?.onTextChange("a title")
+                                cell?.onTextChange?("a title")
                             }
 
                             itBehavesLike("saving data") {
@@ -514,7 +514,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
 
                         describe("on change") {
                             beforeEach {
-                                cell?.onTextChange("a summary")
+                                cell?.onTextChange?("a summary")
                             }
 
                             itBehavesLike("saving data") {
@@ -562,7 +562,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
 
                         describe("on change") {
                             beforeEach {
-                                cell?.onTextChange("a query")
+                                cell?.onTextChange?("a query")
                             }
 
                             itBehavesLike("saving data") {

@@ -21,12 +21,11 @@ private class OutlinedLabel: UILabel {
 }
 
 public class UnreadCounter: UIView {
+    private let numberFormatter = NSNumberFormatter()
     private let triangleLayer = CAShapeLayer()
-
     private let outlineLabel = OutlinedLabel(forAutoLayout: ())
 
     public var countLabel: UILabel { return self.outlineLabel }
-
     public var triangleColor = UIColor.darkGreenColor() {
         didSet {
             self.triangleLayer.fillColor = self.triangleColor.CGColor
@@ -41,12 +40,8 @@ public class UnreadCounter: UIView {
     }
 
     public var hideUnreadText: Bool {
-        get {
-            return self.countLabel.hidden
-        }
-        set {
-            self.countLabel.hidden = newValue
-        }
+        get { return self.countLabel.hidden }
+        set { self.countLabel.hidden = newValue }
     }
 
     public var unread: UInt = 0 {
@@ -65,7 +60,14 @@ public class UnreadCounter: UIView {
         self.triangleLayer.path = path
     }
 
-    private let numberFormatter = NSNumberFormatter()
+    private func unreadDidChange() {
+        if self.unread == 0 {
+            self.hidden = true
+        } else {
+            self.countLabel.text = self.numberFormatter.stringFromNumber(self.unread)
+            self.hidden = false
+        }
+    }
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -86,18 +88,5 @@ public class UnreadCounter: UIView {
         self.countLabel.autoPinEdgeToSuperviewEdge(.Trailing, withInset: 4)
     }
 
-    public required init?(coder aDecoder: NSCoder) {
-        fatalError("not supported")
-    }
-
-    // MARK: - Private
-
-    private func unreadDidChange() {
-        if self.unread == 0 {
-            self.hidden = true
-        } else {
-            self.countLabel.text = self.numberFormatter.stringFromNumber(self.unread)
-            self.hidden = false
-        }
-    }
+    public required init?(coder aDecoder: NSCoder) { fatalError("not supported") }
 }

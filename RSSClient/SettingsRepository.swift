@@ -8,6 +8,7 @@ public class SettingsRepository {
     private enum SettingsKeys: String {
         case QueryFeedsEnabled = "queryFeedsEnabled"
     }
+
     public var queryFeedsEnabled: Bool = false {
         didSet {
             self.informSubscribers()
@@ -30,6 +31,7 @@ public class SettingsRepository {
 
     private let subscribers = NSHashTable.weakObjectsHashTable()
     private let userDefaults: NSUserDefaults?
+
     public init(userDefaults: NSUserDefaults? = nil) {
         self.userDefaults = userDefaults
 

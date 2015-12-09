@@ -4,6 +4,10 @@ import Muon
 import Lepton
 import rNewsKit
 
+public func documentsDirectory() -> NSString {
+    return (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents")
+}
+
 public class LocalImportViewController: UIViewController {
     private var opmls: [(String, [Lepton.Item])] = []
     private var feeds: [(String, Muon.Feed)] = []
@@ -53,12 +57,12 @@ public class LocalImportViewController: UIViewController {
         self.tableViewController.tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
         let inset = CGRectGetHeight(self.navigationController!.navigationBar.frame) +
             CGRectGetHeight(UIApplication.sharedApplication().statusBarFrame)
-        tableViewTopOffset = self.tableViewController.tableView.autoPinEdgeToSuperviewEdge(.Top, withInset: inset)
+        self.tableViewTopOffset = self.tableViewController.tableView.autoPinEdgeToSuperviewEdge(.Top, withInset: inset)
 
         self.reloadItems()
 
         self.tableViewController.refreshControl = UIRefreshControl()
-        tableViewController.refreshControl?.addTarget(self, action: "reloadItems", forControlEvents: .ValueChanged)
+        self.tableViewController.refreshControl?.addTarget(self, action: "reloadItems", forControlEvents: .ValueChanged)
 
         self.navigationItem.title = NSLocalizedString("LocalImportViewController_Title", comment: "")
         let dismissTitle = NSLocalizedString("Generic_Dismiss", comment: "")
@@ -172,7 +176,7 @@ public class LocalImportViewController: UIViewController {
 
     private func reenableInteractionAndDismiss(activityIndicator: ActivityIndicator) {
         activityIndicator.removeFromSuperview()
-        dismiss()
+        self.dismiss()
     }
 }
 
@@ -195,8 +199,8 @@ extension LocalImportViewController: UITableViewDataSource {
 
     public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case 0: return opmls.count
-        case 1: return feeds.count
+        case 0: return self.opmls.count
+        case 1: return self.feeds.count
         default: return 0
         }
     }

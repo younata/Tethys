@@ -2,9 +2,7 @@ import UIKit
 import PureLayout
 
 public class ActivityIndicator: UIView {
-    public var message: String {
-        return self.label.text ?? ""
-    }
+    public var message: String { return self.label.text ?? "" }
 
     public func configureWithMessage(message: String) {
         self.label.text = message

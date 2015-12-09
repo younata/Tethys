@@ -4,21 +4,13 @@ import PureLayout
 public class ExplanationView: UIView {
 
     public var title: String {
-        get {
-            return self.titleLabel.text ?? ""
-        }
-        set {
-            self.titleLabel.text = newValue
-        }
+        get { return self.titleLabel.text ?? "" }
+        set { self.titleLabel.text = newValue }
     }
 
     public var detail: String {
-        get {
-            return self.detailLabel.text ?? ""
-        }
-        set {
-            self.detailLabel.text = newValue
-        }
+        get { return self.detailLabel.text ?? "" }
+        set { self.detailLabel.text = newValue }
     }
 
     internal var themeRepository: ThemeRepository? = nil {
@@ -28,7 +20,6 @@ public class ExplanationView: UIView {
     }
 
     private let titleLabel = UILabel(forAutoLayout: ())
-
     private let detailLabel = UILabel(forAutoLayout: ())
 
     public override init(frame: CGRect) {
@@ -54,13 +45,9 @@ public class ExplanationView: UIView {
         self.layer.cornerRadius = 5
     }
 
-    public convenience init(forAutoLayout: ()) {
-        self.init(frame: CGRectZero)
-    }
+    public convenience init(forAutoLayout: ()) { self.init(frame: CGRectZero) }
 
-    public required init?(coder aDecoder: NSCoder) {
-        fatalError()
-    }
+    public required init?(coder aDecoder: NSCoder) { fatalError() }
 }
 
 extension ExplanationView: ThemeRepositorySubscriber {

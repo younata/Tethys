@@ -78,8 +78,6 @@ public class SettingsViewController: UIViewController {
         }
     }
 
-    public lazy var userDefaults = NSUserDefaults.standardUserDefaults()
-
     public let tableView = UITableView(frame: CGRectZero, style: .Grouped)
 
     private lazy var themeRepository: ThemeRepository = {
@@ -140,9 +138,7 @@ public class SettingsViewController: UIViewController {
         self.oldTheme = self.themeRepository.theme
     }
 
-    public override func canBecomeFirstResponder() -> Bool {
-        return true
-    }
+    public override func canBecomeFirstResponder() -> Bool { return true }
 
     public override var keyCommands: [UIKeyCommand]? {
         var commands: [UIKeyCommand] = []
@@ -174,9 +170,7 @@ public class SettingsViewController: UIViewController {
         return commands
     }
 
-    internal func didHitChangeTheme(keyCommand: UIKeyCommand) {
-
-    }
+    internal func didHitChangeTheme(keyCommand: UIKeyCommand) {}
 
     internal func didTapDismiss() {
         if self.oldTheme != self.themeRepository.theme {
@@ -225,13 +219,16 @@ extension SettingsViewController: ThemeRepositorySubscriber {
     public func didChangeTheme() {
         self.navigationController?.navigationBar.barStyle = self.themeRepository.barStyle
         self.view.backgroundColor = self.themeRepository.backgroundColor
-        // swiftlint:disable line_length
-        self.tableView.backgroundColor = self.themeRepository.theme == .Default ? nil : self.themeRepository.backgroundColor
+
+        func colorWithDefault(color: UIColor) -> UIColor? {
+            return self.themeRepository.theme == .Default ? nil : color
+        }
+
+        self.tableView.backgroundColor = colorWithDefault(self.themeRepository.backgroundColor)
         for section in 0..<self.tableView.numberOfSections {
             let headerView = self.tableView.headerViewForSection(section)
-            headerView?.textLabel?.textColor = self.themeRepository.theme == .Default ? nil : self.themeRepository.tintColor
+            headerView?.textLabel?.textColor = colorWithDefault(self.themeRepository.tintColor)
         }
-        // swiftlint:enable line_length
     }
 }
 

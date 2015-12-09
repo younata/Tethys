@@ -2,14 +2,9 @@ import UIKit
 
 public class SwitchTableViewCell: UITableViewCell {
     private var _textLabel = UILabel(forAutoLayout: ())
+    public override var textLabel: UILabel? { return self._textLabel }
 
-    public override var textLabel: UILabel? {
-        return self._textLabel
-    }
-
-    public override var detailTextLabel: UILabel? {
-        return nil
-    }
+    public override var detailTextLabel: UILabel? { return nil }
 
     public var themeRepository: ThemeRepository? = nil {
         didSet {
@@ -18,8 +13,11 @@ public class SwitchTableViewCell: UITableViewCell {
     }
 
     public let theSwitch: UISwitch = UISwitch(forAutoLayout: ())
+    public var onTapSwitch: ((UISwitch) -> (Void))? = nil
 
-    public var onTapSwitch: (UISwitch) -> (Void) = {_ in }
+    @objc private func didTapSwitch() {
+        self.onTapSwitch?(self.theSwitch)
+    }
 
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -35,13 +33,7 @@ public class SwitchTableViewCell: UITableViewCell {
         self.theSwitch.addTarget(self, action: "didTapSwitch", forControlEvents: .ValueChanged)
     }
 
-    internal func didTapSwitch() {
-        self.onTapSwitch(self.theSwitch)
-    }
-
-    public required init?(coder aDecoder: NSCoder) {
-        fatalError()
-    }
+    public required init?(coder aDecoder: NSCoder) { fatalError() }
 }
 
 extension SwitchTableViewCell: ThemeRepositorySubscriber {

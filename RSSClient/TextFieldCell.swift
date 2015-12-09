@@ -10,7 +10,7 @@ public class TextFieldCell: UITableViewCell {
         return textField
     }()
 
-    public var onTextChange: (String?) -> Void = {(_) in }
+    public var onTextChange: ((String?) -> Void)? = nil
 
     public var showValidator: Bool = false {
         didSet {
@@ -30,9 +30,7 @@ public class TextFieldCell: UITableViewCell {
         return validView
     }()
 
-    public var isValid: Bool {
-        return self.validView.state == .Valid
-    }
+    public var isValid: Bool { return self.validView.state == .Valid }
 
     public func setValid(valid: Bool) {
         self.validView.endValidating(valid)
@@ -52,9 +50,7 @@ public class TextFieldCell: UITableViewCell {
         self.selectionStyle = .None
     }
 
-    public required init?(coder aDecoder: NSCoder) {
-        fatalError("nope")
-    }
+    public required init?(coder aDecoder: NSCoder) { fatalError("nope") }
 }
 
 extension TextFieldCell: ThemeRepositorySubscriber {
@@ -73,7 +69,7 @@ extension TextFieldCell: UITextFieldDelegate {
             if self.showValidator {
                 self.validView.beginValidating()
             }
-            self.onTextChange(changedText)
+            self.onTextChange?(changedText)
 
             return true
     }

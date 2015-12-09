@@ -157,19 +157,6 @@ public class ThemeRepository: NSObject, Injectable {
 
     private let subscribers = NSHashTable.weakObjectsHashTable()
 
-    public init(userDefaults: NSUserDefaults?) {
-        self.userDefaults = userDefaults
-    }
-
-    deinit {
-        self.userDefaults?.synchronize()
-    }
-
-    public required init(injector: Ra.Injector) {
-        self.userDefaults = injector.create(NSUserDefaults.self) as? NSUserDefaults ??
-            NSUserDefaults.standardUserDefaults()
-    }
-
     public func addSubscriber(subscriber: ThemeRepositorySubscriber) {
         self.subscribers.addObject(subscriber)
         subscriber.didChangeTheme()
@@ -210,5 +197,18 @@ public class ThemeRepository: NSObject, Injectable {
         } else {
             self.values[key] = color
         }
+    }
+
+    public init(userDefaults: NSUserDefaults?) {
+        self.userDefaults = userDefaults
+    }
+
+    public required init(injector: Ra.Injector) {
+        self.userDefaults = injector.create(NSUserDefaults.self) as? NSUserDefaults ??
+            NSUserDefaults.standardUserDefaults()
+    }
+
+    deinit {
+        self.userDefaults?.synchronize()
     }
 }

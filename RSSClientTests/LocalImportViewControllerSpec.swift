@@ -103,7 +103,7 @@ class LocalImportViewControllerSpec: QuickSpec {
             }
 
             it("should update the navigation bar background") {
-                expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
+                expect(navigationController.navigationBar.barStyle).to(equal(themeRepository.barStyle))
             }
         }
 

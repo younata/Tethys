@@ -70,10 +70,7 @@ public class FeedsTableViewController: UIViewController {
         return view
     }()
 
-    public lazy var loadingView: ActivityIndicator = {
-        let view = ActivityIndicator(forAutoLayout: ())
-        return view
-    }()
+    public let loadingView = ActivityIndicator(forAutoLayout: ())
 
     private var feeds: [Feed] = []
     private let tableViewController = UITableViewController(style: .Plain)
@@ -178,9 +175,9 @@ public class FeedsTableViewController: UIViewController {
             UIKeyCommand(input: "i", modifierFlags: [.Command, .Shift], action: "importFromLocal"),
             UIKeyCommand(input: ",", modifierFlags: .Command, action: "presentSettings"),
         ]
-        // swiftlint:disable line_length
         if self.settingsRepository.queryFeedsEnabled {
-            commands.insert(UIKeyCommand(input: "i", modifierFlags: [.Command, .Alternate], action: "createQueryFeed"), atIndex: 3)
+            let command = UIKeyCommand(input: "i", modifierFlags: [.Command, .Alternate], action: "createQueryFeed")
+            commands.insert(command, atIndex: 3)
         }
         if #available(iOS 9.0, *) {
             var discoverabilityTitles = [
@@ -190,37 +187,27 @@ public class FeedsTableViewController: UIViewController {
                 NSLocalizedString("FeedsTableViewController_Command_Settings", comment: ""),
             ]
             if self.settingsRepository.queryFeedsEnabled {
-                discoverabilityTitles.insert(NSLocalizedString("FeedsTableViewController_Command_QueryFeed", comment: ""), atIndex: 3)
+                let titleString = NSLocalizedString("FeedsTableViewController_Command_QueryFeed", comment: "")
+                discoverabilityTitles.insert(titleString, atIndex: 3)
             }
             for (idx, cmd) in commands.enumerate() {
                 cmd.discoverabilityTitle = discoverabilityTitles[idx]
             }
         }
-        // swiftlint:enable line_length
         return commands
     }
 
     // MARK - Private/Internal
 
-    internal func importFromWeb() {
-        self.presentController(FindFeedViewController.self)
-    }
+    internal func importFromWeb() { self.presentController(FindFeedViewController.self) }
 
-    internal func importFromLocal() {
-        self.presentController(LocalImportViewController.self)
-    }
+    @objc private func importFromLocal() { self.presentController(LocalImportViewController.self) }
 
-    internal func createQueryFeed() {
-        self.presentController(QueryFeedViewController.self)
-    }
+    @objc private func createQueryFeed() { self.presentController(QueryFeedViewController.self) }
 
-    internal func search() {
-        self.searchBar.becomeFirstResponder()
-    }
+    @objc private func search() { self.searchBar.becomeFirstResponder() }
 
-    internal func presentSettings() {
-        self.presentController(SettingsViewController.self)
-    }
+    @objc private func presentSettings() { self.presentController(SettingsViewController.self) }
 
     private func presentController(controller: NSObject.Type) {
         if let viewController = self.injector?.create(controller) as? UIViewController {
@@ -283,7 +270,7 @@ public class FeedsTableViewController: UIViewController {
         }
     }
 
-    internal func didTapAddFeed() {
+    @objc private func didTapAddFeed() {
         guard self.navigationController?.visibleViewController == self else { return }
 
         if self.dropDownMenu.isOpen {

@@ -77,9 +77,7 @@ public class ArticleCell: UITableViewCell {
             ofView: self.contentView, withMultiplier: 0.25)
     }
 
-    public required init(coder aDecoder: NSCoder) {
-        fatalError("")
-    }
+    public required init(coder aDecoder: NSCoder) { fatalError() }
 }
 
 extension ArticleCell: ThemeRepositorySubscriber {

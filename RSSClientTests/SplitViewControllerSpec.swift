@@ -31,7 +31,7 @@ class SplitViewControllerSpec: QuickSpec {
                 expect(subject.preferredStatusBarStyle()).to(equal(themeRepository.statusBarStyle))
             }
         }
-        
+
         it("should hide the detail on startup") {
             expect(subject.delegate?.splitViewController!(subject, collapseSecondaryViewController: detail, ontoPrimaryViewController: master)).to(beTruthy())
         }

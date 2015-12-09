@@ -88,7 +88,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
             context("when there is only one article") {
                 beforeEach {
-                    subject.article = article
+                    subject.setArticle(article, read: false, show: false)
                     subject.articles = CoreDataBackedArray([article])
                     subject.lastArticleIndex = 0
                 }
@@ -111,7 +111,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
             context("when at the beginning of an article list") {
                 beforeEach {
-                    subject.article = article2
+                    subject.setArticle(article2, read: false, show: false)
                     subject.articles = CoreDataBackedArray([article, article1, article2, article3])
                     subject.lastArticleIndex = 0
                 }
@@ -136,7 +136,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
             context("when at the end of an article list") {
                 beforeEach {
-                    subject.article = article3
+                    subject.setArticle(article3, read: false, show: false)
                     subject.articles = CoreDataBackedArray([article, article1, article2, article3])
                     subject.lastArticleIndex = 3
                 }
@@ -161,7 +161,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
             context("when viewing an article that does not have a link") {
                 beforeEach {
-                    subject.article = article1
+                    subject.setArticle(article1, read: false, show: false)
                     subject.articles = CoreDataBackedArray([article, article1, article2, article3])
                     subject.lastArticleIndex = 1
                 }
@@ -186,7 +186,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
             context("when in the middle of an article list") {
                 beforeEach {
-                    subject.article = article2
+                    subject.setArticle(article2, read: false, show: false)
                     subject.articles = CoreDataBackedArray([article, article1, article2, article3])
                     subject.lastArticleIndex = 2
                 }

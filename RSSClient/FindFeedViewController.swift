@@ -47,7 +47,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         return self.injector?.create(ThemeRepository.self) as? ThemeRepository
     }()
 
-    private lazy var placeholderAttributes: [String: AnyObject] = [NSForegroundColorAttributeName: UIColor.blackColor()]
+    private let placeholderAttributes: [String: AnyObject] = [NSForegroundColorAttributeName: UIColor.blackColor()]
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -110,6 +110,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
         self.themeRepository?.addSubscriber(self)
     }
+
     deinit {
         self.webContent.removeObserver(self, forKeyPath: "estimatedProgress")
     }

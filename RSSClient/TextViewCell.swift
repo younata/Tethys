@@ -17,7 +17,7 @@ public class TextViewCell: UITableViewCell {
         return self.reloadParser()
     }()
 
-    public var onTextChange: (String?) -> Void = {_ in }
+    public var onTextChange: ((String?) -> Void)? = nil
 
     public var themeRepository: ThemeRepository? = nil {
         didSet {
@@ -77,6 +77,6 @@ extension TextViewCell: ThemeRepositorySubscriber {
 extension TextViewCell: UITextViewDelegate {
     public func textViewDidChange(textView: UITextView) {
         self.applyStyling()
-        self.onTextChange(textView.text)
+        self.onTextChange?(textView.text)
     }
 }

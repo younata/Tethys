@@ -184,7 +184,6 @@
 		8999873B1B483332003C1AF5 /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 898C48C41B3D98F60097045A /* test.jpg */; };
 		8999873C1B483332003C1AF5 /* test.opml in Resources */ = {isa = PBXBuildFile; fileRef = 89EF4FD71A96852D0052A82F /* test.opml */; };
 		899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */; };
-		89A3417C1B1435750000C60B /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A3417B1B1435750000C60B /* Helpers.swift */; };
 		89AA8A8E1B536B98000E2C88 /* SyntaxKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89AA8A8C1B536B90000E2C88 /* SyntaxKit.framework */; };
 		89AA8A911B536BEB000E2C88 /* JavaScript.tmLanguage in Resources */ = {isa = PBXBuildFile; fileRef = 89AA8A901B536BEB000E2C88 /* JavaScript.tmLanguage */; };
 		89AA8A931B537048000E2C88 /* mac_classic.tmTheme in Resources */ = {isa = PBXBuildFile; fileRef = 89AA8A921B537048000E2C88 /* mac_classic.tmTheme */; };
@@ -520,7 +519,6 @@
 		899823AF1B30BA7E00818755 /* NSUserActivity+rNewsTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserActivity+rNewsTests.h"; sourceTree = "<group>"; };
 		899823B01B30BA7E00818755 /* NSUserActivity+rNewsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserActivity+rNewsTests.m"; sourceTree = "<group>"; };
 		899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindFeedViewControllerSpec.swift; sourceTree = "<group>"; };
-		89A3417B1B1435750000C60B /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		89A3417E1B150D1B0000C60B /* OPMLManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OPMLManager.swift; path = ../RSSClient/OPMLManager.swift; sourceTree = "<group>"; };
 		89A341811B150DA90000C60B /* OPMLManagerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OPMLManagerSpec.swift; path = ../RSSClientTests/OPMLManagerSpec.swift; sourceTree = "<group>"; };
 		89AA8A8C1B536B90000E2C88 /* SyntaxKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SyntaxKit.framework; path = Carthage/Build/iOS/SyntaxKit.framework; sourceTree = SOURCE_ROOT; };
@@ -796,6 +794,34 @@
 			path = en.lproj;
 			sourceTree = SOURCE_ROOT;
 		};
+		896320921C1779DE00B7C980 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				89E2A33C1B6A856900A40D4E /* SettingsViewController.swift */,
+				89735ABF1C06DAA70032E09C /* FeedsListController.swift */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
+		896320931C1779F900B7C980 /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				8918D4DA1B8598D100DCDE0E /* ThemeRepository.swift */,
+				89F98BA51BA07DC6005C3CA8 /* SettingsRepository.swift */,
+			);
+			name = Repositories;
+			sourceTree = "<group>";
+		};
+		896320941C17E5D300B7C980 /* UIApplicationProtocols */ = {
+			isa = PBXGroup;
+			children = (
+				89F98BB41BA13056005C3CA8 /* UrlOpener.swift */,
+				89D970C21B392B0300ED84B8 /* LocalNotificationSource.swift */,
+				89735ABD1C0698370032E09C /* QuickActionRepository.swift */,
+			);
+			name = UIApplicationProtocols;
+			sourceTree = "<group>";
+		};
 		89635F8A1A13C2E30052C248 /* RSSClient-OSX */ = {
 			isa = PBXGroup;
 			children = (
@@ -942,13 +968,10 @@
 				89EF4FE31A97DAD70052A82F /* Application */,
 				89C830CC19DC67B9009924DA /* UnreadCounter.swift */,
 				898F6E111B129AB6000D343D /* ActivityIndicator.swift */,
-				89A3417B1B1435750000C60B /* Helpers.swift */,
-				89E2A33C1B6A856900A40D4E /* SettingsViewController.swift */,
-				89735ABF1C06DAA70032E09C /* FeedsListController.swift */,
-				89F98BA21BA079DE005C3CA8 /* Cells */,
-				8918D4DA1B8598D100DCDE0E /* ThemeRepository.swift */,
-				89F98BA51BA07DC6005C3CA8 /* SettingsRepository.swift */,
 				8918D4A31B8115F800DCDE0E /* ExplanationView.swift */,
+				896320921C1779DE00B7C980 /* Settings */,
+				89F98BA21BA079DE005C3CA8 /* Generic Cells */,
+				896320931C1779F900B7C980 /* Repositories */,
 				89F98BAF1BA0E694005C3CA8 /* Documentation */,
 				89C830B119D7D2B7009924DA /* Feeds */,
 				89C830B419D7D2D2009924DA /* Articles */,
@@ -1146,23 +1169,21 @@
 			children = (
 				89C8307819D730E9009924DA /* AppDelegate.swift */,
 				AE4356301A7AE4FE00A961B9 /* InjectorModule.swift */,
+				896320941C17E5D300B7C980 /* UIApplicationProtocols */,
 				89C204BC1A73F72800C792D2 /* SplitViewController.swift */,
-				89F98BB41BA13056005C3CA8 /* UrlOpener.swift */,
 				89C204C31A7400D100C792D2 /* NotificationHandler.swift */,
-				89D970C21B392B0300ED84B8 /* LocalNotificationSource.swift */,
 				89D970BC1B3929A600ED84B8 /* BackgroundFetchHandler.swift */,
-				89735ABD1C0698370032E09C /* QuickActionRepository.swift */,
 			);
 			name = Application;
 			sourceTree = "<group>";
 		};
-		89F98BA21BA079DE005C3CA8 /* Cells */ = {
+		89F98BA21BA079DE005C3CA8 /* Generic Cells */ = {
 			isa = PBXGroup;
 			children = (
 				89F98BA01BA079A3005C3CA8 /* SwitchTableViewCell.swift */,
 				89F98BA31BA079EA005C3CA8 /* TableViewCell.swift */,
 			);
-			name = Cells;
+			name = "Generic Cells";
 			sourceTree = "<group>";
 		};
 		89F98BAF1BA0E694005C3CA8 /* Documentation */ = {
@@ -1717,7 +1738,6 @@
 				89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */,
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
 				89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */,
-				89A3417C1B1435750000C60B /* Helpers.swift in Sources */,
 				89F98B9F1B9FC65A005C3CA8 /* ScreenEdgePanGestureRecognizer.swift in Sources */,
 				8918D4A41B8115F800DCDE0E /* ExplanationView.swift in Sources */,
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,

@@ -131,7 +131,6 @@ internal class DataUtility {
                             }
                             return $0
                         }
-                        return
                     }
                 } catch { }
             }

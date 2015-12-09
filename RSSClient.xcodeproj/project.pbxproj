@@ -1251,7 +1251,7 @@
 				8943041C1B45089A000078DC /* Sources */,
 				8943041D1B45089A000078DC /* Frameworks */,
 				8943041E1B45089A000078DC /* Headers */,
-				8943041F1B45089A000078DC /* Resources */,
+				896320951C17FF8300B7C980 /* Lint */,
 			);
 			buildRules = (
 			);
@@ -1475,13 +1475,6 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		8943041F1B45089A000078DC /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		894304281B45089A000078DC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1568,6 +1561,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		896320951C17FF8300B7C980 /* Lint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Lint;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"SwiftLint does not exist, download from https://github.com/realm/SwiftLint\"\nfi";
+		};
 		89CAD4C01BA3D36E006D79FC /* Embed Carthage Libraries */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 12;

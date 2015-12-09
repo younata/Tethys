@@ -17,27 +17,27 @@ public class OPMLManager: NSObject, Injectable {
         self.dataRepository?.addSubscriber(self)
     }
 
-    // swiftlint:disable function_body_length
+    private func feedAlreadyExists(existingFeeds: [Feed], item: Lepton.Item) -> Bool {
+        return existingFeeds.filter({
+            let titleMatches = item.title == $0.title
+            let queryMatches = item.query == $0.query
+            let tagsMatches = (item.tags ?? []) == $0.tags
+            let urlMatches: Bool
+            if let urlString = item.xmlURL {
+                urlMatches = NSURL(string: urlString) == $0.url
+            } else {
+                urlMatches = $0.url == nil
+            }
+            return titleMatches && queryMatches && tagsMatches && urlMatches
+        }).isEmpty == false
+    }
+
     public func importOPML(opml: NSURL, completion: ([Feed]) -> Void) {
         guard let dataRepository = self.dataRepository else {
             completion([])
             return
         }
         dataRepository.feeds {existingFeeds in
-            let feedAlreadyExists: (Lepton.Item) -> (Bool) = {item in
-                return existingFeeds.filter({
-                    let titleMatches = item.title == $0.title
-                    let queryMatches = item.query == $0.query
-                    let tagsMatches = (item.tags ?? []) == $0.tags
-                    let urlMatches: Bool
-                    if let urlString = item.xmlURL {
-                        urlMatches = NSURL(string: urlString) == $0.url
-                    } else {
-                        urlMatches = $0.url == nil
-                    }
-                    return titleMatches && queryMatches && tagsMatches && urlMatches
-                }).isEmpty == false
-            }
             do {
                 let text = try String(contentsOfURL: opml, encoding: NSUTF8StringEncoding)
                 let parser = Lepton.Parser(text: text)
@@ -45,7 +45,7 @@ public class OPMLManager: NSObject, Injectable {
                     var feeds: [Feed] = []
 
                     for item in items {
-                        if feedAlreadyExists(item) {
+                        if self.feedAlreadyExists(existingFeeds, item: item) {
                             continue
                         }
                         if item.isQueryFeed() {
@@ -124,7 +124,7 @@ public class OPMLManager: NSObject, Injectable {
 
     public func writeOPML() {
         let opmlLocation = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
-        dataRepository?.feeds {feeds in
+        self.dataRepository?.feeds {feeds in
             do {
                 try self.generateOPMLContents(feeds).writeToFile(opmlLocation, atomically: true,
                     encoding: NSUTF8StringEncoding)

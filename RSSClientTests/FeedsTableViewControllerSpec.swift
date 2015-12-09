@@ -302,6 +302,16 @@ class FeedsTableViewControllerSpec: QuickSpec {
                         expect(cell.feed).to(equal(feeds[0]))
                     }
                 }
+
+                describe("filtering down to no feeds") {
+                    beforeEach {
+                        subject.searchBar.delegate?.searchBar?(subject.searchBar, textDidChange: "aoeu")
+                    }
+
+                    it("should not show the onboarding view") {
+                        expect(subject.onboardingView.superview).to(beNil())
+                    }
+                }
             }
 
             describe("tapping the settings button") {

@@ -2,16 +2,19 @@ import Foundation
 import Ra
 import Lepton
 
-public class OPMLManager: Injectable {
-
+public class OPMLManager: NSObject, Injectable {
     private let dataRepository: DataRepository?
     private let mainQueue: NSOperationQueue?
     private let importQueue: NSOperationQueue?
 
     required public init(injector: Injector) {
-        dataRepository = injector.create(DataRepository.self) as? DataRepository
-        mainQueue = injector.create(kMainQueue) as? NSOperationQueue
-        importQueue = injector.create(kBackgroundQueue) as? NSOperationQueue
+        self.dataRepository = injector.create(DataRepository.self) as? DataRepository
+        self.mainQueue = injector.create(kMainQueue) as? NSOperationQueue
+        self.importQueue = injector.create(kBackgroundQueue) as? NSOperationQueue
+
+        super.init()
+
+        self.dataRepository?.addSubscriber(self)
     }
 
     public func importOPML(opml: NSURL, completion: ([Feed]) -> Void) {
@@ -126,5 +129,16 @@ public class OPMLManager: Injectable {
                     encoding: NSUTF8StringEncoding)
             } catch _ {}
         }
+    }
+}
+
+extension OPMLManager: DataSubscriber {
+    public func markedArticle(article: Article, asRead read: Bool) {}
+    public func deletedArticle(article: Article) {}
+    public func willUpdateFeeds() {}
+    public func didUpdateFeedsProgress(finished: Int, total: Int) {}
+
+    public func didUpdateFeeds(feeds: [Feed]) {
+        self.writeOPML()
     }
 }

@@ -41,5 +41,9 @@ class KitModuleSpec: QuickSpec {
         it("should bind a DataWriter") {
             expect(injector.create(DataWriter.self) is DataRepository).to(beTruthy())
         }
+
+        it("should bind an opml manager with a singleton scope") {
+            expect(injector.create(OPMLManager.self) as? OPMLManager).to(beIdenticalTo(injector.create(OPMLManager.self) as? OPMLManager))
+        }
     }
 }

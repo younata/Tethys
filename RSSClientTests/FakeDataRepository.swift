@@ -3,6 +3,11 @@ import CoreData
 @testable import rNewsKit
 
 class FakeDataRepository : DataRepository {
+    var subscribers = Array<DataSubscriber>()
+    override func addSubscriber(subscriber: DataSubscriber) {
+        self.subscribers.append(subscriber)
+    }
+
     var lastSavedFeed: Feed? = nil
     override func saveFeed(feed: Feed) {
         lastSavedFeed = feed

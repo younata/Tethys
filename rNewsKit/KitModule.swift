@@ -37,6 +37,9 @@ public class KitModule: NSObject, Ra.InjectorModule {
         injector.bind(DataRetriever.self, to: dataRepository)
         injector.bind(DataWriter.self, to: dataRepository)
         injector.bind(DataRepository.self, to: dataRepository)
+
+        let opmlManager = OPMLManager(injector: injector)
+        injector.bind(OPMLManager.self, to: opmlManager)
     }
 
     private func ManagedObjectContext() -> NSManagedObjectContext {

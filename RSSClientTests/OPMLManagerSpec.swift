@@ -82,12 +82,73 @@ class OPMLManagerSpec: QuickSpec {
                 subject.writeOPML()
             }
 
+            afterEach {
+                let fileManager = NSFileManager.defaultManager()
+                let file = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
+                let _ = try? fileManager.removeItemAtPath(file)
+            }
+
             it("should write an OPML file to ~/Documents/rnews.opml") {
                 let fileManager = NSFileManager.defaultManager()
                 let file = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
                 expect(fileManager.fileExistsAtPath(file)).to(beTruthy())
 
                 let text = try! String(contentsOfFile: file, encoding: NSUTF8StringEncoding)
+
+                let parser = Lepton.Parser(text: text)
+
+                var testItems: [Lepton.Item] = []
+
+                parser.success {items in
+                    testItems = items
+                    expect(items.count).to(equal(2))
+                    if (items.count != 2) {
+                        return
+                    }
+                    let a = items[0]
+                    expect(a.title).to(equal("a"))
+                    expect(a.tags).to(equal(["a", "b", "c"]))
+                    let c = items[1]
+                    expect(c.title).to(equal("e"))
+                    expect(c.tags).to(equal(["dad"]))
+                }
+
+                parser.main()
+
+                expect(testItems).toNot(beEmpty())
+            }
+        }
+
+        describe("When feeds change") {
+            beforeEach {
+                let feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "", query: nil,
+                    tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let feed2 = Feed(title: "d", url: nil, summary: "", query: "", tags: [],
+                    waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let feed3 = Feed(title: "e", url: NSURL(string: "http://example.com/otherfeed"), summary: "", query: nil,
+                    tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+
+                let feeds = [feed1, feed2, feed3]
+
+                dataRepository.feedsList = feeds
+
+                for subscriber in dataRepository.subscribers {
+                    subscriber.didUpdateFeeds(feeds)
+                }
+            }
+
+            afterEach {
+                let fileManager = NSFileManager.defaultManager()
+                let file = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
+                let _ = try? fileManager.removeItemAtPath(file)
+            }
+
+            it("should write an OPML file to ~/Documents/rnews.opml") {
+                let fileManager = NSFileManager.defaultManager()
+                let file = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
+                expect(fileManager.fileExistsAtPath(file)).to(beTruthy())
+
+                guard let text = try? String(contentsOfFile: file, encoding: NSUTF8StringEncoding) else { return }
 
                 let parser = Lepton.Parser(text: text)
 

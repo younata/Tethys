@@ -14,6 +14,7 @@ class BackgroundFetchHandlerSpec: QuickSpec {
         beforeEach {
             injector = Injector()
             dataReadWriter = FakeDataReadWriter()
+            dataReadWriter.feedsList = []
             injector.bind(DataRetriever.self, to: dataReadWriter)
             injector.bind(DataWriter.self, to: dataReadWriter)
             subject = injector.create(BackgroundFetchHandler.self) as! BackgroundFetchHandler

@@ -71,6 +71,12 @@ public class FeedsTableViewController: UIViewController {
         return view
     }()
 
+    public lazy var loadingView: ActivityIndicator = {
+        let view = ActivityIndicator(forAutoLayout: ())
+        view.configureWithMessage(NSLocalizedString("FeedsTableViewController_LoadingFeeds", comment: ""))
+        return view
+    }()
+
     private var feeds: [Feed] = []
 
     private let tableViewController = UITableViewController(style: .Plain)
@@ -114,6 +120,9 @@ public class FeedsTableViewController: UIViewController {
         self.view.addSubview(self.dropDownMenu)
         self.dropDownMenu.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
         self.menuTopOffset = self.dropDownMenu.autoPinEdgeToSuperviewEdge(.Top)
+
+        self.navigationController?.view.addSubview(self.loadingView)
+        self.loadingView.autoPinEdgesToSuperviewEdges()
 
         let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "didTapAddFeed")
         self.navigationItem.rightBarButtonItems = [addButton, self.tableViewController.editButtonItem()]
@@ -237,6 +246,7 @@ public class FeedsTableViewController: UIViewController {
                 self.refreshView.endRefreshing()
             }
 
+            self.loadingView.removeFromSuperview()
             self.onboardingView.removeFromSuperview()
             if sortedFeeds.isEmpty && (tag == nil || tag?.isEmpty == true) {
                 self.view.addSubview(self.onboardingView)

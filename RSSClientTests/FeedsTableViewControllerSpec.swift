@@ -45,13 +45,13 @@ class FeedsTableViewControllerSpec: QuickSpec {
             feeds = [feed1, feed2]
 
             dataReadWriter.feedsList = feeds
-
-            expect(subject.view).toNot(beNil())
-            subject.viewWillAppear(false)
         }
 
         describe("listening to theme repository updates") {
             beforeEach {
+                expect(subject.view).toNot(beNil())
+                subject.viewWillAppear(false)
+
                 themeRepository.theme = .Dark
             }
 
@@ -76,6 +76,33 @@ class FeedsTableViewControllerSpec: QuickSpec {
             it("should update the refreshView colors") {
                 expect(subject.refreshView.scenebackgroundColor).to(equal(themeRepository.backgroundColor))
                 expect(subject.refreshView.textColor).to(equal(themeRepository.textColor))
+            }
+        }
+
+        context("before feed results come back") {
+            beforeEach {
+                dataReadWriter.feedsList = nil
+
+                expect(subject.view).toNot(beNil())
+                subject.viewWillAppear(false)
+            }
+
+            it("should show an activity indicator") {
+                expect(subject.loadingView.superview).toNot(beNil())
+            }
+
+            it("should have the correct message for the activity indicator") {
+                expect(subject.loadingView.message).to(equal("Loading Feeds"))
+            }
+
+            describe("when the feed results come back") {
+                beforeEach {
+                    dataReadWriter.feedsCallback?([])
+                }
+
+                it("should hide the activity indicator") {
+                    expect(subject.loadingView.superview).to(beNil())
+                }
             }
         }
 

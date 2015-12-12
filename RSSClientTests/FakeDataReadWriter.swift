@@ -9,20 +9,25 @@ class FakeDataReadWriter : DataRetriever, DataWriter {
         callback(tagsList)
     }
 
-    var feedsList: [Feed] = []
+    var feedsList: [Feed]? = nil
     var didAskForFeeds = false
+    var feedsCallback: (([Feed]) -> (Void))? = nil
     func feeds(callback: ([Feed]) -> (Void)) {
         didAskForFeeds = true
-        return callback(feedsList)
+        feedsCallback = callback
+        if let feedsList = feedsList {
+            return callback(feedsList)
+        }
     }
 
     func feedsMatchingTag(tag: String?, callback: ([Feed]) -> (Void)) {
         didAskForFeeds = true
-        guard let theTag = tag where !theTag.isEmpty else {
-            return callback(feedsList)
+        feedsCallback = callback
+        guard let theTag = tag, feedslist = feedsList where !theTag.isEmpty else {
+            return self.feeds(callback)
         }
 
-        let feeds = feedsList.filter {feed in
+        let feeds = feedslist.filter {feed in
             let tags = feed.tags
             for t in tags {
                 if t.rangeOfString(theTag) != nil {

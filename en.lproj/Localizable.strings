@@ -18,6 +18,7 @@
 "FeedsTableViewController_Onboarding_Title" = "Welcome to rNews!";
 "FeedsTableViewController_Onboarding_Detail" = "Tap the '+' button to find feeds to follow.";
 "FeedsTableViewController_Title" = "Feeds";
+"FeedsTableViewController_LoadingFeeds" = "Loading Feeds";
 "FeedsTableViewController_Command_Search" = "Filter by tags";
 "FeedsTableViewController_Command_ImportWeb" = "Add from Web";
 "FeedsTableViewController_Command_ImportLocal" = "Add from Local";

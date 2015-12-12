@@ -103,11 +103,9 @@ public class FeedsTableViewController: UIViewController {
         self.updateRefreshViewSize(self.view.bounds.size)
         self.tableView.delegate = self
 
-        self.view.addSubview(self.updateBar)
+        self.navigationController?.navigationBar.addSubview(self.updateBar)
         if let _ = self.updateBar.superview {
-            self.updateBar.autoPinEdgeToSuperviewEdge(.Leading)
-            self.updateBar.autoPinEdgeToSuperviewEdge(.Trailing)
-            self.updateBar.autoPinEdgeToSuperviewEdge(.Top, withInset: 64)
+            self.updateBar.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
             self.updateBar.autoSetDimension(.Height, toSize: 3)
         }
 
@@ -365,7 +363,7 @@ extension FeedsTableViewController: DataSubscriber {
     }
 
     public func didUpdateFeedsProgress(finished: Int, total: Int) {
-        self.updateBar.progress = Float(finished) / Float(total)
+        self.updateBar.setProgress(Float(finished) / Float(total), animated: true)
     }
 
     public func didUpdateFeeds(feeds: [Feed]) {

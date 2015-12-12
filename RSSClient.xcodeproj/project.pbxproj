@@ -442,8 +442,6 @@
 		894304511B450C19000078DC /* CoreDataFeed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataFeed.swift; sourceTree = "<group>"; };
 		894304531B450C6A000078DC /* CoreDataEnclosure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataEnclosure.swift; sourceTree = "<group>"; };
 		894896EB1A16F1130030EB6E /* LocalImportViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalImportViewController.swift; sourceTree = "<group>"; };
-		894C0C351A1329FB008229A4 /* AMPopTip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMPopTip.h; sourceTree = "<group>"; };
-		894C0C361A1329FB008229A4 /* AMPopTip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMPopTip.m; sourceTree = "<group>"; };
 		8953B1571B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIApplication+rNewsSpec.swift"; sourceTree = "<group>"; };
 		8957799D19E62C7100548418 /* RSSClientTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSSClientTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		895901A11A2FFDDD002E2C62 /* RSSClient 1. 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1. 2.xcdatamodel"; sourceTree = "<group>"; };
@@ -775,16 +773,6 @@
 			name = "Supporting files";
 			sourceTree = "<group>";
 		};
-		894C0C341A1329FB008229A4 /* AMPopTip */ = {
-			isa = PBXGroup;
-			children = (
-				894C0C351A1329FB008229A4 /* AMPopTip.h */,
-				894C0C361A1329FB008229A4 /* AMPopTip.m */,
-			);
-			name = AMPopTip;
-			path = AMPopTip/AMPopTip;
-			sourceTree = "<group>";
-		};
 		895901AE1A32B61A002E2C62 /* en.lproj */ = {
 			isa = PBXGroup;
 			children = (
@@ -933,7 +921,6 @@
 		89C8306A19D730E9009924DA = {
 			isa = PBXGroup;
 			children = (
-				89EF4FC61A9681650052A82F /* Vendor */,
 				89C8307519D730E9009924DA /* RSSClient */,
 				89C8308E19D730E9009924DA /* RSSClientTests */,
 				894304221B45089A000078DC /* rNewsKit */,
@@ -1089,14 +1076,6 @@
 				898131771AFC877A0090FA7F /* LocalImportViewControllerSpec.swift */,
 			);
 			name = "Importing Feeds";
-			sourceTree = "<group>";
-		};
-		89EF4FC61A9681650052A82F /* Vendor */ = {
-			isa = PBXGroup;
-			children = (
-				894C0C341A1329FB008229A4 /* AMPopTip */,
-			);
-			name = Vendor;
 			sourceTree = "<group>";
 		};
 		89EF4FDC1A97D99B0052A82F /* Editing Feeds */ = {

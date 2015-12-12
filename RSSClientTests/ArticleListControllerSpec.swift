@@ -104,6 +104,10 @@ class ArticleListControllerSpec: QuickSpec {
             expect(subject.view).toNot(beNil())
         }
 
+        it("dismisses the keyboard upon drag") {
+            expect(subject.tableView.keyboardDismissMode).to(equal(UIScrollViewKeyboardDismissMode.OnDrag))
+        }
+
         describe("listening to theme repository updates") {
             beforeEach {
                 themeRepository.theme = .Dark

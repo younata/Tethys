@@ -47,6 +47,11 @@ class FeedsTableViewControllerSpec: QuickSpec {
             dataReadWriter.feedsList = feeds
         }
 
+        it("dismisses the keyboard upon drag") {
+            expect(subject.view).toNot(beNil())
+            expect(subject.tableView.keyboardDismissMode).to(equal(UIScrollViewKeyboardDismissMode.OnDrag))
+        }
+
         describe("listening to theme repository updates") {
             beforeEach {
                 expect(subject.view).toNot(beNil())

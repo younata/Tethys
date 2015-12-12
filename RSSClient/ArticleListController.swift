@@ -37,6 +37,7 @@ public class ArticleListController: UITableViewController, DataSubscriber {
         super.viewDidLoad()
 
         self.tableView.estimatedRowHeight = 40
+        self.tableView.keyboardDismissMode = .OnDrag
         self.tableView.registerClass(ArticleCell.self, forCellReuseIdentifier: "read")
         self.tableView.registerClass(ArticleCell.self, forCellReuseIdentifier: "unread")
         // Prevents a green triangle which'll (dis)appear depending on whether

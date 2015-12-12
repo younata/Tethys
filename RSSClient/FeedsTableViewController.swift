@@ -96,6 +96,7 @@ public class FeedsTableViewController: UIViewController {
         super.viewDidLoad()
 
         self.addChildViewController(self.tableViewController)
+        self.tableView.keyboardDismissMode = .OnDrag
         self.view.addSubview(self.tableView)
         self.tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
         self.tableView.addSubview(self.refreshView)
@@ -418,8 +419,7 @@ extension FeedsTableViewController: BreakOutToRefreshDelegate, UIScrollViewDeleg
     }
 
     public func scrollViewWillBeginDragging(scrollView: UIScrollView) {
-        self.searchBar.resignFirstResponder()
-        refreshView.scrollViewWillBeginDragging(scrollView)
+        self.refreshView.scrollViewWillBeginDragging(scrollView)
     }
 
     public func scrollViewWillEndDragging(scrollView: UIScrollView,

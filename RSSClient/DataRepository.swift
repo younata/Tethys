@@ -144,12 +144,12 @@ internal class DataRepository: DataRetriever, DataWriter {
                 for feed in feeds[1..<feeds.count] {
                     articles = articles.combine(feed.articlesArray)
                 }
-                let titlePredicate = NSPredicate(format: "title CONTAINS %@", query)
-                let summaryPredicate = NSPredicate(format: "summary CONTAINS %@", query)
-                let descriptionPredicate = NSPredicate(format: "description CONTAINS %@", query)
-                let authorPredicate = NSPredicate(format: "author CONTAINS %@", query)
-                let contentPredicate = NSPredicate(format: "content CONTAINS %@", query)
-                let linkPredicate = NSPredicate(format: "link CONTAINS %@", query)
+                let titlePredicate = NSPredicate(format: "title CONTAINS[cd] %@", query)
+                let summaryPredicate = NSPredicate(format: "summary CONTAINS[cd] %@", query)
+                let descriptionPredicate = NSPredicate(format: "summary CONTAINS[cd] %@", query)
+                let authorPredicate = NSPredicate(format: "author CONTAINS[cd] %@", query)
+                let contentPredicate = NSPredicate(format: "content CONTAINS[cd] %@", query)
+                let linkPredicate = NSPredicate(format: "link CONTAINS[cd] %@", query)
 
                 let predicates = [
                     titlePredicate,

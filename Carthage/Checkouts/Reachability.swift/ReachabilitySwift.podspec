@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'ReachabilitySwift'
-  s.version      = '2.3'
+  s.version      = '2.3.3'
   s.homepage     = 'https://github.com/ashleymills/Reachability.swift'
   s.authors      = {
     'Ashley Mills' => 'ashleymills@mac.com'
@@ -9,10 +9,12 @@ Pod::Spec.new do |s|
   s.license      = { :type => 'MIT' }
 
 # Source Info
-  s.ios.platform = :ios, "9.0"
+  s.ios.platform = :ios, "9.2"
   s.osx.platform = :osx, "10.11"
+  s.tvos.platform = :tvos, "9.1"
   s.ios.deployment_target = "8.0"
   s.osx.deployment_target = "10.9"
+  s.tvos.deployment_target  = "9.0"
   s.source       =  {
     :git => 'https://github.com/ashleymills/Reachability.swift.git',
     :tag => 'v'+s.version.to_s

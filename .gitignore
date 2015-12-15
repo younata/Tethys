@@ -5,4 +5,6 @@ RSSClient.xcodeproj/project.xcworkspace/
 RSSClient.xcodeproj/xcuserdata/
 foo
 *swp
+*bcsymbolmap
+Carthage/Checkouts
 

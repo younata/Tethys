@@ -1,6 +1,6 @@
 body {
+    font: -apple-system-body;
     font-family: Helvetica, arial, sans-serif;
-    font-size: 14px;
     color: white;
     line-height: 1.6;
     padding-top: 10px;
@@ -59,26 +59,26 @@ h6 tt, h6 code {
     font-size: inherit; }
 
 h1 {
-    font-size: 28px;
+    font-size: 2em;
     color: white; }
 
 h2 {
-    font-size: 24px;
+    font-size: 1.8em;
     border-bottom: 1px solid #cccccc;
     color: white; }
 
 h3 {
-    font-size: 18px; }
+    font-size: 1.3em; }
 
 h4 {
-    font-size: 16px; }
+    font-size: 1.2em; }
 
 h5 {
-    font-size: 14px; }
+    font-size: 1em; }
 
 h6 {
     color: #999999;
-    font-size: 14px; }
+    font-size: 1em; }
 
 p, blockquote, ul, ol, dl, li, table, pre {
     margin: 15px 0; }
@@ -124,7 +124,7 @@ ul :first-child, ol :first-child {
 dl {
     padding: 0; }
 dl dt {
-    font-size: 14px;
+    font-size: 1em;
     font-weight: bold;
     font-style: italic;
     padding: 0;
@@ -257,7 +257,7 @@ pre code {
 .highlight pre {
     background-color: #282828;
     border: 1px solid #666;
-    font-size: 13px;
+    font-size: 0.9em;
     line-height: 19px;
     overflow: auto;
     padding: 6px 10px;
@@ -266,7 +266,7 @@ pre code {
 pre {
     background-color: #282828;
     border: 1px solid #666;
-    font-size: 13px;
+    font-size: 0.9em;
     line-height: 19px;
     overflow: auto;
     padding: 6px 10px;

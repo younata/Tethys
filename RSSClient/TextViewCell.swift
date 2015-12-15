@@ -45,7 +45,8 @@ public class TextViewCell: UITableViewCell {
             let selection = textView.selectedRange
             let baseAttributes: [String: AnyObject]?
             let textColor = self.themeRepository?.textColor ?? UIColor.blackColor()
-            if let font = UIFont(name: "Menlo-Regular", size: 14) {
+            let pointSize = UIFont.preferredFontForTextStyle(UIFontTextStyleBody).pointSize
+            if let font = UIFont(name: "Menlo-Regular", size: pointSize) {
                 baseAttributes = [NSFontAttributeName: font, NSForegroundColorAttributeName: textColor]
             } else {
                 baseAttributes = nil

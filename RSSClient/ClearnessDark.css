@@ -10,8 +10,8 @@ blockquote {
     padding: 0;
 }
 body {
+    font: -apple-system-body;
     font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;
-    font-size: 13px;
     line-height: 18px;
     color: #fff;
     background-color: #282a36;
@@ -52,22 +52,22 @@ h6 {
 }
 h1 {
     margin-bottom: 18px;
-    font-size: 30px;
+    font-size: 2.3em;
 }
 h2 {
-    font-size: 24px;
+    font-size: 1.9em;
 }
 h3 {
-    font-size: 18px;
+    font-size: 1.4em;
 }
 h4 {
-    font-size: 16px;
+    font-size: 1.2em;
 }
 h5 {
-    font-size: 14px;
+    font-size: 1.1em;
 }
 h6 {
-    font-size: 13px;
+    font-size: 1em;
 }
 hr {
     margin: 0 0 19px;
@@ -88,7 +88,7 @@ blockquote:before {
     color:#eee;
 }
 blockquote p {
-    font-size: 14px;
+    font-size: 1.1em;
     font-weight: 300;
     line-height: 18px;
     margin-bottom: 0;
@@ -100,7 +100,7 @@ code, pre {
 code {
     color: #ff4a14;
     padding: 1px 3px;
-    font-size: 12px;
+    font-size: 0.9em;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
@@ -110,7 +110,7 @@ pre {
     padding: 14px;
     margin: 0 0 18px;
     line-height: 16px;
-    font-size: 11px;
+    font-size: 0.8em;
     border: 1px solid #bf370f;
     white-space: pre;
     white-space: pre-wrap;
@@ -119,7 +119,7 @@ pre {
 pre code {
     background-color: #282a36;
     color: #ff4a14;
-    font-size: 11px;
+    font-size: 1.8em;
     padding: 0;
 }
 sup {

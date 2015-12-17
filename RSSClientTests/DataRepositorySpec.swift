@@ -21,6 +21,13 @@ private class FakeDataSubscriber: NSObject, DataSubscriber {
         deletedArticle = article
     }
 
+    private var deletedFeed: Feed? = nil
+    private var deletedFeedsLeft: Int? = nil
+    private func deletedFeed(feed: Feed, feedsLeft: Int) {
+        deletedFeed = feed
+        deletedFeedsLeft = feedsLeft
+    }
+
     private var didStartUpdatingFeeds = false
     private func willUpdateFeeds() {
         didStartUpdatingFeeds = true
@@ -406,6 +413,7 @@ class FeedRepositorySpec: QuickSpec {
                 beforeEach {
                     feed = Feed(feed: feed1)
                     articleIDs = feed.articles.map { return $0.articleID!.URIRepresentation().absoluteString }
+                    mainQueue.runSynchronously = true
                     subject.deleteFeed(feed)
                     backgroundQueue.runNextOperation()
                 }
@@ -420,6 +428,11 @@ class FeedRepositorySpec: QuickSpec {
                     let articleTitles = articles.map { $0.title }
                     expect(articleTitles).toNot(contain("b"))
                     expect(articleTitles).toNot(contain("c"))
+                }
+
+                it("should inform any subscribers") {
+                    expect(dataSubscriber.deletedFeed).to(equal(feed))
+                    expect(dataSubscriber.deletedFeedsLeft).to(equal(2))
                 }
 
                 #if os(iOS)

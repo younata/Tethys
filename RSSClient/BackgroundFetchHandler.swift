@@ -3,11 +3,11 @@ import Ra
 import rNewsKit
 
 public class BackgroundFetchHandler: NSObject {
-    lazy var dataWriter: DataWriter? = {
+    private lazy var dataWriter: DataWriter? = {
         return self.injector?.create(DataWriter.self) as? DataWriter
     }()
 
-    lazy var dataRetriever: DataRetriever? = {
+    private lazy var dataRetriever: DataRetriever? = {
         return self.injector?.create(DataRetriever.self) as? DataRetriever
     }()
 
@@ -16,34 +16,43 @@ public class BackgroundFetchHandler: NSObject {
             completionHandler(.Failed)
             return
         }
+        var originalArticlesList = [String]()
+        let lock = NSLock()
+        lock.lock()
         reader.feeds {feeds in
-            let originalList: [String] = feeds.reduce([]) { return $0 + $1.articles }.map { return $0.identifier }
+            originalArticlesList = feeds.reduce([]) { return $0 + $1.articles }.map { return $0.identifier }
+            lock.unlock()
+        }
 
-            writer.updateFeeds {feeds, errors in
-                guard errors.isEmpty else {
-                    completionHandler(.Failed)
-                    return
-                }
-                reader.feeds {newFeeds in
-                    let currentArticleList: [Article] = newFeeds.reduce([]) { return $0 + $1.articles }
-                    if (currentArticleList.count == originalList.count) {
-                        completionHandler(.NoData)
-                        return
-                    }
-                    let filteredArticleList: [Article] = currentArticleList.filter{
-                        return !originalList.contains($0.identifier)
-                    }
-
-                    if (filteredArticleList.count > 0) {
-                        for article in filteredArticleList {
-                            notificationHandler.sendLocalNotification(notificationSource, article: article)
-                        }
-                        completionHandler(.NewData)
-                    } else {
-                        completionHandler(.NoData)
-                    }
-                }
+        writer.updateFeeds {newFeeds, errors in
+            guard errors.isEmpty else {
+                completionHandler(.Failed)
+                return
             }
+            guard lock.lockBeforeDate(NSDate(timeIntervalSinceNow: 15)) else {
+                completionHandler(.Failed)
+                return
+            }
+            lock.unlock()
+            let currentArticleList: [Article] = newFeeds.reduce([]) { return $0 + $1.articles }
+            if (currentArticleList.count == originalArticlesList.count) {
+                completionHandler(.NoData)
+                return
+            }
+            let filteredArticleList: [Article] = currentArticleList.filter{
+                return !originalArticlesList.contains($0.identifier)
+            }
+
+            if (filteredArticleList.count > 0) {
+                for article in filteredArticleList {
+                    notificationHandler.sendLocalNotification(notificationSource, article: article)
+                }
+                completionHandler(.NewData)
+            } else {
+                completionHandler(.NoData)
+            }
+
+            originalArticlesList = []
         }
     }
 }

@@ -24,6 +24,8 @@ public protocol DataSubscriber: NSObjectProtocol {
 
     func deletedArticle(article: Article)
 
+    func deletedFeed(feed: Feed, feedsLeft: Int)
+
     func willUpdateFeeds()
     func didUpdateFeedsProgress(finished: Int, total: Int)
     func didUpdateFeeds(feeds: [Feed])
@@ -264,6 +266,16 @@ internal class DataRepository: DataRetriever, DataWriter {
                     self.searchIndex?.deleteIdentifierFromIndex(articleIDsToDelete) {_ in }
                 }
                 self.save()
+
+                let feedsLeft = self.synchronousAllFeeds().count
+
+                self.mainQueue.addOperationWithBlock {
+                    for object in self.subscribers.allObjects {
+                        if let subscriber = object as? DataSubscriber {
+                            subscriber.deletedFeed(feed, feedsLeft: feedsLeft)
+                        }
+                    }
+                }
             }
         }
     }

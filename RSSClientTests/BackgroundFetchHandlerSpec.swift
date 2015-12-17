@@ -59,7 +59,7 @@ class BackgroundFetchHandlerSpec: QuickSpec {
                     articles = [article1, article2, article3, article4]
 
                     dataReadWriter.feedsList = feeds // TODO: more than 1
-                    dataReadWriter.updateFeedsCompletion([], [])
+                    dataReadWriter.updateFeedsCompletion(feeds, [])
                 }
 
                 it("should send local notifications for each new article") {

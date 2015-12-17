@@ -126,6 +126,8 @@ extension FeedsViewController: DataSubscriber {
 
     public func deletedArticle(article: Article) {}
 
+    public func deletedFeed(feed: Feed, feedsLeft: Int) {}
+
     public func willUpdateFeeds() {}
     public func didUpdateFeedsProgress(finished: Int, total: Int) {}
     public func didUpdateFeeds(feeds: [Feed]) {

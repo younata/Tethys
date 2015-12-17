@@ -341,6 +341,8 @@ extension FeedsTableViewController: DataSubscriber {
         self.reload(self.searchBar.text)
     }
 
+    public func deletedFeed(feed: Feed, feedsLeft: Int) {}
+
     public func willUpdateFeeds() {
         self.updateBar.hidden = false
         self.updateBar.progress = 0

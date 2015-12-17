@@ -15,9 +15,16 @@ extension UIApplication: DataSubscriber {
         }
     }
 
+    public func deletedFeed(feed: Feed, feedsLeft: Int) {
+        if feedsLeft == 0 {
+            self.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
+        }
+    }
+
     public func willUpdateFeeds() {
         self.networkActivityIndicatorVisible = true
     }
+
     public func didUpdateFeedsProgress(finished: Int, total: Int) {}
 
     public func didUpdateFeeds(feeds: [Feed]) {
@@ -78,7 +85,15 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 dataWriter.addSubscriber(application)
             }
 
-            notificationHandler?.enableNotifications(application)
+            self.notificationHandler?.enableNotifications(application)
+
+            self.dataRetriever?.feeds {feeds in
+                if feeds.isEmpty {
+                    application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
+                } else {
+                    application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+                }
+            }
 
             return true
     }
@@ -87,13 +102,13 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
     public func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
         if let window = self.window {
-            notificationHandler?.handleLocalNotification(notification, window: window)
+            self.notificationHandler?.handleLocalNotification(notification, window: window)
         }
     }
 
     public func application(application: UIApplication, handleActionWithIdentifier identifier: String?,
         forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
-            notificationHandler?.handleAction(identifier, notification: notification)
+            self.notificationHandler?.handleAction(identifier, notification: notification)
             completionHandler()
     }
 
@@ -103,6 +118,8 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
             if let noteHandler = self.notificationHandler {
                 self.backgroundFetchHandler?.performFetch(noteHandler, notificationSource: application, completionHandler: completionHandler)
+            } else {
+                completionHandler(.NoData)
             }
     }
 

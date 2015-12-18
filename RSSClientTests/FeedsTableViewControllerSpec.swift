@@ -624,8 +624,28 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                         action.handler()(action, indexPath)
                                     }
 
+                                    it("should show an activity indicator") {
+                                        expect(subject.loadingView.superview).toNot(beNil())
+                                    }
+
+                                    it("should have the correct message for the activity indicator") {
+                                        expect(subject.loadingView.message).to(equal("Deleting Feed"))
+                                    }
+
                                     it("should delete the feed from the data store") {
                                         expect(dataReadWriter.lastDeletedFeed).to(equal(feed))
+                                    }
+
+                                    describe("when the data reloads") {
+                                        beforeEach {
+                                            let feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                            let subscriber = dataReadWriter.subscribers.anyObject as? DataSubscriber
+                                            subscriber?.deletedFeed(feed, feedsLeft: 0)
+                                        }
+
+                                        it("should hide the activity indicator") {
+                                            expect(subject.loadingView.superview).to(beNil())
+                                        }
                                     }
                                 }
                             }
@@ -644,13 +664,33 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                         action.handler()(action, indexPath)
                                     }
 
+                                    it("should show an activity indicator") {
+                                        expect(subject.loadingView.superview).toNot(beNil())
+                                    }
+
+                                    it("should have the correct message for the activity indicator") {
+                                        expect(subject.loadingView.message).to(equal("Marking Articles as Read"))
+                                    }
+
                                     it("should mark all articles of that feed as read") {
                                         expect(dataReadWriter.lastFeedMarkedRead).to(equal(feed))
+                                    }
+
+                                    describe("when the data reloads") {
+                                        beforeEach {
+                                            let article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
+                                            let subscriber = dataReadWriter.subscribers.anyObject as? DataSubscriber
+                                            subscriber?.markedArticle(article, asRead: true)
+                                        }
+
+                                        it("should hide the activity indicator") {
+                                            expect(subject.loadingView.superview).to(beNil())
+                                        }
                                     }
                                 }
                             }
 
-                            describe("the second action") {
+                            describe("the third action") {
                                 beforeEach {
                                     action = actions[2]
                                 }

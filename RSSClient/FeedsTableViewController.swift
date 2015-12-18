@@ -73,7 +73,6 @@ public class FeedsTableViewController: UIViewController {
 
     public lazy var loadingView: ActivityIndicator = {
         let view = ActivityIndicator(forAutoLayout: ())
-        view.configureWithMessage(NSLocalizedString("FeedsTableViewController_LoadingFeeds", comment: ""))
         return view
     }()
 
@@ -121,8 +120,7 @@ public class FeedsTableViewController: UIViewController {
         self.dropDownMenu.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
         self.menuTopOffset = self.dropDownMenu.autoPinEdgeToSuperviewEdge(.Top)
 
-        self.navigationController?.view.addSubview(self.loadingView)
-        self.loadingView.autoPinEdgesToSuperviewEdges()
+        self.showLoadingView(NSLocalizedString("FeedsTableViewController_Loading_Feeds", comment: ""))
 
         let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "didTapAddFeed")
         self.navigationItem.rightBarButtonItems = [addButton, self.tableViewController.editButtonItem()]
@@ -229,6 +227,12 @@ public class FeedsTableViewController: UIViewController {
                 self.presentViewController(nc, animated: true, completion: nil)
             }
         }
+    }
+
+    private func showLoadingView(message: String) {
+        self.loadingView.configureWithMessage(message)
+        self.navigationController?.view.addSubview(self.loadingView)
+        self.loadingView.autoPinEdgesToSuperviewEdges()
     }
 
     private func reload(tag: String?, feeds: [Feed]? = nil) {
@@ -341,7 +345,9 @@ extension FeedsTableViewController: DataSubscriber {
         self.reload(self.searchBar.text)
     }
 
-    public func deletedFeed(feed: Feed, feedsLeft: Int) {}
+    public func deletedFeed(feed: Feed, feedsLeft: Int) {
+        self.reload(self.searchBar.text)
+    }
 
     public func willUpdateFeeds() {
         self.updateBar.hidden = false
@@ -465,15 +471,15 @@ extension FeedsTableViewController: UITableViewDelegate {
         let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
         let delete = UITableViewRowAction(style: .Default, title: deleteTitle, handler: {(_, indexPath: NSIndexPath!) in
             let feed = self.feedAtIndexPath(indexPath)
+            self.showLoadingView(NSLocalizedString("FeedsTableViewController_Loading_Deleting_Feed", comment: ""))
             self.dataWriter.deleteFeed(feed)
-            self.reload(self.searchBar.text)
         })
 
         let readTitle = NSLocalizedString("FeedsTableViewController_Table_EditAction_MarkRead", comment: "")
         let markRead = UITableViewRowAction(style: .Normal, title: readTitle, handler: {_, indexPath in
             let feed = self.feedAtIndexPath(indexPath)
+            self.showLoadingView(NSLocalizedString("FeedsTableViewController_Loading_Marking_Feed", comment: ""))
             self.dataWriter.markFeedAsRead(feed)
-            self.reload(self.searchBar.text)
         })
 
         let editTitle = NSLocalizedString("Generic_Edit", comment: "")

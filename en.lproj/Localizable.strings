@@ -18,7 +18,9 @@
 "FeedsTableViewController_Onboarding_Title" = "Welcome to rNews!";
 "FeedsTableViewController_Onboarding_Detail" = "Tap the '+' button to find feeds to follow.";
 "FeedsTableViewController_Title" = "Feeds";
-"FeedsTableViewController_LoadingFeeds" = "Loading Feeds";
+"FeedsTableViewController_Loading_Feeds" = "Loading Feeds";
+"FeedsTableViewController_Loading_Deleting_Feed" = "Deleting Feed";
+"FeedsTableViewController_Loading_Marking_Feed" = "Marking Articles as Read";
 "FeedsTableViewController_Command_Search" = "Filter by tags";
 "FeedsTableViewController_Command_ImportWeb" = "Add from Web";
 "FeedsTableViewController_Command_ImportLocal" = "Add from Local";

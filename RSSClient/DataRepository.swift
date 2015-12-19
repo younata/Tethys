@@ -282,9 +282,8 @@ internal class DataRepository: DataRetriever, DataWriter {
 
     internal func markFeedAsRead(feed: Feed) {
         self.backgroundQueue.addOperationWithBlock {
-            for article in feed.articles where article.read == false {
-                self.privateMarkArticle(article, asRead: true)
-            }
+            let articles = feed.articles.filter { $0.read == false }
+            self.privateMarkArticles(articles, asRead: true)
         }
     }
 
@@ -328,7 +327,7 @@ internal class DataRepository: DataRetriever, DataWriter {
 
     internal func markArticle(article: Article, asRead: Bool) {
         self.backgroundQueue.addOperationWithBlock {
-            self.privateMarkArticle(article, asRead: asRead)
+            self.privateMarkArticles([article], asRead: asRead)
         }
     }
 
@@ -538,19 +537,29 @@ internal class DataRepository: DataRetriever, DataWriter {
         }
     }
 
-    private func privateMarkArticle(article: Article, asRead read: Bool) {
-        guard let articleID = article.articleID else {
+    private func privateMarkArticles(articles: [Article], asRead read: Bool) {
+        guard let lastArticle = articles.last else { // also implicitly guarantees that articles is not empty
             return
         }
-        article.read = read
-        if let cdarticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", articleID), managedObjectContext: self.objectContext, sortDescriptors: []).first as? CoreDataArticle {
-            cdarticle.read = read
-            save()
+
+        let articleIds = articles.reduce([NSManagedObjectID]()) {
+            if let id = $1.articleID {
+                return $0 + [id]
+            }
+            return $0
         }
+        articles.forEach { $0.read = read }
+        let cdArticles = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self IN %@", articleIds), managedObjectContext: self.objectContext, sortDescriptors: [])
+        cdArticles.forEach {
+            if let cdArticle = $0 as? CoreDataArticle {
+                cdArticle.read = read
+            }
+        }
+        self.save()
         self.mainQueue.addOperationWithBlock {
             for object in self.subscribers.allObjects {
                 if let subscriber = object as? DataSubscriber {
-                    subscriber.markedArticle(article, asRead: read)
+                    subscriber.markedArticle(lastArticle, asRead: read)
                 }
             }
         }

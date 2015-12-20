@@ -15,6 +15,7 @@
 		8902D54C1BB075E9003D7C22 /* Lepton.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5481BB0754F003D7C22 /* Lepton.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8902D54D1BB075F7003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5481BB0754F003D7C22 /* Lepton.framework */; };
 		8902D54E1BB07712003D7C22 /* Lepton.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5481BB0754F003D7C22 /* Lepton.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		89155E011BCED211003B9E57 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89155E001BCED211003B9E57 /* Timer.swift */; settings = {ASSET_TAGS = (); }; };
 		8916880B1BA8856400F9FFE0 /* rNewsKit.framework in Embed rNewsKit */ = {isa = PBXBuildFile; fileRef = 894304211B45089A000078DC /* rNewsKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8918D4A41B8115F800DCDE0E /* ExplanationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8918D4A31B8115F800DCDE0E /* ExplanationView.swift */; };
 		8918D4D41B84593100DCDE0E /* ClearnessDark.css in Resources */ = {isa = PBXBuildFile; fileRef = 8918D4D31B84593100DCDE0E /* ClearnessDark.css */; };
@@ -406,6 +407,7 @@
 		8902D5481BB0754F003D7C22 /* Lepton.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lepton.framework; path = ../Carthage/Build/Mac/Lepton.framework; sourceTree = "<group>"; };
 		890E47581AA19D69007F217C /* DataUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataUtility.swift; path = ../RSSClient/DataUtility.swift; sourceTree = "<group>"; };
 		890E47661AA19F7F007F217C /* DataUtilitySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataUtilitySpec.swift; path = ../RSSClientTests/DataUtilitySpec.swift; sourceTree = "<group>"; };
+		89155E001BCED211003B9E57 /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		8918D4A31B8115F800DCDE0E /* ExplanationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExplanationView.swift; sourceTree = "<group>"; };
 		8918D4D31B84593100DCDE0E /* ClearnessDark.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = ClearnessDark.css; sourceTree = "<group>"; };
 		8918D4D81B85887E00DCDE0E /* darkhub2.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = darkhub2.css; sourceTree = "<group>"; };
@@ -1125,6 +1127,7 @@
 				89C204C31A7400D100C792D2 /* NotificationHandler.swift */,
 				89D970C21B392B0300ED84B8 /* LocalNotificationSource.swift */,
 				89D970BC1B3929A600ED84B8 /* BackgroundFetchHandler.swift */,
+				89155E001BCED211003B9E57 /* Timer.swift */,
 			);
 			name = Application;
 			sourceTree = "<group>";
@@ -1696,6 +1699,7 @@
 				89C509F71A2F825400CBD000 /* TextViewCell.swift in Sources */,
 				89C204C41A7400D100C792D2 /* NotificationHandler.swift in Sources */,
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
+				89155E011BCED211003B9E57 /* Timer.swift in Sources */,
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
 				89F98BA41BA079EA005C3CA8 /* TableViewCell.swift in Sources */,
 				89F98BAC1BA0E428005C3CA8 /* DocumentationViewController.swift in Sources */,

@@ -113,4 +113,9 @@ class FakeDataReadWriter : DataRetriever, DataWriter {
         didUpdateFeed = feed
         updateSingleFeedCallback = callback
     }
+
+    var didCancelFeeds = false
+    func cancelUpdateFeeds() {
+        didCancelFeeds = true
+    }
 }

@@ -879,6 +879,23 @@ class FeedRepositorySpec: QuickSpec {
                         }
                     }
 
+                    context("cancelling an update") {
+                        beforeEach {
+                            dataSubscriber.updatedFeeds = nil
+                            subject.cancelUpdateFeeds()
+                            mainQueue.runNextOperation()
+                        }
+
+                        it("should immediately call the subscriber with all the current feeds") {
+                            expect(dataSubscriber.updatedFeeds).to(equal(feeds))
+                        }
+
+                        it("should immediately call the callbacks") {
+                            expect(didCallCallback).to(beTruthy())
+                            expect(callbackErrors).to(beEmpty())
+                        }
+                    }
+
                     context("when the network request succeeds") {
                         beforeEach {
                             let urlResponse = NSHTTPURLResponse(URL: NSURL(string: "https://example.com/feed1.feed")!, statusCode: 200, HTTPVersion: nil, headerFields: [:])

@@ -24,7 +24,7 @@ extension UIApplication: LocalNotificationSource {
     }
 
     public func scheduleNote(note: UILocalNotification) {
-        if self.applicationState != .Active {
+        if self.applicationState == .Background {
             self.scheduleLocalNotification(note)
         }
     }

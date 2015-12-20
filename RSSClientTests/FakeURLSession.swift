@@ -4,6 +4,10 @@ class FakeDataTask: NSURLSessionDataTask {
     override func resume() {
 
     }
+
+    override func cancel() {
+
+    }
 }
 
 class FakeURLSession: NSURLSession {
@@ -12,6 +16,14 @@ class FakeURLSession: NSURLSession {
     override func dataTaskWithURL(url: NSURL, completionHandler: (NSData?, NSURLResponse?, NSError?) -> Void) -> NSURLSessionDataTask {
         lastURL = url
         lastCompletionHandler = completionHandler
-        return FakeDataTask()
+        let task = FakeDataTask()
+        dataTasks.append(task)
+        return task
+    }
+
+    private var dataTasks = [NSURLSessionDataTask]()
+
+    override func getTasksWithCompletionHandler(completionHandler: ([NSURLSessionDataTask], [NSURLSessionUploadTask], [NSURLSessionDownloadTask]) -> Void) {
+        completionHandler(dataTasks, [], [])
     }
 }

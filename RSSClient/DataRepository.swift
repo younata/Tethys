@@ -46,6 +46,8 @@ public protocol DataWriter {
     func updateFeeds(callback: ([Feed], [NSError]) -> (Void))
 
     func updateFeed(feed: Feed, callback: (Feed?, NSError?) -> (Void))
+
+    func cancelUpdateFeeds()
 }
 
 internal class DataRepository: DataRetriever, DataWriter {
@@ -374,6 +376,29 @@ internal class DataRepository: DataRetriever, DataWriter {
                         }
                     }
                     callback(feeds.first, errors.first)
+                }
+            }
+        }
+    }
+
+    internal func cancelUpdateFeeds() {
+        self.backgroundQueue.cancelAllOperations()
+        self.urlSession.getTasksWithCompletionHandler {data, upload, download in
+            data.forEach { $0.cancel() }
+            upload.forEach { $0.cancel() }
+            download.forEach { $0.cancel() }
+
+            self.allFeedsOnBackgroundQueue {feeds in
+                self.mainQueue.addOperationWithBlock {
+                    for updateCallback in self.updatingFeedsCallbacks {
+                        updateCallback(feeds, [])
+                    }
+                    for object in self.subscribers.allObjects {
+                        if let subscriber = object as? DataSubscriber {
+                            subscriber.didUpdateFeeds(feeds)
+                        }
+                    }
+                    self.updatingFeedsCallbacks = []
                 }
             }
         }

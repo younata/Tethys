@@ -208,7 +208,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     beforeEach {
                         dataReadWriter.didAskForFeeds = false
                         let article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
-                        subscriber?.markedArticle(article, asRead: true)
+                        subscriber?.markedArticles([article], asRead: true)
                     }
 
                     it("should refresh it's feed cache") {
@@ -680,7 +680,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                         beforeEach {
                                             let article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
                                             let subscriber = dataReadWriter.subscribers.anyObject as? DataSubscriber
-                                            subscriber?.markedArticle(article, asRead: true)
+                                            subscriber?.markedArticles([article], asRead: true)
                                         }
 
                                         it("should hide the activity indicator") {

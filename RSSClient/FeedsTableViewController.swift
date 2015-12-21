@@ -337,7 +337,7 @@ extension FeedsTableViewController: UISearchBarDelegate {
 }
 
 extension FeedsTableViewController: DataSubscriber {
-    public func markedArticle(article: Article, asRead read: Bool) {
+    public func markedArticles(articles: [Article], asRead read: Bool) {
         self.reload(self.searchBar.text)
     }
 

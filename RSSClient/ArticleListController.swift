@@ -66,7 +66,7 @@ public class ArticleListController: UITableViewController, DataSubscriber {
     public func didUpdateFeeds(feeds: [Feed]) {}
     public func deletedFeed(feed: Feed, feedsLeft: Int) {}
 
-    public func markedArticle(article: Article, asRead read: Bool) {
+    public func markedArticles(articles: [Article], asRead read: Bool) {
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
     }
 

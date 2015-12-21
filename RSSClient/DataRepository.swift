@@ -20,7 +20,7 @@ public protocol DataRetriever {
 }
 
 public protocol DataSubscriber: NSObjectProtocol {
-    func markedArticle(article: Article, asRead read: Bool)
+    func markedArticles(articles: [Article], asRead read: Bool)
 
     func deletedArticle(article: Article)
 
@@ -563,7 +563,7 @@ internal class DataRepository: DataRetriever, DataWriter {
     }
 
     private func privateMarkArticles(articles: [Article], asRead read: Bool) {
-        guard let lastArticle = articles.last else { // also implicitly guarantees that articles is not empty
+        guard articles.isEmpty == false else {
             return
         }
 
@@ -584,7 +584,7 @@ internal class DataRepository: DataRetriever, DataWriter {
         self.mainQueue.addOperationWithBlock {
             for object in self.subscribers.allObjects {
                 if let subscriber = object as? DataSubscriber {
-                    subscriber.markedArticle(lastArticle, asRead: read)
+                    subscriber.markedArticles(articles, asRead: read)
                 }
             }
         }

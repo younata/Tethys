@@ -3,6 +3,7 @@ import UIKit
 public protocol LocalNotificationSource {
     var scheduledNotes: [UILocalNotification] { get }
     var notificationSettings: UIUserNotificationSettings? { get set }
+    var canScheduleNote: Bool { get }
 
     func scheduleNote(note: UILocalNotification)
 }
@@ -23,8 +24,12 @@ extension UIApplication: LocalNotificationSource {
         }
     }
 
+    public var canScheduleNote: Bool {
+        return self.applicationState == .Background
+    }
+
     public func scheduleNote(note: UILocalNotification) {
-        if self.applicationState == .Background {
+        if self.canScheduleNote {
             self.scheduleLocalNotification(note)
         }
     }

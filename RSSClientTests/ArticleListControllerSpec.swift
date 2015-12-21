@@ -97,7 +97,7 @@ class ArticleListControllerSpec: QuickSpec {
                     articles[0].read = true
                     for object in dataReadWriter.subscribers.allObjects {
                         if let subscriber = object as? DataSubscriber {
-                            subscriber.markedArticle(articles[0], asRead: true)
+                            subscriber.markedArticles([articles[0]], asRead: true)
                         }
                     }
                 }

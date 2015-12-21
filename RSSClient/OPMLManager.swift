@@ -133,7 +133,7 @@ public class OPMLManager: NSObject, Injectable {
 }
 
 extension OPMLManager: DataSubscriber {
-    public func markedArticle(article: Article, asRead read: Bool) {}
+    public func markedArticles(articles: [Article], asRead read: Bool) {}
     public func deletedArticle(article: Article) {}
     public func willUpdateFeeds() {}
     public func didUpdateFeedsProgress(finished: Int, total: Int) {}

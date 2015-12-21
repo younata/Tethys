@@ -9,10 +9,10 @@ import CoreData
 #endif
 
 private class FakeDataSubscriber: NSObject, DataSubscriber {
-    private var markedArticle: Article? = nil
+    private var markedArticles: [Article]? = nil
     private var read: Bool? = nil
-    private func markedArticle(article: Article, asRead: Bool) {
-        markedArticle = article
+    private func markedArticles(articles: [Article], asRead: Bool) {
+        markedArticles = articles
         read = asRead
     }
 
@@ -459,7 +459,7 @@ class FeedRepositorySpec: QuickSpec {
 
                 it("should inform any subscribers") {
                     mainQueue.runNextOperation()
-                    expect(dataSubscriber.markedArticle).toNot(beNil())
+                    expect(dataSubscriber.markedArticles).toNot(beNil())
                     expect(dataSubscriber.read).to(beTruthy())
                 }
             }
@@ -583,13 +583,13 @@ class FeedRepositorySpec: QuickSpec {
                 }
 
                 it("should inform any subscribers") {
-                    expect(dataSubscriber.markedArticle).to(equal(article))
+                    expect(dataSubscriber.markedArticles).to(equal([article]))
                     expect(dataSubscriber.read).to(beTruthy())
                 }
 
                 describe("and marking it as unread again") {
                     beforeEach {
-                        dataSubscriber.markedArticle = nil
+                        dataSubscriber.markedArticles = nil
                         dataSubscriber.read = nil
                         subject.markArticle(article, asRead: false)
                         backgroundQueue.runNextOperation()
@@ -606,7 +606,7 @@ class FeedRepositorySpec: QuickSpec {
                     }
 
                     it("should inform any subscribers") {
-                        expect(dataSubscriber.markedArticle).to(equal(article))
+                        expect(dataSubscriber.markedArticles).to(equal([article]))
                         expect(dataSubscriber.read).to(beFalsy())
                     }
                 }

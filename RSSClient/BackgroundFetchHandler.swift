@@ -21,8 +21,10 @@ public class BackgroundFetchHandler: NSObject {
             return
         }
         timer.setTimer(27) {
-            writer.cancelUpdateFeeds()
-            completionHandler(.Failed)
+            if notificationSource.canScheduleNote {
+                writer.cancelUpdateFeeds()
+                completionHandler(.Failed)
+            }
         }
         var originalArticlesList = [String]()
         let lock = NSLock()

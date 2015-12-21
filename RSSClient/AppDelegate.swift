@@ -4,8 +4,8 @@ import rNewsKit
 import CoreSpotlight
 
 extension UIApplication: DataSubscriber {
-    public func markedArticle(article: Article, asRead read: Bool) {
-        let incrementBy = read ? -1 : 1
+    public func markedArticles(articles: [Article], asRead read: Bool) {
+        let incrementBy = (read ? -1 : 1) * articles.count
         self.applicationIconBadgeNumber += incrementBy
     }
 

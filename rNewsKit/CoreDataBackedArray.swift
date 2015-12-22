@@ -39,9 +39,7 @@ public class CoreDataBackedArray<T>: CollectionType, CustomDebugStringConvertibl
 
     public typealias Generator = CoreDataBackedGenerator<T>
 
-    private lazy var internalCount: Int = {
-        return self.calculateCount()
-    }()
+    private lazy var internalCount: Int = { self.calculateCount() }()
 
     public var count: Int {
         return self.internalCount + self.appendedObjects.count

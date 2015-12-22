@@ -205,6 +205,10 @@ internal class DataRepository: DataRetriever, DataWriter {
                     feed.addArticle(article)
                 }
             }
+            feeds.forEach {
+                let _ = $0.articlesArray.count
+                let _ = $0.articlesArray[0]
+            }
             callback(feeds)
         }
     }

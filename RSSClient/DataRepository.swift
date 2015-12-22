@@ -75,22 +75,24 @@ internal class DataRepository: DataRetriever, DataWriter {
 
     private let reachable: Reachable?
 
+    private let dataUtility: DataUtilityType
+
     internal init(objectContext: NSManagedObjectContext, mainQueue: NSOperationQueue, backgroundQueue: NSOperationQueue,
-                  urlSession: NSURLSession, searchIndex: SearchIndex?, reachable: Reachable?) {
-        self.objectContext = objectContext
-        self.mainQueue = mainQueue
-        self.backgroundQueue = backgroundQueue
-        self.urlSession = urlSession
-        self.searchIndex = searchIndex
-        self.reachable = reachable
+        urlSession: NSURLSession, searchIndex: SearchIndex?, reachable: Reachable?, dataUtility: DataUtilityType) {
+            self.objectContext = objectContext
+            self.mainQueue = mainQueue
+            self.backgroundQueue = backgroundQueue
+            self.urlSession = urlSession
+            self.searchIndex = searchIndex
+            self.reachable = reachable
+            self.dataUtility = dataUtility
     }
 
     //MARK: - DataRetriever
 
     internal func allTags(callback: ([String]) -> (Void)) {
-        self.backgroundQueue.addOperationWithBlock {
-            let feedsWithTags = DataUtility.feedsWithPredicate(NSPredicate(format: "tags != nil"),
-                managedObjectContext: self.objectContext)
+        self.dataUtility.feedsWithPredicate(NSPredicate(format: "tags != nil"),
+            managedObjectContext: self.objectContext) {feedsWithTags in
 
             let setOfTags = feedsWithTags.reduce(Set<String>()) {set, feed in
                 return set.union(Set(feed.tags))
@@ -104,7 +106,7 @@ internal class DataRepository: DataRetriever, DataWriter {
     }
 
     internal func feeds(callback: ([Feed]) -> (Void)) {
-        self.allFeedsOnBackgroundQueue { feeds in
+        self.allFeeds { feeds in
             self.mainQueue.addOperationWithBlock {
                 callback(feeds)
             }
@@ -168,7 +170,7 @@ internal class DataRepository: DataRetriever, DataWriter {
     }
 
     internal func articlesMatchingQuery(query: String, callback: ([Article]) -> (Void)) {
-        self.allFeedsOnBackgroundQueue { feeds in
+        self.allFeeds { feeds in
             let queriedArticles = self.privateArticlesMatchingQuery(query, feeds: feeds)
             self.mainQueue.addOperationWithBlock {
                 callback(queriedArticles)
@@ -178,38 +180,33 @@ internal class DataRepository: DataRetriever, DataWriter {
 
     // MARK: Private (DataRetriever)
 
-    private func allFeedsOnBackgroundQueue(callback: ([Feed] -> (Void))) {
-        self.backgroundQueue.addOperationWithBlock {
-            callback(self.synchronousAllFeeds())
-        }
-    }
+    private func allFeeds(callback: ([Feed] -> (Void))) {
+        let truePredicate = NSPredicate(value: true)
+        self.dataUtility.feedsWithPredicate(truePredicate, managedObjectContext: self.objectContext) {unsorted in
+            let feeds = unsorted.sort { return $0.displayTitle < $1.displayTitle }
 
-    private func synchronousAllFeeds() -> [Feed] {
-        let feeds = DataUtility.feedsWithPredicate(NSPredicate(value: true),
-            managedObjectContext: self.objectContext).sort {
-                return $0.displayTitle < $1.displayTitle
-        }
-        let nonQueryFeeds = feeds.reduce(Array<Feed>()) {
-            if $1.isQueryFeed {
-                return $0
-            } else {
-                return $0 + [$1]
+            let nonQueryFeeds = feeds.reduce(Array<Feed>()) {
+                if $1.isQueryFeed {
+                    return $0
+                } else {
+                    return $0 + [$1]
+                }
             }
-        }
-        let queryFeeds = feeds.reduce(Array<Feed>()) {
-            if $1.isQueryFeed {
-                return $0 + [$1]
-            } else {
-                return $0
+            let queryFeeds = feeds.reduce(Array<Feed>()) {
+                if $1.isQueryFeed {
+                    return $0 + [$1]
+                } else {
+                    return $0
+                }
             }
-        }
-        for feed in queryFeeds {
-            let articles = self.privateArticlesMatchingQuery(feed.query!, feeds: nonQueryFeeds)
-            for article in articles {
-                feed.addArticle(article)
+            for feed in queryFeeds {
+                let articles = self.privateArticlesMatchingQuery(feed.query!, feeds: nonQueryFeeds)
+                for article in articles {
+                    feed.addArticle(article)
+                }
             }
+            callback(feeds)
         }
-        return feeds
     }
 
     private func privateArticlesMatchingQuery(query: String, feeds: [Feed]) -> [Article] {
@@ -263,44 +260,43 @@ internal class DataRepository: DataRetriever, DataWriter {
         guard let _ = feed.feedID where feed.updated else {
             return
         }
-        self.backgroundQueue.addOperationWithBlock {
-            self.synchronousSaveFeed(feed)
-        }
+        self.synchronousSaveFeed(feed)
     }
 
     internal func deleteFeed(feed: Feed) {
         guard let feedID = feed.feedID else {
             return
         }
-        self.backgroundQueue.addOperationWithBlock {
-            guard let cdfeed = DataUtility.entities("Feed",
-                matchingPredicate: NSPredicate(format: "self = %@", feedID),
-                managedObjectContext: self.objectContext,
-                sortDescriptors: []).first as? CoreDataFeed else { return }
+        self.dataUtility.entities("Feed",
+            matchingPredicate: NSPredicate(format: "self = %@", feedID),
+            managedObjectContext: self.objectContext) {managedObjects in
+                guard let cdfeed = managedObjects.first as? CoreDataFeed else { return }
 
-            let articleIDsToDelete = cdfeed.articles.map {
-                return $0.objectID.URIRepresentation().absoluteString
-            }
-            self.objectContext.performBlockAndWait {
-                for article in cdfeed.articles {
-                    self.objectContext.deleteObject(article)
+                let articleIDsToDelete = cdfeed.articles.map {
+                    return $0.objectID.URIRepresentation().absoluteString
                 }
-                self.objectContext.deleteObject(cdfeed)
-            }
-            if #available(iOS 9.0, *) {
-                self.searchIndex?.deleteIdentifierFromIndex(articleIDsToDelete) {_ in }
-            }
-            self.save()
+                self.objectContext.performBlockAndWait {
+                    for article in cdfeed.articles {
+                        self.objectContext.deleteObject(article)
+                    }
+                    self.objectContext.deleteObject(cdfeed)
+                }
+                if #available(iOS 9.0, *) {
+                    self.searchIndex?.deleteIdentifierFromIndex(articleIDsToDelete) {_ in }
+                }
+                self.save()
 
-            let feedsLeft = self.synchronousAllFeeds().count
+                self.allFeeds { feeds in
+                    let feedsLeft = feeds.count
 
-            self.mainQueue.addOperationWithBlock {
-                for object in self.subscribers.allObjects {
-                    if let subscriber = object as? DataSubscriber {
-                        subscriber.deletedFeed(feed, feedsLeft: feedsLeft)
+                    self.mainQueue.addOperationWithBlock {
+                        for object in self.subscribers.allObjects {
+                            if let subscriber = object as? DataSubscriber {
+                                subscriber.deletedFeed(feed, feedsLeft: feedsLeft)
+                            }
+                        }
                     }
                 }
-            }
         }
     }
 
@@ -313,13 +309,11 @@ internal class DataRepository: DataRetriever, DataWriter {
         guard let feedID = article.feed?.feedID where article.updated else {
             return
         }
-        self.backgroundQueue.addOperationWithBlock {
-            if let cdfeed = DataUtility.entities("Feed",
-                matchingPredicate: NSPredicate(format: "self = %@", feedID),
-                managedObjectContext: self.objectContext,
-                sortDescriptors: []).first as? CoreDataFeed {
-                    self.saveArticle(article, feed: cdfeed)
-            }
+        self.dataUtility.entities("Feed",
+            matchingPredicate: NSPredicate(format: "self = %@", feedID),
+            managedObjectContext: self.objectContext) {managedObjects in
+                guard let cdFeed = managedObjects.first as? CoreDataFeed else { return }
+                self.saveArticle(article, feed: cdFeed)
         }
     }
 
@@ -327,28 +321,27 @@ internal class DataRepository: DataRetriever, DataWriter {
         guard let articleID = article.articleID else {
             return
         }
-        self.backgroundQueue.addOperationWithBlock {
-            guard let cdarticle = DataUtility.entities("Article",
-                matchingPredicate: NSPredicate(format: "self = %@", articleID),
-                managedObjectContext: self.objectContext,
-                sortDescriptors: []).first as? CoreDataArticle else { return }
-            let identifier = cdarticle.objectID.URIRepresentation().absoluteString
-            self.objectContext.performBlockAndWait {
-                cdarticle.feed = nil
-                self.objectContext.deleteObject(cdarticle)
-            }
-            if #available(iOS 9.0, *) {
-                self.searchIndex?.deleteIdentifierFromIndex([identifier]) {error in
+        self.dataUtility.entities("Article",
+            matchingPredicate: NSPredicate(format: "self = %@", articleID),
+            managedObjectContext: self.objectContext) {managedObjects in
+                guard let cdarticle = managedObjects.first as? CoreDataArticle else { return }
+                let identifier = cdarticle.objectID.URIRepresentation().absoluteString
+                self.objectContext.performBlockAndWait {
+                    cdarticle.feed = nil
+                    self.objectContext.deleteObject(cdarticle)
                 }
-            }
-            self.mainQueue.addOperationWithBlock {
-                for object in self.subscribers.allObjects {
-                    if let subscriber = object as? DataSubscriber {
-                        subscriber.deletedArticle(article)
+                if #available(iOS 9.0, *) {
+                    self.searchIndex?.deleteIdentifierFromIndex([identifier]) {error in
                     }
                 }
-            }
-            self.save()
+                self.mainQueue.addOperationWithBlock {
+                    for object in self.subscribers.allObjects {
+                        if let subscriber = object as? DataSubscriber {
+                            subscriber.deletedArticle(article)
+                        }
+                    }
+                }
+                self.save()
         }
     }
 
@@ -363,7 +356,7 @@ internal class DataRepository: DataRetriever, DataWriter {
             return
         }
 
-        self.allFeedsOnBackgroundQueue {feeds in
+        self.allFeeds {feeds in
             guard feeds.isEmpty == false && self.reachable?.hasNetworkConnectivity == true else {
                 self.mainQueue.addOperationWithBlock {
                     for updateCallback in self.updatingFeedsCallbacks {
@@ -395,16 +388,14 @@ internal class DataRepository: DataRetriever, DataWriter {
             callback(feed, nil)
             return
         }
-        self.backgroundQueue.addOperationWithBlock {
-            self.privateUpdateFeeds([feed]) {feeds, errors in
-                self.mainQueue.addOperationWithBlock {
-                    for object in self.subscribers.allObjects {
-                        if let subscriber = object as? DataSubscriber {
-                            subscriber.didUpdateFeeds(feeds)
-                        }
+        self.privateUpdateFeeds([feed]) {feeds, errors in
+            self.mainQueue.addOperationWithBlock {
+                for object in self.subscribers.allObjects {
+                    if let subscriber = object as? DataSubscriber {
+                        subscriber.didUpdateFeeds(feeds)
                     }
-                    callback(feeds.first, errors.first)
                 }
+                callback(feeds.first, errors.first)
             }
         }
     }
@@ -441,21 +432,22 @@ internal class DataRepository: DataRetriever, DataWriter {
                 }
             }
         }
-        if let articleID = existingArticle?.articleID,
-            let article = DataUtility.entities("Article",
+        if let articleID = existingArticle?.articleID {
+            self.dataUtility.entities("Article",
                 matchingPredicate: NSPredicate(format: "self = %@", articleID),
-                managedObjectContext: self.objectContext,
-                sortDescriptors: []).last as? CoreDataArticle {
+                managedObjectContext: self.objectContext) {managedObjects in
+                    guard let article = managedObjects.first as? CoreDataArticle else { return }
                     if article.updatedAt != muonArticle.updated {
-                        DataUtility.updateArticle(article, item: muonArticle)
+                        self.dataUtility.updateArticle(article, item: muonArticle)
                         self.save()
                     }
-                    return nil
+            }
+            return nil
         } else {
             // create
             let article = NSEntityDescription.insertNewObjectForEntityForName("Article",
                 inManagedObjectContext: self.objectContext) as! CoreDataArticle
-            DataUtility.updateArticle(article, item: muonArticle)
+            self.dataUtility.updateArticle(article, item: muonArticle)
             self.save()
             return Article(article: article, feed: nil)
         }
@@ -468,81 +460,83 @@ internal class DataRepository: DataRetriever, DataWriter {
     }
 
     private func synchronousSaveFeed(feed: Feed) {
-        // Do not call this on the main thread
         guard let feedID = feed.feedID where feed.updated else {
             return
         }
-        guard let cdfeed = DataUtility.entities("Feed",
+        self.dataUtility.entities("Feed",
             matchingPredicate: NSPredicate(format: "self = %@", feedID),
-            managedObjectContext: self.objectContext,
-            sortDescriptors: []).first as? CoreDataFeed else { return }
-        cdfeed.title = feed.title
-        cdfeed.url = feed.url?.absoluteString
-        cdfeed.summary = feed.summary
-        cdfeed.query = feed.query
-        cdfeed.tags = feed.tags
-        cdfeed.waitPeriodInt = feed.waitPeriod
-        cdfeed.remainingWaitInt = feed.remainingWait
-        cdfeed.image = feed.image
+            managedObjectContext: self.objectContext) {managedObjects in
+                guard let cdfeed = managedObjects.first as? CoreDataFeed else { return }
+                cdfeed.title = feed.title
+                cdfeed.url = feed.url?.absoluteString
+                cdfeed.summary = feed.summary
+                cdfeed.query = feed.query
+                cdfeed.tags = feed.tags
+                cdfeed.waitPeriodInt = feed.waitPeriod
+                cdfeed.remainingWaitInt = feed.remainingWait
+                cdfeed.image = feed.image
 
-        for article in feed.articlesArray where !feed.isQueryFeed {
-            self.saveArticle(article, feed: cdfeed)
+                for article in feed.articlesArray where !feed.isQueryFeed {
+                    self.saveArticle(article, feed: cdfeed)
+                }
+                self.save()
         }
-        self.save()
     }
 
     private func saveArticle(article: Article, feed: CoreDataFeed) {
         guard let articleID = article.articleID where article.updated else {
             return
         }
-        guard let cdarticle = DataUtility.entities("Article",
+        self.dataUtility.entities("Article",
             matchingPredicate: NSPredicate(format: "self = %@", articleID),
-            managedObjectContext: self.objectContext,
-            sortDescriptors: []).first as? CoreDataArticle else { return }
-        cdarticle.title = article.title
-        cdarticle.link = article.link?.absoluteString
-        cdarticle.summary = article.summary
-        cdarticle.author = article.author
-        cdarticle.published = article.published
-        cdarticle.updatedAt = article.updatedAt
-        cdarticle.content = article.content
-        cdarticle.read = article.read
-        cdarticle.flags = article.flags
-        cdarticle.feed = feed
+            managedObjectContext: self.objectContext) {managedObjects in
+                guard let cdarticle = managedObjects.first as? CoreDataArticle else { return }
+                cdarticle.title = article.title
+                cdarticle.link = article.link?.absoluteString
+                cdarticle.summary = article.summary
+                cdarticle.author = article.author
+                cdarticle.published = article.published
+                cdarticle.updatedAt = article.updatedAt
+                cdarticle.content = article.content
+                cdarticle.read = article.read
+                cdarticle.flags = article.flags
+                cdarticle.feed = feed
 
-        #if os(iOS)
-            if #available(iOS 9.0, *) {
-                let identifier = cdarticle.objectID.URIRepresentation().absoluteString
+                #if os(iOS)
+                    if #available(iOS 9.0, *) {
+                        let identifier = cdarticle.objectID.URIRepresentation().absoluteString
 
-                let attributes = CSSearchableItemAttributeSet(itemContentType: kUTTypeHTML as String)
-                attributes.title = article.title
-                let characterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
-                if let articleSummaryData = (article.summary as NSString).dataUsingEncoding(NSUTF8StringEncoding) {
-                    do {
-                        let summary = try NSAttributedString(data: articleSummaryData,
-                            options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType],
-                            documentAttributes: nil)
-                        attributes.contentDescription = summary.string.stringByTrimmingCharactersInSet(characterSet)
-                    } catch {}
-                }
-                let feedTitleWords = article.feed?.title.componentsSeparatedByCharactersInSet(characterSet)
-                attributes.keywords = ["article"] + (feedTitleWords ?? [])
-                attributes.URL = article.link
-                attributes.timestamp = article.updatedAt ?? article.published
-                attributes.authorNames = [article.author]
+                        let attributes = CSSearchableItemAttributeSet(itemContentType: kUTTypeHTML as String)
+                        attributes.title = article.title
+                        let characterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
+                        if let articleSummaryData = article.summary.dataUsingEncoding(NSUTF8StringEncoding) {
+                            do {
+                                let summary = try NSAttributedString(data: articleSummaryData,
+                                    options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType],
+                                    documentAttributes: nil)
+                                let trimmedSummary = summary.string.stringByTrimmingCharactersInSet(characterSet)
+                                attributes.contentDescription = trimmedSummary
+                            } catch {}
+                        }
+                        let feedTitleWords = article.feed?.title.componentsSeparatedByCharactersInSet(characterSet)
+                        attributes.keywords = ["article"] + (feedTitleWords ?? [])
+                        attributes.URL = article.link
+                        attributes.timestamp = article.updatedAt ?? article.published
+                        attributes.authorNames = [article.author]
 
-                if let image = article.feed?.image, let data = UIImagePNGRepresentation(image) {
-                    attributes.thumbnailData = data
-                }
+                        if let image = article.feed?.image, let data = UIImagePNGRepresentation(image) {
+                            attributes.thumbnailData = data
+                        }
 
-                let item = CSSearchableItem(uniqueIdentifier: identifier,
-                    domainIdentifier: nil,
-                    attributeSet: attributes)
-                item.expirationDate = NSDate.distantFuture()
-                self.searchIndex?.addItemsToIndex([item]) {_ in }
-            }
-        #endif
-        self.save()
+                        let item = CSSearchableItem(uniqueIdentifier: identifier,
+                            domainIdentifier: nil,
+                            attributeSet: attributes)
+                        item.expirationDate = NSDate.distantFuture()
+                        self.searchIndex?.addItemsToIndex([item]) {_ in }
+                    }
+                #endif
+                self.save()
+        }
     }
 
     private func updateFeed(feed: Feed, muonFeed: Muon.Feed) {
@@ -590,23 +584,22 @@ internal class DataRepository: DataRetriever, DataWriter {
             return $0
         }
         articles.forEach { $0.read = read }
-        let cdArticles = DataUtility.entities("Article",
-            matchingPredicate: NSPredicate(format: "self IN %@", articleIds),
-            managedObjectContext: self.objectContext,
-            sortDescriptors: [])
 
-        cdArticles.forEach {
-            if let cdArticle = $0 as? CoreDataArticle {
-                cdArticle.read = read
-            }
-        }
-        self.save()
-        self.mainQueue.addOperationWithBlock {
-            for object in self.subscribers.allObjects {
-                if let subscriber = object as? DataSubscriber {
-                    subscriber.markedArticles(articles, asRead: read)
+        self.dataUtility.entities("Article",
+            matchingPredicate: NSPredicate(format: "self IN %@", articleIds),
+            managedObjectContext: self.objectContext) {managedObjects in
+                guard let cdArticles = managedObjects as? [CoreDataArticle] else { return }
+                cdArticles.forEach {
+                    $0.read = read
                 }
-            }
+                self.save()
+                self.mainQueue.addOperationWithBlock {
+                    for object in self.subscribers.allObjects {
+                        if let subscriber = object as? DataSubscriber {
+                            subscriber.markedArticles(articles, asRead: read)
+                        }
+                    }
+                }
         }
     }
 
@@ -714,7 +707,9 @@ internal class DataRepository: DataRetriever, DataWriter {
 
                 feedsLeft--
                 if feedsLeft == 0 {
-                    callback(self.synchronousAllFeeds(), errors)
+                    self.allFeeds {
+                        callback($0, errors)
+                    }
                 }
             }
         }

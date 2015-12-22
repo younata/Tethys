@@ -1,41 +1,15 @@
 import Foundation
-import CoreData
-import Muon
 #if os(OSX)
     import Cocoa
 #elseif os(iOS)
     import UIKit
 #endif
 
-internal protocol DataUtilityType: class {
-    func updateFeed(feed: CoreDataFeed, info: Muon.Feed)
-    func updateFeedImage(feed: CoreDataFeed, info: Muon.Feed, urlSession: NSURLSession)
-    func updateArticle(article: CoreDataArticle, item: Muon.Article)
-    func insertEnclosureFromItem(item: Muon.Enclosure, article: CoreDataArticle)
+import CoreData
+import Muon
+@testable import rNewsKit
 
-    func entities(entity: String,
-        matchingPredicate predicate: NSPredicate,
-        managedObjectContext: NSManagedObjectContext,
-        callback: [NSManagedObject] -> Void)
-
-    func entities(entity: String,
-        matchingPredicate predicate: NSPredicate,
-        managedObjectContext: NSManagedObjectContext,
-        mapper: (NSManagedObject) -> (NSObject?),
-        callback: [NSObject] -> Void)
-
-    func feedsWithPredicate(predicate: NSPredicate,
-        managedObjectContext: NSManagedObjectContext,
-        callback: [Feed] -> Void)
-
-    func articlesWithPredicate(predicate: NSPredicate,
-        managedObjectContext: NSManagedObjectContext,
-        callback: [Article] -> Void)
-}
-
-internal class DataUtility: DataUtilityType {
-    init() {}
-
+class SynchronousDataUtility: DataUtilityType {
     func updateFeed(feed: CoreDataFeed, info: Muon.Feed) {
         let summary: String
         let data = info.description.dataUsingEncoding(NSUTF8StringEncoding,
@@ -44,12 +18,12 @@ internal class DataUtility: DataUtilityType {
         do {
             let aString = try NSAttributedString(data: data, options: options,
                 documentAttributes: nil)
-                summary = aString.string
+            summary = aString.string
         } catch _ {
             summary = info.description
         }
 
-        feed.managedObjectContext?.performBlock {
+        feed.managedObjectContext?.performBlockAndWait {
             feed.title = info.title
             feed.summary = summary
             let _ = try? feed.managedObjectContext?.save()
@@ -63,7 +37,7 @@ internal class DataUtility: DataUtilityType {
                     return
                 }
                 if let d = data, image = Image(data: d) {
-                    feed.managedObjectContext?.performBlock {
+                    feed.managedObjectContext?.performBlockAndWait {
                         feed.image = image
                         let _ = try? feed.managedObjectContext?.save()
                     }
@@ -81,7 +55,7 @@ internal class DataUtility: DataUtilityType {
             return author.name
         }).joinWithSeparator(", ")
 
-        article.managedObjectContext?.performBlock {
+        article.managedObjectContext?.performBlockAndWait {
             article.title = (item.title ?? article.title ?? "unknown").stringByTrimmingCharactersInSet(characterSet)
             article.link = item.link?.absoluteString ?? ""
             if article.published == nil {
@@ -109,7 +83,7 @@ internal class DataUtility: DataUtilityType {
             }
         }
 
-        article.managedObjectContext?.performBlock {
+        article.managedObjectContext?.performBlockAndWait {
             let entityDescription = NSEntityDescription.entityForName("Enclosure",
                 inManagedObjectContext: article.managedObjectContext!)!
             let enclosure = CoreDataEnclosure(entity: entityDescription,
@@ -120,7 +94,6 @@ internal class DataUtility: DataUtilityType {
         }
     }
 
-    // Callback is not guaranteed to be on the main thread
     func entities(entity: String,
         matchingPredicate predicate: NSPredicate,
         managedObjectContext: NSManagedObjectContext,
@@ -130,17 +103,27 @@ internal class DataUtility: DataUtilityType {
                 inManagedObjectContext: managedObjectContext)
             request.predicate = predicate
 
-            managedObjectContext.performBlock {
+            var returnObjects = [NSManagedObject]()
+
+            managedObjectContext.performBlockAndWait {
                 do {
                     if let ret = try managedObjectContext.executeFetchRequest(request) as? [NSManagedObject] {
-                        callback(ret)
+                        returnObjects = ret
                         return
                     }
                 } catch { }
             }
+            callback(returnObjects)
     }
 
-    // callback not guaranteed to be on the main thread
+    func synchronousEntities(entity: String,
+        matchingPredicate predicate: NSPredicate,
+        managedObjectContext: NSManagedObjectContext) -> [NSManagedObject] {
+            var ret = [NSManagedObject]()
+            self.entities(entity, matchingPredicate: predicate, managedObjectContext: managedObjectContext) { ret = $0 }
+            return ret
+    }
+
     func entities(entity: String,
         matchingPredicate predicate: NSPredicate,
         managedObjectContext: NSManagedObjectContext,
@@ -151,24 +134,27 @@ internal class DataUtility: DataUtilityType {
                 inManagedObjectContext: managedObjectContext)
             request.predicate = predicate
 
+            var returnObjects = [NSObject]()
+
             managedObjectContext.performBlockAndWait {
                 do {
                     if let ret = try managedObjectContext.executeFetchRequest(request) as? [NSManagedObject] {
-                        let entities = ret.reduce(Array<NSObject>()) {
+                        returnObjects = ret.reduce(Array<NSObject>()) {
                             if let obj = mapper($1) {
                                 return $0 + [obj]
                             }
                             return $0
                         }
-                        callback(entities)
                     }
                 } catch { }
             }
+
+            callback(returnObjects)
     }
 
     func feedsWithPredicate(predicate: NSPredicate,
         managedObjectContext: NSManagedObjectContext,
-        callback: [Feed] -> Void) {
+        callback: [rNewsKit.Feed] -> Void) {
             self.entities("Feed",
                 matchingPredicate: predicate,
                 managedObjectContext: managedObjectContext,
@@ -179,13 +165,20 @@ internal class DataUtility: DataUtilityType {
                     return Feed(feed: coreDataFeed)
                 },
                 callback: {feedObjects in
-                    callback(feedObjects as? [Feed] ?? [])
-                })
+                    callback(feedObjects as? [rNewsKit.Feed] ?? [])
+            })
+    }
+
+    func synchronousFeedsWithPredicate(predicate: NSPredicate,
+        managedObjectContext: NSManagedObjectContext) -> [rNewsKit.Feed] {
+            var ret: [rNewsKit.Feed] = []
+            self.feedsWithPredicate(predicate, managedObjectContext: managedObjectContext) { ret = $0 }
+            return ret
     }
 
     func articlesWithPredicate(predicate: NSPredicate,
         managedObjectContext: NSManagedObjectContext,
-        callback: [Article] -> Void) {
+        callback: [rNewsKit.Article] -> Void) {
             self.entities("Article",
                 matchingPredicate: predicate,
                 managedObjectContext: managedObjectContext,
@@ -196,7 +189,14 @@ internal class DataUtility: DataUtilityType {
                     return Article(article: coreDataArticle, feed: nil)
                 },
                 callback: {articleObjects in
-                    callback(articleObjects as? [Article] ?? [])
-                })
+                    callback(articleObjects as? [rNewsKit.Article] ?? [])
+            })
+    }
+
+    func synchronousArticlesWithPredicate(predicate: NSPredicate,
+        managedObjectContext: NSManagedObjectContext) -> [rNewsKit.Article] {
+            var ret: [rNewsKit.Article] = []
+            self.articlesWithPredicate(predicate, managedObjectContext: managedObjectContext) { ret = $0 }
+            return ret
     }
 }

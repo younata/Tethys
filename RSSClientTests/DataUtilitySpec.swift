@@ -7,12 +7,14 @@ import CoreData
 
 class DataUtilitySpec: QuickSpec {
     override func spec() {
+        var subject: DataUtility! = nil
         var ctx: NSManagedObjectContext! = nil
         var feed: CoreDataFeed! = nil
 
         var info: Muon.Feed! = nil
 
         beforeEach {
+            subject = DataUtility()
             ctx = managedObjectContext()
             feed = createFeed(ctx)
         }
@@ -22,9 +24,9 @@ class DataUtilitySpec: QuickSpec {
                 info = Muon.Feed(title: "example feed", link: NSURL(string: "http://example.com")!, description: "example", articles: [])
             }
             it("should update the feed accordingly") {
-                DataUtility.updateFeed(feed, info: info)
+                subject.updateFeed(feed, info: info)
 
-                expect(feed.title).to(equal("example feed"))
+                expect(feed.title).toEventually(equal("example feed"))
                 expect(feed.summary).to(equal("example"))
             }
         }
@@ -38,7 +40,7 @@ class DataUtilitySpec: QuickSpec {
             context("when the feed doesn't have an existing image") {
                 it("should download the image pointed at by info.imageURL and set it as the feed image") {
                     let urlSession = FakeURLSession()
-                    DataUtility.updateFeedImage(feed, info: info, urlSession: urlSession)
+                    subject.updateFeedImage(feed, info: info, urlSession: urlSession)
                     #if os(OSX)
                         let image = NSBundle(forClass: self.classForCoder).imageForResource("AppIcon")!
                         let data = image.TIFFRepresentation
@@ -47,7 +49,7 @@ class DataUtilitySpec: QuickSpec {
                     #endif
                     urlSession.lastCompletionHandler(data, nil, nil)
 
-                    expect(feed.image).toNot(beNil())
+                    expect(feed.image).toEventuallyNot(beNil())
                 }
             }
             context("when the feed has an existing image") {
@@ -68,7 +70,7 @@ class DataUtilitySpec: QuickSpec {
 
                 it("should not update the feed image") {
                     let urlSession = FakeURLSession()
-                    DataUtility.updateFeedImage(feed, info: info, urlSession: urlSession)
+                    subject.updateFeedImage(feed, info: info, urlSession: urlSession)
                     expect(urlSession.lastURL).to(beNil())
 
                     expect(feed.hasChanges).to(beFalsy())
@@ -94,9 +96,9 @@ class DataUtilitySpec: QuickSpec {
             }
 
             it("should update an article with the given feed item") {
-                DataUtility.updateArticle(article, item: item)
+                subject.updateArticle(article, item: item)
 
-                expect(article.title).to(equal("example"))
+                expect(article.title).toEventually(equal("example"))
                 expect(article.link).to(equal("http://example.com"))
                 expect(article.published).to(equal(NSDate(timeIntervalSinceReferenceDate: 0)))
                 expect(article.updatedAt).to(equal(NSDate(timeIntervalSinceReferenceDate: 10)))
@@ -118,9 +120,10 @@ class DataUtilitySpec: QuickSpec {
                         } catch _ {
                         }
                     }
+
                     it("should set the article title to 'unknown'") {
-                        DataUtility.updateArticle(article, item: item)
-                        expect(article.title).to(equal("unknown"))
+                        subject.updateArticle(article, item: item)
+                        expect(article.title).toEventually(equal("unknown"))
                     }
                 }
                 context("and the article title has previously been set") {
@@ -132,7 +135,7 @@ class DataUtilitySpec: QuickSpec {
                         }
                     }
                     it("should not change the title") {
-                        DataUtility.updateArticle(article, item: item)
+                        subject.updateArticle(article, item: item)
                         expect(article.title).to(equal("a title"))
                     }
                 }
@@ -141,12 +144,9 @@ class DataUtilitySpec: QuickSpec {
             context("when the article has just been created") {
                 it("should set 'read' to false") {
                     article.read = true
-                    do {
-                        try ctx.save()
-                    } catch _ {
-                    }
-                    DataUtility.updateArticle(article, item: item)
-                    expect(article.read).to(beFalsy())
+                    let _ = try? ctx.save()
+                    subject.updateArticle(article, item: item)
+                    expect(article.read).toEventually(beFalsy())
                 }
             }
         }
@@ -177,7 +177,7 @@ class DataUtilitySpec: QuickSpec {
                 it("should not insert another enclosure item") {
                     expect(article.enclosures.count).to(equal(1))
 
-                    DataUtility.insertEnclosureFromItem(enclosure, article: article)
+                    subject.insertEnclosureFromItem(enclosure, article: article)
 
                     expect(article.enclosures.count).to(equal(1))
                 }
@@ -185,9 +185,9 @@ class DataUtilitySpec: QuickSpec {
 
             context("when the article does not have an existing enclosure for this item") {
                 it("should insert an enclosure object into the article's enclosures set") {
-                    DataUtility.insertEnclosureFromItem(enclosure, article: article)
+                    subject.insertEnclosureFromItem(enclosure, article: article)
 
-                    expect(article.enclosures.count).to(equal(1))
+                    expect(article.enclosures.count).toEventually(equal(1))
                     if let enclosure = article.enclosures.first {
                         expect(enclosure.url).to(equal("http://example.com/enclosure.txt"))
                         expect(enclosure.kind).to(equal("text/text"))
@@ -198,7 +198,7 @@ class DataUtilitySpec: QuickSpec {
             }
         }
 
-        describe("entities:matchingPredicate:managedObjectContext:sortDescriptors:mapper:") {
+        describe("entities:matchingPredicate:managedObjectContext:mapper:callback:") {
             beforeEach {
                 feed.title = "example"
                 feed.summary = "example"
@@ -213,33 +213,43 @@ class DataUtilitySpec: QuickSpec {
 
             it("should return all objects that match the given predicate") {
                 let predicate = NSPredicate(format: "title = %@", "example")
-                let ret = DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: ctx, sortDescriptors: []) { return $0 }
-                expect(ret.count).to(equal(2))
-            }
-
-            it("should sort the results if you ask it to") {
-                let predicate = NSPredicate(format: "title = %@", "example")
-                let sortDescriptor = NSSortDescriptor(key: "summary", ascending: true)
-                let ret = DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: ctx, sortDescriptors: [sortDescriptor]) { return $0 }
-                expect(ret.first?.valueForKey("summary") as? String).to(equal("example"))
-                expect(ret.last?.valueForKey("summary") as? String).to(equal("other"))
+                var called = false
+                subject.entities("Feed",
+                    matchingPredicate: predicate,
+                    managedObjectContext: ctx,
+                    mapper: { return $0 },
+                    callback: {ret in
+                        called = true
+                        expect(ret.count).to(equal(2))
+                })
+                expect(called).toEventually(beTruthy())
             }
 
             it("should omit objects that return nil in the mapper") {
                 let predicate = NSPredicate(format: "title = %@", "example")
-                var omit = true
-                let ret = DataUtility.entities("Feed", matchingPredicate: predicate, managedObjectContext: ctx, sortDescriptors: []) {
-                    if omit {
-                        omit = false
-                        return nil
-                    }
-                    return $0
-                }
-                expect(ret.count).to(equal(1))
+                var shouldReturnNil = true
+
+                var called = false
+
+                subject.entities("Feed",
+                    matchingPredicate: predicate,
+                    managedObjectContext: ctx,
+                    mapper: {
+                        if shouldReturnNil {
+                            shouldReturnNil = false
+                            return nil
+                        }
+                        return $0
+                    },
+                    callback: {ret in
+                        expect(ret.count).to(equal(1))
+                        called = true
+                    })
+                expect(called).toEventually(beTruthy())
             }
         }
 
-        describe("feedsWithPredicate:managedObjectContext:sortDescriptors") {
+        describe("feedsWithPredicate:managedObjectContext:callback:") {
             var otherFeed: CoreDataFeed! = nil
             beforeEach {
                 feed.title = "example"
@@ -255,20 +265,16 @@ class DataUtilitySpec: QuickSpec {
 
             it("should return all feeds that match the given predicate") {
                 let predicate = NSPredicate(format: "title = %@", "example")
-                let ret = DataUtility.feedsWithPredicate(predicate, managedObjectContext: ctx)
-                expect(ret.count).to(equal(2))
-            }
-
-            it("should sort the results if you ask it to") {
-                let predicate = NSPredicate(format: "title = %@", "example")
-                let sortDescriptor = NSSortDescriptor(key: "summary", ascending: true)
-                let ret = DataUtility.feedsWithPredicate(predicate, managedObjectContext: ctx, sortDescriptors: [sortDescriptor])
-                expect(ret.first?.summary).to(equal("example"))
-                expect(ret.last?.summary).to(equal("other"))
+                var called = false
+                subject.feedsWithPredicate(predicate, managedObjectContext: ctx) { ret in
+                    expect(ret.count).to(equal(2))
+                    called = true
+                }
+                expect(called).toEventually(beTruthy())
             }
         }
 
-        describe("articlesWithPredicate:managedObjectContext:sortDescriptors") {
+        describe("articlesWithPredicate:managedObjectContext:callback:") {
 
             var article: CoreDataArticle! = nil
             var otherArticle: CoreDataArticle! = nil
@@ -287,16 +293,12 @@ class DataUtilitySpec: QuickSpec {
 
             it("should return all articles that match the given predicate") {
                 let predicate = NSPredicate(format: "title = %@", "example")
-                let ret = DataUtility.articlesWithPredicate(predicate, managedObjectContext: ctx)
-                expect(ret.count).to(equal(2))
-            }
-
-            it("should sort the results if you ask it to") {
-                let predicate = NSPredicate(format: "title = %@", "example")
-                let sortDescriptor = NSSortDescriptor(key: "summary", ascending: true)
-                let ret = DataUtility.articlesWithPredicate(predicate, managedObjectContext: ctx, sortDescriptors: [sortDescriptor])
-                expect(ret.first?.summary).to(equal("example"))
-                expect(ret.last?.summary).to(equal("other"))
+                var called = false
+                subject.articlesWithPredicate(predicate, managedObjectContext: ctx) { ret in
+                    expect(ret.count).to(equal(2))
+                    called = true
+                }
+                expect(called).toEventually(beTruthy())
             }
         }
     }

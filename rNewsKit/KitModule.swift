@@ -41,7 +41,8 @@ public class KitModule: NSObject, Ra.InjectorModule {
             backgroundQueue: backgroundQueue,
             urlSession: NSURLSession.sharedSession(),
             searchIndex: searchIndex,
-            reachable: reachable)
+            reachable: reachable,
+            dataUtility: DataUtility())
 
         injector.bind(DataRetriever.self, to: dataRepository)
         injector.bind(DataWriter.self, to: dataRepository)

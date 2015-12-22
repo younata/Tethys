@@ -72,6 +72,8 @@ class FeedRepositorySpec: QuickSpec {
 
         var reachable: FakeReachable! = nil
 
+        let dataUtility = SynchronousDataUtility()
+
         beforeEach {
             moc = managedObjectContext()
 
@@ -126,7 +128,8 @@ class FeedRepositorySpec: QuickSpec {
                 backgroundQueue: backgroundQueue,
                 urlSession: urlSession,
                 searchIndex: searchIndex,
-                reachable: reachable)
+                reachable: reachable,
+                dataUtility: dataUtility)
 
             dataSubscriber = FakeDataSubscriber()
             subject.addSubscriber(dataSubscriber)
@@ -149,29 +152,17 @@ class FeedRepositorySpec: QuickSpec {
                         tags = $0
                     }
                 }
-                it("should make an asynch call") {
+
+                it("should return a list of all tags asynchronously on the main thread") {
+                    expect(mainQueue.operationCount).to(equal(1))
+
                     expect(calledHandler).to(beFalsy())
-                    expect(backgroundQueue.operationCount).to(equal(1))
+
+                    mainQueue.runNextOperation()
+
                     expect(mainQueue.operationCount).to(equal(0))
-                }
-
-                describe("when the call finishes") {
-                    beforeEach {
-                        backgroundQueue.runNextOperation()
-                    }
-
-                    it("should let the caller know... on the main thread") {
-                        expect(backgroundQueue.operationCount).to(equal(0))
-                        expect(mainQueue.operationCount).to(equal(1))
-
-                        expect(calledHandler).to(beFalsy())
-
-                        mainQueue.runNextOperation()
-
-                        expect(mainQueue.operationCount).to(equal(0))
-                        expect(calledHandler).to(beTruthy())
-                        expect(tags).to(equal(["a", "b", "c", "d", "dad"]))
-                    }
+                    expect(calledHandler).to(beTruthy())
+                    expect(tags).to(equal(["a", "b", "c", "d", "dad"]))
                 }
             }
 
@@ -188,32 +179,19 @@ class FeedRepositorySpec: QuickSpec {
                     }
                 }
 
-                it("should make an asynch call") {
+                it("should asynchronously return the list of all feeds") {
+                    expect(mainQueue.operationCount).to(equal(1))
+
                     expect(calledHandler).to(beFalsy())
-                    expect(backgroundQueue.operationCount).to(equal(1))
+
+                    mainQueue.runNextOperation()
+
                     expect(mainQueue.operationCount).to(equal(0))
-                }
-
-                describe("when the call finishes") {
-                    beforeEach {
-                        backgroundQueue.runNextOperation()
-                    }
-
-                    it("should let the caller know... on the main thread") {
-                        expect(backgroundQueue.operationCount).to(equal(0))
-                        expect(mainQueue.operationCount).to(equal(1))
-
-                        expect(calledHandler).to(beFalsy())
-
-                        mainQueue.runNextOperation()
-
-                        expect(mainQueue.operationCount).to(equal(0))
-                        expect(calledHandler).to(beTruthy())
-                        expect(calledFeeds).to(equal(feeds))
-                        for (idx, feed) in feeds.enumerate() {
-                            let calledFeed = calledFeeds[idx]
-                            expect(calledFeed.articlesArray == feed.articlesArray).to(beTruthy())
-                        }
+                    expect(calledHandler).to(beTruthy())
+                    expect(calledFeeds).to(equal(feeds))
+                    for (idx, feed) in feeds.enumerate() {
+                        let calledFeed = calledFeeds[idx]
+                        expect(calledFeed.articlesArray == feed.articlesArray).to(beTruthy())
                     }
                 }
             }
@@ -226,45 +204,28 @@ class FeedRepositorySpec: QuickSpec {
                     calledHandler = false
                 }
 
-                context("without a tag/driving out the asynchronous") {
-                    beforeEach {
+                context("without a tag") {
+                    it("should return all the feeds when nil tag is given") {
                         subject.feedsMatchingTag(nil) {
                             calledHandler = true
                             calledFeeds = $0
                         }
-                    }
 
-                    it("should make an asynch call") {
+                        expect(mainQueue.operationCount).to(equal(1))
                         expect(calledHandler).to(beFalsy())
-                        expect(backgroundQueue.operationCount).to(equal(1))
+
+                        mainQueue.runNextOperation()
+
                         expect(mainQueue.operationCount).to(equal(0))
+                        expect(calledHandler).to(beTruthy())
+                        expect(calledFeeds).to(equal(feeds))
                     }
 
-                    describe("when the call finishes") {
-                        beforeEach {
-                            backgroundQueue.runNextOperation()
-                        }
-
-                        it("should let the caller know... on the main thread") {
-                            expect(backgroundQueue.operationCount).to(equal(0))
-                            expect(mainQueue.operationCount).to(equal(1))
-
-                            expect(calledHandler).to(beFalsy())
-
-                            mainQueue.runNextOperation()
-
-                            expect(mainQueue.operationCount).to(equal(0))
-                            expect(calledHandler).to(beTruthy())
-                            expect(calledFeeds).to(equal(feeds))
-                        }
-                    }
-
-                    it("should return all the feeds when no tag, or empty string is given as the tag") {
+                    it("should return all the feeds when empty string is given as the tag") {
                         subject.feedsMatchingTag("") {
                             calledHandler = true
                             calledFeeds = $0
                         }
-                        backgroundQueue.runNextOperation()
                         mainQueue.runNextOperation()
                         expect(calledFeeds).to(equal(feeds))
                     }
@@ -276,7 +237,6 @@ class FeedRepositorySpec: QuickSpec {
                         calledHandler = true
                         calledFeeds = $0
                     }
-                    backgroundQueue.runNextOperation()
                     mainQueue.runNextOperation()
                     expect(calledFeeds).to(equal(subFeeds))
                 }
@@ -294,33 +254,21 @@ class FeedRepositorySpec: QuickSpec {
                         calledHandler = true
                         calledArticles = articles
                     }
+                    backgroundQueue.runNextOperation()
                 }
 
-                it("should make an asynch call") {
+                it("should return all articles that match the given search query") {
+                    expect(mainQueue.operationCount).to(equal(1))
+
                     expect(calledHandler).to(beFalsy())
-                    expect(backgroundQueue.operationCount).to(equal(1))
+
+                    mainQueue.runNextOperation()
+
                     expect(mainQueue.operationCount).to(equal(0))
-                }
+                    expect(calledHandler).to(beTruthy())
+                    expect(Array(calledArticles)).to(equal([Article(article: article1, feed: nil)]))
 
-                describe("when the call finishes") {
-                    beforeEach {
-                        backgroundQueue.runNextOperation()
-                    }
-
-                    it("should let the caller know... on the main thread") {
-                        expect(backgroundQueue.operationCount).to(equal(0))
-                        expect(mainQueue.operationCount).to(equal(1))
-
-                        expect(calledHandler).to(beFalsy())
-
-                        mainQueue.runNextOperation()
-
-                        expect(mainQueue.operationCount).to(equal(0))
-                        expect(calledHandler).to(beTruthy())
-                        expect(Array(calledArticles)).to(equal([Article(article: article1, feed: nil)]))
-
-                        expect(calledArticles.predicate).toNot(beNil())
-                    }
+                    expect(calledArticles.predicate).toNot(beNil())
                 }
             }
 
@@ -336,30 +284,17 @@ class FeedRepositorySpec: QuickSpec {
                         calledArticles = $0
                     }
                 }
-                
-                it("should make an asynch call") {
+
+                it("should execute the javascript query upon all articles to compile thes query feed") {
+                    expect(mainQueue.operationCount).to(equal(1))
+
                     expect(calledHandler).to(beFalsy())
-                    expect(backgroundQueue.operationCount).to(equal(1))
+
+                    mainQueue.runNextOperation()
+
                     expect(mainQueue.operationCount).to(equal(0))
-                }
-                
-                describe("when the call finishes") {
-                    beforeEach {
-                        backgroundQueue.runNextOperation()
-                    }
-                    
-                    it("should let the caller know... on the main thread") {
-                        expect(backgroundQueue.operationCount).to(equal(0))
-                        expect(mainQueue.operationCount).to(equal(1))
-                        
-                        expect(calledHandler).to(beFalsy())
-                        
-                        mainQueue.runNextOperation()
-                        
-                        expect(mainQueue.operationCount).to(equal(0))
-                        expect(calledHandler).to(beTruthy())
-                        expect(calledArticles).to(equal([Article(article: article1, feed: nil)]))
-                    }
+                    expect(calledHandler).to(beTruthy())
+                    expect(calledArticles).to(equal([Article(article: article1, feed: nil)]))
                 }
             }
         }
@@ -371,30 +306,13 @@ class FeedRepositorySpec: QuickSpec {
                     subject.newFeed {feed in
                         createdFeed = feed
                     }
+                    backgroundQueue.runNextOperation()
                 }
 
-                it("should enqueue an operation on the background queue") {
-                    expect(backgroundQueue.operationCount).to(equal(1))
-                }
-
-                describe("when the operation completes") {
-                    beforeEach {
-                        backgroundQueue.runNextOperation()
-                    }
-
-                    it("should enqueue an operation on the mainqueue") {
-                        expect(mainQueue.operationCount).to(equal(1))
-                    }
-
-                    describe("when the main queue operation completes") {
-                        beforeEach {
-                            mainQueue.runNextOperation()
-                        }
-
-                        it("should call back with a created feed") {
-                            expect(createdFeed?.feedID).toNot(beNil())
-                        }
-                    }
+                it("should call back with a created feed") {
+                    expect(mainQueue.operationCount).to(equal(1))
+                    mainQueue.runNextOperation()
+                    expect(createdFeed?.feedID).toNot(beNil())
                 }
             }
 
@@ -404,12 +322,12 @@ class FeedRepositorySpec: QuickSpec {
                     feed = Feed(feed: feed1)
                     feed.summary = "a changed summary"
                     subject.saveFeed(feed)
-                    backgroundQueue.runNextOperation()
                 }
 
                 it("should update the data store") {
-                    let updatedFeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feed1.objectID),
-                        managedObjectContext: moc, sortDescriptors: []).first as? CoreDataFeed
+                    let updatedFeed = dataUtility.synchronousEntities("Feed",
+                        matchingPredicate: NSPredicate(format: "self = %@", feed1.objectID),
+                        managedObjectContext: moc).first as? CoreDataFeed
                     expect(updatedFeed?.summary).to(equal(feed.summary))
                     if let updated = updatedFeed {
                         expect(Feed(feed: updated)).to(equal(feed))
@@ -425,16 +343,16 @@ class FeedRepositorySpec: QuickSpec {
                     articleIDs = feed.articlesArray.map { return $0.articleID!.URIRepresentation().absoluteString }
                     mainQueue.runSynchronously = true
                     subject.deleteFeed(feed)
-                    backgroundQueue.runNextOperation()
                 }
 
                 it("should remove the feed from the data store") {
-                    let feeds = DataUtility.feedsWithPredicate(NSPredicate(value: true), managedObjectContext: moc)
+                    let feeds = dataUtility.synchronousFeedsWithPredicate(NSPredicate(value: true),
+                        managedObjectContext: moc)
                     expect(feeds.contains(feed)).to(beFalsy())
                 }
 
                 it("should remove any articles associated with the feed") {
-                    let articles = DataUtility.articlesWithPredicate(NSPredicate(value: true), managedObjectContext: moc)
+                    let articles = dataUtility.synchronousArticlesWithPredicate(NSPredicate(value: true), managedObjectContext: moc)
                     let articleTitles = articles.map { $0.title }
                     expect(articleTitles).toNot(contain("b"))
                     expect(articleTitles).toNot(contain("c"))
@@ -460,7 +378,7 @@ class FeedRepositorySpec: QuickSpec {
                 }
 
                 it("should mark every article in the feed as read") {
-                    let feed = DataUtility.feedsWithPredicate(NSPredicate(format: "self = %@", feed1.objectID), managedObjectContext: moc).first
+                    let feed = dataUtility.synchronousFeedsWithPredicate(NSPredicate(format: "self = %@", feed1.objectID), managedObjectContext: moc).first
                     for article in feed!.articlesArray {
                         expect(article.read).to(beTruthy())
                     }
@@ -488,17 +406,16 @@ class FeedRepositorySpec: QuickSpec {
 
                     article = feed.articlesArray.first
 
-                    let coreDataArticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
-                        managedObjectContext: moc, sortDescriptors: []).first
+                    let coreDataArticle = dataUtility.synchronousEntities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
+                        managedObjectContext: moc).first
                     expect(coreDataArticle).toNot(beNil())
                     article.title = "hello"
                     subject.saveArticle(article)
-                    backgroundQueue.runNextOperation()
                 }
 
                 it("should update the data store") {
-                    let updatedArticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
-                        managedObjectContext: moc, sortDescriptors: []).first as? CoreDataArticle
+                    let updatedArticle = dataUtility.synchronousEntities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
+                        managedObjectContext: moc).first as? CoreDataArticle
                     expect(updatedArticle?.title).to(equal(article.title))
                     if let updated = updatedArticle {
                         expect(Article(article: updated, feed: nil)).to(equal(article))
@@ -538,16 +455,15 @@ class FeedRepositorySpec: QuickSpec {
                     let feed = Feed(feed: feed1)
                     article = feed.articlesArray.first
 
-                    let coreDataArticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
-                        managedObjectContext: moc, sortDescriptors: []).first
+                    let coreDataArticle = dataUtility.synchronousEntities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
+                        managedObjectContext: moc).first
                     expect(coreDataArticle).toNot(beNil())
                     subject.deleteArticle(article)
-                    backgroundQueue.runNextOperation()
                 }
 
                 it("should remove the article from the data store") {
-                    let coreDataArticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
-                        managedObjectContext: moc, sortDescriptors: []).first
+                    let coreDataArticle = dataUtility.synchronousEntities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
+                        managedObjectContext: moc).first
                     expect(coreDataArticle).to(beNil())
                 }
 
@@ -582,8 +498,8 @@ class FeedRepositorySpec: QuickSpec {
                 }
 
                 it("should mark the article as read in the data store") {
-                    let coreDataArticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
-                        managedObjectContext: moc, sortDescriptors: []).first
+                    let coreDataArticle = dataUtility.synchronousEntities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
+                        managedObjectContext: moc).first
                     expect(coreDataArticle).toNot(beNil())
                     if let cda = coreDataArticle as? CoreDataArticle {
                         expect(cda.read).to(beTruthy())
@@ -604,8 +520,8 @@ class FeedRepositorySpec: QuickSpec {
                     }
 
                     it("should mark the article as unread in the data store") {
-                        let coreDataArticle = DataUtility.entities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
-                            managedObjectContext: moc, sortDescriptors: []).first
+                        let coreDataArticle = dataUtility.synchronousEntities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
+                            managedObjectContext: moc).first
                         expect(coreDataArticle).toNot(beNil())
                         if let cda = coreDataArticle as? CoreDataArticle {
                             expect(cda.read).to(beFalsy())
@@ -711,7 +627,7 @@ class FeedRepositorySpec: QuickSpec {
                             }
 
                             it("should update the feed data now") {
-                                let updatedFeed = DataUtility.feedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
+                                let updatedFeed = dataUtility.synchronousFeedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
                                     managedObjectContext: moc).first
                                 expect(updatedFeed?.title).to(equal("objc.io"))
                             }
@@ -739,7 +655,7 @@ class FeedRepositorySpec: QuickSpec {
                                     }
 
                                     it("should set the feed's image to that image") {
-                                        let updatedFeed = DataUtility.feedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
+                                        let updatedFeed = dataUtility.synchronousFeedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
                                             managedObjectContext: moc).first
                                         expect(updatedFeed?.image).toNot(beNil())
                                     }
@@ -788,8 +704,8 @@ class FeedRepositorySpec: QuickSpec {
                         }
 
                         it("should increment the remainingWait of the feed") {
-                            let updatedFeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feed1.objectID),
-                                managedObjectContext: moc, sortDescriptors: []).first as? CoreDataFeed
+                            let updatedFeed = dataUtility.synchronousEntities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feed1.objectID),
+                                managedObjectContext: moc).first as? CoreDataFeed
                             expect(updatedFeed?.remainingWait).to(equal(NSNumber(integer: 1)))
                         }
                     }
@@ -875,8 +791,8 @@ class FeedRepositorySpec: QuickSpec {
                     }
 
                     it("should not decrement the remainingWait of every feed that did have a remaining wait of > 0") {
-                        let updatedFeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feed3.objectID),
-                            managedObjectContext: moc, sortDescriptors: []).first as? CoreDataFeed
+                        let updatedFeed = dataUtility.synchronousEntities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feed3.objectID),
+                            managedObjectContext: moc).first as? CoreDataFeed
                         expect(updatedFeed?.remainingWait).to(equal(NSNumber(integer: 1)))
                     }
 
@@ -916,8 +832,8 @@ class FeedRepositorySpec: QuickSpec {
                     }
 
                     it("should decrement the remainingWait of every feed that did have a remaining wait of > 0") {
-                        let updatedFeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feed3.objectID),
-                            managedObjectContext: moc, sortDescriptors: []).first as? CoreDataFeed
+                        let updatedFeed = dataUtility.synchronousEntities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feed3.objectID),
+                            managedObjectContext: moc).first as? CoreDataFeed
                         expect(updatedFeed?.remainingWait).to(equal(NSNumber(integer: 0)))
                     }
 
@@ -996,7 +912,7 @@ class FeedRepositorySpec: QuickSpec {
                             }
 
                             it("should update the feed data now") {
-                                let updatedFeed = DataUtility.feedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
+                                let updatedFeed = dataUtility.synchronousFeedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
                                     managedObjectContext: moc).first
                                 expect(updatedFeed?.title).to(equal("objc.io"))
                             }
@@ -1028,7 +944,7 @@ class FeedRepositorySpec: QuickSpec {
                                     }
 
                                     it("should set the feed's image to that image") {
-                                        let updatedFeed = DataUtility.feedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
+                                        let updatedFeed = dataUtility.synchronousFeedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
                                             managedObjectContext: moc).first
                                         expect(updatedFeed?.image).toNot(beNil())
                                     }
@@ -1079,8 +995,8 @@ class FeedRepositorySpec: QuickSpec {
                         }
 
                         it("should increment the remainingWait of the feed") {
-                            let updatedFeed = DataUtility.entities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feed1.objectID),
-                                managedObjectContext: moc, sortDescriptors: []).first as? CoreDataFeed
+                            let updatedFeed = dataUtility.synchronousEntities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feed1.objectID),
+                                managedObjectContext: moc).first as? CoreDataFeed
                             expect(updatedFeed?.remainingWait).to(equal(NSNumber(integer: 1)))
                         }
                     }

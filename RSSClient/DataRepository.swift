@@ -289,9 +289,9 @@ internal class DataRepository: DataRetriever, DataWriter {
                 self.allFeeds { feeds in
                     let feedsLeft = feeds.count
 
-                    self.mainQueue.addOperationWithBlock {
-                        for object in self.subscribers.allObjects {
-                            if let subscriber = object as? DataSubscriber {
+                    for object in self.subscribers.allObjects {
+                        if let subscriber = object as? DataSubscriber {
+                            self.mainQueue.addOperationWithBlock {
                                 subscriber.deletedFeed(feed, feedsLeft: feedsLeft)
                             }
                         }
@@ -334,9 +334,9 @@ internal class DataRepository: DataRetriever, DataWriter {
                     self.searchIndex?.deleteIdentifierFromIndex([identifier]) {error in
                     }
                 }
-                self.mainQueue.addOperationWithBlock {
-                    for object in self.subscribers.allObjects {
-                        if let subscriber = object as? DataSubscriber {
+                for object in self.subscribers.allObjects {
+                    if let subscriber = object as? DataSubscriber {
+                        self.mainQueue.addOperationWithBlock {
                             subscriber.deletedArticle(article)
                         }
                     }
@@ -368,17 +368,19 @@ internal class DataRepository: DataRetriever, DataWriter {
             }
 
             self.privateUpdateFeeds(feeds) {updatedFeeds, errors in
-                self.mainQueue.addOperationWithBlock {
-                    for updateCallback in self.updatingFeedsCallbacks {
+                for updateCallback in self.updatingFeedsCallbacks {
+                    self.mainQueue.addOperationWithBlock {
                         updateCallback(updatedFeeds, errors)
                     }
-                    for object in self.subscribers.allObjects {
-                        if let subscriber = object as? DataSubscriber {
+                }
+                for object in self.subscribers.allObjects {
+                    if let subscriber = object as? DataSubscriber {
+                        self.mainQueue.addOperationWithBlock {
                             subscriber.didUpdateFeeds(updatedFeeds)
                         }
                     }
-                    self.updatingFeedsCallbacks = []
                 }
+                self.updatingFeedsCallbacks = []
             }
         }
     }
@@ -389,9 +391,9 @@ internal class DataRepository: DataRetriever, DataWriter {
             return
         }
         self.privateUpdateFeeds([feed]) {feeds, errors in
-            self.mainQueue.addOperationWithBlock {
-                for object in self.subscribers.allObjects {
-                    if let subscriber = object as? DataSubscriber {
+            for object in self.subscribers.allObjects {
+                if let subscriber = object as? DataSubscriber {
+                    self.mainQueue.addOperationWithBlock {
                         subscriber.didUpdateFeeds(feeds)
                     }
                 }
@@ -593,9 +595,9 @@ internal class DataRepository: DataRetriever, DataWriter {
                     $0.read = read
                 }
                 self.save()
-                self.mainQueue.addOperationWithBlock {
-                    for object in self.subscribers.allObjects {
-                        if let subscriber = object as? DataSubscriber {
+                for object in self.subscribers.allObjects {
+                    if let subscriber = object as? DataSubscriber {
+                        self.mainQueue.addOperationWithBlock {
                             subscriber.markedArticles(articles, asRead: read)
                         }
                     }
@@ -610,9 +612,9 @@ internal class DataRepository: DataRetriever, DataWriter {
             return
         }
 
-        self.mainQueue.addOperationWithBlock {
-            for object in self.subscribers.allObjects {
-                if let subscriber = object as? DataSubscriber {
+        for object in self.subscribers.allObjects {
+            if let subscriber = object as? DataSubscriber {
+                self.mainQueue.addOperationWithBlock {
                     subscriber.willUpdateFeeds()
                 }
             }
@@ -627,9 +629,9 @@ internal class DataRepository: DataRetriever, DataWriter {
         let loadFeed = {(url: NSURL, callback: (Muon.Feed?, NSError?) -> (Void)) -> (Void) in
             let dataTask = self.urlSession.dataTaskWithURL(url) {data, response, error in
                 currentProgress++
-                self.mainQueue.addOperationWithBlock {
-                    for object in self.subscribers.allObjects {
-                        if let subscriber = object as? DataSubscriber {
+                for object in self.subscribers.allObjects {
+                    if let subscriber = object as? DataSubscriber {
+                        self.mainQueue.addOperationWithBlock {
                             subscriber.didUpdateFeedsProgress(currentProgress, total: totalProgress)
                         }
                     }
@@ -697,9 +699,9 @@ internal class DataRepository: DataRetriever, DataWriter {
                 }
 
                 currentProgress++
-                self.mainQueue.addOperationWithBlock {
-                    for object in self.subscribers.allObjects {
-                        if let subscriber = object as? DataSubscriber {
+                for object in self.subscribers.allObjects {
+                    if let subscriber = object as? DataSubscriber {
+                        self.mainQueue.addOperationWithBlock {
                             subscriber.didUpdateFeedsProgress(currentProgress, total: totalProgress)
                         }
                     }

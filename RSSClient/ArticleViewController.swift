@@ -54,7 +54,7 @@ public class ArticleViewController: UIViewController {
     public var content = UIWebView(forAutoLayout: ())
 
     public private(set) lazy var shareButton: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .Compose, target: self, action: "share")
+        return UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: "share")
     }()
     public private(set) lazy var openInSafariButton: UIBarButtonItem = {
         return UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: "openInSafari")

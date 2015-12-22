@@ -137,6 +137,7 @@ public class FeedsTableViewController: UIViewController {
 
         self.dataWriter.addSubscriber(self)
         self.themeRepository.addSubscriber(self)
+        self.reload(self.searchBar.text)
     }
 
     deinit {
@@ -153,11 +154,6 @@ public class FeedsTableViewController: UIViewController {
             super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
 
             self.updateRefreshViewSize(size)
-    }
-
-    public override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        self.reload(self.searchBar.text)
     }
 
     public override func viewWillDisappear(animated: Bool) {

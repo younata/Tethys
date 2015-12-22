@@ -372,6 +372,10 @@ internal class DataRepository: DataRetriever, DataWriter {
             }
 
             self.privateUpdateFeeds(feeds) {updatedFeeds, errors in
+                updatedFeeds.forEach {
+                    let _ = $0.articlesArray.count
+                    let _ = $0.articlesArray[0]
+                }
                 for updateCallback in self.updatingFeedsCallbacks {
                     self.mainQueue.addOperationWithBlock {
                         updateCallback(updatedFeeds, errors)

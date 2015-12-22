@@ -96,13 +96,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
             self.notificationHandler?.enableNotifications(application)
 
-            self.dataRetriever?.feeds {feeds in
-                if feeds.isEmpty {
-                    application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
-                } else {
-                    application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
-                }
-            }
+            application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
 
             return true
     }

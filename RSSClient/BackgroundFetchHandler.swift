@@ -11,20 +11,10 @@ public class BackgroundFetchHandler: NSObject {
         return self.injector?.create(DataRetriever.self) as? DataRetriever
     }()
 
-    private lazy var timer: Timer? = {
-        return self.injector?.create(Timer.self) as? Timer
-    }()
-
     public func performFetch(notificationHandler: NotificationHandler, notificationSource: LocalNotificationSource, completionHandler: (UIBackgroundFetchResult) -> Void) {
-        guard let writer = self.dataWriter, let reader = self.dataRetriever, let timer = self.timer else {
+        guard let writer = self.dataWriter, let reader = self.dataRetriever else {
             completionHandler(.Failed)
             return
-        }
-        timer.setTimer(27) {
-            if notificationSource.canScheduleNote {
-                writer.cancelUpdateFeeds()
-                completionHandler(.Failed)
-            }
         }
         var originalArticlesList = [String]()
         let lock = NSLock()
@@ -36,17 +26,14 @@ public class BackgroundFetchHandler: NSObject {
 
         writer.updateFeeds {newFeeds, errors in
             guard errors.isEmpty else {
-                timer.cancel()
                 completionHandler(.Failed)
                 return
             }
             guard lock.lockBeforeDate(NSDate(timeIntervalSinceNow: 5)) else {
-                timer.cancel()
                 completionHandler(.Failed)
                 return
             }
             lock.unlock()
-            timer.cancel()
             let currentArticleList: [Article] = newFeeds.reduce([]) { return $0 + $1.articles }
             if (currentArticleList.count == originalArticlesList.count) {
                 completionHandler(.NoData)

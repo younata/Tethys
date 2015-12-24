@@ -4,23 +4,10 @@ import Ra
 import rNews
 import rNewsKit
 
-private class FakeTimer: Timer {
-    private var timerCallback: ((Void) -> (Void))? = nil
-    private override func setTimer(interval: NSTimeInterval, callback: (Void) -> (Void)) {
-        self.timerCallback = callback
-    }
-
-    private var timerCancelled = false
-    private override func cancel() {
-        self.timerCancelled = true
-    }
-}
-
 class BackgroundFetchHandlerSpec: QuickSpec {
     override func spec() {
         var injector: Injector! = nil
         var dataReadWriter: FakeDataReadWriter! = nil
-        var timer: FakeTimer! = nil
 
         var subject: BackgroundFetchHandler! = nil
 
@@ -30,9 +17,6 @@ class BackgroundFetchHandlerSpec: QuickSpec {
             dataReadWriter.feedsList = []
             injector.bind(DataRetriever.self, to: dataReadWriter)
             injector.bind(DataWriter.self, to: dataReadWriter)
-
-            timer = FakeTimer()
-            injector.bind(Timer.self, to: timer)
 
             subject = injector.create(BackgroundFetchHandler.self) as! BackgroundFetchHandler
         }
@@ -52,11 +36,6 @@ class BackgroundFetchHandlerSpec: QuickSpec {
 
             it("should make a network request") {
                 expect(dataReadWriter.didUpdateFeeds).to(beTruthy())
-            }
-
-            it("should set up a timer") {
-                expect(timer.timerCallback).toNot(beNil())
-                expect(timer.timerCancelled).to(beFalsy())
             }
 
             context("when new articles are found") {
@@ -83,10 +62,6 @@ class BackgroundFetchHandlerSpec: QuickSpec {
                     dataReadWriter.updateFeedsCompletion(feeds, [])
                 }
 
-                it("should cancel the timer") {
-                    expect(timer.timerCancelled).to(beTruthy())
-                }
-
                 it("should send local notifications for each new article") {
                     expect(notificationSource.scheduledNotes.count).to(equal(articles.count))
                 }
@@ -99,10 +74,6 @@ class BackgroundFetchHandlerSpec: QuickSpec {
             context("when no new articles are found") {
                 beforeEach {
                     dataReadWriter.updateFeedsCompletion([], [])
-                }
-
-                it("should cancel the timer") {
-                    expect(timer.timerCancelled).to(beTruthy())
                 }
 
                 it("should not send any new local notifications") {
@@ -119,29 +90,11 @@ class BackgroundFetchHandlerSpec: QuickSpec {
                     dataReadWriter.updateFeedsCompletion([], [NSError(domain: "", code: 0, userInfo: nil)])
                 }
 
-                it("should cancel the timer") {
-                    expect(timer.timerCancelled).to(beTruthy())
-                }
-
                 it("should not send any new local notifications") {
                     expect(notificationSource.scheduledNotes).to(beEmpty())
                 }
 
                 it("should call the completion handler and indicate that there was an error") {
-                    expect(fetchResult).to(equal(UIBackgroundFetchResult.Failed))
-                }
-            }
-
-            context("when we get dangerously close to being killed by the app") {
-                beforeEach {
-                    timer.timerCallback?()
-                }
-
-                it("should cancel everything") {
-                    expect(dataReadWriter.didCancelFeeds).to(beTruthy())
-                }
-
-                it("should report an error") {
                     expect(fetchResult).to(equal(UIBackgroundFetchResult.Failed))
                 }
             }

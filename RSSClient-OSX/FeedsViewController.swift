@@ -29,11 +29,11 @@ public class FeedsViewController: NSViewController {
     public var onFeedSelection: (Feed) -> Void = {(_) in }
 
     private var dataReader: DataRetriever? {
-        return self.raInjector?.create(DataRetriever.self) as? DataRetriever
+        return self.raInjector?.create(DataRetriever)
     }
 
     private var dataWriter: DataWriter? {
-        return self.raInjector?.create(DataWriter.self) as? DataWriter
+        return self.raInjector?.create(DataWriter)
     }
 
     private var mainMenu: NSMenu? {

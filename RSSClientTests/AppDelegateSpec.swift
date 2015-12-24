@@ -50,14 +50,14 @@ class AppDelegateSpec: QuickSpec {
             injector = Ra.Injector()
 
             dataReadWriter = FakeDataReadWriter()
-            injector.bind(DataRetriever.self, to: dataReadWriter)
-            injector.bind(DataWriter.self, to: dataReadWriter)
+            injector.bind(DataRetriever.self, toInstance: dataReadWriter)
+            injector.bind(DataWriter.self, toInstance: dataReadWriter)
 
             notificationHandler = FakeNotificationHandler()
-            injector.bind(NotificationHandler.self, to: notificationHandler)
+            injector.bind(NotificationHandler.self, toInstance: notificationHandler)
 
             backgroundFetchHandler = FakeBackgroundFetchHandler()
-            injector.bind(BackgroundFetchHandler.self, to: backgroundFetchHandler)
+            injector.bind(BackgroundFetchHandler.self, toInstance: backgroundFetchHandler)
 
             subject.anInjector = injector
             subject.window = UIWindow(frame: CGRectMake(0, 0, 320, 480))

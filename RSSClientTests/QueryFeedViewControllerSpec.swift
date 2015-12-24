@@ -25,16 +25,16 @@ class QueryFeedViewControllerSpec: QuickSpec {
 
             backgroundQueue = FakeOperationQueue()
             backgroundQueue.runSynchronously = true
-            injector.bind(kBackgroundQueue, to: backgroundQueue)
+            injector.bind(kBackgroundQueue, toInstance: backgroundQueue)
 
             dataReadWriter = FakeDataReadWriter()
-            injector.bind(DataRetriever.self, to: dataReadWriter)
-            injector.bind(DataWriter.self, to: dataReadWriter)
+            injector.bind(DataRetriever.self, toInstance: dataReadWriter)
+            injector.bind(DataWriter.self, toInstance: dataReadWriter)
 
             themeRepository = FakeThemeRepository()
-            injector.bind(ThemeRepository.self, to: themeRepository)
+            injector.bind(ThemeRepository.self, toInstance: themeRepository)
 
-            subject = injector.create(QueryFeedViewController.self) as! QueryFeedViewController
+            subject = injector.create(QueryFeedViewController)!
 
             navigationController = UINavigationController(rootViewController: subject)
         }

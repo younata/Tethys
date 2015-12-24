@@ -66,15 +66,15 @@ public class ArticleViewController: UIViewController {
     public var lastArticleIndex = 0
 
     public lazy var dataWriter: DataWriter? = {
-        return self.injector?.create(DataWriter.self) as? DataWriter
+        return self.injector?.create(DataWriter)
     }()
 
     public lazy var themeRepository: ThemeRepository? = {
-        return self.injector?.create(ThemeRepository.self) as? ThemeRepository
+        return self.injector?.create(ThemeRepository)
     }()
 
     public lazy var urlOpener: UrlOpener? = {
-        return self.injector?.create(UrlOpener.self) as? UrlOpener
+        return self.injector?.create(UrlOpener)
     }()
 
     public lazy var panGestureRecognizer: ScreenEdgePanGestureRecognizer = {

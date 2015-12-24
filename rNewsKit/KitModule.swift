@@ -15,9 +15,9 @@ public class KitModule: NSObject, Ra.InjectorModule {
     public func configureInjector(injector: Injector) {
         // Operation Queues
         let mainQueue = NSOperationQueue.mainQueue()
-        injector.bind(kMainQueue, to: mainQueue)
+        injector.bind(kMainQueue, toInstance: mainQueue)
 
-        injector.bind(NSURLSession.self, to: NSURLSession.sharedSession())
+        injector.bind(NSURLSession.self, toInstance: NSURLSession.sharedSession())
 
         var searchIndex: SearchIndex? = nil
 
@@ -26,7 +26,7 @@ public class KitModule: NSObject, Ra.InjectorModule {
         #if os(iOS)
             if #available(iOS 9.0, *) {
                 searchIndex = CSSearchableIndex.defaultSearchableIndex()
-                injector.bind(SearchIndex.self, to: searchIndex!)
+                injector.bind(SearchIndex.self, toInstance: CSSearchableIndex.defaultSearchableIndex())
             }
             reachable = try? Reachability.reachabilityForInternetConnection()
         #endif
@@ -34,7 +34,7 @@ public class KitModule: NSObject, Ra.InjectorModule {
         let backgroundQueue = NSOperationQueue()
         backgroundQueue.qualityOfService = NSQualityOfService.Utility
         backgroundQueue.maxConcurrentOperationCount = 1
-        injector.bind(kBackgroundQueue, to: backgroundQueue)
+        injector.bind(kBackgroundQueue, toInstance: backgroundQueue)
 
         let dataRepository = DataRepository(objectContext: ManagedObjectContext(),
             mainQueue: mainQueue,
@@ -44,12 +44,12 @@ public class KitModule: NSObject, Ra.InjectorModule {
             reachable: reachable,
             dataUtility: DataUtility())
 
-        injector.bind(DataRetriever.self, to: dataRepository)
-        injector.bind(DataWriter.self, to: dataRepository)
-        injector.bind(DataRepository.self, to: dataRepository)
+        injector.bind(DataRetriever.self, toInstance: dataRepository)
+        injector.bind(DataWriter.self, toInstance: dataRepository)
+        injector.bind(DataRepository.self, toInstance: dataRepository)
 
         let opmlManager = OPMLManager(injector: injector)
-        injector.bind(OPMLManager.self, to: opmlManager)
+        injector.bind(OPMLManager.self, toInstance: opmlManager)
     }
 
     private func ManagedObjectContext() -> NSManagedObjectContext {

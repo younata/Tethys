@@ -19,15 +19,15 @@ class ArticleViewControllerSpec: QuickSpec {
             injector = Injector()
 
             dataWriter = FakeDataReadWriter()
-            injector.bind(DataWriter.self, to: dataWriter)
+            injector.bind(DataWriter.self, toInstance: dataWriter)
 
             themeRepository = FakeThemeRepository()
-            injector.bind(ThemeRepository.self, to: themeRepository)
+            injector.bind(ThemeRepository.self, toInstance: themeRepository)
 
             urlOpener = FakeUrlOpener()
-            injector.bind(UrlOpener.self, to: urlOpener)
+            injector.bind(UrlOpener.self, toInstance: urlOpener)
 
-            subject = injector.create(ArticleViewController.self) as! ArticleViewController
+            subject = injector.create(ArticleViewController)!
 
             navigationController = UINavigationController(rootViewController: subject)
 

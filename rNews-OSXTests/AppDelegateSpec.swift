@@ -27,7 +27,7 @@ class AppDelegateSpec: QuickSpec {
                 expect(mainController.raInjector).toNot(beNil())
 
                 if let injector = mainController.raInjector {
-                    expect(injector.create(DataWriter.self) as? DataWriter).toNot(beNil())
+                    expect(injector.create(DataWriter)).toNot(beNil())
                     expect(injector.create(kMainMenu) as? NSMenu).toNot(beNil())
                 }
             }

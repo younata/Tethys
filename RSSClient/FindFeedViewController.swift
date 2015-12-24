@@ -20,15 +20,15 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
     var lookForFeeds: Bool = true
 
     private lazy var feedFinder: FeedFinder? = {
-        self.injector?.create(FeedFinder.self) as? FeedFinder
+        self.injector?.create(FeedFinder)
     }()
 
     private lazy var dataWriter: DataWriter? = {
-        return self.injector?.create(DataWriter.self) as? DataWriter
+        return self.injector?.create(DataWriter)
     }()
 
     private lazy var opmlManager: OPMLManager? = {
-        return self.injector?.create(OPMLManager.self) as? OPMLManager
+        return self.injector?.create(OPMLManager)
     }()
 
     private lazy var mainQueue: NSOperationQueue? = {
@@ -40,11 +40,11 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
     }()
 
     private lazy var urlSession: NSURLSession? = {
-        return self.injector?.create(NSURLSession.self) as? NSURLSession
+        return self.injector?.create(NSURLSession)
     }()
 
     private lazy var themeRepository: ThemeRepository? = {
-        return self.injector?.create(ThemeRepository.self) as? ThemeRepository
+        return self.injector?.create(ThemeRepository)
     }()
 
     private let placeholderAttributes: [String: AnyObject] = [NSForegroundColorAttributeName: UIColor.blackColor()]

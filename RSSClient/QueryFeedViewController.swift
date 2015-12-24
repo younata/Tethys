@@ -37,15 +37,15 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
     }
 
     private lazy var dataWriter: DataWriter? = {
-        return self.injector?.create(DataWriter.self) as? DataWriter
+        return self.injector?.create(DataWriter)
     }()
 
     private lazy var dataRetriever: DataRetriever? = {
-        return self.injector?.create(DataRetriever.self) as? DataRetriever
+        return self.injector?.create(DataRetriever)
     }()
 
     private lazy var themeRepository: ThemeRepository? = {
-        return self.injector?.create(ThemeRepository.self) as? ThemeRepository
+        return self.injector?.create(ThemeRepository)
     }()
 
     public lazy var tableView: UITableView = {
@@ -120,7 +120,7 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
     }
 
     private func showTagEditor(tagIndex: Int) {
-        let tagEditor = self.injector!.create(TagEditorViewController.self) as! TagEditorViewController
+        let tagEditor = self.injector!.create(TagEditorViewController)!
         tagEditor.feed = feed
         if tagIndex < feed?.tags.count {
             tagEditor.tagIndex = tagIndex

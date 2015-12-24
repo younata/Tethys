@@ -51,20 +51,20 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
     }()
 
     private lazy var dataRetriever: DataRetriever? = {
-        return self.anInjector.create(DataRetriever.self) as? DataRetriever
+        return self.anInjector.create(DataRetriever)
     }()
 
     private lazy var notificationHandler: NotificationHandler? = {
-        self.anInjector.create(NotificationHandler.self) as? NotificationHandler
+        self.anInjector.create(NotificationHandler)
     }()
 
     private lazy var backgroundFetchHandler: BackgroundFetchHandler? = {
-        self.anInjector.create(BackgroundFetchHandler.self) as? BackgroundFetchHandler
+        self.anInjector.create(BackgroundFetchHandler)
     }()
 
     internal lazy var splitView: SplitViewController = {
-        let splitView = self.anInjector.create(SplitViewController.self) as! SplitViewController
-        self.anInjector.bind(SplitViewController.self, to: splitView)
+        let splitView = self.anInjector.create(SplitViewController)!
+        self.anInjector.bind(SplitViewController.self, toInstance: splitView)
         return splitView
     }()
 
@@ -81,7 +81,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
             self.createControllerHierarchy()
 
-            if let dataWriter = self.anInjector.create(DataWriter.self) as? DataWriter {
+            if let dataWriter = self.anInjector.create(DataWriter) {
                 dataWriter.addSubscriber(application)
                 let userDefaults = NSUserDefaults.standardUserDefaults()
                 if !userDefaults.boolForKey("firstLaunch") {
@@ -213,7 +213,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 master = masterNC
                 feeds = feedsController
         } else {
-            feeds = self.anInjector.create(FeedsTableViewController.self) as! FeedsTableViewController
+            feeds = self.anInjector.create(FeedsTableViewController)!
             master = UINavigationController(rootViewController: feeds)
         }
 

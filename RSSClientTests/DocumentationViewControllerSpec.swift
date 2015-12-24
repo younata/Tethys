@@ -13,9 +13,9 @@ class DocumentationViewControllerSpec: QuickSpec {
             let injector = Injector()
 
             themeRepository = FakeThemeRepository()
-            injector.bind(ThemeRepository.self, to: themeRepository)
+            injector.bind(ThemeRepository.self, toInstance: themeRepository)
 
-            subject = injector.create(DocumentationViewController.self) as! DocumentationViewController
+            subject = injector.create(DocumentationViewController)!
             navigationController = UINavigationController(rootViewController: subject)
             subject.view.layoutIfNeeded()
         }

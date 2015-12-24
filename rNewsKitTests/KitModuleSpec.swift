@@ -23,13 +23,13 @@ class KitModuleSpec: QuickSpec {
         }
 
         it("should bind the shared URLSession to NSURLSession") {
-            expect(injector.create(NSURLSession.self) as? NSURLSession).to(beIdenticalTo(NSURLSession.sharedSession()))
+            expect(injector.create(NSURLSession)).to(beIdenticalTo(NSURLSession.sharedSession()))
         }
 
         #if os(iOS)
             if #available(iOS 9.0, *) {
                 it("should, on iOS 9, bind a searchIndex") {
-                    expect(injector.create(SearchIndex.self) as? NSObject).to(beIdenticalTo(CSSearchableIndex.defaultSearchableIndex()))
+                    expect(injector.create(SearchIndex)! === CSSearchableIndex.defaultSearchableIndex()).to(beTruthy())
                 }
             }
         #endif
@@ -43,7 +43,7 @@ class KitModuleSpec: QuickSpec {
         }
 
         it("should bind an opml manager with a singleton scope") {
-            expect(injector.create(OPMLManager.self) as? OPMLManager).to(beIdenticalTo(injector.create(OPMLManager.self) as? OPMLManager))
+            expect(injector.create(OPMLManager)).to(beIdenticalTo(injector.create(OPMLManager)))
         }
     }
 }

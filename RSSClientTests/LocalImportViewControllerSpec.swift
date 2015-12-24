@@ -61,11 +61,11 @@ class LocalImportViewControllerSpec: QuickSpec {
             injector = Ra.Injector(module: SpecInjectorModule())
 
             dataReadWriter = FakeDataReadWriter()
-            injector.bind(DataRetriever.self, to: dataReadWriter)
-            injector.bind(DataWriter.self, to: dataReadWriter)
+            injector.bind(DataRetriever.self, toInstance: dataReadWriter)
+            injector.bind(DataWriter.self, toInstance: dataReadWriter)
 
             opmlManager = OPMLManagerMock()
-            injector.bind(OPMLManager.self, to: opmlManager)
+            injector.bind(OPMLManager.self, toInstance: opmlManager)
 
             mainQueue = injector.create(kMainQueue) as! FakeOperationQueue
             mainQueue.runSynchronously = true
@@ -74,13 +74,13 @@ class LocalImportViewControllerSpec: QuickSpec {
             backgroundQueue.runSynchronously = true
 
             themeRepository = FakeThemeRepository()
-            injector.bind(ThemeRepository.self, to: themeRepository)
+            injector.bind(ThemeRepository.self, toInstance: themeRepository)
 
             fileManager = FakeFileManager()
             fileManager.contentsOfDirectories[documentsDirectory() as String] = []
-            injector.bind(NSFileManager.self, to: fileManager)
+            injector.bind(NSFileManager.self, toInstance: fileManager)
 
-            subject = injector.create(LocalImportViewController.self) as! LocalImportViewController
+            subject = injector.create(LocalImportViewController)!
 
             navigationController = UINavigationController(rootViewController: subject)
 

@@ -4,7 +4,7 @@ public class SplitViewController: UISplitViewController {
     public var collapseDetailViewController: Bool = true
 
     private lazy var themeRepository: ThemeRepository? = {
-        return self.injector?.create(ThemeRepository.self) as? ThemeRepository
+        return self.injector?.create(ThemeRepository)
     }()
 
     public override func preferredStatusBarStyle() -> UIStatusBarStyle {

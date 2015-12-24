@@ -25,20 +25,20 @@ class FeedViewControllerSpec: QuickSpec {
             injector = Injector()
 
             urlSession = FakeURLSession()
-            injector.bind(NSURLSession.self, to: urlSession)
+            injector.bind(NSURLSession.self, toInstance: urlSession)
 
             themeRepository = FakeThemeRepository()
-            injector.bind(ThemeRepository.self, to: themeRepository)
+            injector.bind(ThemeRepository.self, toInstance: themeRepository)
 
             backgroundQueue = FakeOperationQueue()
             backgroundQueue.runSynchronously = true
-            injector.bind(kBackgroundQueue, to: backgroundQueue)
+            injector.bind(kBackgroundQueue, toInstance: backgroundQueue)
 
             dataReadWriter = FakeDataReadWriter()
-            injector.bind(DataRetriever.self, to: dataReadWriter)
-            injector.bind(DataWriter.self, to: dataReadWriter)
+            injector.bind(DataRetriever.self, toInstance: dataReadWriter)
+            injector.bind(DataWriter.self, toInstance: dataReadWriter)
 
-            subject = injector.create(FeedViewController.self) as! FeedViewController
+            subject = injector.create(FeedViewController)!
 
             navigationController = UINavigationController(rootViewController: subject)
 

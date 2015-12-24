@@ -204,7 +204,7 @@ public class ThemeRepository: NSObject, Injectable {
     }
 
     public required init(injector: Ra.Injector) {
-        self.userDefaults = injector.create(NSUserDefaults.self) as? NSUserDefaults ??
+        self.userDefaults = injector.create(NSUserDefaults) ??
             NSUserDefaults.standardUserDefaults()
     }
 

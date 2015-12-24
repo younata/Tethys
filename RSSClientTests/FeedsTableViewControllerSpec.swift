@@ -22,18 +22,18 @@ class FeedsTableViewControllerSpec: QuickSpec {
             let injector = Injector()
 
             dataReadWriter = FakeDataReadWriter()
-            injector.bind(DataRetriever.self, to: dataReadWriter)
-            injector.bind(DataWriter.self, to: dataReadWriter)
+            injector.bind(DataRetriever.self, toInstance: dataReadWriter)
+            injector.bind(DataWriter.self, toInstance: dataReadWriter)
 
             settingsRepository = SettingsRepository(userDefaults: nil)
-            injector.bind(SettingsRepository.self, to: settingsRepository)
+            injector.bind(SettingsRepository.self, toInstance: settingsRepository)
 
             themeRepository = FakeThemeRepository()
-            injector.bind(ThemeRepository.self, to: themeRepository)
+            injector.bind(ThemeRepository.self, toInstance: themeRepository)
 
-            injector.bind(kBackgroundQueue, to: FakeOperationQueue())
+            injector.bind(kBackgroundQueue, toInstance: FakeOperationQueue())
 
-            subject = injector.create(FeedsTableViewController.self) as? FeedsTableViewController
+            subject = injector.create(FeedsTableViewController)
 
             navigationController = UINavigationController(rootViewController: subject)
 

@@ -13,15 +13,15 @@ public class ArticleListController: UITableViewController, DataSubscriber {
     public var previewMode: Bool = false
 
     internal lazy var dataWriter: DataWriter? = {
-        self.injector?.create(DataWriter.self) as? DataWriter
+        self.injector?.create(DataWriter)
     }()
 
     internal lazy var dataReader: DataRetriever? = {
-        self.injector?.create(DataRetriever.self) as? DataRetriever
+        self.injector?.create(DataRetriever)
     }()
 
     internal lazy var themeRepository: ThemeRepository? = {
-        self.injector?.create(ThemeRepository.self) as? ThemeRepository
+        self.injector?.create(ThemeRepository)
     }()
 
     public lazy var searchBar: UISearchBar = {

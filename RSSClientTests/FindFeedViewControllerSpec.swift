@@ -30,27 +30,27 @@ class FindFeedViewControllerSpec: QuickSpec {
             injector = Ra.Injector(module: SpecInjectorModule())
 
             feedFinder = FakeFeedFinder()
-            injector.bind(FeedFinder.self, to: feedFinder)
+            injector.bind(FeedFinder.self, toInstance: feedFinder)
 
             dataWriter = FakeDataReadWriter()
-            injector.bind(DataWriter.self, to: dataWriter)
+            injector.bind(DataWriter.self, toInstance: dataWriter)
 
             urlSession = FakeURLSession()
-            injector.bind(NSURLSession.self, to: urlSession)
+            injector.bind(NSURLSession.self, toInstance: urlSession)
 
             mainQueue = FakeOperationQueue()
-            injector.bind(kMainQueue, to: mainQueue)
+            injector.bind(kMainQueue, toInstance: mainQueue)
 
             backgroundQueue = FakeOperationQueue()
-            injector.bind(kBackgroundQueue, to: backgroundQueue)
+            injector.bind(kBackgroundQueue, toInstance: backgroundQueue)
 
             opmlManager = OPMLManagerMock()
-            injector.bind(OPMLManager.self, to: opmlManager)
+            injector.bind(OPMLManager.self, toInstance: opmlManager)
 
             themeRepository = FakeThemeRepository()
-            injector.bind(ThemeRepository.self, to: themeRepository)
+            injector.bind(ThemeRepository.self, toInstance: themeRepository)
 
-            subject = injector.create(FindFeedViewController.self) as! FindFeedViewController
+            subject = injector.create(FindFeedViewController)!
             webView = FakeWebView()
             subject.webContent = webView
 

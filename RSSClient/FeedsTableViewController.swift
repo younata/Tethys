@@ -77,19 +77,19 @@ public class FeedsTableViewController: UIViewController {
     private var menuTopOffset: NSLayoutConstraint!
 
     private lazy var dataWriter: DataWriter = {
-        return self.injector!.create(DataWriter.self) as! DataWriter
+        return self.injector!.create(DataWriter)!
     }()
 
     private lazy var dataRetriever: DataRetriever = {
-        return self.injector!.create(DataRetriever.self) as! DataRetriever
+        return self.injector!.create(DataRetriever)!
     }()
 
     private lazy var themeRepository: ThemeRepository = {
-        return self.injector!.create(ThemeRepository.self) as! ThemeRepository
+        return self.injector!.create(ThemeRepository)!
     }()
 
     private lazy var settingsRepository: SettingsRepository = {
-        return self.injector!.create(SettingsRepository.self) as! SettingsRepository
+        return self.injector!.create(SettingsRepository)!
     }()
 
     public override func viewDidLoad() {
@@ -503,11 +503,11 @@ extension FeedsTableViewController: UITableViewDelegate {
                 let feed = self.feedAtIndexPath(indexPath)
                 var viewController: UIViewController! = nil
                 if feed.isQueryFeed {
-                    let vc = self.injector!.create(QueryFeedViewController.self) as! QueryFeedViewController
+                    let vc = self.injector!.create(QueryFeedViewController)!
                     vc.feed = feed
                     viewController = vc
                 } else {
-                    let vc = self.injector!.create(FeedViewController.self) as! FeedViewController
+                    let vc = self.injector!.create(FeedViewController)!
                     vc.feed = feed
                     viewController = vc
                 }

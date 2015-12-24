@@ -18,10 +18,10 @@ class NotificationHandlerSpec: QuickSpec {
             injector = Injector()
 
             dataReadWriter = FakeDataReadWriter()
-            injector.bind(DataRetriever.self, to: dataReadWriter)
-            injector.bind(DataWriter.self, to: dataReadWriter)
+            injector.bind(DataRetriever.self, toInstance: dataReadWriter)
+            injector.bind(DataWriter.self, toInstance: dataReadWriter)
 
-            subject = injector.create(NotificationHandler.self) as! NotificationHandler
+            subject = injector.create(NotificationHandler)!
 
             notificationSource = FakeNotificationSource()
         }
@@ -65,7 +65,7 @@ class NotificationHandlerSpec: QuickSpec {
                 note.userInfo = ["feed": "feedIdentifier", "article": "articleIdentifier"]
 
                 let splitVC = UISplitViewController()
-                navController = UINavigationController(rootViewController: injector.create(FeedsTableViewController.self) as! UIViewController)
+                navController = UINavigationController(rootViewController: injector.create(FeedsTableViewController)!)
                 splitVC.viewControllers = [navController]
 
                 let feed = Feed(title: "feedTitle", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")

@@ -81,11 +81,11 @@ public class SettingsViewController: UIViewController {
     public let tableView = UITableView(frame: CGRectZero, style: .Grouped)
 
     private lazy var themeRepository: ThemeRepository = {
-        return self.injector!.create(ThemeRepository.self) as! ThemeRepository
+        return self.injector!.create(ThemeRepository)!
     }()
 
     private lazy var settingsRepository: SettingsRepository = {
-        return self.injector!.create(SettingsRepository.self) as! SettingsRepository
+        return self.injector!.create(SettingsRepository)!
     }()
 
     private lazy var queryFeedsEnabled: Bool = {
@@ -93,15 +93,15 @@ public class SettingsViewController: UIViewController {
     }()
 
     private lazy var urlOpener: UrlOpener = {
-        return self.injector!.create(UrlOpener.self) as! UrlOpener
+        return self.injector!.create(UrlOpener)!
     }()
 
     private lazy var quickActionRepository: QuickActionRepository = {
-        return self.injector!.create(QuickActionRepository.self) as! QuickActionRepository
+        return self.injector!.create(QuickActionRepository)!
     }()
 
     private lazy var dataReader: DataRetriever = {
-        return self.injector!.create(DataRetriever.self) as! DataRetriever
+        return self.injector!.create(DataRetriever)!
     }()
 
     private var oldTheme: ThemeRepository.Theme = .Default
@@ -395,7 +395,7 @@ extension SettingsViewController: UITableViewDelegate {
             self.navigationController?.pushViewController(feedsListController, animated: true)
         case .Advanced:
             tableView.deselectRowAtIndexPath(indexPath, animated: false)
-            if let documentation = injector?.create(DocumentationViewController.self) as? DocumentationViewController {
+            if let documentation = injector?.create(DocumentationViewController) {
                 documentation.configure(.QueryFeed)
                 self.navigationController?.pushViewController(documentation, animated: true)
             }

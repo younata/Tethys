@@ -3,7 +3,7 @@ import Foundation
     import CoreSpotlight
 #endif
 
-public protocol SearchIndex {
+public protocol SearchIndex: class {
     func addItemsToIndex(items: [NSObject], completionHandler: (NSError?) -> (Void))
     func deleteIdentifierFromIndex(items: [String], completionHandler: (NSError?) -> (Void))
 }

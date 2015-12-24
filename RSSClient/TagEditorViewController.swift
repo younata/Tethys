@@ -14,15 +14,15 @@ public class TagEditorViewController: UIViewController {
         }
     }
     private lazy var dataWriter: DataWriter? = {
-        self.injector?.create(DataWriter.self) as? DataWriter
+        self.injector?.create(DataWriter)
     }()
 
     private lazy var dataRetriever: DataRetriever? = {
-        self.injector?.create(DataRetriever.self) as? DataRetriever
+        self.injector?.create(DataRetriever)
     }()
 
     private lazy var themeRepository: ThemeRepository? = {
-        self.injector?.create(ThemeRepository.self) as? ThemeRepository
+        self.injector?.create(ThemeRepository)
     }()
 
     public override func viewDidLoad() {

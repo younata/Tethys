@@ -4,11 +4,11 @@ import rNewsKit
 
 public class BackgroundFetchHandler: NSObject {
     private lazy var dataWriter: DataWriter? = {
-        return self.injector?.create(DataWriter.self) as? DataWriter
+        return self.injector?.create(DataWriter)
     }()
 
     private lazy var dataRetriever: DataRetriever? = {
-        return self.injector?.create(DataRetriever.self) as? DataRetriever
+        return self.injector?.create(DataRetriever)
     }()
 
     public func performFetch(notificationHandler: NotificationHandler,

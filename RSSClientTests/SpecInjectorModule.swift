@@ -7,8 +7,8 @@ public class SpecInjectorModule : rNews.InjectorModule {
     public override func configureInjector(injector: Injector) {
         super.configureInjector(injector)
         let mainQueue = FakeOperationQueue()
-        injector.bind(kMainQueue, to: mainQueue)
+        injector.bind(kMainQueue, toInstance: mainQueue)
         let backgroundQueue = FakeOperationQueue()
-        injector.bind(kBackgroundQueue, to: backgroundQueue)
+        injector.bind(kBackgroundQueue, toInstance: backgroundQueue)
     }
 }

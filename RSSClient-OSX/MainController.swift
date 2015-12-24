@@ -29,11 +29,11 @@ public class MainController: NSViewController {
     public private(set) var raInjector: Injector? = nil
 
     private lazy var opmlManager: OPMLManager? = {
-        return self.raInjector?.create(OPMLManager.self) as? OPMLManager
+        return self.raInjector?.create(OPMLManager)
     }()
 
     private lazy var dataWriter: DataWriter? = {
-        return self.raInjector?.create(DataWriter.self) as? DataWriter
+        return self.raInjector?.create(DataWriter)
     }()
 
     public func configure(injector: Injector) {
@@ -62,7 +62,7 @@ public class MainController: NSViewController {
 
     @IBAction public func openDocument(sender: AnyObject) {
         guard let injector = self.raInjector,
-              let panel = injector.create(NSOpenPanel.self) as? NSOpenPanel else {
+              let panel = injector.create(NSOpenPanel) else {
                 return
         }
         panel.canChooseDirectories = false

@@ -44,21 +44,21 @@ class SettingsViewControllerSpec: QuickSpec {
             let injector = Injector()
 
             themeRepository = FakeThemeRepository()
-            injector.bind(ThemeRepository.self, to: themeRepository)
+            injector.bind(ThemeRepository.self, toInstance: themeRepository)
 
             settingsRepository = SettingsRepository(userDefaults: nil)
-            injector.bind(SettingsRepository.self, to: settingsRepository)
+            injector.bind(SettingsRepository.self, toInstance: settingsRepository)
 
             fakeQuickActionRepository = FakeQuickActionRepository()
-            injector.bind(QuickActionRepository.self, to: fakeQuickActionRepository)
+            injector.bind(QuickActionRepository.self, toInstance: fakeQuickActionRepository)
 
             urlOpener = FakeUrlOpener()
-            injector.bind(UrlOpener.self, to: urlOpener)
+            injector.bind(UrlOpener.self, toInstance: urlOpener)
 
             dataReader = FakeDataReadWriter()
-            injector.bind(DataRetriever.self, to: dataReader)
+            injector.bind(DataRetriever.self, toInstance: dataReader)
 
-            subject = injector.create(SettingsViewController.self) as! SettingsViewController
+            subject = injector.create(SettingsViewController)!
 
             navigationController = UINavigationController(rootViewController: subject)
 

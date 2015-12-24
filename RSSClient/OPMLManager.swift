@@ -8,7 +8,7 @@ public class OPMLManager: NSObject, Injectable {
     private let importQueue: NSOperationQueue?
 
     required public init(injector: Injector) {
-        self.dataRepository = injector.create(DataRepository.self) as? DataRepository
+        self.dataRepository = injector.create(DataRepository.self)
         self.mainQueue = injector.create(kMainQueue) as? NSOperationQueue
         self.importQueue = injector.create(kBackgroundQueue) as? NSOperationQueue
 

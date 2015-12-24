@@ -5,11 +5,11 @@ import rNewsKit
 public class NotificationHandler: NSObject {
 
     private lazy var dataRetriever: DataRetriever? = {
-        return self.injector?.create(DataRetriever.self) as? DataRetriever
+        return self.injector?.create(DataRetriever)
     }()
 
     private lazy var dataWriter: DataWriter? = {
-        return self.injector?.create(DataWriter.self) as? DataWriter
+        return self.injector?.create(DataWriter)
     }()
 
     public func enableNotifications(var notificationSource: LocalNotificationSource) {

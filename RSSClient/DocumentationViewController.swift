@@ -52,7 +52,7 @@ public class DocumentationViewController: UIViewController {
     private let content: WKWebView = WKWebView(forAutoLayout: ())
 
     private lazy var themeRepository: ThemeRepository? = {
-        return self.injector?.create(ThemeRepository.self) as? ThemeRepository
+        return self.injector?.create(ThemeRepository)
     }()
 
     public override func viewDidLoad() {

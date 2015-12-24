@@ -41,11 +41,11 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
     }()
 
     private lazy var dataWriter: DataWriter? = {
-        return self.injector?.create(DataWriter.self) as? DataWriter
+        return self.injector?.create(DataWriter)
     }()
 
     private lazy var urlSession: NSURLSession = {
-        return self.injector!.create(NSURLSession.self) as! NSURLSession
+        return self.injector!.create(NSURLSession)!
     }()
 
     private lazy var operationQueue: NSOperationQueue = {
@@ -53,7 +53,7 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
     }()
 
     private lazy var themeRepository: ThemeRepository = {
-        return self.injector!.create(ThemeRepository.self) as! ThemeRepository
+        return self.injector!.create(ThemeRepository)!
     }()
 
     private let intervalFormatter = NSDateIntervalFormatter()
@@ -97,7 +97,7 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
     }
 
     private func showTagEditor(tagIndex: Int) -> TagEditorViewController {
-        let tagEditor = self.injector!.create(TagEditorViewController.self) as! TagEditorViewController
+        let tagEditor = self.injector!.create(TagEditorViewController)!
         tagEditor.feed = self.feed
         if tagIndex < self.feed?.tags.count {
             tagEditor.tagIndex = tagIndex

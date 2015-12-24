@@ -74,14 +74,14 @@ class ArticleListControllerSpec: QuickSpec {
 
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
-            injector.bind(kMainQueue, to: mainQueue)
+            injector.bind(kMainQueue, toInstance: mainQueue)
 
             themeRepository = FakeThemeRepository()
-            injector.bind(ThemeRepository.self, to: themeRepository)
+            injector.bind(ThemeRepository.self, toInstance: themeRepository)
 
             dataReadWriter = FakeDataReadWriter()
-            injector.bind(DataRetriever.self, to: dataReadWriter)
-            injector.bind(DataWriter.self, to: dataReadWriter)
+            injector.bind(DataRetriever.self, toInstance: dataReadWriter)
+            injector.bind(DataWriter.self, toInstance: dataReadWriter)
 
             publishedOffset = 0
 
@@ -96,7 +96,7 @@ class ArticleListControllerSpec: QuickSpec {
                 feed.addArticle(article)
             }
 
-            subject = injector.create(ArticleListController.self) as! ArticleListController
+            subject = injector.create(ArticleListController)!
             subject.feeds = [feed]
 
             navigationController = UINavigationController(rootViewController: subject)

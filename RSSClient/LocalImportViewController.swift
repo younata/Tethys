@@ -18,11 +18,11 @@ public class LocalImportViewController: UIViewController {
     private var tableViewTopOffset: NSLayoutConstraint!
 
     private lazy var dataWriter: DataWriter? = {
-        return self.injector?.create(DataWriter.self) as? DataWriter
+        return self.injector?.create(DataWriter)
     }()
 
     private lazy var opmlManager: OPMLManager? = {
-        return self.injector?.create(OPMLManager.self) as? OPMLManager
+        return self.injector?.create(OPMLManager)
     }()
 
     private lazy var mainQueue: NSOperationQueue? = {
@@ -34,11 +34,11 @@ public class LocalImportViewController: UIViewController {
     }()
 
     private lazy var themeRepository: ThemeRepository? = {
-        return self.injector?.create(ThemeRepository.self) as? ThemeRepository
+        return self.injector?.create(ThemeRepository)
     }()
 
     private lazy var fileManager: NSFileManager? = {
-        return self.injector?.create(NSFileManager.self) as? NSFileManager
+        return self.injector?.create(NSFileManager)
     }()
 
     public lazy var explanationLabel: ExplanationView = {

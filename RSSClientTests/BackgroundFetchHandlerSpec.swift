@@ -15,10 +15,10 @@ class BackgroundFetchHandlerSpec: QuickSpec {
             injector = Injector()
             dataReadWriter = FakeDataReadWriter()
             dataReadWriter.feedsList = []
-            injector.bind(DataRetriever.self, to: dataReadWriter)
-            injector.bind(DataWriter.self, to: dataReadWriter)
+            injector.bind(DataRetriever.self, toInstance: dataReadWriter)
+            injector.bind(DataWriter.self, toInstance: dataReadWriter)
 
-            subject = injector.create(BackgroundFetchHandler.self) as! BackgroundFetchHandler
+            subject = injector.create(BackgroundFetchHandler)!
         }
 
         describe("updating feeds") {

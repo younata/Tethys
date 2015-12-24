@@ -29,9 +29,9 @@ class OPMLManagerSpec: QuickSpec {
                 dataUtility: SynchronousDataUtility())
 
             let injector = Injector()
-            injector.bind(kMainQueue, to: mainQueue)
-            injector.bind(kBackgroundQueue, to: importQueue)
-            injector.bind(DataRepository.self, to: dataRepository)
+            injector.bind(kMainQueue, toInstance: mainQueue)
+            injector.bind(kBackgroundQueue, toInstance: importQueue)
+            injector.bind(DataRepository.self, toInstance: dataRepository)
 
             let previouslyImportedFeed = Feed(title: "imported", url: NSURL(string: "http://example.com/previouslyImportedFeed"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 

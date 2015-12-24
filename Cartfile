@@ -4,10 +4,10 @@ github "younata/Muon"
 github "younata/Lepton"
 github "younata/BreakOutToRefresh" "resizing"
 github "soffes/SyntaxKit"
+github "soffes/X" "swift2"
 github "ashleymills/Reachability.swift"
 
 # objc
 github "PureLayout/PureLayout"
 github "TimOliver/TOBrowserActivityKit" "master"
 github "younata/DropDownMenu" "master"
-github "pivotal/PivotalCoreKit" "master"

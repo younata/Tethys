@@ -206,8 +206,10 @@ internal class DataRepository: DataRetriever, DataWriter {
                 }
             }
             feeds.forEach {
-                let _ = $0.articlesArray.count
-                let _ = $0.articlesArray[0]
+                let count = $0.articlesArray.count
+                if count > 0 {
+                    let _ = $0.articlesArray[0]
+                }
             }
             callback(feeds)
         }
@@ -373,8 +375,10 @@ internal class DataRepository: DataRetriever, DataWriter {
 
             self.privateUpdateFeeds(feeds) {updatedFeeds, errors in
                 updatedFeeds.forEach {
-                    let _ = $0.articlesArray.count
-                    let _ = $0.articlesArray[0]
+                    let count = $0.articlesArray.count
+                    if count > 0 {
+                        let _ = $0.articlesArray[0]
+                    }
                 }
                 for updateCallback in self.updatingFeedsCallbacks {
                     self.mainQueue.addOperationWithBlock {

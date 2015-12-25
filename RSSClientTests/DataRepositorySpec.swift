@@ -81,7 +81,6 @@ class FeedRepositorySpec: QuickSpec {
             article1.title = "b"
             article1.link = "https://example.com/article1.html"
             article1.summary = "<p>Hello world!</p>"
-            article1.read = false
             article2 = createArticle(moc)
             article2.title = "c"
             article2.link = "https://example.com/article2.html"
@@ -563,7 +562,7 @@ class FeedRepositorySpec: QuickSpec {
 
                 beforeEach {
                     let feed = Feed(feed: feed1)
-                    article = feed.articles.filter({$0.title == "b"}).first
+                    article = feed.articles.first
 
                     subject.markArticle(article, asRead: true)
                     backgroundQueue.runNextOperation()
@@ -586,21 +585,6 @@ class FeedRepositorySpec: QuickSpec {
                 it("should inform any subscribers") {
                     expect(dataSubscriber.markedArticles).to(equal([article]))
                     expect(dataSubscriber.read).to(beTruthy())
-                }
-
-                describe("trying to mark it as read again") {
-                    beforeEach {
-                        dataSubscriber.markedArticles = nil
-                        dataSubscriber.read = nil
-                        mainQueue.runSynchronously = true
-                        backgroundQueue.runSynchronously = true
-                        subject.markArticle(article, asRead: true)
-                    }
-
-                    it("should not inform any subscribers") {
-                        expect(dataSubscriber.markedArticles).to(beNil())
-                        expect(dataSubscriber.read).to(beNil())
-                    }
                 }
 
                 describe("and marking it as unread again") {

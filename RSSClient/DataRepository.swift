@@ -328,9 +328,6 @@ internal class DataRepository: DataRetriever, DataWriter {
     }
 
     internal func markArticle(article: Article, asRead: Bool) {
-        guard article.read != asRead else {
-            return
-        }
         self.backgroundQueue.addOperationWithBlock {
             self.privateMarkArticles([article], asRead: asRead)
         }

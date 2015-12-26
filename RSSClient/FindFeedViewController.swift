@@ -154,7 +154,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
             self.dataWriter?.newFeed {newFeed in
                 newFeed.url = NSURL(string: link)
                 self.dataWriter?.saveFeed(newFeed)
-                self.dataWriter?.updateFeed(newFeed) {_, _ in
+                self.dataWriter?.updateFeed(newFeed) { _ in
                     indicator.removeFromSuperview()
                     self.dismiss()
                 }

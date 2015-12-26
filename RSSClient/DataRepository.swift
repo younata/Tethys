@@ -409,7 +409,9 @@ internal class DataRepository: DataRetriever, DataWriter {
                         subscriber.didUpdateFeeds(feeds)
                     }
                 }
-                callback(feeds.first, errors.first)
+                self.mainQueue.addOperationWithBlock {
+                    callback(feeds.first, errors.first)
+                }
             }
         }
     }

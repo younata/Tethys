@@ -613,6 +613,7 @@ class FeedRepositorySpec: QuickSpec {
                                 backgroundQueue.runNextOperation()
                                 mainQueue.runNextOperation()
                                 mainQueue.runNextOperation()
+                                mainQueue.runNextOperation()
                             }
 
                             it("should inform subscribers that we updated our datastore for that feed") {

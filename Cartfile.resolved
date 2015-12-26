@@ -9,4 +9,5 @@ github "TimOliver/TOBrowserActivityKit" "fdd6dab00d2ffcf8227348e9fc690bd0e9519f5
 github "soffes/X" "swift2"
 github "quick/nimble" "v3.0.0"
 github "quick/quick" "v0.8.0"
+github "realm/realm-cocoa" "v0.97.0"
 github "soffes/SyntaxKit" "v0.1.1"

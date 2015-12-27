@@ -92,7 +92,7 @@ import JavaScriptCore
     @available(*, deprecated=1.0, renamed="articlesArray")
     dynamic public var articles: [Article] { return Array(self.articlesArray) }
 
-    public private(set) var articlesArray: CoreDataBackedArray<Article>
+    public private(set) var articlesArray: DataStoreBackedArray<Article>
 
     public var image: Image? {
         willSet {
@@ -148,7 +148,7 @@ import JavaScriptCore
         return ret
     }
 
-    public func unreadArticles() -> CoreDataBackedArray<Article> {
+    public func unreadArticles() -> DataStoreBackedArray<Article> {
         return self.articlesArray.filterWithPredicate(NSPredicate(format: "read == %@", false))
     }
 
@@ -201,7 +201,7 @@ import JavaScriptCore
             self.waitPeriod = waitPeriod
             self.remainingWait = remainingWait
             self.image = image
-            self.articlesArray = CoreDataBackedArray(articles)
+            self.articlesArray = DataStoreBackedArray(articles)
             self.identifier = identifier
             super.init()
             for article in articles {
@@ -230,12 +230,12 @@ import JavaScriptCore
         self.image = feed.image as? Image
         self.feedID = feed.objectID
         self.identifier = feedID?.URIRepresentation().absoluteString ?? ""
-        self.articlesArray = CoreDataBackedArray<Article>()
+        self.articlesArray = DataStoreBackedArray<Article>()
         super.init()
         if !self.isQueryFeed {
             let sortByUpdated = NSSortDescriptor(key: "updatedAt", ascending: false)
             let sortByPublished = NSSortDescriptor(key: "published", ascending: false)
-            self.articlesArray = CoreDataBackedArray(entityName: "Article",
+            self.articlesArray = DataStoreBackedArray(entityName: "Article",
                 predicate: NSPredicate(format: "feed == %@", feed),
                 managedObjectContext: feed.managedObjectContext!,
                 conversionFunction: {

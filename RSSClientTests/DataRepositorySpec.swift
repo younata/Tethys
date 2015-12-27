@@ -244,11 +244,11 @@ class FeedRepositorySpec: QuickSpec {
 
             describe("articlesOfFeeds:MatchingSearchQuery:callback:") {
                 var calledHandler = false
-                var calledArticles = CoreDataBackedArray<Article>()
+                var calledArticles = DataStoreBackedArray<Article>()
 
                 beforeEach {
                     calledHandler = false
-                    calledArticles = CoreDataBackedArray()
+                    calledArticles = DataStoreBackedArray()
 
                     subject.articlesOfFeeds(feeds, matchingSearchQuery: "article1") {articles in
                         calledHandler = true

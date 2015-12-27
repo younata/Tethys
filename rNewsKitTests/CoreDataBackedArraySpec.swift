@@ -9,10 +9,10 @@ extension Article: CustomDebugStringConvertible {
     }
 }
 
-class CoreDataBackedArraySpec: QuickSpec {
+class DataStoreBackedArraySpec: QuickSpec {
     override func spec() {
         var moc: NSManagedObjectContext! = nil
-        var subject: CoreDataBackedArray<Article>! = nil
+        var subject: DataStoreBackedArray<Article>! = nil
 
         var articles: [CoreDataArticle] = []
 
@@ -35,7 +35,7 @@ class CoreDataBackedArraySpec: QuickSpec {
 
             let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
 
-            subject = CoreDataBackedArray(entityName: "Article", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: {
+            subject = DataStoreBackedArray(entityName: "Article", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: {
                 return Article(article: $0 as! CoreDataArticle, feed: nil)
             }, sortDescriptors: [sortDescriptor])
         }
@@ -51,14 +51,14 @@ class CoreDataBackedArraySpec: QuickSpec {
         it("should implement isEmpty correctly") {
             expect(subject.isEmpty).to(beFalsy())
 
-            let emptyArray = CoreDataBackedArray<Feed>(entityName: "Feed", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: { Feed(feed: $0 as! CoreDataFeed) })
+            let emptyArray = DataStoreBackedArray<Feed>(entityName: "Feed", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: { Feed(feed: $0 as! CoreDataFeed) })
             expect(emptyArray.isEmpty).to(beTruthy())
         }
 
         it("should correctly return the first object") {
             expect(subject.first).to(equal(Article(article: articles[0], feed: nil)))
 
-            let emptyArray = CoreDataBackedArray<Feed>(entityName: "Feed", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: { Feed(feed: $0 as! CoreDataFeed) })
+            let emptyArray = DataStoreBackedArray<Feed>(entityName: "Feed", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: { Feed(feed: $0 as! CoreDataFeed) })
             expect(emptyArray.first).to(beNil())
         }
 
@@ -91,40 +91,40 @@ class CoreDataBackedArraySpec: QuickSpec {
 
         it("should be equatable") {
             let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
-            let shouldEqual = CoreDataBackedArray(entityName: "Article", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: {
+            let shouldEqual = DataStoreBackedArray(entityName: "Article", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: {
                 return Article(article: $0 as! CoreDataArticle, feed: nil)
             }, sortDescriptors: [sortDescriptor])
             expect(shouldEqual == subject).to(beTruthy())
 
-            let entityNameOff = CoreDataBackedArray(entityName: "Feed", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: {
+            let entityNameOff = DataStoreBackedArray(entityName: "Feed", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: {
                 return Article(article: $0 as! CoreDataArticle, feed: nil)
                 }, sortDescriptors: [sortDescriptor])
             expect(subject == entityNameOff).toNot(beTruthy())
 
-            let predicateOff = CoreDataBackedArray(entityName: "Article", predicate: NSPredicate(value: false), managedObjectContext: moc, conversionFunction: {
+            let predicateOff = DataStoreBackedArray(entityName: "Article", predicate: NSPredicate(value: false), managedObjectContext: moc, conversionFunction: {
                 return Article(article: $0 as! CoreDataArticle, feed: nil)
             }, sortDescriptors: [sortDescriptor])
             expect(predicateOff == subject).toNot(beTruthy())
 
-            let managedObjectContextOff = CoreDataBackedArray(entityName: "Article", predicate: NSPredicate(value: true), managedObjectContext: managedObjectContext(), conversionFunction: {
+            let managedObjectContextOff = DataStoreBackedArray(entityName: "Article", predicate: NSPredicate(value: true), managedObjectContext: managedObjectContext(), conversionFunction: {
                 return Article(article: $0 as! CoreDataArticle, feed: nil)
             }, sortDescriptors: [sortDescriptor])
             expect(managedObjectContextOff == subject).toNot(beTruthy())
 
-            let sortDescriptorOff = CoreDataBackedArray(entityName: "Article", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: {
+            let sortDescriptorOff = DataStoreBackedArray(entityName: "Article", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: {
                 return Article(article: $0 as! CoreDataArticle, feed: nil)
             }, sortDescriptors: [])
             expect(sortDescriptorOff == subject).toNot(beTruthy())
 
             let expectedArticles = articles.map { Article(article: $0, feed: nil) }
-            let object = CoreDataBackedArray(expectedArticles)
+            let object = DataStoreBackedArray(expectedArticles)
             expect(object == subject).to(beTruthy())
         }
 
         it("should allow itself to be created with an array backing it, for testing reasons") {
             let expectedArticles = articles.map { Article(article: $0, feed: nil) }
 
-            let object = CoreDataBackedArray(expectedArticles)
+            let object = DataStoreBackedArray(expectedArticles)
             expect(Array(object)).to(equal(expectedArticles))
         }
 
@@ -138,7 +138,7 @@ class CoreDataBackedArraySpec: QuickSpec {
             let expectedArticles = articles.map { Article(article: $0, feed: nil) }
             expect(Array(subject)).to(equal(expectedArticles + [article]))
 
-            let queryList = CoreDataBackedArray(expectedArticles)
+            let queryList = DataStoreBackedArray(expectedArticles)
             queryList.append(article)
             expect(Array(queryList)).to(equal(expectedArticles + [article]))
         }
@@ -153,16 +153,16 @@ class CoreDataBackedArraySpec: QuickSpec {
             expect(Array(results)).to(equal([Article(article: articles[1], feed: nil)]))
         }
 
-        it("should allow itself to be combined with another CoreDataBackedArray easily") {
+        it("should allow itself to be combined with another DataStoreBackedArray easily") {
             expect(Array(subject.combine(subject))).to(equal(Array(subject))) // simple case
 
             let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
 
-            let a = CoreDataBackedArray(entityName: "Article", predicate: NSPredicate(format: "title == %@", "002"), managedObjectContext: moc, conversionFunction: {
+            let a = DataStoreBackedArray(entityName: "Article", predicate: NSPredicate(format: "title == %@", "002"), managedObjectContext: moc, conversionFunction: {
                 return Article(article: $0 as! CoreDataArticle, feed: nil)
             }, sortDescriptors: [sortDescriptor])
 
-            let b = CoreDataBackedArray(entityName: "Article", predicate: NSPredicate(format: "title == %@", "003"), managedObjectContext: moc, conversionFunction: {
+            let b = DataStoreBackedArray(entityName: "Article", predicate: NSPredicate(format: "title == %@", "003"), managedObjectContext: moc, conversionFunction: {
                 return Article(article: $0 as! CoreDataArticle, feed: nil)
             }, sortDescriptors: [sortDescriptor])
 
@@ -174,7 +174,7 @@ class CoreDataBackedArraySpec: QuickSpec {
         it("should allow itself to be combined with other predicates") {
             let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
 
-            let a = CoreDataBackedArray(entityName: "Article", predicate: NSPredicate(format: "title == %@", "003"), managedObjectContext: moc, conversionFunction: {
+            let a = DataStoreBackedArray(entityName: "Article", predicate: NSPredicate(format: "title == %@", "003"), managedObjectContext: moc, conversionFunction: {
                 return Article(article: $0 as! CoreDataArticle, feed: nil)
                 }, sortDescriptors: [sortDescriptor])
 
@@ -201,7 +201,7 @@ class CoreDataBackedArraySpec: QuickSpec {
             expect(subject.remove(article)).to(beTruthy())
             expect(Array(subject)).to(equal(expectedArticles))
 
-            let queryList = CoreDataBackedArray(articles)
+            let queryList = DataStoreBackedArray(articles)
             expect(queryList.remove(toRemove)).to(beTruthy())
             expect(Array(queryList)).to(equal(expectedArticles))
         }

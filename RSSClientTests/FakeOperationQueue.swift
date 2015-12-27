@@ -1,7 +1,5 @@
 import Foundation
 
-// Because PivotalCoreKit doesn't support Carthage, and I don't want to put in that effort yet.
-
 class FakeOperationQueue : NSOperationQueue {
     var runSynchronously: Bool = false
 

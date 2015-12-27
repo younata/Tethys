@@ -16,7 +16,7 @@ public protocol DataRetriever {
     func allTags(callback: ([String]) -> (Void))
     func feeds(callback: ([Feed]) -> (Void))
     func feedsMatchingTag(tag: String?, callback: ([Feed]) -> (Void))
-    func articlesOfFeeds(feeds: [Feed], matchingSearchQuery: String, callback: (CoreDataBackedArray<Article>) -> (Void))
+    func articlesOfFeeds(feeds: [Feed], matchingSearchQuery: String, callback: (DataStoreBackedArray<Article>) -> (Void))
     func articlesMatchingQuery(query: String, callback: ([Article]) -> (Void))
 }
 
@@ -135,10 +135,10 @@ internal class DataRepository: DataRetriever, DataWriter {
 
     internal func articlesOfFeeds(feeds: [Feed],
         matchingSearchQuery query: String,
-        callback: (CoreDataBackedArray<Article>) -> (Void)) {
+        callback: (DataStoreBackedArray<Article>) -> (Void)) {
             let feeds = feeds.filter({return !$0.isQueryFeed})
             guard !feeds.isEmpty else {
-                self.mainQueue.addOperationWithBlock { callback(CoreDataBackedArray()) }
+                self.mainQueue.addOperationWithBlock { callback(DataStoreBackedArray()) }
                 return
             }
             self.backgroundQueue.addOperationWithBlock {

@@ -1,12 +1,12 @@
 import CoreData
 
-public struct CoreDataBackedGenerator<T>: GeneratorType {
+public struct DataStoreBackedGenerator<T>: GeneratorType {
     public typealias Element = T
     private var currentIndex: Int = 0
 
-    private let array: CoreDataBackedArray<T>
+    private let array: DataStoreBackedArray<T>
 
-    private init(array: CoreDataBackedArray<T>) {
+    private init(array: DataStoreBackedArray<T>) {
         self.array = array
     }
 
@@ -20,7 +20,7 @@ public struct CoreDataBackedGenerator<T>: GeneratorType {
     }
 }
 
-public class CoreDataBackedArray<T>: CollectionType, CustomDebugStringConvertible {
+public class DataStoreBackedArray<T>: CollectionType, CustomDebugStringConvertible {
     let entityName: String
     let predicate: NSPredicate?
     let managedObjectContext: NSManagedObjectContext?
@@ -37,7 +37,7 @@ public class CoreDataBackedArray<T>: CollectionType, CustomDebugStringConvertibl
     public var startIndex: Index { return 0 }
     public var endIndex: Index { return self.count }
 
-    public typealias Generator = CoreDataBackedGenerator<T>
+    public typealias Generator = DataStoreBackedGenerator<T>
 
     private lazy var internalCount: Int = { self.calculateCount() }()
 
@@ -72,50 +72,50 @@ public class CoreDataBackedArray<T>: CollectionType, CustomDebugStringConvertibl
         return self[0]
     }
 
-    public func filterWithPredicate(predicate: NSPredicate) -> CoreDataBackedArray<T> {
+    public func filterWithPredicate(predicate: NSPredicate) -> DataStoreBackedArray<T> {
         guard let currentPredicate = self.predicate,
             managedObjectContext = self.managedObjectContext,
             conversionFunction = self.conversionFunction else {
                 let array = self.internalObjects.filter {
                     return predicate.evaluateWithObject($0 as? AnyObject)
                 }
-                return CoreDataBackedArray(array)
+                return DataStoreBackedArray(array)
         }
-        return CoreDataBackedArray(entityName: self.entityName,
+        return DataStoreBackedArray(entityName: self.entityName,
             predicate: NSCompoundPredicate(andPredicateWithSubpredicates: [currentPredicate, predicate]),
             managedObjectContext: managedObjectContext,
             conversionFunction: conversionFunction,
             sortDescriptors: self.sortDescriptors)
     }
 
-    public func combineWithPredicate(predicate: NSPredicate) -> CoreDataBackedArray<T> {
+    public func combineWithPredicate(predicate: NSPredicate) -> DataStoreBackedArray<T> {
         guard let currentPredicate = self.predicate,
             managedObjectContext = self.managedObjectContext,
             conversionFunction = self.conversionFunction else {
                 let array = self.internalObjects.filter {
                     return predicate.evaluateWithObject($0 as? AnyObject)
                 }
-                return CoreDataBackedArray(array)
+                return DataStoreBackedArray(array)
         }
-        return CoreDataBackedArray(entityName: self.entityName,
+        return DataStoreBackedArray(entityName: self.entityName,
             predicate: NSCompoundPredicate(orPredicateWithSubpredicates: [currentPredicate, predicate]),
             managedObjectContext: managedObjectContext,
             conversionFunction: conversionFunction,
             sortDescriptors: self.sortDescriptors)
     }
 
-    public func combine(other: CoreDataBackedArray<T>) -> CoreDataBackedArray<T> {
+    public func combine(other: DataStoreBackedArray<T>) -> DataStoreBackedArray<T> {
         guard let currentPredicate = self.predicate, otherPredicate = other.predicate,
             managedObjectContext = self.managedObjectContext, conversionFunction = self.conversionFunction
             where other.entityName == self.entityName &&
                 other.managedObjectContext == self.managedObjectContext &&
                 other.sortDescriptors == self.sortDescriptors else {
-                    return CoreDataBackedArray(self.internalObjects + Array(other))
+                    return DataStoreBackedArray(self.internalObjects + Array(other))
         }
 
         let predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [currentPredicate, otherPredicate])
 
-        return CoreDataBackedArray(entityName: self.entityName,
+        return DataStoreBackedArray(entityName: self.entityName,
             predicate: predicate,
             managedObjectContext: managedObjectContext,
             conversionFunction: conversionFunction,
@@ -136,8 +136,8 @@ public class CoreDataBackedArray<T>: CollectionType, CustomDebugStringConvertibl
         return self.internalObjects[position]
     }
 
-    public func generate() -> Generator {
-        return CoreDataBackedGenerator<T>(array: self)
+    public func generate() -> DataStoreBackedGenerator<T> {
+        return DataStoreBackedGenerator<T>(array: self)
     }
 
     public func append(object: T) {
@@ -216,7 +216,7 @@ public class CoreDataBackedArray<T>: CollectionType, CustomDebugStringConvertibl
     }
 }
 
-extension CoreDataBackedArray where T: Equatable {
+extension DataStoreBackedArray where T: Equatable {
     public func remove(object: T) -> Bool {
         self.fetchUpToPosition(self.internalCount - 1, wait: true)
         var idxToRemove: Int? = nil
@@ -252,7 +252,7 @@ extension CoreDataBackedArray where T: Equatable {
     }
 }
 
-public func ==<T: Equatable>(left: CoreDataBackedArray<T>, right: CoreDataBackedArray<T>) -> Bool {
+public func ==<T: Equatable>(left: DataStoreBackedArray<T>, right: DataStoreBackedArray<T>) -> Bool {
     if left.isCoreDataBacked && right.isCoreDataBacked {
         return left.count == right.count && left.entityName == right.entityName &&
             left.predicate == right.predicate && left.managedObjectContext == right.managedObjectContext &&
@@ -262,6 +262,6 @@ public func ==<T: Equatable>(left: CoreDataBackedArray<T>, right: CoreDataBacked
     }
 }
 
-public func !=<T: Equatable>(left: CoreDataBackedArray<T>, right: CoreDataBackedArray<T>) -> Bool {
+public func !=<T: Equatable>(left: DataStoreBackedArray<T>, right: DataStoreBackedArray<T>) -> Bool {
     return !(left == right)
 }

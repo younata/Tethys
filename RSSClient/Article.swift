@@ -3,71 +3,71 @@ import CoreData
 import JavaScriptCore
 
 @objc public protocol ArticleJSExport: JSExport {
-    var title: String { get set }
-    var link: NSURL? { get set }
-    var summary: String { get set }
-    var author: String { get set }
-    var published: NSDate { get set }
-    var updatedAt: NSDate? { get set }
-    var identifier: String { get set }
-    var content: String { get set }
+    var title: String { get }
+    var link: NSURL? { get }
+    var summary: String { get }
+    var author: String { get }
+    var published: NSDate { get }
+    var updatedAt: NSDate? { get }
+    var identifier: String { get }
+    var content: String { get }
     var read: Bool { get set }
-    weak var feed: Feed? { get set }
+    weak var feed: Feed? { get }
     var flags: [String] { get }
     var enclosures: [Enclosure] { get }
 }
 
 @objc public class Article: NSObject, ArticleJSExport {
-    dynamic public var title: String {
+    dynamic public internal(set) var title: String {
         willSet {
             if newValue != title {
                 self.updated = true
             }
         }
     }
-    dynamic public var link: NSURL? {
+    dynamic public internal(set) var link: NSURL? {
         willSet {
             if newValue != link {
                 self.updated = true
             }
         }
     }
-    dynamic public var summary: String {
+    dynamic public internal(set) var summary: String {
         willSet {
             if newValue != summary {
                 self.updated = true
             }
         }
     }
-    dynamic public var author: String {
+    dynamic public internal(set) var author: String {
         willSet {
             if newValue != author {
                 self.updated = true
             }
         }
     }
-    dynamic public var published: NSDate {
+    dynamic public internal(set) var published: NSDate {
         willSet {
             if newValue != published {
                 self.updated = true
             }
         }
     }
-    dynamic public var updatedAt: NSDate? {
+    dynamic public internal(set) var updatedAt: NSDate? {
         willSet {
             if newValue != updatedAt {
                 self.updated = true
             }
         }
     }
-    dynamic public var identifier: String {
+    dynamic public internal(set) var identifier: String {
         willSet {
             if newValue != identifier {
                 self.updated = true
             }
         }
     }
-    dynamic public var content: String {
+    dynamic public internal(set) var content: String {
         willSet {
             if newValue != content {
                 self.updated = true
@@ -81,7 +81,7 @@ import JavaScriptCore
             }
         }
     }
-    weak dynamic public var feed: Feed? {
+    weak dynamic public internal(set) var feed: Feed? {
         willSet {
             if newValue != feed && newValue?.isQueryFeed != true {
                 self.updated = true
@@ -99,7 +99,7 @@ import JavaScriptCore
     @available(*, deprecated=1.0, renamed="enclosuresArray")
     dynamic public var enclosures: [Enclosure] { return Array(self.enclosuresArray) }
 
-    public private(set) var enclosuresArray: CoreDataBackedArray<Enclosure>
+    public private(set) var enclosuresArray: DataStoreBackedArray<Enclosure>
 
     internal private(set) var updated: Bool = false
 
@@ -152,7 +152,7 @@ import JavaScriptCore
             self.read = read
             self.feed = feed
             self.flags = flags
-            self.enclosuresArray = CoreDataBackedArray(enclosures)
+            self.enclosuresArray = DataStoreBackedArray(enclosures)
             super.init()
             for enclosure in self.enclosuresArray {
                 enclosure.article = self
@@ -179,9 +179,9 @@ import JavaScriptCore
         read = article.read
         self.feed = feed
         self.flags = article.flags
-        self.enclosuresArray = CoreDataBackedArray()
+        self.enclosuresArray = DataStoreBackedArray()
         super.init()
-        self.enclosuresArray = CoreDataBackedArray(entityName: "Enclosure",
+        self.enclosuresArray = DataStoreBackedArray(entityName: "Enclosure",
             predicate: NSPredicate(format: "article == %@", self),
             managedObjectContext: article.managedObjectContext!,
             conversionFunction: {

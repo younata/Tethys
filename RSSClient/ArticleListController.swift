@@ -3,7 +3,7 @@ import rNewsKit
 
 public class ArticleListController: UITableViewController, DataSubscriber {
 
-    internal var articles = CoreDataBackedArray<Article>()
+    internal var articles = DataStoreBackedArray<Article>()
     public var feeds: [Feed] = [] {
         didSet {
             self.resetArticles()

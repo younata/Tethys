@@ -10,7 +10,9 @@ public class ArticleViewController: UIViewController, WKNavigationDelegate {
         didSet {
             self.navigationController?.setToolbarHidden(false, animated: false)
             if let a = article {
-                self.dataWriter?.markArticle(a, asRead: true)
+                if a.read == false {
+                    self.dataWriter?.markArticle(a, asRead: true)
+                }
                 self.showArticle(a, onWebView: self.content)
 
                 self.navigationItem.title = a.title ?? ""

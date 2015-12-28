@@ -13,11 +13,11 @@ import Muon
 #endif
 
 public protocol DataRetriever {
-    func allTags(callback: ([String]) -> (Void))
-    func feeds(callback: ([Feed]) -> (Void))
-    func feedsMatchingTag(tag: String?, callback: ([Feed]) -> (Void))
-    func articlesOfFeeds(feeds: [Feed], matchingSearchQuery: String, callback: (DataStoreBackedArray<Article>) -> (Void))
-    func articlesMatchingQuery(query: String, callback: ([Article]) -> (Void))
+    func allTags(callback: [String] -> Void)
+    func feeds(callback: [Feed] -> Void)
+    func feedsMatchingTag(tag: String?, callback: [Feed] -> Void)
+    func articlesOfFeeds(feeds: [Feed], matchingSearchQuery: String, callback: DataStoreBackedArray<Article> -> Void)
+    func articlesMatchingQuery(query: String, callback: [Article] -> Void)
 }
 
 public protocol DataSubscriber: NSObjectProtocol {
@@ -35,7 +35,7 @@ public protocol DataSubscriber: NSObjectProtocol {
 public protocol DataWriter {
     func addSubscriber(subscriber: DataSubscriber)
 
-    func newFeed(callback: (Feed) -> (Void))
+    func newFeed(callback: Feed -> Void)
     func saveFeed(feed: Feed)
     func deleteFeed(feed: Feed)
     func markFeedAsRead(feed: Feed)
@@ -44,9 +44,9 @@ public protocol DataWriter {
     func deleteArticle(article: Article)
     func markArticle(article: Article, asRead: Bool)
 
-    func updateFeeds(callback: ([Feed], [NSError]) -> (Void))
+    func updateFeeds(callback: ([Feed], [NSError]) -> Void)
 
-    func updateFeed(feed: Feed, callback: (Feed?, NSError?) -> (Void))
+    func updateFeed(feed: Feed, callback: (Feed?, NSError?) -> Void)
 }
 
 internal protocol Reachable {
@@ -90,7 +90,7 @@ internal class DataRepository: DataRetriever, DataWriter {
 
     //MARK: - DataRetriever
 
-    internal func allTags(callback: ([String]) -> (Void)) {
+    internal func allTags(callback: [String] -> Void) {
         self.dataUtility.feedsWithPredicate(NSPredicate(format: "tags != nil"),
             managedObjectContext: self.objectContext) {feedsWithTags in
 
@@ -105,7 +105,7 @@ internal class DataRepository: DataRetriever, DataWriter {
         }
     }
 
-    internal func feeds(callback: ([Feed]) -> (Void)) {
+    internal func feeds(callback: [Feed] -> Void) {
         self.allFeeds { feeds in
             self.mainQueue.addOperationWithBlock {
                 callback(feeds)
@@ -113,7 +113,7 @@ internal class DataRepository: DataRetriever, DataWriter {
         }
     }
 
-    internal func feedsMatchingTag(tag: String?, callback: ([Feed]) -> (Void)) {
+    internal func feedsMatchingTag(tag: String?, callback: [Feed] -> Void) {
         if let theTag = tag where !theTag.isEmpty {
             self.feeds { allFeeds in
                 let feeds = allFeeds.filter { feed in
@@ -135,7 +135,7 @@ internal class DataRepository: DataRetriever, DataWriter {
 
     internal func articlesOfFeeds(feeds: [Feed],
         matchingSearchQuery query: String,
-        callback: (DataStoreBackedArray<Article>) -> (Void)) {
+        callback: DataStoreBackedArray<Article> -> Void) {
             let feeds = feeds.filter({return !$0.isQueryFeed})
             guard !feeds.isEmpty else {
                 self.mainQueue.addOperationWithBlock { callback(DataStoreBackedArray()) }
@@ -203,12 +203,6 @@ internal class DataRepository: DataRetriever, DataWriter {
                 let articles = self.privateArticlesMatchingQuery(feed.query!, feeds: nonQueryFeeds)
                 for article in articles {
                     feed.addArticle(article)
-                }
-            }
-            feeds.forEach {
-                let count = $0.articlesArray.count
-                if count > 0 {
-                    let _ = $0.articlesArray[0]
                 }
             }
             callback(feeds)
@@ -374,12 +368,6 @@ internal class DataRepository: DataRetriever, DataWriter {
             }
 
             self.privateUpdateFeeds(feeds) {updatedFeeds, errors in
-                updatedFeeds.forEach {
-                    let count = $0.articlesArray.count
-                    if count > 0 {
-                        let _ = $0.articlesArray[0]
-                    }
-                }
                 for updateCallback in self.updatingFeedsCallbacks {
                     self.mainQueue.addOperationWithBlock {
                         updateCallback(updatedFeeds, errors)

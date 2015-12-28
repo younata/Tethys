@@ -1,25 +1,5 @@
 import CoreData
 
-public struct DataStoreBackedGenerator<T>: GeneratorType {
-    public typealias Element = T
-    private var currentIndex: Int = 0
-
-    private let array: DataStoreBackedArray<T>
-
-    private init(array: DataStoreBackedArray<T>) {
-        self.array = array
-    }
-
-    mutating public func next() -> Element? {
-        if self.currentIndex == self.array.count {
-            return nil
-        }
-        let object = self.array[currentIndex]
-        self.currentIndex++
-        return object
-    }
-}
-
 public class DataStoreBackedArray<T>: CollectionType, CustomDebugStringConvertible {
     let entityName: String
     let predicate: NSPredicate?
@@ -37,9 +17,13 @@ public class DataStoreBackedArray<T>: CollectionType, CustomDebugStringConvertib
     public var startIndex: Index { return 0 }
     public var endIndex: Index { return self.count }
 
-    public typealias Generator = DataStoreBackedGenerator<T>
-
     private lazy var internalCount: Int = { self.calculateCount() }()
+
+    public typealias Generator = IndexingGenerator<DataStoreBackedArray>
+
+    public func generate() -> Generator {
+        return Generator(self)
+    }
 
     public var count: Int {
         return self.internalCount + self.appendedObjects.count
@@ -134,10 +118,6 @@ public class DataStoreBackedArray<T>: CollectionType, CustomDebugStringConvertib
             }
         }
         return self.internalObjects[position]
-    }
-
-    public func generate() -> DataStoreBackedGenerator<T> {
-        return DataStoreBackedGenerator<T>(array: self)
     }
 
     public func append(object: T) {

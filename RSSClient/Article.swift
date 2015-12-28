@@ -182,7 +182,7 @@ import JavaScriptCore
         self.enclosuresArray = DataStoreBackedArray()
         super.init()
         self.enclosuresArray = DataStoreBackedArray(entityName: "Enclosure",
-            predicate: NSPredicate(format: "article == %@", self),
+            predicate: NSPredicate(format: "article == %@", article),
             managedObjectContext: article.managedObjectContext!,
             conversionFunction: {
                 return Enclosure(enclosure: $0 as! CoreDataEnclosure, article: self)

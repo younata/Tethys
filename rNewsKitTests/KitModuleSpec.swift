@@ -34,6 +34,10 @@ class KitModuleSpec: QuickSpec {
             }
         #endif
 
+        it("should bind the DataService to a CoreDataService") {
+            expect(injector.create(DataService) is CoreDataService) == true
+        }
+
         it("should bind a DataRetriever") {
             expect(injector.create(DataRetriever.self) is DataRepository).to(beTruthy())
         }

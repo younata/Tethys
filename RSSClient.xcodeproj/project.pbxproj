@@ -99,6 +99,21 @@
 		898047641A206CB100EB29F0 /* FeedsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898047631A206CB100EB29F0 /* FeedsViewController.swift */; };
 		898131681AF880400090FA7F /* Muon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; };
 		898131781AFC877A0090FA7F /* LocalImportViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898131771AFC877A0090FA7F /* LocalImportViewControllerSpec.swift */; };
+		898911911C2FC88E009A44E9 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8989118F1C2FC88E009A44E9 /* Realm.framework */; };
+		898911921C2FC88E009A44E9 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898911901C2FC88E009A44E9 /* RealmSwift.framework */; };
+		898911931C2FC8A2009A44E9 /* Realm.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8989118F1C2FC88E009A44E9 /* Realm.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		898911941C2FC8A2009A44E9 /* RealmSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898911901C2FC88E009A44E9 /* RealmSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		898911951C2FC8A6009A44E9 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8989118F1C2FC88E009A44E9 /* Realm.framework */; };
+		898911961C2FC8A6009A44E9 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898911901C2FC88E009A44E9 /* RealmSwift.framework */; };
+		898911991C2FC8E2009A44E9 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898911971C2FC8E2009A44E9 /* Realm.framework */; };
+		8989119A1C2FC8E2009A44E9 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898911981C2FC8E2009A44E9 /* RealmSwift.framework */; };
+		8989119B1C2FC8F8009A44E9 /* Realm.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898911971C2FC8E2009A44E9 /* Realm.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8989119C1C2FC8F8009A44E9 /* RealmSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898911981C2FC8E2009A44E9 /* RealmSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8989119D1C2FC8FE009A44E9 /* Realm.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898911971C2FC8E2009A44E9 /* Realm.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8989119E1C2FC8FE009A44E9 /* RealmSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898911981C2FC8E2009A44E9 /* RealmSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8989119F1C2FC903009A44E9 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898911971C2FC8E2009A44E9 /* Realm.framework */; };
+		898911A01C2FC903009A44E9 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898911981C2FC8E2009A44E9 /* RealmSwift.framework */; };
+		898911A21C30F0BE009A44E9 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898911A11C30F0BE009A44E9 /* NetworkService.swift */; };
 		8989792E1B707FAE00218498 /* rNewsKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898979241B707FAD00218498 /* rNewsKit.framework */; };
 		898979391B707FAE00218498 /* rNewsKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898979241B707FAD00218498 /* rNewsKit.framework */; };
 		8989793A1B707FAE00218498 /* rNewsKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898979241B707FAD00218498 /* rNewsKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -265,10 +280,10 @@
 		89F98BB11BA0EDF1005C3CA8 /* queryFeedDocumentation.html in Resources */ = {isa = PBXBuildFile; fileRef = 89F98BB01BA0EDF1005C3CA8 /* queryFeedDocumentation.html */; };
 		89F98BB51BA13056005C3CA8 /* UrlOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BB41BA13056005C3CA8 /* UrlOpener.swift */; };
 		89FAE2741B92893E009A3604 /* FakeThemeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FAE2731B92893E009A3604 /* FakeThemeRepository.swift */; };
-		89FF979E1BF058FB000080F7 /* CoreDataBackedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF979D1BF058FB000080F7 /* CoreDataBackedArray.swift */; };
-		89FF979F1BF058FB000080F7 /* CoreDataBackedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF979D1BF058FB000080F7 /* CoreDataBackedArray.swift */; };
-		89FF97A11BF05CDC000080F7 /* CoreDataBackedArraySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF97A01BF05CDC000080F7 /* CoreDataBackedArraySpec.swift */; };
-		89FF97A21BF05CDC000080F7 /* CoreDataBackedArraySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF97A01BF05CDC000080F7 /* CoreDataBackedArraySpec.swift */; };
+		89FF979E1BF058FB000080F7 /* DataStoreBackedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */; };
+		89FF979F1BF058FB000080F7 /* DataStoreBackedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */; };
+		89FF97A11BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF97A01BF05CDC000080F7 /* DataStoreBackedArraySpec.swift */; };
+		89FF97A21BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF97A01BF05CDC000080F7 /* DataStoreBackedArraySpec.swift */; };
 		AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4356301A7AE4FE00A961B9 /* InjectorModule.swift */; };
 /* End PBXBuildFile section */
 
@@ -335,6 +350,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				898911931C2FC8A2009A44E9 /* Realm.framework in Embed Frameworks */,
+				898911941C2FC8A2009A44E9 /* RealmSwift.framework in Embed Frameworks */,
 				8908949C1BFED826002848A4 /* Reachability.framework in Embed Frameworks */,
 				8902D54B1BB075E1003D7C22 /* Lepton.framework in Embed Frameworks */,
 				899987381B483256003C1AF5 /* Ra.framework in Embed Frameworks */,
@@ -382,6 +399,8 @@
 				898979A01B70883300218498 /* Muon.framework in Embed Frameworks */,
 				898979641B70847F00218498 /* Ra.framework in Embed Frameworks */,
 				898979651B70847F00218498 /* SyntaxKit.framework in Embed Frameworks */,
+				8989119B1C2FC8F8009A44E9 /* Realm.framework in Embed Frameworks */,
+				8989119C1C2FC8F8009A44E9 /* RealmSwift.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -397,6 +416,8 @@
 				898979BC1B708FA000218498 /* Ra.framework in Embed Frameworks */,
 				898979B41B708EB100218498 /* Nimble.framework in Embed Frameworks */,
 				898979B51B708EB100218498 /* Quick.framework in Embed Frameworks */,
+				8989119D1C2FC8FE009A44E9 /* Realm.framework in Embed Frameworks */,
+				8989119E1C2FC8FE009A44E9 /* RealmSwift.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -484,6 +505,11 @@
 		898047631A206CB100EB29F0 /* FeedsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FeedsViewController.swift; path = "RSSClient-OSX/FeedsViewController.swift"; sourceTree = SOURCE_ROOT; };
 		898131671AF880400090FA7F /* Muon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Muon.framework; path = ../Carthage/Build/iOS/Muon.framework; sourceTree = "<group>"; };
 		898131771AFC877A0090FA7F /* LocalImportViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalImportViewControllerSpec.swift; sourceTree = "<group>"; };
+		8989118F1C2FC88E009A44E9 /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = ../Carthage/Build/iOS/Realm.framework; sourceTree = "<group>"; };
+		898911901C2FC88E009A44E9 /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = ../Carthage/Build/iOS/RealmSwift.framework; sourceTree = "<group>"; };
+		898911971C2FC8E2009A44E9 /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = ../Carthage/Build/Mac/Realm.framework; sourceTree = "<group>"; };
+		898911981C2FC8E2009A44E9 /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = ../Carthage/Build/Mac/RealmSwift.framework; sourceTree = "<group>"; };
+		898911A11C30F0BE009A44E9 /* NetworkService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		898979241B707FAD00218498 /* rNewsKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = rNewsKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		898979281B707FAD00218498 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8989792D1B707FAE00218498 /* rNewsKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = rNewsKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -609,8 +635,8 @@
 		89F98BB01BA0EDF1005C3CA8 /* queryFeedDocumentation.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = queryFeedDocumentation.html; sourceTree = "<group>"; };
 		89F98BB41BA13056005C3CA8 /* UrlOpener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UrlOpener.swift; sourceTree = "<group>"; };
 		89FAE2731B92893E009A3604 /* FakeThemeRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeThemeRepository.swift; sourceTree = "<group>"; };
-		89FF979D1BF058FB000080F7 /* CoreDataBackedArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataBackedArray.swift; sourceTree = "<group>"; };
-		89FF97A01BF05CDC000080F7 /* CoreDataBackedArraySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataBackedArraySpec.swift; sourceTree = "<group>"; };
+		89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreBackedArray.swift; sourceTree = "<group>"; };
+		89FF97A01BF05CDC000080F7 /* DataStoreBackedArraySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreBackedArraySpec.swift; sourceTree = "<group>"; };
 		AE4355FD1A7AB7D900A961B9 /* SpecHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SpecHelper.swift; path = ../RSSClientTests/SpecHelper.swift; sourceTree = "<group>"; };
 		AE4355FF1A7ABA4F00A961B9 /* FakeDataRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FakeDataRepository.swift; path = ../RSSClientTests/FakeDataRepository.swift; sourceTree = "<group>"; };
 		AE4356301A7AE4FE00A961B9 /* InjectorModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InjectorModule.swift; sourceTree = "<group>"; };
@@ -621,6 +647,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				898911911C2FC88E009A44E9 /* Realm.framework in Frameworks */,
+				898911921C2FC88E009A44E9 /* RealmSwift.framework in Frameworks */,
 				890894981BFEC670002848A4 /* Reachability.framework in Frameworks */,
 				8902D5471BB0753E003D7C22 /* Lepton.framework in Frameworks */,
 				89CAD4C11BA3DB7F006D79FC /* Muon.framework in Frameworks */,
@@ -639,6 +667,8 @@
 				8935F5CF1B462702000FFD5D /* Quick.framework in Frameworks */,
 				8935F5D01B462702000FFD5D /* Ra.framework in Frameworks */,
 				8943042B1B45089A000078DC /* rNewsKit.framework in Frameworks */,
+				898911951C2FC8A6009A44E9 /* Realm.framework in Frameworks */,
+				898911961C2FC8A6009A44E9 /* RealmSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -656,6 +686,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				898911991C2FC8E2009A44E9 /* Realm.framework in Frameworks */,
+				8989119A1C2FC8E2009A44E9 /* RealmSwift.framework in Frameworks */,
 				8902D5491BB0754F003D7C22 /* Lepton.framework in Frameworks */,
 				892152001B8FA31800CBF7E4 /* X.framework in Frameworks */,
 				8989799F1B70882D00218498 /* Muon.framework in Frameworks */,
@@ -674,6 +706,8 @@
 				898979AF1B708E8F00218498 /* Nimble.framework in Frameworks */,
 				898979B01B708E8F00218498 /* Quick.framework in Frameworks */,
 				8989792E1B707FAE00218498 /* rNewsKit.framework in Frameworks */,
+				8989119F1C2FC903009A44E9 /* Realm.framework in Frameworks */,
+				898911A01C2FC903009A44E9 /* RealmSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -741,9 +775,10 @@
 				89A3417E1B150D1B0000C60B /* OPMLManager.swift */,
 				898C48CA1B425F8C0097045A /* DataRepository.swift */,
 				890E47581AA19D69007F217C /* DataUtility.swift */,
+				898911A11C30F0BE009A44E9 /* NetworkService.swift */,
 				8999CC0C1C2E710F00B81F5F /* DataService.swift */,
 				8999CC101C2E838400B81F5F /* Core Data */,
-				89FF979D1BF058FB000080F7 /* CoreDataBackedArray.swift */,
+				89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */,
 				8978D4DB1B0533B600EDD6D0 /* Feed.swift */,
 				8978D4DE1B0535EB00EDD6D0 /* Article.swift */,
 				8978D4E11B053A5900EDD6D0 /* Enclosure.swift */,
@@ -765,7 +800,7 @@
 				890E47661AA19F7F007F217C /* DataUtilitySpec.swift */,
 				8999CC0E1C2E796100B81F5F /* DataServiceSpec.swift */,
 				8999CC111C2E83BC00B81F5F /* CoreDataServiceSpec.swift */,
-				89FF97A01BF05CDC000080F7 /* CoreDataBackedArraySpec.swift */,
+				89FF97A01BF05CDC000080F7 /* DataStoreBackedArraySpec.swift */,
 				8978D4E41B05AB2800EDD6D0 /* FeedSpec.swift */,
 				8978D4E61B05AB3800EDD6D0 /* ArticleSpec.swift */,
 				8978D4E81B05AB4300EDD6D0 /* EnclosureSpec.swift */,
@@ -869,6 +904,8 @@
 		898979251B707FAD00218498 /* rNewsKit-OSX */ = {
 			isa = PBXGroup;
 			children = (
+				898911971C2FC8E2009A44E9 /* Realm.framework */,
+				898911981C2FC8E2009A44E9 /* RealmSwift.framework */,
 				8902D5481BB0754F003D7C22 /* Lepton.framework */,
 				8989799E1B70882D00218498 /* Muon.framework */,
 				8989795D1B70845A00218498 /* Ra.framework */,
@@ -1068,6 +1105,8 @@
 		89CB98BB1B13921200C87160 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8989118F1C2FC88E009A44E9 /* Realm.framework */,
+				898911901C2FC88E009A44E9 /* RealmSwift.framework */,
 				890894971BFEC670002848A4 /* Reachability.framework */,
 				8902D5451BB07389003D7C22 /* Lepton.framework */,
 				89CAD4C21BA483C9006D79FC /* PureLayout.framework */,
@@ -1593,6 +1632,8 @@
 				"$(SRCROOT)/Carthage/Build/iOS/X.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Lepton.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Reachability.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Realm.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RealmSwift.framework",
 			);
 			name = "Embed Carthage Libraries";
 			outputPaths = (
@@ -1627,11 +1668,12 @@
 				89CC82061B461A5500648367 /* KitModule.swift in Sources */,
 				894304541B450C6A000078DC /* CoreDataEnclosure.swift in Sources */,
 				8999CC141C2E83D400B81F5F /* CoreDataService.swift in Sources */,
+				898911A21C30F0BE009A44E9 /* NetworkService.swift in Sources */,
 				8943044B1B450A5E000078DC /* Article.swift in Sources */,
 				89CC82001B46198200648367 /* SearchIndex.swift in Sources */,
 				894304451B450A0A000078DC /* RSSClient.xcdatamodeld in Sources */,
 				894304411B450A00000078DC /* OPMLManager.swift in Sources */,
-				89FF979E1BF058FB000080F7 /* CoreDataBackedArray.swift in Sources */,
+				89FF979E1BF058FB000080F7 /* DataStoreBackedArray.swift in Sources */,
 				8999CC0D1C2E710F00B81F5F /* DataService.swift in Sources */,
 				8943044C1B450A5E000078DC /* Enclosure.swift in Sources */,
 				894304441B450A00000078DC /* DataUtility.swift in Sources */,
@@ -1647,7 +1689,7 @@
 			files = (
 				89B51D391C28EE3B006430AD /* SynchronousDataUtility.swift in Sources */,
 				8937F6C01B79D0800044A442 /* KitModuleSpec.swift in Sources */,
-				89FF97A11BF05CDC000080F7 /* CoreDataBackedArraySpec.swift in Sources */,
+				89FF97A11BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */,
 				8935F5D81B4628B3000FFD5D /* DataUtilitySpec.swift in Sources */,
 				8999CC0F1C2E796100B81F5F /* DataServiceSpec.swift in Sources */,
 				8935F5DB1B4628B3000FFD5D /* EnclosureSpec.swift in Sources */,
@@ -1695,7 +1737,7 @@
 				898979531B70808300218498 /* DataRepository.swift in Sources */,
 				8989794F1B70808300218498 /* Helpers.swift in Sources */,
 				898979501B70808300218498 /* KitModule.swift in Sources */,
-				89FF979F1BF058FB000080F7 /* CoreDataBackedArray.swift in Sources */,
+				89FF979F1BF058FB000080F7 /* DataStoreBackedArray.swift in Sources */,
 				898979591B70808300218498 /* Article.swift in Sources */,
 				898979541B70808300218498 /* DataUtility.swift in Sources */,
 				8989795B1B70809200218498 /* RSSClient.xcdatamodeld in Sources */,
@@ -1709,7 +1751,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8937F6C11B79D0800044A442 /* KitModuleSpec.swift in Sources */,
-				89FF97A21BF05CDC000080F7 /* CoreDataBackedArraySpec.swift in Sources */,
+				89FF97A21BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */,
 				898979AA1B708E7800218498 /* FeedSpec.swift in Sources */,
 				898979B61B708F0000218498 /* OPMLManagerMock.swift in Sources */,
 				898979B81B708F0C00218498 /* FakeURLSession.swift in Sources */,

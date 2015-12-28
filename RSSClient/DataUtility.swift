@@ -151,7 +151,7 @@ internal class DataUtility: DataUtilityType {
                 inManagedObjectContext: managedObjectContext)
             request.predicate = predicate
 
-            managedObjectContext.performBlockAndWait {
+            managedObjectContext.performBlock {
                 do {
                     if let ret = try managedObjectContext.executeFetchRequest(request) as? [NSManagedObject] {
                         let entities = ret.reduce(Array<NSObject>()) {

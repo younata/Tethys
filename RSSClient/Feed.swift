@@ -11,15 +11,15 @@ import JavaScriptCore
 #endif
 
 @objc public protocol FeedJSExport: JSExport {
-    var title: String { get set }
+    var title: String { get }
     var displayTitle: String { get }
-    var url: NSURL? { get set }
-    var summary: String { get set }
+    var url: NSURL? { get }
+    var summary: String { get }
     var displaySummary: String { get }
-    var query: String? { get set }
+    var query: String? { get }
     var tags: [String] { get }
-    var waitPeriod: Int { get set }
-    var remainingWait: Int { get set }
+    var waitPeriod: Int { get }
+    var remainingWait: Int { get }
     var articles: [Article] { get }
     var identifier: String { get }
     var isQueryFeed: Bool { get }
@@ -81,7 +81,7 @@ import JavaScriptCore
             }
         }
     }
-    dynamic public var remainingWait: Int {
+    dynamic public internal(set) var remainingWait: Int {
         willSet {
             if newValue != remainingWait {
                 self.updated = true
@@ -92,9 +92,9 @@ import JavaScriptCore
     @available(*, deprecated=1.0, renamed="articlesArray")
     dynamic public var articles: [Article] { return Array(self.articlesArray) }
 
-    public private(set) var articlesArray: DataStoreBackedArray<Article>
+    public internal(set) var articlesArray: DataStoreBackedArray<Article>
 
-    public var image: Image? {
+    public internal(set) var image: Image? {
         willSet {
             if newValue != image {
                 self.updated = true

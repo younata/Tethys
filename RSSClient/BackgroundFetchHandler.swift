@@ -20,7 +20,7 @@ public class BackgroundFetchHandler: NSObject {
         let lock = NSLock()
         lock.lock()
         reader.feeds {feeds in
-            originalArticlesList = feeds.reduce([]) { return $0 + $1.articles }.map { return $0.identifier }
+            originalArticlesList = feeds.reduce([]) { return $0 + $1.articlesArray }.map { return $0.identifier }
             lock.unlock()
         }
 
@@ -34,7 +34,7 @@ public class BackgroundFetchHandler: NSObject {
                 return
             }
             lock.unlock()
-            let currentArticleList: [Article] = newFeeds.reduce([]) { return $0 + $1.articles }
+            let currentArticleList: [Article] = newFeeds.reduce([]) { return $0 + Array($1.articlesArray) }
             if (currentArticleList.count == originalArticlesList.count) {
                 completionHandler(.NoData)
                 return

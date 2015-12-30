@@ -66,7 +66,7 @@ class ArticleSpec: QuickSpec {
                     expect(enclosure.updated).to(beTruthy())
                     expect(subject.updated).to(beTruthy())
                     expect(enclosure.article).to(equal(subject))
-                    expect(subject.enclosures).to(contain(enclosure))
+                    expect(subject.enclosuresArray).to(contain(enclosure))
                 }
             }
 
@@ -76,7 +76,7 @@ class ArticleSpec: QuickSpec {
                     subject = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [enclosure])
 
                     expect(enclosure.article).to(equal(subject))
-                    expect(subject.enclosures).to(contain(enclosure))
+                    expect(subject.enclosuresArray).to(contain(enclosure))
                     expect(subject.updated).to(beFalsy())
                 }
 
@@ -85,7 +85,7 @@ class ArticleSpec: QuickSpec {
 
                     expect(subject.updated).to(beFalsy())
                     expect(enclosure.article).to(equal(subject))
-                    expect(subject.enclosures).to(contain(enclosure))
+                    expect(subject.enclosuresArray).to(contain(enclosure))
                 }
             }
 
@@ -103,8 +103,8 @@ class ArticleSpec: QuickSpec {
                     expect(subject.updated).to(beTruthy())
                     expect(otherArticle.updated).to(beTruthy())
                     expect(enclosure.article).to(equal(subject))
-                    expect(subject.enclosures).to(contain(enclosure))
-                    expect(otherArticle.enclosures).toNot(contain(enclosure))
+                    expect(subject.enclosuresArray).to(contain(enclosure))
+                    expect(otherArticle.enclosuresArray).toNot(contain(enclosure))
                 }
             }
         }
@@ -127,13 +127,13 @@ class ArticleSpec: QuickSpec {
                 beforeEach {
                     subject = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [enclosure])
                     expect(enclosure.article).to(equal(subject))
-                    expect(subject.enclosures).to(contain(enclosure))
+                    expect(subject.enclosuresArray).to(contain(enclosure))
                 }
 
                 it("should remove the enclosure from the article") {
                     subject.removeEnclosure(enclosure)
                     expect(subject.updated).to(beTruthy())
-                    expect(subject.enclosures).toNot(contain(enclosure))
+                    expect(subject.enclosuresArray).toNot(contain(enclosure))
                     expect(enclosure.article).to(beNil())
                 }
             }
@@ -207,13 +207,13 @@ class ArticleSpec: QuickSpec {
             }
 
             it("should add subject to the feed's articles list") {
-                expect(feed.articles).to(contain(subject))
+                expect(feed.articlesArray).to(contain(subject))
             }
 
             it("should remove subject from the feed's articls list when that gets unset") {
                 subject.feed = nil
 
-                expect(feed.articles).toNot(contain(subject))
+                expect(feed.articlesArray).toNot(contain(subject))
             }
 
             it("should remove from the old and add to the new when changing feeds") {
@@ -221,8 +221,8 @@ class ArticleSpec: QuickSpec {
 
                 subject.feed = newFeed
 
-                expect(feed.articles).toNot(contain(subject))
-                expect(newFeed.articles).to(contain(subject))
+                expect(feed.articlesArray).toNot(contain(subject))
+                expect(newFeed.articlesArray).to(contain(subject))
             }
 
             it("should no-op when trying to change the feed to a query feed") {
@@ -230,7 +230,7 @@ class ArticleSpec: QuickSpec {
 
                 subject.feed = query
 
-                expect(feed.articles).to(contain(subject))
+                expect(feed.articlesArray).to(contain(subject))
             }
         }
 

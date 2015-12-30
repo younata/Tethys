@@ -44,14 +44,14 @@ class EnclosureSpec: QuickSpec {
 
             it("should add subject to the article's enclosures list") {
                 if let sub = subject {
-                    expect(article.enclosures).to(contain(sub))
+                    expect(article.enclosuresArray).to(contain(sub))
                 }
             }
 
             it("should remove subject from the article's enclosures list when that gets unset") {
                 subject?.article = nil
                 if let sub = subject {
-                    expect(article.enclosures).toNot(contain(sub))
+                    expect(article.enclosuresArray).toNot(contain(sub))
                 }
             }
 
@@ -59,8 +59,8 @@ class EnclosureSpec: QuickSpec {
                 let newArticle = Article(title: "bleh", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
                 subject?.article = newArticle
                 if let sub = subject {
-                    expect(article.enclosures).toNot(contain(sub))
-                    expect(newArticle.enclosures).to(contain(sub))
+                    expect(article.enclosuresArray).toNot(contain(sub))
+                    expect(newArticle.enclosuresArray).to(contain(sub))
                 }
             }
         }

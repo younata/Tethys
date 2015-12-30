@@ -120,7 +120,7 @@ class FeedSpec: QuickSpec {
                         expect(subject.updated).to(beTruthy())
                         expect(article.updated).to(beTruthy())
                         expect(article.feed).to(equal(subject))
-                        expect(subject.articles).to(contain(article))
+                        expect(subject.articlesArray).to(contain(article))
                     }
                 }
 
@@ -134,7 +134,7 @@ class FeedSpec: QuickSpec {
                         subject.addArticle(article)
                         expect(subject.updated).to(beFalsy())
                         expect(article.feed).to(equal(subject))
-                        expect(subject.articles).to(contain(article))
+                        expect(subject.articlesArray).to(contain(article))
                     }
                 }
 
@@ -152,8 +152,8 @@ class FeedSpec: QuickSpec {
                         expect(article.updated).to(beTruthy())
                         expect(otherFeed.updated).to(beTruthy())
                         expect(article.feed).to(equal(subject))
-                        expect(subject.articles).to(contain(article))
-                        expect(otherFeed.articles).toNot(contain(article))
+                        expect(subject.articlesArray).to(contain(article))
+                        expect(otherFeed.articlesArray).toNot(contain(article))
                     }
                 }
             }
@@ -172,7 +172,7 @@ class FeedSpec: QuickSpec {
 
                 it("should add the article to the feed's articles, but not (re)set the feed property on the article") {
                     expect(article.feed).to(beNil())
-                    expect(subject.articles).to(contain(article))
+                    expect(subject.articlesArray).to(contain(article))
                 }
             }
         }
@@ -201,7 +201,7 @@ class FeedSpec: QuickSpec {
                         subject.removeArticle(article)
                         expect(subject.updated).to(beTruthy())
                         expect(article.feed).to(beNil())
-                        expect(subject.articles).toNot(contain(article))
+                        expect(subject.articlesArray).toNot(contain(article))
                     }
                 }
 
@@ -226,14 +226,14 @@ class FeedSpec: QuickSpec {
 
                     subject.addArticle(article)
 
-                    expect(subject.articles).to(contain(article))
+                    expect(subject.articlesArray).to(contain(article))
                 }
 
                 it("removes the article from the feed, without marking the feed for updating") {
                     subject.removeArticle(article)
                     expect(subject.updated).to(beFalsy())
 
-                    expect(subject.articles).toNot(contain(article))
+                    expect(subject.articlesArray).toNot(contain(article))
                 }
             }
         }

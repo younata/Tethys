@@ -135,7 +135,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 let articleID = userInfo["article"] as? String {
                     self.dataRetriever?.feeds {feeds in
                         if let feed = feeds.filter({ return $0.title == feedTitle }).first,
-                            let article = feed.articles.filter({ $0.articleID?.URIRepresentation().absoluteString == articleID }).first {
+                            let article = feed.articlesArray.filter({ $0.articleID?.URIRepresentation().absoluteString == articleID }).first {
                                 self.createControllerHierarchy(feed, article: article)
                         }
                     }
@@ -146,7 +146,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                     let uniqueID = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
                         self.dataRetriever?.feeds {feeds in
                             guard let article = feeds.reduce(Array<Article>(), combine: {articles, feed in
-                                return articles + feed.articles
+                                return articles + Array(feed.articlesArray)
                             }).filter({ article in
                                     return article.identifier == uniqueID
                             }).first, let feed = article.feed else {

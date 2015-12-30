@@ -160,7 +160,7 @@ public class ArticleListController: UITableViewController, DataSubscriber {
     // Mark: Private
 
     private func resetArticles() {
-        let articles: [Article] = self.feeds.reduce(Array<Article>()) { return $0 + $1.articles }
+        let articles: [Article] = self.feeds.reduce(Array<Article>()) { return $0 + $1.articlesArray }
         self.articles = articles.sort {a, b in
             let da = a.updatedAt ?? a.published
             let db = b.updatedAt ?? b.published

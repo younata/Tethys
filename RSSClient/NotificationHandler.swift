@@ -75,7 +75,7 @@ public class NotificationHandler: NSObject {
         }
         self.dataRetriever?.feeds {feeds in
             let feed = feeds.filter({ $0.identifier == feedID }).first
-            let article = feed?.articles.filter({ $0.identifier == articleID }).first
+            let article = feed?.articlesArray.filter({ $0.identifier == articleID }).first
             callback(feed, article)
         }
     }

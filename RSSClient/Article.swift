@@ -85,17 +85,21 @@ import JavaScriptCore
         willSet {
             if newValue != feed && newValue?.isQueryFeed != true {
                 self.updated = true
-                if let oldValue = feed where oldValue.articles.contains(self) {
+                if let oldValue = feed where oldValue.articlesArray.contains(self) {
                     oldValue.removeArticle(self)
                 }
-                if let nv = newValue where !nv.articles.contains(self) {
+                if let nv = newValue where !nv.articlesArray.contains(self) {
                     nv.addArticle(self)
                 }
             }
         }
     }
     dynamic public private(set) var flags: [String] = []
-    dynamic public private(set) var enclosures: [Enclosure] = []
+
+    @available(*, deprecated=1.0, renamed="enclosuresArray")
+    dynamic public var enclosures: [Enclosure] { return Array(self.enclosuresArray) }
+
+    public private(set) var enclosuresArray: CoreDataBackedArray<Enclosure>
 
     internal private(set) var updated: Bool = false
 
@@ -146,12 +150,12 @@ import JavaScriptCore
             self.read = read
             self.feed = feed
             self.flags = flags
-            self.enclosures = enclosures
-            updated = false
+            self.enclosuresArray = CoreDataBackedArray(array: enclosures)
             super.init()
-            for enclosure in enclosures {
+            for enclosure in self.enclosuresArray {
                 enclosure.article = self
             }
+            self.updated = false
     }
 
     public private(set) var articleID: NSManagedObjectID? = nil
@@ -172,47 +176,49 @@ import JavaScriptCore
         content = article.content ?? ""
         read = article.read
         self.feed = feed
-        flags = article.flags
-        let enclosuresList = Array(article.enclosures)
+        self.flags = article.flags
+        self.enclosuresArray = CoreDataBackedArray(array: [])
         super.init()
-        enclosures = enclosuresList.map { Enclosure(enclosure: $0, article: self) }
+        self.enclosuresArray = CoreDataBackedArray(entityName: "Enclosure", predicate: NSPredicate(format: "article == %@", self), managedObjectContext: article.managedObjectContext!, conversionFunction: {
+            return Enclosure(enclosure: $0 as! CoreDataEnclosure, article: self)
+        })
 
-        articleID = article.objectID
+        self.articleID = article.objectID
 
-        updated = false
+        self.updated = false
     }
     public func addFlag(flag: String) {
         if !self.flags.contains(flag) {
             self.flags.append(flag)
-            updated = true
+            self.updated = true
         }
     }
 
     public func removeFlag(flag: String) {
         if self.flags.contains(flag) {
             self.flags = self.flags.filter { $0 != flag }
-            updated = true
+            self.updated = true
         }
     }
 
     public func addEnclosure(enclosure: Enclosure) {
-        if !self.enclosures.contains(enclosure) {
-            self.enclosures.append(enclosure)
+        if !self.enclosuresArray.contains(enclosure) {
+            self.enclosuresArray.append(enclosure)
             if let otherArticle = enclosure.article {
                 otherArticle.removeEnclosure(enclosure)
             }
             enclosure.article = self
-            updated = true
+            self.updated = true
         }
     }
 
     public func removeEnclosure(enclosure: Enclosure) {
-        if self.enclosures.contains(enclosure) {
-            self.enclosures = self.enclosures.filter { $0 != enclosure }
+        if self.enclosuresArray.contains(enclosure) {
+            self.enclosuresArray.remove(enclosure)
             if enclosure.article == self {
                 enclosure.article = nil
             }
-            updated = true
+            self.updated = true
         }
     }
 }

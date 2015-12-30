@@ -81,5 +81,90 @@ class CoreDataBackedArraySpec: QuickSpec {
                 expect(article).to(equal(expectedArticles[idx]))
             }
         }
+
+        it("should allow an Array to be created from it") {
+            let expectedArticles = articles.map { Article(article: $0, feed: nil) }
+            expect(Array(subject)).to(equal(expectedArticles))
+        }
+
+        it("should be equatable") {
+            let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+            let shouldEqual = CoreDataBackedArray(entityName: "Article", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: {
+                return Article(article: $0 as! CoreDataArticle, feed: nil)
+            }, sortDescriptors: [sortDescriptor])
+            expect(shouldEqual == subject).to(beTruthy())
+
+            let entityNameOff = CoreDataBackedArray(entityName: "Feed", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: {
+                return Article(article: $0 as! CoreDataArticle, feed: nil)
+                }, sortDescriptors: [sortDescriptor])
+            expect(subject == entityNameOff).toNot(beTruthy())
+
+            let predicateOff = CoreDataBackedArray(entityName: "Article", predicate: NSPredicate(value: false), managedObjectContext: moc, conversionFunction: {
+                return Article(article: $0 as! CoreDataArticle, feed: nil)
+            }, sortDescriptors: [sortDescriptor])
+            expect(predicateOff == subject).toNot(beTruthy())
+
+            let managedObjectContextOff = CoreDataBackedArray(entityName: "Article", predicate: NSPredicate(value: true), managedObjectContext: managedObjectContext(), conversionFunction: {
+                return Article(article: $0 as! CoreDataArticle, feed: nil)
+            }, sortDescriptors: [sortDescriptor])
+            expect(managedObjectContextOff == subject).toNot(beTruthy())
+
+            let sortDescriptorOff = CoreDataBackedArray(entityName: "Article", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: {
+                return Article(article: $0 as! CoreDataArticle, feed: nil)
+            }, sortDescriptors: [])
+            expect(sortDescriptorOff == subject).toNot(beTruthy())
+
+            let expectedArticles = articles.map { Article(article: $0, feed: nil) }
+            let object = CoreDataBackedArray(array: expectedArticles)
+            expect(object == subject).to(beTruthy())
+        }
+
+        it("should allow itself to be created with an array backing it, for testing reasons") {
+            let expectedArticles = articles.map { Article(article: $0, feed: nil) }
+
+            let object = CoreDataBackedArray(array: expectedArticles)
+            expect(Array(object)).to(equal(expectedArticles))
+        }
+
+        it("should allow itself to be appended to") {
+            let article = Article(title: "025", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
+
+            subject.append(article)
+
+            expect(subject.count).to(equal(36))
+
+            let expectedArticles = articles.map { Article(article: $0, feed: nil) }
+            expect(Array(subject)).to(equal(expectedArticles + [article]))
+
+            let queryList = CoreDataBackedArray(array: expectedArticles)
+            queryList.append(article)
+            expect(Array(queryList)).to(equal(expectedArticles + [article]))
+        }
+
+        it("should work well with filter") {
+            let results = subject.filter { $0.title == "001" }
+            expect(results).to(equal([Article(article: articles[1], feed: nil)]))
+        }
+
+        it("should allow an object to be removed from it") {
+            let articles = articles.map({ Article(article: $0, feed: nil) })
+            let toRemove = articles[4]
+
+            expect(subject.remove(toRemove)).to(beTruthy())
+            expect(subject.count).to(equal(34))
+
+            let expectedArticles = articles.filter { $0.title != toRemove.title }
+            expect(Array(subject)).to(equal(expectedArticles))
+
+            let article = Article(title: "025", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
+            subject.append(article)
+            expect(subject.count).to(equal(35))
+            expect(subject.remove(article)).to(beTruthy())
+            expect(Array(subject)).to(equal(expectedArticles))
+
+            let queryList = CoreDataBackedArray(array: articles)
+            expect(queryList.remove(toRemove)).to(beTruthy())
+            expect(Array(queryList)).to(equal(expectedArticles))
+        }
     }
 }

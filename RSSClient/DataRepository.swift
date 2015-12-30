@@ -114,7 +114,7 @@ internal class DataRepository: DataRetriever, DataWriter {
 
     internal func articlesOfFeeds(feeds: [Feed], matchingSearchQuery query: String, callback: ([Article]) -> (Void)) {
         self.backgroundQueue.addOperationWithBlock {
-            let articles = feeds.reduce(Array<Article>()) { return $0 + $1.articles }
+            let articles = feeds.reduce(Array<Article>()) { return $0 + $1.articlesArray }
             let matchingArticlesSet = Set(articles.filter({ return self.article($0, matchesQuery: query) }))
             let returnValue = Array(matchingArticlesSet)
             self.mainQueue.addOperationWithBlock {
@@ -202,7 +202,7 @@ internal class DataRepository: DataRetriever, DataWriter {
             }
         }
         let articles = nonQueryFeeds.reduce(Array<Article>()) {articles, feed in
-            return articles + feed.articles
+            return articles + feed.articlesArray
         }
         let context = JSContext()
         context.exceptionHandler = { context, exception in
@@ -284,7 +284,7 @@ internal class DataRepository: DataRetriever, DataWriter {
 
     internal func markFeedAsRead(feed: Feed) {
         self.backgroundQueue.addOperationWithBlock {
-            let articles = feed.articles.filter { $0.read == false }
+            let articles = feed.articlesArray.filter { $0.read == false }
             self.privateMarkArticles(articles, asRead: true)
         }
     }
@@ -418,7 +418,7 @@ internal class DataRepository: DataRetriever, DataWriter {
 
     private func upsertArticle(muonArticle: Muon.Article, feed: Feed) -> Article? {
         var existingArticle: Article? = nil
-        for article in feed.articles {
+        for article in feed.articlesArray {
             if let articleLink = article.link, let muonLink = muonArticle.link where articleLink == muonLink {
                 existingArticle = article
                 break
@@ -475,7 +475,7 @@ internal class DataRepository: DataRetriever, DataWriter {
             cdfeed.remainingWaitInt = feed.remainingWait
             cdfeed.image = feed.image
 
-            for article in feed.articles where !feed.isQueryFeed {
+            for article in feed.articlesArray where !feed.isQueryFeed {
                 self.saveArticle(article, feed: cdfeed)
             }
             self.save()

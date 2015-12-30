@@ -86,7 +86,12 @@ import JavaScriptCore
             }
         }
     }
-    dynamic public private(set) var articles: [Article] = []
+
+    @available(*, deprecated=1.0, renamed="articlesArray")
+    dynamic public var articles: [Article] { return Array(self.articlesArray) }
+
+    public private(set) var articlesArray: CoreDataBackedArray<Article>
+
     public var image: Image? {
         willSet {
             if newValue != image {
@@ -127,7 +132,7 @@ import JavaScriptCore
         }
         return self.title == b.title && self.url == b.url && self.summary == b.summary &&
             self.query == b.query && self.tags == b.tags && self.waitPeriod == b.waitPeriod &&
-            self.remainingWait == b.remainingWait && self.image == b.image && self.articles == b.articles
+            self.remainingWait == b.remainingWait && self.image == b.image && self.articlesArray == b.articlesArray
     }
 
     public private(set) var updated = false
@@ -142,12 +147,12 @@ import JavaScriptCore
     }
 
     public func unreadArticles() -> [Article] {
-        return articles.filter { !$0.read }
+        return articlesArray.filter { !$0.read }
     }
 
     public func addArticle(article: Article) {
-        if !self.articles.contains(article) {
-            self.articles.append(article)
+        if !self.articlesArray.contains(article) {
+            self.articlesArray.append(article)
             if !self.isQueryFeed {
                 self.updated = true
                 if let otherFeed = article.feed where otherFeed != self {
@@ -159,8 +164,8 @@ import JavaScriptCore
     }
 
     public func removeArticle(article: Article) {
-        if self.articles.contains(article) {
-            self.articles = self.articles.filter { $0 != article }
+        if self.articlesArray.contains(article) {
+            self.articlesArray.remove(article)
             if !self.isQueryFeed {
                 self.updated = true
                 if article.feed == self {
@@ -194,12 +199,13 @@ import JavaScriptCore
             self.waitPeriod = waitPeriod
             self.remainingWait = remainingWait
             self.image = image
-            self.articles = articles
+            self.articlesArray = CoreDataBackedArray(array: articles)
             self.identifier = identifier
             super.init()
             for article in articles {
                 article.feed = self
             }
+            self.updated = false
     }
 
     public private(set) var feedID: NSManagedObjectID? = nil
@@ -219,12 +225,18 @@ import JavaScriptCore
         self.waitPeriod = feed.waitPeriodInt
         self.remainingWait = feed.remainingWaitInt
 
-        let articlesList = Array(feed.articles)
         self.image = feed.image as? Image
         self.feedID = feed.objectID
         self.identifier = feedID?.URIRepresentation().absoluteString ?? ""
+        self.articlesArray = CoreDataBackedArray<Article>(array: [])
         super.init()
-        self.articles = articlesList.map { Article(article: $0, feed: self) }
+        if !self.isQueryFeed {
+            let sortByUpdated = NSSortDescriptor(key: "updatedAt", ascending: false)
+            let sortByPublished = NSSortDescriptor(key: "published", ascending: false)
+            self.articlesArray = CoreDataBackedArray(entityName: "Article", predicate: NSPredicate(format: "feed == %@", feed), managedObjectContext: feed.managedObjectContext!, conversionFunction: {
+                return Article(article: $0 as! CoreDataArticle, feed: self)
+                }, sortDescriptors: [sortByUpdated, sortByPublished])
+        }
 
         self.updated = false
     }

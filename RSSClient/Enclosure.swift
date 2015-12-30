@@ -36,10 +36,10 @@ import JavaScriptCore
         willSet {
             if newValue != article {
                 self.updated = true
-                if let oldValue = article where oldValue.enclosures.contains(self) {
+                if let oldValue = article where oldValue.enclosuresArray.contains(self) {
                     oldValue.removeEnclosure(self)
                 }
-                if let nv = newValue where !nv.enclosures.contains(self) {
+                if let nv = newValue where !nv.enclosuresArray.contains(self) {
                     nv.addEnclosure(self)
                 }
             }

@@ -99,10 +99,7 @@ class FeedRepositorySpec: QuickSpec {
             feed3.url = "https://example.com/feed3.feed"
             feed3.remainingWait = 1
             feed3.tags = ["dad"]
-            do {
-                try moc.save()
-            } catch _ {
-            }
+            let _ = try? moc.save()
 
             feeds = [feed1, feed2, feed3].map { Feed(feed: $0) }
 

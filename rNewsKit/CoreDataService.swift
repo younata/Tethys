@@ -37,6 +37,7 @@ class CoreDataService: DataService {
                 insertIntoManagedObjectContext: self.managedObjectContext)
             let _ = try? self.managedObjectContext.save()
             let article = Article(article: cdarticle, feed: feed)
+            feed?.addArticle(article)
             let operation = NSBlockOperation {
                 callback(article)
             }
@@ -54,6 +55,7 @@ class CoreDataService: DataService {
                 insertIntoManagedObjectContext: self.managedObjectContext)
             let _ = try? self.managedObjectContext.save()
             let enclosure = Enclosure(enclosure: cdenclosure, article: article)
+            article?.addEnclosure(enclosure)
             let operation = NSBlockOperation {
                 callback(enclosure)
             }

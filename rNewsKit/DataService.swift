@@ -46,6 +46,29 @@ extension DataService {
         feed.title = info.title
         feed.summary = summary
 
+        let operationQueue = NSOperationQueue()
+        operationQueue.maxConcurrentOperationCount = 1
+
+        for item in info.articles {
+            let itemIsNew = feed.articlesArray.filter { article in
+                return item.title != article.title && item.link != article.link
+            }.isEmpty
+            if itemIsNew {
+                operationQueue.addOperationWithBlock {
+                    let semaphore = dispatch_semaphore_create(0)
+                    self.createArticle(feed) { article in
+                        feed.addArticle(article)
+                        self.updateArticle(article, item: item) {
+                            dispatch_semaphore_signal(semaphore)
+                        }
+                    }
+                    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+                }
+            }
+        }
+
+        operationQueue.waitUntilAllOperationsAreFinished()
+
         self.saveFeed(feed, callback: callback)
     }
 

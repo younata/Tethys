@@ -1,5 +1,5 @@
 import Foundation
-import rNewsKit
+@testable import rNewsKit
 
 class FakeDataReadWriter : DataRetriever, DataWriter {
     init() {}

@@ -99,7 +99,7 @@ import JavaScriptCore
     @available(*, deprecated=1.0, renamed="enclosuresArray")
     dynamic public var enclosures: [Enclosure] { return Array(self.enclosuresArray) }
 
-    public private(set) var enclosuresArray: DataStoreBackedArray<Enclosure>
+    public internal(set) var enclosuresArray: DataStoreBackedArray<Enclosure>
 
     internal private(set) var updated: Bool = false
 

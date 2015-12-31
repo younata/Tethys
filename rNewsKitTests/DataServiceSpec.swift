@@ -27,14 +27,19 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             }
         }
 
-        it("easily allows a feed to be updated") {
+        it("easily allows a feed to be updated with inserted articles") {
             guard let feed = feed else { fail(); return }
-            let info = Muon.Feed(title: "a title", link: NSURL(string: "https://google.com")!, description: "description", articles: [])
+            let item = Muon.Article(title: "article", link: nil, description: "", content: "", guid: "", published: nil, updated: nil, authors: [], enclosures: [])
+            let info = Muon.Feed(title: "a title", link: NSURL(string: "https://google.com")!, description: "description", articles: [item])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
             dataService.updateFeed(feed, info: info) {
                 expect(feed.title) == "a title"
                 expect(feed.summary) == "description"
                 expect(feed.url).to(beNil())
+                expect(feed.articlesArray.count).to(equal(1))
+                if let article = feed.articlesArray.first {
+                    expect(article.title) == "article"
+                }
                 updateExpectation.fulfill()
             }
             spec.waitForExpectationsWithTimeout(1, handler: nil)

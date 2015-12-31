@@ -69,16 +69,17 @@ public class CoreDataBackedArray<T>: CollectionType, CustomDebugStringConvertibl
         return self[0]
     }
 
-    public func filter(@noescape includeElement: (Generator.Element) throws -> Bool) rethrows -> [Generator.Element] {
-        var ret: [T] = []
-        for element in self {
-            do {
-                if try includeElement(element) {
-                    ret.append(element)
-                }
-            } catch {}
+    public func filterWithPredicate(predicate: NSPredicate) -> CoreDataBackedArray<T> {
+        guard let currentPredicate = self.predicate, managedObjectContext = self.managedObjectContext, conversionFunction = self.conversionFunction else {
+            let array = self.internalObjects.filter {
+                return predicate.evaluateWithObject($0 as? AnyObject)
+            }
+            return CoreDataBackedArray(array: array)
         }
-        return ret
+        return CoreDataBackedArray(entityName: self.entityName,
+            predicate: NSCompoundPredicate(andPredicateWithSubpredicates: [currentPredicate, predicate]),
+            managedObjectContext: managedObjectContext,
+            conversionFunction: conversionFunction)
     }
 
     public subscript(position: Int) -> T {

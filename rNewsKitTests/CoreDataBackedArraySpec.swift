@@ -146,6 +146,11 @@ class CoreDataBackedArraySpec: QuickSpec {
             expect(results).to(equal([Article(article: articles[1], feed: nil)]))
         }
 
+        it("should allow a filter with a predicate") {
+            let results = subject.filterWithPredicate(NSPredicate(format: "title == %@", "001"))
+            expect(Array(results)).to(equal([Article(article: articles[1], feed: nil)]))
+        }
+
         it("should allow an object to be removed from it") {
             let articles = articles.map({ Article(article: $0, feed: nil) })
             let toRemove = articles[4]

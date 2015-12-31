@@ -29,7 +29,7 @@ public class KitModule: NSObject, Ra.InjectorModule {
 
         let backgroundQueue = NSOperationQueue()
         backgroundQueue.qualityOfService = NSQualityOfService.Utility
-        backgroundQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount
+        backgroundQueue.maxConcurrentOperationCount = 1
         injector.bind(kBackgroundQueue, to: backgroundQueue)
 
         let dataRepository = DataRepository(objectContext: ManagedObjectContext(), mainQueue: mainQueue, backgroundQueue: backgroundQueue, urlSession: NSURLSession.sharedSession(), searchIndex: searchIndex)

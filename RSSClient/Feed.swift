@@ -23,7 +23,6 @@ import JavaScriptCore
     var articles: [Article] { get }
     var identifier: String { get }
     var isQueryFeed: Bool { get }
-    func unreadArticles() -> [Article]
 }
 
 @objc public class Feed: NSObject, FeedJSExport {
@@ -146,8 +145,8 @@ import JavaScriptCore
         return ret
     }
 
-    public func unreadArticles() -> [Article] {
-        return articlesArray.filter { !$0.read }
+    public func unreadArticles() -> CoreDataBackedArray<Article> {
+        return self.articlesArray.filterWithPredicate(NSPredicate(format: "read == %@", false))
     }
 
     public func addArticle(article: Article) {

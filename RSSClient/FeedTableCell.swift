@@ -8,7 +8,7 @@ public class FeedTableCell: UITableViewCell {
             if let f = feed {
                 nameLabel.text = f.displayTitle
                 summaryLabel.text = f.displaySummary
-                unreadCounter.unread = UInt(f.articlesArray.filter({return $0.read == false}).count)
+                unreadCounter.unread = UInt(f.unreadArticles().count)
             } else {
                 nameLabel.text = ""
                 summaryLabel.text = ""

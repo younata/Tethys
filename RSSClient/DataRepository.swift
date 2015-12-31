@@ -454,9 +454,7 @@ internal class DataRepository: DataRetriever, DataWriter {
 
     private func save() {
         self.objectContext.performBlockAndWait {
-            do {
-                try self.objectContext.save()
-            } catch {}
+            let _ = try? self.objectContext.save()
         }
     }
 

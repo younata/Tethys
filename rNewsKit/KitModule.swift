@@ -36,7 +36,11 @@ public class KitModule: NSObject, Ra.InjectorModule {
         backgroundQueue.maxConcurrentOperationCount = 1
         injector.bind(kBackgroundQueue, toInstance: backgroundQueue)
 
-        let dataRepository = DataRepository(objectContext: ManagedObjectContext(),
+        let objectContext = ManagedObjectContext()
+        let dataService = CoreDataService(managedObjectContext: objectContext, mainQueue: mainQueue)
+        injector.bind(DataService.self, toInstance: dataService)
+
+        let dataRepository = DataRepository(objectContext: objectContext,
             mainQueue: mainQueue,
             backgroundQueue: backgroundQueue,
             urlSession: NSURLSession.sharedSession(),

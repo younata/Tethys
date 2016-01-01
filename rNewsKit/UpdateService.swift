@@ -5,6 +5,7 @@ protocol NetworkClientDelegate: class {
     func didDownloadImage(image: Image, url: NSURL)
     func didDownloadFeed(feed: Muon.Feed, url: NSURL)
     func didDownloadData(data: NSData, url: NSURL)
+    func didFailToDownloadDataFromUrl(url: NSURL)
 }
 
 class URLSessionDelegate: NSObject, NSURLSessionDownloadDelegate {
@@ -29,6 +30,11 @@ class URLSessionDelegate: NSObject, NSURLSessionDownloadDelegate {
         }
         self.delegate?.didDownloadData(data, url: originalUrl)
     }
+
+    func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
+        let url = task.originalRequest?.URL ?? NSURL()
+        self.delegate?.didFailToDownloadDataFromUrl(url)
+    }
 }
 
 class UpdateService: NetworkClientDelegate {
@@ -36,6 +42,7 @@ class UpdateService: NetworkClientDelegate {
     private let urlSession: NSURLSession
 
     private var feedsInProgress: [NSURL: (feed: Feed, callback: (Feed -> Void))] = [:]
+    private var imagesInProgress: [NSURL: (feed: Feed, callback: (Feed -> Void))] = [:]
 
     init(dataService: DataService, urlSession: NSURLSession) {
         self.dataService = dataService
@@ -55,13 +62,31 @@ class UpdateService: NetworkClientDelegate {
 
     func didDownloadFeed(muonFeed: Muon.Feed, url: NSURL) {
         guard let feedCallback = self.feedsInProgress[url] else { return }
+        self.feedsInProgress.removeValueForKey(url)
         let feed = feedCallback.feed
         let callback = feedCallback.callback
         self.dataService.updateFeed(feed, info: muonFeed) {
+            if feed.image == nil, let imageUrl = muonFeed.imageURL where !imageUrl.absoluteString.isEmpty {
+                self.imagesInProgress[imageUrl] = feedCallback
+                self.urlSession.downloadTaskWithURL(imageUrl).resume()
+            } else {
+                callback(feed)
+            }
+        }
+    }
+
+    func didDownloadImage(image: Image, url: NSURL) {
+        guard let imageCallback = self.imagesInProgress[url] else { return }
+        self.imagesInProgress.removeValueForKey(url)
+        let feed = imageCallback.feed
+        let callback = imageCallback.callback
+        feed.image = image
+        self.dataService.saveFeed(feed) {
             callback(feed)
         }
     }
 
-    func didDownloadImage(image: Image, url: NSURL) {}
     func didDownloadData(data: NSData, url: NSURL) {}
+
+    func didFailToDownloadDataFromUrl(url: NSURL) {}
 }

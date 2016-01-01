@@ -12,6 +12,16 @@ class FakeDownloadTask: NSURLSessionDownloadTask {
         return _request
     }
 
+    var _taskDescription: String?
+    override var taskDescription: String? {
+        get {
+            return _taskDescription
+        }
+        set {
+            _taskDescription = newValue
+        }
+    }
+
     var _response: NSURLResponse?
     override var response: NSURLResponse? { return _response }
 
@@ -31,7 +41,7 @@ class FakeURLSession: NSURLSession {
         return task
     }
 
-    var lastDownloadTask: NSURLSessionDownloadTask?
+    var lastDownloadTask: FakeDownloadTask?
     override func downloadTaskWithURL(url: NSURL) -> NSURLSessionDownloadTask {
         lastURL = url
         let task = FakeDownloadTask()

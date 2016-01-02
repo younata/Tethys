@@ -6,11 +6,13 @@ public class OPMLManager: NSObject, Injectable {
     private let dataRepository: DataRepository?
     private let mainQueue: NSOperationQueue?
     private let importQueue: NSOperationQueue?
+    private let dataService: DataService?
 
     required public init(injector: Injector) {
-        self.dataRepository = injector.create(DataRepository.self)
+        self.dataRepository = injector.create(DataRepository)
         self.mainQueue = injector.create(kMainQueue) as? NSOperationQueue
         self.importQueue = injector.create(kBackgroundQueue) as? NSOperationQueue
+        self.dataService = injector.create(DataService)
 
         super.init()
 
@@ -33,7 +35,7 @@ public class OPMLManager: NSObject, Injectable {
     }
 
     public func importOPML(opml: NSURL, completion: ([Feed]) -> Void) {
-        guard let dataRepository = self.dataRepository else {
+        guard let dataRepository = self.dataRepository, let dataService = self.dataService else {
             completion([])
             return
         }
@@ -50,25 +52,25 @@ public class OPMLManager: NSObject, Injectable {
                         }
                         if item.isQueryFeed() {
                             if let title = item.title, let query = item.query {
-                                let newFeed = dataRepository.synchronousNewFeed()
-                                newFeed.title = title
-                                newFeed.query = query
-                                newFeed.summary = item.summary ?? ""
-                                for tag in (item.tags ?? []) {
-                                    newFeed.addTag(tag)
+                                dataService.createFeed { newFeed in
+                                    newFeed.title = title
+                                    newFeed.query = query
+                                    newFeed.summary = item.summary ?? ""
+                                    for tag in (item.tags ?? []) {
+                                        newFeed.addTag(tag)
+                                    }
+                                    feeds.append(newFeed)
                                 }
-                                dataRepository.saveFeed(newFeed)
-                                feeds.append(newFeed)
                             }
                         } else {
                             if let feedURL = item.xmlURL {
-                                let newFeed = dataRepository.synchronousNewFeed()
-                                newFeed.url = NSURL(string: feedURL)
-                                for tag in item.tags ?? [] {
-                                    newFeed.addTag(tag)
+                                dataService.createFeed { newFeed in
+                                    newFeed.url = NSURL(string: feedURL)
+                                    for tag in item.tags ?? [] {
+                                        newFeed.addTag(tag)
+                                    }
+                                    feeds.append(newFeed)
                                 }
-                                dataRepository.saveFeed(newFeed)
-                                feeds.append(newFeed)
                             }
                         }
                     }

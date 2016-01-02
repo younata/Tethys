@@ -54,82 +54,63 @@ class FeedRepositorySpec: QuickSpec {
         var mainQueue: FakeOperationQueue! = nil
         var backgroundQueue: FakeOperationQueue! = nil
 
-        var moc: NSManagedObjectContext! = nil
-
         var feeds: [Feed] = []
-        var feed1: CoreDataFeed! = nil
-        var feed2: CoreDataFeed! = nil
-        var feed3: CoreDataFeed! = nil
+        var feed1: Feed! = nil
+        var feed2: Feed! = nil
+        var feed3: Feed! = nil
 
-        var article1: CoreDataArticle! = nil
-        var article2: CoreDataArticle! = nil
-
-        var searchIndex: FakeSearchIndex! = nil
-
-        var urlSession: FakeURLSession! = nil
+        var article1: Article! = nil
+        var article2: Article! = nil
 
         var dataSubscriber: FakeDataSubscriber! = nil
 
         var reachable: FakeReachable! = nil
 
-        let dataUtility = SynchronousDataUtility()
+        var dataService: InMemoryDataService! = nil
+
+        var updateService: FakeUpdateService! = nil
 
         beforeEach {
-            moc = managedObjectContext()
+            feed1 = Feed(title: "a", url: NSURL(string: "https://example.com/feed1.feed"), summary: "",
+                query: nil, tags: ["a", "b", "c", "d"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-            feed1 = createFeed(moc)
-            feed1.title = "a"
-            feed1.url = "https://example.com/feed1.feed"
-            feed1.tags = ["a", "b", "c", "d"]
-            article1 = createArticle(moc)
-            article1.title = "b"
-            article1.link = "https://example.com/article1.html"
-            article1.summary = "<p>Hello world!</p>"
+            article1 = Article(title: "b", link: NSURL(string: "https://example.com/article1.html"),
+                summary: "<p>Hello world!</p>", author: "", published: NSDate(), updatedAt: nil, identifier: "article1",
+                content: "", read: false, feed: feed1, flags: [], enclosures: [])
 
-            article2 = createArticle(moc)
-            article2.title = "c"
-            article2.link = "https://example.com/article2.html"
-            article2.summary = "<p>Hello world!</p>"
-            article2.read = true
+            article2 = Article(title: "c", link: NSURL(string: "https://example.com/article2.html"),
+                summary: "<p>Hello world!</p>", author: "", published: NSDate(), updatedAt: nil, identifier: "article2",
+                content: "", read: true, feed: feed1, flags: [], enclosures: [])
 
-            article1.feed = feed1
-            article2.feed = feed1
+            feed1.addArticle(article1)
+            feed1.addArticle(article2)
 
-            feed2 = createFeed(moc) // query feed
-            feed2.title = "d"
-            feed2.tags = ["b", "d"]
-            feed2.query = "function(article) {return true;}"
+            feed2 = Feed(title: "d", url: nil, summary: "", query: "function(article) {return true;}", tags: ["b", "d"],
+                waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
 
-            feed3 = createFeed(moc)
-            feed3.title = "e"
-            feed3.url = "https://example.com/feed3.feed"
-            feed3.remainingWait = 1
-            feed3.tags = ["dad"]
-            let _ = try? moc.save()
+            feed3 = Feed(title: "e", url: NSURL(string: "https://example.com/feed3.feed"), summary: "", query: nil,
+                tags: ["dad"], waitPeriod: 0, remainingWait: 1, articles: [], image: nil)
 
-            feeds = [feed1, feed2, feed3].map { Feed(feed: $0) }
-
-            let articles = feeds.reduce(Array<Article>()) {return $0 + Array($1.articlesArray) }
-            expect(articles.isEmpty).to(beFalsy())
-            for article in articles {
-                feeds[1].addArticle(article)
-            }
-
-            searchIndex = FakeSearchIndex()
+            feeds = [feed1, feed2, feed3]
 
             reachable = FakeReachable(hasNetworkConnectivity: true)
 
-            urlSession = FakeURLSession()
-
             mainQueue = FakeOperationQueue()
             backgroundQueue = FakeOperationQueue()
-            subject = DataRepository(objectContext: moc,
-                mainQueue: mainQueue,
+
+            dataService = InMemoryDataService()
+
+            dataService.feeds = feeds
+            dataService.articles = [article1, article2]
+
+            updateService = FakeUpdateService()
+
+            subject = DataRepository(mainQueue: mainQueue,
                 backgroundQueue: backgroundQueue,
-                urlSession: urlSession,
-                searchIndex: searchIndex,
                 reachable: reachable,
-                dataUtility: dataUtility)
+                dataService: dataService,
+                updateService: updateService
+            )
 
             dataSubscriber = FakeDataSubscriber()
             subject.addSubscriber(dataSubscriber)
@@ -153,14 +134,7 @@ class FeedRepositorySpec: QuickSpec {
                     }
                 }
 
-                it("should return a list of all tags asynchronously on the main thread") {
-                    expect(mainQueue.operationCount).to(equal(1))
-
-                    expect(calledHandler).to(beFalsy())
-
-                    mainQueue.runNextOperation()
-
-                    expect(mainQueue.operationCount).to(equal(0))
+                it("should return a list of all tags") {
                     expect(calledHandler).to(beTruthy())
                     expect(tags).to(equal(["a", "b", "c", "d", "dad"]))
                 }
@@ -179,14 +153,7 @@ class FeedRepositorySpec: QuickSpec {
                     }
                 }
 
-                it("should asynchronously return the list of all feeds") {
-                    expect(mainQueue.operationCount).to(equal(1))
-
-                    expect(calledHandler).to(beFalsy())
-
-                    mainQueue.runNextOperation()
-
-                    expect(mainQueue.operationCount).to(equal(0))
+                it("should return the list of all feeds") {
                     expect(calledHandler).to(beTruthy())
                     expect(calledFeeds).to(equal(feeds))
                     for (idx, feed) in feeds.enumerate() {
@@ -211,12 +178,6 @@ class FeedRepositorySpec: QuickSpec {
                             calledFeeds = $0
                         }
 
-                        expect(mainQueue.operationCount).to(equal(1))
-                        expect(calledHandler).to(beFalsy())
-
-                        mainQueue.runNextOperation()
-
-                        expect(mainQueue.operationCount).to(equal(0))
                         expect(calledHandler).to(beTruthy())
                         expect(calledFeeds).to(equal(feeds))
                     }
@@ -226,19 +187,16 @@ class FeedRepositorySpec: QuickSpec {
                             calledHandler = true
                             calledFeeds = $0
                         }
-                        mainQueue.runNextOperation()
                         expect(calledFeeds).to(equal(feeds))
                     }
                 }
 
                 it("should return feeds that partially match a tag") {
-                    let subFeeds = [feed1, feed3].map { Feed(feed: $0) }
                     subject.feedsMatchingTag("a") {
                         calledHandler = true
                         calledFeeds = $0
                     }
-                    mainQueue.runNextOperation()
-                    expect(calledFeeds).to(equal(subFeeds))
+                    expect(calledFeeds) == [feed1, feed3]
                 }
             }
 
@@ -248,9 +206,9 @@ class FeedRepositorySpec: QuickSpec {
 
                 beforeEach {
                     calledHandler = false
-                    calledArticles = DataStoreBackedArray()
+                    calledArticles = DataStoreBackedArray<Article>()
 
-                    subject.articlesOfFeeds(feeds, matchingSearchQuery: "article1") {articles in
+                    subject.articlesOfFeeds(feeds, matchingSearchQuery: "b") { articles in
                         calledHandler = true
                         calledArticles = articles
                     }
@@ -266,9 +224,7 @@ class FeedRepositorySpec: QuickSpec {
 
                     expect(mainQueue.operationCount).to(equal(0))
                     expect(calledHandler).to(beTruthy())
-                    expect(Array(calledArticles)).to(equal([Article(article: article1, feed: nil)]))
-
-                    expect(calledArticles.predicate).toNot(beNil())
+                    expect(Array(calledArticles)) == [article1]
                 }
             }
 
@@ -294,7 +250,7 @@ class FeedRepositorySpec: QuickSpec {
 
                     expect(mainQueue.operationCount).to(equal(0))
                     expect(calledHandler).to(beTruthy())
-                    expect(calledArticles).to(equal([Article(article: article1, feed: nil)]))
+                    expect(calledArticles) == [article1]
                 }
             }
         }
@@ -306,86 +262,43 @@ class FeedRepositorySpec: QuickSpec {
                     subject.newFeed {feed in
                         createdFeed = feed
                     }
-                    backgroundQueue.runNextOperation()
                 }
 
                 it("should call back with a created feed") {
-                    expect(mainQueue.operationCount).to(equal(1))
-                    mainQueue.runNextOperation()
-                    expect(createdFeed?.feedID).toNot(beNil())
-                }
-            }
-
-            describe("saveFeed") {
-                var feed: Feed! = nil
-                beforeEach {
-                    feed = Feed(feed: feed1)
-                    feed.summary = "a changed summary"
-                    subject.saveFeed(feed)
-                }
-
-                it("should update the data store") {
-                    let updatedFeed = dataUtility.synchronousEntities("Feed",
-                        matchingPredicate: NSPredicate(format: "self = %@", feed1.objectID),
-                        managedObjectContext: moc).first as? CoreDataFeed
-                    expect(updatedFeed?.summary).to(equal(feed.summary))
-                    if let updated = updatedFeed {
-                        expect(Feed(feed: updated)).to(equal(feed))
-                    }
+                    expect(dataService.feeds).to(contain(createdFeed))
+                    expect(dataService.feeds.count) == 4
                 }
             }
 
             describe("deleteFeed") {
-                var feed: Feed! = nil
-                var articleIDs: [String] = []
                 beforeEach {
-                    feed = Feed(feed: feed1)
-                    articleIDs = feed.articlesArray.map { return $0.articleID!.URIRepresentation().absoluteString }
                     mainQueue.runSynchronously = true
-                    subject.deleteFeed(feed)
+                    subject.deleteFeed(feed1)
                 }
 
-                it("should remove the feed from the data store") {
-                    let feeds = dataUtility.synchronousFeedsWithPredicate(NSPredicate(value: true),
-                        managedObjectContext: moc)
-                    expect(feeds.contains(feed)).to(beFalsy())
-                }
-
-                it("should remove any articles associated with the feed") {
-                    let articles = dataUtility.synchronousArticlesWithPredicate(NSPredicate(value: true), managedObjectContext: moc)
-                    let articleTitles = articles.map { $0.title }
-                    expect(articleTitles).toNot(contain("b"))
-                    expect(articleTitles).toNot(contain("c"))
+                it("should remove the feed from the data service") {
+                    expect(dataService.feeds).toNot(contain(feed1))
                 }
 
                 it("should inform any subscribers") {
-                    expect(dataSubscriber.deletedFeed).to(equal(feed))
+                    expect(dataSubscriber.deletedFeed).to(equal(feed1))
                     expect(dataSubscriber.deletedFeedsLeft).to(equal(2))
                 }
-
-                #if os(iOS)
-                    if #available(iOS 9.0, *) {
-                        it("should, on iOS 9, remove the articles from the search index") {
-                            expect(searchIndex?.lastItemsDeleted.sort()).to(equal(articleIDs.sort()))
-                        }
-                    }
-                #endif
             }
 
             describe("markFeedAsRead") {
                 beforeEach {
-                    subject.markFeedAsRead(Feed(feed: feed1))
+                    backgroundQueue.runSynchronously = true
+                    subject.markFeedAsRead(feed1)
                 }
 
                 it("should mark every article in the feed as read") {
-                    let feed = dataUtility.synchronousFeedsWithPredicate(NSPredicate(format: "self = %@", feed1.objectID), managedObjectContext: moc).first
-                    for article in feed!.articlesArray {
+                    for article in feed1.articlesArray {
                         expect(article.read).to(beTruthy())
                     }
                 }
 
                 it("should inform any subscribers") {
-                    mainQueue.runNextOperation()
                     expect(dataSubscriber.markedArticles).toNot(beNil())
                     expect(dataSubscriber.read).to(beTruthy())
                 }
@@ -394,90 +307,41 @@ class FeedRepositorySpec: QuickSpec {
             describe("saveArticle") {
                 var article: Article! = nil
                 var image: Image! = nil
-                var feed: Feed! = nil
 
                 beforeEach {
-                    feed = Feed(feed: feed1)
-
                     let bundle = NSBundle(forClass: self.classForCoder)
                     let imageData = NSData(contentsOfURL: bundle.URLForResource("test", withExtension: "jpg")!)
                     image = Image(data: imageData!)
-                    feed.image = image
 
-                    article = feed.articlesArray.first
+                    article = article1
+                    article.feed?.image = image
 
-                    let coreDataArticle = dataUtility.synchronousEntities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
-                        managedObjectContext: moc).first
-                    expect(coreDataArticle).toNot(beNil())
                     article.title = "hello"
                     subject.saveArticle(article)
                 }
 
-                it("should update the data store") {
-                    let updatedArticle = dataUtility.synchronousEntities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
-                        managedObjectContext: moc).first as? CoreDataArticle
-                    expect(updatedArticle?.title).to(equal(article.title))
-                    if let updated = updatedArticle {
-                        expect(Article(article: updated, feed: nil)).to(equal(article))
-                    }
+                it("should update the data service") {
+                    let updatedArticle = dataService.articles.filter { $0.title == "hello" }.first
+                    expect(updatedArticle).toNot(beNil())
+                    expect(article).to(equal(updatedArticle))
+                    expect(article1).to(equal(updatedArticle))
                 }
-
-                #if os(iOS)
-                    if #available(iOS 9.0, *) {
-                        it("should, on iOS 9, update the search index") {
-                            expect(searchIndex?.lastItemsAdded.count).to(equal(1))
-                            if let item = searchIndex?.lastItemsAdded.first as? CSSearchableItem {
-                                let identifier = article.articleID!.URIRepresentation().absoluteString
-                                expect(item.uniqueIdentifier).to(equal(identifier))
-                                expect(item.domainIdentifier).to(beNil())
-                                expect(item.expirationDate).to(equal(NSDate.distantFuture()))
-                                let attributes = item.attributeSet
-                                expect(attributes.contentType).to(equal(kUTTypeHTML as String))
-                                expect(attributes.title).to(equal(article.title))
-                                let keywords = ["article"] + article.feed!.title.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                                expect(attributes.keywords).to(equal(keywords))
-                                expect(attributes.URL).to(equal(article.link))
-                                expect(attributes.timestamp).to(equal(article.updatedAt ?? article.published))
-                                expect(attributes.authorNames).to(equal([article.author]))
-                                expect(attributes.contentDescription).to(equal("Hello world!"))
-                                let imageData = UIImagePNGRepresentation(image!)
-                                expect(attributes.thumbnailData).to(equal(imageData))
-                            }
-                        }
-                    }
-                #endif
             }
 
             describe("deleteArticle") {
                 var article: Article! = nil
 
                 beforeEach {
-                    let feed = Feed(feed: feed1)
-                    article = feed.articlesArray.first
+                    article = article1
 
-                    let coreDataArticle = dataUtility.synchronousEntities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
-                        managedObjectContext: moc).first
-                    expect(coreDataArticle).toNot(beNil())
                     subject.deleteArticle(article)
                 }
 
-                it("should remove the article from the data store") {
-                    let coreDataArticle = dataUtility.synchronousEntities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
-                        managedObjectContext: moc).first
-                    expect(coreDataArticle).to(beNil())
+                it("should remove the article from the data service") {
+                    expect(dataService.articles).toNot(contain(article))
                 }
 
-                #if os(iOS)
-                    if #available(iOS 9.0, *) {
-                        it("should, on iOS 9, remove the article from the search index") {
-                            let identifier = article.articleID!.URIRepresentation().absoluteString
-                            expect(searchIndex?.lastItemsDeleted).to(equal([identifier]))
-                        }
-                    }
-                #endif
-
                 it("should inform any subscribes") {
-                    mainQueue.runNextOperation()
                     expect(dataSubscriber.deletedArticle).to(equal(article))
                 }
             }
@@ -486,24 +350,15 @@ class FeedRepositorySpec: QuickSpec {
                 var article: Article! = nil
 
                 beforeEach {
-                    let feed = Feed(feed: feed1)
-                    article = feed.articlesArray.first
+                    article = article1
+
+                    backgroundQueue.runSynchronously = true
 
                     subject.markArticle(article, asRead: true)
-                    mainQueue.runNextOperation()
                 }
 
                 it("should mark the article object as read") {
                     expect(article.read).to(beTruthy())
-                }
-
-                it("should mark the article as read in the data store") {
-                    let coreDataArticle = dataUtility.synchronousEntities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
-                        managedObjectContext: moc).first
-                    expect(coreDataArticle).toNot(beNil())
-                    if let cda = coreDataArticle as? CoreDataArticle {
-                        expect(cda.read).to(beTruthy())
-                    }
                 }
 
                 it("should inform any subscribers") {
@@ -516,16 +371,6 @@ class FeedRepositorySpec: QuickSpec {
                         dataSubscriber.markedArticles = nil
                         dataSubscriber.read = nil
                         subject.markArticle(article, asRead: false)
-                        mainQueue.runNextOperation()
-                    }
-
-                    it("should mark the article as unread in the data store") {
-                        let coreDataArticle = dataUtility.synchronousEntities("Article", matchingPredicate: NSPredicate(format: "self = %@", article.articleID!),
-                            managedObjectContext: moc).first
-                        expect(coreDataArticle).toNot(beNil())
-                        if let cda = coreDataArticle as? CoreDataArticle {
-                            expect(cda.read).to(beFalsy())
-                        }
                     }
 
                     it("should inform any subscribers") {
@@ -544,7 +389,7 @@ class FeedRepositorySpec: QuickSpec {
                     didCallCallback = false
                     callbackError = nil
 
-                    feed = Feed(feed: feed1)
+                    feed = feed1
                 }
 
                 context("when the network is not reachable") {
@@ -563,8 +408,8 @@ class FeedRepositorySpec: QuickSpec {
                         expect(dataSubscriber.didStartUpdatingFeeds).to(beFalsy())
                     }
 
-                    it("should not make a network request") {
-                        expect(urlSession.lastURL).to(beNil())
+                    it("should not make an update request") {
+                        expect(updateService.updatedFeed).to(beNil())
                     }
 
                     it("should call the completion handler without an error and with the original feed") {
@@ -582,7 +427,6 @@ class FeedRepositorySpec: QuickSpec {
                             didCallCallback = true
                             callbackError = error
                         }
-                        mainQueue.runNextOperation()
                     }
 
                     it("should inform any subscribers") {
@@ -590,35 +434,28 @@ class FeedRepositorySpec: QuickSpec {
                     }
 
                     it("should make a network request for the feed if it has a remaniing wait of 0") {
-                        expect(urlSession.lastURL).to(equal(feed.url))
+                        expect(updateService.updatedFeed) == feed
                     }
 
                     context("when the network request succeeds") {
                         beforeEach {
-                            let urlResponse = NSHTTPURLResponse(URL: NSURL(string: "https://example.com/feed1.feed")!, statusCode: 200, HTTPVersion: nil, headerFields: [:])
-                            let bundle = NSBundle(forClass: self.classForCoder)
-                            let data = NSData(contentsOfFile: bundle.pathForResource("feed2", ofType: "rss")!)
-                            backgroundQueue.runSynchronously = false
-                            urlSession.lastCompletionHandler(data, urlResponse, nil)
+                            expect(updateService.updatedFeedCallback).toNot(beNil())
+                            updateService.updatedFeedCallback?(feed)
                             mainQueue.runNextOperation()
                         }
 
                         it("should inform subscribers that we downloaded a thing and are about to process it") {
                             expect(dataSubscriber.updateFeedsProgressFinished).to(equal(1))
-                            expect(dataSubscriber.updateFeedsProgressTotal).to(equal(2))
+                            expect(dataSubscriber.updateFeedsProgressTotal).to(equal(1))
                         }
 
                         describe("when the last operation completes") {
                             beforeEach {
-                                backgroundQueue.runNextOperation()
-                                mainQueue.runNextOperation()
                                 mainQueue.runNextOperation()
                                 mainQueue.runNextOperation()
                             }
 
                             it("should inform subscribers that we updated our datastore for that feed") {
-                                expect(dataSubscriber.updateFeedsProgressFinished).to(equal(2))
-                                expect(dataSubscriber.updateFeedsProgressTotal).to(equal(2))
                                 expect(dataSubscriber.updatedFeeds).to(beTruthy())
                             }
 
@@ -626,99 +463,6 @@ class FeedRepositorySpec: QuickSpec {
                                 expect(didCallCallback).to(beTruthy())
                                 expect(callbackError).to(beNil())
                             }
-
-                            it("should update the feed data now") {
-                                let updatedFeed = dataUtility.synchronousFeedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
-                                    managedObjectContext: moc).first
-                                expect(updatedFeed?.title).to(equal("objc.io"))
-                            }
-
-                            #if os(iOS)
-                                if #available(iOS 9.0, *) {
-                                    it("should, on ios 9, add spotlight entries for each added article") {
-                                        expect(searchIndex?.lastItemsAdded.count).to(equal(11))
-                                    }
-                                }
-                            #endif
-
-                            context("when the feed contains an image") { // which it does
-                                it("should try to download it") {
-                                    expect(urlSession.lastURL?.absoluteString).to(equal("http://example.org/icon.png"))
-                                }
-
-                                context("if that succeeds") {
-                                    var expectedImageData: NSData! = nil
-                                    beforeEach {
-                                        searchIndex?.lastItemsAdded = []
-                                        let bundle = NSBundle(forClass: self.classForCoder)
-                                        expectedImageData = NSData(contentsOfURL: bundle.URLForResource("test", withExtension: "jpg")!)
-                                        urlSession.lastCompletionHandler(expectedImageData, nil, nil)
-                                    }
-
-                                    it("should set the feed's image to that image") {
-                                        let updatedFeed = dataUtility.synchronousFeedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
-                                            managedObjectContext: moc).first
-                                        expect(updatedFeed?.image).toNot(beNil())
-                                    }
-
-                                    #if os(iOS)
-                                        if #available(iOS 9.0, *) {
-                                            it("should, on ios 9, update all spotlight entries for this feed's articles to have this image") {
-                                                let items = searchIndex?.lastItemsAdded as? [CSSearchableItem]
-                                                expect(items).toNot(beNil())
-                                                if let searchItems = items {
-                                                    for searchItem in searchItems {
-                                                        expect(searchItem.attributeSet.thumbnailData).toNot(beNil())
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    #endif
-                                }
-                            }
-                        }
-                    }
-
-                    context("when the network call fails due to a network error") {
-                        beforeEach {
-                            mainQueue.runSynchronously = true
-                            let error = NSError(domain: "", code: 0, userInfo: [:])
-                            urlSession.lastCompletionHandler(nil, nil, error)
-                        }
-
-                        it("should call the completion handler to let the caller know of an error updating the feed") {
-                            let expectedError = NSError(domain: "", code: 0, userInfo: ["feedTitle": "a"])
-                            expect(callbackError).to(equal(expectedError))
-                        }
-                    }
-
-                    context("when the network call fails due to a client/server error") {
-                        beforeEach {
-                            mainQueue.runSynchronously = true
-                            let urlResponse = NSHTTPURLResponse(URL: NSURL(string: "https://example.com/rnews.feed")!, statusCode: 400, HTTPVersion: nil, headerFields: [:])
-                            urlSession.lastCompletionHandler(nil, urlResponse, nil)
-                        }
-
-                        it("should call the completion handler to let the caller know of an error updating the feeds") {
-                            expect(callbackError?.domain).to(equal("com.rachelbrindle.rssclient.server"))
-                            expect(callbackError?.code).to(equal(400))
-                        }
-
-                        it("should increment the remainingWait of the feed") {
-                            let updatedFeed = dataUtility.synchronousEntities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feed1.objectID),
-                                managedObjectContext: moc).first as? CoreDataFeed
-                            expect(updatedFeed?.remainingWait).to(equal(NSNumber(integer: 1)))
-                        }
-                    }
-
-                    context("when there is an unknown error (no data) - should not happen") {
-                        beforeEach {
-                            mainQueue.runSynchronously = true
-                            urlSession.lastCompletionHandler(nil, nil, nil)
-                        }
-
-                        it("should call the completion handler to let the caller know of an error updating the feeds") {
-                            expect(callbackError?.domain).to(equal("com.rachelbrindle.rssclient.unknown"))
                         }
                     }
                 }
@@ -735,10 +479,7 @@ class FeedRepositorySpec: QuickSpec {
 
                 context("when there are no feeds in the data store") {
                     beforeEach {
-                        moc.deleteObject(feed1)
-                        moc.deleteObject(feed2)
-                        moc.deleteObject(feed3)
-                        try! moc.save()
+                        dataService.feeds = []
                         subject.updateFeeds {feeds, errors in
                             didCallCallback = true
                             callbackErrors = errors
@@ -749,23 +490,13 @@ class FeedRepositorySpec: QuickSpec {
                         expect(dataSubscriber.didStartUpdatingFeeds).to(beFalsy())
                     }
 
-                    it("should immediately add an operation to the main queue") {
-                        expect(mainQueue.operationCount).to(equal(1))
+                    it("should call the callback with no errors") {
+                        expect(didCallCallback).to(beTruthy())
+                        expect(callbackErrors).to(beEmpty())
                     }
 
-                    describe("when that finishes") {
-                        beforeEach {
-                            mainQueue.runNextOperation()
-                        }
-
-                        it("should call the callback with no errors") {
-                            expect(didCallCallback).to(beTruthy())
-                            expect(callbackErrors).to(beEmpty())
-                        }
-
-                        it("should not inform any subscribers") {
-                            expect(dataSubscriber.updatedFeeds).to(beNil())
-                        }
+                    it("should not inform any subscribers") {
+                        expect(dataSubscriber.updatedFeeds).to(beNil())
                     }
                 }
 
@@ -775,12 +506,10 @@ class FeedRepositorySpec: QuickSpec {
 
                         didCallCallback = false
                         callbackErrors = []
-                        backgroundQueue.runSynchronously = true
                         subject.updateFeeds {feeds, errors in
                             didCallCallback = true
                             callbackErrors = errors
                         }
-                        mainQueue.runNextOperation()
                     }
 
                     it("should not inform any subscribers") {
@@ -788,13 +517,11 @@ class FeedRepositorySpec: QuickSpec {
                     }
 
                     it("should not make a network request for every feed in the data store w/ a url and a remaining wait of 0") {
-                        expect(urlSession.lastURL).to(beNil())
+                        expect(updateService.updatedFeed).to(beNil())
                     }
 
                     it("should not decrement the remainingWait of every feed that did have a remaining wait of > 0") {
-                        let updatedFeed = dataUtility.synchronousEntities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feed3.objectID),
-                            managedObjectContext: moc).first as? CoreDataFeed
-                        expect(updatedFeed?.remainingWait).to(equal(NSNumber(integer: 1)))
+                        expect(feed3.remainingWait) == 1
                     }
 
                     it("should inform subscribers that we finished updating") {
@@ -821,7 +548,6 @@ class FeedRepositorySpec: QuickSpec {
                             didCallCallback = true
                             callbackErrors = errors
                         }
-                        mainQueue.runNextOperation()
                     }
 
                     it("should inform any subscribers") {
@@ -829,21 +555,18 @@ class FeedRepositorySpec: QuickSpec {
                     }
 
                     it("should make a network request for every feed in the data store w/ a url and a remaining wait of 0") {
-                        expect(urlSession.lastURL?.absoluteString).to(equal("https://example.com/feed1.feed"))
+                        expect(updateService.updatedFeed) == feed1
                     }
 
                     it("should decrement the remainingWait of every feed that did have a remaining wait of > 0") {
-                        let updatedFeed = dataUtility.synchronousEntities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feed3.objectID),
-                            managedObjectContext: moc).first as? CoreDataFeed
-                        expect(updatedFeed?.remainingWait).to(equal(NSNumber(integer: 0)))
+                        expect(feed3.remainingWait) == 0
                     }
 
                     context("trying to update feeds while a request is still in progress") {
                         var didCallUpdateCallback = false
 
                         beforeEach {
-                            urlSession.lastURL = nil
-                            didCallUpdateCallback = false
+                            updateService.updatedFeed = nil
                             dataSubscriber.didStartUpdatingFeeds = false
 
                             subject.updateFeeds {feeds, errors in
@@ -855,21 +578,18 @@ class FeedRepositorySpec: QuickSpec {
                             expect(dataSubscriber.didStartUpdatingFeeds).to(beFalsy())
                         }
 
-                        it("should not make any network requests") {
-                            expect(urlSession.lastURL).to(beNil())
+                        it("should not make any update requests") {
+                            expect(updateService.updatedFeed).to(beNil())
                         }
 
                         it("should not immediately call the callback") {
                             expect(didCallUpdateCallback).to(beFalsy())
                         }
 
-                        context("when the original network call finishes") {
+                        context("when the original update request finishes") {
                             beforeEach {
-                                let urlResponse = NSHTTPURLResponse(URL: NSURL(string: "https://example.com/feed1.feed")!, statusCode: 200, HTTPVersion: nil, headerFields: [:])
-                                let bundle = NSBundle(forClass: self.classForCoder)
-                                let data = NSData(contentsOfFile: bundle.pathForResource("feed2", ofType: "rss")!)
                                 mainQueue.runSynchronously = true
-                                urlSession.lastCompletionHandler(data, urlResponse, nil)
+                                updateService.updatedFeedCallback?(feed1)
                             }
 
                             it("should call both completion handlers") {
@@ -880,138 +600,24 @@ class FeedRepositorySpec: QuickSpec {
                         }
                     }
 
-                    context("when the network request succeeds") {
+                    context("when the update request succeeds") {
                         beforeEach {
-                            let urlResponse = NSHTTPURLResponse(URL: NSURL(string: "https://example.com/feed1.feed")!, statusCode: 200, HTTPVersion: nil, headerFields: [:])
-                            let bundle = NSBundle(forClass: self.classForCoder)
-                            let data = NSData(contentsOfFile: bundle.pathForResource("feed2", ofType: "rss")!)
-                            backgroundQueue.runSynchronously = false
-                            urlSession.lastCompletionHandler(data, urlResponse, nil)
-                            mainQueue.runNextOperation()
+                            mainQueue.runSynchronously = true
+                            updateService.updatedFeedCallback?(feed1)
                         }
 
                         it("should inform subscribers that we downloaded a thing and are about to process it") {
                             expect(dataSubscriber.updateFeedsProgressFinished).to(equal(1))
-                            expect(dataSubscriber.updateFeedsProgressTotal).to(equal(2))
+                            expect(dataSubscriber.updateFeedsProgressTotal).to(equal(1))
                         }
 
-                        describe("when the last operation completes") {
-                            beforeEach {
-                                backgroundQueue.runNextOperation()
-                                mainQueue.runNextOperation()
-                                mainQueue.runNextOperation()
-                                mainQueue.runNextOperation()
-                            }
-
-                            it("should inform subscribers that we updated our datastore for that feed") {
-                                expect(dataSubscriber.updateFeedsProgressFinished).to(equal(2))
-                                expect(dataSubscriber.updateFeedsProgressTotal).to(equal(2))
-                            }
-
-                            it("should call the completion handler without an error") {
-                                expect(didCallCallback).to(beTruthy())
-                                expect(callbackErrors).to(equal([]))
-                            }
-
-                            it("should update the feed data now") {
-                                let updatedFeed = dataUtility.synchronousFeedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
-                                    managedObjectContext: moc).first
-                                expect(updatedFeed?.title).to(equal("objc.io"))
-                            }
-
-                            #if os(iOS)
-                                if #available(iOS 9.0, *) {
-                                    it("should, on ios 9, add spotlight entries for each added article") {
-                                        expect(searchIndex?.lastItemsAdded.count).to(equal(11))
-                                    }
-                                }
-                            #endif
-
-                            it("should inform any subscribers") {
-                                expect(dataSubscriber.updatedFeeds).toNot(beNil())
-                            }
-
-                            context("when the feed contains an image") { // which it does
-                                it("should try to download it") {
-                                    expect(urlSession.lastURL?.absoluteString).to(equal("http://example.org/icon.png"))
-                                }
-
-                                context("if that succeeds") {
-                                    var expectedImageData: NSData! = nil
-                                    beforeEach {
-                                        searchIndex?.lastItemsAdded = []
-                                        let bundle = NSBundle(forClass: self.classForCoder)
-                                        expectedImageData = NSData(contentsOfURL: bundle.URLForResource("test", withExtension: "jpg")!)
-                                        urlSession.lastCompletionHandler(expectedImageData, nil, nil)
-                                    }
-
-                                    it("should set the feed's image to that image") {
-                                        let updatedFeed = dataUtility.synchronousFeedsWithPredicate(NSPredicate(format: "url = %@", "https://example.com/feed1.feed"),
-                                            managedObjectContext: moc).first
-                                        expect(updatedFeed?.image).toNot(beNil())
-                                    }
-
-                                    #if os(iOS)
-                                        if #available(iOS 9.0, *) {
-                                            it("should, on ios 9, update all spotlight entries for this feed's articles to have this image") {
-                                                let items = searchIndex?.lastItemsAdded as? [CSSearchableItem]
-                                                expect(items).toNot(beNil())
-                                                if let searchItems = items {
-                                                    for searchItem in searchItems {
-                                                        expect(searchItem.attributeSet.thumbnailData).toNot(beNil())
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    #endif
-                                }
-                            }
-                        }
-                    }
-
-                    context("when the network call fails due to a network error") {
-                        let error = NSError(domain: "", code: 0, userInfo: [:])
-                        beforeEach {
-                            mainQueue.runSynchronously = true
-                            urlSession.lastCompletionHandler(nil, nil, error)
+                        it("should call the completion handler without an error") {
+                            expect(didCallCallback).to(beTruthy())
+                            expect(callbackErrors).to(equal([]))
                         }
 
-                        it("should call the completion handler to let the caller know of an error updating the feed") {
-                            let expectedError = NSError(domain: "", code: 0, userInfo: ["feedTitle": "a"])
-                            expect(callbackErrors).to(equal([expectedError]))
-                            expect(callbackErrors.first?.userInfo["feedTitle"] as? String).to(equal("a"))
-                        }
-                    }
-
-                    context("when the network call fails due to a client/server error") {
-                        beforeEach {
-                            mainQueue.runSynchronously = true
-                            let urlResponse = NSHTTPURLResponse(URL: NSURL(string: "https://example.com/rnews.feed")!, statusCode: 400, HTTPVersion: nil, headerFields: [:])
-                            urlSession.lastCompletionHandler(nil, urlResponse, nil)
-                        }
-
-                        it("should call the completion handler to let the caller know of an error updating the feeds") {
-                            expect(callbackErrors.first?.domain).to(equal("com.rachelbrindle.rssclient.server"))
-                            expect(callbackErrors.first?.code).to(equal(400))
-                            expect(callbackErrors.first?.userInfo["feedTitle"] as? String).to(equal("a"))
-                        }
-
-                        it("should increment the remainingWait of the feed") {
-                            let updatedFeed = dataUtility.synchronousEntities("Feed", matchingPredicate: NSPredicate(format: "self = %@", feed1.objectID),
-                                managedObjectContext: moc).first as? CoreDataFeed
-                            expect(updatedFeed?.remainingWait).to(equal(NSNumber(integer: 1)))
-                        }
-                    }
-
-                    context("when there is an unknown error (no data) - should not happen") {
-                        beforeEach {
-                            mainQueue.runSynchronously = true
-                            urlSession.lastCompletionHandler(nil, nil, nil)
-                        }
-
-                        it("should call the completion handler to let the caller know of an error updating the feeds") {
-                            expect(callbackErrors.first?.domain).to(equal("com.rachelbrindle.rssclient.unknown"))
-                            expect(callbackErrors.first?.userInfo["feedTitle"] as? String).to(equal("a"))
+                        it("should inform any subscribers") {
+                            expect(dataSubscriber.updatedFeeds).toNot(beNil())
                         }
                     }
                 }

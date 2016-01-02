@@ -4,14 +4,19 @@ import Muon
     import Cocoa
 #elseif os(iOS)
     import UIKit
+    import CoreSpotlight
+    import MobileCoreServices
 #endif
 
 /**
  Basic protocol describing the service that interacts with the network and database levels.
 
  Everything is asynchronous, though depending upon the underlying service, they may turn out to be asynchronous.
+ All callbacks must be done on the main queue.
 */
 protocol DataService: class {
+    var searchIndex: SearchIndex? { get }
+
     func createFeed(callback: (Feed) -> (Void))
     func createArticle(feed: Feed?, callback: (Article) -> (Void))
     func createEnclosure(article: Article?, callback: (Enclosure) -> (Void))
@@ -30,6 +35,10 @@ protocol DataService: class {
 }
 
 extension DataService {
+    func allFeeds(callback: [Feed] -> Void) {
+        self.feedsMatchingPredicate(NSPredicate(value: true), callback: callback)
+    }
+
     func updateFeed(feed: Feed, info: Muon.Feed, callback: (Void) -> (Void)) {
         let summary: String
         let data = info.description.dataUsingEncoding(NSUTF8StringEncoding,
@@ -50,20 +59,24 @@ extension DataService {
         operationQueue.maxConcurrentOperationCount = 1
 
         for item in info.articles {
-            let itemIsNew = feed.articlesArray.filter { article in
+            let article = feed.articlesArray.filter { article in
                 return item.title != article.title && item.link != article.link
-            }.isEmpty
-            if itemIsNew {
-                operationQueue.addOperationWithBlock {
-                    let semaphore = dispatch_semaphore_create(0)
+            }.first
+            operationQueue.addOperationWithBlock {
+                let semaphore = dispatch_semaphore_create(0)
+                if let article = article {
+                    self.updateArticle(article, item: item) {
+                        dispatch_semaphore_signal(semaphore)
+                    }
+                } else {
                     self.createArticle(feed) { article in
                         feed.addArticle(article)
                         self.updateArticle(article, item: item) {
                             dispatch_semaphore_signal(semaphore)
                         }
                     }
-                    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
                 }
+                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
             }
         }
 
@@ -90,7 +103,38 @@ extension DataService {
 
         article.author = author
 
-        self.saveArticle(article, callback: callback)
+        self.saveArticle(article) {
+            callback()
+        }
+    }
+
+    func updateSearchIndexForArticle(article: Article) {
+        #if os(iOS)
+            if #available(iOS 9.0, *) {
+                let identifier = article.identifier
+
+                let attributes = CSSearchableItemAttributeSet(itemContentType: kUTTypeHTML as String)
+                attributes.title = article.title
+                let characterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
+                let trimmedSummary = article.summary.stringByTrimmingCharactersInSet(characterSet)
+                attributes.contentDescription = trimmedSummary
+                let feedTitleWords = article.feed?.title.componentsSeparatedByCharactersInSet(characterSet)
+                attributes.keywords = ["article"] + (feedTitleWords ?? [])
+                attributes.URL = article.link
+                attributes.timestamp = article.updatedAt ?? article.published
+                attributes.authorNames = [article.author]
+
+                if let image = article.feed?.image, let data = UIImagePNGRepresentation(image) {
+                    attributes.thumbnailData = data
+                }
+
+                let item = CSSearchableItem(uniqueIdentifier: identifier,
+                    domainIdentifier: nil,
+                    attributeSet: attributes)
+                item.expirationDate = NSDate.distantFuture()
+                self.searchIndex?.addItemsToIndex([item]) {_ in }
+            }
+        #endif
     }
 
     func upsertEnclosureForArticle(article: Article, fromItem item: Muon.Enclosure, callback: (Enclosure) -> (Void)) {

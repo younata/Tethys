@@ -75,6 +75,9 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             let item = Muon.Article(title: "a title", link: NSURL(string: "https://example.com"), description: "description", content: "content", guid: "guid", published: NSDate(timeIntervalSince1970: 10), updated: NSDate(timeIntervalSince1970: 15), authors: [author], enclosures: [])
 
             let updateExpectation = spec.expectationWithDescription("Update Article")
+            if let searchIndex = dataService.searchIndex as? FakeSearchIndex {
+                searchIndex.lastItemsAdded = []
+            }
             dataService.updateArticle(article, item: item) {
                 expect(article.title) == "a title"
                 expect(article.link) == NSURL(string: "https://example.com")
@@ -83,6 +86,13 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
                 expect(article.summary) == "description"
                 expect(article.content) == "content"
                 expect(article.author) == "Rachel Brindle <rachel@example.com>"
+                #if os(iOS)
+                    if #available(iOS 9.0, *) {
+                        if let searchIndex = dataService.searchIndex as? FakeSearchIndex {
+                            expect(searchIndex.lastItemsAdded.count) == 1
+                        }
+                    }
+                #endif
                 updateExpectation.fulfill()
             }
             spec.waitForExpectationsWithTimeout(1, handler: nil)

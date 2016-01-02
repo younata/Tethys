@@ -6,8 +6,6 @@ import CoreData
     import Reachability
 #endif
 
-internal let kBackgroundManagedObjectContext = "kBackgroundManagedObjectContext"
-
 public let kMainQueue = "kMainQueue"
 public let kBackgroundQueue = "kBackgroundQueue"
 
@@ -17,7 +15,14 @@ public class KitModule: NSObject, Ra.InjectorModule {
         let mainQueue = NSOperationQueue.mainQueue()
         injector.bind(kMainQueue, toInstance: mainQueue)
 
-        injector.bind(NSURLSession.self, toInstance: NSURLSession.sharedSession())
+        let urlSessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier(
+            "com.rachelbrindle.rnews"
+        )
+        urlSessionConfiguration.discretionary = true
+        let urlSession = NSURLSession(configuration: urlSessionConfiguration,
+            delegate: URLSessionDelegate(),
+            delegateQueue: NSOperationQueue())
+        injector.bind(NSURLSession.self, toInstance: urlSession)
 
         var searchIndex: SearchIndex? = nil
 
@@ -37,16 +42,19 @@ public class KitModule: NSObject, Ra.InjectorModule {
         injector.bind(kBackgroundQueue, toInstance: backgroundQueue)
 
         let objectContext = ManagedObjectContext()
-        let dataService = CoreDataService(managedObjectContext: objectContext, mainQueue: mainQueue)
+        let dataService = CoreDataService(
+            managedObjectContext: objectContext,
+            mainQueue: mainQueue,
+            searchIndex: searchIndex
+        )
         injector.bind(DataService.self, toInstance: dataService)
 
-        let dataRepository = DataRepository(objectContext: objectContext,
-            mainQueue: mainQueue,
+        let dataRepository = DataRepository(mainQueue: mainQueue,
             backgroundQueue: backgroundQueue,
-            urlSession: NSURLSession.sharedSession(),
-            searchIndex: searchIndex,
             reachable: reachable,
-            dataUtility: DataUtility())
+            dataService: dataService,
+            updateService: UpdateService(dataService: dataService, urlSession: urlSession)
+        )
 
         injector.bind(DataRetriever.self, toInstance: dataRepository)
         injector.bind(DataWriter.self, toInstance: dataRepository)

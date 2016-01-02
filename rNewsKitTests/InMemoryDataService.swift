@@ -1,6 +1,9 @@
 @testable import rNewsKit
 
 class InMemoryDataService: DataService {
+
+    let searchIndex: SearchIndex? = FakeSearchIndex()
+
     var feeds = [Feed]()
     var articles = [Article]()
     var enclosures = [Enclosure]()

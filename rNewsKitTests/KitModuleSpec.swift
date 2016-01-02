@@ -22,10 +22,6 @@ class KitModuleSpec: QuickSpec {
             expect(injector.create(kBackgroundQueue) as? NSObject).to(beIdenticalTo(injector.create(kBackgroundQueue) as? NSObject))
         }
 
-        it("should bind the shared URLSession to NSURLSession") {
-            expect(injector.create(NSURLSession)).to(beIdenticalTo(NSURLSession.sharedSession()))
-        }
-
         #if os(iOS)
             if #available(iOS 9.0, *) {
                 it("should, on iOS 9, bind a searchIndex") {
@@ -36,6 +32,15 @@ class KitModuleSpec: QuickSpec {
 
         it("should bind the DataService to a CoreDataService") {
             expect(injector.create(DataService) is CoreDataService) == true
+        }
+
+        it("should bind a URLSession to a background URL Session with a URLSessionDelegate") {
+            let urlSession = injector.create(NSURLSession)
+            expect(urlSession).toNot(beNil())
+
+            expect(urlSession?.delegate is URLSessionDelegate) == true
+            expect(urlSession?.configuration.identifier) == "com.rachelbrindle.rnews"
+            expect(urlSession?.configuration.discretionary) == true
         }
 
         it("should bind a DataRetriever") {

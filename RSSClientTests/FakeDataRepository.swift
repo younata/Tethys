@@ -57,8 +57,4 @@ class FakeDataRepository : DataRepository {
         didUpdateFeeds = true
         updateFeedsCompletion = callback
     }
-
-    override func synchronousNewFeed() -> Feed {
-        return Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-    }
 }

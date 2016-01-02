@@ -91,7 +91,6 @@ class UpdateServiceSpec: QuickSpec {
                         }
 
                         context("when the image download completes") {
-
                             beforeEach {
                                 guard let task = urlSession.lastDownloadTask else { fail(); return }
                                 task._response = NSURLResponse(URL: NSURL(string: "http://example.org/icon.png")!, MIMEType: "image/jpg", expectedContentLength: 0, textEncodingName: nil)

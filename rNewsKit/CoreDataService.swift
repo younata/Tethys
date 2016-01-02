@@ -5,9 +5,12 @@ class CoreDataService: DataService {
     private let managedObjectContext: NSManagedObjectContext
     private let mainQueue: NSOperationQueue
 
-    init(managedObjectContext: NSManagedObjectContext, mainQueue: NSOperationQueue) {
+    let searchIndex: SearchIndex?
+
+    init(managedObjectContext: NSManagedObjectContext, mainQueue: NSOperationQueue, searchIndex: SearchIndex?) {
         self.managedObjectContext = managedObjectContext
         self.mainQueue = mainQueue
+        self.searchIndex = searchIndex
     }
 
     // Mark: - Create
@@ -139,6 +142,7 @@ class CoreDataService: DataService {
     // Mark: - Delete
 
     func deleteFeed(feed: Feed, callback: (Void) -> (Void)) {
+        let articleIdentifiers = feed.articlesArray.map { $0.identifier }
         self.managedObjectContext.performBlock {
             if let cdfeed = self.coreDataFeedForFeed(feed) {
                 for article in cdfeed.articles {
@@ -151,6 +155,12 @@ class CoreDataService: DataService {
                 let _ = try? self.managedObjectContext.save()
             }
             self.mainQueue.addOperationWithBlock(callback)
+
+            #if os(iOS)
+                if #available(iOS 9, *) {
+                    self.searchIndex?.deleteIdentifierFromIndex(articleIdentifiers) {_ in }
+                }
+            #endif
         }
     }
 
@@ -162,6 +172,12 @@ class CoreDataService: DataService {
                 }
                 self.managedObjectContext.deleteObject(cdarticle)
                 let _ = try? self.managedObjectContext.save()
+
+                #if os(iOS)
+                    if #available(iOS 9, *) {
+                        self.searchIndex?.deleteIdentifierFromIndex([article.identifier]) {_ in }
+                    }
+                #endif
             }
             self.mainQueue.addOperationWithBlock(callback)
         }
@@ -263,6 +279,8 @@ class CoreDataService: DataService {
             }
 
             let _ = try? self.managedObjectContext.save()
+
+            self.updateSearchIndexForArticle(article)
         }
     }
 

@@ -3,6 +3,10 @@ import Nimble
 import CoreData
 import Muon
 @testable import rNewsKit
+#if os(iOS)
+    import CoreSpotlight
+    import MobileCoreServices
+#endif
 
 private func coreDataEntities(entity: String,
     matchingPredicate predicate: NSPredicate,
@@ -26,13 +30,15 @@ class CoreDataServiceSpec: QuickSpec {
         var objectContext = managedObjectContext()
         var mainQueue = FakeOperationQueue()
         mainQueue.runSynchronously = true
-        var subject = CoreDataService(managedObjectContext: objectContext, mainQueue: mainQueue)
+        var searchIndex = FakeSearchIndex()
+        var subject = CoreDataService(managedObjectContext: objectContext, mainQueue: mainQueue, searchIndex: searchIndex)
 
         beforeEach {
             objectContext = managedObjectContext()
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
-            subject = CoreDataService(managedObjectContext: objectContext, mainQueue: mainQueue)
+            searchIndex = FakeSearchIndex()
+            subject = CoreDataService(managedObjectContext: objectContext, mainQueue: mainQueue, searchIndex: searchIndex)
         }
 
         describe("create operations") {
@@ -116,6 +122,7 @@ class CoreDataServiceSpec: QuickSpec {
                     let cdarticle3 = CoreDataArticle(entity: articleDescription, insertIntoManagedObjectContext: objectContext)
 
                     cdarticle1.title = "article1"
+                    cdarticle1.link = "https://example.com/article1"
                     cdarticle1.published = NSDate(timeIntervalSince1970: 15)
                     cdarticle2.title = "article2"
                     cdarticle2.published = NSDate(timeIntervalSince1970: 10)
@@ -231,6 +238,39 @@ class CoreDataServiceSpec: QuickSpec {
                     expect(article.summary) == "hello world"
                 }
 
+                #if os(iOS)
+                    if #available(iOS 9.0, *) {
+                        it("should, on iOS 9, update the search index when an article is updated") {
+                            let expectation = self.expectationWithDescription("update article")
+
+                            article1.summary = "Hello world!"
+
+                            subject.saveArticle(article1) {
+                                expectation.fulfill()
+                            }
+
+                            self.waitForExpectationsWithTimeout(1, handler: nil)
+
+                            expect(searchIndex.lastItemsAdded.count).to(equal(1))
+                            if let item = searchIndex.lastItemsAdded.first as? CSSearchableItem {
+                                let identifier = article1.identifier
+                                expect(item.uniqueIdentifier).to(equal(identifier))
+                                expect(item.domainIdentifier).to(beNil())
+                                expect(item.expirationDate).to(equal(NSDate.distantFuture()))
+                                let attributes = item.attributeSet
+                                expect(attributes.contentType).to(equal(kUTTypeHTML as String))
+                                expect(attributes.title).to(equal(article1.title))
+                                let keywords = ["article"] + article1.feed!.title.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                                expect(attributes.keywords).to(equal(keywords))
+                                expect(attributes.URL).to(equal(article1.link))
+                                expect(attributes.timestamp).to(equal(article1.updatedAt ?? article1.published))
+                                expect(attributes.authorNames).to(equal([article1.author]))
+                                expect(attributes.contentDescription).to(equal("Hello world!"))
+                            }
+                        }
+                    }
+                #endif
+
                 it("updates an enclosure") {
                     let expectation = self.expectationWithDescription("update enclosure")
 
@@ -252,11 +292,19 @@ class CoreDataServiceSpec: QuickSpec {
                 it("deletes feeds") {
                     let expectation = self.expectationWithDescription("delete feed")
 
+                    let articleIdentifiers = feed1.articlesArray.map { $0.identifier }
+
                     subject.deleteFeed(feed1) {
                         expectation.fulfill()
                     }
 
                     self.waitForExpectationsWithTimeout(1, handler: nil)
+
+                    #if os(iOS)
+                        if #available(iOS 9, *) {
+                            expect(searchIndex.lastItemsDeleted) == articleIdentifiers
+                        }
+                    #endif
 
                     let feeds = coreDataEntities("Feed", matchingPredicate: NSPredicate(format: "SELF == %@", feed1.feedID!), managedObjectContext: objectContext)
                     expect(feeds).to(beEmpty())
@@ -272,6 +320,13 @@ class CoreDataServiceSpec: QuickSpec {
                     self.waitForExpectationsWithTimeout(1, handler: nil)
 
                     let articles = coreDataEntities("Article", matchingPredicate: NSPredicate(format: "SELF == %@", article1.articleID!), managedObjectContext: objectContext)
+
+                    #if os(iOS)
+                        if #available(iOS 9, *) {
+                            expect(searchIndex.lastItemsDeleted).to(contain(article1.identifier))
+                        }
+                    #endif
+
                     expect(articles).to(beEmpty())
                 }
 

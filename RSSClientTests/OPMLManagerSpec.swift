@@ -13,6 +13,8 @@ class OPMLManagerSpec: QuickSpec {
         var importQueue: FakeOperationQueue! = nil
         var mainQueue: FakeOperationQueue! = nil
 
+        var dataService: InMemoryDataService! = nil
+
         beforeEach {
             importQueue = FakeOperationQueue()
             importQueue.runSynchronously = true
@@ -20,18 +22,21 @@ class OPMLManagerSpec: QuickSpec {
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
 
-            dataRepository = FakeDataRepository(objectContext: managedObjectContext(),
+            dataService = InMemoryDataService()
+
+            dataRepository = FakeDataRepository(
                 mainQueue: mainQueue,
                 backgroundQueue: importQueue,
-                urlSession: FakeURLSession(),
-                searchIndex: nil,
                 reachable: nil,
-                dataUtility: SynchronousDataUtility())
+                dataService: dataService,
+                updateService: FakeUpdateService()
+            )
 
             let injector = Injector()
             injector.bind(kMainQueue, toInstance: mainQueue)
             injector.bind(kBackgroundQueue, toInstance: importQueue)
             injector.bind(DataRepository.self, toInstance: dataRepository)
+            injector.bind(DataService.self, toInstance: dataService)
 
             let previouslyImportedFeed = Feed(title: "imported", url: NSURL(string: "http://example.com/previouslyImportedFeed"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 

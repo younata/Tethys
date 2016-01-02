@@ -37,7 +37,11 @@ class URLSessionDelegate: NSObject, NSURLSessionDownloadDelegate {
     }
 }
 
-class UpdateService: NetworkClientDelegate {
+protocol UpdateServiceType: class {
+    func updateFeed(feed: Feed, callback: Feed -> Void)
+}
+
+class UpdateService: UpdateServiceType, NetworkClientDelegate {
     private let dataService: DataService
     private let urlSession: NSURLSession
 

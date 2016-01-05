@@ -15,17 +15,9 @@ public class KitModule: NSObject, Ra.InjectorModule {
         let mainQueue = NSOperationQueue.mainQueue()
         injector.bind(kMainQueue, toInstance: mainQueue)
 
-        let urlSessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier(
-            "com.rachelbrindle.rnews"
-        )
-        urlSessionConfiguration.discretionary = true
-        let urlSession = NSURLSession(configuration: urlSessionConfiguration,
-            delegate: URLSessionDelegate(),
-            delegateQueue: NSOperationQueue())
-        injector.bind(NSURLSession.self, toInstance: urlSession)
+        injector.bind(NSURLSession.self, toInstance: NSURLSession.sharedSession())
 
         var searchIndex: SearchIndex? = nil
-
         var reachable: Reachable? = nil
 
         #if os(iOS)
@@ -49,11 +41,27 @@ public class KitModule: NSObject, Ra.InjectorModule {
         )
         injector.bind(DataService.self, toInstance: dataService)
 
+        let urlSessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier(
+            "com.rachelbrindle.rnews"
+        )
+        urlSessionConfiguration.discretionary = true
+        let urlSessionDelegate = URLSessionDelegate()
+
+        let urlSession = NSURLSession(configuration: urlSessionConfiguration,
+            delegate: urlSessionDelegate,
+            delegateQueue: NSOperationQueue())
+
+        let updateService = UpdateService(
+            dataService: dataService,
+            urlSession: urlSession,
+            urlSessionDelegate: urlSessionDelegate
+        )
+
         let dataRepository = DataRepository(mainQueue: mainQueue,
             backgroundQueue: backgroundQueue,
             reachable: reachable,
             dataService: dataService,
-            updateService: UpdateService(dataService: dataService, urlSession: urlSession)
+            updateService: updateService
         )
 
         injector.bind(DataRetriever.self, toInstance: dataRepository)

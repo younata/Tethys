@@ -4,7 +4,7 @@ import Ra
 import rNews
 import TOBrowserActivityKit
 import SafariServices
-import rNewsKit
+@testable import rNewsKit
 
 class ArticleViewControllerSpec: QuickSpec {
     override func spec() {

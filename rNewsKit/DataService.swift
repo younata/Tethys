@@ -40,20 +40,8 @@ extension DataService {
     }
 
     func updateFeed(feed: Feed, info: Muon.Feed, callback: (Void) -> (Void)) {
-        let summary: String
-        let data = info.description.dataUsingEncoding(NSUTF8StringEncoding,
-            allowLossyConversion: false)!
-        let options = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
-        do {
-            let aString = try NSAttributedString(data: data, options: options,
-                documentAttributes: nil)
-            summary = aString.string
-        } catch _ {
-            summary = info.description
-        }
-
         feed.title = info.title
-        feed.summary = summary
+        feed.summary = info.description
 
         let operationQueue = NSOperationQueue()
         operationQueue.maxConcurrentOperationCount = 1

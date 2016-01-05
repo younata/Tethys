@@ -34,13 +34,11 @@ class KitModuleSpec: QuickSpec {
             expect(injector.create(DataService) is CoreDataService) == true
         }
 
-        it("should bind a URLSession to a background URL Session with a URLSessionDelegate") {
+        it("should bind a URLSession to the shared session") {
             let urlSession = injector.create(NSURLSession)
             expect(urlSession).toNot(beNil())
 
-            expect(urlSession?.delegate is URLSessionDelegate) == true
-            expect(urlSession?.configuration.identifier) == "com.rachelbrindle.rnews"
-            expect(urlSession?.configuration.discretionary) == true
+            expect(urlSession) === NSURLSession.sharedSession()
         }
 
         it("should bind a DataRetriever") {

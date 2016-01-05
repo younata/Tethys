@@ -15,11 +15,7 @@ class UpdateServiceSpec: QuickSpec {
             urlSession = FakeURLSession()
             urlSessionDelegate = URLSessionDelegate()
 
-            subject = UpdateService(dataService: dataService, urlSession: urlSession)
-
-            // we make the assumption that the urlSession's delegate is an instance of URLSessionDelegate.
-
-            urlSessionDelegate.delegate = subject
+            subject = UpdateService(dataService: dataService, urlSession: urlSession, urlSessionDelegate: urlSessionDelegate)
         }
 
         describe("updating a feed") {

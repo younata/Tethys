@@ -48,9 +48,10 @@ class UpdateService: UpdateServiceType, NetworkClientDelegate {
     private var feedsInProgress: [NSURL: (feed: Feed, callback: (Feed -> Void))] = [:]
     private var imagesInProgress: [NSURL: (feed: Feed, callback: (Feed -> Void))] = [:]
 
-    init(dataService: DataService, urlSession: NSURLSession) {
+    init(dataService: DataService, urlSession: NSURLSession, urlSessionDelegate: URLSessionDelegate) {
         self.dataService = dataService
         self.urlSession = urlSession
+        urlSessionDelegate.delegate = self
     }
 
     func updateFeed(feed: Feed, callback: Feed -> Void) {

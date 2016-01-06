@@ -36,7 +36,7 @@
 		8935F5D01B462702000FFD5D /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F271AE0C942004C3CB4 /* Ra.framework */; };
 		8935F5D21B46273D000FFD5D /* Nimble.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8935F5D31B46273D000FFD5D /* Quick.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2F1AE0C9B4004C3CB4 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		8935F5D51B4628B3000FFD5D /* OPMLManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A341811B150DA90000C60B /* OPMLManagerSpec.swift */; };
+		8935F5D51B4628B3000FFD5D /* OPMLServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A341811B150DA90000C60B /* OPMLServiceSpec.swift */; };
 		8935F5D71B4628B3000FFD5D /* DataRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48CC1B42605A0097045A /* DataRepositorySpec.swift */; };
 		8935F5D91B4628B3000FFD5D /* FeedSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4E41B05AB2800EDD6D0 /* FeedSpec.swift */; };
 		8935F5DA1B4628B3000FFD5D /* ArticleSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4E61B05AB3800EDD6D0 /* ArticleSpec.swift */; };
@@ -46,7 +46,7 @@
 		8935F5DE1B462AD2000FFD5D /* FakeOperationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */; };
 		8935F5DF1B462AD2000FFD5D /* FakeURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F517071B1C12A30005AB04 /* FakeURLSession.swift */; };
 		8935F5E01B462B7A000FFD5D /* FakeURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F517071B1C12A30005AB04 /* FakeURLSession.swift */; };
-		8935F5E11B462B8C000FFD5D /* OPMLManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C11B3A7CCC0097045A /* OPMLManagerMock.swift */; };
+		8935F5E11B462B8C000FFD5D /* FakeOPMLService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C11B3A7CCC0097045A /* FakeOPMLService.swift */; };
 		8935F5E21B462B8F000FFD5D /* FakeDataRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4355FF1A7ABA4F00A961B9 /* FakeDataRepository.swift */; };
 		8937F6B51B77AD780044A442 /* AppModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8937F6B41B77AD780044A442 /* AppModule.swift */; };
 		8937F6B71B77AE5F0044A442 /* AppModuleSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8937F6B61B77AE5F0044A442 /* AppModuleSpec.swift */; };
@@ -59,7 +59,7 @@
 		894304241B45089A000078DC /* rNewsKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 894304231B45089A000078DC /* rNewsKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8943042B1B45089A000078DC /* rNewsKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 894304211B45089A000078DC /* rNewsKit.framework */; };
 		894304361B45089B000078DC /* rNewsKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 894304211B45089A000078DC /* rNewsKit.framework */; };
-		894304411B450A00000078DC /* OPMLManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A3417E1B150D1B0000C60B /* OPMLManager.swift */; };
+		894304411B450A00000078DC /* OPMLService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A3417E1B150D1B0000C60B /* OPMLService.swift */; };
 		894304451B450A0A000078DC /* RSSClient.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307A19D730E9009924DA /* RSSClient.xcdatamodeld */; };
 		8943044A1B450A5E000078DC /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4DB1B0533B600EDD6D0 /* Feed.swift */; };
 		8943044B1B450A5E000078DC /* Article.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4DE1B0535EB00EDD6D0 /* Article.swift */; };
@@ -126,7 +126,7 @@
 		8989794E1B70808300218498 /* SearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C61B40D2AC0097045A /* SearchIndex.swift */; };
 		8989794F1B70808300218498 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82031B461A2B00648367 /* Helpers.swift */; };
 		898979501B70808300218498 /* KitModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82051B461A5500648367 /* KitModule.swift */; };
-		898979521B70808300218498 /* OPMLManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A3417E1B150D1B0000C60B /* OPMLManager.swift */; };
+		898979521B70808300218498 /* OPMLService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A3417E1B150D1B0000C60B /* OPMLService.swift */; };
 		898979531B70808300218498 /* DataRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48CA1B425F8C0097045A /* DataRepository.swift */; };
 		898979551B70808300218498 /* CoreDataArticle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8943044F1B450BFB000078DC /* CoreDataArticle.swift */; };
 		898979561B70808300218498 /* CoreDataFeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894304511B450C19000078DC /* CoreDataFeed.swift */; };
@@ -147,7 +147,7 @@
 		898979A31B708E7800218498 /* SpecHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4355FD1A7AB7D900A961B9 /* SpecHelper.swift */; };
 		898979A41B708E7800218498 /* FakeSearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C81B40FBE00097045A /* FakeSearchIndex.swift */; };
 		898979A51B708E7800218498 /* FakeDataRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4355FF1A7ABA4F00A961B9 /* FakeDataRepository.swift */; };
-		898979A71B708E7800218498 /* OPMLManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A341811B150DA90000C60B /* OPMLManagerSpec.swift */; };
+		898979A71B708E7800218498 /* OPMLServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A341811B150DA90000C60B /* OPMLServiceSpec.swift */; };
 		898979A81B708E7800218498 /* DataRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48CC1B42605A0097045A /* DataRepositorySpec.swift */; };
 		898979AA1B708E7800218498 /* FeedSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4E41B05AB2800EDD6D0 /* FeedSpec.swift */; };
 		898979AB1B708E7800218498 /* ArticleSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4E61B05AB3800EDD6D0 /* ArticleSpec.swift */; };
@@ -156,7 +156,7 @@
 		898979B01B708E8F00218498 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898979AE1B708E8F00218498 /* Quick.framework */; };
 		898979B41B708EB100218498 /* Nimble.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898979AD1B708E8F00218498 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		898979B51B708EB100218498 /* Quick.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898979AE1B708E8F00218498 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		898979B61B708F0000218498 /* OPMLManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C11B3A7CCC0097045A /* OPMLManagerMock.swift */; };
+		898979B61B708F0000218498 /* FakeOPMLService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C11B3A7CCC0097045A /* FakeOPMLService.swift */; };
 		898979B71B708F0700218498 /* FakeOperationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */; };
 		898979B81B708F0C00218498 /* FakeURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F517071B1C12A30005AB04 /* FakeURLSession.swift */; };
 		898979B91B708F8F00218498 /* Muon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8989799E1B70882D00218498 /* Muon.framework */; };
@@ -177,7 +177,7 @@
 		898979DC1B71DFD500218498 /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8989795D1B70845A00218498 /* Ra.framework */; };
 		898979DD1B71DFDF00218498 /* Ra.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8989795D1B70845A00218498 /* Ra.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		898979DE1B72578A00218498 /* FakeDataReadWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EA6C351B4B2D8400456892 /* FakeDataReadWriter.swift */; };
-		898979DF1B72579C00218498 /* OPMLManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C11B3A7CCC0097045A /* OPMLManagerMock.swift */; };
+		898979DF1B72579C00218498 /* FakeOPMLService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C11B3A7CCC0097045A /* FakeOPMLService.swift */; };
 		898979E11B72A63100218498 /* FeedsViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898979E01B72A63100218498 /* FeedsViewControllerSpec.swift */; };
 		898979E31B72FF9A00218498 /* AppDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898979E21B72FF9A00218498 /* AppDelegateSpec.swift */; };
 		898C48C51B3D98F60097045A /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 898C48C41B3D98F60097045A /* test.jpg */; };
@@ -269,7 +269,7 @@
 		89E67D641C33CB8000819646 /* InMemoryDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E67D631C33CB8000819646 /* InMemoryDataService.swift */; };
 		89E67D651C33CB8000819646 /* InMemoryDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E67D631C33CB8000819646 /* InMemoryDataService.swift */; };
 		89EA6C361B4B2D8400456892 /* FakeDataReadWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EA6C351B4B2D8400456892 /* FakeDataReadWriter.swift */; };
-		89EA6C371B4B308F00456892 /* OPMLManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C11B3A7CCC0097045A /* OPMLManagerMock.swift */; };
+		89EA6C371B4B308F00456892 /* FakeOPMLService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C11B3A7CCC0097045A /* FakeOPMLService.swift */; };
 		89EF4FD81A96852D0052A82F /* test.opml in Resources */ = {isa = PBXBuildFile; fileRef = 89EF4FD71A96852D0052A82F /* test.opml */; };
 		89F516571B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89F516561B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m */; };
 		89F517021B1C070C0005AB04 /* FeedViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F517011B1C070C0005AB04 /* FeedViewControllerSpec.swift */; };
@@ -539,7 +539,7 @@
 		898979D41B71CE3A00218498 /* MainControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainControllerSpec.swift; sourceTree = "<group>"; };
 		898979E01B72A63100218498 /* FeedsViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsViewControllerSpec.swift; sourceTree = "<group>"; };
 		898979E21B72FF9A00218498 /* AppDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateSpec.swift; sourceTree = "<group>"; };
-		898C48C11B3A7CCC0097045A /* OPMLManagerMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLManagerMock.swift; sourceTree = "<group>"; };
+		898C48C11B3A7CCC0097045A /* FakeOPMLService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeOPMLService.swift; sourceTree = "<group>"; };
 		898C48C41B3D98F60097045A /* test.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = test.jpg; sourceTree = "<group>"; };
 		898C48C61B40D2AC0097045A /* SearchIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SearchIndex.swift; path = ../RSSClient/SearchIndex.swift; sourceTree = "<group>"; };
 		898C48C81B40FBE00097045A /* FakeSearchIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FakeSearchIndex.swift; path = ../RSSClientTests/FakeSearchIndex.swift; sourceTree = "<group>"; };
@@ -569,8 +569,8 @@
 		8999CC111C2E83BC00B81F5F /* CoreDataServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataServiceSpec.swift; sourceTree = "<group>"; };
 		8999CC131C2E83D400B81F5F /* CoreDataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataService.swift; sourceTree = "<group>"; };
 		899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindFeedViewControllerSpec.swift; sourceTree = "<group>"; };
-		89A3417E1B150D1B0000C60B /* OPMLManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OPMLManager.swift; path = ../RSSClient/OPMLManager.swift; sourceTree = "<group>"; };
-		89A341811B150DA90000C60B /* OPMLManagerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OPMLManagerSpec.swift; path = ../RSSClientTests/OPMLManagerSpec.swift; sourceTree = "<group>"; };
+		89A3417E1B150D1B0000C60B /* OPMLService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OPMLService.swift; path = ../RSSClient/OPMLService.swift; sourceTree = "<group>"; };
+		89A341811B150DA90000C60B /* OPMLServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OPMLServiceSpec.swift; path = ../RSSClientTests/OPMLServiceSpec.swift; sourceTree = "<group>"; };
 		89AA8A8C1B536B90000E2C88 /* SyntaxKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SyntaxKit.framework; path = Carthage/Build/iOS/SyntaxKit.framework; sourceTree = SOURCE_ROOT; };
 		89AA8A901B536BEB000E2C88 /* JavaScript.tmLanguage */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = JavaScript.tmLanguage; sourceTree = "<group>"; };
 		89AA8A921B537048000E2C88 /* mac_classic.tmTheme */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = mac_classic.tmTheme; sourceTree = "<group>"; };
@@ -796,10 +796,8 @@
 				898C48C61B40D2AC0097045A /* SearchIndex.swift */,
 				89CC82031B461A2B00648367 /* Helpers.swift */,
 				89CC82051B461A5500648367 /* KitModule.swift */,
-				89A3417E1B150D1B0000C60B /* OPMLManager.swift */,
 				898C48CA1B425F8C0097045A /* DataRepository.swift */,
-				898911A11C30F0BE009A44E9 /* UpdateService.swift */,
-				8999CC0C1C2E710F00B81F5F /* DataService.swift */,
+				89D256731C3CC22A004066B9 /* Services */,
 				8999CC101C2E838400B81F5F /* Core Data */,
 				89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */,
 				8978D4DB1B0533B600EDD6D0 /* Feed.swift */,
@@ -812,22 +810,14 @@
 		894304301B45089A000078DC /* rNewsKitTests */ = {
 			isa = PBXGroup;
 			children = (
-				AE4355FD1A7AB7D900A961B9 /* SpecHelper.swift */,
-				898C48C81B40FBE00097045A /* FakeSearchIndex.swift */,
-				AE4355FF1A7ABA4F00A961B9 /* FakeDataRepository.swift */,
-				89E67D631C33CB8000819646 /* InMemoryDataService.swift */,
-				8992D4321C3665B7004A5A35 /* FakeUpdateService.swift */,
+				89D256701C3CC01A004066B9 /* Helpers */,
+				89D2566F1C3CC011004066B9 /* Fakes */,
 				8937F6BF1B79D0800044A442 /* KitModuleSpec.swift */,
-				89A341811B150DA90000C60B /* OPMLManagerSpec.swift */,
+				89A341811B150DA90000C60B /* OPMLServiceSpec.swift */,
 				898C48CC1B42605A0097045A /* DataRepositorySpec.swift */,
-				8908949A1BFED7B8002848A4 /* FakeReachable.swift */,
-				898911C11C3267C6009A44E9 /* UpdateServiceSpec.swift */,
-				8999CC0E1C2E796100B81F5F /* DataServiceSpec.swift */,
-				8999CC111C2E83BC00B81F5F /* CoreDataServiceSpec.swift */,
+				89D256711C3CC02B004066B9 /* Services */,
 				89FF97A01BF05CDC000080F7 /* DataStoreBackedArraySpec.swift */,
-				8978D4E41B05AB2800EDD6D0 /* FeedSpec.swift */,
-				8978D4E61B05AB3800EDD6D0 /* ArticleSpec.swift */,
-				8978D4E81B05AB4300EDD6D0 /* EnclosureSpec.swift */,
+				89D256721C3CC038004066B9 /* Models */,
 				8937F6BA1B793CA40044A442 /* AppIcon.png */,
 				894304331B45089B000078DC /* Info.plist */,
 			);
@@ -1099,7 +1089,7 @@
 				89735AC11C0771590032E09C /* FeedsListControllerSpec.swift */,
 				899C48181A9AC0F000F57B96 /* UI */,
 				898F670D1B0007F4004A7BE3 /* SpecInjectorModule.swift */,
-				AE4356071A7ABAD500A961B9 /* Mocks */,
+				AE4356071A7ABAD500A961B9 /* Mocks And Fakes */,
 				8957799D19E62C7100548418 /* RSSClientTests-Bridging-Header.h */,
 				89CB98BC1B13941200C87160 /* Frameworks */,
 			);
@@ -1173,6 +1163,56 @@
 				898131771AFC877A0090FA7F /* LocalImportViewControllerSpec.swift */,
 			);
 			name = "Importing Feeds";
+			sourceTree = "<group>";
+		};
+		89D2566F1C3CC011004066B9 /* Fakes */ = {
+			isa = PBXGroup;
+			children = (
+				898C48C81B40FBE00097045A /* FakeSearchIndex.swift */,
+				AE4355FF1A7ABA4F00A961B9 /* FakeDataRepository.swift */,
+				89E67D631C33CB8000819646 /* InMemoryDataService.swift */,
+				8992D4321C3665B7004A5A35 /* FakeUpdateService.swift */,
+				8908949A1BFED7B8002848A4 /* FakeReachable.swift */,
+			);
+			name = Fakes;
+			sourceTree = "<group>";
+		};
+		89D256701C3CC01A004066B9 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				AE4355FD1A7AB7D900A961B9 /* SpecHelper.swift */,
+			);
+			name = Helpers;
+			sourceTree = "<group>";
+		};
+		89D256711C3CC02B004066B9 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				898911C11C3267C6009A44E9 /* UpdateServiceSpec.swift */,
+				8999CC0E1C2E796100B81F5F /* DataServiceSpec.swift */,
+				8999CC111C2E83BC00B81F5F /* CoreDataServiceSpec.swift */,
+			);
+			name = Services;
+			sourceTree = "<group>";
+		};
+		89D256721C3CC038004066B9 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				8978D4E41B05AB2800EDD6D0 /* FeedSpec.swift */,
+				8978D4E61B05AB3800EDD6D0 /* ArticleSpec.swift */,
+				8978D4E81B05AB4300EDD6D0 /* EnclosureSpec.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		89D256731C3CC22A004066B9 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				89A3417E1B150D1B0000C60B /* OPMLService.swift */,
+				898911A11C30F0BE009A44E9 /* UpdateService.swift */,
+				8999CC0C1C2E710F00B81F5F /* DataService.swift */,
+			);
+			name = Services;
 			sourceTree = "<group>";
 		};
 		89EF4FDC1A97D99B0052A82F /* Editing Feeds */ = {
@@ -1271,16 +1311,19 @@
 			name = Documentation;
 			sourceTree = "<group>";
 		};
-		AE4356071A7ABAD500A961B9 /* Mocks */ = {
+		AE4356071A7ABAD500A961B9 /* Mocks And Fakes */ = {
 			isa = PBXGroup;
 			children = (
-				898C48C11B3A7CCC0097045A /* OPMLManagerMock.swift */,
+				898C48C11B3A7CCC0097045A /* FakeOPMLService.swift */,
 				89D970C01B392AD400ED84B8 /* FakeNotificationSource.swift */,
 				8997C7F41B248D5A00972930 /* FakeWebView.swift */,
 				898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */,
 				89F517071B1C12A30005AB04 /* FakeURLSession.swift */,
 				89C676531BA264F40037A224 /* FakeUserDefaults.swift */,
 				89C676551BA28FE60037A224 /* FakeFileManager.swift */,
+				89EA6C351B4B2D8400456892 /* FakeDataReadWriter.swift */,
+				89F83F351B4DB390003F8F6C /* FakeFeedFinder.swift */,
+				89FAE2731B92893E009A3604 /* FakeThemeRepository.swift */,
 				89F516551B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.h */,
 				89F516561B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m */,
 				899823AF1B30BA7E00818755 /* NSUserActivity+rNewsTests.h */,
@@ -1291,11 +1334,8 @@
 				89DFAA5E1B75CE9B004CD9CA /* UITableViewRowAction+Spec.h */,
 				89D970B91B35BF6400ED84B8 /* WKWebView+rNewsTests.h */,
 				89D970BA1B35BF6500ED84B8 /* WKWebView+rNewsTests.m */,
-				89EA6C351B4B2D8400456892 /* FakeDataReadWriter.swift */,
-				89F83F351B4DB390003F8F6C /* FakeFeedFinder.swift */,
-				89FAE2731B92893E009A3604 /* FakeThemeRepository.swift */,
 			);
-			name = Mocks;
+			name = "Mocks And Fakes";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1737,7 +1777,7 @@
 				8943044B1B450A5E000078DC /* Article.swift in Sources */,
 				89CC82001B46198200648367 /* SearchIndex.swift in Sources */,
 				894304451B450A0A000078DC /* RSSClient.xcdatamodeld in Sources */,
-				894304411B450A00000078DC /* OPMLManager.swift in Sources */,
+				894304411B450A00000078DC /* OPMLService.swift in Sources */,
 				89FF979E1BF058FB000080F7 /* DataStoreBackedArray.swift in Sources */,
 				8999CC0D1C2E710F00B81F5F /* DataService.swift in Sources */,
 				8943044C1B450A5E000078DC /* Enclosure.swift in Sources */,
@@ -1756,7 +1796,7 @@
 				8999CC0F1C2E796100B81F5F /* DataServiceSpec.swift in Sources */,
 				8992D4331C3665B7004A5A35 /* FakeUpdateService.swift in Sources */,
 				8935F5DB1B4628B3000FFD5D /* EnclosureSpec.swift in Sources */,
-				8935F5E11B462B8C000FFD5D /* OPMLManagerMock.swift in Sources */,
+				8935F5E11B462B8C000FFD5D /* FakeOPMLService.swift in Sources */,
 				8935F5D71B4628B3000FFD5D /* DataRepositorySpec.swift in Sources */,
 				8935F5DE1B462AD2000FFD5D /* FakeOperationQueue.swift in Sources */,
 				898911C21C3267C6009A44E9 /* UpdateServiceSpec.swift in Sources */,
@@ -1764,7 +1804,7 @@
 				8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */,
 				8935F5D91B4628B3000FFD5D /* FeedSpec.swift in Sources */,
 				8935F5DF1B462AD2000FFD5D /* FakeURLSession.swift in Sources */,
-				8935F5D51B4628B3000FFD5D /* OPMLManagerSpec.swift in Sources */,
+				8935F5D51B4628B3000FFD5D /* OPMLServiceSpec.swift in Sources */,
 				8935F5DA1B4628B3000FFD5D /* ArticleSpec.swift in Sources */,
 				8935F5DC1B4629E6000FFD5D /* SpecHelper.swift in Sources */,
 				8935F5E21B462B8F000FFD5D /* FakeDataRepository.swift in Sources */,
@@ -1797,7 +1837,7 @@
 				898911C81C3267E3009A44E9 /* CoreDataService.swift in Sources */,
 				8989794E1B70808300218498 /* SearchIndex.swift in Sources */,
 				898979561B70808300218498 /* CoreDataFeed.swift in Sources */,
-				898979521B70808300218498 /* OPMLManager.swift in Sources */,
+				898979521B70808300218498 /* OPMLService.swift in Sources */,
 				898979581B70808300218498 /* Feed.swift in Sources */,
 				8989795A1B70808300218498 /* Enclosure.swift in Sources */,
 				898979531B70808300218498 /* DataRepository.swift in Sources */,
@@ -1821,7 +1861,7 @@
 				8937F6C11B79D0800044A442 /* KitModuleSpec.swift in Sources */,
 				89FF97A21BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */,
 				898979AA1B708E7800218498 /* FeedSpec.swift in Sources */,
-				898979B61B708F0000218498 /* OPMLManagerMock.swift in Sources */,
+				898979B61B708F0000218498 /* FakeOPMLService.swift in Sources */,
 				898979B81B708F0C00218498 /* FakeURLSession.swift in Sources */,
 				898911C31C3267D6009A44E9 /* UpdateServiceSpec.swift in Sources */,
 				89E67D651C33CB8000819646 /* InMemoryDataService.swift in Sources */,
@@ -1833,7 +1873,7 @@
 				898979AB1B708E7800218498 /* ArticleSpec.swift in Sources */,
 				898979A51B708E7800218498 /* FakeDataRepository.swift in Sources */,
 				898979A41B708E7800218498 /* FakeSearchIndex.swift in Sources */,
-				898979A71B708E7800218498 /* OPMLManagerSpec.swift in Sources */,
+				898979A71B708E7800218498 /* OPMLServiceSpec.swift in Sources */,
 				898979AC1B708E7800218498 /* EnclosureSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1842,7 +1882,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				898979DF1B72579C00218498 /* OPMLManagerMock.swift in Sources */,
+				898979DF1B72579C00218498 /* FakeOPMLService.swift in Sources */,
 				898979E11B72A63100218498 /* FeedsViewControllerSpec.swift in Sources */,
 				898979D51B71CE3A00218498 /* MainControllerSpec.swift in Sources */,
 				89DFAA601B7684A0004CD9CA /* FeedViewSpec.swift in Sources */,
@@ -1925,7 +1965,7 @@
 				898ECDE11B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift in Sources */,
 				89F98BAE1BA0E449005C3CA8 /* DocumentationViewControllerSpec.swift in Sources */,
 				89735ABC1C0694C70032E09C /* UITraitCollection+rNewsTests.m in Sources */,
-				89EA6C371B4B308F00456892 /* OPMLManagerMock.swift in Sources */,
+				89EA6C371B4B308F00456892 /* FakeOPMLService.swift in Sources */,
 				899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */,
 				89D970BB1B35BF6500ED84B8 /* WKWebView+rNewsTests.m in Sources */,
 				89C204C21A73FEDA00C792D2 /* SplitViewControllerSpec.swift in Sources */,
@@ -2609,6 +2649,7 @@
 				8992D4411C37C9B0004A5A35 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		89C8306E19D730E9009924DA /* Build configuration list for PBXProject "RSSClient" */ = {
 			isa = XCConfigurationList;

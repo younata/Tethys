@@ -5,9 +5,9 @@ import Ra
 import Lepton
 @testable import rNewsKit
 
-class OPMLManagerSpec: QuickSpec {
+class OPMLServiceSpec: QuickSpec {
     override func spec() {
-        var subject: OPMLManager! = nil
+        var subject: OPMLService! = nil
 
         var dataRepository: FakeDataRepository! = nil
         var importQueue: FakeOperationQueue! = nil
@@ -42,7 +42,7 @@ class OPMLManagerSpec: QuickSpec {
 
             dataRepository.feedsList = [previouslyImportedFeed]
 
-            subject = OPMLManager(injector: injector)
+            subject = OPMLService(injector: injector)
         }
 
         describe("Importing OPML Files") {

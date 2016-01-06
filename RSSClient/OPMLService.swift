@@ -2,7 +2,7 @@ import Foundation
 import Ra
 import Lepton
 
-public class OPMLManager: NSObject, Injectable {
+public class OPMLService: NSObject, Injectable {
     private let dataRepository: DataRepository?
     private let mainQueue: NSOperationQueue?
     private let importQueue: NSOperationQueue?
@@ -135,7 +135,7 @@ public class OPMLManager: NSObject, Injectable {
     }
 }
 
-extension OPMLManager: DataSubscriber {
+extension OPMLService: DataSubscriber {
     public func markedArticles(articles: [Article], asRead read: Bool) {}
     public func deletedArticle(article: Article) {}
     public func willUpdateFeeds() {}

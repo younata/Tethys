@@ -51,7 +51,7 @@ class LocalImportViewControllerSpec: QuickSpec {
         var tableView: UITableView! = nil
 
         var dataReadWriter: FakeDataReadWriter! = nil
-        var opmlManager: OPMLManagerMock! = nil
+        var opmlService: FakeOPMLService! = nil
         var mainQueue: FakeOperationQueue! = nil
         var backgroundQueue: FakeOperationQueue! = nil
         var themeRepository: FakeThemeRepository! = nil
@@ -64,8 +64,8 @@ class LocalImportViewControllerSpec: QuickSpec {
             injector.bind(DataRetriever.self, toInstance: dataReadWriter)
             injector.bind(DataWriter.self, toInstance: dataReadWriter)
 
-            opmlManager = OPMLManagerMock()
-            injector.bind(OPMLManager.self, toInstance: opmlManager)
+            opmlService = FakeOPMLService()
+            injector.bind(OPMLService.self, toInstance: opmlService)
 
             mainQueue = injector.create(kMainQueue) as! FakeOperationQueue
             mainQueue.runSynchronously = true
@@ -259,12 +259,12 @@ class LocalImportViewControllerSpec: QuickSpec {
 
                     it("should import the feeds") {
                         let expectedLocation = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
-                        expect(opmlManager.importOPMLURL).to(equal(NSURL(string: "file://" + expectedLocation)))
+                        expect(opmlService.importOPMLURL).to(equal(NSURL(string: "file://" + expectedLocation)))
                     }
 
                     describe("when it's done importing the feeds") {
                         beforeEach {
-                            opmlManager.importOPMLCompletion([])
+                            opmlService.importOPMLCompletion([])
                         }
 
                         it("should import the feed") {

@@ -40,7 +40,6 @@ class rNewsAcceptanceTests: XCTestCase {
         app.typeText("\r")
         app.toolbars.buttons["Add Feed"].tap()
 
-        XCTAssertEqual(app.cells.count, 1)
         let feedCell = app.cells.elementBoundByIndex(0)
 
         expectationForPredicate(NSPredicate(format: "exists == true"), evaluatedWithObject: feedCell, handler: nil)
@@ -48,5 +47,4 @@ class rNewsAcceptanceTests: XCTestCase {
 
         deleteEverything()
     }
-    
 }

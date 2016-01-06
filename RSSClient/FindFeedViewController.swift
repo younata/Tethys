@@ -27,8 +27,8 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         return self.injector?.create(DataWriter)
     }()
 
-    private lazy var opmlManager: OPMLManager? = {
-        return self.injector?.create(OPMLManager)
+    private lazy var opmlService: OPMLService? = {
+        return self.injector?.create(OPMLService)
     }()
 
     private lazy var mainQueue: NSOperationQueue? = {
@@ -146,7 +146,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         let message = NSString.localizedStringWithFormat(messageTemplate, link) as String
         indicator.configureWithMessage(message)
         if opml {
-            self.opmlManager?.importOPML(NSURL(string: link)!) {(_) in
+            self.opmlService?.importOPML(NSURL(string: link)!) {(_) in
                 indicator.removeFromSuperview()
                 self.dismiss()
             }

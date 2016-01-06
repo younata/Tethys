@@ -22,7 +22,7 @@ class FindFeedViewControllerSpec: QuickSpec {
         var mainQueue: FakeOperationQueue! = nil
         var backgroundQueue: FakeOperationQueue! = nil
 
-        var opmlManager: OPMLManagerMock! = nil
+        var opmlService: FakeOPMLService! = nil
 
         var themeRepository: FakeThemeRepository! = nil
 
@@ -44,8 +44,8 @@ class FindFeedViewControllerSpec: QuickSpec {
             backgroundQueue = FakeOperationQueue()
             injector.bind(kBackgroundQueue, toInstance: backgroundQueue)
 
-            opmlManager = OPMLManagerMock()
-            injector.bind(OPMLManager.self, toInstance: opmlManager)
+            opmlService = FakeOPMLService()
+            injector.bind(OPMLService.self, toInstance: opmlService)
 
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, toInstance: themeRepository)
@@ -307,12 +307,12 @@ class FindFeedViewControllerSpec: QuickSpec {
                         }
 
                         it("should import the opml file") {
-                            expect(opmlManager.importOPMLURL).to(equal(NSURL(string: "https://example.com/feed.xml")))
+                            expect(opmlService.importOPMLURL).to(equal(NSURL(string: "https://example.com/feed.xml")))
                         }
 
                         describe("when the opml file is imported") {
                             beforeEach {
-                                opmlManager.importOPMLCompletion([])
+                                opmlService.importOPMLCompletion([])
                             }
 
                             it("should remove the indicator") {

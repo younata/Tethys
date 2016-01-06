@@ -21,8 +21,8 @@ public class LocalImportViewController: UIViewController {
         return self.injector?.create(DataWriter)
     }()
 
-    private lazy var opmlManager: OPMLManager? = {
-        return self.injector?.create(OPMLManager)
+    private lazy var opmlService: OPMLService? = {
+        return self.injector?.create(OPMLService)
     }()
 
     private lazy var mainQueue: NSOperationQueue? = {
@@ -247,7 +247,7 @@ extension LocalImportViewController: UITableViewDelegate {
             let path = opmls[indexPath.row].0
             let activityIndicator = disableInteractionWithMessage(NSLocalizedString("Importing feeds", comment: ""))
 
-            self.opmlManager?.importOPML(NSURL(string: "file://" + path)!, completion: {(_) in
+            self.opmlService?.importOPML(NSURL(string: "file://" + path)!, completion: {(_) in
                 self.dataWriter?.updateFeeds {_ in
                     self.reenableInteractionAndDismiss(activityIndicator)
                 }

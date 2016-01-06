@@ -50,7 +50,7 @@ class KitModuleSpec: QuickSpec {
         }
 
         it("should bind an opml manager with a singleton scope") {
-            expect(injector.create(OPMLManager)).to(beIdenticalTo(injector.create(OPMLManager)))
+            expect(injector.create(OPMLService)).to(beIdenticalTo(injector.create(OPMLService)))
         }
     }
 }

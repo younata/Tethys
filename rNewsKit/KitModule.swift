@@ -68,8 +68,8 @@ public class KitModule: NSObject, Ra.InjectorModule {
         injector.bind(DataWriter.self, toInstance: dataRepository)
         injector.bind(DataRepository.self, toInstance: dataRepository)
 
-        let opmlManager = OPMLManager(injector: injector)
-        injector.bind(OPMLManager.self, toInstance: opmlManager)
+        let opmlService = OPMLService(injector: injector)
+        injector.bind(OPMLService.self, toInstance: opmlService)
     }
 
     private func ManagedObjectContext() -> NSManagedObjectContext {

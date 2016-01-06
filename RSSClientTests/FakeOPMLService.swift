@@ -2,7 +2,7 @@ import Foundation
 @testable import rNewsKit
 import Ra
 
-class OPMLManagerMock: OPMLManager {
+class FakeOPMLService: OPMLService {
     var importOPMLURL : NSURL? = nil
     var importOPMLCompletion : ([Feed]) -> Void = {_ in }
     override func importOPML(opml: NSURL, completion: ([Feed]) -> Void) {

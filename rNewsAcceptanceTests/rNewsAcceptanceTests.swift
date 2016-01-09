@@ -7,9 +7,12 @@ class rNewsAcceptanceTests: XCTestCase {
 
         continueAfterFailure = false
         XCUIApplication().launch()
+
+        deleteEverything()
     }
     
     override func tearDown() {
+        deleteEverything()
         super.tearDown()
     }
 

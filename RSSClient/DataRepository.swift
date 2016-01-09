@@ -287,15 +287,15 @@ class DataRepository: DataRetriever, DataWriter {
     private func privateMarkArticles(articles: [Article], asRead read: Bool) {
         guard articles.count > 0 else { return }
 
+        let operationQueue = NSOperationQueue()
+
         for article in articles {
-            self.backgroundQueue.addOperationWithBlock {
-                let semaphore = dispatch_semaphore_create(0)
+            operationQueue.addOperationWithBlock {
                 article.read = read
-                self.dataService.saveArticle(article) { dispatch_semaphore_signal(semaphore) }
-                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+                self.dataService.saveArticle(article) {}
             }
         }
-        self.backgroundQueue.waitUntilAllOperationsAreFinished()
+        operationQueue.waitUntilAllOperationsAreFinished()
 
         for object in self.subscribers.allObjects {
             if let subscriber = object as? DataSubscriber {

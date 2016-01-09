@@ -44,6 +44,61 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             }
             spec.waitForExpectationsWithTimeout(1, handler: nil)
         }
+
+        it("does not insert items that have empty titles") {
+            guard let feed = feed else { fail(); return }
+            let item = Muon.Article(title: "", link: nil, description: "", content: "", guid: "", published: nil, updated: nil, authors: [], enclosures: [])
+            let info = Muon.Feed(title: "a title", link: NSURL(string: "https://google.com")!, description: "description", articles: [item])
+            let updateExpectation = spec.expectationWithDescription("Update Feed")
+            dataService.updateFeed(feed, info: info) {
+                expect(feed.title) == "a title"
+                expect(feed.summary) == "description"
+                expect(feed.url).to(beNil())
+                expect(feed.articlesArray.count).to(equal(0))
+                updateExpectation.fulfill()
+            }
+            spec.waitForExpectationsWithTimeout(1, handler: nil)
+        }
+
+        it("easily updates an existing feed that has articles with new articles") {
+            guard let feed = feed else { fail(); return }
+            var existingArticle: rNewsKit.Article! = nil
+            let addArticleExpectation = spec.expectationWithDescription("existing article")
+
+            dataService.createArticle(feed) { article in
+                existingArticle = article
+                existingArticle.title = "blah"
+                existingArticle.link = NSURL(string: "https://example.com/article")
+                existingArticle.summary = "summary"
+                existingArticle.content = "content"
+                existingArticle.published = NSDate()
+                addArticleExpectation.fulfill()
+            }
+            spec.waitForExpectationsWithTimeout(1, handler: nil)
+
+            expect(feed.articlesArray.count) == 1
+
+            let item = Muon.Article(title: "article", link: nil, description: "", content: "", guid: "", published: nil, updated: nil, authors: [], enclosures: [])
+            let existingItem = Muon.Article(title: existingArticle.title, link: existingArticle.link, description: existingArticle.summary, content: existingArticle.content, guid: "", published: existingArticle.published, updated: nil, authors: [], enclosures: [])
+            let info = Muon.Feed(title: "a title", link: NSURL(string: "https://google.com")!, description: "description", articles: [item, existingItem])
+            let updateExpectation = spec.expectationWithDescription("Update Feed")
+            dataService.updateFeed(feed, info: info) {
+                expect(feed.title) == "a title"
+                expect(feed.summary) == "description"
+                expect(feed.url).to(beNil())
+                expect(feed.articlesArray.count).to(equal(2))
+                if let firstArticle = feed.articlesArray.first {
+                    expect(firstArticle) == existingArticle
+                }
+                if let secondArticle = feed.articlesArray.last {
+                    expect(secondArticle.title) == item.title
+                    expect(secondArticle.link).to(beNil())
+                    expect(secondArticle) != existingArticle
+                }
+                updateExpectation.fulfill()
+            }
+            spec.waitForExpectationsWithTimeout(1, handler: nil)
+        }
     }
 
     describe("articles") {

@@ -46,9 +46,11 @@ extension DataService {
         let operationQueue = NSOperationQueue()
         operationQueue.maxConcurrentOperationCount = 1
 
-        for item in info.articles {
+        let articles = info.articles.filter { $0.title?.isEmpty == false }
+
+        for item in articles {
             let article = feed.articlesArray.filter { article in
-                return item.title != article.title && item.link != article.link
+                return item.title == article.title || item.link == article.link
             }.first
             operationQueue.addOperationWithBlock {
                 let semaphore = dispatch_semaphore_create(0)

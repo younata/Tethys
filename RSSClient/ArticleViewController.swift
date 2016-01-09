@@ -128,7 +128,6 @@ public class ArticleViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.edgesForExtendedLayout = .None
         self.navigationController?.setToolbarHidden(false, animated: true)
 
         self.view.backgroundColor = UIColor.whiteColor()

@@ -81,7 +81,7 @@ public class ArticleCell: UITableViewCell {
 }
 
 extension ArticleCell: ThemeRepositorySubscriber {
-    public func didChangeTheme() {
+    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
         self.title.textColor = self.themeRepository?.textColor
         self.published.textColor = self.themeRepository?.textColor
         self.author.textColor = self.themeRepository?.textColor

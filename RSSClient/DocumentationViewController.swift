@@ -66,7 +66,7 @@ public class DocumentationViewController: UIViewController {
 }
 
 extension DocumentationViewController: ThemeRepositorySubscriber {
-    public func didChangeTheme() {
+    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
         self.view.backgroundColor = self.themeRepository?.backgroundColor
         if let themeRepository = self.themeRepository {
             self.navigationController?.navigationBar.barStyle = themeRepository.barStyle

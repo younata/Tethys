@@ -210,16 +210,14 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func createControllerHierarchy(feed: Feed? = nil, article: Article? = nil) {
         let feeds: FeedsTableViewController
-        let master: UINavigationController
+        let master = self.splitView.masterNavigationController
 
-        if let masterNC = self.splitView.viewControllers.first as? UINavigationController,
-            let feedsController = masterNC.viewControllers.first as? FeedsTableViewController
+        if let feedsController = master.viewControllers.first as? FeedsTableViewController
             where self.window?.rootViewController == self.splitView {
-                master = masterNC
                 feeds = feedsController
         } else {
             feeds = self.anInjector.create(FeedsTableViewController)!
-            master = UINavigationController(rootViewController: feeds)
+            master.viewControllers = [feeds]
         }
 
         if let feedToShow = feed, let articleToShow = article {
@@ -227,7 +225,8 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             let al = feeds.showFeeds([feedToShow], animated: false)
             al.showArticle(articleToShow, animated: false)
         } else {
-            let detail = UINavigationController(rootViewController: ArticleViewController())
+            let detail = self.splitView.detailNavigationController
+            detail.viewControllers = [ArticleViewController()]
             self.splitView.viewControllers = [master, detail]
         }
 

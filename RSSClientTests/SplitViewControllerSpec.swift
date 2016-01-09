@@ -2,14 +2,15 @@ import Quick
 import Nimble
 import rNews
 import Ra
+import SafariServices
 
 class SplitViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: SplitViewController! = nil
         var themeRepository: FakeThemeRepository! = nil
 
-        let master = UIViewController()
-        let detail = UIViewController()
+        let master = UINavigationController(rootViewController: UIViewController())
+        let detail = UINavigationController(rootViewController: UIViewController())
 
         beforeEach {
             let injector = Injector()
@@ -29,6 +30,28 @@ class SplitViewControllerSpec: QuickSpec {
 
             it("should change the preferred status bar styling") {
                 expect(subject.preferredStatusBarStyle()).to(equal(themeRepository.statusBarStyle))
+            }
+
+            if #available(iOS 9, *) {
+                context("when an SFSafariViewController is on the master view controller") {
+                    beforeEach {
+                        master.topViewController?.presentViewController(SFSafariViewController(URL: NSURL(string: "https://example.com")!), animated: false, completion: nil)
+                    }
+
+                    it("changes the preferredStatusBarStyle to black") {
+                        expect(subject.preferredStatusBarStyle()) == UIStatusBarStyle.Default
+                    }
+                }
+
+                context("when an SFSafariViewController is on the detail view controller") {
+                    beforeEach {
+                        detail.topViewController?.presentViewController(SFSafariViewController(URL: NSURL(string: "https://example.com")!), animated: false, completion: nil)
+                    }
+
+                    it("changes the preferredStatusBarStyle to black") {
+                        expect(subject.preferredStatusBarStyle()) == UIStatusBarStyle.Default
+                    }
+                }
             }
         }
 

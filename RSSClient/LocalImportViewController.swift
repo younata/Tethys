@@ -181,7 +181,7 @@ public class LocalImportViewController: UIViewController {
 }
 
 extension LocalImportViewController: ThemeRepositorySubscriber {
-    public func didChangeTheme() {
+    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
         self.tableViewController.tableView.backgroundColor = self.themeRepository?.backgroundColor
         self.tableViewController.tableView.separatorColor = self.themeRepository?.textColor
 

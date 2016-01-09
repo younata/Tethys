@@ -145,6 +145,12 @@ public class ArticleViewController: UIViewController {
         self.themeRepository?.addSubscriber(self)
     }
 
+    public override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+
+        self.splitViewController?.setNeedsStatusBarAppearanceUpdate()
+    }
+
     public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         self.userActivity?.invalidate()
@@ -364,7 +370,7 @@ extension ArticleViewController: NSUserActivityDelegate {
 }
 
 extension ArticleViewController: ThemeRepositorySubscriber {
-    public func didChangeTheme() {
+    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
         self.articleCSS = self.loadArticleCSS()
         self.content.reload()
         self.nextContent?.reload()

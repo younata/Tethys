@@ -311,7 +311,7 @@ public class FeedsTableViewController: UIViewController {
 }
 
 extension FeedsTableViewController: ThemeRepositorySubscriber {
-    public func didChangeTheme() {
+    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
         self.navigationController?.navigationBar.barStyle = self.themeRepository.barStyle
 
         self.tableView.backgroundColor = self.themeRepository.backgroundColor

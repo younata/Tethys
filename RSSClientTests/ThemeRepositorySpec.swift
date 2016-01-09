@@ -6,7 +6,7 @@ import UIKit
 
 private class FakeThemeSubscriber: NSObject, ThemeRepositorySubscriber {
     private var didCallChangeTheme = false
-    private func didChangeTheme() {
+    private func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
         didCallChangeTheme = true
     }
 }

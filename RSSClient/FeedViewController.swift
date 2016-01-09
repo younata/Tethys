@@ -249,7 +249,7 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
 }
 
 extension FeedViewController: ThemeRepositorySubscriber {
-    public func didChangeTheme() {
+    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
         self.tableView.backgroundColor = self.themeRepository.backgroundColor
         self.tableView.separatorColor = self.themeRepository.textColor
         self.tableView.indicatorStyle = self.themeRepository.scrollIndicatorStyle

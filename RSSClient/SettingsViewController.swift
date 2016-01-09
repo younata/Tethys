@@ -138,6 +138,12 @@ public class SettingsViewController: UIViewController {
         self.oldTheme = self.themeRepository.theme
     }
 
+    public override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+
+        self.splitViewController?.setNeedsStatusBarAppearanceUpdate()
+    }
+
     public override func canBecomeFirstResponder() -> Bool { return true }
 
     public override var keyCommands: [UIKeyCommand]? {
@@ -216,7 +222,7 @@ public class SettingsViewController: UIViewController {
 }
 
 extension SettingsViewController: ThemeRepositorySubscriber {
-    public func didChangeTheme() {
+    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
         self.navigationController?.navigationBar.barStyle = self.themeRepository.barStyle
         self.view.backgroundColor = self.themeRepository.backgroundColor
 
@@ -404,7 +410,7 @@ extension SettingsViewController: UITableViewDelegate {
             guard let url = NSURL(string: "https://twitter.com/younata") else { return }
             if #available(iOS 9.0, *) {
                 let viewController = SFSafariViewController(URL: url)
-                self.navigationController?.pushViewController(viewController, animated: true)
+                self.presentViewController(viewController, animated: true, completion: nil)
             } else {
                 self.urlOpener.openURL(url)
             }

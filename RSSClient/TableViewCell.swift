@@ -13,7 +13,7 @@ public class TableViewCell: UITableViewCell, ThemeRepositorySubscriber {
         self.detailTextLabel?.text = nil
     }
 
-    public func didChangeTheme() {
+    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
         self.textLabel?.textColor = self.themeRepository?.textColor
         self.detailTextLabel?.textColor = self.themeRepository?.textColor
 

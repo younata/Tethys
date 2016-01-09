@@ -73,7 +73,7 @@ public class TagEditorViewController: UIViewController {
 }
 
 extension TagEditorViewController: ThemeRepositorySubscriber {
-    public func didChangeTheme() {
+    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
         self.view.backgroundColor = self.themeRepository?.backgroundColor
 
         self.tagPicker.picker.tintColor = self.themeRepository?.textColor

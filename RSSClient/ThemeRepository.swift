@@ -2,7 +2,7 @@ import UIKit
 import Ra
 
 public protocol ThemeRepositorySubscriber: NSObjectProtocol {
-    func didChangeTheme()
+    func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository)
 }
 
 public class ThemeRepository: NSObject, Injectable {
@@ -147,7 +147,7 @@ public class ThemeRepository: NSObject, Injectable {
 
             for case let subscriber in self.subscribers.allObjects {
                 if let themeSubscriber = subscriber as? ThemeRepositorySubscriber {
-                    themeSubscriber.didChangeTheme()
+                    themeSubscriber.themeRepositoryDidChangeTheme(self)
                 }
             }
         }
@@ -159,7 +159,7 @@ public class ThemeRepository: NSObject, Injectable {
 
     public func addSubscriber(subscriber: ThemeRepositorySubscriber) {
         self.subscribers.addObject(subscriber)
-        subscriber.didChangeTheme()
+        subscriber.themeRepositoryDidChangeTheme(self)
     }
 
     private var values: [String: AnyObject] = [:]

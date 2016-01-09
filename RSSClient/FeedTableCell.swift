@@ -89,7 +89,7 @@ public class FeedTableCell: UITableViewCell {
 }
 
 extension FeedTableCell: ThemeRepositorySubscriber {
-    public func didChangeTheme() {
+    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
         self.nameLabel.textColor = self.themeRepository?.textColor
         self.summaryLabel.textColor = self.themeRepository?.textColor
 

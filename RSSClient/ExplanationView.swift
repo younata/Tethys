@@ -51,7 +51,7 @@ public class ExplanationView: UIView {
 }
 
 extension ExplanationView: ThemeRepositorySubscriber {
-    public func didChangeTheme() {
+    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
         self.titleLabel.textColor = self.themeRepository?.textColor
         self.detailLabel.textColor = self.themeRepository?.textColor
     }

@@ -60,7 +60,7 @@ public class TextViewCell: UITableViewCell {
 }
 
 extension TextViewCell: ThemeRepositorySubscriber {
-    public func didChangeTheme() {
+    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
         self.backgroundColor = self.themeRepository?.backgroundColor
         self.textView.backgroundColor = self.themeRepository?.backgroundColor
         self.textView.textColor = self.themeRepository?.textColor

@@ -287,7 +287,7 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
 }
 
 extension QueryFeedViewController: ThemeRepositorySubscriber {
-    public func didChangeTheme() {
+    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
         self.tableView.backgroundColor = self.themeRepository?.backgroundColor
         self.tableView.separatorColor = self.themeRepository?.textColor
 

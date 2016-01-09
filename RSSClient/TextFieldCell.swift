@@ -54,7 +54,7 @@ public class TextFieldCell: UITableViewCell {
 }
 
 extension TextFieldCell: ThemeRepositorySubscriber {
-    public func didChangeTheme() {
+    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
         self.textField.textColor = self.themeRepository?.textColor
         self.backgroundColor = self.themeRepository?.backgroundColor
     }

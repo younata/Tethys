@@ -102,7 +102,7 @@ extension TagPickerView: UITextFieldDelegate {
 }
 
 extension TagPickerView: ThemeRepositorySubscriber {
-    public func didChangeTheme() {
+    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
         self.picker.reloadComponent(0)
     }
 }

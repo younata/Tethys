@@ -33,7 +33,7 @@ public class FeedsListController: UIViewController {
 }
 
 extension FeedsListController: ThemeRepositorySubscriber {
-    public func didChangeTheme() {
+    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
         self.tableView.backgroundColor = self.themeRepository?.backgroundColor
         self.tableView.separatorColor = self.themeRepository?.textColor
         if let themeRepo = self.themeRepository {

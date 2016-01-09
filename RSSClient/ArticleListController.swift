@@ -223,7 +223,7 @@ extension ArticleListController: UIViewControllerPreviewingDelegate {
 }
 
 extension ArticleListController: ThemeRepositorySubscriber {
-    public func didChangeTheme() {
+    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
         self.tableView.backgroundColor = self.themeRepository?.backgroundColor
         self.tableView.separatorColor = self.themeRepository?.textColor
 

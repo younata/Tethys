@@ -37,7 +37,7 @@ public class SwitchTableViewCell: UITableViewCell {
 }
 
 extension SwitchTableViewCell: ThemeRepositorySubscriber {
-    public func didChangeTheme() {
+    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
         self.backgroundColor = self.themeRepository?.backgroundColor
         self.textLabel?.textColor = self.themeRepository?.textColor
     }

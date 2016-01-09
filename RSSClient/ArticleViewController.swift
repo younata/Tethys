@@ -85,7 +85,10 @@ public class ArticleViewController: UIViewController {
         if let cssFileName = self.themeRepository?.articleCSSFileName,
             let loc = NSBundle.mainBundle().URLForResource(cssFileName, withExtension: "css"),
             let cssNSString = try? NSString(contentsOfURL: loc, encoding: NSUTF8StringEncoding) {
-                return "<html><head><style type=\"text/css\">\(String(cssNSString))</style></head><body>"
+                return "<html><head>" +
+                    "<style type=\"text/css\">\(String(cssNSString))</style>" +
+                    "<meta name=\"viewport\" content=\"initial-scale=1.0,maximum-scale=10.0\"/>" +
+                    "</head><body>"
         }
         return "<html><body>"
     }
@@ -235,6 +238,7 @@ public class ArticleViewController: UIViewController {
     private func configureContent() {
         self.content.delegate = self
 
+        self.content.scalesPageToFit = true
         self.setThemeForWebView(self.content)
 
         if #available(iOS 9, *) {
@@ -245,7 +249,6 @@ public class ArticleViewController: UIViewController {
     private func setThemeForWebView(webView: UIWebView) {
         guard let themeRepository = self.themeRepository else { return }
         webView.backgroundColor = themeRepository.backgroundColor
-
         webView.scrollView.indicatorStyle = themeRepository.scrollIndicatorStyle
     }
 

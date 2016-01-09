@@ -238,6 +238,11 @@ span.float-right > span {
     margin: 13px auto 0;
     text-align: right; }
 
+iframe.youtube-player {
+    max-width: 420px;
+    height: auto;
+    margin: 20px auto; }
+
 code, tt {
     margin: 0 2px;
     padding: 0 5px;
@@ -282,10 +287,9 @@ sup {
 * {
     -webkit-print-color-adjust: exact;
 }
-@media screen and (min-width: 914px) {
+@media screen {
     body {
-        width: 854px;
-        margin:0 auto;
+        margin: 0 auto;
     }
 }
 @media print {

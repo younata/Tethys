@@ -94,6 +94,12 @@ blockquote p {
     margin-bottom: 0;
     font-style: italic;
 }
+
+iframe.youtube-player {
+    max-width: 420px;
+    height: auto;
+    margin: 20px auto; }
+
 code, pre {
     font-family: Monaco, Andale Mono, Courier New, monospace;
 }
@@ -130,9 +136,8 @@ sup {
 * {
     -webkit-print-color-adjust: exact;
 }
-@media screen and (min-width: 914px) {
+@media screen {
     body {
-        width: 854px;
         margin:10px auto;
     }
 }

@@ -22,10 +22,15 @@ class UpdateServiceSpec: QuickSpec {
             context("trying to update a query feed") {
                 let query = Feed(title: "query", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                 var updatedFeed: Feed? = nil
+                var receivedError: NSError? = nil
 
                 beforeEach {
                     dataService.feeds = [query]
-                    subject.updateFeed(query) { updatedFeed = $0 }
+                    receivedError = nil
+                    subject.updateFeed(query) {
+                        updatedFeed = $0
+                        receivedError = $1
+                    }
                 }
 
                 it("should not make a network request") {
@@ -35,18 +40,27 @@ class UpdateServiceSpec: QuickSpec {
                 it("should call the callback with the original feed") {
                     expect(updatedFeed) == query
                 }
+
+                it("should not have any error in the callback") {
+                    expect(receivedError).to(beNil())
+                }
             }
 
             describe("updating a standard feed") {
                 var feed: Feed! = nil
                 var updatedFeed: Feed? = nil
+                var receivedError: NSError? = nil
 
                 beforeEach {
                     feed = Feed(title: "feed", url: NSURL(string: "https://example.com/feed"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     dataService.feeds = [feed]
 
                     updatedFeed = nil
-                    subject.updateFeed(feed) { updatedFeed = $0 }
+                    receivedError = nil
+                    subject.updateFeed(feed) {
+                        updatedFeed = $0
+                        receivedError = $1
+                    }
                 }
 
                 it("should make a call to download the feed URL") {
@@ -68,6 +82,10 @@ class UpdateServiceSpec: QuickSpec {
                             expect(feed.title) == "Iotlist"
                             expect(feed.summary) == "The list for the Internet of Things"
                             expect(feed.articlesArray).toNot(beEmpty())
+                        }
+
+                        it("should not have an error in the callback") {
+                            expect(receivedError).to(beNil())
                         }
                     }
 
@@ -94,11 +112,35 @@ class UpdateServiceSpec: QuickSpec {
                                 urlSessionDelegate.URLSession(urlSession, downloadTask: task, didFinishDownloadingToURL: location)
                             }
 
-                            it("should call the callback with the updated feed and image") {
+                            it("should call the callback with the updated feed") {
                                 expect(updatedFeed?.title) == "objc.io"
                                 expect(updatedFeed?.summary) == "A periodical about best practices and advanced techniques for iOS and OS X development."
                                 expect(updatedFeed?.image).toNot(beNil())
                                 expect(updatedFeed?.articlesArray).toNot(beEmpty())
+                            }
+
+                            it("should not have an error in the callback") {
+                                expect(receivedError).to(beNil())
+                            }
+                        }
+
+                        context("if the image download errors out") {
+                            let error = NSError(domain: "com.example.error", code: 20, userInfo: nil)
+                            beforeEach {
+                                guard let task = urlSession.lastDownloadTask else { fail(); return }
+                                task._response = NSURLResponse(URL: NSURL(string: "http://example.org/icon.png")!, MIMEType: "image/jpg", expectedContentLength: 0, textEncodingName: nil)
+                                urlSessionDelegate.URLSession(urlSession, task: task, didCompleteWithError: error)
+                            }
+
+                            it("should call the callback with an error and an updated feed") {
+                                expect(updatedFeed?.title) == "objc.io"
+                                expect(updatedFeed?.summary) == "A periodical about best practices and advanced techniques for iOS and OS X development."
+                                expect(updatedFeed?.image).to(beNil())
+                                expect(updatedFeed?.articlesArray).toNot(beEmpty())
+                            }
+
+                            it("should have an error in the callback") {
+                                expect(receivedError) == error
                             }
                         }
                     }
@@ -128,6 +170,22 @@ class UpdateServiceSpec: QuickSpec {
                         it("should not try to download the image") {
                             expect(urlSession.lastURL) == feed.url
                         }
+                    }
+                }
+
+                context("if the download errors out") {
+                    let error = NSError(domain: "com.example.error", code: 22, userInfo: nil)
+                    beforeEach {
+                        guard let task = urlSession.lastDownloadTask else { fail(); return }
+                        urlSessionDelegate.URLSession(urlSession, task: task, didCompleteWithError: error)
+                    }
+
+                    it("should call the callback with the original feed") {
+                        expect(updatedFeed) === feed
+                    }
+
+                    it("should have an error in the callback") {
+                        expect(receivedError) == error
                     }
                 }
             }

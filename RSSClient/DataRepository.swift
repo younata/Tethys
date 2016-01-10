@@ -318,6 +318,7 @@ class DataRepository: DataRetriever, DataWriter {
         }
 
         var updatedFeeds: [Feed] = []
+        var errors: [NSError] = []
 
         var totalProgress = feedsLeft
         var currentProgress = 0
@@ -329,11 +330,14 @@ class DataRepository: DataRetriever, DataWriter {
                 feedsLeft -= 1
                 totalProgress -= 1
                 if feedsLeft == 0 {
-                    callback(updatedFeeds, [])
+                    callback(updatedFeeds, errors)
                 }
                 continue
             }
-            self.updateService.updateFeed(feed) { feed in
+            self.updateService.updateFeed(feed) { feed, error in
+                if let error = error {
+                    errors.append(error)
+                }
                 updatedFeeds.append(feed)
 
                 currentProgress++
@@ -348,7 +352,7 @@ class DataRepository: DataRetriever, DataWriter {
                 feedsLeft--
                 if feedsLeft == 0 {
                     self.allFeeds {
-                        callback($0, [])
+                        callback($0, errors)
                     }
                 }
             }

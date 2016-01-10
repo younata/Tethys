@@ -5,7 +5,7 @@ protocol NetworkClientDelegate: class {
     func didDownloadImage(image: Image, url: NSURL)
     func didDownloadFeed(feed: Muon.Feed, url: NSURL)
     func didDownloadData(data: NSData, url: NSURL)
-    func didFailToDownloadDataFromUrl(url: NSURL)
+    func didFailToDownloadDataFromUrl(url: NSURL, error: NSError?)
 }
 
 class URLSessionDelegate: NSObject, NSURLSessionDownloadDelegate {
@@ -33,20 +33,19 @@ class URLSessionDelegate: NSObject, NSURLSessionDownloadDelegate {
 
     func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
         let url = task.originalRequest?.URL ?? NSURL()
-        self.delegate?.didFailToDownloadDataFromUrl(url)
+        self.delegate?.didFailToDownloadDataFromUrl(url, error: error)
     }
 }
 
 protocol UpdateServiceType: class {
-    func updateFeed(feed: Feed, callback: Feed -> Void)
+    func updateFeed(feed: Feed, callback: (Feed, NSError?) -> Void)
 }
 
 class UpdateService: UpdateServiceType, NetworkClientDelegate {
     private let dataService: DataService
     private let urlSession: NSURLSession
 
-    private var feedsInProgress: [NSURL: (feed: Feed, callback: (Feed -> Void))] = [:]
-    private var imagesInProgress: [NSURL: (feed: Feed, callback: (Feed -> Void))] = [:]
+    private var callbacksInProgress: [NSURL: (feed: Feed, callback: ((Feed, NSError?) -> Void))] = [:]
 
     init(dataService: DataService, urlSession: NSURLSession, urlSessionDelegate: URLSessionDelegate) {
         self.dataService = dataService
@@ -54,44 +53,50 @@ class UpdateService: UpdateServiceType, NetworkClientDelegate {
         urlSessionDelegate.delegate = self
     }
 
-    func updateFeed(feed: Feed, callback: Feed -> Void) {
+    func updateFeed(feed: Feed, callback: (Feed, NSError?) -> Void) {
         guard let url = feed.url else {
-            callback(feed)
+            callback(feed, nil)
             return
         }
-        self.feedsInProgress[url] = (feed, callback)
+        self.callbacksInProgress[url] = (feed, callback)
         self.urlSession.downloadTaskWithURL(url).resume()
     }
 
     // MARK: NetworkClientDelegate
 
     func didDownloadFeed(muonFeed: Muon.Feed, url: NSURL) {
-        guard let feedCallback = self.feedsInProgress[url] else { return }
-        self.feedsInProgress.removeValueForKey(url)
+        guard let feedCallback = self.callbacksInProgress[url] else { return }
+        self.callbacksInProgress.removeValueForKey(url)
         let feed = feedCallback.feed
         let callback = feedCallback.callback
         self.dataService.updateFeed(feed, info: muonFeed) {
             if feed.image == nil, let imageUrl = muonFeed.imageURL where !imageUrl.absoluteString.isEmpty {
-                self.imagesInProgress[imageUrl] = feedCallback
+                self.callbacksInProgress[imageUrl] = feedCallback
                 self.urlSession.downloadTaskWithURL(imageUrl).resume()
             } else {
-                callback(feed)
+                callback(feed, nil)
             }
         }
     }
 
     func didDownloadImage(image: Image, url: NSURL) {
-        guard let imageCallback = self.imagesInProgress[url] else { return }
-        self.imagesInProgress.removeValueForKey(url)
+        guard let imageCallback = self.callbacksInProgress[url] else { return }
+        self.callbacksInProgress.removeValueForKey(url)
         let feed = imageCallback.feed
         let callback = imageCallback.callback
         feed.image = image
         self.dataService.saveFeed(feed) {
-            callback(feed)
+            callback(feed, nil)
         }
     }
 
     func didDownloadData(data: NSData, url: NSURL) {}
 
-    func didFailToDownloadDataFromUrl(url: NSURL) {}
+    func didFailToDownloadDataFromUrl(url: NSURL, error: NSError?) {
+        guard let callback = self.callbacksInProgress[url] else { return }
+        self.callbacksInProgress.removeValueForKey(url)
+        let feed = callback.feed
+        let function = callback.callback
+        function(feed, error)
+    }
 }

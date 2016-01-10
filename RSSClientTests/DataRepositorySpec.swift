@@ -440,7 +440,7 @@ class FeedRepositorySpec: QuickSpec {
                     context("when the network request succeeds") {
                         beforeEach {
                             expect(updateService.updatedFeedCallback).toNot(beNil())
-                            updateService.updatedFeedCallback?(feed)
+                            updateService.updatedFeedCallback?(feed, nil)
                             mainQueue.runNextOperation()
                         }
 
@@ -589,7 +589,7 @@ class FeedRepositorySpec: QuickSpec {
                         context("when the original update request finishes") {
                             beforeEach {
                                 mainQueue.runSynchronously = true
-                                updateService.updatedFeedCallback?(feed1)
+                                updateService.updatedFeedCallback?(feed1, nil)
                             }
 
                             it("should call both completion handlers") {
@@ -603,7 +603,7 @@ class FeedRepositorySpec: QuickSpec {
                     context("when the update request succeeds") {
                         beforeEach {
                             mainQueue.runSynchronously = true
-                            updateService.updatedFeedCallback?(feed1)
+                            updateService.updatedFeedCallback?(feed1, nil)
                         }
 
                         it("should inform subscribers that we downloaded a thing and are about to process it") {

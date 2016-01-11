@@ -273,6 +273,7 @@ class CoreDataService: DataService {
             cdarticle.content = article.content
             cdarticle.read = article.read
             cdarticle.flags = article.flags
+            cdarticle.estimatedReadingTime = NSNumber(integer: article.estimatedReadingTime)
 
             if let feed = article.feed, cdfeed = self.coreDataFeedForFeed(feed) {
                 cdarticle.feed = cdfeed

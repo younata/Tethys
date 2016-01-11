@@ -57,7 +57,7 @@ class FeedSpec: QuickSpec {
 
         it("unreadArticles() should return articles with read->false") {
             func article(name: String, read: Bool) -> Article {
-                return Article(title: name, link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: read, feed: nil, flags: [], enclosures: [])
+                return Article(title: name, link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: read, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
             }
 
             let a = article("a", read: true)
@@ -116,7 +116,7 @@ class FeedSpec: QuickSpec {
         describe("adding an article") {
             var article: Article! = nil
             beforeEach {
-                article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
+                article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
             }
 
             context("to a regular feed") {
@@ -187,7 +187,7 @@ class FeedSpec: QuickSpec {
         describe("removing an article") {
             var article: Article! = nil
             beforeEach {
-                article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
+                article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
             }
 
             context("from a regular feed") {
@@ -365,7 +365,7 @@ class FeedSpec: QuickSpec {
                 }
 
                 it("articles") {
-                    let article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
+                    let article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
                     subject.addArticle(article)
                     expect(subject.updated).to(beTruthy())
                 }

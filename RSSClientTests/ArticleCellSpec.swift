@@ -8,8 +8,8 @@ class ArticleCellSpec: QuickSpec {
         var subject: ArticleCell! = nil
         var themeRepository: FakeThemeRepository! = nil
 
-        let unupdatedArticle = Article(title: "title", link: nil, summary: "summary", author: "Rachel", published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, feed: nil, flags: [], enclosures: [])
-        let readArticle = Article(title: "title", link: nil, summary: "summary", author: "Rachel", published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: NSDate(timeIntervalSinceReferenceDate: 100000), identifier: "", content: "content", read: true, feed: nil, flags: [], enclosures: [])
+        let unupdatedArticle = Article(title: "title", link: nil, summary: "summary", author: "Rachel", published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+        let readArticle = Article(title: "title", link: nil, summary: "summary", author: "Rachel", published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: NSDate(timeIntervalSinceReferenceDate: 100000), identifier: "", content: "content", read: true, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
 
         beforeEach {
             subject = ArticleCell(style: .Default, reuseIdentifier: nil)
@@ -61,7 +61,7 @@ class ArticleCellSpec: QuickSpec {
                 subject.article = readArticle
             }
 
-            it("should indicate that it's unread") {
+            it("should indicate that it's read") {
                 expect(subject.unread.unread).to(equal(0))
             }
         }

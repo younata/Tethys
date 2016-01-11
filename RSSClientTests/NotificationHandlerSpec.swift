@@ -69,7 +69,7 @@ class NotificationHandlerSpec: QuickSpec {
                 splitVC.viewControllers = [navController]
 
                 let feed = Feed(title: "feedTitle", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")
-                article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, feed: feed, flags: [], enclosures: [])
+                article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
                 feed.addArticle(article)
 
                 dataReadWriter.feedsList = [feed]
@@ -97,7 +97,7 @@ class NotificationHandlerSpec: QuickSpec {
             var article: Article! = nil
             beforeEach {
                 let feed = Feed(title: "feedTitle", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")
-                article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, feed: feed, flags: [], enclosures: [])
+                article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
                 feed.addArticle(article)
 
                 dataReadWriter.feedsList = [feed]
@@ -122,7 +122,7 @@ class NotificationHandlerSpec: QuickSpec {
             var article: Article! = nil
             beforeEach {
                 let feed = Feed(title: "feedTitle", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")
-                article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, feed: feed, flags: [], enclosures: [])
+                article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
                 feed.addArticle(article)
 
                 dataReadWriter.feedsList = [feed]

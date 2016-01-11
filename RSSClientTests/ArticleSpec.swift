@@ -7,7 +7,7 @@ class ArticleSpec: QuickSpec {
         var subject: Article! = nil
 
         beforeEach {
-            subject = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
+            subject = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
         }
 
         describe("Equatable") {
@@ -22,9 +22,9 @@ class ArticleSpec: QuickSpec {
 
             it("should report two articles not created with coredataarticles with the same property equality as equal") {
                 let date = NSDate()
-                let a = Article(title: "", link: nil, summary: "", author: "", published: date, updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
-                let b = Article(title: "blah", link: NSURL(), summary: "hello", author: "anAuthor", published: NSDate(timeIntervalSince1970: 0), updatedAt: nil, identifier: "hi", content: "hello there", read: true, feed: nil, flags: ["flag"], enclosures: [])
-                let c = Article(title: "", link: nil, summary: "", author: "", published: date, updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
+                let a = Article(title: "", link: nil, summary: "", author: "", published: date, updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                let b = Article(title: "blah", link: NSURL(), summary: "hello", author: "anAuthor", published: NSDate(timeIntervalSince1970: 0), updatedAt: nil, identifier: "hi", content: "hello there", read: true, estimatedReadingTime: 70, feed: nil, flags: ["flag"], enclosures: [])
+                let c = Article(title: "", link: nil, summary: "", author: "", published: date, updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
 
                 expect(a).toNot(equal(b))
                 expect(a).to(equal(c))
@@ -43,9 +43,9 @@ class ArticleSpec: QuickSpec {
 
             it("should report two articles not created with coredataarticles with the same property equality as having the same hashValue") {
                 let date = NSDate()
-                let a = Article(title: "", link: nil, summary: "", author: "", published: date, updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
-                let b = Article(title: "blah", link: NSURL(), summary: "hello", author: "anAuthor", published: NSDate(timeIntervalSince1970: 0), updatedAt: nil, identifier: "hi", content: "hello there", read: true, feed: nil, flags: ["flag"], enclosures: [])
-                let c = Article(title: "", link: nil, summary: "", author: "", published: date, updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [])
+                let a = Article(title: "", link: nil, summary: "", author: "", published: date, updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                let b = Article(title: "blah", link: NSURL(), summary: "hello", author: "anAuthor", published: NSDate(timeIntervalSince1970: 0), updatedAt: nil, identifier: "hi", content: "hello there", read: true, estimatedReadingTime: 60, feed: nil, flags: ["flag"], enclosures: [])
+                let c = Article(title: "", link: nil, summary: "", author: "", published: date, updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
 
                 expect(a.hashValue).toNot(equal(b.hashValue))
                 expect(a.hashValue).to(equal(c.hashValue))
@@ -73,7 +73,7 @@ class ArticleSpec: QuickSpec {
             context("when the enclosure is already associated with this article") {
 
                 beforeEach {
-                    subject = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [enclosure])
+                    subject = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [enclosure])
 
                     expect(enclosure.article).to(equal(subject))
                     expect(subject.enclosuresArray).to(contain(enclosure))
@@ -93,7 +93,7 @@ class ArticleSpec: QuickSpec {
                 var otherArticle: Article! = nil
 
                 beforeEach {
-                    otherArticle = Article(title: "blah", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [enclosure])
+                    otherArticle = Article(title: "blah", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [enclosure])
                 }
 
                 it("should remove the enclosure from the other article and add it to this article") {
@@ -125,7 +125,7 @@ class ArticleSpec: QuickSpec {
 
             context("when the enclosure is associated with this article") {
                 beforeEach {
-                    subject = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [enclosure])
+                    subject = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [enclosure])
                     expect(enclosure.article).to(equal(subject))
                     expect(subject.enclosuresArray).to(contain(enclosure))
                 }
@@ -142,7 +142,7 @@ class ArticleSpec: QuickSpec {
                 var otherArticle: Article! = nil
 
                 beforeEach {
-                    otherArticle = Article(title: "blah", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: [], enclosures: [enclosure])
+                    otherArticle = Article(title: "blah", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [enclosure])
                 }
 
                 it("essentially no-ops") {
@@ -164,7 +164,7 @@ class ArticleSpec: QuickSpec {
 
             context("trying to add the same flag again") {
                 beforeEach {
-                    subject = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: ["flag"], enclosures: [])
+                    subject = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: ["flag"], enclosures: [])
                 }
 
                 it("should no-op") {
@@ -178,7 +178,7 @@ class ArticleSpec: QuickSpec {
         describe("removing a flag") {
             context("that is already a flag in the article") {
                 it("should remove the flag") {
-                    subject = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil, flags: ["flag"], enclosures: [])
+                    subject = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: ["flag"], enclosures: [])
                     subject.removeFlag("flag")
 
                     expect(subject.flags).toNot(contain("flags"))
@@ -293,6 +293,13 @@ class ArticleSpec: QuickSpec {
                     subject.content = ""
                     expect(subject.updated).to(beFalsy())
                     subject.content = "content"
+                    expect(subject.updated).to(beTruthy())
+                }
+
+                it("estimatedReadingTime") {
+                    subject.estimatedReadingTime = 0
+                    expect(subject.updated).to(beFalsy())
+                    subject.estimatedReadingTime = 30
                     expect(subject.updated).to(beTruthy())
                 }
 

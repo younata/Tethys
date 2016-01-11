@@ -11,6 +11,7 @@ import JavaScriptCore
     var updatedAt: NSDate? { get }
     var identifier: String { get }
     var content: String { get }
+    var estimatedReadingTime: Int { get }
     var read: Bool { get set }
     weak var feed: Feed? { get }
     var flags: [String] { get }
@@ -70,6 +71,13 @@ import JavaScriptCore
     dynamic public internal(set) var content: String {
         willSet {
             if newValue != content {
+                self.updated = true
+            }
+        }
+    }
+    dynamic public internal(set) var estimatedReadingTime: Int {
+        willSet {
+            if newValue != estimatedReadingTime {
                 self.updated = true
             }
         }
@@ -139,8 +147,8 @@ import JavaScriptCore
     }
 
     public init(title: String, link: NSURL?, summary: String, author: String, published: NSDate,
-        updatedAt: NSDate?, identifier: String, content: String, read: Bool, feed: Feed?,
-        flags: [String], enclosures: [Enclosure]) {
+        updatedAt: NSDate?, identifier: String, content: String, read: Bool, estimatedReadingTime: Int,
+        feed: Feed?, flags: [String], enclosures: [Enclosure]) {
             self.title = title
             self.link = link
             self.summary = summary
@@ -152,6 +160,7 @@ import JavaScriptCore
             self.read = read
             self.feed = feed
             self.flags = flags
+            self.estimatedReadingTime = estimatedReadingTime
             self.enclosuresArray = DataStoreBackedArray(enclosures)
             super.init()
             for enclosure in self.enclosuresArray {
@@ -177,6 +186,7 @@ import JavaScriptCore
         identifier = article.objectID.URIRepresentation().absoluteString ?? ""
         content = article.content ?? ""
         read = article.read
+        estimatedReadingTime = article.estimatedReadingTime?.integerValue ?? 0
         self.feed = feed
         self.flags = article.flags
         self.enclosuresArray = DataStoreBackedArray()

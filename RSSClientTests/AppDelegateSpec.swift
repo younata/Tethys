@@ -171,7 +171,7 @@ class AppDelegateSpec: QuickSpec {
 
                 it("opens an article list for a feed when a 'View Feed' action is selected") {
                     let feed = Feed(title: "title", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
-                    let article = Article(title: "title", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, feed: feed, flags: [], enclosures: [])
+                    let article = Article(title: "title", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
                     feed.addArticle(article)
                     dataReadWriter.feedsList = [feed]
 
@@ -239,7 +239,7 @@ class AppDelegateSpec: QuickSpec {
 
             beforeEach {
                 let feed = Feed(title: "title", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
-                article = Article(title: "title", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, feed: feed, flags: [], enclosures: [])
+                article = Article(title: "title", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
                 feed.addArticle(article)
                 dataReadWriter.feedsList = [feed]
                 subject.application(UIApplication.sharedApplication(), didFinishLaunchingWithOptions: nil)

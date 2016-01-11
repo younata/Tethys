@@ -81,10 +81,10 @@ class ArticleViewControllerSpec: QuickSpec {
                 }
             }
 
-            let article = Article(title: "article", link: NSURL(string: "https://example.com/article"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, feed: nil, flags: [], enclosures: [])
-            let article1 = Article(title: "article1", link: nil, summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier1", content: "<h1>hi</h1>", read: false, feed: nil, flags: [], enclosures: [])
-            let article2 = Article(title: "article2", link: NSURL(string: "https://example.com/article"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier2", content: "<h1>hi</h1>", read: false, feed: nil, flags: [], enclosures: [])
-            let article3 = Article(title: "article3", link: NSURL(string: "https://example.com/article"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier3", content: "<h1>hi</h1>", read: false, feed: nil, flags: [], enclosures: [])
+            let article = Article(title: "article", link: NSURL(string: "https://example.com/article"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+            let article1 = Article(title: "article1", link: nil, summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier1", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+            let article2 = Article(title: "article2", link: NSURL(string: "https://example.com/article"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier2", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+            let article3 = Article(title: "article3", link: NSURL(string: "https://example.com/article"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier3", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
 
             context("when there is only one article") {
                 beforeEach {
@@ -225,7 +225,7 @@ class ArticleViewControllerSpec: QuickSpec {
         }
 
         describe("continuing from user activity") {
-            let article = Article(title: "article", link: NSURL(string: "https://example.com/article"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, feed: nil, flags: [], enclosures: [])
+            let article = Article(title: "article", link: NSURL(string: "https://example.com/article"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
 
             beforeEach {
                 subject.setArticle(article)
@@ -248,8 +248,8 @@ class ArticleViewControllerSpec: QuickSpec {
         }
 
         describe("setting the article") {
-            let article = Article(title: "article", link: NSURL(string: "https://google.com/"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, feed: nil, flags: ["a"], enclosures: [])
-            let articleWOContent = Article(title: "article", link: NSURL(string: "https://google.com/"), summary: "this was a summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, feed: nil, flags: ["a"], enclosures: [])
+            let article = Article(title: "article", link: NSURL(string: "https://google.com/"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"], enclosures: [])
+            let articleWOContent = Article(title: "article", link: NSURL(string: "https://google.com/"), summary: "this was a summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"], enclosures: [])
             let feed = Feed(title: "feed", url: NSURL(string: "https://example.com"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
 
             beforeEach {
@@ -285,7 +285,7 @@ class ArticleViewControllerSpec: QuickSpec {
             }
 
             it("should exclude the open in safari button if the article has no associated link") {
-                let article2 = Article(title: "article2", link: nil, summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "<h1>Hello World</h1>", read: false, feed: nil, flags: ["a"], enclosures: [])
+                let article2 = Article(title: "article2", link: nil, summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "<h1>Hello World</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"], enclosures: [])
                 let feed2 = Feed(title: "feed2", url: NSURL(string: "https://example.com"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
                 article2.feed = feed2
                 feed2.addArticle(article2)

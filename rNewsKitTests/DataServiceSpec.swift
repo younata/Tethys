@@ -127,7 +127,8 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
         it("easily allows an article to be updated") {
             guard let article = article else { fail(); return }
             let author = Muon.Author(name: "Rachel Brindle", email: NSURL(string: "mailto:rachel@example.com"), uri: NSURL(string: "https://example.com/rachel"))
-            let item = Muon.Article(title: "a title", link: NSURL(string: "https://example.com"), description: "description", content: "content", guid: "guid", published: NSDate(timeIntervalSince1970: 10), updated: NSDate(timeIntervalSince1970: 15), authors: [author], enclosures: [])
+            let content = (0..<100).map({_ in "<p>this was a content space</p>"}).reduce("", combine: +)
+            let item = Muon.Article(title: "a title", link: NSURL(string: "https://example.com"), description: "description", content: content, guid: "guid", published: NSDate(timeIntervalSince1970: 10), updated: NSDate(timeIntervalSince1970: 15), authors: [author], enclosures: [])
 
             let updateExpectation = spec.expectationWithDescription("Update Article")
             if let searchIndex = dataService.searchIndex as? FakeSearchIndex {
@@ -139,8 +140,9 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
                 expect(article.published) == NSDate(timeIntervalSince1970: 10)
                 expect(article.updatedAt) == NSDate(timeIntervalSince1970: 15)
                 expect(article.summary) == "description"
-                expect(article.content) == "content"
+                expect(article.content) == content
                 expect(article.author) == "Rachel Brindle <rachel@example.com>"
+                expect(article.estimatedReadingTime) == 3
                 #if os(iOS)
                     if #available(iOS 9.0, *) {
                         if let searchIndex = dataService.searchIndex as? FakeSearchIndex {

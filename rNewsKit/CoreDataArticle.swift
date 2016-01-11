@@ -10,6 +10,7 @@ class CoreDataArticle: NSManagedObject {
     @NSManaged var identifier: String?
     @NSManaged var content: String?
     @NSManaged var read: Bool
+    @NSManaged var estimatedReadingTime: NSNumber?
     @NSManaged var flags: [String]
     @NSManaged var feed: CoreDataFeed?
     @NSManaged var enclosures: Set<CoreDataEnclosure>

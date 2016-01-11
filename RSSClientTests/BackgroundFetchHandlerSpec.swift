@@ -45,10 +45,10 @@ class BackgroundFetchHandlerSpec: QuickSpec {
                     let feed1 = Feed(title: "a", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     let feed2 = Feed(title: "b", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-                    let article1 = Article(title: "a", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "a", content: "", read: false, feed: feed1, flags: [], enclosures: [])
-                    let article2 = Article(title: "b", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "b", content: "", read: false, feed: feed1, flags: [], enclosures: [])
-                    let article3 = Article(title: "c", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "c", content: "", read: false, feed: feed2, flags: [], enclosures: [])
-                    let article4 = Article(title: "d", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "d", content: "", read: false, feed: feed2, flags: [], enclosures: [])
+                    let article1 = Article(title: "a", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "a", content: "", read: false, estimatedReadingTime: 0, feed: feed1, flags: [], enclosures: [])
+                    let article2 = Article(title: "b", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "b", content: "", read: false, estimatedReadingTime: 0, feed: feed1, flags: [], enclosures: [])
+                    let article3 = Article(title: "c", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "c", content: "", read: false, estimatedReadingTime: 0, feed: feed2, flags: [], enclosures: [])
+                    let article4 = Article(title: "d", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "d", content: "", read: false, estimatedReadingTime: 0, feed: feed2, flags: [], enclosures: [])
 
                     feed1.addArticle(article1)
                     feed1.addArticle(article2)

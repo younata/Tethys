@@ -248,7 +248,8 @@ class ArticleViewControllerSpec: QuickSpec {
         }
 
         describe("setting the article") {
-            let article = Article(title: "article", link: NSURL(string: "https://google.com/"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, feed: nil, flags: ["a"], enclosures: [])
+            let article = Article(title: "article", link: NSURL(string: "https://google.com/"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, feed: nil, flags: ["a"], enclosures: [])
+            let articleWOContent = Article(title: "article", link: NSURL(string: "https://google.com/"), summary: "this was a summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, feed: nil, flags: ["a"], enclosures: [])
             let feed = Feed(title: "feed", url: NSURL(string: "https://example.com"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
 
             beforeEach {
@@ -260,6 +261,12 @@ class ArticleViewControllerSpec: QuickSpec {
             it("should mark the article as read") {
                 expect(article.read).to(beTruthy())
                 expect(dataWriter.lastArticleMarkedRead).to(equal(article))
+            }
+
+            it("should load just the description if the article has no content") {
+                subject.setArticle(articleWOContent)
+
+                expect(subject.content.loadedHTMLString()).to(contain(articleWOContent.summary))
             }
 
             if #available(iOS 9, *) {

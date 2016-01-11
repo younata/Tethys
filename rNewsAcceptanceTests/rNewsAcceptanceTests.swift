@@ -41,12 +41,18 @@ class rNewsAcceptanceTests: XCTestCase {
         enterUrlTextField.tap()
         enterUrlTextField.typeText("http://younata.github.io")
         app.typeText("\r")
-        app.toolbars.buttons["Add Feed"].tap()
+
+        let addFeedButton = app.toolbars.buttons["Add Feed"]
+
+        expectationForPredicate(NSPredicate(format: "exists == true"), evaluatedWithObject: addFeedButton, handler: nil)
+        waitForExpectationsWithTimeout(60, handler: nil)
+
+        addFeedButton.tap()
 
         let feedCell = app.cells.elementBoundByIndex(0)
 
         expectationForPredicate(NSPredicate(format: "exists == true"), evaluatedWithObject: feedCell, handler: nil)
-        waitForExpectationsWithTimeout(10, handler: nil)
+        waitForExpectationsWithTimeout(60, handler: nil)
 
         deleteEverything()
     }

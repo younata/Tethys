@@ -8,10 +8,6 @@
 		<data>
 		YnmL11CjRz8S5mf1keqca5Hzp/4=
 		</data>
-		<key>Headers/Ra-iOS.h</key>
-		<data>
-		OgN0mtJDf4l+jgnvEBbxPSuaNxM=
-		</data>
 		<key>Headers/Ra.h</key>
 		<data>
 		+RQnITwFlblEc3hTPHxnjk3tY6I=
@@ -26,7 +22,7 @@
 		</data>
 		<key>Modules/Ra.swiftmodule/arm.swiftmodule</key>
 		<data>
-		SNAh+8JoODiiJRg5yh8H4q7D/OE=
+		HW3++V2dFT+S9jls2XWhTberweo=
 		</data>
 		<key>Modules/Ra.swiftmodule/arm64.swiftdoc</key>
 		<data>
@@ -34,7 +30,7 @@
 		</data>
 		<key>Modules/Ra.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		X8eibyaGoWWQjw/0sFHdWhsmY+w=
+		TLQU5pY1mew+xUKpOCZ8mh4Pols=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -47,10 +43,6 @@
 		<data>
 		YnmL11CjRz8S5mf1keqca5Hzp/4=
 		</data>
-		<key>Headers/Ra-iOS.h</key>
-		<data>
-		OgN0mtJDf4l+jgnvEBbxPSuaNxM=
-		</data>
 		<key>Headers/Ra.h</key>
 		<data>
 		+RQnITwFlblEc3hTPHxnjk3tY6I=
@@ -61,7 +53,7 @@
 		</data>
 		<key>Modules/Ra.swiftmodule/arm.swiftmodule</key>
 		<data>
-		SNAh+8JoODiiJRg5yh8H4q7D/OE=
+		HW3++V2dFT+S9jls2XWhTberweo=
 		</data>
 		<key>Modules/Ra.swiftmodule/arm64.swiftdoc</key>
 		<data>
@@ -69,7 +61,7 @@
 		</data>
 		<key>Modules/Ra.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		X8eibyaGoWWQjw/0sFHdWhsmY+w=
+		TLQU5pY1mew+xUKpOCZ8mh4Pols=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>

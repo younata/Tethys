@@ -57,9 +57,8 @@ public class ArticleViewController: UIViewController {
         return UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: "share")
     }()
     public private(set) lazy var openInSafariButton: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: "openInSafari")
+        return UIBarButtonItem(title: self.linkString, style: .Plain, target: self, action: "openInSafari")
     }()
-    private let contentString = NSLocalizedString("ArticleViewController_TabBar_ViewContent", comment: "")
     private let linkString = NSLocalizedString("ArticleViewController_TabBar_ViewLink", comment: "")
 
     public var articles = DataStoreBackedArray<Article>()

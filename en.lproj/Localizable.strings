@@ -76,6 +76,8 @@
 "ArticleListController_Cell_EditAction_MarkUnread" = "Mark\nUnread";
 "ArticleListController_Search" = "Search Articles";
 
+"ArticleCell_EstimatedReadingTime" = "%@ to read";
+
 "ArticleViewController_TabBar_ViewLink" = "Open Link";
 "ArticleViewController_Command_ViewPreviousArticle" = "Previous Article";
 "ArticleViewController_Command_ViewNextArticle" = "Next Article";

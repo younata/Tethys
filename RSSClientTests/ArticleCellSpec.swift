@@ -27,6 +27,7 @@ class ArticleCellSpec: QuickSpec {
                 expect(subject.title.textColor).to(equal(themeRepository.textColor))
                 expect(subject.published.textColor).to(equal(themeRepository.textColor))
                 expect(subject.author.textColor).to(equal(themeRepository.textColor))
+                expect(subject.readingTime.textColor).to(equal(themeRepository.textColor))
             }
 
             it("changes the cell's background colors") {
@@ -48,6 +49,10 @@ class ArticleCellSpec: QuickSpec {
             expect(subject.published.text).to(equal(dateFormatter.stringFromDate(unupdatedArticle.published)))
         }
 
+        it("should not show the estimated reading time") {
+            expect(subject.readingTime.hidden).to(beTruthy())
+        }
+
         it("should show the author") {
             expect(subject.author.text).to(equal("Rachel"))
         }
@@ -63,6 +68,17 @@ class ArticleCellSpec: QuickSpec {
 
             it("should indicate that it's read") {
                 expect(subject.unread.unread).to(equal(0))
+            }
+        }
+
+        context("setting a decently long article") {
+            beforeEach {
+                subject.article = Article(title: "title", link: nil, summary: "summary", author: "Rachel", published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 15, feed: nil, flags: [], enclosures: [])
+            }
+
+            it("should show the estimated reading time") {
+                expect(subject.readingTime.hidden).to(beFalsy())
+                expect(subject.readingTime.text).to(equal("15 minutes"))
             }
         }
 

@@ -12,7 +12,11 @@ class URLSessionDelegate: NSObject, NSURLSessionDownloadDelegate {
     weak var delegate: NetworkClientDelegate?
 
     func URLSession(_ : NSURLSession, downloadTask: NSURLSessionDownloadTask, didFinishDownloadingToURL url: NSURL) {
-        guard let data = NSData(contentsOfURL: url) else { return }
+        guard let data = NSData(contentsOfURL: url) else {
+            let error = NSError(domain: "com.rachelbrindle.rNews", code: 20, userInfo: nil)
+            self.delegate?.didFailToDownloadDataFromUrl(url, error: error)
+            return
+        }
         let originalUrl = downloadTask.originalRequest?.URL ?? NSURL()
         if downloadTask.response?.MIMEType?.hasPrefix("image") == true, let image = Image(data: data) {
             self.delegate?.didDownloadImage(image, url: originalUrl)

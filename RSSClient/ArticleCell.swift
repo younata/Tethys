@@ -12,6 +12,15 @@ public class ArticleCell: UITableViewCell {
             let hasNotRead = self.article?.read != true
             self.unread.unread = hasNotRead ? 1 : 0
             self.unreadWidth.constant = (hasNotRead ? 30 : 0)
+            if let readingTime = self.article?.estimatedReadingTime where readingTime > 0 {
+                self.readingTime.hidden = false
+                let localizedFormat = NSLocalizedString("ArticleCell_EstimatedReadingTime", comment: "")
+                let formattedTime = self.timeFormatter.stringFromTimeInterval(NSTimeInterval(readingTime * 60)) ?? ""
+                self.readingTime.text = NSString.localizedStringWithFormat(localizedFormat, formattedTime) as String
+            } else {
+                self.readingTime.hidden = true
+                self.readingTime.text = nil
+            }
         }
     }
 
@@ -19,6 +28,7 @@ public class ArticleCell: UITableViewCell {
     public let published = UILabel(forAutoLayout: ())
     public let author = UILabel(forAutoLayout: ())
     public let unread = UnreadCounter(forAutoLayout: ())
+    public let readingTime = UILabel(forAutoLayout: ())
 
     public var themeRepository: ThemeRepository? = nil {
         didSet {
@@ -28,7 +38,7 @@ public class ArticleCell: UITableViewCell {
 
     private var unreadWidth: NSLayoutConstraint! = nil
 
-    private lazy var dateFormatter: NSDateFormatter = {
+    private let dateFormatter: NSDateFormatter = {
         let dateFormatter = NSDateFormatter()
 
         dateFormatter.timeStyle = .NoStyle
@@ -38,6 +48,13 @@ public class ArticleCell: UITableViewCell {
         return dateFormatter
     }()
 
+    private let timeFormatter: NSDateComponentsFormatter = {
+        let formatter = NSDateComponentsFormatter()
+        formatter.allowedUnits = [.Hour, .Minute]
+        formatter.unitsStyle = .Full
+        return formatter
+    }()
+
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
@@ -45,6 +62,7 @@ public class ArticleCell: UITableViewCell {
         self.contentView.addSubview(self.author)
         self.contentView.addSubview(self.published)
         self.contentView.addSubview(self.unread)
+        self.contentView.addSubview(self.readingTime)
 
         self.title.numberOfLines = 0
         self.title.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
@@ -57,7 +75,9 @@ public class ArticleCell: UITableViewCell {
 
         self.author.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         self.author.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.title, withOffset: 8)
-        self.author.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
+
+        self.readingTime.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(0, 8, 4, 4), excludingEdge: .Top)
+        self.readingTime.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.author, withOffset: 4)
 
         self.unread.hideUnreadText = true
 
@@ -82,10 +102,11 @@ public class ArticleCell: UITableViewCell {
 
 extension ArticleCell: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
-        self.title.textColor = self.themeRepository?.textColor
-        self.published.textColor = self.themeRepository?.textColor
-        self.author.textColor = self.themeRepository?.textColor
+        self.title.textColor = themeRepository.textColor
+        self.published.textColor = themeRepository.textColor
+        self.author.textColor = themeRepository.textColor
+        self.readingTime.textColor = themeRepository.textColor
 
-        self.backgroundColor = self.themeRepository?.backgroundColor
+        self.backgroundColor = themeRepository.backgroundColor
     }
 }

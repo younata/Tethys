@@ -113,7 +113,7 @@ extension DataService {
         article.summary = item.description ?? ""
         article.content = item.content ?? ""
 
-        article.estimatedReadingTime = estimateReadingTime(item.content ?? "")
+        article.estimatedReadingTime = estimateReadingTime(item.content ?? item.description ?? "")
 
         article.author = author
 

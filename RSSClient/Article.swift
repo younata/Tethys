@@ -186,7 +186,13 @@ import JavaScriptCore
         identifier = article.objectID.URIRepresentation().absoluteString ?? ""
         content = article.content ?? ""
         read = article.read
-        estimatedReadingTime = article.estimatedReadingTime?.integerValue ?? 0
+        if let readingTime = article.estimatedReadingTime?.integerValue {
+            estimatedReadingTime = readingTime
+        } else {
+            let readingTime = estimateReadingTime(article.content ?? article.summary ?? "")
+            article.estimatedReadingTime = NSNumber(integer: readingTime)
+            estimatedReadingTime = readingTime
+        }
         self.feed = feed
         self.flags = article.flags
         self.enclosuresArray = DataStoreBackedArray()

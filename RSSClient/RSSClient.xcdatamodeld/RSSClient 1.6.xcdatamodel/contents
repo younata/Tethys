@@ -3,7 +3,7 @@
     <entity name="Article" representedClassName="rNewsKit.CoreDataArticle" syncable="YES">
         <attribute name="author" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="content" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="estimatedReadingTime" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="estimatedReadingTime" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <attribute name="flags" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="link" optional="YES" attributeType="String" syncable="YES"/>

@@ -34,28 +34,6 @@ protocol DataService: class {
     func deleteEnclosure(enclosure: Enclosure, callback: (Void) -> (Void))
 }
 
-private func estimateReadingTime(htmlString: String) -> Int {
-    guard let removeEntityCodes = try? NSRegularExpression(pattern: "(&nbsp;|&#160;)", options: .CaseInsensitive),
-        makeOneLine = try? NSRegularExpression(pattern: "[\n\r]", options: .CaseInsensitive),
-        removeScripts = try? NSRegularExpression(pattern: "<script.*?</script>", options: .CaseInsensitive),
-        removeHTMLTags = try? NSRegularExpression(pattern: "<.*?>", options: .CaseInsensitive) else {
-            return 0
-    }
-
-    let mutableString = NSMutableString(string: htmlString)
-
-    for regex in [removeEntityCodes, makeOneLine, removeScripts, removeHTMLTags] {
-        regex.replaceMatchesInString(mutableString,
-            options: [],
-            range: NSMakeRange(0, mutableString.length),
-            withTemplate: " ")
-    }
-
-    let words = mutableString.componentsSeparatedByString(" ")
-
-    return Int(round(Double(words.count) / 200.0))
-}
-
 extension DataService {
     func allFeeds(callback: [Feed] -> Void) {
         self.feedsMatchingPredicate(NSPredicate(value: true), callback: callback)

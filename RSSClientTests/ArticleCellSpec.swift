@@ -78,7 +78,7 @@ class ArticleCellSpec: QuickSpec {
 
             it("should show the estimated reading time") {
                 expect(subject.readingTime.hidden).to(beFalsy())
-                expect(subject.readingTime.text).to(equal("15 minutes"))
+                expect(subject.readingTime.text).to(equal("15 minutes to read"))
             }
         }
 

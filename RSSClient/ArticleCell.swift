@@ -76,6 +76,9 @@ public class ArticleCell: UITableViewCell {
         self.author.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         self.author.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.title, withOffset: 8)
 
+        self.readingTime.numberOfLines = 0
+        self.readingTime.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
+
         self.readingTime.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(0, 8, 4, 4), excludingEdge: .Top)
         self.readingTime.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.author, withOffset: 4)
 

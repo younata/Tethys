@@ -175,6 +175,7 @@ public class DataStoreBackedArray<T>: CollectionType, CustomDebugStringConvertib
             for i in start..<end {
                 self.internalObjects.insert(self.conversionFunction!(self.managedArray[i]), atIndex: i)
             }
+            _ = try? self.managedObjectContext?.save()
         }
 
         if wait {

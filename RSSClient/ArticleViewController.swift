@@ -272,6 +272,7 @@ public class ArticleViewController: UIViewController {
             self.nextContent?.autoPinEdgeToSuperviewEdge(.Top)
             self.nextContent?.autoPinEdgeToSuperviewEdge(.Bottom)
             self.nextContent?.autoMatchDimension(.Width, toDimension: .Width, ofView: self.view)
+            self.nextContent?.scrollView.contentInset = self.content.scrollView.contentInset
             let edge: ALEdge = left ? .Leading : .Trailing
             self.nextContentRight = self.nextContent!.autoPinEdgeToSuperviewEdge(edge, withInset: translation)
         } else if gesture.state == .Changed {

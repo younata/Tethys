@@ -44,7 +44,7 @@ public class KitModule: NSObject, Ra.InjectorModule {
         let urlSessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier(
             "com.rachelbrindle.rnews"
         )
-        urlSessionConfiguration.discretionary = true
+        urlSessionConfiguration.discretionary = false
         let urlSessionDelegate = URLSessionDelegate()
 
         let urlSession = NSURLSession(configuration: urlSessionConfiguration,

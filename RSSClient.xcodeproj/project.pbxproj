@@ -15,6 +15,8 @@
 		8902D54C1BB075E9003D7C22 /* Lepton.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5481BB0754F003D7C22 /* Lepton.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8902D54D1BB075F7003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5481BB0754F003D7C22 /* Lepton.framework */; };
 		8902D54E1BB07712003D7C22 /* Lepton.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5481BB0754F003D7C22 /* Lepton.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8903A6251C4AB17C00E896BF /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903A6241C4AB17C00E896BF /* NotificationView.swift */; };
+		8903A6271C4ABA7800E896BF /* NotificationViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903A6261C4ABA7800E896BF /* NotificationViewSpec.swift */; };
 		890894981BFEC670002848A4 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; };
 		890894991BFEC698002848A4 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; };
 		8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8908949A1BFED7B8002848A4 /* FakeReachable.swift */; };
@@ -454,6 +456,8 @@
 		8902D5451BB07389003D7C22 /* Lepton.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lepton.framework; path = ../Carthage/Build/iOS/Lepton.framework; sourceTree = "<group>"; };
 		8902D5481BB0754F003D7C22 /* Lepton.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lepton.framework; path = ../Carthage/Build/Mac/Lepton.framework; sourceTree = "<group>"; };
 		8903A6231C48919E00E896BF /* RSSClient 1.7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.7.xcdatamodel"; sourceTree = "<group>"; };
+		8903A6241C4AB17C00E896BF /* NotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
+		8903A6261C4ABA7800E896BF /* NotificationViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationViewSpec.swift; sourceTree = "<group>"; };
 		890894971BFEC670002848A4 /* Reachability.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reachability.framework; path = ../Carthage/Build/iOS/Reachability.framework; sourceTree = "<group>"; };
 		8908949A1BFED7B8002848A4 /* FakeReachable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeReachable.swift; sourceTree = "<group>"; };
 		8918D4A31B8115F800DCDE0E /* ExplanationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExplanationView.swift; sourceTree = "<group>"; };
@@ -1043,6 +1047,7 @@
 				89C830CC19DC67B9009924DA /* UnreadCounter.swift */,
 				898F6E111B129AB6000D343D /* ActivityIndicator.swift */,
 				8918D4A31B8115F800DCDE0E /* ExplanationView.swift */,
+				8903A6241C4AB17C00E896BF /* NotificationView.swift */,
 				896320921C1779DE00B7C980 /* Settings */,
 				89F98BA21BA079DE005C3CA8 /* Generic Cells */,
 				896320931C1779F900B7C980 /* Repositories */,
@@ -1077,6 +1082,7 @@
 				89C8308F19D730E9009924DA /* Supporting Files */,
 				89C204B41A73811000C792D2 /* AppDelegateSpec.swift */,
 				8953B1571B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift */,
+				8903A6261C4ABA7800E896BF /* NotificationViewSpec.swift */,
 				89C204C11A73FEDA00C792D2 /* SplitViewControllerSpec.swift */,
 				8918D4DC1B859D3B00DCDE0E /* ThemeRepositorySpec.swift */,
 				89F98BA71BA07E50005C3CA8 /* SettingsRepositorySpec.swift */,
@@ -1941,6 +1947,7 @@
 				89E2A33D1B6A856900A40D4E /* SettingsViewController.swift in Sources */,
 				89C509F41A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */,
 				8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */,
+				8903A6251C4AB17C00E896BF /* NotificationView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1958,6 +1965,7 @@
 				898F670E1B0007F4004A7BE3 /* SpecInjectorModule.swift in Sources */,
 				893F93E41B237EBC00B52194 /* UnreadCounterSpec.swift in Sources */,
 				89FAE2741B92893E009A3604 /* FakeThemeRepository.swift in Sources */,
+				8903A6271C4ABA7800E896BF /* NotificationViewSpec.swift in Sources */,
 				898F670C1B000451004A7BE3 /* FakeOperationQueue.swift in Sources */,
 				89F83F361B4DB390003F8F6C /* FakeFeedFinder.swift in Sources */,
 				89F98BAA1BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift in Sources */,

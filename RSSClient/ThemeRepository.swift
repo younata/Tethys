@@ -94,6 +94,16 @@ public class ThemeRepository: NSObject, Injectable {
         }
     }
 
+    public private(set) var errorColor: UIColor {
+        get {
+            let color = self.colorForKey("errorColor")
+            return color ?? UIColor(red: 1, green: 0, blue: 0.2, alpha: 1)
+        }
+        set {
+            self.privateSetValue(newValue, forKey: "errorColor")
+        }
+    }
+
     public enum Theme: Int, CustomStringConvertible {
         case Default = 0
         case Dark = 1
@@ -133,6 +143,7 @@ public class ThemeRepository: NSObject, Injectable {
                 self.barStyle = .Default
                 self.statusBarStyle = .Default
                 self.scrollIndicatorStyle = .Black
+                self.errorColor = UIColor(red: 1, green: 0, blue: 0.2, alpha: 1)
             case .Dark:
                 self.backgroundColor = UIColor.blackColor()
                 self.textColor = UIColor.whiteColor()
@@ -142,6 +153,7 @@ public class ThemeRepository: NSObject, Injectable {
                 self.barStyle = .Black
                 self.statusBarStyle = .LightContent
                 self.scrollIndicatorStyle = .White
+                self.errorColor = UIColor(red: 0.75, green: 0, blue: 0.1, alpha: 1)
             }
 
 

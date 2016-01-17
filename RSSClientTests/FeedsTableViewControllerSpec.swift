@@ -563,37 +563,29 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 }
 
                 context("when the call fails") {
-                    var alert: UIAlertController? = nil
                     beforeEach {
                         let error = NSError(domain: "NSURLErrorDomain", code: -1001, userInfo: [NSLocalizedFailureReasonErrorKey: "The request timed out.", "feedTitle": "foo"])
+                        UIView.pauseAnimations()
                         dataReadWriter.updateFeedsCompletion([], [error])
+                    }
+
+                    afterEach {
+                        UIView.beforeEach()
+                    }
+
+                    it("should end refreshing") {
                         for object in dataReadWriter.subscribers.allObjects {
                             if let subscriber = object as? DataSubscriber {
                                 subscriber.didUpdateFeeds([])
                             }
                         }
-                        alert = subject.presentedViewController as? UIAlertController
-                    }
-
-                    it("should end refreshing") {
                         expect(subject.refreshView.isRefreshing).to(beFalsy())
                     }
 
                     it("should bring up an alert notifying the user") {
-                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                        if let alert = alert {
-                            expect(alert.title).to(equal("Unable to update feeds"))
-                            expect(alert.message).to(equal("foo: The request timed out."))
-                        }
-                    }
-
-                    it("should dismiss the alert when tapping the single (OK) button") {
-                        if let actions = alert?.actions {
-                            expect(actions.count).to(equal(1))
-                            if let action = actions.first {
-                                expect(action.title).to(equal("OK"))
-                            }
-                        }
+                        expect(subject.notificationView.titleLabel.hidden) == false
+                        expect(subject.notificationView.titleLabel.text).to(equal("Unable to update feeds"))
+                        expect(subject.notificationView.messageLabel.text).to(equal("foo: The request timed out."))
                     }
                 }
             }

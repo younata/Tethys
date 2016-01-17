@@ -76,6 +76,8 @@ public class FeedsTableViewController: UIViewController {
     private let tableViewController = UITableViewController(style: .Plain)
     private var menuTopOffset: NSLayoutConstraint!
 
+    public let notificationView = NotificationView(forAutoLayout: ())
+
     private lazy var dataWriter: DataWriter = {
         return self.injector!.create(DataWriter)!
     }()
@@ -112,6 +114,12 @@ public class FeedsTableViewController: UIViewController {
         self.view.addSubview(self.dropDownMenu)
         self.dropDownMenu.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
         self.menuTopOffset = self.dropDownMenu.autoPinEdgeToSuperviewEdge(.Top)
+
+        self.themeRepository.addSubscriber(self.notificationView)
+        self.navigationController?.navigationBar.addSubview(self.notificationView)
+        self.notificationView.autoPinEdgeToSuperviewMargin(.Trailing)
+        self.notificationView.autoPinEdgeToSuperviewMargin(.Leading)
+        self.notificationView.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.navigationController!.navigationBar)
 
         self.showLoadingView(NSLocalizedString("FeedsTableViewController_Loading_Feeds", comment: ""))
 
@@ -402,12 +410,7 @@ extension FeedsTableViewController: BreakOutToRefreshDelegate, UIScrollViewDeleg
                 }).joinWithSeparator("\n")
 
                 let alertMessage = messageString
-                let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
-                let actionTitle = NSLocalizedString("FeedsTableViewController_UpdateFeeds_Error_Accept", comment: "")
-                alert.addAction(UIAlertAction(title: actionTitle, style: .Default, handler: {_ in
-                    self.dismissViewControllerAnimated(true, completion: nil)
-                }))
-                self.presentViewController(alert, animated: true, completion: nil)
+                self.notificationView.display(alertTitle, message: alertMessage)
             }
         })
     }

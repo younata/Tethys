@@ -6,6 +6,7 @@ github "younata/BreakOutToRefresh" "resizing"
 github "soffes/SyntaxKit"
 github "soffes/X" "swift2"
 github "ashleymills/Reachability.swift"
+github "younata/WorkFlow"
 
 # objc
 github "PureLayout/PureLayout"

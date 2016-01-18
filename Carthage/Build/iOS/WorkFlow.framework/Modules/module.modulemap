@@ -1,0 +1,10 @@
+framework module WorkFlow {
+  umbrella header "WorkFlow.h"
+
+  export *
+  module * { export * }
+}
+
+module WorkFlow.Swift {
+    header "WorkFlow-Swift.h"
+}

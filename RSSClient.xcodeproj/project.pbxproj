@@ -1082,8 +1082,8 @@
 			isa = PBXGroup;
 			children = (
 				89C8308F19D730E9009924DA /* Supporting Files */,
-				89C204B41A73811000C792D2 /* AppDelegateSpec.swift */,
 				89BFAC0F1C4C66AE007B3415 /* CustomMatchers.swift */,
+				89C204B41A73811000C792D2 /* AppDelegateSpec.swift */,
 				8953B1571B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift */,
 				8903A6261C4ABA7800E896BF /* NotificationViewSpec.swift */,
 				89C204C11A73FEDA00C792D2 /* SplitViewControllerSpec.swift */,

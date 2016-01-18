@@ -43,11 +43,11 @@ class ThemeRepositorySpec: QuickSpec {
         }
 
         it("has a default background color of white") {
-            expect(subject.backgroundColor).to(equal(UIColor.whiteColor()))
+            expect(subject.backgroundColor).to(equalColor(UIColor.whiteColor()))
         }
 
         it("has a default text color of black") {
-            expect(subject.textColor).to(equal(UIColor.blackColor()))
+            expect(subject.textColor).to(equalColor(UIColor.blackColor()))
         }
 
         it("uses 'github2' as the default article css") {
@@ -55,7 +55,7 @@ class ThemeRepositorySpec: QuickSpec {
         }
 
         it("has a default tint color of white") {
-            expect(subject.tintColor).to(equal(UIColor.whiteColor()))
+            expect(subject.tintColor).to(equalColor(UIColor.whiteColor()))
         }
 
         it("uses 'mac_classic' as the default syntax highlight file name") {
@@ -75,26 +75,26 @@ class ThemeRepositorySpec: QuickSpec {
         }
 
         it("has a default error color of a red shade") {
-            expect(subject.errorColor).to(equal(UIColor(red: 1, green: 0, blue: 0.2, alpha: 1)))
+            expect(subject.errorColor).to(equalColor(UIColor(red: 1, green: 0, blue: 0.2, alpha: 1)))
         }
 
         sharedExamples("a changed theme") {(sharedContext: SharedExampleContext) in
             it("changes the background color") {
                 let expectedColor = sharedContext()["background"] as? UIColor
                 expect(expectedColor).toNot(beNil())
-                expect(subject.backgroundColor).to(equal(expectedColor))
+                expect(subject.backgroundColor).to(equalColor(expectedColor))
             }
 
             it("changes the text color") {
                 let expectedColor = sharedContext()["text"] as? UIColor
                 expect(expectedColor).toNot(beNil())
-                expect(subject.textColor).to(equal(expectedColor))
+                expect(subject.textColor).to(equalColor(expectedColor))
             }
 
             it("changes the tint color") {
                 let expectedColor = sharedContext()["tint"] as? UIColor
                 expect(expectedColor).toNot(beNil())
-                expect(subject.tintColor).to(equal(expectedColor))
+                expect(subject.tintColor).to(equalColor(expectedColor))
             }
 
             it("changes the articleCss") {
@@ -130,7 +130,7 @@ class ThemeRepositorySpec: QuickSpec {
             it("changes the error color") {
                 let expectedColor = sharedContext()["error"] as? UIColor
                 expect(expectedColor).toNot(beNil())
-                expect(subject.errorColor).to(equal(expectedColor))
+                expect(subject.errorColor).to(equalColor(expectedColor))
             }
 
             it("informs subscribers") {
@@ -167,15 +167,15 @@ class ThemeRepositorySpec: QuickSpec {
                     let expectedError = sharedContext()["error"] as? UIColor
                     expect(expectedError).toNot(beNil())
 
-                    expect(otherRepo.backgroundColor).to(equal(expectedBackground))
-                    expect(otherRepo.textColor).to(equal(expectedText))
+                    expect(otherRepo.backgroundColor).to(equalColor(expectedBackground))
+                    expect(otherRepo.textColor).to(equalColor(expectedText))
                     expect(otherRepo.articleCSSFileName).to(equal(expectedCss))
-                    expect(otherRepo.tintColor).to(equal(expectedTint))
+                    expect(otherRepo.tintColor).to(equalColor(expectedTint))
                     expect(otherRepo.syntaxHighlightFile).to(equal(expectedSyntax))
                     expect(otherRepo.barStyle).to(equal(expectedBarStyle))
                     expect(otherRepo.statusBarStyle).to(equal(expectedStatusBarStyle))
                     expect(otherRepo.scrollIndicatorStyle).to(equal(expectedScrollIndicatorStyle))
-                    expect(otherRepo.errorColor).to(equal(expectedError))
+                    expect(otherRepo.errorColor).to(equalColor(expectedError))
                 } else {
                     let expectedBackground = UIColor.whiteColor()
                     let expectedText = UIColor.blackColor()
@@ -187,15 +187,15 @@ class ThemeRepositorySpec: QuickSpec {
                     let expectedScrollIndicatorStyle = UIScrollViewIndicatorStyle.Black
                     let expectedError = UIColor(red: 1, green: 0, blue: 0.2, alpha: 1)
 
-                    expect(otherRepo.backgroundColor).to(equal(expectedBackground))
-                    expect(otherRepo.textColor).to(equal(expectedText))
+                    expect(otherRepo.backgroundColor).to(equalColor(expectedBackground))
+                    expect(otherRepo.textColor).to(equalColor(expectedText))
                     expect(otherRepo.articleCSSFileName).to(equal(expectedCss))
-                    expect(otherRepo.tintColor).to(equal(expectedTint))
+                    expect(otherRepo.tintColor).to(equalColor(expectedTint))
                     expect(otherRepo.syntaxHighlightFile).to(equal(expectedSyntax))
                     expect(otherRepo.barStyle).to(equal(expectedBarStyle))
                     expect(otherRepo.statusBarStyle).to(equal(expectedStatusBarStyle))
                     expect(otherRepo.scrollIndicatorStyle).to(equal(expectedScrollIndicatorStyle))
-                    expect(otherRepo.errorColor).to(equal(expectedError))
+                    expect(otherRepo.errorColor).to(equalColor(expectedError))
                 }
             }
         }

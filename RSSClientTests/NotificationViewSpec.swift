@@ -1,6 +1,7 @@
 import Quick
 import Nimble
 import rNews
+import UIKit_PivotalSpecHelper
 
 class NotificationViewSpec: QuickSpec {
     override func spec() {
@@ -17,7 +18,12 @@ class NotificationViewSpec: QuickSpec {
 
         describe("displaying") {
             beforeEach {
+                UIView.pauseAnimations()
                 subject.display("foo", message: "bar", animated: true)
+            }
+
+            afterEach {
+                UIView.resetAnimations()
             }
 
             it("unhides the labels") {
@@ -32,7 +38,7 @@ class NotificationViewSpec: QuickSpec {
 
             describe("hiding again") {
                 beforeEach {
-                    subject.hide(false, delay: 0)
+                    UIView.resumeAnimations()
                 }
 
                 it("re-hides the labels") {
@@ -58,12 +64,12 @@ class NotificationViewSpec: QuickSpec {
             }
 
             it("updates the label's textColors") {
-                expect(subject.titleLabel.textColor) == themeRepository.backgroundColor
-                expect(subject.messageLabel.textColor) == themeRepository.backgroundColor
+                expect(subject.titleLabel.textColor).to(equalColor(themeRepository.backgroundColor))
+                expect(subject.messageLabel.textColor).to(equalColor(themeRepository.backgroundColor))
             }
 
             it("sets the background color to the tintcolor") {
-                expect(subject.backgroundColor) == themeRepository.errorColor
+                expect(subject.backgroundColor).to(equalColor(themeRepository.errorColor))
             }
         }
     }

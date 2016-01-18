@@ -100,7 +100,7 @@ public class ThemeRepository: NSObject, Injectable {
             return color ?? UIColor(red: 1, green: 0, blue: 0.2, alpha: 1)
         }
         set {
-            self.privateSetValue(newValue, forKey: "errorColor")
+            self.setColor(newValue, forKey: "errorColor")
         }
     }
 

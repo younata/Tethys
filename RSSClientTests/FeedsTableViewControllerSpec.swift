@@ -4,6 +4,7 @@ import Ra
 import rNews
 import BreakOutToRefresh
 import rNewsKit
+import UIKit_PivotalSpecHelperStubs
 
 class FeedsTableViewControllerSpec: QuickSpec {
     override func spec() {
@@ -570,7 +571,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     }
 
                     afterEach {
-                        UIView.beforeEach()
+                        UIView.resetAnimations()
                     }
 
                     it("should end refreshing") {

@@ -1,3 +1,8 @@
+require 'semantic'
+require 'tempfile'
+require 'rest-client'
+require 'json'
+
 def run(command)
   system(command) or raise "RAKE TASK FAILED: #{command}"
 end
@@ -40,8 +45,77 @@ namespace "test" do
   task :osx => ["osx:app", "osx:kit"]
 end
 
+namespace "release" do
+  def last_git_tag
+    `git tag | tail -1`.strip
+  end
+
+  def commit_logs_since_version(version)
+    `git log #{version}..HEAD --format='%B- %an%n---'`
+  end
+
+  def draft_release_notes
+    message = commit_logs_since_version(last_git_tag)
+    path = Dir::Tmpname.make_tmpname "rnews_release_notes", nil
+    IO.write(path, message)
+
+    run "vim #{path}"
+
+    message = IO.read(path)
+    File.delete(path)
+    IO.write("fastlane/metadata/en-US/release_notes.txt", message)
+    message
+  end
+
+  def bump_version(version)
+    run "/usr/libexec/PlistBuddy -c 'Set :CFBundleShortVersionString #{version}' RSSClient/Info.plist"
+    build_version = `/usr/libexec/PlistBuddy -c 'print :CFBundleVersion' RSSClient/Info.plist`.strip().to_i
+    run "/usr/libexec/PlistBuddy -c 'Set :CFBundleVersion #{build_version + 1}' RSSClient/Info.plist"
+  end
+
+  desc "Commits and pushes a release of the new version"
+  task :publish do |t, args|
+    new_version = STDIN.gets.chomp
+    Semantic::Version.new new_version
+    bump_version new_version
+
+    message = draft_release_notes
+    run "git add fastlane/metadata/en-US/release_notes.txt"
+    run "git add RSSClient/Info.plist"
+    version = `/usr/libexec/PlistBuddy -c 'print :CFBundleShortVersionString' RSSClient/Info.plist`.strip()
+
+    run "git ci -m '#{version}'"
+
+    version_str = "v#{version}"
+    run "git tag #{version_str}"
+    run "git push origin head && git push origin #{version_str}"
+
+    release_token = IO.read(".release_token").strip()
+
+    version_str = "v#{version}"
+
+    body_data = {
+        :tag_name => version_str,
+        :name => version,
+        :body => message
+    }
+
+    headers = {
+        'Content-Type' => 'application/json',
+        'Authorization' => "token #{release_token}"
+    }
+
+    response = RestClient.post('https://api.github.com/repos/younata/RSSClient/releases', body_data, headers)
+
+    if response.code == 201
+      puts 'Successfully uploaded release'
+    else
+      puts "Unable to upload release, data: #{response.to_str}"
+    end
+  end
+end
+
 task :test => ["test:ios", "test:osx"]
 
 task default: ["test"]
-
 

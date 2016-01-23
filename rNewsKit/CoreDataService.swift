@@ -289,8 +289,6 @@ class CoreDataService: DataService {
         if let cdenclosure = self.coreDataEnclosureForEnclosure(enclosure) {
             cdenclosure.url = enclosure.url.absoluteString
             cdenclosure.kind = enclosure.kind
-            cdenclosure.data = enclosure.data
-            cdenclosure.downloaded = enclosure.downloaded
 
             if let article = enclosure.article, cdarticle = self.coreDataArticleForArticle(article) {
                 cdenclosure.article = cdarticle

@@ -248,8 +248,8 @@ class ArticleViewControllerSpec: QuickSpec {
         }
 
         describe("setting the article") {
-            let article = Article(title: "article", link: NSURL(string: "https://google.com/"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"], enclosures: [])
-            let articleWOContent = Article(title: "article", link: NSURL(string: "https://google.com/"), summary: "this was a summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"], enclosures: [])
+            let article = Article(title: "article", link: NSURL(string: "https://example.com/"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"], enclosures: [])
+            let articleWOContent = Article(title: "article1", link: NSURL(string: "https://example.com/"), summary: "this was a summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier1", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"], enclosures: [])
             let feed = Feed(title: "feed", url: NSURL(string: "https://example.com"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
 
             beforeEach {
@@ -267,6 +267,35 @@ class ArticleViewControllerSpec: QuickSpec {
                 subject.setArticle(articleWOContent)
 
                 expect(subject.content.loadedHTMLString()).to(contain(articleWOContent.summary))
+            }
+
+            it("should not show the enclosures list if the article has no enclosures") {
+                expect(subject.enclosuresList.bounds.height).to(beCloseTo(0))
+                expect(subject.enclosuresList.enclosures.isEmpty) == true
+            }
+
+            it("should show the enclosure list if the article has supported enclosures") {
+                let articleWithEnclosures = Article(title: "article2", link: NSURL(string: "https://example.com/"), summary: "has enclosures", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier2", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"], enclosures: [])
+                let enclosure = Enclosure(url: NSURL(string: "https://example.com/enclosure")!, kind: "audio/mpeg", article: nil)
+
+                enclosure.article = articleWithEnclosures
+                articleWithEnclosures.addEnclosure(enclosure)
+                subject.setArticle(articleWithEnclosures)
+
+                expect(subject.enclosuresList.bounds.height) > 10.0
+                expect(Array(subject.enclosuresList.enclosures)) == [enclosure]
+            }
+
+            it("should not show the enclosure list if the article has no supported enclosures") {
+                let articleWithEnclosures = Article(title: "article2", link: NSURL(string: "https://example.com/"), summary: "has enclosures", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier2", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"], enclosures: [])
+                let enclosure = Enclosure(url: NSURL(string: "https://example.com/enclosure")!, kind: "application/json", article: nil)
+
+                enclosure.article = articleWithEnclosures
+                articleWithEnclosures.addEnclosure(enclosure)
+                subject.setArticle(articleWithEnclosures)
+
+                expect(subject.enclosuresList.bounds.height).to(beCloseTo(0))
+                expect(subject.enclosuresList.enclosures.isEmpty) == true
             }
 
             if #available(iOS 9, *) {
@@ -376,7 +405,7 @@ class ArticleViewControllerSpec: QuickSpec {
             }
 
             it("should open any link tapped in system safari (iOS <9) or an SFSafariViewController (iOS 9+)") {
-                let url = NSURL(string: "https://google.com")!
+                let url = NSURL(string: "https://example.com")!
                 let shouldInteract = subject.content.delegate?.webView?(subject.content, shouldStartLoadWithRequest: NSURLRequest(URL: url), navigationType: .LinkClicked)
                 expect(shouldInteract).to(beFalsy())
                 if #available(iOS 9, *) {

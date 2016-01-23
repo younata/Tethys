@@ -5,9 +5,7 @@ import JavaScriptCore
 @objc public protocol EnclosureJSExport: JSExport {
     var url: NSURL { get set }
     var kind: String { get set }
-    var data: NSData? { get set }
     weak var article: Article? { get set }
-    var downloaded: Bool { get }
 }
 
 @objc public class Enclosure: NSObject, EnclosureJSExport {
@@ -21,13 +19,6 @@ import JavaScriptCore
     dynamic public var kind: String {
         willSet {
             if newValue != kind {
-                self.updated = true
-            }
-        }
-    }
-    dynamic public var data: NSData? {
-        willSet {
-            if newValue != data {
                 self.updated = true
             }
         }
@@ -48,10 +39,6 @@ import JavaScriptCore
 
     public private(set) var updated: Bool = false
 
-    dynamic public var downloaded: Bool {
-        return data == nil
-    }
-
     public override func isEqual(object: AnyObject?) -> Bool {
         guard let b = object as? Enclosure else {
             return false
@@ -59,13 +46,12 @@ import JavaScriptCore
         if let aEID = self.enclosureID, let bEID = b.enclosureID {
             return aEID.URIRepresentation() == bEID.URIRepresentation()
         }
-        return self.url == b.url && self.kind == b.kind && self.data == b.data
+        return self.url == b.url && self.kind == b.kind
     }
 
-    public init(url: NSURL, kind: String, data: NSData?, article: Article?) {
+    public init(url: NSURL, kind: String, article: Article?) {
         self.url = url
         self.kind = kind
-        self.data = data
         self.article = article
     }
 
@@ -74,7 +60,6 @@ import JavaScriptCore
     internal init(enclosure: CoreDataEnclosure, article: Article?) {
         url = NSURL(string: enclosure.url ?? "") ?? NSURL()
         kind = enclosure.kind ?? ""
-        data = enclosure.data
         self.article = article
         enclosureID = enclosure.objectID
     }

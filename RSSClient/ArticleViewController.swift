@@ -1,4 +1,5 @@
 import UIKit
+import AVFoundation
 import PureLayout
 import TOBrowserActivityKit
 import Ra
@@ -13,9 +14,7 @@ public class ArticleViewController: UIViewController {
         self.navigationController?.setToolbarHidden(false, animated: false)
 
         guard let a = article else { return }
-        if a.read == false && read {
-            self.dataWriter?.markArticle(a, asRead: true)
-        }
+        if a.read == false && read { self.dataWriter?.markArticle(a, asRead: true) }
         if show { self.showArticle(a, onWebView: self.content) }
 
         self.toolbarItems = [self.spacer(), self.shareButton, self.spacer()]
@@ -53,28 +52,26 @@ public class ArticleViewController: UIViewController {
 
     public var content = UIWebView(forAutoLayout: ())
 
+    public let enclosuresList = EnclosuresList(frame: CGRectZero)
+    private var enclosuresListHeight: NSLayoutConstraint?
+
     public private(set) lazy var shareButton: UIBarButtonItem = {
         return UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: "share")
     }()
     public private(set) lazy var openInSafariButton: UIBarButtonItem = {
         return UIBarButtonItem(title: self.linkString, style: .Plain, target: self, action: "openInSafari")
     }()
+
     private let linkString = NSLocalizedString("ArticleViewController_TabBar_ViewLink", comment: "")
 
     public var articles = DataStoreBackedArray<Article>()
     public var lastArticleIndex = 0
 
-    public lazy var dataWriter: DataWriter? = {
-        return self.injector?.create(DataWriter)
-    }()
+    public lazy var dataWriter: DataWriter? = { self.injector?.create(DataWriter) }()
 
-    public lazy var themeRepository: ThemeRepository? = {
-        return self.injector?.create(ThemeRepository)
-    }()
+    public lazy var themeRepository: ThemeRepository? = { self.injector?.create(ThemeRepository) }()
 
-    public lazy var urlOpener: UrlOpener? = {
-        return self.injector?.create(UrlOpener)
-    }()
+    public lazy var urlOpener: UrlOpener? = { self.injector?.create(UrlOpener) }()
 
     public lazy var panGestureRecognizer: ScreenEdgePanGestureRecognizer = {
         return ScreenEdgePanGestureRecognizer(target: self, action: "didSwipe:")
@@ -92,9 +89,7 @@ public class ArticleViewController: UIViewController {
         return "<html><body>"
     }
 
-    private lazy var articleCSS: String = {
-        return self.loadArticleCSS()
-    }()
+    private lazy var articleCSS: String = { self.loadArticleCSS() }()
 
     private lazy var prismJS: String = {
         if let loc = NSBundle.mainBundle().URLForResource("prism.js", withExtension: "html"),
@@ -109,6 +104,15 @@ public class ArticleViewController: UIViewController {
         let title = "<h2>\(article.title)</h2>"
         let htmlString = self.articleCSS + title + content + self.prismJS + "</body></html>"
         webView.loadHTMLString(htmlString, baseURL: article.link)
+
+        let enclosures = article.enclosuresArray.filter { AVURLAsset.audiovisualMIMETypes().contains($0.kind) }
+        if !enclosures.isEmpty {
+            self.enclosuresList.enclosures = article.enclosuresArray
+            self.enclosuresListHeight?.constant = 50
+        }
+        UIView.animateWithDuration(0.2) {
+            self.view.layoutIfNeeded()
+        }
     }
 
     private func spacer() -> UIBarButtonItem {
@@ -131,13 +135,18 @@ public class ArticleViewController: UIViewController {
         super.viewDidLoad()
 
         self.navigationController?.setToolbarHidden(false, animated: true)
-
         self.view.backgroundColor = UIColor.whiteColor()
 
         self.setupUserActivity()
 
         self.view.addSubview(self.content)
-        self.content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
+        self.view.addSubview(self.enclosuresList)
+
+        self.content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
+        self.content.autoPinEdge(.Bottom, toEdge: .Top, ofView: self.enclosuresList)
+        self.enclosuresList.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
+        self.enclosuresListHeight = self.enclosuresList.autoSetDimension(.Height, toSize: 0)
+
         self.configureContent()
 
         self.updateLeftBarButtonItem(self.traitCollection)
@@ -270,7 +279,7 @@ public class ArticleViewController: UIViewController {
             self.view.addSubview(self.nextContent!)
             self.showArticle(a, onWebView: self.nextContent!)
             self.nextContent?.autoPinEdgeToSuperviewEdge(.Top)
-            self.nextContent?.autoPinEdgeToSuperviewEdge(.Bottom)
+            self.nextContent?.autoPinEdge(.Bottom, toEdge: .Top, ofView: self.enclosuresList)
             self.nextContent?.autoMatchDimension(.Width, toDimension: .Width, ofView: self.view)
             self.nextContent?.scrollView.contentInset = self.content.scrollView.contentInset
             let edge: ALEdge = left ? .Leading : .Trailing
@@ -293,7 +302,7 @@ public class ArticleViewController: UIViewController {
                 self.configureContent()
                 UIView.animateWithDuration(0.2, animations: {
                     self.view.layoutIfNeeded()
-                    }, completion: {(completed) in
+                    }, completion: {_ in
                         oldContent.removeFromSuperview()
                 })
             } else {
@@ -351,13 +360,11 @@ extension ArticleViewController: UIWebViewDelegate {
         shouldStartLoadWithRequest request: NSURLRequest,
         navigationType: UIWebViewNavigationType) -> Bool {
             guard let url = request.URL where navigationType == .LinkClicked else { return true }
-
             if #available(iOS 9, *) {
                 self.loadUrlInSafari(url)
             } else {
                 self.urlOpener?.openURL(url)
             }
-
             return false
     }
 }
@@ -383,9 +390,7 @@ extension ArticleViewController: ThemeRepositorySubscriber {
             self.setThemeForWebView(nextContent)
         }
 
-        if let themeRepository = self.themeRepository {
-            self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
-            self.navigationController?.toolbar.barStyle = themeRepository.barStyle
-        }
+        self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
+        self.navigationController?.toolbar.barStyle = themeRepository.barStyle
     }
 }

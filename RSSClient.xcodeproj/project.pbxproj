@@ -259,6 +259,8 @@
 		89CC82001B46198200648367 /* SearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C61B40D2AC0097045A /* SearchIndex.swift */; };
 		89CC82041B461A2B00648367 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82031B461A2B00648367 /* Helpers.swift */; };
 		89CC82061B461A5500648367 /* KitModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82051B461A5500648367 /* KitModule.swift */; };
+		89D170A61C52D4AC00D546F9 /* EnclosuresList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D170A51C52D4AC00D546F9 /* EnclosuresList.swift */; };
+		89D170A81C52E98300D546F9 /* EnclosuresListSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D170A71C52E98300D546F9 /* EnclosuresListSpec.swift */; };
 		89D428031B8D0734006CD81C /* X.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89D428021B8D0734006CD81C /* X.framework */; };
 		89D970BB1B35BF6500ED84B8 /* WKWebView+rNewsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D970BA1B35BF6500ED84B8 /* WKWebView+rNewsTests.m */; };
 		89D970BD1B3929A600ED84B8 /* BackgroundFetchHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D970BC1B3929A600ED84B8 /* BackgroundFetchHandler.swift */; };
@@ -627,6 +629,8 @@
 		89CC82031B461A2B00648367 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		89CC82051B461A5500648367 /* KitModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KitModule.swift; sourceTree = "<group>"; };
 		89D135101A5944A200B6937A /* RSSClient 1.4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.4.xcdatamodel"; sourceTree = "<group>"; };
+		89D170A51C52D4AC00D546F9 /* EnclosuresList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnclosuresList.swift; sourceTree = "<group>"; };
+		89D170A71C52E98300D546F9 /* EnclosuresListSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnclosuresListSpec.swift; sourceTree = "<group>"; };
 		89D428021B8D0734006CD81C /* X.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = X.framework; path = ../Carthage/Build/iOS/X.framework; sourceTree = "<group>"; };
 		89D970B91B35BF6400ED84B8 /* WKWebView+rNewsTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WKWebView+rNewsTests.h"; sourceTree = "<group>"; };
 		89D970BA1B35BF6500ED84B8 /* WKWebView+rNewsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "WKWebView+rNewsTests.m"; sourceTree = "<group>"; };
@@ -1013,6 +1017,7 @@
 				8997C8521B2566A600972930 /* ArticleCellSpec.swift */,
 				899823AB1B2C883B00818755 /* ArticleListControllerSpec.swift */,
 				899823AD1B30B64000818755 /* ArticleViewControllerSpec.swift */,
+				89D170A71C52E98300D546F9 /* EnclosuresListSpec.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -1142,6 +1147,7 @@
 			children = (
 				89EF4FE11A97D9E60052A82F /* Viewing articles */,
 				89EF4FE01A97D9DF0052A82F /* Reading an article */,
+				89D170A41C52D45500D546F9 /* Enclosures */,
 			);
 			name = Articles;
 			sourceTree = "<group>";
@@ -1183,6 +1189,14 @@
 				898131771AFC877A0090FA7F /* LocalImportViewControllerSpec.swift */,
 			);
 			name = "Importing Feeds";
+			sourceTree = "<group>";
+		};
+		89D170A41C52D45500D546F9 /* Enclosures */ = {
+			isa = PBXGroup;
+			children = (
+				89D170A51C52D4AC00D546F9 /* EnclosuresList.swift */,
+			);
+			name = Enclosures;
 			sourceTree = "<group>";
 		};
 		89D2566F1C3CC011004066B9 /* Fakes */ = {
@@ -1953,6 +1967,7 @@
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
 				89F98BA41BA079EA005C3CA8 /* TableViewCell.swift in Sources */,
 				89F98BAC1BA0E428005C3CA8 /* DocumentationViewController.swift in Sources */,
+				89D170A61C52D4AC00D546F9 /* EnclosuresList.swift in Sources */,
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
 				89DA7D2C1A66111E0050685B /* TextFieldCell.swift in Sources */,
 				89C204BD1A73F72800C792D2 /* SplitViewController.swift in Sources */,
@@ -2010,6 +2025,7 @@
 				89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */,
 				898131781AFC877A0090FA7F /* LocalImportViewControllerSpec.swift in Sources */,
 				89C204C71A740D8900C792D2 /* NotificationHandlerSpec.swift in Sources */,
+				89D170A81C52E98300D546F9 /* EnclosuresListSpec.swift in Sources */,
 				8997C8531B2566A600972930 /* ArticleCellSpec.swift in Sources */,
 				8935F5E01B462B7A000FFD5D /* FakeURLSession.swift in Sources */,
 				89735AC21C0771590032E09C /* FeedsListControllerSpec.swift in Sources */,

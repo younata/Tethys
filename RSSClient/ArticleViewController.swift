@@ -8,7 +8,6 @@ import SafariServices
 
 public class ArticleViewController: UIViewController {
     public private(set) var article: Article? = nil
-
     public func setArticle(article: Article?, read: Bool = true, show: Bool = true) {
         self.article = article
         self.navigationController?.setToolbarHidden(false, animated: false)
@@ -68,9 +67,7 @@ public class ArticleViewController: UIViewController {
     public var lastArticleIndex = 0
 
     public lazy var dataWriter: DataWriter? = { self.injector?.create(DataWriter) }()
-
     public lazy var themeRepository: ThemeRepository? = { self.injector?.create(ThemeRepository) }()
-
     public lazy var urlOpener: UrlOpener? = { self.injector?.create(UrlOpener) }()
 
     public lazy var panGestureRecognizer: ScreenEdgePanGestureRecognizer = {
@@ -106,13 +103,15 @@ public class ArticleViewController: UIViewController {
         webView.loadHTMLString(htmlString, baseURL: article.link)
 
         let enclosures = article.enclosuresArray.filter { AVURLAsset.audiovisualMIMETypes().contains($0.kind) }
+        self.view.layoutIfNeeded()
         if !enclosures.isEmpty {
-            self.enclosuresList.enclosures = article.enclosuresArray
-            self.enclosuresListHeight?.constant = 50
+            self.enclosuresListHeight?.constant = (enclosures.count == 1 ? 70 : 100)
+            self.enclosuresList.enclosures = DataStoreBackedArray(enclosures)
+        } else {
+            self.enclosuresListHeight?.constant = 0
+            self.enclosuresList.enclosures = DataStoreBackedArray()
         }
-        UIView.animateWithDuration(0.2) {
-            self.view.layoutIfNeeded()
-        }
+        self.view.layoutIfNeeded()
     }
 
     private func spacer() -> UIBarButtonItem {
@@ -134,17 +133,19 @@ public class ArticleViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.navigationController?.setToolbarHidden(false, animated: true)
-        self.view.backgroundColor = UIColor.whiteColor()
-
+        self.view.backgroundColor = self.themeRepository?.backgroundColor
         self.setupUserActivity()
+
 
         self.view.addSubview(self.content)
         self.view.addSubview(self.enclosuresList)
 
         self.content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
         self.content.autoPinEdge(.Bottom, toEdge: .Top, ofView: self.enclosuresList)
-        self.enclosuresList.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
+        self.enclosuresList.autoPinEdgeToSuperviewEdge(.Leading)
+        self.enclosuresList.autoPinEdgeToSuperviewEdge(.Trailing)
+        self.view.addConstraint(NSLayoutConstraint(item: self.enclosuresList, attribute: .Bottom, relatedBy: .Equal,
+            toItem: self.bottomLayoutGuide, attribute: .Top, multiplier: 1, constant: 0))
         self.enclosuresListHeight = self.enclosuresList.autoSetDimension(.Height, toSize: 0)
 
         self.configureContent()
@@ -154,11 +155,13 @@ public class ArticleViewController: UIViewController {
         self.view.addGestureRecognizer(self.panGestureRecognizer)
 
         self.themeRepository?.addSubscriber(self)
+        self.enclosuresList.themeRepository = self.themeRepository
     }
 
     public override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
 
+        self.navigationController?.setToolbarHidden(false, animated: true)
         self.splitViewController?.setNeedsStatusBarAppearanceUpdate()
     }
 
@@ -249,9 +252,7 @@ public class ArticleViewController: UIViewController {
         self.content.scalesPageToFit = true
         self.setThemeForWebView(self.content)
 
-        if #available(iOS 9, *) {
-            self.content.allowsLinkPreview = true
-        }
+        if #available(iOS 9, *) { self.content.allowsLinkPreview = true }
     }
 
     private func setThemeForWebView(webView: UIWebView) {
@@ -276,12 +277,12 @@ public class ArticleViewController: UIViewController {
             let a = self.articles[nextArticleIndex]
             self.nextContent = UIWebView(forAutoLayout: ())
             self.nextContent?.backgroundColor = self.themeRepository?.backgroundColor
+            self.nextContent?.scrollView.contentInset = self.content.scrollView.contentInset
             self.view.addSubview(self.nextContent!)
             self.showArticle(a, onWebView: self.nextContent!)
             self.nextContent?.autoPinEdgeToSuperviewEdge(.Top)
             self.nextContent?.autoPinEdge(.Bottom, toEdge: .Top, ofView: self.enclosuresList)
             self.nextContent?.autoMatchDimension(.Width, toDimension: .Width, ofView: self.view)
-            self.nextContent?.scrollView.contentInset = self.content.scrollView.contentInset
             let edge: ALEdge = left ? .Leading : .Trailing
             self.nextContentRight = self.nextContent!.autoPinEdgeToSuperviewEdge(edge, withInset: translation)
         } else if gesture.state == .Changed {
@@ -390,6 +391,7 @@ extension ArticleViewController: ThemeRepositorySubscriber {
             self.setThemeForWebView(nextContent)
         }
 
+        self.view.backgroundColor = themeRepository.backgroundColor
         self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
         self.navigationController?.toolbar.barStyle = themeRepository.barStyle
     }

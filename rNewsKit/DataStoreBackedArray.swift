@@ -114,7 +114,7 @@ public class DataStoreBackedArray<T>: CollectionType, CustomDebugStringConvertib
             } else if position >= self.internalCount {
                 return self.appendedObjects[position - self.internalCount]
             } else {
-                self.fetchUpToPosition(position, wait: true)
+                self.fetchUpToPosition(position)
             }
         }
         return self.internalObjects[position]
@@ -154,9 +154,10 @@ public class DataStoreBackedArray<T>: CollectionType, CustomDebugStringConvertib
             self.managedObjectContext = managedObjectContext
             self.conversionFunction = conversionFunction
             self.sortDescriptors = sortDescriptors
+            self.internalCount = self.calculateCount()
     }
 
-    private func fetchUpToPosition(position: Int, wait: Bool) {
+    private func fetchUpToPosition(position: Int) {
         if self.internalObjects.isEmpty {
             let fetchRequest = NSFetchRequest(entityName: self.entityName)
             fetchRequest.predicate = self.predicate
@@ -171,17 +172,11 @@ public class DataStoreBackedArray<T>: CollectionType, CustomDebugStringConvertib
         let start = self.internalObjects.count
         let end = min(self.internalCount, start + ((Int((position - start) / self.batchSize) + 1) * self.batchSize))
 
-        let block: (Void) -> Void = {
+        self.managedObjectContext?.performBlockAndWait {
             for i in start..<end {
                 self.internalObjects.insert(self.conversionFunction!(self.managedArray[i]), atIndex: i)
             }
             _ = try? self.managedObjectContext?.save()
-        }
-
-        if wait {
-            self.managedObjectContext?.performBlockAndWait(block)
-        } else {
-            self.managedObjectContext?.performBlock(block)
         }
     }
 
@@ -199,7 +194,7 @@ public class DataStoreBackedArray<T>: CollectionType, CustomDebugStringConvertib
 
 extension DataStoreBackedArray where T: Equatable {
     public func remove(object: T) -> Bool {
-        self.fetchUpToPosition(self.internalCount - 1, wait: true)
+        self.fetchUpToPosition(self.internalCount - 1)
         var idxToRemove: Int? = nil
         for (idx, obj) in self.appendedObjects.enumerate() {
             if obj == object {

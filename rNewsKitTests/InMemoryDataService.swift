@@ -22,7 +22,7 @@ class InMemoryDataService: DataService {
     }
 
     func createEnclosure(article: Article?, callback: (Enclosure) -> (Void)) {
-        let enclosure = Enclosure(url: NSURL(), kind: "", data: nil, article: article)
+        let enclosure = Enclosure(url: NSURL(), kind: "", article: article)
         article?.addEnclosure(enclosure)
         callback(enclosure)
         self.enclosures.append(enclosure)

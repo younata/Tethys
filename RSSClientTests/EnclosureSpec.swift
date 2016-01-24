@@ -8,7 +8,7 @@ class EnclosureSpec: QuickSpec {
         var subject: Enclosure? = nil
 
         beforeEach {
-            subject = Enclosure(url: NSURL(string: "http://example.com")!, kind: "", data: nil, article: nil)
+            subject = Enclosure(url: NSURL(string: "http://example.com")!, kind: "", article: nil)
 
             expect(subject).toNot(beNil())
         }
@@ -24,9 +24,9 @@ class EnclosureSpec: QuickSpec {
             }
 
             it("should report two enclosures not created with coredataenclosures with the same property equality as equal") {
-                let a = Enclosure(url: NSURL(string: "http://example.com")!, kind: "", data: nil, article: nil)
-                let b = Enclosure(url: NSURL(string: "http://example.com")!, kind: "text/text", data: nil, article: nil)
-                let c = Enclosure(url: NSURL(string: "http://example.com")!, kind: "", data: nil, article: nil)
+                let a = Enclosure(url: NSURL(string: "http://example.com")!, kind: "", article: nil)
+                let b = Enclosure(url: NSURL(string: "http://example.com")!, kind: "text/text", article: nil)
+                let c = Enclosure(url: NSURL(string: "http://example.com")!, kind: "", article: nil)
 
                 expect(a).toNot(equal(b))
                 expect(a).to(equal(c))
@@ -82,13 +82,6 @@ class EnclosureSpec: QuickSpec {
                     subject?.kind = ""
                     expect(subject?.updated).to(beFalsy())
                     subject?.kind = "hello there"
-                    expect(subject?.updated).to(beTruthy())
-                }
-
-                it("data") {
-                    subject?.data = nil
-                    expect(subject?.updated).to(beFalsy())
-                    subject?.data = NSData()
                     expect(subject?.updated).to(beTruthy())
                 }
 

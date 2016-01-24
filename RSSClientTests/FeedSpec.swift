@@ -12,10 +12,10 @@ class FeedSpec: QuickSpec {
         }
 
         it("uses it's url as the title if the title is blank") {
-            subject = Feed(title: "", url: NSURL(string: "https://google.com")!, summary: "", query: nil, tags: [],
+            subject = Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", query: nil, tags: [],
                 waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-            expect(subject.displayTitle).to(equal("https://google.com"))
+            expect(subject.displayTitle).to(equal("https://example.com"))
         }
 
         describe("waitPeriodInRefreshes") {

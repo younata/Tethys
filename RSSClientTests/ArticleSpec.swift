@@ -69,7 +69,7 @@ class ArticleSpec: QuickSpec {
             var enclosure: Enclosure! = nil
 
             beforeEach {
-                enclosure = Enclosure(url: NSURL(string: "http://example.com")!, kind: "", data: nil, article: nil)
+                enclosure = Enclosure(url: NSURL(string: "http://example.com")!, kind: "", article: nil)
             }
 
             context("when the enclosure is not associated with any article") {
@@ -126,7 +126,7 @@ class ArticleSpec: QuickSpec {
             var enclosure: Enclosure! = nil
 
             beforeEach {
-                enclosure = Enclosure(url: NSURL(string: "http://example.com")!, kind: "", data: nil, article: nil)
+                enclosure = Enclosure(url: NSURL(string: "http://example.com")!, kind: "", article: nil)
             }
 
             context("when the enclosure is not associated with any article") {
@@ -336,7 +336,7 @@ class ArticleSpec: QuickSpec {
                 }
 
                 it("enclosures") {
-                    subject.addEnclosure(Enclosure(url: NSURL(string: "http://example.com")!, kind: "", data: nil, article: nil))
+                    subject.addEnclosure(Enclosure(url: NSURL(string: "http://example.com")!, kind: "", article: nil))
                     expect(subject.updated).to(beTruthy())
                 }
             }

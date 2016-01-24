@@ -59,6 +59,7 @@ class CoreDataService: DataService {
             let _ = try? self.managedObjectContext.save()
             let enclosure = Enclosure(enclosure: cdenclosure, article: article)
             article?.addEnclosure(enclosure)
+            enclosure.article = article
             let operation = NSBlockOperation {
                 callback(enclosure)
             }

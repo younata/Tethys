@@ -29,8 +29,9 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
 
         it("easily allows a feed to be updated with inserted articles") {
             guard let feed = feed else { fail(); return }
-            let item = Muon.Article(title: "article", link: nil, description: "", content: "", guid: "", published: nil, updated: nil, authors: [], enclosures: [])
-            let info = Muon.Feed(title: "a title", link: NSURL(string: "https://google.com")!, description: "description", articles: [item])
+            let muonEnclosure = Muon.Enclosure(url: NSURL(string: "https://example.com/enclosure.mp3")!, length: 0, type: "audio/mpeg")
+            let item = Muon.Article(title: "article", link: nil, description: "", content: "", guid: "", published: nil, updated: nil, authors: [], enclosures: [muonEnclosure])
+            let info = Muon.Feed(title: "a title", link: NSURL(string: "https://example.com")!, description: "description", articles: [item])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
             dataService.updateFeed(feed, info: info) {
                 expect(feed.title) == "a title"
@@ -39,6 +40,11 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
                 expect(feed.articlesArray.count).to(equal(1))
                 if let article = feed.articlesArray.first {
                     expect(article.title) == "article"
+                    expect(article.enclosuresArray.count).to(equal(1))
+                    if let enclosure = article.enclosuresArray.first {
+                        expect(enclosure.kind) == muonEnclosure.type
+                        expect(enclosure.url) == muonEnclosure.url
+                    }
                 }
                 updateExpectation.fulfill()
             }
@@ -48,7 +54,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
         it("does not insert items that have empty titles") {
             guard let feed = feed else { fail(); return }
             let item = Muon.Article(title: "", link: nil, description: "", content: "", guid: "", published: nil, updated: nil, authors: [], enclosures: [])
-            let info = Muon.Feed(title: "a title", link: NSURL(string: "https://google.com")!, description: "description", articles: [item])
+            let info = Muon.Feed(title: "a title", link: NSURL(string: "https://example.com")!, description: "description", articles: [item])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
             dataService.updateFeed(feed, info: info) {
                 expect(feed.title) == "a title"
@@ -80,7 +86,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
 
             let item = Muon.Article(title: "article", link: nil, description: "", content: "", guid: "", published: nil, updated: nil, authors: [], enclosures: [])
             let existingItem = Muon.Article(title: existingArticle.title, link: existingArticle.link, description: existingArticle.summary, content: existingArticle.content, guid: "", published: existingArticle.published, updated: nil, authors: [], enclosures: [])
-            let info = Muon.Feed(title: "a title", link: NSURL(string: "https://google.com")!, description: "description", articles: [item, existingItem])
+            let info = Muon.Feed(title: "a title", link: NSURL(string: "https://example.com")!, description: "description", articles: [item, existingItem])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
             dataService.updateFeed(feed, info: info) {
                 expect(feed.title) == "a title"
@@ -128,7 +134,9 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             guard let article = article else { fail(); return }
             let author = Muon.Author(name: "Rachel Brindle", email: NSURL(string: "mailto:rachel@example.com"), uri: NSURL(string: "https://example.com/rachel"))
             let content = (0..<100).map({_ in "<p>this was a content space</p>"}).reduce("", combine: +)
-            let item = Muon.Article(title: "a title", link: NSURL(string: "https://example.com"), description: "description", content: content, guid: "guid", published: NSDate(timeIntervalSince1970: 10), updated: NSDate(timeIntervalSince1970: 15), authors: [author], enclosures: [])
+
+            let muonEnclosure = Muon.Enclosure(url: NSURL(string: "https://example.com/enclosure.mp3")!, length: 0, type: "audio/mpeg")
+            let item = Muon.Article(title: "a title", link: NSURL(string: "https://example.com"), description: "description", content: content, guid: "guid", published: NSDate(timeIntervalSince1970: 10), updated: NSDate(timeIntervalSince1970: 15), authors: [author], enclosures: [muonEnclosure])
 
             let updateExpectation = spec.expectationWithDescription("Update Article")
             if let searchIndex = dataService.searchIndex as? FakeSearchIndex {
@@ -150,6 +158,11 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
                         }
                     }
                 #endif
+                expect(article.enclosuresArray.count).to(equal(1))
+                if let enclosure = article.enclosuresArray.first {
+                    expect(enclosure.kind) == muonEnclosure.type
+                    expect(enclosure.url) == muonEnclosure.url
+                }
                 updateExpectation.fulfill()
             }
             spec.waitForExpectationsWithTimeout(1, handler: nil)
@@ -185,13 +198,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
 
                 it("essentially no-ops, and specifically does not add another enclosure to the article") {
                     guard let article = article else { fail(); return; }
-                    let updateExpectation = spec.expectationWithDescription("Update Enclosure")
-                    dataService.upsertEnclosureForArticle(article, fromItem: muonEnclosure) {
-                        expect($0) == enclosure
-                        updateExpectation.fulfill()
-                    }
-
-                    spec.waitForExpectationsWithTimeout(1, handler: nil)
+                    dataService.upsertEnclosureForArticle(article, fromItem: muonEnclosure)
 
                     expect(article.enclosuresArray.count) == 1
                 }
@@ -200,13 +207,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             context("when the given article does not have an existing enclosure object matching the given one") {
                 it("creates a new enclosure and inserts that into the article") {
                     guard let article = article else { fail(); return; }
-                    let updateExpectation = spec.expectationWithDescription("Update Enclosure")
-                    dataService.upsertEnclosureForArticle(article, fromItem: muonEnclosure) {
-                        enclosure = $0
-                        updateExpectation.fulfill()
-                    }
-
-                    spec.waitForExpectationsWithTimeout(1, handler: nil)
+                    dataService.upsertEnclosureForArticle(article, fromItem: muonEnclosure)
 
                     let findExpectation = spec.expectationWithDescription("Find Enclosure")
 

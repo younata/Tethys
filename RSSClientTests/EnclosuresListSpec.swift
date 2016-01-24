@@ -35,6 +35,17 @@ class EnclosuresListSpec: QuickSpec {
                     cellForItemAtIndexPath: indexPath) as? EnclosuresList.EnclosureCell else { fail("no"); return }
 
                 expect(cell.thumbnail) == UIImage(named: "podcast")
+                expect(cell.title) == "podcast.mp3"
+            }
+
+            it("does not display the title if the enclosure list only has 1 enclosure") {
+                subject.enclosures = DataStoreBackedArray([enclosure1])
+
+                guard let cell = subject.collectionView.dataSource?.collectionView(subject.collectionView,
+                    cellForItemAtIndexPath: indexPath) as? EnclosuresList.EnclosureCell else { fail("no"); return }
+
+                expect(cell.thumbnail) == UIImage(named: "podcast")
+                expect(cell.title).to(beNil())
             }
         }
     }

@@ -95,6 +95,10 @@ extension DataService {
 
         article.author = author
 
+        for enclosure in item.enclosures {
+            self.upsertEnclosureForArticle(article, fromItem: enclosure)
+        }
+
         self.saveArticle(article) {
             callback()
         }
@@ -129,20 +133,18 @@ extension DataService {
         #endif
     }
 
-    func upsertEnclosureForArticle(article: Article, fromItem item: Muon.Enclosure, callback: (Enclosure) -> (Void)) {
+    func upsertEnclosureForArticle(article: Article, fromItem item: Muon.Enclosure) {
         let url = item.url
         for enclosure in article.enclosuresArray {
             if enclosure.url == url {
                 enclosure.kind = item.type
-                self.saveEnclosure(enclosure) { callback(enclosure) }
+                self.saveEnclosure(enclosure) { }
                 return
             }
         }
         self.createEnclosure(article) {enclosure in
             enclosure.url = url
             enclosure.kind = item.type
-            enclosure.article = article
-            callback(enclosure)
         }
     }
 }

@@ -6,7 +6,7 @@ Pretty much the newsbeuter for mobile, or the mutt of visual feed readers.
 
 This project requires Swift 2.1/Xcode 7.2 to build.
 
-#####[Screenshots](http://imgur.com/a/YFibl)
+#####[Screenshots](screenshots)
 
 
 ####Backlog

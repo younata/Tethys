@@ -1,9 +1,11 @@
 import UIKit
+import AVKit
+import AVFoundation
 import PureLayout
 import rNewsKit
 
 public class EnclosuresList: UIView, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
-    public var enclosures = DataStoreBackedArray<Enclosure>([]) {
+    public private(set) var enclosures = DataStoreBackedArray<Enclosure>([]) {
         didSet {
             if let flowlayout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
                 if enclosures.count == 1 {
@@ -16,11 +18,12 @@ public class EnclosuresList: UIView, UICollectionViewDelegateFlowLayout, UIColle
         }
     }
 
+    public private(set) var viewControllerToPresentOn: UIViewController?
     public var themeRepository: ThemeRepository?
-
     public let collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: UICollectionViewFlowLayout())
 
     private let cellIdentifier = "cell"
+
 
     public class EnclosureCell: UICollectionViewCell, ThemeRepositorySubscriber {
         public var thumbnail: UIImage? {
@@ -61,7 +64,7 @@ public class EnclosuresList: UIView, UICollectionViewDelegateFlowLayout, UIColle
             self.imageView.autoPinEdgeToSuperviewEdge(.Top)
             self.imageView.autoAlignAxisToSuperviewAxis(.Vertical)
             self.imageView.autoPinEdgeToSuperviewEdge(.Leading, withInset: 0, relation: .GreaterThanOrEqual)
-            self.imageView.autoPinEdgeToSuperviewEdge(.Trailing, withInset: 0, relation: .LessThanOrEqual)
+            self.imageView.autoPinEdgeToSuperviewEdge(.Trailing, withInset: 0, relation: .GreaterThanOrEqual)
             self.imageView.autoPinEdge(.Bottom, toEdge: .Top, ofView: self.label)
             self.label.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
         }
@@ -90,6 +93,11 @@ public class EnclosuresList: UIView, UICollectionViewDelegateFlowLayout, UIColle
         public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
             self.label.textColor = themeRepository.textColor
         }
+    }
+
+    public func configure(enclosures: DataStoreBackedArray<Enclosure>, viewController: UIViewController) {
+        self.enclosures = enclosures
+        self.viewControllerToPresentOn = viewController
     }
 
     public override init(frame: CGRect) {
@@ -125,5 +133,11 @@ public class EnclosuresList: UIView, UICollectionViewDelegateFlowLayout, UIColle
                 showTitle: self.enclosures.count > 1)
             self.themeRepository?.addSubscriber(cell)
             return cell
+    }
+
+    public func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        let playerViewController = AVPlayerViewController()
+        playerViewController.player = AVPlayer(URL: self.enclosures[indexPath.item].url)
+        self.viewControllerToPresentOn?.presentViewController(playerViewController, animated: true, completion: nil)
     }
 }

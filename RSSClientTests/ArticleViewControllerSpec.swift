@@ -276,14 +276,16 @@ class ArticleViewControllerSpec: QuickSpec {
 
             it("should show the enclosure list if the article has supported enclosures") {
                 let articleWithEnclosures = Article(title: "article2", link: NSURL(string: "https://example.com/"), summary: "has enclosures", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier2", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"], enclosures: [])
-                let enclosure = Enclosure(url: NSURL(string: "https://example.com/enclosure")!, kind: "audio/mpeg", article: nil)
+                let enclosure = Enclosure(url: NSURL(string: "https://example.com/enclosure")!, kind: "video/mp4", article: nil)
 
                 enclosure.article = articleWithEnclosures
                 articleWithEnclosures.addEnclosure(enclosure)
+
                 subject.setArticle(articleWithEnclosures)
 
                 expect(subject.enclosuresList.bounds.height) > 10.0
                 expect(Array(subject.enclosuresList.enclosures)) == [enclosure]
+                expect(subject.enclosuresList.viewControllerToPresentOn) == subject
             }
 
             it("should not show the enclosure list if the article has no supported enclosures") {

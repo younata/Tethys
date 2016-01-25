@@ -1,5 +1,8 @@
 import Quick
 import Nimble
+import AVKit
+import AVFoundation
+import UIKit
 import rNews
 import rNewsKit
 
@@ -10,10 +13,14 @@ class EnclosuresListSpec: QuickSpec {
 
         var subject: EnclosuresList!
 
+        var viewController: UIViewController!
+
         beforeEach {
             subject = EnclosuresList(frame: CGRectZero)
 
-            subject.enclosures = DataStoreBackedArray([enclosure1, enclosure2])
+            viewController = UIViewController()
+            let enclosures = DataStoreBackedArray([enclosure1, enclosure2])
+            subject.configure(enclosures, viewController: viewController)
         }
 
         it("should have one section") {
@@ -39,13 +46,26 @@ class EnclosuresListSpec: QuickSpec {
             }
 
             it("does not display the title if the enclosure list only has 1 enclosure") {
-                subject.enclosures = DataStoreBackedArray([enclosure1])
+                subject.configure(DataStoreBackedArray([enclosure1]), viewController: viewController)
 
                 guard let cell = subject.collectionView.dataSource?.collectionView(subject.collectionView,
                     cellForItemAtIndexPath: indexPath) as? EnclosuresList.EnclosureCell else { fail("no"); return }
 
                 expect(cell.thumbnail) == UIImage(named: "podcast")
                 expect(cell.title).to(beNil())
+            }
+
+            it("present an AVPlayerViewController configured with the enclosure onto the view controller when tapped") {
+                subject.collectionView.delegate?.collectionView?(subject.collectionView,
+                    didSelectItemAtIndexPath: indexPath)
+
+                expect(viewController.presentedViewController).to(beAKindOf(AVPlayerViewController.self))
+                if let playerViewController = viewController.presentedViewController as? AVPlayerViewController {
+                    expect(playerViewController.player).toNot(beNil())
+                    expect(playerViewController.player?.currentItem).toNot(beNil())
+                    expect(playerViewController.player?.currentItem?.asset).to(beAKindOf(AVURLAsset.self))
+                    expect((playerViewController.player?.currentItem?.asset as? AVURLAsset)?.URL).to(equal(enclosure1.url))
+                }
             }
         }
     }

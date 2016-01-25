@@ -102,15 +102,15 @@ public class ArticleViewController: UIViewController {
         let htmlString = self.articleCSS + title + content + self.prismJS + "</body></html>"
         webView.loadHTMLString(htmlString, baseURL: article.link)
 
-        let enclosures = article.enclosuresArray.filter { AVURLAsset.audiovisualMIMETypes().contains($0.kind) }
+        let avMimeTypes = AVURLAsset.audiovisualMIMETypes()
+        let enclosures = article.enclosuresArray.filter { avMimeTypes.contains($0.kind) && $0.kind.hasPrefix("video") }
         self.view.layoutIfNeeded()
         if !enclosures.isEmpty {
             self.enclosuresListHeight?.constant = (enclosures.count == 1 ? 70 : 100)
-            self.enclosuresList.enclosures = DataStoreBackedArray(enclosures)
         } else {
             self.enclosuresListHeight?.constant = 0
-            self.enclosuresList.enclosures = DataStoreBackedArray()
         }
+        self.enclosuresList.configure(DataStoreBackedArray(enclosures), viewController: self)
         self.view.layoutIfNeeded()
     }
 

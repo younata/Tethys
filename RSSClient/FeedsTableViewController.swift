@@ -235,8 +235,8 @@ public class FeedsTableViewController: UIViewController {
     private func reload(tag: String?, feeds: [Feed]? = nil) {
         let reloadWithFeeds: ([Feed]) -> (Void) = {feeds in
             let sortedFeeds = feeds.sort {(f1: Feed, f2: Feed) in
-                let f1Unread = f1.unreadArticles().count
-                let f2Unread = f2.unreadArticles().count
+                let f1Unread = f1.unreadArticles.count
+                let f2Unread = f2.unreadArticles.count
                 if f1Unread != f2Unread {
                     return f1Unread > f2Unread
                 }
@@ -458,7 +458,7 @@ extension FeedsTableViewController: UITableViewDataSource {
 
     public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let feed = feedAtIndexPath(indexPath)
-        let cellTypeToUse = (feed.unreadArticles().isEmpty ? "unread": "read")
+        let cellTypeToUse = (feed.unreadArticles.isEmpty ? "unread": "read")
         // Prevents a green triangle which'll (dis)appear depending on
         // whether new feed loaded into it has unread articles or not.
 

@@ -148,9 +148,9 @@ import JavaScriptCore
         return ret
     }
 
-    public func unreadArticles() -> DataStoreBackedArray<Article> {
+    public private(set) lazy var unreadArticles: DataStoreBackedArray<Article> = {
         return self.articlesArray.filterWithPredicate(NSPredicate(format: "read == %@", false))
-    }
+    }()
 
     public func addArticle(article: Article) {
         if !self.articlesArray.contains(article) {

@@ -19,6 +19,7 @@ extension UIApplication: DataSubscriber {
         if feedsLeft == 0 {
             self.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
         }
+        self.applicationIconBadgeNumber -= feed.unreadArticles.count
     }
 
     public func willUpdateFeeds() {
@@ -29,7 +30,7 @@ extension UIApplication: DataSubscriber {
 
     public func didUpdateFeeds(feeds: [Feed]) {
         self.networkActivityIndicatorVisible = false
-        let unreadCount = feeds.reduce(0) { $0 + $1.unreadArticles().count }
+        let unreadCount = feeds.reduce(0) { $0 + $1.unreadArticles.count }
         self.applicationIconBadgeNumber = unreadCount
     }
 }

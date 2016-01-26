@@ -70,7 +70,7 @@ class FeedSpec: QuickSpec {
             subject.addArticle(c)
             subject.addArticle(d)
 
-            expect(Array(subject.unreadArticles())).to(equal([b, c]))
+            expect(Array(subject.unreadArticles)).to(equal([b, c]))
         }
 
         describe("Equatable") {

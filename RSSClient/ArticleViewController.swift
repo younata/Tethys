@@ -101,8 +101,7 @@ public class ArticleViewController: UIViewController {
         let htmlString = self.articleCSS + title + content + self.prismJS + "</body></html>"
         webView.loadHTMLString(htmlString, baseURL: article.link)
 
-        let avMimeTypes = AVURLAsset.audiovisualMIMETypes()
-        let enclosures = article.enclosuresArray.filter { avMimeTypes.contains($0.kind) && $0.kind.hasPrefix("video") }
+        let enclosures = article.enclosuresArray.filter(enclosureIsSupported)
         self.view.layoutIfNeeded()
         if !enclosures.isEmpty {
             self.enclosuresListHeight?.constant = (enclosures.count == 1 ? 70 : 100)

@@ -261,6 +261,7 @@
 		89CC82061B461A5500648367 /* KitModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82051B461A5500648367 /* KitModule.swift */; };
 		89D170A61C52D4AC00D546F9 /* EnclosuresList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D170A51C52D4AC00D546F9 /* EnclosuresList.swift */; };
 		89D170A81C52E98300D546F9 /* EnclosuresListSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D170A71C52E98300D546F9 /* EnclosuresListSpec.swift */; };
+		89D170B71C57318F00D546F9 /* AppHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D170B61C57318F00D546F9 /* AppHelpers.swift */; };
 		89D428031B8D0734006CD81C /* X.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89D428021B8D0734006CD81C /* X.framework */; };
 		89D970BB1B35BF6500ED84B8 /* WKWebView+rNewsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D970BA1B35BF6500ED84B8 /* WKWebView+rNewsTests.m */; };
 		89D970BD1B3929A600ED84B8 /* BackgroundFetchHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D970BC1B3929A600ED84B8 /* BackgroundFetchHandler.swift */; };
@@ -631,6 +632,7 @@
 		89D135101A5944A200B6937A /* RSSClient 1.4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.4.xcdatamodel"; sourceTree = "<group>"; };
 		89D170A51C52D4AC00D546F9 /* EnclosuresList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnclosuresList.swift; sourceTree = "<group>"; };
 		89D170A71C52E98300D546F9 /* EnclosuresListSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnclosuresListSpec.swift; sourceTree = "<group>"; };
+		89D170B61C57318F00D546F9 /* AppHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppHelpers.swift; sourceTree = "<group>"; };
 		89D428021B8D0734006CD81C /* X.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = X.framework; path = ../Carthage/Build/iOS/X.framework; sourceTree = "<group>"; };
 		89D970B91B35BF6400ED84B8 /* WKWebView+rNewsTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WKWebView+rNewsTests.h"; sourceTree = "<group>"; };
 		89D970BA1B35BF6500ED84B8 /* WKWebView+rNewsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "WKWebView+rNewsTests.m"; sourceTree = "<group>"; };
@@ -1063,6 +1065,7 @@
 				898F6E111B129AB6000D343D /* ActivityIndicator.swift */,
 				8918D4A31B8115F800DCDE0E /* ExplanationView.swift */,
 				8903A6241C4AB17C00E896BF /* NotificationView.swift */,
+				89D170B61C57318F00D546F9 /* AppHelpers.swift */,
 				896320921C1779DE00B7C980 /* Settings */,
 				89F98BA21BA079DE005C3CA8 /* Generic Cells */,
 				896320931C1779F900B7C980 /* Repositories */,
@@ -1971,6 +1974,7 @@
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
 				89DA7D2C1A66111E0050685B /* TextFieldCell.swift in Sources */,
 				89C204BD1A73F72800C792D2 /* SplitViewController.swift in Sources */,
+				89D170B71C57318F00D546F9 /* AppHelpers.swift in Sources */,
 				89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */,
 				89C509FA1A2F865F00CBD000 /* QueryFeedViewController.swift in Sources */,
 				89E2A33D1B6A856900A40D4E /* SettingsViewController.swift in Sources */,

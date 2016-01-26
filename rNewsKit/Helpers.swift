@@ -11,8 +11,6 @@ extension String {
                 return self
         }
 
-
-
         let mutableString = NSMutableString(string: self)
 
         for regex in [removeEntityCodes, makeOneLine, removeScripts, removeHTMLTags] {

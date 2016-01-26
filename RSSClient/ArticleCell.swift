@@ -21,6 +21,17 @@ public class ArticleCell: UITableViewCell {
                 self.readingTime.hidden = true
                 self.readingTime.text = nil
             }
+
+            let supportedEnclosures = self.article?.enclosuresArray.filter(enclosureIsSupported) ?? []
+            if supportedEnclosures.isEmpty {
+                self.enclosures.hidden = true
+                self.enclosures.text = nil
+            } else {
+                self.enclosures.hidden = false
+                let localizedFormat = NSLocalizedString("ArticleCell_NumberOfEnclosures", comment: "")
+                let localized = NSString.localizedStringWithFormat(localizedFormat, supportedEnclosures.count) as String
+                self.enclosures.text = localized
+            }
         }
     }
 
@@ -29,6 +40,7 @@ public class ArticleCell: UITableViewCell {
     public let author = UILabel(forAutoLayout: ())
     public let unread = UnreadCounter(forAutoLayout: ())
     public let readingTime = UILabel(forAutoLayout: ())
+    public let enclosures = UILabel(forAutoLayout: ())
 
     public var themeRepository: ThemeRepository? = nil {
         didSet {
@@ -63,6 +75,7 @@ public class ArticleCell: UITableViewCell {
         self.contentView.addSubview(self.published)
         self.contentView.addSubview(self.unread)
         self.contentView.addSubview(self.readingTime)
+        self.contentView.addSubview(self.enclosures)
 
         self.title.numberOfLines = 0
         self.title.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
@@ -79,8 +92,17 @@ public class ArticleCell: UITableViewCell {
         self.readingTime.numberOfLines = 0
         self.readingTime.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
 
-        self.readingTime.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(0, 8, 4, 4), excludingEdge: .Top)
+        self.readingTime.autoPinEdgeToSuperviewEdge(.Leading, withInset: 8)
+        self.readingTime.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
         self.readingTime.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.author, withOffset: 4)
+
+        self.enclosures.numberOfLines = 0
+        self.enclosures.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
+
+        self.enclosures.autoPinEdgeToSuperviewEdge(.Trailing, withInset: 4)
+        self.enclosures.autoPinEdge(.Leading, toEdge: .Trailing, ofView: self.readingTime, withOffset: 4)
+        self.enclosures.autoPinEdge(.Bottom, toEdge: .Bottom, ofView: self.readingTime)
+        self.enclosures.autoPinEdge(.Top, toEdge: .Top, ofView: self.readingTime)
 
         self.unread.hideUnreadText = true
 
@@ -109,6 +131,7 @@ extension ArticleCell: ThemeRepositorySubscriber {
         self.published.textColor = themeRepository.textColor
         self.author.textColor = themeRepository.textColor
         self.readingTime.textColor = themeRepository.textColor
+        self.enclosures.textColor = themeRepository.textColor
 
         self.backgroundColor = themeRepository.backgroundColor
     }

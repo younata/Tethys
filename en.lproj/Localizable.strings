@@ -77,6 +77,7 @@
 "ArticleListController_Search" = "Search Articles";
 
 "ArticleCell_EstimatedReadingTime" = "%@ to read";
+"ArticleCell_NumberOfEnclosures" = "%@ items";
 
 "ArticleViewController_TabBar_ViewLink" = "Open Link";
 "ArticleViewController_Command_ViewPreviousArticle" = "Previous Article";

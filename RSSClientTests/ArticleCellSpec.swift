@@ -24,19 +24,20 @@ class ArticleCellSpec: QuickSpec {
             }
 
             it("updates each label") {
-                expect(subject.title.textColor).to(equal(themeRepository.textColor))
-                expect(subject.published.textColor).to(equal(themeRepository.textColor))
-                expect(subject.author.textColor).to(equal(themeRepository.textColor))
-                expect(subject.readingTime.textColor).to(equal(themeRepository.textColor))
+                expect(subject.title.textColor) == themeRepository.textColor
+                expect(subject.published.textColor) == themeRepository.textColor
+                expect(subject.author.textColor) == themeRepository.textColor
+                expect(subject.readingTime.textColor) == themeRepository.textColor
+                expect(subject.enclosures.textColor) == themeRepository.textColor
             }
 
             it("changes the cell's background colors") {
-                expect(subject.backgroundColor).to(equal(themeRepository.backgroundColor))
+                expect(subject.backgroundColor) == themeRepository.backgroundColor
             }
         }
 
         it("should set the title label") {
-            expect(subject.title.text).to(equal("title"))
+            expect(subject.title.text) == "title"
         }
 
         it("should set the published/updated label") {
@@ -46,19 +47,23 @@ class ArticleCellSpec: QuickSpec {
             dateFormatter.dateStyle = .ShortStyle
             dateFormatter.timeZone = NSCalendar.currentCalendar().timeZone
 
-            expect(subject.published.text).to(equal(dateFormatter.stringFromDate(unupdatedArticle.published)))
+            expect(subject.published.text) == dateFormatter.stringFromDate(unupdatedArticle.published)
         }
 
         it("should not show the estimated reading time") {
-            expect(subject.readingTime.hidden).to(beTruthy())
+            expect(subject.readingTime.hidden) == true
         }
 
         it("should show the author") {
-            expect(subject.author.text).to(equal("Rachel"))
+            expect(subject.author.text) == "Rachel"
         }
 
         it("should indicate that it's unread") {
-            expect(subject.unread.unread).toNot(equal(0))
+            expect(subject.unread.unread) != 0
+        }
+
+        it("should not show the enclosures label") {
+            expect(subject.enclosures.hidden) == true
         }
 
         context("setting an read article") {
@@ -67,7 +72,7 @@ class ArticleCellSpec: QuickSpec {
             }
 
             it("should indicate that it's read") {
-                expect(subject.unread.unread).to(equal(0))
+                expect(subject.unread.unread) == 0
             }
         }
 
@@ -77,8 +82,8 @@ class ArticleCellSpec: QuickSpec {
             }
 
             it("should show the estimated reading time") {
-                expect(subject.readingTime.hidden).to(beFalsy())
-                expect(subject.readingTime.text).to(equal("15 minutes to read"))
+                expect(subject.readingTime.hidden) == false
+                expect(subject.readingTime.text) == "15 minutes to read"
             }
         }
 
@@ -94,7 +99,50 @@ class ArticleCellSpec: QuickSpec {
                 dateFormatter.dateStyle = .ShortStyle
                 dateFormatter.timeZone = NSCalendar.currentCalendar().timeZone
 
-                expect(subject.published.text).to(equal(dateFormatter.stringFromDate(readArticle.updatedAt!)))
+                expect(subject.published.text) == dateFormatter.stringFromDate(readArticle.updatedAt!)
+            }
+        }
+
+        context("setting an article with a supported enclosure") {
+            beforeEach {
+                let enclosure = Enclosure(url: NSURL(string: "https://example.com/enclosure")!, kind: "video/mp4", article: nil)
+                let article = Article(title: "title", link: nil, summary: "summary", author: "Rachel", published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 15, feed: nil, flags: [], enclosures: [enclosure])
+                enclosure.article = article
+                subject.article = article
+            }
+
+            it("should show the enclosures label indicating 1 item") {
+                expect(subject.enclosures.hidden) == false
+                expect(subject.enclosures.text) == "1 item"
+            }
+        }
+
+        context("setting an article with multiple supported enclosures") {
+            beforeEach {
+                let enclosure = Enclosure(url: NSURL(string: "https://example.com/enclosure")!, kind: "video/mp4", article: nil)
+                let enclosure2 = Enclosure(url: NSURL(string: "https://example.com/enclosure2")!, kind: "video/mp4", article: nil)
+                let article = Article(title: "title", link: nil, summary: "summary", author: "Rachel", published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 15, feed: nil, flags: [], enclosures: [enclosure, enclosure2])
+                enclosure.article = article
+                enclosure2.article = article
+                subject.article = article
+            }
+
+            it("should show the enclosures label indicating 2 items") {
+                expect(subject.enclosures.hidden) == false
+                expect(subject.enclosures.text) == "2 items"
+            }
+        }
+
+        context("setting an article with no supported enclosures") {
+            beforeEach {
+                let enclosure = Enclosure(url: NSURL(string: "https://example.com/enclosure")!, kind: "application/json", article: nil)
+                let article = Article(title: "title", link: nil, summary: "summary", author: "Rachel", published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 15, feed: nil, flags: [], enclosures: [enclosure])
+                enclosure.article = article
+                subject.article = article
+            }
+
+            it("should not show the enclosures label") {
+                expect(subject.enclosures.hidden) == true
             }
         }
     }

@@ -683,7 +683,7 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
 
                 let values: [(String, String, NSURL)] = [
-                    ("Rachel Brindle", "Creator/Developer", NSURL(string: "https://twitter.com/younata")!),
+                    ("Rachel Brindle", "Developer", NSURL(string: "https://twitter.com/younata")!),
                 ]
 
                 it("should have \(values.count) cells") {

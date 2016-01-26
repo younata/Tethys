@@ -10,7 +10,6 @@ public class ArticleViewController: UIViewController {
     public private(set) var article: Article? = nil
     public func setArticle(article: Article?, read: Bool = true, show: Bool = true) {
         self.article = article
-        self.navigationController?.setToolbarHidden(false, animated: false)
 
         guard let a = article else { return }
         if a.read == false && read { self.dataWriter?.markArticle(a, asRead: true) }
@@ -135,7 +134,7 @@ public class ArticleViewController: UIViewController {
 
         self.view.backgroundColor = self.themeRepository?.backgroundColor
         self.setupUserActivity()
-
+        self.navigationController?.setToolbarHidden(false, animated: false)
 
         self.view.addSubview(self.content)
         self.view.addSubview(self.enclosuresList)
@@ -161,8 +160,10 @@ public class ArticleViewController: UIViewController {
     public override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
 
-        self.navigationController?.setToolbarHidden(false, animated: true)
+        self.navigationController?.setToolbarHidden(false, animated: false)
         self.splitViewController?.setNeedsStatusBarAppearanceUpdate()
+
+        if let themeRepository = self.themeRepository { self.themeRepositoryDidChangeTheme(themeRepository) }
     }
 
     public override func viewWillDisappear(animated: Bool) {
@@ -383,13 +384,12 @@ extension ArticleViewController: NSUserActivityDelegate {
 extension ArticleViewController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
         self.articleCSS = self.loadArticleCSS()
-        self.content.reload()
-        self.nextContent?.reload()
+        if let article = self.article {
+            self.showArticle(article, onWebView: self.content)
+        }
 
         self.setThemeForWebView(self.content)
-        if let nextContent = self.nextContent {
-            self.setThemeForWebView(nextContent)
-        }
+        if let nextContent = self.nextContent { self.setThemeForWebView(nextContent) }
 
         self.view.backgroundColor = themeRepository.backgroundColor
         self.navigationController?.navigationBar.barStyle = themeRepository.barStyle

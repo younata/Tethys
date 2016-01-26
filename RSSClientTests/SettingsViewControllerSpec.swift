@@ -682,28 +682,39 @@ class SettingsViewControllerSpec: QuickSpec {
                     expect(title).to(equal("Credits"))
                 }
 
-                it("should have a single cell") {
-                    expect(subject.tableView.numberOfRowsInSection(sectionNumber)).to(equal(1))
+                let values: [(String, String, NSURL)] = [
+                    ("Rachel Brindle", "Creator/Developer", NSURL(string: "https://twitter.com/younata")!),
+                ]
+
+                it("should have \(values.count) cells") {
+                    expect(subject.tableView.numberOfRowsInSection(sectionNumber)).to(equal(values.count))
                 }
 
-                describe("the first cell") {
-                    var cell: TableViewCell! = nil
-                    let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
+                sharedExamples("a credits cell") { (sharedContext: SharedExampleContext) in
+                    var cell: TableViewCell!
+                    var indexPath: NSIndexPath!
+                    var title: String!
+                    var detail: String!
+                    var url: NSURL!
 
                     beforeEach {
-                        cell = dataSource.tableView(subject.tableView, cellForRowAtIndexPath: indexPath) as! TableViewCell
+                        cell = sharedContext()["cell"] as! TableViewCell
+                        indexPath = sharedContext()["indexPath"] as! NSIndexPath
+                        title = sharedContext()["title"] as! String
+                        detail = sharedContext()["detail"] as! String
+                        url = sharedContext()["url"] as! NSURL
                     }
 
                     it("should be configured with the theme repository") {
                         expect(cell.themeRepository).to(equal(themeRepository))
                     }
 
-                    it("should have my name") {
-                        expect(cell.textLabel?.text).to(equal("Rachel Brindle"))
+                    it("should have the proper text") {
+                        expect(cell.textLabel?.text).to(equal(title))
                     }
 
-                    it("should say that I'm the developer") {
-                        expect(cell.detailTextLabel?.text).to(equal("Developer"))
+                    it("should show the proper detail text") {
+                        expect(cell.detailTextLabel?.text).to(equal(detail))
                     }
 
                     describe("tapping it") {
@@ -719,10 +730,27 @@ class SettingsViewControllerSpec: QuickSpec {
                             }
                         } else {
                             context("on iOS 8") {
-                                it("should navigate outside the app to my twitter handle") {
-                                    expect(urlOpener.url).to(equal(NSURL(string: "https://twitter.com/younata")))
+                                it("should navigate outside the app to the proper url") {
+                                    expect(urlOpener.url).to(equal(url))
                                 }
                             }
+                        }
+                    }
+                }
+
+                for index in 0..<values.count {
+                    describe("the \(index)th cell") {
+                        itBehavesLike("a credits cell") {
+                            let indexPath = NSIndexPath(forRow: index, inSection: sectionNumber)
+                            let cell = dataSource.tableView(subject.tableView, cellForRowAtIndexPath: indexPath)
+                            let value = values[index]
+                            return [
+                                "cell": cell,
+                                "indexPath": indexPath,
+                                "title": value.0,
+                                "detail": value.1,
+                                "url": value.2
+                            ]
                         }
                     }
                 }

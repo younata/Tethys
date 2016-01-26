@@ -259,9 +259,11 @@ public class FeedsTableViewController: UIViewController {
                     withMultiplier: 0.75)
             }
 
+            self.feeds = sortedFeeds
             if sortedFeeds != self.feeds {
-                self.feeds = sortedFeeds
                 self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+            } else {
+                self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
             }
         }
 

@@ -31,10 +31,10 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             guard let feed = feed else { fail(); return }
             let muonEnclosure = Muon.Enclosure(url: NSURL(string: "https://example.com/enclosure.mp3")!, length: 0, type: "audio/mpeg")
             let item = Muon.Article(title: "article", link: nil, description: "", content: "", guid: "", published: nil, updated: nil, authors: [], enclosures: [muonEnclosure])
-            let info = Muon.Feed(title: "a title", link: NSURL(string: "https://example.com")!, description: "description", articles: [item])
+            let info = Muon.Feed(title: "a &amp; title", link: NSURL(string: "https://example.com")!, description: "description", articles: [item])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
             dataService.updateFeed(feed, info: info) {
-                expect(feed.title) == "a title"
+                expect(feed.title) == "a & title"
                 expect(feed.summary) == "description"
                 expect(feed.url).to(beNil())
                 expect(feed.articlesArray.count).to(equal(1))
@@ -130,20 +130,20 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             }
         }
 
-        it("easily allows an article to be updated") {
+        it("easily allows an article to be updated, filtering out title information") {
             guard let article = article else { fail(); return }
             let author = Muon.Author(name: "Rachel Brindle", email: NSURL(string: "mailto:rachel@example.com"), uri: NSURL(string: "https://example.com/rachel"))
             let content = (0..<100).map({_ in "<p>this was a content space</p>"}).reduce("", combine: +)
 
             let muonEnclosure = Muon.Enclosure(url: NSURL(string: "https://example.com/enclosure.mp3")!, length: 0, type: "audio/mpeg")
-            let item = Muon.Article(title: "a title", link: NSURL(string: "https://example.com"), description: "description", content: content, guid: "guid", published: NSDate(timeIntervalSince1970: 10), updated: NSDate(timeIntervalSince1970: 15), authors: [author], enclosures: [muonEnclosure])
+            let item = Muon.Article(title: "a <p></p>&amp; title", link: NSURL(string: "https://example.com"), description: "description", content: content, guid: "guid", published: NSDate(timeIntervalSince1970: 10), updated: NSDate(timeIntervalSince1970: 15), authors: [author], enclosures: [muonEnclosure])
 
             let updateExpectation = spec.expectationWithDescription("Update Article")
             if let searchIndex = dataService.searchIndex as? FakeSearchIndex {
                 searchIndex.lastItemsAdded = []
             }
             dataService.updateArticle(article, item: item) {
-                expect(article.title) == "a title"
+                expect(article.title) == "a & title"
                 expect(article.link) == NSURL(string: "https://example.com")
                 expect(article.published) == NSDate(timeIntervalSince1970: 10)
                 expect(article.updatedAt) == NSDate(timeIntervalSince1970: 15)

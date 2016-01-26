@@ -40,7 +40,7 @@ extension DataService {
     }
 
     func updateFeed(feed: Feed, info: Muon.Feed, callback: (Void) -> (Void)) {
-        feed.title = info.title
+        feed.title = info.title.stringByUnescapingHTML().stringByStrippingHTML()
         feed.summary = info.description
 
         let operationQueue = NSOperationQueue()
@@ -84,7 +84,8 @@ extension DataService {
             return author.name
         }).joinWithSeparator(", ")
 
-        article.title = (item.title ?? article.title ?? "unknown").stringByTrimmingCharactersInSet(characterSet)
+        let title = (item.title ?? article.title ?? "unknown").stringByTrimmingCharactersInSet(characterSet)
+        article.title = title.stringByUnescapingHTML().stringByStrippingHTML()
         article.link = item.link
         article.published = item.published ?? article.published
         article.updatedAt = item.updated

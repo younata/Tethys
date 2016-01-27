@@ -9,33 +9,10 @@ class rNewsAcceptanceTests: XCTestCase {
         XCUIApplication().launch()
 
         setupSnapshot(XCUIApplication())
-
-        deleteEverything()
     }
 
     override func tearDown() {
         super.tearDown()
-    }
-
-    func deleteEverything() {
-        let app = XCUIApplication()
-        let feedsNavigationBar = app.navigationBars["Feeds"]
-        feedsNavigationBar.buttons["Edit"].tap()
-        self.waitForThingToExist(feedsNavigationBar.buttons["Done"])
-        var count = Int(app.tables.cells.count)
-        while app.cells.count > 0 {
-            app.cells.buttons.elementBoundByIndex(0).tap()
-
-            let deleteButton = app.buttons["Delete"]
-            self.waitForThingToExist(deleteButton)
-
-            deleteButton.tap()
-
-            count -= 1
-            self.waitForPredicate(NSPredicate(format: "count == \(count)"), object: app.tables.cells)
-        }
-        feedsNavigationBar.buttons["Done"].tap()
-        XCTAssertEqual(app.tables.cells.count, 0)
     }
 
     func waitForThingToExist(thing: AnyObject) {
@@ -44,7 +21,7 @@ class rNewsAcceptanceTests: XCTestCase {
 
     func waitForPredicate(predicate: NSPredicate, object: AnyObject) {
         expectationForPredicate(predicate, evaluatedWithObject: object, handler: nil)
-        waitForExpectationsWithTimeout(60, handler: nil)
+        waitForExpectationsWithTimeout(120, handler: nil)
     }
 
     func loadWebFeed() {
@@ -52,13 +29,13 @@ class rNewsAcceptanceTests: XCTestCase {
 
         self.waitForThingToExist(app.navigationBars["Feeds"])
         app.navigationBars["Feeds"].buttons["Add"].tap()
-        self.waitForThingToExist(app.buttons["Add from Web"])
         app.buttons["Add from Web"].tap()
         
         let enterUrlTextField = app.textFields["Enter URL"]
         enterUrlTextField.tap()
-        enterUrlTextField.typeText("http://younata.github.io")
-        enterUrlTextField.typeText("\r")
+        NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 10))
+        enterUrlTextField.typeText("http://younata.github.io\r")
+        NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 10))
 
         let addFeedButton = app.toolbars.buttons["Add Feed"]
 
@@ -76,18 +53,18 @@ class rNewsAcceptanceTests: XCTestCase {
 
         self.loadWebFeed()
 
-        snapshot("01-feedsList")
+        snapshot("01-feedsList", waitForLoadingIndicator: false)
 
         app.cells.elementBoundByIndex(0).tap()
 
         self.waitForThingToExist(app.navigationBars["Rachel Brindle"])
 
-        snapshot("02-articlesList")
+        snapshot("02-articlesList", waitForLoadingIndicator: false)
 
         app.staticTexts["Homemade thermostat for my apartment"].tap()
 
         self.waitForThingToExist(app.navigationBars["Homemade thermostat for my apartment"])
 
-        snapshot("03-article")
+        snapshot("03-article", waitForLoadingIndicator: false)
     }
 }

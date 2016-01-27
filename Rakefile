@@ -74,7 +74,8 @@ namespace "release" do
   end
 
   desc "Commits and pushes a release of the new version"
-  task :publish do |t, args|
+  task :publish do |t|
+    puts "Enter new version number: "
     new_version = STDIN.gets.chomp
     Semantic::Version.new new_version
     bump_version new_version
@@ -87,7 +88,9 @@ namespace "release" do
     run "git ci -m '#{version}'"
 
     version_str = "v#{version}"
+    puts "Tagging version"
     run "git tag #{version_str}"
+    puts "Pushing to github"
     run "git push origin head && git push origin #{version_str}"
 
     release_token = IO.read(".release_token").strip()
@@ -102,10 +105,12 @@ namespace "release" do
 
     headers = {
         'Content-Type' => 'application/json',
-        'Authorization' => "token #{release_token}"
+        'Accept' => 'application/vnd.github.v3+json'
     }
 
-    response = RestClient.post('https://api.github.com/repos/younata/RSSClient/releases', body_data, headers)
+    puts "Creating github release"
+
+    response = RestClient.post("https://younata:#{release_token}@api.github.com/repos/younata/RSSClient/releases", body_data, headers)
 
     if response.code == 201
       puts 'Successfully uploaded release'

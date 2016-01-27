@@ -29,16 +29,15 @@ platform :ios do
   desc "Runs all the tests"
   lane :test do
     sh "bundle exec rake test:ios"
-    snapshot
   end
 
   desc "Deploy a new version to the App Store"
   lane :deploy do
-    sh "bundle exec rake test:ios"
     sh "bundle exec rake release:publish"
+    sh "export SNAPSHOT_FORCE_DELETE=1; snapshot reset_simulators"
     snapshot
     gym(scheme: "RSSClient")
-    deliver(force: true)
+    deliver
   end
 
   # You can define as many lanes as you want

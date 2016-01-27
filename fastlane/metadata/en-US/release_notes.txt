@@ -1,15 +1,5 @@
-Add WorkFlow as a dependency
-- Rachel Brindle
----
-Finish tests for using NotificationView
+Adds initial support for video enclosures (minimal support for vidcasts)
 
-Use Carthage for PivotalCoreKit
-[Finishes #108726770]
-- Rachel Brindle
----
-Add a NotificationView
-- Rachel Brindle
----
-when panning to new article, set the content inset for the webview
-- Rachel Brindle
----
+Shows the number of supported (that is, video) enclosures for a given article in the article list.
+Better interpret titles of feeds and articles
+Minor bug fixes performance improvements

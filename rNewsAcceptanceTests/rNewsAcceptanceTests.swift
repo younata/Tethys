@@ -47,15 +47,18 @@ class rNewsAcceptanceTests: XCTestCase {
         waitForExpectationsWithTimeout(60, handler: nil)
     }
 
-    func testLoadingWebFeed() {
+    func loadWebFeed() {
         let app = XCUIApplication()
 
+        self.waitForThingToExist(app.navigationBars["Feeds"])
         app.navigationBars["Feeds"].buttons["Add"].tap()
+        self.waitForThingToExist(app.buttons["Add from Web"])
         app.buttons["Add from Web"].tap()
         
-        let enterUrlTextField = app.navigationBars["rNews.FindFeedView"].textFields["Enter URL"]
+        let enterUrlTextField = app.textFields["Enter URL"]
         enterUrlTextField.tap()
-        enterUrlTextField.typeText("http://younata.github.io\r")
+        enterUrlTextField.typeText("http://younata.github.io")
+        enterUrlTextField.typeText("\r")
 
         let addFeedButton = app.toolbars.buttons["Add Feed"]
 
@@ -71,7 +74,7 @@ class rNewsAcceptanceTests: XCTestCase {
     func testMakingScreenshots() {
         let app = XCUIApplication()
 
-        self.testLoadingWebFeed()
+        self.loadWebFeed()
 
         snapshot("01-feedsList")
 

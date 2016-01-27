@@ -11,7 +11,7 @@ public class ArticleCell: UITableViewCell {
             self.author.text = self.article?.author ?? ""
             let hasNotRead = self.article?.read != true
             self.unread.unread = hasNotRead ? 1 : 0
-            self.unreadWidth.constant = (hasNotRead ? 30 : 0)
+            self.unreadWidth.constant = hasNotRead ? 30 : 0
             if let readingTime = self.article?.estimatedReadingTime where readingTime > 0 {
                 self.readingTime.hidden = false
                 let localizedFormat = NSLocalizedString("ArticleCell_EstimatedReadingTime", comment: "")

@@ -59,7 +59,7 @@ namespace "release" do
     path = Dir::Tmpname.make_tmpname "rnews_release_notes", nil
     IO.write(path, message)
 
-    run "vim #{path}"
+    run "mvim -f #{path}"
 
     message = IO.read(path)
     File.delete(path)

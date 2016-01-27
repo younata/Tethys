@@ -146,14 +146,13 @@ public class ArticleViewController: UIViewController {
             toItem: self.bottomLayoutGuide, attribute: .Top, multiplier: 1, constant: 0))
         self.enclosuresListHeight = self.enclosuresList.autoSetDimension(.Height, toSize: 0)
 
-        self.configureContent()
-
         self.updateLeftBarButtonItem(self.traitCollection)
 
         self.view.addGestureRecognizer(self.panGestureRecognizer)
 
         self.themeRepository?.addSubscriber(self)
         self.enclosuresList.themeRepository = self.themeRepository
+        self.configureContent()
     }
 
     public override func viewDidAppear(animated: Bool) {
@@ -250,6 +249,7 @@ public class ArticleViewController: UIViewController {
         self.content.delegate = self
 
         self.content.scalesPageToFit = true
+        self.content.opaque = false
         self.setThemeForWebView(self.content)
 
         if #available(iOS 9, *) { self.content.allowsLinkPreview = true }
@@ -258,6 +258,7 @@ public class ArticleViewController: UIViewController {
     private func setThemeForWebView(webView: UIWebView) {
         guard let themeRepository = self.themeRepository else { return }
         webView.backgroundColor = themeRepository.backgroundColor
+        webView.scrollView.backgroundColor = themeRepository.backgroundColor
         webView.scrollView.indicatorStyle = themeRepository.scrollIndicatorStyle
     }
 

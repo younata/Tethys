@@ -4,68 +4,84 @@
 <dict>
 	<key>files</key>
 	<dict>
-		<key>Headers/X-Swift.h</key>
+		<key>Headers/DSL.h</key>
 		<data>
-		djAngnkhuyFcJxExOnkI/GM4uLU=
+		dbfHIrj8dDbx7vDhdDNXSc1hWNA=
 		</data>
-		<key>Headers/X.h</key>
+		<key>Headers/NMBExceptionCapture.h</key>
 		<data>
-		5tWo+h25p0Kyj1WdJL0RG74PHmo=
+		ncXv+PqMUjLHOJpiFz6BKmTAq5o=
+		</data>
+		<key>Headers/Nimble-Swift.h</key>
+		<data>
+		XhFiRr/HTIYFeTnm0YluNiosaig=
+		</data>
+		<key>Headers/Nimble.h</key>
+		<data>
+		KLz+oTarBbtyqHW8TwM58Vs5XWQ=
 		</data>
 		<key>Info.plist</key>
 		<data>
-		c636ZFcGdWLvWisq8aJg2RqiP3Y=
+		9SC3icABXLQo6KxXi/aSaq5/2IA=
 		</data>
-		<key>Modules/X.swiftmodule/arm.swiftdoc</key>
+		<key>Modules/Nimble.swiftmodule/arm.swiftdoc</key>
 		<data>
-		RRDNq0tUb7M7c95GGWWFttVIe4s=
+		f0D4gzS2uTQz9tHJ1n2SHl1lrog=
 		</data>
-		<key>Modules/X.swiftmodule/arm.swiftmodule</key>
+		<key>Modules/Nimble.swiftmodule/arm.swiftmodule</key>
 		<data>
-		wj6fL87oQfUvjHsL98TGhjxhsN8=
+		6PcGfRFfmmvwCJnO+xE1F+ZQAUo=
 		</data>
-		<key>Modules/X.swiftmodule/arm64.swiftdoc</key>
+		<key>Modules/Nimble.swiftmodule/arm64.swiftdoc</key>
 		<data>
-		OIL/fl+TK7QMtYsLXTduPlOg4GI=
+		uf3MXG77/SKbDGqF6Z6P3wOWY6s=
 		</data>
-		<key>Modules/X.swiftmodule/arm64.swiftmodule</key>
+		<key>Modules/Nimble.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		fNsSlQwUZCvsvi8jsppMmEe+HhM=
+		xToQLQAa9w+arwQZumSTTkdJ/JQ=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
-		/Ch5xMdECQ8uatJLTqpCMMv2Nqc=
+		HraXvk1VTxnsGdY8oSlKGNkdg60=
 		</data>
 	</dict>
 	<key>files2</key>
 	<dict>
-		<key>Headers/X-Swift.h</key>
+		<key>Headers/DSL.h</key>
 		<data>
-		djAngnkhuyFcJxExOnkI/GM4uLU=
+		dbfHIrj8dDbx7vDhdDNXSc1hWNA=
 		</data>
-		<key>Headers/X.h</key>
+		<key>Headers/NMBExceptionCapture.h</key>
 		<data>
-		5tWo+h25p0Kyj1WdJL0RG74PHmo=
+		ncXv+PqMUjLHOJpiFz6BKmTAq5o=
 		</data>
-		<key>Modules/X.swiftmodule/arm.swiftdoc</key>
+		<key>Headers/Nimble-Swift.h</key>
 		<data>
-		RRDNq0tUb7M7c95GGWWFttVIe4s=
+		XhFiRr/HTIYFeTnm0YluNiosaig=
 		</data>
-		<key>Modules/X.swiftmodule/arm.swiftmodule</key>
+		<key>Headers/Nimble.h</key>
 		<data>
-		wj6fL87oQfUvjHsL98TGhjxhsN8=
+		KLz+oTarBbtyqHW8TwM58Vs5XWQ=
 		</data>
-		<key>Modules/X.swiftmodule/arm64.swiftdoc</key>
+		<key>Modules/Nimble.swiftmodule/arm.swiftdoc</key>
 		<data>
-		OIL/fl+TK7QMtYsLXTduPlOg4GI=
+		f0D4gzS2uTQz9tHJ1n2SHl1lrog=
 		</data>
-		<key>Modules/X.swiftmodule/arm64.swiftmodule</key>
+		<key>Modules/Nimble.swiftmodule/arm.swiftmodule</key>
 		<data>
-		fNsSlQwUZCvsvi8jsppMmEe+HhM=
+		6PcGfRFfmmvwCJnO+xE1F+ZQAUo=
+		</data>
+		<key>Modules/Nimble.swiftmodule/arm64.swiftdoc</key>
+		<data>
+		uf3MXG77/SKbDGqF6Z6P3wOWY6s=
+		</data>
+		<key>Modules/Nimble.swiftmodule/arm64.swiftmodule</key>
+		<data>
+		xToQLQAa9w+arwQZumSTTkdJ/JQ=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
-		/Ch5xMdECQ8uatJLTqpCMMv2Nqc=
+		HraXvk1VTxnsGdY8oSlKGNkdg60=
 		</data>
 	</dict>
 	<key>rules</key>

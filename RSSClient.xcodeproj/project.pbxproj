@@ -1538,6 +1538,7 @@
 				89CB98C01B13A0ED00C87160 /* Lint */,
 				89CAD4C01BA3D36E006D79FC /* Embed Carthage Libraries */,
 				8916880A1BA8854E00F9FFE0 /* Embed rNewsKit */,
+				89D170B91C5835C600D546F9 /* Remove Frameworks folder from rNewsKit */,
 			);
 			buildRules = (
 			);
@@ -1784,6 +1785,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/usr/local/bin/carthage copy-frameworks";
+			showEnvVarsInLog = 0;
 		};
 		89CB98C01B13A0ED00C87160 /* Lint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1798,6 +1800,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"SwiftLint does not exist, download from https://github.com/realm/SwiftLint\"\nfi";
+			showEnvVarsInLog = 0;
+		};
+		89D170B91C5835C600D546F9 /* Remove Frameworks folder from rNewsKit */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Remove Frameworks folder from rNewsKit";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "rm -rf $BUILT_PRODUCTS_DIR/rNews.app/Frameworks/rNewsKit.framework/Frameworks/";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 

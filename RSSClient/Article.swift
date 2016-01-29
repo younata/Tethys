@@ -131,8 +131,10 @@ import JavaScriptCore
         guard let b = object as? Article else {
             return false
         }
-        if let aID = self.articleID, let bID = b.articleID {
+        if let aID = self.articleID as? NSManagedObjectID, let bID = b.articleID as? NSManagedObjectID {
             return aID.URIRepresentation() == bID.URIRepresentation()
+        } else if let aID = self.articleID as? String, let bID = b.articleID as? String {
+            return aID == bID
         }
         return self.title == b.title && self.link == b.link && self.summary == b.summary &&
             self.author == b.author && self.published == b.published && self.updatedAt == b.updatedAt &&
@@ -169,7 +171,7 @@ import JavaScriptCore
             self.updated = false
     }
 
-    public private(set) var articleID: NSManagedObjectID? = nil
+    internal private(set) var articleID: AnyObject? = nil
 
     internal init(article: CoreDataArticle, feed: Feed?) {
         title = article.title ?? ""
@@ -208,6 +210,35 @@ import JavaScriptCore
 
         self.updated = false
     }
+
+    internal init(realmArticle article: RealmArticle, feed: Feed?) {
+        title = article.title ?? ""
+        link = NSURL(string: article.link)
+
+        summary = article.summary ?? ""
+        author = article.author ?? ""
+        published = article.published ?? NSDate()
+        updatedAt = article.updatedAt
+        identifier = article.link
+        content = article.content ?? ""
+        read = article.read
+        if let readingTime = article.estimatedReadingTime.value {
+            estimatedReadingTime = readingTime
+        } else {
+            let readingTime = estimateReadingTime(article.content ?? article.summary ?? "")
+            article.estimatedReadingTime.value = readingTime
+            estimatedReadingTime = readingTime
+        }
+        self.feed = feed
+        self.flags = article.flags.map { $0.string }
+        self.enclosuresArray = DataStoreBackedArray()
+        super.init()
+        let enclosures = article.enclosures.map { Enclosure(realmEnclosure: $0, article: self) }
+        self.enclosuresArray = DataStoreBackedArray(enclosures)
+        self.articleID = article.link
+        self.updated = false
+    }
+
     public func addFlag(flag: String) {
         if !self.flags.contains(flag) {
             self.flags.append(flag)

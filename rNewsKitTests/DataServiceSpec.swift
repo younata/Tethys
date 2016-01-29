@@ -1,5 +1,6 @@
 import Quick
 import Nimble
+import CoreData
 @testable import rNewsKit
 import Muon
 
@@ -211,7 +212,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
 
                     let findExpectation = spec.expectationWithDescription("Find Enclosure")
 
-                    dataService.articlesMatchingPredicate(NSPredicate(format: "self == %@", article.articleID!)) { articles in
+                    dataService.articlesMatchingPredicate(NSPredicate(format: "self == %@", article.articleID as! NSManagedObjectID)) { articles in
                         let article = articles.first!
                         expect(article.enclosuresArray.count) == 1
                         expect(article.enclosuresArray.first?.url) == NSURL(string: "https://example.com")!

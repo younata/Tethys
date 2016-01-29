@@ -1,16 +1,37 @@
 import Quick
 import Nimble
+import RealmSwift
 @testable import rNewsKit
 
 class ArticleSpec: QuickSpec {
     override func spec() {
         var subject: Article! = nil
+        var realm: Realm!
 
         beforeEach {
+            let realmConf = Realm.Configuration(inMemoryIdentifier: "ArticleSpec")
+            realm = try! Realm(configuration: realmConf)
+            try! realm.write {
+                realm.deleteAll()
+            }
+
             subject = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
         }
 
         describe("creating from a CoreDataArticle") {
+            it("sets estimatedReadingTime when it's nil in CoreData estimatedReadingTime is nil") {
+                let a = RealmArticle()
+                a.title = "hello"
+                a.link = "https://example.com/article"
+                a.content = (0..<100).map({_ in "<p>this was a content space</p>"}).reduce("", combine: +)
+
+                let article = Article(realmArticle: a, feed: nil)
+                expect(article.estimatedReadingTime).to(equal(3))
+                expect(a.estimatedReadingTime.value).to(equal(3))
+            }
+        }
+
+        describe("creating from a RealmArticle") {
             it("sets estimatedReadingTime when it's nil in CoreData estimatedReadingTime is nil") {
                 let ctx = managedObjectContext()
                 let a = createArticle(ctx)
@@ -33,7 +54,18 @@ class ArticleSpec: QuickSpec {
                 expect(Article(article: a, feed: nil)).to(equal(Article(article: a, feed: nil)))
             }
 
-            it("should report two articles not created with coredataarticles with the same property equality as equal") {
+            it("should report two articles created with a realmarticle with the same url as equal") {
+                let a = RealmArticle()
+                a.link = "https://example.com/article"
+
+                let b = RealmArticle()
+                b.link = "https://example.com/article2"
+
+                expect(Article(realmArticle: a, feed: nil)).toNot(equal(Article(realmArticle: b, feed: nil)))
+                expect(Article(realmArticle: a, feed: nil)).to(equal(Article(realmArticle: a, feed: nil)))
+            }
+
+            it("should report two articles not created with datastore objects with the same property equality as equal") {
                 let date = NSDate()
                 let a = Article(title: "", link: nil, summary: "", author: "", published: date, updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
                 let b = Article(title: "blah", link: NSURL(), summary: "hello", author: "anAuthor", published: NSDate(timeIntervalSince1970: 0), updatedAt: nil, identifier: "hi", content: "hello there", read: true, estimatedReadingTime: 70, feed: nil, flags: ["flag"], enclosures: [])

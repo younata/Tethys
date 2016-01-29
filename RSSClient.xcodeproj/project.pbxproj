@@ -22,6 +22,12 @@
 		8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8908949A1BFED7B8002848A4 /* FakeReachable.swift */; };
 		8908949C1BFED826002848A4 /* Reachability.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8916880B1BA8856400F9FFE0 /* rNewsKit.framework in Embed rNewsKit */ = {isa = PBXBuildFile; fileRef = 894304211B45089A000078DC /* rNewsKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		891754701C5B449E0036D96D /* RealmObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8917546F1C5B449E0036D96D /* RealmObjects.swift */; };
+		891754711C5B449E0036D96D /* RealmObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8917546F1C5B449E0036D96D /* RealmObjects.swift */; };
+		891754731C5B485B0036D96D /* RealmService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891754721C5B485B0036D96D /* RealmService.swift */; };
+		891754741C5B485B0036D96D /* RealmService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891754721C5B485B0036D96D /* RealmService.swift */; };
+		891754791C5B48D40036D96D /* RealmServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891754781C5B48D40036D96D /* RealmServiceSpec.swift */; };
+		8917547A1C5B48D40036D96D /* RealmServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891754781C5B48D40036D96D /* RealmServiceSpec.swift */; };
 		8918D4A41B8115F800DCDE0E /* ExplanationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8918D4A31B8115F800DCDE0E /* ExplanationView.swift */; };
 		8918D4D41B84593100DCDE0E /* ClearnessDark.css in Resources */ = {isa = PBXBuildFile; fileRef = 8918D4D31B84593100DCDE0E /* ClearnessDark.css */; };
 		8918D4D91B85887E00DCDE0E /* darkhub2.css in Resources */ = {isa = PBXBuildFile; fileRef = 8918D4D81B85887E00DCDE0E /* darkhub2.css */; };
@@ -467,6 +473,9 @@
 		8903A6261C4ABA7800E896BF /* NotificationViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationViewSpec.swift; sourceTree = "<group>"; };
 		890894971BFEC670002848A4 /* Reachability.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reachability.framework; path = ../Carthage/Build/iOS/Reachability.framework; sourceTree = "<group>"; };
 		8908949A1BFED7B8002848A4 /* FakeReachable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeReachable.swift; sourceTree = "<group>"; };
+		8917546F1C5B449E0036D96D /* RealmObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmObjects.swift; sourceTree = "<group>"; };
+		891754721C5B485B0036D96D /* RealmService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmService.swift; sourceTree = "<group>"; };
+		891754781C5B48D40036D96D /* RealmServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmServiceSpec.swift; sourceTree = "<group>"; };
 		8918D4A31B8115F800DCDE0E /* ExplanationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExplanationView.swift; sourceTree = "<group>"; };
 		8918D4D31B84593100DCDE0E /* ClearnessDark.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = ClearnessDark.css; sourceTree = "<group>"; };
 		8918D4D81B85887E00DCDE0E /* darkhub2.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = darkhub2.css; sourceTree = "<group>"; };
@@ -801,6 +810,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8917546E1C5B44680036D96D /* Realm */ = {
+			isa = PBXGroup;
+			children = (
+				8917546F1C5B449E0036D96D /* RealmObjects.swift */,
+				891754721C5B485B0036D96D /* RealmService.swift */,
+			);
+			name = Realm;
+			sourceTree = "<group>";
+		};
 		8933E93519EE342F00ECFF3F /* Categories */ = {
 			isa = PBXGroup;
 			children = (
@@ -820,6 +838,7 @@
 				898C48CA1B425F8C0097045A /* DataRepository.swift */,
 				89D256731C3CC22A004066B9 /* Services */,
 				8999CC101C2E838400B81F5F /* Core Data */,
+				8917546E1C5B44680036D96D /* Realm */,
 				89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */,
 				8978D4DB1B0533B600EDD6D0 /* Feed.swift */,
 				8978D4DE1B0535EB00EDD6D0 /* Article.swift */,
@@ -1228,6 +1247,7 @@
 				898911C11C3267C6009A44E9 /* UpdateServiceSpec.swift */,
 				8999CC0E1C2E796100B81F5F /* DataServiceSpec.swift */,
 				8999CC111C2E83BC00B81F5F /* CoreDataServiceSpec.swift */,
+				891754781C5B48D40036D96D /* RealmServiceSpec.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -1834,8 +1854,10 @@
 				89CC82001B46198200648367 /* SearchIndex.swift in Sources */,
 				894304451B450A0A000078DC /* RSSClient.xcdatamodeld in Sources */,
 				894304411B450A00000078DC /* OPMLService.swift in Sources */,
+				891754701C5B449E0036D96D /* RealmObjects.swift in Sources */,
 				89FF979E1BF058FB000080F7 /* DataStoreBackedArray.swift in Sources */,
 				8999CC0D1C2E710F00B81F5F /* DataService.swift in Sources */,
+				891754731C5B485B0036D96D /* RealmService.swift in Sources */,
 				8943044C1B450A5E000078DC /* Enclosure.swift in Sources */,
 				894304501B450BFB000078DC /* CoreDataArticle.swift in Sources */,
 				894304521B450C19000078DC /* CoreDataFeed.swift in Sources */,
@@ -1857,6 +1879,7 @@
 				8935F5DE1B462AD2000FFD5D /* FakeOperationQueue.swift in Sources */,
 				898911C21C3267C6009A44E9 /* UpdateServiceSpec.swift in Sources */,
 				89E67D641C33CB8000819646 /* InMemoryDataService.swift in Sources */,
+				891754791C5B48D40036D96D /* RealmServiceSpec.swift in Sources */,
 				8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */,
 				8935F5D91B4628B3000FFD5D /* FeedSpec.swift in Sources */,
 				8935F5DF1B462AD2000FFD5D /* FakeURLSession.swift in Sources */,
@@ -1900,8 +1923,10 @@
 				8989794F1B70808300218498 /* Helpers.swift in Sources */,
 				898911C71C3267E3009A44E9 /* DataService.swift in Sources */,
 				898979501B70808300218498 /* KitModule.swift in Sources */,
+				891754711C5B449E0036D96D /* RealmObjects.swift in Sources */,
 				89FF979F1BF058FB000080F7 /* DataStoreBackedArray.swift in Sources */,
 				898911C61C3267E3009A44E9 /* UpdateService.swift in Sources */,
+				891754741C5B485B0036D96D /* RealmService.swift in Sources */,
 				898979591B70808300218498 /* Article.swift in Sources */,
 				8989795B1B70809200218498 /* RSSClient.xcdatamodeld in Sources */,
 				898979551B70808300218498 /* CoreDataArticle.swift in Sources */,
@@ -1918,6 +1943,7 @@
 				89FF97A21BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */,
 				898979AA1B708E7800218498 /* FeedSpec.swift in Sources */,
 				898979B61B708F0000218498 /* FakeOPMLService.swift in Sources */,
+				8917547A1C5B48D40036D96D /* RealmServiceSpec.swift in Sources */,
 				898979B81B708F0C00218498 /* FakeURLSession.swift in Sources */,
 				898911C31C3267D6009A44E9 /* UpdateServiceSpec.swift in Sources */,
 				89E67D651C33CB8000819646 /* InMemoryDataService.swift in Sources */,

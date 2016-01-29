@@ -180,7 +180,7 @@ class CoreDataServiceSpec: QuickSpec {
                     }
 
                     let someExpectation = self.expectationWithDescription("Read some articles")
-                    subject.articlesMatchingPredicate(NSPredicate(format: "feed == %@", feed1.feedID!)) {
+                    subject.articlesMatchingPredicate(NSPredicate(format: "feed == %@", feed1.feedID as! NSManagedObjectID)) {
                         expect($0) == [article1, article2]
                         someExpectation.fulfill()
                     }
@@ -217,7 +217,7 @@ class CoreDataServiceSpec: QuickSpec {
 
                     self.waitForExpectationsWithTimeout(1, handler: nil)
 
-                    let objects = coreDataEntities("Feed", matchingPredicate: NSPredicate(format: "SELF == %@", feed1.feedID!), managedObjectContext: objectContext) as! [CoreDataFeed]
+                    let objects = coreDataEntities("Feed", matchingPredicate: NSPredicate(format: "SELF == %@", feed1.feedID as! NSManagedObjectID), managedObjectContext: objectContext) as! [CoreDataFeed]
                     let feed = objects.first!
                     expect(feed.summary) == "hello world"
                 }
@@ -233,7 +233,7 @@ class CoreDataServiceSpec: QuickSpec {
 
                     self.waitForExpectationsWithTimeout(1, handler: nil)
 
-                    let objects = coreDataEntities("Article", matchingPredicate: NSPredicate(format: "SELF == %@", article1.articleID!), managedObjectContext: objectContext) as! [CoreDataArticle]
+                    let objects = coreDataEntities("Article", matchingPredicate: NSPredicate(format: "SELF == %@", article1.articleID as! NSManagedObjectID), managedObjectContext: objectContext) as! [CoreDataArticle]
                     let article = objects.first!
                     expect(article.summary) == "hello world"
                 }
@@ -282,7 +282,7 @@ class CoreDataServiceSpec: QuickSpec {
 
                     self.waitForExpectationsWithTimeout(1, handler: nil)
 
-                    let objects = coreDataEntities("Enclosure", matchingPredicate: NSPredicate(format: "SELF == %@", enclosure1.enclosureID!), managedObjectContext: objectContext) as! [CoreDataEnclosure]
+                    let objects = coreDataEntities("Enclosure", matchingPredicate: NSPredicate(format: "SELF == %@", enclosure1.enclosureID as! NSManagedObjectID), managedObjectContext: objectContext) as! [CoreDataEnclosure]
                     let enclosure = objects.first!
                     expect(enclosure.kind) == "3"
                 }
@@ -306,7 +306,7 @@ class CoreDataServiceSpec: QuickSpec {
                         }
                     #endif
 
-                    let feeds = coreDataEntities("Feed", matchingPredicate: NSPredicate(format: "SELF == %@", feed1.feedID!), managedObjectContext: objectContext)
+                    let feeds = coreDataEntities("Feed", matchingPredicate: NSPredicate(format: "SELF == %@", feed1.feedID as! NSManagedObjectID), managedObjectContext: objectContext)
                     expect(feeds).to(beEmpty())
                 }
 
@@ -319,7 +319,7 @@ class CoreDataServiceSpec: QuickSpec {
 
                     self.waitForExpectationsWithTimeout(1, handler: nil)
 
-                    let articles = coreDataEntities("Article", matchingPredicate: NSPredicate(format: "SELF == %@", article1.articleID!), managedObjectContext: objectContext)
+                    let articles = coreDataEntities("Article", matchingPredicate: NSPredicate(format: "SELF == %@", article1.articleID as! NSManagedObjectID), managedObjectContext: objectContext)
 
                     #if os(iOS)
                         if #available(iOS 9, *) {
@@ -339,7 +339,7 @@ class CoreDataServiceSpec: QuickSpec {
 
                     self.waitForExpectationsWithTimeout(1, handler: nil)
 
-                    let enclosures = coreDataEntities("Enclosure", matchingPredicate: NSPredicate(format: "SELF == %@", enclosure1.enclosureID!), managedObjectContext: objectContext)
+                    let enclosures = coreDataEntities("Enclosure", matchingPredicate: NSPredicate(format: "SELF == %@", enclosure1.enclosureID as! NSManagedObjectID), managedObjectContext: objectContext)
                     expect(enclosures).to(beEmpty())
                 }
             }

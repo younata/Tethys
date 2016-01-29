@@ -210,7 +210,7 @@ import JavaScriptCore
             self.updated = false
     }
 
-    public private(set) var feedID: NSManagedObjectID? = nil
+    public private(set) var feedID: AnyObject? = nil
 
     internal init(feed: CoreDataFeed) {
         self.title = feed.title ?? ""
@@ -242,6 +242,36 @@ import JavaScriptCore
                     return Article(article: $0 as! CoreDataArticle, feed: self)
                 },
                 sortDescriptors: [sortByUpdated, sortByPublished])
+        }
+
+        self.updated = false
+    }
+
+    internal init(realmFeed feed: RealmFeed) {
+        self.title = feed.title ?? ""
+        let url: NSURL?
+        url = NSURL(string: feed.url)
+        self.url = url
+        self.summary = feed.summary ?? ""
+        self.query = feed.query
+        self.tags = feed.tags.map { $0.string }
+        self.waitPeriod = feed.waitPeriod
+        self.remainingWait = feed.remainingWait
+
+        if let data = feed.imageData {
+            self.image = Image(data: data)
+        } else {
+            self.image = nil
+        }
+        self.feedID = feed.url
+        self.identifier = feed.url
+        self.articlesArray = DataStoreBackedArray<Article>()
+        super.init()
+        if !self.isQueryFeed {
+            let articles = feed.articles.sorted("updatedAt", ascending: false)
+                .sorted("published", ascending: false)
+                .map { Article(realmArticle: $0, feed: self) }
+            self.articlesArray = DataStoreBackedArray(articles)
         }
 
         self.updated = false

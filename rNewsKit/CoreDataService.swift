@@ -218,7 +218,7 @@ class CoreDataService: DataService {
         let request = NSFetchRequest()
         request.entity = NSEntityDescription.entityForName("Feed",
             inManagedObjectContext: managedObjectContext)
-        request.predicate = NSPredicate(format: "self == %@", feed.feedID!)
+        request.predicate = NSPredicate(format: "self == %@", feed.feedID! as! NSManagedObjectID)
         let objects = (try? self.managedObjectContext.executeFetchRequest(request) ?? []) as? [NSManagedObject] ?? []
 
         return (objects as? [CoreDataFeed])?.first
@@ -229,7 +229,7 @@ class CoreDataService: DataService {
         let request = NSFetchRequest()
         request.entity = NSEntityDescription.entityForName("Article",
             inManagedObjectContext: managedObjectContext)
-        request.predicate = NSPredicate(format: "self == %@", article.articleID!)
+        request.predicate = NSPredicate(format: "self == %@", article.articleID! as! NSManagedObjectID)
         let objects = (try? self.managedObjectContext.executeFetchRequest(request) ?? []) as? [NSManagedObject] ?? []
 
         return (objects as? [CoreDataArticle])?.first
@@ -240,7 +240,7 @@ class CoreDataService: DataService {
         let request = NSFetchRequest()
         request.entity = NSEntityDescription.entityForName("Enclosure",
             inManagedObjectContext: managedObjectContext)
-        request.predicate = NSPredicate(format: "self == %@", enclosure.enclosureID!)
+        request.predicate = NSPredicate(format: "self == %@", enclosure.enclosureID! as! NSManagedObjectID)
         let objects = (try? self.managedObjectContext.executeFetchRequest(request) ?? []) as? [NSManagedObject] ?? []
 
         return (objects as? [CoreDataEnclosure])?.first

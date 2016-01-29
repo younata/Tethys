@@ -55,12 +55,19 @@ import JavaScriptCore
         self.article = article
     }
 
-    public private(set) var enclosureID: NSManagedObjectID? = nil
+    public private(set) var enclosureID: AnyObject? = nil
 
     internal init(enclosure: CoreDataEnclosure, article: Article?) {
         url = NSURL(string: enclosure.url ?? "") ?? NSURL()
         kind = enclosure.kind ?? ""
         self.article = article
         enclosureID = enclosure.objectID
+    }
+
+    internal init(realmEnclosure enclosure: RealmEnclosure, article: Article?) {
+        url = NSURL(string: enclosure.url) ?? NSURL()
+        kind = enclosure.kind ?? ""
+        self.article = article
+        enclosureID = enclosure.url
     }
 }

@@ -112,8 +112,10 @@ import JavaScriptCore
     internal private(set) var updated: Bool = false
 
     public override var hashValue: Int {
-        if let id = articleID {
+        if let id = articleID as? NSManagedObjectID {
             return id.URIRepresentation().hash
+        } else if let id = articleID as? String {
+            return id.hash
         }
         let nonNilHashValues = title.hashValue ^ summary.hashValue ^ author.hashValue ^
             published.hash ^ identifier.hashValue ^ content.hashValue & read.hashValue
@@ -173,7 +175,7 @@ import JavaScriptCore
 
     internal private(set) var articleID: AnyObject? = nil
 
-    internal init(article: CoreDataArticle, feed: Feed?) {
+    internal init(coreDataArticle article: CoreDataArticle, feed: Feed?) {
         title = article.title ?? ""
         if let articleLink = article.link {
             link = NSURL(string: articleLink)
@@ -203,7 +205,7 @@ import JavaScriptCore
             predicate: NSPredicate(format: "article == %@", article),
             managedObjectContext: article.managedObjectContext!,
             conversionFunction: {
-                return Enclosure(enclosure: $0 as! CoreDataEnclosure, article: self)
+                return Enclosure(coreDataEnclosure: $0 as! CoreDataEnclosure, article: self)
         })
 
         self.articleID = article.objectID
@@ -222,20 +224,14 @@ import JavaScriptCore
         identifier = article.link
         content = article.content ?? ""
         read = article.read
-        if let readingTime = article.estimatedReadingTime.value {
-            estimatedReadingTime = readingTime
-        } else {
-            let readingTime = estimateReadingTime(article.content ?? article.summary ?? "")
-            article.estimatedReadingTime.value = readingTime
-            estimatedReadingTime = readingTime
-        }
+        estimatedReadingTime = article.estimatedReadingTime
         self.feed = feed
         self.flags = article.flags.map { $0.string }
         self.enclosuresArray = DataStoreBackedArray()
         super.init()
         let enclosures = article.enclosures.map { Enclosure(realmEnclosure: $0, article: self) }
         self.enclosuresArray = DataStoreBackedArray(enclosures)
-        self.articleID = article.link
+        self.articleID = article.id
         self.updated = false
     }
 

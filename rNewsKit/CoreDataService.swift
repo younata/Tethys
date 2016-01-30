@@ -3,8 +3,8 @@ import CoreData
 
 class CoreDataService: DataService {
     private let managedObjectContext: NSManagedObjectContext
-    private let mainQueue: NSOperationQueue
 
+    let mainQueue: NSOperationQueue
     let searchIndex: SearchIndex?
 
     init(managedObjectContext: NSManagedObjectContext, mainQueue: NSOperationQueue, searchIndex: SearchIndex?) {
@@ -22,7 +22,7 @@ class CoreDataService: DataService {
             let cdfeed = CoreDataFeed(entity: entityDescription,
                 insertIntoManagedObjectContext: self.managedObjectContext)
             let _ = try? self.managedObjectContext.save()
-            let feed = Feed(feed: cdfeed)
+            let feed = Feed(coreDataFeed: cdfeed)
             let operation = NSBlockOperation {
                 callback(feed)
             }
@@ -39,7 +39,7 @@ class CoreDataService: DataService {
             let cdarticle = CoreDataArticle(entity: entityDescription,
                 insertIntoManagedObjectContext: self.managedObjectContext)
             let _ = try? self.managedObjectContext.save()
-            let article = Article(article: cdarticle, feed: feed)
+            let article = Article(coreDataArticle: cdarticle, feed: feed)
             feed?.addArticle(article)
             let operation = NSBlockOperation {
                 callback(article)
@@ -57,7 +57,7 @@ class CoreDataService: DataService {
             let cdenclosure = CoreDataEnclosure(entity: entityDescription,
                 insertIntoManagedObjectContext: self.managedObjectContext)
             let _ = try? self.managedObjectContext.save()
-            let enclosure = Enclosure(enclosure: cdenclosure, article: article)
+            let enclosure = Enclosure(coreDataEnclosure: cdenclosure, article: article)
             article?.addEnclosure(enclosure)
             enclosure.article = article
             let operation = NSBlockOperation {
@@ -75,7 +75,7 @@ class CoreDataService: DataService {
         let sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
         self.entities("Feed", predicate: predicate, sortDescriptors: sortDescriptors) { objects in
             let objects = objects as? [CoreDataFeed] ?? []
-            let feeds = objects.map { Feed(feed: $0) }
+            let feeds = objects.map { Feed(coreDataFeed: $0) }
             self.mainQueue.addOperationWithBlock {
                 callback(feeds)
             }
@@ -90,7 +90,7 @@ class CoreDataService: DataService {
         self.entities("Article", predicate: predicate, sortDescriptors: sortDescriptors) { objects in
             let array = objects as? [CoreDataArticle] ?? []
             let articles = array.map {
-                return Article(article: $0, feed: nil)
+                return Article(coreDataArticle: $0, feed: nil)
             }
             self.mainQueue.addOperationWithBlock {
                 callback(articles)
@@ -103,7 +103,7 @@ class CoreDataService: DataService {
         self.entities("Enclosure", predicate: predicate, sortDescriptors: sortDescriptors) { objects in
             let array = objects as? [CoreDataEnclosure] ?? []
             let enclosures = array.map {
-                return Enclosure(enclosure: $0, article: nil)
+                return Enclosure(coreDataEnclosure: $0, article: nil)
             }
             self.mainQueue.addOperationWithBlock {
                 callback(enclosures)
@@ -114,7 +114,7 @@ class CoreDataService: DataService {
     // Mark: - Update
 
     func saveFeed(feed: Feed, callback: (Void) -> (Void)) {
-        guard let _ = feed.feedID else { callback(); return }
+        guard let _ = feed.feedID as? NSManagedObjectID else { callback(); return }
 
         self.managedObjectContext.performBlock {
             self.updateFeed(feed)
@@ -123,7 +123,7 @@ class CoreDataService: DataService {
     }
 
     func saveArticle(article: Article, callback: (Void) -> (Void)) {
-        guard let _ = article.articleID else { callback(); return }
+        guard let _ = article.articleID as? NSManagedObjectID else { callback(); return }
 
         self.managedObjectContext.performBlock {
             self.updateArticle(article)
@@ -132,7 +132,7 @@ class CoreDataService: DataService {
     }
 
     func saveEnclosure(enclosure: Enclosure, callback: (Void) -> (Void)) {
-        guard let _ = enclosure.enclosureID else { callback(); return }
+        guard let _ = enclosure.enclosureID as? NSManagedObjectID else { callback(); return }
 
         self.managedObjectContext.performBlock {
             self.updateEnclosure(enclosure)
@@ -143,6 +143,7 @@ class CoreDataService: DataService {
     // Mark: - Delete
 
     func deleteFeed(feed: Feed, callback: (Void) -> (Void)) {
+        guard let _ = feed.feedID as? NSManagedObjectID else { callback(); return }
         let articleIdentifiers = feed.articlesArray.map { $0.identifier }
         self.managedObjectContext.performBlock {
             if let cdfeed = self.coreDataFeedForFeed(feed) {
@@ -166,6 +167,7 @@ class CoreDataService: DataService {
     }
 
     func deleteArticle(article: Article, callback: (Void) -> (Void)) {
+        guard let _ = article.articleID as? NSManagedObjectID else { callback(); return }
         self.managedObjectContext.performBlock {
             if let cdarticle = self.coreDataArticleForArticle(article) {
                 for enclosure in cdarticle.enclosures {
@@ -185,6 +187,7 @@ class CoreDataService: DataService {
     }
 
     func deleteEnclosure(enclosure: Enclosure, callback: (Void) -> (Void)) {
+        guard let _ = enclosure.enclosureID as? NSManagedObjectID else { callback(); return }
         self.managedObjectContext.performBlock {
             if let cdenclosure = self.coreDataEnclosureForEnclosure(enclosure) {
                 self.managedObjectContext.deleteObject(cdenclosure)

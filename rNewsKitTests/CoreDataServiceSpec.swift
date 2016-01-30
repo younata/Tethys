@@ -142,15 +142,15 @@ class CoreDataServiceSpec: QuickSpec {
 
                     try! objectContext.save()
 
-                    feed1 = Feed(feed: cdfeed1)
-                    feed2 = Feed(feed: cdfeed2)
+                    feed1 = Feed(coreDataFeed: cdfeed1)
+                    feed2 = Feed(coreDataFeed: cdfeed2)
 
-                    article1 = Article(article: cdarticle1, feed: feed1)
-                    article2 = Article(article: cdarticle2, feed: feed1)
-                    article3 = Article(article: cdarticle3, feed: feed2)
+                    article1 = Article(coreDataArticle: cdarticle1, feed: feed1)
+                    article2 = Article(coreDataArticle: cdarticle2, feed: feed1)
+                    article3 = Article(coreDataArticle: cdarticle3, feed: feed2)
 
-                    enclosure1 = Enclosure(enclosure: cdenclosure1, article: article1)
-                    enclosure2 = Enclosure(enclosure: cdenclosure2, article: article1)
+                    enclosure1 = Enclosure(coreDataEnclosure: cdenclosure1, article: article1)
+                    enclosure2 = Enclosure(coreDataEnclosure: cdenclosure2, article: article1)
 
                 }
             }

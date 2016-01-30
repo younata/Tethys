@@ -16,6 +16,7 @@ import Muon
 */
 protocol DataService: class {
     var searchIndex: SearchIndex? { get }
+    var mainQueue: NSOperationQueue { get }
 
     func createFeed(callback: (Feed) -> (Void))
     func createArticle(feed: Feed?, callback: (Article) -> (Void))
@@ -43,16 +44,13 @@ extension DataService {
         feed.title = info.title.stringByUnescapingHTML().stringByStrippingHTML()
         feed.summary = info.description
 
-        let operationQueue = NSOperationQueue()
-        operationQueue.maxConcurrentOperationCount = 1
-
         let articles = info.articles.filter { $0.title?.isEmpty == false }
 
         for item in articles {
             let article = feed.articlesArray.filter { article in
                 return item.title == article.title || item.link == article.link
             }.first
-            operationQueue.addOperationWithBlock {
+            self.mainQueue.addOperationWithBlock {
                 let semaphore = dispatch_semaphore_create(0)
                 if let article = article {
                     self.updateArticle(article, item: item) {
@@ -70,7 +68,7 @@ extension DataService {
             }
         }
 
-        operationQueue.waitUntilAllOperationsAreFinished()
+        self.mainQueue.waitUntilAllOperationsAreFinished()
 
         self.saveFeed(feed, callback: callback)
     }

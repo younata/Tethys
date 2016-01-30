@@ -43,8 +43,10 @@ import JavaScriptCore
         guard let b = object as? Enclosure else {
             return false
         }
-        if let aEID = self.enclosureID, let bEID = b.enclosureID {
+        if let aEID = self.enclosureID as? NSManagedObjectID, let bEID = b.enclosureID as? NSManagedObjectID {
             return aEID.URIRepresentation() == bEID.URIRepresentation()
+        } else if let aEID = self.enclosureID as? String, let bEID = b.enclosureID as? String {
+            return aEID == bEID
         }
         return self.url == b.url && self.kind == b.kind
     }
@@ -57,7 +59,7 @@ import JavaScriptCore
 
     public private(set) var enclosureID: AnyObject? = nil
 
-    internal init(enclosure: CoreDataEnclosure, article: Article?) {
+    internal init(coreDataEnclosure enclosure: CoreDataEnclosure, article: Article?) {
         url = NSURL(string: enclosure.url ?? "") ?? NSURL()
         kind = enclosure.kind ?? ""
         self.article = article
@@ -68,6 +70,6 @@ import JavaScriptCore
         url = NSURL(string: enclosure.url) ?? NSURL()
         kind = enclosure.kind ?? ""
         self.article = article
-        enclosureID = enclosure.url
+        enclosureID = enclosure.id
     }
 }

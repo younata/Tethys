@@ -78,11 +78,13 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
                 existingArticle.link = NSURL(string: "https://example.com/article")
                 existingArticle.summary = "summary"
                 existingArticle.content = "content"
-                existingArticle.published = NSDate()
+                existingArticle.published = NSDate(timeIntervalSince1970: 10)
+                expect(existingArticle.feed) == feed
                 addArticleExpectation.fulfill()
             }
             spec.waitForExpectationsWithTimeout(1, handler: nil)
 
+            expect(feed.articlesArray).to(contain(existingArticle))
             expect(feed.articlesArray.count) == 1
 
             let item = Muon.Article(title: "article", link: nil, description: "", content: "", guid: "", published: nil, updated: nil, authors: [], enclosures: [])
@@ -212,7 +214,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
 
                     let findExpectation = spec.expectationWithDescription("Find Enclosure")
 
-                    dataService.articlesMatchingPredicate(NSPredicate(format: "self == %@", article.articleID as! NSManagedObjectID)) { articles in
+                    dataService.articlesMatchingPredicate(NSPredicate(value: true)) { articles in
                         let article = articles.first!
                         expect(article.enclosuresArray.count) == 1
                         expect(article.enclosuresArray.first?.url) == NSURL(string: "https://example.com")!

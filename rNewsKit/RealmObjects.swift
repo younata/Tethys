@@ -12,23 +12,40 @@ class RealmString: Object {
 
 class RealmFeed: Object {
     dynamic var title: String?
-    dynamic var url = "https://example.com/feed"
+    dynamic var url: String?
     dynamic var summary: String?
     dynamic var query: String?
     let tags = List<RealmString>()
     dynamic var waitPeriod: Int = 0
     dynamic var remainingWait: Int = 0
-    let articles = List<RealmArticle>()
+    var articles: [RealmArticle] {
+        return linkingObjects(RealmArticle.self, forProperty: "feed").sort {
+            let aDate: NSDate
+            let bDate: NSDate
+            if let date = $0.updatedAt {
+                aDate = date
+            } else {
+                aDate = $0.published
+            }
+            if let date = $1.updatedAt {
+                bDate = date
+            } else {
+                bDate = $0.published
+            }
+            return aDate.timeIntervalSince1970 > bDate.timeIntervalSince1970
+        }
+    }
     dynamic var imageData: NSData?
 
+    dynamic var id: String = NSUUID().UUIDString
     override static func primaryKey() -> String? {
-        return "url"
+        return "id"
     }
 }
 
 class RealmArticle: Object {
     dynamic var title: String?
-    dynamic var link = "https://example.com/article"
+    dynamic var link = ""
     dynamic var summary: String?
     dynamic var author: String?
     dynamic var published = NSDate(timeIntervalSinceNow: 0)
@@ -36,13 +53,16 @@ class RealmArticle: Object {
     dynamic var identifier: String?
     dynamic var content: String?
     dynamic var read = false
-    var estimatedReadingTime = RealmOptional<Int>()
+    dynamic var estimatedReadingTime = 0
     let flags = List<RealmString>()
     dynamic var feed: RealmFeed?
-    let enclosures = List<RealmEnclosure>()
+    var enclosures: [RealmEnclosure] {
+        return linkingObjects(RealmEnclosure.self, forProperty: "article")
+    }
 
+    dynamic var id: String = NSUUID().UUIDString
     override static func primaryKey() -> String? {
-        return "link"
+        return "id"
     }
 }
 
@@ -52,7 +72,8 @@ class RealmEnclosure: Object {
     dynamic var data: NSData?
     dynamic var article: RealmArticle?
 
+    dynamic var id: String = NSUUID().UUIDString
     override static func primaryKey() -> String? {
-        return "url"
+        return "id"
     }
 }

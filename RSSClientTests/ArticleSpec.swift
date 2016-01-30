@@ -18,19 +18,6 @@ class ArticleSpec: QuickSpec {
             subject = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
         }
 
-        describe("creating from a CoreDataArticle") {
-            it("sets estimatedReadingTime when it's nil in CoreData estimatedReadingTime is nil") {
-                let a = RealmArticle()
-                a.title = "hello"
-                a.link = "https://example.com/article"
-                a.content = (0..<100).map({_ in "<p>this was a content space</p>"}).reduce("", combine: +)
-
-                let article = Article(realmArticle: a, feed: nil)
-                expect(article.estimatedReadingTime).to(equal(3))
-                expect(a.estimatedReadingTime.value).to(equal(3))
-            }
-        }
-
         describe("creating from a RealmArticle") {
             it("sets estimatedReadingTime when it's nil in CoreData estimatedReadingTime is nil") {
                 let ctx = managedObjectContext()
@@ -38,7 +25,7 @@ class ArticleSpec: QuickSpec {
 
                 a.content = (0..<100).map({_ in "<p>this was a content space</p>"}).reduce("", combine: +)
 
-                let article = Article(article: a, feed: nil)
+                let article = Article(coreDataArticle: a, feed: nil)
                 expect(article.estimatedReadingTime).to(equal(3))
                 expect(a.estimatedReadingTime?.integerValue).to(equal(3))
             }
@@ -50,16 +37,19 @@ class ArticleSpec: QuickSpec {
                 let a = createArticle(ctx)
                 let b = createArticle(ctx)
 
-                expect(Article(article: a, feed: nil)).toNot(equal(Article(article: b, feed: nil)))
-                expect(Article(article: a, feed: nil)).to(equal(Article(article: a, feed: nil)))
+                expect(Article(coreDataArticle: a, feed: nil)).toNot(equal(Article(coreDataArticle: b, feed: nil)))
+                expect(Article(coreDataArticle: a, feed: nil)).to(equal(Article(coreDataArticle: a, feed: nil)))
             }
 
             it("should report two articles created with a realmarticle with the same url as equal") {
-                let a = RealmArticle()
+                realm.beginWrite()
+                let a = realm.create(RealmArticle)
                 a.link = "https://example.com/article"
 
-                let b = RealmArticle()
+                let b = realm.create(RealmArticle)
                 b.link = "https://example.com/article2"
+
+                _ = try? realm.commitWrite()
 
                 expect(Article(realmArticle: a, feed: nil)).toNot(equal(Article(realmArticle: b, feed: nil)))
                 expect(Article(realmArticle: a, feed: nil)).to(equal(Article(realmArticle: a, feed: nil)))
@@ -82,8 +72,22 @@ class ArticleSpec: QuickSpec {
                 let a = createArticle(ctx)
                 let b = createArticle(ctx)
 
-                expect(Article(article: a, feed: nil).hashValue).toNot(equal(Article(article: b, feed: nil).hashValue))
-                expect(Article(article: a, feed: nil).hashValue).to(equal(Article(article: a, feed: nil).hashValue))
+                expect(Article(coreDataArticle: a, feed: nil).hashValue).toNot(equal(Article(coreDataArticle: b, feed: nil).hashValue))
+                expect(Article(coreDataArticle: a, feed: nil).hashValue).to(equal(Article(coreDataArticle: a, feed: nil).hashValue))
+            }
+
+            it("should report two articles created with a realmarticle with the same url as equal") {
+                realm.beginWrite()
+                let a = realm.create(RealmArticle)
+                a.link = "https://example.com/article"
+
+                let b = realm.create(RealmArticle)
+                b.link = "https://example.com/article2"
+
+                _ = try? realm.commitWrite()
+
+                expect(Article(realmArticle: a, feed: nil).hashValue).toNot(equal(Article(realmArticle: b, feed: nil).hashValue))
+                expect(Article(realmArticle: a, feed: nil).hashValue).to(equal(Article(realmArticle: a, feed: nil).hashValue))
             }
 
             it("should report two articles not created with coredataarticles with the same property equality as having the same hashValue") {

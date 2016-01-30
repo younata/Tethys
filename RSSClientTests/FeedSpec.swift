@@ -1,12 +1,21 @@
 import Quick
 import Nimble
+import CoreData
+import RealmSwift
 @testable import rNewsKit
 
 class FeedSpec: QuickSpec {
     override func spec() {
         var subject: Feed! = nil
+        var realm: Realm!
 
         beforeEach {
+            let realmConf = Realm.Configuration(inMemoryIdentifier: "FeedSpec")
+            realm = try! Realm(configuration: realmConf)
+            try! realm.write {
+                realm.deleteAll()
+            }
+
             subject = Feed(title: "", url: nil, summary: "", query: nil, tags: [],
                 waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
         }
@@ -49,7 +58,7 @@ class FeedSpec: QuickSpec {
         it("correctly identifies itself as a query feed or not") {
             let regularFeed = Feed(title: "", url: nil, summary: "", query: nil, tags: [],
                 waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-            let queryFeed = Feed(title: "", url: nil, summary: "", query: "", tags: [],
+            let queryFeed = Feed(title: "", url: nil, summary: "", query: "true", tags: [],
                 waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
             expect(regularFeed.isQueryFeed).to(beFalsy())
             expect(queryFeed.isQueryFeed).to(beTruthy())
@@ -79,8 +88,23 @@ class FeedSpec: QuickSpec {
                 let a = createFeed(ctx)
                 let b = createFeed(ctx)
 
-                expect(Feed(feed: a)).toNot(equal(Feed(feed: b)))
-                expect(Feed(feed: a)).to(equal(Feed(feed: a)))
+                expect(Feed(coreDataFeed: a)).toNot(equal(Feed(coreDataFeed: b)))
+                expect(Feed(coreDataFeed: a)).to(equal(Feed(coreDataFeed: a)))
+            }
+
+            it("should report two feeds created with a realmfeed with the same url as equal") {
+                let a = RealmFeed()
+                a.url = "https://example.com/feed"
+                let b = RealmFeed()
+                b.url = "https://example.com/feed2"
+
+                _ = try? realm.write {
+                    realm.add(a)
+                    realm.add(b)
+                }
+
+                expect(Feed(realmFeed: a)).toNot(equal(Feed(realmFeed: b)))
+                expect(Feed(realmFeed: a)).to(equal(Feed(realmFeed: a)))
             }
 
             it("should report two feeds not created with coredatafeeds with the same property equality as equal") {
@@ -99,8 +123,23 @@ class FeedSpec: QuickSpec {
                 let a = createFeed(ctx)
                 let b = createFeed(ctx)
 
-                expect(Feed(feed: a).hashValue).toNot(equal(Feed(feed: b).hashValue))
-                expect(Feed(feed: a).hashValue).to(equal(Feed(feed: a).hashValue))
+                expect(Feed(coreDataFeed: a).hashValue).toNot(equal(Feed(coreDataFeed: b).hashValue))
+                expect(Feed(coreDataFeed: a).hashValue).to(equal(Feed(coreDataFeed: a).hashValue))
+            }
+
+            it("should report two feeds created with a realmfeed with the same url as having the same hashValue") {
+                let a = RealmFeed()
+                a.url = "https://example.com/feed"
+                let b = RealmFeed()
+                b.url = "https://example.com/feed2"
+
+                _ = try? realm.write {
+                    realm.add(a)
+                    realm.add(b)
+                }
+
+                expect(Feed(realmFeed: a).hashValue).toNot(equal(Feed(realmFeed: b).hashValue))
+                expect(Feed(realmFeed: a).hashValue).to(equal(Feed(realmFeed: a).hashValue))
             }
 
             it("should report two feeds not created with coredatafeeds with the same property equality as having the same hashValue") {

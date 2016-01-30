@@ -1,13 +1,21 @@
 import Quick
 import Nimble
 import CoreData
+import RealmSwift
 @testable import rNewsKit
 
 class EnclosureSpec: QuickSpec {
     override func spec() {
         var subject: Enclosure? = nil
+        var realm: Realm!
 
         beforeEach {
+            let realmConf = Realm.Configuration(inMemoryIdentifier: "EnclosureSpec")
+            realm = try! Realm(configuration: realmConf)
+            try! realm.write {
+                realm.deleteAll()
+            }
+
             subject = Enclosure(url: NSURL(string: "http://example.com")!, kind: "", article: nil)
 
             expect(subject).toNot(beNil())
@@ -19,8 +27,16 @@ class EnclosureSpec: QuickSpec {
                 let a = createEnclosure(ctx)
                 let b = createEnclosure(ctx)
 
-                expect(Enclosure(enclosure: a, article: nil)).toNot(equal(Enclosure(enclosure: b, article: nil)))
-                expect(Enclosure(enclosure: a, article: nil)).to(equal(Enclosure(enclosure: a, article: nil)))
+                expect(Enclosure(coreDataEnclosure: a, article: nil)).toNot(equal(Enclosure(coreDataEnclosure: b, article: nil)))
+                expect(Enclosure(coreDataEnclosure: a, article: nil)).to(equal(Enclosure(coreDataEnclosure: a, article: nil)))
+            }
+
+            it("should report two enclosures created with a realmenclosure with the same enclosureID as equal") {
+                let a = RealmEnclosure()
+                let b = RealmEnclosure()
+
+                expect(Enclosure(realmEnclosure: a, article: nil)).toNot(equal(Enclosure(realmEnclosure: b, article: nil)))
+                expect(Enclosure(realmEnclosure: a, article: nil)).to(equal(Enclosure(realmEnclosure: a, article: nil)))
             }
 
             it("should report two enclosures not created with coredataenclosures with the same property equality as equal") {

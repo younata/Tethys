@@ -1,6 +1,7 @@
 import Foundation
 import CoreData
 import JavaScriptCore
+import RealmSwift
 
 #if os(iOS)
     import UIKit
@@ -104,11 +105,13 @@ import JavaScriptCore
 
     dynamic public private(set) var identifier: String
 
-    dynamic public var isQueryFeed: Bool { return query != nil }
+    dynamic public var isQueryFeed: Bool { return query?.isEmpty == false }
 
     public override var hashValue: Int {
-        if let id = feedID {
+        if let id = feedID as? NSManagedObjectID {
             return id.URIRepresentation().hash
+        } else if let id = feedID as? String {
+            return id.hash
         }
         let nonNilHashValues = title.hashValue ^ summary.hashValue ^ waitPeriod.hashValue ^ remainingWait.hashValue
         let possiblyNilHashValues: Int
@@ -129,8 +132,10 @@ import JavaScriptCore
         guard let b = object as? Feed else {
             return false
         }
-        if let aID = self.feedID, let bID = b.feedID {
+        if let aID = self.feedID as? NSManagedObjectID, let bID = b.feedID as? NSManagedObjectID {
             return aID.URIRepresentation() == bID.URIRepresentation()
+        } else if let aID = self.feedID as? NSURL, let bID = b.feedID as? NSURL {
+            return aID == bID
         }
         return self.title == b.title && self.url == b.url && self.summary == b.summary &&
             self.query == b.query && self.tags == b.tags && self.waitPeriod == b.waitPeriod &&
@@ -212,7 +217,7 @@ import JavaScriptCore
 
     public private(set) var feedID: AnyObject? = nil
 
-    internal init(feed: CoreDataFeed) {
+    internal init(coreDataFeed feed: CoreDataFeed) {
         self.title = feed.title ?? ""
         let url: NSURL?
         if let feedURL = feed.url {
@@ -239,7 +244,7 @@ import JavaScriptCore
                 predicate: NSPredicate(format: "feed == %@", feed),
                 managedObjectContext: feed.managedObjectContext!,
                 conversionFunction: {
-                    return Article(article: $0 as! CoreDataArticle, feed: self)
+                    return Article(coreDataArticle: $0 as! CoreDataArticle, feed: self)
                 },
                 sortDescriptors: [sortByUpdated, sortByPublished])
         }
@@ -250,7 +255,9 @@ import JavaScriptCore
     internal init(realmFeed feed: RealmFeed) {
         self.title = feed.title ?? ""
         let url: NSURL?
-        url = NSURL(string: feed.url)
+        if let feedURL = feed.url {
+            url = NSURL(string: feedURL)
+        } else { url = nil }
         self.url = url
         self.summary = feed.summary ?? ""
         self.query = feed.query
@@ -263,14 +270,12 @@ import JavaScriptCore
         } else {
             self.image = nil
         }
-        self.feedID = feed.url
-        self.identifier = feed.url
+        self.feedID = feed.id
+        self.identifier = feed.id
         self.articlesArray = DataStoreBackedArray<Article>()
         super.init()
         if !self.isQueryFeed {
-            let articles = feed.articles.sorted("updatedAt", ascending: false)
-                .sorted("published", ascending: false)
-                .map { Article(realmArticle: $0, feed: self) }
+            let articles = feed.articles.map { Article(realmArticle: $0, feed: self) }
             self.articlesArray = DataStoreBackedArray(articles)
         }
 

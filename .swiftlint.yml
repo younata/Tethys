@@ -27,5 +27,5 @@ variable_name_max_length:
   - 60 # error
 # parameterized rules are first parameterized as a warning level, then error level.
 variable_name_min_length:
-  - 3 # warning
-  - 2 # error
+  - 2 # warning
+  - 1 # error

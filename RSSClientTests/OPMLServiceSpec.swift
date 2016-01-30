@@ -22,7 +22,7 @@ class OPMLServiceSpec: QuickSpec {
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
 
-            dataService = InMemoryDataService()
+            dataService = InMemoryDataService(mainQueue: mainQueue, searchIndex: FakeSearchIndex())
 
             dataRepository = FakeDataRepository(
                 mainQueue: mainQueue,

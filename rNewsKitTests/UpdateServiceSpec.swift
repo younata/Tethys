@@ -11,7 +11,9 @@ class UpdateServiceSpec: QuickSpec {
 
         beforeEach {
             urlSessionDelegate = URLSessionDelegate()
-            dataService = InMemoryDataService()
+            let mainQueue = FakeOperationQueue()
+            mainQueue.runSynchronously = true
+            dataService = InMemoryDataService(mainQueue: mainQueue, searchIndex: FakeSearchIndex())
             urlSession = FakeURLSession()
             urlSessionDelegate = URLSessionDelegate()
 

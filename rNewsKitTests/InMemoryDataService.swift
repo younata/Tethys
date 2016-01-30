@@ -1,12 +1,13 @@
 @testable import rNewsKit
 
 class InMemoryDataService: DataService {
-    let mainQueue: NSOperationQueue = {
-        let queue = FakeOperationQueue()
-        queue.runSynchronously = true
-        return queue
-    }()
-    let searchIndex: SearchIndex? = FakeSearchIndex()
+    let mainQueue: NSOperationQueue
+    let searchIndex: SearchIndex?
+
+    init(mainQueue: NSOperationQueue, searchIndex: SearchIndex?) {
+        self.mainQueue = mainQueue
+        self.searchIndex = searchIndex
+    }
 
     var feeds = [Feed]()
     var articles = [Article]()

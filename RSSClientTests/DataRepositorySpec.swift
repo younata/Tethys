@@ -98,7 +98,7 @@ class FeedRepositorySpec: QuickSpec {
             mainQueue = FakeOperationQueue()
             backgroundQueue = FakeOperationQueue()
 
-            dataService = InMemoryDataService()
+            dataService = InMemoryDataService(mainQueue: mainQueue, searchIndex: FakeSearchIndex())
 
             dataService.feeds = feeds
             dataService.articles = [article1, article2]

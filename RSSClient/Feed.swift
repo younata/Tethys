@@ -139,7 +139,7 @@ import RealmSwift
         }
         return self.title == b.title && self.url == b.url && self.summary == b.summary &&
             self.query == b.query && self.tags == b.tags && self.waitPeriod == b.waitPeriod &&
-            self.remainingWait == b.remainingWait && self.image == b.image && self.articlesArray == b.articlesArray
+            self.remainingWait == b.remainingWait && self.image == b.image
     }
 
     public private(set) var updated = false

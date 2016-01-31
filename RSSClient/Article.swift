@@ -118,13 +118,15 @@ import JavaScriptCore
             return id.hash
         }
         let nonNilHashValues = title.hashValue ^ summary.hashValue ^ author.hashValue ^
-            published.hash ^ identifier.hashValue ^ content.hashValue & read.hashValue
+            published.hash ^ identifier.hashValue ^ content.hashValue & read.hashValue &
+            estimatedReadingTime.hashValue
         let flagsHashValues = flags.reduce(0) { $0 ^ $1.hashValue }
-        let possiblyNilHashValues: Int
-        if let link = link, updatedAt = updatedAt {
-            possiblyNilHashValues = link.hash ^ updatedAt.hash
-        } else {
-            possiblyNilHashValues = 0
+        var possiblyNilHashValues = 0
+        if let link = link {
+            possiblyNilHashValues ^= link.hashValue
+        }
+        if let updatedAt = updatedAt {
+            possiblyNilHashValues ^= updatedAt.hash
         }
         return nonNilHashValues ^ flagsHashValues ^ possiblyNilHashValues
     }
@@ -141,12 +143,12 @@ import JavaScriptCore
         return self.title == b.title && self.link == b.link && self.summary == b.summary &&
             self.author == b.author && self.published == b.published && self.updatedAt == b.updatedAt &&
             self.identifier == b.identifier && self.content == b.content && self.read == b.read &&
-            self.flags == b.flags
+            self.flags == b.flags && self.estimatedReadingTime == b.estimatedReadingTime
     }
 
     public override var description: String {
         // swiftlint:disable line_length
-        return "Article: title: \(title), link: \(link), summary: \(summary), author: \(author), published: \(published), updated: \(updatedAt), identifier: \(identifier), content: \(content), read: \(read)\n"
+        return "(Article: title: \(title), link: \(link), summary: \(summary), author: \(author), published: \(published), updated: \(updatedAt), identifier: \(identifier), content: \(content), read: \(read), estimatedReadingTime: \(estimatedReadingTime))\n"
         // swiftlint:enable line_length
     }
 

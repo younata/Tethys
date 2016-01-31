@@ -21,6 +21,10 @@
 		890894991BFEC698002848A4 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; };
 		8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8908949A1BFED7B8002848A4 /* FakeReachable.swift */; };
 		8908949C1BFED826002848A4 /* Reachability.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		89122E611C5D725D00004B1F /* DatabaseMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89122E601C5D725D00004B1F /* DatabaseMigrator.swift */; };
+		89122E621C5D725D00004B1F /* DatabaseMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89122E601C5D725D00004B1F /* DatabaseMigrator.swift */; };
+		89122E641C5D762000004B1F /* DatabaseMigratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89122E631C5D762000004B1F /* DatabaseMigratorSpec.swift */; };
+		89122E651C5D762000004B1F /* DatabaseMigratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89122E631C5D762000004B1F /* DatabaseMigratorSpec.swift */; };
 		8916880B1BA8856400F9FFE0 /* rNewsKit.framework in Embed rNewsKit */ = {isa = PBXBuildFile; fileRef = 894304211B45089A000078DC /* rNewsKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		891754701C5B449E0036D96D /* RealmObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8917546F1C5B449E0036D96D /* RealmObjects.swift */; };
 		891754711C5B449E0036D96D /* RealmObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8917546F1C5B449E0036D96D /* RealmObjects.swift */; };
@@ -473,6 +477,8 @@
 		8903A6261C4ABA7800E896BF /* NotificationViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationViewSpec.swift; sourceTree = "<group>"; };
 		890894971BFEC670002848A4 /* Reachability.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reachability.framework; path = ../Carthage/Build/iOS/Reachability.framework; sourceTree = "<group>"; };
 		8908949A1BFED7B8002848A4 /* FakeReachable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeReachable.swift; sourceTree = "<group>"; };
+		89122E601C5D725D00004B1F /* DatabaseMigrator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseMigrator.swift; sourceTree = "<group>"; };
+		89122E631C5D762000004B1F /* DatabaseMigratorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseMigratorSpec.swift; sourceTree = "<group>"; };
 		8917546F1C5B449E0036D96D /* RealmObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmObjects.swift; sourceTree = "<group>"; };
 		891754721C5B485B0036D96D /* RealmService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmService.swift; sourceTree = "<group>"; };
 		891754781C5B48D40036D96D /* RealmServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmServiceSpec.swift; sourceTree = "<group>"; };
@@ -1246,6 +1252,7 @@
 			children = (
 				898911C11C3267C6009A44E9 /* UpdateServiceSpec.swift */,
 				8999CC0E1C2E796100B81F5F /* DataServiceSpec.swift */,
+				89122E631C5D762000004B1F /* DatabaseMigratorSpec.swift */,
 				8999CC111C2E83BC00B81F5F /* CoreDataServiceSpec.swift */,
 				891754781C5B48D40036D96D /* RealmServiceSpec.swift */,
 			);
@@ -1268,6 +1275,7 @@
 				89A3417E1B150D1B0000C60B /* OPMLService.swift */,
 				898911A11C30F0BE009A44E9 /* UpdateService.swift */,
 				8999CC0C1C2E710F00B81F5F /* DataService.swift */,
+				89122E601C5D725D00004B1F /* DatabaseMigrator.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -1860,6 +1868,7 @@
 				891754731C5B485B0036D96D /* RealmService.swift in Sources */,
 				8943044C1B450A5E000078DC /* Enclosure.swift in Sources */,
 				894304501B450BFB000078DC /* CoreDataArticle.swift in Sources */,
+				89122E611C5D725D00004B1F /* DatabaseMigrator.swift in Sources */,
 				894304521B450C19000078DC /* CoreDataFeed.swift in Sources */,
 				898979661B70849000218498 /* DataRepository.swift in Sources */,
 			);
@@ -1888,6 +1897,7 @@
 				8935F5DC1B4629E6000FFD5D /* SpecHelper.swift in Sources */,
 				8935F5E21B462B8F000FFD5D /* FakeDataRepository.swift in Sources */,
 				8999CC121C2E83BC00B81F5F /* CoreDataServiceSpec.swift in Sources */,
+				89122E641C5D762000004B1F /* DatabaseMigratorSpec.swift in Sources */,
 				8935F5DD1B462AD2000FFD5D /* FakeSearchIndex.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1929,6 +1939,7 @@
 				891754741C5B485B0036D96D /* RealmService.swift in Sources */,
 				898979591B70808300218498 /* Article.swift in Sources */,
 				8989795B1B70809200218498 /* RSSClient.xcdatamodeld in Sources */,
+				89122E621C5D725D00004B1F /* DatabaseMigrator.swift in Sources */,
 				898979551B70808300218498 /* CoreDataArticle.swift in Sources */,
 				898979571B70808300218498 /* CoreDataEnclosure.swift in Sources */,
 			);
@@ -1944,6 +1955,7 @@
 				898979AA1B708E7800218498 /* FeedSpec.swift in Sources */,
 				898979B61B708F0000218498 /* FakeOPMLService.swift in Sources */,
 				8917547A1C5B48D40036D96D /* RealmServiceSpec.swift in Sources */,
+				89122E651C5D762000004B1F /* DatabaseMigratorSpec.swift in Sources */,
 				898979B81B708F0C00218498 /* FakeURLSession.swift in Sources */,
 				898911C31C3267D6009A44E9 /* UpdateServiceSpec.swift in Sources */,
 				89E67D651C33CB8000819646 /* InMemoryDataService.swift in Sources */,

@@ -3,12 +3,6 @@ import Nimble
 import CoreData
 @testable import rNewsKit
 
-extension Article: CustomDebugStringConvertible {
-    override public var debugDescription: String {
-        return "Title: \(self.title)"
-    }
-}
-
 class DataStoreBackedArraySpec: QuickSpec {
     override func spec() {
         var moc: NSManagedObjectContext! = nil

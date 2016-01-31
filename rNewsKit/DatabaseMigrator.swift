@@ -15,7 +15,7 @@ struct DatabaseMigrator {
                 var feedsDictionary: [Feed: Feed] = [:]
                 var articlesDictionary: [Article: Article] = [:]
 
-                var totalRemaining = feedsToMigrate.count + articlesToMigrate .count + enclosuresToMigrate.count
+                var totalRemaining = feedsToMigrate.count + articlesToMigrate.count + enclosuresToMigrate.count
                 let semaphore = dispatch_semaphore_create(0)
 
                 let checkForCompleted = {
@@ -51,6 +51,38 @@ struct DatabaseMigrator {
                 dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
                 finish()
             }
+        }
+    }
+
+    func deleteEverything(database: DataService, finish: Void -> Void) {
+        database.allFeeds { feeds in
+            let articles = feeds.reduce([Article]()) { $0 + Array($1.articlesArray) }
+            let enclosures = articles.reduce([Enclosure]()) { $0 + Array($1.enclosuresArray) }
+
+            var totalRemaining = feeds.count + articles.count + enclosures.count
+            let semaphore = dispatch_semaphore_create(0)
+
+            let checkForCompleted = {
+                totalRemaining -= 1
+                if totalRemaining == 0 {
+                    dispatch_semaphore_signal(semaphore)
+                }
+            }
+
+            feeds.forEach {
+                database.deleteFeed($0, callback: checkForCompleted)
+            }
+
+            articles.forEach {
+                database.deleteArticle($0, callback: checkForCompleted)
+            }
+
+            enclosures.forEach {
+                database.deleteEnclosure($0, callback: checkForCompleted)
+            }
+
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+            finish()
         }
     }
 

@@ -18,21 +18,21 @@ protocol DataService: class {
     var searchIndex: SearchIndex? { get }
     var mainQueue: NSOperationQueue { get }
 
-    func createFeed(callback: (Feed) -> (Void))
-    func createArticle(feed: Feed?, callback: (Article) -> (Void))
-    func createEnclosure(article: Article?, callback: (Enclosure) -> (Void))
+    func createFeed(callback: Feed -> Void)
+    func createArticle(feed: Feed?, callback: Article -> Void)
+    func createEnclosure(article: Article?, callback: Enclosure -> Void)
 
     func feedsMatchingPredicate(predicate: NSPredicate, callback: [Feed] -> Void)
     func articlesMatchingPredicate(predicate: NSPredicate, callback: [Article] -> Void)
     func enclosuresMatchingPredicate(predicate: NSPredicate, callback: [Enclosure] -> Void)
 
-    func saveFeed(feed: Feed, callback: (Void) -> (Void))
-    func saveArticle(article: Article, callback: (Void) -> (Void))
-    func saveEnclosure(enclosure: Enclosure, callback: (Void) -> (Void))
+    func saveFeed(feed: Feed, callback: Void -> Void)
+    func saveArticle(article: Article, callback: Void -> Void)
+    func saveEnclosure(enclosure: Enclosure, callback: Void -> Void)
 
-    func deleteFeed(feed: Feed, callback: (Void) -> (Void))
-    func deleteArticle(article: Article, callback: (Void) -> (Void))
-    func deleteEnclosure(enclosure: Enclosure, callback: (Void) -> (Void))
+    func deleteFeed(feed: Feed, callback: Void -> Void)
+    func deleteArticle(article: Article, callback: Void -> Void)
+    func deleteEnclosure(enclosure: Enclosure, callback: Void -> Void)
 }
 
 extension DataService {
@@ -40,7 +40,7 @@ extension DataService {
         self.feedsMatchingPredicate(NSPredicate(value: true), callback: callback)
     }
 
-    func updateFeed(feed: Feed, info: Muon.Feed, callback: (Void) -> (Void)) {
+    func updateFeed(feed: Feed, info: Muon.Feed, callback: Void -> Void) {
         feed.title = info.title.stringByUnescapingHTML().stringByStrippingHTML()
         feed.summary = info.description
 
@@ -73,7 +73,7 @@ extension DataService {
         self.saveFeed(feed, callback: callback)
     }
 
-    func updateArticle(article: Article, item: Muon.Article, callback: (Void) -> (Void)) {
+    func updateArticle(article: Article, item: Muon.Article, callback: Void -> Void) {
         let characterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
         let author = item.authors.map({ author in
             if let email = author.email?.resourceSpecifier {

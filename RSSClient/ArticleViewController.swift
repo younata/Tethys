@@ -37,7 +37,7 @@ public class ArticleViewController: UIViewController {
 
         self.userActivity?.userInfo = [
             "feed": a.feed?.title ?? "",
-            "article": a.articleID?.URIRepresentation().absoluteString ?? "",
+            "article": a.identifier,
         ]
 
         if #available(iOS 9.0, *) {
@@ -376,7 +376,7 @@ extension ArticleViewController: NSUserActivityDelegate {
         guard let article = self.article else { return }
         userActivity.userInfo = [
             "feed": article.feed?.title ?? "",
-            "article": article.articleID?.URIRepresentation().absoluteString ?? "",
+            "article": article.identifier,
         ]
     }
 }

@@ -223,7 +223,7 @@ import JavaScriptCore
         author = article.author ?? ""
         published = article.published ?? NSDate()
         updatedAt = article.updatedAt
-        identifier = article.link
+        identifier = article.id
         content = article.content ?? ""
         read = article.read
         estimatedReadingTime = article.estimatedReadingTime

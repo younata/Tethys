@@ -181,7 +181,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                     self.dataRetriever?.feeds {feeds in
                         // swiftlint:disable line_length
                         if let feed = feeds.filter({ return $0.title == feedTitle }).first,
-                            let article = feed.articlesArray.filter({ $0.articleID?.URIRepresentation().absoluteString == articleID }).first {
+                            let article = feed.articlesArray.filter({ $0.identifier == articleID }).first {
                                 self.createControllerHierarchy(feed, article: article)
                         }
                         // swiftlint:enable line_length

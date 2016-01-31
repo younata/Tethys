@@ -336,7 +336,7 @@ class ArticleViewControllerSpec: QuickSpec {
                     if let userInfo = activity.userInfo {
                         expect(userInfo.keys.count).to(equal(2))
                         expect(userInfo["feed"] as? String).to(equal("feed"))
-                        expect(userInfo["article"] as? String).to(equal(""))
+                        expect(userInfo["article"] as? String).to(equal("identifier"))
                     }
 
                     expect(activity.webpageURL).to(equal(article.link))
@@ -370,7 +370,7 @@ class ArticleViewControllerSpec: QuickSpec {
                         if let userInfo = activity.userInfo {
                             expect(userInfo.keys.count).to(equal(2))
                             expect(userInfo["feed"] as? String).to(equal("feed"))
-                            expect(userInfo["article"] as? String).to(equal(""))
+                            expect(userInfo["article"] as? String).to(equal("identifier"))
                         }
                     }
                 }

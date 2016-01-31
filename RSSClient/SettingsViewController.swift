@@ -100,8 +100,8 @@ public class SettingsViewController: UIViewController {
         return self.injector!.create(QuickActionRepository)!
     }()
 
-    private lazy var dataReader: DataRetriever = {
-        return self.injector!.create(DataRetriever)!
+    private lazy var feedRepository: FeedRepository = {
+        return self.injector!.create(FeedRepository)!
     }()
 
     private var oldTheme: ThemeRepository.Theme = .Default
@@ -371,7 +371,7 @@ extension SettingsViewController: UITableViewDelegate {
             feedsListController.navigationItem.title = self.titleForQuickAction(indexPath.row)
 
             let quickActions = self.quickActionRepository.quickActions
-            self.dataReader.feeds {feeds in
+            self.feedRepository.feeds {feeds in
                 if !quickActions.isEmpty {
                     let quickActionFeeds = quickActions.indices.reduce([Feed]()) {
                         guard let feed = self.feedForQuickAction($1, feeds: feeds) else { return $0 }

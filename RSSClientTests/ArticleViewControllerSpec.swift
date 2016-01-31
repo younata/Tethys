@@ -11,15 +11,15 @@ class ArticleViewControllerSpec: QuickSpec {
         var subject: ArticleViewController! = nil
         var injector: Injector! = nil
         var navigationController: UINavigationController! = nil
-        var dataWriter: FakeDataReadWriter! = nil
+        var dataWriter: FakeDataRepository! = nil
         var themeRepository: FakeThemeRepository! = nil
         var urlOpener: FakeUrlOpener! = nil
 
         beforeEach {
             injector = Injector()
 
-            dataWriter = FakeDataReadWriter()
-            injector.bind(DataWriter.self, toInstance: dataWriter)
+            dataWriter = FakeDataRepository()
+            injector.bind(FeedRepository.self, toInstance: dataWriter)
 
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, toInstance: themeRepository)

@@ -40,8 +40,8 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
         return tableView
     }()
 
-    private lazy var dataWriter: DataWriter? = {
-        return self.injector?.create(DataWriter)
+    private lazy var feedRepository: FeedRepository? = {
+        return self.injector?.create(FeedRepository)
     }()
 
     private lazy var urlSession: NSURLSession = {
@@ -91,7 +91,7 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
 
     internal func save() {
         if let theFeed = feed {
-            dataWriter?.saveFeed(theFeed)
+            self.feedRepository?.saveFeed(theFeed)
         }
         dismiss()
     }

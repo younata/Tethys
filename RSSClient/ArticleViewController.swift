@@ -12,7 +12,7 @@ public class ArticleViewController: UIViewController {
         self.article = article
 
         guard let a = article else { return }
-        if a.read == false && read { self.dataWriter?.markArticle(a, asRead: true) }
+        if a.read == false && read { self.feedRepository?.markArticle(a, asRead: true) }
         if show { self.showArticle(a, onWebView: self.content) }
 
         self.toolbarItems = [self.spacer(), self.shareButton, self.spacer()]
@@ -65,7 +65,7 @@ public class ArticleViewController: UIViewController {
     public var articles = DataStoreBackedArray<Article>()
     public var lastArticleIndex = 0
 
-    public lazy var dataWriter: DataWriter? = { self.injector?.create(DataWriter) }()
+    public lazy var feedRepository: FeedRepository? = { self.injector?.create(FeedRepository) }()
     public lazy var themeRepository: ThemeRepository? = { self.injector?.create(ThemeRepository) }()
     public lazy var urlOpener: UrlOpener? = { self.injector?.create(UrlOpener) }()
 
@@ -242,7 +242,7 @@ public class ArticleViewController: UIViewController {
 
     @objc private func toggleArticleRead() {
         guard let article = self.article else { return }
-        self.dataWriter?.markArticle(article, asRead: !article.read)
+        self.feedRepository?.markArticle(article, asRead: !article.read)
     }
 
     private func configureContent() {

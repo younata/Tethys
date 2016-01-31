@@ -12,12 +12,8 @@ public class ArticleListController: UITableViewController, DataSubscriber {
 
     public var previewMode: Bool = false
 
-    internal lazy var dataWriter: DataWriter? = {
-        self.injector?.create(DataWriter)
-    }()
-
-    internal lazy var dataReader: DataRetriever? = {
-        self.injector?.create(DataRetriever)
+    internal lazy var feedRepository: FeedRepository? = {
+        self.injector?.create(FeedRepository)
     }()
 
     internal lazy var themeRepository: ThemeRepository? = {
@@ -46,7 +42,7 @@ public class ArticleListController: UITableViewController, DataSubscriber {
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.tableFooterView = UIView()
 
-        self.dataWriter?.addSubscriber(self)
+        self.feedRepository?.addSubscriber(self)
 
         self.themeRepository?.addSubscriber(self)
 
@@ -89,7 +85,7 @@ public class ArticleListController: UITableViewController, DataSubscriber {
     private func configuredArticleController(article: Article, read: Bool = true) -> ArticleViewController {
         let avc = splitViewController?.viewControllers.last as? ArticleViewController ??
             ArticleViewController()
-        avc.dataWriter = self.dataWriter
+        avc.feedRepository = self.feedRepository
         avc.themeRepository = self.themeRepository
         avc.setArticle(article, read: read)
         avc.articles = self.articles
@@ -158,7 +154,7 @@ public class ArticleListController: UITableViewController, DataSubscriber {
             let article = self.articleForIndexPath(indexPath)
             let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Generic_Delete", comment: ""),
                 handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
-                    self.dataWriter?.deleteArticle(article)
+                    self.feedRepository?.deleteArticle(article)
                     self.articles.remove(article)
                     self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             })
@@ -168,7 +164,7 @@ public class ArticleListController: UITableViewController, DataSubscriber {
             let toggle = UITableViewRowAction(style: .Normal, title: toggleText,
                 handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
                     article.read = !article.read
-                    self.dataWriter?.markArticle(article, asRead: article.read)
+                    self.feedRepository?.markArticle(article, asRead: article.read)
                     tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             })
             return [delete, toggle]
@@ -191,7 +187,7 @@ extension ArticleListController: UISearchBarDelegate {
         if searchText.isEmpty {
             self.resetArticles()
         } else {
-            self.dataReader?.articlesOfFeeds(self.feeds, matchingSearchQuery: searchText) {articles in
+            self.feedRepository?.articlesOfFeeds(self.feeds, matchingSearchQuery: searchText) {articles in
                 let articlesArray = articles
                 if self.articles != articlesArray {
                     self.articles = articlesArray
@@ -216,7 +212,7 @@ extension ArticleListController: UIViewControllerPreviewingDelegate {
         commitViewController viewControllerToCommit: UIViewController) {
             if let articleController = viewControllerToCommit as? ArticleViewController,
                 article = articleController.article where !self.previewMode {
-                    self.dataWriter?.markArticle(article, asRead: true)
+                    self.feedRepository?.markArticle(article, asRead: true)
                     self.showArticleController(articleController, animated: true)
             }
     }

@@ -36,12 +36,8 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
         }
     }
 
-    private lazy var dataWriter: DataWriter? = {
-        return self.injector?.create(DataWriter)
-    }()
-
-    private lazy var dataRetriever: DataRetriever? = {
-        return self.injector?.create(DataRetriever)
+    private lazy var feedRepository: FeedRepository? = {
+        return self.injector?.create(FeedRepository)
     }()
 
     private lazy var themeRepository: ThemeRepository? = {
@@ -107,13 +103,13 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
             if !self.feedQuery.isEmpty {
                 feed.query = self.feedQuery
             }
-            self.dataWriter?.saveFeed(feed)
+            self.feedRepository?.saveFeed(feed)
             self.dismiss()
         }
         if let feed = self.feed {
             saveFeed(feed)
         } else {
-            self.dataWriter?.newFeed {feed in
+            self.feedRepository?.newFeed {feed in
                 saveFeed(feed)
             }
         }
@@ -250,7 +246,7 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
             let preview = UITableViewRowAction(style: .Normal, title: previewTitle, handler: {(_, _) in
                 let articleList = ArticleListController(style: .Plain)
                 articleList.previewMode = true
-                self.dataRetriever?.articlesMatchingQuery(self.feedQuery) {articles in
+                self.feedRepository?.articlesMatchingQuery(self.feedQuery) {articles in
                     articleList.articles = DataStoreBackedArray(articles)
                 }
                 self.navigationController?.pushViewController(articleList, animated: true)

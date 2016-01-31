@@ -17,8 +17,8 @@ public class LocalImportViewController: UIViewController {
 
     private var tableViewTopOffset: NSLayoutConstraint!
 
-    private lazy var dataWriter: DataWriter? = {
-        return self.injector?.create(DataWriter)
+    private lazy var feedRepository: FeedRepository? = {
+        return self.injector?.create(FeedRepository)
     }()
 
     private lazy var opmlService: OPMLService? = {
@@ -248,7 +248,7 @@ extension LocalImportViewController: UITableViewDelegate {
             let activityIndicator = disableInteractionWithMessage(NSLocalizedString("Importing feeds", comment: ""))
 
             self.opmlService?.importOPML(NSURL(string: "file://" + path)!, completion: {(_) in
-                self.dataWriter?.updateFeeds {_ in
+                self.feedRepository?.updateFeeds {_ in
                     self.reenableInteractionAndDismiss(activityIndicator)
                 }
             })
@@ -257,10 +257,10 @@ extension LocalImportViewController: UITableViewDelegate {
 
             let activityIndicator = self.disableInteractionWithMessage(NSLocalizedString("Importing feed", comment: ""))
 
-            self.dataWriter?.newFeed {newFeed in
+            self.feedRepository?.newFeed {newFeed in
                 newFeed.url = feed.link
-                self.dataWriter?.saveFeed(newFeed)
-                self.dataWriter?.updateFeeds {_ in
+                self.feedRepository?.saveFeed(newFeed)
+                self.feedRepository?.updateFeeds {_ in
                     self.reenableInteractionAndDismiss(activityIndicator)
                 }
             }

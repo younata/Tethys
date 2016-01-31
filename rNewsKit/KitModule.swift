@@ -64,8 +64,7 @@ public class KitModule: NSObject, Ra.InjectorModule {
             updateService: updateService
         )
 
-        injector.bind(DataRetriever.self, toInstance: dataRepository)
-        injector.bind(DataWriter.self, toInstance: dataRepository)
+        injector.bind(FeedRepository.self, toInstance: dataRepository)
         injector.bind(DataRepository.self, toInstance: dataRepository)
 
         let opmlService = OPMLService(injector: injector)

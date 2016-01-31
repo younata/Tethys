@@ -66,7 +66,7 @@ class ArticleListControllerSpec: QuickSpec {
         var subject: ArticleListController! = nil
         var navigationController: UINavigationController! = nil
         var articles: [Article] = []
-        var dataReadWriter: FakeDataReadWriter! = nil
+        var dataRepository: FakeDataRepository! = nil
         var themeRepository: FakeThemeRepository! = nil
 
         beforeEach {
@@ -79,9 +79,8 @@ class ArticleListControllerSpec: QuickSpec {
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, toInstance: themeRepository)
 
-            dataReadWriter = FakeDataReadWriter()
-            injector.bind(DataRetriever.self, toInstance: dataReadWriter)
-            injector.bind(DataWriter.self, toInstance: dataReadWriter)
+            dataRepository = FakeDataRepository()
+            injector.bind(FeedRepository.self, toInstance: dataRepository)
 
             publishedOffset = 0
 
@@ -140,7 +139,7 @@ class ArticleListControllerSpec: QuickSpec {
                     expect(cell.unread.unread).to(equal(1))
 
                     articles[3].read = true
-                    for object in dataReadWriter.subscribers.allObjects {
+                    for object in dataRepository.subscribers.allObjects {
                         if let subscriber = object as? DataSubscriber {
                             subscriber.markedArticles([articles[3]], asRead: true)
                         }
@@ -197,7 +196,7 @@ class ArticleListControllerSpec: QuickSpec {
 
                 it("should not mark the article as read") {
                     expect(articles[0].read).to(beFalsy())
-                    expect(dataReadWriter.lastArticleMarkedRead).to(beNil())
+                    expect(dataRepository.lastArticleMarkedRead).to(beNil())
                 }
 
                 describe("committing that view controller") {
@@ -213,7 +212,7 @@ class ArticleListControllerSpec: QuickSpec {
 
                     it("should mark the article as read") {
                         expect(articles[0].read).to(beTruthy())
-                        expect(dataReadWriter.lastArticleMarkedRead).to(equal(articles[0]))
+                        expect(dataRepository.lastArticleMarkedRead).to(equal(articles[0]))
                     }
                 }
             }
@@ -268,7 +267,7 @@ class ArticleListControllerSpec: QuickSpec {
                         beforeEach {
                             subject.searchBar.becomeFirstResponder()
                             subject.searchBar.text = "\(publishedOffset)"
-                            dataReadWriter.articlesOfFeedList = [articles.last!]
+                            dataRepository.articlesOfFeedList = [articles.last!]
                             subject.searchBar.delegate?.searchBar?(subject.searchBar, textDidChange: "\(publishedOffset)")
                         }
 
@@ -318,7 +317,7 @@ class ArticleListControllerSpec: QuickSpec {
                             if let delete = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.first {
                                 expect(delete.title).to(equal("Delete"))
                                 delete.handler()(delete, indexPath)
-                                expect(dataReadWriter.lastDeletedArticle).to(equal(articles.first))
+                                expect(dataRepository.lastDeletedArticle).to(equal(articles.first))
                             }
                         }
 
@@ -328,7 +327,7 @@ class ArticleListControllerSpec: QuickSpec {
                                 if let markRead = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.last {
                                     expect(markRead.title).to(equal("Mark\nRead"))
                                     markRead.handler()(markRead, indexPath)
-                                    expect(dataReadWriter.lastArticleMarkedRead).to(equal(articles.first))
+                                    expect(dataRepository.lastArticleMarkedRead).to(equal(articles.first))
                                     expect(articles.first?.read).to(beTruthy())
                                 }
                             }
@@ -340,7 +339,7 @@ class ArticleListControllerSpec: QuickSpec {
                                 if let markUnread = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.last {
                                     expect(markUnread.title).to(equal("Mark\nUnread"))
                                     markUnread.handler()(markUnread, indexPath)
-                                    expect(dataReadWriter.lastArticleMarkedRead).to(equal(articles[2]))
+                                    expect(dataRepository.lastArticleMarkedRead).to(equal(articles[2]))
                                     expect(articles[2].read).to(beFalsy())
                                 }
                             }

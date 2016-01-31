@@ -5,7 +5,7 @@ import rNews
 import rNewsKit
 
 private var navController: UINavigationController! = nil
-private var dataWriter: FakeDataReadWriter! = nil
+private var dataWriter: FakeDataRepository! = nil
 private var rootViewController: UIViewController! = nil
 
 
@@ -32,8 +32,8 @@ class FindFeedViewControllerSpec: QuickSpec {
             feedFinder = FakeFeedFinder()
             injector.bind(FeedFinder.self, toInstance: feedFinder)
 
-            dataWriter = FakeDataReadWriter()
-            injector.bind(DataWriter.self, toInstance: dataWriter)
+            dataWriter = FakeDataRepository()
+            injector.bind(FeedRepository.self, toInstance: dataWriter)
 
             urlSession = FakeURLSession()
             injector.bind(NSURLSession.self, toInstance: urlSession)

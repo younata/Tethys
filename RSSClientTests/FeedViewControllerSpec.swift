@@ -14,7 +14,7 @@ class FeedViewControllerSpec: QuickSpec {
         var navigationController: UINavigationController!
         var subject: FeedViewController! = nil
         var injector: Injector! = nil
-        var dataReadWriter: FakeDataReadWriter! = nil
+        var dataRepository: FakeDataRepository! = nil
 
         var urlSession: FakeURLSession! = nil
         var backgroundQueue: FakeOperationQueue! = nil
@@ -34,9 +34,8 @@ class FeedViewControllerSpec: QuickSpec {
             backgroundQueue.runSynchronously = true
             injector.bind(kBackgroundQueue, toInstance: backgroundQueue)
 
-            dataReadWriter = FakeDataReadWriter()
-            injector.bind(DataRetriever.self, toInstance: dataReadWriter)
-            injector.bind(DataWriter.self, toInstance: dataReadWriter)
+            dataRepository = FakeDataRepository()
+            injector.bind(FeedRepository.self, toInstance: dataRepository)
 
             subject = injector.create(FeedViewController)!
 
@@ -64,7 +63,7 @@ class FeedViewControllerSpec: QuickSpec {
             }
 
             it("should save the changes to the dataManager") {
-                expect(dataReadWriter.lastSavedFeed).to(equal(feed))
+                expect(dataRepository.lastSavedFeed).to(equal(feed))
             }
 
             it("should dismiss itself") {

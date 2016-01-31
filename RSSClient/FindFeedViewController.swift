@@ -23,8 +23,8 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         self.injector?.create(FeedFinder)
     }()
 
-    private lazy var dataWriter: DataWriter? = {
-        return self.injector?.create(DataWriter)
+    private lazy var feedRepository: FeedRepository? = {
+        return self.injector?.create(FeedRepository)
     }()
 
     private lazy var opmlService: OPMLService? = {
@@ -151,10 +151,10 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
                 self.dismiss()
             }
         } else {
-            self.dataWriter?.newFeed {newFeed in
+            self.feedRepository?.newFeed {newFeed in
                 newFeed.url = NSURL(string: link)
-                self.dataWriter?.saveFeed(newFeed)
-                self.dataWriter?.updateFeed(newFeed) { _ in
+                self.feedRepository?.saveFeed(newFeed)
+                self.feedRepository?.updateFeed(newFeed) { _ in
                     indicator.removeFromSuperview()
                     self.dismiss()
                 }

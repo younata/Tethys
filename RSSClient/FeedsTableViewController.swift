@@ -78,12 +78,8 @@ public class FeedsTableViewController: UIViewController {
 
     public let notificationView = NotificationView(forAutoLayout: ())
 
-    private lazy var dataWriter: DataWriter = {
-        return self.injector!.create(DataWriter)!
-    }()
-
-    private lazy var dataRetriever: DataRetriever = {
-        return self.injector!.create(DataRetriever)!
+    private lazy var feedRepository: FeedRepository = {
+        return self.injector!.create(FeedRepository)!
     }()
 
     private lazy var themeRepository: ThemeRepository = {
@@ -143,7 +139,7 @@ public class FeedsTableViewController: UIViewController {
             }
         }
 
-        self.dataWriter.addSubscriber(self)
+        self.feedRepository.addSubscriber(self)
         self.themeRepository.addSubscriber(self)
         self.reload(self.searchBar.text)
     }
@@ -270,7 +266,7 @@ public class FeedsTableViewController: UIViewController {
         if let feeds = feeds where (tag == nil || tag?.isEmpty == true) {
             reloadWithFeeds(feeds)
         }
-        self.dataRetriever.feedsMatchingTag(tag) {feeds in
+        self.feedRepository.feedsMatchingTag(tag) {feeds in
             reloadWithFeeds(feeds)
         }
     }
@@ -302,8 +298,7 @@ public class FeedsTableViewController: UIViewController {
 
     private func configuredArticleListWithFeeds(feeds: [Feed]) -> ArticleListController {
         let al = ArticleListController(style: .Plain)
-        al.dataWriter = self.dataWriter
-        al.dataReader = self.dataRetriever
+        al.feedRepository = self.feedRepository
         al.themeRepository = self.themeRepository
         al.feeds = feeds
         return al
@@ -401,7 +396,7 @@ extension FeedsTableViewController: MAKDropDownMenuDelegate {
 
 extension FeedsTableViewController: BreakOutToRefreshDelegate, UIScrollViewDelegate {
     public func refreshViewDidRefresh(refreshView: BreakOutToRefreshView) {
-        self.dataWriter.updateFeeds({feeds, errors in
+        self.feedRepository.updateFeeds({feeds, errors in
             if !errors.isEmpty {
                 let alertTitle = NSLocalizedString("FeedsTableViewController_UpdateFeeds_Error_Title", comment: "")
 
@@ -492,14 +487,14 @@ extension FeedsTableViewController: UITableViewDelegate {
             let delete = UITableViewRowAction(style: .Default, title: deleteTitle) {(_, indexPath: NSIndexPath!) in
                 let feed = self.feedAtIndexPath(indexPath)
                 self.feeds = self.feeds.filter { $0 != feed }
-                self.dataWriter.deleteFeed(feed)
+                self.feedRepository.deleteFeed(feed)
                 tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             }
 
             let readTitle = NSLocalizedString("FeedsTableViewController_Table_EditAction_MarkRead", comment: "")
             let markRead = UITableViewRowAction(style: .Normal, title: readTitle) {_, indexPath in
                 let feed = self.feedAtIndexPath(indexPath)
-                self.dataWriter.markFeedAsRead(feed)
+                self.feedRepository.markFeedAsRead(feed)
                 tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             }
 

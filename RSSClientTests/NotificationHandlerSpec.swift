@@ -8,7 +8,7 @@ import rNewsKit
 class NotificationHandlerSpec: QuickSpec {
     override func spec() {
         var injector: Injector! = nil
-        var dataReadWriter: FakeDataReadWriter! = nil
+        var dataRepository: FakeDataRepository! = nil
 
         var notificationSource: FakeNotificationSource! = nil
 
@@ -17,9 +17,8 @@ class NotificationHandlerSpec: QuickSpec {
         beforeEach {
             injector = Injector()
 
-            dataReadWriter = FakeDataReadWriter()
-            injector.bind(DataRetriever.self, toInstance: dataReadWriter)
-            injector.bind(DataWriter.self, toInstance: dataReadWriter)
+            dataRepository = FakeDataRepository()
+            injector.bind(FeedRepository.self, toInstance: dataRepository)
 
             subject = injector.create(NotificationHandler)!
 
@@ -72,7 +71,7 @@ class NotificationHandlerSpec: QuickSpec {
                 article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
                 feed.addArticle(article)
 
-                dataReadWriter.feedsList = [feed]
+                dataRepository.feedsList = [feed]
 
                 window = UIWindow()
                 window.rootViewController = splitVC
@@ -100,7 +99,7 @@ class NotificationHandlerSpec: QuickSpec {
                 article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
                 feed.addArticle(article)
 
-                dataReadWriter.feedsList = [feed]
+                dataRepository.feedsList = [feed]
             }
 
             describe("read") {
@@ -113,7 +112,7 @@ class NotificationHandlerSpec: QuickSpec {
 
                 it("should set the article's read value to true") {
                     expect(article.read).to(beTruthy())
-                    expect(dataReadWriter.lastArticleMarkedRead).to(equal(article))
+                    expect(dataRepository.lastArticleMarkedRead).to(equal(article))
                 }
             }
         }
@@ -125,7 +124,7 @@ class NotificationHandlerSpec: QuickSpec {
                 article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
                 feed.addArticle(article)
 
-                dataReadWriter.feedsList = [feed]
+                dataRepository.feedsList = [feed]
 
                 subject.sendLocalNotification(notificationSource, article: article)
             }

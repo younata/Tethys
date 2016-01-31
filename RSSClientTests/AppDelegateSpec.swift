@@ -39,7 +39,7 @@ class AppDelegateSpec: QuickSpec {
         let application = UIApplication.sharedApplication()
         var injector: Ra.Injector! = nil
 
-        var dataReadWriter: FakeDataReadWriter! = nil
+        var dataRepository: FakeDataRepository! = nil
 
         var notificationHandler: FakeNotificationHandler! = nil
         var backgroundFetchHandler: FakeBackgroundFetchHandler! = nil
@@ -49,9 +49,8 @@ class AppDelegateSpec: QuickSpec {
 
             injector = Ra.Injector()
 
-            dataReadWriter = FakeDataReadWriter()
-            injector.bind(DataRetriever.self, toInstance: dataReadWriter)
-            injector.bind(DataWriter.self, toInstance: dataReadWriter)
+            dataRepository = FakeDataRepository()
+            injector.bind(FeedRepository.self, toInstance: dataRepository)
 
             notificationHandler = FakeNotificationHandler()
             injector.bind(NotificationHandler.self, toInstance: notificationHandler)
@@ -70,11 +69,11 @@ class AppDelegateSpec: QuickSpec {
 
                 subject.application(application, didFinishLaunchingWithOptions: ["test": true])
 
-                expect(dataReadWriter.didCreateFeed).to(beTruthy())
+                expect(dataRepository.didCreateFeed).to(beTruthy())
 
                 let feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-                dataReadWriter.newFeedCallback(feed)
+                dataRepository.newFeedCallback(feed)
 
                 expect(feed.title).to(equal("All Unread"))
                 expect(feed.summary).to(equal("All unread articles"))
@@ -89,7 +88,7 @@ class AppDelegateSpec: QuickSpec {
 
                 subject.application(application, didFinishLaunchingWithOptions: ["test": true])
 
-                expect(dataReadWriter.didCreateFeed).to(beFalsy())
+                expect(dataRepository.didCreateFeed).to(beFalsy())
             }
 
             it("should enable notifications") {
@@ -102,7 +101,7 @@ class AppDelegateSpec: QuickSpec {
                 subject.application(application, didFinishLaunchingWithOptions: ["test": true])
 
                 var applicationInSubscribers = false
-                for subscriber in dataReadWriter.subscribers.allObjects {
+                for subscriber in dataRepository.subscribers.allObjects {
                     if subscriber is UIApplication {
                         applicationInSubscribers = true
                         break
@@ -173,7 +172,7 @@ class AppDelegateSpec: QuickSpec {
                     let feed = Feed(title: "title", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
                     let article = Article(title: "title", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
                     feed.addArticle(article)
-                    dataReadWriter.feedsList = [feed]
+                    dataRepository.feedsList = [feed]
 
                     let shortCut = UIApplicationShortcutItem(type: "com.rachelbrindle.RSSClient.viewfeed",
                         localizedTitle: feed.displayTitle,
@@ -241,7 +240,7 @@ class AppDelegateSpec: QuickSpec {
                 let feed = Feed(title: "title", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
                 article = Article(title: "title", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
                 feed.addArticle(article)
-                dataReadWriter.feedsList = [feed]
+                dataRepository.feedsList = [feed]
                 subject.application(UIApplication.sharedApplication(), didFinishLaunchingWithOptions: nil)
             }
 

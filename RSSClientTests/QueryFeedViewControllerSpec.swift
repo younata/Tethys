@@ -14,7 +14,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
         var navigationController: UINavigationController!
         var subject: QueryFeedViewController! = nil
         var injector: Injector! = nil
-        var dataReadWriter: FakeDataReadWriter! = nil
+        var dataRepository: FakeDataRepository! = nil
 
         var backgroundQueue: FakeOperationQueue! = nil
 
@@ -27,9 +27,8 @@ class QueryFeedViewControllerSpec: QuickSpec {
             backgroundQueue.runSynchronously = true
             injector.bind(kBackgroundQueue, toInstance: backgroundQueue)
 
-            dataReadWriter = FakeDataReadWriter()
-            injector.bind(DataRetriever.self, toInstance: dataReadWriter)
-            injector.bind(DataWriter.self, toInstance: dataReadWriter)
+            dataRepository = FakeDataRepository()
+            injector.bind(FeedRepository.self, toInstance: dataRepository)
 
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, toInstance: themeRepository)
@@ -108,7 +107,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                 }
 
                 it("should ask the data manager for a new feed if one didn't previously exist") {
-                    expect(dataReadWriter.didCreateFeed).to(equal(createFeed))
+                    expect(dataRepository.didCreateFeed).to(equal(createFeed))
                 }
 
                 describe("when the feed is created (or not)") {
@@ -116,7 +115,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                         if createFeed {
                             feed = Feed(title: "", url: nil, summary: "", query: nil,
                                 tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                            dataReadWriter.newFeedCallback(feed)
+                            dataRepository.newFeedCallback(feed)
                         }
                     }
 
@@ -135,7 +134,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should save the changes to the dataManager") {
-                        expect(dataReadWriter.lastSavedFeed).to(equal(feed))
+                        expect(dataRepository.lastSavedFeed).to(equal(feed))
                     }
 
                     it("should dismiss itself") {

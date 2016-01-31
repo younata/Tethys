@@ -13,12 +13,8 @@ public class TagEditorViewController: UIViewController {
             self.navigationItem.rightBarButtonItem?.enabled = self.feed != nil && self.tag != nil
         }
     }
-    private lazy var dataWriter: DataWriter? = {
-        self.injector?.create(DataWriter)
-    }()
-
-    private lazy var dataRetriever: DataRetriever? = {
-        self.injector?.create(DataRetriever)
+    private lazy var feedRepository: FeedRepository? = {
+        self.injector?.create(FeedRepository)
     }()
 
     private lazy var themeRepository: ThemeRepository? = {
@@ -38,7 +34,7 @@ public class TagEditorViewController: UIViewController {
 
         self.tagPicker.translatesAutoresizingMaskIntoConstraints = false
         self.tagPicker.themeRepository = self.themeRepository
-        self.dataRetriever?.allTags { tags in
+        self.feedRepository?.allTags { tags in
             self.tagPicker.configureWithTags(tags) {
                 self.tag = $0
             }
@@ -64,7 +60,7 @@ public class TagEditorViewController: UIViewController {
     @objc private func save() {
         if let feed = self.feed, let tag = tag {
             feed.addTag(tag)
-            self.dataWriter?.saveFeed(feed)
+            self.feedRepository?.saveFeed(feed)
             self.feed = feed
         }
 

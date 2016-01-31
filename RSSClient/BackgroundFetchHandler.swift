@@ -3,30 +3,26 @@ import Ra
 import rNewsKit
 
 public class BackgroundFetchHandler: NSObject {
-    private lazy var dataWriter: DataWriter? = {
-        return self.injector?.create(DataWriter)
-    }()
-
-    private lazy var dataRetriever: DataRetriever? = {
-        return self.injector?.create(DataRetriever)
+    private lazy var feedRepository: FeedRepository? = {
+        return self.injector?.create(FeedRepository)
     }()
 
     public func performFetch(notificationHandler: NotificationHandler,
         notificationSource: LocalNotificationSource,
         completionHandler: (UIBackgroundFetchResult) -> Void) {
-            guard let writer = self.dataWriter, let reader = self.dataRetriever else {
+            guard let feedRepository = self.feedRepository else {
                 completionHandler(.Failed)
                 return
             }
             var originalArticlesList = [String]()
             let lock = NSLock()
             lock.lock()
-            reader.feeds {feeds in
+            feedRepository.feeds {feeds in
                 originalArticlesList = feeds.reduce([]) { return $0 + $1.articlesArray }.map { return $0.identifier }
                 lock.unlock()
             }
 
-            writer.updateFeeds {newFeeds, errors in
+            feedRepository.updateFeeds {newFeeds, errors in
                 guard errors.isEmpty else {
                     completionHandler(.Failed)
                     return

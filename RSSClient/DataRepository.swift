@@ -12,27 +12,13 @@ import Muon
     import Cocoa
 #endif
 
-public protocol DataRetriever {
+public protocol FeedRepository {
     func allTags(callback: [String] -> Void)
     func feeds(callback: [Feed] -> Void)
     func feedsMatchingTag(tag: String?, callback: [Feed] -> Void)
     func articlesOfFeeds(feeds: [Feed], matchingSearchQuery: String, callback: DataStoreBackedArray<Article> -> Void)
     func articlesMatchingQuery(query: String, callback: [Article] -> Void)
-}
 
-public protocol DataSubscriber: NSObjectProtocol {
-    func markedArticles(articles: [Article], asRead read: Bool)
-
-    func deletedArticle(article: Article)
-
-    func deletedFeed(feed: Feed, feedsLeft: Int)
-
-    func willUpdateFeeds()
-    func didUpdateFeedsProgress(finished: Int, total: Int)
-    func didUpdateFeeds(feeds: [Feed])
-}
-
-public protocol DataWriter {
     func addSubscriber(subscriber: DataSubscriber)
 
     func newFeed(callback: Feed -> Void)
@@ -49,6 +35,18 @@ public protocol DataWriter {
     func updateFeed(feed: Feed, callback: (Feed?, NSError?) -> Void)
 }
 
+public protocol DataSubscriber: NSObjectProtocol {
+    func markedArticles(articles: [Article], asRead read: Bool)
+
+    func deletedArticle(article: Article)
+
+    func deletedFeed(feed: Feed, feedsLeft: Int)
+
+    func willUpdateFeeds()
+    func didUpdateFeedsProgress(finished: Int, total: Int)
+    func didUpdateFeeds(feeds: [Feed])
+}
+
 protocol Reachable {
     var hasNetworkConnectivity: Bool { get }
 }
@@ -61,7 +59,7 @@ protocol Reachable {
     }
 #endif
 
-class DataRepository: DataRetriever, DataWriter {
+class DataRepository: FeedRepository {
     private let mainQueue: NSOperationQueue
     private let backgroundQueue: NSOperationQueue
 

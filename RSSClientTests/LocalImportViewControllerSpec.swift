@@ -50,7 +50,7 @@ class LocalImportViewControllerSpec: QuickSpec {
 
         var tableView: UITableView! = nil
 
-        var dataReadWriter: FakeDataReadWriter! = nil
+        var dataRepository: FakeDataRepository! = nil
         var opmlService: FakeOPMLService! = nil
         var mainQueue: FakeOperationQueue! = nil
         var backgroundQueue: FakeOperationQueue! = nil
@@ -60,9 +60,8 @@ class LocalImportViewControllerSpec: QuickSpec {
         beforeEach {
             injector = Ra.Injector(module: SpecInjectorModule())
 
-            dataReadWriter = FakeDataReadWriter()
-            injector.bind(DataRetriever.self, toInstance: dataReadWriter)
-            injector.bind(DataWriter.self, toInstance: dataReadWriter)
+            dataRepository = FakeDataRepository()
+            injector.bind(FeedRepository.self, toInstance: dataRepository)
 
             opmlService = FakeOPMLService()
             injector.bind(OPMLService.self, toInstance: opmlService)
@@ -268,12 +267,12 @@ class LocalImportViewControllerSpec: QuickSpec {
                         }
 
                         it("should import the feed") {
-                            expect(dataReadWriter.didUpdateFeeds).to(beTruthy())
+                            expect(dataRepository.didUpdateFeeds).to(beTruthy())
                         }
 
                         describe("when it's done updating the feeds") {
                             beforeEach {
-                                dataReadWriter.updateFeedsCompletion([], [])
+                                dataRepository.updateFeedsCompletion([], [])
                             }
 
                             it("should remove the activity indicator") {
@@ -326,22 +325,22 @@ class LocalImportViewControllerSpec: QuickSpec {
                     }
 
                     it("should create a feed") {
-                        expect(dataReadWriter.didCreateFeed).to(beTruthy())
+                        expect(dataRepository.didCreateFeed).to(beTruthy())
                     }
 
                     describe("after the feed is created") {
                         beforeEach {
                             let feed = rNewsKit.Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                            dataReadWriter.newFeedCallback(feed)
+                            dataRepository.newFeedCallback(feed)
                         }
 
                         it("should import the feed") {
-                            expect(dataReadWriter.didUpdateFeeds).to(beTruthy())
+                            expect(dataRepository.didUpdateFeeds).to(beTruthy())
                         }
 
                         describe("when it's done importing the feeds") {
                             beforeEach {
-                                dataReadWriter.updateFeedsCompletion([], [])
+                                dataRepository.updateFeedsCompletion([], [])
                             }
 
                             it("should remove the activity indicator") {

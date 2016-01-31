@@ -7,16 +7,15 @@ import rNewsKit
 class BackgroundFetchHandlerSpec: QuickSpec {
     override func spec() {
         var injector: Injector! = nil
-        var dataReadWriter: FakeDataReadWriter! = nil
+        var dataRepository: FakeDataRepository! = nil
 
         var subject: BackgroundFetchHandler! = nil
 
         beforeEach {
             injector = Injector()
-            dataReadWriter = FakeDataReadWriter()
-            dataReadWriter.feedsList = []
-            injector.bind(DataRetriever.self, toInstance: dataReadWriter)
-            injector.bind(DataWriter.self, toInstance: dataReadWriter)
+            dataRepository = FakeDataRepository()
+            dataRepository.feedsList = []
+            injector.bind(FeedRepository.self, toInstance: dataRepository)
 
             subject = injector.create(BackgroundFetchHandler)!
         }
@@ -35,7 +34,7 @@ class BackgroundFetchHandlerSpec: QuickSpec {
             }
 
             it("should make a network request") {
-                expect(dataReadWriter.didUpdateFeeds).to(beTruthy())
+                expect(dataRepository.didUpdateFeeds).to(beTruthy())
             }
 
             context("when new articles are found") {
@@ -58,8 +57,8 @@ class BackgroundFetchHandlerSpec: QuickSpec {
                     feeds = [feed1, feed2]
                     articles = [article1, article2, article3, article4]
 
-                    dataReadWriter.feedsList = feeds // TODO: more than 1
-                    dataReadWriter.updateFeedsCompletion(feeds, [])
+                    dataRepository.feedsList = feeds // TODO: more than 1
+                    dataRepository.updateFeedsCompletion(feeds, [])
                 }
 
                 it("should send local notifications for each new article") {
@@ -73,7 +72,7 @@ class BackgroundFetchHandlerSpec: QuickSpec {
 
             context("when no new articles are found") {
                 beforeEach {
-                    dataReadWriter.updateFeedsCompletion([], [])
+                    dataRepository.updateFeedsCompletion([], [])
                 }
 
                 it("should not send any new local notifications") {
@@ -87,7 +86,7 @@ class BackgroundFetchHandlerSpec: QuickSpec {
 
             context("when there is an error updating feeds") {
                 beforeEach {
-                    dataReadWriter.updateFeedsCompletion([], [NSError(domain: "", code: 0, userInfo: nil)])
+                    dataRepository.updateFeedsCompletion([], [NSError(domain: "", code: 0, userInfo: nil)])
                 }
 
                 it("should not send any new local notifications") {

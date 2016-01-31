@@ -51,8 +51,8 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         return Ra.Injector(module: appModule, kitModule)
     }()
 
-    private lazy var dataRetriever: DataRetriever? = {
-        return self.anInjector.create(DataRetriever)
+    private lazy var feedRepository: FeedRepository? = {
+        return self.anInjector.create(FeedRepository)
     }()
 
     private lazy var notificationHandler: NotificationHandler? = {
@@ -87,11 +87,11 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
             self.createControllerHierarchy()
 
-            if let dataWriter = self.anInjector.create(DataWriter) {
-                dataWriter.addSubscriber(application)
+            if let feedRepository = self.feedRepository {
+                feedRepository.addSubscriber(application)
                 let userDefaults = NSUserDefaults.standardUserDefaults()
                 if !userDefaults.boolForKey("firstLaunch") {
-                    dataWriter.newFeed { feed in
+                    feedRepository.newFeed { feed in
                         feed.title = NSLocalizedString("AppDelegate_UnreadFeed_Title", comment: "")
                         feed.summary = NSLocalizedString("AppDelegate_UnreadFeed_Summary", comment: "")
                         feed.query = "function(article) {\n    return !article.read;\n}"
@@ -130,7 +130,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 completionHandler(true)
             } else if let feedTitle = shortcutItem.userInfo?["feed"] as? String
                 where shortcutItem.type == "com.rachelbrindle.RSSClient.viewfeed" {
-                    self.dataRetriever?.feeds {feeds in
+                    self.feedRepository?.feeds {feeds in
                         if let feed = feeds.filter({ return $0.title == feedTitle }).first {
                             feedsViewController.showFeeds([feed], animated: false)
                             completionHandler(true)
@@ -178,7 +178,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 let userInfo = userActivity.userInfo,
                 let feedTitle = userInfo["feed"] as? String,
                 let articleID = userInfo["article"] as? String {
-                    self.dataRetriever?.feeds {feeds in
+                    self.feedRepository?.feeds {feeds in
                         // swiftlint:disable line_length
                         if let feed = feeds.filter({ return $0.title == feedTitle }).first,
                             let article = feed.articlesArray.filter({ $0.identifier == articleID }).first {
@@ -191,7 +191,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             if #available(iOS 9.0, *) {
                 if type == CSSearchableItemActionType,
                     let uniqueID = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
-                        self.dataRetriever?.feeds {feeds in
+                        self.feedRepository?.feeds {feeds in
                             guard let article = feeds.reduce(Array<Article>(), combine: {articles, feed in
                                 return articles + Array(feed.articlesArray)
                             }).filter({ article in

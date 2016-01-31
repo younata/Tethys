@@ -9,7 +9,7 @@ import UIKit_PivotalSpecHelperStubs
 class FeedsTableViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: FeedsTableViewController! = nil
-        var dataReadWriter: FakeDataReadWriter! = nil
+        var dataRepository: FakeDataRepository! = nil
         var navigationController: UINavigationController! = nil
         var themeRepository: FakeThemeRepository! = nil
         var settingsRepository: SettingsRepository! = nil
@@ -22,9 +22,8 @@ class FeedsTableViewControllerSpec: QuickSpec {
         beforeEach {
             let injector = Injector()
 
-            dataReadWriter = FakeDataReadWriter()
-            injector.bind(DataRetriever.self, toInstance: dataReadWriter)
-            injector.bind(DataWriter.self, toInstance: dataReadWriter)
+            dataRepository = FakeDataRepository()
+            injector.bind(FeedRepository.self, toInstance: dataRepository)
 
             settingsRepository = SettingsRepository(userDefaults: nil)
             injector.bind(SettingsRepository.self, toInstance: settingsRepository)
@@ -45,7 +44,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
             feeds = [feed1, feed2]
 
-            dataReadWriter.feedsList = feeds
+            dataRepository.feedsList = feeds
         }
 
         it("dismisses the keyboard upon drag") {
@@ -91,7 +90,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
         context("before feed results come back") {
             beforeEach {
-                dataReadWriter.feedsList = nil
+                dataRepository.feedsList = nil
 
                 expect(subject.view).toNot(beNil())
                 subject.viewWillAppear(false)
@@ -107,7 +106,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
             describe("when the feed results come back") {
                 beforeEach {
-                    dataReadWriter.feedsCallback?([])
+                    dataRepository.feedsCallback?([])
                 }
 
                 it("should hide the activity indicator") {
@@ -120,7 +119,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
             beforeEach {
                 feeds = []
 
-                dataReadWriter.feedsList = feeds
+                dataRepository.feedsList = feeds
 
                 expect(subject.view).toNot(beNil())
                 subject.viewWillAppear(false)
@@ -134,7 +133,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 beforeEach {
                     feeds = [feed1, feed2]
 
-                    dataReadWriter.feedsList = feeds
+                    dataRepository.feedsList = feeds
                     subject.searchBar.delegate?.searchBar?(subject.searchBar, textDidChange: "") // just to trigger a reload
                 }
 
@@ -150,7 +149,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     Feed(title: "All Unread", url: nil, summary: "All unread articles", query: "function(article) {\n    return !article.read;\n}", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                 ]
 
-                dataReadWriter.feedsList = feeds
+                dataRepository.feedsList = feeds
 
                 expect(subject.view).toNot(beNil())
                 subject.viewWillAppear(false)
@@ -164,7 +163,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 beforeEach {
                     feeds = [feed1, feed2]
 
-                    dataReadWriter.feedsList = feeds
+                    dataRepository.feedsList = feeds
                     subject.searchBar.delegate?.searchBar?(subject.searchBar, textDidChange: "") // just to trigger a reload
                 }
 
@@ -178,7 +177,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
             beforeEach {
                 feeds = [feed1, feed2]
 
-                dataReadWriter.feedsList = feeds
+                dataRepository.feedsList = feeds
 
                 expect(subject.view).toNot(beNil())
                 subject.viewWillAppear(false)
@@ -189,13 +188,13 @@ class FeedsTableViewControllerSpec: QuickSpec {
             }
 
             it("should add a subscriber to the dataWriter") {
-                expect(dataReadWriter.subscribers).toNot(beEmpty())
+                expect(dataRepository.subscribers).toNot(beEmpty())
             }
 
             describe("responding to data subscriber (feed) update events") {
                 var subscriber: DataSubscriber? = nil
                 beforeEach {
-                    subscriber = dataReadWriter.subscribers.anyObject as? DataSubscriber
+                    subscriber = dataRepository.subscribers.anyObject as? DataSubscriber
                 }
 
                 context("when the feeds start refreshing") {
@@ -238,7 +237,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             }
 
                             it("should reload the tableView") {
-                                expect(dataReadWriter.didAskForFeeds).to(beTruthy())
+                                expect(dataRepository.didAskForFeeds).to(beTruthy())
                             }
                         }
                     }
@@ -246,25 +245,25 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                 context("marking an article as read") {
                     beforeEach {
-                        dataReadWriter.didAskForFeeds = false
+                        dataRepository.didAskForFeeds = false
                         let article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
                         subscriber?.markedArticles([article], asRead: true)
                     }
 
                     it("should refresh it's feed cache") {
-                        expect(dataReadWriter.didAskForFeeds).to(beTruthy())
+                        expect(dataRepository.didAskForFeeds).to(beTruthy())
                     }
                 }
 
                 context("deleting an article") {
                     beforeEach {
-                        dataReadWriter.didAskForFeeds = false
+                        dataRepository.didAskForFeeds = false
                         let article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
                         subscriber?.deletedArticle(article)
                     }
 
                     it("should refresh it's feed cache") {
-                        expect(dataReadWriter.didAskForFeeds).to(beTruthy())
+                        expect(dataRepository.didAskForFeeds).to(beTruthy())
                     }
                 }
             }
@@ -527,13 +526,13 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
             describe("pull to refresh") {
                 beforeEach {
-                    expect(dataReadWriter.didUpdateFeeds).to(beFalsy())
+                    expect(dataRepository.didUpdateFeeds).to(beFalsy())
                     subject.refreshView.beginRefreshing()
                     subject.refreshViewDidRefresh(subject.refreshView)
                 }
 
                 it("should tell the dataManager to updateFeeds") {
-                    expect(dataReadWriter.didUpdateFeeds).to(beTruthy())
+                    expect(dataRepository.didUpdateFeeds).to(beTruthy())
                 }
 
                 it("should be refreshing") {
@@ -545,9 +544,9 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     beforeEach {
                         feed3 = Feed(title: "d", url: nil, summary: "", query: "", tags: [],
                             waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                        dataReadWriter.feedsList = feeds + [feed3]
-                        dataReadWriter.updateFeedsCompletion([], [])
-                        for object in dataReadWriter.subscribers.allObjects {
+                        dataRepository.feedsList = feeds + [feed3]
+                        dataRepository.updateFeedsCompletion([], [])
+                        for object in dataRepository.subscribers.allObjects {
                             if let subscriber = object as? DataSubscriber {
                                 subscriber.didUpdateFeeds([])
                             }
@@ -567,7 +566,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     beforeEach {
                         let error = NSError(domain: "NSURLErrorDomain", code: -1001, userInfo: [NSLocalizedFailureReasonErrorKey: "The request timed out.", "feedTitle": "foo"])
                         UIView.pauseAnimations()
-                        dataReadWriter.updateFeedsCompletion([], [error])
+                        dataRepository.updateFeedsCompletion([], [error])
                     }
 
                     afterEach {
@@ -575,7 +574,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     }
 
                     it("should end refreshing") {
-                        for object in dataReadWriter.subscribers.allObjects {
+                        for object in dataRepository.subscribers.allObjects {
                             if let subscriber = object as? DataSubscriber {
                                 subscriber.didUpdateFeeds([])
                             }
@@ -684,7 +683,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                     }
 
                                     it("should delete the feed from the data store") {
-                                        expect(dataReadWriter.lastDeletedFeed).to(equal(feed))
+                                        expect(dataRepository.lastDeletedFeed).to(equal(feed))
                                     }
                                 }
                             }
@@ -704,7 +703,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                     }
 
                                     it("should mark all articles of that feed as read") {
-                                        expect(dataReadWriter.lastFeedMarkedRead).to(equal(feed))
+                                        expect(dataRepository.lastFeedMarkedRead).to(equal(feed))
                                     }
                                 }
                             }
@@ -819,7 +818,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                     }
 
                                     it("should delete the feed from the data store") {
-                                        expect(dataReadWriter.lastDeletedFeed).to(equal(feed))
+                                        expect(dataRepository.lastDeletedFeed).to(equal(feed))
                                     }
                                 }
                             }
@@ -839,7 +838,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                     }
 
                                     it("should mark all articles of that feed as read") {
-                                        expect(dataReadWriter.lastFeedMarkedRead).to(equal(feed))
+                                        expect(dataRepository.lastFeedMarkedRead).to(equal(feed))
                                     }
                                 }
                             }

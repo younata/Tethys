@@ -41,12 +41,8 @@ class KitModuleSpec: QuickSpec {
             expect(urlSession) === NSURLSession.sharedSession()
         }
 
-        it("should bind a DataRetriever") {
-            expect(injector.create(DataRetriever.self) is DataRepository).to(beTruthy())
-        }
-
-        it("should bind a DataWriter") {
-            expect(injector.create(DataWriter.self) is DataRepository).to(beTruthy())
+        it("should bind a FeedRepository") {
+            expect(injector.create(FeedRepository.self) is DataRepository).to(beTruthy())
         }
 
         it("should bind an opml manager with a singleton scope") {

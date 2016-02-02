@@ -52,6 +52,25 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             spec.waitForExpectationsWithTimeout(1, handler: nil)
         }
 
+        it("makes the item link relative to the feed link in the event the item link has a nil scheme") {
+            guard let feed = feed else { fail(); return }
+            let item = Muon.Article(title: "article", link: NSURL(string: "/foo/bar/baz"), description: "", content: "", guid: "", published: nil, updated: nil, authors: [], enclosures: [])
+            let info = Muon.Feed(title: "a &amp; title", link: NSURL(string: "https://example.com/qux")!, description: "description", articles: [item])
+            let updateExpectation = spec.expectationWithDescription("Update Feed")
+            dataService.updateFeed(feed, info: info) {
+                expect(feed.title) == "a & title"
+                expect(feed.summary) == "description"
+                expect(feed.url).to(beNil())
+                expect(feed.articlesArray.count).to(equal(1))
+                if let article = feed.articlesArray.first {
+                    expect(article.title) == "article"
+                    expect(article.link) == NSURL(string: "https://example.com/foo/bar/baz")
+                }
+                updateExpectation.fulfill()
+            }
+            spec.waitForExpectationsWithTimeout(1, handler: nil)
+        }
+
         it("does not insert items that have empty titles") {
             guard let feed = feed else { fail(); return }
             let item = Muon.Article(title: "", link: nil, description: "", content: "", guid: "", published: nil, updated: nil, authors: [], enclosures: [])
@@ -101,7 +120,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
                 }
                 if let secondArticle = feed.articlesArray.last {
                     expect(secondArticle.title) == item.title
-                    expect(secondArticle.link).to(beNil())
+                    expect(secondArticle.link) == NSURL(string: "https://example.com")
                     expect(secondArticle) != existingArticle
                 }
                 updateExpectation.fulfill()
@@ -145,7 +164,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             if let searchIndex = dataService.searchIndex as? FakeSearchIndex {
                 searchIndex.lastItemsAdded = []
             }
-            dataService.updateArticle(article, item: item) {
+            dataService.updateArticle(article, item: item, feedURL: NSURL(string: "https://example.com/foo/bar/baz")!) {
                 expect(article.title) == "a & title"
                 expect(article.link) == NSURL(string: "https://example.com")
                 expect(article.published) == NSDate(timeIntervalSince1970: 10)

@@ -272,6 +272,7 @@ class RealmService: DataService {
     private func realmTransaction(execBlock: Void -> Void) {
         self.startRealmTransaction()
         execBlock()
+        self.startRealmTransaction()
         _ = try? self.realm.commitWrite()
     }
 }

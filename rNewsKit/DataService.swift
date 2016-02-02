@@ -46,34 +46,40 @@ extension DataService {
 
         let articles = info.articles.filter { $0.title?.isEmpty == false }
 
+        if articles.isEmpty {
+            self.saveFeed(feed, callback: callback)
+            return
+        }
+
+        var articlesRemaining = articles.count
+
+        let checkIfFinished = {
+            articlesRemaining -= 1
+            if articlesRemaining == 0 {
+                self.saveFeed(feed, callback: callback)
+            }
+        }
+
         for item in articles {
             let article = feed.articlesArray.filter { article in
                 return item.title == article.title || item.link == article.link
             }.first
             self.mainQueue.addOperationWithBlock {
-                let semaphore = dispatch_semaphore_create(0)
                 if let article = article {
-                    self.updateArticle(article, item: item) {
-                        dispatch_semaphore_signal(semaphore)
-                    }
+                    self.updateArticle(article, item: item, feedURL: info.link, callback: checkIfFinished)
                 } else {
                     self.createArticle(feed) { article in
                         feed.addArticle(article)
-                        self.updateArticle(article, item: item) {
-                            dispatch_semaphore_signal(semaphore)
-                        }
+                        self.updateArticle(article, item: item, feedURL: info.link, callback: checkIfFinished)
                     }
                 }
-                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
             }
         }
 
         self.mainQueue.waitUntilAllOperationsAreFinished()
-
-        self.saveFeed(feed, callback: callback)
     }
 
-    func updateArticle(article: Article, item: Muon.Article, callback: Void -> Void) {
+    func updateArticle(article: Article, item: Muon.Article, feedURL: NSURL, callback: Void -> Void) {
         let characterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
         let author = item.authors.map({ author in
             if let email = author.email?.resourceSpecifier {
@@ -84,7 +90,7 @@ extension DataService {
 
         let title = (item.title ?? article.title ?? "unknown").stringByTrimmingCharactersInSet(characterSet)
         article.title = title.stringByUnescapingHTML().stringByStrippingHTML()
-        article.link = item.link
+        article.link = NSURL(string: item.link?.absoluteString ?? "", relativeToURL: feedURL)?.absoluteURL
         article.published = item.published ?? article.published
         article.updatedAt = item.updated
         article.summary = item.description ?? ""

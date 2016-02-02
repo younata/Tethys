@@ -107,7 +107,6 @@ public class DataStoreBackedArray<T>: CollectionType, CustomDebugStringConvertib
     }
 
     public subscript(position: Int) -> T {
-        assert(position < self.count, "Array index out of range")
         if self.isCoreDataBacked {
             if position < self.internalObjects.count {
                 return self.internalObjects[position]

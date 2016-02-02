@@ -13,6 +13,9 @@ import Muon
 #endif
 
 public protocol FeedRepository {
+    func databaseUpdateAvailable() -> Bool
+    func performDatabaseUpdates(callback: Void -> Void)
+
     func allTags(callback: [String] -> Void)
     func feeds(callback: [Feed] -> Void)
     func feedsMatchingTag(tag: String?, callback: [Feed] -> Void)
@@ -78,6 +81,14 @@ class DataRepository: FeedRepository {
             self.reachable = reachable
             self.dataService = dataService
             self.updateService = updateService
+    }
+
+    func databaseUpdateAvailable() -> Bool {
+        return false
+    }
+
+    func performDatabaseUpdates(callback: Void -> Void) {
+        callback()
     }
 
     //MARK: - DataRetriever

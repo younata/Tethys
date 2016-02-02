@@ -61,7 +61,8 @@ class InMemoryDataService: DataService {
         if let index = self.feeds.indexOf(feed) {
             self.feeds.removeAtIndex(index)
         }
-        for article in feed.articlesArray {
+        for _ in 0..<feed.articlesArray.count {
+            guard let article = feed.articlesArray.first else { break }
             feed.removeArticle(article)
         }
         callback()
@@ -73,7 +74,8 @@ class InMemoryDataService: DataService {
         }
         article.feed?.removeArticle(article)
         article.feed = nil
-        for enclosure in article.enclosuresArray {
+        for _ in 0..<article.enclosuresArray.count {
+            guard let enclosure = article.enclosuresArray.first else { break }
             article.removeEnclosure(enclosure)
         }
         callback()

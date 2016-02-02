@@ -50,7 +50,7 @@ class LocalImportViewControllerSpec: QuickSpec {
 
         var tableView: UITableView! = nil
 
-        var dataRepository: FakeDataRepository! = nil
+        var dataRepository: FakeFeedRepository! = nil
         var opmlService: FakeOPMLService! = nil
         var mainQueue: FakeOperationQueue! = nil
         var backgroundQueue: FakeOperationQueue! = nil
@@ -60,7 +60,7 @@ class LocalImportViewControllerSpec: QuickSpec {
         beforeEach {
             injector = Ra.Injector(module: SpecInjectorModule())
 
-            dataRepository = FakeDataRepository()
+            dataRepository = FakeFeedRepository()
             injector.bind(FeedRepository.self, toInstance: dataRepository)
 
             opmlService = FakeOPMLService()

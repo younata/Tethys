@@ -9,7 +9,7 @@ import UIKit_PivotalSpecHelperStubs
 class FeedsTableViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: FeedsTableViewController! = nil
-        var dataRepository: FakeDataRepository! = nil
+        var dataRepository: FakeFeedRepository! = nil
         var navigationController: UINavigationController! = nil
         var themeRepository: FakeThemeRepository! = nil
         var settingsRepository: SettingsRepository! = nil
@@ -22,7 +22,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
         beforeEach {
             let injector = Injector()
 
-            dataRepository = FakeDataRepository()
+            dataRepository = FakeFeedRepository()
             injector.bind(FeedRepository.self, toInstance: dataRepository)
 
             settingsRepository = SettingsRepository(userDefaults: nil)

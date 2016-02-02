@@ -39,7 +39,7 @@ class AppDelegateSpec: QuickSpec {
         let application = UIApplication.sharedApplication()
         var injector: Ra.Injector! = nil
 
-        var dataRepository: FakeDataRepository! = nil
+        var dataRepository: FakeFeedRepository! = nil
 
         var notificationHandler: FakeNotificationHandler! = nil
         var backgroundFetchHandler: FakeBackgroundFetchHandler! = nil
@@ -49,7 +49,7 @@ class AppDelegateSpec: QuickSpec {
 
             injector = Ra.Injector()
 
-            dataRepository = FakeDataRepository()
+            dataRepository = FakeFeedRepository()
             injector.bind(FeedRepository.self, toInstance: dataRepository)
 
             notificationHandler = FakeNotificationHandler()

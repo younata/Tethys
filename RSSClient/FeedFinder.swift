@@ -2,7 +2,7 @@ import Foundation
 import WebKit
 
 public protocol FeedFinder {
-    func findUnknownFeedInCurrentWebView(webView: WKWebView, callback: (String?) -> (Void))
+    func findUnknownFeedInCurrentWebView(webView: WKWebView, callback: [String] -> Void)
 }
 
 public class WebFeedFinder: FeedFinder {
@@ -13,15 +13,14 @@ public class WebFeedFinder: FeedFinder {
 
     lazy var feeds: [String] = []
 
-    public func findUnknownFeedInCurrentWebView(webView: WKWebView, callback: (String?) -> (Void)) {
+    public func findUnknownFeedInCurrentWebView(webView: WKWebView, callback: [String] -> Void) {
         webView.evaluateJavaScript(discoverScript) {res, error in
-            if let str = res as? String {
-                if !self.feeds.contains(str) {
-                    callback(str)
-                    return
-                }
+            if let potentialFeeds = res as? [String] {
+                let unimportedFeeds = potentialFeeds.filter { !self.feeds.contains($0) }
+                callback(unimportedFeeds)
+                return
             }
-            callback(nil)
+            callback([])
         }
     }
 

@@ -35,7 +35,7 @@ class SettingsViewControllerSpec: QuickSpec {
         var subject: SettingsViewController! = nil
         var navigationController: UINavigationController! = nil
         var themeRepository: ThemeRepository! = nil
-        var dataReader: FakeDataRepository! = nil
+        var feedRepository: FakeFeedRepository! = nil
         var settingsRepository: SettingsRepository! = nil
         var urlOpener: FakeUrlOpener! = nil
         var fakeQuickActionRepository: FakeQuickActionRepository! = nil
@@ -55,8 +55,8 @@ class SettingsViewControllerSpec: QuickSpec {
             urlOpener = FakeUrlOpener()
             injector.bind(UrlOpener.self, toInstance: urlOpener)
 
-            dataReader = FakeDataRepository()
-            injector.bind(FeedRepository.self, toInstance: dataReader)
+            feedRepository = FakeFeedRepository()
+            injector.bind(FeedRepository.self, toInstance: feedRepository)
 
             subject = injector.create(SettingsViewController)!
 
@@ -410,7 +410,7 @@ class SettingsViewControllerSpec: QuickSpec {
                                 Feed(title: "a", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
                                 Feed(title: "b", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                             ]
-                            dataReader.feedsList = feeds
+                            feedRepository.feedsList = feeds
 
                             subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
 
@@ -444,7 +444,7 @@ class SettingsViewControllerSpec: QuickSpec {
                         let feeds = [feedA, feedB]
 
                         beforeEach {
-                            dataReader.feedsList = feeds
+                            feedRepository.feedsList = feeds
 
                             fakeQuickActionRepository.quickActions = [UIApplicationShortcutItem(type: "a", localizedTitle: "a")]
                             subject.tableView.reloadData()
@@ -544,7 +544,7 @@ class SettingsViewControllerSpec: QuickSpec {
                         beforeEach {
                             fakeQuickActionRepository.quickActions = [firstShortcut, secondShortcut, thirdShortcut]
 
-                            dataReader.feedsList = feeds
+                            feedRepository.feedsList = feeds
                             subject.tableView.reloadData()
                         }
 

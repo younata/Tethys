@@ -7,7 +7,7 @@ import rNewsKit
 class TagEditorViewControllerSpec: QuickSpec {
     override func spec() {
         var injector: Injector! = nil
-        var dataRepository = FakeDataRepository()
+        var dataRepository = FakeFeedRepository()
         var subject: TagEditorViewController! = nil
         var navigationController: UINavigationController! = nil
         var themeRepository: FakeThemeRepository! = nil
@@ -17,7 +17,7 @@ class TagEditorViewControllerSpec: QuickSpec {
 
         beforeEach {
             injector = Injector()
-            dataRepository = FakeDataRepository()
+            dataRepository = FakeFeedRepository()
             injector.bind(FeedRepository.self, toInstance: dataRepository)
 
             themeRepository = FakeThemeRepository()

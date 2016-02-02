@@ -66,7 +66,7 @@ class ArticleListControllerSpec: QuickSpec {
         var subject: ArticleListController! = nil
         var navigationController: UINavigationController! = nil
         var articles: [Article] = []
-        var dataRepository: FakeDataRepository! = nil
+        var dataRepository: FakeFeedRepository! = nil
         var themeRepository: FakeThemeRepository! = nil
 
         beforeEach {
@@ -79,7 +79,7 @@ class ArticleListControllerSpec: QuickSpec {
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, toInstance: themeRepository)
 
-            dataRepository = FakeDataRepository()
+            dataRepository = FakeFeedRepository()
             injector.bind(FeedRepository.self, toInstance: dataRepository)
 
             publishedOffset = 0

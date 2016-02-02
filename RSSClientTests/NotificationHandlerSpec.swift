@@ -8,7 +8,7 @@ import rNewsKit
 class NotificationHandlerSpec: QuickSpec {
     override func spec() {
         var injector: Injector! = nil
-        var dataRepository: FakeDataRepository! = nil
+        var dataRepository: FakeFeedRepository! = nil
 
         var notificationSource: FakeNotificationSource! = nil
 
@@ -17,7 +17,7 @@ class NotificationHandlerSpec: QuickSpec {
         beforeEach {
             injector = Injector()
 
-            dataRepository = FakeDataRepository()
+            dataRepository = FakeFeedRepository()
             injector.bind(FeedRepository.self, toInstance: dataRepository)
 
             subject = injector.create(NotificationHandler)!

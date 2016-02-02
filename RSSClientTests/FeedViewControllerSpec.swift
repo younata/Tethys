@@ -14,7 +14,7 @@ class FeedViewControllerSpec: QuickSpec {
         var navigationController: UINavigationController!
         var subject: FeedViewController! = nil
         var injector: Injector! = nil
-        var dataRepository: FakeDataRepository! = nil
+        var dataRepository: FakeFeedRepository! = nil
 
         var urlSession: FakeURLSession! = nil
         var backgroundQueue: FakeOperationQueue! = nil
@@ -34,7 +34,7 @@ class FeedViewControllerSpec: QuickSpec {
             backgroundQueue.runSynchronously = true
             injector.bind(kBackgroundQueue, toInstance: backgroundQueue)
 
-            dataRepository = FakeDataRepository()
+            dataRepository = FakeFeedRepository()
             injector.bind(FeedRepository.self, toInstance: dataRepository)
 
             subject = injector.create(FeedViewController)!

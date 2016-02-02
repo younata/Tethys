@@ -5,7 +5,7 @@ import rNews
 import rNewsKit
 
 private var navController: UINavigationController! = nil
-private var dataWriter: FakeDataRepository! = nil
+private var feedRepository: FakeFeedRepository! = nil
 private var rootViewController: UIViewController! = nil
 
 
@@ -32,8 +32,8 @@ class FindFeedViewControllerSpec: QuickSpec {
             feedFinder = FakeFeedFinder()
             injector.bind(FeedFinder.self, toInstance: feedFinder)
 
-            dataWriter = FakeDataRepository()
-            injector.bind(FeedRepository.self, toInstance: dataWriter)
+            feedRepository = FakeFeedRepository()
+            injector.bind(FeedRepository.self, toInstance: feedRepository)
 
             urlSession = FakeURLSession()
             injector.bind(NSURLSession.self, toInstance: urlSession)
@@ -113,38 +113,44 @@ class FindFeedViewControllerSpec: QuickSpec {
                 expect(rootViewController.presentedViewController).toNot(beNil())
             }
 
-            sharedExamples("importing a feed") {
+            sharedExamples("importing a feed") { (sharedContext: SharedExampleContext) in
+                var url: NSURL!
+
+                beforeEach {
+                    url = (sharedContext()["url"] as? NSURL) ?? NSURL(string: "https://example.com/feed.xml")!
+                }
+
                 it("should create a new feed") {
-                    expect(dataWriter.didCreateFeed).to(beTruthy())
+                    expect(feedRepository.didCreateFeed).to(beTruthy())
                 }
 
                 it("should show an indicator that we're doing things") {
                     let indicator = subject.view.subviews.filter {
                         return $0.isKindOfClass(ActivityIndicator.classForCoder())
                         }.first as? ActivityIndicator
-                    expect(indicator?.message).to(equal("Loading feed at https://example.com/feed.xml"))
+                    expect(indicator?.message).to(equal("Loading feed at \(url.absoluteString)"))
                 }
 
                 describe("when the feed is created") {
                     var feed: Feed! = nil
                     beforeEach {
                         feed = Feed(title: "", url: NSURL(string: ""), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                        dataWriter.newFeedCallback(feed)
+                        feedRepository.newFeedCallback(feed)
                     }
 
                     it("should save the new feed") {
-                        let feed = Feed(title: "", url: NSURL(string: "https://example.com/feed.xml"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                        expect(dataWriter.lastSavedFeed).to(equal(feed))
+                        let feed = Feed(title: "", url: url, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                        expect(feedRepository.lastSavedFeed).to(equal(feed))
                     }
 
                     it("should try to update feeds") {
-                        expect(dataWriter.didUpdateFeed).to(beTruthy())
+                        expect(feedRepository.didUpdateFeed).to(beTruthy())
                     }
 
                     describe("when the feeds update") {
                         beforeEach {
-                            feed = Feed(title: "", url: NSURL(string: "https://example.com/feed.xml"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                            dataWriter.updateSingleFeedCallback(feed, nil)
+                            feed = Feed(title: "", url: url, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                            feedRepository.updateSingleFeedCallback(feed, nil)
                         }
 
                         it("should remove the indicator") {
@@ -403,9 +409,9 @@ class FindFeedViewControllerSpec: QuickSpec {
                     expect(feedFinder.didAttemptToFindFeed).to(beTruthy())
                 }
 
-                context("when a feed is found") {
+                context("when a single feed is found") {
                     beforeEach {
-                        feedFinder.findFeedCallback("https://example.com/feed.xml")
+                        feedFinder.findFeedCallback(["https://example.com/feed.xml"])
                     }
 
                     it("should enable the addFeedButton") {
@@ -422,9 +428,61 @@ class FindFeedViewControllerSpec: QuickSpec {
                     }
                 }
 
-                context("when a feed is not found") {
+                context("when multiple feeds are found") {
                     beforeEach {
-                        feedFinder.findFeedCallback(nil)
+                        feedFinder.findFeedCallback(["https://example.com/feed.xml", "https://example.com/feed2.xml"])
+                    }
+
+                    it("should enable the addFeedButton") {
+                        expect(subject.addFeedButton.enabled).to(beTruthy())
+                    }
+
+                    describe("tapping on the addFeedButton") {
+                        beforeEach {
+                            showRootController()
+                            subject.addFeedButton.tap()
+                        }
+
+                        it("should bring up a list of available feeds to import") {
+                            expect(subject.presentedViewController).to(beAKindOf(UIAlertController.self))
+                            if let alertController = subject.presentedViewController as? UIAlertController {
+                                expect(alertController.preferredStyle) == UIAlertControllerStyle.ActionSheet
+                                expect(alertController.actions.count) == 3
+
+                                guard alertController.actions.count == 3 else { return }
+
+                                let firstAction = alertController.actions[0]
+                                expect(firstAction.title) == "feed.xml"
+
+                                let secondAction = alertController.actions[1]
+                                expect(secondAction.title) == "feed2.xml"
+
+                                let thirdAction = alertController.actions[2]
+                                expect(thirdAction.title) == "Cancel"
+                            }
+                        }
+
+                        context("tapping on one of the feed actions") {
+                            beforeEach {
+                                let actions = (subject.presentedViewController as? UIAlertController)?.actions ?? []
+                                if actions.count >= 3 {
+                                    let action = actions[1]
+                                    action.handler()(action)
+                                } else {
+                                    fail("grr")
+                                }
+                            }
+
+                            itBehavesLike("importing a feed") {
+                                return ["url": NSURL(string: "https://example.com/feed2.xml")!]
+                            }
+                        }
+                    }
+                }
+
+                context("when no feeds are found") {
+                    beforeEach {
+                        feedFinder.findFeedCallback([])
                     }
 
                     it("should do nothing") {

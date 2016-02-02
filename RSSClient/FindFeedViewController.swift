@@ -9,7 +9,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
     public let loadingBar = UIProgressView(progressViewStyle: .Bar)
     public let navField = UITextField(frame: CGRectMake(0, 0, 200, 30))
-    private var rssLink: String? = nil
+    private var rssLinks = [String]()
 
     public var addFeedButton: UIBarButtonItem! = nil
     var back: UIBarButtonItem! = nil
@@ -122,13 +122,30 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
             self.navField.frame = CGRectMake(0, 0, size.width * 0.8, 32)
     }
 
-    internal func dismiss() {
+    @objc private func dismiss() {
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
 
-    internal func save() {
-        if let rl = self.rssLink {
+    @objc private func save() {
+        if let rl = self.rssLinks.first where self.rssLinks.count == 1 {
             self.save(rl)
+        } else if self.rssLinks.count > 1 {
+            // yay!
+            let alertTitle = NSLocalizedString("FindFeedViewController_ImportFeeds_SelectFeed", comment: "")
+            let alert = UIAlertController(title: alertTitle, message: nil, preferredStyle: .ActionSheet)
+            for link in self.rssLinks {
+                let pathWithPrecedingSlash = NSURL(string: link)?.path ?? ""
+                let path = pathWithPrecedingSlash.substringFromIndex(pathWithPrecedingSlash.startIndex.successor())
+                alert.addAction(UIAlertAction(title: path, style: .Default) { _ in
+                    self.save(link)
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                })
+            }
+            let cancelTitle = NSLocalizedString("FindFeedViewController_Cancel", comment: "")
+            alert.addAction(UIAlertAction(title: cancelTitle, style: .Cancel) { _ in
+                self.dismissViewControllerAnimated(true, completion: nil)
+            })
+            self.presentViewController(alert, animated: true, completion: nil)
         } else {
             self.dismiss()
         }
@@ -214,9 +231,9 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
             return
         }
 
-        self.feedFinder?.findUnknownFeedInCurrentWebView(webView) {feedUrl in
-            self.rssLink = feedUrl
-            self.addFeedButton.enabled = feedUrl != nil
+        self.feedFinder?.findUnknownFeedInCurrentWebView(webView) {feedUrls in
+            self.rssLinks = feedUrls
+            self.addFeedButton.enabled = !feedUrls.isEmpty
         }
     }
 

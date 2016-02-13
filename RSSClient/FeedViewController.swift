@@ -1,8 +1,9 @@
 import UIKit
 import Muon
+import Ra
 import rNewsKit
 
-public class FeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+public class FeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Injectable {
     public var feed: rNewsKit.Feed? = nil {
         didSet {
             self.navigationItem.title = self.feed?.displayTitle ?? ""
@@ -40,23 +41,41 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
         return tableView
     }()
 
-    private lazy var feedRepository: FeedRepository? = {
-        return self.injector?.create(FeedRepository)
-    }()
-
-    private lazy var urlSession: NSURLSession = {
-        return self.injector!.create(NSURLSession)!
-    }()
-
-    private lazy var operationQueue: NSOperationQueue = {
-        return self.injector!.create(kBackgroundQueue) as! NSOperationQueue
-    }()
-
-    private lazy var themeRepository: ThemeRepository = {
-        return self.injector!.create(ThemeRepository)!
-    }()
+    private let feedRepository: FeedRepository
+    private let urlSession: NSURLSession
+    private let operationQueue: NSOperationQueue
+    private let themeRepository: ThemeRepository
+    private let tagEditorViewController: TagEditorViewController
 
     private let intervalFormatter = NSDateIntervalFormatter()
+
+    public init(feedRepository: FeedRepository,
+                urlSession: NSURLSession,
+                operationQueue: NSOperationQueue,
+                themeRepository: ThemeRepository,
+                tagEditorViewController: TagEditorViewController) {
+        self.feedRepository = feedRepository
+        self.urlSession = urlSession
+        self.operationQueue = operationQueue
+        self.themeRepository = themeRepository
+        self.tagEditorViewController = tagEditorViewController
+
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    public required convenience init(injector: Injector) {
+        self.init(
+            feedRepository: injector.create(FeedRepository)!,
+            urlSession: injector.create(NSURLSession)!,
+            operationQueue: injector.create(kBackgroundQueue) as! NSOperationQueue,
+            themeRepository: injector.create(ThemeRepository)!,
+            tagEditorViewController: injector.create(TagEditorViewController)!
+        )
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,8 +89,8 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
         self.navigationItem.rightBarButtonItem = saveButton
         self.navigationItem.title = self.feed?.displayTitle ?? ""
 
-        self.view.addSubview(tableView)
-        tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
+        self.view.addSubview(self.tableView)
+        self.tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
 
         self.intervalFormatter.calendar = NSCalendar.currentCalendar()
         self.intervalFormatter.dateStyle = .MediumStyle
@@ -82,7 +101,7 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
 
     public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        tableView.reloadData()
+        self.tableView.reloadData()
     }
 
     internal func dismiss() {
@@ -90,21 +109,20 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
     }
 
     internal func save() {
-        if let theFeed = feed {
-            self.feedRepository?.saveFeed(theFeed)
+        if let theFeed = self.feed {
+            self.feedRepository.saveFeed(theFeed)
         }
-        dismiss()
+        self.dismiss()
     }
 
     private func showTagEditor(tagIndex: Int) -> TagEditorViewController {
-        let tagEditor = self.injector!.create(TagEditorViewController)!
-        tagEditor.feed = self.feed
+        self.tagEditorViewController.feed = self.feed
         if tagIndex < self.feed?.tags.count {
-            tagEditor.tagIndex = tagIndex
-            tagEditor.tagPicker.textField.text = self.feed?.tags[tagIndex]
+            self.tagEditorViewController.tagIndex = tagIndex
+            self.tagEditorViewController.tagPicker.textField.text = self.feed?.tags[tagIndex]
         }
-        self.navigationController?.pushViewController(tagEditor, animated: true)
-        return tagEditor
+        self.navigationController?.pushViewController(self.tagEditorViewController, animated: true)
+        return self.tagEditorViewController
     }
 
     // MARK: - Table view data source
@@ -250,10 +268,10 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
 
 extension FeedViewController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
-        self.tableView.backgroundColor = self.themeRepository.backgroundColor
-        self.tableView.separatorColor = self.themeRepository.textColor
-        self.tableView.indicatorStyle = self.themeRepository.scrollIndicatorStyle
+        self.tableView.backgroundColor = themeRepository.backgroundColor
+        self.tableView.separatorColor = themeRepository.textColor
+        self.tableView.indicatorStyle = themeRepository.scrollIndicatorStyle
 
-        self.navigationController?.navigationBar.barStyle = self.themeRepository.barStyle
+        self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
     }
 }

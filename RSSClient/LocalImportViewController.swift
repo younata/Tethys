@@ -8,7 +8,7 @@ public func documentsDirectory() -> NSString {
     return (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents")
 }
 
-public class LocalImportViewController: UIViewController {
+public class LocalImportViewController: UIViewController, Injectable {
     private var opmls: [(String, [Lepton.Item])] = []
     private var feeds: [(String, Muon.Feed)] = []
     private var contentsOfDirectory: [String] = []
@@ -17,29 +17,12 @@ public class LocalImportViewController: UIViewController {
 
     private var tableViewTopOffset: NSLayoutConstraint!
 
-    private lazy var feedRepository: FeedRepository? = {
-        return self.injector?.create(FeedRepository)
-    }()
-
-    private lazy var opmlService: OPMLService? = {
-        return self.injector?.create(OPMLService)
-    }()
-
-    private lazy var mainQueue: NSOperationQueue? = {
-        return self.injector?.create(kMainQueue) as? NSOperationQueue
-    }()
-
-    private lazy var backgroundQueue: NSOperationQueue? = {
-        return self.injector?.create(kBackgroundQueue) as? NSOperationQueue
-    }()
-
-    private lazy var themeRepository: ThemeRepository? = {
-        return self.injector?.create(ThemeRepository)
-    }()
-
-    private lazy var fileManager: NSFileManager? = {
-        return self.injector?.create(NSFileManager)
-    }()
+    private let feedRepository: FeedRepository
+    private let opmlService: OPMLService
+    private let themeRepository: ThemeRepository
+    private let fileManager: NSFileManager
+    private let mainQueue: NSOperationQueue
+    private let backgroundQueue: NSOperationQueue
 
     public lazy var explanationLabel: ExplanationView = {
         let label = ExplanationView(forAutoLayout: ())
@@ -49,6 +32,36 @@ public class LocalImportViewController: UIViewController {
         label.backgroundColor = UIColor.lightGrayColor()
         return label
     }()
+
+    public init(feedRepository: FeedRepository,
+        opmlService: OPMLService,
+        themeRepository: ThemeRepository,
+        fileManager: NSFileManager,
+        mainQueue: NSOperationQueue,
+        backgroundQueue: NSOperationQueue) {
+            self.feedRepository = feedRepository
+            self.opmlService = opmlService
+            self.themeRepository = themeRepository
+            self.fileManager = fileManager
+            self.mainQueue = mainQueue
+            self.backgroundQueue = backgroundQueue
+            super.init(nibName: nil, bundle: nil)
+    }
+
+    public required convenience init(injector: Injector) {
+        self.init(
+            feedRepository: injector.create(FeedRepository)!,
+            opmlService: injector.create(OPMLService)!,
+            themeRepository: injector.create(ThemeRepository)!,
+            fileManager: injector.create(NSFileManager)!,
+            mainQueue: injector.create(kMainQueue) as! NSOperationQueue,
+            backgroundQueue: injector.create(NSOperationQueue)!
+        )
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,7 +87,7 @@ public class LocalImportViewController: UIViewController {
         self.tableViewController.tableView.dataSource = self
         self.tableViewController.tableView.tableFooterView = UIView()
 
-        self.themeRepository?.addSubscriber(self)
+        self.themeRepository.addSubscriber(self)
     }
 
     internal func dismiss() {
@@ -82,8 +95,7 @@ public class LocalImportViewController: UIViewController {
     }
 
     public func reloadItems() {
-        guard let fileManager = self.fileManager,
-              let contents = try? fileManager.contentsOfDirectoryAtPath(documentsDirectory() as String) else {
+        guard let contents = try? self.fileManager.contentsOfDirectoryAtPath(documentsDirectory() as String) else {
             return
         }
         for path in contents {
@@ -142,7 +154,7 @@ public class LocalImportViewController: UIViewController {
             feedParser.completion = {feed in
                 self.feeds.append((path, feed))
                 opmlParser.cancel()
-                self.mainQueue?.addOperationWithBlock {
+                self.mainQueue.addOperationWithBlock {
                     self.reload()
                 }
             }
@@ -150,11 +162,11 @@ public class LocalImportViewController: UIViewController {
                 let toAdd = (location, items)
                 self.opmls.append(toAdd)
                 feedParser.cancel()
-                self.mainQueue?.addOperationWithBlock {
+                self.mainQueue.addOperationWithBlock {
                     self.reload()
                 }
             }
-            self.backgroundQueue?.addOperations([opmlParser, feedParser], waitUntilFinished: false)
+            self.backgroundQueue.addOperations([opmlParser, feedParser], waitUntilFinished: false)
         } catch _ {
         }
     }
@@ -182,13 +194,11 @@ public class LocalImportViewController: UIViewController {
 
 extension LocalImportViewController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
-        self.tableViewController.tableView.backgroundColor = self.themeRepository?.backgroundColor
-        self.tableViewController.tableView.separatorColor = self.themeRepository?.textColor
+        self.tableViewController.tableView.backgroundColor = themeRepository.backgroundColor
+        self.tableViewController.tableView.separatorColor = themeRepository.textColor
+        self.tableViewController.tableView.indicatorStyle = themeRepository.scrollIndicatorStyle
 
-        if let themeRepository = self.themeRepository {
-            self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
-            self.tableViewController.tableView.indicatorStyle = themeRepository.scrollIndicatorStyle
-        }
+        self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
     }
 }
 
@@ -247,8 +257,8 @@ extension LocalImportViewController: UITableViewDelegate {
             let path = opmls[indexPath.row].0
             let activityIndicator = disableInteractionWithMessage(NSLocalizedString("Importing feeds", comment: ""))
 
-            self.opmlService?.importOPML(NSURL(string: "file://" + path)!, completion: {(_) in
-                self.feedRepository?.updateFeeds {_ in
+            self.opmlService.importOPML(NSURL(string: "file://" + path)!, completion: {(_) in
+                self.feedRepository.updateFeeds {_ in
                     self.reenableInteractionAndDismiss(activityIndicator)
                 }
             })
@@ -257,10 +267,10 @@ extension LocalImportViewController: UITableViewDelegate {
 
             let activityIndicator = self.disableInteractionWithMessage(NSLocalizedString("Importing feed", comment: ""))
 
-            self.feedRepository?.newFeed {newFeed in
+            self.feedRepository.newFeed {newFeed in
                 newFeed.url = feed.link
-                self.feedRepository?.saveFeed(newFeed)
-                self.feedRepository?.updateFeeds {_ in
+                self.feedRepository.saveFeed(newFeed)
+                self.feedRepository.updateFeeds {_ in
                     self.reenableInteractionAndDismiss(activityIndicator)
                 }
             }

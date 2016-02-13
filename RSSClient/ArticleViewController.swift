@@ -6,13 +6,13 @@ import Ra
 import rNewsKit
 import SafariServices
 
-public class ArticleViewController: UIViewController {
+public class ArticleViewController: UIViewController, Injectable {
     public private(set) var article: Article? = nil
     public func setArticle(article: Article?, read: Bool = true, show: Bool = true) {
         self.article = article
 
         guard let a = article else { return }
-        if a.read == false && read { self.feedRepository?.markArticle(a, asRead: true) }
+        if a.read == false && read { self.feedRepository.markArticle(a, asRead: true) }
         if show { self.showArticle(a, onWebView: self.content) }
 
         self.toolbarItems = [self.spacer(), self.shareButton, self.spacer()]
@@ -65,17 +65,17 @@ public class ArticleViewController: UIViewController {
     public var articles = DataStoreBackedArray<Article>()
     public var lastArticleIndex = 0
 
-    public lazy var feedRepository: FeedRepository? = { self.injector?.create(FeedRepository) }()
-    public lazy var themeRepository: ThemeRepository? = { self.injector?.create(ThemeRepository) }()
-    public lazy var urlOpener: UrlOpener? = { self.injector?.create(UrlOpener) }()
+    public let feedRepository: FeedRepository
+    public let themeRepository: ThemeRepository
+    public let urlOpener: UrlOpener
 
     public lazy var panGestureRecognizer: ScreenEdgePanGestureRecognizer = {
         return ScreenEdgePanGestureRecognizer(target: self, action: "didSwipe:")
     }()
 
     private func loadArticleCSS() -> String {
-        if let cssFileName = self.themeRepository?.articleCSSFileName,
-            let loc = NSBundle.mainBundle().URLForResource(cssFileName, withExtension: "css"),
+        let cssFileName = self.themeRepository.articleCSSFileName
+        if let loc = NSBundle.mainBundle().URLForResource(cssFileName, withExtension: "css"),
             let cssNSString = try? NSString(contentsOfURL: loc, encoding: NSUTF8StringEncoding) {
                 return "<html><head>" +
                     "<style type=\"text/css\">\(String(cssNSString))</style>" +
@@ -94,6 +94,28 @@ public class ArticleViewController: UIViewController {
         }
         return ""
     }()
+
+    public init(feedRepository: FeedRepository,
+                themeRepository: ThemeRepository,
+                urlOpener: UrlOpener) {
+        self.feedRepository = feedRepository
+        self.themeRepository = themeRepository
+        self.urlOpener = urlOpener
+
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    public required convenience init(injector: Injector) {
+        self.init(
+            feedRepository: injector.create(FeedRepository)!,
+            themeRepository: injector.create(ThemeRepository)!,
+            urlOpener: injector.create(UrlOpener)!
+        )
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     private func showArticle(article: Article, onWebView webView: UIWebView) {
         let content = article.content.isEmpty ? article.summary : article.content
@@ -131,7 +153,7 @@ public class ArticleViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.view.backgroundColor = self.themeRepository?.backgroundColor
+        self.view.backgroundColor = self.themeRepository.backgroundColor
         self.setupUserActivity()
         self.navigationController?.setToolbarHidden(false, animated: false)
 
@@ -150,7 +172,7 @@ public class ArticleViewController: UIViewController {
 
         self.view.addGestureRecognizer(self.panGestureRecognizer)
 
-        self.themeRepository?.addSubscriber(self)
+        self.themeRepository.addSubscriber(self)
         self.enclosuresList.themeRepository = self.themeRepository
         self.configureContent()
     }
@@ -161,7 +183,7 @@ public class ArticleViewController: UIViewController {
         self.navigationController?.setToolbarHidden(false, animated: false)
         self.splitViewController?.setNeedsStatusBarAppearanceUpdate()
 
-        if let themeRepository = self.themeRepository { self.themeRepositoryDidChangeTheme(themeRepository) }
+        self.themeRepositoryDidChangeTheme(themeRepository)
     }
 
     public override func viewWillDisappear(animated: Bool) {
@@ -242,7 +264,7 @@ public class ArticleViewController: UIViewController {
 
     @objc private func toggleArticleRead() {
         guard let article = self.article else { return }
-        self.feedRepository?.markArticle(article, asRead: !article.read)
+        self.feedRepository.markArticle(article, asRead: !article.read)
     }
 
     private func configureContent() {
@@ -256,7 +278,6 @@ public class ArticleViewController: UIViewController {
     }
 
     private func setThemeForWebView(webView: UIWebView) {
-        guard let themeRepository = self.themeRepository else { return }
         webView.backgroundColor = themeRepository.backgroundColor
         webView.scrollView.backgroundColor = themeRepository.backgroundColor
         webView.scrollView.indicatorStyle = themeRepository.scrollIndicatorStyle
@@ -277,7 +298,7 @@ public class ArticleViewController: UIViewController {
         if gesture.state == .Began {
             let a = self.articles[nextArticleIndex]
             self.nextContent = UIWebView(forAutoLayout: ())
-            self.nextContent?.backgroundColor = self.themeRepository?.backgroundColor
+            self.nextContent?.backgroundColor = self.themeRepository.backgroundColor
             self.nextContent?.scrollView.contentInset = self.content.scrollView.contentInset
             self.view.addSubview(self.nextContent!)
             self.showArticle(a, onWebView: self.nextContent!)
@@ -345,7 +366,7 @@ public class ArticleViewController: UIViewController {
         if #available(iOS 9, *) {
             self.loadUrlInSafari(url)
         } else {
-            self.urlOpener?.openURL(url)
+            self.urlOpener.openURL(url)
         }
     }
 
@@ -365,7 +386,7 @@ extension ArticleViewController: UIWebViewDelegate {
             if #available(iOS 9, *) {
                 self.loadUrlInSafari(url)
             } else {
-                self.urlOpener?.openURL(url)
+                self.urlOpener.openURL(url)
             }
             return false
     }

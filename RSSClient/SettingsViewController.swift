@@ -1,11 +1,12 @@
 import UIKit
 import PureLayout
 import SafariServices
+import Ra
 import rNewsKit
 
 // swiftlint:disable file_length
 
-public class SettingsViewController: UIViewController {
+public class SettingsViewController: UIViewController, Injectable {
     private enum SettingsSection: CustomStringConvertible {
         case Theme
         case QuickActions
@@ -80,31 +81,48 @@ public class SettingsViewController: UIViewController {
 
     public let tableView = UITableView(frame: CGRectZero, style: .Grouped)
 
-    private lazy var themeRepository: ThemeRepository = {
-        return self.injector!.create(ThemeRepository)!
-    }()
+    private let themeRepository: ThemeRepository
+    private let settingsRepository: SettingsRepository
+    private let urlOpener: UrlOpener
+    private let quickActionRepository: QuickActionRepository
+    private let feedRepository: FeedRepository
+    private let documentationViewController: DocumentationViewController
 
-    private lazy var settingsRepository: SettingsRepository = {
-        return self.injector!.create(SettingsRepository)!
-    }()
-
+    private var oldTheme: ThemeRepository.Theme = .Default
     private lazy var queryFeedsEnabled: Bool = {
         return self.settingsRepository.queryFeedsEnabled
     }()
 
-    private lazy var urlOpener: UrlOpener = {
-        return self.injector!.create(UrlOpener)!
-    }()
+    public init(themeRepository: ThemeRepository,
+                settingsRepository: SettingsRepository,
+                urlOpener: UrlOpener,
+                quickActionRepository: QuickActionRepository,
+                feedRepository: FeedRepository,
+                documentationViewController: DocumentationViewController) {
+        self.themeRepository = themeRepository
+        self.settingsRepository = settingsRepository
+        self.urlOpener = urlOpener
+        self.quickActionRepository = quickActionRepository
+        self.feedRepository = feedRepository
+        self.documentationViewController = documentationViewController
 
-    private lazy var quickActionRepository: QuickActionRepository = {
-        return self.injector!.create(QuickActionRepository)!
-    }()
+        super.init(nibName: nil, bundle: nil)
+    }
 
-    private lazy var feedRepository: FeedRepository = {
-        return self.injector!.create(FeedRepository)!
-    }()
+    public required convenience init(injector: Injector) {
+        self.init(
+            themeRepository: injector.create(ThemeRepository)!,
+            settingsRepository: injector.create(SettingsRepository)!,
+            urlOpener: injector.create(UrlOpener)!,
+            quickActionRepository: injector.create(QuickActionRepository)!,
+            feedRepository: injector.create(FeedRepository)!,
+            documentationViewController: injector.create(DocumentationViewController)!
+        )
+    }
 
-    private var oldTheme: ThemeRepository.Theme = .Default
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -401,10 +419,8 @@ extension SettingsViewController: UITableViewDelegate {
             self.navigationController?.pushViewController(feedsListController, animated: true)
         case .Advanced:
             tableView.deselectRowAtIndexPath(indexPath, animated: false)
-            if let documentation = injector?.create(DocumentationViewController) {
-                documentation.configure(.QueryFeed)
-                self.navigationController?.pushViewController(documentation, animated: true)
-            }
+            self.documentationViewController.configure(.QueryFeed)
+            self.navigationController?.pushViewController(self.documentationViewController, animated: true)
         case .Credits:
             tableView.deselectRowAtIndexPath(indexPath, animated: false)
             guard let url = NSURL(string: "https://twitter.com/younata") else { return }

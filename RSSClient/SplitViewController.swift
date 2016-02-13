@@ -1,7 +1,8 @@
 import UIKit
 import SafariServices
+import Ra
 
-public class SplitViewController: UISplitViewController {
+public class SplitViewController: UISplitViewController, Injectable {
     public var collapseDetailViewController: Bool = true
 
     public private(set) lazy var masterNavigationController: UINavigationController = {
@@ -12,9 +13,20 @@ public class SplitViewController: UISplitViewController {
         return UINavigationController()
     }()
 
-    private lazy var themeRepository: ThemeRepository? = {
-        return self.injector?.create(ThemeRepository)
-    }()
+    private let themeRepository: ThemeRepository
+
+    public init(themeRepository: ThemeRepository) {
+        self.themeRepository = themeRepository
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    public required convenience init(injector: Injector) {
+        self.init(themeRepository: injector.create(ThemeRepository)!)
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     public override func preferredStatusBarStyle() -> UIStatusBarStyle {
         if #available(iOS 9, *) {
@@ -28,13 +40,13 @@ public class SplitViewController: UISplitViewController {
                 }
             }
         }
-        return self.themeRepository?.statusBarStyle ?? super.preferredStatusBarStyle()
+        return self.themeRepository.statusBarStyle ?? super.preferredStatusBarStyle()
     }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.themeRepository?.addSubscriber(self)
+        self.themeRepository.addSubscriber(self)
         self.delegate = self
         self.preferredDisplayMode = .PrimaryOverlay
     }

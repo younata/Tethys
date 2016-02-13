@@ -2,18 +2,20 @@ import UIKit
 import Ra
 import rNewsKit
 
-public class BackgroundFetchHandler: NSObject {
-    private lazy var feedRepository: FeedRepository? = {
-        return self.injector?.create(FeedRepository)
-    }()
+public struct BackgroundFetchHandler: Injectable {
+    private let feedRepository: FeedRepository
+
+    public init(feedRepository: FeedRepository) {
+        self.feedRepository = feedRepository
+    }
+
+    public init(injector: Injector) {
+        self.feedRepository = injector.create(FeedRepository)!
+    }
 
     public func performFetch(notificationHandler: NotificationHandler,
         notificationSource: LocalNotificationSource,
         completionHandler: (UIBackgroundFetchResult) -> Void) {
-            guard let feedRepository = self.feedRepository else {
-                completionHandler(.Failed)
-                return
-            }
             var originalArticlesList = [String]()
             let lock = NSLock()
             lock.lock()

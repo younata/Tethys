@@ -1,7 +1,8 @@
 import UIKit
+import Ra
 import rNewsKit
 
-public class QueryFeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+public class QueryFeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Injectable {
     public var feed: Feed? = nil {
         didSet {
             let newTitle = NSLocalizedString("QueryFeedViewController_Title_New", comment: "")
@@ -36,13 +37,10 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
         }
     }
 
-    private lazy var feedRepository: FeedRepository? = {
-        return self.injector?.create(FeedRepository)
-    }()
-
-    private lazy var themeRepository: ThemeRepository? = {
-        return self.injector?.create(ThemeRepository)
-    }()
+    private let feedRepository: FeedRepository
+    private let themeRepository: ThemeRepository
+    private let tagEditorViewController: TagEditorViewController
+    private let articleListController: ArticleListController
 
     public lazy var tableView: UITableView = {
         let tableView = UITableView(forAutoLayout: ())
@@ -64,6 +62,31 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
     private var feedSummary = ""
     private var feedQuery = "function(article) {\n    return !article.read;\n}"
 
+    public init(feedRepository: FeedRepository,
+                themeRepository: ThemeRepository,
+                tagEditorViewController: TagEditorViewController,
+                articleListController: ArticleListController) {
+        self.feedRepository = feedRepository
+        self.themeRepository = themeRepository
+        self.tagEditorViewController = tagEditorViewController
+        self.articleListController = articleListController
+
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    public required convenience init(injector: Injector) {
+        self.init(
+            feedRepository: injector.create(FeedRepository)!,
+            themeRepository: injector.create(ThemeRepository)!,
+            tagEditorViewController: injector.create(TagEditorViewController)!,
+            articleListController: injector.create(ArticleListController)!
+        )
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     public override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -80,7 +103,7 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
         self.view.addSubview(self.tableView)
         self.tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
 
-        self.themeRepository?.addSubscriber(self)
+        self.themeRepository.addSubscriber(self)
     }
 
     public override func viewWillAppear(animated: Bool) {
@@ -103,26 +126,25 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
             if !self.feedQuery.isEmpty {
                 feed.query = self.feedQuery
             }
-            self.feedRepository?.saveFeed(feed)
+            self.feedRepository.saveFeed(feed)
             self.dismiss()
         }
         if let feed = self.feed {
             saveFeed(feed)
         } else {
-            self.feedRepository?.newFeed {feed in
+            self.feedRepository.newFeed {feed in
                 saveFeed(feed)
             }
         }
     }
 
     private func showTagEditor(tagIndex: Int) {
-        let tagEditor = self.injector!.create(TagEditorViewController)!
-        tagEditor.feed = feed
+        self.tagEditorViewController.feed = feed
         if tagIndex < feed?.tags.count {
-            tagEditor.tagIndex = tagIndex
-            tagEditor.tagPicker.textField.text = feed?.tags[tagIndex]
+            self.tagEditorViewController.tagIndex = tagIndex
+            self.tagEditorViewController.tagPicker.textField.text = feed?.tags[tagIndex]
         }
-        self.navigationController?.pushViewController(tagEditor, animated: true)
+        self.navigationController?.pushViewController(self.tagEditorViewController, animated: true)
     }
 
     // MARK: - Table view data source
@@ -244,12 +266,11 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
         case .Query:
             let previewTitle = NSLocalizedString("QueryFeedViewController_Cell_Action_Preview", comment: "")
             let preview = UITableViewRowAction(style: .Normal, title: previewTitle, handler: {(_, _) in
-                let articleList = ArticleListController(style: .Plain)
-                articleList.previewMode = true
-                self.feedRepository?.articlesMatchingQuery(self.feedQuery) {articles in
-                    articleList.articles = DataStoreBackedArray(articles)
+                self.articleListController.previewMode = true
+                self.feedRepository.articlesMatchingQuery(self.feedQuery) {articles in
+                    self.articleListController.articles = DataStoreBackedArray(articles)
                 }
-                self.navigationController?.pushViewController(articleList, animated: true)
+                self.navigationController?.pushViewController(self.articleListController, animated: true)
             })
             return [preview]
         case .Tags:
@@ -284,12 +305,10 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
 
 extension QueryFeedViewController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
-        self.tableView.backgroundColor = self.themeRepository?.backgroundColor
-        self.tableView.separatorColor = self.themeRepository?.textColor
+        self.tableView.backgroundColor = themeRepository.backgroundColor
+        self.tableView.separatorColor = themeRepository.textColor
+        self.tableView.indicatorStyle = themeRepository.scrollIndicatorStyle
 
-        if let themeRepository = self.themeRepository {
-            self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
-            self.tableView.indicatorStyle = themeRepository.scrollIndicatorStyle
-        }
+        self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
     }
 }

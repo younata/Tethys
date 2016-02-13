@@ -227,8 +227,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             al.showArticle(articleToShow, animated: false)
         } else {
             let detail = self.splitView.detailNavigationController
-            let articleViewController = ArticleViewController()
-            articleViewController.themeRepository = self.anInjector.create(ThemeRepository)
+            let articleViewController =  self.anInjector.create(ArticleViewController)!
             detail.viewControllers = [articleViewController]
             self.splitView.viewControllers = [master, detail]
         }

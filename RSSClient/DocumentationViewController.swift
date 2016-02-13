@@ -1,8 +1,9 @@
 import UIKit
 import WebKit
 import PureLayout
+import Ra
 
-public class DocumentationViewController: UIViewController {
+public class DocumentationViewController: UIViewController, Injectable {
     public enum Document: String {
         case QueryFeed = "queryFeedDocumentation"
 
@@ -32,8 +33,8 @@ public class DocumentationViewController: UIViewController {
 
     private func cssString() -> String {
         let bundle = NSBundle(forClass: self.classForCoder)
-        if let cssFileName = self.themeRepository?.articleCSSFileName,
-            let loc = bundle.URLForResource(cssFileName, withExtension: "css"),
+        let cssFileName = self.themeRepository.articleCSSFileName
+        if let loc = bundle.URLForResource(cssFileName, withExtension: "css"),
             let cssNSString = try? NSString(contentsOfURL: loc, encoding: NSUTF8StringEncoding) {
                 return "<html><head><style type=\"text/css\">\(String(cssNSString))</style></head><body>"
         }
@@ -51,9 +52,20 @@ public class DocumentationViewController: UIViewController {
 
     private let content: WKWebView = WKWebView(forAutoLayout: ())
 
-    private lazy var themeRepository: ThemeRepository? = {
-        return self.injector?.create(ThemeRepository)
-    }()
+    private let themeRepository: ThemeRepository
+
+    public init(themeRepository: ThemeRepository) {
+        self.themeRepository = themeRepository
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    public required convenience init(injector: Injector) {
+        self.init(themeRepository: injector.create(ThemeRepository)!)
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,16 +73,14 @@ public class DocumentationViewController: UIViewController {
         self.view.addSubview(self.content)
         self.content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
 
-        self.themeRepository?.addSubscriber(self)
+        self.themeRepository.addSubscriber(self)
     }
 }
 
 extension DocumentationViewController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
-        self.view.backgroundColor = self.themeRepository?.backgroundColor
-        if let themeRepository = self.themeRepository {
-            self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
-            self.content.scrollView.indicatorStyle = themeRepository.scrollIndicatorStyle
-        }
+        self.view.backgroundColor = themeRepository.backgroundColor
+        self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
+        self.content.scrollView.indicatorStyle = themeRepository.scrollIndicatorStyle
     }
 }

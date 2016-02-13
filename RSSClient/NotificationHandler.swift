@@ -2,11 +2,17 @@ import UIKit
 import Ra
 import rNewsKit
 
-public class NotificationHandler: NSObject {
+public struct NotificationHandler: Injectable {
 
-    private lazy var feedRepository: FeedRepository? = {
-        return self.injector?.create(FeedRepository)
-    }()
+    private let feedRepository: FeedRepository
+
+    public init(feedRepository: FeedRepository) {
+        self.feedRepository = feedRepository
+    }
+
+    public init(injector: Injector) {
+        self.init(feedRepository: injector.create(FeedRepository)!)
+    }
 
     public func enableNotifications(var notificationSource: LocalNotificationSource) {
         let markReadAction = UIMutableUserNotificationAction()
@@ -36,7 +42,7 @@ public class NotificationHandler: NSObject {
     public func handleAction(identifier: String?, notification: UILocalNotification) {
         guard let userInfo = notification.userInfo where identifier == "read" else { return }
 
-        self.articleFromUserInfo(userInfo) { self.feedRepository?.markArticle($0, asRead: true) }
+        self.articleFromUserInfo(userInfo) { self.feedRepository.markArticle($0, asRead: true) }
     }
 
     public func sendLocalNotification(notificationSource: LocalNotificationSource, article: Article) {
@@ -57,12 +63,11 @@ public class NotificationHandler: NSObject {
     }
 
     private func articleFromUserInfo(userInfo: [NSObject: AnyObject], callback: (Article) -> (Void)) {
-        guard let feedRepository = self.feedRepository,
-              let feedID = userInfo["feed"] as? String,
+        guard let feedID = userInfo["feed"] as? String,
               let articleID = userInfo["article"] as? String else {
                 return
         }
-        feedRepository.feeds {feeds in
+        self.feedRepository.feeds {feeds in
             let feed = feeds.filter({ $0.identifier == feedID }).first
             if let article = feed?.articlesArray.filter({ $0.identifier == articleID }).first {
                 callback(article)

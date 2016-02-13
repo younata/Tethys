@@ -1,7 +1,8 @@
 import UIKit
 import rNewsKit
+import Ra
 
-public class ArticleListController: UITableViewController, DataSubscriber {
+public class ArticleListController: UITableViewController, DataSubscriber, Injectable {
 
     internal var articles = DataStoreBackedArray<Article>()
     public var feeds: [Feed] = [] {
@@ -12,13 +13,9 @@ public class ArticleListController: UITableViewController, DataSubscriber {
 
     public var previewMode: Bool = false
 
-    internal lazy var feedRepository: FeedRepository? = {
-        self.injector?.create(FeedRepository)
-    }()
-
-    internal lazy var themeRepository: ThemeRepository? = {
-        self.injector?.create(ThemeRepository)
-    }()
+    private let feedRepository: FeedRepository
+    private let themeRepository: ThemeRepository
+    private let articleViewController: ArticleViewController
 
     public lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar(frame: CGRectMake(0, 0, 320, 32))
@@ -28,6 +25,28 @@ public class ArticleListController: UITableViewController, DataSubscriber {
         searchBar.delegate = self
         return searchBar
     }()
+
+    public init(feedRepository: FeedRepository,
+                themeRepository: ThemeRepository,
+                articleViewController: ArticleViewController) {
+        self.feedRepository = feedRepository
+        self.themeRepository = themeRepository
+        self.articleViewController = articleViewController
+
+        super.init(style: .Plain)
+    }
+
+    public required convenience init(injector: Injector) {
+        self.init(
+            feedRepository: injector.create(FeedRepository)!,
+            themeRepository: injector.create(ThemeRepository)!,
+            articleViewController: injector.create(ArticleViewController)!
+        )
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,9 +61,9 @@ public class ArticleListController: UITableViewController, DataSubscriber {
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.tableFooterView = UIView()
 
-        self.feedRepository?.addSubscriber(self)
+        self.feedRepository.addSubscriber(self)
 
-        self.themeRepository?.addSubscriber(self)
+        self.themeRepository.addSubscriber(self)
 
         if !self.previewMode {
             self.tableView.tableHeaderView = self.searchBar
@@ -83,18 +102,14 @@ public class ArticleListController: UITableViewController, DataSubscriber {
     }
 
     private func configuredArticleController(article: Article, read: Bool = true) -> ArticleViewController {
-        let avc = splitViewController?.viewControllers.last as? ArticleViewController ??
-            ArticleViewController()
-        avc.feedRepository = self.feedRepository
-        avc.themeRepository = self.themeRepository
-        avc.setArticle(article, read: read)
-        avc.articles = self.articles
+        self.articleViewController.setArticle(article, read: read)
+        self.articleViewController.articles = self.articles
         if self.articles.count != 0 {
-            avc.lastArticleIndex = self.articles.indexOf(article) ?? 0
+            self.articleViewController.lastArticleIndex = self.articles.indexOf(article) ?? 0
         } else {
-            avc.lastArticleIndex = 0
+            self.articleViewController.lastArticleIndex = 0
         }
-        return avc
+        return self.articleViewController
     }
 
     private func showArticleController(avc: ArticleViewController, animated: Bool) {
@@ -154,7 +169,7 @@ public class ArticleListController: UITableViewController, DataSubscriber {
             let article = self.articleForIndexPath(indexPath)
             let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Generic_Delete", comment: ""),
                 handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
-                    self.feedRepository?.deleteArticle(article)
+                    self.feedRepository.deleteArticle(article)
                     self.articles.remove(article)
                     self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             })
@@ -164,7 +179,7 @@ public class ArticleListController: UITableViewController, DataSubscriber {
             let toggle = UITableViewRowAction(style: .Normal, title: toggleText,
                 handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
                     article.read = !article.read
-                    self.feedRepository?.markArticle(article, asRead: article.read)
+                    self.feedRepository.markArticle(article, asRead: article.read)
                     tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             })
             return [delete, toggle]
@@ -187,7 +202,7 @@ extension ArticleListController: UISearchBarDelegate {
         if searchText.isEmpty {
             self.resetArticles()
         } else {
-            self.feedRepository?.articlesOfFeeds(self.feeds, matchingSearchQuery: searchText) {articles in
+            self.feedRepository.articlesOfFeeds(self.feeds, matchingSearchQuery: searchText) {articles in
                 let articlesArray = articles
                 if self.articles != articlesArray {
                     self.articles = articlesArray
@@ -212,7 +227,7 @@ extension ArticleListController: UIViewControllerPreviewingDelegate {
         commitViewController viewControllerToCommit: UIViewController) {
             if let articleController = viewControllerToCommit as? ArticleViewController,
                 article = articleController.article where !self.previewMode {
-                    self.feedRepository?.markArticle(article, asRead: true)
+                    self.feedRepository.markArticle(article, asRead: true)
                     self.showArticleController(articleController, animated: true)
             }
     }
@@ -220,17 +235,13 @@ extension ArticleListController: UIViewControllerPreviewingDelegate {
 
 extension ArticleListController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
-        self.tableView.backgroundColor = self.themeRepository?.backgroundColor
-        self.tableView.separatorColor = self.themeRepository?.textColor
+        self.tableView.backgroundColor = themeRepository.backgroundColor
+        self.tableView.separatorColor = themeRepository.textColor
+        self.tableView.indicatorStyle = themeRepository.scrollIndicatorStyle
 
-        self.searchBar.backgroundColor = self.themeRepository?.backgroundColor
+        self.searchBar.backgroundColor = themeRepository.backgroundColor
+        self.searchBar.barStyle = themeRepository.barStyle
 
-        if let themeRepository = self.themeRepository {
-            self.searchBar.barStyle = themeRepository.barStyle
-
-            self.tableView.indicatorStyle = themeRepository.scrollIndicatorStyle
-
-            self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
-        }
+        self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
     }
 }

@@ -1,11 +1,12 @@
 import UIKit
 import BreakOutToRefresh
 import MAKDropDownMenu
+import Ra
 import rNewsKit
 
 // swiftlint:disable file_length
 
-public class FeedsTableViewController: UIViewController {
+public class FeedsTableViewController: UIViewController, Injectable {
     public lazy var tableView: UITableView = {
         let tableView = self.tableViewController.tableView
         tableView.tableHeaderView = self.searchBar
@@ -78,17 +79,56 @@ public class FeedsTableViewController: UIViewController {
 
     public let notificationView = NotificationView(forAutoLayout: ())
 
-    private lazy var feedRepository: FeedRepository = {
-        return self.injector!.create(FeedRepository)!
-    }()
+    private let feedRepository: FeedRepository
+    private let themeRepository: ThemeRepository
+    private let settingsRepository: SettingsRepository
 
-    private lazy var themeRepository: ThemeRepository = {
-        return self.injector!.create(ThemeRepository)!
-    }()
+    private let findFeedViewController: FindFeedViewController
+    private let localImportViewController: LocalImportViewController
+    private let feedViewController: FeedViewController
+    private let queryFeedViewController: QueryFeedViewController
+    private let settingsViewController: SettingsViewController
+    private let articleListController: ArticleListController
 
-    private lazy var settingsRepository: SettingsRepository = {
-        return self.injector!.create(SettingsRepository)!
-    }()
+    public init(feedRepository: FeedRepository,
+                themeRepository: ThemeRepository,
+                settingsRepository: SettingsRepository,
+                findFeedViewController: FindFeedViewController,
+                localImportViewController: LocalImportViewController,
+                feedViewController: FeedViewController,
+                queryFeedViewController: QueryFeedViewController,
+                settingsViewController: SettingsViewController,
+                articleListController: ArticleListController
+        ) {
+        self.feedRepository = feedRepository
+        self.themeRepository = themeRepository
+        self.settingsRepository = settingsRepository
+        self.findFeedViewController = findFeedViewController
+        self.localImportViewController = localImportViewController
+        self.feedViewController = feedViewController
+        self.queryFeedViewController = queryFeedViewController
+        self.settingsViewController = settingsViewController
+        self.articleListController = articleListController
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    public required convenience init(injector: Injector) {
+        self.init(
+            feedRepository: injector.create(FeedRepository)!,
+            themeRepository: injector.create(ThemeRepository)!,
+            settingsRepository: injector.create(SettingsRepository)!,
+            findFeedViewController: injector.create(FindFeedViewController)!,
+            localImportViewController: injector.create(LocalImportViewController)!,
+            feedViewController: injector.create(FeedViewController)!,
+            queryFeedViewController: injector.create(QueryFeedViewController)!,
+            settingsViewController: injector.create(SettingsViewController)!,
+            articleListController: injector.create(ArticleListController)!
+        )
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -198,27 +238,25 @@ public class FeedsTableViewController: UIViewController {
 
     // MARK - Private/Internal
 
-    internal func importFromWeb() { self.presentController(FindFeedViewController.self) }
+    internal func importFromWeb() { self.presentController(self.findFeedViewController) }
 
-    @objc private func importFromLocal() { self.presentController(LocalImportViewController.self) }
+    @objc private func importFromLocal() { self.presentController(self.localImportViewController) }
 
-    @objc private func createQueryFeed() { self.presentController(QueryFeedViewController.self) }
+    @objc private func createQueryFeed() { self.presentController(self.queryFeedViewController) }
 
     @objc private func search() { self.searchBar.becomeFirstResponder() }
 
-    @objc private func presentSettings() { self.presentController(SettingsViewController.self) }
+    @objc private func presentSettings() { self.presentController(self.settingsViewController) }
 
-    private func presentController(controller: NSObject.Type) {
-        if let viewController = self.injector?.create(controller) as? UIViewController {
-            let nc = UINavigationController(rootViewController: viewController)
-            if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-                let popover = UIPopoverController(contentViewController: nc)
-                popover.popoverContentSize = CGSizeMake(600, 800)
-                popover.presentPopoverFromBarButtonItem(self.navigationItem.rightBarButtonItem!,
-                    permittedArrowDirections: .Any, animated: true)
-            } else {
-                self.presentViewController(nc, animated: true, completion: nil)
-            }
+    private func presentController(viewController: UIViewController) {
+        let nc = UINavigationController(rootViewController: viewController)
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+            let popover = UIPopoverController(contentViewController: nc)
+            popover.popoverContentSize = CGSizeMake(600, 800)
+            popover.presentPopoverFromBarButtonItem(self.navigationItem.rightBarButtonItem!,
+                permittedArrowDirections: .Any, animated: true)
+        } else {
+            self.presentViewController(nc, animated: true, completion: nil)
         }
     }
 
@@ -297,11 +335,8 @@ public class FeedsTableViewController: UIViewController {
     }
 
     private func configuredArticleListWithFeeds(feeds: [Feed]) -> ArticleListController {
-        let al = ArticleListController(style: .Plain)
-        al.feedRepository = self.feedRepository
-        al.themeRepository = self.themeRepository
-        al.feeds = feeds
-        return al
+        self.articleListController.feeds = feeds
+        return self.articleListController
     }
 
     private func showArticleList(articleListController: ArticleListController, animated: Bool) {
@@ -503,13 +538,11 @@ extension FeedsTableViewController: UITableViewDelegate {
                 let feed = self.feedAtIndexPath(indexPath)
                 var viewController: UIViewController! = nil
                 if feed.isQueryFeed {
-                    let vc = self.injector!.create(QueryFeedViewController)!
-                    vc.feed = feed
-                    viewController = vc
+                    self.queryFeedViewController.feed = feed
+                    viewController = self.queryFeedViewController
                 } else {
-                    let vc = self.injector!.create(FeedViewController)!
-                    vc.feed = feed
-                    viewController = vc
+                    self.feedViewController.feed = feed
+                    viewController = self.feedViewController
                 }
                 self.presentViewController(UINavigationController(rootViewController: viewController),
                     animated: true, completion: nil)

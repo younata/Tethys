@@ -1,7 +1,8 @@
 import UIKit
+import Ra
 import rNewsKit
 
-public class TagEditorViewController: UIViewController {
+public class TagEditorViewController: UIViewController, Injectable {
 
     public var feed: Feed? = nil
     public var tagIndex: Int? = nil
@@ -13,13 +14,25 @@ public class TagEditorViewController: UIViewController {
             self.navigationItem.rightBarButtonItem?.enabled = self.feed != nil && self.tag != nil
         }
     }
-    private lazy var feedRepository: FeedRepository? = {
-        self.injector?.create(FeedRepository)
-    }()
+    private let feedRepository: FeedRepository
+    private let themeRepository: ThemeRepository
 
-    private lazy var themeRepository: ThemeRepository? = {
-        self.injector?.create(ThemeRepository)
-    }()
+    public init(feedRepository: FeedRepository, themeRepository: ThemeRepository) {
+        self.feedRepository = feedRepository
+        self.themeRepository = themeRepository
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    public required convenience init(injector: Injector) {
+        self.init(
+            feedRepository: injector.create(FeedRepository)!,
+            themeRepository: injector.create(ThemeRepository)!
+        )
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,7 +47,7 @@ public class TagEditorViewController: UIViewController {
 
         self.tagPicker.translatesAutoresizingMaskIntoConstraints = false
         self.tagPicker.themeRepository = self.themeRepository
-        self.feedRepository?.allTags { tags in
+        self.feedRepository.allTags { tags in
             self.tagPicker.configureWithTags(tags) {
                 self.tag = $0
             }
@@ -50,7 +63,7 @@ public class TagEditorViewController: UIViewController {
         self.tagLabel.numberOfLines = 0
         self.tagLabel.text = NSLocalizedString("TagEditorViewController_Explanation", comment: "")
 
-        self.themeRepository?.addSubscriber(self)
+        self.themeRepository.addSubscriber(self)
     }
 
     @objc private func dismiss() {
@@ -60,7 +73,7 @@ public class TagEditorViewController: UIViewController {
     @objc private func save() {
         if let feed = self.feed, let tag = tag {
             feed.addTag(tag)
-            self.feedRepository?.saveFeed(feed)
+            self.feedRepository.saveFeed(feed)
             self.feed = feed
         }
 
@@ -70,13 +83,13 @@ public class TagEditorViewController: UIViewController {
 
 extension TagEditorViewController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
-        self.view.backgroundColor = self.themeRepository?.backgroundColor
+        self.view.backgroundColor = themeRepository.backgroundColor
 
-        self.tagPicker.picker.tintColor = self.themeRepository?.textColor
-        self.tagPicker.textField.textColor = self.themeRepository?.textColor
+        self.tagPicker.picker.tintColor = themeRepository.textColor
+        self.tagPicker.textField.textColor = themeRepository.textColor
 
-        self.tagLabel.textColor = self.themeRepository?.textColor
+        self.tagLabel.textColor = themeRepository.textColor
 
-        self.navigationController?.navigationBar.barTintColor = self.themeRepository?.backgroundColor
+        self.navigationController?.navigationBar.barTintColor = themeRepository.backgroundColor
     }
 }

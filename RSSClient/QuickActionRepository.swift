@@ -1,6 +1,6 @@
 import UIKit
 
-public protocol QuickActionRepository {
+public protocol QuickActionRepository: class {
     @available (iOS 9, *)
     var quickActions: [UIApplicationShortcutItem] { get set }
 }

@@ -2,9 +2,10 @@ import UIKit
 import WebKit
 import Muon
 import Lepton
+import Ra
 import rNewsKit
 
-public class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFieldDelegate {
+public class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFieldDelegate, Injectable {
     public lazy var webContent = WKWebView(forAutoLayout: ())
 
     public let loadingBar = UIProgressView(progressViewStyle: .Bar)
@@ -19,35 +20,48 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
     var lookForFeeds: Bool = true
 
-    private lazy var feedFinder: FeedFinder? = {
-        self.injector?.create(FeedFinder)
-    }()
-
-    private lazy var feedRepository: FeedRepository? = {
-        return self.injector?.create(FeedRepository)
-    }()
-
-    private lazy var opmlService: OPMLService? = {
-        return self.injector?.create(OPMLService)
-    }()
-
-    private lazy var mainQueue: NSOperationQueue? = {
-        return self.injector?.create(kMainQueue) as? NSOperationQueue
-    }()
-
-    private lazy var backgroundQueue: NSOperationQueue? = {
-        return self.injector?.create(kBackgroundQueue) as? NSOperationQueue
-    }()
-
-    private lazy var urlSession: NSURLSession? = {
-        return self.injector?.create(NSURLSession)
-    }()
-
-    private lazy var themeRepository: ThemeRepository? = {
-        return self.injector?.create(ThemeRepository)
-    }()
+    private let feedFinder: FeedFinder
+    private let feedRepository: FeedRepository
+    private let opmlService: OPMLService
+    private let mainQueue: NSOperationQueue
+    private let backgroundQueue: NSOperationQueue
+    private let urlSession: NSURLSession
+    private let themeRepository: ThemeRepository
 
     private let placeholderAttributes: [String: AnyObject] = [NSForegroundColorAttributeName: UIColor.blackColor()]
+
+    public init(feedFinder: FeedFinder,
+                feedRepository: FeedRepository,
+                opmlService: OPMLService,
+                mainQueue: NSOperationQueue,
+                backgroundQueue: NSOperationQueue,
+                urlSession: NSURLSession,
+                themeRepository: ThemeRepository) {
+        self.feedFinder = feedFinder
+        self.feedRepository = feedRepository
+        self.opmlService = opmlService
+        self.mainQueue = mainQueue
+        self.backgroundQueue = backgroundQueue
+        self.urlSession = urlSession
+        self.themeRepository = themeRepository
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    public required convenience init(injector: Injector) {
+        self.init(
+            feedFinder: injector.create(FeedFinder)!,
+            feedRepository: injector.create(FeedRepository)!,
+            opmlService: injector.create(OPMLService)!,
+            mainQueue: injector.create(kMainQueue) as! NSOperationQueue,
+            backgroundQueue: injector.create(kBackgroundQueue) as! NSOperationQueue,
+            urlSession: injector.create(NSURLSession)!,
+            themeRepository: injector.create(ThemeRepository)!
+        )
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -108,7 +122,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         self.loadingBar.hidden = true
         self.loadingBar.progressTintColor = UIColor.darkGreenColor()
 
-        self.themeRepository?.addSubscriber(self)
+        self.themeRepository.addSubscriber(self)
     }
 
     deinit {
@@ -163,15 +177,15 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         let message = NSString.localizedStringWithFormat(messageTemplate, link) as String
         indicator.configureWithMessage(message)
         if opml {
-            self.opmlService?.importOPML(NSURL(string: link)!) {(_) in
+            self.opmlService.importOPML(NSURL(string: link)!) {(_) in
                 indicator.removeFromSuperview()
                 self.dismiss()
             }
         } else {
-            self.feedRepository?.newFeed {newFeed in
+            self.feedRepository.newFeed {newFeed in
                 newFeed.url = NSURL(string: link)
-                self.feedRepository?.saveFeed(newFeed)
-                self.feedRepository?.updateFeed(newFeed) { _ in
+                self.feedRepository.saveFeed(newFeed)
+                self.feedRepository.updateFeed(newFeed) { _ in
                     indicator.removeFromSuperview()
                     self.dismiss()
                 }
@@ -231,7 +245,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
             return
         }
 
-        self.feedFinder?.findUnknownFeedInCurrentWebView(webView) {feedUrls in
+        self.feedFinder.findUnknownFeedInCurrentWebView(webView) {feedUrls in
             self.rssLinks = feedUrls
             self.addFeedButton.enabled = !feedUrls.isEmpty
         }
@@ -254,7 +268,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
             attributes: self.placeholderAttributes)
         self.addFeedButton.enabled = false
         if let url = webView.URL where lookForFeeds {
-            self.urlSession?.dataTaskWithURL(url) {data, response, error in
+            self.urlSession.dataTaskWithURL(url) {data, response, error in
                 guard let data = data, let text = NSString(data: data, encoding: NSUTF8StringEncoding) as? String else {
                     return
                 }
@@ -277,7 +291,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
                         alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
                         self.save(url.absoluteString, opml: true)
                     })
-                    self.mainQueue?.addOperationWithBlock {
+                    self.mainQueue.addOperationWithBlock {
                         self.presentViewController(alert, animated: true, completion: nil)
                     }
                 }
@@ -296,13 +310,13 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
                         alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
                         self.save(url.absoluteString, opml: false)
                     }))
-                    self.mainQueue?.addOperationWithBlock {
+                    self.mainQueue.addOperationWithBlock {
                         self.presentViewController(alert, animated: true, completion: nil)
                     }
                 }
 
-                self.backgroundQueue?.addOperation(opmlParser)
-                self.backgroundQueue?.addOperation(feedParser)
+                self.backgroundQueue.addOperation(opmlParser)
+                self.backgroundQueue.addOperation(feedParser)
             }.resume()
         }
     }
@@ -310,13 +324,10 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
 extension FindFeedViewController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
-        if let themeRepository = self.themeRepository {
-            self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
-            self.navigationController?.toolbar.barStyle = themeRepository.barStyle
+        self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
+        self.navigationController?.toolbar.barStyle = themeRepository.barStyle
 
-            self.webContent.scrollView.indicatorStyle = themeRepository.scrollIndicatorStyle
-        }
-
-        self.webContent.backgroundColor = self.themeRepository?.backgroundColor
+        self.webContent.scrollView.indicatorStyle = themeRepository.scrollIndicatorStyle
+        self.webContent.backgroundColor = themeRepository.backgroundColor
     }
 }

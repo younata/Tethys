@@ -18,7 +18,7 @@ class FakeUIViewControllerPreviewing: NSObject, UIViewControllerPreviewing {
         if let delegate = _delegate as? UIViewControllerPreviewingDelegate {
             return delegate
         }
-        return ArticleListController()
+        fatalError("_delegate was not set")
     }
 
     private let _sourceView: UIView
@@ -75,6 +75,8 @@ class ArticleListControllerSpec: QuickSpec {
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
             injector.bind(kMainQueue, toInstance: mainQueue)
+
+            injector.bind(UrlOpener.self, toInstance: FakeUrlOpener())
 
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, toInstance: themeRepository)

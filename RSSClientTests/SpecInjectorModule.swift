@@ -6,9 +6,8 @@ import rNewsKit
 public class SpecInjectorModule : rNews.InjectorModule {
     public override func configureInjector(injector: Injector) {
         super.configureInjector(injector)
-        let mainQueue = FakeOperationQueue()
-        injector.bind(kMainQueue, toInstance: mainQueue)
-        let backgroundQueue = FakeOperationQueue()
-        injector.bind(kBackgroundQueue, toInstance: backgroundQueue)
+        injector.bind(kMainQueue, toInstance: FakeOperationQueue())
+        injector.bind(kBackgroundQueue, toInstance: FakeOperationQueue())
+        injector.bind(FeedFinder.self, toInstance: FakeFeedFinder())
     }
 }

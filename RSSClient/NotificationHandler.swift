@@ -2,8 +2,14 @@ import UIKit
 import Ra
 import rNewsKit
 
-public struct NotificationHandler: Injectable {
+public protocol NotificationHandler {
+    func enableNotifications(var notificationSource: LocalNotificationSource)
+    func handleLocalNotification(notification: UILocalNotification, window: UIWindow)
+    func handleAction(identifier: String?, notification: UILocalNotification)
+    func sendLocalNotification(notificationSource: LocalNotificationSource, article: Article)
+}
 
+public struct LocalNotificationHandler: NotificationHandler, Injectable {
     private let feedRepository: FeedRepository
 
     public init(feedRepository: FeedRepository) {

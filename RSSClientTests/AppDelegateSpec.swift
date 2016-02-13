@@ -5,27 +5,9 @@ import rNews
 import rNewsKit
 import CoreSpotlight
 
-private class FakeNotificationHandler: NotificationHandler {
-    private var didEnableNotifications = false
-    private override func enableNotifications(notificationSource: LocalNotificationSource) {
-        didEnableNotifications = true
-    }
-
-    private var lastNotificationHandled: UILocalNotification? = nil
-    private override func handleLocalNotification(notification: UILocalNotification, window: UIWindow) {
-        lastNotificationHandled = notification
-    }
-
-    private var lastNotificationActionIdentifier: String? = nil
-    private override func handleAction(identifier: String?, notification: UILocalNotification) {
-        lastNotificationHandled = notification
-        lastNotificationActionIdentifier = identifier
-    }
-}
-
 private class FakeBackgroundFetchHandler: BackgroundFetchHandler {
     private var performFetchCalled = false
-    private override func performFetch(notificationHandler: NotificationHandler, notificationSource: LocalNotificationSource, completionHandler: (UIBackgroundFetchResult) -> Void) {
+    private func performFetch(notificationHandler: NotificationHandler, notificationSource: LocalNotificationSource, completionHandler: (UIBackgroundFetchResult) -> Void) {
         performFetchCalled = true
     }
 
@@ -48,6 +30,10 @@ class AppDelegateSpec: QuickSpec {
             subject = AppDelegate()
 
             injector = Ra.Injector()
+
+            InjectorModule().configureInjector(injector)
+            injector.bind(kMainQueue, toInstance: FakeOperationQueue())
+            injector.bind(kBackgroundQueue, toInstance: FakeOperationQueue())
 
             dataRepository = FakeFeedRepository()
             injector.bind(FeedRepository.self, toInstance: dataRepository)
@@ -94,7 +80,7 @@ class AppDelegateSpec: QuickSpec {
             it("should enable notifications") {
                 subject.application(application, didFinishLaunchingWithOptions: ["test": true])
 
-                expect(notificationHandler.didEnableNotifications).to(beTruthy())
+                expect(notificationHandler.enableNotificationsCallCount) == 1
             }
 
             it("should add the UIApplication object to the dataWriter's subscribers") {
@@ -200,8 +186,8 @@ class AppDelegateSpec: QuickSpec {
                     subject.application(UIApplication.sharedApplication(), didReceiveLocalNotification: UILocalNotification())
                 }
                 it("should forward to the notification handler") {
-                    expect(notificationHandler.lastNotificationHandled).toNot(beNil())
-                    expect(notificationHandler.lastNotificationActionIdentifier).to(beNil())
+                    expect(notificationHandler.handleLocalNotificationCallCount) == 1
+                    expect(notificationHandler.handleActionCallCount) == 0
                 }
             }
             describe("handling notification actions") {
@@ -213,8 +199,8 @@ class AppDelegateSpec: QuickSpec {
                     }
                 }
                 it("should forward to the notification handler") {
-                    expect(notificationHandler.lastNotificationHandled).toNot(beNil())
-                    expect(notificationHandler.lastNotificationActionIdentifier).to(equal("read"))
+                    expect(notificationHandler.handleActionCallCount) == 1
+                    expect(notificationHandler.handleActionArgsForCall(0).0).to(equal("read"))
                 }
                 it("should call the completionHandler") {
                     expect(completionHandlerCalled).to(beTruthy())

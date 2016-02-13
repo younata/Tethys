@@ -22,6 +22,8 @@ class FeedsTableViewControllerSpec: QuickSpec {
         beforeEach {
             let injector = Injector()
 
+            SpecInjectorModule().configureInjector(injector)
+
             dataRepository = FakeFeedRepository()
             injector.bind(FeedRepository.self, toInstance: dataRepository)
 
@@ -32,6 +34,8 @@ class FeedsTableViewControllerSpec: QuickSpec {
             injector.bind(ThemeRepository.self, toInstance: themeRepository)
 
             injector.bind(kBackgroundQueue, toInstance: FakeOperationQueue())
+
+            injector.bind(FeedFinder.self, toInstance: FakeFeedFinder())
 
             subject = injector.create(FeedsTableViewController)
 
@@ -624,7 +628,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             it("should navigate to an ArticleListViewController for that feed") {
                                 expect(navigationController.topViewController).to(beAnInstanceOf(ArticleListController.self))
                                 if let articleList = navigationController.topViewController as? ArticleListController {
-                                    expect(articleList.feeds).to(equal([feed]))
+                                    expect(articleList.feeds == [feed]) == true
                                 }
                             }
                         }
@@ -644,14 +648,14 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             it("should return an ArticleListController configured with the feed's articles to present to the user") {
                                 expect(viewController).to(beAKindOf(ArticleListController.self))
                                 if let articleVC = viewController as? ArticleListController {
-                                    expect(articleVC.feeds).to(equal([feed]))
+                                    expect(articleVC.feeds == [feed]) == true
                                 }
                             }
 
                             it("should push the view controller when commited") {
                                 if let vc = viewController {
                                     subject.previewingContext(viewControllerPreviewing, commitViewController: vc)
-                                    expect(navigationController.topViewController).to(beIdenticalTo(viewController))
+                                    expect(navigationController.topViewController) === viewController
                                 }
                             }
                         }
@@ -759,7 +763,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             it("should navigate to an ArticleListViewController for that feed") {
                                 expect(navigationController.topViewController).to(beAnInstanceOf(ArticleListController.self))
                                 if let articleList = navigationController.topViewController as? ArticleListController {
-                                    expect(articleList.feeds).to(equal([feed]))
+                                    expect(articleList.feeds == [feed]) == true
                                 }
                             }
                         }
@@ -779,14 +783,14 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             it("should return an ArticleListController configured with the feed's articles to present to the user") {
                                 expect(viewController).to(beAKindOf(ArticleListController.self))
                                 if let articleVC = viewController as? ArticleListController {
-                                    expect(articleVC.feeds).to(equal([feed]))
+                                    expect(articleVC.feeds == [feed]) == true
                                 }
                             }
 
                             it("should push the view controller when commited") {
                                 if let vc = viewController {
                                     subject.previewingContext(viewControllerPreviewing, commitViewController: vc)
-                                    expect(navigationController.topViewController).to(beIdenticalTo(viewController))
+                                    expect(navigationController.topViewController) === viewController
                                 }
                             }
                         }

@@ -5,22 +5,24 @@ import UIKit
 import Ra
 import rNewsKit
 
-class NotificationHandlerSpec: QuickSpec {
+class LocalNotificationHandlerSpec: QuickSpec {
     override func spec() {
         var injector: Injector! = nil
         var dataRepository: FakeFeedRepository! = nil
 
         var notificationSource: FakeNotificationSource! = nil
 
-        var subject: NotificationHandler! = nil
+        var subject: LocalNotificationHandler! = nil
 
         beforeEach {
             injector = Injector()
 
+            SpecInjectorModule().configureInjector(injector)
+
             dataRepository = FakeFeedRepository()
             injector.bind(FeedRepository.self, toInstance: dataRepository)
 
-            subject = injector.create(NotificationHandler)!
+            subject = injector.create(LocalNotificationHandler)!
 
             notificationSource = FakeNotificationSource()
         }
@@ -64,6 +66,8 @@ class NotificationHandlerSpec: QuickSpec {
                 note.userInfo = ["feed": "feedIdentifier", "article": "articleIdentifier"]
 
                 let splitVC = UISplitViewController()
+                injector.bind(SettingsRepository.self, toInstance: SettingsRepository())
+                injector.bind(FeedFinder.self, toInstance: FakeFeedFinder())
                 navController = UINavigationController(rootViewController: injector.create(FeedsTableViewController)!)
                 splitVC.viewControllers = [navController]
 

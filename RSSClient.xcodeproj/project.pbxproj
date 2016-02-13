@@ -17,6 +17,7 @@
 		8902D54E1BB07712003D7C22 /* Lepton.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5481BB0754F003D7C22 /* Lepton.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8903A6251C4AB17C00E896BF /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903A6241C4AB17C00E896BF /* NotificationView.swift */; };
 		8903A6271C4ABA7800E896BF /* NotificationViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903A6261C4ABA7800E896BF /* NotificationViewSpec.swift */; };
+		8903EAFD1C6F8A46001C0189 /* FakeNotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EAFC1C6F8A46001C0189 /* FakeNotificationHandler.swift */; };
 		890894981BFEC670002848A4 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; };
 		890894991BFEC698002848A4 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; };
 		8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8908949A1BFED7B8002848A4 /* FakeReachable.swift */; };
@@ -237,7 +238,7 @@
 		89C204BD1A73F72800C792D2 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204BC1A73F72800C792D2 /* SplitViewController.swift */; };
 		89C204C21A73FEDA00C792D2 /* SplitViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204C11A73FEDA00C792D2 /* SplitViewControllerSpec.swift */; };
 		89C204C41A7400D100C792D2 /* NotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204C31A7400D100C792D2 /* NotificationHandler.swift */; };
-		89C204C71A740D8900C792D2 /* NotificationHandlerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204C61A740D8900C792D2 /* NotificationHandlerSpec.swift */; };
+		89C204C71A740D8900C792D2 /* LocalNotificationHandlerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204C61A740D8900C792D2 /* LocalNotificationHandlerSpec.swift */; };
 		89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509EF1A2EB18300CBD000 /* FeedViewController.swift */; };
 		89C509F41A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F31A2EE56E00CBD000 /* TagEditorViewController.swift */; };
 		89C509F71A2F825400CBD000 /* TextViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F61A2F825400CBD000 /* TextViewCell.swift */; };
@@ -276,7 +277,7 @@
 		89D428031B8D0734006CD81C /* X.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89D428021B8D0734006CD81C /* X.framework */; };
 		89D970BB1B35BF6500ED84B8 /* WKWebView+rNewsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D970BA1B35BF6500ED84B8 /* WKWebView+rNewsTests.m */; };
 		89D970BD1B3929A600ED84B8 /* BackgroundFetchHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D970BC1B3929A600ED84B8 /* BackgroundFetchHandler.swift */; };
-		89D970BF1B3929D600ED84B8 /* BackgroundFetchHandlerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D970BE1B3929D600ED84B8 /* BackgroundFetchHandlerSpec.swift */; };
+		89D970BF1B3929D600ED84B8 /* DefaultBackgroundFetchHandlerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D970BE1B3929D600ED84B8 /* DefaultBackgroundFetchHandlerSpec.swift */; };
 		89D970C11B392AD400ED84B8 /* FakeNotificationSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D970C01B392AD400ED84B8 /* FakeNotificationSource.swift */; };
 		89D970C31B392B0300ED84B8 /* LocalNotificationSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D970C21B392B0300ED84B8 /* LocalNotificationSource.swift */; };
 		89DA7D2C1A66111E0050685B /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2B1A66111E0050685B /* TextFieldCell.swift */; };
@@ -476,6 +477,7 @@
 		8903A6231C48919E00E896BF /* RSSClient 1.7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.7.xcdatamodel"; sourceTree = "<group>"; };
 		8903A6241C4AB17C00E896BF /* NotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		8903A6261C4ABA7800E896BF /* NotificationViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationViewSpec.swift; sourceTree = "<group>"; };
+		8903EAFC1C6F8A46001C0189 /* FakeNotificationHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeNotificationHandler.swift; sourceTree = "<group>"; };
 		890894971BFEC670002848A4 /* Reachability.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reachability.framework; path = ../Carthage/Build/iOS/Reachability.framework; sourceTree = "<group>"; };
 		8908949A1BFED7B8002848A4 /* FakeReachable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeReachable.swift; sourceTree = "<group>"; };
 		89122E601C5D725D00004B1F /* DatabaseMigrator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseMigrator.swift; sourceTree = "<group>"; };
@@ -614,7 +616,7 @@
 		89C204BC1A73F72800C792D2 /* SplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
 		89C204C11A73FEDA00C792D2 /* SplitViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitViewControllerSpec.swift; sourceTree = "<group>"; };
 		89C204C31A7400D100C792D2 /* NotificationHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationHandler.swift; sourceTree = "<group>"; };
-		89C204C61A740D8900C792D2 /* NotificationHandlerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationHandlerSpec.swift; sourceTree = "<group>"; };
+		89C204C61A740D8900C792D2 /* LocalNotificationHandlerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalNotificationHandlerSpec.swift; sourceTree = "<group>"; };
 		89C509EF1A2EB18300CBD000 /* FeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 		89C509F31A2EE56E00CBD000 /* TagEditorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagEditorViewController.swift; sourceTree = "<group>"; };
 		89C509F61A2F825400CBD000 /* TextViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextViewCell.swift; sourceTree = "<group>"; };
@@ -654,7 +656,7 @@
 		89D970B91B35BF6400ED84B8 /* WKWebView+rNewsTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WKWebView+rNewsTests.h"; sourceTree = "<group>"; };
 		89D970BA1B35BF6500ED84B8 /* WKWebView+rNewsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "WKWebView+rNewsTests.m"; sourceTree = "<group>"; };
 		89D970BC1B3929A600ED84B8 /* BackgroundFetchHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundFetchHandler.swift; sourceTree = "<group>"; };
-		89D970BE1B3929D600ED84B8 /* BackgroundFetchHandlerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundFetchHandlerSpec.swift; sourceTree = "<group>"; };
+		89D970BE1B3929D600ED84B8 /* DefaultBackgroundFetchHandlerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultBackgroundFetchHandlerSpec.swift; sourceTree = "<group>"; };
 		89D970C01B392AD400ED84B8 /* FakeNotificationSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeNotificationSource.swift; sourceTree = "<group>"; };
 		89D970C21B392B0300ED84B8 /* LocalNotificationSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalNotificationSource.swift; sourceTree = "<group>"; };
 		89DA7D2B1A66111E0050685B /* TextFieldCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldCell.swift; sourceTree = "<group>"; };
@@ -1132,8 +1134,8 @@
 				89C204C11A73FEDA00C792D2 /* SplitViewControllerSpec.swift */,
 				8918D4DC1B859D3B00DCDE0E /* ThemeRepositorySpec.swift */,
 				89F98BA71BA07E50005C3CA8 /* SettingsRepositorySpec.swift */,
-				89C204C61A740D8900C792D2 /* NotificationHandlerSpec.swift */,
-				89D970BE1B3929D600ED84B8 /* BackgroundFetchHandlerSpec.swift */,
+				89C204C61A740D8900C792D2 /* LocalNotificationHandlerSpec.swift */,
+				89D970BE1B3929D600ED84B8 /* DefaultBackgroundFetchHandlerSpec.swift */,
 				89CB98491B12C50000C87160 /* ActivityIndicatorSpec.swift */,
 				893F93E31B237EBC00B52194 /* UnreadCounterSpec.swift */,
 				8997C7F61B25074900972930 /* ValidatorViewSpec.swift */,
@@ -1382,6 +1384,7 @@
 			isa = PBXGroup;
 			children = (
 				898C48C11B3A7CCC0097045A /* FakeOPMLService.swift */,
+				8903EAFC1C6F8A46001C0189 /* FakeNotificationHandler.swift */,
 				89D970C01B392AD400ED84B8 /* FakeNotificationSource.swift */,
 				8997C7F41B248D5A00972930 /* FakeWebView.swift */,
 				898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */,
@@ -2074,6 +2077,7 @@
 				89C204C21A73FEDA00C792D2 /* SplitViewControllerSpec.swift in Sources */,
 				89E2A33F1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift in Sources */,
 				89F516571B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m in Sources */,
+				8903EAFD1C6F8A46001C0189 /* FakeNotificationHandler.swift in Sources */,
 				8997C8511B255A1900972930 /* TagPickerViewSpec.swift in Sources */,
 				899823B11B30BA7E00818755 /* NSUserActivity+rNewsTests.m in Sources */,
 				8953B1581B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift in Sources */,
@@ -2081,14 +2085,14 @@
 				89F5170A1B2014470005AB04 /* QueryFeedViewControllerSpec.swift in Sources */,
 				89CB984A1B12C50000C87160 /* ActivityIndicatorSpec.swift in Sources */,
 				8918D4DD1B859D3B00DCDE0E /* ThemeRepositorySpec.swift in Sources */,
-				89D970BF1B3929D600ED84B8 /* BackgroundFetchHandlerSpec.swift in Sources */,
+				89D970BF1B3929D600ED84B8 /* DefaultBackgroundFetchHandlerSpec.swift in Sources */,
 				899823AC1B2C883B00818755 /* ArticleListControllerSpec.swift in Sources */,
 				899823AE1B30B64000818755 /* ArticleViewControllerSpec.swift in Sources */,
 				8997C7F91B250FD200972930 /* TextViewCellSpec.swift in Sources */,
 				89C676561BA28FE60037A224 /* FakeFileManager.swift in Sources */,
 				89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */,
 				898131781AFC877A0090FA7F /* LocalImportViewControllerSpec.swift in Sources */,
-				89C204C71A740D8900C792D2 /* NotificationHandlerSpec.swift in Sources */,
+				89C204C71A740D8900C792D2 /* LocalNotificationHandlerSpec.swift in Sources */,
 				89D170A81C52E98300D546F9 /* EnclosuresListSpec.swift in Sources */,
 				8997C8531B2566A600972930 /* ArticleCellSpec.swift in Sources */,
 				8935F5E01B462B7A000FFD5D /* FakeURLSession.swift in Sources */,

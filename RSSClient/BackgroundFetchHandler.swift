@@ -2,7 +2,13 @@ import UIKit
 import Ra
 import rNewsKit
 
-public struct BackgroundFetchHandler: Injectable {
+public protocol BackgroundFetchHandler {
+    func performFetch(notificationHandler: NotificationHandler,
+        notificationSource: LocalNotificationSource,
+        completionHandler: (UIBackgroundFetchResult) -> Void)
+}
+
+public struct DefaultBackgroundFetchHandler: BackgroundFetchHandler, Injectable {
     private let feedRepository: FeedRepository
 
     public init(feedRepository: FeedRepository) {

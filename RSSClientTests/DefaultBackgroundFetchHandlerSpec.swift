@@ -4,12 +4,12 @@ import Ra
 import rNews
 import rNewsKit
 
-class BackgroundFetchHandlerSpec: QuickSpec {
+class DefaultBackgroundFetchHandlerSpec: QuickSpec {
     override func spec() {
         var injector: Injector! = nil
         var dataRepository: FakeFeedRepository! = nil
 
-        var subject: BackgroundFetchHandler! = nil
+        var subject: DefaultBackgroundFetchHandler! = nil
 
         beforeEach {
             injector = Injector()
@@ -17,16 +17,16 @@ class BackgroundFetchHandlerSpec: QuickSpec {
             dataRepository.feedsList = []
             injector.bind(FeedRepository.self, toInstance: dataRepository)
 
-            subject = injector.create(BackgroundFetchHandler)!
+            subject = injector.create(DefaultBackgroundFetchHandler)!
         }
 
         describe("updating feeds") {
-            var notificationHandler: NotificationHandler! = nil
+            var notificationHandler: FakeNotificationHandler! = nil
             var notificationSource: FakeNotificationSource! = nil
             var fetchResult: UIBackgroundFetchResult? = nil
 
             beforeEach {
-                notificationHandler = NotificationHandler()
+                notificationHandler = FakeNotificationHandler()
                 notificationSource = FakeNotificationSource()
                 subject.performFetch(notificationHandler, notificationSource: notificationSource, completionHandler: {res in
                     fetchResult = res
@@ -57,12 +57,12 @@ class BackgroundFetchHandlerSpec: QuickSpec {
                     feeds = [feed1, feed2]
                     articles = [article1, article2, article3, article4]
 
-                    dataRepository.feedsList = feeds // TODO: more than 1
+                    dataRepository.feedsList = feeds
                     dataRepository.updateFeedsCompletion(feeds, [])
                 }
 
                 it("should send local notifications for each new article") {
-                    expect(notificationSource.scheduledNotes.count).to(equal(articles.count))
+                    expect(notificationHandler.sendLocalNotificationCallCount) == articles.count
                 }
 
                 it("should call the completion handler and indicate that there was new data found") {
@@ -76,7 +76,7 @@ class BackgroundFetchHandlerSpec: QuickSpec {
                 }
 
                 it("should not send any new local notifications") {
-                    expect(notificationSource.scheduledNotes).to(beEmpty())
+                    expect(notificationHandler.sendLocalNotificationCallCount) == 0
                 }
 
                 it("should call the completion handler and indicate that there was no new data found") {

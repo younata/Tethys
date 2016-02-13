@@ -16,18 +16,20 @@ public class InjectorModule: Ra.InjectorModule {
             return tagPicker
         }
 
-        injector.bind(UrlOpener.self, toInstance: UIApplication.sharedApplication())
+        let app = UIApplication.sharedApplication()
+        injector.bind(UrlOpener.self, toInstance: app)
+        injector.bind(QuickActionRepository.self, toInstance: app)
 
-        injector.bind(QuickActionRepository.self, toInstance: UIApplication.sharedApplication())
+        injector.bind(ThemeRepository.self, toInstance: ThemeRepository(injector: injector))
 
-        let themeRepository = ThemeRepository(injector: injector)
-        injector.bind(ThemeRepository.self, toInstance: themeRepository)
+        let userDefaults = NSUserDefaults.standardUserDefaults()
+        injector.bind(SettingsRepository.self, toInstance: SettingsRepository(userDefaults: userDefaults))
 
-        let settingsRepository = SettingsRepository(userDefaults: NSUserDefaults.standardUserDefaults())
-        injector.bind(SettingsRepository.self, toInstance: settingsRepository)
+        injector.bind(BackgroundFetchHandler.self) { DefaultBackgroundFetchHandler(injector: $0) }
 
-        let feedFinder = WebFeedFinder()
-        injector.bind(FeedFinder.self, toInstance: feedFinder)
+        injector.bind(NotificationHandler.self) { LocalNotificationHandler(injector: $0) }
+
+        injector.bind(FeedFinder.self, toInstance: WebFeedFinder())
 
         injector.bind(NSFileManager.self, toInstance: NSFileManager.defaultManager())
     }

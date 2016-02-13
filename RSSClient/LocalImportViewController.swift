@@ -55,7 +55,7 @@ public class LocalImportViewController: UIViewController, Injectable {
             themeRepository: injector.create(ThemeRepository)!,
             fileManager: injector.create(NSFileManager)!,
             mainQueue: injector.create(kMainQueue) as! NSOperationQueue,
-            backgroundQueue: injector.create(NSOperationQueue)!
+            backgroundQueue: injector.create(kBackgroundQueue) as! NSOperationQueue
         )
     }
 

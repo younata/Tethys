@@ -21,7 +21,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
         var themeRepository: FakeThemeRepository! = nil
 
         beforeEach {
-            injector = Injector()
+            injector = Injector(module: SpecInjectorModule())
 
             backgroundQueue = FakeOperationQueue()
             backgroundQueue.runSynchronously = true

@@ -196,6 +196,7 @@ import RealmSwift
         }
     }
 
+    // swiftlint:disable function_parameter_count
     public init(title: String, url: NSURL?, summary: String, query: String?, tags: [String],
         waitPeriod: Int, remainingWait: Int, articles: [Article], image: Image?, identifier: String = "") {
             self.title = title
@@ -214,6 +215,7 @@ import RealmSwift
             }
             self.updated = false
     }
+    // swiftlint:enable function_parameter_count
 
     public private(set) var feedID: AnyObject? = nil
 

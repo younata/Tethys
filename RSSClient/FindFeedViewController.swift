@@ -9,7 +9,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
     public lazy var webContent = WKWebView(forAutoLayout: ())
 
     public let loadingBar = UIProgressView(progressViewStyle: .Bar)
-    public let navField = UITextField(frame: CGRectMake(0, 0, 200, 30))
+    public let navField = UITextField(frame: CGRect(x: 0, y: 0, width: 200, height: 30))
     private var rssLinks = [String]()
 
     public var addFeedButton: UIBarButtonItem! = nil
@@ -30,6 +30,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
     private let placeholderAttributes: [String: AnyObject] = [NSForegroundColorAttributeName: UIColor.blackColor()]
 
+    // swiftlint:disable function_parameter_count
     public init(feedFinder: FeedFinder,
                 feedRepository: FeedRepository,
                 opmlService: OPMLService,
@@ -46,6 +47,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         self.themeRepository = themeRepository
         super.init(nibName: nil, bundle: nil)
     }
+    // swiftlint:enable function_parameter_count
 
     public required convenience init(injector: Injector) {
         self.init(
@@ -102,7 +104,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         }
 
         self.navigationItem.titleView = self.navField
-        self.navField.frame = CGRectMake(0, 0, self.view.bounds.size.width * 0.8, 32)
+        self.navField.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width * 0.8, height: 32)
         self.navField.delegate = self
         let urlPlaceholder = NSLocalizedString("FindFeedViewController_URLBar_Placeholder", comment: "")
         self.navField.attributedPlaceholder = NSAttributedString(string: urlPlaceholder,
@@ -133,7 +135,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
             super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
 
-            self.navField.frame = CGRectMake(0, 0, size.width * 0.8, 32)
+            self.navField.frame = CGRect(x: 0, y: 0, width: size.width * 0.8, height: 32)
     }
 
     @objc private func dismiss() {

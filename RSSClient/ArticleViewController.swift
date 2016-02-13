@@ -50,7 +50,7 @@ public class ArticleViewController: UIViewController, Injectable {
 
     public var content = UIWebView(forAutoLayout: ())
 
-    public let enclosuresList = EnclosuresList(frame: CGRectZero)
+    public let enclosuresList = EnclosuresList(frame: CGRect.zero)
     private var enclosuresListHeight: NSLayoutConstraint?
 
     public private(set) lazy var shareButton: UIBarButtonItem = {

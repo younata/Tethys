@@ -16,7 +16,7 @@ extension String {
         for regex in [removeEntityCodes, makeOneLine, removeScripts, removeHTMLTags] {
             regex.replaceMatchesInString(mutableString,
                 options: [],
-                range: NSMakeRange(0, mutableString.length),
+                range: NSRange(location: 0, length: mutableString.length),
                 withTemplate: " ")
         }
         return mutableString.componentsSeparatedByString(" ").filter({!$0.isEmpty}).joinWithSeparator(" ")

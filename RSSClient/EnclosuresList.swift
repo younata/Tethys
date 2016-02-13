@@ -9,9 +9,9 @@ public class EnclosuresList: UIView, UICollectionViewDelegateFlowLayout, UIColle
         didSet {
             if let flowlayout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
                 if enclosures.count == 1 {
-                    flowlayout.estimatedItemSize = CGSizeMake(48, 50)
+                    flowlayout.estimatedItemSize = CGSize(width: 48, height: 50)
                 } else {
-                    flowlayout.estimatedItemSize = CGSizeMake(100, 80)
+                    flowlayout.estimatedItemSize = CGSize(width: 100, height: 80)
                 }
             }
             self.collectionView.reloadData()
@@ -20,7 +20,7 @@ public class EnclosuresList: UIView, UICollectionViewDelegateFlowLayout, UIColle
 
     public private(set) var viewControllerToPresentOn: UIViewController?
     public var themeRepository: ThemeRepository?
-    public let collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: UICollectionViewFlowLayout())
+    public let collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: UICollectionViewFlowLayout())
 
     private let cellIdentifier = "cell"
 
@@ -106,7 +106,7 @@ public class EnclosuresList: UIView, UICollectionViewDelegateFlowLayout, UIColle
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
         if let flowlayout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            flowlayout.estimatedItemSize = CGSizeMake(100, 80)
+            flowlayout.estimatedItemSize = CGSize(width: 100, height: 80)
             flowlayout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         }
 

@@ -18,7 +18,7 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
     private let articleViewController: ArticleViewController
 
     public lazy var searchBar: UISearchBar = {
-        let searchBar = UISearchBar(frame: CGRectMake(0, 0, 320, 32))
+        let searchBar = UISearchBar(frame: CGRect(x: 0, y: 0, width: 320, height: 32))
         searchBar.autocorrectionType = .No
         searchBar.autocapitalizationType = .None
         searchBar.placeholder = NSLocalizedString("ArticleListController_Search", comment: "")

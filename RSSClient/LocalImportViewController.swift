@@ -33,6 +33,7 @@ public class LocalImportViewController: UIViewController, Injectable {
         return label
     }()
 
+    // swiftlint:disable function_parameter_count
     public init(feedRepository: FeedRepository,
         opmlService: OPMLService,
         themeRepository: ThemeRepository,
@@ -47,6 +48,7 @@ public class LocalImportViewController: UIViewController, Injectable {
             self.backgroundQueue = backgroundQueue
             super.init(nibName: nil, bundle: nil)
     }
+    // swiftlint:enable function_parameter_count
 
     public required convenience init(injector: Injector) {
         self.init(
@@ -135,7 +137,7 @@ public class LocalImportViewController: UIViewController, Injectable {
         self.feeds.sortInPlace { $0.0 < $1.0 }
         self.opmls.sortInPlace { $0.0 < $1.0 }
         self.showExplanationView()
-        let sections = NSIndexSet(indexesInRange: NSMakeRange(0, 2))
+        let sections = NSIndexSet(indexesInRange: NSRange(location: 0, length: 2))
         self.tableViewController.tableView.reloadSections(sections, withRowAnimation: .Automatic)
     }
 

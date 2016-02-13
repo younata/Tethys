@@ -6,7 +6,7 @@ public class TagEditorViewController: UIViewController, Injectable {
 
     public var feed: Feed? = nil
     public var tagIndex: Int? = nil
-    public let tagPicker = TagPickerView(frame: CGRectZero)
+    public let tagPicker = TagPickerView(frame: CGRect.zero)
 
     private let tagLabel = UILabel(forAutoLayout: ())
     private var tag: String? = nil {

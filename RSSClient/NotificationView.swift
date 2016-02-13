@@ -26,7 +26,7 @@ public class NotificationView: UIView {
 
         let height = self.requiredHeight(title, message: message)
         self.heightConstraint?.constant = height
-        let bounds = CGRectMake(0, 0, self.bounds.width, height)
+        let bounds = CGRect(x: 0, y: 0, width: self.bounds.width, height: height)
         self.recomputeMask(bounds)
 
         self.changeLayout(animated, spring: true, delay: 0) {_ in
@@ -80,7 +80,7 @@ public class NotificationView: UIView {
         let sizeOptions: NSStringDrawingOptions = [.UsesDeviceMetrics, .UsesFontLeading, .UsesLineFragmentOrigin]
 
         let width = self.bounds.width - (self.layoutMargins.left + self.layoutMargins.right)
-        let size = CGSizeMake(width, CGFloat.infinity)
+        let size = CGSize(width: width, height: CGFloat.infinity)
 
         let titleHeight = NSString(string: title).boundingRectWithSize(size,
             options: sizeOptions,

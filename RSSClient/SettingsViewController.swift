@@ -79,7 +79,7 @@ public class SettingsViewController: UIViewController, Injectable {
         }
     }
 
-    public let tableView = UITableView(frame: CGRectZero, style: .Grouped)
+    public let tableView = UITableView(frame: CGRect.zero, style: .Grouped)
 
     private let themeRepository: ThemeRepository
     private let settingsRepository: SettingsRepository
@@ -93,6 +93,7 @@ public class SettingsViewController: UIViewController, Injectable {
         return self.settingsRepository.queryFeedsEnabled
     }()
 
+    // swiftlint:disable function_parameter_count
     public init(themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
                 urlOpener: UrlOpener,
@@ -108,6 +109,7 @@ public class SettingsViewController: UIViewController, Injectable {
 
         super.init(nibName: nil, bundle: nil)
     }
+    // swiftlint:enable function_parameter_count
 
     public required convenience init(injector: Injector) {
         self.init(

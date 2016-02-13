@@ -5,13 +5,13 @@ public class InjectorModule: Ra.InjectorModule {
     public func configureInjector(injector: Injector) {
         // Views
         injector.bind(UnreadCounter.self) { _ in
-            let unreadCounter = UnreadCounter(frame: CGRectZero)
+            let unreadCounter = UnreadCounter(frame: CGRect.zero)
             unreadCounter.translatesAutoresizingMaskIntoConstraints = false
             return unreadCounter
         }
 
         injector.bind(TagPickerView.self) { _ in
-            let tagPicker = TagPickerView(frame: CGRectZero)
+            let tagPicker = TagPickerView(frame: CGRect.zero)
             tagPicker.translatesAutoresizingMaskIntoConstraints = false
             return tagPicker
         }

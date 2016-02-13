@@ -81,7 +81,7 @@ public class FeedView: NSView {
 
         self.unreadCounter.autoPinEdgeToSuperviewEdge(.Top)
         self.unreadCounter.autoPinEdgeToSuperviewEdge(.Right)
-        self.unreadCounter.autoSetDimensionsToSize(CGSizeMake(30, 30))
+        self.unreadCounter.autoSetDimensionsToSize(CGSize(width: 30, height: 30))
         self.unreadCounter.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0, relation: .GreaterThanOrEqual)
 
         self.nameLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)

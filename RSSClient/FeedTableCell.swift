@@ -35,7 +35,7 @@ public class FeedTableCell: UITableViewCell {
 
     public let nameLabel = UILabel(forAutoLayout: ())
     public let summaryLabel = UILabel(forAutoLayout: ())
-    public let unreadCounter = UnreadCounter(frame: CGRectZero)
+    public let unreadCounter = UnreadCounter(frame: CGRect.zero)
     public let iconView = UIImageView(forAutoLayout: ())
 
     public private(set) var iconWidth: NSLayoutConstraint!

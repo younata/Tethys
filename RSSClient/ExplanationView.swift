@@ -45,7 +45,7 @@ public class ExplanationView: UIView {
         self.layer.cornerRadius = 5
     }
 
-    public convenience init(forAutoLayout: ()) { self.init(frame: CGRectZero) }
+    public convenience init(forAutoLayout: ()) { self.init(frame: CGRect.zero) }
 
     public required init?(coder aDecoder: NSCoder) { fatalError() }
 }

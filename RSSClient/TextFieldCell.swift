@@ -25,7 +25,7 @@ public class TextFieldCell: UITableViewCell {
     }
 
     public lazy var validView: ValidatorView = {
-        let validView = ValidatorView(frame: CGRectZero)
+        let validView = ValidatorView(frame: CGRect.zero)
         validView.translatesAutoresizingMaskIntoConstraints = false
         return validView
     }()

@@ -1,5 +1,6 @@
 disabled_rules: # rule identifiers to exclude from running
   - force_cast
+  - variable_name
 included: # paths to include during linting. `--path` is ignored if present. takes precendence over `excluded`.
   - RSSClient
   - rNewsKit
@@ -21,11 +22,3 @@ function_body_length:
 type_body_length:
   - 400 # warning
   - 600 # error
-# parameterized rules are first parameterized as a warning level, then error level.
-variable_name_max_length:
-  - 40 # warning
-  - 60 # error
-# parameterized rules are first parameterized as a warning level, then error level.
-variable_name_min_length:
-  - 2 # warning
-  - 1 # error

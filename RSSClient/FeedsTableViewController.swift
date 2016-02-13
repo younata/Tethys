@@ -36,7 +36,7 @@ public class FeedsTableViewController: UIViewController, Injectable {
     }()
 
     public lazy var searchBar: UISearchBar = {
-        let searchBar = UISearchBar(frame: CGRectMake(0, 0, 320, 32))
+        let searchBar = UISearchBar(frame: CGRect(x: 0, y: 0, width: 320, height: 32))
         searchBar.autocorrectionType = .No
         searchBar.autocapitalizationType = .None
         searchBar.delegate = self
@@ -90,6 +90,7 @@ public class FeedsTableViewController: UIViewController, Injectable {
     private let settingsViewController: SettingsViewController
     private let articleListController: ArticleListController
 
+    // swiftlint:disable function_parameter_count
     public init(feedRepository: FeedRepository,
                 themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
@@ -111,6 +112,7 @@ public class FeedsTableViewController: UIViewController, Injectable {
         self.articleListController = articleListController
         super.init(nibName: nil, bundle: nil)
     }
+    // swiftlint:enable function_parameter_count
 
     public required convenience init(injector: Injector) {
         self.init(
@@ -252,7 +254,7 @@ public class FeedsTableViewController: UIViewController, Injectable {
         let nc = UINavigationController(rootViewController: viewController)
         if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
             let popover = UIPopoverController(contentViewController: nc)
-            popover.popoverContentSize = CGSizeMake(600, 800)
+            popover.popoverContentSize = CGSize(width: 600, height: 800)
             popover.presentPopoverFromBarButtonItem(self.navigationItem.rightBarButtonItem!,
                 permittedArrowDirections: .Any, animated: true)
         } else {

@@ -152,6 +152,7 @@ import JavaScriptCore
         // swiftlint:enable line_length
     }
 
+    // swiftlint:disable function_parameter_count
     public init(title: String, link: NSURL?, summary: String, author: String, published: NSDate,
         updatedAt: NSDate?, identifier: String, content: String, read: Bool, estimatedReadingTime: Int,
         feed: Feed?, flags: [String], enclosures: [Enclosure]) {
@@ -174,6 +175,7 @@ import JavaScriptCore
             }
             self.updated = false
     }
+    // swiftlint:enable function_parameter_count
 
     internal private(set) var articleID: AnyObject? = nil
 

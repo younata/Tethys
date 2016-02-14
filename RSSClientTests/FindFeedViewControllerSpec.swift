@@ -11,38 +11,22 @@ private var rootViewController: UIViewController! = nil
 
 class FindFeedViewControllerSpec: QuickSpec {
     override func spec() {
-        var subject: FindFeedViewController! = nil
+        var subject: FindFeedViewController!
 
-
-        var injector: Ra.Injector! = nil
-        var webView: FakeWebView! = nil
-        var feedFinder: FakeFeedFinder! = nil
-        var urlSession: FakeURLSession! = nil
-
-        var mainQueue: FakeOperationQueue! = nil
-        var backgroundQueue: FakeOperationQueue! = nil
-
-        var opmlService: FakeOPMLService! = nil
-
-        var themeRepository: FakeThemeRepository! = nil
+        var injector: Ra.Injector!
+        var webView: FakeWebView!
+        var importUseCase: FakeImportUseCase!
+        var opmlService: FakeOPMLService!
+        var themeRepository: FakeThemeRepository!
 
         beforeEach {
             injector = Ra.Injector(module: SpecInjectorModule())
 
-            feedFinder = FakeFeedFinder()
-            injector.bind(FeedFinder.self, toInstance: feedFinder)
-
             feedRepository = FakeFeedRepository()
             injector.bind(FeedRepository.self, toInstance: feedRepository)
 
-            urlSession = FakeURLSession()
-            injector.bind(NSURLSession.self, toInstance: urlSession)
-
-            mainQueue = FakeOperationQueue()
-            injector.bind(kMainQueue, toInstance: mainQueue)
-
-            backgroundQueue = FakeOperationQueue()
-            injector.bind(kBackgroundQueue, toInstance: backgroundQueue)
+            importUseCase = FakeImportUseCase()
+            injector.bind(ImportUseCase.self, toInstance: importUseCase)
 
             opmlService = FakeOPMLService()
             injector.bind(OPMLService.self, toInstance: opmlService)
@@ -57,10 +41,6 @@ class FindFeedViewControllerSpec: QuickSpec {
             navController = UINavigationController(rootViewController: subject)
 
             expect(subject.view).toNot(beNil())
-        }
-
-        afterEach {
-            objc_removeAssociatedObjects(subject)
         }
 
         describe("changing the theme") {
@@ -117,11 +97,11 @@ class FindFeedViewControllerSpec: QuickSpec {
                 var url: NSURL!
 
                 beforeEach {
-                    url = (sharedContext()["url"] as? NSURL) ?? NSURL(string: "https://example.com/feed.xml")!
+                    url = (sharedContext()["url"] as? NSURL) ?? NSURL(string: "https://example.com/feed")!
                 }
 
-                it("should create a new feed") {
-                    expect(feedRepository.didCreateFeed).to(beTruthy())
+                it("asks the import use case to import the feed at the url") {
+                    expect(importUseCase.importItemArgsForCall(0).0) == url
                 }
 
                 it("should show an indicator that we're doing things") {
@@ -131,38 +111,20 @@ class FindFeedViewControllerSpec: QuickSpec {
                     expect(indicator?.message).to(equal("Loading feed at \(url.absoluteString)"))
                 }
 
-                describe("when the feed is created") {
-                    var feed: Feed! = nil
+                describe("when the use case is finished") {
                     beforeEach {
-                        feed = Feed(title: "", url: NSURL(string: ""), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                        feedRepository.newFeedCallback(feed)
+                        importUseCase.importItemArgsForCall(0).1()
                     }
 
-                    it("should save the new feed") {
-                        let feed = Feed(title: "", url: url, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                        expect(feedRepository.lastSavedFeed).to(equal(feed))
+                    it("should remove the indicator") {
+                        let indicator = navController.view.subviews.filter {
+                            return $0.isKindOfClass(ActivityIndicator.classForCoder())
+                            }.first
+                        expect(indicator).to(beNil())
                     }
 
-                    it("should try to update feeds") {
-                        expect(feedRepository.didUpdateFeed).to(beTruthy())
-                    }
-
-                    describe("when the feeds update") {
-                        beforeEach {
-                            feed = Feed(title: "", url: url, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                            feedRepository.updateSingleFeedCallback(feed, nil)
-                        }
-
-                        it("should remove the indicator") {
-                            let indicator = navController.view.subviews.filter {
-                                return $0.isKindOfClass(ActivityIndicator.classForCoder())
-                                }.first
-                            expect(indicator).to(beNil())
-                        }
-
-                        it("should dismiss itself") {
-                            expect(rootViewController.presentedViewController).to(beNil())
-                        }
+                    it("should dismiss itself") {
+                        expect(rootViewController.presentedViewController).to(beNil())
                     }
                 }
             }
@@ -176,196 +138,239 @@ class FindFeedViewControllerSpec: QuickSpec {
                 expect(subject.addFeedButton.enabled).to(beFalsy())
             }
 
-            it("should make a separate request to that url") {
-                expect(urlSession.lastURL).to(equal(NSURL(string: "https://example.com/feed.xml")))
+            it("asks the import use case to check if the page at the url has a feed") {
+                expect(importUseCase.scanForImportableArgsForCall(0).0) == NSURL(string: "https://example.com/feed.xml")
             }
 
-            context("when that urlSession request succeeds with an rss file") {
+            context("when the use case finds a feed") {
+                let url = NSURL(string: "https://example.com/feed")!
                 beforeEach {
-                    let bundle = NSBundle(forClass: self.classForCoder)
-                    let data = NSData(contentsOfFile: bundle.pathForResource("feed", ofType: "rss")!)
-                    urlSession.lastCompletionHandler(data, nil, nil)
+                    showRootController()
+                    importUseCase.scanForImportableArgsForCall(0).1(.Feed(url))
                 }
 
-                it("should add two background operations") {
-                    expect(backgroundQueue.operationCount).to(equal(2))
+                it("should present an alert") {
+                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                    if let alert = subject.presentedViewController as? UIAlertController {
+                        expect(alert.title).to(equal("Feed Detected"))
+                        expect(alert.message).to(equal("Import feed?"))
+
+                        expect(alert.actions.count).to(equal(2))
+                        if let dontsave = alert.actions.first {
+                            expect(dontsave.title).to(equal("Don't Import"))
+                        }
+                        if let save = alert.actions.last {
+                            expect(save.title).to(equal("Import"))
+                        }
+                    }
                 }
 
-                describe("when the background ops finish") {
+                describe("tapping 'Don't Import'") {
                     beforeEach {
-                        showRootController()
-                        backgroundQueue.runNextOperation()
-                        backgroundQueue.runNextOperation()
-                        mainQueue.runNextOperation()
-                    }
-
-                    it("should present an alert") {
-                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                        if let alert = subject.presentedViewController as? UIAlertController {
-                            expect(alert.title).to(equal("Feed Detected"))
-                            expect(alert.message).to(equal("Import Iotlist?"))
-
-                            expect(alert.actions.count).to(equal(2))
-                            if let dontsave = alert.actions.first {
-                                expect(dontsave.title).to(equal("Don't Import"))
-                            }
-                            if let save = alert.actions.last {
-                                expect(save.title).to(equal("Import"))
-                            }
+                        if let alert = subject.presentedViewController as? UIAlertController,
+                            let action = alert.actions.first {
+                                action.handler()(action)
                         }
                     }
 
-                    describe("tapping 'Don't Import'") {
-                        beforeEach {
-                            if let alert = subject.presentedViewController as? UIAlertController,
-                                let action = alert.actions.first {
-                                    action.handler()(action)
-                            }
-                        }
-
-                        it("should dismiss the alert") {
-                            expect(subject.presentedViewController).to(beNil())
-                        }
-                    }
-
-                    describe("tapping 'Import'") {
-                        beforeEach {
-                            if let alert = subject.presentedViewController as? UIAlertController,
-                                let action = alert.actions.last {
-                                    action.handler()(action)
-                            }
-                        }
-
-                        it("should dismiss the alert") {
-                            expect(subject.presentedViewController).to(beNil())
-                        }
-
-                        itBehavesLike("importing a feed")
-                    }
-                }
-            }
-
-            context("when that urlSession request succeeds with an opml file") {
-                beforeEach {
-                    let bundle = NSBundle(forClass: self.classForCoder)
-                    let data = NSData(contentsOfFile: bundle.pathForResource("test", ofType: "opml")!)
-                    urlSession.lastCompletionHandler(data, nil, nil)
-                }
-
-                it("should add two background operations") {
-                    expect(backgroundQueue.operationCount).to(equal(2))
-                }
-
-                describe("when the background ops finish") {
-                    beforeEach {
-                        showRootController()
-                        backgroundQueue.runNextOperation()
-                        backgroundQueue.runNextOperation()
-                        mainQueue.runNextOperation()
-                    }
-
-                    it("should present an alert") {
-                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                        if let alert = subject.presentedViewController as? UIAlertController {
-                            expect(alert.title).to(equal("Feed List Detected"))
-                            expect(alert.message).to(equal("Import?"))
-
-                            expect(alert.actions.count).to(equal(2))
-                            if let dontsave = alert.actions.first {
-                                expect(dontsave.title).to(equal("Don't Import"))
-                            }
-                            if let save = alert.actions.last {
-                                expect(save.title).to(equal("Import"))
-                            }
-                        }
-                    }
-
-                    describe("tapping 'Don't Import'") {
-                        beforeEach {
-                            if let alert = subject.presentedViewController as? UIAlertController,
-                                let action = alert.actions.first {
-                                    action.handler()(action)
-                            }
-                        }
-
-                        it("should dismiss the alert") {
-                            expect(subject.presentedViewController).to(beNil())
-                        }
-                    }
-
-                    describe("tapping 'Import'") {
-                        beforeEach {
-                            if let alert = subject.presentedViewController as? UIAlertController,
-                                let action = alert.actions.last {
-                                    action.handler()(action)
-                            }
-                        }
-
-                        it("should dismiss the alert") {
-                            expect(subject.presentedViewController).to(beNil())
-                        }
-
-                        it("should show an indicator that we're doing things") {
-                            let indicator = subject.view.subviews.filter {
-                                return $0.isKindOfClass(ActivityIndicator.classForCoder())
-                            }.first as? ActivityIndicator
-                            expect(indicator?.message).to(equal("Loading feed list at https://example.com/feed.xml"))
-                        }
-
-                        it("should import the opml file") {
-                            expect(opmlService.importOPMLURL).to(equal(NSURL(string: "https://example.com/feed.xml")))
-                        }
-
-                        describe("when the opml file is imported") {
-                            beforeEach {
-                                opmlService.importOPMLCompletion([])
-                            }
-
-                            it("should remove the indicator") {
-                                let indicator = subject.view.subviews.filter {
-                                    return $0.isKindOfClass(ActivityIndicator.classForCoder())
-                                }.first
-                                expect(indicator).to(beNil())
-                            }
-
-                            it("should dismiss itself") {
-                                expect(rootViewController.presentedViewController).to(beNil())
-                            }
-                        }
-                    }
-                }
-            }
-
-            context("when that urlSession request succeeds with anything else") {
-                beforeEach {
-                    let data = "hello world!".dataUsingEncoding(NSUTF8StringEncoding)
-                    urlSession.lastCompletionHandler(data, nil, nil)
-                }
-
-                it("should add two background operations") {
-                    expect(backgroundQueue.operationCount).to(equal(2))
-                }
-
-                describe("when the background ops finish") {
-                    beforeEach {
-                        backgroundQueue.runNextOperation()
-                        backgroundQueue.runNextOperation()
-                    }
-
-                    it("should do nothing") {
-                        expect(mainQueue.operationCount).to(equal(0))
+                    it("should dismiss the alert") {
                         expect(subject.presentedViewController).to(beNil())
                     }
                 }
+
+                describe("tapping 'Import'") {
+                    beforeEach {
+                        if let alert = subject.presentedViewController as? UIAlertController,
+                            let action = alert.actions.last {
+                                action.handler()(action)
+                        }
+                    }
+
+                    it("should dismiss the alert") {
+                        expect(subject.presentedViewController).to(beNil())
+                    }
+
+                    itBehavesLike("importing a feed")
+                }
             }
 
-            context("when that urlSession request fails") {
+            context("when the use case finds an opml file") {
+                let url = NSURL(string: "https://example.com/feed")!
                 beforeEach {
-                    urlSession.lastCompletionHandler(nil, nil, NSError(domain: "", code: 0, userInfo: nil))
+                    showRootController()
+                    importUseCase.scanForImportableArgsForCall(0).1(.OPML(url))
+                }
+
+                it("should present an alert") {
+                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                    if let alert = subject.presentedViewController as? UIAlertController {
+                        expect(alert.title).to(equal("Feed List Detected"))
+                        expect(alert.message).to(equal("Import?"))
+
+                        expect(alert.actions.count).to(equal(2))
+                        if let dontsave = alert.actions.first {
+                            expect(dontsave.title).to(equal("Don't Import"))
+                        }
+                        if let save = alert.actions.last {
+                            expect(save.title).to(equal("Import"))
+                        }
+                    }
+                }
+
+                describe("tapping 'Don't Import'") {
+                    beforeEach {
+                        if let alert = subject.presentedViewController as? UIAlertController,
+                            let action = alert.actions.first {
+                                action.handler()(action)
+                        }
+                    }
+
+                    it("should dismiss the alert") {
+                        expect(subject.presentedViewController).to(beNil())
+                    }
+                }
+
+                describe("tapping 'Import'") {
+                    beforeEach {
+                        if let alert = subject.presentedViewController as? UIAlertController,
+                            let action = alert.actions.last {
+                                action.handler()(action)
+                        }
+                    }
+
+                    it("should dismiss the alert") {
+                        expect(subject.presentedViewController).to(beNil())
+                    }
+
+                    it("should show an indicator that we're doing things") {
+                        let indicator = subject.view.subviews.filter {
+                            return $0.isKindOfClass(ActivityIndicator.classForCoder())
+                        }.first as? ActivityIndicator
+                        expect(indicator?.message).to(equal("Loading feed list at https://example.com/feed"))
+                    }
+
+                    it("asks the import use case to import the feed at the url") {
+                        expect(importUseCase.importItemArgsForCall(0).0) == url
+                    }
+
+                    describe("when the use case is finished") {
+                        beforeEach {
+                            importUseCase.importItemArgsForCall(0).1()
+                        }
+
+                        it("should remove the indicator") {
+                            let indicator = subject.view.subviews.filter {
+                                return $0.isKindOfClass(ActivityIndicator.classForCoder())
+                                }.first
+                            expect(indicator).to(beNil())
+                        }
+
+                        it("should dismiss itself") {
+                            expect(rootViewController.presentedViewController).to(beNil())
+                        }
+                    }
+                }
+            }
+
+            context("when the use case finds a web page with a single feed") {
+                let url = NSURL(string: "https://example.com/feed")!
+                let feedURL = NSURL(string: "https://example.com/feed1")!
+
+                beforeEach {
+                    importUseCase.scanForImportableArgsForCall(0).1(.WebPage(url, [feedURL]))
+                }
+
+                it("should enable the addFeedButton") {
+                    expect(subject.addFeedButton.enabled).to(beTruthy())
+                }
+
+                describe("tapping on the addFeedButton") {
+                    beforeEach {
+                        showRootController()
+                        subject.addFeedButton.tap()
+                    }
+
+                    itBehavesLike("importing a feed") {
+                        return ["url": feedURL]
+                    }
+                }
+            }
+
+            context("when the use case finds a web page with multiple feeds") {
+                let url = NSURL(string: "https://example.com/feed")!
+                let feedURL1 = NSURL(string: "https://example.com/feed1")!
+                let feedURL2 = NSURL(string: "https://example.com/feed2")!
+
+                beforeEach {
+                    importUseCase.scanForImportableArgsForCall(0).1(.WebPage(url, [feedURL1, feedURL2]))
+                }
+
+                it("should enable the addFeedButton") {
+                    expect(subject.addFeedButton.enabled).to(beTruthy())
+                }
+
+                describe("tapping on the addFeedButton") {
+                    beforeEach {
+                        showRootController()
+                        subject.addFeedButton.tap()
+                    }
+
+                    it("should bring up a list of available feeds to import") {
+                        expect(subject.presentedViewController).to(beAKindOf(UIAlertController.self))
+                        if let alertController = subject.presentedViewController as? UIAlertController {
+                            expect(alertController.preferredStyle) == UIAlertControllerStyle.ActionSheet
+                            expect(alertController.actions.count) == 3
+
+                            guard alertController.actions.count == 3 else { return }
+
+                            let firstAction = alertController.actions[0]
+                            expect(firstAction.title) == "feed1"
+
+                            let secondAction = alertController.actions[1]
+                            expect(secondAction.title) == "feed2"
+
+                            let thirdAction = alertController.actions[2]
+                            expect(thirdAction.title) == "Cancel"
+                        }
+                    }
+
+                    context("tapping on one of the feed actions") {
+                        beforeEach {
+                            let actions = (subject.presentedViewController as? UIAlertController)?.actions ?? []
+                            if actions.count == 3 {
+                                let action = actions[1]
+                                action.handler()(action)
+                            } else {
+                                fail("precondition failed")
+                            }
+                        }
+
+                        itBehavesLike("importing a feed") {
+                            return ["url": feedURL2]
+                        }
+                    }
+                }
+            }
+
+            context("when the use case finds a web page with no feeds") {
+                let url = NSURL(string: "https://example.com/feed")!
+                beforeEach {
+                    importUseCase.scanForImportableArgsForCall(0).1(.WebPage(url, []))
                 }
 
                 it("should do nothing") {
-                    expect(backgroundQueue.operationCount).to(equal(0))
+                    expect(subject.presentedViewController).to(beNil())
+                }
+            }
+
+            context("when the use case finds nothing") {
+                let url = NSURL(string: "https://example.com/feed")!
+                beforeEach {
+                    importUseCase.scanForImportableArgsForCall(0).1(.None(url))
+                }
+
+                it("should do nothing") {
+                    expect(subject.presentedViewController).to(beNil())
                 }
             }
 
@@ -403,91 +408,6 @@ class FindFeedViewControllerSpec: QuickSpec {
 
                 it("should allow the user to reload the page") {
                     expect(subject.navigationItem.rightBarButtonItem).to(equal(subject.reload))
-                }
-
-                it("should look for a not-already imported feed linked from the webpage") {
-                    expect(feedFinder.didAttemptToFindFeed).to(beTruthy())
-                }
-
-                context("when a single feed is found") {
-                    beforeEach {
-                        feedFinder.findFeedCallback(["https://example.com/feed.xml"])
-                    }
-
-                    it("should enable the addFeedButton") {
-                        expect(subject.addFeedButton.enabled).to(beTruthy())
-                    }
-
-                    describe("tapping on the addFeedButton") {
-                        beforeEach {
-                            showRootController()
-                            subject.addFeedButton.tap()
-                        }
-
-                        itBehavesLike("importing a feed")
-                    }
-                }
-
-                context("when multiple feeds are found") {
-                    beforeEach {
-                        feedFinder.findFeedCallback(["https://example.com/feed.xml", "https://example.com/feed2.xml"])
-                    }
-
-                    it("should enable the addFeedButton") {
-                        expect(subject.addFeedButton.enabled).to(beTruthy())
-                    }
-
-                    describe("tapping on the addFeedButton") {
-                        beforeEach {
-                            showRootController()
-                            subject.addFeedButton.tap()
-                        }
-
-                        it("should bring up a list of available feeds to import") {
-                            expect(subject.presentedViewController).to(beAKindOf(UIAlertController.self))
-                            if let alertController = subject.presentedViewController as? UIAlertController {
-                                expect(alertController.preferredStyle) == UIAlertControllerStyle.ActionSheet
-                                expect(alertController.actions.count) == 3
-
-                                guard alertController.actions.count == 3 else { return }
-
-                                let firstAction = alertController.actions[0]
-                                expect(firstAction.title) == "feed.xml"
-
-                                let secondAction = alertController.actions[1]
-                                expect(secondAction.title) == "feed2.xml"
-
-                                let thirdAction = alertController.actions[2]
-                                expect(thirdAction.title) == "Cancel"
-                            }
-                        }
-
-                        context("tapping on one of the feed actions") {
-                            beforeEach {
-                                let actions = (subject.presentedViewController as? UIAlertController)?.actions ?? []
-                                if actions.count >= 3 {
-                                    let action = actions[1]
-                                    action.handler()(action)
-                                } else {
-                                    fail("grr")
-                                }
-                            }
-
-                            itBehavesLike("importing a feed") {
-                                return ["url": NSURL(string: "https://example.com/feed2.xml")!]
-                            }
-                        }
-                    }
-                }
-
-                context("when no feeds are found") {
-                    beforeEach {
-                        feedFinder.findFeedCallback([])
-                    }
-
-                    it("should do nothing") {
-                        expect(subject.addFeedButton.enabled).to(beFalsy())
-                    }
                 }
             }
         }

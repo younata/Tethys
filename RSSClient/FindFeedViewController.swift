@@ -10,53 +10,31 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
     public let loadingBar = UIProgressView(progressViewStyle: .Bar)
     public let navField = UITextField(frame: CGRect(x: 0, y: 0, width: 200, height: 30))
-    private var rssLinks = [String]()
+    private var rssLinks = [NSURL]()
 
-    public var addFeedButton: UIBarButtonItem! = nil
-    var back: UIBarButtonItem! = nil
-    var forward: UIBarButtonItem! = nil
-    public var reload: UIBarButtonItem! = nil
-    var cancelTextEntry: UIBarButtonItem! = nil
+    public var addFeedButton: UIBarButtonItem!
+    public var back: UIBarButtonItem!
+    public var forward: UIBarButtonItem!
+    public var reload: UIBarButtonItem!
+    public var cancelTextEntry: UIBarButtonItem!
 
-    var lookForFeeds: Bool = true
+    public var lookForFeeds = true
 
-    private let feedFinder: FeedFinder
-    private let feedRepository: FeedRepository
-    private let opmlService: OPMLService
-    private let mainQueue: NSOperationQueue
-    private let backgroundQueue: NSOperationQueue
-    private let urlSession: NSURLSession
+    private let importUseCase: ImportUseCase
     private let themeRepository: ThemeRepository
 
     private let placeholderAttributes: [String: AnyObject] = [NSForegroundColorAttributeName: UIColor.blackColor()]
 
-    // swiftlint:disable function_parameter_count
-    public init(feedFinder: FeedFinder,
-                feedRepository: FeedRepository,
-                opmlService: OPMLService,
-                mainQueue: NSOperationQueue,
-                backgroundQueue: NSOperationQueue,
-                urlSession: NSURLSession,
+    public init(importUseCase: ImportUseCase,
                 themeRepository: ThemeRepository) {
-        self.feedFinder = feedFinder
-        self.feedRepository = feedRepository
-        self.opmlService = opmlService
-        self.mainQueue = mainQueue
-        self.backgroundQueue = backgroundQueue
-        self.urlSession = urlSession
+        self.importUseCase = importUseCase
         self.themeRepository = themeRepository
         super.init(nibName: nil, bundle: nil)
     }
-    // swiftlint:enable function_parameter_count
 
     public required convenience init(injector: Injector) {
         self.init(
-            feedFinder: injector.create(FeedFinder)!,
-            feedRepository: injector.create(FeedRepository)!,
-            opmlService: injector.create(OPMLService)!,
-            mainQueue: injector.create(kMainQueue) as! NSOperationQueue,
-            backgroundQueue: injector.create(kBackgroundQueue) as! NSOperationQueue,
-            urlSession: injector.create(NSURLSession)!,
+            importUseCase: injector.create(ImportUseCase)!,
             themeRepository: injector.create(ThemeRepository)!
         )
     }
@@ -138,63 +116,6 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
             self.navField.frame = CGRect(x: 0, y: 0, width: size.width * 0.8, height: 32)
     }
 
-    @objc private func dismiss() {
-        self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
-    }
-
-    @objc private func save() {
-        if let rl = self.rssLinks.first where self.rssLinks.count == 1 {
-            self.save(rl)
-        } else if self.rssLinks.count > 1 {
-            // yay!
-            let alertTitle = NSLocalizedString("FindFeedViewController_ImportFeeds_SelectFeed", comment: "")
-            let alert = UIAlertController(title: alertTitle, message: nil, preferredStyle: .ActionSheet)
-            for link in self.rssLinks {
-                let pathWithPrecedingSlash = NSURL(string: link)?.path ?? ""
-                let path = pathWithPrecedingSlash.substringFromIndex(pathWithPrecedingSlash.startIndex.successor())
-                alert.addAction(UIAlertAction(title: path, style: .Default) { _ in
-                    self.save(link)
-                    self.dismissViewControllerAnimated(true, completion: nil)
-                })
-            }
-            let cancelTitle = NSLocalizedString("FindFeedViewController_Cancel", comment: "")
-            alert.addAction(UIAlertAction(title: cancelTitle, style: .Cancel) { _ in
-                self.dismissViewControllerAnimated(true, completion: nil)
-            })
-            self.presentViewController(alert, animated: true, completion: nil)
-        } else {
-            self.dismiss()
-        }
-    }
-
-    private func save(link: String, opml: Bool = false) {
-        // show something to indicate we're doing work...
-        let indicator = ActivityIndicator(forAutoLayout: ())
-        self.view.addSubview(indicator)
-        indicator.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
-        let feedMessageTemplate = NSLocalizedString("FindFeedViewController_Save_Feed", comment: "")
-        let opmlMessageTemplate = NSLocalizedString("FindFeedViewController_Save_Feed_List", comment: "")
-
-        let messageTemplate = opml ? opmlMessageTemplate : feedMessageTemplate
-        let message = NSString.localizedStringWithFormat(messageTemplate, link) as String
-        indicator.configureWithMessage(message)
-        if opml {
-            self.opmlService.importOPML(NSURL(string: link)!) {(_) in
-                indicator.removeFromSuperview()
-                self.dismiss()
-            }
-        } else {
-            self.feedRepository.newFeed {newFeed in
-                newFeed.url = NSURL(string: link)
-                self.feedRepository.saveFeed(newFeed)
-                self.feedRepository.updateFeed(newFeed) { _ in
-                    indicator.removeFromSuperview()
-                    self.dismiss()
-                }
-            }
-        }
-    }
-
     public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?,
         change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if keyPath == "estimatedProgress" && object as? NSObject == self.webContent {
@@ -242,15 +163,6 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         self.forward.enabled = webView.canGoForward
         self.back.enabled = webView.canGoBack
         self.navigationItem.rightBarButtonItem = self.reload
-
-        guard self.lookForFeeds else {
-            return
-        }
-
-        self.feedFinder.findUnknownFeedInCurrentWebView(webView) {feedUrls in
-            self.rssLinks = feedUrls
-            self.addFeedButton.enabled = !feedUrls.isEmpty
-        }
     }
 
     public func webView(webView: WKWebView, didFailNavigation _: WKNavigation!, withError error: NSError) {
@@ -270,57 +182,104 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
             attributes: self.placeholderAttributes)
         self.addFeedButton.enabled = false
         if let url = webView.URL where lookForFeeds {
-            self.urlSession.dataTaskWithURL(url) {data, response, error in
-                guard let data = data, let text = NSString(data: data, encoding: NSUTF8StringEncoding) as? String else {
-                    return
-                }
-
-                let doNotSave = NSLocalizedString("FindFeedViewController_FoundFeed_Decline", comment: "")
-                let save = NSLocalizedString("FindFeedViewController_FoundFeed_Accept", comment: "")
-
-                let feedParser = FeedParser(string: text)
-                let opmlParser = Lepton.Parser(text: text).success {_ in
-                    feedParser.cancel()
-
-                    let detected = NSLocalizedString("FindFeedViewController_FoundFeed_List_Title", comment: "")
-                    let shouldImport = NSLocalizedString("FindFeedViewController_FoundFeed_List_Subtitle", comment: "")
-
-                    let alert = UIAlertController(title: detected, message: shouldImport, preferredStyle: .Alert)
-                    alert.addAction(UIAlertAction(title: doNotSave, style: .Cancel) {_ in
-                            alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
-                    })
-                    alert.addAction(UIAlertAction(title: save, style: .Default) {_ in
-                        alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
-                        self.save(url.absoluteString, opml: true)
-                    })
-                    self.mainQueue.addOperationWithBlock {
-                        self.presentViewController(alert, animated: true, completion: nil)
+            self.importUseCase.scanForImportable(url) { item in
+                switch item {
+                case .Feed(let url):
+                    self.askToImportFeed(url)
+                case .WebPage(_, let feeds):
+                    if !feeds.isEmpty {
+                        self.rssLinks = feeds
+                        self.addFeedButton.enabled = true
                     }
+                case .OPML(let url):
+                    self.askToImportOPML(url)
+                default: break
                 }
-                feedParser.success {feed in
-                    opmlParser.cancel()
-
-                    let detected = NSLocalizedString("FindFeedViewController_FoundFeed_Title", comment: "")
-                    let saveFormatString = NSLocalizedString("FindFeedViewController_FoundFeed_Subtitle", comment: "")
-                    let saveFeed = String.localizedStringWithFormat(saveFormatString, feed.title)
-                    let alert = UIAlertController(title: detected, message: saveFeed, preferredStyle: .Alert)
-                    alert.addAction(UIAlertAction(title: doNotSave, style: .Cancel,
-                        handler: {(alertAction: UIAlertAction!) in
-                            alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
-                    }))
-                    alert.addAction(UIAlertAction(title: save, style: .Default, handler: {(_) in
-                        alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
-                        self.save(url.absoluteString, opml: false)
-                    }))
-                    self.mainQueue.addOperationWithBlock {
-                        self.presentViewController(alert, animated: true, completion: nil)
-                    }
-                }
-
-                self.backgroundQueue.addOperation(opmlParser)
-                self.backgroundQueue.addOperation(feedParser)
-            }.resume()
+            }
         }
+    }
+}
+
+// MARK: Private
+extension FindFeedViewController {
+    @objc private func dismiss() {
+        self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+    }
+
+    @objc private func save() {
+        if let rl = self.rssLinks.first where self.rssLinks.count == 1 {
+            self.save(rl)
+        } else if self.rssLinks.count > 1 {
+            // yay!
+            let alertTitle = NSLocalizedString("FindFeedViewController_ImportFeeds_SelectFeed", comment: "")
+            let alert = UIAlertController(title: alertTitle, message: nil, preferredStyle: .ActionSheet)
+            for link in self.rssLinks {
+                let pathWithPrecedingSlash = link.path ?? ""
+                let path = pathWithPrecedingSlash.substringFromIndex(pathWithPrecedingSlash.startIndex.successor())
+                alert.addAction(UIAlertAction(title: path, style: .Default) { _ in
+                    self.save(link)
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                    })
+            }
+            let cancelTitle = NSLocalizedString("FindFeedViewController_Cancel", comment: "")
+            alert.addAction(UIAlertAction(title: cancelTitle, style: .Cancel) { _ in
+                self.dismissViewControllerAnimated(true, completion: nil)
+            })
+            self.presentViewController(alert, animated: true, completion: nil)
+        } else {
+            self.dismiss()
+        }
+    }
+
+    private func save(link: NSURL, opml: Bool = false) {
+        let indicator = ActivityIndicator(forAutoLayout: ())
+        self.view.addSubview(indicator)
+        indicator.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
+
+        let feedMessageTemplate = NSLocalizedString("FindFeedViewController_Save_Feed", comment: "")
+        let opmlMessageTemplate = NSLocalizedString("FindFeedViewController_Save_Feed_List", comment: "")
+
+        let messageTemplate = opml ? opmlMessageTemplate : feedMessageTemplate
+        let message = NSString.localizedStringWithFormat(messageTemplate, link) as String
+        indicator.configureWithMessage(message)
+        self.importUseCase.importItem(link) {
+            indicator.removeFromSuperview()
+            self.dismiss()
+        }
+    }
+
+    private func askToImportFeed(url: NSURL) {
+        let title = NSLocalizedString("FindFeedViewController_FoundFeed_Title", comment: "")
+        let messageFormat = NSLocalizedString("FindFeedViewController_FoundFeed_Subtitle", comment: "")
+        let message = String.localizedStringWithFormat(messageFormat, url.lastPathComponent ?? "")
+
+        self.displayAlertToSave(title, alertMessage: message) {
+            self.save(url, opml: false)
+        }
+    }
+
+    private func askToImportOPML(url: NSURL) {
+        let title = NSLocalizedString("FindFeedViewController_FoundFeed_List_Title", comment: "")
+        let message = NSLocalizedString("FindFeedViewController_FoundFeed_List_Subtitle", comment: "")
+
+        self.displayAlertToSave(title, alertMessage: message) {
+            self.save(url, opml: true)
+        }
+    }
+
+    private func displayAlertToSave(alertTitle: String, alertMessage: String, success: Void -> Void) {
+        let doNotSave = NSLocalizedString("FindFeedViewController_FoundFeed_Decline", comment: "")
+        let save = NSLocalizedString("FindFeedViewController_FoundFeed_Accept", comment: "")
+
+        let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: doNotSave, style: .Cancel) {_ in
+            alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+        })
+        alert.addAction(UIAlertAction(title: save, style: .Default) {_ in
+            alert.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+            success()
+        })
+        self.presentViewController(alert, animated: true, completion: nil)
     }
 }
 

@@ -16,6 +16,8 @@ public class InjectorModule: Ra.InjectorModule {
             return tagPicker
         }
 
+        injector.bind(ImportUseCase.self) { DefaultImportUseCase(injector: $0) }
+
         let app = UIApplication.sharedApplication()
         injector.bind(UrlOpener.self, toInstance: app)
         injector.bind(QuickActionRepository.self, toInstance: app)

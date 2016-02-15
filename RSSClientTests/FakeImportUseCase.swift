@@ -6,6 +6,16 @@ import rNews
 class FakeImportUseCase : ImportUseCase {
     init() {}
 
+    private(set) var scanDirectoryForImportablesCallCount : Int = 0
+    private var scanDirectoryForImportablesArgs : Array<(NSURL, ImportUseCaseScanDirectoryCompletion)> = []
+    func scanDirectoryForImportablesArgsForCall(callIndex: Int) -> (NSURL, ImportUseCaseScanDirectoryCompletion) {
+        return self.scanDirectoryForImportablesArgs[callIndex]
+    }
+    func scanDirectoryForImportables(url: NSURL, callback: ImportUseCaseScanDirectoryCompletion) {
+        self.scanDirectoryForImportablesCallCount++
+        self.scanDirectoryForImportablesArgs.append((url, callback))
+    }
+
     private(set) var scanForImportableCallCount : Int = 0
     private var scanForImportableArgs : Array<(NSURL, ImportUseCaseScanCompletion)> = []
     func scanForImportableArgsForCall(callIndex: Int) -> (NSURL, ImportUseCaseScanCompletion) {

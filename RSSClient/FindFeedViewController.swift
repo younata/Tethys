@@ -184,14 +184,14 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         if let url = webView.URL where lookForFeeds {
             self.importUseCase.scanForImportable(url) { item in
                 switch item {
-                case .Feed(let url):
+                case .Feed(let url, _):
                     self.askToImportFeed(url)
                 case .WebPage(_, let feeds):
                     if !feeds.isEmpty {
                         self.rssLinks = feeds
                         self.addFeedButton.enabled = true
                     }
-                case .OPML(let url):
+                case .OPML(let url, _):
                     self.askToImportOPML(url)
                 default: break
                 }

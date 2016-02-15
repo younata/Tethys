@@ -41,6 +41,8 @@ private func createFeed(feed: (url: String, title: String, articles: [String]), 
     }
 }
 
+private let documentsUrl = NSURL(string: "file://\(NSHomeDirectory())/Documents/")!
+
 class LocalImportViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: LocalImportViewController! = nil
@@ -50,34 +52,17 @@ class LocalImportViewControllerSpec: QuickSpec {
 
         var tableView: UITableView! = nil
 
-        var dataRepository: FakeFeedRepository! = nil
-        var opmlService: FakeOPMLService! = nil
-        var mainQueue: FakeOperationQueue! = nil
-        var backgroundQueue: FakeOperationQueue! = nil
-        var themeRepository: FakeThemeRepository! = nil
-        var fileManager: FakeFileManager! = nil
+        var themeRepository: FakeThemeRepository!
+        var importUseCase: FakeImportUseCase!
 
         beforeEach {
             injector = Ra.Injector(module: SpecInjectorModule())
 
-            dataRepository = FakeFeedRepository()
-            injector.bind(FeedRepository.self, toInstance: dataRepository)
-
-            opmlService = FakeOPMLService()
-            injector.bind(OPMLService.self, toInstance: opmlService)
-
-            mainQueue = injector.create(kMainQueue) as! FakeOperationQueue
-            mainQueue.runSynchronously = true
-
-            backgroundQueue = injector.create(kBackgroundQueue) as! FakeOperationQueue
-            backgroundQueue.runSynchronously = true
-
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, toInstance: themeRepository)
 
-            fileManager = FakeFileManager()
-            fileManager.contentsOfDirectories[documentsDirectory() as String] = []
-            injector.bind(NSFileManager.self, toInstance: fileManager)
+            importUseCase = FakeImportUseCase()
+            injector.bind(ImportUseCase.self, toInstance: importUseCase)
 
             subject = injector.create(LocalImportViewController)!
 
@@ -106,102 +91,75 @@ class LocalImportViewControllerSpec: QuickSpec {
             }
         }
 
-        it("should have 2 sections") {
-            expect(subject.numberOfSectionsInTableView(tableView)).to(equal(2))
+        it("asks the use case to scan for any importable items in the documents directory") {
+            expect(importUseCase.scanDirectoryForImportablesCallCount) == 1
+            expect(importUseCase.scanDirectoryForImportablesArgsForCall(0).0) == documentsUrl
         }
 
-        it("should start out with 0 rows in each section") {
-            expect(subject.tableView(tableView, numberOfRowsInSection: 0)).to(equal(0))
-            expect(subject.tableView(tableView, numberOfRowsInSection: 1)).to(equal(0))
-        }
+        describe("the explanation message") {
+            let itShowsAnExplanationMessage = {
+                it("shows the explanationLabel") {
+                    expect(subject.explanationLabel.superview).toNot(beNil())
+                }
 
-        it("should list OPML first, then RSS feeds") {
-            let opmlHeader = subject.tableView(tableView, titleForHeaderInSection: 0)
-            let feedHeader = subject.tableView(tableView, titleForHeaderInSection: 1)
-            expect(opmlHeader).to(beNil())
-            expect(feedHeader).to(beNil())
-        }
+                context("when feeds are added") {
 
-        sharedExamples("showing explanation message") {
-            it("shows the explanationLabel") {
-                expect(subject.explanationLabel.superview).toNot(beNil())
+                    beforeEach {
+                        let opmlUrl = documentsUrl.URLByAppendingPathComponent("rnews.opml")
+                        let feedUrl = documentsUrl.URLByAppendingPathComponent("feed")
+
+                        subject.reloadItems()
+
+                        importUseCase.scanDirectoryForImportablesArgsForCall(1).1([.OPML(opmlUrl, 3), .Feed(feedUrl, 10)])
+                    }
+
+                    it("removes the explanationLabel from the view hierarchy") {
+                        expect(subject.explanationLabel.superview).to(beNil())
+                    }
+                }
             }
 
-            context("when feeds are added") {
-                let opmlFeeds : [(url: String, title: String)] = [("http://example.com/feed1", "feed1"), ("http://example.com/feed2", "feed2")]
-                let rssFeed : (url: String, title: String, articles: [String]) = ("http://example.com/feed", "feed", ["article1", "article2"])
-
+            context("when there are no files to list") {
                 beforeEach {
-                    createOPMLWithFeeds(opmlFeeds, location: "rnews.opml")
-                    createFeed(rssFeed, location: "feed")
-                    fileManager.contentsOfDirectories[documentsDirectory() as String] = ["rnews.opml", "feed"]
-                    subject.reloadItems()
+                    importUseCase.scanDirectoryForImportablesArgsForCall(0).1([])
                 }
 
-                afterEach {
-                    deleteAtLocation("opml")
-                    deleteAtLocation("feed")
+                itShowsAnExplanationMessage()
+            }
+
+            context("when there is only the rnews.opml file to list") {
+                beforeEach {
+                    let opmlUrl = documentsUrl.URLByAppendingPathComponent("rnews.opml")
+                    importUseCase.scanDirectoryForImportablesArgsForCall(0).1([.OPML(opmlUrl, 3)])
                 }
 
-                it("removes the explanationLabel from the view hierarchy") {
+                itShowsAnExplanationMessage()
+            }
+
+            context("when there are multiple files to list") {
+                beforeEach {
+                    let opmlUrl = documentsUrl.URLByAppendingPathComponent("rnews.opml")
+                    let feedUrl = documentsUrl.URLByAppendingPathComponent("feed")
+
+                    importUseCase.scanDirectoryForImportablesArgsForCall(0).1([.OPML(opmlUrl, 3), .Feed(feedUrl, 10)])
+                }
+                
+                it("does not show the explanationLabel") {
                     expect(subject.explanationLabel.superview).to(beNil())
                 }
             }
         }
 
-        context("when there are no files to list") {
-            beforeEach {
-                fileManager.contentsOfDirectories[documentsDirectory() as String] = []
-                subject.reloadItems()
-            }
-            itBehavesLike("showing explanation message")
-        }
-
-        context("when there is only the rnews.opml file to list") {
-            beforeEach {
-                fileManager.contentsOfDirectories[documentsDirectory() as String] = ["rnews.opml"]
-                subject.reloadItems()
-            }
-            itBehavesLike("showing explanation message")
-        }
-
-        context("when there are multiple files to list") {
-            let opmlFeeds : [(url: String, title: String)] = [("http://example.com/feed1", "feed1"), ("http://example.com/feed2", "feed2")]
-            let rssFeed : (url: String, title: String, articles: [String]) = ("http://example.com/feed", "feed", ["article1", "article2"])
+        describe("the tableView") {
+            let opmlUrl = documentsUrl.URLByAppendingPathComponent("rnews.opml")
+            let feedUrl = documentsUrl.URLByAppendingPathComponent("feed")
 
             beforeEach {
-                createOPMLWithFeeds(opmlFeeds, location: "rnews.opml")
-                createFeed(rssFeed, location: "feed")
-                fileManager.contentsOfDirectories[documentsDirectory() as String] = ["rnews.opml", "feed"]
-                subject.reloadItems()
+                importUseCase.scanDirectoryForImportablesArgsForCall(0).1([.OPML(opmlUrl, 3), .Feed(feedUrl, 10)])
             }
 
-            afterEach {
-                deleteAtLocation("opml")
-                deleteAtLocation("feed")
-            }
-
-            it("does not show the explanationLabel") {
-                expect(subject.explanationLabel.superview).to(beNil())
-            }
-        }
-
-        describe("reloading objects") {
-            let opmlFeeds : [(url: String, title: String)] = [("http://example.com/feed1", "feed1"), ("http://example.com/feed2", "feed2")]
-            let rssFeed : (url: String, title: String, articles: [String]) = ("http://example.com/feed", "feed", ["article1", "article2"])
-
-            beforeEach {
-                createOPMLWithFeeds(opmlFeeds, location: "rnews.opml")
-                createFeed(rssFeed, location: "feed")
-
-                fileManager.contentsOfDirectories[documentsDirectory() as String] = ["rnews.opml", "feed"]
-
-                subject.reloadItems()
-            }
-
-            afterEach {
-                deleteAtLocation("opml")
-                deleteAtLocation("feed")
+            it("should have 2 sections") {
+                expect(subject.numberOfSectionsInTableView(tableView)).to(equal(2))
             }
 
             it("should with 1 row in each section") {
@@ -234,7 +192,7 @@ class LocalImportViewControllerSpec: QuickSpec {
                 }
 
                 it("should list how many feeds are in this opml file") {
-                    expect(cell?.detailTextLabel?.text).to(equal("2 feeds"))
+                    expect(cell?.detailTextLabel?.text).to(equal("3 feeds"))
                 }
 
                 describe("selecting it") {
@@ -256,36 +214,14 @@ class LocalImportViewControllerSpec: QuickSpec {
                         }
                     }
 
-                    it("should import the feeds") {
-                        let expectedLocation = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
-                        expect(opmlService.importOPMLURL).to(equal(NSURL(string: "file://" + expectedLocation)))
+                    it("tells the use case to import the opml") {
+                        expect(importUseCase.importItemArgsForCall(0).0) == opmlUrl
                     }
 
-                    describe("when it's done importing the feeds") {
-                        beforeEach {
-                            opmlService.importOPMLCompletion([])
-                        }
+                    it("dismisses the activity indicator when the import finishes") {
+                        importUseCase.importItemArgsForCall(0).1()
 
-                        it("should import the feed") {
-                            expect(dataRepository.didUpdateFeeds).to(beTruthy())
-                        }
-
-                        describe("when it's done updating the feeds") {
-                            beforeEach {
-                                dataRepository.updateFeedsCompletion([], [])
-                            }
-
-                            it("should remove the activity indicator") {
-                                var indicator : ActivityIndicator? = nil
-                                for view in subject.view.subviews {
-                                    if view is ActivityIndicator {
-                                        indicator = view as? ActivityIndicator
-                                        break
-                                    }
-                                }
-                                expect(indicator).to(beNil())
-                            }
-                        }
+                        expect(subject.view.subviews).toNot(contain(ActivityIndicator.self))
                     }
                 }
             }
@@ -302,7 +238,7 @@ class LocalImportViewControllerSpec: QuickSpec {
                 }
 
                 it("should list how many articles are in this feed") {
-                    expect(cell.detailTextLabel?.text).to(equal("2 articles"))
+                    expect(cell.detailTextLabel?.text).to(equal("10 articles"))
                 }
 
                 describe("selecting it") {
@@ -324,29 +260,14 @@ class LocalImportViewControllerSpec: QuickSpec {
                         }
                     }
 
-                    it("should create a feed") {
-                        expect(dataRepository.didCreateFeed).to(beTruthy())
+                    it("tells the use case to import the feed") {
+                        expect(importUseCase.importItemArgsForCall(0).0) == feedUrl
                     }
 
-                    describe("after the feed is created") {
-                        beforeEach {
-                            let feed = rNewsKit.Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                            dataRepository.newFeedCallback(feed)
-                        }
+                    it("dismisses the activity indicator when the import finishes") {
+                        importUseCase.importItemArgsForCall(0).1()
 
-                        it("should import the feed") {
-                            expect(dataRepository.didUpdateFeeds).to(beTruthy())
-                        }
-
-                        describe("when it's done importing the feeds") {
-                            beforeEach {
-                                dataRepository.updateFeedsCompletion([], [])
-                            }
-
-                            it("should remove the activity indicator") {
-                                expect(subject.view.subviews).toNot(contain(ActivityIndicator.self))
-                            }
-                        }
+                        expect(subject.view.subviews).toNot(contain(ActivityIndicator.self))
                     }
                 }
             }

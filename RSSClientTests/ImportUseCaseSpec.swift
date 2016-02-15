@@ -10,26 +10,33 @@ class ImportUseCaseSpec: QuickSpec {
         var urlSession: FakeURLSession!
         var feedRepository: FakeFeedRepository!
         var opmlService: FakeOPMLService!
+        var fileManager: FakeFileManager!
 
         beforeEach {
             urlSession = FakeURLSession()
             feedRepository = FakeFeedRepository()
             opmlService = FakeOPMLService()
+            fileManager = FakeFileManager()
             subject = DefaultImportUseCase(
                 urlSession: urlSession,
                 feedRepository: feedRepository,
-                opmlService: opmlService
+                opmlService: opmlService,
+                fileManager: fileManager
             )
         }
 
         describe("-scanForImportable:progress:callback:") {
+            var receivedItem: ImportUseCaseItem?
+
+            beforeEach {
+                receivedItem = nil
+            }
+
             context("when asked to scan a network URL") {
                 let url = NSURL(string: "https://example.com/item")!
 
-                var receivedItem: ImportUseCaseItem?
 
                 beforeEach {
-                    receivedItem = nil
                     subject.scanForImportable(url) {
                         receivedItem = $0
                     }
@@ -48,7 +55,7 @@ class ImportUseCaseSpec: QuickSpec {
                     }
 
                     it("calls the callback with .Feed and the URL") {
-                        expect(receivedItem) == ImportUseCaseItem.Feed(url)
+                        expect(receivedItem) == ImportUseCaseItem.Feed(url, 100)
                     }
 
                     context("later calling -importItem:callback: with that url") {
@@ -107,7 +114,7 @@ class ImportUseCaseSpec: QuickSpec {
                     }
 
                     it("calls the callback with .OPML and the URL") {
-                        expect(receivedItem) == ImportUseCaseItem.OPML(url)
+                        expect(receivedItem) == ImportUseCaseItem.OPML(url, 4)
                     }
 
                     context("later calling -importItem:callback: with that url") {
@@ -212,7 +219,119 @@ class ImportUseCaseSpec: QuickSpec {
             }
 
             context("when asked to scan a file system URL") {
-                pending("Write me!") {}
+                context("and that file is a feed file") {
+                    let feedURL = NSBundle(forClass: self.classForCoder).URLForResource("feed", withExtension: "rss")!
+
+                    beforeEach {
+                        subject.scanForImportable(feedURL) {
+                            receivedItem = $0
+                        }
+                    }
+
+                    it("does not call the urlSession") {
+                        expect(urlSession.lastURL).to(beNil())
+                    }
+
+                    it("calls the callback with .Feed and the URL") {
+                        expect(receivedItem) == ImportUseCaseItem.Feed(feedURL, 100)
+                    }
+
+                    context("later calling -importItem:callback: with that url") {
+                        var didImport = false
+                        beforeEach {
+                            subject.importItem(feedURL) {
+                                didImport = true
+                            }
+                        }
+
+                        it("asks the feed repository to import the feed") {
+                            expect(feedRepository.didCreateFeed) == true
+                        }
+
+                        context("when the feed repository creates the feed") {
+                            var feed: Feed!
+                            beforeEach {
+                                feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                feedRepository.newFeedCallback(feed)
+                            }
+
+                            it("sets that feed's url") {
+                                expect(feed.url) == NSURL(string: "http://iotlist.co/posts.atom")
+                            }
+
+                            it("it tells the feed repository to update the feed from the network") {
+                                expect(feedRepository.didUpdateFeed) == feed
+                            }
+
+                            it("calls the callback when the feed repository finishes updating the feed") {
+                                feedRepository.updateSingleFeedCallback(feed, nil)
+
+                                expect(didImport) == true
+                            }
+
+                            it("calls the callback when the feed repository errors updating the feed") {
+                                feedRepository.updateSingleFeedCallback(feed, NSError(domain: "", code: 0, userInfo: nil))
+                                
+                                expect(didImport) == true
+                            }
+                        }
+                    }
+                }
+
+                context("and that file is an opml file") {
+                    let opmlURL = NSBundle(forClass: self.classForCoder).URLForResource("test", withExtension: "opml")!
+
+                    beforeEach {
+                        subject.scanForImportable(opmlURL) {
+                            receivedItem = $0
+                        }
+                    }
+
+                    it("does not call the network service") {
+                        expect(urlSession.lastURL).to(beNil())
+                    }
+
+                    it("calls the callback with .OPML and the URL") {
+                        expect(receivedItem) == ImportUseCaseItem.OPML(opmlURL, 4)
+                    }
+
+                    context("later calling -importItem:callback: with that url") {
+                        var didImport = false
+                        beforeEach {
+                            subject.importItem(opmlURL) {
+                                didImport = true
+                            }
+                        }
+
+                        it("asks the opml service to import the feed list") {
+                            expect(opmlService.importOPMLURL) == opmlURL
+                        }
+
+                        it("calls the callback when the opml service finishes") {
+                            opmlService.importOPMLCompletion([])
+                            
+                            expect(didImport) == true
+                        }
+                    }
+                }
+
+                context("and that file is neither") {
+                    let url = NSBundle(forClass: self.classForCoder).URLForResource("test", withExtension: "jpg")!
+
+                    beforeEach {
+                        subject.scanForImportable(url) {
+                            receivedItem = $0
+                        }
+                    }
+
+                    it("does not call the network service") {
+                        expect(urlSession.lastURL).to(beNil())
+                    }
+
+                    it("calls the callback with .None and the URL") {
+                        expect(receivedItem) == ImportUseCaseItem.None(url)
+                    }
+                }
             }
         }
 
@@ -225,6 +344,33 @@ class ImportUseCaseSpec: QuickSpec {
                     didImport = true
                 }
                 expect(didImport) == true
+            }
+
+            // other cases are covered up above
+        }
+
+        describe("-scanDirectoryForImportables:callback:") {
+            let feedURL = NSBundle(forClass: self.classForCoder).URLForResource("feed", withExtension: "rss")!
+            let opmlURL = NSBundle(forClass: self.classForCoder).URLForResource("test", withExtension: "opml")!
+
+            it("it scans the directory for all urls in that directory") {
+                let bundle = NSBundle(forClass: self.classForCoder)
+
+                fileManager.contentsOfDirectories[bundle.resourcePath!] = ["feed.rss", "test.opml"]
+
+                var receivedContents: [ImportUseCaseItem]? = nil
+
+                subject.scanDirectoryForImportables(bundle.resourceURL!) { contents in
+                    receivedContents = contents
+                }
+
+                expect(receivedContents).toNot(beNil())
+
+                guard let contents = receivedContents else { return }
+
+                expect(contents.count) == 2
+                expect(contents).to(contain(ImportUseCaseItem.Feed(feedURL, 100)))
+                expect(contents).to(contain(ImportUseCaseItem.OPML(opmlURL, 4)))
             }
         }
     }

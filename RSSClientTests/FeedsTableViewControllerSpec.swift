@@ -33,10 +33,6 @@ class FeedsTableViewControllerSpec: QuickSpec {
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, toInstance: themeRepository)
 
-            injector.bind(kBackgroundQueue, toInstance: FakeOperationQueue())
-
-            injector.bind(FeedFinder.self, toInstance: FakeFeedFinder())
-
             subject = injector.create(FeedsTableViewController)
 
             navigationController = UINavigationController(rootViewController: subject)

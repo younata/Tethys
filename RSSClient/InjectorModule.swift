@@ -31,8 +31,6 @@ public class InjectorModule: Ra.InjectorModule {
 
         injector.bind(NotificationHandler.self) { LocalNotificationHandler(injector: $0) }
 
-        injector.bind(FeedFinder.self, toInstance: WebFeedFinder())
-
         injector.bind(NSFileManager.self, toInstance: NSFileManager.defaultManager())
     }
 

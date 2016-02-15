@@ -1,7 +1,5 @@
 import UIKit
 import Ra
-import Muon
-import Lepton
 import rNewsKit
 
 public func documentsDirectory() -> NSString {
@@ -9,20 +7,16 @@ public func documentsDirectory() -> NSString {
 }
 
 public class LocalImportViewController: UIViewController, Injectable {
-    private var opmls: [(String, [Lepton.Item])] = []
-    private var feeds: [(String, Muon.Feed)] = []
+    private var opmls: [(NSURL, Int)] = []
+    private var feeds: [(NSURL, Int)] = []
     private var contentsOfDirectory: [String] = []
 
     public let tableViewController = UITableViewController(style: .Plain)
 
     private var tableViewTopOffset: NSLayoutConstraint!
 
-    private let feedRepository: FeedRepository
-    private let opmlService: OPMLService
     private let themeRepository: ThemeRepository
-    private let fileManager: NSFileManager
-    private let mainQueue: NSOperationQueue
-    private let backgroundQueue: NSOperationQueue
+    private let importUseCase: ImportUseCase
 
     public lazy var explanationLabel: ExplanationView = {
         let label = ExplanationView(forAutoLayout: ())
@@ -33,31 +27,17 @@ public class LocalImportViewController: UIViewController, Injectable {
         return label
     }()
 
-    // swiftlint:disable function_parameter_count
-    public init(feedRepository: FeedRepository,
-        opmlService: OPMLService,
-        themeRepository: ThemeRepository,
-        fileManager: NSFileManager,
-        mainQueue: NSOperationQueue,
-        backgroundQueue: NSOperationQueue) {
-            self.feedRepository = feedRepository
-            self.opmlService = opmlService
+    public init(themeRepository: ThemeRepository,
+        importUseCase: ImportUseCase) {
             self.themeRepository = themeRepository
-            self.fileManager = fileManager
-            self.mainQueue = mainQueue
-            self.backgroundQueue = backgroundQueue
+            self.importUseCase = importUseCase
             super.init(nibName: nil, bundle: nil)
     }
-    // swiftlint:enable function_parameter_count
 
     public required convenience init(injector: Injector) {
         self.init(
-            feedRepository: injector.create(FeedRepository)!,
-            opmlService: injector.create(OPMLService)!,
             themeRepository: injector.create(ThemeRepository)!,
-            fileManager: injector.create(NSFileManager)!,
-            mainQueue: injector.create(kMainQueue) as! NSOperationQueue,
-            backgroundQueue: injector.create(kBackgroundQueue) as! NSOperationQueue
+            importUseCase: injector.create(ImportUseCase)!
         )
     }
 
@@ -97,18 +77,36 @@ public class LocalImportViewController: UIViewController, Injectable {
     }
 
     public func reloadItems() {
-        guard let contents = try? self.fileManager.contentsOfDirectoryAtPath(documentsDirectory() as String) else {
-            return
-        }
-        for path in contents {
-            self.verifyIfFeedOrOPML(path)
-        }
+        let documentsUrl = NSURL(string: "file://\(NSHomeDirectory())/Documents/")!
+        self.importUseCase.scanDirectoryForImportables(documentsUrl) { contents in
+            if contents.isEmpty {
+                self.showExplanationView()
+            }
 
-        if contents.isEmpty {
+            self.opmls = contents.flatMap { item in
+                switch item {
+                case .OPML(let url, let feeds): return (url, feeds)
+                default: return nil
+                }
+            }
+
+            self.feeds = contents.flatMap { item in
+                switch item {
+                case .Feed(let url, let articles): return (url, articles)
+                default: return nil
+                }
+            }
+
+            self.feeds.sortInPlace { $0.0.absoluteString < $1.0.absoluteString }
+            self.opmls.sortInPlace { $0.0.absoluteString < $1.0.absoluteString }
             self.showExplanationView()
+            let sections = NSIndexSet(indexesInRange: NSRange(location: 0, length: 2))
+            self.tableViewController.tableView.reloadSections(sections, withRowAnimation: .Automatic)
+
+            self.tableViewController.refreshControl?.endRefreshing()
         }
 
-        self.tableViewController.refreshControl?.endRefreshing()
+
     }
 
     // MARK: - Private
@@ -116,12 +114,10 @@ public class LocalImportViewController: UIViewController, Injectable {
     private func showExplanationView() {
         self.explanationLabel.removeFromSuperview()
         let opmlIsEmptyOrHasOnlyRNews: Bool
-        if self.opmls.isEmpty {
-            opmlIsEmptyOrHasOnlyRNews = true
-        } else if let opmlPathString = self.opmls.first?.0 where self.opmls.count == 1 {
-            opmlIsEmptyOrHasOnlyRNews = String(NSString(string: opmlPathString).lastPathComponent) == "rnews.opml"
+        if self.opmls.count == 1, let opmlUrl = self.opmls.first?.0 {
+            opmlIsEmptyOrHasOnlyRNews = opmlUrl.lastPathComponent == "rnews.opml"
         } else {
-            opmlIsEmptyOrHasOnlyRNews = false
+            opmlIsEmptyOrHasOnlyRNews = self.opmls.isEmpty
         }
         if self.feeds.isEmpty && opmlIsEmptyOrHasOnlyRNews {
             self.view.addSubview(self.explanationLabel)
@@ -130,46 +126,6 @@ public class LocalImportViewController: UIViewController, Injectable {
                 toDimension: .Width,
                 ofView: self.view,
                 withMultiplier: 0.75)
-        }
-    }
-
-    private func reload() {
-        self.feeds.sortInPlace { $0.0 < $1.0 }
-        self.opmls.sortInPlace { $0.0 < $1.0 }
-        self.showExplanationView()
-        let sections = NSIndexSet(indexesInRange: NSRange(location: 0, length: 2))
-        self.tableViewController.tableView.reloadSections(sections, withRowAnimation: .Automatic)
-    }
-
-    private func verifyIfFeedOrOPML(path: String) {
-        if self.contentsOfDirectory.contains(path) {
-            return
-        }
-
-        self.contentsOfDirectory.append(path)
-
-        let location = documentsDirectory().stringByAppendingPathComponent(path)
-        do {
-            let text = try NSString(contentsOfFile: location, encoding: NSUTF8StringEncoding)
-            let opmlParser = Lepton.Parser(text: text as String)
-            let feedParser = FeedParser(string: text as String)
-            feedParser.completion = {feed in
-                self.feeds.append((path, feed))
-                opmlParser.cancel()
-                self.mainQueue.addOperationWithBlock {
-                    self.reload()
-                }
-            }
-            opmlParser.success {items in
-                let toAdd = (location, items)
-                self.opmls.append(toAdd)
-                feedParser.cancel()
-                self.mainQueue.addOperationWithBlock {
-                    self.reload()
-                }
-            }
-            self.backgroundQueue.addOperations([opmlParser, feedParser], waitUntilFinished: false)
-        } catch _ {
         }
     }
 
@@ -182,9 +138,9 @@ public class LocalImportViewController: UIViewController, Injectable {
         self.view.addSubview(activityIndicator)
         activityIndicator.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
 
-        UIView.animateWithDuration(0.3, animations: {
+        UIView.animateWithDuration(0.3) {
             activityIndicator.backgroundColor = color
-        })
+        }
         return activityIndicator
     }
 
@@ -223,15 +179,15 @@ extension LocalImportViewController: UITableViewDataSource {
         cell.selectionStyle = .Gray
 
         if indexPath.section == 0 {
-            let (path, items) = opmls[indexPath.row]
-            cell.textLabel?.text = NSString(string: path).lastPathComponent as String
+            let (url, feeds) = opmls[indexPath.row]
+            cell.textLabel?.text = url.lastPathComponent
             let feedCount = NSLocalizedString("LocalImportViewController_Cell_FeedList_FeedCount", comment: "")
-            cell.detailTextLabel?.text = NSString.localizedStringWithFormat(feedCount, items.count) as String
+            cell.detailTextLabel?.text = NSString.localizedStringWithFormat(feedCount, feeds) as String
         } else if indexPath.section == 1 {
-            let (path, item) = feeds[indexPath.row]
-            cell.textLabel?.text = path
+            let (url, articles) = feeds[indexPath.row]
+            cell.textLabel?.text = url.lastPathComponent
             let articleCount = NSLocalizedString("LocalImportViewController_Cell_Feed_ArticleCount", comment: "")
-            cell.detailTextLabel?.text = NSString.localizedStringWithFormat(articleCount, item.articles.count) as String
+            cell.detailTextLabel?.text = NSString.localizedStringWithFormat(articleCount, articles) as String
         }
 
         (cell as? TableViewCell)?.themeRepository = self.themeRepository
@@ -255,27 +211,20 @@ extension LocalImportViewController: UITableViewDataSource {
 extension LocalImportViewController: UITableViewDelegate {
     public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
+
+        let url: NSURL
+        let activityIndicator: ActivityIndicator
         if indexPath.section == 0 {
-            let path = opmls[indexPath.row].0
-            let activityIndicator = disableInteractionWithMessage(NSLocalizedString("Importing feeds", comment: ""))
+            url = opmls[indexPath.row].0
+            activityIndicator = disableInteractionWithMessage(NSLocalizedString("Importing feeds", comment: ""))
 
-            self.opmlService.importOPML(NSURL(string: "file://" + path)!, completion: {(_) in
-                self.feedRepository.updateFeeds {_ in
-                    self.reenableInteractionAndDismiss(activityIndicator)
-                }
-            })
         } else if indexPath.section == 1 {
-            let feed = feeds[indexPath.row].1
+            url = feeds[indexPath.row].0
+            activityIndicator = self.disableInteractionWithMessage(NSLocalizedString("Importing feed", comment: ""))
+        } else { return }
 
-            let activityIndicator = self.disableInteractionWithMessage(NSLocalizedString("Importing feed", comment: ""))
-
-            self.feedRepository.newFeed {newFeed in
-                newFeed.url = feed.link
-                self.feedRepository.saveFeed(newFeed)
-                self.feedRepository.updateFeeds {_ in
-                    self.reenableInteractionAndDismiss(activityIndicator)
-                }
-            }
+        self.importUseCase.importItem(url) {
+            self.reenableInteractionAndDismiss(activityIndicator)
         }
     }
 }

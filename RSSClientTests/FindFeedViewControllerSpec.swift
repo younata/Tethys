@@ -146,7 +146,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                 let url = NSURL(string: "https://example.com/feed")!
                 beforeEach {
                     showRootController()
-                    importUseCase.scanForImportableArgsForCall(0).1(.Feed(url))
+                    importUseCase.scanForImportableArgsForCall(0).1(.Feed(url, 0))
                 }
 
                 it("should present an alert") {
@@ -198,7 +198,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                 let url = NSURL(string: "https://example.com/feed")!
                 beforeEach {
                     showRootController()
-                    importUseCase.scanForImportableArgsForCall(0).1(.OPML(url))
+                    importUseCase.scanForImportableArgsForCall(0).1(.OPML(url, 0))
                 }
 
                 it("should present an alert") {

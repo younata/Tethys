@@ -8,6 +8,5 @@ public class SpecInjectorModule : rNews.InjectorModule {
         super.configureInjector(injector)
         injector.bind(kMainQueue, toInstance: FakeOperationQueue())
         injector.bind(kBackgroundQueue, toInstance: FakeOperationQueue())
-        injector.bind(FeedFinder.self, toInstance: FakeFeedFinder())
     }
 }

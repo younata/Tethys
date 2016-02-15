@@ -92,8 +92,6 @@
 		894304541B450C6A000078DC /* CoreDataEnclosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894304531B450C6A000078DC /* CoreDataEnclosure.swift */; };
 		894896EC1A16F1130030EB6E /* LocalImportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896EB1A16F1130030EB6E /* LocalImportViewController.swift */; };
 		8953B1581B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8953B1571B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift */; };
-		895779A519E62CC500548418 /* findFeeds.js in Resources */ = {isa = PBXBuildFile; fileRef = 89C830B919D8904A009924DA /* findFeeds.js */; };
-		895779A619E62CC500548418 /* FindICO.js in Resources */ = {isa = PBXBuildFile; fileRef = 89C830BD19D89722009924DA /* FindICO.js */; };
 		895901B31A32B61A002E2C62 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 895901AF1A32B61A002E2C62 /* Localizable.strings */; };
 		895901B41A32B61A002E2C62 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 895901AF1A32B61A002E2C62 /* Localizable.strings */; };
 		895901B51A32B61A002E2C62 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 895901B11A32B61A002E2C62 /* Localizable.stringsdict */; };
@@ -260,8 +258,6 @@
 		89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830B219D7D2CB009924DA /* ArticleCell.swift */; };
 		89C830B619D7DE97009924DA /* ArticleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830B519D7DE97009924DA /* ArticleViewController.swift */; };
 		89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830B719D7EC55009924DA /* FindFeedViewController.swift */; };
-		89C830BB19D8904A009924DA /* findFeeds.js in Resources */ = {isa = PBXBuildFile; fileRef = 89C830B919D8904A009924DA /* findFeeds.js */; };
-		89C830BF19D89722009924DA /* FindICO.js in Resources */ = {isa = PBXBuildFile; fileRef = 89C830BD19D89722009924DA /* FindICO.js */; };
 		89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */; };
 		89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830C919DA37FB009924DA /* FeedTableCell.swift */; };
 		89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830CC19DC67B9009924DA /* UnreadCounter.swift */; };
@@ -304,8 +300,6 @@
 		89F516571B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89F516561B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m */; };
 		89F517021B1C070C0005AB04 /* FeedViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F517011B1C070C0005AB04 /* FeedViewControllerSpec.swift */; };
 		89F5170A1B2014470005AB04 /* QueryFeedViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F517091B2014470005AB04 /* QueryFeedViewControllerSpec.swift */; };
-		89F83F341B4D6D33003F8F6C /* FeedFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F83F331B4D6D33003F8F6C /* FeedFinder.swift */; };
-		89F83F361B4DB390003F8F6C /* FakeFeedFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F83F351B4DB390003F8F6C /* FakeFeedFinder.swift */; };
 		89F98B9F1B9FC65A005C3CA8 /* ScreenEdgePanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98B9E1B9FC659005C3CA8 /* ScreenEdgePanGestureRecognizer.swift */; };
 		89F98BA11BA079A3005C3CA8 /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA01BA079A3005C3CA8 /* SwitchTableViewCell.swift */; };
 		89F98BA41BA079EA005C3CA8 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA31BA079EA005C3CA8 /* TableViewCell.swift */; };
@@ -650,8 +644,6 @@
 		89C830B219D7D2CB009924DA /* ArticleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleCell.swift; sourceTree = "<group>"; };
 		89C830B519D7DE97009924DA /* ArticleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleViewController.swift; sourceTree = "<group>"; };
 		89C830B719D7EC55009924DA /* FindFeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindFeedViewController.swift; sourceTree = "<group>"; };
-		89C830B919D8904A009924DA /* findFeeds.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = findFeeds.js; sourceTree = "<group>"; };
-		89C830BD19D89722009924DA /* FindICO.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = FindICO.js; sourceTree = "<group>"; };
 		89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsTableViewController.swift; sourceTree = "<group>"; };
 		89C830C919DA37FB009924DA /* FeedTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCell.swift; sourceTree = "<group>"; };
 		89C830CC19DC67B9009924DA /* UnreadCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounter.swift; sourceTree = "<group>"; };
@@ -692,8 +684,6 @@
 		89F517011B1C070C0005AB04 /* FeedViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewControllerSpec.swift; sourceTree = "<group>"; };
 		89F517071B1C12A30005AB04 /* FakeURLSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeURLSession.swift; sourceTree = "<group>"; };
 		89F517091B2014470005AB04 /* QueryFeedViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryFeedViewControllerSpec.swift; sourceTree = "<group>"; };
-		89F83F331B4D6D33003F8F6C /* FeedFinder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedFinder.swift; sourceTree = "<group>"; };
-		89F83F351B4DB390003F8F6C /* FakeFeedFinder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeFeedFinder.swift; sourceTree = "<group>"; };
 		89F98B9E1B9FC659005C3CA8 /* ScreenEdgePanGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScreenEdgePanGestureRecognizer.swift; sourceTree = "<group>"; };
 		89F98BA01BA079A3005C3CA8 /* SwitchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCell.swift; sourceTree = "<group>"; };
 		89F98BA31BA079EA005C3CA8 /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
@@ -1322,9 +1312,6 @@
 				89C830B719D7EC55009924DA /* FindFeedViewController.swift */,
 				894896EB1A16F1130030EB6E /* LocalImportViewController.swift */,
 				8903EB001C6F9DFB001C0189 /* ImportUseCase.swift */,
-				89F83F331B4D6D33003F8F6C /* FeedFinder.swift */,
-				89C830B919D8904A009924DA /* findFeeds.js */,
-				89C830BD19D89722009924DA /* FindICO.js */,
 			);
 			name = "Importing Feeds";
 			sourceTree = "<group>";
@@ -1404,7 +1391,6 @@
 			isa = PBXGroup;
 			children = (
 				89EA6C351B4B2D8400456892 /* FakeDataRepository.swift */,
-				89F83F351B4DB390003F8F6C /* FakeFeedFinder.swift */,
 				89348F2E1C60730D007D366B /* FakeFeedRepository.swift */,
 				89C676551BA28FE60037A224 /* FakeFileManager.swift */,
 				8903EB0E1C703570001C0189 /* FakeImportUseCase.swift */,
@@ -1773,8 +1759,6 @@
 				89AA8A931B537048000E2C88 /* mac_classic.tmTheme in Resources */,
 				89B8BBDD1B9C5B1000B2C112 /* Launch Screen.xib in Resources */,
 				895901B31A32B61A002E2C62 /* Localizable.strings in Resources */,
-				89C830BF19D89722009924DA /* FindICO.js in Resources */,
-				89C830BB19D8904A009924DA /* findFeeds.js in Resources */,
 				895901B51A32B61A002E2C62 /* Localizable.stringsdict in Resources */,
 				8918D4D41B84593100DCDE0E /* ClearnessDark.css in Resources */,
 				8937F6BE1B7996F50044A442 /* prism.js.html in Resources */,
@@ -1791,10 +1775,8 @@
 				89EF4FD81A96852D0052A82F /* test.opml in Resources */,
 				89DBDA9A1A9EBB0C00959AC7 /* feed.rss in Resources */,
 				895901B61A32B61A002E2C62 /* Localizable.stringsdict in Resources */,
-				895779A519E62CC500548418 /* findFeeds.js in Resources */,
 				895901B41A32B61A002E2C62 /* Localizable.strings in Resources */,
 				89DBDA9C1A9FBCB200959AC7 /* feed2.rss in Resources */,
-				895779A619E62CC500548418 /* FindICO.js in Resources */,
 				898C48C51B3D98F60097045A /* test.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2047,7 +2029,6 @@
 				89F98BB51BA13056005C3CA8 /* UrlOpener.swift in Sources */,
 				89C830B619D7DE97009924DA /* ArticleViewController.swift in Sources */,
 				898F6E121B129AB6000D343D /* ActivityIndicator.swift in Sources */,
-				89F83F341B4D6D33003F8F6C /* FeedFinder.swift in Sources */,
 				89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */,
 				89735ABE1C0698370032E09C /* QuickActionRepository.swift in Sources */,
 				89D970C31B392B0300ED84B8 /* LocalNotificationSource.swift in Sources */,
@@ -2091,7 +2072,6 @@
 				8903A6271C4ABA7800E896BF /* NotificationViewSpec.swift in Sources */,
 				89348F2F1C60730D007D366B /* FakeFeedRepository.swift in Sources */,
 				898F670C1B000451004A7BE3 /* FakeOperationQueue.swift in Sources */,
-				89F83F361B4DB390003F8F6C /* FakeFeedFinder.swift in Sources */,
 				89F98BAA1BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift in Sources */,
 				89D970C11B392AD400ED84B8 /* FakeNotificationSource.swift in Sources */,
 				899823A91B2C76B800818755 /* TagEditorViewControllerSpec.swift in Sources */,

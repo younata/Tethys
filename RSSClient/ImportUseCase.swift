@@ -42,6 +42,7 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
     private let feedRepository: FeedRepository
     private let opmlService: OPMLService
     private let fileManager: NSFileManager
+    private let mainQueue: NSOperationQueue
 
     private enum ImportType {
         case Feed
@@ -52,11 +53,13 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
     public init(urlSession: NSURLSession,
                 feedRepository: FeedRepository,
                 opmlService: OPMLService,
-                fileManager: NSFileManager) {
+                fileManager: NSFileManager,
+                mainQueue: NSOperationQueue) {
         self.urlSession = urlSession
         self.feedRepository = feedRepository
         self.opmlService = opmlService
         self.fileManager = fileManager
+        self.mainQueue = mainQueue
     }
 
     public required convenience init(injector: Injector) {
@@ -64,7 +67,8 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
             urlSession: injector.create(NSURLSession)!,
             feedRepository: injector.create(FeedRepository)!,
             opmlService: injector.create(OPMLService)!,
-            fileManager: injector.create(NSFileManager)!
+            fileManager: injector.create(NSFileManager)!,
+            mainQueue: injector.create(kMainQueue) as! NSOperationQueue
         )
     }
 
@@ -107,8 +111,10 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
                     callback(.None(url))
                     return
                 }
-                callback(self.scanDataForItem(data, url: url))
-            }
+                self.mainQueue.addOperationWithBlock {
+                    callback(self.scanDataForItem(data, url: url))
+                }
+            }.resume()
         }
     }
 

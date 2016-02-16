@@ -11,17 +11,23 @@ class ImportUseCaseSpec: QuickSpec {
         var feedRepository: FakeFeedRepository!
         var opmlService: FakeOPMLService!
         var fileManager: FakeFileManager!
+        var mainQueue: FakeOperationQueue!
 
         beforeEach {
             urlSession = FakeURLSession()
             feedRepository = FakeFeedRepository()
             opmlService = FakeOPMLService()
             fileManager = FakeFileManager()
+
+            mainQueue = FakeOperationQueue()
+            mainQueue.runSynchronously = true
+
             subject = DefaultImportUseCase(
                 urlSession: urlSession,
                 feedRepository: feedRepository,
                 opmlService: opmlService,
-                fileManager: fileManager
+                fileManager: fileManager,
+                mainQueue: mainQueue
             )
         }
 

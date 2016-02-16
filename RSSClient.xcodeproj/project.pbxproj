@@ -27,6 +27,7 @@
 		8903EB0C1C702FA3001C0189 /* WebPageParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB0B1C702FA3001C0189 /* WebPageParserSpec.swift */; };
 		8903EB0D1C702FA3001C0189 /* WebPageParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB0B1C702FA3001C0189 /* WebPageParserSpec.swift */; };
 		8903EB0F1C703570001C0189 /* FakeImportUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB0E1C703570001C0189 /* FakeImportUseCase.swift */; };
+		8903EB151C72F8A7001C0189 /* Kanna.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8903EB141C72F8A7001C0189 /* Kanna.framework */; };
 		890894981BFEC670002848A4 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; };
 		890894991BFEC698002848A4 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; };
 		8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8908949A1BFED7B8002848A4 /* FakeReachable.swift */; };
@@ -91,6 +92,7 @@
 		894304521B450C19000078DC /* CoreDataFeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894304511B450C19000078DC /* CoreDataFeed.swift */; };
 		894304541B450C6A000078DC /* CoreDataEnclosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894304531B450C6A000078DC /* CoreDataEnclosure.swift */; };
 		894896EC1A16F1130030EB6E /* LocalImportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894896EB1A16F1130030EB6E /* LocalImportViewController.swift */; };
+		8949698D1C72FAEB00A91986 /* Kanna.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8903EB141C72F8A7001C0189 /* Kanna.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8953B1581B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8953B1571B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift */; };
 		895901B31A32B61A002E2C62 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 895901AF1A32B61A002E2C62 /* Localizable.strings */; };
 		895901B41A32B61A002E2C62 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 895901AF1A32B61A002E2C62 /* Localizable.strings */; };
@@ -396,6 +398,7 @@
 				899987371B483248003C1AF5 /* Muon.framework in Embed Frameworks */,
 				8935F5D21B46273D000FFD5D /* Nimble.framework in Embed Frameworks */,
 				8935F5D31B46273D000FFD5D /* Quick.framework in Embed Frameworks */,
+				8949698D1C72FAEB00A91986 /* Kanna.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -487,6 +490,7 @@
 		8903EB081C702843001C0189 /* WebPageParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebPageParser.swift; sourceTree = "<group>"; };
 		8903EB0B1C702FA3001C0189 /* WebPageParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebPageParserSpec.swift; sourceTree = "<group>"; };
 		8903EB0E1C703570001C0189 /* FakeImportUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeImportUseCase.swift; sourceTree = "<group>"; };
+		8903EB141C72F8A7001C0189 /* Kanna.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Kanna.framework; path = ../Carthage/Build/iOS/Kanna.framework; sourceTree = "<group>"; };
 		890894971BFEC670002848A4 /* Reachability.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reachability.framework; path = ../Carthage/Build/iOS/Reachability.framework; sourceTree = "<group>"; };
 		8908949A1BFED7B8002848A4 /* FakeReachable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeReachable.swift; sourceTree = "<group>"; };
 		89122E601C5D725D00004B1F /* DatabaseMigrator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseMigrator.swift; sourceTree = "<group>"; };
@@ -707,6 +711,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8903EB151C72F8A7001C0189 /* Kanna.framework in Frameworks */,
 				898911911C2FC88E009A44E9 /* Realm.framework in Frameworks */,
 				898911921C2FC88E009A44E9 /* RealmSwift.framework in Frameworks */,
 				890894981BFEC670002848A4 /* Reachability.framework in Frameworks */,
@@ -1195,6 +1200,7 @@
 		89CB98BB1B13921200C87160 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8903EB141C72F8A7001C0189 /* Kanna.framework */,
 				89BA95381C4C8E7C001FD453 /* WorkFlow.framework */,
 				8989118F1C2FC88E009A44E9 /* Realm.framework */,
 				898911901C2FC88E009A44E9 /* RealmSwift.framework */,
@@ -1817,6 +1823,7 @@
 				"$(SRCROOT)/Carthage/Build/iOS/Realm.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/RealmSwift.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/WorkFlow.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Kanna.framework",
 			);
 			name = "Embed Carthage Libraries";
 			outputPaths = (
@@ -2203,6 +2210,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_NO_COMMON_BLOCKS = YES;
+				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2";
 				INFOPLIST_FILE = rNewsKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
@@ -2230,6 +2238,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_NO_COMMON_BLOCKS = YES;
+				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2";
 				INFOPLIST_FILE = rNewsKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
@@ -2253,6 +2262,7 @@
 				);
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2";
 				INFOPLIST_FILE = rNewsKitTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -2272,6 +2282,7 @@
 				);
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2";
 				INFOPLIST_FILE = rNewsKitTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -2606,7 +2617,7 @@
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				HEADER_SEARCH_PATHS = "$(inherited)";
+				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2";
 				INFOPLIST_FILE = RSSClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2636,7 +2647,7 @@
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				HEADER_SEARCH_PATHS = "$(inherited)";
+				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2";
 				INFOPLIST_FILE = RSSClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2666,6 +2677,7 @@
 					"$(inherited)",
 				);
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2";
 				INFOPLIST_FILE = RSSClientTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -2692,6 +2704,7 @@
 					"$(PROJECT_DIR)/RSSClientTests",
 				);
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2";
 				INFOPLIST_FILE = RSSClientTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";

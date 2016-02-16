@@ -219,7 +219,7 @@ extension FindFeedViewController {
                 alert.addAction(UIAlertAction(title: path, style: .Default) { _ in
                     self.save(link)
                     self.dismissViewControllerAnimated(true, completion: nil)
-                    })
+                })
             }
             let cancelTitle = NSLocalizedString("FindFeedViewController_Cancel", comment: "")
             alert.addAction(UIAlertAction(title: cancelTitle, style: .Cancel) { _ in

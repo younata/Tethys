@@ -39,8 +39,8 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
 
     private let feedRepository: FeedRepository
     private let themeRepository: ThemeRepository
-    private let tagEditorViewController: TagEditorViewController
-    private let articleListController: ArticleListController
+    private let tagEditorViewController: Void -> TagEditorViewController
+    private let articleListController: Void -> ArticleListController
 
     public lazy var tableView: UITableView = {
         let tableView = UITableView(forAutoLayout: ())
@@ -64,8 +64,8 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
 
     public init(feedRepository: FeedRepository,
                 themeRepository: ThemeRepository,
-                tagEditorViewController: TagEditorViewController,
-                articleListController: ArticleListController) {
+                tagEditorViewController: Void -> TagEditorViewController,
+                articleListController: Void -> ArticleListController) {
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository
         self.tagEditorViewController = tagEditorViewController
@@ -78,8 +78,8 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
         self.init(
             feedRepository: injector.create(FeedRepository)!,
             themeRepository: injector.create(ThemeRepository)!,
-            tagEditorViewController: injector.create(TagEditorViewController)!,
-            articleListController: injector.create(ArticleListController)!
+            tagEditorViewController: {injector.create(TagEditorViewController)!},
+            articleListController: {injector.create(ArticleListController)!}
         )
     }
 
@@ -139,12 +139,13 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
     }
 
     private func showTagEditor(tagIndex: Int) {
-        self.tagEditorViewController.feed = feed
+        let tagEditorViewController = self.tagEditorViewController()
+        tagEditorViewController.feed = feed
         if tagIndex < feed?.tags.count {
-            self.tagEditorViewController.tagIndex = tagIndex
-            self.tagEditorViewController.tagPicker.textField.text = feed?.tags[tagIndex]
+            tagEditorViewController.tagIndex = tagIndex
+            tagEditorViewController.tagPicker.textField.text = feed?.tags[tagIndex]
         }
-        self.navigationController?.pushViewController(self.tagEditorViewController, animated: true)
+        self.navigationController?.pushViewController(tagEditorViewController, animated: true)
     }
 
     // MARK: - Table view data source
@@ -266,11 +267,12 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
         case .Query:
             let previewTitle = NSLocalizedString("QueryFeedViewController_Cell_Action_Preview", comment: "")
             let preview = UITableViewRowAction(style: .Normal, title: previewTitle, handler: {(_, _) in
-                self.articleListController.previewMode = true
+                let articleListController = self.articleListController()
+                articleListController.previewMode = true
                 self.feedRepository.articlesMatchingQuery(self.feedQuery) {articles in
-                    self.articleListController.articles = DataStoreBackedArray(articles)
+                    articleListController.articles = DataStoreBackedArray(articles)
                 }
-                self.navigationController?.pushViewController(self.articleListController, animated: true)
+                self.navigationController?.pushViewController(articleListController, animated: true)
             })
             return [preview]
         case .Tags:

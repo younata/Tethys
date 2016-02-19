@@ -15,7 +15,7 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
 
     private let feedRepository: FeedRepository
     private let themeRepository: ThemeRepository
-    private let articleViewController: ArticleViewController
+    private let articleViewController: Void -> ArticleViewController
 
     public lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar(frame: CGRect(x: 0, y: 0, width: 320, height: 32))
@@ -28,7 +28,7 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
 
     public init(feedRepository: FeedRepository,
                 themeRepository: ThemeRepository,
-                articleViewController: ArticleViewController) {
+                articleViewController: Void -> ArticleViewController) {
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository
         self.articleViewController = articleViewController
@@ -40,7 +40,7 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
         self.init(
             feedRepository: injector.create(FeedRepository)!,
             themeRepository: injector.create(ThemeRepository)!,
-            articleViewController: injector.create(ArticleViewController)!
+            articleViewController: {injector.create(ArticleViewController)!}
         )
     }
 
@@ -105,14 +105,15 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
     }
 
     private func configuredArticleController(article: Article, read: Bool = true) -> ArticleViewController {
-        self.articleViewController.setArticle(article, read: read)
-        self.articleViewController.articles = self.articles
+        let articleViewController = self.articleViewController()
+        articleViewController.setArticle(article, read: read)
+        articleViewController.articles = self.articles
         if self.articles.count != 0 {
-            self.articleViewController.lastArticleIndex = self.articles.indexOf(article) ?? 0
+            articleViewController.lastArticleIndex = self.articles.indexOf(article) ?? 0
         } else {
-            self.articleViewController.lastArticleIndex = 0
+            articleViewController.lastArticleIndex = 0
         }
-        return self.articleViewController
+        return articleViewController
     }
 
     private func showArticleController(avc: ArticleViewController, animated: Bool) {

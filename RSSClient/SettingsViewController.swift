@@ -86,7 +86,7 @@ public class SettingsViewController: UIViewController, Injectable {
     private let urlOpener: UrlOpener
     private let quickActionRepository: QuickActionRepository
     private let feedRepository: FeedRepository
-    private let documentationViewController: DocumentationViewController
+    private let documentationViewController: Void -> DocumentationViewController
 
     private var oldTheme: ThemeRepository.Theme = .Default
     private lazy var queryFeedsEnabled: Bool = {
@@ -99,7 +99,7 @@ public class SettingsViewController: UIViewController, Injectable {
                 urlOpener: UrlOpener,
                 quickActionRepository: QuickActionRepository,
                 feedRepository: FeedRepository,
-                documentationViewController: DocumentationViewController) {
+                documentationViewController: Void -> DocumentationViewController) {
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.urlOpener = urlOpener
@@ -118,7 +118,7 @@ public class SettingsViewController: UIViewController, Injectable {
             urlOpener: injector.create(UrlOpener)!,
             quickActionRepository: injector.create(QuickActionRepository)!,
             feedRepository: injector.create(FeedRepository)!,
-            documentationViewController: injector.create(DocumentationViewController)!
+            documentationViewController: {injector.create(DocumentationViewController)!}
         )
     }
 
@@ -421,8 +421,9 @@ extension SettingsViewController: UITableViewDelegate {
             self.navigationController?.pushViewController(feedsListController, animated: true)
         case .Advanced:
             tableView.deselectRowAtIndexPath(indexPath, animated: false)
-            self.documentationViewController.configure(.QueryFeed)
-            self.navigationController?.pushViewController(self.documentationViewController, animated: true)
+            let documentationViewController = self.documentationViewController()
+            documentationViewController.configure(.QueryFeed)
+            self.navigationController?.pushViewController(documentationViewController, animated: true)
         case .Credits:
             tableView.deselectRowAtIndexPath(indexPath, animated: false)
             guard let url = NSURL(string: "https://twitter.com/younata") else { return }

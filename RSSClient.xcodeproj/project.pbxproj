@@ -32,6 +32,9 @@
 		890894991BFEC698002848A4 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; };
 		8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8908949A1BFED7B8002848A4 /* FakeReachable.swift */; };
 		8908949C1BFED826002848A4 /* Reachability.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		890B78BC1C77A5100066E201 /* DocumentationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890B78BB1C77A5100066E201 /* DocumentationUseCase.swift */; };
+		890B78BE1C77A52B0066E201 /* DocumentationUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890B78BD1C77A52B0066E201 /* DocumentationUseCaseSpec.swift */; };
+		890B78C21C77A83D0066E201 /* FakeDocumentationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890B78C11C77A83D0066E201 /* FakeDocumentationUseCase.swift */; };
 		89122E611C5D725D00004B1F /* DatabaseMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89122E601C5D725D00004B1F /* DatabaseMigrator.swift */; };
 		89122E621C5D725D00004B1F /* DatabaseMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89122E601C5D725D00004B1F /* DatabaseMigrator.swift */; };
 		89122E641C5D762000004B1F /* DatabaseMigratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89122E631C5D762000004B1F /* DatabaseMigratorSpec.swift */; };
@@ -493,6 +496,9 @@
 		8903EB141C72F8A7001C0189 /* Kanna.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Kanna.framework; path = ../Carthage/Build/iOS/Kanna.framework; sourceTree = "<group>"; };
 		890894971BFEC670002848A4 /* Reachability.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reachability.framework; path = ../Carthage/Build/iOS/Reachability.framework; sourceTree = "<group>"; };
 		8908949A1BFED7B8002848A4 /* FakeReachable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeReachable.swift; sourceTree = "<group>"; };
+		890B78BB1C77A5100066E201 /* DocumentationUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationUseCase.swift; sourceTree = "<group>"; };
+		890B78BD1C77A52B0066E201 /* DocumentationUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationUseCaseSpec.swift; sourceTree = "<group>"; };
+		890B78C11C77A83D0066E201 /* FakeDocumentationUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDocumentationUseCase.swift; sourceTree = "<group>"; };
 		89122E601C5D725D00004B1F /* DatabaseMigrator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseMigrator.swift; sourceTree = "<group>"; };
 		89122E631C5D762000004B1F /* DatabaseMigratorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseMigratorSpec.swift; sourceTree = "<group>"; };
 		8917546F1C5B449E0036D96D /* RealmObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmObjects.swift; sourceTree = "<group>"; };
@@ -1050,6 +1056,7 @@
 			isa = PBXGroup;
 			children = (
 				89F98BAD1BA0E449005C3CA8 /* DocumentationViewControllerSpec.swift */,
+				890B78BD1C77A52B0066E201 /* DocumentationUseCaseSpec.swift */,
 				89E2A33E1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift */,
 				89CB98BD1B13945500C87160 /* Importing Feeds */,
 				89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */,
@@ -1388,6 +1395,7 @@
 			isa = PBXGroup;
 			children = (
 				89F98BAB1BA0E428005C3CA8 /* DocumentationViewController.swift */,
+				890B78BB1C77A5100066E201 /* DocumentationUseCase.swift */,
 				89F98BB01BA0EDF1005C3CA8 /* queryFeedDocumentation.html */,
 			);
 			name = Documentation;
@@ -1397,6 +1405,7 @@
 			isa = PBXGroup;
 			children = (
 				89EA6C351B4B2D8400456892 /* FakeDataRepository.swift */,
+				890B78C11C77A83D0066E201 /* FakeDocumentationUseCase.swift */,
 				89348F2E1C60730D007D366B /* FakeFeedRepository.swift */,
 				89C676551BA28FE60037A224 /* FakeFileManager.swift */,
 				8903EB0E1C703570001C0189 /* FakeImportUseCase.swift */,
@@ -2021,6 +2030,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				890B78BC1C77A5100066E201 /* DocumentationUseCase.swift in Sources */,
 				8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */,
 				89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */,
 				89D970BD1B3929A600ED84B8 /* BackgroundFetchHandler.swift in Sources */,
@@ -2071,9 +2081,11 @@
 				89EA6C361B4B2D8400456892 /* FakeDataRepository.swift in Sources */,
 				8997C7F51B248D5A00972930 /* FakeWebView.swift in Sources */,
 				89F98BA81BA07E50005C3CA8 /* SettingsRepositorySpec.swift in Sources */,
+				890B78BE1C77A52B0066E201 /* DocumentationUseCaseSpec.swift in Sources */,
 				89CB98BF1B13947800C87160 /* FeedTableCellSpec.swift in Sources */,
 				8997C7F71B25074900972930 /* ValidatorViewSpec.swift in Sources */,
 				898F670E1B0007F4004A7BE3 /* SpecInjectorModule.swift in Sources */,
+				890B78C21C77A83D0066E201 /* FakeDocumentationUseCase.swift in Sources */,
 				893F93E41B237EBC00B52194 /* UnreadCounterSpec.swift in Sources */,
 				89FAE2741B92893E009A3604 /* FakeThemeRepository.swift in Sources */,
 				8903A6271C4ABA7800E896BF /* NotificationViewSpec.swift in Sources */,

@@ -5,12 +5,16 @@ import Ra
 
 class DocumentationViewControllerSpec: QuickSpec {
     override func spec() {
-        var subject: DocumentationViewController! = nil
-        var themeRepository: FakeThemeRepository! = nil
-        var navigationController: UINavigationController! = nil
+        var subject: DocumentationViewController!
+        var themeRepository: FakeThemeRepository!
+        var documentationUseCase: FakeDocumentationUseCase!
+        var navigationController: UINavigationController!
 
         beforeEach {
             let injector = Injector()
+
+            documentationUseCase = FakeDocumentationUseCase()
+            injector.bind(DocumentationUseCase.self, toInstance: documentationUseCase)
 
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, toInstance: themeRepository)
@@ -35,13 +39,19 @@ class DocumentationViewControllerSpec: QuickSpec {
         }
 
         describe("configuring with a document") {
-            describe("Query Feed") {
+            describe("with a Query Feed") {
                 beforeEach {
+                    documentationUseCase.htmlForDocumentReturns("foo")
                     subject.configure(.QueryFeed)
                 }
 
-                it("should change the navigation title") {
-                    expect(subject.navigationItem.title).to(equal("Query Feeds"))
+                it("changes the title") {
+                    expect(subject.title).to(equal("Query Feeds"))
+                }
+
+                it("asks the documentation use case for the Document's content") {
+                    expect(documentationUseCase.htmlForDocumentCallCount) == 1
+                    expect(documentationUseCase.htmlForDocumentArgsForCall(0)) == Document.QueryFeed
                 }
             }
         }

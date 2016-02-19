@@ -16,7 +16,11 @@ public class InjectorModule: Ra.InjectorModule {
             return tagPicker
         }
 
+        injector.bind(NSBundle.self, toInstance: NSBundle.mainBundle())
+
         injector.bind(ImportUseCase.self) { DefaultImportUseCase(injector: $0) }
+
+        injector.bind(DocumentationUseCase.self) { DefaultDocumentationUseCase(injector: $0) }
 
         let app = UIApplication.sharedApplication()
         injector.bind(UrlOpener.self, toInstance: app)

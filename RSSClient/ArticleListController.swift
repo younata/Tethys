@@ -88,7 +88,10 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
     public func deletedFeed(feed: Feed, feedsLeft: Int) {}
 
     public func markedArticles(articles: [Article], asRead read: Bool) {
-        self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
+        let indices = articles.flatMap { self.articles.indexOf($0) }
+
+        let indexPaths = indices.map { NSIndexPath(forRow: $0, inSection: 0) }
+        self.tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .None)
     }
 
     private func articleForIndexPath(indexPath: NSIndexPath) -> Article {
@@ -171,7 +174,7 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
                 handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
                     self.feedRepository.deleteArticle(article)
                     self.articles.remove(article)
-                    self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                    tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             })
             let unread = NSLocalizedString("ArticleListController_Cell_EditAction_MarkUnread", comment: "")
             let read = NSLocalizedString("ArticleListController_Cell_EditAction_MarkRead", comment: "")
@@ -180,7 +183,6 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
                 handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
                     article.read = !article.read
                     self.feedRepository.markArticle(article, asRead: article.read)
-                    tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             })
             return [delete, toggle]
     }

@@ -138,6 +138,22 @@ class FindFeedViewControllerSpec: QuickSpec {
                 expect(subject.addFeedButton.enabled).to(beFalsy())
             }
 
+            describe("tapping the navField") {
+                beforeEach {
+                    subject.navField.delegate?.textFieldDidBeginEditing?(subject.navField)
+                }
+
+                it("fills the navField's text with the webView's url") {
+                    expect(subject.navField.text) == "https://example.com/feed.xml"
+                }
+
+                it("goes back to the webView's title when loaded cancel is tapped") {
+                    subject.cancelTextEntry.tap()
+
+                    expect(subject.navField.text) == ""
+                }
+            }
+
             it("asks the import use case to check if the page at the url has a feed") {
                 expect(importUseCase.scanForImportableArgsForCall(0).0) == NSURL(string: "https://example.com/feed.xml")
             }

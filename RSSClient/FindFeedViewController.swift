@@ -69,7 +69,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
         let cancelTitle = NSLocalizedString("FindFeedViewController_Cancel", comment: "")
         self.cancelTextEntry = UIBarButtonItem(title: cancelTitle, style: .Plain,
-            target: self.navField, action: "resignFirstResponder")
+            target: self, action: "dismissNavFieldKeyboard")
 
         self.navigationController?.toolbarHidden = false
         func spacer() -> UIBarButtonItem {
@@ -127,6 +127,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
     public func textFieldDidBeginEditing(textField: UITextField) {
         self.navigationItem.setRightBarButtonItem(self.cancelTextEntry, animated: true)
+        textField.text = self.webContent.URL?.absoluteString
     }
 
     public func textFieldDidEndEditing(textField: UITextField) {
@@ -202,6 +203,12 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
 // MARK: Private
 extension FindFeedViewController {
+    @objc private func dismissNavFieldKeyboard() {
+        self.navField.resignFirstResponder()
+
+        self.navField.text = nil
+    }
+
     @objc private func dismiss() {
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }

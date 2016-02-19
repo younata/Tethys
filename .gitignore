@@ -8,3 +8,8 @@ foo
 *bcsymbolmap
 Carthage/Checkouts
 .release_token
+.bundle
+fastlane/
+rNews.app*
+rNews.ipa
+screenshots

@@ -385,40 +385,7 @@ extension SettingsViewController: UITableViewDelegate {
             self.tableView.reloadData()
             self.tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
         case .QuickActions:
-            guard #available(iOS 9, *) else { return }
-            let feedsListController = FeedsListController()
-            feedsListController.themeRepository = self.themeRepository
-            feedsListController.navigationItem.title = self.titleForQuickAction(indexPath.row)
-
-            let quickActions = self.quickActionRepository.quickActions
-            self.feedRepository.feeds {feeds in
-                if !quickActions.isEmpty {
-                    let quickActionFeeds = quickActions.indices.reduce([Feed]()) {
-                        guard let feed = self.feedForQuickAction($1, feeds: feeds) else { return $0 }
-                        return $0 + [feed]
-                    }
-                    feedsListController.feeds = feeds.filter { !quickActionFeeds.contains($0) }
-                } else {
-                    feedsListController.feeds = feeds
-                }
-            }
-            feedsListController.tapFeed = {feed, _ in
-                let newQuickAction = UIApplicationShortcutItem(type: "com.rachelbrindle.rssclient.viewfeed",
-                    localizedTitle: feed.title)
-                if indexPath.row < quickActions.count {
-                    self.quickActionRepository.quickActions[indexPath.row] = newQuickAction
-                } else {
-                    self.quickActionRepository.quickActions.append(newQuickAction)
-                    if self.quickActionRepository.quickActions.count <= 3 {
-                        let quickActionsCount = self.quickActionRepository.quickActions.count
-                        let insertedIndexPath = NSIndexPath(forRow: quickActionsCount, inSection: indexPath.section)
-                        self.tableView.insertRowsAtIndexPaths([insertedIndexPath], withRowAnimation: .Automatic)
-                    }
-                }
-                self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-                self.navigationController?.popViewControllerAnimated(true)
-            }
-            self.navigationController?.pushViewController(feedsListController, animated: true)
+            self.didTapQuickActionCell(indexPath)
         case .Advanced:
             tableView.deselectRowAtIndexPath(indexPath, animated: false)
             let documentationViewController = self.documentationViewController()
@@ -434,5 +401,42 @@ extension SettingsViewController: UITableViewDelegate {
                 self.urlOpener.openURL(url)
             }
         }
+    }
+
+    private func didTapQuickActionCell(indexPath: NSIndexPath) {
+        guard #available(iOS 9, *) else { return }
+        let feedsListController = FeedsListController()
+        feedsListController.themeRepository = self.themeRepository
+        feedsListController.navigationItem.title = self.titleForQuickAction(indexPath.row)
+
+        let quickActions = self.quickActionRepository.quickActions
+        self.feedRepository.feeds {feeds in
+            if !quickActions.isEmpty {
+                let quickActionFeeds = quickActions.indices.reduce([Feed]()) {
+                    guard let feed = self.feedForQuickAction($1, feeds: feeds) else { return $0 }
+                    return $0 + [feed]
+                }
+                feedsListController.feeds = feeds.filter { !quickActionFeeds.contains($0) }
+            } else {
+                feedsListController.feeds = feeds
+            }
+        }
+        feedsListController.tapFeed = {feed, _ in
+            let newQuickAction = UIApplicationShortcutItem(type: "com.rachelbrindle.rssclient.viewfeed",
+                localizedTitle: feed.title)
+            if indexPath.row < quickActions.count {
+                self.quickActionRepository.quickActions[indexPath.row] = newQuickAction
+            } else {
+                self.quickActionRepository.quickActions.append(newQuickAction)
+                if self.quickActionRepository.quickActions.count <= 3 {
+                    let quickActionsCount = self.quickActionRepository.quickActions.count
+                    let insertedIndexPath = NSIndexPath(forRow: quickActionsCount, inSection: indexPath.section)
+                    self.tableView.insertRowsAtIndexPaths([insertedIndexPath], withRowAnimation: .Automatic)
+                }
+            }
+            self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+            self.navigationController?.popViewControllerAnimated(true)
+        }
+        self.navigationController?.pushViewController(feedsListController, animated: true)
     }
 }

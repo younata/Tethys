@@ -150,7 +150,6 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
         return nil
     }
 
-    // swiftlint:disable function_body_length
     public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let section = FeedSections(rawValue: indexPath.section) ?? .Title
         switch section {
@@ -165,30 +164,7 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
             }
             return cell
         case .URL:
-            let tc = tableView.dequeueReusableCellWithIdentifier("text", forIndexPath: indexPath) as! TextFieldCell
-            tc.onTextChange = {(_) in } // remove any previous onTextChange for setting stuff here.
-            tc.themeRepository = self.themeRepository
-            tc.textField.text = self.feed?.url?.absoluteString
-            tc.showValidator = true
-            tc.onTextChange = {(text) in
-                if let txt = text, url = NSURL(string: txt) {
-                    self.urlSession.dataTaskWithURL(url) {data, response, error in
-                        if let response = response as? NSHTTPURLResponse {
-                            if let data = data,
-                               let nstext = NSString(data: data, encoding: NSUTF8StringEncoding)
-                                where response.statusCode == 200 {
-                                    let string = String(nstext)
-                                    let fp = Muon.FeedParser(string: string)
-                                    fp.failure {_ in tc.setValid(false) }
-                                    fp.success {_ in tc.setValid(true) }
-                                    self.operationQueue.addOperation(fp)
-                            } else { tc.setValid(false) }
-                        } else { tc.setValid(false) }
-                    }.resume()
-                }
-                return
-            }
-            return tc
+            return self.textFieldCell(indexPath)
         case .Summary:
             let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TableViewCell
             cell.textLabel?.text = ""
@@ -217,7 +193,6 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
             return cell
         }
     }
-    // swiftlint:enable function_body_length
 
     public func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         let isTagsSection = FeedSections(rawValue: indexPath.section) == .Tags
@@ -264,6 +239,33 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
             let count = feed?.tags.count where indexPath.row == count {
                 showTagEditor(indexPath.row)
         }
+    }
+
+    private func textFieldCell(indexPath: NSIndexPath) -> TextFieldCell {
+        let tc = tableView.dequeueReusableCellWithIdentifier("text", forIndexPath: indexPath) as! TextFieldCell
+        tc.onTextChange = {(_) in } // remove any previous onTextChange for setting stuff here.
+        tc.themeRepository = self.themeRepository
+        tc.textField.text = self.feed?.url?.absoluteString
+        tc.showValidator = true
+        tc.onTextChange = {(text) in
+            if let txt = text, url = NSURL(string: txt) {
+                self.urlSession.dataTaskWithURL(url) {data, response, error in
+                    if let response = response as? NSHTTPURLResponse {
+                        if let data = data,
+                            let nstext = NSString(data: data, encoding: NSUTF8StringEncoding)
+                            where response.statusCode == 200 {
+                                let string = String(nstext)
+                                let fp = Muon.FeedParser(string: string)
+                                fp.failure {_ in tc.setValid(false) }
+                                fp.success {_ in tc.setValid(true) }
+                                self.operationQueue.addOperation(fp)
+                        } else { tc.setValid(false) }
+                    } else { tc.setValid(false) }
+                    }.resume()
+            }
+            return
+        }
+        return tc
     }
 }
 

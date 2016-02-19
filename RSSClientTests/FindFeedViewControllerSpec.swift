@@ -334,7 +334,6 @@ class FindFeedViewControllerSpec: QuickSpec {
                     it("should bring up a list of available feeds to import") {
                         expect(subject.presentedViewController).to(beAKindOf(UIAlertController.self))
                         if let alertController = subject.presentedViewController as? UIAlertController {
-                            expect(alertController.preferredStyle) == UIAlertControllerStyle.ActionSheet
                             expect(alertController.actions.count) == 3
 
                             guard alertController.actions.count == 3 else { return }

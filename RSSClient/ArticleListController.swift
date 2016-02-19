@@ -91,7 +91,7 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
         let indices = articles.flatMap { self.articles.indexOf($0) }
 
         let indexPaths = indices.map { NSIndexPath(forRow: $0, inSection: 0) }
-        self.tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .None)
+        self.tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .Right)
     }
 
     private func articleForIndexPath(indexPath: NSIndexPath) -> Article {

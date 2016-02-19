@@ -295,9 +295,10 @@ public class FeedsTableViewController: UIViewController, Injectable {
                     withMultiplier: 0.75)
             }
 
+            let oldFeeds = self.feeds
             self.feeds = sortedFeeds
-            if sortedFeeds != self.feeds {
-                self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+            if oldFeeds != sortedFeeds {
+                self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Fade)
             } else {
                 self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
             }

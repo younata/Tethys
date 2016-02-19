@@ -83,23 +83,23 @@ public class FeedsTableViewController: UIViewController, Injectable {
     private let themeRepository: ThemeRepository
     private let settingsRepository: SettingsRepository
 
-    private let findFeedViewController: FindFeedViewController
-    private let localImportViewController: LocalImportViewController
-    private let feedViewController: FeedViewController
-    private let queryFeedViewController: QueryFeedViewController
-    private let settingsViewController: SettingsViewController
-    private let articleListController: ArticleListController
+    private let findFeedViewController: Void -> FindFeedViewController
+    private let localImportViewController: Void -> LocalImportViewController
+    private let feedViewController: Void -> FeedViewController
+    private let queryFeedViewController: Void -> QueryFeedViewController
+    private let settingsViewController: Void -> SettingsViewController
+    private let articleListController: Void -> ArticleListController
 
     // swiftlint:disable function_parameter_count
     public init(feedRepository: FeedRepository,
                 themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
-                findFeedViewController: FindFeedViewController,
-                localImportViewController: LocalImportViewController,
-                feedViewController: FeedViewController,
-                queryFeedViewController: QueryFeedViewController,
-                settingsViewController: SettingsViewController,
-                articleListController: ArticleListController
+                findFeedViewController: Void -> FindFeedViewController,
+                localImportViewController: Void -> LocalImportViewController,
+                feedViewController: Void -> FeedViewController,
+                queryFeedViewController: Void -> QueryFeedViewController,
+                settingsViewController: Void -> SettingsViewController,
+                articleListController: Void -> ArticleListController
         ) {
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository
@@ -119,12 +119,12 @@ public class FeedsTableViewController: UIViewController, Injectable {
             feedRepository: injector.create(FeedRepository)!,
             themeRepository: injector.create(ThemeRepository)!,
             settingsRepository: injector.create(SettingsRepository)!,
-            findFeedViewController: injector.create(FindFeedViewController)!,
-            localImportViewController: injector.create(LocalImportViewController)!,
-            feedViewController: injector.create(FeedViewController)!,
-            queryFeedViewController: injector.create(QueryFeedViewController)!,
-            settingsViewController: injector.create(SettingsViewController)!,
-            articleListController: injector.create(ArticleListController)!
+            findFeedViewController: {injector.create(FindFeedViewController)!},
+            localImportViewController: {injector.create(LocalImportViewController)!},
+            feedViewController: {injector.create(FeedViewController)!},
+            queryFeedViewController: {injector.create(QueryFeedViewController)!},
+            settingsViewController: {injector.create(SettingsViewController)!},
+            articleListController: {injector.create(ArticleListController)!}
         )
     }
 
@@ -240,15 +240,15 @@ public class FeedsTableViewController: UIViewController, Injectable {
 
     // MARK - Private/Internal
 
-    internal func importFromWeb() { self.presentController(self.findFeedViewController) }
+    internal func importFromWeb() { self.presentController(self.findFeedViewController()) }
 
-    @objc private func importFromLocal() { self.presentController(self.localImportViewController) }
+    @objc private func importFromLocal() { self.presentController(self.localImportViewController()) }
 
-    @objc private func createQueryFeed() { self.presentController(self.queryFeedViewController) }
+    @objc private func createQueryFeed() { self.presentController(self.queryFeedViewController()) }
 
     @objc private func search() { self.searchBar.becomeFirstResponder() }
 
-    @objc private func presentSettings() { self.presentController(self.settingsViewController) }
+    @objc private func presentSettings() { self.presentController(self.settingsViewController()) }
 
     private func presentController(viewController: UIViewController) {
         let nc = UINavigationController(rootViewController: viewController)
@@ -338,8 +338,9 @@ public class FeedsTableViewController: UIViewController, Injectable {
     }
 
     private func configuredArticleListWithFeeds(feeds: [Feed]) -> ArticleListController {
-        self.articleListController.feeds = feeds
-        return self.articleListController
+        let articleListController = self.articleListController()
+        articleListController.feeds = feeds
+        return articleListController
     }
 
     private func showArticleList(articleListController: ArticleListController, animated: Bool) {
@@ -541,11 +542,13 @@ extension FeedsTableViewController: UITableViewDelegate {
                 let feed = self.feedAtIndexPath(indexPath)
                 var viewController: UIViewController! = nil
                 if feed.isQueryFeed {
-                    self.queryFeedViewController.feed = feed
-                    viewController = self.queryFeedViewController
+                    let queryFeedViewController = self.queryFeedViewController()
+                    queryFeedViewController.feed = feed
+                    viewController = queryFeedViewController
                 } else {
-                    self.feedViewController.feed = feed
-                    viewController = self.feedViewController
+                    let feedViewController = self.feedViewController()
+                    feedViewController.feed = feed
+                    viewController = feedViewController
                 }
                 self.presentViewController(UINavigationController(rootViewController: viewController),
                     animated: true, completion: nil)

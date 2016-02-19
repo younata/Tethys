@@ -45,7 +45,7 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
     private let urlSession: NSURLSession
     private let operationQueue: NSOperationQueue
     private let themeRepository: ThemeRepository
-    private let tagEditorViewController: TagEditorViewController
+    private let tagEditorViewController: Void -> TagEditorViewController
 
     private let intervalFormatter = NSDateIntervalFormatter()
 
@@ -53,7 +53,7 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
                 urlSession: NSURLSession,
                 operationQueue: NSOperationQueue,
                 themeRepository: ThemeRepository,
-                tagEditorViewController: TagEditorViewController) {
+                tagEditorViewController: Void -> TagEditorViewController) {
         self.feedRepository = feedRepository
         self.urlSession = urlSession
         self.operationQueue = operationQueue
@@ -69,7 +69,7 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
             urlSession: injector.create(NSURLSession)!,
             operationQueue: injector.create(kBackgroundQueue) as! NSOperationQueue,
             themeRepository: injector.create(ThemeRepository)!,
-            tagEditorViewController: injector.create(TagEditorViewController)!
+            tagEditorViewController: {injector.create(TagEditorViewController)!}
         )
     }
 
@@ -116,13 +116,14 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
     }
 
     private func showTagEditor(tagIndex: Int) -> TagEditorViewController {
-        self.tagEditorViewController.feed = self.feed
+        let tagEditorViewController = self.tagEditorViewController()
+        tagEditorViewController.feed = self.feed
         if tagIndex < self.feed?.tags.count {
-            self.tagEditorViewController.tagIndex = tagIndex
-            self.tagEditorViewController.tagPicker.textField.text = self.feed?.tags[tagIndex]
+            tagEditorViewController.tagIndex = tagIndex
+            tagEditorViewController.tagPicker.textField.text = self.feed?.tags[tagIndex]
         }
-        self.navigationController?.pushViewController(self.tagEditorViewController, animated: true)
-        return self.tagEditorViewController
+        self.navigationController?.pushViewController(tagEditorViewController, animated: true)
+        return tagEditorViewController
     }
 
     // MARK: - Table view data source

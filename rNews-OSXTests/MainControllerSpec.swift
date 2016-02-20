@@ -92,8 +92,8 @@ class MainControllerSpec: QuickSpec {
             }
 
             it("should open a dialog to find something") {
-                expect(openPanel.canChooseDirectories).to(beFalsy())
-                expect(openPanel.allowsMultipleSelection).to(beTruthy())
+                expect(openPanel.canChooseDirectories) == false
+                expect(openPanel.allowsMultipleSelection) == true
                 expect(openPanel.allowedFileTypes).to(equal(["opml", "xml"]))
                 expect(openPanel.sheetModalWindow).toNot(beNil())
             }
@@ -115,7 +115,7 @@ class MainControllerSpec: QuickSpec {
                     }
 
                     it("should ask the dataWriter to update feeds") {
-                        expect(dataWriter.didUpdateFeeds).to(beTruthy())
+                        expect(dataWriter.didUpdateFeeds) == true
                     }
 
                     // show something to indicate that things are going fine
@@ -127,7 +127,7 @@ class MainControllerSpec: QuickSpec {
                     }
 
                     it("should not ask the dataWriter to update feeds") {
-                        expect(dataWriter.didUpdateFeeds).to(beFalsy())
+                        expect(dataWriter.didUpdateFeeds) == false
                     }
 
                     // pop up something to let the user know they dun goofed.

@@ -114,7 +114,7 @@ class LocalNotificationHandlerSpec: QuickSpec {
                 }
 
                 it("should set the article's read value to true") {
-                    expect(article.read).to(beTruthy())
+                    expect(article.read) == true
                     expect(dataRepository.lastArticleMarkedRead).to(equal(article))
                 }
             }

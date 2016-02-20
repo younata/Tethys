@@ -135,7 +135,7 @@ class FeedRepositorySpec: QuickSpec {
                 }
 
                 it("should return a list of all tags") {
-                    expect(calledHandler).to(beTruthy())
+                    expect(calledHandler) == true
                     expect(tags).to(equal(["a", "b", "c", "d", "dad"]))
                 }
             }
@@ -154,11 +154,11 @@ class FeedRepositorySpec: QuickSpec {
                 }
 
                 it("should return the list of all feeds") {
-                    expect(calledHandler).to(beTruthy())
+                    expect(calledHandler) == true
                     expect(calledFeeds).to(equal(feeds))
                     for (idx, feed) in feeds.enumerate() {
                         let calledFeed = calledFeeds[idx]
-                        expect(calledFeed.articlesArray == feed.articlesArray).to(beTruthy())
+                        expect(calledFeed.articlesArray == feed.articlesArray) == true
                     }
                 }
             }
@@ -178,7 +178,7 @@ class FeedRepositorySpec: QuickSpec {
                             calledFeeds = $0
                         }
 
-                        expect(calledHandler).to(beTruthy())
+                        expect(calledHandler) == true
                         expect(calledFeeds).to(equal(feeds))
                     }
 
@@ -218,12 +218,12 @@ class FeedRepositorySpec: QuickSpec {
                 it("should return all articles that match the given search query") {
                     expect(mainQueue.operationCount).to(equal(1))
 
-                    expect(calledHandler).to(beFalsy())
+                    expect(calledHandler) == false
 
                     mainQueue.runNextOperation()
 
                     expect(mainQueue.operationCount).to(equal(0))
-                    expect(calledHandler).to(beTruthy())
+                    expect(calledHandler) == true
                     expect(Array(calledArticles)) == [article1]
                 }
             }
@@ -244,12 +244,12 @@ class FeedRepositorySpec: QuickSpec {
                 it("should execute the javascript query upon all articles to compile thes query feed") {
                     expect(mainQueue.operationCount).to(equal(1))
 
-                    expect(calledHandler).to(beFalsy())
+                    expect(calledHandler) == false
 
                     mainQueue.runNextOperation()
 
                     expect(mainQueue.operationCount).to(equal(0))
-                    expect(calledHandler).to(beTruthy())
+                    expect(calledHandler) == true
                     expect(calledArticles) == [article1]
                 }
             }
@@ -294,13 +294,13 @@ class FeedRepositorySpec: QuickSpec {
 
                 it("should mark every article in the feed as read") {
                     for article in feed1.articlesArray {
-                        expect(article.read).to(beTruthy())
+                        expect(article.read) == true
                     }
                 }
 
                 it("should inform any subscribers") {
                     expect(dataSubscriber.markedArticles).toNot(beNil())
-                    expect(dataSubscriber.read).to(beTruthy())
+                    expect(dataSubscriber.read) == true
                 }
             }
 
@@ -358,12 +358,12 @@ class FeedRepositorySpec: QuickSpec {
                 }
 
                 it("should mark the article object as read") {
-                    expect(article.read).to(beTruthy())
+                    expect(article.read) == true
                 }
 
                 it("should inform any subscribers") {
                     expect(dataSubscriber.markedArticles).to(equal([article]))
-                    expect(dataSubscriber.read).to(beTruthy())
+                    expect(dataSubscriber.read) == true
                 }
 
                 describe("and marking it as unread again") {
@@ -375,7 +375,7 @@ class FeedRepositorySpec: QuickSpec {
 
                     it("should inform any subscribers") {
                         expect(dataSubscriber.markedArticles).to(equal([article]))
-                        expect(dataSubscriber.read).to(beFalsy())
+                        expect(dataSubscriber.read) == false
                     }
                 }
             }
@@ -405,7 +405,7 @@ class FeedRepositorySpec: QuickSpec {
                     }
 
                     it("should not inform any subscribers") {
-                        expect(dataSubscriber.didStartUpdatingFeeds).to(beFalsy())
+                        expect(dataSubscriber.didStartUpdatingFeeds) == false
                     }
 
                     it("should not make an update request") {
@@ -413,7 +413,7 @@ class FeedRepositorySpec: QuickSpec {
                     }
 
                     it("should call the completion handler without an error and with the original feed") {
-                        expect(didCallCallback).to(beTruthy())
+                        expect(didCallCallback) == true
                         expect(callbackError).to(beNil())
                         expect(updatedFeed).to(equal(feed))
                     }
@@ -430,7 +430,7 @@ class FeedRepositorySpec: QuickSpec {
                     }
 
                     it("should inform any subscribers") {
-                        expect(dataSubscriber.didStartUpdatingFeeds).to(beTruthy())
+                        expect(dataSubscriber.didStartUpdatingFeeds) == true
                     }
 
                     it("should make a network request for the feed if it has a remaniing wait of 0") {
@@ -456,11 +456,11 @@ class FeedRepositorySpec: QuickSpec {
                             }
 
                             it("should inform subscribers that we updated our datastore for that feed") {
-                                expect(dataSubscriber.updatedFeeds).to(beTruthy())
+                                expect(dataSubscriber.updatedFeeds) == feeds
                             }
 
                             it("should call the completion handler without an error") {
-                                expect(didCallCallback).to(beTruthy())
+                                expect(didCallCallback) == true
                                 expect(callbackError).to(beNil())
                             }
                         }
@@ -487,11 +487,11 @@ class FeedRepositorySpec: QuickSpec {
                     }
 
                     it("should not inform any subscribers") {
-                        expect(dataSubscriber.didStartUpdatingFeeds).to(beFalsy())
+                        expect(dataSubscriber.didStartUpdatingFeeds) == false
                     }
 
                     it("should call the callback with no errors") {
-                        expect(didCallCallback).to(beTruthy())
+                        expect(didCallCallback) == true
                         expect(callbackErrors).to(beEmpty())
                     }
 
@@ -513,7 +513,7 @@ class FeedRepositorySpec: QuickSpec {
                     }
 
                     it("should not inform any subscribers") {
-                        expect(dataSubscriber.didStartUpdatingFeeds).to(beFalsy())
+                        expect(dataSubscriber.didStartUpdatingFeeds) == false
                     }
 
                     it("should not make a network request for every feed in the data store w/ a url and a remaining wait of 0") {
@@ -530,7 +530,7 @@ class FeedRepositorySpec: QuickSpec {
                     }
 
                     it("should call the completion handler without an error") {
-                        expect(didCallCallback).to(beTruthy())
+                        expect(didCallCallback) == true
                         expect(callbackErrors).to(equal([]))
                     }
 
@@ -551,7 +551,7 @@ class FeedRepositorySpec: QuickSpec {
                     }
 
                     it("should inform any subscribers") {
-                        expect(dataSubscriber.didStartUpdatingFeeds).to(beTruthy())
+                        expect(dataSubscriber.didStartUpdatingFeeds) == true
                     }
 
                     it("should make a network request for every feed in the data store w/ a url and a remaining wait of 0") {
@@ -575,7 +575,7 @@ class FeedRepositorySpec: QuickSpec {
                         }
 
                         it("should not inform any subscribers") {
-                            expect(dataSubscriber.didStartUpdatingFeeds).to(beFalsy())
+                            expect(dataSubscriber.didStartUpdatingFeeds) == false
                         }
 
                         it("should not make any update requests") {
@@ -583,7 +583,7 @@ class FeedRepositorySpec: QuickSpec {
                         }
 
                         it("should not immediately call the callback") {
-                            expect(didCallUpdateCallback).to(beFalsy())
+                            expect(didCallUpdateCallback) == false
                         }
 
                         context("when the original update request finishes") {
@@ -593,9 +593,9 @@ class FeedRepositorySpec: QuickSpec {
                             }
 
                             it("should call both completion handlers") {
-                                expect(didCallCallback).to(beTruthy())
+                                expect(didCallCallback) == true
                                 expect(callbackErrors).to(equal([]))
-                                expect(didCallUpdateCallback).to(beTruthy())
+                                expect(didCallUpdateCallback) == true
                             }
                         }
                     }
@@ -612,7 +612,7 @@ class FeedRepositorySpec: QuickSpec {
                         }
 
                         it("should call the completion handler without an error") {
-                            expect(didCallCallback).to(beTruthy())
+                            expect(didCallCallback) == true
                             expect(callbackErrors).to(equal([]))
                         }
 

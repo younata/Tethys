@@ -52,7 +52,7 @@ class UIApplicationRNewsSpec: QuickSpec {
             }
 
             it("shows the network activity indicator") {
-                expect(subject.networkActivityIndicatorVisible).to(beTruthy())
+                expect(subject.networkActivityIndicatorVisible) == true
             }
 
             describe("when we stop updating feeds") {
@@ -61,7 +61,7 @@ class UIApplicationRNewsSpec: QuickSpec {
                 }
 
                 it("stops showing the network activity indicator") {
-                    expect(subject.networkActivityIndicatorVisible).to(beFalsy())
+                    expect(subject.networkActivityIndicatorVisible) == false
                 }
             }
         }

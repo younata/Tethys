@@ -16,12 +16,12 @@ class UnreadCounterSpec: QuickSpec {
         }
 
         it("should default to not show the countlabel even when unread != 0") {
-            expect(subject.hideUnreadText).to(beTruthy())
+            expect(subject.hideUnreadText) == true
         }
 
         it("should hide the countLabel when unreadText is set") {
             subject.hideUnreadText = true
-            expect(subject.countLabel.hidden).to(beTruthy())
+            expect(subject.countLabel.hidden) == true
         }
 
         context("when unread is 0") {
@@ -30,7 +30,7 @@ class UnreadCounterSpec: QuickSpec {
             }
 
             it("should hide itself") {
-                expect(subject.hidden).to(beTruthy())
+                expect(subject.hidden) == true
             }
         }
 
@@ -40,7 +40,7 @@ class UnreadCounterSpec: QuickSpec {
             }
 
             it("should show itself") {
-                expect(subject.hidden).to(beFalsy())
+                expect(subject.hidden) == false
             }
 
             it("should set the countLabel text") {

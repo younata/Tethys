@@ -20,7 +20,7 @@ class SwitchTableViewCellSpec: QuickSpec {
                 expect(aSwitch).to(beIdenticalTo(subject.theSwitch))
             }
             subject.theSwitch.sendActionsForControlEvents(.ValueChanged)
-            expect(called).to(beTruthy())
+            expect(called) == true
         }
 
         describe("on theme changes") {

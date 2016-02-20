@@ -20,7 +20,7 @@ class ValidatorViewSpec: QuickSpec {
             }
 
             it("should start the progressIndicator") {
-                expect(subject.progressIndicator.isAnimating()).to(beTruthy())
+                expect(subject.progressIndicator.isAnimating()) == true
             }
 
             context("upon successful validation") {
@@ -33,11 +33,11 @@ class ValidatorViewSpec: QuickSpec {
                 }
 
                 it("should stop the progressIndicator") {
-                    expect(subject.progressIndicator.isAnimating()).to(beFalsy())
+                    expect(subject.progressIndicator.isAnimating()) == false
                 }
 
                 it("should hide the progressIndicator") {
-                    expect(subject.progressIndicator.hidden).to(beTruthy())
+                    expect(subject.progressIndicator.hidden) == true
                 }
             }
 
@@ -51,11 +51,11 @@ class ValidatorViewSpec: QuickSpec {
                 }
 
                 it("should stop the progressIndicator") {
-                    expect(subject.progressIndicator.isAnimating()).to(beFalsy())
+                    expect(subject.progressIndicator.isAnimating()) == false
                 }
 
                 it("should hide the progressIndicator") {
-                    expect(subject.progressIndicator.hidden).to(beTruthy())
+                    expect(subject.progressIndicator.hidden) == true
                 }
             }
         }

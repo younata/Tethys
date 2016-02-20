@@ -83,30 +83,30 @@ class EnclosureSpec: QuickSpec {
 
         describe("the updated flag") {
             it("should start negative") {
-                expect(subject?.updated).to(beFalsy())
+                expect(subject?.updated) == false
             }
 
             describe("properties that change updated to positive") {
                 it("url") {
                     subject?.url = NSURL(string: "http://example.com")!
-                    expect(subject?.updated).to(beFalsy())
+                    expect(subject?.updated) == false
                     subject?.url = NSURL(string: "http://example.com/changed")!
-                    expect(subject?.updated).to(beTruthy())
+                    expect(subject?.updated) == true
                 }
 
                 it("kind") {
                     subject?.kind = ""
-                    expect(subject?.updated).to(beFalsy())
+                    expect(subject?.updated) == false
                     subject?.kind = "hello there"
-                    expect(subject?.updated).to(beTruthy())
+                    expect(subject?.updated) == true
                 }
 
                 it("article") {
                     subject?.article = nil
-                    expect(subject?.updated).to(beFalsy())
+                    expect(subject?.updated) == false
                     let article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
                     subject?.article = article
-                    expect(subject?.updated).to(beTruthy())
+                    expect(subject?.updated) == true
                 }
             }
         }

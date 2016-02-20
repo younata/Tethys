@@ -34,8 +34,8 @@ class ThemeRepositorySpec: QuickSpec {
         it("adding a subscriber should immediately call didChangeTheme on it") {
             let newSubscriber = FakeThemeSubscriber()
             subject.addSubscriber(newSubscriber)
-            expect(newSubscriber.didCallChangeTheme).to(beTruthy())
-            expect(subscriber.didCallChangeTheme).to(beFalsy())
+            expect(newSubscriber.didCallChangeTheme) == true
+            expect(subscriber.didCallChangeTheme) == false
         }
 
         it("has a default theme of .Default") {
@@ -134,7 +134,7 @@ class ThemeRepositorySpec: QuickSpec {
             }
 
             it("informs subscribers") {
-                expect(subscriber.didCallChangeTheme).to(beTruthy())
+                expect(subscriber.didCallChangeTheme) == true
             }
 
             it("persists the change if it is not ephemeral") {

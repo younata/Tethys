@@ -25,7 +25,7 @@ class KitModuleSpec: QuickSpec {
         #if os(iOS)
             if #available(iOS 9.0, *) {
                 it("should, on iOS 9, bind a searchIndex") {
-                    expect(injector.create(SearchIndex)! === CSSearchableIndex.defaultSearchableIndex()).to(beTruthy())
+                    expect(injector.create(SearchIndex)! === CSSearchableIndex.defaultSearchableIndex()) == true
                 }
             }
         #endif
@@ -42,7 +42,7 @@ class KitModuleSpec: QuickSpec {
         }
 
         it("should bind a FeedRepository") {
-            expect(injector.create(FeedRepository.self) is DataRepository).to(beTruthy())
+            expect(injector.create(FeedRepository.self) is DataRepository) == true
         }
 
         it("should bind an opml manager with a singleton scope") {

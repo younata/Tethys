@@ -60,8 +60,8 @@ class FeedSpec: QuickSpec {
                 waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
             let queryFeed = Feed(title: "", url: nil, summary: "", query: "true", tags: [],
                 waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-            expect(regularFeed.isQueryFeed).to(beFalsy())
-            expect(queryFeed.isQueryFeed).to(beTruthy())
+            expect(regularFeed.isQueryFeed) == false
+            expect(queryFeed.isQueryFeed) == true
         }
 
         it("unreadArticles() should return articles with read->false") {
@@ -163,8 +163,8 @@ class FeedSpec: QuickSpec {
                     it("should add the article and set the article's feed if it's not set already") {
                         subject.addArticle(article)
 
-                        expect(subject.updated).to(beTruthy())
-                        expect(article.updated).to(beTruthy())
+                        expect(subject.updated) == true
+                        expect(article.updated) == true
                         expect(article.feed).to(equal(subject))
                         expect(subject.articlesArray).to(contain(article))
                     }
@@ -178,7 +178,7 @@ class FeedSpec: QuickSpec {
 
                     it("essentially no-ops") {
                         subject.addArticle(article)
-                        expect(subject.updated).to(beFalsy())
+                        expect(subject.updated) == false
                         expect(article.feed).to(equal(subject))
                         expect(subject.articlesArray).to(contain(article))
                     }
@@ -194,9 +194,9 @@ class FeedSpec: QuickSpec {
                     it("should remove the article from the other feed and add it to this feed") {
                         subject.addArticle(article)
 
-                        expect(subject.updated).to(beTruthy())
-                        expect(article.updated).to(beTruthy())
-                        expect(otherFeed.updated).to(beTruthy())
+                        expect(subject.updated) == true
+                        expect(article.updated) == true
+                        expect(otherFeed.updated) == true
                         expect(article.feed).to(equal(subject))
                         expect(subject.articlesArray).to(contain(article))
                         expect(otherFeed.articlesArray).toNot(contain(article))
@@ -212,8 +212,8 @@ class FeedSpec: QuickSpec {
                 }
 
                 it("should not set 'updated' for either the feed nor article") {
-                    expect(subject.updated).to(beFalsy())
-                    expect(article.updated).to(beFalsy())
+                    expect(subject.updated) == false
+                    expect(article.updated) == false
                 }
 
                 it("should add the article to the feed's articles, but not (re)set the feed property on the article") {
@@ -233,7 +233,7 @@ class FeedSpec: QuickSpec {
                 context("when the article is not associated with any article") {
                     it("essentially no-ops") {
                         subject.removeArticle(article)
-                        expect(subject.updated).to(beFalsy())
+                        expect(subject.updated) == false
                     }
                 }
 
@@ -245,7 +245,7 @@ class FeedSpec: QuickSpec {
 
                     it("removes the article and unsets the article's feed") {
                         subject.removeArticle(article)
-                        expect(subject.updated).to(beTruthy())
+                        expect(subject.updated) == true
                         expect(article.feed).to(beNil())
                         expect(subject.articlesArray).toNot(contain(article))
                     }
@@ -260,8 +260,8 @@ class FeedSpec: QuickSpec {
 
                     it("essentially no-ops") {
                         subject.removeArticle(article)
-                        expect(subject.updated).to(beFalsy())
-                        expect(otherFeed.updated).to(beFalsy())
+                        expect(subject.updated) == false
+                        expect(otherFeed.updated) == false
                     }
                 }
             }
@@ -277,7 +277,7 @@ class FeedSpec: QuickSpec {
 
                 it("removes the article from the feed, without marking the feed for updating") {
                     subject.removeArticle(article)
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
 
                     expect(subject.articlesArray).toNot(contain(article))
                 }
@@ -289,7 +289,7 @@ class FeedSpec: QuickSpec {
                 subject.addTag("tag")
 
                 expect(subject.tags).to(contain("tag"))
-                expect(subject.updated).to(beTruthy())
+                expect(subject.updated) == true
             }
 
             context("trying to add the same flag again") {
@@ -301,7 +301,7 @@ class FeedSpec: QuickSpec {
                 it("should no-op") {
                     subject.addTag("tag")
 
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                 }
             }
 
@@ -335,7 +335,7 @@ class FeedSpec: QuickSpec {
                     subject.removeTag("tag")
 
                     expect(subject.tags).toNot(contain("tags"))
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
             }
 
@@ -345,75 +345,75 @@ class FeedSpec: QuickSpec {
                     subject.removeTag("tag")
 
                     expect(subject.tags).toNot(contain("tag"))
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                 }
             }
         }
 
         describe("the updated flag") {
             it("should start negative") {
-                expect(subject.updated).to(beFalsy())
+                expect(subject.updated) == false
             }
 
             describe("properties that change updated to positive") {
                 it("title") {
                     subject.title = ""
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                     subject.title = "title"
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
 
                 it("url") {
                     subject.title = ""
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                     subject.title = "title"
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
 
                 it("summary") {
                     subject.summary = ""
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                     subject.summary = "summary"
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
 
                 it("query") {
                     subject.query = nil
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                     subject.query = "query"
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
 
                 it("tags") {
                     subject.addTag("tag")
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
 
                 it("waitPeriod") {
                     subject.waitPeriod = 0
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                     subject.waitPeriod = 1
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
 
                 it("remainingWait") {
                     subject.remainingWait = 0
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                     subject.remainingWait = 1
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
 
                 it("articles") {
                     let article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
                     subject.addArticle(article)
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
 
                 it("image") {
                     subject.image = nil
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                     subject.image = Image()
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
             }
         }

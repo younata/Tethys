@@ -49,19 +49,19 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             it("should update the navigation bar background") {
-                expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
+                expect(subject.navigationController?.navigationBar.barStyle) == themeRepository.barStyle
             }
 
             it("should update the toolbar") {
-                expect(subject.navigationController?.toolbar.barStyle).to(equal(themeRepository.barStyle))
+                expect(subject.navigationController?.toolbar.barStyle) == themeRepository.barStyle
             }
 
             it("should update the webView's background color") {
-                expect(subject.webContent.backgroundColor).to(equal(themeRepository.backgroundColor))
+                expect(subject.webContent.backgroundColor) == themeRepository.backgroundColor
             }
 
             it("should update the scroll indicator style") {
-                expect(subject.webContent.scrollView.indicatorStyle).to(equal(themeRepository.scrollIndicatorStyle))
+                expect(subject.webContent.scrollView.indicatorStyle) == themeRepository.scrollIndicatorStyle
             }
         }
 
@@ -72,11 +72,11 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             it("should auto-prepend 'http://' if it's not already there") {
-                expect(subject.navField.text).to(equal("http://example.com"))
+                expect(subject.navField.text) == "http://example.com"
             }
 
             it("should navigate the webview that url") {
-                expect(webView.lastRequestLoaded?.URL).to(equal(NSURL(string: "http://example.com")))
+                expect(webView.lastRequestLoaded?.URL) == NSURL(string: "http://example.com")
             }
         }
 
@@ -108,7 +108,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     let indicator = subject.view.subviews.filter {
                         return $0.isKindOfClass(ActivityIndicator.classForCoder())
                         }.first as? ActivityIndicator
-                    expect(indicator?.message).to(equal("Loading feed at \(url.absoluteString)"))
+                    expect(indicator?.message) == "Loading feed at \(url.absoluteString)"
                 }
 
                 describe("when the use case is finished") {
@@ -130,12 +130,12 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             it("should show the loadingBar") {
-                expect(subject.loadingBar.hidden).to(beFalsy())
+                expect(subject.loadingBar.hidden) == false
                 expect(subject.loadingBar.progress).to(beCloseTo(0))
             }
 
             it("should disable the addFeedButton") {
-                expect(subject.addFeedButton.enabled).to(beFalsy())
+                expect(subject.addFeedButton.enabled) == false
             }
 
             describe("tapping the navField") {
@@ -168,15 +168,15 @@ class FindFeedViewControllerSpec: QuickSpec {
                 it("should present an alert") {
                     expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                     if let alert = subject.presentedViewController as? UIAlertController {
-                        expect(alert.title).to(equal("Feed Detected"))
-                        expect(alert.message).to(equal("Import feed?"))
+                        expect(alert.title) == "Feed Detected"
+                        expect(alert.message) == "Import feed?"
 
-                        expect(alert.actions.count).to(equal(2))
+                        expect(alert.actions.count) == 2
                         if let dontsave = alert.actions.first {
-                            expect(dontsave.title).to(equal("Don't Import"))
+                            expect(dontsave.title) == "Don't Import"
                         }
                         if let save = alert.actions.last {
-                            expect(save.title).to(equal("Import"))
+                            expect(save.title) == "Import"
                         }
                     }
                 }
@@ -220,15 +220,15 @@ class FindFeedViewControllerSpec: QuickSpec {
                 it("should present an alert") {
                     expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                     if let alert = subject.presentedViewController as? UIAlertController {
-                        expect(alert.title).to(equal("Feed List Detected"))
-                        expect(alert.message).to(equal("Import?"))
+                        expect(alert.title) == "Feed List Detected"
+                        expect(alert.message) == "Import?"
 
-                        expect(alert.actions.count).to(equal(2))
+                        expect(alert.actions.count) == 2
                         if let dontsave = alert.actions.first {
-                            expect(dontsave.title).to(equal("Don't Import"))
+                            expect(dontsave.title) == "Don't Import"
                         }
                         if let save = alert.actions.last {
-                            expect(save.title).to(equal("Import"))
+                            expect(save.title) == "Import"
                         }
                     }
                 }
@@ -262,7 +262,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                         let indicator = subject.view.subviews.filter {
                             return $0.isKindOfClass(ActivityIndicator.classForCoder())
                         }.first as? ActivityIndicator
-                        expect(indicator?.message).to(equal("Loading feed list at https://example.com/feed"))
+                        expect(indicator?.message) == "Loading feed list at https://example.com/feed"
                     }
 
                     it("asks the import use case to import the feed at the url") {
@@ -297,7 +297,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                 }
 
                 it("should enable the addFeedButton") {
-                    expect(subject.addFeedButton.enabled).to(beTruthy())
+                    expect(subject.addFeedButton.enabled) == true
                 }
 
                 describe("tapping on the addFeedButton") {
@@ -322,7 +322,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                 }
 
                 it("should enable the addFeedButton") {
-                    expect(subject.addFeedButton.enabled).to(beTruthy())
+                    expect(subject.addFeedButton.enabled) == true
                 }
 
                 describe("tapping on the addFeedButton") {
@@ -397,7 +397,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should hide the webview") {
-                        expect(subject.loadingBar.hidden).to(beTruthy())
+                        expect(subject.loadingBar.hidden) == true
                     }
                 }
 
@@ -407,7 +407,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should hide the webview") {
-                        expect(subject.loadingBar.hidden).to(beTruthy())
+                        expect(subject.loadingBar.hidden) == true
                     }
                 }
             }
@@ -418,11 +418,11 @@ class FindFeedViewControllerSpec: QuickSpec {
                 }
 
                 it("should hide the loadingBar") {
-                    expect(subject.loadingBar.hidden).to(beTruthy())
+                    expect(subject.loadingBar.hidden) == true
                 }
 
                 it("should allow the user to reload the page") {
-                    expect(subject.navigationItem.rightBarButtonItem).to(equal(subject.reload))
+                    expect(subject.navigationItem.rightBarButtonItem) == subject.reload
                 }
             }
         }

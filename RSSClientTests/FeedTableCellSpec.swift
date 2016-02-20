@@ -58,7 +58,7 @@ class FeedTableCellSpec: QuickSpec {
                 }
 
                 it("should hide the unread counter") {
-                    expect(subject.unreadCounter.hidden).to(beTruthy())
+                    expect(subject.unreadCounter.hidden) == true
                     expect(subject.unreadCounter.unread).to(equal(0))
                 }
             }
@@ -80,7 +80,7 @@ class FeedTableCellSpec: QuickSpec {
                 }
 
                 it("should hide the unread counter") {
-                    expect(subject.unreadCounter.hidden).to(beFalsy())
+                    expect(subject.unreadCounter.hidden) == false
                     expect(subject.unreadCounter.unread).to(equal(1))
                 }
             }

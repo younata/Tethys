@@ -27,13 +27,13 @@ class SettingsRepositorySpec: QuickSpec {
         it("calls 'didChangeSetting' on the new subscriber whenever it's added") {
             let newSubscriber = FakeSettingsRepositorySubscriber()
             subject.addSubscriber(newSubscriber)
-            expect(newSubscriber.didCallChangeSetting).to(beTruthy())
-            expect(subscriber.didCallChangeSetting).to(beFalsy())
+            expect(newSubscriber.didCallChangeSetting) == true
+            expect(subscriber.didCallChangeSetting) == false
         }
 
         describe("Query Feeds") {
             it("are initially disabled") {
-                expect(subject.queryFeedsEnabled).to(beFalsy())
+                expect(subject.queryFeedsEnabled) == false
             }
 
             describe("when set") {
@@ -42,16 +42,16 @@ class SettingsRepositorySpec: QuickSpec {
                 }
 
                 it("records the result") {
-                    expect(subject.queryFeedsEnabled).to(beTruthy())
+                    expect(subject.queryFeedsEnabled) == true
                 }
 
                 it("notifies subscribers") {
-                    expect(subscriber.didCallChangeSetting).to(beTruthy())
+                    expect(subscriber.didCallChangeSetting) == true
                 }
 
                 it("persists if userDefaults is not nil") {
                     let newRepository = SettingsRepository(userDefaults: userDefaults)
-                    expect(newRepository.queryFeedsEnabled).to(beTruthy())
+                    expect(newRepository.queryFeedsEnabled) == true
                 }
             }
         }

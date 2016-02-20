@@ -102,7 +102,7 @@ class OPMLServiceSpec: QuickSpec {
             it("should write an OPML file to ~/Documents/rnews.opml") {
                 let fileManager = NSFileManager.defaultManager()
                 let file = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
-                expect(fileManager.fileExistsAtPath(file)).to(beTruthy())
+                expect(fileManager.fileExistsAtPath(file)) == true
 
                 let text = try! String(contentsOfFile: file, encoding: NSUTF8StringEncoding)
 
@@ -157,7 +157,7 @@ class OPMLServiceSpec: QuickSpec {
             it("should write an OPML file to ~/Documents/rnews.opml") {
                 let fileManager = NSFileManager.defaultManager()
                 let file = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
-                expect(fileManager.fileExistsAtPath(file)).to(beTruthy())
+                expect(fileManager.fileExistsAtPath(file)) == true
 
                 guard let text = try? String(contentsOfFile: file, encoding: NSUTF8StringEncoding) else { return }
 

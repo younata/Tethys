@@ -34,7 +34,7 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
             }
 
             it("should make a network request") {
-                expect(dataRepository.didUpdateFeeds).to(beTruthy())
+                expect(dataRepository.didUpdateFeeds) == true
             }
 
             context("when new articles are found") {

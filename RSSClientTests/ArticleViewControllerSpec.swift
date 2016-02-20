@@ -58,7 +58,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
         describe("Key Commands") {
             it("can become first responder") {
-                expect(subject.canBecomeFirstResponder()).to(beTruthy())
+                expect(subject.canBecomeFirstResponder()) == true
             }
 
             func hasKindsOfKeyCommands(expectedCommands: [UIKeyCommand], discoveryTitles: [String]) {
@@ -218,8 +218,8 @@ class ArticleViewControllerSpec: QuickSpec {
                 expect(activity.activityType).to(equal("com.rachelbrindle.rssclient.article"))
                 expect(activity.delegate).toNot(beNil())
                 if #available(iOS 9.0, *) {
-                    expect(activity.eligibleForSearch).to(beTruthy())
-                    expect(activity.eligibleForPublicIndexing).to(beFalsy())
+                    expect(activity.eligibleForSearch) == true
+                    expect(activity.eligibleForPublicIndexing) == false
                 }
             }
         }
@@ -259,7 +259,7 @@ class ArticleViewControllerSpec: QuickSpec {
             }
 
             it("should mark the article as read") {
-                expect(article.read).to(beTruthy())
+                expect(article.read) == true
                 expect(dataWriter.lastArticleMarkedRead).to(equal(article))
             }
 
@@ -302,14 +302,14 @@ class ArticleViewControllerSpec: QuickSpec {
 
             if #available(iOS 9, *) {
                 it("should enable link preview with 3d touch on iOS 9") {
-                    expect(subject.content.allowsLinkPreview).to(beTruthy())
+                    expect(subject.content.allowsLinkPreview) == true
                 }
             }
 
             it("should include the share button in the toolbar, and the open in safari button only if we're on iOS 9") {
-                expect(subject.toolbarItems?.contains(subject.shareButton)).to(beTruthy())
+                expect(subject.toolbarItems?.contains(subject.shareButton)) == true
                 if #available(iOS 9, *) {
-                    expect(subject.toolbarItems?.contains(subject.openInSafariButton)).to(beTruthy())
+                    expect(subject.toolbarItems?.contains(subject.openInSafariButton)) == true
                 } else {
                     expect(subject.toolbarItems?.contains(subject.openInSafariButton)).to(equal(false))
                 }
@@ -323,14 +323,14 @@ class ArticleViewControllerSpec: QuickSpec {
 
                 subject.setArticle(article2)
 
-                expect(subject.toolbarItems?.contains(subject.shareButton)).to(beTruthy())
+                expect(subject.toolbarItems?.contains(subject.shareButton)) == true
                 expect(subject.toolbarItems?.contains(subject.openInSafariButton)).to(equal(false))
             }
 
             it("should update the user activity") {
                 expect(subject.userActivity).toNot(beNil())
                 if let activity = subject.userActivity {
-                    expect(activity.active).to(beTruthy())
+                    expect(activity.active) == true
 
                     expect(activity.userInfo).toNot(beNil())
                     if let userInfo = activity.userInfo {
@@ -340,7 +340,7 @@ class ArticleViewControllerSpec: QuickSpec {
                     }
 
                     expect(activity.webpageURL).to(equal(article.link))
-                    expect(activity.needsSave).to(beTruthy())
+                    expect(activity.needsSave) == true
                     expect(activity.title).to(equal("\(feed.title): \(article.title)"))
 
                     if #available(iOS 9.0, *) {
@@ -350,7 +350,7 @@ class ArticleViewControllerSpec: QuickSpec {
                     navigationController = nil
                     injector = nil
                     subject = nil
-                    expect(activity.valid).to(beFalsy())
+                    expect(activity.valid) == false
                 }
             }
 
@@ -409,7 +409,7 @@ class ArticleViewControllerSpec: QuickSpec {
             it("should open any link tapped in system safari (iOS <9) or an SFSafariViewController (iOS 9+)") {
                 let url = NSURL(string: "https://example.com")!
                 let shouldInteract = subject.content.delegate?.webView?(subject.content, shouldStartLoadWithRequest: NSURLRequest(URL: url), navigationType: .LinkClicked)
-                expect(shouldInteract).to(beFalsy())
+                expect(shouldInteract) == false
                 if #available(iOS 9, *) {
                     expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
                 } else {

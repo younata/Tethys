@@ -120,7 +120,7 @@ class FeedViewControllerSpec: QuickSpec {
                 }
 
                 it("should not be editable") {
-                    expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 0))).to(beFalsy())
+                    expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 0))) == false
                 }
 
                 describe("the cell") {
@@ -169,7 +169,7 @@ class FeedViewControllerSpec: QuickSpec {
                 }
 
                 it("should not be editable") {
-                    expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 1))).to(beFalsy())
+                    expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 1))) == false
                 }
 
                 describe("the cell") {
@@ -207,7 +207,7 @@ class FeedViewControllerSpec: QuickSpec {
                                 }
                                 
                                 it("should mark the field as valid") {
-                                    expect(cell.isValid).to(beTruthy())
+                                    expect(cell.isValid) == true
                                 }
                             }
 
@@ -218,7 +218,7 @@ class FeedViewControllerSpec: QuickSpec {
                                 }
 
                                 it("should mark the field as invalid") {
-                                    expect(cell.isValid).to(beFalsy())
+                                    expect(cell.isValid) == false
                                 }
                             }
                         }
@@ -229,7 +229,7 @@ class FeedViewControllerSpec: QuickSpec {
                             }
 
                             it("should mark the field as invalid") {
-                                expect(cell.isValid).to(beFalsy())
+                                expect(cell.isValid) == false
                             }
                         }
                     }
@@ -247,7 +247,7 @@ class FeedViewControllerSpec: QuickSpec {
                 }
 
                 it("should not be editable") {
-                    expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 2))).to(beFalsy())
+                    expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 2))) == false
                 }
 
                 context("when the feed has no summary preconfigured") {
@@ -324,7 +324,7 @@ class FeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should be editable") {
-                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: NSIndexPath(forRow: tagIndex, inSection: 3))).to(beTruthy())
+                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: NSIndexPath(forRow: tagIndex, inSection: 3))) == true
                     }
 
                     it("should set the cell's themeRepository") {
@@ -397,7 +397,7 @@ class FeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should not be editable") {
-                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)).to(beFalsy())
+                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)) == false
                     }
 
                     it("should set the cell's themeRepository") {

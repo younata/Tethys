@@ -79,7 +79,7 @@ class TagEditorViewControllerSpec: QuickSpec {
 
             context("when there is not data to save") {
                 it("should not even be enabled") {
-                    expect(subject.navigationItem.rightBarButtonItem?.enabled).to(beFalsy())
+                    expect(subject.navigationItem.rightBarButtonItem?.enabled) == false
                 }
             }
         }

@@ -36,7 +36,7 @@ class FeedViewSpec: QuickSpec {
         }
 
         it("correctly configures the unread counter") {
-            expect(subject.unreadCounter.hideUnreadText).to(beFalsy())
+            expect(subject.unreadCounter.hideUnreadText) == false
         }
 
         describe("gesture recognizers") {

@@ -92,7 +92,7 @@ class SettingsViewControllerSpec: QuickSpec {
         }
 
         it("has a disabled save button") {
-            expect(subject.navigationItem.rightBarButtonItem?.enabled).to(beFalsy())
+            expect(subject.navigationItem.rightBarButtonItem?.enabled) == false
         }
 
         describe("tapping the cancel button") {
@@ -112,7 +112,7 @@ class SettingsViewControllerSpec: QuickSpec {
 
         sharedExamples("a changed setting") { (sharedContext: SharedExampleContext) in
             it("should enable the save button") {
-                expect(subject.navigationItem.rightBarButtonItem?.enabled).to(beTruthy())
+                expect(subject.navigationItem.rightBarButtonItem?.enabled) == true
             }
 
             describe("tapping the save button") {
@@ -138,7 +138,7 @@ class SettingsViewControllerSpec: QuickSpec {
 
         describe("key commands") {
             it("can become first responder") {
-                expect(subject.canBecomeFirstResponder()).to(beTruthy())
+                expect(subject.canBecomeFirstResponder()) == true
             }
 
             it("has (number of themes - 1) + 2 commands") {
@@ -318,7 +318,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("should be selected") {
-                        expect(cell.selected).to(beTruthy())
+                        expect(cell.selected) == true
                     }
 
                     it("should have no edit actions") {
@@ -339,7 +339,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("should be selected if it's the current theme") { // which it is not
-                        expect(cell.selected).to(beFalsy())
+                        expect(cell.selected) == false
                     }
 
                     it("should have its theme repository set") {
@@ -646,12 +646,12 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
 
                         it("should not yet change the settings repository") {
-                            expect(settingsRepository.queryFeedsEnabled).to(beFalsy())
+                            expect(settingsRepository.queryFeedsEnabled) == false
                         }
 
                         itBehavesLike("a changed setting") {
                             let op = NSBlockOperation {
-                                expect(settingsRepository.queryFeedsEnabled).to(beTruthy())
+                                expect(settingsRepository.queryFeedsEnabled) == true
                             }
                             return ["saveToUserDefaults": op]
                         }

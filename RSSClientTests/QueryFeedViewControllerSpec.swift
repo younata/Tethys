@@ -93,7 +93,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
             }
 
             it("should enable the save button") {
-                expect(subject.navigationItem.rightBarButtonItem?.enabled).to(beTruthy())
+                expect(subject.navigationItem.rightBarButtonItem?.enabled) == true
             }
 
             describe("tapping 'save'") {
@@ -151,7 +151,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
             }
 
             it("should not enable the save button") {
-                expect(subject.navigationItem.rightBarButtonItem?.enabled).to(beFalsy())
+                expect(subject.navigationItem.rightBarButtonItem?.enabled) == false
             }
 
             describe("the tableView") {
@@ -172,7 +172,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should not be editable") {
-                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)).to(beFalsy())
+                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)) == false
                     }
 
                     describe("the cell") {
@@ -222,7 +222,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should not be editable") {
-                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)).to(beFalsy())
+                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)) == false
                     }
 
                     describe("the cell") {
@@ -282,7 +282,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should be editable") {
-                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)).to(beTruthy())
+                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)) == true
                     }
 
                     describe("the cell") {
@@ -342,7 +342,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                                     action?.handler()(action, indexPath)
                                     expect(navigationController.topViewController).to(beAnInstanceOf(ArticleListController.self))
                                     if let articleList = navigationController.topViewController as? ArticleListController {
-                                        expect(articleList.previewMode).to(beTruthy())
+                                        expect(articleList.previewMode) == true
                                         // TODO: fake articles
                                     }
                                 }
@@ -363,7 +363,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
             }
 
             it("should enable the save button") {
-                expect(subject.navigationItem.rightBarButtonItem?.enabled).to(beTruthy())
+                expect(subject.navigationItem.rightBarButtonItem?.enabled) == true
             }
 
             describe("the tableView") {
@@ -384,7 +384,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should not be editable") {
-                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)).to(beFalsy())
+                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)) == false
                     }
 
                     context("when the feed has no title preconfigured") {
@@ -466,7 +466,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should not be editable") {
-                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)).to(beFalsy())
+                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)) == false
                     }
 
                     context("when the feed has no summary preconfigured") {
@@ -546,7 +546,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should be editable") {
-                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)).to(beTruthy())
+                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)) == true
                     }
 
                     describe("the cell") {
@@ -600,7 +600,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                                     action?.handler()(action, indexPath)
                                     expect(navigationController.topViewController).to(beAnInstanceOf(ArticleListController.self))
                                     if let articleList = navigationController.topViewController as? ArticleListController {
-                                        expect(articleList.previewMode).to(beTruthy())
+                                        expect(articleList.previewMode) == true
                                         // TODO: fake articles
                                     }
                                 }
@@ -633,7 +633,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                         }
 
                         it("should be editable") {
-                            expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: NSIndexPath(forRow: tagIndex, inSection: 3))).to(beTruthy())
+                            expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: NSIndexPath(forRow: tagIndex, inSection: 3))) == true
                         }
 
                         describe("edit actions") {
@@ -703,7 +703,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                         }
 
                         it("should not be editable") {
-                            expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)).to(beFalsy())
+                            expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)) == false
                         }
 
                         describe("when tapped") {

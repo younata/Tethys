@@ -55,7 +55,7 @@ class AppDelegateSpec: QuickSpec {
 
                 subject.application(application, didFinishLaunchingWithOptions: ["test": true])
 
-                expect(dataRepository.didCreateFeed).to(beTruthy())
+                expect(dataRepository.didCreateFeed) == true
 
                 let feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
@@ -64,7 +64,7 @@ class AppDelegateSpec: QuickSpec {
                 expect(feed.title).to(equal("All Unread"))
                 expect(feed.summary).to(equal("All unread articles"))
                 expect(feed.query).to(equal("function(article) {\n    return !article.read;\n}"))
-                expect(userDefaults.boolForKey("firstLaunch")).to(beTruthy())
+                expect(userDefaults.boolForKey("firstLaunch")) == true
 
             }
 
@@ -74,7 +74,7 @@ class AppDelegateSpec: QuickSpec {
 
                 subject.application(application, didFinishLaunchingWithOptions: ["test": true])
 
-                expect(dataRepository.didCreateFeed).to(beFalsy())
+                expect(dataRepository.didCreateFeed) == false
             }
 
             it("should enable notifications") {
@@ -93,7 +93,7 @@ class AppDelegateSpec: QuickSpec {
                         break
                     }
                 }
-                expect(applicationInSubscribers).to(beTruthy())
+                expect(applicationInSubscribers) == true
             }
 
             describe("window view controllers") {
@@ -147,7 +147,7 @@ class AppDelegateSpec: QuickSpec {
                         completedAction = completed
                     }
 
-                    expect(completedAction).to(beTruthy())
+                    expect(completedAction) == true
                     let navController = (subject.window?.rootViewController as? UISplitViewController)?.viewControllers.first as? UINavigationController
                     expect(navController?.visibleViewController).to(beAKindOf(UINavigationController.self))
                     let viewController = (navController?.visibleViewController as? UINavigationController)?.topViewController
@@ -170,7 +170,7 @@ class AppDelegateSpec: QuickSpec {
                         completedAction = completed
                     }
 
-                    expect(completedAction).to(beTruthy())
+                    expect(completedAction) == true
 
                     let navController = (subject.window?.rootViewController as? UISplitViewController)?.viewControllers.first as? UINavigationController
                     expect(navController?.visibleViewController).to(beAKindOf(ArticleListController.self))
@@ -203,7 +203,7 @@ class AppDelegateSpec: QuickSpec {
                     expect(notificationHandler.handleActionArgsForCall(0).0).to(equal("read"))
                 }
                 it("should call the completionHandler") {
-                    expect(completionHandlerCalled).to(beTruthy())
+                    expect(completionHandlerCalled) == true
                 }
             }
         }
@@ -214,7 +214,7 @@ class AppDelegateSpec: QuickSpec {
             }
 
             it("should forward the call to the backgroundFetchHandler") {
-                expect(backgroundFetchHandler.performFetchCalled).to(beTruthy())
+                expect(backgroundFetchHandler.performFetchCalled) == true
             }
         }
 
@@ -239,7 +239,7 @@ class AppDelegateSpec: QuickSpec {
                     ]
                     expect(subject.application(UIApplication.sharedApplication(), continueUserActivity: activity) {responders in
                         responderArray = responders as? [UIResponder] ?? []
-                    }).to(beTruthy())
+                    }) == true
                 }
 
                 it("should not set the responderArray") {
@@ -260,7 +260,7 @@ class AppDelegateSpec: QuickSpec {
                         activity.userInfo = [CSSearchableItemActivityIdentifier: "identifier"]
                         expect(subject.application(UIApplication.sharedApplication(), continueUserActivity: activity) {responders in
                             responderArray = responders as? [UIResponder] ?? []
-                        }).to(beTruthy())
+                        }) == true
                     }
                 }
 

@@ -39,11 +39,11 @@ class FeedsViewControllerSpec: QuickSpec {
         }
 
         it("should ask for the list of feeds") {
-            expect(dataReadWriter.didAskForFeeds).to(beTruthy())
+            expect(dataReadWriter.didAskForFeeds) == true
         }
 
         it("should add a subscriber to the dataWriter") {
-            expect(dataReadWriter.subscribers.allObjects.isEmpty).to(beFalsy())
+            expect(dataReadWriter.subscribers.allObjects.isEmpty) == false
         }
 
         describe("the main menu") {
@@ -57,7 +57,7 @@ class FeedsViewControllerSpec: QuickSpec {
                 expect(feedsMenuItem?.target as? NSObject).toNot(beNil())
                 if let target = feedsMenuItem?.target as? NSObject,
                    let action = feedsMenuItem?.action {
-                    expect(target.respondsToSelector(action)).to(beTruthy())
+                    expect(target.respondsToSelector(action)) == true
                 }
             }
 
@@ -79,7 +79,7 @@ class FeedsViewControllerSpec: QuickSpec {
                     }
 
                     expect(deleteItem.keyEquivalent).to(equal("D"))
-                    expect(deleteItem.enabled).to(beTruthy())
+                    expect(deleteItem.enabled) == true
                     expect(deleteItem.target as? NSObject).toNot(beNil())
 
                     if let target = deleteItem.target as? NSObject {
@@ -100,13 +100,13 @@ class FeedsViewControllerSpec: QuickSpec {
                     }
 
                     expect(reloadItem.keyEquivalent).to(equal("r"))
-                    expect(reloadItem.enabled).to(beTruthy())
+                    expect(reloadItem.enabled) == true
                     expect(reloadItem.target as? NSObject).toNot(beNil())
 
                     if let target = reloadItem.target as? NSObject {
                         target.performSelector(reloadItem.action)
 
-                        expect(dataReadWriter.didUpdateFeeds).to(beTruthy())
+                        expect(dataReadWriter.didUpdateFeeds) == true
                     }
                 }
 
@@ -118,7 +118,7 @@ class FeedsViewControllerSpec: QuickSpec {
                     }
 
                     expect(markReadItem.keyEquivalent).to(equal("R"))
-                    expect(markReadItem.enabled).to(beTruthy())
+                    expect(markReadItem.enabled) == true
                     expect(markReadItem.target as? NSObject).toNot(beNil())
 
                     if let target = markReadItem.target as? NSObject {

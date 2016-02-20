@@ -203,7 +203,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     }
 
                     it("should unhide the updateBar") {
-                        expect(subject.updateBar.hidden).to(beFalsy())
+                        expect(subject.updateBar.hidden) == false
                     }
 
                     it("should set the updateBar progress to 0") {
@@ -211,7 +211,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     }
 
                     it("should start the pull to refresh") {
-                        expect(subject.refreshView.isRefreshing).to(beTruthy())
+                        expect(subject.refreshView.isRefreshing) == true
                     }
 
                     context("as progress continues") {
@@ -229,15 +229,15 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             }
 
                             it("should hide the updateBar") {
-                                expect(subject.updateBar.hidden).to(beTruthy())
+                                expect(subject.updateBar.hidden) == true
                             }
 
                             it("should stop the pull to refresh") {
-                                expect(subject.refreshView.isRefreshing).to(beFalsy())
+                                expect(subject.refreshView.isRefreshing) == false
                             }
 
                             it("should reload the tableView") {
-                                expect(dataRepository.didAskForFeeds).to(beTruthy())
+                                expect(dataRepository.didAskForFeeds) == true
                             }
                         }
                     }
@@ -251,7 +251,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     }
 
                     it("should refresh it's feed cache") {
-                        expect(dataRepository.didAskForFeeds).to(beTruthy())
+                        expect(dataRepository.didAskForFeeds) == true
                     }
                 }
 
@@ -263,14 +263,14 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     }
 
                     it("should refresh it's feed cache") {
-                        expect(dataRepository.didAskForFeeds).to(beTruthy())
+                        expect(dataRepository.didAskForFeeds) == true
                     }
                 }
             }
 
             describe("Key Commands") {
                 it("can become first responder") {
-                    expect(subject.canBecomeFirstResponder()).to(beTruthy())
+                    expect(subject.canBecomeFirstResponder()) == true
                 }
 
                 context("when query feeds are enabled") {
@@ -409,7 +409,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 }
 
                 it("should bring up the dropDownMenu") {
-                    expect(subject.dropDownMenu.isOpen).to(beTruthy())
+                    expect(subject.dropDownMenu.isOpen) == true
                 }
 
                 context("when query feeds are available") {
@@ -456,7 +456,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     }
 
                     it("should close the dropDownMenu") {
-                        expect(subject.dropDownMenu.isOpen).to(beFalsy())
+                        expect(subject.dropDownMenu.isOpen) == false
                     }
                 }
 
@@ -468,7 +468,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     }
 
                     it("should close the dropDownMenu") {
-                        expect(subject.dropDownMenu.isOpen).to(beFalsy())
+                        expect(subject.dropDownMenu.isOpen) == false
                     }
 
                     it("should present a FindFeedViewController") {
@@ -486,7 +486,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     }
 
                     it("should close the dropDownMenu") {
-                        expect(subject.dropDownMenu.isOpen).to(beFalsy())
+                        expect(subject.dropDownMenu.isOpen) == false
                     }
 
                     it("should present a LocalImportViewController") {
@@ -512,7 +512,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     }
 
                     it("should close the dropDownMenu") {
-                        expect(subject.dropDownMenu.isOpen).to(beFalsy())
+                        expect(subject.dropDownMenu.isOpen) == false
                     }
 
                     it("should present a QueryFeedViewController") {
@@ -526,17 +526,17 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
             describe("pull to refresh") {
                 beforeEach {
-                    expect(dataRepository.didUpdateFeeds).to(beFalsy())
+                    expect(dataRepository.didUpdateFeeds) == false
                     subject.refreshView.beginRefreshing()
                     subject.refreshViewDidRefresh(subject.refreshView)
                 }
 
                 it("should tell the dataManager to updateFeeds") {
-                    expect(dataRepository.didUpdateFeeds).to(beTruthy())
+                    expect(dataRepository.didUpdateFeeds) == true
                 }
 
                 it("should be refreshing") {
-                    expect(subject.refreshView.isRefreshing).to(beTruthy())
+                    expect(subject.refreshView.isRefreshing) == true
                 }
 
                 context("when the call succeeds") {
@@ -554,7 +554,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     }
 
                     it("should end refreshing") {
-                        expect(subject.refreshView.isRefreshing).to(beFalsy())
+                        expect(subject.refreshView.isRefreshing) == false
                     }
 
                     it("should reload the tableView") {
@@ -579,7 +579,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                 subscriber.didUpdateFeeds([])
                             }
                         }
-                        expect(subject.refreshView.isRefreshing).to(beFalsy())
+                        expect(subject.refreshView.isRefreshing) == false
                     }
 
                     it("should bring up an alert notifying the user") {

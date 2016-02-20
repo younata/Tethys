@@ -56,7 +56,7 @@ class SplitViewControllerSpec: QuickSpec {
         }
 
         it("should hide the detail on startup") {
-            expect(subject.delegate?.splitViewController!(subject, collapseSecondaryViewController: detail, ontoPrimaryViewController: master)).to(beTruthy())
+            expect(subject.delegate?.splitViewController!(subject, collapseSecondaryViewController: detail, ontoPrimaryViewController: master)) == true
         }
         
         describe("Changing from collapsed to not collapsed") {
@@ -67,7 +67,7 @@ class SplitViewControllerSpec: QuickSpec {
             }
             
             it("should show the detail") {
-                expect(subject.delegate?.splitViewController!(subject, collapseSecondaryViewController: detail, ontoPrimaryViewController: master)).to(beFalsy())
+                expect(subject.delegate?.splitViewController!(subject, collapseSecondaryViewController: detail, ontoPrimaryViewController: master)) == false
             }
         }
     }

@@ -197,7 +197,7 @@ class ArticleListControllerSpec: QuickSpec {
                 }
 
                 it("should not mark the article as read") {
-                    expect(articles[0].read).to(beFalsy())
+                    expect(articles[0].read) == false
                     expect(dataRepository.lastArticleMarkedRead).to(beNil())
                 }
 
@@ -213,7 +213,7 @@ class ArticleListControllerSpec: QuickSpec {
                     }
 
                     it("should mark the article as read") {
-                        expect(articles[0].read).to(beTruthy())
+                        expect(articles[0].read) == true
                         expect(dataRepository.lastArticleMarkedRead).to(equal(articles[0]))
                     }
                 }
@@ -239,7 +239,7 @@ class ArticleListControllerSpec: QuickSpec {
                         for section in 0..<subject.tableView.numberOfSections {
                             for row in 0..<subject.tableView.numberOfRowsInSection(section) {
                                 let indexPath = NSIndexPath(forRow: row, inSection: section)
-                                expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)).to(beFalsy())
+                                expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)) == false
                             }
                         }
                     }
@@ -276,7 +276,7 @@ class ArticleListControllerSpec: QuickSpec {
                         it("should resign first responder when the tableView is scrolled") {
                             subject.tableView.delegate?.scrollViewDidScroll?(subject.tableView)
 
-                            expect(subject.searchBar.isFirstResponder()).to(beFalsy())
+                            expect(subject.searchBar.isFirstResponder()) == false
                         }
 
                         it("should filter the articles down to those that match the query") {
@@ -299,7 +299,7 @@ class ArticleListControllerSpec: QuickSpec {
                         for section in 0..<subject.tableView.numberOfSections {
                             for row in 0..<subject.tableView.numberOfRowsInSection(section) {
                                 let indexPath = NSIndexPath(forRow: row, inSection: section)
-                                expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)).to(beTruthy())
+                                expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)) == true
                             }
                         }
                     }
@@ -330,7 +330,7 @@ class ArticleListControllerSpec: QuickSpec {
                                     expect(markRead.title).to(equal("Mark\nRead"))
                                     markRead.handler()(markRead, indexPath)
                                     expect(dataRepository.lastArticleMarkedRead).to(equal(articles.first))
-                                    expect(articles.first?.read).to(beTruthy())
+                                    expect(articles.first?.read) == true
                                 }
                             }
                         }
@@ -342,7 +342,7 @@ class ArticleListControllerSpec: QuickSpec {
                                     expect(markUnread.title).to(equal("Mark\nUnread"))
                                     markUnread.handler()(markUnread, indexPath)
                                     expect(dataRepository.lastArticleMarkedRead).to(equal(articles[2]))
-                                    expect(articles[2].read).to(beFalsy())
+                                    expect(articles[2].read) == false
                                 }
                             }
                         }

@@ -112,8 +112,8 @@ class ArticleSpec: QuickSpec {
                 it("should add the enclosure and set the enclosure's article if it's not set already") {
                     subject.addEnclosure(enclosure)
 
-                    expect(enclosure.updated).to(beTruthy())
-                    expect(subject.updated).to(beTruthy())
+                    expect(enclosure.updated) == true
+                    expect(subject.updated) == true
                     expect(enclosure.article).to(equal(subject))
                     expect(subject.enclosuresArray).to(contain(enclosure))
                 }
@@ -126,13 +126,13 @@ class ArticleSpec: QuickSpec {
 
                     expect(enclosure.article).to(equal(subject))
                     expect(subject.enclosuresArray).to(contain(enclosure))
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                 }
 
                 it("essentially no-ops") {
                     subject.addEnclosure(enclosure)
 
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                     expect(enclosure.article).to(equal(subject))
                     expect(subject.enclosuresArray).to(contain(enclosure))
                 }
@@ -148,9 +148,9 @@ class ArticleSpec: QuickSpec {
                 it("should remove the enclosure from the other article and add it to this article") {
                     subject.addEnclosure(enclosure)
 
-                    expect(enclosure.updated).to(beTruthy())
-                    expect(subject.updated).to(beTruthy())
-                    expect(otherArticle.updated).to(beTruthy())
+                    expect(enclosure.updated) == true
+                    expect(subject.updated) == true
+                    expect(otherArticle.updated) == true
                     expect(enclosure.article).to(equal(subject))
                     expect(subject.enclosuresArray).to(contain(enclosure))
                     expect(otherArticle.enclosuresArray).toNot(contain(enclosure))
@@ -168,7 +168,7 @@ class ArticleSpec: QuickSpec {
             context("when the enclosure is not associated with any article") {
                 it("essentially no-ops") {
                     subject.removeEnclosure(enclosure)
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                 }
             }
 
@@ -181,7 +181,7 @@ class ArticleSpec: QuickSpec {
 
                 it("should remove the enclosure from the article") {
                     subject.removeEnclosure(enclosure)
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                     expect(subject.enclosuresArray).toNot(contain(enclosure))
                     expect(enclosure.article).to(beNil())
                 }
@@ -196,8 +196,8 @@ class ArticleSpec: QuickSpec {
 
                 it("essentially no-ops") {
                     subject.removeEnclosure(enclosure)
-                    expect(subject.updated).to(beFalsy())
-                    expect(otherArticle.updated).to(beFalsy())
+                    expect(subject.updated) == false
+                    expect(otherArticle.updated) == false
                 }
             }
         }
@@ -208,7 +208,7 @@ class ArticleSpec: QuickSpec {
                 subject.addFlag("flag")
 
                 expect(subject.flags).to(contain("flag"))
-                expect(subject.updated).to(beTruthy())
+                expect(subject.updated) == true
             }
 
             context("trying to add the same flag again") {
@@ -219,7 +219,7 @@ class ArticleSpec: QuickSpec {
                 it("should no-op") {
                     subject.addFlag("flag")
 
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                 }
             }
         }
@@ -231,7 +231,7 @@ class ArticleSpec: QuickSpec {
                     subject.removeFlag("flag")
 
                     expect(subject.flags).toNot(contain("flags"))
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
             }
 
@@ -241,7 +241,7 @@ class ArticleSpec: QuickSpec {
                     subject.removeFlag("flag")
 
                     expect(subject.flags).toNot(contain("flag"))
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                 }
             }
         }
@@ -285,95 +285,95 @@ class ArticleSpec: QuickSpec {
 
         describe("the updated flag") {
             it("should start negative") {
-                expect(subject.updated).to(beFalsy())
+                expect(subject.updated) == false
             }
 
             describe("properties that change updated to positive") {
                 it("title") {
                     subject.title = ""
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                     subject.title = "title"
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
 
                 it("link") {
                     subject.link = nil
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                     subject.link = NSURL(string: "http://example.com")
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
 
                 it("summary") {
                     subject.summary = ""
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                     subject.summary = "summary"
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
 
                 it("author") {
                     subject.author = ""
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                     subject.author = "author"
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
 
                 it("published") {
                     subject.published = subject.published
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                     subject.published = NSDate(timeIntervalSince1970: 0)
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
 
                 it("updatedAt") {
                     subject.updatedAt = nil
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                     subject.updatedAt = NSDate()
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
 
                 it("identifier") {
                     subject.identifier = ""
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                     subject.identifier = "identifier"
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
 
                 it("content") {
                     subject.content = ""
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                     subject.content = "content"
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
 
                 it("estimatedReadingTime") {
                     subject.estimatedReadingTime = 0
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                     subject.estimatedReadingTime = 30
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
 
                 it("read") {
                     subject.read = false
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                     subject.read = true
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
 
                 it("feed") {
                     subject.feed = nil
-                    expect(subject.updated).to(beFalsy())
+                    expect(subject.updated) == false
                     subject.feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
 
                 it("flags") {
                     subject.addFlag("flag")
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
 
                 it("enclosures") {
                     subject.addEnclosure(Enclosure(url: NSURL(string: "http://example.com")!, kind: "", article: nil))
-                    expect(subject.updated).to(beTruthy())
+                    expect(subject.updated) == true
                 }
             }
         }

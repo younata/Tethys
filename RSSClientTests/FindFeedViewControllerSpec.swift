@@ -80,6 +80,78 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
         }
 
+        describe("key commands") {
+            it("can become first responder") {
+                expect(subject.canBecomeFirstResponder()) == true
+            }
+
+            it("has 2 key commands initially") {
+                expect(subject.keyCommands?.count) == 2
+            }
+
+            describe("the first command") {
+                it("is bound to cmd+l") {
+                    guard let keyCommand = subject.keyCommands?.first else { fail("precondition failed"); return }
+
+                    expect(keyCommand.input) == "l"
+                }
+
+                if #available(iOS 9, *) {
+                    it("is titled 'open URL'") {
+                        guard let keyCommand = subject.keyCommands?.first else { fail("precondition failed"); return }
+
+                        expect(keyCommand.discoverabilityTitle) == "Open URL"
+                    }
+                }
+            }
+
+            describe("the second command") {
+                it("is bound to cmd+r") {
+                    guard let keyCommand = subject.keyCommands?.last else { fail("precondition failed"); return }
+
+                    expect(keyCommand.input) == "r"
+                }
+
+                if #available(iOS 9, *) {
+                    it("is titled 'Reload'") {
+                        guard let keyCommand = subject.keyCommands?.last else { fail("precondition failed"); return }
+
+                        expect(keyCommand.discoverabilityTitle) == "Reload"
+                    }
+                }
+            }
+
+            context("when a feed is detected in a web page") {
+                let url = NSURL(string: "https://example.com/feed")!
+                let feedURL = NSURL(string: "https://example.com/feed1")!
+
+                beforeEach {
+                    webView.fakeUrl = url
+                    subject.webView(subject.webContent, didStartProvisionalNavigation: nil)
+
+                    importUseCase.scanForImportableArgsForCall(0).1(.WebPage(url, [feedURL]))
+                }
+
+                it("adds a third command") {
+                    expect(subject.keyCommands?.count) == 3
+                }
+
+                it("is bound to cmd+i") {
+                    guard let keyCommand = subject.keyCommands?.last else { fail("precondition failed"); return }
+
+                    expect(keyCommand.input) == "i"
+                }
+
+                if #available(iOS 9, *) {
+                    it("is titled 'Import'") {
+                        guard let keyCommand = subject.keyCommands?.last else { fail("precondition failed"); return }
+
+                        expect(keyCommand.discoverabilityTitle) == "Import"
+                    }
+                }
+            }
+        }
+
         describe("WKWebView and Delegates") {
             beforeEach {
                 webView.fakeUrl = NSURL(string: "https://example.com/feed.xml")

@@ -37,11 +37,13 @@
 
 "FindFeedViewController_AddFeed" = "Add Feed";
 "FindFeedViewController_Cancel" = "Cancel";
+"FindFeedViewController_Commands_OpenURL" = "Open URL";
+"FindFeedViewController_Commands_Reload" = "Reload";
 "FindFeedViewController_URLBar_Placeholder" = "Enter URL";
 "FindFeedViewController_Save_Feed" = "Loading feed at %@";
 "FindFeedViewController_Save_Feed_List" = "Loading feed list at %@";
 "FindFeedViewController_URLBar_Loading" = "Loading";
-"FindFeedViewController_FoundFeed_Accept" = "Import";
+"FindFeedViewController_FoundFeed_Import" = "Import";
 "FindFeedViewController_FoundFeed_Decline" = "Don't Import";
 "FindFeedViewController_FoundFeed_Title" = "Feed Detected";
 "FindFeedViewController_FoundFeed_Subtitle" = "Import %@?";

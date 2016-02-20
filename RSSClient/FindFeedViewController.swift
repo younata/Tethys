@@ -65,7 +65,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
         let dismissTitle = NSLocalizedString("Generic_Dismiss", comment: "")
         let dismiss = UIBarButtonItem(title: dismissTitle, style: .Plain, target: self, action: "dismiss")
-        self.reload = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self.webContent, action: "reload")
+        self.reload = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: "reloadWebPage")
 
         let cancelTitle = NSLocalizedString("FindFeedViewController_Cancel", comment: "")
         self.cancelTextEntry = UIBarButtonItem(title: cancelTitle, style: .Plain,
@@ -121,6 +121,34 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         if keyPath == "estimatedProgress" && object as? NSObject == self.webContent {
             self.loadingBar.progress = Float(self.webContent.estimatedProgress)
         }
+    }
+
+    public override func canBecomeFirstResponder() -> Bool { return true }
+
+    public override var keyCommands: [UIKeyCommand]? {
+
+        let focusNavField = UIKeyCommand(input: "l", modifierFlags: [], action: Selector("focusNavField"))
+        let reloadContent = UIKeyCommand(input: "r", modifierFlags: [], action: Selector("reloadWebPage"))
+
+        if #available(iOS 9.0, *) {
+            focusNavField.discoverabilityTitle =
+                NSLocalizedString("FindFeedViewController_Commands_OpenURL", comment: "")
+            reloadContent.discoverabilityTitle =
+                NSLocalizedString("FindFeedViewController_Commands_Reload", comment: "")
+        }
+
+        var commands = [focusNavField, reloadContent]
+
+        if !self.rssLinks.isEmpty {
+            let importFeed = UIKeyCommand(input: "i", modifierFlags: [], action: Selector("save"))
+            if #available(iOS 9.0, *) {
+                importFeed.discoverabilityTitle =
+                    NSLocalizedString("FindFeedViewController_FoundFeed_Import", comment: "")
+            }
+            commands.append(importFeed)
+        }
+
+        return commands
     }
 
     // MARK: - UITextFieldDelegate
@@ -203,6 +231,16 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
 // MARK: Private
 extension FindFeedViewController {
+    @objc private func focusNavField() {
+        self.navField.becomeFirstResponder()
+
+        self.navField.selectAll(nil)
+    }
+
+    @objc private func reloadWebPage() {
+        self.webContent.reload()
+    }
+
     @objc private func dismissNavFieldKeyboard() {
         self.navField.resignFirstResponder()
 
@@ -276,7 +314,7 @@ extension FindFeedViewController {
 
     private func displayAlertToSave(alertTitle: String, alertMessage: String, success: Void -> Void) {
         let doNotSave = NSLocalizedString("FindFeedViewController_FoundFeed_Decline", comment: "")
-        let save = NSLocalizedString("FindFeedViewController_FoundFeed_Accept", comment: "")
+        let save = NSLocalizedString("FindFeedViewController_FoundFeed_Import", comment: "")
 
         let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: doNotSave, style: .Cancel) {_ in

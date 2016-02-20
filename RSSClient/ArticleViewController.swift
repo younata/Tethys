@@ -23,8 +23,7 @@ public class ArticleViewController: UIViewController, Injectable {
                 ]
             }
         }
-        self.navigationItem.title = a.title ?? ""
-
+        self.title = a.title ?? ""
         self.setupUserActivity()
 
         let userActivityTitle: String
@@ -34,15 +33,12 @@ public class ArticleViewController: UIViewController, Injectable {
             userActivityTitle = a.title
         }
         self.userActivity?.title = userActivityTitle
-
         self.userActivity?.userInfo = [
             "feed": a.feed?.title ?? "",
             "article": a.identifier,
         ]
 
-        if #available(iOS 9.0, *) {
-            self.userActivity?.keywords = Set<String>([a.title, a.summary, a.author] + a.flags)
-        }
+        if #available(iOS 9.0, *) { self.userActivity?.keywords = Set([a.title, a.summary, a.author] + a.flags) }
 
         self.userActivity?.webpageURL = a.link
         self.userActivity?.needsSave = true
@@ -91,8 +87,7 @@ public class ArticleViewController: UIViewController, Injectable {
         if let loc = NSBundle.mainBundle().URLForResource("prism.js", withExtension: "html"),
             let prismJS = try? NSString(contentsOfURL: loc, encoding: NSUTF8StringEncoding) as String {
                 return prismJS
-        }
-        return ""
+        } else { return "" }
     }()
 
     public init(feedRepository: FeedRepository,
@@ -113,9 +108,7 @@ public class ArticleViewController: UIViewController, Injectable {
         )
     }
 
-    public required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     private func showArticle(article: Article, onWebView webView: UIWebView) {
         let content = article.content.isEmpty ? article.summary : article.content
@@ -157,6 +150,7 @@ public class ArticleViewController: UIViewController, Injectable {
         self.setupUserActivity()
         self.navigationController?.setToolbarHidden(false, animated: false)
 
+        self.view.addGestureRecognizer(self.panGestureRecognizer)
         self.view.addSubview(self.content)
         self.view.addSubview(self.enclosuresList)
 
@@ -170,8 +164,6 @@ public class ArticleViewController: UIViewController, Injectable {
 
         self.updateLeftBarButtonItem(self.traitCollection)
 
-        self.view.addGestureRecognizer(self.panGestureRecognizer)
-
         self.themeRepository.addSubscriber(self)
         self.enclosuresList.themeRepository = self.themeRepository
         self.configureContent()
@@ -179,10 +171,8 @@ public class ArticleViewController: UIViewController, Injectable {
 
     public override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-
         self.navigationController?.setToolbarHidden(false, animated: false)
         self.splitViewController?.setNeedsStatusBarAppearanceUpdate()
-
         self.themeRepositoryDidChangeTheme(themeRepository)
     }
 
@@ -208,10 +198,8 @@ public class ArticleViewController: UIViewController, Injectable {
     public override func canBecomeFirstResponder() -> Bool { return true }
 
     public override var keyCommands: [UIKeyCommand]? {
-        let addTitleToCmd: (UIKeyCommand, String) -> (Void) = {cmd, title in
-            if #available(iOS 9.0, *) {
-                cmd.discoverabilityTitle = title
-            }
+        let addTitleToCmd: (UIKeyCommand, String) -> Void = {cmd, title in
+            if #available(iOS 9, *) { cmd.discoverabilityTitle = title }
         }
 
         var commands: [UIKeyCommand] = []
@@ -248,18 +236,14 @@ public class ArticleViewController: UIViewController, Injectable {
         guard self.lastArticleIndex > 0 else { return }
         self.lastArticleIndex--
         self.setArticle(self.articles[lastArticleIndex])
-        if let article = self.article {
-            self.showArticle(article, onWebView: self.content)
-        }
+        if let article = self.article { self.showArticle(article, onWebView: self.content) }
     }
 
     @objc private func showNextArticle() {
         guard self.lastArticleIndex < self.articles.count else { return }
         self.lastArticleIndex++
         self.setArticle(self.articles[lastArticleIndex])
-        if let article = self.article {
-            self.showArticle(article, onWebView: self.content)
-        }
+        if let article = self.article { self.showArticle(article, onWebView: self.content) }
     }
 
     @objc private func toggleArticleRead() {
@@ -269,11 +253,9 @@ public class ArticleViewController: UIViewController, Injectable {
 
     private func configureContent() {
         self.content.delegate = self
-
         self.content.scalesPageToFit = true
         self.content.opaque = false
         self.setThemeForWebView(self.content)
-
         if #available(iOS 9, *) { self.content.allowsLinkPreview = true }
     }
 
@@ -363,16 +345,16 @@ public class ArticleViewController: UIViewController, Injectable {
 
     @objc private func openInSafari() {
         guard let url = self.article?.link else { return }
-        if #available(iOS 9, *) {
-            self.loadUrlInSafari(url)
-        } else {
-            self.urlOpener.openURL(url)
-        }
+        self.openURL(url)
+    }
+
+    private func openURL(url: NSURL) {
+        if #available(iOS 9, *) { self.loadUrlInSafari(url)
+        } else { self.urlOpener.openURL(url) }
     }
 
     private func loadUrlInSafari(url: NSURL) {
         guard #available(iOS 9, *) else { return }
-
         let safari = SFSafariViewController(URL: url)
         self.presentViewController(safari, animated: true, completion: nil)
     }
@@ -383,11 +365,7 @@ extension ArticleViewController: UIWebViewDelegate {
         shouldStartLoadWithRequest request: NSURLRequest,
         navigationType: UIWebViewNavigationType) -> Bool {
             guard let url = request.URL where navigationType == .LinkClicked else { return true }
-            if #available(iOS 9, *) {
-                self.loadUrlInSafari(url)
-            } else {
-                self.urlOpener.openURL(url)
-            }
+            self.openURL(url)
             return false
     }
 }

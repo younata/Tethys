@@ -35,6 +35,8 @@
 		890B78BC1C77A5100066E201 /* DocumentationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890B78BB1C77A5100066E201 /* DocumentationUseCase.swift */; };
 		890B78BE1C77A52B0066E201 /* DocumentationUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890B78BD1C77A52B0066E201 /* DocumentationUseCaseSpec.swift */; };
 		890B78C21C77A83D0066E201 /* FakeDocumentationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890B78C11C77A83D0066E201 /* FakeDocumentationUseCase.swift */; };
+		890B78C81C77FD200066E201 /* ReadArticleUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890B78C71C77FD200066E201 /* ReadArticleUseCase.swift */; };
+		890B78CA1C78E8650066E201 /* ReadArticleUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890B78C91C78E8650066E201 /* ReadArticleUseCaseSpec.swift */; };
 		89122E611C5D725D00004B1F /* DatabaseMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89122E601C5D725D00004B1F /* DatabaseMigrator.swift */; };
 		89122E621C5D725D00004B1F /* DatabaseMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89122E601C5D725D00004B1F /* DatabaseMigrator.swift */; };
 		89122E641C5D762000004B1F /* DatabaseMigratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89122E631C5D762000004B1F /* DatabaseMigratorSpec.swift */; };
@@ -499,6 +501,8 @@
 		890B78BB1C77A5100066E201 /* DocumentationUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationUseCase.swift; sourceTree = "<group>"; };
 		890B78BD1C77A52B0066E201 /* DocumentationUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationUseCaseSpec.swift; sourceTree = "<group>"; };
 		890B78C11C77A83D0066E201 /* FakeDocumentationUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDocumentationUseCase.swift; sourceTree = "<group>"; };
+		890B78C71C77FD200066E201 /* ReadArticleUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadArticleUseCase.swift; sourceTree = "<group>"; };
+		890B78C91C78E8650066E201 /* ReadArticleUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadArticleUseCaseSpec.swift; sourceTree = "<group>"; };
 		89122E601C5D725D00004B1F /* DatabaseMigrator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseMigrator.swift; sourceTree = "<group>"; };
 		89122E631C5D762000004B1F /* DatabaseMigratorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseMigratorSpec.swift; sourceTree = "<group>"; };
 		8917546F1C5B449E0036D96D /* RealmObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmObjects.swift; sourceTree = "<group>"; };
@@ -1067,6 +1071,7 @@
 				8997C8521B2566A600972930 /* ArticleCellSpec.swift */,
 				899823AB1B2C883B00818755 /* ArticleListControllerSpec.swift */,
 				899823AD1B30B64000818755 /* ArticleViewControllerSpec.swift */,
+				890B78C91C78E8650066E201 /* ReadArticleUseCaseSpec.swift */,
 				89D170A71C52E98300D546F9 /* EnclosuresListSpec.swift */,
 			);
 			name = UI;
@@ -1342,6 +1347,7 @@
 			isa = PBXGroup;
 			children = (
 				89C830B519D7DE97009924DA /* ArticleViewController.swift */,
+				890B78C71C77FD200066E201 /* ReadArticleUseCase.swift */,
 				89F98B9E1B9FC659005C3CA8 /* ScreenEdgePanGestureRecognizer.swift */,
 				8924D8E81A094CF5003B7529 /* github2.css */,
 				8918D4D81B85887E00DCDE0E /* darkhub2.css */,
@@ -2058,6 +2064,7 @@
 				89F98BA41BA079EA005C3CA8 /* TableViewCell.swift in Sources */,
 				89F98BAC1BA0E428005C3CA8 /* DocumentationViewController.swift in Sources */,
 				89D170A61C52D4AC00D546F9 /* EnclosuresList.swift in Sources */,
+				890B78C81C77FD200066E201 /* ReadArticleUseCase.swift in Sources */,
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
 				89DA7D2C1A66111E0050685B /* TextFieldCell.swift in Sources */,
 				89C204BD1A73F72800C792D2 /* SplitViewController.swift in Sources */,
@@ -2099,6 +2106,7 @@
 				89F98BAE1BA0E449005C3CA8 /* DocumentationViewControllerSpec.swift in Sources */,
 				89735ABC1C0694C70032E09C /* UITraitCollection+rNewsTests.m in Sources */,
 				89EA6C371B4B308F00456892 /* FakeOPMLService.swift in Sources */,
+				890B78CA1C78E8650066E201 /* ReadArticleUseCaseSpec.swift in Sources */,
 				899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */,
 				89D970BB1B35BF6500ED84B8 /* WKWebView+rNewsTests.m in Sources */,
 				89C204C21A73FEDA00C792D2 /* SplitViewControllerSpec.swift in Sources */,

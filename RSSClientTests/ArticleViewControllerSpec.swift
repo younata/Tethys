@@ -8,24 +8,24 @@ import SafariServices
 
 class ArticleViewControllerSpec: QuickSpec {
     override func spec() {
-        var subject: ArticleViewController! = nil
-        var injector: Injector! = nil
-        var navigationController: UINavigationController! = nil
-        var dataWriter: FakeFeedRepository! = nil
-        var themeRepository: FakeThemeRepository! = nil
-        var urlOpener: FakeUrlOpener! = nil
+        var subject: ArticleViewController!
+        var injector: Injector!
+        var navigationController: UINavigationController!
+        var themeRepository: FakeThemeRepository!
+        var urlOpener: FakeUrlOpener!
+        var readArticleUseCase: FakeReadArticleUseCase!
 
         beforeEach {
             injector = Injector()
-
-            dataWriter = FakeFeedRepository()
-            injector.bind(FeedRepository.self, toInstance: dataWriter)
 
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, toInstance: themeRepository)
 
             urlOpener = FakeUrlOpener()
             injector.bind(UrlOpener.self, toInstance: urlOpener)
+
+            readArticleUseCase = FakeReadArticleUseCase()
+            injector.bind(ReadArticleUseCase.self, toInstance: readArticleUseCase)
 
             subject = injector.create(ArticleViewController)!
 
@@ -57,6 +57,11 @@ class ArticleViewControllerSpec: QuickSpec {
         }
 
         describe("Key Commands") {
+            beforeEach {
+                readArticleUseCase.readArticleReturns("hello")
+                readArticleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
+            }
+
             it("can become first responder") {
                 expect(subject.canBecomeFirstResponder()) == true
             }
@@ -212,22 +217,18 @@ class ArticleViewControllerSpec: QuickSpec {
             }
         }
 
-        it("should create/set a user activity") {
-            expect(subject.userActivity).toNot(beNil())
-            if let activity = subject.userActivity {
-                expect(activity.activityType).to(equal("com.rachelbrindle.rssclient.article"))
-                expect(activity.delegate).toNot(beNil())
-                if #available(iOS 9.0, *) {
-                    expect(activity.eligibleForSearch) == true
-                    expect(activity.eligibleForPublicIndexing) == false
-                }
-            }
-        }
-
         describe("continuing from user activity") {
             let article = Article(title: "article", link: NSURL(string: "https://example.com/article"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
 
             beforeEach {
+                readArticleUseCase.readArticleStub = {
+                    if $0 == article {
+                        return $0.content
+                    }
+                    return "hello"
+                }
+                readArticleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
+
                 subject.setArticle(article)
 
                 let activityType = "com.rachelbrindle.rssclient.article"
@@ -249,24 +250,26 @@ class ArticleViewControllerSpec: QuickSpec {
 
         describe("setting the article") {
             let article = Article(title: "article", link: NSURL(string: "https://example.com/"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"], enclosures: [])
-            let articleWOContent = Article(title: "article1", link: NSURL(string: "https://example.com/"), summary: "this was a summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier1", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"], enclosures: [])
             let feed = Feed(title: "feed", url: NSURL(string: "https://example.com"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
 
+            let userActivity = NSUserActivity(activityType: "com.example.test")
+
             beforeEach {
+                readArticleUseCase.readArticleReturns("example")
+                readArticleUseCase.userActivityForArticleReturns(userActivity)
+
                 article.feed = feed
                 feed.addArticle(article)
                 subject.setArticle(article)
             }
 
-            it("should mark the article as read") {
-                expect(article.read) == true
-                expect(dataWriter.lastArticleMarkedRead).to(equal(article))
+            it("asks the use case for the html to show") {
+                expect(readArticleUseCase.readArticleCallCount) == 1
+                expect(readArticleUseCase.readArticleArgsForCall(0)) == article
             }
 
-            it("should load just the description if the article has no content") {
-                subject.setArticle(articleWOContent)
-
-                expect(subject.content.loadedHTMLString()).to(contain(articleWOContent.summary))
+            it("sets the user activity up") {
+                expect(subject.userActivity) === userActivity
             }
 
             it("should not show the enclosures list if the article has no enclosures") {
@@ -325,55 +328,6 @@ class ArticleViewControllerSpec: QuickSpec {
 
                 expect(subject.toolbarItems?.contains(subject.shareButton)) == true
                 expect(subject.toolbarItems?.contains(subject.openInSafariButton)).to(equal(false))
-            }
-
-            it("should update the user activity") {
-                expect(subject.userActivity).toNot(beNil())
-                if let activity = subject.userActivity {
-                    expect(activity.active) == true
-
-                    expect(activity.userInfo).toNot(beNil())
-                    if let userInfo = activity.userInfo {
-                        expect(userInfo.keys.count).to(equal(2))
-                        expect(userInfo["feed"] as? String).to(equal("feed"))
-                        expect(userInfo["article"] as? String).to(equal("identifier"))
-                    }
-
-                    expect(activity.webpageURL).to(equal(article.link))
-                    expect(activity.needsSave) == true
-                    expect(activity.title).to(equal("\(feed.title): \(article.title)"))
-
-                    if #available(iOS 9.0, *) {
-                        expect(activity.keywords).to(equal(Set(["article", "summary", "rachel",  "a"])))
-                    }
-
-                    navigationController = nil
-                    injector = nil
-                    subject = nil
-                    expect(activity.valid) == false
-                }
-            }
-
-            describe("saving the user activity") {
-                beforeEach {
-                    expect(subject.userActivity).toNot(beNil())
-                    if let activity = subject.userActivity {
-                        activity.userInfo = nil
-
-                        activity.delegate?.userActivityWillSave?(activity)
-                    }
-                }
-
-                it("actually writes the data to disk") {
-                    if let activity = subject.userActivity {
-                        expect(activity.userInfo).toNot(beNil())
-                        if let userInfo = activity.userInfo {
-                            expect(userInfo.keys.count).to(equal(2))
-                            expect(userInfo["feed"] as? String).to(equal("feed"))
-                            expect(userInfo["article"] as? String).to(equal("identifier"))
-                        }
-                    }
-                }
             }
 
             describe("tapping the share button") {

@@ -78,6 +78,11 @@ class ArticleListControllerSpec: QuickSpec {
 
             injector.bind(UrlOpener.self, toInstance: FakeUrlOpener())
 
+            let useCase = FakeReadArticleUseCase()
+            useCase.readArticleReturns("hello")
+            useCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
+            injector.bind(ReadArticleUseCase.self, toInstance: useCase)
+
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, toInstance: themeRepository)
 

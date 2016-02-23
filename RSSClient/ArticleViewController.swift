@@ -11,37 +11,20 @@ public class ArticleViewController: UIViewController, Injectable {
     public func setArticle(article: Article?, read: Bool = true, show: Bool = true) {
         self.article = article
 
-        guard let a = article else { return }
-        if a.read == false && read { self.feedRepository.markArticle(a, asRead: true) }
-        if show { self.showArticle(a, onWebView: self.content) }
+        guard let article = article else { return }
+        if show { self.showArticle(article, onWebView: self.content) }
+
+        self.userActivity = self.readArticleUseCase.userActivityForArticle(article)
 
         self.toolbarItems = [self.spacer(), self.shareButton, self.spacer()]
         if #available(iOS 9, *) {
-            if article?.link != nil {
+            if article.link != nil {
                 self.toolbarItems = [
                     self.spacer(), self.shareButton, self.spacer(), self.openInSafariButton, self.spacer()
                 ]
             }
         }
-        self.title = a.title ?? ""
-        self.setupUserActivity()
-
-        let userActivityTitle: String
-        if let feedTitle = a.feed?.title {
-            userActivityTitle = "\(feedTitle): \(a.title)"
-        } else {
-            userActivityTitle = a.title
-        }
-        self.userActivity?.title = userActivityTitle
-        self.userActivity?.userInfo = [
-            "feed": a.feed?.title ?? "",
-            "article": a.identifier,
-        ]
-
-        if #available(iOS 9.0, *) { self.userActivity?.keywords = Set([a.title, a.summary, a.author] + a.flags) }
-
-        self.userActivity?.webpageURL = a.link
-        self.userActivity?.needsSave = true
+        self.title = article.title
     }
 
     public var content = UIWebView(forAutoLayout: ())
@@ -61,60 +44,36 @@ public class ArticleViewController: UIViewController, Injectable {
     public var articles = DataStoreBackedArray<Article>()
     public var lastArticleIndex = 0
 
-    public let feedRepository: FeedRepository
     public let themeRepository: ThemeRepository
     public let urlOpener: UrlOpener
+    private let readArticleUseCase: ReadArticleUseCase
 
     public lazy var panGestureRecognizer: ScreenEdgePanGestureRecognizer = {
         return ScreenEdgePanGestureRecognizer(target: self, action: "didSwipe:")
     }()
 
-    private func loadArticleCSS() -> String {
-        let cssFileName = self.themeRepository.articleCSSFileName
-        if let loc = NSBundle.mainBundle().URLForResource(cssFileName, withExtension: "css"),
-            let cssNSString = try? NSString(contentsOfURL: loc, encoding: NSUTF8StringEncoding) {
-                return "<html><head>" +
-                    "<style type=\"text/css\">\(String(cssNSString))</style>" +
-                    "<meta name=\"viewport\" content=\"initial-scale=1.0,maximum-scale=10.0\"/>" +
-                    "</head><body>"
-        }
-        return "<html><body>"
-    }
-
-    private lazy var articleCSS: String = { self.loadArticleCSS() }()
-
-    private lazy var prismJS: String = {
-        if let loc = NSBundle.mainBundle().URLForResource("prism.js", withExtension: "html"),
-            let prismJS = try? NSString(contentsOfURL: loc, encoding: NSUTF8StringEncoding) as String {
-                return prismJS
-        } else { return "" }
-    }()
-
-    public init(feedRepository: FeedRepository,
-                themeRepository: ThemeRepository,
-                urlOpener: UrlOpener) {
-        self.feedRepository = feedRepository
+    public init(themeRepository: ThemeRepository,
+                urlOpener: UrlOpener,
+                readArticleUseCase: ReadArticleUseCase) {
         self.themeRepository = themeRepository
         self.urlOpener = urlOpener
+        self.readArticleUseCase = readArticleUseCase
 
         super.init(nibName: nil, bundle: nil)
     }
 
     public required convenience init(injector: Injector) {
         self.init(
-            feedRepository: injector.create(FeedRepository)!,
             themeRepository: injector.create(ThemeRepository)!,
-            urlOpener: injector.create(UrlOpener)!
+            urlOpener: injector.create(UrlOpener)!,
+            readArticleUseCase: injector.create(ReadArticleUseCase)!
         )
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     private func showArticle(article: Article, onWebView webView: UIWebView) {
-        let content = article.content.isEmpty ? article.summary : article.content
-        let title = "<h2>\(article.title)</h2>"
-        let htmlString = self.articleCSS + title + content + self.prismJS + "</body></html>"
-        webView.loadHTMLString(htmlString, baseURL: article.link)
+        webView.loadHTMLString(self.readArticleUseCase.readArticle(article), baseURL: article.link)
 
         let enclosures = article.enclosuresArray.filter(enclosureIsSupported)
         self.view.layoutIfNeeded()
@@ -131,23 +90,10 @@ public class ArticleViewController: UIViewController, Injectable {
         return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: "")
     }
 
-    private func setupUserActivity() {
-        guard self.userActivity == nil else { return }
-        self.userActivity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
-        if #available(iOS 9.0, *) {
-            self.userActivity?.requiredUserInfoKeys = Set(["feed", "article"])
-            self.userActivity?.eligibleForPublicIndexing = false
-            self.userActivity?.eligibleForSearch = true
-        }
-        self.userActivity?.delegate = self
-        self.userActivity?.becomeCurrent()
-    }
-
     public override func viewDidLoad() {
         super.viewDidLoad()
 
         self.view.backgroundColor = self.themeRepository.backgroundColor
-        self.setupUserActivity()
         self.navigationController?.setToolbarHidden(false, animated: false)
 
         self.view.addGestureRecognizer(self.panGestureRecognizer)
@@ -248,7 +194,7 @@ public class ArticleViewController: UIViewController, Injectable {
 
     @objc private func toggleArticleRead() {
         guard let article = self.article else { return }
-        self.feedRepository.markArticle(article, asRead: !article.read)
+        self.readArticleUseCase.toggleArticleRead(article)
     }
 
     private func configureContent() {
@@ -382,7 +328,6 @@ extension ArticleViewController: NSUserActivityDelegate {
 
 extension ArticleViewController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
-        self.articleCSS = self.loadArticleCSS()
         if let article = self.article {
             self.showArticle(article, onWebView: self.content)
         }

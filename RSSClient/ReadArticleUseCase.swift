@@ -3,7 +3,8 @@ import Ra
 import rNewsKit
 
 public protocol ReadArticleUseCase {
-    func readArticle(article: Article) -> (userActivity: NSUserActivity, html: String)
+    func readArticle(article: Article) -> String
+    func userActivityForArticle(article: Article) -> NSUserActivity
     func toggleArticleRead(article: Article)
 }
 
@@ -29,9 +30,9 @@ public final class DefaultReadArticleUseCase: NSObject, ReadArticleUseCase, Inje
         )
     }
 
-    public func readArticle(article: Article) -> (userActivity: NSUserActivity, html: String) {
+    public func readArticle(article: Article) -> String {
         if !article.read { self.feedRepository.markArticle(article, asRead: true) }
-        return (self.userActivityForArticle(article), self.htmlForArticle(article))
+        return self.htmlForArticle(article)
     }
 
     public func toggleArticleRead(article: Article) {
@@ -50,7 +51,7 @@ public final class DefaultReadArticleUseCase: NSObject, ReadArticleUseCase, Inje
     }()
     private weak var mostRecentArticle: Article?
 
-    private func userActivityForArticle(article: Article) -> NSUserActivity {
+    public func userActivityForArticle(article: Article) -> NSUserActivity {
         let title: String
         if let feedTitle = article.feed?.title {
             title = "\(feedTitle): \(article.title)"

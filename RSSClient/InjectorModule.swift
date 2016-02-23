@@ -35,6 +35,8 @@ public class InjectorModule: Ra.InjectorModule {
 
         injector.bind(NotificationHandler.self) { LocalNotificationHandler(injector: $0) }
 
+        injector.bind(ReadArticleUseCase.self) { DefaultReadArticleUseCase(injector: $0) }
+
         injector.bind(NSFileManager.self, toInstance: NSFileManager.defaultManager())
     }
 

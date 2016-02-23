@@ -34,25 +34,42 @@ class ArticleViewControllerSpec: QuickSpec {
             expect(subject.view).toNot(beNil())
         }
 
+        it("shows the background view on viewWillAppear and an article is not set") {
+            subject.viewWillAppear(true)
+            expect(subject.backgroundView.hidden) == false
+
+            subject.backgroundView.hidden = true
+
+            readArticleUseCase.readArticleReturns("hello")
+            readArticleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
+            subject.setArticle(Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: []))
+
+            expect(subject.backgroundView.hidden) == true
+        }
+
         describe("changing the theme") {
             beforeEach {
                 themeRepository.theme = .Dark
             }
 
             it("should update the navigation bar background") {
-                expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
+                expect(subject.navigationController?.navigationBar.barStyle) == themeRepository.barStyle
             }
 
             it("should update the content's background color") {
-                expect(subject.content.backgroundColor).to(equal(themeRepository.backgroundColor))
+                expect(subject.content.backgroundColor) == themeRepository.backgroundColor
             }
 
             it("should update the scroll indicator style") {
-                expect(subject.content.scrollView.indicatorStyle).to(equal(themeRepository.scrollIndicatorStyle))
+                expect(subject.content.scrollView.indicatorStyle) == themeRepository.scrollIndicatorStyle
             }
 
             it("should update the toolbar") {
-                expect(subject.navigationController?.toolbar.barStyle).to(equal(themeRepository.barStyle))
+                expect(subject.navigationController?.toolbar.barStyle) == themeRepository.barStyle
+            }
+
+            it("updates the background view's backgroundColor") {
+                expect(subject.backgroundView.backgroundColor) == themeRepository.backgroundColor
             }
         }
 
@@ -328,6 +345,16 @@ class ArticleViewControllerSpec: QuickSpec {
 
                 expect(subject.toolbarItems?.contains(subject.shareButton)) == true
                 expect(subject.toolbarItems?.contains(subject.openInSafariButton)).to(equal(false))
+            }
+
+            describe("when the article loads") {
+                beforeEach {
+                    subject.content.delegate?.webViewDidFinishLoad?(subject.content)
+                }
+
+                it("hides the backgroundView") {
+                    expect(subject.backgroundView.hidden) == true
+                }
             }
 
             describe("tapping the share button") {

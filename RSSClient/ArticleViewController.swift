@@ -90,6 +90,12 @@ public class ArticleViewController: UIViewController, Injectable {
         return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: "")
     }
 
+    public let backgroundView: UIView = {
+        let view = UIView(forAutoLayout: ())
+
+        return view
+    }()
+
     public override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -99,6 +105,7 @@ public class ArticleViewController: UIViewController, Injectable {
         self.view.addGestureRecognizer(self.panGestureRecognizer)
         self.view.addSubview(self.content)
         self.view.addSubview(self.enclosuresList)
+        self.view.addSubview(self.backgroundView)
 
         self.content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
         self.content.autoPinEdge(.Bottom, toEdge: .Top, ofView: self.enclosuresList)
@@ -110,6 +117,8 @@ public class ArticleViewController: UIViewController, Injectable {
 
         self.updateLeftBarButtonItem(self.traitCollection)
 
+        self.backgroundView.autoPinEdgesToSuperviewEdges()
+
         self.themeRepository.addSubscriber(self)
         self.enclosuresList.themeRepository = self.themeRepository
         self.configureContent()
@@ -120,6 +129,7 @@ public class ArticleViewController: UIViewController, Injectable {
         self.navigationController?.setToolbarHidden(false, animated: false)
         self.splitViewController?.setNeedsStatusBarAppearanceUpdate()
         self.themeRepositoryDidChangeTheme(themeRepository)
+        if self.article != nil { self.backgroundView.hidden = false }
     }
 
     public override func viewWillDisappear(animated: Bool) {
@@ -313,6 +323,10 @@ extension ArticleViewController: UIWebViewDelegate {
             guard let url = request.URL where navigationType == .LinkClicked else { return true }
             self.openURL(url)
             return false
+    }
+
+    public func webViewDidFinishLoad(webView: UIWebView) {
+        self.backgroundView.hidden = self.article != nil
     }
 }
 

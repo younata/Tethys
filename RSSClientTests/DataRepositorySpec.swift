@@ -52,7 +52,6 @@ class FeedRepositorySpec: QuickSpec {
         var subject: DataRepository!
 
         var mainQueue: FakeOperationQueue!
-        var backgroundQueue: FakeOperationQueue!
 
         var feeds: [Feed] = []
         var feed1: Feed!
@@ -70,6 +69,8 @@ class FeedRepositorySpec: QuickSpec {
         var dataService: InMemoryDataService!
 
         var updateService: FakeUpdateService!
+
+        var databaseMigrator: FakeDatabaseMigrator!
 
         beforeEach {
             feed1 = Feed(title: "a", url: NSURL(string: "https://example.com/feed1.feed"), summary: "",
@@ -97,7 +98,6 @@ class FeedRepositorySpec: QuickSpec {
             reachable = FakeReachable(hasNetworkConnectivity: true)
 
             mainQueue = FakeOperationQueue()
-            backgroundQueue = FakeOperationQueue()
 
             dataServiceFactory = FakeDataServiceFactory()
             dataService = InMemoryDataService(mainQueue: mainQueue, searchIndex: FakeSearchIndex())
@@ -108,11 +108,13 @@ class FeedRepositorySpec: QuickSpec {
 
             updateService = FakeUpdateService()
 
+            databaseMigrator = FakeDatabaseMigrator()
+
             subject = DataRepository(mainQueue: mainQueue,
-                backgroundQueue: backgroundQueue,
                 reachable: reachable,
                 dataServiceFactory: dataServiceFactory,
-                updateService: updateService
+                updateService: updateService,
+                databaseMigrator: databaseMigrator
             )
 
             dataSubscriber = FakeDataSubscriber()
@@ -129,10 +131,78 @@ class FeedRepositorySpec: QuickSpec {
             }
 
             context("when the user is using a CoreDataDataService") {
-                xit("returns true") {
-                    // setup
+                it("returns true") {
+                    let objectContext = managedObjectContext()
+                    let mainQueue = FakeOperationQueue()
+                    let searchIndex = FakeSearchIndex()
+                    let coreDataService = CoreDataService(managedObjectContext: objectContext, mainQueue: mainQueue, searchIndex: searchIndex)
+                    dataServiceFactory.currentDataService = coreDataService
 
                     expect(subject.databaseUpdateAvailable()) == true
+                }
+            }
+        }
+
+        describe("performing database migrations") {
+            context("from Core Data to Realm") {
+                var objectContext: NSManagedObjectContext!
+                var mainQueue: FakeOperationQueue!
+                var searchIndex: FakeSearchIndex!
+                var coreDataService: CoreDataService!
+
+                var migrationFinished = false
+
+                var newDataService: InMemoryDataService!
+
+                beforeEach {
+                    objectContext = managedObjectContext()
+                    mainQueue = FakeOperationQueue()
+                    searchIndex = FakeSearchIndex()
+                    coreDataService = CoreDataService(managedObjectContext: objectContext, mainQueue: mainQueue, searchIndex: searchIndex)
+                    dataServiceFactory.currentDataService = coreDataService
+
+                    newDataService = InMemoryDataService(mainQueue: mainQueue, searchIndex: searchIndex)
+                    dataServiceFactory.newDataServiceReturns(newDataService)
+
+                    migrationFinished = false
+
+                    subject.performDatabaseUpdates {
+                        migrationFinished = true
+                    }
+                }
+
+                it("asks the dataServiceFactory for a new data service") {
+                    expect(dataServiceFactory.newDataServiceCallCount) == 1
+                }
+
+                it("asks the migrator to migrate") {
+                    expect(databaseMigrator.migrateCallCount) == 1
+
+                    expect(databaseMigrator.migrateArgsForCall(0).0 as? CoreDataService) === coreDataService
+                    expect(databaseMigrator.migrateArgsForCall(0).1 as? InMemoryDataService) === newDataService
+                }
+
+                context("when the migration finishes") {
+                    beforeEach {
+                        databaseMigrator.migrateArgsForCall(0).2()
+                    }
+
+                    it("sets the new data service as the current data service") {
+                        expect(try! dataServiceFactory.setCurrentDataServiceArgsForCall(2) as? InMemoryDataService) === newDataService
+                    }
+
+                    it("deletes everything in the old dataService") {
+                        expect(databaseMigrator.deleteEverythingCallCount) == 1
+                        expect(databaseMigrator.deleteEverythingArgsForCall(0).0 as? CoreDataService) === coreDataService
+                    }
+
+                    context("when the deletion finishes") {
+                        it("calls the callback") {
+                            databaseMigrator.deleteEverythingArgsForCall(0).1()
+
+                            expect(migrationFinished) == true
+                        }
+                    }
                 }
             }
         }
@@ -229,7 +299,6 @@ class FeedRepositorySpec: QuickSpec {
                         calledHandler = true
                         calledArticles = articles
                     }
-                    backgroundQueue.runNextOperation()
                 }
 
                 it("should return all articles that match the given search query") {
@@ -305,7 +374,6 @@ class FeedRepositorySpec: QuickSpec {
 
             describe("markFeedAsRead") {
                 beforeEach {
-                    backgroundQueue.runSynchronously = true
                     subject.markFeedAsRead(feed1)
                 }
 
@@ -368,8 +436,6 @@ class FeedRepositorySpec: QuickSpec {
 
                 beforeEach {
                     article = article1
-
-                    backgroundQueue.runSynchronously = true
 
                     subject.markArticle(article, asRead: true)
                 }
@@ -438,8 +504,6 @@ class FeedRepositorySpec: QuickSpec {
 
                 context("when the network is reachable") {
                     beforeEach {
-                        backgroundQueue.runSynchronously = true
-
                         subject.updateFeed(feed) {changedFeed, error in
                             didCallCallback = true
                             callbackError = error
@@ -491,7 +555,6 @@ class FeedRepositorySpec: QuickSpec {
                 beforeEach {
                     didCallCallback = false
                     callbackErrors = []
-                    backgroundQueue.runSynchronously = true
                 }
 
                 context("when there are no feeds in the data store") {
@@ -560,7 +623,6 @@ class FeedRepositorySpec: QuickSpec {
                     beforeEach {
                         didCallCallback = false
                         callbackErrors = []
-                        backgroundQueue.runSynchronously = true
                         subject.updateFeeds {feeds, errors in
                             didCallCallback = true
                             callbackErrors = errors

@@ -1,4 +1,9 @@
-struct DatabaseMigrator {
+protocol DatabaseMigratorType {
+    func migrate(from: DataService, to: DataService, finish: Void -> Void)
+    func deleteEverything(database: DataService, finish: Void -> Void)
+}
+
+struct DatabaseMigrator: DatabaseMigratorType {
     func migrate(from: DataService, to: DataService, finish: Void -> Void) {
         from.allFeeds { oldFeeds in
             let oldArticles = oldFeeds.reduce([Article]()) { $0 + Array($1.articlesArray) }

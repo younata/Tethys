@@ -55,10 +55,10 @@ public class KitModule: NSObject, Ra.InjectorModule {
         )
 
         let dataRepository = DataRepository(mainQueue: mainQueue,
-            backgroundQueue: backgroundQueue,
             reachable: reachable,
             dataServiceFactory: dataServiceFactory,
-            updateService: updateService
+            updateService: updateService,
+            databaseMigrator: DatabaseMigrator()
         )
 
         injector.bind(FeedRepository.self, toInstance: dataRepository)

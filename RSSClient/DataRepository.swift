@@ -64,35 +64,47 @@ protocol Reachable {
 
 class DataRepository: FeedRepository {
     private let mainQueue: NSOperationQueue
-    private let backgroundQueue: NSOperationQueue
 
     private let reachable: Reachable?
 
     private let dataServiceFactory: DataServiceFactoryType
     private let updateService: UpdateServiceType
+    private let databaseMigrator: DatabaseMigratorType
+
 
     private var dataService: DataService {
         return self.dataServiceFactory.currentDataService
     }
 
     init(mainQueue: NSOperationQueue,
-        backgroundQueue: NSOperationQueue,
         reachable: Reachable?,
         dataServiceFactory: DataServiceFactoryType,
-        updateService: UpdateServiceType) {
+        updateService: UpdateServiceType,
+        databaseMigrator: DatabaseMigratorType) {
             self.mainQueue = mainQueue
-            self.backgroundQueue = backgroundQueue
             self.reachable = reachable
             self.dataServiceFactory = dataServiceFactory
             self.updateService = updateService
+            self.databaseMigrator = databaseMigrator
     }
 
     func databaseUpdateAvailable() -> Bool {
-        return false
+        return self.dataServiceFactory.currentDataService is CoreDataService
     }
 
     func performDatabaseUpdates(callback: Void -> Void) {
-        callback()
+        guard self.databaseUpdateAvailable() else { return callback() }
+        let currentDataService = self.dataServiceFactory.currentDataService
+        if currentDataService is CoreDataService {
+            let replacementDataService = self.dataServiceFactory.newDataService()
+            self.databaseMigrator.migrate(currentDataService, to: replacementDataService) {
+                self.dataServiceFactory.currentDataService = replacementDataService
+
+                self.databaseMigrator.deleteEverything(currentDataService) {
+                    callback()
+                }
+            }
+        }
     }
 
     //MARK: - DataRetriever
@@ -137,21 +149,19 @@ class DataRepository: FeedRepository {
                 self.mainQueue.addOperationWithBlock { callback(DataStoreBackedArray()) }
                 return
             }
-            self.backgroundQueue.addOperationWithBlock {
-                var articles = feeds[0].articlesArray
-                for feed in feeds[1..<feeds.count] {
-                    articles = articles.combine(feed.articlesArray)
-                }
-                let predicates = [
-                    NSPredicate(format: "title CONTAINS[cd] %@", query),
-                    NSPredicate(format: "summary CONTAINS[cd] %@", query),
-                    NSPredicate(format: "author CONTAINS[cd] %@", query),
-                    NSPredicate(format: "content CONTAINS[cd] %@", query),
-                ]
-                let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
-                let returnValue = articles.filterWithPredicate(compoundPredicate)
-                self.mainQueue.addOperationWithBlock { callback(returnValue) }
+            var articles = feeds[0].articlesArray
+            for feed in feeds[1..<feeds.count] {
+                articles = articles.combine(feed.articlesArray)
             }
+            let predicates = [
+                NSPredicate(format: "title CONTAINS[cd] %@", query),
+                NSPredicate(format: "summary CONTAINS[cd] %@", query),
+                NSPredicate(format: "author CONTAINS[cd] %@", query),
+                NSPredicate(format: "content CONTAINS[cd] %@", query),
+            ]
+            let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
+            let returnValue = articles.filterWithPredicate(compoundPredicate)
+            self.mainQueue.addOperationWithBlock { callback(returnValue) }
     }
 
     func articlesMatchingQuery(query: String, callback: ([Article]) -> (Void)) {

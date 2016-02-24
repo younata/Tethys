@@ -30,10 +30,10 @@ class OPMLServiceSpec: QuickSpec {
 
             dataRepository = FakeDataRepository(
                 mainQueue: mainQueue,
-                backgroundQueue: importQueue,
                 reachable: nil,
                 dataServiceFactory: dataServiceFactory,
-                updateService: FakeUpdateService()
+                updateService: FakeUpdateService(),
+                databaseMigrator: FakeDatabaseMigrator()
             )
 
             let injector = Injector()

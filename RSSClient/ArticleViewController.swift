@@ -352,5 +352,6 @@ extension ArticleViewController: ThemeRepositorySubscriber {
         self.view.backgroundColor = themeRepository.backgroundColor
         self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
         self.navigationController?.toolbar.barStyle = themeRepository.barStyle
+        self.backgroundView.backgroundColor = themeRepository.backgroundColor
     }
 }

@@ -288,6 +288,11 @@
 		89CBDBFA1C7D32EE006B70F5 /* FakeDataServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDBF81C7D32EE006B70F5 /* FakeDataServiceFactory.swift */; };
 		89CBDBFE1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDBFD1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift */; };
 		89CBDBFF1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDBFD1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift */; };
+		89CBDC011C7D41C9006B70F5 /* MigrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC001C7D41C9006B70F5 /* MigrationViewController.swift */; };
+		89CBDC051C7D42D7006B70F5 /* MigrationViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC041C7D42D7006B70F5 /* MigrationViewControllerSpec.swift */; };
+		89CBDC091C7D431D006B70F5 /* FakeMigrationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC081C7D431D006B70F5 /* FakeMigrationUseCase.swift */; };
+		89CBDC0B1C7D432F006B70F5 /* MigrationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC0A1C7D432F006B70F5 /* MigrationUseCase.swift */; };
+		89CBDC111C7D781E006B70F5 /* MigrationUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC101C7D781E006B70F5 /* MigrationUseCaseSpec.swift */; };
 		89CC81FF1B4615A100648367 /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F271AE0C942004C3CB4 /* Ra.framework */; };
 		89CC82001B46198200648367 /* SearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C61B40D2AC0097045A /* SearchIndex.swift */; };
 		89CC82041B461A2B00648367 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82031B461A2B00648367 /* Helpers.swift */; };
@@ -681,6 +686,11 @@
 		89CBDBF31C7D1436006B70F5 /* DataServiceFactorySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataServiceFactorySpec.swift; sourceTree = "<group>"; };
 		89CBDBF81C7D32EE006B70F5 /* FakeDataServiceFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDataServiceFactory.swift; sourceTree = "<group>"; };
 		89CBDBFD1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDatabaseMigrator.swift; sourceTree = "<group>"; };
+		89CBDC001C7D41C9006B70F5 /* MigrationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MigrationViewController.swift; sourceTree = "<group>"; };
+		89CBDC041C7D42D7006B70F5 /* MigrationViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MigrationViewControllerSpec.swift; sourceTree = "<group>"; };
+		89CBDC081C7D431D006B70F5 /* FakeMigrationUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeMigrationUseCase.swift; sourceTree = "<group>"; };
+		89CBDC0A1C7D432F006B70F5 /* MigrationUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MigrationUseCase.swift; sourceTree = "<group>"; };
+		89CBDC101C7D781E006B70F5 /* MigrationUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MigrationUseCaseSpec.swift; sourceTree = "<group>"; };
 		89CC82031B461A2B00648367 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		89CC82051B461A5500648367 /* KitModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KitModule.swift; sourceTree = "<group>"; };
 		89D135101A5944A200B6937A /* RSSClient 1.4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.4.xcdatamodel"; sourceTree = "<group>"; };
@@ -1073,6 +1083,7 @@
 		899C48181A9AC0F000F57B96 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				89CBDC031C7D42C2006B70F5 /* Migration */,
 				89F98BAD1BA0E449005C3CA8 /* DocumentationViewControllerSpec.swift */,
 				890B78BD1C77A52B0066E201 /* DocumentationUseCaseSpec.swift */,
 				89E2A33E1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift */,
@@ -1133,6 +1144,7 @@
 				8918D4A31B8115F800DCDE0E /* ExplanationView.swift */,
 				8903A6241C4AB17C00E896BF /* NotificationView.swift */,
 				89D170B61C57318F00D546F9 /* AppHelpers.swift */,
+				89CBDC021C7D428E006B70F5 /* Migration */,
 				896320921C1779DE00B7C980 /* Settings */,
 				89F98BA21BA079DE005C3CA8 /* Generic Cells */,
 				896320931C1779F900B7C980 /* Repositories */,
@@ -1262,6 +1274,24 @@
 				8903EB021C6FA022001C0189 /* ImportUseCaseSpec.swift */,
 			);
 			name = "Importing Feeds";
+			sourceTree = "<group>";
+		};
+		89CBDC021C7D428E006B70F5 /* Migration */ = {
+			isa = PBXGroup;
+			children = (
+				89CBDC001C7D41C9006B70F5 /* MigrationViewController.swift */,
+				89CBDC0A1C7D432F006B70F5 /* MigrationUseCase.swift */,
+			);
+			name = Migration;
+			sourceTree = "<group>";
+		};
+		89CBDC031C7D42C2006B70F5 /* Migration */ = {
+			isa = PBXGroup;
+			children = (
+				89CBDC041C7D42D7006B70F5 /* MigrationViewControllerSpec.swift */,
+				89CBDC101C7D781E006B70F5 /* MigrationUseCaseSpec.swift */,
+			);
+			name = Migration;
 			sourceTree = "<group>";
 		};
 		89D170A41C52D45500D546F9 /* Enclosures */ = {
@@ -1433,6 +1463,7 @@
 				89348F2E1C60730D007D366B /* FakeFeedRepository.swift */,
 				89C676551BA28FE60037A224 /* FakeFileManager.swift */,
 				8903EB0E1C703570001C0189 /* FakeImportUseCase.swift */,
+				89CBDC081C7D431D006B70F5 /* FakeMigrationUseCase.swift */,
 				8903EAFC1C6F8A46001C0189 /* FakeNotificationHandler.swift */,
 				89D970C01B392AD400ED84B8 /* FakeNotificationSource.swift */,
 				898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */,
@@ -2085,11 +2116,13 @@
 				8918D4DB1B8598D100DCDE0E /* ThemeRepository.swift in Sources */,
 				89F98BA11BA079A3005C3CA8 /* SwitchTableViewCell.swift in Sources */,
 				89C509F71A2F825400CBD000 /* TextViewCell.swift in Sources */,
+				89CBDC011C7D41C9006B70F5 /* MigrationViewController.swift in Sources */,
 				89C204C41A7400D100C792D2 /* NotificationHandler.swift in Sources */,
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
 				89F98BA41BA079EA005C3CA8 /* TableViewCell.swift in Sources */,
 				89F98BAC1BA0E428005C3CA8 /* DocumentationViewController.swift in Sources */,
+				89CBDC0B1C7D432F006B70F5 /* MigrationUseCase.swift in Sources */,
 				89D170A61C52D4AC00D546F9 /* EnclosuresList.swift in Sources */,
 				890B78C81C77FD200066E201 /* ReadArticleUseCase.swift in Sources */,
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
@@ -2135,6 +2168,7 @@
 				89735ABC1C0694C70032E09C /* UITraitCollection+rNewsTests.m in Sources */,
 				89EA6C371B4B308F00456892 /* FakeOPMLService.swift in Sources */,
 				890B78CA1C78E8650066E201 /* ReadArticleUseCaseSpec.swift in Sources */,
+				89CBDC091C7D431D006B70F5 /* FakeMigrationUseCase.swift in Sources */,
 				899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */,
 				89D970BB1B35BF6500ED84B8 /* WKWebView+rNewsTests.m in Sources */,
 				89C204C21A73FEDA00C792D2 /* SplitViewControllerSpec.swift in Sources */,
@@ -2147,8 +2181,10 @@
 				8953B1581B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift in Sources */,
 				89BFAC101C4C66AE007B3415 /* CustomMatchers.swift in Sources */,
 				89F5170A1B2014470005AB04 /* QueryFeedViewControllerSpec.swift in Sources */,
+				89CBDC051C7D42D7006B70F5 /* MigrationViewControllerSpec.swift in Sources */,
 				8903EB031C6FA022001C0189 /* ImportUseCaseSpec.swift in Sources */,
 				89CB984A1B12C50000C87160 /* ActivityIndicatorSpec.swift in Sources */,
+				89CBDC111C7D781E006B70F5 /* MigrationUseCaseSpec.swift in Sources */,
 				8918D4DD1B859D3B00DCDE0E /* ThemeRepositorySpec.swift in Sources */,
 				89D970BF1B3929D600ED84B8 /* DefaultBackgroundFetchHandlerSpec.swift in Sources */,
 				899823AC1B2C883B00818755 /* ArticleListControllerSpec.swift in Sources */,

@@ -4,12 +4,14 @@ import Foundation
 class FakeFeedRepository: FeedRepository {
     init() {}
 
+    var _databaseUpdateAvailable = false
     func databaseUpdateAvailable() -> Bool {
-        return false
+        return self._databaseUpdateAvailable
     }
 
+    var perfomDatabaseUpdatesCallback: (Void -> Void)?
     func performDatabaseUpdates(callback: Void -> Void) {
-        callback()
+        self.perfomDatabaseUpdatesCallback = callback
     }
 
     var tagsList: [String] = []

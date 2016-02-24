@@ -33,14 +33,6 @@ public class KitModule: NSObject, Ra.InjectorModule {
         backgroundQueue.maxConcurrentOperationCount = 1
         injector.bind(kBackgroundQueue, toInstance: backgroundQueue)
 
-        let objectContext = ManagedObjectContext()
-        let dataService = CoreDataService(
-            managedObjectContext: objectContext,
-            mainQueue: mainQueue,
-            searchIndex: searchIndex
-        )
-        injector.bind(DataService.self, toInstance: dataService)
-
         let urlSessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier(
             "com.rachelbrindle.rnews"
         )
@@ -51,8 +43,13 @@ public class KitModule: NSObject, Ra.InjectorModule {
             delegate: urlSessionDelegate,
             delegateQueue: NSOperationQueue())
 
+        let dataServiceFactory = DataServiceFactory(mainQueue: mainQueue,
+            searchIndex: searchIndex,
+            bundle: NSBundle(forClass: self.classForCoder),
+            fileManager: NSFileManager.defaultManager())
+
         let updateService = UpdateService(
-            dataService: dataService,
+            dataServiceFactory: dataServiceFactory,
             urlSession: urlSession,
             urlSessionDelegate: urlSessionDelegate
         )
@@ -60,7 +57,7 @@ public class KitModule: NSObject, Ra.InjectorModule {
         let dataRepository = DataRepository(mainQueue: mainQueue,
             backgroundQueue: backgroundQueue,
             reachable: reachable,
-            dataService: dataService,
+            dataServiceFactory: dataServiceFactory,
             updateService: updateService
         )
 
@@ -69,25 +66,4 @@ public class KitModule: NSObject, Ra.InjectorModule {
 
         let opmlService = OPMLService(injector: injector)
         injector.bind(OPMLService.self, toInstance: opmlService)
-    }
-
-    private func ManagedObjectContext() -> NSManagedObjectContext {
-        let modelURL = NSBundle(forClass: self.classForCoder).URLForResource("RSSClient", withExtension: "momd")!
-        let managedObjectModel = NSManagedObjectModel(contentsOfURL: modelURL)!
-
-        let storeURL = NSURL.fileURLWithPath(documentsDirectory().stringByAppendingPathComponent("RSSClient.sqlite"))
-        let persistentStore = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
-        let options: [String: AnyObject] = [NSMigratePersistentStoresAutomaticallyOption: true,
-            NSInferMappingModelAutomaticallyOption: true]
-        do {
-            try persistentStore.addPersistentStoreWithType(NSSQLiteStoreType,
-                configuration: managedObjectModel.configurations.last,
-                URL: storeURL, options: options)
-        } catch {
-            fatalError()
-        }
-        let ctx = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
-        ctx.persistentStoreCoordinator = persistentStore
-        return ctx
-    }
-}
+    }}

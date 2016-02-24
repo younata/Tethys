@@ -46,13 +46,13 @@ protocol UpdateServiceType: class {
 }
 
 class UpdateService: UpdateServiceType, NetworkClientDelegate {
-    private let dataService: DataService
+    private let dataServiceFactory: DataServiceFactoryType
     private let urlSession: NSURLSession
 
     private var callbacksInProgress: [NSURL: (feed: Feed, callback: ((Feed, NSError?) -> Void))] = [:]
 
-    init(dataService: DataService, urlSession: NSURLSession, urlSessionDelegate: URLSessionDelegate) {
-        self.dataService = dataService
+    init(dataServiceFactory: DataServiceFactoryType, urlSession: NSURLSession, urlSessionDelegate: URLSessionDelegate) {
+        self.dataServiceFactory = dataServiceFactory
         self.urlSession = urlSession
         urlSessionDelegate.delegate = self
     }
@@ -73,7 +73,7 @@ class UpdateService: UpdateServiceType, NetworkClientDelegate {
         self.callbacksInProgress.removeValueForKey(url)
         let feed = feedCallback.feed
         let callback = feedCallback.callback
-        self.dataService.updateFeed(feed, info: muonFeed) {
+        self.dataServiceFactory.currentDataService.updateFeed(feed, info: muonFeed) {
             if feed.image == nil, let imageUrl = muonFeed.imageURL where !imageUrl.absoluteString.isEmpty {
                 self.callbacksInProgress[imageUrl] = feedCallback
                 self.urlSession.downloadTaskWithURL(imageUrl).resume()
@@ -89,7 +89,7 @@ class UpdateService: UpdateServiceType, NetworkClientDelegate {
         let feed = imageCallback.feed
         let callback = imageCallback.callback
         feed.image = image
-        self.dataService.saveFeed(feed) {
+        self.dataServiceFactory.currentDataService.saveFeed(feed) {
             callback(feed, nil)
         }
     }

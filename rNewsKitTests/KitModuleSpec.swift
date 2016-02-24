@@ -30,10 +30,6 @@ class KitModuleSpec: QuickSpec {
             }
         #endif
 
-        it("should bind the DataService to a CoreDataService") {
-            expect(injector.create(DataService) is CoreDataService) == true
-        }
-
         it("should bind a URLSession to the shared session") {
             let urlSession = injector.create(NSURLSession)
             expect(urlSession).toNot(beNil())

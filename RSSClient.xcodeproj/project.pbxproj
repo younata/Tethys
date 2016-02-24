@@ -280,6 +280,12 @@
 		89CB98B81B12E9C900C87160 /* MAKDropDownMenu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB98B61B12E9C900C87160 /* MAKDropDownMenu.framework */; };
 		89CB98B91B12E9D300C87160 /* MAKDropDownMenu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB98B61B12E9C900C87160 /* MAKDropDownMenu.framework */; };
 		89CB98BF1B13947800C87160 /* FeedTableCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */; };
+		89CBDBF11C7D1206006B70F5 /* DataServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDBF01C7D1206006B70F5 /* DataServiceFactory.swift */; };
+		89CBDBF21C7D1206006B70F5 /* DataServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDBF01C7D1206006B70F5 /* DataServiceFactory.swift */; };
+		89CBDBF41C7D1436006B70F5 /* DataServiceFactorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDBF31C7D1436006B70F5 /* DataServiceFactorySpec.swift */; };
+		89CBDBF51C7D1436006B70F5 /* DataServiceFactorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDBF31C7D1436006B70F5 /* DataServiceFactorySpec.swift */; };
+		89CBDBF91C7D32EE006B70F5 /* FakeDataServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDBF81C7D32EE006B70F5 /* FakeDataServiceFactory.swift */; };
+		89CBDBFA1C7D32EE006B70F5 /* FakeDataServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDBF81C7D32EE006B70F5 /* FakeDataServiceFactory.swift */; };
 		89CC81FF1B4615A100648367 /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F271AE0C942004C3CB4 /* Ra.framework */; };
 		89CC82001B46198200648367 /* SearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C61B40D2AC0097045A /* SearchIndex.swift */; };
 		89CC82041B461A2B00648367 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82031B461A2B00648367 /* Helpers.swift */; };
@@ -669,6 +675,9 @@
 		89CB98911B12DFB100C87160 /* TOBrowserActivityKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TOBrowserActivityKit.framework; path = Carthage/Build/iOS/TOBrowserActivityKit.framework; sourceTree = SOURCE_ROOT; };
 		89CB98B61B12E9C900C87160 /* MAKDropDownMenu.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MAKDropDownMenu.framework; path = Carthage/Build/iOS/MAKDropDownMenu.framework; sourceTree = SOURCE_ROOT; };
 		89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCellSpec.swift; sourceTree = "<group>"; };
+		89CBDBF01C7D1206006B70F5 /* DataServiceFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataServiceFactory.swift; sourceTree = "<group>"; };
+		89CBDBF31C7D1436006B70F5 /* DataServiceFactorySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataServiceFactorySpec.swift; sourceTree = "<group>"; };
+		89CBDBF81C7D32EE006B70F5 /* FakeDataServiceFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDataServiceFactory.swift; sourceTree = "<group>"; };
 		89CC82031B461A2B00648367 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		89CC82051B461A5500648367 /* KitModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KitModule.swift; sourceTree = "<group>"; };
 		89D135101A5944A200B6937A /* RSSClient 1.4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.4.xcdatamodel"; sourceTree = "<group>"; };
@@ -1265,6 +1274,7 @@
 			children = (
 				898C48C81B40FBE00097045A /* FakeSearchIndex.swift */,
 				AE4355FF1A7ABA4F00A961B9 /* FakeDataRepository.swift */,
+				89CBDBF81C7D32EE006B70F5 /* FakeDataServiceFactory.swift */,
 				89E67D631C33CB8000819646 /* InMemoryDataService.swift */,
 				8992D4321C3665B7004A5A35 /* FakeUpdateService.swift */,
 				8908949A1BFED7B8002848A4 /* FakeReachable.swift */,
@@ -1285,6 +1295,7 @@
 			children = (
 				898911C11C3267C6009A44E9 /* UpdateServiceSpec.swift */,
 				8999CC0E1C2E796100B81F5F /* DataServiceSpec.swift */,
+				89CBDBF31C7D1436006B70F5 /* DataServiceFactorySpec.swift */,
 				89122E631C5D762000004B1F /* DatabaseMigratorSpec.swift */,
 				8999CC111C2E83BC00B81F5F /* CoreDataServiceSpec.swift */,
 				891754781C5B48D40036D96D /* RealmServiceSpec.swift */,
@@ -1308,6 +1319,7 @@
 				89A3417E1B150D1B0000C60B /* OPMLService.swift */,
 				898911A11C30F0BE009A44E9 /* UpdateService.swift */,
 				8999CC0C1C2E710F00B81F5F /* DataService.swift */,
+				89CBDBF01C7D1206006B70F5 /* DataServiceFactory.swift */,
 				89122E601C5D725D00004B1F /* DatabaseMigrator.swift */,
 			);
 			name = Services;
@@ -1893,6 +1905,7 @@
 				89CC82061B461A5500648367 /* KitModule.swift in Sources */,
 				894304541B450C6A000078DC /* CoreDataEnclosure.swift in Sources */,
 				8999CC141C2E83D400B81F5F /* CoreDataService.swift in Sources */,
+				89CBDBF11C7D1206006B70F5 /* DataServiceFactory.swift in Sources */,
 				898911A21C30F0BE009A44E9 /* UpdateService.swift in Sources */,
 				8903EB091C702843001C0189 /* WebPageParser.swift in Sources */,
 				8943044B1B450A5E000078DC /* Article.swift in Sources */,
@@ -1916,6 +1929,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8937F6C01B79D0800044A442 /* KitModuleSpec.swift in Sources */,
+				89CBDBF91C7D32EE006B70F5 /* FakeDataServiceFactory.swift in Sources */,
 				89FF97A11BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */,
 				8999CC0F1C2E796100B81F5F /* DataServiceSpec.swift in Sources */,
 				8992D4331C3665B7004A5A35 /* FakeUpdateService.swift in Sources */,
@@ -1926,6 +1940,7 @@
 				898911C21C3267C6009A44E9 /* UpdateServiceSpec.swift in Sources */,
 				89E67D641C33CB8000819646 /* InMemoryDataService.swift in Sources */,
 				891754791C5B48D40036D96D /* RealmServiceSpec.swift in Sources */,
+				89CBDBF41C7D1436006B70F5 /* DataServiceFactorySpec.swift in Sources */,
 				8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */,
 				8935F5D91B4628B3000FFD5D /* FeedSpec.swift in Sources */,
 				8935F5DF1B462AD2000FFD5D /* FakeURLSession.swift in Sources */,
@@ -1966,6 +1981,7 @@
 				898979561B70808300218498 /* CoreDataFeed.swift in Sources */,
 				898979521B70808300218498 /* OPMLService.swift in Sources */,
 				898979581B70808300218498 /* Feed.swift in Sources */,
+				89CBDBF21C7D1206006B70F5 /* DataServiceFactory.swift in Sources */,
 				8989795A1B70808300218498 /* Enclosure.swift in Sources */,
 				8903EB0A1C702843001C0189 /* WebPageParser.swift in Sources */,
 				898979531B70808300218498 /* DataRepository.swift in Sources */,
@@ -1991,6 +2007,8 @@
 				8992D4341C3665B7004A5A35 /* FakeUpdateService.swift in Sources */,
 				8937F6C11B79D0800044A442 /* KitModuleSpec.swift in Sources */,
 				89FF97A21BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */,
+				89CBDBF51C7D1436006B70F5 /* DataServiceFactorySpec.swift in Sources */,
+				89CBDBFA1C7D32EE006B70F5 /* FakeDataServiceFactory.swift in Sources */,
 				898979AA1B708E7800218498 /* FeedSpec.swift in Sources */,
 				898979B61B708F0000218498 /* FakeOPMLService.swift in Sources */,
 				8917547A1C5B48D40036D96D /* RealmServiceSpec.swift in Sources */,

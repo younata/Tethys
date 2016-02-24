@@ -7,13 +7,14 @@ import Lepton
 
 class OPMLServiceSpec: QuickSpec {
     override func spec() {
-        var subject: OPMLService! = nil
+        var subject: OPMLService!
 
-        var dataRepository: FakeDataRepository! = nil
-        var importQueue: FakeOperationQueue! = nil
-        var mainQueue: FakeOperationQueue! = nil
+        var dataRepository: FakeDataRepository!
+        var importQueue: FakeOperationQueue!
+        var mainQueue: FakeOperationQueue!
 
-        var dataService: InMemoryDataService! = nil
+        var dataServiceFactory: FakeDataServiceFactory!
+        var dataService: InMemoryDataService!
 
         beforeEach {
             importQueue = FakeOperationQueue()
@@ -24,11 +25,14 @@ class OPMLServiceSpec: QuickSpec {
 
             dataService = InMemoryDataService(mainQueue: mainQueue, searchIndex: FakeSearchIndex())
 
+            dataServiceFactory = FakeDataServiceFactory()
+            dataServiceFactory.currentDataService = dataService
+
             dataRepository = FakeDataRepository(
                 mainQueue: mainQueue,
                 backgroundQueue: importQueue,
                 reachable: nil,
-                dataService: dataService,
+                dataServiceFactory: dataServiceFactory,
                 updateService: FakeUpdateService()
             )
 

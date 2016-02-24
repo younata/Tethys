@@ -68,18 +68,22 @@ class DataRepository: FeedRepository {
 
     private let reachable: Reachable?
 
-    private let dataService: DataService
+    private let dataServiceFactory: DataServiceFactoryType
     private let updateService: UpdateServiceType
+
+    private var dataService: DataService {
+        return self.dataServiceFactory.currentDataService
+    }
 
     init(mainQueue: NSOperationQueue,
         backgroundQueue: NSOperationQueue,
         reachable: Reachable?,
-        dataService: DataService,
+        dataServiceFactory: DataServiceFactoryType,
         updateService: UpdateServiceType) {
             self.mainQueue = mainQueue
             self.backgroundQueue = backgroundQueue
             self.reachable = reachable
-            self.dataService = dataService
+            self.dataServiceFactory = dataServiceFactory
             self.updateService = updateService
     }
 

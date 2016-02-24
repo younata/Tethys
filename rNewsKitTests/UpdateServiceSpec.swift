@@ -4,20 +4,24 @@ import Nimble
 
 class UpdateServiceSpec: QuickSpec {
     override func spec() {
-        var subject: UpdateService! = nil
-        var urlSession: FakeURLSession! = nil
-        var urlSessionDelegate: URLSessionDelegate! = nil
-        var dataService: InMemoryDataService! = nil
+        var subject: UpdateService!
+        var urlSession: FakeURLSession!
+        var urlSessionDelegate: URLSessionDelegate!
+        var dataServiceFactory: FakeDataServiceFactory!
+        var dataService: InMemoryDataService!
 
         beforeEach {
             urlSessionDelegate = URLSessionDelegate()
             let mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
+
+            dataServiceFactory = FakeDataServiceFactory()
             dataService = InMemoryDataService(mainQueue: mainQueue, searchIndex: FakeSearchIndex())
+            dataServiceFactory.currentDataService = dataService
             urlSession = FakeURLSession()
             urlSessionDelegate = URLSessionDelegate()
 
-            subject = UpdateService(dataService: dataService, urlSession: urlSession, urlSessionDelegate: urlSessionDelegate)
+            subject = UpdateService(dataServiceFactory: dataServiceFactory, urlSession: urlSession, urlSessionDelegate: urlSessionDelegate)
         }
 
         describe("updating a feed") {

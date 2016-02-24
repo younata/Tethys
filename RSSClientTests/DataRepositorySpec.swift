@@ -49,26 +49,27 @@ private class FakeDataSubscriber: NSObject, DataSubscriber {
 
 class FeedRepositorySpec: QuickSpec {
     override func spec() {
-        var subject: DataRepository! = nil
+        var subject: DataRepository!
 
-        var mainQueue: FakeOperationQueue! = nil
-        var backgroundQueue: FakeOperationQueue! = nil
+        var mainQueue: FakeOperationQueue!
+        var backgroundQueue: FakeOperationQueue!
 
         var feeds: [Feed] = []
-        var feed1: Feed! = nil
-        var feed2: Feed! = nil
-        var feed3: Feed! = nil
+        var feed1: Feed!
+        var feed2: Feed!
+        var feed3: Feed!
 
-        var article1: Article! = nil
-        var article2: Article! = nil
+        var article1: Article!
+        var article2: Article!
 
-        var dataSubscriber: FakeDataSubscriber! = nil
+        var dataSubscriber: FakeDataSubscriber!
 
-        var reachable: FakeReachable! = nil
+        var reachable: FakeReachable!
 
-        var dataService: InMemoryDataService! = nil
+        var dataServiceFactory: FakeDataServiceFactory!
+        var dataService: InMemoryDataService!
 
-        var updateService: FakeUpdateService! = nil
+        var updateService: FakeUpdateService!
 
         beforeEach {
             feed1 = Feed(title: "a", url: NSURL(string: "https://example.com/feed1.feed"), summary: "",
@@ -98,7 +99,9 @@ class FeedRepositorySpec: QuickSpec {
             mainQueue = FakeOperationQueue()
             backgroundQueue = FakeOperationQueue()
 
+            dataServiceFactory = FakeDataServiceFactory()
             dataService = InMemoryDataService(mainQueue: mainQueue, searchIndex: FakeSearchIndex())
+            dataServiceFactory.currentDataService = dataService
 
             dataService.feeds = feeds
             dataService.articles = [article1, article2]
@@ -108,7 +111,7 @@ class FeedRepositorySpec: QuickSpec {
             subject = DataRepository(mainQueue: mainQueue,
                 backgroundQueue: backgroundQueue,
                 reachable: reachable,
-                dataService: dataService,
+                dataServiceFactory: dataServiceFactory,
                 updateService: updateService
             )
 
@@ -118,6 +121,20 @@ class FeedRepositorySpec: QuickSpec {
 
         afterEach {
             feeds = []
+        }
+
+        describe("databaseUpdateAvailable") {
+            it("returns false by default") {
+                expect(subject.databaseUpdateAvailable()) == false
+            }
+
+            context("when the user is using a CoreDataDataService") {
+                xit("returns true") {
+                    // setup
+
+                    expect(subject.databaseUpdateAvailable()) == true
+                }
+            }
         }
 
         describe("as a DataRetriever") {

@@ -1,23 +1,24 @@
 import Ra
 import rNewsKit
+import WorkFlow
 
 public protocol MigrationUseCaseSubscriber: class {
     func migrationUseCaseDidFinish(migrationUseCase: MigrationUseCase)
 }
 
-public protocol MigrationUseCase {
+public protocol MigrationUseCase: WorkFlowComponent {
     func addSubscriber(subscriber: MigrationUseCaseSubscriber)
     func beginMigration()
 }
 
-public struct DefaultMigrationUseCase: MigrationUseCase, Injectable {
+public class DefaultMigrationUseCase: MigrationUseCase, Injectable {
     private let feedRepository: FeedRepository
 
     public init(feedRepository: FeedRepository) {
         self.feedRepository = feedRepository
     }
 
-    public init(injector: Injector) {
+    public required convenience init(injector: Injector) {
         self.init(
             feedRepository: injector.create(FeedRepository)!
         )
@@ -34,6 +35,16 @@ public struct DefaultMigrationUseCase: MigrationUseCase, Injectable {
     public func beginMigration() {
         self.feedRepository.performDatabaseUpdates {
             self.subscribers.forEach { $0.migrationUseCaseDidFinish(self) }
+            for callback in self.workFlowCallbacks {
+                callback()
+            }
+            self.workFlowCallbacks.removeAll()
         }
+    }
+
+    private var workFlowCallbacks: [WorkFlowFinishCallback] = []
+    public func beginWork(finish: WorkFlowFinishCallback) {
+        self.workFlowCallbacks.append(finish)
+        self.beginMigration()
     }
 }

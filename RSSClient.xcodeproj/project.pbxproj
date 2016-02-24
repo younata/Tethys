@@ -294,6 +294,8 @@
 		89CBDC0B1C7D432F006B70F5 /* MigrationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC0A1C7D432F006B70F5 /* MigrationUseCase.swift */; };
 		89CBDC111C7D781E006B70F5 /* MigrationUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC101C7D781E006B70F5 /* MigrationUseCaseSpec.swift */; };
 		89CBDC151C7D7D96006B70F5 /* UIApplication+DataSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC141C7D7D96006B70F5 /* UIApplication+DataSubscriber.swift */; };
+		89CBDC171C7D8501006B70F5 /* BootstrapWorkFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC161C7D8501006B70F5 /* BootstrapWorkFlow.swift */; };
+		89CBDC2C1C7E60B7006B70F5 /* BootstrapWorkFlowSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC2B1C7E60B7006B70F5 /* BootstrapWorkFlowSpec.swift */; };
 		89CC81FF1B4615A100648367 /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F271AE0C942004C3CB4 /* Ra.framework */; };
 		89CC82001B46198200648367 /* SearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C61B40D2AC0097045A /* SearchIndex.swift */; };
 		89CC82041B461A2B00648367 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82031B461A2B00648367 /* Helpers.swift */; };
@@ -693,6 +695,8 @@
 		89CBDC0A1C7D432F006B70F5 /* MigrationUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MigrationUseCase.swift; sourceTree = "<group>"; };
 		89CBDC101C7D781E006B70F5 /* MigrationUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MigrationUseCaseSpec.swift; sourceTree = "<group>"; };
 		89CBDC141C7D7D96006B70F5 /* UIApplication+DataSubscriber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIApplication+DataSubscriber.swift"; sourceTree = "<group>"; };
+		89CBDC161C7D8501006B70F5 /* BootstrapWorkFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BootstrapWorkFlow.swift; sourceTree = "<group>"; };
+		89CBDC2B1C7E60B7006B70F5 /* BootstrapWorkFlowSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BootstrapWorkFlowSpec.swift; sourceTree = "<group>"; };
 		89CC82031B461A2B00648367 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		89CC82051B461A5500648367 /* KitModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KitModule.swift; sourceTree = "<group>"; };
 		89D135101A5944A200B6937A /* RSSClient 1.4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.4.xcdatamodel"; sourceTree = "<group>"; };
@@ -1181,6 +1185,7 @@
 				89C8308F19D730E9009924DA /* Supporting Files */,
 				89BFAC0F1C4C66AE007B3415 /* CustomMatchers.swift */,
 				89C204B41A73811000C792D2 /* AppDelegateSpec.swift */,
+				89CBDC2B1C7E60B7006B70F5 /* BootstrapWorkFlowSpec.swift */,
 				8953B1571B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift */,
 				8903A6261C4ABA7800E896BF /* NotificationViewSpec.swift */,
 				89C204C11A73FEDA00C792D2 /* SplitViewControllerSpec.swift */,
@@ -1429,6 +1434,7 @@
 			isa = PBXGroup;
 			children = (
 				89C8307819D730E9009924DA /* AppDelegate.swift */,
+				89CBDC161C7D8501006B70F5 /* BootstrapWorkFlow.swift */,
 				89CBDC141C7D7D96006B70F5 /* UIApplication+DataSubscriber.swift */,
 				AE4356301A7AE4FE00A961B9 /* InjectorModule.swift */,
 				896320941C17E5D300B7C980 /* UIApplicationProtocols */,
@@ -2104,6 +2110,7 @@
 				894896EC1A16F1130030EB6E /* LocalImportViewController.swift in Sources */,
 				89F98BA61BA07DC6005C3CA8 /* SettingsRepository.swift in Sources */,
 				89735AC01C06DAA70032E09C /* FeedsListController.swift in Sources */,
+				89CBDC171C7D8501006B70F5 /* BootstrapWorkFlow.swift in Sources */,
 				89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */,
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
 				89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */,
@@ -2173,6 +2180,7 @@
 				89EA6C371B4B308F00456892 /* FakeOPMLService.swift in Sources */,
 				890B78CA1C78E8650066E201 /* ReadArticleUseCaseSpec.swift in Sources */,
 				89CBDC091C7D431D006B70F5 /* FakeMigrationUseCase.swift in Sources */,
+				89CBDC2C1C7E60B7006B70F5 /* BootstrapWorkFlowSpec.swift in Sources */,
 				899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */,
 				89D970BB1B35BF6500ED84B8 /* WKWebView+rNewsTests.m in Sources */,
 				89C204C21A73FEDA00C792D2 /* SplitViewControllerSpec.swift in Sources */,

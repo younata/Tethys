@@ -21,12 +21,12 @@ struct DatabaseMigrator: DatabaseMigratorType {
                 var articlesDictionary: [Article: Article] = [:]
 
                 var totalRemaining = feedsToMigrate.count + articlesToMigrate.count + enclosuresToMigrate.count
-                let semaphore = dispatch_semaphore_create(0)
+                let lock = NSRecursiveLock()
 
                 let checkForCompleted = {
                     totalRemaining -= 1
                     if totalRemaining == 0 {
-                        dispatch_semaphore_signal(semaphore)
+                        lock.unlock()
                     }
                 }
 
@@ -53,7 +53,7 @@ struct DatabaseMigrator: DatabaseMigratorType {
                     }
                 }
 
-                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+                lock.lock()
                 finish()
             }
         }
@@ -65,12 +65,12 @@ struct DatabaseMigrator: DatabaseMigratorType {
             let enclosures = articles.reduce([Enclosure]()) { $0 + Array($1.enclosuresArray) }
 
             var totalRemaining = feeds.count + articles.count + enclosures.count
-            let semaphore = dispatch_semaphore_create(0)
+            let lock = NSRecursiveLock()
 
             let checkForCompleted = {
                 totalRemaining -= 1
                 if totalRemaining == 0 {
-                    dispatch_semaphore_signal(semaphore)
+                    lock.unlock()
                 }
             }
 
@@ -86,7 +86,7 @@ struct DatabaseMigrator: DatabaseMigratorType {
                 database.deleteEnclosure($0, callback: checkForCompleted)
             }
 
-            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+            lock.lock()
             finish()
         }
     }

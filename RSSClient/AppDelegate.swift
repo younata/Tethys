@@ -37,6 +37,10 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         return splitView
     }()
 
+    private lazy var bootstrapper: Bootstrapper = {
+        return BootstrapWorkFlow(window: self.window!, injector: self.anInjector)
+    }()
+
     public func application(application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
             UINavigationBar.appearance().tintColor = UIColor.darkGreenColor()
@@ -176,28 +180,12 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - Private
 
     private func createControllerHierarchy(feed: Feed? = nil, article: Article? = nil) {
-        let feeds: FeedsTableViewController
-        let master = self.splitView.masterNavigationController
-
-        if let feedsController = master.viewControllers.first as? FeedsTableViewController
-            where self.window?.rootViewController == self.splitView {
-                feeds = feedsController
+        let feedAndArticle: (Feed, Article)?
+        if let feed = feed, article = article {
+            feedAndArticle = (feed, article)
         } else {
-            feeds = self.anInjector.create(FeedsTableViewController)!
-            master.viewControllers = [feeds]
+            feedAndArticle = nil
         }
-
-        if let feedToShow = feed, let articleToShow = article {
-            self.splitView.viewControllers = [master]
-            let al = feeds.showFeeds([feedToShow], animated: false)
-            al.showArticle(articleToShow, animated: false)
-        } else {
-            let detail = self.splitView.detailNavigationController
-            let articleViewController =  self.anInjector.create(ArticleViewController)!
-            detail.viewControllers = [articleViewController]
-            self.splitView.viewControllers = [master, detail]
-        }
-
-        self.window?.rootViewController = splitView
+        self.bootstrapper.begin(feedAndArticle)
     }
 }

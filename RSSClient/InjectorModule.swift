@@ -18,6 +18,7 @@ public class InjectorModule: Ra.InjectorModule {
 
         injector.bind(NSBundle.self, toInstance: NSBundle.mainBundle())
 
+        injector.bind(MigrationUseCase.self) { DefaultMigrationUseCase(injector: $0) }
         injector.bind(ImportUseCase.self) { DefaultImportUseCase(injector: $0) }
 
         injector.bind(DocumentationUseCase.self) { DefaultDocumentationUseCase(injector: $0) }

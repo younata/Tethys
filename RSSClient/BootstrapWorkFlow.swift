@@ -2,7 +2,11 @@ import WorkFlow
 import rNewsKit
 import Ra
 
-public class BootstrapWorkFlow {
+public protocol Bootstrapper {
+    func begin(feedAndArticle: (feed: Feed, article: Article)?)
+}
+
+public class BootstrapWorkFlow: Bootstrapper {
     private var workflow: LinearWorkFlow!
 
     private let window: UIWindow

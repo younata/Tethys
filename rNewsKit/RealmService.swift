@@ -23,10 +23,7 @@ class RealmService: DataService {
         self.realmTransaction {
             let realmFeed = self.realm.create(RealmFeed)
             let feed = Feed(realmFeed: realmFeed)
-            self.mainQueue.addOperationWithBlock {
-                callback(feed)
-            }
-            self.mainQueue.waitUntilAllOperationsAreFinished()
+            callback(feed)
 
             self.startRealmTransaction()
 
@@ -39,10 +36,7 @@ class RealmService: DataService {
             let realmArticle = self.realm.create(RealmArticle)
             let article = Article(realmArticle: realmArticle, feed: feed)
             feed?.addArticle(article)
-            self.mainQueue.addOperationWithBlock {
-                callback(article)
-            }
-            self.mainQueue.waitUntilAllOperationsAreFinished()
+            callback(article)
 
             self.startRealmTransaction()
 
@@ -55,10 +49,7 @@ class RealmService: DataService {
             let realmEnclosure = self.realm.create(RealmEnclosure)
             let enclosure = Enclosure(realmEnclosure: realmEnclosure, article: article)
             article?.addEnclosure(enclosure)
-            self.mainQueue.addOperationWithBlock {
-                callback(enclosure)
-            }
-            self.mainQueue.waitUntilAllOperationsAreFinished()
+            callback(enclosure)
 
             self.startRealmTransaction()
 

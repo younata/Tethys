@@ -58,6 +58,8 @@
 "LocalImportViewController_TableHeader_OPMLs" = "Feed Lists";
 "LocalImportViewController_TableHeader_Feeds" = "Individual Feeds";
 
+"MigrationViewController_Message" = "Optimizing your database, hang tight";
+
 "FeedViewController_Table_Header_Title" = "Title";
 "FeedViewController_Table_Header_URL" = "URL";
 "FeedViewController_Table_Header_Summary" = "Summary";

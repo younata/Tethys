@@ -13,8 +13,8 @@ class MigrationViewControllerSpec: QuickSpec {
             subject.view.layoutIfNeeded()
         }
 
-        it("dunno") {
-            expect(subject.view).toNot(beNil())
+        it("shows an activity indicator with a useful message") {
+            expect(subject.activityIndicator.message) == "Optimizing your database, hang tight"
         }
     }
 }

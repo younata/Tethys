@@ -147,12 +147,10 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 let feedTitle = userInfo["feed"] as? String,
                 let articleID = userInfo["article"] as? String {
                     self.feedRepository?.feeds {feeds in
-                        // swiftlint:disable line_length
                         if let feed = feeds.filter({ return $0.title == feedTitle }).first,
                             let article = feed.articlesArray.filter({ $0.identifier == articleID }).first {
                                 self.createControllerHierarchy(feed, article: article)
                         }
-                        // swiftlint:enable line_length
                     }
                     return true
             }

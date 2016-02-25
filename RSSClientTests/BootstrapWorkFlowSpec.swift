@@ -110,6 +110,10 @@ class BootstrapWorkFlowSpec: QuickSpec {
                     expect(migrationUseCase.beginWorkCallCount) == 1
                 }
 
+                it("shows a migration view controller as the root view controller") {
+                    expect(window.rootViewController).to(beAnInstanceOf(MigrationViewController.self))
+                }
+
                 describe("when the migration finishes") {
                     beforeEach {
                         migrationUseCase.beginWorkArgsForCall(0)()
@@ -142,6 +146,10 @@ class BootstrapWorkFlowSpec: QuickSpec {
 
                     it("begins the migration use case") {
                         expect(migrationUseCase.beginWorkCallCount) == 1
+                    }
+
+                    it("shows a migration view controller as the root view controller") {
+                        expect(window.rootViewController).to(beAnInstanceOf(MigrationViewController.self))
                     }
 
                     describe("when the migration finishes") {

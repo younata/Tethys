@@ -9,6 +9,7 @@ public class BootstrapWorkFlow {
     private let feedRepository: FeedRepository
     private let migrationUseCase: MigrationUseCase
     private let splitViewController: SplitViewController
+    private let migrationViewController: Void -> MigrationViewController
     private let feedsTableViewController: Void -> FeedsTableViewController
     private let articleViewController: Void -> ArticleViewController
 
@@ -19,12 +20,14 @@ public class BootstrapWorkFlow {
         feedRepository: FeedRepository,
         migrationUseCase: MigrationUseCase,
         splitViewController: SplitViewController,
+        migrationViewController: Void -> MigrationViewController,
         feedsTableViewController: Void -> FeedsTableViewController,
         articleViewController: Void -> ArticleViewController) {
         self.window = window
         self.feedRepository = feedRepository
         self.migrationUseCase = migrationUseCase
         self.splitViewController = splitViewController
+        self.migrationViewController = migrationViewController
         self.feedsTableViewController = feedsTableViewController
         self.articleViewController = articleViewController
     }
@@ -36,6 +39,7 @@ public class BootstrapWorkFlow {
             feedRepository: injector.create(FeedRepository)!,
             migrationUseCase: injector.create(MigrationUseCase)!,
             splitViewController: injector.create(SplitViewController)!,
+            migrationViewController: { injector.create(MigrationViewController)! },
             feedsTableViewController: { injector.create(FeedsTableViewController)! },
             articleViewController: { injector.create(ArticleViewController)! }
         )
@@ -55,6 +59,7 @@ public class BootstrapWorkFlow {
                     cancel: self.workFlowDidFinish
                 )
                 self.workflow.startWorkFlow()
+                self.showMigrationViewController()
             } else {
                 self.showFeedsController()
             }
@@ -66,6 +71,10 @@ public class BootstrapWorkFlow {
 
     public func workFlowDidFinish(workFlow: WorkFlow) {
         self.showFeedsController()
+    }
+
+    private func showMigrationViewController() {
+        self.window.rootViewController = self.migrationViewController()
     }
 
     private func showFeedsController() {

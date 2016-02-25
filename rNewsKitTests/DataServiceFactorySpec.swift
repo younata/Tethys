@@ -10,7 +10,7 @@ class DataServiceFactorySpec: QuickSpec {
         let fileManager = NSFileManager.defaultManager()
         describe("currentDataService") {
             it("returns a CoreDataService if we haven't migrated yet") {
-                try! fileManager.removeItemAtPath(Realm.Configuration.defaultConfiguration.path!)
+                _ = try? fileManager.removeItemAtPath(Realm.Configuration.defaultConfiguration.path!)
 
                 let mainQueue = FakeOperationQueue()
                 let searchIndex = FakeSearchIndex()

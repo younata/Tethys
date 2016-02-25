@@ -310,15 +310,10 @@ class DataRepository: FeedRepository {
     private func privateMarkArticles(articles: [Article], asRead read: Bool) {
         guard articles.count > 0 else { return }
 
-        let operationQueue = NSOperationQueue()
-
         for article in articles {
-            operationQueue.addOperationWithBlock {
-                article.read = read
-                self.dataService.saveArticle(article) {}
-            }
+            article.read = read
+            self.dataService.saveArticle(article) {}
         }
-        operationQueue.waitUntilAllOperationsAreFinished()
 
         for object in self.subscribers.allObjects {
             if let subscriber = object as? DataSubscriber {

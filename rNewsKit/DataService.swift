@@ -75,8 +75,6 @@ extension DataService {
                 }
             }
         }
-
-        self.mainQueue.waitUntilAllOperationsAreFinished()
     }
 
     func updateArticle(article: Article, item: Muon.Article, feedURL: NSURL, callback: Void -> Void) {

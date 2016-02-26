@@ -84,6 +84,8 @@ public class ArticleViewController: UIViewController, Injectable {
         }
         self.enclosuresList.configure(DataStoreBackedArray(enclosures), viewController: self)
         self.view.layoutIfNeeded()
+
+        webView.scrollView.scrollIndicatorInsets.bottom = 0
     }
 
     private func spacer() -> UIBarButtonItem {

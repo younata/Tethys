@@ -277,8 +277,21 @@ import RealmSwift
         self.articlesArray = DataStoreBackedArray<Article>()
         super.init()
         if !self.isQueryFeed {
-            let articles = feed.articles.map { Article(realmArticle: $0, feed: self) }
-            self.articlesArray = DataStoreBackedArray(articles)
+            if let realm = feed.realm {
+                let sortByUpdated = NSSortDescriptor(key: "updatedAt", ascending: false)
+                let sortByPublished = NSSortDescriptor(key: "published", ascending: false)
+
+                self.articlesArray = DataStoreBackedArray<Article>(realmDataType: RealmArticle.self,
+                    predicate: NSPredicate(format: "feed.id == %@", feed.id),
+                    realm: realm,
+                    conversionFunction: {
+                        return Article(realmArticle: $0 as! RealmArticle, feed: self)
+                    },
+                    sortDescriptors: [sortByUpdated, sortByPublished])
+            } else {
+                let articles = feed.articles.map { Article(realmArticle: $0, feed: self) }
+                self.articlesArray = DataStoreBackedArray(articles)
+            }
         }
 
         self.updated = false

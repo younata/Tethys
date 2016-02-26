@@ -234,7 +234,14 @@ import JavaScriptCore
         self.enclosuresArray = DataStoreBackedArray()
         super.init()
         let enclosures = article.enclosures.map { Enclosure(realmEnclosure: $0, article: self) }
-        self.enclosuresArray = DataStoreBackedArray(enclosures)
+        if let realm = article.realm {
+            self.enclosuresArray = DataStoreBackedArray(realmDataType: RealmEnclosure.self,
+                predicate: NSPredicate(format: "article.id == %@", article.id),
+                realm: realm,
+                conversionFunction: { Enclosure(realmEnclosure: $0 as! RealmEnclosure, article: self) } )
+        } else {
+            self.enclosuresArray = DataStoreBackedArray(enclosures)
+        }
         self.articleID = article.id
         self.updated = false
     }

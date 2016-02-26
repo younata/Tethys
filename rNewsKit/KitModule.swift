@@ -39,6 +39,8 @@ public class KitModule: NSObject, Ra.InjectorModule {
         urlSessionConfiguration.discretionary = false
         let urlSessionDelegate = URLSessionDelegate()
 
+        RealmMigrator.beginMigration()
+
         let urlSession = NSURLSession(configuration: urlSessionConfiguration,
             delegate: urlSessionDelegate,
             delegateQueue: NSOperationQueue())

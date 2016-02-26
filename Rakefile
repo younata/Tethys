@@ -122,5 +122,10 @@ end
 
 task :test => ["test:ios", "test:osx"]
 
+desc "Runs Synx (synchronizes directory structure with xcode project structure)"
+task :synx do |t|
+    run 'synx -e /RSSClient/Frameworks -e /RSSClientTests/Frameworks -e /RSSClient-OSX/Frameworks -e /rNewsKit-OSX -e /rNewsKit-OSXTests RSSClient.xcodeproj/'
+end
+
 task default: ["test"]
 

@@ -122,9 +122,16 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
         guard let importType = self.knownUrls[url] else { callback(); return }
         switch importType {
         case .Feed:
-            self.feedRepository.newFeed {
-                $0.url = self.canonicalURLForFeedAtURL(url)
-                self.feedRepository.updateFeed($0) { _ in callback() }
+            let url = self.canonicalURLForFeedAtURL(url)
+            self.feedRepository.feeds { feeds in
+                let existingFeed = feeds.filter({ $0.url == url }).first
+                guard existingFeed == nil else {
+                    return callback()
+                }
+                self.feedRepository.newFeed {
+                    $0.url = url
+                    self.feedRepository.updateFeed($0) { _ in callback() }
+                }
             }
         case .OPML:
             self.opmlService.importOPML(url) { _ in callback() }
@@ -151,6 +158,7 @@ extension DefaultImportUseCase {
             return .WebPage(url, feedUrls)
         }
     }
+
     private func isDataAFeed(data: String) -> Bool {
         var ret = false
         let feedParser = FeedParser(string: data)

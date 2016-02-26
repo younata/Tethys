@@ -77,35 +77,62 @@ class ImportUseCaseSpec: QuickSpec {
                             expect(urlSession.lastURL).to(beNil())
                         }
 
-                        it("asks the feed repository to import the feed") {
-                            expect(feedRepository.didCreateFeed) == true
+                        it("asks the feed repository for a list of all feeds") {
+                            expect(feedRepository.didAskForFeeds) == true
                         }
 
-                        context("when the feed repository creates the feed") {
-                            var feed: Feed!
-                            beforeEach {
-                                feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                                feedRepository.newFeedCallback(feed)
+                        describe("when the feed repository returns") {
+                            context("and a feed with the proposed feed url is in the feeds list") {
+                                beforeEach {
+                                    let existingFeed = Feed(title: "", url: url, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                    feedRepository.feedsCallback?([existingFeed])
+                                }
+
+                                it("does not ask the feed repository to import the feed") {
+                                    expect(feedRepository.didCreateFeed) == false
+                                }
+
+                                it("calls the callback") {
+                                    expect(didImport) == true
+                                }
                             }
 
-                            it("sets that feed's url") {
-                                expect(feed.url) == url
-                            }
+                            context("and a feed with the proposed feed url is not in the feeds list") {
+                                beforeEach {
+                                    feedRepository.feedsCallback?([])
+                                }
 
-                            it("it tells the feed repository to update the feed from the network") {
-                                expect(feedRepository.didUpdateFeed) == feed
-                            }
+                                it("asks the feed repository to import the feed") {
+                                    expect(feedRepository.didCreateFeed) == true
+                                }
 
-                            it("calls the callback when the feed repository finishes updating the feed") {
-                                feedRepository.updateSingleFeedCallback(feed, nil)
+                                context("when the feed repository creates the feed") {
+                                    var feed: Feed!
+                                    beforeEach {
+                                        feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                        feedRepository.newFeedCallback(feed)
+                                    }
 
-                                expect(didImport) == true
-                            }
+                                    it("sets that feed's url") {
+                                        expect(feed.url) == url
+                                    }
 
-                            it("calls the callback when the feed repository errors updating the feed") {
-                                feedRepository.updateSingleFeedCallback(feed, NSError(domain: "", code: 0, userInfo: nil))
+                                    it("it tells the feed repository to update the feed from the network") {
+                                        expect(feedRepository.didUpdateFeed) == feed
+                                    }
 
-                                expect(didImport) == true
+                                    it("calls the callback when the feed repository finishes updating the feed") {
+                                        feedRepository.updateSingleFeedCallback(feed, nil)
+
+                                        expect(didImport) == true
+                                    }
+
+                                    it("calls the callback when the feed repository errors updating the feed") {
+                                        feedRepository.updateSingleFeedCallback(feed, NSError(domain: "", code: 0, userInfo: nil))
+
+                                        expect(didImport) == true
+                                    }
+                                }
                             }
                         }
                     }
@@ -178,35 +205,62 @@ class ImportUseCaseSpec: QuickSpec {
                             expect(urlSession.lastURL).to(beNil())
                         }
 
-                        it("asks the feed repository to import the feed") {
-                            expect(feedRepository.didCreateFeed) == true
+                        it("asks the feed repository for a list of all feeds") {
+                            expect(feedRepository.didAskForFeeds) == true
                         }
 
-                        context("when the feed repository creates the feed") {
-                            var feed: Feed!
-                            beforeEach {
-                                feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                                feedRepository.newFeedCallback(feed)
+                        describe("when the feed repository returns") {
+                            context("and a feed with the proposed feed url is in the feeds list") {
+                                beforeEach {
+                                    let existingFeed = Feed(title: "", url: feed1Url, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                    feedRepository.feedsCallback?([existingFeed])
+                                }
+
+                                it("does not ask the feed repository to import the feed") {
+                                    expect(feedRepository.didCreateFeed) == false
+                                }
+
+                                it("calls the callback") {
+                                    expect(didImport) == true
+                                }
                             }
 
-                            it("sets that feed's url") {
-                                expect(feed.url) == feed1Url
-                            }
+                            context("and a feed with the proposed feed url is not in the feeds list") {
+                                beforeEach {
+                                    feedRepository.feedsCallback?([])
+                                }
 
-                            it("it tells the feed repository to update the feed from the network") {
-                                expect(feedRepository.didUpdateFeed) == feed
-                            }
+                                it("asks the feed repository to import the feed") {
+                                    expect(feedRepository.didCreateFeed) == true
+                                }
 
-                            it("calls the callback when the feed repository finishes updating the feed") {
-                                feedRepository.updateSingleFeedCallback(feed, nil)
+                                context("when the feed repository creates the feed") {
+                                    var feed: Feed!
+                                    beforeEach {
+                                        feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                        feedRepository.newFeedCallback(feed)
+                                    }
 
-                                expect(didImport) == true
-                            }
+                                    it("sets that feed's url") {
+                                        expect(feed.url) == feed1Url
+                                    }
 
-                            it("calls the callback when the feed repository errors updating the feed") {
-                                feedRepository.updateSingleFeedCallback(feed, NSError(domain: "", code: 0, userInfo: nil))
-                                
-                                expect(didImport) == true
+                                    it("it tells the feed repository to update the feed from the network") {
+                                        expect(feedRepository.didUpdateFeed) == feed
+                                    }
+
+                                    it("calls the callback when the feed repository finishes updating the feed") {
+                                        feedRepository.updateSingleFeedCallback(feed, nil)
+
+                                        expect(didImport) == true
+                                    }
+
+                                    it("calls the callback when the feed repository errors updating the feed") {
+                                        feedRepository.updateSingleFeedCallback(feed, NSError(domain: "", code: 0, userInfo: nil))
+
+                                        expect(didImport) == true
+                                    }
+                                }
                             }
                         }
                     }
@@ -250,35 +304,62 @@ class ImportUseCaseSpec: QuickSpec {
                             }
                         }
 
-                        it("asks the feed repository to import the feed") {
-                            expect(feedRepository.didCreateFeed) == true
+                        it("asks the feed repository for the most recent list of feeds") {
+                            expect(feedRepository.didAskForFeeds) == true
                         }
 
-                        context("when the feed repository creates the feed") {
-                            var feed: Feed!
-                            beforeEach {
-                                feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                                feedRepository.newFeedCallback(feed)
+                        describe("when the feeds come back") {
+                            context("and a feed with the proposed feed url is in the feeds list") {
+                                beforeEach {
+                                    let existingFeed = Feed(title: "", url: NSURL(string: "http://iotlist.co/posts.atom"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                    feedRepository.feedsCallback?([existingFeed])
+                                }
+
+                                it("does not ask the feed repository to import the feed") {
+                                    expect(feedRepository.didCreateFeed) == false
+                                }
+
+                                it("calls the callback") {
+                                    expect(didImport) == true
+                                }
                             }
 
-                            it("sets that feed's url") {
-                                expect(feed.url) == NSURL(string: "http://iotlist.co/posts.atom")
-                            }
+                            context("and a feed with the proposed feed url is not in the feeds list") {
+                                beforeEach {
+                                    feedRepository.feedsCallback?([])
+                                }
 
-                            it("it tells the feed repository to update the feed from the network") {
-                                expect(feedRepository.didUpdateFeed) == feed
-                            }
+                                it("asks the feed repository to import the feed") {
+                                    expect(feedRepository.didCreateFeed) == true
+                                }
 
-                            it("calls the callback when the feed repository finishes updating the feed") {
-                                feedRepository.updateSingleFeedCallback(feed, nil)
+                                context("when the feed repository creates the feed") {
+                                    var feed: Feed!
+                                    beforeEach {
+                                        feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                        feedRepository.newFeedCallback(feed)
+                                    }
 
-                                expect(didImport) == true
-                            }
+                                    it("sets that feed's url") {
+                                        expect(feed.url) == NSURL(string: "http://iotlist.co/posts.atom")
+                                    }
 
-                            it("calls the callback when the feed repository errors updating the feed") {
-                                feedRepository.updateSingleFeedCallback(feed, NSError(domain: "", code: 0, userInfo: nil))
-                                
-                                expect(didImport) == true
+                                    it("it tells the feed repository to update the feed from the network") {
+                                        expect(feedRepository.didUpdateFeed) == feed
+                                    }
+
+                                    it("calls the callback when the feed repository finishes updating the feed") {
+                                        feedRepository.updateSingleFeedCallback(feed, nil)
+
+                                        expect(didImport) == true
+                                    }
+
+                                    it("calls the callback when the feed repository errors updating the feed") {
+                                        feedRepository.updateSingleFeedCallback(feed, NSError(domain: "", code: 0, userInfo: nil))
+
+                                        expect(didImport) == true
+                                    }
+                                }
                             }
                         }
                     }

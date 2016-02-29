@@ -267,6 +267,8 @@ class ArticleViewControllerSpec: QuickSpec {
 
         describe("setting the article") {
             let article = Article(title: "article", link: NSURL(string: "https://example.com/"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"], enclosures: [])
+            let article2 = Article(title: "article2", link: NSURL(string: "https://example.com/2"), summary: "summary2", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"], enclosures: [])
+            article.addRelatedArticle(article2)
             let feed = Feed(title: "feed", url: NSURL(string: "https://example.com"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
 
             let userActivity = NSUserActivity(activityType: "com.example.test")
@@ -387,14 +389,22 @@ class ArticleViewControllerSpec: QuickSpec {
                 }
             }
 
-            it("should open any link tapped in system safari (iOS <9) or an SFSafariViewController (iOS 9+)") {
-                let url = NSURL(string: "https://example.com")!
-                let shouldInteract = subject.content.delegate?.webView?(subject.content, shouldStartLoadWithRequest: NSURLRequest(URL: url), navigationType: .LinkClicked)
-                expect(shouldInteract) == false
-                if #available(iOS 9, *) {
-                    expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
-                } else {
-                    expect(urlOpener.url).to(equal(url))
+            context("tapping a link") {
+                fit("navigates to that article if the link goes to a related article") {
+                    let shouldInteract = subject.content.delegate?.webView?(subject.content, shouldStartLoadWithRequest: NSURLRequest(URL: article2.link!), navigationType: .LinkClicked)
+                    expect(shouldInteract) == false
+                    expect(subject.article) == article2
+                }
+
+                it("opens in system safari (iOS <9) or an SFSafariViewController (iOS 9+)") {
+                    let url = NSURL(string: "https://example.com")!
+                    let shouldInteract = subject.content.delegate?.webView?(subject.content, shouldStartLoadWithRequest: NSURLRequest(URL: url), navigationType: .LinkClicked)
+                    expect(shouldInteract) == false
+                    if #available(iOS 9, *) {
+                        expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
+                    } else {
+                        expect(urlOpener.url).to(equal(url))
+                    }
                 }
             }
         }

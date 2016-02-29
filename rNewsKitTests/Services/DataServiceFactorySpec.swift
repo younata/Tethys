@@ -14,7 +14,7 @@ class DataServiceFactorySpec: QuickSpec {
 
                 let mainQueue = FakeOperationQueue()
                 let searchIndex = FakeSearchIndex()
-                let subject = DataServiceFactory(mainQueue: mainQueue, searchIndex: searchIndex, bundle: bundle, fileManager: fileManager)
+                let subject = DataServiceFactory(mainQueue: mainQueue, realmQueue: NSOperationQueue(), searchIndex: searchIndex, bundle: bundle, fileManager: fileManager)
 
                 expect(subject.currentDataService is CoreDataService) == true
             }
@@ -25,7 +25,7 @@ class DataServiceFactorySpec: QuickSpec {
 
                 try! Realm().write({})
 
-                let subject = DataServiceFactory(mainQueue: mainQueue, searchIndex: searchIndex, bundle: bundle, fileManager: fileManager)
+                let subject = DataServiceFactory(mainQueue: mainQueue, realmQueue: NSOperationQueue(), searchIndex: searchIndex, bundle: bundle, fileManager: fileManager)
                 let dataService = subject.currentDataService
                 expect(dataService is RealmService) == true
 
@@ -38,7 +38,7 @@ class DataServiceFactorySpec: QuickSpec {
             it("caches existing data services") {
                 let mainQueue = FakeOperationQueue()
                 let searchIndex = FakeSearchIndex()
-                let subject = DataServiceFactory(mainQueue: mainQueue, searchIndex: searchIndex, bundle: bundle, fileManager: fileManager)
+                let subject = DataServiceFactory(mainQueue: mainQueue, realmQueue: NSOperationQueue(), searchIndex: searchIndex, bundle: bundle, fileManager: fileManager)
                 let inMemoryDataService = InMemoryDataService(mainQueue: mainQueue, searchIndex: searchIndex)
                 subject.currentDataService = inMemoryDataService
                 expect(subject.currentDataService as? InMemoryDataService) === inMemoryDataService
@@ -49,7 +49,7 @@ class DataServiceFactorySpec: QuickSpec {
             it("returns a RealmDataService") {
                 let mainQueue = FakeOperationQueue()
                 let searchIndex = FakeSearchIndex()
-                let subject = DataServiceFactory(mainQueue: mainQueue, searchIndex: searchIndex, bundle: bundle, fileManager: fileManager)
+                let subject = DataServiceFactory(mainQueue: mainQueue, realmQueue: NSOperationQueue(), searchIndex: searchIndex, bundle: bundle, fileManager: fileManager)
                 let dataService = subject.newDataService()
                 expect(dataService is RealmService) == true
 

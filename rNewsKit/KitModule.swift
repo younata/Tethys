@@ -45,7 +45,12 @@ public class KitModule: NSObject, Ra.InjectorModule {
             delegate: urlSessionDelegate,
             delegateQueue: NSOperationQueue())
 
+        let realmQueue = NSOperationQueue()
+        realmQueue.maxConcurrentOperationCount = 1
+        realmQueue.qualityOfService = .UserInitiated
+
         let dataServiceFactory = DataServiceFactory(mainQueue: mainQueue,
+            realmQueue: realmQueue,
             searchIndex: searchIndex,
             bundle: NSBundle(forClass: self.classForCoder),
             fileManager: NSFileManager.defaultManager())
@@ -68,4 +73,5 @@ public class KitModule: NSObject, Ra.InjectorModule {
 
         let opmlService = OPMLService(injector: injector)
         injector.bind(OPMLService.self, toInstance: opmlService)
-    }}
+    }
+}

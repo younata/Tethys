@@ -22,16 +22,19 @@ struct DatabaseMigrator: DatabaseMigratorType {
 
                 var totalRemaining = feedsToMigrate.count + articlesToMigrate.count + enclosuresToMigrate.count
                 let totalCount = Double(totalRemaining)
-                let lock = NSRecursiveLock()
 
                 let checkForCompleted = {
                     totalRemaining -= 1
+
+                    if totalRemaining % 50 == 0 {
+                        print("Amount done: \(totalRemaining) / \(Int(totalCount))")
+                    }
 
                     let progressValue = 1.0 - (Double(totalRemaining) / totalCount)
                     progress(progressValue)
 
                     if totalRemaining == 0 {
-                        lock.unlock()
+                        finish()
                     }
                 }
 
@@ -57,9 +60,6 @@ struct DatabaseMigrator: DatabaseMigratorType {
                         checkForCompleted()
                     }
                 }
-
-                lock.lock()
-                finish()
             }
         }
     }

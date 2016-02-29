@@ -1,6 +1,7 @@
 import UIKit
 import PureLayout
 import Ra
+import rNewsKit
 
 public final class MigrationViewController: UIViewController, Injectable {
     public let label: UILabel = {
@@ -18,8 +19,11 @@ public final class MigrationViewController: UIViewController, Injectable {
     }()
 
     private let activityIndicator = UIActivityIndicatorView(forAutoLayout: ())
+    private let mainQueue: NSOperationQueue
 
-    public init(migrationUseCase: MigrationUseCase, themeRepository: ThemeRepository) {
+    public init(migrationUseCase: MigrationUseCase, themeRepository: ThemeRepository, mainQueue: NSOperationQueue) {
+        self.mainQueue = mainQueue
+
         super.init(nibName: nil, bundle: nil)
 
         migrationUseCase.addSubscriber(self)
@@ -29,7 +33,8 @@ public final class MigrationViewController: UIViewController, Injectable {
     public required convenience init(injector: Injector) {
         self.init(
             migrationUseCase: injector.create(MigrationUseCase)!,
-            themeRepository: injector.create(ThemeRepository)!
+            themeRepository: injector.create(ThemeRepository)!,
+            mainQueue: injector.create(kMainQueue) as! NSOperationQueue
         )
     }
 
@@ -69,7 +74,9 @@ extension MigrationViewController: ThemeRepositorySubscriber {
 
 extension MigrationViewController: MigrationUseCaseSubscriber {
     public func migrationUseCase(migrationUseCase: MigrationUseCase, didUpdateProgress progress: Double) {
-        self.progressBar.setProgress(Float(progress), animated: true)
+        self.mainQueue.addOperationWithBlock {
+            self.progressBar.setProgress(Float(progress), animated: true)
+        }
     }
 
     public func migrationUseCaseDidFinish(migrationUseCase: MigrationUseCase) {}

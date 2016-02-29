@@ -21,6 +21,7 @@ class BootstrapWorkFlowSpec: QuickSpec {
             injector.bind(FeedRepository.self, toInstance: feedRepository)
             injector.bind(MigrationUseCase.self, toInstance: migrationUseCase)
             injector.bind(UrlOpener.self, toInstance: FakeUrlOpener())
+            injector.bind(kMainQueue, toInstance: FakeOperationQueue())
             let readArticleUseCase = FakeReadArticleUseCase()
             readArticleUseCase.readArticleReturns("")
             readArticleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.foo"))

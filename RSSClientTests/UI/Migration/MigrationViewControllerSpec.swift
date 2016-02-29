@@ -8,12 +8,15 @@ class MigrationViewControllerSpec: QuickSpec {
         var subject: MigrationViewController!
         var migrationUseCase: FakeMigrationUseCase!
         var themeRepository: FakeThemeRepository!
+        var mainQueue: FakeOperationQueue!
 
         beforeEach {
             migrationUseCase = FakeMigrationUseCase()
             themeRepository = FakeThemeRepository()
+            mainQueue = FakeOperationQueue()
+            mainQueue.runSynchronously = true
 
-            subject = MigrationViewController(migrationUseCase: migrationUseCase, themeRepository: themeRepository)
+            subject = MigrationViewController(migrationUseCase: migrationUseCase, themeRepository: themeRepository, mainQueue: mainQueue)
 
             subject.view.layoutIfNeeded()
         }

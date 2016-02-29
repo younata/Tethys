@@ -8,15 +8,35 @@ import Foundation
 #endif
 
 class RealmService: DataService {
-    private let realm: Realm
+    private let realmConfiguration: Realm.Configuration
 
     let mainQueue: NSOperationQueue
+    let workQueue: NSOperationQueue
     let searchIndex: SearchIndex?
 
-    init(realm: Realm, mainQueue: NSOperationQueue, searchIndex: SearchIndex?) {
-        self.realm = realm
-        self.mainQueue = mainQueue
-        self.searchIndex = searchIndex
+    init(realmConfiguration: Realm.Configuration,
+        mainQueue: NSOperationQueue,
+        workQueue: NSOperationQueue,
+        searchIndex: SearchIndex?) {
+            self.realmConfiguration = realmConfiguration
+            self.mainQueue = mainQueue
+            self.workQueue = workQueue
+            self.searchIndex = searchIndex
+    }
+
+    private var realmsForThreads: [NSThread: Realm] = [:]
+    private var realm: Realm {
+        let thread = NSThread.currentThread()
+        if let realm = self.realmsForThreads[thread] {
+            return realm
+        }
+
+        // swiftlint:disable force_try
+        let realm = try! Realm(configuration: self.realmConfiguration)
+        // swiftlint:enable force_try
+        self.realmsForThreads[thread] = realm
+
+        return realm
     }
 
     func createFeed(callback: (Feed) -> (Void)) {
@@ -25,9 +45,7 @@ class RealmService: DataService {
             let feed = Feed(realmFeed: realmFeed)
             callback(feed)
 
-            self.startRealmTransaction()
-
-            self.updateFeed(feed, realmFeed: realmFeed)
+            self.updateFeed(feed, realmFeed: realmFeed) {}
         }
     }
 
@@ -38,9 +56,7 @@ class RealmService: DataService {
             feed?.addArticle(article)
             callback(article)
 
-            self.startRealmTransaction()
-
-            self.updateArticle(article, realmArticle: realmArticle)
+            self.updateArticle(article, realmArticle: realmArticle) {}
         }
     }
 
@@ -51,9 +67,7 @@ class RealmService: DataService {
             article?.addEnclosure(enclosure)
             callback(enclosure)
 
-            self.startRealmTransaction()
-
-            self.updateEnclosure(enclosure, realmEnclosure: realmEnclosure)
+            self.updateEnclosure(enclosure, realmEnclosure: realmEnclosure) {}
         }
     }
 
@@ -61,11 +75,14 @@ class RealmService: DataService {
 
     func feedsMatchingPredicate(predicate: NSPredicate, callback: [Feed] -> Void) {
         let sortDescriptors = [SortDescriptor(property: "title", ascending: true)]
-        self.mainQueue.addOperationWithBlock {
+
+        self.realmTransaction {
             let feeds = self.realm.objects(RealmFeed).filter(predicate)
                 .sorted(sortDescriptors)
                 .map { Feed(realmFeed: $0) }
-            callback(feeds)
+            self.mainQueue.addOperationWithBlock {
+                callback(feeds)
+            }
         }
     }
 
@@ -74,21 +91,26 @@ class RealmService: DataService {
             SortDescriptor(property: "updatedAt", ascending: false),
             SortDescriptor(property: "published", ascending: false)
         ]
-        self.mainQueue.addOperationWithBlock {
+        self.realmTransaction {
             let articles = self.realm.objects(RealmArticle).filter(predicate)
                 .sorted(sortDescriptors)
                 .map { Article(realmArticle: $0, feed: nil) }
-            callback(articles)
+            self.mainQueue.addOperationWithBlock {
+                callback(articles)
+            }
         }
     }
 
     func enclosuresMatchingPredicate(predicate: NSPredicate, callback: [Enclosure] -> Void) {
         let sortDescriptors = [SortDescriptor(property: "kind", ascending: true)]
-        self.mainQueue.addOperationWithBlock {
+        self.realmTransaction {
             let enclosures = self.realm.objects(RealmEnclosure).filter(predicate)
                 .sorted(sortDescriptors)
                 .map { Enclosure(realmEnclosure: $0, article: nil) }
-            callback(enclosures)
+
+            self.mainQueue.addOperationWithBlock {
+                callback(enclosures)
+            }
         }
     }
 
@@ -97,8 +119,7 @@ class RealmService: DataService {
     func saveFeed(feed: Feed, callback: (Void) -> (Void)) {
         guard let _ = feed.feedID as? String else { callback(); return }
 
-        self.realmTransaction {
-            self.updateFeed(feed)
+        self.updateFeed(feed) {
             self.mainQueue.addOperationWithBlock(callback)
         }
     }
@@ -106,8 +127,7 @@ class RealmService: DataService {
     func saveArticle(article: Article, callback: (Void) -> (Void)) {
         guard let _ = article.articleID as? String else { callback(); return }
 
-        self.realmTransaction {
-            self.updateArticle(article)
+        self.updateArticle(article) {
             self.mainQueue.addOperationWithBlock(callback)
         }
     }
@@ -115,8 +135,7 @@ class RealmService: DataService {
     func saveEnclosure(enclosure: Enclosure, callback: (Void) -> (Void)) {
         guard let _ = enclosure.enclosureID as? String else { callback(); return }
 
-        self.realmTransaction {
-            self.updateEnclosure(enclosure)
+        self.updateEnclosure(enclosure) {
             self.mainQueue.addOperationWithBlock(callback)
         }
     }
@@ -187,87 +206,101 @@ class RealmService: DataService {
 
     // Synchronous update!
 
-    private func updateFeed(feed: Feed, realmFeed: RealmFeed? = nil) {
-        self.startRealmTransaction()
-        if let rfeed = realmFeed ?? self.realmFeedForFeed(feed) {
-            rfeed.title = feed.title
-            rfeed.url = feed.url?.absoluteString
-            rfeed.summary = feed.summary
-            rfeed.query = feed.query
-            let tags: [RealmString] = feed.tags.map { str in
-                let realmString = RealmString()
-                realmString.string = str
-                return realmString
-            }
-            rfeed.tags.replaceRange(0..<rfeed.tags.count, with: tags)
-            rfeed.waitPeriod = feed.waitPeriod
-            rfeed.remainingWait = feed.remainingWait
-            #if os(iOS)
-                if let image = feed.image {
-                    rfeed.imageData = UIImagePNGRepresentation(image)
+    private func updateFeed(feed: Feed, realmFeed: RealmFeed? = nil, callback: Void -> Void) {
+        self.realmTransaction {
+            if let rfeed = realmFeed ?? self.realmFeedForFeed(feed) {
+                rfeed.title = feed.title
+                rfeed.url = feed.url?.absoluteString
+                rfeed.summary = feed.summary
+                rfeed.query = feed.query
+                let tags: [RealmString] = feed.tags.map { str in
+                    let realmString = RealmString()
+                    realmString.string = str
+                    return realmString
                 }
-            #else
-                if let image = feed.image {
-                    rfeed.imageData = image.TIFFRepresentation
+                rfeed.tags.replaceRange(0..<rfeed.tags.count, with: tags)
+                rfeed.waitPeriod = feed.waitPeriod
+                rfeed.remainingWait = feed.remainingWait
+                #if os(iOS)
+                    if let image = feed.image {
+                        rfeed.imageData = UIImagePNGRepresentation(image)
+                    }
+                #else
+                    if let image = feed.image {
+                        rfeed.imageData = image.TIFFRepresentation
+                    }
+                #endif
+            }
+
+            callback()
+        }
+    }
+
+    private func updateArticle(article: Article, realmArticle: RealmArticle? = nil, callback: Void -> Void) {
+        self.realmTransaction {
+            if let rarticle = realmArticle ?? self.realmArticleForArticle(article) {
+                rarticle.title = article.title
+                rarticle.link = article.link?.absoluteString ?? ""
+                rarticle.summary = article.summary
+                rarticle.author = article.author
+                rarticle.published = article.published
+                rarticle.updatedAt = article.updatedAt
+                rarticle.content = article.content
+                rarticle.read = article.read
+                let flags: [RealmString] = article.flags.map { str in
+                    let realmString = RealmString()
+                    realmString.string = str
+                    return realmString
                 }
-            #endif
+                rarticle.flags.removeAll()
+                rarticle.flags.appendContentsOf(flags)
+                rarticle.relatedArticles.removeAll()
+                let relatedArticles = article.relatedArticles.flatMap { self.realmArticleForArticle($0) }
+                rarticle.relatedArticles.appendContentsOf(relatedArticles)
+                rarticle.estimatedReadingTime = article.estimatedReadingTime
+
+                if let feed = article.feed, rfeed = self.realmFeedForFeed(feed) {
+                    rarticle.feed = rfeed
+                }
+
+                self.updateSearchIndexForArticle(article)
+            }
+            callback()
         }
     }
 
-    private func updateArticle(article: Article, realmArticle: RealmArticle? = nil) {
-        self.startRealmTransaction()
-        if let rarticle = realmArticle ?? self.realmArticleForArticle(article) {
-            rarticle.title = article.title
-            rarticle.link = article.link?.absoluteString ?? ""
-            rarticle.summary = article.summary
-            rarticle.author = article.author
-            rarticle.published = article.published
-            rarticle.updatedAt = article.updatedAt
-            rarticle.content = article.content
-            rarticle.read = article.read
-            let flags: [RealmString] = article.flags.map { str in
-                let realmString = RealmString()
-                realmString.string = str
-                return realmString
+    private func updateEnclosure(enclosure: Enclosure, realmEnclosure: RealmEnclosure? = nil, callback: Void -> Void) {
+        self.realmTransaction {
+            if let renclosure = realmEnclosure ?? self.realmEnclosureForEnclosure(enclosure) {
+                renclosure.url = enclosure.url.absoluteString
+                renclosure.kind = enclosure.kind
+
+                if let article = enclosure.article, rarticle = self.realmArticleForArticle(article) {
+                    renclosure.article = rarticle
+                }
             }
-            rarticle.flags.removeAll()
-            rarticle.flags.appendContentsOf(flags)
-            rarticle.relatedArticles.removeAll()
-            let relatedArticles: [RealmArticle] = article.relatedArticles.flatMap { self.realmArticleForArticle($0) }
-            rarticle.relatedArticles.appendContentsOf(relatedArticles)
-            rarticle.estimatedReadingTime = article.estimatedReadingTime
-
-            if let feed = article.feed, rfeed = self.realmFeedForFeed(feed) {
-                rarticle.feed = rfeed
-            }
-
-            self.updateSearchIndexForArticle(article)
-        }
-    }
-
-    private func updateEnclosure(enclosure: Enclosure, realmEnclosure: RealmEnclosure? = nil) {
-        self.startRealmTransaction()
-        if let renclosure = realmEnclosure ?? self.realmEnclosureForEnclosure(enclosure) {
-            renclosure.url = enclosure.url.absoluteString
-            renclosure.kind = enclosure.kind
-
-            if let article = enclosure.article, rarticle = self.realmArticleForArticle(article) {
-                renclosure.article = rarticle
-            }
-        }
-    }
-
-    private func startRealmTransaction() {
-        if !self.realm.inWriteTransaction {
-            self.realm.refresh()
-            self.realm.beginWrite()
+            callback()
         }
     }
 
     private func realmTransaction(execBlock: Void -> Void) {
-        self.startRealmTransaction()
-        execBlock()
-        self.startRealmTransaction()
-        _ = try? self.realm.commitWrite()
+        func startRealmTransaction() {
+            if !self.realm.inWriteTransaction {
+                self.realm.refresh()
+                self.realm.beginWrite()
+            }
+        }
+        let operation = NSBlockOperation {
+            startRealmTransaction()
+            execBlock()
+            startRealmTransaction()
+            _ = try? self.realm.commitWrite()
+        }
+
+        if self.workQueue == NSOperationQueue.currentQueue() {
+            operation.start()
+        } else {
+            self.workQueue.addOperation(operation)
+        }
     }
 }

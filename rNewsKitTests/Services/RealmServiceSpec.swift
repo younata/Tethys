@@ -21,7 +21,7 @@ class RealmServiceSpec: QuickSpec {
         mainQueue.runSynchronously = true
         var searchIndex = FakeSearchIndex()
 
-        var subject = RealmService(realm: realm, mainQueue: mainQueue, searchIndex: searchIndex)
+        var subject = RealmService(realmConfiguration: realmConf, mainQueue: mainQueue, workQueue: mainQueue, searchIndex: searchIndex)
 
         beforeEach {
             realm = try! Realm(configuration: realmConf)
@@ -33,7 +33,7 @@ class RealmServiceSpec: QuickSpec {
             mainQueue.runSynchronously = true
             searchIndex = FakeSearchIndex()
 
-            subject = RealmService(realm: realm, mainQueue: mainQueue, searchIndex: searchIndex)
+            subject = RealmService(realmConfiguration: realmConf, mainQueue: mainQueue, workQueue: mainQueue, searchIndex: searchIndex)
         }
 
         describe("create operations") {

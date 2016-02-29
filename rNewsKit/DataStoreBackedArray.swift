@@ -7,7 +7,7 @@ private enum BackingStore {
     case Array
 }
 
-public final class DataStoreBackedArray<T>: CollectionType, CustomDebugStringConvertible {
+public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDebugStringConvertible {
     let predicate: NSPredicate?
     let sortDescriptors: [NSSortDescriptor]
 
@@ -76,7 +76,7 @@ public final class DataStoreBackedArray<T>: CollectionType, CustomDebugStringCon
     public func filterWithPredicate(predicate: NSPredicate) -> DataStoreBackedArray<T> {
         let filterArray: Void -> DataStoreBackedArray = {
             let array = self.internalObjects.filter {
-                return predicate.evaluateWithObject($0 as? AnyObject)
+                return predicate.evaluateWithObject($0)
             }
             return DataStoreBackedArray(array)
         }
@@ -232,6 +232,12 @@ public final class DataStoreBackedArray<T>: CollectionType, CustomDebugStringCon
             self.managedObjectContext = managedObjectContext
             self.coreDataConversionFunction = conversionFunction
             self.internalCount = self.calculateCount()
+    }
+
+    deinit {
+        self.internalObjects = []
+        self.appendedObjects = []
+        self.managedArray = []
     }
 
     private func fetchUpToPosition(position: Int) {

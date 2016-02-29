@@ -9,16 +9,22 @@ protocol DataServiceFactoryType: class {
 
 final class DataServiceFactory: DataServiceFactoryType {
     private let mainQueue: NSOperationQueue
+    private let realmQueue: NSOperationQueue
     private let searchIndex: SearchIndex?
     private let bundle: NSBundle
     private let fileManager: NSFileManager
 
 
-    init(mainQueue: NSOperationQueue, searchIndex: SearchIndex?, bundle: NSBundle, fileManager: NSFileManager) {
-        self.mainQueue = mainQueue
-        self.searchIndex = searchIndex
-        self.bundle = bundle
-        self.fileManager = fileManager
+    init(mainQueue: NSOperationQueue,
+        realmQueue: NSOperationQueue,
+        searchIndex: SearchIndex?,
+        bundle: NSBundle,
+        fileManager: NSFileManager) {
+            self.mainQueue = mainQueue
+            self.realmQueue = realmQueue
+            self.searchIndex = searchIndex
+            self.bundle = bundle
+            self.fileManager = fileManager
     }
 
     private var existingDataService: DataService?
@@ -42,10 +48,10 @@ final class DataServiceFactory: DataServiceFactoryType {
     }
 
     func newDataService() -> DataService {
-        guard let realm = try? Realm() else {
-            fatalError("Unable to access Realm")
-        }
-        return RealmService(realm: realm, mainQueue: self.mainQueue, searchIndex: self.searchIndex)
+        return RealmService(realmConfiguration: Realm.Configuration.defaultConfiguration,
+            mainQueue: self.mainQueue,
+            workQueue: self.realmQueue,
+            searchIndex: self.searchIndex)
     }
 
     private func useCoreData() -> Bool {

@@ -36,6 +36,8 @@ class DatabaseMigratorSpec: QuickSpec {
             let oldEnclosure2 = Enclosure(url: NSURL(string: "https://example.com/feed2/2/enclosure2")!, kind: "text/text", article: oldArticle2)
             oldArticle2.addEnclosure(oldEnclosure2)
 
+            var progressCalls: [Double] = []
+
             beforeEach {
                 oldDatabase = InMemoryDataService(mainQueue: mainQueue, searchIndex: FakeSearchIndex())
                 newDatabase = InMemoryDataService(mainQueue: mainQueue, searchIndex: FakeSearchIndex())
@@ -49,7 +51,8 @@ class DatabaseMigratorSpec: QuickSpec {
                 newDatabase.enclosures = [oldEnclosure2]
 
                 finishCount = 0
-                subject.migrate(oldDatabase, to: newDatabase) {
+                progressCalls = []
+                subject.migrate(oldDatabase, to: newDatabase, progress: { progressCalls.append($0) }) {
                     finishCount += 1
                 }
             }
@@ -105,6 +108,7 @@ class DatabaseMigratorSpec: QuickSpec {
             var database: InMemoryDataService!
 
             var finishCount = 0
+            var progressCalls: [Double] = []
 
             beforeEach {
                 database = InMemoryDataService(mainQueue: mainQueue, searchIndex: FakeSearchIndex())
@@ -128,8 +132,9 @@ class DatabaseMigratorSpec: QuickSpec {
                 database.enclosures = [oldEnclosure1, oldEnclosure2]
 
                 finishCount = 0
+                progressCalls = []
 
-                subject.deleteEverything(database) {
+                subject.deleteEverything(database, progress: { progressCalls.append($0) }) {
                     finishCount += 1
                 }
             }

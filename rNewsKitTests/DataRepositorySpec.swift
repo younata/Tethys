@@ -187,7 +187,7 @@ class FeedRepositorySpec: QuickSpec {
 
                 context("when the migration finishes") {
                     beforeEach {
-                        databaseMigrator.migrateArgsForCall(0).2()
+                        databaseMigrator.migrateArgsForCall(0).3()
                     }
 
                     it("sets the new data service as the current data service") {
@@ -201,7 +201,7 @@ class FeedRepositorySpec: QuickSpec {
 
                     context("when the deletion finishes") {
                         it("calls the callback") {
-                            databaseMigrator.deleteEverythingArgsForCall(0).1()
+                            databaseMigrator.deleteEverythingArgsForCall(0).2()
 
                             expect(migrationFinished) == true
                         }

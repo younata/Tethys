@@ -11,16 +11,20 @@ class BootstrapWorkFlowSpec: QuickSpec {
         var window: UIWindow!
         var feedRepository: FakeFeedRepository!
         var migrationUseCase: FakeMigrationUseCase!
-        var injector: Injector!
 
         beforeEach {
             window = UIWindow()
             feedRepository = FakeFeedRepository()
             migrationUseCase = FakeMigrationUseCase()
 
-            injector = Injector(module: SpecInjectorModule())
+            let injector = Injector()
             injector.bind(FeedRepository.self, toInstance: feedRepository)
             injector.bind(MigrationUseCase.self, toInstance: migrationUseCase)
+            injector.bind(UrlOpener.self, toInstance: FakeUrlOpener())
+            let readArticleUseCase = FakeReadArticleUseCase()
+            readArticleUseCase.readArticleReturns("")
+            readArticleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.foo"))
+            injector.bind(ReadArticleUseCase.self, toInstance: readArticleUseCase)
 
             subject = BootstrapWorkFlow(window: window, injector: injector)
         }

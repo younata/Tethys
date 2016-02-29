@@ -8,23 +8,23 @@ class FakeDatabaseMigrator : DatabaseMigratorType {
     }
 
     private(set) var migrateCallCount : Int = 0
-    private var migrateArgs : Array<(DataService, DataService, Void -> Void)> = []
-    func migrateArgsForCall(callIndex: Int) -> (DataService, DataService, Void -> Void) {
+    private var migrateArgs : Array<(DataService, DataService, Double -> Void, Void -> Void)> = []
+    func migrateArgsForCall(callIndex: Int) -> (DataService, DataService, Double -> Void, Void -> Void) {
         return self.migrateArgs[callIndex]
     }
-    func migrate(from: DataService, to: DataService, finish: Void -> Void) -> (Void) {
+    func migrate(from: DataService, to: DataService, progress: Double -> Void, finish: Void -> Void) {
         self.migrateCallCount++
-        self.migrateArgs.append((from, to, finish))
+        self.migrateArgs.append((from, to, progress, finish))
     }
 
     private(set) var deleteEverythingCallCount : Int = 0
-    private var deleteEverythingArgs : Array<(DataService, Void -> Void)> = []
-    func deleteEverythingArgsForCall(callIndex: Int) -> (DataService, Void -> Void) {
+    private var deleteEverythingArgs : Array<(DataService, Double -> Void, Void -> Void)> = []
+    func deleteEverythingArgsForCall(callIndex: Int) -> (DataService, Double -> Void, Void -> Void) {
         return self.deleteEverythingArgs[callIndex]
     }
-    func deleteEverything(database: DataService, finish: Void -> Void) {
+    func deleteEverything(database: DataService, progress: Double -> Void, finish: Void -> Void) {
         self.deleteEverythingCallCount++
-        self.deleteEverythingArgs.append((database, finish))
+        self.deleteEverythingArgs.append((database, progress, finish))
     }
 
     static func reset() {

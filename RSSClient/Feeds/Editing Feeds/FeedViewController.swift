@@ -43,7 +43,6 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
 
     private let feedRepository: FeedRepository
     private let urlSession: NSURLSession
-    private let operationQueue: NSOperationQueue
     private let themeRepository: ThemeRepository
     private let tagEditorViewController: Void -> TagEditorViewController
 
@@ -51,12 +50,10 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
 
     public init(feedRepository: FeedRepository,
                 urlSession: NSURLSession,
-                operationQueue: NSOperationQueue,
                 themeRepository: ThemeRepository,
                 tagEditorViewController: Void -> TagEditorViewController) {
         self.feedRepository = feedRepository
         self.urlSession = urlSession
-        self.operationQueue = operationQueue
         self.themeRepository = themeRepository
         self.tagEditorViewController = tagEditorViewController
 
@@ -67,7 +64,6 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
         self.init(
             feedRepository: injector.create(FeedRepository)!,
             urlSession: injector.create(NSURLSession)!,
-            operationQueue: injector.create(kBackgroundQueue) as! NSOperationQueue,
             themeRepository: injector.create(ThemeRepository)!,
             tagEditorViewController: {injector.create(TagEditorViewController)!}
         )
@@ -258,7 +254,7 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
                                 let fp = Muon.FeedParser(string: string)
                                 fp.failure {_ in tc.setValid(false) }
                                 fp.success {_ in tc.setValid(true) }
-                                self.operationQueue.addOperation(fp)
+                                fp.start()
                         } else { tc.setValid(false) }
                     } else { tc.setValid(false) }
                     }.resume()

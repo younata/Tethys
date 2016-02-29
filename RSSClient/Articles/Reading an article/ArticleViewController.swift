@@ -323,7 +323,7 @@ extension ArticleViewController: UIWebViewDelegate {
         shouldStartLoadWithRequest request: NSURLRequest,
         navigationType: UIWebViewNavigationType) -> Bool {
             guard let url = request.URL where navigationType == .LinkClicked else { return true }
-            let predicate = NSPredicate(format: "link = %@", url)
+            let predicate = NSPredicate(format: "link = %@", url.absoluteString)
             if let article = self.article?.relatedArticles.filterWithPredicate(predicate).first {
                 self.setArticle(article, read: true, show: true)
             } else {

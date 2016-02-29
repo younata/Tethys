@@ -20,7 +20,7 @@ class FindFeedViewControllerSpec: QuickSpec {
         var themeRepository: FakeThemeRepository!
 
         beforeEach {
-            injector = Ra.Injector(module: SpecInjectorModule())
+            injector = Ra.Injector()
 
             feedRepository = FakeFeedRepository()
             injector.bind(FeedRepository.self, toInstance: feedRepository)

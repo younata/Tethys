@@ -31,18 +31,20 @@ class AppDelegateSpec: QuickSpec {
 
             injector = Ra.Injector()
 
-            InjectorModule().configureInjector(injector)
             injector.bind(kMainQueue, toInstance: FakeOperationQueue())
             injector.bind(kBackgroundQueue, toInstance: FakeOperationQueue())
 
             dataRepository = FakeFeedRepository()
             injector.bind(FeedRepository.self, toInstance: dataRepository)
 
+            InjectorModule().configureInjector(injector)
+
             notificationHandler = FakeNotificationHandler()
             injector.bind(NotificationHandler.self, toInstance: notificationHandler)
 
             backgroundFetchHandler = FakeBackgroundFetchHandler()
             injector.bind(BackgroundFetchHandler.self, toInstance: backgroundFetchHandler)
+
 
             subject.anInjector = injector
             subject.window = UIWindow(frame: CGRectMake(0, 0, 320, 480))

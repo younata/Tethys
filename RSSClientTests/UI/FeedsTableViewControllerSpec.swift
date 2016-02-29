@@ -22,8 +22,6 @@ class FeedsTableViewControllerSpec: QuickSpec {
         beforeEach {
             let injector = Injector()
 
-            SpecInjectorModule().configureInjector(injector)
-
             dataRepository = FakeFeedRepository()
             injector.bind(FeedRepository.self, toInstance: dataRepository)
 
@@ -32,6 +30,10 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, toInstance: themeRepository)
+
+            injector.bind(UrlOpener.self, toInstance: FakeUrlOpener())
+            injector.bind(QuickActionRepository.self, toInstance: FakeQuickActionRepository())
+            injector.bind(ImportUseCase.self, toInstance: FakeImportUseCase())
 
             subject = injector.create(FeedsTableViewController)
 

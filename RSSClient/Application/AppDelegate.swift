@@ -19,16 +19,16 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         return Ra.Injector(module: kitModule, appModule)
     }()
 
-    private lazy var feedRepository: FeedRepository? = {
-        return self.anInjector.create(FeedRepository)
+    private lazy var feedRepository: FeedRepository = {
+        return self.anInjector.create(FeedRepository)!
     }()
 
-    private lazy var notificationHandler: NotificationHandler? = {
-        self.anInjector.create(NotificationHandler)
+    private lazy var notificationHandler: NotificationHandler = {
+        self.anInjector.create(NotificationHandler)!
     }()
 
-    private lazy var backgroundFetchHandler: BackgroundFetchHandler? = {
-        self.anInjector.create(BackgroundFetchHandler)
+    private lazy var backgroundFetchHandler: BackgroundFetchHandler = {
+        self.anInjector.create(BackgroundFetchHandler)!
     }()
 
     internal lazy var splitView: SplitViewController = {
@@ -59,20 +59,18 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
             self.createControllerHierarchy()
 
-            if let feedRepository = self.feedRepository {
-                feedRepository.addSubscriber(application)
-                let userDefaults = NSUserDefaults.standardUserDefaults()
-                if !userDefaults.boolForKey("firstLaunch") {
-                    feedRepository.newFeed { feed in
-                        feed.title = NSLocalizedString("AppDelegate_UnreadFeed_Title", comment: "")
-                        feed.summary = NSLocalizedString("AppDelegate_UnreadFeed_Summary", comment: "")
-                        feed.query = "function(article) {\n    return !article.read;\n}"
-                    }
-                    userDefaults.setBool(true, forKey: "firstLaunch")
+            self.feedRepository.addSubscriber(application)
+            let userDefaults = NSUserDefaults.standardUserDefaults()
+            if !userDefaults.boolForKey("firstLaunch") {
+                self.feedRepository.newFeed { feed in
+                    feed.title = NSLocalizedString("AppDelegate_UnreadFeed_Title", comment: "")
+                    feed.summary = NSLocalizedString("AppDelegate_UnreadFeed_Summary", comment: "")
+                    feed.query = "function(article) {\n    return !article.read;\n}"
                 }
+                userDefaults.setBool(true, forKey: "firstLaunch")
             }
 
-            self.notificationHandler?.enableNotifications(application)
+            self.notificationHandler.enableNotifications(application)
 
             application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
 
@@ -102,7 +100,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 completionHandler(true)
             } else if let feedTitle = shortcutItem.userInfo?["feed"] as? String
                 where shortcutItem.type == "com.rachelbrindle.RSSClient.viewfeed" {
-                    self.feedRepository?.feeds {feeds in
+                    self.feedRepository.feeds {feeds in
                         if let feed = feeds.filter({ return $0.title == feedTitle }).first {
                             feedsViewController.showFeeds([feed], animated: false)
                             completionHandler(true)
@@ -117,13 +115,13 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
     public func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
         if let window = self.window {
-            self.notificationHandler?.handleLocalNotification(notification, window: window)
+            self.notificationHandler.handleLocalNotification(notification, window: window)
         }
     }
 
     public func application(application: UIApplication, handleActionWithIdentifier identifier: String?,
         forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
-            self.notificationHandler?.handleAction(identifier, notification: notification)
+            self.notificationHandler.handleAction(identifier, notification: notification)
             completionHandler()
     }
 
@@ -131,13 +129,9 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
     public func application(application: UIApplication,
         performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-            if let noteHandler = self.notificationHandler {
-                self.backgroundFetchHandler?.performFetch(noteHandler,
-                    notificationSource: application,
-                    completionHandler: completionHandler)
-            } else {
-                completionHandler(.NoData)
-            }
+            self.backgroundFetchHandler.performFetch(self.notificationHandler,
+                notificationSource: application,
+                completionHandler: completionHandler)
     }
 
     // MARK: - User Activities
@@ -150,7 +144,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 let userInfo = userActivity.userInfo,
                 let feedTitle = userInfo["feed"] as? String,
                 let articleID = userInfo["article"] as? String {
-                    self.feedRepository?.feeds {feeds in
+                    self.feedRepository.feeds {feeds in
                         if let feed = feeds.filter({ return $0.title == feedTitle }).first,
                             let article = feed.articlesArray.filter({ $0.identifier == articleID }).first {
                                 self.createControllerHierarchy(feed, article: article)
@@ -161,7 +155,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             if #available(iOS 9.0, *) {
                 if type == CSSearchableItemActionType,
                     let uniqueID = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
-                        self.feedRepository?.feeds {feeds in
+                        self.feedRepository.feeds {feeds in
                             guard let article = feeds.reduce(Array<Article>(), combine: {articles, feed in
                                 return articles + Array(feed.articlesArray)
                             }).filter({ article in

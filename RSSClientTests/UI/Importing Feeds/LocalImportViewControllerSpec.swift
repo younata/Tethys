@@ -56,7 +56,7 @@ class LocalImportViewControllerSpec: QuickSpec {
         var importUseCase: FakeImportUseCase!
 
         beforeEach {
-            injector = Ra.Injector(module: SpecInjectorModule())
+            injector = Ra.Injector()
 
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, toInstance: themeRepository)

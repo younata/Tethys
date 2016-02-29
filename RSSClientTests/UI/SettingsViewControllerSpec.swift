@@ -5,31 +5,6 @@ import rNewsKit
 import Ra
 import SafariServices
 
-internal class FakeUrlOpener: UrlOpener {
-
-    internal var url: NSURL? = nil
-    internal func openURL(url: NSURL) -> Bool {
-        self.url = url
-        return true
-    }
-
-    init() {}
-}
-
-private class FakeQuickActionRepository: QuickActionRepository {
-    private var _quickActions = [NSObject]()
-
-    @available (iOS 9, *)
-    private var quickActions: [UIApplicationShortcutItem] {
-        get {
-            return (self._quickActions as? [UIApplicationShortcutItem]) ?? []
-        }
-        set {
-            self._quickActions = newValue
-        }
-    }
-}
-
 class SettingsViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: SettingsViewController! = nil

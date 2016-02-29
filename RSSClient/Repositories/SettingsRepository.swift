@@ -1,10 +1,11 @@
 import Foundation
+import Ra
 
 public protocol SettingsRepositorySubscriber: NSObjectProtocol {
     func didChangeSetting(_: SettingsRepository)
 }
 
-public class SettingsRepository {
+public class SettingsRepository: Injectable {
     private enum SettingsKeys: String {
         case QueryFeedsEnabled = "queryFeedsEnabled"
     }
@@ -36,6 +37,10 @@ public class SettingsRepository {
         self.userDefaults = userDefaults
 
         self.queryFeedsEnabled = self.userDefaults?.boolForKey(SettingsKeys.QueryFeedsEnabled.rawValue) ?? false
+    }
+
+    public required convenience init(injector: Injector) {
+        self.init(userDefaults: injector.create(NSUserDefaults))
     }
 
     deinit {

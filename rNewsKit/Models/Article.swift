@@ -16,6 +16,7 @@ import JavaScriptCore
     weak var feed: Feed? { get }
     var flags: [String] { get }
     var enclosures: [Enclosure] { get }
+    var relatedArticlesArray: [Article] { get }
 }
 
 @objc public class Article: NSObject, ArticleJSExport {
@@ -108,6 +109,9 @@ import JavaScriptCore
     dynamic public var enclosures: [Enclosure] { return Array(self.enclosuresArray) }
 
     public internal(set) var enclosuresArray: DataStoreBackedArray<Enclosure>
+
+    public private(set) var relatedArticles = DataStoreBackedArray<Article>()
+    public var relatedArticlesArray: [Article] { return Array(self.relatedArticles) }
 
     internal private(set) var updated: Bool = false
 
@@ -239,6 +243,19 @@ import JavaScriptCore
                 predicate: NSPredicate(format: "article.id == %@", article.id),
                 realm: realm,
                 conversionFunction: { Enclosure(realmEnclosure: $0 as! RealmEnclosure, article: self) } )
+
+            let relatedArticleIds = article.relatedArticles.map { $0.id }
+            self.relatedArticles = DataStoreBackedArray(realmDataType: RealmArticle.self,
+                predicate: NSPredicate(format: "id IN %@", relatedArticleIds),
+                realm: realm,
+                conversionFunction: { object in
+                    let article = object as! RealmArticle
+                    let feed: Feed?
+                    if let realmFeed = article.feed {
+                        feed = Feed(realmFeed: realmFeed)
+                    } else { feed = nil }
+                    return Article(realmArticle: article, feed: feed)
+            })
         } else {
             self.enclosuresArray = DataStoreBackedArray(enclosures)
         }
@@ -277,6 +294,23 @@ import JavaScriptCore
             if enclosure.article == self {
                 enclosure.article = nil
             }
+            self.updated = true
+        }
+    }
+
+    public func addRelatedArticle(article: Article) {
+        guard article != self else { return }
+        if !self.relatedArticles.contains(article) {
+            self.relatedArticles.append(article)
+            article.addRelatedArticle(self)
+            self.updated = true
+        }
+    }
+
+    public func removeRelatedArticle(article: Article) {
+        if self.relatedArticles.contains(article) {
+            self.relatedArticles.remove(article)
+            article.removeRelatedArticle(self)
             self.updated = true
         }
     }

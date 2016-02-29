@@ -898,11 +898,9 @@
 				8917546E1C5B44680036D96D /* Realm */,
 				89D256731C3CC22A004066B9 /* Services */,
 				8943044D1B450A96000078DC /* Supporting files */,
-				8978D4DE1B0535EB00EDD6D0 /* Article.swift */,
+				895AC5271C83816600A5F6A1 /* Models */,
 				898C48CA1B425F8C0097045A /* DataRepository.swift */,
 				89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */,
-				8978D4E11B053A5900EDD6D0 /* Enclosure.swift */,
-				8978D4DB1B0533B600EDD6D0 /* Feed.swift */,
 				89CC82031B461A2B00648367 /* Helpers.swift */,
 				89CC82051B461A5500648367 /* KitModule.swift */,
 				898C48C61B40D2AC0097045A /* SearchIndex.swift */,
@@ -994,6 +992,16 @@
 				89E2A33E1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift */,
 			);
 			name = Settings;
+			sourceTree = "<group>";
+		};
+		895AC5271C83816600A5F6A1 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				8978D4DE1B0535EB00EDD6D0 /* Article.swift */,
+				8978D4E11B053A5900EDD6D0 /* Enclosure.swift */,
+				8978D4DB1B0533B600EDD6D0 /* Feed.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		896320921C1779DE00B7C980 /* Settings */ = {

@@ -18,7 +18,7 @@ class ArticleSpec: QuickSpec {
             subject = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
         }
 
-        describe("creating from a RealmArticle") {
+        describe("creating from a CoreDataArticle") {
             it("sets estimatedReadingTime when it's nil in CoreData estimatedReadingTime is nil") {
                 let ctx = managedObjectContext()
                 let a = createArticle(ctx)
@@ -283,6 +283,37 @@ class ArticleSpec: QuickSpec {
             }
         }
 
+        describe("relatedArticles") {
+            var a: Article!
+            var b: Article!
+
+            beforeEach {
+                a = Article(title: "a", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                b = Article(title: "b", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+            }
+
+            it("doesn't let itself be added as a related article") {
+                a.addRelatedArticle(a)
+
+                expect(a.relatedArticles).to(beEmpty())
+            }
+
+            it("adding sets a bidirectional relationship for the two related articles") {
+                a.addRelatedArticle(b)
+                expect(a.relatedArticles).to(contain(b))
+                expect(b.relatedArticles).to(contain(a))
+            }
+
+            it("removing removes the relation from both articles") {
+                a.addRelatedArticle(b)
+
+                b.removeRelatedArticle(a)
+
+                expect(a.relatedArticles).toNot(contain(b))
+                expect(b.relatedArticles).toNot(contain(a))
+            }
+        }
+
         describe("the updated flag") {
             it("should start negative") {
                 expect(subject.updated) == false
@@ -374,6 +405,16 @@ class ArticleSpec: QuickSpec {
                 it("enclosures") {
                     subject.addEnclosure(Enclosure(url: NSURL(string: "http://example.com")!, kind: "", article: nil))
                     expect(subject.updated) == true
+                }
+
+                it("relatedArticles") {
+                    let a = Article(title: "a", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                    let b = Article(title: "b", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+
+                    a.addRelatedArticle(b)
+
+                    expect(a.updated) == true
+                    expect(b.updated) == true
                 }
             }
         }

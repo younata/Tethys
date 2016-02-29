@@ -119,6 +119,9 @@ class RealmServiceSpec: QuickSpec {
                 realmArticle2.feed = realmFeed1
                 realmArticle3.feed = realmFeed2
 
+                realmArticle3.relatedArticles.append(realmArticle2)
+                realmArticle2.relatedArticles.append(realmArticle3)
+
                 let realmEnclosure1 = RealmEnclosure()
                 let realmEnclosure2 = RealmEnclosure()
 
@@ -162,8 +165,12 @@ class RealmServiceSpec: QuickSpec {
 
                 it("reads the articles based on the predicate") {
                     let allExpectation = self.expectationWithDescription("Read all articles")
-                    subject.articlesMatchingPredicate(NSPredicate(value: true)) {
-                        expect($0) == [article1, article2, article3]
+                    subject.articlesMatchingPredicate(NSPredicate(value: true)) { articles in
+                        expect(articles) == [article1, article2, article3]
+
+                        expect(articles[1].relatedArticles).to(contain(article3))
+                        expect(articles[2].relatedArticles).to(contain(article2))
+
                         allExpectation.fulfill()
                     }
 
@@ -214,6 +221,7 @@ class RealmServiceSpec: QuickSpec {
                     let expectation = self.expectationWithDescription("update article")
 
                     article1.summary = "hello world"
+                    article1.addRelatedArticle(article2)
 
                     subject.saveArticle(article1) {
                         expectation.fulfill()
@@ -223,6 +231,7 @@ class RealmServiceSpec: QuickSpec {
 
                     let article = realm.objectForPrimaryKey(RealmArticle.self, key: article1.articleID as! String)
                     expect(article?.summary) == "hello world"
+                    expect(article?.relatedArticles).toNot(beEmpty())
                 }
 
                 #if os(iOS)

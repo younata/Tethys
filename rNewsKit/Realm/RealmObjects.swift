@@ -59,6 +59,7 @@ class RealmArticle: Object {
     var enclosures: [RealmEnclosure] {
         return linkingObjects(RealmEnclosure.self, forProperty: "article")
     }
+    let relatedArticles = List<RealmArticle>()
 
     dynamic var id: String = NSUUID().UUIDString
     override static func primaryKey() -> String? {

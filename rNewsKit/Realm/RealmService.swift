@@ -230,7 +230,11 @@ class RealmService: DataService {
                 realmString.string = str
                 return realmString
             }
-            rarticle.flags.replaceRange(0..<rarticle.flags.count, with: flags)
+            rarticle.flags.removeAll()
+            rarticle.flags.appendContentsOf(flags)
+            rarticle.relatedArticles.removeAll()
+            let relatedArticles: [RealmArticle] = article.relatedArticles.flatMap { self.realmArticleForArticle($0) }
+            rarticle.relatedArticles.appendContentsOf(relatedArticles)
             rarticle.estimatedReadingTime = article.estimatedReadingTime
 
             if let feed = article.feed, rfeed = self.realmFeedForFeed(feed) {

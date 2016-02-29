@@ -9,8 +9,10 @@ class FakeFeedRepository: FeedRepository {
         return self._databaseUpdateAvailable
     }
 
+    var performDatabaseUpdatesProgress: (Double -> Void)?
     var perfomDatabaseUpdatesCallback: (Void -> Void)?
-    func performDatabaseUpdates(callback: Void -> Void) {
+    func performDatabaseUpdates(progress: Double -> Void, callback: Void -> Void) {
+        self.performDatabaseUpdatesProgress = progress
         self.perfomDatabaseUpdatesCallback = callback
     }
 

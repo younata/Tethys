@@ -14,7 +14,7 @@ import Muon
 
 public protocol FeedRepository {
     func databaseUpdateAvailable() -> Bool
-    func performDatabaseUpdates(callback: Void -> Void)
+    func performDatabaseUpdates(progress: Double -> Void, callback: Void -> Void)
 
     func allTags(callback: [String] -> Void)
     func feeds(callback: [Feed] -> Void)
@@ -92,15 +92,19 @@ class DataRepository: FeedRepository {
         return self.dataServiceFactory.currentDataService is CoreDataService
     }
 
-    func performDatabaseUpdates(callback: Void -> Void) {
+    func performDatabaseUpdates(progress: Double -> Void, callback: Void -> Void) {
         guard self.databaseUpdateAvailable() else { return callback() }
         let currentDataService = self.dataServiceFactory.currentDataService
         if currentDataService is CoreDataService {
             let replacementDataService = self.dataServiceFactory.newDataService()
-            self.databaseMigrator.migrate(currentDataService, to: replacementDataService) {
+            self.databaseMigrator.migrate(currentDataService, to: replacementDataService, progress: { value in
+                progress(value / 2.0)
+            }) {
                 self.dataServiceFactory.currentDataService = replacementDataService
 
-                self.databaseMigrator.deleteEverything(currentDataService) {
+                self.databaseMigrator.deleteEverything(currentDataService, progress: { value in
+                    progress(0.5 + (value / 2.0))
+                }) {
                     callback()
                 }
             }

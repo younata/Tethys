@@ -14,9 +14,9 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
     }()
 
     public lazy var anInjector: Ra.Injector = {
-        let appModule = InjectorModule()
         let kitModule = KitModule()
-        return Ra.Injector(module: appModule, kitModule)
+        let appModule = InjectorModule()
+        return Ra.Injector(module: kitModule, appModule)
     }()
 
     private lazy var feedRepository: FeedRepository? = {

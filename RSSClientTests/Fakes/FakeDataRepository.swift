@@ -8,8 +8,10 @@ class FakeDataRepository : DataRepository {
         return self.databaseUpdateIsAvailable
     }
 
+    var performDatabaseUpdatesProgress: (Double -> Void)? = nil
     var performDatabaseUpdatesCallback: (Void -> Void)? = nil
-    override func performDatabaseUpdates(callback: Void -> Void) {
+    override func performDatabaseUpdates(progress: Double -> Void, callback: Void -> Void) {
+        self.performDatabaseUpdatesProgress = progress
         self.performDatabaseUpdatesCallback = callback
     }
 

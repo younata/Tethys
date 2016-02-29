@@ -154,6 +154,8 @@ class FeedRepositorySpec: QuickSpec {
 
                 var newDataService: InMemoryDataService!
 
+                var progressUpdates: [Double] = []
+
                 beforeEach {
                     objectContext = managedObjectContext()
                     mainQueue = FakeOperationQueue()
@@ -164,9 +166,10 @@ class FeedRepositorySpec: QuickSpec {
                     newDataService = InMemoryDataService(mainQueue: mainQueue, searchIndex: searchIndex)
                     dataServiceFactory.newDataServiceReturns(newDataService)
 
+                    progressUpdates = []
                     migrationFinished = false
 
-                    subject.performDatabaseUpdates {
+                    subject.performDatabaseUpdates({ progressUpdates.append($0) }) {
                         migrationFinished = true
                     }
                 }

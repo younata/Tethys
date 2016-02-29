@@ -1,10 +1,10 @@
 protocol DatabaseMigratorType {
-    func migrate(from: DataService, to: DataService, finish: Void -> Void)
-    func deleteEverything(database: DataService, finish: Void -> Void)
+    func migrate(from: DataService, to: DataService, progress: Double -> Void, finish: Void -> Void)
+    func deleteEverything(database: DataService, progress: Double -> Void, finish: Void -> Void)
 }
 
 struct DatabaseMigrator: DatabaseMigratorType {
-    func migrate(from: DataService, to: DataService, finish: Void -> Void) {
+    func migrate(from: DataService, to: DataService, progress: Double -> Void, finish: Void -> Void) {
         from.allFeeds { oldFeeds in
             let oldArticles = oldFeeds.reduce([Article]()) { $0 + Array($1.articlesArray) }
             let oldEnclosures = oldArticles.reduce([Enclosure]()) { $0 + Array($1.enclosuresArray) }
@@ -21,10 +21,15 @@ struct DatabaseMigrator: DatabaseMigratorType {
                 var articlesDictionary: [Article: Article] = [:]
 
                 var totalRemaining = feedsToMigrate.count + articlesToMigrate.count + enclosuresToMigrate.count
+                let totalCount = Double(totalRemaining)
                 let lock = NSRecursiveLock()
 
                 let checkForCompleted = {
                     totalRemaining -= 1
+
+                    let progressValue = 1.0 - (Double(totalRemaining) / totalCount)
+                    progress(progressValue)
+
                     if totalRemaining == 0 {
                         lock.unlock()
                     }
@@ -59,16 +64,21 @@ struct DatabaseMigrator: DatabaseMigratorType {
         }
     }
 
-    func deleteEverything(database: DataService, finish: Void -> Void) {
+    func deleteEverything(database: DataService, progress: Double -> Void, finish: Void -> Void) {
         database.allFeeds { feeds in
             let articles = feeds.reduce([Article]()) { $0 + Array($1.articlesArray) }
             let enclosures = articles.reduce([Enclosure]()) { $0 + Array($1.enclosuresArray) }
 
             var totalRemaining = feeds.count + articles.count + enclosures.count
+            let totalCount = Double(totalRemaining)
             let lock = NSRecursiveLock()
 
             let checkForCompleted = {
                 totalRemaining -= 1
+
+                let progressValue = 1.0 - (Double(totalRemaining) / totalCount)
+                progress(progressValue)
+
                 if totalRemaining == 0 {
                     lock.unlock()
                 }

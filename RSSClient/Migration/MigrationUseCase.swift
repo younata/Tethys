@@ -4,6 +4,7 @@ import WorkFlow
 
 public protocol MigrationUseCaseSubscriber: class {
     func migrationUseCaseDidFinish(migrationUseCase: MigrationUseCase)
+    func migrationUseCase(migrationUseCase: MigrationUseCase, didUpdateProgress progress: Double)
 }
 
 public protocol MigrationUseCase: WorkFlowComponent {
@@ -33,7 +34,7 @@ public class DefaultMigrationUseCase: MigrationUseCase, Injectable {
     }
 
     public func beginMigration() {
-        self.feedRepository.performDatabaseUpdates {
+        self.feedRepository.performDatabaseUpdates(self.updateProgress) {
             self.subscribers.forEach { $0.migrationUseCaseDidFinish(self) }
             for callback in self.workFlowCallbacks {
                 callback()
@@ -46,5 +47,9 @@ public class DefaultMigrationUseCase: MigrationUseCase, Injectable {
     public func beginWork(finish: WorkFlowFinishCallback) {
         self.workFlowCallbacks.append(finish)
         self.beginMigration()
+    }
+
+    private func updateProgress(progress: Double) {
+        self.subscribers.forEach { $0.migrationUseCase(self, didUpdateProgress: progress) }
     }
 }

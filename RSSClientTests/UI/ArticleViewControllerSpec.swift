@@ -390,7 +390,7 @@ class ArticleViewControllerSpec: QuickSpec {
             }
 
             context("tapping a link") {
-                fit("navigates to that article if the link goes to a related article") {
+                it("navigates to that article if the link goes to a related article") {
                     let shouldInteract = subject.content.delegate?.webView?(subject.content, shouldStartLoadWithRequest: NSURLRequest(URL: article2.link!), navigationType: .LinkClicked)
                     expect(shouldInteract) == false
                     expect(subject.article) == article2

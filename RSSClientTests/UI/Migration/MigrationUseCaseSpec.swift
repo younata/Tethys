@@ -28,6 +28,13 @@ class MigrationUseCaseSpec: QuickSpec {
                 expect(feedRepository.perfomDatabaseUpdatesCallback).toNot(beNil())
             }
 
+            it("informs subscribers when the migration progress updates") {
+                feedRepository.performDatabaseUpdatesProgress?(1.0)
+
+                expect(subscriber.migrationUseCaseDidUpdateProgressCallCount) == 1
+                expect(subscriber.migrationUseCaseDidUpdateProgressArgsForCall(0).1) == 1.0
+            }
+
             it("informs subscribers when the migration finishes") {
                 feedRepository.perfomDatabaseUpdatesCallback?()
 
@@ -47,6 +54,13 @@ class MigrationUseCaseSpec: QuickSpec {
 
             it("begins the migration when beginWork is called") {
                 expect(feedRepository.perfomDatabaseUpdatesCallback).toNot(beNil())
+            }
+
+            it("informs subscribers when the migration progress updates") {
+                feedRepository.performDatabaseUpdatesProgress?(1.0)
+
+                expect(subscriber.migrationUseCaseDidUpdateProgressCallCount) == 1
+                expect(subscriber.migrationUseCaseDidUpdateProgressArgsForCall(0).1) == 1.0
             }
 
             it("calls the callback when the migration finishes") {

@@ -51,6 +51,16 @@ class FakeMigrationUseCaseSubscriber : MigrationUseCaseSubscriber {
         self.migrationUseCaseDidFinishArgs.append((migrationUseCase))
     }
 
+    private(set) var migrationUseCaseDidUpdateProgressCallCount : Int = 0
+    private var migrationUseCaseDidUpdateProgressArgs : Array<(MigrationUseCase, Double)> = []
+    func migrationUseCaseDidUpdateProgressArgsForCall(callIndex: Int) -> (MigrationUseCase, Double) {
+        return self.migrationUseCaseDidUpdateProgressArgs[callIndex]
+    }
+    func migrationUseCase(migrationUseCase: MigrationUseCase, didUpdateProgress progress: Double) {
+        self.migrationUseCaseDidUpdateProgressCallCount++
+        self.migrationUseCaseDidUpdateProgressArgs.append((migrationUseCase, progress))
+    }
+
     static func reset() {
     }
 }

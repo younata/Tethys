@@ -194,6 +194,7 @@ extension DefaultImportUseCase {
         let webPageParser = WebPageParser(string: webPage) {
             ret = $0.map { NSURL(string: $0.absoluteString, relativeToURL: url)?.absoluteURL ?? $0 }
         }
+        webPageParser.searchType = .Feeds
         webPageParser.start()
         return ret
     }

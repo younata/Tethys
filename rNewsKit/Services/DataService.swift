@@ -102,9 +102,18 @@ extension DataService {
             self.upsertEnclosureForArticle(article, fromItem: enclosure)
         }
 
-        self.saveArticle(article) {
-            callback()
+        let content = item.content ?? item.description ?? ""
+        let parser = WebPageParser(string: content) { urls in
+            let links = urls.flatMap { NSURL(string: $0.absoluteString, relativeToURL: feedURL)?.absoluteString }
+            self.articlesMatchingPredicate(NSPredicate(format: "link IN %@", links)) { related in
+                related.forEach(article.addRelatedArticle)
+                self.saveArticle(article) {
+                    callback()
+                }
+            }
         }
+        parser.searchType = .Links
+        parser.start()
     }
 
     func updateSearchIndexForArticle(article: Article) {

@@ -152,6 +152,29 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             }
         }
 
+        it("searches an item's content for links matching current articles, and adds them to the related articles list") {
+            var otherArticle: rNewsKit.Article?
+            let createExpectation = spec.expectationWithDescription("Create Article")
+            dataService.createArticle(nil) {
+                otherArticle = $0
+                $0.link = NSURL(string: "https://example.com/foo/bar/")
+                createExpectation.fulfill()
+            }
+            spec.waitForExpectationsWithTimeout(1, handler: nil)
+            expect(otherArticle).toNot(beNil())
+
+            let content = "<html><body><a href=\"/foo/bar/\"></a></body></html>"
+
+            let item = Muon.Article(title: "a <p></p>&amp; title", link: NSURL(string: "https://example.com/foo/baz"), description: "description", content: content, guid: "guid", published: NSDate(timeIntervalSince1970: 10), updated: NSDate(timeIntervalSince1970: 15), authors: [], enclosures: [])
+
+            let updateExpectation = spec.expectationWithDescription("Update Article")
+            dataService.updateArticle(article!, item: item, feedURL: NSURL(string: "https://example.com/")!) {
+                expect(article!.relatedArticles).to(contain(otherArticle!))
+                updateExpectation.fulfill()
+            }
+            spec.waitForExpectationsWithTimeout(1, handler: nil)
+        }
+
         it("easily allows an article to be updated, filtering out title information") {
             guard let article = article else { fail(); return }
             let author = Muon.Author(name: "Rachel Brindle", email: NSURL(string: "mailto:rachel@example.com"), uri: NSURL(string: "https://example.com/rachel"))

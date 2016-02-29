@@ -1,3 +1,66 @@
+0.98.3 Release notes (2016-02-26)
+=============================================================
+
+### Enhancements
+
+* Initializing the shared schema is 3x faster.
+
+### Bugfixes
+
+* Using Realm Objective-C from Swift while having Realm Swift linked no longer causes that the
+  declared `ignoredProperties` are not taken into account.
+* Fix assertion failures when rolling back a migration which added Object link
+  properties to a class.
+* Fix potential errors when cancelling a write transaction which modified
+  multiple `RLMArray`/`List` properties.
+* Report the correct value for inWriteTransaction after attempting to commit a
+  write transaction fails.
+* Support CocoaPods 1.0 beginning from prerelease 1.0.0.beta.4 while retaining
+  backwards compatibility with 0.39.
+
+0.98.2 Release notes (2016-02-18)
+=============================================================
+
+### API breaking changes
+
+* None.
+
+### Enhancements
+
+* Aggregate operations (`ANY`, `NONE`, `@count`, `SUBQUERY`, etc.) are now supported for key paths
+  that begin with an object relationship so long as there is a `RLMArray`/`List` property at some
+  point in a key path.
+* Predicates of the form `%@ IN arrayProperty` are now supported.
+
+### Bugfixes
+
+* Use of KVC collection operators on Swift collection types no longer throws an exception.
+* Fix reporting of inWriteTransaction in notifications triggered by
+  `beginWriteTransaction`.
+* The contents of `List` and `Optional` properties are now correctly preserved when copying
+  a Swift object from one Realm to another, and performing other operations that result in a
+  Swift object graph being recursively traversed from Objective-C.
+* Fix a deadlock when queries are performed within a Realm notification block.
+* The `ANY` / `SOME` / `NONE` qualifiers are now required in comparisons involving a key path that
+  traverse a `RLMArray`/`List` property. Previously they were only required if the first key in the
+  key path was an `RLMArray`/`List` property.
+* Fix several scenarios where the default schema would be initialized
+  incorrectly if the first Realm opened used a restricted class subset (via
+  `objectClasses`/`objectTypes`).
+
+0.98.1 Release notes (2016-02-10)
+=============================================================
+
+### Bugfixes
+
+* Fix crashes when deleting an object containing an `RLMArray`/`List` which had
+  previously been queried.
+* Fix a crash when deleting an object containing an `RLMArray`/`List` with
+  active notification blocks.
+* Fix duplicate file warnings when building via CocoaPods.
+* Fix crash or incorrect results when calling `indexOfObject:` on an
+  `RLMResults` derived from an `RLMArray`.
+
 0.98.0 Release notes (2016-02-04)
 =============================================================
 

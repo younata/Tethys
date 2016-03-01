@@ -46,7 +46,6 @@ public class KitModule: NSObject, Ra.InjectorModule {
             delegateQueue: NSOperationQueue())
 
         let realmQueue = NSOperationQueue()
-        realmQueue.maxConcurrentOperationCount = 1
         realmQueue.qualityOfService = .UserInitiated
 
         let dataServiceFactory = DataServiceFactory(mainQueue: mainQueue,

@@ -71,44 +71,37 @@ class CoreDataService: DataService {
 
     // Mark: - Read
 
-    func feedsMatchingPredicate(predicate: NSPredicate, callback: [Feed] -> Void) {
+    func feedsMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Feed> -> Void) {
         let sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-        self.entities("Feed", predicate: predicate, sortDescriptors: sortDescriptors) { objects in
-            let objects = objects as? [CoreDataFeed] ?? []
-            let feeds = objects.map { Feed(coreDataFeed: $0) }
-            self.mainQueue.addOperationWithBlock {
-                callback(feeds)
-            }
-        }
+        let feeds = DataStoreBackedArray(entityName: "Feed",
+            predicate: predicate,
+            managedObjectContext: self.managedObjectContext,
+            conversionFunction: { Feed(coreDataFeed: $0 as! CoreDataFeed) },
+            sortDescriptors: sortDescriptors)
+        callback(feeds)
     }
 
-    func articlesMatchingPredicate(predicate: NSPredicate, callback: [Article] -> Void) {
+    func articlesMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Article> -> Void) {
         let sortDescriptors = [
             NSSortDescriptor(key: "updatedAt", ascending: false),
             NSSortDescriptor(key: "published", ascending: false)
         ]
-        self.entities("Article", predicate: predicate, sortDescriptors: sortDescriptors) { objects in
-            let array = objects as? [CoreDataArticle] ?? []
-            let articles = array.map {
-                return Article(coreDataArticle: $0, feed: nil)
-            }
-            self.mainQueue.addOperationWithBlock {
-                callback(articles)
-            }
-        }
+        let articles = DataStoreBackedArray(entityName: "Article",
+            predicate: predicate,
+            managedObjectContext: self.managedObjectContext,
+            conversionFunction: { Article(coreDataArticle: $0 as! CoreDataArticle, feed: nil) },
+            sortDescriptors: sortDescriptors)
+        callback(articles)
     }
 
-    func enclosuresMatchingPredicate(predicate: NSPredicate, callback: [Enclosure] -> Void) {
+    func enclosuresMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Enclosure> -> Void) {
         let sortDescriptors = [NSSortDescriptor(key: "kind", ascending: true)]
-        self.entities("Enclosure", predicate: predicate, sortDescriptors: sortDescriptors) { objects in
-            let array = objects as? [CoreDataEnclosure] ?? []
-            let enclosures = array.map {
-                return Enclosure(coreDataEnclosure: $0, article: nil)
-            }
-            self.mainQueue.addOperationWithBlock {
-                callback(enclosures)
-            }
-        }
+        let enclosures = DataStoreBackedArray(entityName: "Enclosure",
+            predicate: predicate,
+            managedObjectContext: self.managedObjectContext,
+            conversionFunction: { Enclosure(coreDataEnclosure: $0 as! CoreDataEnclosure, article: nil) },
+            sortDescriptors: sortDescriptors)
+        callback(enclosures)
     }
 
     // Mark: - Update
@@ -198,23 +191,6 @@ class CoreDataService: DataService {
     }
 
     // Mark: - Private
-
-    private func entities(entity: String,
-        predicate: NSPredicate,
-        sortDescriptors: [NSSortDescriptor],
-        callback: [NSManagedObject] -> Void) {
-            let request = NSFetchRequest()
-            request.entity = NSEntityDescription.entityForName(entity,
-                inManagedObjectContext: managedObjectContext)
-            request.predicate = predicate
-            request.sortDescriptors = sortDescriptors
-
-            self.managedObjectContext.performBlock {
-                let array: [NSManagedObject]
-                array = (try? self.managedObjectContext.executeFetchRequest(request) ?? []) as? [NSManagedObject] ?? []
-                callback(array)
-            }
-    }
 
     // Danger will robinson, this is meant to be inside a managedObjectContext's performBlock block!
     private func coreDataFeedForFeed(feed: Feed) -> CoreDataFeed? {

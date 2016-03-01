@@ -17,7 +17,13 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
     private var managedArray = [NSManagedObject]()
 
     let realmDataType: Object.Type?
-    let realm: Realm?
+    let realmConfiguration: Realm.Configuration?
+    var realm: Realm? {
+        if let configuration = self.realmConfiguration {
+            return try? Realm(configuration: configuration)
+        }
+        return nil
+    }
     let realmConversionFunction: ((Object) -> T)?
 
     private let batchSize = 20
@@ -62,7 +68,7 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
 
     private var backingStore: BackingStore {
         if self.managedObjectContext != nil { return .CoreData }
-        if self.realm != nil { return .Realm }
+        if self.realmConfiguration != nil { return .Realm }
         return .Array
     }
 
@@ -99,13 +105,13 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
                 sortDescriptors: self.sortDescriptors)
         case .Realm:
             guard let realmDataType = self.realmDataType,
-                realm = self.realm,
+                realmConfiguration = self.realmConfiguration,
                 conversionFunction = self.realmConversionFunction else {
                     return filterArray()
             }
             return DataStoreBackedArray(realmDataType: realmDataType,
                 predicate: compoundPredicate,
-                realm: realm,
+                realmConfiguration: realmConfiguration,
                 conversionFunction: conversionFunction,
                 sortDescriptors: self.sortDescriptors)
         }
@@ -140,16 +146,15 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
                 conversionFunction: conversionFunction,
                 sortDescriptors: self.sortDescriptors)
         case .Realm:
-            guard let realm = self.realm, dataType = self.realmDataType,
-                conversionFunction = self.realmConversionFunction where
-                self.realm == other.realm && self.realmDataType == other.realmDataType &&
+            guard let realmConfiguration = self.realmConfiguration, dataType = self.realmDataType,
+                conversionFunction = self.realmConversionFunction where self.realmDataType == other.realmDataType &&
                     other.sortDescriptors == self.sortDescriptors else {
                         return combineArray()
             }
 
             return DataStoreBackedArray(realmDataType: dataType,
                 predicate: compoundPredicate,
-                realm: realm,
+                realmConfiguration: realmConfiguration,
                 conversionFunction: conversionFunction)
         }
 
@@ -188,7 +193,7 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
         self.sortDescriptors = []
 
         self.realmDataType = nil
-        self.realm = nil
+        self.realmConfiguration = nil
         self.realmConversionFunction = nil
 
         self.entityName = ""
@@ -200,14 +205,14 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
 
     public init(realmDataType: Object.Type,
         predicate: NSPredicate,
-        realm: Realm,
+        realmConfiguration: Realm.Configuration,
         conversionFunction: Object -> T,
         sortDescriptors: [NSSortDescriptor] = []) {
             self.predicate = predicate
             self.sortDescriptors = sortDescriptors
 
             self.realmDataType = realmDataType
-            self.realm = realm
+            self.realmConfiguration = realmConfiguration
             self.realmConversionFunction = conversionFunction
 
             self.entityName = ""
@@ -225,7 +230,7 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
             self.sortDescriptors = sortDescriptors
 
             self.realmDataType = nil
-            self.realm = nil
+            self.realmConfiguration = nil
             self.realmConversionFunction = nil
 
             self.entityName = entityName

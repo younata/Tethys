@@ -73,45 +73,39 @@ class RealmService: DataService {
 
     // Mark: - Read
 
-    func feedsMatchingPredicate(predicate: NSPredicate, callback: [Feed] -> Void) {
-        let sortDescriptors = [SortDescriptor(property: "title", ascending: true)]
+    func feedsMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Feed> -> Void) {
+        let sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
 
-        self.realmTransaction {
-            let feeds = self.realm.objects(RealmFeed).filter(predicate)
-                .sorted(sortDescriptors)
-                .map { Feed(realmFeed: $0) }
-            self.mainQueue.addOperationWithBlock {
-                callback(feeds)
-            }
-        }
+        let feeds = DataStoreBackedArray(realmDataType: RealmFeed.self,
+            predicate: predicate,
+            realmConfiguration: self.realmConfiguration,
+            conversionFunction: { Feed(realmFeed: $0 as! RealmFeed) },
+            sortDescriptors: sortDescriptors)
+        callback(feeds)
     }
 
-    func articlesMatchingPredicate(predicate: NSPredicate, callback: [Article] -> Void) {
+    func articlesMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Article> -> Void) {
         let sortDescriptors = [
-            SortDescriptor(property: "updatedAt", ascending: false),
-            SortDescriptor(property: "published", ascending: false)
+            NSSortDescriptor(key: "updatedAt", ascending: false),
+            NSSortDescriptor(key: "published", ascending: false)
         ]
-        self.realmTransaction {
-            let articles = self.realm.objects(RealmArticle).filter(predicate)
-                .sorted(sortDescriptors)
-                .map { Article(realmArticle: $0, feed: nil) }
-            self.mainQueue.addOperationWithBlock {
-                callback(articles)
-            }
-        }
+        let articles = DataStoreBackedArray(realmDataType: RealmArticle.self,
+            predicate: predicate,
+            realmConfiguration: self.realmConfiguration,
+            conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) },
+            sortDescriptors: sortDescriptors)
+        callback(articles)
     }
 
-    func enclosuresMatchingPredicate(predicate: NSPredicate, callback: [Enclosure] -> Void) {
-        let sortDescriptors = [SortDescriptor(property: "kind", ascending: true)]
-        self.realmTransaction {
-            let enclosures = self.realm.objects(RealmEnclosure).filter(predicate)
-                .sorted(sortDescriptors)
-                .map { Enclosure(realmEnclosure: $0, article: nil) }
+    func enclosuresMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Enclosure> -> Void) {
+        let sortDescriptors = [NSSortDescriptor(key: "kind", ascending: true)]
 
-            self.mainQueue.addOperationWithBlock {
-                callback(enclosures)
-            }
-        }
+        let enclosures = DataStoreBackedArray(realmDataType: RealmEnclosure.self,
+            predicate: predicate,
+            realmConfiguration: self.realmConfiguration,
+            conversionFunction: { Enclosure(realmEnclosure: $0 as! RealmEnclosure, article: nil) },
+            sortDescriptors: sortDescriptors)
+        callback(enclosures)
     }
 
     // Mark: - Update

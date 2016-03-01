@@ -22,9 +22,9 @@ protocol DataService: class {
     func createArticle(feed: Feed?, callback: Article -> Void)
     func createEnclosure(article: Article?, callback: Enclosure -> Void)
 
-    func feedsMatchingPredicate(predicate: NSPredicate, callback: [Feed] -> Void)
-    func articlesMatchingPredicate(predicate: NSPredicate, callback: [Article] -> Void)
-    func enclosuresMatchingPredicate(predicate: NSPredicate, callback: [Enclosure] -> Void)
+    func feedsMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Feed> -> Void)
+    func articlesMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Article> -> Void)
+    func enclosuresMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Enclosure> -> Void)
 
     func saveFeed(feed: Feed, callback: Void -> Void)
     func saveArticle(article: Article, callback: Void -> Void)
@@ -36,7 +36,7 @@ protocol DataService: class {
 }
 
 extension DataService {
-    func allFeeds(callback: [Feed] -> Void) {
+    func allFeeds(callback: DataStoreBackedArray<Feed> -> Void) {
         self.feedsMatchingPredicate(NSPredicate(value: true), callback: callback)
     }
 

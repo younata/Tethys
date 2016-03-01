@@ -283,7 +283,7 @@ import RealmSwift
 
                 self.articlesArray = DataStoreBackedArray<Article>(realmDataType: RealmArticle.self,
                     predicate: NSPredicate(format: "feed.id == %@", feed.id),
-                    realm: realm,
+                    realmConfiguration: realm.configuration,
                     conversionFunction: {
                         return Article(realmArticle: $0 as! RealmArticle, feed: self)
                     },

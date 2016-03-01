@@ -18,7 +18,7 @@ struct DatabaseMigrator: DatabaseMigratorType {
                 let enclosuresToMigrate = oldEnclosures.filter { !existingEnclosures.contains($0) }
 
                 var feedsDictionary: [Feed: Feed] = [:]
-                var articlesDictionary: [Article: Article] = [:]
+                var articlesWithEnclosuresDictionary: [Article: Article] = [:]
 
                 var totalRemaining = feedsToMigrate.count + articlesToMigrate.count + enclosuresToMigrate.count
                 let totalCount = Double(totalRemaining)
@@ -49,13 +49,15 @@ struct DatabaseMigrator: DatabaseMigratorType {
                 for oldArticle in articlesToMigrate {
                     to.createArticle(feedsDictionary[oldArticle.feed!]) { newArticle in
                         self.migrateArticle(from: oldArticle, to: newArticle)
-                        articlesDictionary[oldArticle] = newArticle
+                        if !oldArticle.enclosuresArray.isEmpty {
+                            articlesWithEnclosuresDictionary[oldArticle] = newArticle
+                        }
                         checkForCompleted()
                     }
                 }
 
                 for oldEnclosure in enclosuresToMigrate {
-                    to.createEnclosure(articlesDictionary[oldEnclosure.article!]) { newEnclosure in
+                    to.createEnclosure(articlesWithEnclosuresDictionary[oldEnclosure.article!]) { newEnclosure in
                         self.migrateEnclosure(from: oldEnclosure, to: newEnclosure)
                         checkForCompleted()
                     }
@@ -71,7 +73,6 @@ struct DatabaseMigrator: DatabaseMigratorType {
 
             var totalRemaining = feeds.count + articles.count + enclosures.count
             let totalCount = Double(totalRemaining)
-            let lock = NSRecursiveLock()
 
             let checkForCompleted = {
                 totalRemaining -= 1
@@ -80,7 +81,7 @@ struct DatabaseMigrator: DatabaseMigratorType {
                 progress(progressValue)
 
                 if totalRemaining == 0 {
-                    lock.unlock()
+                    finish()
                 }
             }
 
@@ -95,9 +96,6 @@ struct DatabaseMigrator: DatabaseMigratorType {
             enclosures.forEach {
                 database.deleteEnclosure($0, callback: checkForCompleted)
             }
-
-            lock.lock()
-            finish()
         }
     }
 

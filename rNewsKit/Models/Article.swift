@@ -241,13 +241,13 @@ import JavaScriptCore
         if let realm = article.realm {
             self.enclosuresArray = DataStoreBackedArray(realmDataType: RealmEnclosure.self,
                 predicate: NSPredicate(format: "article.id == %@", article.id),
-                realm: realm,
+                realmConfiguration: realm.configuration,
                 conversionFunction: { Enclosure(realmEnclosure: $0 as! RealmEnclosure, article: self) } )
 
             let relatedArticleIds = article.relatedArticles.map { $0.id }
             self.relatedArticles = DataStoreBackedArray(realmDataType: RealmArticle.self,
                 predicate: NSPredicate(format: "id IN %@", relatedArticleIds),
-                realm: realm,
+                realmConfiguration: realm.configuration,
                 conversionFunction: { object in
                     let article = object as! RealmArticle
                     let feed: Feed?

@@ -122,7 +122,9 @@ class DataRepository: FeedRepository {
     }
 
     func feeds(callback: [Feed] -> Void) {
-        self.dataService.allFeeds(callback)
+        self.dataService.allFeeds {
+            callback(Array($0))
+        }
     }
 
     func feedsMatchingTag(tag: String?, callback: [Feed] -> Void) {

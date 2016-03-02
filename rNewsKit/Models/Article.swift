@@ -215,6 +215,17 @@ import JavaScriptCore
             conversionFunction: {
                 return Enclosure(coreDataEnclosure: $0 as! CoreDataEnclosure, article: self)
         })
+        self.relatedArticles = DataStoreBackedArray(entityName: "Article",
+            predicate: NSPredicate(format: "self in %@", article.relatedArticles),
+            managedObjectContext: article.managedObjectContext!,
+            conversionFunction: {
+                let article = $0 as! CoreDataArticle
+                let feed: Feed?
+                if let coreDataFeed = article.feed {
+                    feed = Feed(coreDataFeed: coreDataFeed)
+                } else { feed = nil }
+                return Article(coreDataArticle: article, feed: feed)
+        })
 
         self.articleID = article.objectID
 

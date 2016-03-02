@@ -14,4 +14,5 @@ class CoreDataArticle: NSManagedObject {
     @NSManaged var flags: [String]
     @NSManaged var feed: CoreDataFeed?
     @NSManaged var enclosures: Set<CoreDataEnclosure>
+    @NSManaged var relatedArticles: Set<CoreDataArticle>
 }

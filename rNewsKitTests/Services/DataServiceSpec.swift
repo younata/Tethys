@@ -35,21 +35,22 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             let info = Muon.Feed(title: "a &amp; title", link: NSURL(string: "https://example.com")!, description: "description", articles: [item])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
             dataService.updateFeed(feed, info: info) {
-                expect(feed.title) == "a & title"
-                expect(feed.summary) == "description"
-                expect(feed.url).to(beNil())
-                expect(feed.articlesArray.count).to(equal(1))
-                if let article = feed.articlesArray.first {
-                    expect(article.title) == "article"
-                    expect(article.enclosuresArray.count).to(equal(1))
-                    if let enclosure = article.enclosuresArray.first {
-                        expect(enclosure.kind) == muonEnclosure.type
-                        expect(enclosure.url) == muonEnclosure.url
-                    }
-                }
                 updateExpectation.fulfill()
             }
             spec.waitForExpectationsWithTimeout(1, handler: nil)
+
+            expect(feed.title) == "a & title"
+            expect(feed.summary) == "description"
+            expect(feed.url).to(beNil())
+            expect(feed.articlesArray.count).to(equal(1))
+            if let article = feed.articlesArray.first {
+                expect(article.title) == "article"
+                expect(article.enclosuresArray.count).to(equal(1))
+                if let enclosure = article.enclosuresArray.first {
+                    expect(enclosure.kind) == muonEnclosure.type
+                    expect(enclosure.url) == muonEnclosure.url
+                }
+            }
         }
 
         it("makes the item link relative to the feed link in the event the item link has a nil scheme") {
@@ -58,17 +59,18 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             let info = Muon.Feed(title: "a &amp; title", link: NSURL(string: "https://example.com/qux")!, description: "description", articles: [item])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
             dataService.updateFeed(feed, info: info) {
-                expect(feed.title) == "a & title"
-                expect(feed.summary) == "description"
-                expect(feed.url).to(beNil())
-                expect(feed.articlesArray.count).to(equal(1))
-                if let article = feed.articlesArray.first {
-                    expect(article.title) == "article"
-                    expect(article.link) == NSURL(string: "https://example.com/foo/bar/baz")
-                }
                 updateExpectation.fulfill()
             }
             spec.waitForExpectationsWithTimeout(1, handler: nil)
+
+            expect(feed.title) == "a & title"
+            expect(feed.summary) == "description"
+            expect(feed.url).to(beNil())
+            expect(feed.articlesArray.count).to(equal(1))
+            if let article = feed.articlesArray.first {
+                expect(article.title) == "article"
+                expect(article.link) == NSURL(string: "https://example.com/foo/bar/baz")
+            }
         }
 
         it("does not insert items that have empty titles") {
@@ -77,13 +79,14 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             let info = Muon.Feed(title: "a title", link: NSURL(string: "https://example.com")!, description: "description", articles: [item])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
             dataService.updateFeed(feed, info: info) {
-                expect(feed.title) == "a title"
-                expect(feed.summary) == "description"
-                expect(feed.url).to(beNil())
-                expect(feed.articlesArray.count).to(equal(0))
                 updateExpectation.fulfill()
             }
             spec.waitForExpectationsWithTimeout(1, handler: nil)
+
+            expect(feed.title) == "a title"
+            expect(feed.summary) == "description"
+            expect(feed.url).to(beNil())
+            expect(feed.articlesArray.count).to(equal(0))
         }
 
         it("easily updates an existing feed that has articles with new articles") {
@@ -168,7 +171,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             let item = Muon.Article(title: "a <p></p>&amp; title", link: NSURL(string: "https://example.com/foo/baz"), description: "description", content: content, guid: "guid", published: NSDate(timeIntervalSince1970: 10), updated: NSDate(timeIntervalSince1970: 15), authors: [], enclosures: [])
 
             let updateExpectation = spec.expectationWithDescription("Update Article")
-            dataService.updateArticle(article!, item: item, feedURL: NSURL(string: "https://example.com/")!) {
+            dataService.updateArticle(article!, item: item, feedURL: NSURL(string: "https://example.com/")!) { _ in
                 expect(article!.relatedArticles).to(contain(otherArticle!))
                 updateExpectation.fulfill()
             }
@@ -187,7 +190,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             if let searchIndex = dataService.searchIndex as? FakeSearchIndex {
                 searchIndex.lastItemsAdded = []
             }
-            dataService.updateArticle(article, item: item, feedURL: NSURL(string: "https://example.com/foo/bar/baz")!) {
+            dataService.updateArticle(article, item: item, feedURL: NSURL(string: "https://example.com/foo/bar/baz")!) { _ in
                 expect(article.title) == "a & title"
                 expect(article.link) == NSURL(string: "https://example.com")
                 expect(article.published) == NSDate(timeIntervalSince1970: 10)
@@ -196,13 +199,6 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
                 expect(article.content) == content
                 expect(article.author) == "Rachel Brindle <rachel@example.com>"
                 expect(article.estimatedReadingTime) == 3
-                #if os(iOS)
-                    if #available(iOS 9.0, *) {
-                        if let searchIndex = dataService.searchIndex as? FakeSearchIndex {
-                            expect(searchIndex.lastItemsAdded.count) == 1
-                        }
-                    }
-                #endif
                 expect(article.enclosuresArray.count).to(equal(1))
                 if let enclosure = article.enclosuresArray.first {
                     expect(enclosure.kind) == muonEnclosure.type

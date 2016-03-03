@@ -319,8 +319,8 @@ class DataRepository: FeedRepository {
 
         for article in articles {
             article.read = read
-            self.dataService.saveArticle(article) {}
         }
+        self.dataService.batchSave([], articles: articles, enclosures: []) {}
 
         for object in self.subscribers.allObjects {
             if let subscriber = object as? DataSubscriber {

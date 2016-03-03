@@ -24,13 +24,13 @@ import JavaScriptCore
         }
     }
     weak dynamic public var article: Article? {
-        willSet {
-            if newValue != article {
+        didSet {
+            if article != oldValue {
                 self.updated = true
-                if let oldValue = article where oldValue.enclosuresArray.contains(self) {
+                if let oldValue = oldValue where oldValue.enclosuresArray.contains(self) {
                     oldValue.removeEnclosure(self)
                 }
-                if let nv = newValue where !nv.enclosuresArray.contains(self) {
+                if let nv = article where !nv.enclosuresArray.contains(self) {
                     nv.addEnclosure(self)
                 }
             }

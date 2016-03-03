@@ -89,4 +89,33 @@ class InMemoryDataService: DataService {
         enclosure.article = nil
         callback()
     }
+
+    func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int, callback: BatchCreateCallback) {
+        var feeds: [Feed] = []
+        var articles: [Article] = []
+        var enclosures: [Enclosure] = []
+        for _ in 0..<feedCount {
+            self.createFeed { feeds.append($0) }
+        }
+        for _ in 0..<articleCount {
+            self.createArticle(nil) { articles.append($0) }
+        }
+        for _ in 0..<enclosureCount {
+            self.createEnclosure(nil) { enclosures.append($0) }
+        }
+
+        callback(feeds, articles, enclosures)
+    }
+
+    func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure], callback: Void -> Void) {
+        callback()
+    }
+
+    func batchDelete(feeds: [Feed], articles: [Article], enclosures: [Enclosure], callback: Void -> Void) {
+        feeds.forEach { self.deleteFeed($0) {} }
+        articles.forEach { self.deleteArticle($0) {} }
+        enclosures.forEach { self.deleteEnclosure($0) {} }
+
+        callback()
+    }
 }

@@ -14,6 +14,8 @@ import Muon
  Everything is asynchronous, though depending upon the underlying service, they may turn out to be asynchronous.
  All callbacks must be done on the main queue.
 */
+public typealias BatchCreateCallback = ([Feed], [Article], [Enclosure]) -> Void
+
 protocol DataService: class {
     var searchIndex: SearchIndex? { get }
     var mainQueue: NSOperationQueue { get }
@@ -30,9 +32,14 @@ protocol DataService: class {
     func saveArticle(article: Article, callback: Void -> Void)
     func saveEnclosure(enclosure: Enclosure, callback: Void -> Void)
 
+
     func deleteFeed(feed: Feed, callback: Void -> Void)
     func deleteArticle(article: Article, callback: Void -> Void)
     func deleteEnclosure(enclosure: Enclosure, callback: Void -> Void)
+
+    func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int, callback: BatchCreateCallback)
+    func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure], callback: Void -> Void)
+    func batchDelete(feeds: [Feed], articles: [Article], enclosures: [Enclosure], callback: Void -> Void)
 }
 
 extension DataService {
@@ -53,31 +60,34 @@ extension DataService {
 
         var articlesRemaining = articles.count
 
-        let checkIfFinished = {
+        var articlesToSave: [Article] = []
+        var enclosuresToSave: [Enclosure] = []
+
+        let checkIfFinished: (Article, [Enclosure]) -> Void = { article, enclosures in
+            articlesToSave.append(article)
+            enclosuresToSave += enclosures
             articlesRemaining -= 1
             if articlesRemaining == 0 {
-                self.saveFeed(feed, callback: callback)
+                self.batchSave([feed], articles: articlesToSave, enclosures: enclosures, callback: callback)
             }
         }
 
         for item in articles {
-            self.mainQueue.addOperationWithBlock {
-                let article = feed.articlesArray.filter { article in
-                    return item.title == article.title || item.link == article.link
-                    }.first
-                if let article = article {
+            let article = feed.articlesArray.filter { article in
+                return item.title == article.title || item.link == article.link
+                }.first
+            if let article = article {
+                self.updateArticle(article, item: item, feedURL: info.link, callback: checkIfFinished)
+            } else {
+                self.createArticle(feed) { article in
+                    feed.addArticle(article)
                     self.updateArticle(article, item: item, feedURL: info.link, callback: checkIfFinished)
-                } else {
-                    self.createArticle(feed) { article in
-                        feed.addArticle(article)
-                        self.updateArticle(article, item: item, feedURL: info.link, callback: checkIfFinished)
-                    }
                 }
             }
         }
     }
 
-    func updateArticle(article: Article, item: Muon.Article, feedURL: NSURL, callback: Void -> Void) {
+    func updateArticle(article: Article, item: Muon.Article, feedURL: NSURL, callback: (Article, [Enclosure]) -> Void) {
         let characterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
         let author = item.authors.map({ author in
             if let email = author.email?.resourceSpecifier {
@@ -98,18 +108,14 @@ extension DataService {
 
         article.author = author
 
-        for enclosure in item.enclosures {
-            self.upsertEnclosureForArticle(article, fromItem: enclosure)
-        }
+        let enclosures = item.enclosures.flatMap { self.upsertEnclosureForArticle(article, fromItem: $0) }
 
         let content = item.content ?? item.description ?? ""
         let parser = WebPageParser(string: content) { urls in
             let links = urls.flatMap { NSURL(string: $0.absoluteString, relativeToURL: feedURL)?.absoluteString }
             self.articlesMatchingPredicate(NSPredicate(format: "link IN %@", links)) { related in
                 related.forEach(article.addRelatedArticle)
-                self.saveArticle(article) {
-                    callback()
-                }
+                callback(article, enclosures)
             }
         }
         parser.searchType = .Links
@@ -145,18 +151,20 @@ extension DataService {
         #endif
     }
 
-    func upsertEnclosureForArticle(article: Article, fromItem item: Muon.Enclosure) {
+    func upsertEnclosureForArticle(article: Article, fromItem item: Muon.Enclosure) -> Enclosure? {
         let url = item.url
-        for enclosure in article.enclosuresArray {
-            if enclosure.url == url {
+        for enclosure in article.enclosuresArray where enclosure.url == url {
+            if enclosure.kind != item.type {
                 enclosure.kind = item.type
-                self.saveEnclosure(enclosure) { }
-                return
+                return enclosure
+            } else {
+                return nil
             }
         }
         self.createEnclosure(article) {enclosure in
             enclosure.url = url
             enclosure.kind = item.type
         }
+        return nil
     }
 }

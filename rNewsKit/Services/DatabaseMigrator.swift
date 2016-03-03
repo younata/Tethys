@@ -5,11 +5,21 @@ protocol DatabaseMigratorType {
 
 struct DatabaseMigrator: DatabaseMigratorType {
     func migrate(from: DataService, to: DataService, progress: Double -> Void, finish: Void -> Void) {
+        var progressCalls: Double = 0
+        let expectedProgressCalls: Double = 6
+
+        let updateProgress = {
+            progressCalls += 1
+            progress(progressCalls / expectedProgressCalls)
+        }
+
         from.allFeeds { oldFeeds in
+            updateProgress()
             let oldArticles = oldFeeds.reduce([Article]()) { $0 + Array($1.articlesArray) }
             let oldEnclosures = oldArticles.reduce([Enclosure]()) { $0 + Array($1.enclosuresArray) }
 
             to.allFeeds { existingFeeds in
+                updateProgress()
                 let existingArticles = existingFeeds.reduce([Article]()) { $0 + Array($1.articlesArray) }
                 let existingEnclosures = existingArticles.reduce([Enclosure]()) { $0 + Array($1.enclosuresArray) }
 
@@ -18,49 +28,53 @@ struct DatabaseMigrator: DatabaseMigratorType {
                 let enclosuresToMigrate = oldEnclosures.filter { !existingEnclosures.contains($0) }
 
                 var feedsDictionary: [Feed: Feed] = [:]
-                var articlesWithEnclosuresDictionary: [Article: Article] = [:]
+                var articlesDictionary: [Article: Article] = [:]
+                var enclosuresDictionary: [Enclosure: Enclosure] = [:]
 
-                var totalRemaining = feedsToMigrate.count + articlesToMigrate.count + enclosuresToMigrate.count
-                let totalCount = Double(totalRemaining)
-
-                let checkForCompleted = {
-                    totalRemaining -= 1
-
-                    if totalRemaining % 50 == 0 {
-                        print("Amount done: \(totalRemaining) / \(Int(totalCount))")
-                    }
-
-                    let progressValue = 1.0 - (Double(totalRemaining) / totalCount)
-                    progress(progressValue)
-
-                    if totalRemaining == 0 {
-                        finish()
-                    }
-                }
-
-                for oldFeed in feedsToMigrate {
-                    to.createFeed { newFeed in
-                        self.migrateFeed(from: oldFeed, to: newFeed)
-                        feedsDictionary[oldFeed] = newFeed
-                        checkForCompleted()
-                    }
-                }
-
-                for oldArticle in articlesToMigrate {
-                    to.createArticle(feedsDictionary[oldArticle.feed!]) { newArticle in
-                        self.migrateArticle(from: oldArticle, to: newArticle)
-                        if !oldArticle.enclosuresArray.isEmpty {
-                            articlesWithEnclosuresDictionary[oldArticle] = newArticle
+                to.batchCreate(feedsToMigrate.count,
+                    articleCount: articlesToMigrate.count,
+                    enclosureCount: enclosuresToMigrate.count) { newFeeds, newArticles, newEnclosures in
+                        for (idx, oldFeed) in feedsToMigrate.enumerate() {
+                            let newFeed = newFeeds[idx]
+                            feedsDictionary[oldFeed] = newFeed
                         }
-                        checkForCompleted()
-                    }
-                }
+                        feedsDictionary.forEach(self.migrateFeed)
 
-                for oldEnclosure in enclosuresToMigrate {
-                    to.createEnclosure(articlesWithEnclosuresDictionary[oldEnclosure.article!]) { newEnclosure in
-                        self.migrateEnclosure(from: oldEnclosure, to: newEnclosure)
-                        checkForCompleted()
-                    }
+                        updateProgress()
+
+                        for (idx, oldArticle) in articlesToMigrate.enumerate() {
+                            let newArticle = newArticles[idx]
+                            articlesDictionary[oldArticle] = newArticle
+
+                            if let oldFeed = oldArticle.feed, let feed = feedsDictionary[oldFeed] {
+                                newArticle.feed = feed
+                                feed.addArticle(newArticle)
+                            }
+                        }
+                        articlesDictionary.forEach(self.migrateArticle)
+
+                        updateProgress()
+
+                        for (idx, oldEnclosure) in enclosuresToMigrate.enumerate() {
+                            let newEnclosure = newEnclosures[idx]
+                            enclosuresDictionary[oldEnclosure] = newEnclosure
+
+                            if let oldArticle = oldEnclosure.article, let article = articlesDictionary[oldArticle] {
+                                newEnclosure.article = article
+                                article.addEnclosure(newEnclosure)
+                            }
+
+                        }
+                        enclosuresDictionary.forEach(self.migrateEnclosure)
+
+                        updateProgress()
+
+                        to.batchSave(Array(feedsDictionary.values),
+                            articles: Array(articlesDictionary.values),
+                            enclosures: Array(enclosuresDictionary.values)) {
+                                updateProgress()
+                                finish()
+                        }
                 }
             }
         }
@@ -71,30 +85,11 @@ struct DatabaseMigrator: DatabaseMigratorType {
             let articles = feeds.reduce([Article]()) { $0 + Array($1.articlesArray) }
             let enclosures = articles.reduce([Enclosure]()) { $0 + Array($1.enclosuresArray) }
 
-            var totalRemaining = feeds.count + articles.count + enclosures.count
-            let totalCount = Double(totalRemaining)
+            progress(0.5)
 
-            let checkForCompleted = {
-                totalRemaining -= 1
-
-                let progressValue = 1.0 - (Double(totalRemaining) / totalCount)
-                progress(progressValue)
-
-                if totalRemaining == 0 {
-                    finish()
-                }
-            }
-
-            feeds.forEach {
-                database.deleteFeed($0, callback: checkForCompleted)
-            }
-
-            articles.forEach {
-                database.deleteArticle($0, callback: checkForCompleted)
-            }
-
-            enclosures.forEach {
-                database.deleteEnclosure($0, callback: checkForCompleted)
+            database.batchDelete(Array(feeds), articles: articles, enclosures: enclosures) {
+                progress(1.0)
+                finish()
             }
         }
     }

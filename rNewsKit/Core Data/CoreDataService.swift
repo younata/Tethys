@@ -137,44 +137,16 @@ class CoreDataService: DataService {
 
     func deleteFeed(feed: Feed, callback: (Void) -> (Void)) {
         guard let _ = feed.feedID as? NSManagedObjectID else { callback(); return }
-        let articleIdentifiers = feed.articlesArray.map { $0.identifier }
         self.managedObjectContext.performBlock {
-            if let cdfeed = self.coreDataFeedForFeed(feed) {
-                for article in cdfeed.articles {
-                    for enclosure in article.enclosures {
-                        self.managedObjectContext.deleteObject(enclosure)
-                    }
-                    self.managedObjectContext.deleteObject(article)
-                }
-                self.managedObjectContext.deleteObject(cdfeed)
-                let _ = try? self.managedObjectContext.save()
-            }
+            self.deleteFeed(feed)
             self.mainQueue.addOperationWithBlock(callback)
-
-            #if os(iOS)
-                if #available(iOS 9, *) {
-                    self.searchIndex?.deleteIdentifierFromIndex(articleIdentifiers) {_ in }
-                }
-            #endif
         }
     }
 
     func deleteArticle(article: Article, callback: (Void) -> (Void)) {
         guard let _ = article.articleID as? NSManagedObjectID else { callback(); return }
         self.managedObjectContext.performBlock {
-            if let cdarticle = self.coreDataArticleForArticle(article) {
-                for enclosure in cdarticle.enclosures {
-                    self.managedObjectContext.deleteObject(enclosure)
-                }
-                self.managedObjectContext.deleteObject(cdarticle)
-                let _ = try? self.managedObjectContext.save()
-
-                #if os(iOS)
-                    if #available(iOS 9, *) {
-                        self.searchIndex?.deleteIdentifierFromIndex([article.identifier]) {_ in }
-                    }
-                #endif
-            }
+            self.deleteArticle(article)
             self.mainQueue.addOperationWithBlock(callback)
         }
     }
@@ -182,10 +154,62 @@ class CoreDataService: DataService {
     func deleteEnclosure(enclosure: Enclosure, callback: (Void) -> (Void)) {
         guard let _ = enclosure.enclosureID as? NSManagedObjectID else { callback(); return }
         self.managedObjectContext.performBlock {
-            if let cdenclosure = self.coreDataEnclosureForEnclosure(enclosure) {
-                self.managedObjectContext.deleteObject(cdenclosure)
-                let _ = try? self.managedObjectContext.save()
+            self.deleteEnclosure(enclosure)
+            self.mainQueue.addOperationWithBlock(callback)
+        }
+    }
+
+    // Mark: - Batch
+
+    func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int, callback: BatchCreateCallback) {
+        let feedEntityDescription = NSEntityDescription.entityForName("Feed",
+            inManagedObjectContext: self.managedObjectContext)!
+        let articleEntityDescription = NSEntityDescription.entityForName("Article",
+            inManagedObjectContext: self.managedObjectContext)!
+        let enclosureEntityDescription = NSEntityDescription.entityForName("Enclosure",
+            inManagedObjectContext: self.managedObjectContext)!
+
+        self.managedObjectContext.performBlock {
+            let cdfeeds = (0..<feedCount).map { _ in
+                return CoreDataFeed(entity: feedEntityDescription,
+                    insertIntoManagedObjectContext: self.managedObjectContext)
             }
+            let cdarticles = (0..<articleCount).map { _ in
+                return CoreDataArticle(entity: articleEntityDescription,
+                    insertIntoManagedObjectContext: self.managedObjectContext)
+            }
+            let cdenclosures = (0..<enclosureCount).map { _ in
+                return CoreDataEnclosure(entity: enclosureEntityDescription,
+                    insertIntoManagedObjectContext: self.managedObjectContext)
+            }
+            let _ = try? self.managedObjectContext.save()
+
+            let feeds = cdfeeds.map(Feed.init)
+            let articles = cdarticles.map { Article(coreDataArticle: $0, feed: nil) }
+            let enclosures = cdenclosures.map { Enclosure(coreDataEnclosure: $0, article: nil) }
+
+            self.mainQueue.addOperationWithBlock {
+                callback(feeds, articles, enclosures)
+            }
+        }
+    }
+
+    func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure], callback: Void -> Void) {
+        self.managedObjectContext.performBlock {
+            feeds.forEach(self.updateFeed)
+            articles.forEach(self.updateArticle)
+            enclosures.forEach(self.updateEnclosure)
+
+            self.mainQueue.addOperationWithBlock(callback)
+        }
+    }
+
+    func batchDelete(feeds: [Feed], articles: [Article], enclosures: [Enclosure], callback: Void -> Void) {
+        self.managedObjectContext.performBlock {
+            enclosures.forEach(self.deleteEnclosure)
+            articles.forEach(self.deleteArticle)
+            feeds.forEach(self.deleteFeed)
+
             self.mainQueue.addOperationWithBlock(callback)
         }
     }
@@ -274,6 +298,50 @@ class CoreDataService: DataService {
                 cdenclosure.article = cdarticle
             }
 
+            let _ = try? self.managedObjectContext.save()
+        }
+    }
+
+    private func deleteFeed(feed: Feed) {
+        if let cdfeed = self.coreDataFeedForFeed(feed) {
+            for article in cdfeed.articles {
+                for enclosure in article.enclosures {
+                    self.managedObjectContext.deleteObject(enclosure)
+                }
+                self.managedObjectContext.deleteObject(article)
+            }
+            self.managedObjectContext.deleteObject(cdfeed)
+            let _ = try? self.managedObjectContext.save()
+        }
+
+        #if os(iOS)
+            if #available(iOS 9, *) {
+                let articleIdentifiers = feed.articlesArray.map { $0.identifier }
+
+                self.searchIndex?.deleteIdentifierFromIndex(articleIdentifiers) {_ in }
+            }
+        #endif
+    }
+
+    private func deleteArticle(article: Article) {
+        if let cdarticle = self.coreDataArticleForArticle(article) {
+            for enclosure in cdarticle.enclosures {
+                self.managedObjectContext.deleteObject(enclosure)
+            }
+            self.managedObjectContext.deleteObject(cdarticle)
+            let _ = try? self.managedObjectContext.save()
+
+            #if os(iOS)
+                if #available(iOS 9, *) {
+                    self.searchIndex?.deleteIdentifierFromIndex([article.identifier]) {_ in }
+                }
+            #endif
+        }
+    }
+
+    private func deleteEnclosure(enclosure: Enclosure) {
+        if let cdenclosure = self.coreDataEnclosureForEnclosure(enclosure) {
+            self.managedObjectContext.deleteObject(cdenclosure)
             let _ = try? self.managedObjectContext.save()
         }
     }

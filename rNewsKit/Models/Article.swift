@@ -291,10 +291,12 @@ import JavaScriptCore
     public func addEnclosure(enclosure: Enclosure) {
         if !self.enclosuresArray.contains(enclosure) {
             self.enclosuresArray.append(enclosure)
-            if let otherArticle = enclosure.article {
+            if let otherArticle = enclosure.article where otherArticle != self {
                 otherArticle.removeEnclosure(enclosure)
             }
-            enclosure.article = self
+            if enclosure.article != self {
+                enclosure.article = self
+            }
             self.updated = true
         }
     }

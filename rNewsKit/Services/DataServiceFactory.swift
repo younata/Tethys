@@ -76,6 +76,7 @@ final class DataServiceFactory: DataServiceFactoryType {
         }
         let managedObjectContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
         managedObjectContext.persistentStoreCoordinator = persistentStore
+        managedObjectContext.undoManager = nil
 
         return CoreDataService(
             managedObjectContext: managedObjectContext,

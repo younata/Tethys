@@ -34,6 +34,7 @@ class RealmService: DataService {
         // swiftlint:disable force_try
         let realm = try! Realm(configuration: self.realmConfiguration)
         // swiftlint:enable force_try
+        realm.autorefresh = false
         self.realmsForThreads[thread] = realm
 
         return realm

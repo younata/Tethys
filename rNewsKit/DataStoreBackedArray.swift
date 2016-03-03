@@ -246,51 +246,58 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
     }
 
     private func fetchUpToPosition(position: Int) {
-        if self.backingStore == .CoreData {
-            if self.internalObjects.isEmpty {
-                let fetchRequest = NSFetchRequest(entityName: self.entityName)
-                fetchRequest.predicate = self.predicate
-                fetchRequest.sortDescriptors = self.sortDescriptors
-                fetchRequest.fetchBatchSize = self.batchSize
+        autoreleasepool {
+            if self.backingStore == .CoreData {
+                if self.internalObjects.isEmpty {
+                    let fetchRequest = NSFetchRequest(entityName: self.entityName)
+                    fetchRequest.predicate = self.predicate
+                    fetchRequest.sortDescriptors = self.sortDescriptors
+                    fetchRequest.fetchBatchSize = self.batchSize
+                    self.managedObjectContext?.performBlockAndWait {
+                        let result = try? self.managedObjectContext?.executeFetchRequest(fetchRequest)
+                            as? [NSManagedObject]
+                        guard let array = result else { return }
+                        self.managedArray = array ?? []
+                    }
+                }
+                let start = self.internalObjects.count
+                let end = min(self.internalCount,
+                              start + ((Int((position - start) / self.batchSize) + 1) * self.batchSize))
+
                 self.managedObjectContext?.performBlockAndWait {
-                    let result = try? self.managedObjectContext?.executeFetchRequest(fetchRequest) as? [NSManagedObject]
-                    guard let array = result else { return }
-                    self.managedArray = array ?? []
+                    for i in start..<end {
+                        self.internalObjects.insert(self.coreDataConversionFunction!(self.managedArray[i]), atIndex: i)
+                    }
+                    _ = try? self.managedObjectContext?.save()
                 }
-            }
-            let start = self.internalObjects.count
-            let end = min(self.internalCount, start + ((Int((position - start) / self.batchSize) + 1) * self.batchSize))
+            } else if let objects = self.realmObjectList() {
+                let start = self.internalObjects.count
+                let end = min(objects.count,
+                              start + ((Int((position - start) / self.batchSize) + 1) * self.batchSize))
 
-            self.managedObjectContext?.performBlockAndWait {
                 for i in start..<end {
-                    self.internalObjects.insert(self.coreDataConversionFunction!(self.managedArray[i]), atIndex: i)
+                    self.internalObjects.insert(self.realmConversionFunction!(objects[i]), atIndex: i)
                 }
-                _ = try? self.managedObjectContext?.save()
-            }
-        } else if let objects = self.realmObjectList() {
-            let start = self.internalObjects.count
-            let end = min(self.internalCount, start + ((Int((position - start) / self.batchSize) + 1) * self.batchSize))
-
-            for i in start..<end {
-                self.internalObjects.insert(self.realmConversionFunction!(objects[i]), atIndex: i)
             }
         }
     }
 
     private func calculateCount() -> Int {
-        if self.backingStore == .CoreData {
-            var count = 0
-            self.managedObjectContext?.performBlockAndWait {
-                let fetchRequest = NSFetchRequest(entityName: self.entityName)
-                fetchRequest.predicate = self.predicate
-                count = self.managedObjectContext!.countForFetchRequest(fetchRequest, error: nil)
+        var count = self.internalObjects.count
+        autoreleasepool {
+            if self.backingStore == .CoreData {
+                count = 0
+                self.managedObjectContext?.performBlockAndWait {
+                    let fetchRequest = NSFetchRequest(entityName: self.entityName)
+                    fetchRequest.predicate = self.predicate
+                    count = self.managedObjectContext!.countForFetchRequest(fetchRequest, error: nil)
+                }
+                self.internalObjects.reserveCapacity(count)
+            } else if let list = self.realmObjectList() {
+                count = list.count
             }
-            self.internalObjects.reserveCapacity(count)
-            return count
-        } else if let list = self.realmObjectList() {
-            return list.count
         }
-        return self.internalObjects.count
+        return count
     }
 
     private func realmObjectList() -> Results<Object>? {
@@ -302,7 +309,9 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
             }
             return nil
         }
-        return realm.objects(dataType).filter(predicate).sorted(sortDescriptors)
+        let results = realm.objects(dataType).filter(predicate).sorted(sortDescriptors)
+        self.internalCount = results.count
+        return results
     }
 }
 
@@ -329,15 +338,17 @@ extension DataStoreBackedArray where T: Equatable {
         guard let idx = idxToRemove else {
             return false
         }
-        if self.backingStore == .CoreData {
-            self.managedObjectContext?.performBlockAndWait {
-                let managedObject = self.managedArray[idx]
-                self.managedObjectContext?.deleteObject(managedObject)
+        autoreleasepool {
+            if self.backingStore == .CoreData {
+                self.managedObjectContext?.performBlockAndWait {
+                    let managedObject = self.managedArray[idx]
+                    self.managedObjectContext?.deleteObject(managedObject)
+                }
+            } else if let objects = self.realmObjectList() {
+                self.realm?.beginWrite()
+                self.realm?.delete(objects[idx])
+                _ = try? self.realm?.commitWrite()
             }
-        } else if let objects = self.realmObjectList() {
-            self.realm?.beginWrite()
-            self.realm?.delete(objects[idx])
-            _ = try? self.realm?.commitWrite()
         }
         self.internalObjects.removeAtIndex(idx)
         self.internalCount--

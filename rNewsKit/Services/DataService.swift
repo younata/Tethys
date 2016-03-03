@@ -75,7 +75,7 @@ extension DataService {
         for item in articles {
             let article = feed.articlesArray.filter { article in
                 return item.title == article.title || item.link == article.link
-                }.first
+            }.first
             if let article = article {
                 self.updateArticle(article, item: item, feedURL: info.link, callback: checkIfFinished)
             } else {

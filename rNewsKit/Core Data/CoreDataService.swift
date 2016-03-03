@@ -13,6 +13,10 @@ class CoreDataService: DataService {
         self.searchIndex = searchIndex
     }
 
+    deinit {
+        self.managedObjectContext.reset()
+    }
+
     // Mark: - Create
 
     func createFeed(callback: (Feed) -> (Void)) {
@@ -170,35 +174,39 @@ class CoreDataService: DataService {
             inManagedObjectContext: self.managedObjectContext)!
 
         self.managedObjectContext.performBlock {
-            let cdfeeds = (0..<feedCount).map { _ in
-                return CoreDataFeed(entity: feedEntityDescription,
-                    insertIntoManagedObjectContext: self.managedObjectContext)
-            }
-            let cdarticles = (0..<articleCount).map { _ in
-                return CoreDataArticle(entity: articleEntityDescription,
-                    insertIntoManagedObjectContext: self.managedObjectContext)
-            }
-            let cdenclosures = (0..<enclosureCount).map { _ in
-                return CoreDataEnclosure(entity: enclosureEntityDescription,
-                    insertIntoManagedObjectContext: self.managedObjectContext)
-            }
-            let _ = try? self.managedObjectContext.save()
+            autoreleasepool {
+                let cdfeeds = (0..<feedCount).map { _ in
+                    return CoreDataFeed(entity: feedEntityDescription,
+                        insertIntoManagedObjectContext: self.managedObjectContext)
+                }
+                let cdarticles = (0..<articleCount).map { _ in
+                    return CoreDataArticle(entity: articleEntityDescription,
+                        insertIntoManagedObjectContext: self.managedObjectContext)
+                }
+                let cdenclosures = (0..<enclosureCount).map { _ in
+                    return CoreDataEnclosure(entity: enclosureEntityDescription,
+                        insertIntoManagedObjectContext: self.managedObjectContext)
+                }
+                let _ = try? self.managedObjectContext.save()
 
-            let feeds = cdfeeds.map(Feed.init)
-            let articles = cdarticles.map { Article(coreDataArticle: $0, feed: nil) }
-            let enclosures = cdenclosures.map { Enclosure(coreDataEnclosure: $0, article: nil) }
+                let feeds = cdfeeds.map(Feed.init)
+                let articles = cdarticles.map { Article(coreDataArticle: $0, feed: nil) }
+                let enclosures = cdenclosures.map { Enclosure(coreDataEnclosure: $0, article: nil) }
 
-            self.mainQueue.addOperationWithBlock {
-                callback(feeds, articles, enclosures)
+                self.mainQueue.addOperationWithBlock {
+                    callback(feeds, articles, enclosures)
+                }
             }
         }
     }
 
     func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure], callback: Void -> Void) {
         self.managedObjectContext.performBlock {
-            feeds.forEach(self.updateFeed)
-            articles.forEach(self.updateArticle)
-            enclosures.forEach(self.updateEnclosure)
+            autoreleasepool {
+                feeds.forEach(self.updateFeed)
+                articles.forEach(self.updateArticle)
+                enclosures.forEach(self.updateEnclosure)
+            }
 
             self.mainQueue.addOperationWithBlock(callback)
         }
@@ -206,9 +214,11 @@ class CoreDataService: DataService {
 
     func batchDelete(feeds: [Feed], articles: [Article], enclosures: [Enclosure], callback: Void -> Void) {
         self.managedObjectContext.performBlock {
-            enclosures.forEach(self.deleteEnclosure)
-            articles.forEach(self.deleteArticle)
-            feeds.forEach(self.deleteFeed)
+            autoreleasepool {
+                enclosures.forEach(self.deleteEnclosure)
+                articles.forEach(self.deleteArticle)
+                feeds.forEach(self.deleteFeed)
+            }
 
             self.mainQueue.addOperationWithBlock(callback)
         }
@@ -263,6 +273,8 @@ class CoreDataService: DataService {
             cdfeed.image = feed.image
 
             let _ = try? self.managedObjectContext.save()
+
+            self.managedObjectContext.refreshObject(cdfeed, mergeChanges: true)
         }
     }
 
@@ -285,6 +297,8 @@ class CoreDataService: DataService {
 
             let _ = try? self.managedObjectContext.save()
 
+            self.managedObjectContext.refreshObject(cdarticle, mergeChanges: true)
+
             self.updateSearchIndexForArticle(article)
         }
     }
@@ -299,6 +313,8 @@ class CoreDataService: DataService {
             }
 
             let _ = try? self.managedObjectContext.save()
+
+            self.managedObjectContext.refreshObject(cdenclosure, mergeChanges: true)
         }
     }
 
@@ -307,11 +323,15 @@ class CoreDataService: DataService {
             for article in cdfeed.articles {
                 for enclosure in article.enclosures {
                     self.managedObjectContext.deleteObject(enclosure)
+                    self.managedObjectContext.refreshObject(enclosure, mergeChanges: false)
                 }
                 self.managedObjectContext.deleteObject(article)
+                self.managedObjectContext.refreshObject(article, mergeChanges: false)
             }
             self.managedObjectContext.deleteObject(cdfeed)
             let _ = try? self.managedObjectContext.save()
+
+            self.managedObjectContext.refreshObject(cdfeed, mergeChanges: false)
         }
 
         #if os(iOS)
@@ -331,6 +351,8 @@ class CoreDataService: DataService {
             self.managedObjectContext.deleteObject(cdarticle)
             let _ = try? self.managedObjectContext.save()
 
+            self.managedObjectContext.refreshObject(cdarticle, mergeChanges: false)
+
             #if os(iOS)
                 if #available(iOS 9, *) {
                     self.searchIndex?.deleteIdentifierFromIndex([article.identifier]) {_ in }
@@ -343,6 +365,8 @@ class CoreDataService: DataService {
         if let cdenclosure = self.coreDataEnclosureForEnclosure(enclosure) {
             self.managedObjectContext.deleteObject(cdenclosure)
             let _ = try? self.managedObjectContext.save()
+
+            self.managedObjectContext.refreshObject(cdenclosure, mergeChanges: false)
         }
     }
 }

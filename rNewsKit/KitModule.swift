@@ -73,5 +73,8 @@ public class KitModule: NSObject, Ra.InjectorModule {
 
         let opmlService = OPMLService(injector: injector)
         injector.bind(OPMLService.self, toInstance: opmlService)
+
+        injector.bind(MigrationUseCase.self, toInstance: DefaultMigrationUseCase(injector: injector))
+        injector.bind(ImportUseCase.self, to: DefaultImportUseCase.init)
     }
 }

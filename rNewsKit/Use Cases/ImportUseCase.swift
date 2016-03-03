@@ -1,7 +1,6 @@
 import Ra
 import Muon
 import Lepton
-import rNewsKit
 
 public enum ImportUseCaseItem {
     case None(NSURL)

@@ -1,7 +1,6 @@
 import Quick
 import Nimble
 
-import rNews
 import rNewsKit
 
 class ImportUseCaseSpec: QuickSpec {

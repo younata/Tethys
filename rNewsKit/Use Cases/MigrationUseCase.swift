@@ -1,5 +1,4 @@
 import Ra
-import rNewsKit
 import WorkFlow
 
 public protocol MigrationUseCaseSubscriber: class {

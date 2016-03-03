@@ -18,10 +18,7 @@ public class InjectorModule: Ra.InjectorModule {
 
         injector.bind(NSBundle.self, toInstance: NSBundle.mainBundle())
 
-        injector.bind(MigrationUseCase.self, toInstance: DefaultMigrationUseCase(injector: injector))
-        injector.bind(ImportUseCase.self) { DefaultImportUseCase(injector: $0) }
-
-        injector.bind(DocumentationUseCase.self) { DefaultDocumentationUseCase(injector: $0) }
+        injector.bind(DocumentationUseCase.self, to: DefaultDocumentationUseCase.init)
 
         let app = UIApplication.sharedApplication()
         injector.bind(UrlOpener.self, toInstance: app)
@@ -32,11 +29,11 @@ public class InjectorModule: Ra.InjectorModule {
         let userDefaults = NSUserDefaults.standardUserDefaults()
         injector.bind(SettingsRepository.self, toInstance: SettingsRepository(userDefaults: userDefaults))
 
-        injector.bind(BackgroundFetchHandler.self) { DefaultBackgroundFetchHandler(injector: $0) }
+        injector.bind(BackgroundFetchHandler.self, to: DefaultBackgroundFetchHandler.init)
 
-        injector.bind(NotificationHandler.self) { LocalNotificationHandler(injector: $0) }
+        injector.bind(NotificationHandler.self, to: LocalNotificationHandler.init)
 
-        injector.bind(ReadArticleUseCase.self) { DefaultReadArticleUseCase(injector: $0) }
+        injector.bind(ReadArticleUseCase.self, to: DefaultReadArticleUseCase.init)
 
         injector.bind(NSFileManager.self, toInstance: NSFileManager.defaultManager())
     }

@@ -13,36 +13,36 @@ class InMemoryDataService: DataService {
     var articles = [Article]()
     var enclosures = [Enclosure]()
 
-    func createFeed(callback: (Feed) -> (Void)) {
+    func createFeed(callback: Feed -> Void) {
         let feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
         callback(feed)
         self.feeds.append(feed)
     }
 
-    func createArticle(feed: Feed?, callback: (Article) -> (Void)) {
+    func createArticle(feed: Feed?, callback: Article -> Void) {
         let article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
         feed?.addArticle(article)
         callback(article)
         self.articles.append(article)
     }
 
-    func createEnclosure(article: Article?, callback: (Enclosure) -> (Void)) {
+    func createEnclosure(article: Article?, callback: Enclosure -> Void) {
         let enclosure = Enclosure(url: NSURL(), kind: "", article: article)
         article?.addEnclosure(enclosure)
         callback(enclosure)
         self.enclosures.append(enclosure)
     }
 
-    func feedsMatchingPredicate(predicate: NSPredicate, callback: [Feed] -> Void) {
-        callback(self.feeds.filter({ predicate.evaluateWithObject($0) }))
+    func feedsMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Feed> -> Void) {
+        callback(DataStoreBackedArray(self.feeds.filter({ predicate.evaluateWithObject($0) })))
     }
 
-    func articlesMatchingPredicate(predicate: NSPredicate, callback: [Article] -> Void) {
-        callback(self.articles.filter({ predicate.evaluateWithObject($0) }))
+    func articlesMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Article> -> Void) {
+        callback(DataStoreBackedArray(self.articles.filter({ predicate.evaluateWithObject($0) })))
     }
 
-    func enclosuresMatchingPredicate(predicate: NSPredicate, callback: [Enclosure] -> Void) {
-        callback(self.enclosures.filter({ predicate.evaluateWithObject($0) }))
+    func enclosuresMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Enclosure> -> Void) {
+        callback(DataStoreBackedArray(self.enclosures.filter({ predicate.evaluateWithObject($0) })))
     }
 
     func saveFeed(feed: Feed, callback: (Void) -> (Void)) {

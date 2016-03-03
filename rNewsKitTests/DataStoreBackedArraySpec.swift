@@ -13,9 +13,9 @@ class DataStoreBackedArraySpec: QuickSpec {
         describe("a Realm backed array") {
             var realm: Realm!
             var articles: [RealmArticle] = []
+            let realmConf = Realm.Configuration(inMemoryIdentifier: "DataStoreBackedArraySpec")
 
             beforeEach {
-                let realmConf = Realm.Configuration(inMemoryIdentifier: "DataStoreBackedArraySpec")
                 realm = try! Realm(configuration: realmConf)
                 try! realm.write {
                     realm.deleteAll()
@@ -34,7 +34,7 @@ class DataStoreBackedArraySpec: QuickSpec {
 
                 let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
 
-                subject = DataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(value: true), realm: realm, conversionFunction: {
+                subject = DataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(value: true), realmConfiguration: realmConf, conversionFunction: {
                     return Article(realmArticle: $0 as! RealmArticle, feed: nil)
                 }, sortDescriptors: [sortDescriptor])
             }
@@ -46,14 +46,14 @@ class DataStoreBackedArraySpec: QuickSpec {
             it("should implement isEmpty correctly") {
                 expect(subject.isEmpty) == false
 
-                let emptyArray = DataStoreBackedArray<Feed>(realmDataType: RealmFeed.self, predicate: NSPredicate(value: true), realm: realm, conversionFunction: { Feed(realmFeed: $0 as! RealmFeed) })
+                let emptyArray = DataStoreBackedArray<Feed>(realmDataType: RealmFeed.self, predicate: NSPredicate(value: true), realmConfiguration: realmConf, conversionFunction: { Feed(realmFeed: $0 as! RealmFeed) })
                 expect(emptyArray.isEmpty) == true
             }
 
             it("should correctly return the first object") {
                 expect(subject.first) == Article(realmArticle: articles[0], feed: nil)
 
-                let emptyArray = DataStoreBackedArray<Feed>(realmDataType: RealmFeed.self, predicate: NSPredicate(value: true), realm: realm, conversionFunction: { Feed(realmFeed: $0 as! RealmFeed) })
+                let emptyArray = DataStoreBackedArray<Feed>(realmDataType: RealmFeed.self, predicate: NSPredicate(value: true), realmConfiguration: realmConf, conversionFunction: { Feed(realmFeed: $0 as! RealmFeed) })
                 expect(emptyArray.first).to(beNil())
             }
 
@@ -86,22 +86,21 @@ class DataStoreBackedArraySpec: QuickSpec {
 
             it("should be equatable") {
                 let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
-                let shouldEqual = DataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(value: true), realm: realm, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
+                let shouldEqual = DataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(value: true), realmConfiguration: realmConf, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
                 expect(shouldEqual == subject) == true
 
-                let entityNameOff = DataStoreBackedArray(realmDataType: RealmFeed.self, predicate: NSPredicate(value: true), realm: realm, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
+                let entityNameOff = DataStoreBackedArray(realmDataType: RealmFeed.self, predicate: NSPredicate(value: true), realmConfiguration: realmConf, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
                 expect(subject == entityNameOff) != true
 
-                let predicateOff = DataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(value: false), realm: realm, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
+                let predicateOff = DataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(value: false), realmConfiguration: realmConf, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
                 expect(predicateOff == subject) != true
 
                 let otherRealmConfiguration = Realm.Configuration(inMemoryIdentifier: "DataStoreBackedArraySpec2")
-                let otherRealm = try! Realm(configuration: otherRealmConfiguration)
 
-                let realmOff = DataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(value: true), realm: otherRealm, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
+                let realmOff = DataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(value: true), realmConfiguration: otherRealmConfiguration, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
                 expect(realmOff == subject) != true
 
-                let sortDescriptorOff = DataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(value: true), realm: realm, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [])
+                let sortDescriptorOff = DataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(value: true), realmConfiguration: realmConf, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [])
                 expect(sortDescriptorOff == subject) != true
 
                 let expectedArticles = articles.map { Article(realmArticle: $0, feed: nil) }
@@ -146,8 +145,8 @@ class DataStoreBackedArraySpec: QuickSpec {
 
                 let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
 
-                let a = DataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(format: "title == %@", "002"), realm: realm, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
-                let b = DataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(format: "title == %@", "003"), realm: realm, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
+                let a = DataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(format: "title == %@", "002"), realmConfiguration: realmConf, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
+                let b = DataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(format: "title == %@", "003"), realmConfiguration: realmConf, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
 
                 let articles = articles.map({ Article(realmArticle: $0, feed: nil) })
 

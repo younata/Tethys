@@ -2983,7 +2983,7 @@
 				8903A6231C48919E00E896BF /* RSSClient 1.7.xcdatamodel */,
 				89C8307B19D730E9009924DA /* RSSClient.xcdatamodel */,
 			);
-			currentVersion = 89E08DDB1C4380A000E3D5FC /* RSSClient 1.6.xcdatamodel */;
+			currentVersion = 8903A6231C48919E00E896BF /* RSSClient 1.7.xcdatamodel */;
 			path = RSSClient.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

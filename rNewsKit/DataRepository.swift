@@ -98,14 +98,15 @@ class DataRepository: FeedRepository {
         if currentDataService is CoreDataService {
             let replacementDataService = self.dataServiceFactory.newDataService()
             self.databaseMigrator.migrate(currentDataService, to: replacementDataService, progress: { value in
-                progress(value / 2.0)
+                let reportedProgressValue = value / 2.0
+                progress(reportedProgressValue)
             }) {
                 self.dataServiceFactory.currentDataService = replacementDataService
 
                 self.databaseMigrator.deleteEverything(currentDataService, progress: { value in
                     progress(0.5 + (value / 2.0))
-                }) {
-                    callback()
+                    }) {
+                        callback()
                 }
             }
         }

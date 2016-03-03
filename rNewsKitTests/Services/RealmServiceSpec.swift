@@ -150,13 +150,13 @@ class RealmServiceSpec: QuickSpec {
                 it("reads the feeds based on the predicate") {
                     let allExpectation = self.expectationWithDescription("Read all feeds")
                     subject.feedsMatchingPredicate(NSPredicate(value: true)) {
-                        expect($0) == [feed1, feed2]
+                        expect(Array($0)) == [feed1, feed2]
                         allExpectation.fulfill()
                     }
 
                     let someExpectation = self.expectationWithDescription("Read some feeds")
                     subject.feedsMatchingPredicate(NSPredicate(format: "title == %@", "feed1")) {
-                        expect($0) == [feed1]
+                        expect(Array($0)) == [feed1]
                         someExpectation.fulfill()
                     }
 
@@ -166,7 +166,7 @@ class RealmServiceSpec: QuickSpec {
                 it("reads the articles based on the predicate") {
                     let allExpectation = self.expectationWithDescription("Read all articles")
                     subject.articlesMatchingPredicate(NSPredicate(value: true)) { articles in
-                        expect(articles) == [article1, article2, article3]
+                        expect(Array(articles)) == [article1, article2, article3]
 
                         expect(articles[1].relatedArticles).to(contain(article3))
                         expect(articles[2].relatedArticles).to(contain(article2))
@@ -176,7 +176,7 @@ class RealmServiceSpec: QuickSpec {
 
                     let someExpectation = self.expectationWithDescription("Read some articles")
                     subject.articlesMatchingPredicate(NSPredicate(format: "title == %@", "article1")) {
-                        expect($0) == [article1]
+                        expect(Array($0)) == [article1]
                         someExpectation.fulfill()
                     }
 
@@ -186,13 +186,13 @@ class RealmServiceSpec: QuickSpec {
                 it("reads all enclosures based on the predicate") {
                     let allExpectation = self.expectationWithDescription("Read all enclosures")
                     subject.enclosuresMatchingPredicate(NSPredicate(value: true)) {
-                        expect($0) == [enclosure1, enclosure2]
+                        expect(Array($0)) == [enclosure1, enclosure2]
                         allExpectation.fulfill()
                     }
 
                     let someExpectation = self.expectationWithDescription("Read some enclosures")
                     subject.enclosuresMatchingPredicate(NSPredicate(format: "kind == %@", "1")) {
-                        expect($0) == [enclosure1]
+                        expect(Array($0)) == [enclosure1]
                         someExpectation.fulfill()
                     }
 

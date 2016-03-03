@@ -290,7 +290,7 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
         } else if let list = self.realmObjectList() {
             return list.count
         }
-        return 0
+        return self.internalObjects.count
     }
 
     private func realmObjectList() -> Results<Object>? {

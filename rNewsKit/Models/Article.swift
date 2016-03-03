@@ -19,7 +19,7 @@ import JavaScriptCore
     var relatedArticlesArray: [Article] { get }
 }
 
-@objc public class Article: NSObject, ArticleJSExport {
+@objc public final class Article: NSObject, ArticleJSExport {
     dynamic public internal(set) var title: String {
         willSet {
             if newValue != title {

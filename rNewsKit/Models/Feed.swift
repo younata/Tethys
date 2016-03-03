@@ -26,7 +26,7 @@ import RealmSwift
     var isQueryFeed: Bool { get }
 }
 
-@objc public class Feed: NSObject, FeedJSExport {
+@objc public final class Feed: NSObject, FeedJSExport {
     dynamic public var title: String {
         willSet {
             if newValue != title {

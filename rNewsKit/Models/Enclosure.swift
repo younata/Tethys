@@ -8,7 +8,7 @@ import JavaScriptCore
     weak var article: Article? { get set }
 }
 
-@objc public class Enclosure: NSObject, EnclosureJSExport {
+@objc public final class Enclosure: NSObject, EnclosureJSExport {
     dynamic public var url: NSURL {
         willSet {
             if newValue != url {

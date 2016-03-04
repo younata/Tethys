@@ -81,16 +81,9 @@ struct DatabaseMigrator: DatabaseMigratorType {
     }
 
     func deleteEverything(database: DataService, progress: Double -> Void, finish: Void -> Void) {
-        database.allFeeds { feeds in
-            let articles = feeds.reduce([Article]()) { $0 + Array($1.articlesArray) }
-            let enclosures = articles.reduce([Enclosure]()) { $0 + Array($1.enclosuresArray) }
-
-            progress(0.5)
-
-            database.batchDelete(Array(feeds), articles: articles, enclosures: enclosures) {
-                progress(1.0)
-                finish()
-            }
+        database.deleteEverything {
+            progress(1.0)
+            finish()
         }
     }
 

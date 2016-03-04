@@ -215,10 +215,55 @@ class CoreDataService: DataService {
     func batchDelete(feeds: [Feed], articles: [Article], enclosures: [Enclosure], callback: Void -> Void) {
         self.managedObjectContext.performBlock {
             autoreleasepool {
-                enclosures.forEach(self.deleteEnclosure)
-                articles.forEach(self.deleteArticle)
-                feeds.forEach(self.deleteFeed)
+                #if os(iOS)
+                    if #available(iOS 9, *) {
+                        let articleIdentifiers = articles.map { $0.identifier }
+
+                        self.searchIndex?.deleteIdentifierFromIndex(articleIdentifiers) {_ in }
+                    }
+                #endif
+
+                self.coreDataEnclosuresForEnclosures(enclosures).forEach(self.managedObjectContext.deleteObject)
+                self.coreDataArticlesForArticles(articles).forEach(self.managedObjectContext.deleteObject)
+                self.coreDataFeedsForFeeds(feeds).forEach(self.managedObjectContext.deleteObject)
+
+                _ = try? self.managedObjectContext.save()
             }
+
+            self.mainQueue.addOperationWithBlock(callback)
+        }
+    }
+
+    func deleteEverything(callback: Void -> Void) {
+        self.managedObjectContext.performBlock {
+            self.managedObjectContext.reset()
+            let deleteAllEntitiesOfType: String -> Void = { entityType in
+                autoreleasepool {
+                    let request = NSFetchRequest()
+                    request.entity = NSEntityDescription.entityForName(entityType,
+                        inManagedObjectContext: self.managedObjectContext)
+
+                    if #available(iOS 9, *) {
+                        let store = self.managedObjectContext.persistentStoreCoordinator!
+                        let deleteRequest = NSBatchDeleteRequest(fetchRequest: request)
+                        _ = try? store.executeRequest(deleteRequest, withContext: self.managedObjectContext)
+                    } else {
+                        request.resultType = .ManagedObjectIDResultType
+                        request.includesPropertyValues = false
+                        request.includesSubentities = false
+                        request.returnsObjectsAsFaults = true
+                        let objects = (try? self.managedObjectContext.executeFetchRequest(request) ?? [])
+                            as? [NSManagedObject]
+
+                        objects?.forEach(self.managedObjectContext.deleteObject)
+                        _ = try? self.managedObjectContext.save()
+                    }
+                }
+            }
+
+            deleteAllEntitiesOfType("Feed")
+            deleteAllEntitiesOfType("Article")
+            deleteAllEntitiesOfType("Enclosure")
 
             self.mainQueue.addOperationWithBlock(callback)
         }
@@ -228,35 +273,42 @@ class CoreDataService: DataService {
 
     // Danger will robinson, this is meant to be inside a managedObjectContext's performBlock block!
     private func coreDataFeedForFeed(feed: Feed) -> CoreDataFeed? {
+        return self.coreDataFeedsForFeeds([feed]).first
+    }
+
+    private func coreDataArticleForArticle(article: Article) -> CoreDataArticle? {
+        return self.coreDataArticlesForArticles([article]).first
+    }
+
+    private func coreDataEnclosureForEnclosure(enclosure: Enclosure) -> CoreDataEnclosure? {
+        return self.coreDataEnclosuresForEnclosures([enclosure]).first
+    }
+
+    private func coreDataFeedsForFeeds(feeds: [Feed]) -> [CoreDataFeed] {
         let request = NSFetchRequest()
         request.entity = NSEntityDescription.entityForName("Feed",
             inManagedObjectContext: managedObjectContext)
-        request.predicate = NSPredicate(format: "self == %@", feed.feedID! as! NSManagedObjectID)
-        let objects = (try? self.managedObjectContext.executeFetchRequest(request) ?? []) as? [NSManagedObject] ?? []
-
-        return (objects as? [CoreDataFeed])?.first
+        let ids = feeds.flatMap { $0.feedID as? NSManagedObjectID }
+        request.predicate = NSPredicate(format: "self IN %@", ids)
+        return (try? self.managedObjectContext.executeFetchRequest(request) ?? []) as? [CoreDataFeed] ?? []
     }
 
-    // Danger will robinson, this is meant to be inside a managedObjectContext's performBlock block!
-    private func coreDataArticleForArticle(article: Article) -> CoreDataArticle? {
+    private func coreDataArticlesForArticles(articles: [Article]) -> [CoreDataArticle] {
         let request = NSFetchRequest()
         request.entity = NSEntityDescription.entityForName("Article",
             inManagedObjectContext: managedObjectContext)
-        request.predicate = NSPredicate(format: "self == %@", article.articleID! as! NSManagedObjectID)
-        let objects = (try? self.managedObjectContext.executeFetchRequest(request) ?? []) as? [NSManagedObject] ?? []
-
-        return (objects as? [CoreDataArticle])?.first
+        let ids = articles.flatMap { $0.articleID as? NSManagedObjectID }
+        request.predicate = NSPredicate(format: "self IN %@", ids)
+        return (try? self.managedObjectContext.executeFetchRequest(request) ?? []) as? [CoreDataArticle] ?? []
     }
 
-    // Danger will robinson, this is meant to be inside a managedObjectContext's performBlock block!
-    private func coreDataEnclosureForEnclosure(enclosure: Enclosure) -> CoreDataEnclosure? {
+    private func coreDataEnclosuresForEnclosures(enclosures: [Enclosure]) -> [CoreDataEnclosure] {
         let request = NSFetchRequest()
         request.entity = NSEntityDescription.entityForName("Enclosure",
             inManagedObjectContext: managedObjectContext)
-        request.predicate = NSPredicate(format: "self == %@", enclosure.enclosureID! as! NSManagedObjectID)
-        let objects = (try? self.managedObjectContext.executeFetchRequest(request) ?? []) as? [NSManagedObject] ?? []
-
-        return (objects as? [CoreDataEnclosure])?.first
+        let ids = enclosures.flatMap { $0.enclosureID as? NSManagedObjectID }
+        request.predicate = NSPredicate(format: "self IN %@", ids)
+        return (try? self.managedObjectContext.executeFetchRequest(request) ?? []) as? [CoreDataEnclosure] ?? []
     }
 
     // synchronous update!
@@ -274,7 +326,7 @@ class CoreDataService: DataService {
 
             let _ = try? self.managedObjectContext.save()
 
-            self.managedObjectContext.refreshObject(cdfeed, mergeChanges: true)
+            self.managedObjectContext.refreshObject(cdfeed, mergeChanges: false)
         }
     }
 
@@ -297,7 +349,7 @@ class CoreDataService: DataService {
 
             let _ = try? self.managedObjectContext.save()
 
-            self.managedObjectContext.refreshObject(cdarticle, mergeChanges: true)
+            self.managedObjectContext.refreshObject(cdarticle, mergeChanges: false)
 
             self.updateSearchIndexForArticle(article)
         }
@@ -314,39 +366,43 @@ class CoreDataService: DataService {
 
             let _ = try? self.managedObjectContext.save()
 
-            self.managedObjectContext.refreshObject(cdenclosure, mergeChanges: true)
+            self.managedObjectContext.refreshObject(cdenclosure, mergeChanges: false)
         }
     }
 
-    private func deleteFeed(feed: Feed) {
+    private func deleteFeed(feed: Feed, deleteArticles: Bool = true) {
         if let cdfeed = self.coreDataFeedForFeed(feed) {
-            for article in cdfeed.articles {
-                for enclosure in article.enclosures {
-                    self.managedObjectContext.deleteObject(enclosure)
-                    self.managedObjectContext.refreshObject(enclosure, mergeChanges: false)
+            if deleteArticles {
+                #if os(iOS)
+                    if #available(iOS 9, *) {
+                        let articleIdentifiers = feed.articlesArray.map { $0.identifier }
+
+                        self.searchIndex?.deleteIdentifierFromIndex(articleIdentifiers) {_ in }
+                    }
+                #endif
+
+                for article in cdfeed.articles {
+                    for enclosure in article.enclosures {
+                        self.managedObjectContext.deleteObject(enclosure)
+                        self.managedObjectContext.refreshObject(enclosure, mergeChanges: false)
+                    }
+                    self.managedObjectContext.deleteObject(article)
+                    self.managedObjectContext.refreshObject(article, mergeChanges: false)
                 }
-                self.managedObjectContext.deleteObject(article)
-                self.managedObjectContext.refreshObject(article, mergeChanges: false)
             }
             self.managedObjectContext.deleteObject(cdfeed)
             let _ = try? self.managedObjectContext.save()
 
             self.managedObjectContext.refreshObject(cdfeed, mergeChanges: false)
         }
-
-        #if os(iOS)
-            if #available(iOS 9, *) {
-                let articleIdentifiers = feed.articlesArray.map { $0.identifier }
-
-                self.searchIndex?.deleteIdentifierFromIndex(articleIdentifiers) {_ in }
-            }
-        #endif
     }
 
-    private func deleteArticle(article: Article) {
+    private func deleteArticle(article: Article, deleteEnclosures: Bool = true) {
         if let cdarticle = self.coreDataArticleForArticle(article) {
-            for enclosure in cdarticle.enclosures {
-                self.managedObjectContext.deleteObject(enclosure)
+            if deleteEnclosures {
+                for enclosure in cdarticle.enclosures {
+                    self.managedObjectContext.deleteObject(enclosure)
+                }
             }
             self.managedObjectContext.deleteObject(cdarticle)
             let _ = try? self.managedObjectContext.save()

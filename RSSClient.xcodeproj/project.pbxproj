@@ -46,6 +46,13 @@
 		89146E431C88C70700EC8F10 /* ImportUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB001C6F9DFB001C0189 /* ImportUseCase.swift */; };
 		89146E441C88C73200EC8F10 /* ImportUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB021C6FA022001C0189 /* ImportUseCaseSpec.swift */; };
 		89146E451C88C73400EC8F10 /* ImportUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB021C6FA022001C0189 /* ImportUseCaseSpec.swift */; };
+		89146E4C1C88F01700EC8F10 /* FakeFeedRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89348F2E1C60730D007D366B /* FakeFeedRepository.swift */; };
+		89146E4D1C88F01800EC8F10 /* FakeFeedRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89348F2E1C60730D007D366B /* FakeFeedRepository.swift */; };
+		89146E4E1C88F01F00EC8F10 /* FakeFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C676551BA28FE60037A224 /* FakeFileManager.swift */; };
+		89146E4F1C88F02000EC8F10 /* FakeFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C676551BA28FE60037A224 /* FakeFileManager.swift */; };
+		89146E501C88F0A600EC8F10 /* WorkFlow.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89BA95381C4C8E7C001FD453 /* WorkFlow.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		89146E511C88F0B800EC8F10 /* WorkFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89BA95381C4C8E7C001FD453 /* WorkFlow.framework */; };
+		89146E521C88F0BC00EC8F10 /* WorkFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89BA95381C4C8E7C001FD453 /* WorkFlow.framework */; };
 		8916880B1BA8856400F9FFE0 /* rNewsKit.framework in Embed rNewsKit */ = {isa = PBXBuildFile; fileRef = 894304211B45089A000078DC /* rNewsKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		891754701C5B449E0036D96D /* RealmObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8917546F1C5B449E0036D96D /* RealmObjects.swift */; };
 		891754711C5B449E0036D96D /* RealmObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8917546F1C5B449E0036D96D /* RealmObjects.swift */; };
@@ -419,6 +426,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				89146E501C88F0A600EC8F10 /* WorkFlow.framework in Embed Frameworks */,
 				898911931C2FC8A2009A44E9 /* Realm.framework in Embed Frameworks */,
 				898911941C2FC8A2009A44E9 /* RealmSwift.framework in Embed Frameworks */,
 				8908949C1BFED826002848A4 /* Reachability.framework in Embed Frameworks */,
@@ -766,6 +774,7 @@
 				8902D5471BB0753E003D7C22 /* Lepton.framework in Frameworks */,
 				89CAD4C11BA3DB7F006D79FC /* Muon.framework in Frameworks */,
 				89CC81FF1B4615A100648367 /* Ra.framework in Frameworks */,
+				89146E521C88F0BC00EC8F10 /* WorkFlow.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -782,6 +791,7 @@
 				8943042B1B45089A000078DC /* rNewsKit.framework in Frameworks */,
 				898911951C2FC8A6009A44E9 /* Realm.framework in Frameworks */,
 				898911961C2FC8A6009A44E9 /* RealmSwift.framework in Frameworks */,
+				89146E511C88F0B800EC8F10 /* WorkFlow.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2066,6 +2076,7 @@
 				89CBDBF41C7D1436006B70F5 /* DataServiceFactorySpec.swift in Sources */,
 				8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */,
 				8935F5D91B4628B3000FFD5D /* FeedSpec.swift in Sources */,
+				89146E4E1C88F01F00EC8F10 /* FakeFileManager.swift in Sources */,
 				8935F5DF1B462AD2000FFD5D /* FakeURLSession.swift in Sources */,
 				8935F5D51B4628B3000FFD5D /* OPMLServiceSpec.swift in Sources */,
 				8935F5DA1B4628B3000FFD5D /* ArticleSpec.swift in Sources */,
@@ -2073,6 +2084,7 @@
 				8999CC121C2E83BC00B81F5F /* CoreDataServiceSpec.swift in Sources */,
 				8903EB0C1C702FA3001C0189 /* WebPageParserSpec.swift in Sources */,
 				89122E641C5D762000004B1F /* DatabaseMigratorSpec.swift in Sources */,
+				89146E4C1C88F01700EC8F10 /* FakeFeedRepository.swift in Sources */,
 				8935F5DD1B462AD2000FFD5D /* FakeSearchIndex.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2147,6 +2159,7 @@
 				898911C41C3267D6009A44E9 /* DataServiceSpec.swift in Sources */,
 				898979A81B708E7800218498 /* DataRepositorySpec.swift in Sources */,
 				89CBDBFF1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift in Sources */,
+				89146E4F1C88F02000EC8F10 /* FakeFileManager.swift in Sources */,
 				898979A31B708E7800218498 /* SpecHelper.swift in Sources */,
 				898979B71B708F0700218498 /* FakeOperationQueue.swift in Sources */,
 				898911C51C3267D6009A44E9 /* CoreDataServiceSpec.swift in Sources */,
@@ -2154,6 +2167,7 @@
 				8903EB0D1C702FA3001C0189 /* WebPageParserSpec.swift in Sources */,
 				898979A41B708E7800218498 /* FakeSearchIndex.swift in Sources */,
 				898979A71B708E7800218498 /* OPMLServiceSpec.swift in Sources */,
+				89146E4D1C88F01800EC8F10 /* FakeFeedRepository.swift in Sources */,
 				898979AC1B708E7800218498 /* EnclosureSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3005,7 +3019,7 @@
 				8903A6231C48919E00E896BF /* RSSClient 1.7.xcdatamodel */,
 				89C8307B19D730E9009924DA /* RSSClient.xcdatamodel */,
 			);
-			currentVersion = 89C8307B19D730E9009924DA /* RSSClient.xcdatamodel */;
+			currentVersion = 8903A6231C48919E00E896BF /* RSSClient 1.7.xcdatamodel */;
 			path = RSSClient.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

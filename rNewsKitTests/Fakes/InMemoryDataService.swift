@@ -118,4 +118,12 @@ class InMemoryDataService: DataService {
 
         callback()
     }
+
+    func deleteEverything(callback: Void -> Void) {
+        self.feeds = []
+        self.articles = []
+        self.enclosures = []
+
+        callback()
+    }
 }

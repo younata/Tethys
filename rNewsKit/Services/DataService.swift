@@ -40,6 +40,8 @@ protocol DataService: class {
     func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int, callback: BatchCreateCallback)
     func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure], callback: Void -> Void)
     func batchDelete(feeds: [Feed], articles: [Article], enclosures: [Enclosure], callback: Void -> Void)
+
+    func deleteEverything(callback: Void -> Void)
 }
 
 extension DataService {

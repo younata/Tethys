@@ -34,7 +34,6 @@ class RealmService: DataService {
         // swiftlint:disable force_try
         let realm = try! Realm(configuration: self.realmConfiguration)
         // swiftlint:enable force_try
-        realm.autorefresh = false
         self.realmsForThreads[thread] = realm
 
         return realm
@@ -96,6 +95,7 @@ class RealmService: DataService {
             NSSortDescriptor(key: "updatedAt", ascending: false),
             NSSortDescriptor(key: "published", ascending: false)
         ]
+
         let articles = DataStoreBackedArray(realmDataType: RealmArticle.self,
             predicate: predicate,
             realmConfiguration: self.realmConfiguration,
@@ -214,6 +214,14 @@ class RealmService: DataService {
             enclosures.forEach(self.synchronousDeleteEnclosure)
             articles.forEach(self.synchronousDeleteArticle)
             feeds.forEach(self.synchronousDeleteFeed)
+
+            self.mainQueue.addOperationWithBlock(callback)
+        }
+    }
+
+    func deleteEverything(callback: Void -> Void) {
+        self.realmTransaction {
+            self.realm.deleteAll()
 
             self.mainQueue.addOperationWithBlock(callback)
         }

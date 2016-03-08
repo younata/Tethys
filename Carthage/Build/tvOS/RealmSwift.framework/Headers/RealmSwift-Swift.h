@@ -203,6 +203,9 @@ SWIFT_CLASS_NAMED("Object")
 /// Helper to return the class name for an Object subclass.
 @property (nonatomic, readonly, copy) NSString * __nonnull className;
 
+/// WARNING: This is an internal helper method not intended for public use. :nodoc:
++ (Class __nonnull)objectUtilClass:(BOOL)isSwift;
+
 /// Override to designate a property as the primary key for an Object subclass. Only properties of type String and Int can be designated as the primary key. Primary key properties enforce uniqueness for each value whenever the property is set which incurs some overhead. Indexes are created automatically for primary key properties.
 ///
 /// \returns  Name of the property designated as the primary key, or <code>nil
@@ -223,7 +226,12 @@ SWIFT_CLASS_NAMED("Object")
 - (id __nullable)objectForKeyedSubscript:(NSString * __nonnull)key;
 - (void)setObject:(id __nullable)value forKeyedSubscript:(NSString * __nonnull)key;
 
-/// Returns whether both objects are equal. Objects are considered equal when they are both from the same Realm and point to the same underlying object in the database.
+/// Returns whether both objects are equal.
+///
+/// Objects are considered equal when they are both from the same Realm and point to the same
+/// underlying object in the database.
+///
+/// \param object Object to compare for equality.
 - (BOOL)isEqual:(id __nullable)object;
 
 /// WARNING: This is an internal initializer not intended for public use. :nodoc:

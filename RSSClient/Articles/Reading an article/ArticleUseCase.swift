@@ -3,6 +3,8 @@ import Ra
 import rNewsKit
 
 public protocol ArticleUseCase {
+    func articlesByAuthor(author: String, callback: DataStoreBackedArray<Article> -> Void)
+
     func readArticle(article: Article) -> String
     func userActivityForArticle(article: Article) -> NSUserActivity
     func toggleArticleRead(article: Article)
@@ -28,6 +30,19 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
             themeRepository: injector.create(ThemeRepository)!,
             bundle: injector.create(NSBundle)!
         )
+    }
+
+    public func articlesByAuthor(author: String, callback: DataStoreBackedArray<Article> -> Void) {
+        self.feedRepository.feeds { feeds in
+            guard let initial = feeds.first?.articlesArray else { return callback(DataStoreBackedArray()) }
+
+            let allArticles: DataStoreBackedArray<Article> = feeds[1..<feeds.count].reduce(initial) {
+                return $0.combine($1.articlesArray)
+            }
+
+            callback(allArticles.filterWithPredicate(NSPredicate(format: "%@ IN author", author)))
+        }
+        callback(DataStoreBackedArray())
     }
 
     public func readArticle(article: Article) -> String {

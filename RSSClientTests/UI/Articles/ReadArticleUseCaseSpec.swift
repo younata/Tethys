@@ -1,7 +1,7 @@
 import Quick
 import Nimble
 
-import rNewsKit
+@testable import rNewsKit
 import rNews
 
 class ArticleUseCaseSpec: QuickSpec {
@@ -15,6 +15,42 @@ class ArticleUseCaseSpec: QuickSpec {
             feedRepository = FakeFeedRepository()
             themeRepository = FakeThemeRepository()
             subject = DefaultArticleUseCase(feedRepository: feedRepository, themeRepository: themeRepository, bundle: bundle)
+        }
+
+        describe("-articlesByAuthor:") {
+            var receivedArticles: [Article]? = nil
+
+            beforeEach {
+                subject.articlesByAuthor("author") {
+                    receivedArticles = Array($0)
+                }
+            }
+
+            it("asks the feed repository for all feeds") {
+                expect(feedRepository.feedsCallback).toNot(beNil())
+            }
+
+            describe("when the feeds returns") {
+                let article1 = Article(title: "a", link: nil, summary: "", author: "author", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                let article2 = Article(title: "b", link: nil, summary: "", author: "foo", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                let article3 = Article(title: "c", link: nil, summary: "", author: "author", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                let article4 = Article(title: "d", link: nil, summary: "", author: "bar", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+
+                let feed1 = Feed(title: "ab", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
+                let feed2 = Feed(title: "cd", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [article3, article4], image: nil)
+                article1.feed = feed1
+                article2.feed = feed1
+                article3.feed = feed2
+                article4.feed = feed2
+
+                beforeEach {
+                    feedRepository.feedsCallback?([feed1, feed2])
+                }
+
+                it("calls the callback with a list of articles from those feeds filtered by article") {
+                    expect(receivedArticles) == [article1, article3]
+                }
+            }
         }
 
         describe("-userActivityForArticle:") {

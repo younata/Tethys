@@ -8,6 +8,16 @@ class FakeArticleUseCase : ArticleUseCase {
     init() {
     }
 
+    private(set) var articlesByAuthorCallCount : Int = 0
+    private var articlesByAuthorArgs : Array<(String, DataStoreBackedArray<Article> -> Void)> = []
+    func articlesByAuthorArgsForCall(callIndex: Int) -> (String, DataStoreBackedArray<Article> -> Void) {
+        return self.articlesByAuthorArgs[callIndex]
+    }
+    func articlesByAuthor(author: String, callback: DataStoreBackedArray<Article> -> Void) {
+        self.articlesByAuthorCallCount++
+        self.articlesByAuthorArgs.append((author, callback))
+    }
+
     private(set) var readArticleCallCount : Int = 0
     var readArticleStub : ((Article) -> (String))?
     private var readArticleArgs : Array<(Article)> = []

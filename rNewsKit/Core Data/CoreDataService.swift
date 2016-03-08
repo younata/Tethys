@@ -1,6 +1,7 @@
 import Foundation
 import CoreData
 
+// swiftlint:disable file_length
 class CoreDataService: DataService {
     private let managedObjectContext: NSManagedObjectContext
 
@@ -426,3 +427,4 @@ class CoreDataService: DataService {
         }
     }
 }
+// swiftlint:enable file_length

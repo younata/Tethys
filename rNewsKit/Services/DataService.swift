@@ -60,33 +60,41 @@ extension DataService {
             return
         }
 
-        var articlesRemaining = articles.count
-
         var articlesToSave: [Article] = []
         var enclosuresToSave: [Enclosure] = []
+
+        var importTasks: [Void -> Void] = []
 
         let checkIfFinished: (Article, [Enclosure]) -> Void = { article, enclosures in
             articlesToSave.append(article)
             enclosuresToSave += enclosures
-            articlesRemaining -= 1
-            if articlesRemaining == 0 {
+            if importTasks.isEmpty {
                 self.batchSave([feed], articles: articlesToSave, enclosures: enclosures, callback: callback)
+            } else {
+                importTasks.popLast()?()
             }
         }
 
         for item in articles {
-            let article = feed.articlesArray.filter { article in
-                return item.title == article.title || item.link == article.link
-            }.first
-            if let article = article {
-                self.updateArticle(article, item: item, feedURL: info.link, callback: checkIfFinished)
-            } else {
-                self.createArticle(feed) { article in
-                    feed.addArticle(article)
+            importTasks.append {
+                let filter: rNewsKit.Article -> Bool = { article in
+                    return item.title == article.title || item.link == article.link
+                }
+                let article = feed.articlesArray.filter(filter).first
+                if let article = article ?? articlesToSave.filter(filter).first {
                     self.updateArticle(article, item: item, feedURL: info.link, callback: checkIfFinished)
+                } else {
+                    self.createArticle(feed) { article in
+                        feed.addArticle(article)
+                        self.updateArticle(article, item: item, feedURL: info.link, callback: checkIfFinished)
+                    }
                 }
             }
         }
+
+        if let task = importTasks.popLast() {
+            task()
+        } else { callback() }
     }
 
     func updateArticle(article: Article, item: Muon.Article, feedURL: NSURL, callback: (Article, [Enclosure]) -> Void) {

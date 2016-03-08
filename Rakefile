@@ -2,6 +2,7 @@ require 'semantic'
 require 'tempfile'
 require 'rest-client'
 require 'json'
+require 'octokit'
 
 def run(command)
   system(command) or raise "RAKE TASK FAILED: #{command}"
@@ -68,9 +69,9 @@ namespace "release" do
   end
 
   def bump_version(version)
-    run "/usr/libexec/PlistBuddy -c 'Set :CFBundleShortVersionString #{version}' RSSClient/Supporting Files/Info.plist"
-    build_version = `/usr/libexec/PlistBuddy -c 'print :CFBundleVersion' RSSClient/Supporting Files/Info.plist`.strip().to_i
-    run "/usr/libexec/PlistBuddy -c 'Set :CFBundleVersion #{build_version + 1}' RSSClient/Supporting Files/Info.plist"
+    run "/usr/libexec/PlistBuddy -c 'Set :CFBundleShortVersionString #{version}' 'RSSClient/Supporting Files/Info.plist'"
+    build_version = `/usr/libexec/PlistBuddy -c 'print :CFBundleVersion' 'RSSClient/Supporting Files/Info.plist'`.strip().to_i
+    run "/usr/libexec/PlistBuddy -c 'Set :CFBundleVersion #{build_version + 1}' 'RSSClient/Supporting Files/Info.plist'"
   end
 
   desc "Commits and pushes a release of the new version"
@@ -82,8 +83,8 @@ namespace "release" do
 
     message = draft_release_notes
     run "git add fastlane/metadata/en-US/release_notes.txt"
-    run "git add RSSClient/Supporting Files/Info.plist"
-    version = `/usr/libexec/PlistBuddy -c 'print :CFBundleShortVersionString' RSSClient/Supporting Files/Info.plist`.strip()
+    run "git add 'RSSClient/Supporting Files/Info.plist'"
+    version = `/usr/libexec/PlistBuddy -c 'print :CFBundleShortVersionString' 'RSSClient/Supporting Files/Info.plist'`.strip()
 
     run "git ci -m '#{version}'"
 
@@ -97,25 +98,14 @@ namespace "release" do
 
     version_str = "v#{version}"
 
-    body_data = {
-        :tag_name => version_str,
-        :name => version,
-        :body => message
-    }
-
-    headers = {
-        'Content-Type' => 'application/json',
-        'Accept' => 'application/vnd.github.v3+json'
-    }
-
     puts "Creating github release"
 
-    response = RestClient.post("https://younata:#{release_token}@api.github.com/repos/younata/RSSClient/releases", body_data, headers)
-
-    if response.code == 201
+    client = Octokit::Client.new(:access_token => release_token)
+    client.create_release("younata/RSSClient", version_str, {:name => version, :body => message})
+    if 200 <= client.last_response.status < 300
       puts 'Successfully uploaded release'
     else
-      puts "Unable to upload release, data: #{response.to_str}"
+      puts 'Error uploading release'
     end
   end
 end

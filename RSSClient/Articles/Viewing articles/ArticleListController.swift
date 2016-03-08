@@ -173,8 +173,8 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
             let article = self.articleForIndexPath(indexPath)
             let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Generic_Delete", comment: ""),
                 handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
-                    self.feedRepository.deleteArticle(article)
                     self.articles.remove(article)
+                    self.feedRepository.deleteArticle(article)
                     tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             })
             let unread = NSLocalizedString("ArticleListController_Cell_EditAction_MarkUnread", comment: "")

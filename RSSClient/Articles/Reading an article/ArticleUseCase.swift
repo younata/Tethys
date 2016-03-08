@@ -2,13 +2,13 @@ import UIKit
 import Ra
 import rNewsKit
 
-public protocol ReadArticleUseCase {
+public protocol ArticleUseCase {
     func readArticle(article: Article) -> String
     func userActivityForArticle(article: Article) -> NSUserActivity
     func toggleArticleRead(article: Article)
 }
 
-public final class DefaultReadArticleUseCase: NSObject, ReadArticleUseCase, Injectable {
+public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
     private let feedRepository: FeedRepository
     private let themeRepository: ThemeRepository
     private let bundle: NSBundle
@@ -98,7 +98,7 @@ public final class DefaultReadArticleUseCase: NSObject, ReadArticleUseCase, Inje
     }
 }
 
-extension DefaultReadArticleUseCase: NSUserActivityDelegate {
+extension DefaultArticleUseCase: NSUserActivityDelegate {
     public func userActivityWillSave(userActivity: NSUserActivity) {
         guard let article = self.mostRecentArticle else { return }
         userActivity.userInfo = [

@@ -22,10 +22,10 @@ class BootstrapWorkFlowSpec: QuickSpec {
             injector.bind(MigrationUseCase.self, toInstance: migrationUseCase)
             injector.bind(UrlOpener.self, toInstance: FakeUrlOpener())
             injector.bind(kMainQueue, toInstance: FakeOperationQueue())
-            let readArticleUseCase = FakeReadArticleUseCase()
-            readArticleUseCase.readArticleReturns("")
-            readArticleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.foo"))
-            injector.bind(ReadArticleUseCase.self, toInstance: readArticleUseCase)
+            let articleUseCase = FakeArticleUseCase()
+            articleUseCase.readArticleReturns("")
+            articleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.foo"))
+            injector.bind(ArticleUseCase.self, toInstance: articleUseCase)
 
             subject = BootstrapWorkFlow(window: window, injector: injector)
         }

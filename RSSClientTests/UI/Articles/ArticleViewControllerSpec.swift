@@ -13,7 +13,7 @@ class ArticleViewControllerSpec: QuickSpec {
         var navigationController: UINavigationController!
         var themeRepository: FakeThemeRepository!
         var urlOpener: FakeUrlOpener!
-        var readArticleUseCase: FakeReadArticleUseCase!
+        var articleUseCase: FakeArticleUseCase!
 
         beforeEach {
             injector = Injector()
@@ -24,8 +24,8 @@ class ArticleViewControllerSpec: QuickSpec {
             urlOpener = FakeUrlOpener()
             injector.bind(UrlOpener.self, toInstance: urlOpener)
 
-            readArticleUseCase = FakeReadArticleUseCase()
-            injector.bind(ReadArticleUseCase.self, toInstance: readArticleUseCase)
+            articleUseCase = FakeArticleUseCase()
+            injector.bind(ArticleUseCase.self, toInstance: articleUseCase)
 
             subject = injector.create(ArticleViewController)!
 
@@ -40,8 +40,8 @@ class ArticleViewControllerSpec: QuickSpec {
 
             subject.backgroundView.hidden = true
 
-            readArticleUseCase.readArticleReturns("hello")
-            readArticleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
+            articleUseCase.readArticleReturns("hello")
+            articleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
             subject.setArticle(Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: []))
 
             expect(subject.backgroundView.hidden) == true
@@ -75,8 +75,8 @@ class ArticleViewControllerSpec: QuickSpec {
 
         describe("Key Commands") {
             beforeEach {
-                readArticleUseCase.readArticleReturns("hello")
-                readArticleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
+                articleUseCase.readArticleReturns("hello")
+                articleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
             }
 
             it("can become first responder") {
@@ -238,13 +238,13 @@ class ArticleViewControllerSpec: QuickSpec {
             let article = Article(title: "article", link: NSURL(string: "https://example.com/article"), summary: "summary", author: "rachel", published: NSDate(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
 
             beforeEach {
-                readArticleUseCase.readArticleStub = {
+                articleUseCase.readArticleStub = {
                     if $0 == article {
                         return $0.content
                     }
                     return "hello"
                 }
-                readArticleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
+                articleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
 
                 subject.setArticle(article)
 
@@ -274,8 +274,8 @@ class ArticleViewControllerSpec: QuickSpec {
             let userActivity = NSUserActivity(activityType: "com.example.test")
 
             beforeEach {
-                readArticleUseCase.readArticleReturns("example")
-                readArticleUseCase.userActivityForArticleReturns(userActivity)
+                articleUseCase.readArticleReturns("example")
+                articleUseCase.userActivityForArticleReturns(userActivity)
 
                 article.feed = feed
                 feed.addArticle(article)
@@ -283,8 +283,8 @@ class ArticleViewControllerSpec: QuickSpec {
             }
 
             it("asks the use case for the html to show") {
-                expect(readArticleUseCase.readArticleCallCount) == 1
-                expect(readArticleUseCase.readArticleArgsForCall(0)) == article
+                expect(articleUseCase.readArticleCallCount) == 1
+                expect(articleUseCase.readArticleArgsForCall(0)) == article
             }
 
             it("sets the user activity up") {

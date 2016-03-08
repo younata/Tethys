@@ -20,10 +20,10 @@ class LocalNotificationHandlerSpec: QuickSpec {
             dataRepository = FakeFeedRepository()
             injector.bind(FeedRepository.self, toInstance: dataRepository)
             injector.bind(UrlOpener.self, toInstance: FakeUrlOpener())
-            let readArticleUseCase = FakeReadArticleUseCase()
-            readArticleUseCase.readArticleReturns("")
-            readArticleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
-            injector.bind(ReadArticleUseCase.self, toInstance: readArticleUseCase)
+            let articleUseCase = FakeArticleUseCase()
+            articleUseCase.readArticleReturns("")
+            articleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
+            injector.bind(ArticleUseCase.self, toInstance: articleUseCase)
 
             subject = injector.create(LocalNotificationHandler)!
 

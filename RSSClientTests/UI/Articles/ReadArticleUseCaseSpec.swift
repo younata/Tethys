@@ -4,9 +4,9 @@ import Nimble
 import rNewsKit
 import rNews
 
-class ReadArticleUseCaseSpec: QuickSpec {
+class ArticleUseCaseSpec: QuickSpec {
     override func spec() {
-        var subject: DefaultReadArticleUseCase!
+        var subject: DefaultArticleUseCase!
         var feedRepository: FakeFeedRepository!
         var themeRepository: FakeThemeRepository!
         let bundle = NSBundle.mainBundle()
@@ -14,7 +14,7 @@ class ReadArticleUseCaseSpec: QuickSpec {
         beforeEach {
             feedRepository = FakeFeedRepository()
             themeRepository = FakeThemeRepository()
-            subject = DefaultReadArticleUseCase(feedRepository: feedRepository, themeRepository: themeRepository, bundle: bundle)
+            subject = DefaultArticleUseCase(feedRepository: feedRepository, themeRepository: themeRepository, bundle: bundle)
         }
 
         describe("-userActivityForArticle:") {

@@ -14,7 +14,7 @@ public class ArticleViewController: UIViewController, Injectable {
         guard let article = article else { return }
         if show { self.showArticle(article, onWebView: self.content) }
 
-        self.userActivity = self.readArticleUseCase.userActivityForArticle(article)
+        self.userActivity = self.articleUseCase.userActivityForArticle(article)
 
         self.toolbarItems = [self.spacer(), self.shareButton, self.spacer()]
         if #available(iOS 9, *) {
@@ -46,7 +46,7 @@ public class ArticleViewController: UIViewController, Injectable {
 
     public let themeRepository: ThemeRepository
     public let urlOpener: UrlOpener
-    private let readArticleUseCase: ReadArticleUseCase
+    private let articleUseCase: ArticleUseCase
 
     public lazy var panGestureRecognizer: ScreenEdgePanGestureRecognizer = {
         return ScreenEdgePanGestureRecognizer(target: self, action: "didSwipe:")
@@ -54,10 +54,10 @@ public class ArticleViewController: UIViewController, Injectable {
 
     public init(themeRepository: ThemeRepository,
                 urlOpener: UrlOpener,
-                readArticleUseCase: ReadArticleUseCase) {
+                articleUseCase: ArticleUseCase) {
         self.themeRepository = themeRepository
         self.urlOpener = urlOpener
-        self.readArticleUseCase = readArticleUseCase
+        self.articleUseCase = articleUseCase
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -66,14 +66,14 @@ public class ArticleViewController: UIViewController, Injectable {
         self.init(
             themeRepository: injector.create(ThemeRepository)!,
             urlOpener: injector.create(UrlOpener)!,
-            readArticleUseCase: injector.create(ReadArticleUseCase)!
+            articleUseCase: injector.create(ArticleUseCase)!
         )
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     private func showArticle(article: Article, onWebView webView: UIWebView) {
-        webView.loadHTMLString(self.readArticleUseCase.readArticle(article), baseURL: article.link)
+        webView.loadHTMLString(self.articleUseCase.readArticle(article), baseURL: article.link)
 
         let enclosures = article.enclosuresArray.filter(enclosureIsSupported)
         self.view.layoutIfNeeded()
@@ -206,7 +206,7 @@ public class ArticleViewController: UIViewController, Injectable {
 
     @objc private func toggleArticleRead() {
         guard let article = self.article else { return }
-        self.readArticleUseCase.toggleArticleRead(article)
+        self.articleUseCase.toggleArticleRead(article)
     }
 
     private func configureContent() {

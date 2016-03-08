@@ -1,5 +1,7 @@
-Adds initial support for video enclosures (minimal support for vidcasts)
+Migrate from using Core Data to Realm - this'll involve a 1-time only migration that will take up to a couple minutes. AFter which, everything will be much snappier.
 
-Shows the number of supported (that is, video) enclosures for a given article in the article list.
-Better interpret titles of feeds and articles
-Minor bug fixes performance improvements
+Add support for related articles - that is, links that match other articles. Tapping on a link that matches another article will load that article in the article view, instead of a browser.
+
+Fix most cases where UI would freeze up during import.
+
+Various other bug fixes and performance improvements

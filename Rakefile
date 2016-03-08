@@ -68,9 +68,9 @@ namespace "release" do
   end
 
   def bump_version(version)
-    run "/usr/libexec/PlistBuddy -c 'Set :CFBundleShortVersionString #{version}' RSSClient/Info.plist"
-    build_version = `/usr/libexec/PlistBuddy -c 'print :CFBundleVersion' RSSClient/Info.plist`.strip().to_i
-    run "/usr/libexec/PlistBuddy -c 'Set :CFBundleVersion #{build_version + 1}' RSSClient/Info.plist"
+    run "/usr/libexec/PlistBuddy -c 'Set :CFBundleShortVersionString #{version}' RSSClient/Supporting Files/Info.plist"
+    build_version = `/usr/libexec/PlistBuddy -c 'print :CFBundleVersion' RSSClient/Supporting Files/Info.plist`.strip().to_i
+    run "/usr/libexec/PlistBuddy -c 'Set :CFBundleVersion #{build_version + 1}' RSSClient/Supporting Files/Info.plist"
   end
 
   desc "Commits and pushes a release of the new version"
@@ -82,8 +82,8 @@ namespace "release" do
 
     message = draft_release_notes
     run "git add fastlane/metadata/en-US/release_notes.txt"
-    run "git add RSSClient/Info.plist"
-    version = `/usr/libexec/PlistBuddy -c 'print :CFBundleShortVersionString' RSSClient/Info.plist`.strip()
+    run "git add RSSClient/Supporting Files/Info.plist"
+    version = `/usr/libexec/PlistBuddy -c 'print :CFBundleShortVersionString' RSSClient/Supporting Files/Info.plist`.strip()
 
     run "git ci -m '#{version}'"
 

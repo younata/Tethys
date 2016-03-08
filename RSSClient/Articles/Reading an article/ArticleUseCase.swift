@@ -40,9 +40,8 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
                 return $0.combine($1.articlesArray)
             }
 
-            callback(allArticles.filterWithPredicate(NSPredicate(format: "%@ IN author", author)))
+            callback(allArticles.filterWithPredicate(NSPredicate(format: "author = %@", author)))
         }
-        callback(DataStoreBackedArray())
     }
 
     public func readArticle(article: Article) -> String {

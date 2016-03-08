@@ -155,7 +155,8 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
             return DataStoreBackedArray(realmDataType: dataType,
                 predicate: compoundPredicate,
                 realmConfiguration: realmConfiguration,
-                conversionFunction: conversionFunction)
+                conversionFunction: conversionFunction,
+                sortDescriptors: self.sortDescriptors)
         }
 
     }

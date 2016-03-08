@@ -373,7 +373,8 @@ class ArticleViewControllerSpec: QuickSpec {
                         expect(activityViewController.applicationActivities() as? [NSObject]).toNot(beNil())
                         if let activities = activityViewController.applicationActivities() as? [NSObject] {
                             expect(activities.first).to(beAnInstanceOf(TOActivitySafari.self))
-                            expect(activities.last).to(beAnInstanceOf(TOActivityChrome.self))
+                            expect(activities[1]).to(beAnInstanceOf(TOActivityChrome.self))
+                            expect(activities.last).to(beAnInstanceOf(ArticlesByAuthorActivity.self))
                         }
                     }
                 }

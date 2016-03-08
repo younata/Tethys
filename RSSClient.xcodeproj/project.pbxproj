@@ -234,6 +234,7 @@
 		8992D4331C3665B7004A5A35 /* FakeUpdateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8992D4321C3665B7004A5A35 /* FakeUpdateService.swift */; };
 		8992D4341C3665B7004A5A35 /* FakeUpdateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8992D4321C3665B7004A5A35 /* FakeUpdateService.swift */; };
 		8992D43C1C37C9B0004A5A35 /* rNewsAcceptanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8992D43B1C37C9B0004A5A35 /* rNewsAcceptanceTests.swift */; };
+		8994F0EB1C8F53E600920E6D /* AuthorActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8994F0EA1C8F53E600920E6D /* AuthorActivity.swift */; };
 		899788811C508BB400B408C4 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899788801C508BB400B408C4 /* SnapshotHelper.swift */; };
 		8997C7F51B248D5A00972930 /* FakeWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C7F41B248D5A00972930 /* FakeWebView.swift */; };
 		8997C7F71B25074900972930 /* ValidatorViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C7F61B25074900972930 /* ValidatorViewSpec.swift */; };
@@ -643,6 +644,7 @@
 		8992D4391C37C9B0004A5A35 /* rNewsAcceptanceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = rNewsAcceptanceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8992D43B1C37C9B0004A5A35 /* rNewsAcceptanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = rNewsAcceptanceTests.swift; sourceTree = "<group>"; };
 		8992D43D1C37C9B0004A5A35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8994F0EA1C8F53E600920E6D /* AuthorActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorActivity.swift; sourceTree = "<group>"; };
 		899788801C508BB400B408C4 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
 		8997C7F41B248D5A00972930 /* FakeWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeWebView.swift; sourceTree = "<group>"; };
 		8997C7F61B25074900972930 /* ValidatorViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidatorViewSpec.swift; sourceTree = "<group>"; };
@@ -1484,6 +1486,7 @@
 			children = (
 				890B78C71C77FD200066E201 /* ArticleUseCase.swift */,
 				89C830B519D7DE97009924DA /* ArticleViewController.swift */,
+				8994F0EA1C8F53E600920E6D /* AuthorActivity.swift */,
 				8918D4D31B84593100DCDE0E /* ClearnessDark.css */,
 				89F98B9E1B9FC659005C3CA8 /* ScreenEdgePanGestureRecognizer.swift */,
 				8918D4D81B85887E00DCDE0E /* darkhub2.css */,
@@ -2200,6 +2203,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				890B78BC1C77A5100066E201 /* DocumentationUseCase.swift in Sources */,
+				8994F0EB1C8F53E600920E6D /* AuthorActivity.swift in Sources */,
 				8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */,
 				89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */,
 				89D970BD1B3929A600ED84B8 /* BackgroundFetchHandler.swift in Sources */,

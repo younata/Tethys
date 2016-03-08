@@ -91,6 +91,8 @@
 "ArticleViewController_Command_OpenInWebView" = "Open Article in WebView";
 "ArticleViewController_Command_OpenShareSheet" = "Open Share Sheet";
 
+"AuthorActivity_Title" = "Articles by %@";
+
 "AppDelegate_UnreadFeed_Title" = "All Unread";
 "AppDelegate_UnreadFeed_Summary" = "All unread articles";
 

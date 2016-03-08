@@ -37,6 +37,9 @@ class AppDelegateSpec: QuickSpec {
             dataRepository = FakeFeedRepository()
             injector.bind(FeedRepository.self, toInstance: dataRepository)
 
+            injector.bind(MigrationUseCase.self, toInstance: FakeMigrationUseCase())
+            injector.bind(ImportUseCase.self, toInstance: FakeImportUseCase())
+
             InjectorModule().configureInjector(injector)
 
             notificationHandler = FakeNotificationHandler()

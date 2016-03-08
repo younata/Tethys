@@ -47,6 +47,7 @@ public class ArticleViewController: UIViewController, Injectable {
     public let themeRepository: ThemeRepository
     public let urlOpener: UrlOpener
     private let articleUseCase: ArticleUseCase
+    private let articleListController: Void -> ArticleListController
 
     public lazy var panGestureRecognizer: ScreenEdgePanGestureRecognizer = {
         return ScreenEdgePanGestureRecognizer(target: self, action: "didSwipe:")
@@ -54,10 +55,12 @@ public class ArticleViewController: UIViewController, Injectable {
 
     public init(themeRepository: ThemeRepository,
                 urlOpener: UrlOpener,
-                articleUseCase: ArticleUseCase) {
+                articleUseCase: ArticleUseCase,
+                articleListController: Void -> ArticleListController) {
         self.themeRepository = themeRepository
         self.urlOpener = urlOpener
         self.articleUseCase = articleUseCase
+        self.articleListController = articleListController
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -66,7 +69,8 @@ public class ArticleViewController: UIViewController, Injectable {
         self.init(
             themeRepository: injector.create(ThemeRepository)!,
             urlOpener: injector.create(UrlOpener)!,
-            articleUseCase: injector.create(ArticleUseCase)!
+            articleUseCase: injector.create(ArticleUseCase)!,
+            articleListController: { injector.create(ArticleListController)! }
         )
     }
 
@@ -292,12 +296,27 @@ public class ArticleViewController: UIViewController, Injectable {
     }
 
     @objc private func share() {
-        guard let link = self.article?.link else { return }
+        guard let article = self.article, link = article.link else { return }
         let safari = TOActivitySafari()
         let chrome = TOActivityChrome()
+        let authorActivity = AuthorActivity(author: article.author)
+
+        var activities: [UIActivity] = [safari, chrome]
+        if !article.author.isEmpty { activities.append(authorActivity) }
 
         let activity = UIActivityViewController(activityItems: [link],
-            applicationActivities: [safari, chrome])
+            applicationActivities: activities)
+        activity.completionWithItemsHandler = { activityType, completed, _, _ in
+            guard completed else { return }
+            if activityType == authorActivity.activityType() {
+                let articleListController = self.articleListController()
+                self.articleUseCase.articlesByAuthor(article.author) {
+                    articleListController.articles = $0
+                    articleListController.title = article.author
+                    self.showViewController(articleListController, sender: self)
+                }
+            }
+        }
         self.presentViewController(activity, animated: true, completion: nil)
     }
 

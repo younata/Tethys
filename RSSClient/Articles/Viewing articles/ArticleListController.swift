@@ -40,7 +40,7 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
         self.init(
             feedRepository: injector.create(FeedRepository)!,
             themeRepository: injector.create(ThemeRepository)!,
-            articleViewController: {injector.create(ArticleViewController)!}
+            articleViewController: { injector.create(ArticleViewController)! }
         )
     }
 

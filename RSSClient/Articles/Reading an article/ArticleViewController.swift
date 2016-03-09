@@ -309,8 +309,8 @@ public class ArticleViewController: UIViewController, Injectable {
         activity.completionWithItemsHandler = { activityType, completed, _, _ in
             guard completed else { return }
             if activityType == authorActivity.activityType() {
-                let articleListController = self.articleListController()
                 self.articleUseCase.articlesByAuthor(article.author) {
+                    let articleListController = self.articleListController()
                     articleListController.articles = $0
                     articleListController.title = article.author
                     self.showViewController(articleListController, sender: self)

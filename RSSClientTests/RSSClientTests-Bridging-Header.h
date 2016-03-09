@@ -2,3 +2,4 @@
 #import "NSUserActivity+rNewsTests.h"
 #import "WKWebView+rNewsTests.h"
 #import "UITraitCollection+rNewsTests.h"
+#import "UIViewController+rNewsTests.h"

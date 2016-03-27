@@ -365,7 +365,7 @@ class DataRepository: FeedRepository {
                 }
                 updatedFeeds.append(feed)
 
-                currentProgress++
+                currentProgress += 1
                 self.mainQueue.addOperationWithBlock {
                     for object in self.subscribers.allObjects {
                         if let subscriber = object as? DataSubscriber {
@@ -374,7 +374,7 @@ class DataRepository: FeedRepository {
                     }
                 }
 
-                feedsLeft--
+                feedsLeft -= 1
                 if feedsLeft == 0 {
                     self.allFeeds {
                         callback($0, errors)

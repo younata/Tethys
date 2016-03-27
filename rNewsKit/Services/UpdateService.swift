@@ -63,7 +63,7 @@ class UpdateService: UpdateServiceType, NetworkClientDelegate {
             return
         }
         self.callbacksInProgress[url] = (feed, callback)
-        self.urlSession.downloadTaskWithURL(url).resume()
+        self.downloadURL(url)
     }
 
     // MARK: NetworkClientDelegate
@@ -76,7 +76,7 @@ class UpdateService: UpdateServiceType, NetworkClientDelegate {
         self.dataServiceFactory.currentDataService.updateFeed(feed, info: muonFeed) {
             if feed.image == nil, let imageUrl = muonFeed.imageURL where !imageUrl.absoluteString.isEmpty {
                 self.callbacksInProgress[imageUrl] = feedCallback
-                self.urlSession.downloadTaskWithURL(imageUrl).resume()
+                self.downloadURL(imageUrl)
             } else {
                 callback(feed, nil)
             }
@@ -94,7 +94,12 @@ class UpdateService: UpdateServiceType, NetworkClientDelegate {
         }
     }
 
-    func didDownloadData(data: NSData, url: NSURL) {}
+    func didDownloadData(data: NSData, url: NSURL) {
+        let error = NSError(domain: "com.rachelbrindle.rnews.parseError",
+            code: 1,
+            userInfo: [NSLocalizedDescriptionKey: "Unable to parse data"])
+        self.didFailToDownloadDataFromUrl(url, error: error)
+    }
 
     func didFailToDownloadDataFromUrl(url: NSURL, error: NSError?) {
         guard error != nil, let callback = self.callbacksInProgress[url] else { return }
@@ -102,5 +107,12 @@ class UpdateService: UpdateServiceType, NetworkClientDelegate {
         let feed = callback.feed
         let function = callback.callback
         function(feed, error)
+    }
+
+    // MARK: Private
+
+    private func downloadURL(url: NSURL) {
+        let request = NSURLRequest(URL: url, cachePolicy: .UseProtocolCachePolicy, timeoutInterval: 30)
+        self.urlSession.downloadTaskWithRequest(request).resume()
     }
 }

@@ -42,10 +42,10 @@ class FakeURLSession: NSURLSession {
     }
 
     var lastDownloadTask: FakeDownloadTask?
-    override func downloadTaskWithURL(url: NSURL) -> NSURLSessionDownloadTask {
-        lastURL = url
+    override func downloadTaskWithRequest(request: NSURLRequest) -> NSURLSessionDownloadTask {
+        lastURL = request.URL
         let task = FakeDownloadTask()
-        task._request = NSURLRequest(URL: url)
+        task._request = request
         lastDownloadTask = task
         downloadTasks.append(task)
         return task

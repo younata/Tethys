@@ -219,7 +219,6 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
             self.entityName = ""
             self.managedObjectContext = nil
             self.coreDataConversionFunction = nil
-            self.internalCount = self.calculateCount()
     }
 
     public init(entityName: String,

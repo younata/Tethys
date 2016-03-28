@@ -22,25 +22,36 @@ default_platform :ios
 
 
 platform :ios do
-  before_all do
-    sh "bundle"
-  end
-
-  desc "Runs all the tests"
+  desc 'Runs all the tests'
   lane :test do
-    sh "bundle exec rake test:ios"
+    scan(scheme: 'RSSClientTests')
+    scan(scheme: 'rNewsKitTests', clean: false, skip_build: true)
   end
 
-  desc "Deploy a new version to the App Store"
-  lane :deploy do
-    sh "bundle exec rake release:publish"
-    sh "export SNAPSHOT_FORCE_DELETE=1; snapshot reset_simulators"
+  lane :test_app do
+    scan(scheme: 'RSSClientTests')
+  end
+
+  lane :test_kit do
+    scan(scheme: 'rNewsKitTests')
+  end
+
+  lane :test_acceptance do
+    scan(scheme: 'rNewsAcceptanceTests')
+  end
+
+  desc 'Deploy a new version to TestFlight'
+  lane :deploy_testflight do
+  end
+
+  desc 'Deploy a new version to the App Store'
+  lane :deploy_app_store do
+    sh 'bundle exec rake release:publish'
+    sh 'SNAPSHOT_FORCE_DELETE=1 snapshot reset_simulators'
     snapshot
     gym(scheme: "RSSClient")
     deliver
   end
-
-  # You can define as many lanes as you want
 
   after_all do |lane|
     # This block is called, only if the executed lane was successful

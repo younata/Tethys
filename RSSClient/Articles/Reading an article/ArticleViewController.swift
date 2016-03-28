@@ -95,7 +95,7 @@ public class ArticleViewController: UIViewController, Injectable {
     }
 
     private func spacer() -> UIBarButtonItem {
-        return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: Selector(""))
+        return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: Selector())
     }
 
     public let backgroundView: UIView = {

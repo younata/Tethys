@@ -40,7 +40,7 @@ class FakeDataServiceFactory : DataServiceFactoryType {
         }
     }
     func newDataService() -> (DataService) {
-        self.newDataServiceCallCount++
+        self.newDataServiceCallCount += 1
         return self.newDataServiceStub!()
     }
 

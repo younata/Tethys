@@ -117,9 +117,9 @@ class ArticleViewControllerSpec: QuickSpec {
 
                 it("should not list the next/previous article commands") {
                     let expectedCommands = [
-                        UIKeyCommand(input: "r", modifierFlags: .Shift, action: Selector("")),
-                        UIKeyCommand(input: "l", modifierFlags: .Command, action: Selector("")),
-                        UIKeyCommand(input: "s", modifierFlags: .Command, action: Selector("")),
+                        UIKeyCommand(input: "r", modifierFlags: .Shift, action: Selector()),
+                        UIKeyCommand(input: "l", modifierFlags: .Command, action: Selector()),
+                        UIKeyCommand(input: "s", modifierFlags: .Command, action: Selector()),
                     ]
                     let expectedDiscoverabilityTitles = [
                         "Toggle Read",
@@ -140,10 +140,10 @@ class ArticleViewControllerSpec: QuickSpec {
 
                 it("should not list the previous article command") {
                     let expectedCommands = [
-                        UIKeyCommand(input: "n", modifierFlags: .Control, action: Selector("")),
-                        UIKeyCommand(input: "r", modifierFlags: .Shift, action: Selector("")),
-                        UIKeyCommand(input: "l", modifierFlags: .Command, action: Selector("")),
-                        UIKeyCommand(input: "s", modifierFlags: .Command, action: Selector("")),
+                        UIKeyCommand(input: "n", modifierFlags: .Control, action: Selector()),
+                        UIKeyCommand(input: "r", modifierFlags: .Shift, action: Selector()),
+                        UIKeyCommand(input: "l", modifierFlags: .Command, action: Selector()),
+                        UIKeyCommand(input: "s", modifierFlags: .Command, action: Selector()),
                     ]
                     let expectedDiscoverabilityTitles = [
                         "Next Article",
@@ -165,10 +165,10 @@ class ArticleViewControllerSpec: QuickSpec {
 
                 it("should not list the next article command") {
                     let expectedCommands = [
-                        UIKeyCommand(input: "p", modifierFlags: .Control, action: Selector("")),
-                        UIKeyCommand(input: "r", modifierFlags: .Shift, action: Selector("")),
-                        UIKeyCommand(input: "l", modifierFlags: .Command, action: Selector("")),
-                        UIKeyCommand(input: "s", modifierFlags: .Command, action: Selector("")),
+                        UIKeyCommand(input: "p", modifierFlags: .Control, action: Selector()),
+                        UIKeyCommand(input: "r", modifierFlags: .Shift, action: Selector()),
+                        UIKeyCommand(input: "l", modifierFlags: .Command, action: Selector()),
+                        UIKeyCommand(input: "s", modifierFlags: .Command, action: Selector()),
                     ]
                     let expectedDiscoverabilityTitles = [
                         "Previous Article",
@@ -190,10 +190,10 @@ class ArticleViewControllerSpec: QuickSpec {
 
                 it("should not list the next article command") {
                     let expectedCommands = [
-                        UIKeyCommand(input: "p", modifierFlags: .Control, action: Selector("")),
-                        UIKeyCommand(input: "n", modifierFlags: .Control, action: Selector("")),
-                        UIKeyCommand(input: "r", modifierFlags: .Shift, action: Selector("")),
-                        UIKeyCommand(input: "s", modifierFlags: .Command, action: Selector("")),
+                        UIKeyCommand(input: "p", modifierFlags: .Control, action: Selector()),
+                        UIKeyCommand(input: "n", modifierFlags: .Control, action: Selector()),
+                        UIKeyCommand(input: "r", modifierFlags: .Shift, action: Selector()),
+                        UIKeyCommand(input: "s", modifierFlags: .Command, action: Selector()),
                     ]
                     let expectedDiscoverabilityTitles = [
                         "Previous Article",
@@ -215,11 +215,11 @@ class ArticleViewControllerSpec: QuickSpec {
 
                 it("should list the complete list of key commands") {
                     let expectedCommands = [
-                        UIKeyCommand(input: "p", modifierFlags: .Control, action: Selector("")),
-                        UIKeyCommand(input: "n", modifierFlags: .Control, action: Selector("")),
-                        UIKeyCommand(input: "r", modifierFlags: .Shift, action: Selector("")),
-                        UIKeyCommand(input: "l", modifierFlags: .Command, action: Selector("")),
-                        UIKeyCommand(input: "s", modifierFlags: .Command, action: Selector("")),
+                        UIKeyCommand(input: "p", modifierFlags: .Control, action: Selector()),
+                        UIKeyCommand(input: "n", modifierFlags: .Control, action: Selector()),
+                        UIKeyCommand(input: "r", modifierFlags: .Shift, action: Selector()),
+                        UIKeyCommand(input: "l", modifierFlags: .Command, action: Selector()),
+                        UIKeyCommand(input: "s", modifierFlags: .Command, action: Selector()),
                     ]
                     let expectedDiscoverabilityTitles = [
                         "Previous Article",

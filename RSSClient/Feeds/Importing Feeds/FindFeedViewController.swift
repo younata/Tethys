@@ -78,7 +78,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
         self.navigationController?.toolbarHidden = false
         func spacer() -> UIBarButtonItem {
-            return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: Selector(""))
+            return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: Selector())
         }
         if self.lookForFeeds {
             self.toolbarItems = [self.back, self.forward, spacer(), dismiss, spacer(), self.addFeedButton]

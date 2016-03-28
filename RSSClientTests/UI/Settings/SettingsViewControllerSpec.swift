@@ -135,7 +135,7 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
 
                         let expectedCommands = [
-                            UIKeyCommand(input: "2", modifierFlags: .Command, action: Selector("")),
+                            UIKeyCommand(input: "2", modifierFlags: .Command, action: Selector()),
                         ]
                         let expectedDiscoverabilityTitles = [
                             "Change Theme to 'Dark'",
@@ -167,7 +167,7 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
 
                         let expectedCommands = [
-                            UIKeyCommand(input: "1", modifierFlags: .Command, action: ""),
+                            UIKeyCommand(input: "1", modifierFlags: .Command, action: Selector()),
                         ]
                         let expectedDiscoverabilityTitles = [
                             "Change Theme to 'Default'",
@@ -198,8 +198,8 @@ class SettingsViewControllerSpec: QuickSpec {
                     let commands = allCommands[allCommands.count - 2..<allCommands.count]
 
                     let expectedCommands = [
-                        UIKeyCommand(input: "s", modifierFlags: .Command, action: Selector("")),
-                        UIKeyCommand(input: "w", modifierFlags: .Command, action: Selector("")),
+                        UIKeyCommand(input: "s", modifierFlags: .Command, action: Selector()),
+                        UIKeyCommand(input: "w", modifierFlags: .Command, action: Selector()),
                     ]
                     let expectedDiscoverabilityTitles = [
                         "Save and dismiss",
@@ -595,7 +595,7 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
 
                 it("has two cells") {
-                    expect(subject.tableView.numberOfRowsInSection(sectionNumber)).to(equal(1))
+                    expect(subject.tableView.numberOfRowsInSection(sectionNumber)).to(equal(2))
                 }
 
                 describe("the first cell") {

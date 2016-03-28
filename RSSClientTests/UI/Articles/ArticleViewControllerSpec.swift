@@ -402,6 +402,7 @@ class ArticleViewControllerSpec: QuickSpec {
                             articleListController = ArticleListController(
                                 feedRepository: FakeFeedRepository(),
                                 themeRepository: FakeThemeRepository(),
+                                settingsRepository: SettingsRepository(userDefaults: nil),
                                 articleViewController: { subject }
                             )
                             injector.bind(ArticleListController.self, toInstance: articleListController)

@@ -13,12 +13,12 @@ public class ArticleCell: UITableViewCell {
             self.unread.unread = hasNotRead ? 1 : 0
             self.unreadWidth.constant = hasNotRead ? 30 : 0
             if let readingTime = self.article?.estimatedReadingTime where readingTime > 0 {
-                self.readingTime.hidden = false
+                self.managedReadingTimeHidden()
                 let localizedFormat = NSLocalizedString("ArticleCell_EstimatedReadingTime", comment: "")
                 let formattedTime = self.timeFormatter.stringFromTimeInterval(NSTimeInterval(readingTime * 60)) ?? ""
                 self.readingTime.text = NSString.localizedStringWithFormat(localizedFormat, formattedTime) as String
             } else {
-                self.readingTime.hidden = true
+                self.managedReadingTimeHidden()
                 self.readingTime.text = nil
             }
 
@@ -48,6 +48,12 @@ public class ArticleCell: UITableViewCell {
         }
     }
 
+    public var settingsRepository: SettingsRepository? = nil {
+        didSet {
+            self.settingsRepository?.addSubscriber(self)
+        }
+    }
+
     private var unreadWidth: NSLayoutConstraint! = nil
 
     private let dateFormatter: NSDateFormatter = {
@@ -66,6 +72,14 @@ public class ArticleCell: UITableViewCell {
         formatter.unitsStyle = .Full
         return formatter
     }()
+
+    private func managedReadingTimeHidden() {
+        guard let article = self.article else { return }
+        let articleWantsToShow = article.estimatedReadingTime > 0
+        let userWantsToShow = self.settingsRepository?.showEstimatedReadingLabel ?? true
+
+        self.readingTime.hidden = !(articleWantsToShow && userWantsToShow)
+    }
 
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -134,5 +148,11 @@ extension ArticleCell: ThemeRepositorySubscriber {
         self.enclosures.textColor = themeRepository.textColor
 
         self.backgroundColor = themeRepository.backgroundColor
+    }
+}
+
+extension ArticleCell: SettingsRepositorySubscriber {
+    public func didChangeSetting(settingsRepository: SettingsRepository) {
+        self.managedReadingTimeHidden()
     }
 }

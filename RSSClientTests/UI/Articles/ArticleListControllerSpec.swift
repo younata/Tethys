@@ -68,6 +68,7 @@ class ArticleListControllerSpec: QuickSpec {
         var articles: [Article] = []
         var dataRepository: FakeFeedRepository! = nil
         var themeRepository: FakeThemeRepository! = nil
+        var settingsRepository: SettingsRepository! = nil
 
         beforeEach {
             injector = Injector()
@@ -77,6 +78,9 @@ class ArticleListControllerSpec: QuickSpec {
             injector.bind(kMainQueue, toInstance: mainQueue)
 
             injector.bind(UrlOpener.self, toInstance: FakeUrlOpener())
+
+            settingsRepository = SettingsRepository(userDefaults: nil)
+            injector.bind(SettingsRepository.self, toInstance: settingsRepository)
 
             let useCase = FakeArticleUseCase()
             useCase.readArticleReturns("hello")
@@ -296,6 +300,17 @@ class ArticleListControllerSpec: QuickSpec {
 
                             it("should reset the articles") {
                                 expect(subject.tableView(subject.tableView, numberOfRowsInSection: 0)).to(equal(articles.count))
+                            }
+                        }
+                    }
+
+                    it("has a set settings repository") {
+                        for section in 0..<subject.tableView.numberOfSections {
+                            for row in 0..<subject.tableView.numberOfRowsInSection(section) {
+                                let indexPath = NSIndexPath(forRow: row, inSection: section)
+                                let cell = subject.tableView(subject.tableView, cellForRowAtIndexPath: indexPath) as? ArticleCell
+                                expect(cell).toNot(beNil())
+                                expect(cell?.settingsRepository) === settingsRepository
                             }
                         }
                     }

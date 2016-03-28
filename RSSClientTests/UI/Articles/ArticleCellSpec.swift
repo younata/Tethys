@@ -7,6 +7,7 @@ class ArticleCellSpec: QuickSpec {
     override func spec() {
         var subject: ArticleCell! = nil
         var themeRepository: FakeThemeRepository! = nil
+        var settingsRepository: SettingsRepository! = nil
 
         let unupdatedArticle = Article(title: "title", link: nil, summary: "summary", author: "Rachel", published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
         let readArticle = Article(title: "title", link: nil, summary: "summary", author: "Rachel", published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: NSDate(timeIntervalSinceReferenceDate: 100000), identifier: "", content: "content", read: true, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
@@ -14,8 +15,10 @@ class ArticleCellSpec: QuickSpec {
         beforeEach {
             subject = ArticleCell(style: .Default, reuseIdentifier: nil)
             themeRepository = FakeThemeRepository()
+            settingsRepository = SettingsRepository(userDefaults: nil)
             subject.article = unupdatedArticle
             subject.themeRepository = themeRepository
+            subject.settingsRepository = settingsRepository
         }
 
        describe("changing the theme") {
@@ -33,6 +36,16 @@ class ArticleCellSpec: QuickSpec {
 
             it("changes the cell's background colors") {
                 expect(subject.backgroundColor) == themeRepository.backgroundColor
+            }
+        }
+
+        describe("turning off SettingsRepository.showEstimatedReadingLabel") {
+            beforeEach {
+                settingsRepository.showEstimatedReadingLabel = false
+            }
+
+            it("hides the readingTime label") {
+                expect(subject.readingTime.hidden) == true
             }
         }
 

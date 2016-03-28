@@ -14,7 +14,7 @@ class FakeArticleUseCase : ArticleUseCase {
         return self.articlesByAuthorArgs[callIndex]
     }
     func articlesByAuthor(author: String, callback: DataStoreBackedArray<Article> -> Void) {
-        self.articlesByAuthorCallCount++
+        self.articlesByAuthorCallCount += 1
         self.articlesByAuthorArgs.append((author, callback))
     }
 
@@ -47,7 +47,7 @@ class FakeArticleUseCase : ArticleUseCase {
         return self.userActivityForArticleArgs[callIndex]
     }
     func userActivityForArticle(article: Article) -> (NSUserActivity) {
-        self.userActivityForArticleCallCount++
+        self.userActivityForArticleCallCount += 1
         self.userActivityForArticleArgs.append((article))
         return self.userActivityForArticleStub!(article)
     }

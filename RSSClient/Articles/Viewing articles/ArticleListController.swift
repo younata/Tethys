@@ -15,6 +15,7 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
 
     private let feedRepository: FeedRepository
     private let themeRepository: ThemeRepository
+    private let settingsRepository: SettingsRepository
     private let articleViewController: Void -> ArticleViewController
 
     public lazy var searchBar: UISearchBar = {
@@ -28,9 +29,11 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
 
     public init(feedRepository: FeedRepository,
                 themeRepository: ThemeRepository,
+                settingsRepository: SettingsRepository,
                 articleViewController: Void -> ArticleViewController) {
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository
+        self.settingsRepository = settingsRepository
         self.articleViewController = articleViewController
 
         super.init(style: .Plain)
@@ -40,6 +43,7 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
         self.init(
             feedRepository: injector.create(FeedRepository)!,
             themeRepository: injector.create(ThemeRepository)!,
+            settingsRepository: injector.create(SettingsRepository)!,
             articleViewController: { injector.create(ArticleViewController)! }
         )
     }
@@ -145,6 +149,7 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
                 forIndexPath: indexPath) as! ArticleCell
 
             cell.themeRepository = self.themeRepository
+            cell.settingsRepository = self.settingsRepository
             cell.article = article
 
         return cell

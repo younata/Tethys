@@ -20,7 +20,7 @@ class FakeDocumentationUseCase : DocumentationUseCase {
         return self.htmlForDocumentArgs[callIndex]
     }
     func htmlForDocument(document: Document) -> (String?) {
-        self.htmlForDocumentCallCount++
+        self.htmlForDocumentCallCount += 1
         self.htmlForDocumentArgs.append((document))
         return self.htmlForDocumentStub!(document)
     }

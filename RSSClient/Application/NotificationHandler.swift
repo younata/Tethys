@@ -3,7 +3,7 @@ import Ra
 import rNewsKit
 
 public protocol NotificationHandler {
-    func enableNotifications( notificationSource: LocalNotificationSource)
+    func enableNotifications(notificationSource: LocalNotificationSource)
     func handleLocalNotification(notification: UILocalNotification, window: UIWindow)
     func handleAction(identifier: String?, notification: UILocalNotification)
     func sendLocalNotification(notificationSource: LocalNotificationSource, article: Article)

@@ -589,12 +589,12 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
                 }
 
-                it("should be titled 'Advanced'") {
+                it("is titled 'Advanced'") {
                     let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
                     expect(title).to(equal("Advanced"))
                 }
 
-                it("should have a single cell") {
+                it("has two cells") {
                     expect(subject.tableView.numberOfRowsInSection(sectionNumber)).to(equal(1))
                 }
 
@@ -606,11 +606,11 @@ class SettingsViewControllerSpec: QuickSpec {
                         cell = dataSource.tableView(subject.tableView, cellForRowAtIndexPath: indexPath) as! SwitchTableViewCell
                     }
 
-                    it("should be configured with the theme repository") {
+                    it("is configured with the theme repository") {
                         expect(cell.themeRepository).to(equal(themeRepository))
                     }
 
-                    it("should be titled 'Enable Query Feeds'") {
+                    it("is titled 'Enable Query Feeds'") {
                         expect(cell.textLabel?.text).to(equal("Enable Query Feeds"))
                     }
 
@@ -620,7 +620,7 @@ class SettingsViewControllerSpec: QuickSpec {
                             cell.onTapSwitch?(cell.theSwitch)
                         }
 
-                        it("should not yet change the settings repository") {
+                        it("does not yet change the settings repository") {
                             expect(settingsRepository.queryFeedsEnabled) == false
                         }
 
@@ -637,11 +637,46 @@ class SettingsViewControllerSpec: QuickSpec {
                             delegate.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
                         }
 
-                        it("should navigate to a leaf page describing what query feeds are and why they're awesome") {
+                        it("navigates to a leaf page describing what query feeds are and why they're awesome") {
                             expect(navigationController.topViewController).to(beAnInstanceOf(DocumentationViewController.self))
                             if let documentation = navigationController.topViewController as? DocumentationViewController {
                                 expect(documentation.document).to(equal(Document.QueryFeed))
                             }
+                        }
+                    }
+                }
+
+                describe("the second cell") {
+                    var cell: SwitchTableViewCell! = nil
+                    let indexPath = NSIndexPath(forRow: 1, inSection: sectionNumber)
+
+                    beforeEach {
+                        cell = dataSource.tableView(subject.tableView, cellForRowAtIndexPath: indexPath) as! SwitchTableViewCell
+                    }
+
+                    it("is configured with the theme repository") {
+                        expect(cell.themeRepository).to(equal(themeRepository))
+                    }
+
+                    it("is titled 'Show Estimated Reading Times'") {
+                        expect(cell.textLabel?.text).to(equal("Show Estimated Reading Times"))
+                    }
+
+                    describe("tapping the switch on the cell") {
+                        beforeEach {
+                            cell.theSwitch.on = false
+                            cell.onTapSwitch?(cell.theSwitch)
+                        }
+
+                        it("does not yet change the settings repository") {
+                            expect(settingsRepository.showEstimatedReadingLabel) == true
+                        }
+
+                        itBehavesLike("a changed setting") {
+                            let op = NSBlockOperation {
+                                expect(settingsRepository.showEstimatedReadingLabel) == false
+                            }
+                            return ["saveToUserDefaults": op]
                         }
                     }
                 }

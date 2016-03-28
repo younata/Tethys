@@ -79,6 +79,20 @@ public class SettingsViewController: UIViewController, Injectable {
         }
     }
 
+    private enum AdvancedSection: Int, CustomStringConvertible {
+        case EnableQueryFeeds = 0
+        case ShowReadingTimes = 1
+
+        private var description: String {
+            switch self {
+            case .EnableQueryFeeds:
+                return NSLocalizedString("SettingsViewController_Advanced_EnableQueryFeeds", comment: "")
+            case .ShowReadingTimes:
+                return NSLocalizedString("SettingsViewController_Advanced_ShowReadingTimes", comment: "")
+            }
+        }
+    }
+
     public let tableView = UITableView(frame: CGRect.zero, style: .Grouped)
 
     private let themeRepository: ThemeRepository
@@ -91,6 +105,10 @@ public class SettingsViewController: UIViewController, Injectable {
     private var oldTheme: ThemeRepository.Theme = .Default
     private lazy var queryFeedsEnabled: Bool = {
         return self.settingsRepository.queryFeedsEnabled
+    }()
+
+    private lazy var showReadingTimes: Bool = {
+        return self.settingsRepository.showEstimatedReadingLabel
     }()
 
     // swiftlint:disable function_parameter_count
@@ -211,6 +229,7 @@ public class SettingsViewController: UIViewController, Injectable {
     internal func didTapSave() {
         self.oldTheme = self.themeRepository.theme
         self.settingsRepository.queryFeedsEnabled = self.queryFeedsEnabled
+        self.settingsRepository.showEstimatedReadingLabel = self.showReadingTimes
         self.didTapDismiss()
     }
 
@@ -282,7 +301,7 @@ extension SettingsViewController: UITableViewDataSource {
             }
             return 0
         case .Advanced:
-            return 1
+            return 2
         case .Credits:
             return 1
         }
@@ -311,13 +330,23 @@ extension SettingsViewController: UITableViewDataSource {
         case .Advanced:
             let cell = tableView.dequeueReusableCellWithIdentifier("switch",
                 forIndexPath: indexPath) as! SwitchTableViewCell
-            cell.textLabel?.text = NSLocalizedString("SettingsViewController_Advanced_EnableQueryFeeds", comment: "")
+            let row = AdvancedSection(rawValue: indexPath.row)!
+            cell.textLabel?.text = row.description
             cell.themeRepository = self.themeRepository
             cell.onTapSwitch = {_ in }
-            cell.theSwitch.on = self.queryFeedsEnabled
-            cell.onTapSwitch = {aSwitch in
-                self.queryFeedsEnabled = aSwitch.on
-                self.navigationItem.rightBarButtonItem?.enabled = true
+            switch row {
+            case .EnableQueryFeeds:
+                cell.theSwitch.on = self.queryFeedsEnabled
+                cell.onTapSwitch = {aSwitch in
+                    self.queryFeedsEnabled = aSwitch.on
+                    self.navigationItem.rightBarButtonItem?.enabled = true
+                }
+            case .ShowReadingTimes:
+                cell.theSwitch.on = self.showReadingTimes
+                cell.onTapSwitch = {aSwitch in
+                    self.showReadingTimes = aSwitch.on
+                    self.navigationItem.rightBarButtonItem?.enabled = true
+                }
             }
             return cell
         case .Credits:
@@ -391,6 +420,7 @@ extension SettingsViewController: UITableViewDelegate {
             self.didTapQuickActionCell(indexPath)
         case .Advanced:
             tableView.deselectRowAtIndexPath(indexPath, animated: false)
+            guard AdvancedSection(rawValue: indexPath.row) == .EnableQueryFeeds else { return }
             let documentationViewController = self.documentationViewController()
             documentationViewController.configure(.QueryFeed)
             self.navigationController?.pushViewController(documentationViewController, animated: true)

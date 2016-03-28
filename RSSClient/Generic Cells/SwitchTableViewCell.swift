@@ -30,7 +30,8 @@ public class SwitchTableViewCell: UITableViewCell {
             excludingEdge: .Leading)
         self.theSwitch.autoPinEdge(.Leading, toEdge: .Trailing, ofView: self._textLabel)
 
-        self.theSwitch.addTarget(self, action: "didTapSwitch", forControlEvents: .ValueChanged)
+        self.theSwitch.addTarget(self, action: #selector(SwitchTableViewCell.didTapSwitch),
+                                 forControlEvents: .ValueChanged)
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError() }

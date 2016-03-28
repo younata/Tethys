@@ -14,13 +14,13 @@ class FakeMigrationUseCase : MigrationUseCase {
         return self.addSubscriberArgs[callIndex]
     }
     func addSubscriber(subscriber: MigrationUseCaseSubscriber) {
-        self.addSubscriberCallCount++
+        self.addSubscriberCallCount += 1
         self.addSubscriberArgs.append((subscriber))
     }
 
     private(set) var beginMigrationCallCount : Int = 0
     func beginMigration() {
-        self.beginMigrationCallCount++
+        self.beginMigrationCallCount += 1
     }
 
     private(set) var beginWorkCallCount : Int = 0
@@ -29,7 +29,7 @@ class FakeMigrationUseCase : MigrationUseCase {
         return self.beginWorkArgs[callIndex]
     }
     func beginWork(finish: WorkFlowFinishCallback) {
-        self.beginWorkCallCount++
+        self.beginWorkCallCount += 1
         self.beginWorkArgs.append((finish))
     }
 
@@ -47,7 +47,7 @@ class FakeMigrationUseCaseSubscriber : MigrationUseCaseSubscriber {
         return self.migrationUseCaseDidFinishArgs[callIndex]
     }
     func migrationUseCaseDidFinish(migrationUseCase: MigrationUseCase) {
-        self.migrationUseCaseDidFinishCallCount++
+        self.migrationUseCaseDidFinishCallCount += 1
         self.migrationUseCaseDidFinishArgs.append((migrationUseCase))
     }
 
@@ -57,7 +57,7 @@ class FakeMigrationUseCaseSubscriber : MigrationUseCaseSubscriber {
         return self.migrationUseCaseDidUpdateProgressArgs[callIndex]
     }
     func migrationUseCase(migrationUseCase: MigrationUseCase, didUpdateProgress progress: Double) {
-        self.migrationUseCaseDidUpdateProgressCallCount++
+        self.migrationUseCaseDidUpdateProgressCallCount += 1
         self.migrationUseCaseDidUpdateProgressArgs.append((migrationUseCase, progress))
     }
 

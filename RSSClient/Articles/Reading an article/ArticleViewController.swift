@@ -33,10 +33,12 @@ public class ArticleViewController: UIViewController, Injectable {
     private var enclosuresListHeight: NSLayoutConstraint?
 
     public private(set) lazy var shareButton: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: "share")
+        return UIBarButtonItem(barButtonSystemItem: .Action, target: self,
+                               action: #selector(ArticleViewController.share))
     }()
     public private(set) lazy var openInSafariButton: UIBarButtonItem = {
-        return UIBarButtonItem(title: self.linkString, style: .Plain, target: self, action: "openInSafari")
+        return UIBarButtonItem(title: self.linkString, style: .Plain,
+                               target: self, action: #selector(ArticleViewController.openInSafari))
     }()
 
     private let linkString = NSLocalizedString("ArticleViewController_TabBar_ViewLink", comment: "")
@@ -50,7 +52,7 @@ public class ArticleViewController: UIViewController, Injectable {
     private let articleListController: Void -> ArticleListController
 
     public lazy var panGestureRecognizer: ScreenEdgePanGestureRecognizer = {
-        return ScreenEdgePanGestureRecognizer(target: self, action: "didSwipe:")
+        return ScreenEdgePanGestureRecognizer(target: self, action: #selector(ArticleViewController.didSwipe(_:)))
     }()
 
     public init(themeRepository: ThemeRepository,
@@ -93,7 +95,7 @@ public class ArticleViewController: UIViewController, Injectable {
     }
 
     private func spacer() -> UIBarButtonItem {
-        return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: "")
+        return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: Selector(""))
     }
 
     public let backgroundView: UIView = {
@@ -166,28 +168,33 @@ public class ArticleViewController: UIViewController, Injectable {
 
         var commands: [UIKeyCommand] = []
         if self.lastArticleIndex != 0 {
-            let cmd = UIKeyCommand(input: "p", modifierFlags: .Control, action: "showPreviousArticle")
+            let cmd = UIKeyCommand(input: "p", modifierFlags: .Control,
+                                   action: #selector(ArticleViewController.showPreviousArticle))
             addTitleToCmd(cmd, NSLocalizedString("ArticleViewController_Command_ViewPreviousArticle", comment: ""))
             commands.append(cmd)
         }
 
         if self.lastArticleIndex < (self.articles.count - 1) {
-            let cmd = UIKeyCommand(input: "n", modifierFlags: .Control, action: "showNextArticle")
+            let cmd = UIKeyCommand(input: "n", modifierFlags: .Control,
+                                   action: #selector(ArticleViewController.showNextArticle))
             addTitleToCmd(cmd, NSLocalizedString("ArticleViewController_Command_ViewNextArticle", comment: ""))
             commands.append(cmd)
         }
 
-        let markAsRead = UIKeyCommand(input: "r", modifierFlags: .Shift, action: "toggleArticleRead")
+        let markAsRead = UIKeyCommand(input: "r", modifierFlags: .Shift,
+                                      action: #selector(ArticleViewController.toggleArticleRead))
         addTitleToCmd(markAsRead, NSLocalizedString("ArticleViewController_Command_ToggleRead", comment: ""))
         commands.append(markAsRead)
 
         if let _ = self.article?.link {
-            let cmd = UIKeyCommand(input: "l", modifierFlags: .Command, action: "openInSafari")
+            let cmd = UIKeyCommand(input: "l", modifierFlags: .Command,
+                                   action: #selector(ArticleViewController.openInSafari))
             addTitleToCmd(cmd, NSLocalizedString("ArticleViewController_Command_OpenInWebView", comment: ""))
             commands.append(cmd)
         }
 
-        let showShareSheet = UIKeyCommand(input: "s", modifierFlags: .Command, action: "share")
+        let showShareSheet = UIKeyCommand(input: "s", modifierFlags: .Command,
+                                          action: #selector(ArticleViewController.share))
         addTitleToCmd(showShareSheet, NSLocalizedString("ArticleViewController_Command_OpenShareSheet", comment: ""))
         commands.append(showShareSheet)
 
@@ -196,14 +203,14 @@ public class ArticleViewController: UIViewController, Injectable {
 
     @objc private func showPreviousArticle() {
         guard self.lastArticleIndex > 0 else { return }
-        self.lastArticleIndex--
+        self.lastArticleIndex -= 1
         self.setArticle(self.articles[lastArticleIndex])
         if let article = self.article { self.showArticle(article, onWebView: self.content) }
     }
 
     @objc private func showNextArticle() {
         guard self.lastArticleIndex < self.articles.count else { return }
-        self.lastArticleIndex++
+        self.lastArticleIndex += 1
         self.setArticle(self.articles[lastArticleIndex])
         if let article = self.article { self.showArticle(article, onWebView: self.content) }
     }

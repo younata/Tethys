@@ -55,5 +55,30 @@ class SettingsRepositorySpec: QuickSpec {
                 }
             }
         }
+
+        describe("estimatedReadingLabel") {
+            it("is initially yes") {
+                expect(subject.showEstimatedReadingLabel) == true
+            }
+
+            describe("when set") {
+                beforeEach {
+                    subject.showEstimatedReadingLabel = false
+                }
+
+                it("records the result") {
+                    expect(subject.showEstimatedReadingLabel) == false
+                }
+
+                it("notifies subscribers") {
+                    expect(subscriber.didCallChangeSetting) == true
+                }
+
+                it("persists if userDefaults is not nil") {
+                    let newRepository = SettingsRepository(userDefaults: userDefaults)
+                    expect(newRepository.showEstimatedReadingLabel) == false
+                }
+            }
+        }
     }
 }

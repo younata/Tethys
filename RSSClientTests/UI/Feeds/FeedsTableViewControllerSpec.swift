@@ -289,11 +289,11 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                         // cmd+f, cmd+i, cmd+shift+i, cmd+opt+i
                         let expectedCommands = [
-                            UIKeyCommand(input: "f", modifierFlags: .Command, action: ""),
-                            UIKeyCommand(input: "i", modifierFlags: .Command, action: ""),
-                            UIKeyCommand(input: "i", modifierFlags: [.Command, .Shift], action: ""),
-                            UIKeyCommand(input: "i", modifierFlags: [.Command, .Alternate], action: ""),
-                            UIKeyCommand(input: ",", modifierFlags: .Command, action: ""),
+                            UIKeyCommand(input: "f", modifierFlags: .Command, action: Selector("")),
+                            UIKeyCommand(input: "i", modifierFlags: .Command, action: Selector("")),
+                            UIKeyCommand(input: "i", modifierFlags: [.Command, .Shift], action: Selector("")),
+                            UIKeyCommand(input: "i", modifierFlags: [.Command, .Alternate], action: Selector("")),
+                            UIKeyCommand(input: ",", modifierFlags: .Command, action: Selector("")),
                         ]
                         let expectedDiscoverabilityTitles = [
                             "Filter by tags",
@@ -331,10 +331,10 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                         // cmd+f, cmd+i, cmd+shift+i, cmd+opt+i
                         let expectedCommands = [
-                            UIKeyCommand(input: "f", modifierFlags: .Command, action: ""),
-                            UIKeyCommand(input: "i", modifierFlags: .Command, action: ""),
-                            UIKeyCommand(input: "i", modifierFlags: [.Command, .Shift], action: ""),
-                            UIKeyCommand(input: ",", modifierFlags: .Command, action: ""),
+                            UIKeyCommand(input: "f", modifierFlags: .Command, action: Selector("")),
+                            UIKeyCommand(input: "i", modifierFlags: .Command, action: Selector("")),
+                            UIKeyCommand(input: "i", modifierFlags: [.Command, .Shift], action: Selector("")),
+                            UIKeyCommand(input: ",", modifierFlags: .Command, action: Selector("")),
                         ]
                         let expectedDiscoverabilityTitles = [
                             "Filter by tags",

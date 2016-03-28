@@ -77,11 +77,14 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
         super.viewDidLoad()
 
         let dismissTitle = NSLocalizedString("Generic_Dismiss", comment: "")
-        let dismissButton = UIBarButtonItem(title: dismissTitle, style: .Plain, target: self, action: "dismiss")
+        let dismissButton = UIBarButtonItem(title: dismissTitle, style: .Plain, target: self,
+                                            action: #selector(FeedViewController.dismiss))
         self.navigationItem.leftBarButtonItem = dismissButton
 
         let saveTitle = NSLocalizedString("Generic_Save", comment: "")
-        let saveButton = UIBarButtonItem(title: saveTitle, style: .Plain, target: self, action: "save")
+        let saveButton = UIBarButtonItem(title: saveTitle, style: .Plain, target: self, action:
+
+            #selector(FeedViewController.save))
         self.navigationItem.rightBarButtonItem = saveButton
         self.navigationItem.title = self.feed?.displayTitle ?? ""
 

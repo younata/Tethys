@@ -161,19 +161,21 @@ public class FeedsTableViewController: UIViewController, Injectable {
 
         self.showLoadingView(NSLocalizedString("FeedsTableViewController_Loading_Feeds", comment: ""))
 
-        let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "didTapAddFeed")
+        let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self,
+                                        action: #selector(FeedsTableViewController.didTapAddFeed))
         self.navigationItem.rightBarButtonItems = [addButton, self.tableViewController.editButtonItem()]
 
         let settingsTitle = NSLocalizedString("SettingsViewController_Title", comment: "")
         let settingsButton = UIBarButtonItem(title: settingsTitle,
             style: .Plain,
             target: self,
-            action: "presentSettings")
+            action: #selector(FeedsTableViewController.presentSettings))
         self.navigationItem.leftBarButtonItem = settingsButton
 
         self.navigationItem.title = NSLocalizedString("FeedsTableViewController_Title", comment: "")
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: "UpdatedFeed", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(UIWebView.reload),
+                                                         name: "UpdatedFeed", object: nil)
 
         if #available(iOS 9.0, *) {
             if self.traitCollection.forceTouchCapability == .Available {
@@ -211,13 +213,17 @@ public class FeedsTableViewController: UIViewController, Injectable {
 
     public override var keyCommands: [UIKeyCommand]? {
         var commands = [
-            UIKeyCommand(input: "f", modifierFlags: .Command, action: "search"),
-            UIKeyCommand(input: "i", modifierFlags: .Command, action: "importFromWeb"),
-            UIKeyCommand(input: "i", modifierFlags: [.Command, .Shift], action: "importFromLocal"),
-            UIKeyCommand(input: ",", modifierFlags: .Command, action: "presentSettings"),
+            UIKeyCommand(input: "f", modifierFlags: .Command, action: #selector(FeedsTableViewController.search)),
+            UIKeyCommand(input: "i", modifierFlags: .Command,
+                action: #selector(FeedsTableViewController.importFromWeb)),
+            UIKeyCommand(input: "i", modifierFlags: [.Command, .Shift],
+                action: #selector(FeedsTableViewController.importFromLocal)),
+            UIKeyCommand(input: ",", modifierFlags: .Command,
+                action: #selector(FeedsTableViewController.presentSettings)),
         ]
         if self.settingsRepository.queryFeedsEnabled {
-            let command = UIKeyCommand(input: "i", modifierFlags: [.Command, .Alternate], action: "createQueryFeed")
+            let command = UIKeyCommand(input: "i", modifierFlags: [.Command, .Alternate],
+                                       action: #selector(FeedsTableViewController.createQueryFeed))
             commands.insert(command, atIndex: 3)
         }
         if #available(iOS 9.0, *) {

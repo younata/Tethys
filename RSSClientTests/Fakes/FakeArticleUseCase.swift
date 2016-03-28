@@ -30,7 +30,7 @@ class FakeArticleUseCase : ArticleUseCase {
         return self.readArticleArgs[callIndex]
     }
     func readArticle(article: Article) -> (String) {
-        self.readArticleCallCount++
+        self.readArticleCallCount += 1
         self.readArticleArgs.append((article))
         return self.readArticleStub!(article)
     }
@@ -58,7 +58,7 @@ class FakeArticleUseCase : ArticleUseCase {
         return self.toggleArticleReadArgs[callIndex]
     }
     func toggleArticleRead(article: Article) {
-        self.toggleArticleReadCallCount++
+        self.toggleArticleReadCallCount += 1
         self.toggleArticleReadArgs.append((article))
     }
 

@@ -350,7 +350,7 @@ class DataRepository: FeedRepository {
 
         for feed in feeds {
             guard let _ = feed.url where feed.remainingWait == 0 else {
-                feed.remainingWait--
+                feed.remainingWait -= 1
                 self.dataService.saveFeed(feed) {}
                 feedsLeft -= 1
                 totalProgress -= 1

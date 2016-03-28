@@ -1,6 +1,6 @@
 import UIKit
 
-public protocol LocalNotificationSource {
+public protocol LocalNotificationSource: class {
     var scheduledNotes: [UILocalNotification] { get }
     var notificationSettings: UIUserNotificationSettings? { get set }
     var canScheduleNote: Bool { get }

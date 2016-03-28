@@ -13,7 +13,7 @@ class FakeImportUseCase : ImportUseCase {
         return self.scanDirectoryForImportablesArgs[callIndex]
     }
     func scanDirectoryForImportables(url: NSURL, callback: ImportUseCaseScanDirectoryCompletion) {
-        self.scanDirectoryForImportablesCallCount++
+        self.scanDirectoryForImportablesCallCount += 1
         self.scanDirectoryForImportablesArgs.append((url, callback))
     }
 

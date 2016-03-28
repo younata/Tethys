@@ -57,11 +57,14 @@ public class LocalImportViewController: UIViewController, Injectable {
         self.reloadItems()
 
         self.tableViewController.refreshControl = UIRefreshControl()
-        self.tableViewController.refreshControl?.addTarget(self, action: "reloadItems", forControlEvents: .ValueChanged)
+        self.tableViewController.refreshControl?.addTarget(self,
+                                                           action: #selector(LocalImportViewController.reloadItems),
+                                                           forControlEvents: .ValueChanged)
 
         self.navigationItem.title = NSLocalizedString("LocalImportViewController_Title", comment: "")
         let dismissTitle = NSLocalizedString("Generic_Dismiss", comment: "")
-        let dismissButton = UIBarButtonItem(title: dismissTitle, style: .Plain, target: self, action: "dismiss")
+        let dismissButton = UIBarButtonItem(title: dismissTitle, style: .Plain, target: self,
+                                            action: #selector(LocalImportViewController.dismiss))
         self.navigationItem.leftBarButtonItem = dismissButton
 
         self.tableViewController.tableView.registerClass(TableViewCell.self, forCellReuseIdentifier: "cell")

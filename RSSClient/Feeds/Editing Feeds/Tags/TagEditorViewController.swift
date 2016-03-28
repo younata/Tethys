@@ -40,7 +40,8 @@ public class TagEditorViewController: UIViewController, Injectable {
         self.edgesForExtendedLayout = .None
 
         let saveTitle = NSLocalizedString("Generic_Save", comment: "")
-        let saveButton = UIBarButtonItem(title: saveTitle, style: .Plain, target: self, action: "save")
+        let saveButton = UIBarButtonItem(title: saveTitle, style: .Plain, target: self,
+                                         action: #selector(TagEditorViewController.save))
         self.navigationItem.rightBarButtonItem = saveButton
         self.navigationItem.rightBarButtonItem?.enabled = false
         self.navigationItem.title = self.feed?.displayTitle ?? ""

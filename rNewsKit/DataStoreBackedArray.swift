@@ -351,7 +351,7 @@ extension DataStoreBackedArray where T: Equatable {
             }
         }
         self.internalObjects.removeAtIndex(idx)
-        self.internalCount--
+        self.internalCount -= 1
 
         return true
     }

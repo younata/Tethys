@@ -132,11 +132,11 @@ public class SettingsViewController: UIViewController, Injectable {
         self.navigationItem.title = NSLocalizedString("SettingsViewController_Title", comment: "")
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Save,
             target: self,
-            action: "didTapSave")
+            action: #selector(SettingsViewController.didTapSave))
         self.navigationItem.rightBarButtonItem?.enabled = false
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel,
             target: self,
-            action: "didTapDismiss")
+            action: #selector(SettingsViewController.didTapDismiss))
 
         self.tableView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(self.tableView)
@@ -174,7 +174,8 @@ public class SettingsViewController: UIViewController, Injectable {
                 continue
             }
 
-            let keyCommand = UIKeyCommand(input: "\(idx+1)", modifierFlags: .Command, action: "didHitChangeTheme:")
+            let keyCommand = UIKeyCommand(input: "\(idx+1)", modifierFlags: .Command,
+                                          action: #selector(SettingsViewController.didHitChangeTheme(_:)))
             if #available(iOS 9, *) {
                 let title = NSLocalizedString("SettingsViewController_Commands_Theme", comment: "")
                 keyCommand.discoverabilityTitle = String(NSString.localizedStringWithFormat(title, theme.description))
@@ -182,8 +183,10 @@ public class SettingsViewController: UIViewController, Injectable {
             commands.append(keyCommand)
         }
 
-        let save = UIKeyCommand(input: "s", modifierFlags: .Command, action: "didTapSave")
-        let dismiss = UIKeyCommand(input: "w", modifierFlags: .Command, action: "didTapDismiss")
+        let save = UIKeyCommand(input: "s", modifierFlags: .Command,
+                                action: #selector(SettingsViewController.didTapSave))
+        let dismiss = UIKeyCommand(input: "w", modifierFlags: .Command,
+                                   action: #selector(SettingsViewController.didTapDismiss))
 
         if #available(iOS 9, *) {
             save.discoverabilityTitle = NSLocalizedString("SettingsViewController_Commands_Save", comment: "")

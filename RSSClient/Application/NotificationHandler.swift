@@ -3,7 +3,7 @@ import Ra
 import rNewsKit
 
 public protocol NotificationHandler {
-    func enableNotifications(var notificationSource: LocalNotificationSource)
+    func enableNotifications( notificationSource: LocalNotificationSource)
     func handleLocalNotification(notification: UILocalNotification, window: UIWindow)
     func handleAction(identifier: String?, notification: UILocalNotification)
     func sendLocalNotification(notificationSource: LocalNotificationSource, article: Article)
@@ -20,7 +20,7 @@ public struct LocalNotificationHandler: NotificationHandler, Injectable {
         self.init(feedRepository: injector.create(FeedRepository)!)
     }
 
-    public func enableNotifications(var notificationSource: LocalNotificationSource) {
+    public func enableNotifications(notificationSource: LocalNotificationSource) {
         let markReadAction = UIMutableUserNotificationAction()
         markReadAction.identifier = "read"
         markReadAction.title = NSLocalizedString("NotificationHandler_LocalNotification_MarkRead_Action", comment: "")

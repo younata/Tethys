@@ -45,7 +45,7 @@ class FakeUIViewControllerPreviewing: NSObject, UIViewControllerPreviewing {
 
 private var publishedOffset = -1
 func fakeArticle(feed: Feed, isUpdated: Bool = false, read: Bool = false) -> Article {
-    publishedOffset++
+    publishedOffset += 1
     let publishDate: NSDate
     let updatedDate: NSDate?
     if isUpdated {

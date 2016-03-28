@@ -54,26 +54,31 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
         self.webContent.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
 
-        self.back = UIBarButtonItem(title: "<", style: .Plain, target: self.webContent, action: "goBack")
-        self.forward = UIBarButtonItem(title: ">", style: .Plain, target: self.webContent, action: "goForward")
+        self.back = UIBarButtonItem(title: "<", style: .Plain, target: self.webContent,
+                                    action: #selector(UIWebView.goBack))
+        self.forward = UIBarButtonItem(title: ">", style: .Plain, target: self.webContent,
+                                       action: #selector(UIWebView.goForward))
 
         let addFeedTitle = NSLocalizedString("FindFeedViewController_AddFeed", comment: "")
-        self.addFeedButton = UIBarButtonItem(title: addFeedTitle, style: .Plain, target: self, action: "save")
+        let save = #selector(FindFeedViewController.save as (FindFeedViewController) -> () -> ())
+        self.addFeedButton = UIBarButtonItem(title: addFeedTitle, style: .Plain, target: self, action: save)
         self.back.enabled = false
         self.forward.enabled = false
         self.addFeedButton.enabled = false
 
         let dismissTitle = NSLocalizedString("Generic_Dismiss", comment: "")
-        let dismiss = UIBarButtonItem(title: dismissTitle, style: .Plain, target: self, action: "dismiss")
-        self.reload = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: "reloadWebPage")
+        let dismiss = UIBarButtonItem(title: dismissTitle, style: .Plain, target: self,
+                                      action: #selector(FindFeedViewController.dismiss))
+        self.reload = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self,
+                                      action: #selector(FindFeedViewController.reloadWebPage))
 
         let cancelTitle = NSLocalizedString("FindFeedViewController_Cancel", comment: "")
         self.cancelTextEntry = UIBarButtonItem(title: cancelTitle, style: .Plain,
-            target: self, action: "dismissNavFieldKeyboard")
+            target: self, action: #selector(FindFeedViewController.dismissNavFieldKeyboard))
 
         self.navigationController?.toolbarHidden = false
         func spacer() -> UIBarButtonItem {
-            return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: "")
+            return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: Selector(""))
         }
         if self.lookForFeeds {
             self.toolbarItems = [self.back, self.forward, spacer(), dismiss, spacer(), self.addFeedButton]
@@ -127,8 +132,10 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
     public override var keyCommands: [UIKeyCommand]? {
 
-        let focusNavField = UIKeyCommand(input: "l", modifierFlags: [], action: Selector("focusNavField"))
-        let reloadContent = UIKeyCommand(input: "r", modifierFlags: [], action: Selector("reloadWebPage"))
+        let focusNavField = UIKeyCommand(input: "l", modifierFlags: [],
+                                         action: #selector(FindFeedViewController.focusNavField))
+        let reloadContent = UIKeyCommand(input: "r", modifierFlags: [],
+                                         action: #selector(FindFeedViewController.reloadWebPage))
 
         if #available(iOS 9.0, *) {
             focusNavField.discoverabilityTitle =
@@ -140,7 +147,8 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         var commands = [focusNavField, reloadContent]
 
         if !self.rssLinks.isEmpty {
-            let importFeed = UIKeyCommand(input: "i", modifierFlags: [], action: Selector("save"))
+            let selector = #selector(FindFeedViewController.save as (FindFeedViewController) -> () -> ())
+            let importFeed = UIKeyCommand(input: "i", modifierFlags: [], action: selector)
             if #available(iOS 9.0, *) {
                 importFeed.discoverabilityTitle =
                     NSLocalizedString("FindFeedViewController_FoundFeed_Import", comment: "")

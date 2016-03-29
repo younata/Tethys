@@ -5,6 +5,6 @@ before_install:
  - bundle
  - brew update
  - brew install swiftlint
- - carthage build kanna --platform ios
+ - carthage build Kanna --platform ios
 script:
  - bundle exec fastlane test

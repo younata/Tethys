@@ -43,7 +43,7 @@ platform :ios do
   desc 'Deploy a new version to TestFlight'
   lane :deploy_testflight do
     gym(scheme: "RSSClient")
-    pilot
+    pilot(distribute_external: true, changelog: `git log -1 --format='%B'`)
   end
 
   desc 'Deploy a new version to the App Store'

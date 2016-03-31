@@ -1,0 +1,19 @@
+machine:
+  xcode:
+    version: 7.3
+
+dependencies:
+  pre:
+    - brew install carthage
+    - openssl aes-256-cbc -k "$MOBILE_PROVISION_DECRYPT_KEY" -in ci/rNews.mobileprovision.enc -d -a -out ci/rNews.mobileprovision
+
+test:
+  override:
+    - carthage bootstrap --platform ios
+    - bundle exec fastlane test
+
+deployment:
+  beta_distribution:
+    branch: master
+    commands:
+      - bundle exec fastlane deploy_testflight

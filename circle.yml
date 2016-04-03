@@ -3,10 +3,11 @@ machine:
     version: 7.3
 
 dependencies:
-  pre:
+  override:
     - brew install carthage
     - openssl aes-256-cbc -k "$MOBILE_PROVISION_DECRYPT_KEY" -in ci/rNews.mobileprovision.enc -d -a -out ci/rNews.mobileprovision
     - carthage bootstrap --platform ios --no-use-binaries
+    - bundle
 
 test:
   override:

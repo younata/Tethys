@@ -42,8 +42,11 @@ platform :ios do
 
   desc 'Deploy a new version to TestFlight'
   lane :deploy_testflight do
-    gym(scheme: "RSSClient")
-    pilot(distribute_external: true, changelog: `git log -1 --format='%B'`)
+    #gym(scheme: "RSSClient")
+    #pilot(distribute_external: true, changelog: `git log -1 --format='%B'`)
+    #increment_build_number(xcodeproj: 'RSSClient.xcodeproj')
+    commit_version_bump(xcodeproj: 'RSSClient.xcodeproj')
+    push_to_git_remote
   end
 
   desc 'Deploy a new version to the App Store'
@@ -53,6 +56,9 @@ platform :ios do
     snapshot
     gym(scheme: "RSSClient")
     deliver
+    increment_version_number(xcodeproj: 'RSSClient.xcodeproj')
+    commit_version_bump(xcodeproj: 'RSSClient.xcodeproj')
+    push_to_git_remote
   end
 
   after_all do |lane|

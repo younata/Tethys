@@ -12,3 +12,7 @@ This project requires Swift 2.1/Xcode 7.2 to build.
 ####Backlog
 
 [This project uses Pivotal Tracker for it's backlog](https://www.pivotaltracker.com/n/projects/1423142).
+
+####License
+
+This app is licensed under the [MIT License](LICENSE), though I ask that you do not distribute it to the apple app store.

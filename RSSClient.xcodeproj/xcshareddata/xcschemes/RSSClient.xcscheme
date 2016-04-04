@@ -20,6 +20,34 @@
                ReferencedContainer = "container:RSSClient.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "89C8308A19D730E9009924DA"
+               BuildableName = "RSSClientTests.xctest"
+               BlueprintName = "RSSClientTests"
+               ReferencedContainer = "container:RSSClient.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "894304291B45089A000078DC"
+               BuildableName = "rNewsKitTests.xctest"
+               BlueprintName = "rNewsKitTests"
+               ReferencedContainer = "container:RSSClient.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -28,6 +56,26 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "89C8308A19D730E9009924DA"
+               BuildableName = "RSSClientTests.xctest"
+               BlueprintName = "RSSClientTests"
+               ReferencedContainer = "container:RSSClient.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "894304291B45089A000078DC"
+               BuildableName = "rNewsKitTests.xctest"
+               BlueprintName = "rNewsKitTests"
+               ReferencedContainer = "container:RSSClient.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

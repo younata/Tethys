@@ -24,8 +24,7 @@ default_platform :ios
 platform :ios do
   desc 'Runs all the tests'
   lane :test do
-    scan(project: 'RSSClient.xcodeproj', scheme: 'RSSClientTests')
-    scan(project: 'RSSClient.xcodeproj', scheme: 'rNewsKitTests', clean: false, skip_build: true)
+    scan(project: 'RSSClient.xcodeproj', scheme: 'RSSClient')
   end
 
   lane :test_app do

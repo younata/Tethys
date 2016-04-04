@@ -135,6 +135,8 @@ public class ArticleViewController: UIViewController, Injectable {
     public override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         self.navigationController?.setToolbarHidden(false, animated: false)
+        self.navigationController?.hidesBarsOnSwipe = true
+        self.navigationController?.hidesBarsOnTap = true
         self.splitViewController?.setNeedsStatusBarAppearanceUpdate()
         self.themeRepositoryDidChangeTheme(themeRepository)
         if self.article != nil { self.backgroundView.hidden = false }
@@ -144,6 +146,9 @@ public class ArticleViewController: UIViewController, Injectable {
         super.viewWillDisappear(animated)
         self.userActivity?.invalidate()
         self.userActivity = nil
+
+        self.navigationController?.hidesBarsOnSwipe = false
+        self.navigationController?.hidesBarsOnTap = false
     }
 
     private func updateLeftBarButtonItem(traitCollection: UITraitCollection) {

@@ -34,17 +34,33 @@ class ArticleViewControllerSpec: QuickSpec {
             expect(subject.view).toNot(beNil())
         }
 
-        it("shows the background view on viewWillAppear and an article is not set") {
-            subject.viewWillAppear(true)
-            expect(subject.backgroundView.hidden) == false
+        describe("when the view appears") {
+            beforeEach {
+                subject.viewDidAppear(false)
+            }
 
-            subject.backgroundView.hidden = true
+            it("shows the background view on viewWillAppear and an article is not set") {
+                expect(subject.backgroundView.hidden) == false
 
-            articleUseCase.readArticleReturns("hello")
-            articleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
-            subject.setArticle(Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: []))
+                subject.backgroundView.hidden = true
 
-            expect(subject.backgroundView.hidden) == true
+                articleUseCase.readArticleReturns("hello")
+                articleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
+                subject.setArticle(Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: []))
+
+                expect(subject.backgroundView.hidden) == true
+            }
+
+            it("hides the nav and toolbars on swipe/tap") {
+                expect(navigationController.hidesBarsOnSwipe).to(beTruthy())
+                expect(navigationController.hidesBarsOnTap).to(beTruthy())
+            }
+
+            it("disables hiding the nav and toolbars on swipe/tap when the view disappears") {
+                subject.viewWillDisappear(false)
+                expect(navigationController.hidesBarsOnSwipe).to(beFalsy())
+                expect(navigationController.hidesBarsOnTap).to(beFalsy())
+            }
         }
 
         describe("changing the theme") {

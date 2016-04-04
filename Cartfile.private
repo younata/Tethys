@@ -1,2 +1,2 @@
-github "quick/quick"
-github "quick/nimble"
+github "quick/quick" "master"
+github "quick/nimble" "master"

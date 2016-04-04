@@ -215,17 +215,17 @@ SWIFT_CLASS("_TtC6Nimble14NMBObjCMatcher")
 
 
 @interface NMBObjCMatcher (SWIFT_EXTENSION(Nimble))
-+ (NMBObjCMatcher * _Nonnull)beEmptyMatcher;
-@end
-
-
-@interface NMBObjCMatcher (SWIFT_EXTENSION(Nimble))
 + (NMBObjCMatcher * _Nonnull)beIdenticalToMatcher:(NSObject * _Nullable)expected;
 @end
 
 
 @interface NMBObjCMatcher (SWIFT_EXTENSION(Nimble))
 + (NMBObjCMatcher * _Nonnull)beginWithMatcher:(id _Nonnull)expected;
+@end
+
+
+@interface NMBObjCMatcher (SWIFT_EXTENSION(Nimble))
++ (NMBObjCMatcher * _Nonnull)beGreaterThanOrEqualToMatcher:(id <NMBComparable> _Nullable)expected;
 @end
 
 
@@ -287,7 +287,7 @@ SWIFT_CLASS("_TtC6Nimble14NMBObjCMatcher")
 
 
 @interface NMBObjCMatcher (SWIFT_EXTENSION(Nimble))
-+ (NMBObjCMatcher * _Nonnull)beGreaterThanOrEqualToMatcher:(id <NMBComparable> _Nullable)expected;
++ (NMBObjCMatcher * _Nonnull)beEmptyMatcher;
 @end
 
 
@@ -320,6 +320,13 @@ SWIFT_PROTOCOL("_TtP6Nimble20NMBOrderedCollection_")
 @end
 
 
+SWIFT_CLASS("_TtC6Nimble11NMBStringer")
+@interface NMBStringer : NSObject
++ (NSString * _Nonnull)stringify:(id _Nullable)obj;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+@end
+
+
 @interface NSArray (SWIFT_EXTENSION(Nimble)) <NMBContainer>
 @end
 
@@ -329,6 +336,12 @@ SWIFT_PROTOCOL("_TtP6Nimble20NMBOrderedCollection_")
 
 
 @interface NSArray (SWIFT_EXTENSION(Nimble))
+@property (nonatomic, readonly, copy) NSString * _Nonnull testDescription;
+@end
+
+
+@interface NSData (SWIFT_EXTENSION(Nimble))
+@property (nonatomic, readonly, copy) NSString * _Nonnull testDescription;
 @end
 
 
@@ -337,7 +350,16 @@ SWIFT_PROTOCOL("_TtP6Nimble20NMBOrderedCollection_")
 @end
 
 
+@interface NSDate (SWIFT_EXTENSION(Nimble))
+@property (nonatomic, readonly, copy) NSString * _Nonnull testDescription;
+@end
+
+
 @interface NSDictionary (SWIFT_EXTENSION(Nimble)) <NMBCollection>
+@end
+
+
+@interface NSHashTable (SWIFT_EXTENSION(Nimble)) <NMBCollection>
 @end
 
 
@@ -345,7 +367,12 @@ SWIFT_PROTOCOL("_TtP6Nimble20NMBOrderedCollection_")
 @end
 
 
-@interface NSHashTable (SWIFT_EXTENSION(Nimble)) <NMBCollection>
+@interface NSIndexSet (SWIFT_EXTENSION(Nimble)) <NMBCollection>
+@end
+
+
+@interface NSIndexSet (SWIFT_EXTENSION(Nimble))
+@property (nonatomic, readonly, copy) NSString * _Nonnull testDescription;
 @end
 
 
@@ -362,11 +389,16 @@ SWIFT_PROTOCOL("_TtP6Nimble20NMBOrderedCollection_")
 @end
 
 
-@interface NSSet (SWIFT_EXTENSION(Nimble)) <NMBContainer>
+@interface NSNumber (SWIFT_EXTENSION(Nimble))
+@property (nonatomic, readonly, copy) NSString * _Nonnull testDescription;
 @end
 
 
 @interface NSSet (SWIFT_EXTENSION(Nimble)) <NMBCollection>
+@end
+
+
+@interface NSSet (SWIFT_EXTENSION(Nimble)) <NMBContainer>
 @end
 
 

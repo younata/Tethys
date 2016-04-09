@@ -175,7 +175,10 @@ table tr th :last-child, table tr td :last-child {
     margin-bottom: 0; }
 
 img {
-    max-width: 100%; }
+    display: block;
+    max-width: 100%;
+    height: auto;
+    width: auto; }
 
 span.frame {
     display: block;
@@ -239,7 +242,9 @@ span.float-right > span {
     text-align: right; }
 
 iframe.youtube-player {
+    display: block;
     max-width: 420px;
+    width: auto;
     height: auto;
     margin: 20px auto; }
 

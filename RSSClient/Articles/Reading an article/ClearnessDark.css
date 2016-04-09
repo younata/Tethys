@@ -36,6 +36,10 @@ a:hover {
     text-decoration: none;
 }
 a img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    width: auto;
     border: none;
 }
 p {
@@ -96,7 +100,9 @@ blockquote p {
 }
 
 iframe.youtube-player {
+    display: block;
     max-width: 420px;
+    width: auto;
     height: auto;
     margin: 20px auto; }
 

@@ -111,7 +111,7 @@ class ArticleListControllerSpec: QuickSpec {
 
             navigationController = UINavigationController(rootViewController: subject)
 
-            expect(subject.view).toNot(beNil())
+            subject.view.layoutIfNeeded()
         }
 
         it("dismisses the keyboard upon drag") {

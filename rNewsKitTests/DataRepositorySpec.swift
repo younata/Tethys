@@ -77,11 +77,11 @@ class FeedRepositorySpec: QuickSpec {
                 query: nil, tags: ["a", "b", "c", "d"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             article1 = Article(title: "b", link: NSURL(string: "https://example.com/article1.html"),
-                summary: "<p>Hello world!</p>", author: "", published: NSDate(), updatedAt: nil, identifier: "article1",
+                summary: "<p>Hello world!</p>", authors: [], published: NSDate(), updatedAt: nil, identifier: "article1",
                 content: "", read: false, estimatedReadingTime: 0, feed: feed1, flags: [], enclosures: [])
 
             article2 = Article(title: "c", link: NSURL(string: "https://example.com/article2.html"),
-                summary: "<p>Hello world!</p>", author: "", published: NSDate(), updatedAt: nil, identifier: "article2",
+                summary: "<p>Hello world!</p>", authors: [], published: NSDate(), updatedAt: nil, identifier: "article2",
                 content: "", read: true, estimatedReadingTime: 0, feed: feed1, flags: [], enclosures: [])
 
             feed1.addArticle(article1)

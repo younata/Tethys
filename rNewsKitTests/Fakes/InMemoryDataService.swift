@@ -20,7 +20,7 @@ class InMemoryDataService: DataService {
     }
 
     func createArticle(feed: Feed?, callback: Article -> Void) {
-        let article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
+        let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
         feed?.addArticle(article)
         callback(article)
         self.articles.append(article)

@@ -6,7 +6,7 @@ import JavaScriptCore
     var title: String { get }
     var link: NSURL? { get }
     var summary: String { get }
-    var author: String { get }
+    var authors: [Author] { get }
     var published: NSDate { get }
     var updatedAt: NSDate? { get }
     var identifier: String { get }
@@ -41,9 +41,9 @@ import JavaScriptCore
             }
         }
     }
-    dynamic public internal(set) var author: String {
+    dynamic public internal(set) var authors: [Author] {
         willSet {
-            if newValue != author {
+            if newValue != authors {
                 self.updated = true
             }
         }
@@ -121,7 +121,8 @@ import JavaScriptCore
         } else if let id = articleID as? String {
             return id.hash
         }
-        let nonNilHashValues = title.hashValue ^ summary.hashValue ^ author.hashValue ^
+        let authorsHashValue = authors.reduce(0) { $0 ^ $1.hashValue }
+        let nonNilHashValues = title.hashValue ^ summary.hashValue ^ authorsHashValue ^
             published.hash ^ identifier.hashValue ^ content.hashValue & read.hashValue &
             estimatedReadingTime.hashValue
         let flagsHashValues = flags.reduce(0) { $0 ^ $1.hashValue }
@@ -145,25 +146,25 @@ import JavaScriptCore
             return aID == bID
         }
         return self.title == b.title && self.link == b.link && self.summary == b.summary &&
-            self.author == b.author && self.published == b.published && self.updatedAt == b.updatedAt &&
+            self.authors == b.authors && self.published == b.published && self.updatedAt == b.updatedAt &&
             self.identifier == b.identifier && self.content == b.content && self.read == b.read &&
             self.flags == b.flags && self.estimatedReadingTime == b.estimatedReadingTime
     }
 
     public override var description: String {
         // swiftlint:disable line_length
-        return "(Article: title: \(title), link: \(link), summary: \(summary), author: \(author), published: \(published), updated: \(updatedAt), identifier: \(identifier), content: \(content), read: \(read), estimatedReadingTime: \(estimatedReadingTime))\n"
+        return "(Article: title: \(title), link: \(link), summary: \(summary), author: \(authors), published: \(published), updated: \(updatedAt), identifier: \(identifier), content: \(content), read: \(read), estimatedReadingTime: \(estimatedReadingTime))\n"
         // swiftlint:enable line_length
     }
 
     // swiftlint:disable function_parameter_count
-    public init(title: String, link: NSURL?, summary: String, author: String, published: NSDate,
+    public init(title: String, link: NSURL?, summary: String, authors: [Author], published: NSDate,
         updatedAt: NSDate?, identifier: String, content: String, read: Bool, estimatedReadingTime: Int,
         feed: Feed?, flags: [String], enclosures: [Enclosure]) {
             self.title = title
             self.link = link
             self.summary = summary
-            self.author = author
+            self.authors = authors
             self.published = published
             self.updatedAt = updatedAt
             self.identifier = identifier
@@ -192,7 +193,7 @@ import JavaScriptCore
         }
 
         summary = article.summary ?? ""
-        author = article.author ?? ""
+        authors = [Author(article.author ?? "")]
         published = article.published ?? NSDate()
         updatedAt = article.updatedAt
         identifier = article.objectID.URIRepresentation().absoluteString ?? ""
@@ -235,9 +236,9 @@ import JavaScriptCore
     internal init(realmArticle article: RealmArticle, feed: Feed?) {
         title = article.title ?? ""
         link = NSURL(string: article.link)
-
         summary = article.summary ?? ""
-        author = article.author ?? ""
+
+        self.authors = article.authors.map(Author.init)
         published = article.published ?? NSDate()
         updatedAt = article.updatedAt
         identifier = article.id

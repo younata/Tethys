@@ -248,7 +248,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 context("marking an article as read") {
                     beforeEach {
                         dataRepository.didAskForFeeds = false
-                        let article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                        let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
                         subscriber?.markedArticles([article], asRead: true)
                     }
 
@@ -260,7 +260,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 context("deleting an article") {
                     beforeEach {
                         dataRepository.didAskForFeeds = false
-                        let article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                        let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
                         subscriber?.deletedArticle(article)
                     }
 

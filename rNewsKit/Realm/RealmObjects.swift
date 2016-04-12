@@ -43,11 +43,20 @@ class RealmFeed: Object {
     }
 }
 
+class RealmAuthor: Object {
+    dynamic var name = ""
+    dynamic var email: String?
+
+    dynamic var id: String = NSUUID().UUIDString
+    override static func primaryKey() -> String? {
+        return "id"
+    }
+}
+
 class RealmArticle: Object {
     dynamic var title: String?
     dynamic var link = ""
     dynamic var summary: String?
-    dynamic var author: String?
     dynamic var published = NSDate(timeIntervalSinceNow: 0)
     dynamic var updatedAt: NSDate?
     dynamic var identifier: String?
@@ -59,6 +68,7 @@ class RealmArticle: Object {
     var enclosures: [RealmEnclosure] {
         return linkingObjects(RealmEnclosure.self, forProperty: "article")
     }
+    let authors = List<RealmAuthor>()
     let relatedArticles = List<RealmArticle>()
 
     dynamic var id: String = NSUUID().UUIDString

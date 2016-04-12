@@ -3,7 +3,7 @@ import Ra
 import rNewsKit
 
 public protocol ArticleUseCase {
-    func articlesByAuthor(author: String, callback: DataStoreBackedArray<Article> -> Void)
+    func articlesByAuthor(author: Author, callback: DataStoreBackedArray<Article> -> Void)
 
     func readArticle(article: Article) -> String
     func userActivityForArticle(article: Article) -> NSUserActivity
@@ -32,7 +32,7 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
         )
     }
 
-    public func articlesByAuthor(author: String, callback: DataStoreBackedArray<Article> -> Void) {
+    public func articlesByAuthor(author: Author, callback: DataStoreBackedArray<Article> -> Void) {
         self.feedRepository.feeds { feeds in
             guard let initial = feeds.first?.articlesArray else { return callback(DataStoreBackedArray()) }
 
@@ -40,7 +40,10 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
                 return $0.combine($1.articlesArray)
             }
 
-            callback(allArticles.filterWithPredicate(NSPredicate(format: "author = %@", author)))
+            let predicate = NSPredicate(format: "SUBQUERY(authors, $author, $author.id = %@) .@count > 0",
+                author.identifier)
+
+            callback(allArticles.filterWithPredicate(predicate))
         }
     }
 
@@ -76,7 +79,8 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
         self.userActivity.title = title
         self.userActivity.webpageURL = article.link
         if #available(iOS 9, *) {
-            self.userActivity.keywords = Set([article.title, article.summary, article.author] + article.flags)
+            let authorWords = article.authors.flatMap { $0.description.componentsSeparatedByString(" ") }
+            self.userActivity.keywords = Set([article.title, article.summary] + article.flags + authorWords)
         }
         self.userActivity.becomeCurrent()
         self.userActivity.needsSave = true

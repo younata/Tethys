@@ -9,11 +9,11 @@ class FakeArticleUseCase : ArticleUseCase {
     }
 
     private(set) var articlesByAuthorCallCount : Int = 0
-    private var articlesByAuthorArgs : Array<(String, DataStoreBackedArray<Article> -> Void)> = []
-    func articlesByAuthorArgsForCall(callIndex: Int) -> (String, DataStoreBackedArray<Article> -> Void) {
+    private var articlesByAuthorArgs : Array<(Author, DataStoreBackedArray<Article> -> Void)> = []
+    func articlesByAuthorArgsForCall(callIndex: Int) -> (Author, DataStoreBackedArray<Article> -> Void) {
         return self.articlesByAuthorArgs[callIndex]
     }
-    func articlesByAuthor(author: String, callback: DataStoreBackedArray<Article> -> Void) {
+    func articlesByAuthor(author: Author, callback: DataStoreBackedArray<Article> -> Void) {
         self.articlesByAuthorCallCount += 1
         self.articlesByAuthorArgs.append((author, callback))
     }

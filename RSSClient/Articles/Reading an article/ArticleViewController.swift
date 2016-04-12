@@ -311,20 +311,24 @@ public class ArticleViewController: UIViewController, Injectable {
         guard let article = self.article, link = article.link else { return }
         let safari = TOActivitySafari()
         let chrome = TOActivityChrome()
-        let authorActivity = AuthorActivity(author: article.author)
+
+        let authorActivity: AuthorActivity?
+        if let author = article.authors.first {
+            authorActivity = AuthorActivity(author: author)
+        } else { authorActivity = nil }
 
         var activities: [UIActivity] = [safari, chrome]
-        if !article.author.isEmpty { activities.append(authorActivity) }
+        if let activity = authorActivity { activities.append(activity) }
 
         let activity = UIActivityViewController(activityItems: [link],
             applicationActivities: activities)
         activity.completionWithItemsHandler = { activityType, completed, _, _ in
-            guard completed else { return }
-            if activityType == authorActivity.activityType() {
-                self.articleUseCase.articlesByAuthor(article.author) {
+            guard completed, let authorActivity = authorActivity else { return }
+            if activityType == authorActivity.activityType(), let author = article.authors.first {
+                self.articleUseCase.articlesByAuthor(author) {
                     let articleListController = self.articleListController()
                     articleListController.articles = $0
-                    articleListController.title = article.author
+                    articleListController.title = article.authors.first?.description
                     self.showViewController(articleListController, sender: self)
                 }
             }

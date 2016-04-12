@@ -99,12 +99,9 @@ extension DataService {
 
     func updateArticle(article: Article, item: Muon.Article, feedURL: NSURL, callback: (Article, [Enclosure]) -> Void) {
         let characterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
-        let author = item.authors.map({ author in
-            if let email = author.email?.resourceSpecifier {
-                return "\(author.name) <\(email)>"
-            }
-            return author.name
-        }).joinWithSeparator(", ")
+        let authors = item.authors.map {
+            return rNewsKit.Author(name: $0.name, email: $0.email)
+        }
 
         let title = (item.title ?? article.title ?? "unknown").stringByTrimmingCharactersInSet(characterSet)
         article.title = title.stringByUnescapingHTML().stringByStrippingHTML()
@@ -116,7 +113,7 @@ extension DataService {
 
         article.estimatedReadingTime = estimateReadingTime(item.content ?? item.description ?? "")
 
-        article.author = author
+        article.authors = authors
 
         let enclosures = item.enclosures.flatMap { self.upsertEnclosureForArticle(article, fromItem: $0) }
 
@@ -146,7 +143,7 @@ extension DataService {
                 attributes.keywords = ["article"] + (feedTitleWords ?? [])
                 attributes.URL = article.link
                 attributes.timestamp = article.updatedAt ?? article.published
-                attributes.authorNames = [article.author]
+                attributes.authorNames = article.authors.map { $0.name }
 
                 if let image = article.feed?.image, let data = UIImagePNGRepresentation(image) {
                     attributes.thumbnailData = data

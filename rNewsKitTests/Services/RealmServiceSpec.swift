@@ -260,8 +260,9 @@ class RealmServiceSpec: QuickSpec {
                                 expect(attributes.keywords).to(equal(keywords))
                                 expect(attributes.URL).to(equal(article1.link))
                                 expect(attributes.timestamp).to(equal(article1.updatedAt ?? article1.published))
-                                expect(attributes.authorNames).to(equal([article1.author]))
-                                expect(attributes.contentDescription).to(equal("Hello world!"))
+                                let authorNames = article1.authors.map({ $0.description })
+                                expect(attributes.authorNames) == authorNames
+                                expect(attributes.contentDescription) == "Hello world!"
                             }
                         }
                     }

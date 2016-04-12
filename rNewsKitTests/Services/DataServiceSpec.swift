@@ -197,7 +197,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
                 expect(article.updatedAt) == NSDate(timeIntervalSince1970: 15)
                 expect(article.summary) == "description"
                 expect(article.content) == content
-                expect(article.author) == "Rachel Brindle <rachel@example.com>"
+                expect(article.authors) == [Author(name: "Rachel Brindle", email: NSURL(string: "mailto:rachel@example.com"))]
                 expect(article.estimatedReadingTime) == 3
                 expect(article.enclosuresArray.count).to(equal(1))
                 if let enclosure = article.enclosuresArray.first {

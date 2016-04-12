@@ -53,7 +53,7 @@ class EnclosureSpec: QuickSpec {
             var article: Article! = nil
 
             beforeEach {
-                article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
 
                 subject?.article = article
             }
@@ -72,7 +72,7 @@ class EnclosureSpec: QuickSpec {
             }
 
             it("should remove from the old and add to the new when changing articles") {
-                let newArticle = Article(title: "bleh", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                let newArticle = Article(title: "bleh", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
                 subject?.article = newArticle
                 if let sub = subject {
                     expect(article.enclosuresArray).toNot(contain(sub))
@@ -104,7 +104,7 @@ class EnclosureSpec: QuickSpec {
                 it("article") {
                     subject?.article = nil
                     expect(subject?.updated) == false
-                    let article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                    let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
                     subject?.article = article
                     expect(subject?.updated) == true
                 }

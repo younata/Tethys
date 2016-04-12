@@ -8,7 +8,7 @@ public class ArticleCell: UITableViewCell {
             self.title.text = self.article?.title ?? ""
             let publishedDate = self.article?.updatedAt ?? self.article?.published ?? NSDate()
             self.published.text = self.dateFormatter.stringFromDate(publishedDate) ?? ""
-            self.author.text = self.article?.author ?? ""
+            self.author.text = self.article?.authors.map({$0.description}).joinWithSeparator(", ") ?? ""
             let hasNotRead = self.article?.read != true
             self.unread.unread = hasNotRead ? 1 : 0
             self.unreadWidth.constant = hasNotRead ? 30 : 0

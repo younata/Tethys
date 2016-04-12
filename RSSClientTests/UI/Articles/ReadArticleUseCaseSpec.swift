@@ -21,7 +21,7 @@ class ArticleUseCaseSpec: QuickSpec {
             var receivedArticles: [Article]? = nil
 
             beforeEach {
-                subject.articlesByAuthor("author") {
+                subject.articlesByAuthor(Author(name: "author", email: nil)) {
                     receivedArticles = Array($0)
                 }
             }
@@ -31,10 +31,10 @@ class ArticleUseCaseSpec: QuickSpec {
             }
 
             describe("when the feeds returns") {
-                let article1 = Article(title: "a", link: nil, summary: "", author: "author", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
-                let article2 = Article(title: "b", link: nil, summary: "", author: "foo", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
-                let article3 = Article(title: "c", link: nil, summary: "", author: "author", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
-                let article4 = Article(title: "d", link: nil, summary: "", author: "bar", published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                let article1 = Article(title: "a", link: nil, summary: "", authors: [Author(name: "author", email: nil)], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                let article2 = Article(title: "b", link: nil, summary: "", authors: [Author(name: "foo", email: nil)], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                let article3 = Article(title: "c", link: nil, summary: "", authors: [Author(name: "author", email: nil)], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                let article4 = Article(title: "d", link: nil, summary: "", authors: [Author(name: "bar", email: nil)], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
 
                 let feed1 = Feed(title: "ab", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
                 let feed2 = Feed(title: "cd", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [article3, article4], image: nil)
@@ -61,7 +61,7 @@ class ArticleUseCaseSpec: QuickSpec {
 
             beforeEach {
                 feed = Feed(title: "feedTitle", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                article = Article(title: "articleTitle", link: NSURL(string: "https://example.com"), summary: "articleSummary", author: "articleAuthor", published: NSDate(), updatedAt: NSDate(), identifier: "identifier", content: "", read: true, estimatedReadingTime: 4, feed: feed, flags: ["flag"], enclosures: [])
+                article = Article(title: "articleTitle", link: NSURL(string: "https://example.com"), summary: "articleSummary", authors: [Author(name: "articleAuthor", email: nil)], published: NSDate(), updatedAt: NSDate(), identifier: "identifier", content: "", read: true, estimatedReadingTime: 4, feed: feed, flags: ["flag"], enclosures: [])
 
                 userActivity = subject.userActivityForArticle(article)
             }
@@ -120,7 +120,7 @@ class ArticleUseCaseSpec: QuickSpec {
 
         describe("-readArticle:") {
             it("marks the article as read if it wasn't already") {
-                let article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: NSDate(), identifier: "", content: "", read: false, estimatedReadingTime: 3, feed: nil, flags: [], enclosures: [])
+                let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: NSDate(), identifier: "", content: "", read: false, estimatedReadingTime: 3, feed: nil, flags: [], enclosures: [])
 
                 subject.readArticle(article)
 
@@ -129,7 +129,7 @@ class ArticleUseCaseSpec: QuickSpec {
             }
 
             it("doesn't mark the article as read if it already was") {
-                let article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: NSDate(), identifier: "", content: "", read: true, estimatedReadingTime: 4, feed: nil, flags: [], enclosures: [])
+                let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: NSDate(), identifier: "", content: "", read: true, estimatedReadingTime: 4, feed: nil, flags: [], enclosures: [])
 
                 subject.readArticle(article)
 
@@ -140,7 +140,7 @@ class ArticleUseCaseSpec: QuickSpec {
                 var html: String!
 
                 beforeEach {
-                    let article = Article(title: "articleTitle", link: nil, summary: "", author: "", published: NSDate(), updatedAt: NSDate(), identifier: "", content: "Example Content", read: true, estimatedReadingTime: 4, feed: nil, flags: [], enclosures: [])
+                    let article = Article(title: "articleTitle", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: NSDate(), identifier: "", content: "Example Content", read: true, estimatedReadingTime: 4, feed: nil, flags: [], enclosures: [])
 
                     html = subject.readArticle(article)
                 }
@@ -194,7 +194,7 @@ class ArticleUseCaseSpec: QuickSpec {
 
         describe("-toggleArticleRead:") {
             it("marks the article as read if it wasn't already") {
-                let article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: NSDate(), identifier: "", content: "", read: false, estimatedReadingTime: 3, feed: nil, flags: [], enclosures: [])
+                let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: NSDate(), identifier: "", content: "", read: false, estimatedReadingTime: 3, feed: nil, flags: [], enclosures: [])
 
                 subject.toggleArticleRead(article)
 
@@ -203,7 +203,7 @@ class ArticleUseCaseSpec: QuickSpec {
             }
 
             it("marks the article as unread if it already was") {
-                let article = Article(title: "", link: nil, summary: "", author: "", published: NSDate(), updatedAt: NSDate(), identifier: "", content: "", read: true, estimatedReadingTime: 4, feed: nil, flags: [], enclosures: [])
+                let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: NSDate(), identifier: "", content: "", read: true, estimatedReadingTime: 4, feed: nil, flags: [], enclosures: [])
 
                 subject.toggleArticleRead(article)
 

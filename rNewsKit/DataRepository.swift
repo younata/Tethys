@@ -163,7 +163,7 @@ class DataRepository: FeedRepository {
             let predicates = [
                 NSPredicate(format: "title CONTAINS[cd] %@", query),
                 NSPredicate(format: "summary CONTAINS[cd] %@", query),
-                NSPredicate(format: "author CONTAINS[cd] %@", query),
+//                NSPredicate(format: "author CONTAINS[cd] %@", query),
                 NSPredicate(format: "content CONTAINS[cd] %@", query),
             ]
             let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)

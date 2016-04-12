@@ -264,7 +264,7 @@ class CoreDataServiceSpec: QuickSpec {
                                 expect(attributes.keywords).to(equal(keywords))
                                 expect(attributes.URL).to(equal(article1.link))
                                 expect(attributes.timestamp).to(equal(article1.updatedAt ?? article1.published))
-                                expect(attributes.authorNames).to(equal([article1.author]))
+                                expect(attributes.authorNames).to(equal([""]))
                                 expect(attributes.contentDescription).to(equal("Hello world!"))
                             }
                         }

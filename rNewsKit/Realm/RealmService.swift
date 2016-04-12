@@ -281,7 +281,14 @@ class RealmService: DataService {
             rarticle.title = article.title
             rarticle.link = article.link?.absoluteString ?? ""
             rarticle.summary = article.summary
-            rarticle.author = article.author
+            let authors: [RealmAuthor] = article.authors.map {
+                let author = RealmAuthor()
+                author.name = $0.name
+                author.email = $0.email?.absoluteString
+                return author
+            }
+            rarticle.authors.removeAll()
+            rarticle.authors.appendContentsOf(authors)
             rarticle.published = article.published
             rarticle.updatedAt = article.updatedAt
             rarticle.content = article.content

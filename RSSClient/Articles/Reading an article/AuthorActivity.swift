@@ -1,7 +1,9 @@
-public class AuthorActivity: UIActivity {
-    private let author: String
+import rNewsKit
 
-    public init(author: String) {
+public class AuthorActivity: UIActivity {
+    private let author: Author
+
+    public init(author: Author) {
         self.author = author
         super.init()
     }

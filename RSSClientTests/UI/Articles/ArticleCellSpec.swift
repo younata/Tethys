@@ -9,8 +9,8 @@ class ArticleCellSpec: QuickSpec {
         var themeRepository: FakeThemeRepository! = nil
         var settingsRepository: SettingsRepository! = nil
 
-        let unupdatedArticle = Article(title: "title", link: nil, summary: "summary", author: "Rachel", published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
-        let readArticle = Article(title: "title", link: nil, summary: "summary", author: "Rachel", published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: NSDate(timeIntervalSinceReferenceDate: 100000), identifier: "", content: "content", read: true, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+        let unupdatedArticle = Article(title: "title", link: nil, summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+        let readArticle = Article(title: "title", link: nil, summary: "summary", authors: [], published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: NSDate(timeIntervalSinceReferenceDate: 100000), identifier: "", content: "content", read: true, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
 
         beforeEach {
             subject = ArticleCell(style: .Default, reuseIdentifier: nil)
@@ -91,7 +91,7 @@ class ArticleCellSpec: QuickSpec {
 
         context("setting a decently long article") {
             beforeEach {
-                subject.article = Article(title: "title", link: nil, summary: "summary", author: "Rachel", published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 15, feed: nil, flags: [], enclosures: [])
+                subject.article = Article(title: "title", link: nil, summary: "summary", authors: [], published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 15, feed: nil, flags: [], enclosures: [])
             }
 
             it("should show the estimated reading time") {
@@ -119,7 +119,7 @@ class ArticleCellSpec: QuickSpec {
         context("setting an article with a supported enclosure") {
             beforeEach {
                 let enclosure = Enclosure(url: NSURL(string: "https://example.com/enclosure")!, kind: "video/mp4", article: nil)
-                let article = Article(title: "title", link: nil, summary: "summary", author: "Rachel", published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 15, feed: nil, flags: [], enclosures: [enclosure])
+                let article = Article(title: "title", link: nil, summary: "summary", authors: [], published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 15, feed: nil, flags: [], enclosures: [enclosure])
                 enclosure.article = article
                 subject.article = article
             }
@@ -134,7 +134,7 @@ class ArticleCellSpec: QuickSpec {
             beforeEach {
                 let enclosure = Enclosure(url: NSURL(string: "https://example.com/enclosure")!, kind: "video/mp4", article: nil)
                 let enclosure2 = Enclosure(url: NSURL(string: "https://example.com/enclosure2")!, kind: "video/mp4", article: nil)
-                let article = Article(title: "title", link: nil, summary: "summary", author: "Rachel", published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 15, feed: nil, flags: [], enclosures: [enclosure, enclosure2])
+                let article = Article(title: "title", link: nil, summary: "summary", authors: [], published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 15, feed: nil, flags: [], enclosures: [enclosure, enclosure2])
                 enclosure.article = article
                 enclosure2.article = article
                 subject.article = article
@@ -149,7 +149,7 @@ class ArticleCellSpec: QuickSpec {
         context("setting an article with no supported enclosures") {
             beforeEach {
                 let enclosure = Enclosure(url: NSURL(string: "https://example.com/enclosure")!, kind: "application/json", article: nil)
-                let article = Article(title: "title", link: nil, summary: "summary", author: "Rachel", published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 15, feed: nil, flags: [], enclosures: [enclosure])
+                let article = Article(title: "title", link: nil, summary: "summary", authors: [], published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 15, feed: nil, flags: [], enclosures: [enclosure])
                 enclosure.article = article
                 subject.article = article
             }

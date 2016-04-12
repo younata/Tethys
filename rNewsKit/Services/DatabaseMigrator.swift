@@ -107,7 +107,7 @@ struct DatabaseMigrator: DatabaseMigratorType {
         newArticle.title = oldArticle.title
         newArticle.link = oldArticle.link
         newArticle.summary = oldArticle.summary
-        newArticle.author = oldArticle.author
+        newArticle.authors = oldArticle.authors
         newArticle.published = oldArticle.published
         newArticle.updatedAt = oldArticle.updatedAt
         newArticle.identifier = oldArticle.identifier

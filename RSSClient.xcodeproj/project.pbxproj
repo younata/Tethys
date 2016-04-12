@@ -145,6 +145,12 @@
 		898047641A206CB100EB29F0 /* FeedsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898047631A206CB100EB29F0 /* FeedsViewController.swift */; };
 		898131681AF880400090FA7F /* Muon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; };
 		898131781AFC877A0090FA7F /* LocalImportViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898131771AFC877A0090FA7F /* LocalImportViewControllerSpec.swift */; };
+		8984FE891CB984A40096F4B3 /* Author.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984FE881CB984A40096F4B3 /* Author.swift */; };
+		8984FE8A1CB984A40096F4B3 /* Author.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984FE881CB984A40096F4B3 /* Author.swift */; };
+		8984FE8C1CBA1A180096F4B3 /* AuthorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984FE8B1CBA1A180096F4B3 /* AuthorSpec.swift */; };
+		8984FE8D1CBA1A180096F4B3 /* AuthorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984FE8B1CBA1A180096F4B3 /* AuthorSpec.swift */; };
+		8984FE8F1CBAAFED0096F4B3 /* RealmMigratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984FE8E1CBAAFED0096F4B3 /* RealmMigratorSpec.swift */; };
+		8984FE901CBAAFED0096F4B3 /* RealmMigratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984FE8E1CBAAFED0096F4B3 /* RealmMigratorSpec.swift */; };
 		898911911C2FC88E009A44E9 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8989118F1C2FC88E009A44E9 /* Realm.framework */; };
 		898911921C2FC88E009A44E9 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898911901C2FC88E009A44E9 /* RealmSwift.framework */; };
 		898911931C2FC8A2009A44E9 /* Realm.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8989118F1C2FC88E009A44E9 /* Realm.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -610,6 +616,9 @@
 		898047631A206CB100EB29F0 /* FeedsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsViewController.swift; sourceTree = "<group>"; };
 		898131671AF880400090FA7F /* Muon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Muon.framework; path = ../Carthage/Build/iOS/Muon.framework; sourceTree = "<group>"; };
 		898131771AFC877A0090FA7F /* LocalImportViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalImportViewControllerSpec.swift; sourceTree = "<group>"; };
+		8984FE881CB984A40096F4B3 /* Author.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Author.swift; sourceTree = "<group>"; };
+		8984FE8B1CBA1A180096F4B3 /* AuthorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorSpec.swift; sourceTree = "<group>"; };
+		8984FE8E1CBAAFED0096F4B3 /* RealmMigratorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmMigratorSpec.swift; sourceTree = "<group>"; };
 		8989118F1C2FC88E009A44E9 /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = ../Carthage/Build/iOS/Realm.framework; sourceTree = "<group>"; };
 		898911901C2FC88E009A44E9 /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = ../Carthage/Build/iOS/RealmSwift.framework; sourceTree = "<group>"; };
 		898911971C2FC8E2009A44E9 /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = ../Carthage/Build/Mac/Realm.framework; sourceTree = "<group>"; };
@@ -1039,6 +1048,7 @@
 			isa = PBXGroup;
 			children = (
 				8978D4DE1B0535EB00EDD6D0 /* Article.swift */,
+				8984FE881CB984A40096F4B3 /* Author.swift */,
 				8978D4E11B053A5900EDD6D0 /* Enclosure.swift */,
 				8978D4DB1B0533B600EDD6D0 /* Feed.swift */,
 			);
@@ -1426,6 +1436,7 @@
 				8999CC0E1C2E796100B81F5F /* DataServiceSpec.swift */,
 				89122E631C5D762000004B1F /* DatabaseMigratorSpec.swift */,
 				891754781C5B48D40036D96D /* RealmServiceSpec.swift */,
+				8984FE8E1CBAAFED0096F4B3 /* RealmMigratorSpec.swift */,
 				898911C11C3267C6009A44E9 /* UpdateServiceSpec.swift */,
 			);
 			path = Services;
@@ -1435,6 +1446,7 @@
 			isa = PBXGroup;
 			children = (
 				8978D4E61B05AB3800EDD6D0 /* ArticleSpec.swift */,
+				8984FE8B1CBA1A180096F4B3 /* AuthorSpec.swift */,
 				8978D4E81B05AB4300EDD6D0 /* EnclosureSpec.swift */,
 				8978D4E41B05AB2800EDD6D0 /* FeedSpec.swift */,
 			);
@@ -2044,6 +2056,7 @@
 				8999CC141C2E83D400B81F5F /* CoreDataService.swift in Sources */,
 				89CBDBF11C7D1206006B70F5 /* DataServiceFactory.swift in Sources */,
 				89146E401C88C6A700EC8F10 /* MigrationUseCase.swift in Sources */,
+				8984FE891CB984A40096F4B3 /* Author.swift in Sources */,
 				898911A21C30F0BE009A44E9 /* UpdateService.swift in Sources */,
 				8903EB091C702843001C0189 /* WebPageParser.swift in Sources */,
 				8943044B1B450A5E000078DC /* Article.swift in Sources */,
@@ -2075,6 +2088,7 @@
 				8935F5E11B462B8C000FFD5D /* FakeOPMLService.swift in Sources */,
 				89146E441C88C73200EC8F10 /* ImportUseCaseSpec.swift in Sources */,
 				895AC5201C80227B00A5F6A1 /* FakeDataRepository.swift in Sources */,
+				8984FE8F1CBAAFED0096F4B3 /* RealmMigratorSpec.swift in Sources */,
 				8935F5D71B4628B3000FFD5D /* DataRepositorySpec.swift in Sources */,
 				8935F5DE1B462AD2000FFD5D /* FakeOperationQueue.swift in Sources */,
 				89CBDBFE1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift in Sources */,
@@ -2088,6 +2102,7 @@
 				8935F5DF1B462AD2000FFD5D /* FakeURLSession.swift in Sources */,
 				8935F5D51B4628B3000FFD5D /* OPMLServiceSpec.swift in Sources */,
 				8935F5DA1B4628B3000FFD5D /* ArticleSpec.swift in Sources */,
+				8984FE8C1CBA1A180096F4B3 /* AuthorSpec.swift in Sources */,
 				8935F5DC1B4629E6000FFD5D /* SpecHelper.swift in Sources */,
 				8999CC121C2E83BC00B81F5F /* CoreDataServiceSpec.swift in Sources */,
 				8903EB0C1C702FA3001C0189 /* WebPageParserSpec.swift in Sources */,
@@ -2127,6 +2142,7 @@
 				898979581B70808300218498 /* Feed.swift in Sources */,
 				89CBDBF21C7D1206006B70F5 /* DataServiceFactory.swift in Sources */,
 				89146E411C88C6A800EC8F10 /* MigrationUseCase.swift in Sources */,
+				8984FE8A1CB984A40096F4B3 /* Author.swift in Sources */,
 				8989795A1B70808300218498 /* Enclosure.swift in Sources */,
 				8903EB0A1C702843001C0189 /* WebPageParser.swift in Sources */,
 				898979531B70808300218498 /* DataRepository.swift in Sources */,
@@ -2158,6 +2174,7 @@
 				89CBDBFA1C7D32EE006B70F5 /* FakeDataServiceFactory.swift in Sources */,
 				89146E451C88C73400EC8F10 /* ImportUseCaseSpec.swift in Sources */,
 				898979AA1B708E7800218498 /* FeedSpec.swift in Sources */,
+				8984FE901CBAAFED0096F4B3 /* RealmMigratorSpec.swift in Sources */,
 				898979B61B708F0000218498 /* FakeOPMLService.swift in Sources */,
 				8917547A1C5B48D40036D96D /* RealmServiceSpec.swift in Sources */,
 				89122E651C5D762000004B1F /* DatabaseMigratorSpec.swift in Sources */,
@@ -2171,6 +2188,7 @@
 				898979A31B708E7800218498 /* SpecHelper.swift in Sources */,
 				898979B71B708F0700218498 /* FakeOperationQueue.swift in Sources */,
 				898911C51C3267D6009A44E9 /* CoreDataServiceSpec.swift in Sources */,
+				8984FE8D1CBA1A180096F4B3 /* AuthorSpec.swift in Sources */,
 				898979AB1B708E7800218498 /* ArticleSpec.swift in Sources */,
 				8903EB0D1C702FA3001C0189 /* WebPageParserSpec.swift in Sources */,
 				898979A41B708E7800218498 /* FakeSearchIndex.swift in Sources */,

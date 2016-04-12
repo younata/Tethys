@@ -336,7 +336,7 @@ class CoreDataService: DataService {
             cdarticle.title = article.title
             cdarticle.link = article.link?.absoluteString
             cdarticle.summary = article.summary
-            cdarticle.author = article.author
+            cdarticle.author = article.authors.first?.description ?? ""
             cdarticle.published = article.published
             cdarticle.updatedAt = article.updatedAt
             cdarticle.content = article.content

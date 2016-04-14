@@ -13,8 +13,8 @@ dependencies:
 test:
   override:
     - bundle exec fastlane test
-  post:
-    - mv ~/Library/Logs/scan/* $CIRCLE_ARTIFACTS/
+  #post:
+    #- mv ~/Library/Logs/scan/* $CIRCLE_ARTIFACTS/
 
 deployment:
   beta_distribution:

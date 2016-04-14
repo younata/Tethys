@@ -4,8 +4,6 @@ machine:
 
 dependencies:
   override:
-    - brew update
-    - brew install carthage
     - openssl aes-256-cbc -k "$MOBILE_PROVISION_DECRYPT_KEY" -in ci/rNews.mobileprovision.enc -d -a -out ci/rNews.mobileprovision
     - carthage build Kanna --platform ios
     - bundle

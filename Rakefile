@@ -13,13 +13,13 @@ namespace "test" do
     desc "Run unit tests for the iOS app"
     task :app do |t|
       puts "running tests for the iOS app"
-      run "set -o pipefail && xcodebuild -project RSSClient.xcodeproj -scheme RSSClientTests -destination 'platform=iOS Simulator,name=iPhone 6' test | xcpretty -c --formatter scripts/xcpretty-formatter.rb && echo 'iOS App Tests Passed'"
+      run "set -o pipefail && xcodebuild -project RSSClient.xcodeproj -scheme RSSClientTests -destination 'platform=iOS Simulator,name=iPhone 6' test | xcpretty -c && echo 'iOS App Tests Passed'"
     end
 
     desc "Run unit tests for the iOS kit"
     task :kit do |t|
       puts "Running tests for the iOS kit"
-      run "set -o pipefail && xcodebuild -project RSSClient.xcodeproj -scheme rNewsKitTests -destination 'platform=iOS Simulator,name=iPhone 6' test | xcpretty -c --formatter scripts/xcpretty-formatter.rb && echo 'iOS Kit tests Passed'"
+      run "set -o pipefail && xcodebuild -project RSSClient.xcodeproj -scheme rNewsKitTests -destination 'platform=iOS Simulator,name=iPhone 6' test | xcpretty -c && echo 'iOS Kit tests Passed'"
     end
 
     desc "Run acceptance (UI) tests for the iOS app"

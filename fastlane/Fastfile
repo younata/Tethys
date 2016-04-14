@@ -24,7 +24,9 @@ default_platform :ios
 platform :ios do
   desc 'Runs all the tests'
   lane :test do
-    scan(project: 'RSSClient.xcodeproj', scheme: 'RSSClient')
+    #scan(project: 'RSSClient.xcodeproj', scheme: 'RSSClient')
+    sh("bundle exec rake test:ios:app")
+    sh("bundle exec rake test:ios:kit")
   end
 
   lane :test_app do

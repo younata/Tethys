@@ -8,6 +8,9 @@ github "soffes/X" "swift2"
 github "ashleymills/Reachability.swift"
 github "younata/WorkFlow"
 github "tid-kijyun/Kanna"
+github "antitypical/Result"
+github "cbguder/CBGPromise" "master"
+github "soffes/Crypto"
 
 # objc
 github "PureLayout/PureLayout"

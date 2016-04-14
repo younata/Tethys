@@ -13,11 +13,11 @@ public class AuthorActivity: UIActivity {
     }
 
     public override func activityTitle() -> String? {
-        return String.localizedStringWithFormat(NSLocalizedString("AuthorActivity_Title", comment: ""), self.author)
+        return String.localizedStringWithFormat(NSLocalizedString("AuthorActivity_Title", comment: ""), self.author.name)
     }
 
     public override func activityImage() -> UIImage? {
-        return UIImage(named: "Podcast")
+        return UIImage(named: "GrayIcon")
     }
 
     public override func canPerformWithActivityItems(activityItems: [AnyObject]) -> Bool {

@@ -333,6 +333,18 @@
 		89D970C31B392B0300ED84B8 /* LocalNotificationSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D970C21B392B0300ED84B8 /* LocalNotificationSource.swift */; };
 		89DA7D2C1A66111E0050685B /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2B1A66111E0050685B /* TextFieldCell.swift */; };
 		89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA7D2D1A6613100050685B /* ValidatorView.swift */; };
+		89DB07481CBE1834006D672D /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89DB07471CBE1834006D672D /* Result.framework */; };
+		89DB07491CBE1862006D672D /* Result.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89DB07471CBE1834006D672D /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		89DB074B1CBED820006D672D /* GravatarRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DB074A1CBED820006D672D /* GravatarRepository.swift */; };
+		89DB074C1CBED820006D672D /* GravatarRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DB074A1CBED820006D672D /* GravatarRepository.swift */; };
+		89DB074E1CBF2AC7006D672D /* CBGPromise.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89DB074D1CBF2AC7006D672D /* CBGPromise.framework */; };
+		89DB074F1CBF2AE1006D672D /* CBGPromise.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89DB074D1CBF2AC7006D672D /* CBGPromise.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		89DB07511CBF2C21006D672D /* GravatarRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DB07501CBF2C21006D672D /* GravatarRepositorySpec.swift */; };
+		89DB07521CBF2C21006D672D /* GravatarRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DB07501CBF2C21006D672D /* GravatarRepositorySpec.swift */; };
+		89DB07551CBF3427006D672D /* CommonCrypto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89DB07531CBF3427006D672D /* CommonCrypto.framework */; };
+		89DB07561CBF3427006D672D /* Crypto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89DB07541CBF3427006D672D /* Crypto.framework */; };
+		89DB07571CBF3438006D672D /* CommonCrypto.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89DB07531CBF3427006D672D /* CommonCrypto.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		89DB07581CBF3438006D672D /* Crypto.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89DB07541CBF3427006D672D /* Crypto.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89DBDA9A1A9EBB0C00959AC7 /* feed.rss in Resources */ = {isa = PBXBuildFile; fileRef = 89DBDA991A9EBB0C00959AC7 /* feed.rss */; };
 		89DBDA9C1A9FBCB200959AC7 /* feed2.rss in Resources */ = {isa = PBXBuildFile; fileRef = 89DBDA9B1A9FBC4100959AC7 /* feed2.rss */; };
 		89DFAA601B7684A0004CD9CA /* FeedViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DFAA5F1B7684A0004CD9CA /* FeedViewSpec.swift */; };
@@ -434,6 +446,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				89DB07491CBE1862006D672D /* Result.framework in Embed Frameworks */,
 				89146E501C88F0A600EC8F10 /* WorkFlow.framework in Embed Frameworks */,
 				898911931C2FC8A2009A44E9 /* Realm.framework in Embed Frameworks */,
 				898911941C2FC8A2009A44E9 /* RealmSwift.framework in Embed Frameworks */,
@@ -444,6 +457,9 @@
 				8935F5D21B46273D000FFD5D /* Nimble.framework in Embed Frameworks */,
 				8935F5D31B46273D000FFD5D /* Quick.framework in Embed Frameworks */,
 				8949698D1C72FAEB00A91986 /* Kanna.framework in Embed Frameworks */,
+				89DB07571CBF3438006D672D /* CommonCrypto.framework in Embed Frameworks */,
+				89DB07581CBF3438006D672D /* Crypto.framework in Embed Frameworks */,
+				89DB074F1CBF2AE1006D672D /* CBGPromise.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -743,6 +759,12 @@
 		89D970C21B392B0300ED84B8 /* LocalNotificationSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalNotificationSource.swift; sourceTree = "<group>"; };
 		89DA7D2B1A66111E0050685B /* TextFieldCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldCell.swift; sourceTree = "<group>"; };
 		89DA7D2D1A6613100050685B /* ValidatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidatorView.swift; sourceTree = "<group>"; };
+		89DB07471CBE1834006D672D /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/iOS/Result.framework; sourceTree = SOURCE_ROOT; };
+		89DB074A1CBED820006D672D /* GravatarRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GravatarRepository.swift; sourceTree = "<group>"; };
+		89DB074D1CBF2AC7006D672D /* CBGPromise.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CBGPromise.framework; path = Carthage/Build/iOS/CBGPromise.framework; sourceTree = SOURCE_ROOT; };
+		89DB07501CBF2C21006D672D /* GravatarRepositorySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GravatarRepositorySpec.swift; sourceTree = "<group>"; };
+		89DB07531CBF3427006D672D /* CommonCrypto.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CommonCrypto.framework; path = Carthage/Build/iOS/CommonCrypto.framework; sourceTree = SOURCE_ROOT; };
+		89DB07541CBF3427006D672D /* Crypto.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crypto.framework; path = Carthage/Build/iOS/Crypto.framework; sourceTree = SOURCE_ROOT; };
 		89DBDA991A9EBB0C00959AC7 /* feed.rss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = feed.rss; sourceTree = "<group>"; };
 		89DBDA9B1A9FBC4100959AC7 /* feed2.rss */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = feed2.rss; sourceTree = "<group>"; };
 		89DFAA5D1B75CE65004CD9CA /* PCKMethodRedirector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PCKMethodRedirector.h; sourceTree = "<group>"; };
@@ -782,12 +804,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				8903EB151C72F8A7001C0189 /* Kanna.framework in Frameworks */,
+				89DB074E1CBF2AC7006D672D /* CBGPromise.framework in Frameworks */,
 				898911911C2FC88E009A44E9 /* Realm.framework in Frameworks */,
 				898911921C2FC88E009A44E9 /* RealmSwift.framework in Frameworks */,
+				89DB07481CBE1834006D672D /* Result.framework in Frameworks */,
 				890894981BFEC670002848A4 /* Reachability.framework in Frameworks */,
 				8902D5471BB0753E003D7C22 /* Lepton.framework in Frameworks */,
 				89CAD4C11BA3DB7F006D79FC /* Muon.framework in Frameworks */,
 				89CC81FF1B4615A100648367 /* Ra.framework in Frameworks */,
+				89DB07561CBF3427006D672D /* Crypto.framework in Frameworks */,
+				89DB07551CBF3427006D672D /* CommonCrypto.framework in Frameworks */,
 				89146E521C88F0BC00EC8F10 /* WorkFlow.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -950,6 +976,7 @@
 				89146E3D1C88C59C00EC8F10 /* Use Cases */,
 				898C48CA1B425F8C0097045A /* DataRepository.swift */,
 				89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */,
+				89DB074A1CBED820006D672D /* GravatarRepository.swift */,
 				89CC82031B461A2B00648367 /* Helpers.swift */,
 				89CC82051B461A5500648367 /* KitModule.swift */,
 				898C48C61B40D2AC0097045A /* SearchIndex.swift */,
@@ -969,6 +996,7 @@
 				8937F6BA1B793CA40044A442 /* AppIcon.png */,
 				898C48CC1B42605A0097045A /* DataRepositorySpec.swift */,
 				89FF97A01BF05CDC000080F7 /* DataStoreBackedArraySpec.swift */,
+				89DB07501CBF2C21006D672D /* GravatarRepositorySpec.swift */,
 				894304331B45089B000078DC /* Info.plist */,
 				8937F6BF1B79D0800044A442 /* KitModuleSpec.swift */,
 				89A341811B150DA90000C60B /* OPMLServiceSpec.swift */,
@@ -1346,6 +1374,10 @@
 		89CB98BB1B13921200C87160 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				89DB07531CBF3427006D672D /* CommonCrypto.framework */,
+				89DB07541CBF3427006D672D /* Crypto.framework */,
+				89DB074D1CBF2AC7006D672D /* CBGPromise.framework */,
+				89DB07471CBE1834006D672D /* Result.framework */,
 				8903EB141C72F8A7001C0189 /* Kanna.framework */,
 				89BA95381C4C8E7C001FD453 /* WorkFlow.framework */,
 				8989118F1C2FC88E009A44E9 /* Realm.framework */,
@@ -2001,6 +2033,10 @@
 				"$(SRCROOT)/Carthage/Build/iOS/RealmSwift.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/WorkFlow.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Kanna.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Result.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/CBGPromise.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/CommonCrypto.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Crypto.framework",
 			);
 			name = "Embed Carthage Libraries";
 			outputPaths = (
@@ -2050,6 +2086,7 @@
 				8943044A1B450A5E000078DC /* Feed.swift in Sources */,
 				89CC82041B461A2B00648367 /* Helpers.swift in Sources */,
 				89146E421C88C70600EC8F10 /* ImportUseCase.swift in Sources */,
+				89DB074B1CBED820006D672D /* GravatarRepository.swift in Sources */,
 				89CC82061B461A5500648367 /* KitModule.swift in Sources */,
 				894304541B450C6A000078DC /* CoreDataEnclosure.swift in Sources */,
 				895AC51B1C7FF27300A5F6A1 /* RealmMigrator.swift in Sources */,
@@ -2109,6 +2146,7 @@
 				89122E641C5D762000004B1F /* DatabaseMigratorSpec.swift in Sources */,
 				89146E4C1C88F01700EC8F10 /* FakeFeedRepository.swift in Sources */,
 				8935F5DD1B462AD2000FFD5D /* FakeSearchIndex.swift in Sources */,
+				89DB07511CBF2C21006D672D /* GravatarRepositorySpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2136,6 +2174,7 @@
 				898911C81C3267E3009A44E9 /* CoreDataService.swift in Sources */,
 				8989794E1B70808300218498 /* SearchIndex.swift in Sources */,
 				89146E431C88C70700EC8F10 /* ImportUseCase.swift in Sources */,
+				89DB074C1CBED820006D672D /* GravatarRepository.swift in Sources */,
 				898979561B70808300218498 /* CoreDataFeed.swift in Sources */,
 				898979521B70808300218498 /* OPMLService.swift in Sources */,
 				895AC51C1C7FF27300A5F6A1 /* RealmMigrator.swift in Sources */,
@@ -2195,6 +2234,7 @@
 				898979A71B708E7800218498 /* OPMLServiceSpec.swift in Sources */,
 				89146E4D1C88F01800EC8F10 /* FakeFeedRepository.swift in Sources */,
 				898979AC1B708E7800218498 /* EnclosureSpec.swift in Sources */,
+				89DB07521CBF2C21006D672D /* GravatarRepositorySpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

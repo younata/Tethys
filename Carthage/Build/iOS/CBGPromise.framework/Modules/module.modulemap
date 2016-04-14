@@ -1,0 +1,10 @@
+framework module CBGPromise {
+  umbrella header "CBGPromise.h"
+
+  export *
+  module * { export * }
+}
+
+module CBGPromise.Swift {
+    header "CBGPromise-Swift.h"
+}

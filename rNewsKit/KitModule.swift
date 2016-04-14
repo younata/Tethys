@@ -70,6 +70,7 @@ public class KitModule: NSObject, Ra.InjectorModule {
 
         injector.bind(FeedRepository.self, toInstance: dataRepository)
         injector.bind(DataRepository.self, toInstance: dataRepository)
+        injector.bind(GravatarRepository.self, toInstance: DefaultGravatarRepository(injector: injector))
 
         let opmlService = OPMLService(injector: injector)
         injector.bind(OPMLService.self, toInstance: opmlService)

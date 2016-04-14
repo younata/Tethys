@@ -118,6 +118,35 @@ class ArticleListControllerSpec: QuickSpec {
             expect(subject.tableView.keyboardDismissMode).to(equal(UIScrollViewKeyboardDismissMode.OnDrag))
         }
 
+        describe("when a feed is backing the list") {
+            beforeEach {
+                subject.feeds = [feed]
+            }
+
+            it("displays a share sheet icon for sharing that feed") {
+                expect(subject.navigationItem.rightBarButtonItems?.count) == 2
+                expect(subject.navigationItem.rightBarButtonItems?.first) == subject.editButtonItem()
+                if let shareSheet = subject.navigationItem.rightBarButtonItems?.last {
+                    shareSheet.tap()
+                    expect(subject.presentedViewController).to(beAnInstanceOf(UIActivityViewController))
+                    if let activityVC = subject.presentedViewController as? UIActivityViewController {
+                        expect(activityVC.activityItems() as? [NSURL]) == [feed.url!]
+                    }
+                }
+            }
+        }
+
+        describe("when a feed is not backing the list") {
+            beforeEach {
+                subject.feeds = []
+            }
+
+            it("does not display a share sheet icon for sharing that feed") {
+                expect(subject.navigationItem.rightBarButtonItems?.count) == 1
+                expect(subject.navigationItem.rightBarButtonItems?.first) == subject.editButtonItem()
+            }
+        }
+
         describe("listening to theme repository updates") {
             beforeEach {
                 themeRepository.theme = .Dark

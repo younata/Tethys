@@ -8,6 +8,7 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
     public var feeds: [Feed] = [] {
         didSet {
             self.resetArticles()
+            self.resetBarItems()
         }
     }
 
@@ -82,6 +83,7 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
                     self.registerForPreviewingWithDelegate(self, sourceView: self.tableView)
                 }
             }
+            self.resetBarItems()
         }
     }
 
@@ -202,6 +204,27 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
         }
         self.articles = articles
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+    }
+
+    private func resetBarItems() {
+        guard !self.previewMode else { return }
+
+        var barItems = [self.editButtonItem()]
+
+        if self.feeds.count == 1 {
+            let shareSheet = UIBarButtonItem(barButtonSystemItem: .Action,
+                                             target: self,
+                                             action: #selector(ArticleListController.shareFeed))
+            barItems.append(shareSheet)
+        }
+
+        self.navigationItem.rightBarButtonItems = barItems
+    }
+
+    @objc private func shareFeed() {
+        guard let url = self.feeds.first?.url else { return }
+        let shareSheet = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        self.presentViewController(shareSheet, animated: true, completion: nil)
     }
 }
 

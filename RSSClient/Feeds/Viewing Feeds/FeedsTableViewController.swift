@@ -560,6 +560,17 @@ extension FeedsTableViewController: UITableViewDelegate {
                     animated: true, completion: nil)
             }
             edit.backgroundColor = UIColor.blueColor()
-            return [delete, markRead, edit]
+            let feed = self.feedAtIndexPath(indexPath)
+            if feed.isQueryFeed {
+                return [delete, markRead, edit]
+            } else {
+                let shareTitle = NSLocalizedString("Generic_Share", comment: "")
+                let share = UITableViewRowAction(style: .Normal, title: shareTitle) {_ in
+                    guard let url = feed.url else { return }
+                    let shareSheet = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+                    self.presentViewController(shareSheet, animated: true, completion: nil)
+                }
+                return [delete, markRead, edit, share]
+            }
     }
 }

@@ -666,8 +666,8 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                 actions = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath) ?? []
                             }
 
-                            it("should have 3 actions") {
-                                expect(actions.count).to(equal(3))
+                            it("should have 4 actions") {
+                                expect(actions.count).to(equal(4))
                             }
 
                             describe("the first action") {
@@ -729,6 +729,29 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                         if let nc = navigationController.visibleViewController as? UINavigationController {
                                             expect(nc.viewControllers.count).to(equal(1))
                                             expect(nc.topViewController).to(beAnInstanceOf(FeedViewController.self))
+                                        }
+                                    }
+                                }
+                            }
+
+                            describe("the fourth action") {
+                                beforeEach {
+                                    action = actions[3]
+                                }
+
+                                it("should state it opens a share sheet") {
+                                    expect(action.title).to(equal("Share"))
+                                }
+
+                                describe("tapping it") {
+                                    beforeEach {
+                                        action.handler()(action, indexPath)
+                                    }
+
+                                    it("should bring up a share sheet") {
+                                        expect(navigationController.visibleViewController).to(beAnInstanceOf(UIActivityViewController))
+                                        if let activityVC = navigationController.visibleViewController as? UIActivityViewController {
+                                            expect(activityVC.activityItems() as? [NSURL]) == [feed.url!]
                                         }
                                     }
                                 }

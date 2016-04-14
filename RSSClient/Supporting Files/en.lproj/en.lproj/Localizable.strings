@@ -102,6 +102,7 @@
 "Generic_Save" = "Save";
 "Generic_Delete" = "Delete";
 "Generic_Edit" = "Edit";
+"Generic_Share" = "Share";
 
 "%ld enclosures" = "%ld enclosures";
 

@@ -10,7 +10,6 @@ github "younata/WorkFlow"
 github "tid-kijyun/Kanna"
 github "antitypical/Result"
 github "cbguder/CBGPromise" "master"
-github "soffes/Crypto"
 
 # objc
 github "PureLayout/PureLayout"

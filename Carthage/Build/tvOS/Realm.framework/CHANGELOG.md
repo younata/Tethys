@@ -1,3 +1,27 @@
+0.98.7 Release notes (2016-04-13)
+=============================================================
+
+### API breaking changes
+
+* None.
+
+### Enhancements
+
+* None.
+
+### Bugfixes
+
+* Mark further initializers in Objective-C as NS_DESIGNATED_INITIALIZER to prevent that these aren't
+  correctly defined in Swift Object subclasses, which don't qualify for auto-inheriting the required initializers.
+* `-[RLMResults indexOfObjectWithPredicate:]` now returns correct results
+  for `RLMResults` instances that were created by filtering an `RLMArray`.
+* Adjust how RLMObjects are destroyed in order to support using an associated
+  object on an RLMObject to remove KVO observers from that RLMObject.
+* `-[RLMResults indexOfObjectWithPredicate:]` now returns the index of the first matching object for a
+  sorted `RLMResults`, matching its documented behavior.
+* Fix a crash when canceling a transaction that set a relationship.
+* Fix a crash when a query referenced a deleted object.
+
 0.98.6 Release notes (2016-03-25)
 =============================================================
 

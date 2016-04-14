@@ -224,7 +224,7 @@ SWIFT_CLASS_NAMED("Object")
 /// </code> of property names to ignore.
 + (NSArray<NSString *> * _Nonnull)ignoredProperties;
 
-/// Return an array of property names for properties which should be indexed. Only supported for string and int properties.
+/// Return an array of property names for properties which should be indexed. Only supported for strings, integers, booleans and NSDate properties.
 ///
 /// \returns  <code>Array
 /// </code> of property names to index.

@@ -80,6 +80,17 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
         }
 
+        describe("Entering an invalid url") {
+            beforeEach {
+                subject.navField.text = "not a url"
+                subject.textFieldShouldReturn(subject.navField)
+            }
+
+            it("searches duckduckgo for that text") {
+                expect(webView.lastRequestLoaded?.URL) == NSURL(string: "https://duckduckgo.com/?q=not+a+url")
+            }
+        }
+
         describe("key commands") {
             it("can become first responder") {
                 expect(subject.canBecomeFirstResponder()) == true

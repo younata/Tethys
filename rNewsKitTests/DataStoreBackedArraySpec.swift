@@ -7,8 +7,8 @@ import RealmSwift
 class DataStoreBackedArraySpec: QuickSpec {
     override func spec() {
         var subject: DataStoreBackedArray<Article>! = nil
-        let totalObjectCount = 35
-        let batchSize = 20
+        let totalObjectCount = 125
+        let batchSize = 50
 
         describe("a Realm backed array") {
             var realm: Realm!
@@ -67,8 +67,8 @@ class DataStoreBackedArraySpec: QuickSpec {
             }
 
             it("should load successively more things") {
-                expect(subject[26]) == Article(realmArticle: articles[26], feed: nil)
-                expect(subject.internalObjects) == articles.map({Article(realmArticle: $0, feed: nil)})
+                expect(subject[batchSize + 5]) == Article(realmArticle: articles[batchSize + 5], feed: nil)
+                expect(subject.internalObjects.count) == batchSize * 2
             }
 
             it("should be iterable") {
@@ -120,7 +120,7 @@ class DataStoreBackedArraySpec: QuickSpec {
 
                 subject.append(article)
 
-                expect(subject.count) == 36
+                expect(subject.count) == totalObjectCount + 1
 
                 let expectedArticles = articles.map { Article(realmArticle: $0, feed: nil) }
                 expect(Array(subject)) == expectedArticles + [article]
@@ -158,14 +158,14 @@ class DataStoreBackedArraySpec: QuickSpec {
                 let toRemove = articles[4]
 
                 expect(subject.remove(toRemove)) == true
-                expect(subject.count) == 34
+                expect(subject.count) == totalObjectCount - 1
 
                 let expectedArticles = articles.filter { $0.title != toRemove.title }
                 expect(Array(subject)) == expectedArticles
 
                 let article = Article(title: "025", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
                 subject.append(article)
-                expect(subject.count) == 35
+                expect(subject.count) == totalObjectCount
                 expect(subject.remove(article)) == true
                 expect(Array(subject)) == expectedArticles
 
@@ -196,7 +196,7 @@ class DataStoreBackedArraySpec: QuickSpec {
 
                 subject = DataStoreBackedArray(entityName: "Article", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: {
                     return Article(coreDataArticle: $0 as! CoreDataArticle, feed: nil)
-                    }, sortDescriptors: [sortDescriptor])
+                }, sortDescriptors: [sortDescriptor])
             }
 
             afterEach {
@@ -231,8 +231,8 @@ class DataStoreBackedArraySpec: QuickSpec {
             }
 
             it("should load successively more things") {
-                expect(subject[26]) == Article(coreDataArticle: articles[26], feed: nil)
-                expect(subject.internalObjects) == articles.map({Article(coreDataArticle: $0, feed: nil)})
+                expect(subject[batchSize + 5]) == Article(coreDataArticle: articles[batchSize + 5], feed: nil)
+                expect(subject.internalObjects.count) == batchSize * 2
             }
 
             it("should be iterable") {
@@ -292,7 +292,7 @@ class DataStoreBackedArraySpec: QuickSpec {
 
                 subject.append(article)
 
-                expect(subject.count) == 36
+                expect(subject.count) == totalObjectCount + 1
 
                 let expectedArticles = articles.map { Article(coreDataArticle: $0, feed: nil) }
                 expect(Array(subject)) == expectedArticles + [article]
@@ -335,14 +335,14 @@ class DataStoreBackedArraySpec: QuickSpec {
                 let toRemove = articles[4]
 
                 expect(subject.remove(toRemove)) == true
-                expect(subject.count) == 34
+                expect(subject.count) == totalObjectCount - 1
 
                 let expectedArticles = articles.filter { $0.title != toRemove.title }
                 expect(Array(subject)) == expectedArticles
 
                 let article = Article(title: "025", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
                 subject.append(article)
-                expect(subject.count) == 35
+                expect(subject.count) == totalObjectCount
                 expect(subject.remove(article)) == true
                 expect(Array(subject)) == expectedArticles
 

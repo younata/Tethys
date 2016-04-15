@@ -26,9 +26,13 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
     }
     let realmConversionFunction: ((Object) -> T)?
 
-    private let batchSize = 20
+    private let batchSize = 50
 
     var internalObjects = [T]()
+
+    public var loadedCount: Int {
+        return self.internalObjects.count + self.appendedObjects.count
+    }
 
     private var appendedObjects: [T] = []
 

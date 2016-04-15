@@ -570,6 +570,7 @@ extension FeedsTableViewController: UITableViewDelegate {
                     let shareSheet = UIActivityViewController(activityItems: [url], applicationActivities: nil)
                     self.presentViewController(shareSheet, animated: true, completion: nil)
                 }
+                share.backgroundColor = UIColor.darkGreenColor()
                 return [delete, markRead, edit, share]
             }
     }

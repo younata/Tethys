@@ -115,7 +115,7 @@ class DataRepository: FeedRepository {
     //MARK: - DataRetriever
 
     func allTags(callback: [String] -> Void) {
-        self.dataService.feedsMatchingPredicate(NSPredicate(format: "tags != nil")) { feedsWithTags in
+        self.dataService.feedsMatchingPredicate(NSPredicate(format: "tags.@count > 0")) { feedsWithTags in
             let setOfTags = feedsWithTags.reduce(Set<String>()) {set, feed in set.union(Set(feed.tags)) }
             let tags = Array(setOfTags).sort { return $0.lowercaseString < $1.lowercaseString }
             callback(tags)

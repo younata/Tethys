@@ -22,6 +22,13 @@ default_platform :ios
 
 
 platform :ios do
+  desc 'Pushes'
+  lane :push do
+    increment_build_number(xcodeproj: 'RSSClient.xcodeproj')
+    commit_version_bump(xcodeproj: 'RSSClient.xcodeproj', force: true)
+    push_to_git_remote
+  end
+
   desc 'Runs all the tests'
   lane :test do
     #scan(project: 'RSSClient.xcodeproj', scheme: 'RSSClient')
@@ -45,7 +52,6 @@ platform :ios do
   lane :deploy_testflight do
     increment_build_number(xcodeproj: 'RSSClient.xcodeproj')
     commit_version_bump(xcodeproj: 'RSSClient.xcodeproj', force: true)
-    push_to_git_remote
     gym(project: 'RSSClient.xcodeproj', scheme: "RSSClient")
     pilot(distribute_external: true, changelog: `git log -1 --format='%B'`)
   end

@@ -1,13 +1,15 @@
 machine:
   xcode:
     version: 7.3
+  pre:
+    - pwd
+    - openssl aes-256-cbc -k "$MOBILE_PROVISION_DECRYPT_KEY" -in ci/rNews.mobileprovision.enc -d -a -out ci/rNews.mobileprovision
+    - open ci/rNews.mobileprovision
 
 dependencies:
   override:
     - brew update
     - brew upgrade carthage
-    - openssl aes-256-cbc -k "$MOBILE_PROVISION_DECRYPT_KEY" -in ci/rNews.mobileprovision.enc -d -a -out ci/rNews.mobileprovision
-    - open ci/rNews.mobileprovision
     - carthage bootstrap --platform ios
     - bundle
 

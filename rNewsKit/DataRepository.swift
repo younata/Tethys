@@ -3,6 +3,7 @@ import Ra
 import CoreData
 import JavaScriptCore
 import Muon
+import CBGPromise
 #if os(iOS)
     import CoreSpotlight
     import MobileCoreServices
@@ -27,7 +28,7 @@ public protocol FeedRepository {
     func newFeed(callback: Feed -> Void)
     func saveFeed(feed: Feed)
     func deleteFeed(feed: Feed)
-    func markFeedAsRead(feed: Feed)
+    func markFeedAsRead(feed: Feed) -> Future<Int>
 
     func saveArticle(article: Article)
     func deleteArticle(article: Article)
@@ -244,9 +245,9 @@ class DataRepository: FeedRepository {
         }
     }
 
-    func markFeedAsRead(feed: Feed) {
+    func markFeedAsRead(feed: Feed) -> Future<Int> {
         let articles = feed.articlesArray.filterWithPredicate(NSPredicate(format: "read != 1"))
-        self.privateMarkArticles(Array(articles), asRead: true)
+        return self.privateMarkArticles(Array(articles), asRead: true)
     }
 
     func saveArticle(article: Article) {
@@ -314,9 +315,14 @@ class DataRepository: FeedRepository {
 
     //MARK: Private (DataWriter)
 
-    private func privateMarkArticles(articles: [Article], asRead read: Bool) {
-        guard articles.count > 0 else { return }
+    private func privateMarkArticles(articles: [Article], asRead read: Bool) -> Future<Int> {
+        let promise = Promise<Int>()
+        guard articles.count > 0 else {
+            promise.resolve(0)
+            return promise.future
+        }
 
+        let amountToChange = articles.filter({ $0.read == !read }).count
         for article in articles {
             article.read = read
         }
@@ -326,7 +332,9 @@ class DataRepository: FeedRepository {
                     subscriber.markedArticles(articles, asRead: read)
                 }
             }
+            promise.resolve(amountToChange)
         }
+        return promise.future
     }
 
     private func privateUpdateFeeds(feeds: [Feed], callback: ([Feed], [NSError]) -> (Void)) {

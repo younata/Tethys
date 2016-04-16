@@ -2,6 +2,7 @@ import UIKit
 import BreakOutToRefresh
 import MAKDropDownMenu
 import Ra
+import CBGPromise
 import rNewsKit
 
 // swiftlint:disable file_length

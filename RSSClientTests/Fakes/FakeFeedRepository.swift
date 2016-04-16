@@ -1,4 +1,5 @@
 import Foundation
+import CBGPromise
 @testable import rNewsKit
 
 class FakeFeedRepository: FeedRepository {
@@ -90,9 +91,12 @@ class FakeFeedRepository: FeedRepository {
 
     var lastFeedMarkedRead: Feed? = nil
     var markedReadFeeds = Array<Feed>()
-    func markFeedAsRead(feed: Feed) {
+    var markedReadPromise: Promise<Int>? = nil
+    func markFeedAsRead(feed: Feed) -> Future<Int> {
         markedReadFeeds.append(feed)
         lastFeedMarkedRead = feed
+        self.markedReadPromise = Promise<Int>()
+        return self.markedReadPromise!.future
     }
 
     func saveArticle(article: Article) {

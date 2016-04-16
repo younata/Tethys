@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import CBGPromise
 @testable import rNewsKit
 
 class FakeDataRepository : DataRepository {
@@ -31,8 +32,11 @@ class FakeDataRepository : DataRepository {
     }
 
     var lastFeedMarkedRead: Feed? = nil
-    override func markFeedAsRead(feed: Feed) {
+    var lastMarkedReadPromise: Promise<Int>? = nil
+    override func markFeedAsRead(feed: Feed) -> Future<Int> {
         lastFeedMarkedRead = feed
+        self.lastMarkedReadPromise = Promise<Int>()
+        return self.lastMarkedReadPromise!.future
     }
 
     var tagsList: [String] = []

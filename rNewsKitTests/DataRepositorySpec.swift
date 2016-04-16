@@ -3,6 +3,7 @@ import Nimble
 @testable import rNewsKit
 import Ra
 import CoreData
+import CBGPromise
 #if os(iOS)
     import CoreSpotlight
     import MobileCoreServices
@@ -376,19 +377,24 @@ class FeedRepositorySpec: QuickSpec {
             }
 
             describe("markFeedAsRead") {
+                var markedReadFuture: Future<Int>?
                 beforeEach {
-                    subject.markFeedAsRead(feed1)
+                    markedReadFuture = subject.markFeedAsRead(feed1)
                 }
 
-                it("should mark every article in the feed as read") {
+                it("marks every article in the feed as read") {
                     for article in feed1.articlesArray {
                         expect(article.read) == true
                     }
                 }
 
-                it("should inform any subscribers") {
+                it("informs any subscribers") {
                     expect(dataSubscriber.markedArticles).toNot(beNil())
                     expect(dataSubscriber.read) == true
+                }
+
+                it("resolves the promise with the number of articles marked read") {
+                    expect(markedReadFuture?.value) == 1
                 }
             }
 

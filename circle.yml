@@ -1,9 +1,8 @@
 machine:
   xcode:
     version: 7.3
-  post:
+  environment:
     - openssl aes-256-cbc -k "$MOBILE_PROVISION_DECRYPT_KEY" -in RSSClient/ci/rNews.mobileprovision.enc -d -a -out RSSClient/ci/rNews.mobileprovision
-    - open ci/rNews.mobileprovision
 
 dependencies:
   override:

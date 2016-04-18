@@ -540,8 +540,9 @@ extension FeedsTableViewController: UITableViewDelegate {
             let readTitle = NSLocalizedString("FeedsTableViewController_Table_EditAction_MarkRead", comment: "")
             let markRead = UITableViewRowAction(style: .Normal, title: readTitle) {_, indexPath in
                 let feed = self.feedAtIndexPath(indexPath)
-                self.feedRepository.markFeedAsRead(feed)
-                tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                self.feedRepository.markFeedAsRead(feed).then { _ in
+                    tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                }
             }
 
             let editTitle = NSLocalizedString("Generic_Edit", comment: "")

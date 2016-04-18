@@ -196,6 +196,10 @@ import RealmSwift
         }
     }
 
+    internal func resetUnreadArticles() {
+        self.unreadArticles = self.articlesArray.filterWithPredicate(NSPredicate(format: "read == %@", false))
+    }
+
     // swiftlint:disable function_parameter_count
     public init(title: String, url: NSURL?, summary: String, query: String?, tags: [String],
         waitPeriod: Int, remainingWait: Int, articles: [Article], image: Image?, identifier: String = "") {

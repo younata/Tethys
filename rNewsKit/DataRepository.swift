@@ -247,9 +247,12 @@ class DataRepository: FeedRepository {
 
     func markFeedAsRead(feed: Feed) -> Future<Int> {
         let articles = feed.articlesArray.filterWithPredicate(NSPredicate(format: "read != 1"))
-        return self.privateMarkArticles(Array(articles), asRead: true).then { _ in
+        let promise = Promise<Int>()
+        self.privateMarkArticles(Array(articles), asRead: true).then {
             feed.resetUnreadArticles()
+            promise.resolve($0)
         }
+        return promise.future
     }
 
     func saveArticle(article: Article) {

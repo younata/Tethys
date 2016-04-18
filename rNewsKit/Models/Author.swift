@@ -53,7 +53,7 @@ import JavaScriptCore
     }
 
     public override var description: String {
-        if let email = self.email?.resourceSpecifier {
+        if let email = self.email?.resourceSpecifier where !email.isEmpty {
             return "\(self.name) <\(email)>"
         }
         return self.name

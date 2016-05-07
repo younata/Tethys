@@ -98,8 +98,21 @@ public class ArticleViewController: UIViewController, Injectable {
         return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: Selector())
     }
 
-    public let backgroundView: UIView = {
+    public private(set) lazy var backgroundSpinnerView: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView(activityIndicatorStyle: self.themeRepository.spinnerStyle)
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        spinner.startAnimating()
+        return spinner
+    }()
+
+    public private(set) lazy var backgroundView: UIView = {
         let view = UIView(forAutoLayout: ())
+
+        let spinner = UIActivityIndicatorView(activityIndicatorStyle: self.themeRepository.spinnerStyle)
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+
+        view.addSubview(self.backgroundSpinnerView)
+        self.backgroundSpinnerView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
 
         return view
     }()
@@ -395,5 +408,6 @@ extension ArticleViewController: ThemeRepositorySubscriber {
         self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
         self.navigationController?.toolbar.barStyle = themeRepository.barStyle
         self.backgroundView.backgroundColor = themeRepository.backgroundColor
+        self.backgroundSpinnerView.activityIndicatorViewStyle = themeRepository.spinnerStyle
     }
 }

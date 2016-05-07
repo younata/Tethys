@@ -94,6 +94,19 @@ public class ThemeRepository: NSObject, Injectable {
         }
     }
 
+    public private(set) var spinnerStyle: UIActivityIndicatorViewStyle {
+        get {
+            if let rawValue = self.privateValueForKey("spinnerStyle") as? Int,
+                spinnerStyle = UIActivityIndicatorViewStyle(rawValue: rawValue) {
+                return spinnerStyle
+            }
+            return .Gray
+        }
+        set {
+            self.privateSetValue(newValue.rawValue, forKey: "spinnerStyle")
+        }
+    }
+
     public private(set) var errorColor: UIColor {
         get {
             let color = self.colorForKey("errorColor")
@@ -143,6 +156,7 @@ public class ThemeRepository: NSObject, Injectable {
                 self.barStyle = .Default
                 self.statusBarStyle = .Default
                 self.scrollIndicatorStyle = .Black
+                self.spinnerStyle = .Gray
                 self.errorColor = UIColor(red: 1, green: 0, blue: 0.2, alpha: 1)
             case .Dark:
                 self.backgroundColor = UIColor.blackColor()
@@ -153,6 +167,7 @@ public class ThemeRepository: NSObject, Injectable {
                 self.barStyle = .Black
                 self.statusBarStyle = .LightContent
                 self.scrollIndicatorStyle = .White
+                self.spinnerStyle = .White
                 self.errorColor = UIColor(red: 0.75, green: 0, blue: 0.1, alpha: 1)
             }
 

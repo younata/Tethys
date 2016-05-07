@@ -74,6 +74,10 @@ class ThemeRepositorySpec: QuickSpec {
             expect(subject.scrollIndicatorStyle).to(equal(UIScrollViewIndicatorStyle.Black))
         }
 
+        it("uses UIActivityIndicatorViewStyleGray as the default spinnerStyle") {
+            expect(subject.spinnerStyle).to(equal(UIActivityIndicatorViewStyle.Gray))
+        }
+
         it("has a default error color of a red shade") {
             expect(subject.errorColor).to(equalColor(UIColor(red: 1, green: 0, blue: 0.2, alpha: 1)))
         }
@@ -127,6 +131,12 @@ class ThemeRepositorySpec: QuickSpec {
                 expect(subject.scrollIndicatorStyle).to(equal(expectedScrollIndicatorStyle))
             }
 
+            it("changes the spinnerStyle") {
+                let expectedSpinnerStyle = UIActivityIndicatorViewStyle(rawValue: sharedContext()["spinnerStyle"] as! Int)
+                expect(expectedSpinnerStyle).toNot(beNil())
+                expect(subject.spinnerStyle).to(equal(expectedSpinnerStyle))
+            }
+
             it("changes the error color") {
                 let expectedColor = sharedContext()["error"] as? UIColor
                 expect(expectedColor).toNot(beNil())
@@ -164,6 +174,9 @@ class ThemeRepositorySpec: QuickSpec {
                     let expectedScrollIndicatorStyle = UIScrollViewIndicatorStyle(rawValue: sharedContext()["scrollIndicatorStyle"] as! Int)
                     expect(expectedScrollIndicatorStyle).toNot(beNil())
 
+                    let expectedSpinnerStyle = UIActivityIndicatorViewStyle(rawValue: sharedContext()["spinnerStyle"] as! Int)
+                    expect(expectedSpinnerStyle).toNot(beNil())
+
                     let expectedError = sharedContext()["error"] as? UIColor
                     expect(expectedError).toNot(beNil())
 
@@ -175,6 +188,7 @@ class ThemeRepositorySpec: QuickSpec {
                     expect(otherRepo.barStyle).to(equal(expectedBarStyle))
                     expect(otherRepo.statusBarStyle).to(equal(expectedStatusBarStyle))
                     expect(otherRepo.scrollIndicatorStyle).to(equal(expectedScrollIndicatorStyle))
+                    expect(otherRepo.spinnerStyle).to(equal(expectedSpinnerStyle))
                     expect(otherRepo.errorColor).to(equalColor(expectedError))
                 } else {
                     let expectedBackground = UIColor.whiteColor()
@@ -185,6 +199,7 @@ class ThemeRepositorySpec: QuickSpec {
                     let expectedBarStyle = UIBarStyle.Default
                     let expectedStatusBarStyle = UIStatusBarStyle.Default
                     let expectedScrollIndicatorStyle = UIScrollViewIndicatorStyle.Black
+                    let expectedSpinnerStyle = UIActivityIndicatorViewStyle.Gray
                     let expectedError = UIColor(red: 1, green: 0, blue: 0.2, alpha: 1)
 
                     expect(otherRepo.backgroundColor).to(equalColor(expectedBackground))
@@ -195,6 +210,7 @@ class ThemeRepositorySpec: QuickSpec {
                     expect(otherRepo.barStyle).to(equal(expectedBarStyle))
                     expect(otherRepo.statusBarStyle).to(equal(expectedStatusBarStyle))
                     expect(otherRepo.scrollIndicatorStyle).to(equal(expectedScrollIndicatorStyle))
+                    expect(otherRepo.spinnerStyle).to(equal(expectedSpinnerStyle))
                     expect(otherRepo.errorColor).to(equalColor(expectedError))
                 }
             }
@@ -217,6 +233,7 @@ class ThemeRepositorySpec: QuickSpec {
                             "barStyle": UIBarStyle.Black.rawValue,
                             "statusBar": UIStatusBarStyle.LightContent.rawValue,
                             "scrollIndicatorStyle": UIScrollViewIndicatorStyle.White.rawValue,
+                            "spinnerStyle": UIActivityIndicatorViewStyle.White.rawValue,
                             "error": UIColor(red: 0.75, green: 0, blue: 0.1, alpha: 1),
                         ]
                     }
@@ -237,6 +254,7 @@ class ThemeRepositorySpec: QuickSpec {
                             "barStyle": UIBarStyle.Default.rawValue,
                             "statusBar": UIStatusBarStyle.Default.rawValue,
                             "scrollIndicatorStyle": UIScrollViewIndicatorStyle.Black.rawValue,
+                            "spinnerStyle": UIActivityIndicatorViewStyle.Gray.rawValue,
                             "error": UIColor(red: 1, green: 0, blue: 0.2, alpha: 1),
                         ]
                     }
@@ -267,6 +285,7 @@ class ThemeRepositorySpec: QuickSpec {
                             "barStyle": UIBarStyle.Black.rawValue,
                             "statusBar": UIStatusBarStyle.LightContent.rawValue,
                             "scrollIndicatorStyle": UIScrollViewIndicatorStyle.White.rawValue,
+                            "spinnerStyle": UIActivityIndicatorViewStyle.White.rawValue,
                             "error": UIColor(red: 0.75, green: 0, blue: 0.1, alpha: 1),
                             "ephemeral": true,
                         ]
@@ -288,6 +307,7 @@ class ThemeRepositorySpec: QuickSpec {
                             "barStyle": UIBarStyle.Default.rawValue,
                             "statusBar": UIStatusBarStyle.Default.rawValue,
                             "scrollIndicatorStyle": UIScrollViewIndicatorStyle.Black.rawValue,
+                            "spinnerStyle": UIActivityIndicatorViewStyle.Gray.rawValue,
                             "error": UIColor(red: 1, green: 0, blue: 0.2, alpha: 1),
                             "ephemeral": true,
                         ]

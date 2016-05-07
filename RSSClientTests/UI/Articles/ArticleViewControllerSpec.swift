@@ -87,6 +87,10 @@ class ArticleViewControllerSpec: QuickSpec {
             it("updates the background view's backgroundColor") {
                 expect(subject.backgroundView.backgroundColor) == themeRepository.backgroundColor
             }
+
+            it("updates the background spinner's style") {
+                expect(subject.backgroundSpinnerView.activityIndicatorViewStyle) == themeRepository.spinnerStyle
+            }
         }
 
         describe("Key Commands") {

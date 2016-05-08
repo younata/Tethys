@@ -1,5 +1,3 @@
-@testable import rNewsKit
-
 class InMemoryDataService: DataService {
     let mainQueue: NSOperationQueue
     let searchIndex: SearchIndex?
@@ -14,13 +12,16 @@ class InMemoryDataService: DataService {
     var enclosures = [Enclosure]()
 
     func createFeed(callback: Feed -> Void) {
-        let feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+        let feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0,
+                        articles: [], image: nil)
         callback(feed)
         self.feeds.append(feed)
     }
 
     func createArticle(feed: Feed?, callback: Article -> Void) {
-        let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
+        let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil,
+                              identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [],
+                              enclosures: [])
         feed?.addArticle(article)
         callback(article)
         self.articles.append(article)
@@ -63,6 +64,7 @@ class InMemoryDataService: DataService {
         }
         for _ in 0..<feed.articlesArray.count {
             guard let article = feed.articlesArray.first else { break }
+            self.deleteArticle(article, callback: {})
             feed.removeArticle(article)
         }
         callback()
@@ -76,6 +78,7 @@ class InMemoryDataService: DataService {
         article.feed = nil
         for _ in 0..<article.enclosuresArray.count {
             guard let enclosure = article.enclosuresArray.first else { break }
+            self.deleteEnclosure(enclosure, callback: {})
             article.removeEnclosure(enclosure)
         }
         callback()

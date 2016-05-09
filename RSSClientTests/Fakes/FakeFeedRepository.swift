@@ -66,6 +66,9 @@ class FakeFeedRepository: FeedRepository {
     // MARK: DataWriter
 
     let subscribers = NSHashTable.weakObjectsHashTable()
+    var subscribersArray: [DataSubscriber] {
+        return self.subscribers.allObjects.flatMap { $0 as? DataSubscriber }
+    }
     func addSubscriber(subscriber: DataSubscriber) {
         self.subscribers.addObject(subscriber)
     }

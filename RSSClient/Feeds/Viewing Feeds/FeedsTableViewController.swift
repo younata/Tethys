@@ -91,6 +91,8 @@ public class FeedsTableViewController: UIViewController, Injectable {
     private let settingsViewController: Void -> SettingsViewController
     private let articleListController: Void -> ArticleListController
 
+    private var markReadFuture: Future<Int>? = nil
+
     // swiftlint:disable function_parameter_count
     public init(feedRepository: FeedRepository,
                 themeRepository: ThemeRepository,
@@ -390,7 +392,7 @@ extension FeedsTableViewController: UISearchBarDelegate {
 
 extension FeedsTableViewController: DataSubscriber {
     public func markedArticles(articles: [Article], asRead read: Bool) {
-        if self.navigationController?.visibleViewController != self {
+        if self.markReadFuture == nil {
             self.reload(self.searchBar.text)
         }
     }
@@ -542,9 +544,11 @@ extension FeedsTableViewController: UITableViewDelegate {
             let readTitle = NSLocalizedString("FeedsTableViewController_Table_EditAction_MarkRead", comment: "")
             let markRead = UITableViewRowAction(style: .Normal, title: readTitle) {_, indexPath in
                 let feed = self.feedAtIndexPath(indexPath)
-                self.feedRepository.markFeedAsRead(feed).then { _ in
+                self.markReadFuture = self.feedRepository.markFeedAsRead(feed)
+                self.markReadFuture!.then { _ in
                     self.reload(nil)
                     tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                    self.markReadFuture = nil
                 }
             }
 

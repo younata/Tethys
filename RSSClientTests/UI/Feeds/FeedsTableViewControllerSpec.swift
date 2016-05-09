@@ -246,30 +246,16 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 }
 
                 context("marking an article as read") {
-                    context("when we're the main view controller") {
-                        beforeEach {
-                            dataRepository.didAskForFeeds = false
-                            let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
-                            subscriber?.markedArticles([article], asRead: true)
-                        }
+                    beforeEach {
+                        subject.presentViewController(UIViewController(), animated: false, completion: nil)
 
-                        it("refreshes it's feed cache") {
-                            expect(dataRepository.didAskForFeeds) == false
-                        }
+                        dataRepository.didAskForFeeds = false
+                        let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                        subscriber?.markedArticles([article], asRead: true)
                     }
 
-                    context("any other time") {
-                        beforeEach {
-                            subject.presentViewController(UIViewController(), animated: false, completion: nil)
-
-                            dataRepository.didAskForFeeds = false
-                            let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
-                            subscriber?.markedArticles([article], asRead: true)
-                        }
-
-                        it("refreshes it's feed cache") {
-                            expect(dataRepository.didAskForFeeds) == true
-                        }
+                    it("refreshes it's feed cache") {
+                        expect(dataRepository.didAskForFeeds) == true
                     }
                 }
 
@@ -723,6 +709,12 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                                     it("marks all articles of that feed as read") {
                                         expect(dataRepository.lastFeedMarkedRead).to(equal(feed))
+                                    }
+
+                                    it("when the subscriber gets a marked articles notice it does not refresh it's feed cache") {
+                                        let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                                        dataRepository.subscribersArray.first?.markedArticles([article], asRead: true)
+                                        expect(dataRepository.didAskForFeeds) == false
                                     }
 
                                     it("causes a refresh of the feeds") {

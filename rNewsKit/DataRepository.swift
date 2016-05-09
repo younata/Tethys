@@ -116,7 +116,7 @@ class DataRepository: FeedRepository {
     //MARK: - DataRetriever
 
     func allTags(callback: [String] -> Void) {
-        self.dataService.feedsMatchingPredicate(NSPredicate(format: "tags.@count > 0")) { feedsWithTags in
+        self.dataService.feedsMatchingPredicate(NSPredicate(format: "tags.@count > 0")).then { feedsWithTags in
             let setOfTags = feedsWithTags.reduce(Set<String>()) {set, feed in set.union(Set(feed.tags)) }
             let tags = Array(setOfTags).sort { return $0.lowercaseString < $1.lowercaseString }
             callback(tags)
@@ -124,7 +124,7 @@ class DataRepository: FeedRepository {
     }
 
     func feeds(callback: [Feed] -> Void) {
-        self.dataService.allFeeds {
+        self.dataService.allFeeds().then {
             callback(Array($0))
         }
     }
@@ -230,11 +230,11 @@ class DataRepository: FeedRepository {
     }
 
     func saveFeed(feed: Feed) {
-        self.dataService.saveFeed(feed) {}
+        self.dataService.saveFeed(feed)
     }
 
     func deleteFeed(feed: Feed) {
-        self.dataService.deleteFeed(feed) {
+        self.dataService.deleteFeed(feed).then {
             self.feeds {
                 for object in self.subscribers.allObjects {
                     if let subscriber = object as? DataSubscriber {
@@ -254,11 +254,11 @@ class DataRepository: FeedRepository {
     }
 
     func saveArticle(article: Article) {
-        self.dataService.saveArticle(article) {}
+        self.dataService.saveArticle(article)
     }
 
     func deleteArticle(article: Article) {
-        self.dataService.deleteArticle(article) {
+        self.dataService.deleteArticle(article).then {
             for object in self.subscribers.allObjects {
                 if let subscriber = object as? DataSubscriber {
                     subscriber.deletedArticle(article)
@@ -319,8 +319,8 @@ class DataRepository: FeedRepository {
     //MARK: Private (DataWriter)
 
     private func privateMarkArticles(articles: [Article], asRead read: Bool) -> Future<Int> {
-        let promise = Promise<Int>()
         guard articles.count > 0 else {
+            let promise = Promise<Int>()
             promise.resolve(0)
             return promise.future
         }
@@ -329,15 +329,14 @@ class DataRepository: FeedRepository {
         for article in articles {
             article.read = read
         }
-        self.dataService.batchSave([], articles: articles, enclosures: []) {
-            promise.resolve(amountToChange)
+        return self.dataService.batchSave([], articles: articles, enclosures: []).map { (_: Void) -> Int in
             for object in self.subscribers.allObjects {
                 if let subscriber = object as? DataSubscriber {
                     subscriber.markedArticles(articles, asRead: read)
                 }
             }
+            return amountToChange
         }
-        return promise.future
     }
 
     private func privateUpdateFeeds(feeds: [Feed], callback: ([Feed], [NSError]) -> (Void)) {
@@ -362,7 +361,7 @@ class DataRepository: FeedRepository {
         for feed in feeds {
             guard let _ = feed.url where feed.remainingWait == 0 else {
                 feed.remainingWait -= 1
-                self.dataService.saveFeed(feed) {}
+                self.dataService.saveFeed(feed)
                 feedsLeft -= 1
                 totalProgress -= 1
                 if feedsLeft == 0 {

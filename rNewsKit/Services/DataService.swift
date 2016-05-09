@@ -1,5 +1,6 @@
 import Foundation
 import Muon
+import CBGPromise
 #if os(OSX)
     import Cocoa
 #elseif os(iOS)
@@ -14,7 +15,6 @@ import Muon
  Everything is asynchronous, though depending upon the underlying service, they may turn out to be asynchronous.
  All callbacks must be done on the main queue.
 */
-public typealias BatchCreateCallback = ([Feed], [Article], [Enclosure]) -> Void
 
 protocol DataService: class {
     var searchIndex: SearchIndex? { get }
@@ -24,40 +24,41 @@ protocol DataService: class {
     func createArticle(feed: Feed?, callback: Article -> Void)
     func createEnclosure(article: Article?, callback: Enclosure -> Void)
 
-    func feedsMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Feed> -> Void)
-    func articlesMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Article> -> Void)
-    func enclosuresMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Enclosure> -> Void)
+    func feedsMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Feed>>
+    func articlesMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Article>>
+    func enclosuresMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Enclosure>>
 
-    func saveFeed(feed: Feed, callback: Void -> Void)
-    func saveArticle(article: Article, callback: Void -> Void)
-    func saveEnclosure(enclosure: Enclosure, callback: Void -> Void)
+    func saveFeed(feed: Feed) -> Future<Void>
+    func saveArticle(article: Article) -> Future<Void>
+    func saveEnclosure(enclosure: Enclosure) -> Future<Void>
 
 
-    func deleteFeed(feed: Feed, callback: Void -> Void)
-    func deleteArticle(article: Article, callback: Void -> Void)
-    func deleteEnclosure(enclosure: Enclosure, callback: Void -> Void)
+    func deleteFeed(feed: Feed) -> Future<Void>
+    func deleteArticle(article: Article) -> Future<Void>
+    func deleteEnclosure(enclosure: Enclosure) -> Future<Void>
 
-    func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int, callback: BatchCreateCallback)
-    func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure], callback: Void -> Void)
-    func batchDelete(feeds: [Feed], articles: [Article], enclosures: [Enclosure], callback: Void -> Void)
+    func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int) -> Future<([Feed], [Article], [Enclosure])>
+    func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Void>
+    func batchDelete(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Void>
 
-    func deleteEverything(callback: Void -> Void)
+    func deleteEverything() -> Future<Void>
 }
 
 extension DataService {
-    func allFeeds(callback: DataStoreBackedArray<Feed> -> Void) {
-        self.feedsMatchingPredicate(NSPredicate(value: true), callback: callback)
+    func allFeeds() -> Future<DataStoreBackedArray<Feed>> {
+        return self.feedsMatchingPredicate(NSPredicate(value: true))
     }
 
-    func updateFeed(feed: Feed, info: Muon.Feed, callback: Void -> Void) {
+    func updateFeed(feed: Feed, info: Muon.Feed) -> Future<Void> {
+        let promise = Promise<Void>()
         feed.title = info.title.stringByUnescapingHTML().stringByStrippingHTML()
         feed.summary = info.description
 
         let articles = info.articles.filter { $0.title?.isEmpty == false }
 
         if articles.isEmpty {
-            self.saveFeed(feed, callback: callback)
-            return
+            self.saveFeed(feed).then { promise.resolve() }
+            return promise.future
         }
 
         var articlesToSave: [Article] = []
@@ -69,7 +70,9 @@ extension DataService {
             articlesToSave.append(article)
             enclosuresToSave += enclosures
             if importTasks.isEmpty {
-                self.batchSave([feed], articles: articlesToSave, enclosures: enclosures, callback: callback)
+                self.batchSave([feed], articles: articlesToSave, enclosures: enclosures).map { _ -> Void in
+                    promise.resolve()
+                }
             } else {
                 importTasks.popLast()?()
             }
@@ -82,11 +85,11 @@ extension DataService {
                 }
                 let article = feed.articlesArray.filter(filter).first
                 if let article = article ?? articlesToSave.filter(filter).first {
-                    self.updateArticle(article, item: item, feedURL: info.link, callback: checkIfFinished)
+                    self.updateArticle(article, item: item, feedURL: info.link).then(checkIfFinished)
                 } else {
                     self.createArticle(feed) { article in
                         feed.addArticle(article)
-                        self.updateArticle(article, item: item, feedURL: info.link, callback: checkIfFinished)
+                        self.updateArticle(article, item: item, feedURL: info.link).then(checkIfFinished)
                     }
                 }
             }
@@ -94,10 +97,13 @@ extension DataService {
 
         if let task = importTasks.popLast() {
             task()
-        } else { callback() }
+        } else {
+            promise.resolve()
+        }
+        return promise.future
     }
 
-    func updateArticle(article: Article, item: Muon.Article, feedURL: NSURL, callback: (Article, [Enclosure]) -> Void) {
+    func updateArticle(article: Article, item: Muon.Article, feedURL: NSURL) -> Future<(Article, [Enclosure])> {
         let characterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
         let authors = item.authors.map {
             return rNewsKit.Author(name: $0.name, email: $0.email)
@@ -118,15 +124,19 @@ extension DataService {
         let enclosures = item.enclosures.flatMap { self.upsertEnclosureForArticle(article, fromItem: $0) }
 
         let content = item.content ?? item.description ?? ""
+
+        let promise = Promise<(Article, [Enclosure])>()
+
         let parser = WebPageParser(string: content) { urls in
             let links = urls.flatMap { NSURL(string: $0.absoluteString, relativeToURL: feedURL)?.absoluteString }
-            self.articlesMatchingPredicate(NSPredicate(format: "link IN %@", links)) { related in
+            self.articlesMatchingPredicate(NSPredicate(format: "link IN %@", links)).then { related in
                 related.forEach(article.addRelatedArticle)
-                callback(article, enclosures)
+                promise.resolve(article, enclosures)
             }
         }
         parser.searchType = .Links
         parser.start()
+        return promise.future
     }
 
     func updateSearchIndexForArticle(article: Article) {

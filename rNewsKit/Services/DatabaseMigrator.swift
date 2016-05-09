@@ -13,12 +13,12 @@ struct DatabaseMigrator: DatabaseMigratorType {
             progress(progressCalls / expectedProgressCalls)
         }
 
-        from.allFeeds { oldFeeds in
+        from.allFeeds().then { oldFeeds in
             updateProgress()
             let oldArticles = oldFeeds.reduce([Article]()) { $0 + Array($1.articlesArray) }
             let oldEnclosures = oldArticles.reduce([Enclosure]()) { $0 + Array($1.enclosuresArray) }
 
-            to.allFeeds { existingFeeds in
+            to.allFeeds().then { existingFeeds in
                 updateProgress()
                 let existingArticles = existingFeeds.reduce([Article]()) { $0 + Array($1.articlesArray) }
                 let existingEnclosures = existingArticles.reduce([Enclosure]()) { $0 + Array($1.enclosuresArray) }
@@ -33,7 +33,7 @@ struct DatabaseMigrator: DatabaseMigratorType {
 
                 to.batchCreate(feedsToMigrate.count,
                     articleCount: articlesToMigrate.count,
-                    enclosureCount: enclosuresToMigrate.count) { newFeeds, newArticles, newEnclosures in
+                    enclosureCount: enclosuresToMigrate.count).then { newFeeds, newArticles, newEnclosures in
                         for (idx, oldFeed) in feedsToMigrate.enumerate() {
                             let newFeed = newFeeds[idx]
                             feedsDictionary[oldFeed] = newFeed
@@ -71,7 +71,7 @@ struct DatabaseMigrator: DatabaseMigratorType {
 
                         to.batchSave(Array(feedsDictionary.values),
                             articles: Array(articlesDictionary.values),
-                            enclosures: Array(enclosuresDictionary.values)) {
+                            enclosures: Array(enclosuresDictionary.values)).then {
                                 updateProgress()
                                 finish()
                         }
@@ -81,7 +81,7 @@ struct DatabaseMigrator: DatabaseMigratorType {
     }
 
     func deleteEverything(database: DataService, progress: Double -> Void, finish: Void -> Void) {
-        database.deleteEverything {
+        database.deleteEverything().then {
             progress(1.0)
             finish()
         }

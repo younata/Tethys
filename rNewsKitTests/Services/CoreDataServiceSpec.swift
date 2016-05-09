@@ -158,13 +158,13 @@ class CoreDataServiceSpec: QuickSpec {
             describe("read operations") {
                 it("reads the feeds based on the predicate") {
                     let allExpectation = self.expectationWithDescription("Read all feeds")
-                    subject.feedsMatchingPredicate(NSPredicate(value: true)) {
+                    subject.feedsMatchingPredicate(NSPredicate(value: true)).then {
                         expect(Array($0)) == [feed1, feed2]
                         allExpectation.fulfill()
                     }
 
                     let someExpectation = self.expectationWithDescription("Read some feeds")
-                    subject.feedsMatchingPredicate(NSPredicate(format: "title == %@", "feed1")) {
+                    subject.feedsMatchingPredicate(NSPredicate(format: "title == %@", "feed1")).then {
                         expect(Array($0)) == [feed1]
                         someExpectation.fulfill()
                     }
@@ -174,13 +174,13 @@ class CoreDataServiceSpec: QuickSpec {
 
                 it("reads the articles based on the predicate") {
                     let allExpectation = self.expectationWithDescription("Read all articles")
-                    subject.articlesMatchingPredicate(NSPredicate(value: true)) {
+                    subject.articlesMatchingPredicate(NSPredicate(value: true)).then {
                         expect(Array($0)) == [article1, article2, article3]
                         allExpectation.fulfill()
                     }
 
                     let someExpectation = self.expectationWithDescription("Read some articles")
-                    subject.articlesMatchingPredicate(NSPredicate(format: "feed == %@", feed1.feedID as! NSManagedObjectID)) {
+                    subject.articlesMatchingPredicate(NSPredicate(format: "feed == %@", feed1.feedID as! NSManagedObjectID)).then {
                         expect(Array($0)) == [article1, article2]
                         someExpectation.fulfill()
                     }
@@ -190,13 +190,13 @@ class CoreDataServiceSpec: QuickSpec {
 
                 it("reads all enclosures based on the predicate") {
                     let allExpectation = self.expectationWithDescription("Read all enclosures")
-                    subject.enclosuresMatchingPredicate(NSPredicate(value: true)) {
+                    subject.enclosuresMatchingPredicate(NSPredicate(value: true)).then {
                         expect(Array($0)) == [enclosure1, enclosure2]
                         allExpectation.fulfill()
                     }
 
                     let someExpectation = self.expectationWithDescription("Read some enclosures")
-                    subject.enclosuresMatchingPredicate(NSPredicate(format: "kind == %@", "1")) {
+                    subject.enclosuresMatchingPredicate(NSPredicate(format: "kind == %@", "1")).then {
                         expect(Array($0)) == [enclosure1]
                         someExpectation.fulfill()
                     }
@@ -211,7 +211,7 @@ class CoreDataServiceSpec: QuickSpec {
 
                     feed1.summary = "hello world"
 
-                    subject.saveFeed(feed1) {
+                    subject.saveFeed(feed1).then {
                         expectation.fulfill()
                     }
 
@@ -227,7 +227,7 @@ class CoreDataServiceSpec: QuickSpec {
 
                     article1.summary = "hello world"
 
-                    subject.saveArticle(article1) {
+                    subject.saveArticle(article1).then {
                         expectation.fulfill()
                     }
 
@@ -245,7 +245,7 @@ class CoreDataServiceSpec: QuickSpec {
 
                             article1.summary = "Hello world!"
 
-                            subject.saveArticle(article1) {
+                            subject.saveArticle(article1).then {
                                 expectation.fulfill()
                             }
 
@@ -276,7 +276,7 @@ class CoreDataServiceSpec: QuickSpec {
 
                     enclosure1.kind = "3"
 
-                    subject.saveEnclosure(enclosure1) {
+                    subject.saveEnclosure(enclosure1).then {
                         expectation.fulfill()
                     }
 
@@ -294,7 +294,7 @@ class CoreDataServiceSpec: QuickSpec {
 
                     let articleIdentifiers = feed1.articlesArray.map { $0.identifier }
 
-                    subject.deleteFeed(feed1) {
+                    subject.deleteFeed(feed1).then {
                         expectation.fulfill()
                     }
 
@@ -313,7 +313,7 @@ class CoreDataServiceSpec: QuickSpec {
                 it("deletes articles") {
                     let expectation = self.expectationWithDescription("delete article")
 
-                    subject.deleteArticle(article1) {
+                    subject.deleteArticle(article1).then {
                         expectation.fulfill()
                     }
 
@@ -333,7 +333,7 @@ class CoreDataServiceSpec: QuickSpec {
                 it("deletes enclosures") {
                     let expectation = self.expectationWithDescription("delete enclosure")
 
-                    subject.deleteEnclosure(enclosure1) {
+                    subject.deleteEnclosure(enclosure1).then {
                         expectation.fulfill()
                     }
 

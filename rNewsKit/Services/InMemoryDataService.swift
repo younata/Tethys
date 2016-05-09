@@ -1,3 +1,5 @@
+import CBGPromise
+
 class InMemoryDataService: DataService {
     let mainQueue: NSOperationQueue
     let searchIndex: SearchIndex?
@@ -34,43 +36,57 @@ class InMemoryDataService: DataService {
         self.enclosures.append(enclosure)
     }
 
-    func feedsMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Feed> -> Void) {
-        callback(DataStoreBackedArray(self.feeds.filter({ predicate.evaluateWithObject($0) })))
+    func feedsMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Feed>> {
+        let promise = Promise<DataStoreBackedArray<Feed>>()
+        promise.resolve(DataStoreBackedArray(self.feeds.filter({ predicate.evaluateWithObject($0) })))
+        return promise.future
     }
 
-    func articlesMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Article> -> Void) {
-        callback(DataStoreBackedArray(self.articles.filter({ predicate.evaluateWithObject($0) })))
+    func articlesMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Article>> {
+        let promise = Promise<DataStoreBackedArray<Article>>()
+        promise.resolve(DataStoreBackedArray(self.articles.filter({ predicate.evaluateWithObject($0) })))
+        return promise.future
     }
 
-    func enclosuresMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Enclosure> -> Void) {
-        callback(DataStoreBackedArray(self.enclosures.filter({ predicate.evaluateWithObject($0) })))
+    func enclosuresMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Enclosure>> {
+        let promise = Promise<DataStoreBackedArray<Enclosure>>()
+        promise.resolve(DataStoreBackedArray(self.enclosures.filter({ predicate.evaluateWithObject($0) })))
+        return promise.future
     }
 
-    func saveFeed(feed: Feed, callback: (Void) -> (Void)) {
-        callback()
+    func saveFeed(feed: Feed) -> Future<Void> {
+        let promise = Promise<Void>()
+        promise.resolve()
+        return promise.future
     }
 
-    func saveArticle(article: Article, callback: (Void) -> (Void)) {
-        callback()
+    func saveArticle(article: Article) -> Future<Void> {
+        let promise = Promise<Void>()
+        promise.resolve()
+        return promise.future
     }
 
-    func saveEnclosure(enclosure: Enclosure, callback: (Void) -> (Void)) {
-        callback()
+    func saveEnclosure(enclosure: Enclosure) -> Future<Void> {
+        let promise = Promise<Void>()
+        promise.resolve()
+        return promise.future
     }
 
-    func deleteFeed(feed: Feed, callback: (Void) -> (Void)) {
+    func deleteFeed(feed: Feed) -> Future<Void> {
         if let index = self.feeds.indexOf(feed) {
             self.feeds.removeAtIndex(index)
         }
         for _ in 0..<feed.articlesArray.count {
             guard let article = feed.articlesArray.first else { break }
-            self.deleteArticle(article, callback: {})
+            self.deleteArticle(article)
             feed.removeArticle(article)
         }
-        callback()
+        let promise = Promise<Void>()
+        promise.resolve()
+        return promise.future
     }
 
-    func deleteArticle(article: Article, callback: (Void) -> (Void)) {
+    func deleteArticle(article: Article) -> Future<Void> {
         if let index = self.articles.indexOf(article) {
             self.articles.removeAtIndex(index)
         }
@@ -78,22 +94,27 @@ class InMemoryDataService: DataService {
         article.feed = nil
         for _ in 0..<article.enclosuresArray.count {
             guard let enclosure = article.enclosuresArray.first else { break }
-            self.deleteEnclosure(enclosure, callback: {})
+            self.deleteEnclosure(enclosure)
             article.removeEnclosure(enclosure)
         }
-        callback()
+        let promise = Promise<Void>()
+        promise.resolve()
+        return promise.future
     }
 
-    func deleteEnclosure(enclosure: Enclosure, callback: (Void) -> (Void)) {
+    func deleteEnclosure(enclosure: Enclosure) -> Future<Void> {
         if let index = self.enclosures.indexOf(enclosure) {
             self.enclosures.removeAtIndex(index)
         }
         enclosure.article?.removeEnclosure(enclosure)
         enclosure.article = nil
-        callback()
+        let promise = Promise<Void>()
+        promise.resolve()
+        return promise.future
     }
 
-    func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int, callback: BatchCreateCallback) {
+    func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int) -> Future<([Feed], [Article], [Enclosure])> {
+        let promise = Promise<([Feed], [Article], [Enclosure])>()
         var feeds: [Feed] = []
         var articles: [Article] = []
         var enclosures: [Enclosure] = []
@@ -107,26 +128,33 @@ class InMemoryDataService: DataService {
             self.createEnclosure(nil) { enclosures.append($0) }
         }
 
-        callback(feeds, articles, enclosures)
+        promise.resolve((feeds, articles, enclosures))
+        return promise.future
     }
 
-    func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure], callback: Void -> Void) {
-        callback()
+    func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Void> {
+        let promise = Promise<Void>()
+        promise.resolve()
+        return promise.future
     }
 
-    func batchDelete(feeds: [Feed], articles: [Article], enclosures: [Enclosure], callback: Void -> Void) {
-        feeds.forEach { self.deleteFeed($0) {} }
-        articles.forEach { self.deleteArticle($0) {} }
-        enclosures.forEach { self.deleteEnclosure($0) {} }
+    func batchDelete(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Void> {
+        feeds.forEach { self.deleteFeed($0) }
+        articles.forEach { self.deleteArticle($0) }
+        enclosures.forEach { self.deleteEnclosure($0) }
 
-        callback()
+        let promise = Promise<Void>()
+        promise.resolve()
+        return promise.future
     }
 
-    func deleteEverything(callback: Void -> Void) {
+    func deleteEverything() -> Future<Void> {
         self.feeds = []
         self.articles = []
         self.enclosures = []
 
-        callback()
+        let promise = Promise<Void>()
+        promise.resolve()
+        return promise.future
     }
 }

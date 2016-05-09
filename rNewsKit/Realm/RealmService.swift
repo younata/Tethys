@@ -1,5 +1,6 @@
 import RealmSwift
 import Foundation
+import CBGPromise
 
 #if os(iOS)
     import UIKit
@@ -79,7 +80,8 @@ class RealmService: DataService {
 
     // Mark: - Read
 
-    func feedsMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Feed> -> Void) {
+    func feedsMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Feed>> {
+        let promise = Promise<DataStoreBackedArray<Feed>>()
         let sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
 
         let feeds = DataStoreBackedArray(realmDataType: RealmFeed.self,
@@ -87,10 +89,12 @@ class RealmService: DataService {
             realmConfiguration: self.realmConfiguration,
             conversionFunction: { Feed(realmFeed: $0 as! RealmFeed) },
             sortDescriptors: sortDescriptors)
-        callback(feeds)
+        promise.resolve(feeds)
+        return promise.future
     }
 
-    func articlesMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Article> -> Void) {
+    func articlesMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Article>> {
+        let promise = Promise<DataStoreBackedArray<Article>>()
         let sortDescriptors = [
             NSSortDescriptor(key: "updatedAt", ascending: false),
             NSSortDescriptor(key: "published", ascending: false)
@@ -101,10 +105,12 @@ class RealmService: DataService {
             realmConfiguration: self.realmConfiguration,
             conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) },
             sortDescriptors: sortDescriptors)
-        callback(articles)
+        promise.resolve(articles)
+        return promise.future
     }
 
-    func enclosuresMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Enclosure> -> Void) {
+    func enclosuresMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Enclosure>> {
+        let promise = Promise<DataStoreBackedArray<Enclosure>>()
         let sortDescriptors = [NSSortDescriptor(key: "kind", ascending: true)]
 
         let enclosures = DataStoreBackedArray(realmDataType: RealmEnclosure.self,
@@ -112,44 +118,58 @@ class RealmService: DataService {
             realmConfiguration: self.realmConfiguration,
             conversionFunction: { Enclosure(realmEnclosure: $0 as! RealmEnclosure, article: nil) },
             sortDescriptors: sortDescriptors)
-        callback(enclosures)
+        promise.resolve(enclosures)
+        return promise.future
     }
 
     // Mark: - Update
 
-    func saveFeed(feed: Feed, callback: (Void) -> (Void)) {
-        guard let _ = feed.feedID as? String else { callback(); return }
+    func saveFeed(feed: Feed) -> Future<Void> {
+        let promise = Promise<Void>()
+        guard let _ = feed.feedID as? String else { promise.resolve(); return promise.future }
 
         self.realmTransaction {
             self.synchronousUpdateFeed(feed)
 
-            self.mainQueue.addOperationWithBlock(callback)
+            self.mainQueue.addOperationWithBlock {
+                promise.resolve()
+            }
         }
+        return promise.future
     }
 
-    func saveArticle(article: Article, callback: (Void) -> (Void)) {
-        guard let _ = article.articleID as? String else { callback(); return }
+    func saveArticle(article: Article) -> Future<Void> {
+        let promise = Promise<Void>()
+        guard let _ = article.articleID as? String else { promise.resolve(); return promise.future }
 
         self.realmTransaction {
             self.synchronousUpdateArticle(article)
 
-            self.mainQueue.addOperationWithBlock(callback)
+            self.mainQueue.addOperationWithBlock {
+                promise.resolve()
+            }
         }
+        return promise.future
     }
 
-    func saveEnclosure(enclosure: Enclosure, callback: (Void) -> (Void)) {
-        guard let _ = enclosure.enclosureID as? String else { callback(); return }
+    func saveEnclosure(enclosure: Enclosure) -> Future<Void> {
+        let promise = Promise<Void>()
+        guard let _ = enclosure.enclosureID as? String else { promise.resolve(); return promise.future}
 
         self.realmTransaction {
             self.synchronousUpdateEnclosure(enclosure)
 
-            self.mainQueue.addOperationWithBlock(callback)
+            self.mainQueue.addOperationWithBlock {
+                promise.resolve()
+            }
         }
+        return promise.future
     }
 
     // Mark: - Delete
 
-    func deleteFeed(feed: Feed, callback: (Void) -> (Void)) {
+    func deleteFeed(feed: Feed) -> Future<Void> {
+        let promise = Promise<Void>()
         let articleIdentifiers = feed.articlesArray.map { $0.identifier }
         #if os(iOS)
             if #available(iOS 9, *) {
@@ -158,11 +178,15 @@ class RealmService: DataService {
         #endif
         self.realmTransaction {
             self.synchronousDeleteFeed(feed)
-            self.mainQueue.addOperationWithBlock(callback)
+            self.mainQueue.addOperationWithBlock {
+                promise.resolve()
+            }
         }
+        return promise.future
     }
 
-    func deleteArticle(article: Article, callback: (Void) -> (Void)) {
+    func deleteArticle(article: Article) -> Future<Void> {
+        let promise = Promise<Void>()
         #if os(iOS)
             if #available(iOS 9, *) {
                 self.searchIndex?.deleteIdentifierFromIndex([article.identifier]) {_ in }
@@ -170,20 +194,28 @@ class RealmService: DataService {
         #endif
         self.realmTransaction {
             self.synchronousDeleteArticle(article)
-            self.mainQueue.addOperationWithBlock(callback)
+            self.mainQueue.addOperationWithBlock {
+                promise.resolve()
+            }
         }
+        return promise.future
     }
 
-    func deleteEnclosure(enclosure: Enclosure, callback: (Void) -> (Void)) {
+    func deleteEnclosure(enclosure: Enclosure) -> Future<Void> {
+        let promise = Promise<Void>()
         self.realmTransaction {
             self.synchronousDeleteEnclosure(enclosure)
-            self.mainQueue.addOperationWithBlock(callback)
+            self.mainQueue.addOperationWithBlock {
+                promise.resolve()
+            }
         }
+        return promise.future
     }
 
     // Mark: - Batch
 
-    func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int, callback: BatchCreateCallback) {
+    func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int) -> Future<([Feed], [Article], [Enclosure])> {
+        let promise = Promise<([Feed], [Article], [Enclosure])>()
         self.realmTransaction {
             let realmFeeds = (0..<feedCount).map { _ in self.realm.create(RealmFeed) }
             let realmArticles = (0..<articleCount).map { _ in self.realm.create(RealmArticle) }
@@ -194,37 +226,50 @@ class RealmService: DataService {
             let enclosures = realmEnclosures.map { Enclosure(realmEnclosure: $0, article: nil) }
 
             self.mainQueue.addOperationWithBlock {
-                callback(feeds, articles, enclosures)
+                promise.resolve((feeds, articles, enclosures))
             }
         }
+        return promise.future
     }
 
-    func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure], callback: Void -> Void) {
+    func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Void> {
+        let promise = Promise<Void>()
         self.realmTransaction {
             enclosures.forEach { self.synchronousUpdateEnclosure($0) }
             articles.forEach { self.synchronousUpdateArticle($0) }
             feeds.forEach { self.synchronousUpdateFeed($0) }
 
-            self.mainQueue.addOperationWithBlock(callback)
+            self.mainQueue.addOperationWithBlock {
+                promise.resolve()
+            }
         }
+        return promise.future
     }
 
-    func batchDelete(feeds: [Feed], articles: [Article], enclosures: [Enclosure], callback: Void -> Void) {
+    func batchDelete(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Void> {
+        let promise = Promise<Void>()
         self.realmTransaction {
             enclosures.forEach(self.synchronousDeleteEnclosure)
             articles.forEach(self.synchronousDeleteArticle)
             feeds.forEach(self.synchronousDeleteFeed)
 
-            self.mainQueue.addOperationWithBlock(callback)
+            self.mainQueue.addOperationWithBlock {
+                promise.resolve()
+            }
         }
+        return promise.future
     }
 
-    func deleteEverything(callback: Void -> Void) {
+    func deleteEverything() -> Future<Void> {
+        let promise = Promise<Void>()
         self.realmTransaction {
             self.realm.deleteAll()
 
-            self.mainQueue.addOperationWithBlock(callback)
+            self.mainQueue.addOperationWithBlock {
+                promise.resolve()
+            }
         }
+        return promise.future
     }
 
     // Mark: - Private

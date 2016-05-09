@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import CBGPromise
 
 // swiftlint:disable file_length
 class CoreDataService: DataService {
@@ -76,17 +77,20 @@ class CoreDataService: DataService {
 
     // Mark: - Read
 
-    func feedsMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Feed> -> Void) {
+    func feedsMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Feed>> {
+        let promise = Promise<DataStoreBackedArray<Feed>>()
         let sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
         let feeds = DataStoreBackedArray(entityName: "Feed",
             predicate: predicate,
             managedObjectContext: self.managedObjectContext,
             conversionFunction: { Feed(coreDataFeed: $0 as! CoreDataFeed) },
             sortDescriptors: sortDescriptors)
-        callback(feeds)
+        promise.resolve(feeds)
+        return promise.future
     }
 
-    func articlesMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Article> -> Void) {
+    func articlesMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Article>> {
+        let promise = Promise<DataStoreBackedArray<Article>>()
         let sortDescriptors = [
             NSSortDescriptor(key: "updatedAt", ascending: false),
             NSSortDescriptor(key: "published", ascending: false)
@@ -96,77 +100,105 @@ class CoreDataService: DataService {
             managedObjectContext: self.managedObjectContext,
             conversionFunction: { Article(coreDataArticle: $0 as! CoreDataArticle, feed: nil) },
             sortDescriptors: sortDescriptors)
-        callback(articles)
+        promise.resolve(articles)
+        return promise.future
     }
 
-    func enclosuresMatchingPredicate(predicate: NSPredicate, callback: DataStoreBackedArray<Enclosure> -> Void) {
+    func enclosuresMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Enclosure>> {
+        let promise = Promise<DataStoreBackedArray<Enclosure>>()
         let sortDescriptors = [NSSortDescriptor(key: "kind", ascending: true)]
         let enclosures = DataStoreBackedArray(entityName: "Enclosure",
             predicate: predicate,
             managedObjectContext: self.managedObjectContext,
             conversionFunction: { Enclosure(coreDataEnclosure: $0 as! CoreDataEnclosure, article: nil) },
             sortDescriptors: sortDescriptors)
-        callback(enclosures)
+        promise.resolve(enclosures)
+        return promise.future
     }
 
     // Mark: - Update
 
-    func saveFeed(feed: Feed, callback: (Void) -> (Void)) {
-        guard let _ = feed.feedID as? NSManagedObjectID else { callback(); return }
+    func saveFeed(feed: Feed) -> Future<Void>{
+        let promise = Promise<Void>()
+        guard let _ = feed.feedID as? NSManagedObjectID else { promise.resolve(); return promise.future }
 
         self.managedObjectContext.performBlock {
             self.updateFeed(feed)
-            self.mainQueue.addOperationWithBlock(callback)
+            self.mainQueue.addOperationWithBlock {
+                promise.resolve()
+            }
         }
+        return promise.future
     }
 
-    func saveArticle(article: Article, callback: (Void) -> (Void)) {
-        guard let _ = article.articleID as? NSManagedObjectID else { callback(); return }
+    func saveArticle(article: Article) -> Future<Void> {
+        let promise = Promise<Void>()
+        guard let _ = article.articleID as? NSManagedObjectID else { promise.resolve(); return promise.future }
 
         self.managedObjectContext.performBlock {
             self.updateArticle(article)
-            self.mainQueue.addOperationWithBlock(callback)
+            self.mainQueue.addOperationWithBlock {
+                promise.resolve()
+            }
         }
+        return promise.future
     }
 
-    func saveEnclosure(enclosure: Enclosure, callback: (Void) -> (Void)) {
-        guard let _ = enclosure.enclosureID as? NSManagedObjectID else { callback(); return }
+    func saveEnclosure(enclosure: Enclosure) -> Future<Void> {
+        let promise = Promise<Void>()
+        guard let _ = enclosure.enclosureID as? NSManagedObjectID else { promise.resolve(); return promise.future }
 
         self.managedObjectContext.performBlock {
             self.updateEnclosure(enclosure)
-            self.mainQueue.addOperationWithBlock(callback)
+            self.mainQueue.addOperationWithBlock {
+                promise.resolve()
+            }
         }
+        return promise.future
     }
 
     // Mark: - Delete
 
-    func deleteFeed(feed: Feed, callback: (Void) -> (Void)) {
-        guard let _ = feed.feedID as? NSManagedObjectID else { callback(); return }
+    func deleteFeed(feed: Feed) -> Future<Void> {
+        let promise = Promise<Void>()
+        guard let _ = feed.feedID as? NSManagedObjectID else { promise.resolve(); return promise.future }
         self.managedObjectContext.performBlock {
-            self.deleteFeed(feed)
-            self.mainQueue.addOperationWithBlock(callback)
+            self.deleteFeed(feed, deleteArticles: true)
+            self.mainQueue.addOperationWithBlock {
+                promise.resolve()
+            }
         }
+        return promise.future
     }
 
-    func deleteArticle(article: Article, callback: (Void) -> (Void)) {
-        guard let _ = article.articleID as? NSManagedObjectID else { callback(); return }
+    func deleteArticle(article: Article) -> Future<Void> {
+        let promise = Promise<Void>()
+        guard let _ = article.articleID as? NSManagedObjectID else { promise.resolve(); return promise.future }
         self.managedObjectContext.performBlock {
-            self.deleteArticle(article)
-            self.mainQueue.addOperationWithBlock(callback)
+            self.deleteArticle(article, deleteEnclosures: true)
+            self.mainQueue.addOperationWithBlock {
+                promise.resolve()
+            }
         }
+        return promise.future
     }
 
-    func deleteEnclosure(enclosure: Enclosure, callback: (Void) -> (Void)) {
-        guard let _ = enclosure.enclosureID as? NSManagedObjectID else { callback(); return }
+    func deleteEnclosure(enclosure: Enclosure) -> Future<Void> {
+        let promise = Promise<Void>()
+        guard let _ = enclosure.enclosureID as? NSManagedObjectID else { promise.resolve(); return promise.future }
         self.managedObjectContext.performBlock {
-            self.deleteEnclosure(enclosure)
-            self.mainQueue.addOperationWithBlock(callback)
+            self.privateDeleteEnclosure(enclosure)
+            self.mainQueue.addOperationWithBlock {
+                promise.resolve()
+            }
         }
+        return promise.future
     }
 
     // Mark: - Batch
 
-    func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int, callback: BatchCreateCallback) {
+    func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int) -> Future<([Feed], [Article], [Enclosure])> {
+        let promise = Promise<([Feed], [Article], [Enclosure])>()
         let feedEntityDescription = NSEntityDescription.entityForName("Feed",
             inManagedObjectContext: self.managedObjectContext)!
         let articleEntityDescription = NSEntityDescription.entityForName("Article",
@@ -195,13 +227,15 @@ class CoreDataService: DataService {
                 let enclosures = cdenclosures.map { Enclosure(coreDataEnclosure: $0, article: nil) }
 
                 self.mainQueue.addOperationWithBlock {
-                    callback(feeds, articles, enclosures)
+                    promise.resolve((feeds, articles, enclosures))
                 }
             }
         }
+        return promise.future
     }
 
-    func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure], callback: Void -> Void) {
+    func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Void> {
+        let promise = Promise<Void>()
         self.managedObjectContext.performBlock {
             autoreleasepool {
                 feeds.forEach(self.updateFeed)
@@ -209,11 +243,15 @@ class CoreDataService: DataService {
                 enclosures.forEach(self.updateEnclosure)
             }
 
-            self.mainQueue.addOperationWithBlock(callback)
+            self.mainQueue.addOperationWithBlock {
+                promise.resolve()
+            }
         }
+        return promise.future
     }
 
-    func batchDelete(feeds: [Feed], articles: [Article], enclosures: [Enclosure], callback: Void -> Void) {
+    func batchDelete(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Void> {
+        let promise = Promise<Void>()
         self.managedObjectContext.performBlock {
             autoreleasepool {
                 #if os(iOS)
@@ -231,11 +269,15 @@ class CoreDataService: DataService {
                 _ = try? self.managedObjectContext.save()
             }
 
-            self.mainQueue.addOperationWithBlock(callback)
+            self.mainQueue.addOperationWithBlock {
+                promise.resolve()
+            }
         }
+        return promise.future
     }
 
-    func deleteEverything(callback: Void -> Void) {
+    func deleteEverything() -> Future<Void> {
+        let promise = Promise<Void>()
         self.managedObjectContext.performBlock {
             self.managedObjectContext.reset()
             let deleteAllEntitiesOfType: String -> Void = { entityType in
@@ -266,8 +308,11 @@ class CoreDataService: DataService {
             deleteAllEntitiesOfType("Article")
             deleteAllEntitiesOfType("Enclosure")
 
-            self.mainQueue.addOperationWithBlock(callback)
+            self.mainQueue.addOperationWithBlock {
+                promise.resolve()
+            }
         }
+        return promise.future
     }
 
     // Mark: - Private
@@ -371,7 +416,7 @@ class CoreDataService: DataService {
         }
     }
 
-    private func deleteFeed(feed: Feed, deleteArticles: Bool = true) {
+    private func deleteFeed(feed: Feed, deleteArticles: Bool) {
         if let cdfeed = self.coreDataFeedForFeed(feed) {
             if deleteArticles {
                 #if os(iOS)
@@ -398,7 +443,7 @@ class CoreDataService: DataService {
         }
     }
 
-    private func deleteArticle(article: Article, deleteEnclosures: Bool = true) {
+    private func deleteArticle(article: Article, deleteEnclosures: Bool) {
         if let cdarticle = self.coreDataArticleForArticle(article) {
             if deleteEnclosures {
                 for enclosure in cdarticle.enclosures {
@@ -418,7 +463,7 @@ class CoreDataService: DataService {
         }
     }
 
-    private func deleteEnclosure(enclosure: Enclosure) {
+    private func privateDeleteEnclosure(enclosure: Enclosure) {
         if let cdenclosure = self.coreDataEnclosureForEnclosure(enclosure) {
             self.managedObjectContext.deleteObject(cdenclosure)
             let _ = try? self.managedObjectContext.save()

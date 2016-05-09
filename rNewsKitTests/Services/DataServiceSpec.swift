@@ -21,7 +21,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
         afterEach {
             if let feed = feed {
                 let deleteFeedExpectation = spec.expectationWithDescription("Delete Feed")
-                dataService.deleteFeed(feed) {
+                dataService.deleteFeed(feed).then {
                     deleteFeedExpectation.fulfill()
                 }
                 spec.waitForExpectationsWithTimeout(1, handler: nil)
@@ -34,7 +34,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             let item = Muon.Article(title: "article", link: nil, description: "", content: "", guid: "", published: nil, updated: nil, authors: [], enclosures: [muonEnclosure])
             let info = Muon.Feed(title: "a &amp; title", link: NSURL(string: "https://example.com")!, description: "description", articles: [item])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
-            dataService.updateFeed(feed, info: info) {
+            dataService.updateFeed(feed, info: info).then {
                 updateExpectation.fulfill()
             }
             spec.waitForExpectationsWithTimeout(1, handler: nil)
@@ -58,7 +58,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             let item = Muon.Article(title: "article", link: NSURL(string: "/foo/bar/baz"), description: "", content: "", guid: "", published: nil, updated: nil, authors: [], enclosures: [])
             let info = Muon.Feed(title: "a &amp; title", link: NSURL(string: "https://example.com/qux")!, description: "description", articles: [item])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
-            dataService.updateFeed(feed, info: info) {
+            dataService.updateFeed(feed, info: info).then {
                 updateExpectation.fulfill()
             }
             spec.waitForExpectationsWithTimeout(1, handler: nil)
@@ -78,7 +78,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             let item = Muon.Article(title: "", link: nil, description: "", content: "", guid: "", published: nil, updated: nil, authors: [], enclosures: [])
             let info = Muon.Feed(title: "a title", link: NSURL(string: "https://example.com")!, description: "description", articles: [item])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
-            dataService.updateFeed(feed, info: info) {
+            dataService.updateFeed(feed, info: info).then {
                 updateExpectation.fulfill()
             }
             spec.waitForExpectationsWithTimeout(1, handler: nil)
@@ -113,7 +113,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             let existingItem = Muon.Article(title: existingArticle.title, link: existingArticle.link, description: existingArticle.summary, content: existingArticle.content, guid: "", published: existingArticle.published, updated: nil, authors: [], enclosures: [])
             let info = Muon.Feed(title: "a title", link: NSURL(string: "https://example.com")!, description: "description", articles: [item, existingItem])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
-            dataService.updateFeed(feed, info: info) {
+            dataService.updateFeed(feed, info: info).then {
                 expect(feed.title) == "a title"
                 expect(feed.summary) == "description"
                 expect(feed.url).to(beNil())
@@ -148,7 +148,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
         afterEach {
             if let article = article {
                 let deleteExpectation = spec.expectationWithDescription("Delete Article")
-                dataService.deleteArticle(article) {
+                dataService.deleteArticle(article).then {
                     deleteExpectation.fulfill()
                 }
                 spec.waitForExpectationsWithTimeout(1, handler: nil)
@@ -171,7 +171,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             let item = Muon.Article(title: "a <p></p>&amp; title", link: NSURL(string: "https://example.com/foo/baz"), description: "description", content: content, guid: "guid", published: NSDate(timeIntervalSince1970: 10), updated: NSDate(timeIntervalSince1970: 15), authors: [], enclosures: [])
 
             let updateExpectation = spec.expectationWithDescription("Update Article")
-            dataService.updateArticle(article!, item: item, feedURL: NSURL(string: "https://example.com/")!) { _ in
+            dataService.updateArticle(article!, item: item, feedURL: NSURL(string: "https://example.com/")!).then { _ in
                 expect(article!.relatedArticles).to(contain(otherArticle!))
                 updateExpectation.fulfill()
             }
@@ -190,7 +190,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             if let searchIndex = dataService.searchIndex as? FakeSearchIndex {
                 searchIndex.lastItemsAdded = []
             }
-            dataService.updateArticle(article, item: item, feedURL: NSURL(string: "https://example.com/foo/bar/baz")!) { _ in
+            dataService.updateArticle(article, item: item, feedURL: NSURL(string: "https://example.com/foo/bar/baz")!).then { _ in
                 expect(article.title) == "a & title"
                 expect(article.link) == NSURL(string: "https://example.com")
                 expect(article.published) == NSDate(timeIntervalSince1970: 10)
@@ -216,7 +216,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             afterEach {
                 if let enclosure = enclosure {
                     let deleteExpectation = spec.expectationWithDescription("Delete Enclosure")
-                    dataService.deleteEnclosure(enclosure) {
+                    dataService.deleteEnclosure(enclosure).then {
                         deleteExpectation.fulfill()
                     }
                     spec.waitForExpectationsWithTimeout(1, handler: nil)
@@ -252,7 +252,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
 
                     let findExpectation = spec.expectationWithDescription("Find Enclosure")
 
-                    dataService.articlesMatchingPredicate(NSPredicate(value: true)) { articles in
+                    dataService.articlesMatchingPredicate(NSPredicate(value: true)).then { articles in
                         let article = articles.first!
                         expect(article.enclosuresArray.count) == 1
                         expect(article.enclosuresArray.first?.url) == NSURL(string: "https://example.com")!

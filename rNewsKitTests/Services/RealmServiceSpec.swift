@@ -2,6 +2,7 @@ import Quick
 import Nimble
 import RealmSwift
 import Muon
+import CBGPromise
 @testable import rNewsKit
 #if os(iOS)
     import CoreSpotlight
@@ -85,6 +86,18 @@ class RealmServiceSpec: QuickSpec {
                 expect(enclosures.count) == 1
                 expect(enclosures.first?.kind) == "hi"
             }
+
+            it("can batch create things") {
+                let expectation = self.expectationWithDescription("Batch Create")
+
+                subject.batchCreate(2, articleCount: 3, enclosureCount: 4).then { _ in
+                    expectation.fulfill()
+                }
+
+                expect(realm.objects(RealmFeed).count) == 2
+                expect(realm.objects(RealmArticle).count) == 3
+                expect(realm.objects(RealmEnclosure).count) == 4
+            }
         }
 
         describe("after creates") {
@@ -149,13 +162,13 @@ class RealmServiceSpec: QuickSpec {
             describe("read operations") {
                 it("reads the feeds based on the predicate") {
                     let allExpectation = self.expectationWithDescription("Read all feeds")
-                    subject.feedsMatchingPredicate(NSPredicate(value: true)) {
+                    subject.feedsMatchingPredicate(NSPredicate(value: true)).then {
                         expect(Array($0)) == [feed1, feed2]
                         allExpectation.fulfill()
                     }
 
                     let someExpectation = self.expectationWithDescription("Read some feeds")
-                    subject.feedsMatchingPredicate(NSPredicate(format: "title == %@", "feed1")) {
+                    subject.feedsMatchingPredicate(NSPredicate(format: "title == %@", "feed1")).then {
                         expect(Array($0)) == [feed1]
                         someExpectation.fulfill()
                     }
@@ -165,7 +178,7 @@ class RealmServiceSpec: QuickSpec {
 
                 it("reads the articles based on the predicate") {
                     let allExpectation = self.expectationWithDescription("Read all articles")
-                    subject.articlesMatchingPredicate(NSPredicate(value: true)) { articles in
+                    subject.articlesMatchingPredicate(NSPredicate(value: true)).then { articles in
                         expect(Array(articles)) == [article1, article2, article3]
 
                         expect(articles[1].relatedArticles).to(contain(article3))
@@ -175,7 +188,7 @@ class RealmServiceSpec: QuickSpec {
                     }
 
                     let someExpectation = self.expectationWithDescription("Read some articles")
-                    subject.articlesMatchingPredicate(NSPredicate(format: "title == %@", "article1")) {
+                    subject.articlesMatchingPredicate(NSPredicate(format: "title == %@", "article1")).then {
                         expect(Array($0)) == [article1]
                         someExpectation.fulfill()
                     }
@@ -185,13 +198,13 @@ class RealmServiceSpec: QuickSpec {
 
                 it("reads all enclosures based on the predicate") {
                     let allExpectation = self.expectationWithDescription("Read all enclosures")
-                    subject.enclosuresMatchingPredicate(NSPredicate(value: true)) {
+                    subject.enclosuresMatchingPredicate(NSPredicate(value: true)).then {
                         expect(Array($0)) == [enclosure1, enclosure2]
                         allExpectation.fulfill()
                     }
 
                     let someExpectation = self.expectationWithDescription("Read some enclosures")
-                    subject.enclosuresMatchingPredicate(NSPredicate(format: "kind == %@", "1")) {
+                    subject.enclosuresMatchingPredicate(NSPredicate(format: "kind == %@", "1")).then {
                         expect(Array($0)) == [enclosure1]
                         someExpectation.fulfill()
                     }
@@ -206,7 +219,7 @@ class RealmServiceSpec: QuickSpec {
 
                     feed1.summary = "hello world"
 
-                    subject.saveFeed(feed1) {
+                    subject.saveFeed(feed1).then {
                         expectation.fulfill()
                     }
 
@@ -223,7 +236,7 @@ class RealmServiceSpec: QuickSpec {
                     article1.summary = "hello world"
                     article1.addRelatedArticle(article2)
 
-                    subject.saveArticle(article1) {
+                    subject.saveArticle(article1).then {
                         expectation.fulfill()
                     }
 
@@ -241,7 +254,7 @@ class RealmServiceSpec: QuickSpec {
 
                             article1.summary = "Hello world!"
 
-                            subject.saveArticle(article1) {
+                            subject.saveArticle(article1).then {
                                 expectation.fulfill()
                             }
 
@@ -273,7 +286,7 @@ class RealmServiceSpec: QuickSpec {
 
                     enclosure1.kind = "3"
 
-                    subject.saveEnclosure(enclosure1) {
+                    subject.saveEnclosure(enclosure1).then {
                         expectation.fulfill()
                     }
 
@@ -292,7 +305,7 @@ class RealmServiceSpec: QuickSpec {
 
                     let articleIdentifiers = feed1.articlesArray.map { $0.identifier }
 
-                    subject.deleteFeed(feed1) {
+                    subject.deleteFeed(feed1).then {
                         expectation.fulfill()
                     }
 
@@ -311,7 +324,7 @@ class RealmServiceSpec: QuickSpec {
                 it("deletes articles") {
                     let expectation = self.expectationWithDescription("delete article")
 
-                    subject.deleteArticle(article1) {
+                    subject.deleteArticle(article1).then {
                         expectation.fulfill()
                     }
 
@@ -331,7 +344,7 @@ class RealmServiceSpec: QuickSpec {
                 it("deletes enclosures") {
                     let expectation = self.expectationWithDescription("delete enclosure")
                     
-                    subject.deleteEnclosure(enclosure1) {
+                    subject.deleteEnclosure(enclosure1).then {
                         expectation.fulfill()
                     }
                     

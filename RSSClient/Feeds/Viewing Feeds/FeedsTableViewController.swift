@@ -305,7 +305,7 @@ public class FeedsTableViewController: UIViewController, Injectable {
             let oldFeeds = self.feeds
             self.feeds = sortedFeeds
             if oldFeeds != sortedFeeds {
-                self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Fade)
+                self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Right)
             } else {
                 self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
             }
@@ -341,7 +341,7 @@ public class FeedsTableViewController: UIViewController, Injectable {
     }
 
     private func feedAtIndexPath(indexPath: NSIndexPath) -> Feed! {
-        return feeds[indexPath.row]
+        return self.feeds[indexPath.row]
     }
 
     private func configuredArticleListWithFeeds(feeds: [Feed]) -> ArticleListController {
@@ -390,7 +390,9 @@ extension FeedsTableViewController: UISearchBarDelegate {
 
 extension FeedsTableViewController: DataSubscriber {
     public func markedArticles(articles: [Article], asRead read: Bool) {
-        self.reload(self.searchBar.text)
+        if self.navigationController?.visibleViewController != self {
+            self.reload(self.searchBar.text)
+        }
     }
 
     public func deletedArticle(article: Article) {
@@ -541,6 +543,7 @@ extension FeedsTableViewController: UITableViewDelegate {
             let markRead = UITableViewRowAction(style: .Normal, title: readTitle) {_, indexPath in
                 let feed = self.feedAtIndexPath(indexPath)
                 self.feedRepository.markFeedAsRead(feed).then { _ in
+                    self.reload(nil)
                     tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
                 }
             }

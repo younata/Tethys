@@ -7,7 +7,7 @@ machine:
 dependencies:
   override:
     - brew update
-    - brew upgrade carthage
+    - brew upgrade carthage || true
     - carthage bootstrap --platform ios
     - bundle
 

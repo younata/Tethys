@@ -19,10 +19,12 @@ class UIApplicationRNewsSpec: QuickSpec {
         }
 
         it("increments the badge number when an article is marked as unread") {
+            let currentBadgeCount = subject.applicationIconBadgeNumber
+
             let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
             subject.markedArticles([article], asRead: false)
 
-            expect(subject.applicationIconBadgeNumber).to(equal(2))
+            expect(subject.applicationIconBadgeNumber - currentBadgeCount) == 1
         }
 
         it("decrements the badge number when an article is marked as read") {

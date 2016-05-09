@@ -247,12 +247,10 @@ class DataRepository: FeedRepository {
 
     func markFeedAsRead(feed: Feed) -> Future<Int> {
         let articles = feed.articlesArray.filterWithPredicate(NSPredicate(format: "read != 1"))
-        let promise = Promise<Int>()
-        self.privateMarkArticles(Array(articles), asRead: true).then {
+        return self.privateMarkArticles(Array(articles), asRead: true).map { (articlesCount: Int) -> Int in
             feed.resetUnreadArticles()
-            promise.resolve($0)
+            return articlesCount
         }
-        return promise.future
     }
 
     func saveArticle(article: Article) {
@@ -332,12 +330,12 @@ class DataRepository: FeedRepository {
             article.read = read
         }
         self.dataService.batchSave([], articles: articles, enclosures: []) {
+            promise.resolve(amountToChange)
             for object in self.subscribers.allObjects {
                 if let subscriber = object as? DataSubscriber {
                     subscriber.markedArticles(articles, asRead: read)
                 }
             }
-            promise.resolve(amountToChange)
         }
         return promise.future
     }

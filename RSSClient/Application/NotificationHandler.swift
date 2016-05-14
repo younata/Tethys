@@ -10,14 +10,14 @@ public protocol NotificationHandler {
 }
 
 public struct LocalNotificationHandler: NotificationHandler, Injectable {
-    private let feedRepository: FeedRepository
+    private let feedRepository: DatabaseUseCase
 
-    public init(feedRepository: FeedRepository) {
+    public init(feedRepository: DatabaseUseCase) {
         self.feedRepository = feedRepository
     }
 
     public init(injector: Injector) {
-        self.init(feedRepository: injector.create(FeedRepository)!)
+        self.init(feedRepository: injector.create(DatabaseUseCase)!)
     }
 
     public func enableNotifications(notificationSource: LocalNotificationSource) {

@@ -8,7 +8,7 @@ import rNewsKit
 class LocalNotificationHandlerSpec: QuickSpec {
     override func spec() {
         var injector: Injector! = nil
-        var dataRepository: FakeFeedRepository! = nil
+        var dataRepository: FakeDatabaseUseCase! = nil
 
         var notificationSource: FakeNotificationSource! = nil
 
@@ -17,8 +17,8 @@ class LocalNotificationHandlerSpec: QuickSpec {
         beforeEach {
             injector = Injector()
 
-            dataRepository = FakeFeedRepository()
-            injector.bind(FeedRepository.self, toInstance: dataRepository)
+            dataRepository = FakeDatabaseUseCase()
+            injector.bind(DatabaseUseCase.self, toInstance: dataRepository)
             injector.bind(UrlOpener.self, toInstance: FakeUrlOpener())
             let articleUseCase = FakeArticleUseCase()
             articleUseCase.readArticleReturns("")

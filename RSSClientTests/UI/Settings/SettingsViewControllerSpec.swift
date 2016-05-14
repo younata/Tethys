@@ -10,7 +10,7 @@ class SettingsViewControllerSpec: QuickSpec {
         var subject: SettingsViewController! = nil
         var navigationController: UINavigationController! = nil
         var themeRepository: ThemeRepository! = nil
-        var feedRepository: FakeFeedRepository! = nil
+        var feedRepository: FakeDatabaseUseCase! = nil
         var settingsRepository: SettingsRepository! = nil
         var urlOpener: FakeUrlOpener! = nil
         var fakeQuickActionRepository: FakeQuickActionRepository! = nil
@@ -34,8 +34,8 @@ class SettingsViewControllerSpec: QuickSpec {
             urlOpener = FakeUrlOpener()
             injector.bind(UrlOpener.self, toInstance: urlOpener)
 
-            feedRepository = FakeFeedRepository()
-            injector.bind(FeedRepository.self, toInstance: feedRepository)
+            feedRepository = FakeDatabaseUseCase()
+            injector.bind(DatabaseUseCase.self, toInstance: feedRepository)
 
             subject = injector.create(SettingsViewController)!
 

@@ -12,15 +12,15 @@ public protocol MigrationUseCase: WorkFlowComponent {
 }
 
 public class DefaultMigrationUseCase: MigrationUseCase, Injectable {
-    private let feedRepository: FeedRepository
+    private let feedRepository: DatabaseUseCase
 
-    public init(feedRepository: FeedRepository) {
+    public init(feedRepository: DatabaseUseCase) {
         self.feedRepository = feedRepository
     }
 
     public required convenience init(injector: Injector) {
         self.init(
-            feedRepository: injector.create(FeedRepository)!
+            feedRepository: injector.create(DatabaseUseCase)!
         )
     }
 

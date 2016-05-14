@@ -2,9 +2,7 @@ import Foundation
 import CBGPromise
 @testable import rNewsKit
 
-class FakeFeedRepository: FeedRepository {
-    init() {}
-
+class FakeDatabaseUseCase: DatabaseUseCase {
     var _databaseUpdateAvailable = false
     func databaseUpdateAvailable() -> Bool {
         return self._databaseUpdateAvailable
@@ -33,29 +31,9 @@ class FakeFeedRepository: FeedRepository {
         }
     }
 
-    func feedsMatchingTag(tag: String?, callback: ([Feed]) -> (Void)) {
-        didAskForFeeds = true
-        feedsCallback = callback
-        guard let theTag = tag, feedslist = feedsList where !theTag.isEmpty else {
-            return self.feeds(callback)
-        }
-
-        let feeds = feedslist.filter {feed in
-            let tags = feed.tags
-            for t in tags {
-                if t.rangeOfString(theTag) != nil {
-                    return true
-                }
-            }
-            return false
-        }
-
-        return callback(feeds)
-    }
-
     var articlesOfFeedList = Array<Article>()
-    func articlesOfFeeds(feeds: [Feed], matchingSearchQuery: String, callback: (DataStoreBackedArray<Article>) -> (Void)) {
-        return callback(DataStoreBackedArray(articlesOfFeedList))
+    func articlesOfFeeds(feeds: [Feed], matchingSearchQuery: String) -> DataStoreBackedArray<Article> {
+        return DataStoreBackedArray(articlesOfFeedList)
     }
 
     var articlesList: [Article] = []

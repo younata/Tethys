@@ -37,8 +37,8 @@ class KitModuleSpec: QuickSpec {
             expect(urlSession) === NSURLSession.sharedSession()
         }
 
-        it("should bind a FeedRepository") {
-            expect(injector.create(FeedRepository.self) is DataRepository) == true
+        it("should bind a DatabaseUseCase") {
+            expect(injector.create(DatabaseUseCase.self) is DefaultDatabaseUseCase) == true
         }
 
         it("should bind an opml manager with a singleton scope") {

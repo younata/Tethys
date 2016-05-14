@@ -420,7 +420,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
                         beforeEach {
                             articleListController = ArticleListController(
-                                feedRepository: FakeFeedRepository(),
+                                feedRepository: FakeDatabaseUseCase(),
                                 themeRepository: FakeThemeRepository(),
                                 settingsRepository: SettingsRepository(userDefaults: nil),
                                 articleViewController: { subject }

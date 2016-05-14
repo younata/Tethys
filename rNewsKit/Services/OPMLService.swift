@@ -3,13 +3,13 @@ import Ra
 import Lepton
 
 public class OPMLService: NSObject, Injectable {
-    private let dataRepository: DataRepository?
+    private let dataRepository: DefaultDatabaseUseCase?
     private let mainQueue: NSOperationQueue?
     private let importQueue: NSOperationQueue?
     private let dataService: DataService?
 
     required public init(injector: Injector) {
-        self.dataRepository = injector.create(DataRepository)
+        self.dataRepository = injector.create(DefaultDatabaseUseCase)
         self.mainQueue = injector.create(kMainQueue) as? NSOperationQueue
         self.importQueue = injector.create(kBackgroundQueue) as? NSOperationQueue
         self.dataService = injector.create(DataService)

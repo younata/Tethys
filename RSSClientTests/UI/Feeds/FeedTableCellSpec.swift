@@ -88,8 +88,7 @@ class FeedTableCellSpec: QuickSpec {
             context("with a feed featuring an image") {
                 var image: UIImage! = nil
                 beforeEach {
-                    let data = NSData(contentsOfURL: NSURL(string: "https://avatars3.githubusercontent.com/u/285321?v=3&s=40")!)!
-                    image = UIImage(data: data)
+                    image = UIImage(named: "GrayIcon")
                     feed = Feed(title: "Hello", url: nil, summary: "World", query: nil, tags: [],
                         waitPeriod: 0, remainingWait: 0, articles: [], image: image)
                     subject.feed = feed

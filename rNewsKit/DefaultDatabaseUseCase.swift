@@ -13,57 +13,7 @@ import CBGPromise
     import Cocoa
 #endif
 
-public protocol FeedRepository {
-    func databaseUpdateAvailable() -> Bool
-    func performDatabaseUpdates(progress: Double -> Void, callback: Void -> Void)
-
-    func allTags(callback: [String] -> Void)
-    func feeds(callback: [Feed] -> Void)
-    func feedsMatchingTag(tag: String?, callback: [Feed] -> Void)
-    func articlesOfFeeds(feeds: [Feed], matchingSearchQuery: String, callback: DataStoreBackedArray<Article> -> Void)
-    func articlesMatchingQuery(query: String, callback: [Article] -> Void)
-
-    func addSubscriber(subscriber: DataSubscriber)
-
-    func newFeed(callback: Feed -> Void)
-    func saveFeed(feed: Feed)
-    func deleteFeed(feed: Feed)
-    func markFeedAsRead(feed: Feed) -> Future<Int>
-
-    func saveArticle(article: Article)
-    func deleteArticle(article: Article)
-    func markArticle(article: Article, asRead: Bool)
-
-    func updateFeeds(callback: ([Feed], [NSError]) -> Void)
-
-    func updateFeed(feed: Feed, callback: (Feed?, NSError?) -> Void)
-}
-
-public protocol DataSubscriber: NSObjectProtocol {
-    func markedArticles(articles: [Article], asRead read: Bool)
-
-    func deletedArticle(article: Article)
-
-    func deletedFeed(feed: Feed, feedsLeft: Int)
-
-    func willUpdateFeeds()
-    func didUpdateFeedsProgress(finished: Int, total: Int)
-    func didUpdateFeeds(feeds: [Feed])
-}
-
-protocol Reachable {
-    var hasNetworkConnectivity: Bool { get }
-}
-
-#if os(iOS)
-    extension Reachability: Reachable {
-        var hasNetworkConnectivity: Bool {
-            return self.currentReachabilityStatus != .NotReachable
-        }
-    }
-#endif
-
-class DataRepository: FeedRepository {
+class DefaultDatabaseUseCase: DatabaseUseCase {
     private let mainQueue: NSOperationQueue
 
     private let reachable: Reachable?
@@ -71,6 +21,7 @@ class DataRepository: FeedRepository {
     private let dataServiceFactory: DataServiceFactoryType
     private let updateService: UpdateServiceType
     private let databaseMigrator: DatabaseMigratorType
+    let scriptService: ScriptService
 
 
     private var dataService: DataService {
@@ -81,12 +32,14 @@ class DataRepository: FeedRepository {
         reachable: Reachable?,
         dataServiceFactory: DataServiceFactoryType,
         updateService: UpdateServiceType,
-        databaseMigrator: DatabaseMigratorType) {
+        databaseMigrator: DatabaseMigratorType,
+        scriptService: ScriptService) {
             self.mainQueue = mainQueue
             self.reachable = reachable
             self.dataServiceFactory = dataServiceFactory
             self.updateService = updateService
             self.databaseMigrator = databaseMigrator
+            self.scriptService = scriptService
     }
 
     func databaseUpdateAvailable() -> Bool {
@@ -116,46 +69,21 @@ class DataRepository: FeedRepository {
     //MARK: - DataRetriever
 
     func allTags(callback: [String] -> Void) {
-        self.dataService.feedsMatchingPredicate(NSPredicate(format: "tags.@count > 0")).then { feedsWithTags in
-            let setOfTags = feedsWithTags.reduce(Set<String>()) {set, feed in set.union(Set(feed.tags)) }
+        self.feeds { feeds in
+            let setOfTags = feeds.reduce(Set<String>()) {set, feed in set.union(Set(feed.tags)) }
             let tags = Array(setOfTags).sort { return $0.lowercaseString < $1.lowercaseString }
             callback(tags)
         }
     }
 
     func feeds(callback: [Feed] -> Void) {
-        self.dataService.allFeeds().then {
-            callback(Array($0))
-        }
+        self.allFeeds(callback)
     }
 
-    func feedsMatchingTag(tag: String?, callback: [Feed] -> Void) {
-        if let theTag = tag where !theTag.isEmpty {
-            self.feeds {
-                let feeds = $0.filter { feed in
-                    let tags = feed.tags
-                    for t in tags {
-                        if t.rangeOfString(theTag) != nil {
-                            return true
-                        }
-                    }
-                    return false
-                }
-                callback(feeds)
-            }
-        } else {
-            self.feeds(callback)
-        }
-    }
-
-
-    func articlesOfFeeds(feeds: [Feed],
-        matchingSearchQuery query: String,
-        callback: DataStoreBackedArray<Article> -> Void) {
+    func articlesOfFeeds(feeds: [Feed], matchingSearchQuery query: String) -> DataStoreBackedArray<Article> {
             let feeds = feeds.filter { !$0.isQueryFeed }
             guard !feeds.isEmpty else {
-                self.mainQueue.addOperationWithBlock { callback(DataStoreBackedArray()) }
-                return
+                return DataStoreBackedArray()
             }
             var articles = feeds[0].articlesArray
             for feed in feeds[1..<feeds.count] {
@@ -164,46 +92,41 @@ class DataRepository: FeedRepository {
             let predicates = [
                 NSPredicate(format: "title CONTAINS[cd] %@", query),
                 NSPredicate(format: "summary CONTAINS[cd] %@", query),
-//                NSPredicate(format: "author CONTAINS[cd] %@", query),
                 NSPredicate(format: "content CONTAINS[cd] %@", query),
             ]
             let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
-            let returnValue = articles.filterWithPredicate(compoundPredicate)
-            self.mainQueue.addOperationWithBlock { callback(returnValue) }
+            return articles.filterWithPredicate(compoundPredicate)
     }
 
     func articlesMatchingQuery(query: String, callback: ([Article]) -> (Void)) {
-        self.allFeeds { feeds in
-            let queriedArticles = self.privateArticlesMatchingQuery(query, feeds: feeds)
-            self.mainQueue.addOperationWithBlock { callback(queriedArticles) }
+        self.feeds { feeds in
+            let queriedArticles = self.articlesMatchingQuery(query, feeds: feeds)
+            callback(queriedArticles)
         }
     }
 
     // MARK: Private (DataRetriever)
 
-    private func allFeeds(callback: ([Feed] -> (Void))) {
-        self.feeds {unsorted in
+    private func allFeeds(callback: [Feed] -> Void) {
+        self.dataService.allFeeds().then {
+            let unsorted = Array($0)
             let feeds = unsorted.sort { return $0.displayTitle < $1.displayTitle }
 
             let nonQueryFeeds = feeds.reduce(Array<Feed>()) { $0 + ($1.isQueryFeed ? [] : [$1]) }
             let queryFeeds    = feeds.reduce(Array<Feed>()) { $0 + ($1.isQueryFeed ? [$1] : []) }
             for feed in queryFeeds {
-                let articles = self.privateArticlesMatchingQuery(feed.query!, feeds: nonQueryFeeds)
+                let articles = self.articlesMatchingQuery(feed.query!, feeds: nonQueryFeeds)
                 articles.forEach { feed.addArticle($0) }
             }
             callback(feeds)
         }
     }
 
-    private func privateArticlesMatchingQuery(query: String, feeds: [Feed]) -> [Article] {
+    private func articlesMatchingQuery(query: String, feeds: [Feed]) -> [Article] {
         let nonQueryFeeds = feeds.reduce(Array<Feed>()) { $0 + ($1.isQueryFeed ? [] : [$1]) }
         let articles = nonQueryFeeds.reduce(Array<Article>()) { $0 + $1.articlesArray }
-        let context = JSContext()
-        context.exceptionHandler = { _, exception in
-            print("JS Error: \(exception)")
-        }
         let script = "var query = \(query)\n" +
-            "var include = function(articles) {\n" +
+            "var script = function(articles) {\n" +
             "  var ret = [];\n" +
             "  for (var i = 0; i < articles.length; i++) {\n" +
             "    var article = articles[i];\n" +
@@ -211,10 +134,7 @@ class DataRepository: FeedRepository {
             "  }\n" +
             "  return ret\n" +
         "}"
-        context.evaluateScript(script)
-        let include = context.objectForKeyedSubscript("include")
-        let res = include.callWithArguments([articles]).toArray()
-        return res as? [Article] ?? []
+        return self.scriptService.runScript(script, arguments: [articles])
     }
 
     // MARK: DataWriter
@@ -276,7 +196,7 @@ class DataRepository: FeedRepository {
         self.updatingFeedsCallbacks.append(callback)
         guard self.updatingFeedsCallbacks.count == 1 else { return }
 
-        self.allFeeds {feeds in
+        self.feeds {feeds in
             guard feeds.isEmpty == false && self.reachable?.hasNetworkConnectivity == true else {
                 self.updatingFeedsCallbacks.forEach { $0([], []) }
                 self.updatingFeedsCallbacks = []

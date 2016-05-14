@@ -37,7 +37,7 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
         }
     }
 
-    private let feedRepository: FeedRepository
+    private let feedRepository: DatabaseUseCase
     private let themeRepository: ThemeRepository
     private let tagEditorViewController: Void -> TagEditorViewController
     private let articleListController: Void -> ArticleListController
@@ -62,7 +62,7 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
     private var feedSummary = ""
     private var feedQuery = "function(article) {\n    return !article.read;\n}"
 
-    public init(feedRepository: FeedRepository,
+    public init(feedRepository: DatabaseUseCase,
                 themeRepository: ThemeRepository,
                 tagEditorViewController: Void -> TagEditorViewController,
                 articleListController: Void -> ArticleListController) {
@@ -76,7 +76,7 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
 
     public required convenience init(injector: Injector) {
         self.init(
-            feedRepository: injector.create(FeedRepository)!,
+            feedRepository: injector.create(DatabaseUseCase)!,
             themeRepository: injector.create(ThemeRepository)!,
             tagEditorViewController: {injector.create(TagEditorViewController)!},
             articleListController: {injector.create(ArticleListController)!}

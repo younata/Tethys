@@ -19,8 +19,8 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         return Ra.Injector(module: appModule, kitModule)
     }()
 
-    private lazy var feedRepository: FeedRepository = {
-        return self.anInjector.create(FeedRepository)!
+    private lazy var feedRepository: DatabaseUseCase = {
+        return self.anInjector.create(DatabaseUseCase)!
     }()
 
     private lazy var notificationHandler: NotificationHandler = {

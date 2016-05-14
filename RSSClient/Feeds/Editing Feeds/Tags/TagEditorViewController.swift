@@ -14,10 +14,10 @@ public class TagEditorViewController: UIViewController, Injectable {
             self.navigationItem.rightBarButtonItem?.enabled = self.feed != nil && self.tag != nil
         }
     }
-    private let feedRepository: FeedRepository
+    private let feedRepository: DatabaseUseCase
     private let themeRepository: ThemeRepository
 
-    public init(feedRepository: FeedRepository, themeRepository: ThemeRepository) {
+    public init(feedRepository: DatabaseUseCase, themeRepository: ThemeRepository) {
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository
         super.init(nibName: nil, bundle: nil)
@@ -25,7 +25,7 @@ public class TagEditorViewController: UIViewController, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            feedRepository: injector.create(FeedRepository)!,
+            feedRepository: injector.create(DatabaseUseCase)!,
             themeRepository: injector.create(ThemeRepository)!
         )
     }

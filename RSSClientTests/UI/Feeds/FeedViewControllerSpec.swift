@@ -2,7 +2,7 @@ import Quick
 import Nimble
 import rNews
 import Ra
-import rNewsKit
+@testable import rNewsKit
 
 class FeedViewControllerSpec: QuickSpec {
     override func spec() {
@@ -14,7 +14,7 @@ class FeedViewControllerSpec: QuickSpec {
         var navigationController: UINavigationController!
         var subject: FeedViewController! = nil
         var injector: Injector! = nil
-        var dataRepository: FakeFeedRepository! = nil
+        var dataRepository: FakeDatabaseUseCase! = nil
 
         var urlSession: FakeURLSession! = nil
         var backgroundQueue: FakeOperationQueue! = nil
@@ -34,8 +34,8 @@ class FeedViewControllerSpec: QuickSpec {
             backgroundQueue.runSynchronously = true
             injector.bind(kBackgroundQueue, toInstance: backgroundQueue)
 
-            dataRepository = FakeFeedRepository()
-            injector.bind(FeedRepository.self, toInstance: dataRepository)
+            dataRepository = FakeDatabaseUseCase()
+            injector.bind(DatabaseUseCase.self, toInstance: dataRepository)
 
             subject = injector.create(FeedViewController)!
 

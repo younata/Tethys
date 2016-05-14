@@ -14,7 +14,7 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
 
     public var previewMode: Bool = false
 
-    private let feedRepository: FeedRepository
+    private let feedRepository: DatabaseUseCase
     private let themeRepository: ThemeRepository
     private let settingsRepository: SettingsRepository
     private let articleViewController: Void -> ArticleViewController
@@ -28,7 +28,7 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
         return searchBar
     }()
 
-    public init(feedRepository: FeedRepository,
+    public init(feedRepository: DatabaseUseCase,
                 themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
                 articleViewController: Void -> ArticleViewController) {
@@ -42,7 +42,7 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
 
     public required convenience init(injector: Injector) {
         self.init(
-            feedRepository: injector.create(FeedRepository)!,
+            feedRepository: injector.create(DatabaseUseCase)!,
             themeRepository: injector.create(ThemeRepository)!,
             settingsRepository: injector.create(SettingsRepository)!,
             articleViewController: { injector.create(ArticleViewController)! }
@@ -233,12 +233,10 @@ extension ArticleListController: UISearchBarDelegate {
         if searchText.isEmpty {
             self.resetArticles()
         } else {
-            self.feedRepository.articlesOfFeeds(self.feeds, matchingSearchQuery: searchText) {articles in
-                let articlesArray = articles
-                if self.articles != articlesArray {
-                    self.articles = articlesArray
-                    self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
-                }
+            let articlesArray = self.feedRepository.articlesOfFeeds(self.feeds, matchingSearchQuery: searchText)
+            if self.articles != articlesArray {
+                self.articles = articlesArray
+                self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
             }
         }
     }

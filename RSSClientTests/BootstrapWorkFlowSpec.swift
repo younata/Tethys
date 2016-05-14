@@ -9,16 +9,16 @@ class BootstrapWorkFlowSpec: QuickSpec {
     override func spec() {
         var subject: BootstrapWorkFlow!
         var window: UIWindow!
-        var feedRepository: FakeFeedRepository!
+        var feedRepository: FakeDatabaseUseCase!
         var migrationUseCase: FakeMigrationUseCase!
 
         beforeEach {
             window = UIWindow()
-            feedRepository = FakeFeedRepository()
+            feedRepository = FakeDatabaseUseCase()
             migrationUseCase = FakeMigrationUseCase()
 
             let injector = Injector()
-            injector.bind(FeedRepository.self, toInstance: feedRepository)
+            injector.bind(DatabaseUseCase.self, toInstance: feedRepository)
             injector.bind(MigrationUseCase.self, toInstance: migrationUseCase)
             injector.bind(UrlOpener.self, toInstance: FakeUrlOpener())
             injector.bind(kMainQueue, toInstance: FakeOperationQueue())

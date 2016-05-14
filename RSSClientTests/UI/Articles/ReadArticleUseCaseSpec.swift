@@ -7,12 +7,12 @@ import rNews
 class ArticleUseCaseSpec: QuickSpec {
     override func spec() {
         var subject: DefaultArticleUseCase!
-        var feedRepository: FakeFeedRepository!
+        var feedRepository: FakeDatabaseUseCase!
         var themeRepository: FakeThemeRepository!
         let bundle = NSBundle.mainBundle()
 
         beforeEach {
-            feedRepository = FakeFeedRepository()
+            feedRepository = FakeDatabaseUseCase()
             themeRepository = FakeThemeRepository()
             subject = DefaultArticleUseCase(feedRepository: feedRepository, themeRepository: themeRepository, bundle: bundle)
         }

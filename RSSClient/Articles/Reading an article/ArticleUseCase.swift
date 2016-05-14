@@ -11,11 +11,11 @@ public protocol ArticleUseCase {
 }
 
 public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
-    private let feedRepository: FeedRepository
+    private let feedRepository: DatabaseUseCase
     private let themeRepository: ThemeRepository
     private let bundle: NSBundle
 
-    public init(feedRepository: FeedRepository,
+    public init(feedRepository: DatabaseUseCase,
                 themeRepository: ThemeRepository,
                 bundle: NSBundle) {
         self.feedRepository = feedRepository
@@ -26,7 +26,7 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            feedRepository: injector.create(FeedRepository)!,
+            feedRepository: injector.create(DatabaseUseCase)!,
             themeRepository: injector.create(ThemeRepository)!,
             bundle: injector.create(NSBundle)!
         )

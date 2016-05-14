@@ -61,15 +61,16 @@ public class KitModule: NSObject, Ra.InjectorModule {
             urlSessionDelegate: urlSessionDelegate
         )
 
-        let dataRepository = DataRepository(mainQueue: mainQueue,
+        let dataRepository = DefaultDatabaseUseCase(mainQueue: mainQueue,
             reachable: reachable,
             dataServiceFactory: dataServiceFactory,
             updateService: updateService,
-            databaseMigrator: DatabaseMigrator()
+            databaseMigrator: DatabaseMigrator(),
+            scriptService: JavaScriptService()
         )
 
-        injector.bind(FeedRepository.self, toInstance: dataRepository)
-        injector.bind(DataRepository.self, toInstance: dataRepository)
+        injector.bind(DatabaseUseCase.self, toInstance: dataRepository)
+        injector.bind(DefaultDatabaseUseCase.self, toInstance: dataRepository)
 
         let opmlService = OPMLService(injector: injector)
         injector.bind(OPMLService.self, toInstance: opmlService)

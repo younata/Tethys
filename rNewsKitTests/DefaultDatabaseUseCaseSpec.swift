@@ -9,48 +9,9 @@ import CBGPromise
     import MobileCoreServices
 #endif
 
-private class FakeDataSubscriber: NSObject, DataSubscriber {
-    private var markedArticles: [Article]? = nil
-    private var read: Bool? = nil
-    private func markedArticles(articles: [Article], asRead: Bool) {
-        markedArticles = articles
-        read = asRead
-    }
-
-    private var deletedArticle: Article? = nil
-    private func deletedArticle(article: Article) {
-        deletedArticle = article
-    }
-
-    private var deletedFeed: Feed? = nil
-    private var deletedFeedsLeft: Int? = nil
-    private func deletedFeed(feed: Feed, feedsLeft: Int) {
-        deletedFeed = feed
-        deletedFeedsLeft = feedsLeft
-    }
-
-    private var didStartUpdatingFeeds = false
-    private func willUpdateFeeds() {
-        didStartUpdatingFeeds = true
-    }
-
-    private var updateFeedsProgressFinished = 0
-    private var updateFeedsProgressTotal = 0
-    private func didUpdateFeedsProgress(finished: Int, total: Int) {
-        updateFeedsProgressFinished = finished
-        updateFeedsProgressTotal = total
-    }
-
-
-    private var updatedFeeds: [Feed]? = nil
-    private func didUpdateFeeds(feeds: [Feed]) {
-        updatedFeeds = feeds
-    }
-}
-
-class FeedRepositorySpec: QuickSpec {
+class DefaultDatabaseUseCaseSpec: QuickSpec {
     override func spec() {
-        var subject: DataRepository!
+        var subject: DefaultDatabaseUseCase!
 
         var mainQueue: FakeOperationQueue!
 
@@ -111,11 +72,12 @@ class FeedRepositorySpec: QuickSpec {
 
             databaseMigrator = FakeDatabaseMigrator()
 
-            subject = DataRepository(mainQueue: mainQueue,
+            subject = DefaultDatabaseUseCase(mainQueue: mainQueue,
                 reachable: reachable,
                 dataServiceFactory: dataServiceFactory,
                 updateService: updateService,
-                databaseMigrator: databaseMigrator
+                databaseMigrator: databaseMigrator,
+                scriptService: JavaScriptService()
             )
 
             dataSubscriber = FakeDataSubscriber()
@@ -244,7 +206,7 @@ class FeedRepositorySpec: QuickSpec {
                     }
                 }
 
-                it("should return the list of all feeds") {
+                it("returns the list of all feeds") {
                     expect(calledHandler) == true
                     expect(calledFeeds).to(equal(feeds))
                     for (idx, feed) in feeds.enumerate() {
@@ -254,67 +216,10 @@ class FeedRepositorySpec: QuickSpec {
                 }
             }
 
-            describe("feedsMatchingTag:") {
-                var calledHandler = false
-                var calledFeeds: [Feed] = []
-
-                beforeEach {
-                    calledHandler = false
-                }
-
-                context("without a tag") {
-                    it("should return all the feeds when nil tag is given") {
-                        subject.feedsMatchingTag(nil) {
-                            calledHandler = true
-                            calledFeeds = $0
-                        }
-
-                        expect(calledHandler) == true
-                        expect(calledFeeds).to(equal(feeds))
-                    }
-
-                    it("should return all the feeds when empty string is given as the tag") {
-                        subject.feedsMatchingTag("") {
-                            calledHandler = true
-                            calledFeeds = $0
-                        }
-                        expect(calledFeeds).to(equal(feeds))
-                    }
-                }
-
-                it("should return feeds that partially match a tag") {
-                    subject.feedsMatchingTag("a") {
-                        calledHandler = true
-                        calledFeeds = $0
-                    }
-                    expect(calledFeeds) == [feed1, feed3]
-                }
-            }
-
             describe("articlesOfFeeds:MatchingSearchQuery:callback:") {
-                var calledHandler = false
-                var calledArticles = DataStoreBackedArray<Article>()
-
-                beforeEach {
-                    calledHandler = false
-                    calledArticles = DataStoreBackedArray<Article>()
-
-                    subject.articlesOfFeeds(feeds, matchingSearchQuery: "b") { articles in
-                        calledHandler = true
-                        calledArticles = articles
-                    }
-                }
-
                 it("should return all articles that match the given search query") {
-                    expect(mainQueue.operationCount).to(equal(1))
-
-                    expect(calledHandler) == false
-
-                    mainQueue.runNextOperation()
-
-                    expect(mainQueue.operationCount).to(equal(0))
-                    expect(calledHandler) == true
-                    expect(Array(calledArticles)) == [article1]
+                    let searchedArticles = subject.articlesOfFeeds(feeds, matchingSearchQuery: "b")
+                    expect(Array(searchedArticles)) == [article1]
                 }
             }
 
@@ -331,14 +236,7 @@ class FeedRepositorySpec: QuickSpec {
                     }
                 }
 
-                it("should execute the javascript query upon all articles to compile thes query feed") {
-                    expect(mainQueue.operationCount).to(equal(1))
-
-                    expect(calledHandler) == false
-
-                    mainQueue.runNextOperation()
-
-                    expect(mainQueue.operationCount).to(equal(0))
+                it("should execute the javascript query upon all articles to compile the query feed") {
                     expect(calledHandler) == true
                     expect(calledArticles) == [article1]
                 }

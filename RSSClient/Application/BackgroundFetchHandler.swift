@@ -9,14 +9,14 @@ public protocol BackgroundFetchHandler {
 }
 
 public struct DefaultBackgroundFetchHandler: BackgroundFetchHandler, Injectable {
-    private let feedRepository: FeedRepository
+    private let feedRepository: DatabaseUseCase
 
-    public init(feedRepository: FeedRepository) {
+    public init(feedRepository: DatabaseUseCase) {
         self.feedRepository = feedRepository
     }
 
     public init(injector: Injector) {
-        self.feedRepository = injector.create(FeedRepository)!
+        self.feedRepository = injector.create(DatabaseUseCase)!
     }
 
     public func performFetch(notificationHandler: NotificationHandler,

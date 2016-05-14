@@ -3,7 +3,7 @@ import CoreData
 import CBGPromise
 @testable import rNewsKit
 
-class FakeDataRepository : DataRepository {
+class FakeDefaultDatabaseUseCase : DefaultDatabaseUseCase {
     var databaseUpdateIsAvailable = false
     override func databaseUpdateAvailable() -> Bool {
         return self.databaseUpdateIsAvailable

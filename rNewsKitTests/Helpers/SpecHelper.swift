@@ -4,7 +4,7 @@ import CoreData
 @testable import rNewsKit
 
 func managedObjectContext() -> NSManagedObjectContext {
-    let bundle = NSBundle(forClass: DataRepository.self)
+    let bundle = NSBundle(forClass: DefaultDatabaseUseCase.self)
     let modelURL = bundle.URLForResource("RSSClient", withExtension: "momd")!
     let managedObjectModel = NSManagedObjectModel(contentsOfURL: modelURL)!
 

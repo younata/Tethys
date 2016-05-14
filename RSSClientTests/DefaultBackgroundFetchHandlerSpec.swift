@@ -7,15 +7,15 @@ import rNewsKit
 class DefaultBackgroundFetchHandlerSpec: QuickSpec {
     override func spec() {
         var injector: Injector! = nil
-        var dataRepository: FakeFeedRepository! = nil
+        var dataRepository: FakeDatabaseUseCase! = nil
 
         var subject: DefaultBackgroundFetchHandler! = nil
 
         beforeEach {
             injector = Injector()
-            dataRepository = FakeFeedRepository()
+            dataRepository = FakeDatabaseUseCase()
             dataRepository.feedsList = []
-            injector.bind(FeedRepository.self, toInstance: dataRepository)
+            injector.bind(DatabaseUseCase.self, toInstance: dataRepository)
 
             subject = injector.create(DefaultBackgroundFetchHandler)!
         }

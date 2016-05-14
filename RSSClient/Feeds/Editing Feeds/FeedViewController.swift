@@ -41,14 +41,14 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
         return tableView
     }()
 
-    private let feedRepository: FeedRepository
+    private let feedRepository: DatabaseUseCase
     private let urlSession: NSURLSession
     private let themeRepository: ThemeRepository
     private let tagEditorViewController: Void -> TagEditorViewController
 
     private let intervalFormatter = NSDateIntervalFormatter()
 
-    public init(feedRepository: FeedRepository,
+    public init(feedRepository: DatabaseUseCase,
                 urlSession: NSURLSession,
                 themeRepository: ThemeRepository,
                 tagEditorViewController: Void -> TagEditorViewController) {
@@ -62,7 +62,7 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
 
     public required convenience init(injector: Injector) {
         self.init(
-            feedRepository: injector.create(FeedRepository)!,
+            feedRepository: injector.create(DatabaseUseCase)!,
             urlSession: injector.create(NSURLSession)!,
             themeRepository: injector.create(ThemeRepository)!,
             tagEditorViewController: {injector.create(TagEditorViewController)!}

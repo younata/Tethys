@@ -5,7 +5,7 @@ import rNews
 import rNewsKit
 
 private var navController: UINavigationController! = nil
-private var feedRepository: FakeFeedRepository! = nil
+private var feedRepository: FakeDatabaseUseCase! = nil
 private var rootViewController: UIViewController! = nil
 
 
@@ -22,8 +22,8 @@ class FindFeedViewControllerSpec: QuickSpec {
         beforeEach {
             injector = Ra.Injector()
 
-            feedRepository = FakeFeedRepository()
-            injector.bind(FeedRepository.self, toInstance: feedRepository)
+            feedRepository = FakeDatabaseUseCase()
+            injector.bind(DatabaseUseCase.self, toInstance: feedRepository)
 
             importUseCase = FakeImportUseCase()
             injector.bind(ImportUseCase.self, toInstance: importUseCase)

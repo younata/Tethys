@@ -14,7 +14,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
         var navigationController: UINavigationController!
         var subject: QueryFeedViewController! = nil
         var injector: Injector! = nil
-        var feedRepository: FakeFeedRepository! = nil
+        var feedRepository: FakeDatabaseUseCase! = nil
 
         var backgroundQueue: FakeOperationQueue! = nil
 
@@ -27,8 +27,8 @@ class QueryFeedViewControllerSpec: QuickSpec {
             backgroundQueue.runSynchronously = true
             injector.bind(kBackgroundQueue, toInstance: backgroundQueue)
 
-            feedRepository = FakeFeedRepository()
-            injector.bind(FeedRepository.self, toInstance: feedRepository)
+            feedRepository = FakeDatabaseUseCase()
+            injector.bind(DatabaseUseCase.self, toInstance: feedRepository)
 
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, toInstance: themeRepository)

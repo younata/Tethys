@@ -10,7 +10,7 @@ public class BootstrapWorkFlow: Bootstrapper {
     private var workflow: LinearWorkFlow!
 
     private let window: UIWindow
-    private let feedRepository: FeedRepository
+    private let feedRepository: DatabaseUseCase
     private let migrationUseCase: MigrationUseCase
     private let splitViewController: SplitViewController
     private let migrationViewController: Void -> MigrationViewController
@@ -21,7 +21,7 @@ public class BootstrapWorkFlow: Bootstrapper {
 
     // swiftlint:disable function_parameter_count
     public init(window: UIWindow,
-        feedRepository: FeedRepository,
+        feedRepository: DatabaseUseCase,
         migrationUseCase: MigrationUseCase,
         splitViewController: SplitViewController,
         migrationViewController: Void -> MigrationViewController,
@@ -40,7 +40,7 @@ public class BootstrapWorkFlow: Bootstrapper {
     public convenience init(window: UIWindow, injector: Injector) {
         self.init(
             window: window,
-            feedRepository: injector.create(FeedRepository)!,
+            feedRepository: injector.create(DatabaseUseCase)!,
             migrationUseCase: injector.create(MigrationUseCase)!,
             splitViewController: injector.create(SplitViewController)!,
             migrationViewController: { injector.create(MigrationViewController)! },

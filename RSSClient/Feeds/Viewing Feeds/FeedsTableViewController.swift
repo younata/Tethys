@@ -80,7 +80,7 @@ public class FeedsTableViewController: UIViewController, Injectable {
 
     public let notificationView = NotificationView(forAutoLayout: ())
 
-    private let feedRepository: FeedRepository
+    private let feedRepository: DatabaseUseCase
     private let themeRepository: ThemeRepository
     private let settingsRepository: SettingsRepository
 
@@ -94,7 +94,7 @@ public class FeedsTableViewController: UIViewController, Injectable {
     private var markReadFuture: Future<Int>? = nil
 
     // swiftlint:disable function_parameter_count
-    public init(feedRepository: FeedRepository,
+    public init(feedRepository: DatabaseUseCase,
                 themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
                 findFeedViewController: Void -> FindFeedViewController,
@@ -119,7 +119,7 @@ public class FeedsTableViewController: UIViewController, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            feedRepository: injector.create(FeedRepository)!,
+            feedRepository: injector.create(DatabaseUseCase)!,
             themeRepository: injector.create(ThemeRepository)!,
             settingsRepository: injector.create(SettingsRepository)!,
             findFeedViewController: {injector.create(FindFeedViewController)!},

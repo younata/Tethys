@@ -21,7 +21,7 @@ class AppDelegateSpec: QuickSpec {
         let application = UIApplication.sharedApplication()
         var injector: Ra.Injector! = nil
 
-        var dataRepository: FakeFeedRepository! = nil
+        var dataRepository: FakeDatabaseUseCase! = nil
 
         var notificationHandler: FakeNotificationHandler! = nil
         var backgroundFetchHandler: FakeBackgroundFetchHandler! = nil
@@ -34,8 +34,8 @@ class AppDelegateSpec: QuickSpec {
             injector.bind(kMainQueue, toInstance: FakeOperationQueue())
             injector.bind(kBackgroundQueue, toInstance: FakeOperationQueue())
 
-            dataRepository = FakeFeedRepository()
-            injector.bind(FeedRepository.self, toInstance: dataRepository)
+            dataRepository = FakeDatabaseUseCase()
+            injector.bind(DatabaseUseCase.self, toInstance: dataRepository)
 
             injector.bind(MigrationUseCase.self, toInstance: FakeMigrationUseCase())
             injector.bind(ImportUseCase.self, toInstance: FakeImportUseCase())

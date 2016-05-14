@@ -7,14 +7,14 @@ class ImportUseCaseSpec: QuickSpec {
     override func spec() {
         var subject: DefaultImportUseCase!
         var urlSession: FakeURLSession!
-        var feedRepository: FakeFeedRepository!
+        var feedRepository: FakeDatabaseUseCase!
         var opmlService: FakeOPMLService!
         var fileManager: FakeFileManager!
         var mainQueue: FakeOperationQueue!
 
         beforeEach {
             urlSession = FakeURLSession()
-            feedRepository = FakeFeedRepository()
+            feedRepository = FakeDatabaseUseCase()
             opmlService = FakeOPMLService()
             fileManager = FakeFileManager()
 

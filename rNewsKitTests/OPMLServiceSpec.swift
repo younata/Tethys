@@ -9,7 +9,7 @@ class OPMLServiceSpec: QuickSpec {
     override func spec() {
         var subject: OPMLService!
 
-        var dataRepository: FakeDataRepository!
+        var dataRepository: FakeDefaultDatabaseUseCase!
         var importQueue: FakeOperationQueue!
         var mainQueue: FakeOperationQueue!
 
@@ -28,18 +28,19 @@ class OPMLServiceSpec: QuickSpec {
             dataServiceFactory = FakeDataServiceFactory()
             dataServiceFactory.currentDataService = dataService
 
-            dataRepository = FakeDataRepository(
+            dataRepository = FakeDefaultDatabaseUseCase(
                 mainQueue: mainQueue,
                 reachable: nil,
                 dataServiceFactory: dataServiceFactory,
                 updateService: FakeUpdateService(),
-                databaseMigrator: FakeDatabaseMigrator()
+                databaseMigrator: FakeDatabaseMigrator(),
+                scriptService: JavaScriptService()
             )
 
             let injector = Injector()
             injector.bind(kMainQueue, toInstance: mainQueue)
             injector.bind(kBackgroundQueue, toInstance: importQueue)
-            injector.bind(DataRepository.self, toInstance: dataRepository)
+            injector.bind(DefaultDatabaseUseCase.self, toInstance: dataRepository)
             injector.bind(DataService.self, toInstance: dataService)
 
             let previouslyImportedFeed = Feed(title: "imported", url: NSURL(string: "http://example.com/previouslyImportedFeed"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)

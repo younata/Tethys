@@ -7,12 +7,12 @@ import rNewsKit
 class MigrationUseCaseSpec: QuickSpec {
     override func spec() {
         var subject: DefaultMigrationUseCase!
-        var feedRepository: FakeFeedRepository!
+        var feedRepository: FakeDatabaseUseCase!
 
         var subscriber: FakeMigrationUseCaseSubscriber!
 
         beforeEach {
-            feedRepository = FakeFeedRepository()
+            feedRepository = FakeDatabaseUseCase()
             subject = DefaultMigrationUseCase(feedRepository: feedRepository)
 
             subscriber = FakeMigrationUseCaseSubscriber()

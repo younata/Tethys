@@ -38,7 +38,7 @@ public protocol ImportUseCase {
 
 public final class DefaultImportUseCase: ImportUseCase, Injectable {
     private let urlSession: NSURLSession
-    private let feedRepository: FeedRepository
+    private let feedRepository: DatabaseUseCase
     private let opmlService: OPMLService
     private let fileManager: NSFileManager
     private let mainQueue: NSOperationQueue
@@ -50,7 +50,7 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
     private var knownUrls: [NSURL: ImportType] = [:]
 
     public init(urlSession: NSURLSession,
-                feedRepository: FeedRepository,
+                feedRepository: DatabaseUseCase,
                 opmlService: OPMLService,
                 fileManager: NSFileManager,
                 mainQueue: NSOperationQueue) {
@@ -64,7 +64,7 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
     public required convenience init(injector: Injector) {
         self.init(
             urlSession: injector.create(NSURLSession)!,
-            feedRepository: injector.create(FeedRepository)!,
+            feedRepository: injector.create(DatabaseUseCase)!,
             opmlService: injector.create(OPMLService)!,
             fileManager: injector.create(NSFileManager)!,
             mainQueue: injector.create(kMainQueue) as! NSOperationQueue

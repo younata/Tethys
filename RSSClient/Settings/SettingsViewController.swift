@@ -99,7 +99,7 @@ public class SettingsViewController: UIViewController, Injectable {
     private let settingsRepository: SettingsRepository
     private let urlOpener: UrlOpener
     private let quickActionRepository: QuickActionRepository
-    private let feedRepository: FeedRepository
+    private let feedRepository: DatabaseUseCase
     private let documentationViewController: Void -> DocumentationViewController
 
     private var oldTheme: ThemeRepository.Theme = .Default
@@ -116,7 +116,7 @@ public class SettingsViewController: UIViewController, Injectable {
                 settingsRepository: SettingsRepository,
                 urlOpener: UrlOpener,
                 quickActionRepository: QuickActionRepository,
-                feedRepository: FeedRepository,
+                feedRepository: DatabaseUseCase,
                 documentationViewController: Void -> DocumentationViewController) {
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
@@ -135,7 +135,7 @@ public class SettingsViewController: UIViewController, Injectable {
             settingsRepository: injector.create(SettingsRepository)!,
             urlOpener: injector.create(UrlOpener)!,
             quickActionRepository: injector.create(QuickActionRepository)!,
-            feedRepository: injector.create(FeedRepository)!,
+            feedRepository: injector.create(DatabaseUseCase)!,
             documentationViewController: {injector.create(DocumentationViewController)!}
         )
     }

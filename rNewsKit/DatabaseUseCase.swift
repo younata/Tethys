@@ -16,13 +16,13 @@ public protocol DatabaseUseCase {
     func addSubscriber(subscriber: DataSubscriber)
 
     func newFeed(callback: Feed -> Void)
-    func saveFeed(feed: Feed)
-    func deleteFeed(feed: Feed)
+    func saveFeed(feed: Feed) -> Future<Void>
+    func deleteFeed(feed: Feed) -> Future<Void>
     func markFeedAsRead(feed: Feed) -> Future<Int>
 
-    func saveArticle(article: Article)
-    func deleteArticle(article: Article)
-    func markArticle(article: Article, asRead: Bool)
+    func saveArticle(article: Article) -> Future<Void>
+    func deleteArticle(article: Article) -> Future<Void>
+    func markArticle(article: Article, asRead: Bool) -> Future<Void>
 
     func updateFeeds(callback: ([Feed], [NSError]) -> Void)
 

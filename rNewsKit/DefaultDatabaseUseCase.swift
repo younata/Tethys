@@ -149,12 +149,12 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         self.dataService.createFeed(callback)
     }
 
-    func saveFeed(feed: Feed) {
-        self.dataService.saveFeed(feed)
+    func saveFeed(feed: Feed) -> Future<Void> {
+        return self.dataService.saveFeed(feed)
     }
 
-    func deleteFeed(feed: Feed) {
-        self.dataService.deleteFeed(feed).then {
+    func deleteFeed(feed: Feed) -> Future<Void> {
+        return self.dataService.deleteFeed(feed).then {
             self.feeds {
                 for object in self.subscribers.allObjects {
                     if let subscriber = object as? DataSubscriber {
@@ -173,12 +173,12 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         }
     }
 
-    func saveArticle(article: Article) {
-        self.dataService.saveArticle(article)
+    func saveArticle(article: Article) -> Future<Void> {
+        return self.dataService.saveArticle(article)
     }
 
-    func deleteArticle(article: Article) {
-        self.dataService.deleteArticle(article).then {
+    func deleteArticle(article: Article) -> Future<Void> {
+        return self.dataService.deleteArticle(article).then {
             for object in self.subscribers.allObjects {
                 if let subscriber = object as? DataSubscriber {
                     subscriber.deletedArticle(article)
@@ -187,8 +187,10 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         }
     }
 
-    func markArticle(article: Article, asRead: Bool) {
-        self.privateMarkArticles([article], asRead: asRead)
+    func markArticle(article: Article, asRead: Bool) -> Future<Void> {
+        return self.privateMarkArticles([article], asRead: asRead).map { _ -> Void in
+            return
+        }
     }
 
     private var updatingFeedsCallbacks = Array<([Feed], [NSError]) -> (Void)>()

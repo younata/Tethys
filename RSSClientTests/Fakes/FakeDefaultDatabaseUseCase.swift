@@ -22,13 +22,21 @@ class FakeDefaultDatabaseUseCase : DefaultDatabaseUseCase {
     }
 
     var lastSavedFeed: Feed? = nil
-    override func saveFeed(feed: Feed) {
+    var saveFeedPromises: [Promise<Void>] = []
+    override func saveFeed(feed: Feed) -> Future<Void> {
         lastSavedFeed = feed
+        let promise = Promise<Void>()
+        saveFeedPromises.append(promise)
+        return promise.future
     }
 
     var lastDeletedFeed: Feed? = nil
-    override func deleteFeed(feed: Feed) {
+    var deleteFeedPromises: [Promise<Void>] = []
+    override func deleteFeed(feed: Feed) -> Future<Void> {
         lastDeletedFeed = feed
+        let promise = Promise<Void>()
+        deleteFeedPromises.append(promise)
+        return promise.future
     }
 
     var lastFeedMarkedRead: Feed? = nil
@@ -55,16 +63,24 @@ class FakeDefaultDatabaseUseCase : DefaultDatabaseUseCase {
     }
 
     var lastArticleMarkedRead: Article? = nil
-    override func markArticle(article: Article, asRead read: Bool) {
+    var markArticleReadPromises: [Promise<Void>] = []
+    override func markArticle(article: Article, asRead read: Bool) -> Future<Void> {
         lastArticleMarkedRead = article
         article.read = read
+        let promise = Promise<Void>()
+        markArticleReadPromises.append(promise)
+        return promise.future
     }
 
     var lastDeletedArticle: Article? = nil
-    override func deleteArticle(article: Article) {
+    var deleteArticlePromises: [Promise<Void>] = []
+    override func deleteArticle(article: Article) -> Future<Void> {
         lastDeletedArticle = article
         article.feed?.removeArticle(article)
         article.feed = nil
+        let promise = Promise<Void>()
+        deleteArticlePromises.append(promise)
+        return promise.future
     }
 
     var didUpdateFeeds = false

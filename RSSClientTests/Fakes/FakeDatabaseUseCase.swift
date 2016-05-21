@@ -59,15 +59,23 @@ class FakeDatabaseUseCase: DatabaseUseCase {
     }
 
     var lastSavedFeed: Feed? = nil
-    func saveFeed(feed: Feed) {
+    var saveFeedPromises: [Promise<Void>] = []
+    func saveFeed(feed: Feed) -> Future<Void> {
         lastSavedFeed = feed
+        let promise = Promise<Void>()
+        saveFeedPromises.append(promise)
+        return promise.future
     }
 
     var lastDeletedFeed: Feed? = nil
     var deletedFeeds = Array<Feed>()
-    func deleteFeed(feed: Feed) {
+    var deleteFeedPromises: [Promise<Void>] = []
+    func deleteFeed(feed: Feed) -> Future<Void> {
         deletedFeeds.append(feed)
         lastDeletedFeed = feed
+        let promise = Promise<Void>()
+        deleteFeedPromises.append(promise)
+        return promise.future
     }
 
     var lastFeedMarkedRead: Feed? = nil
@@ -80,21 +88,29 @@ class FakeDatabaseUseCase: DatabaseUseCase {
         return self.markedReadPromise!.future
     }
 
-    func saveArticle(article: Article) {
+    func saveArticle(article: Article) -> Future<Void>{
         fatalError("should not have called saveArticle?")
     }
 
     var lastDeletedArticle: Article? = nil
-    func deleteArticle(article: Article) {
+    var deleteArticlePromises: [Promise<Void>] = []
+    func deleteArticle(article: Article) -> Future<Void> {
         lastDeletedArticle = article
         article.feed?.removeArticle(article)
         article.feed = nil
+        let promise = Promise<Void>()
+        deleteArticlePromises.append(promise)
+        return promise.future
     }
 
     var lastArticleMarkedRead: Article? = nil
-    func markArticle(article: Article, asRead read: Bool) {
+    var markArticleReadPromises: [Promise<Void>] = []
+    func markArticle(article: Article, asRead read: Bool) -> Future<Void> {
         lastArticleMarkedRead = article
         article.read = read
+        let promise = Promise<Void>()
+        markArticleReadPromises.append(promise)
+        return promise.future
     }
 
     var didUpdateFeeds = false

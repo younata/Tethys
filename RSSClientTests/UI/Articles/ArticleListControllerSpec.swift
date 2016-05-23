@@ -179,10 +179,8 @@ class ArticleListControllerSpec: QuickSpec {
                     expect(cell.unread.unread).to(equal(1))
 
                     articles[3].read = true
-                    for object in dataRepository.subscribers.allObjects {
-                        if let subscriber = object as? DataSubscriber {
-                            subscriber.markedArticles([articles[3]], asRead: true)
-                        }
+                    for subscriber in dataRepository.subscribersArray {
+                        subscriber.markedArticles([articles[3]], asRead: true)
                     }
                 }
 

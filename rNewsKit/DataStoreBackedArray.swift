@@ -40,7 +40,20 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
     public var startIndex: Index { return 0 }
     public var endIndex: Index { return self.count }
 
-    private lazy var internalCount: Int = { self.calculateCount() }()
+    private var _internalCount: Int? = nil
+    private var internalCount: Int {
+        get {
+            if let count = self._internalCount {
+                return count
+            } else {
+                _internalCount = self.calculateCount()
+                return _internalCount ?? 0
+            }
+        }
+        set {
+            self._internalCount = newValue
+        }
+    }
 
     public typealias Generator = IndexingGenerator<DataStoreBackedArray>
 
@@ -240,7 +253,7 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
             self.entityName = entityName
             self.managedObjectContext = managedObjectContext
             self.coreDataConversionFunction = conversionFunction
-            self.internalCount = self.calculateCount()
+            self._internalCount = self.calculateCount()
     }
 
     deinit {
@@ -286,8 +299,12 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
         }
     }
 
-    private func calculateCount() -> Int {
-        var count = self.internalObjects.count
+    private func calculateCount() -> Int? {
+        let loadedObjects = self.internalObjects.count
+        if loadedObjects != 0 {
+            return loadedObjects
+        }
+        var count: Int? = nil
         autoreleasepool {
             if self.backingStore == .CoreData {
                 count = 0
@@ -296,7 +313,7 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
                     fetchRequest.predicate = self.predicate
                     count = self.managedObjectContext!.countForFetchRequest(fetchRequest, error: nil)
                 }
-                self.internalObjects.reserveCapacity(count)
+                self.internalObjects.reserveCapacity(count!)
             } else if let list = self.realmObjectList() {
                 count = list.count
             }

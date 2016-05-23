@@ -14,7 +14,7 @@ protocol Repository {
     func delete(data: Data) -> Future<Result<Void, RepositoryError>>
 }
 
-class DatabaseRepository: Repository {
+class FeedRepository: Repository {
     private let dataService: DataService
     private let scriptService: ScriptService
 //    private let networkService: NetworkService

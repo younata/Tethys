@@ -1,3 +1,127 @@
+0.103.1 Release notes (2016-05-19)
+=============================================================
+
+### API breaking changes
+
+* None.
+
+### Enhancements
+
+* None.
+
+### Bugfixes
+
+* Fix a bug that sometimes resulted in a single object's NSData properties
+  changing from `nil` to a zero-length non-`nil` NSData when a different object
+  of the same type was deleted.
+
+0.103.0 Release notes (2016-05-18)
+=============================================================
+
+### API breaking changes
+
+* All functionality deprecated in previous releases has been removed entirely.
+* Support for Xcode 6.x & Swift prior to 2.2 has been completely removed.
+* `RLMResults`/`Results` now become empty when a `RLMArray`/`List` or object
+  they depend on is deleted, rather than throwing an exception when accessed.
+* Migrations are no longer run when `deleteRealmIfMigrationNeeded` is set,
+  recreating the file instead.
+
+### Enhancements
+
+* Added `invalidated` properties to `RLMResults`/`Results`, `RLMLinkingObjects`/`LinkingObjects`,
+  `RealmCollectionType` and `AnyRealmCollection`. These properties report whether the Realm
+  the object is associated with has been invalidated.
+* Some `NSError`s created by Realm now have more descriptive user info payloads.
+
+### Bugfixes
+
+* None.
+
+0.102.1 Release notes (2016-05-13)
+=============================================================
+
+### API breaking changes
+
+* None.
+
+### Enhancements
+
+* Return `RLMErrorSchemaMismatch` error rather than the more generic `RLMErrorFail`
+  when a migration is required.
+* Improve the performance of allocating instances of `Object` subclasses
+  that have `LinkingObjects` properties.
+
+### Bugfixes
+
+* `RLMLinkingObjects` properties declared in Swift subclasses of `RLMObject`
+  now work correctly.
+* Fix an assertion failure when deleting all objects of a type, inserting more
+  objects, and then deleting some of the newly inserted objects within a single
+  write transaction when there is an active notification block for a different
+  object type which links to the objects being deleted.
+* Fix crashes and/or incorrect results when querying over multiple levels of
+  `LinkingObjects` properties.
+* Fix opening read-only Realms on multiple threads at once.
+* Fix a `BadTransactLog` exception when storing dates before the unix epoch (1970-01-01).
+
+0.102.0 Release notes (2016-05-09)
+=============================================================
+
+### API breaking changes
+
+* None.
+
+### Enhancements
+
+* Add a method to rename properties during migrations:
+  * Swift: `Migration.renamePropertyForClass(_:oldName:newName:)`
+  * Objective-C: `-[RLMMigration renamePropertyForClass:oldName:newName:]`
+* Add `deleteRealmIfMigrationNeeded` to
+  `RLMRealmConfiguration`/`Realm.Configuration`. When this is set to `true`,
+  the Realm file will be automatically deleted and recreated when there is a
+  schema mismatch rather than migrated to the new schema.
+
+### Bugfixes
+
+* Fix `BETWEEN` queries that traverse `RLMArray`/`List` properties to ensure that
+  a single related object satisfies the `BETWEEN` criteria, rather than allowing
+  different objects in the array to satisfy the lower and upper bounds.
+* Fix a race condition when a Realm is opened on one thread while it is in the
+  middle of being closed on another thread which could result in crashes.
+* Fix a bug which could result in changes made on one thread being applied
+  incorrectly on other threads when those threads are refreshed.
+* Fix crash when migrating to the new date format introduced in 0.101.0.
+* Fix crash when querying inverse relationships when objects are deleted.
+
+0.101.0 Release notes (2016-05-04)
+=============================================================
+
+### API breaking changes
+
+* Files written by this version of Realm cannot be read by older versions of
+  Realm. Existing files will automatically be upgraded when they are opened.
+
+### Enhancements
+
+* Greatly improve performance of collection change calculation for complex
+  object graphs, especially for ones with cycles.
+* NSDate properties now support nanoseconds precision.
+* Opening a single Realm file on multiple threads now shares a single memory
+  mapping of the file for all threads, significantly reducing the memory
+  required to work with large files.
+* Crashing while in the middle of a write transaction no longer blocks other
+  processes from performing write transactions on the same file.
+* Improve the performance of refreshing a Realm (including via autorefresh)
+  when there are live Results/RLMResults objects for that Realm.
+
+### Bugfixes
+
+* Fix an assertion failure of "!more_before || index >= std::prev(it)->second)"
+  in `IndexSet::do_add()`.
+* Fix a crash when an `RLMArray` or `List` object is destroyed from the wrong
+  thread.
+
 0.100.0 Release notes (2016-04-29)
 =============================================================
 

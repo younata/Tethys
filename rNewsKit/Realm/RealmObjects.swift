@@ -19,7 +19,7 @@ class RealmFeed: Object {
     dynamic var waitPeriod: Int = 0
     dynamic var remainingWait: Int = 0
     var articles: [RealmArticle] {
-        return linkingObjects(RealmArticle.self, forProperty: "feed").sort {
+        return LinkingObjects(fromType: RealmArticle.self, property: "feed").sort {
             let aDate: NSDate
             let bDate: NSDate
             if let date = $0.updatedAt {
@@ -65,9 +65,7 @@ class RealmArticle: Object {
     dynamic var estimatedReadingTime = 0
     let flags = List<RealmString>()
     dynamic var feed: RealmFeed?
-    var enclosures: [RealmEnclosure] {
-        return linkingObjects(RealmEnclosure.self, forProperty: "article")
-    }
+    let enclosures = LinkingObjects(fromType: RealmEnclosure.self, property: "article")
     let authors = List<RealmAuthor>()
     let relatedArticles = List<RealmArticle>()
 

@@ -55,8 +55,8 @@ final class DataServiceFactory: DataServiceFactoryType {
     }
 
     private func useCoreData() -> Bool {
-        guard let path = Realm.Configuration.defaultConfiguration.path else { return true }
-        return !self.fileManager.fileExistsAtPath(path)
+        guard let url = Realm.Configuration.defaultConfiguration.fileURL else { return true }
+        return !self.fileManager.fileExistsAtPath(url.path ?? "")
     }
 
     private func coreDataService() -> CoreDataService {

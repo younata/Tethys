@@ -74,6 +74,7 @@
 		892E30E41CE78D4900E327A0 /* FakeScriptService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E30E21CE2C84300E327A0 /* FakeScriptService.swift */; };
 		892E30E51CE78D4B00E327A0 /* FakeScriptService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E30E21CE2C84300E327A0 /* FakeScriptService.swift */; };
 		892E30E81CF218F600E327A0 /* FeedRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E30E71CF218F600E327A0 /* FeedRepositorySpec.swift */; };
+		892E30F71CF4011F00E327A0 /* Future+when.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E30F61CF4011F00E327A0 /* Future+when.swift */; };
 		8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */; };
 		89348F2F1C60730D007D366B /* FakeDatabaseUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89348F2E1C60730D007D366B /* FakeDatabaseUseCase.swift */; };
 		8935F5CD1B462702000FFD5D /* Muon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; };
@@ -576,6 +577,7 @@
 		892CBDE91C7A27FE0062E578 /* FakeArticleUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeArticleUseCase.swift; sourceTree = "<group>"; };
 		892E30E21CE2C84300E327A0 /* FakeScriptService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeScriptService.swift; sourceTree = "<group>"; };
 		892E30E71CF218F600E327A0 /* FeedRepositorySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedRepositorySpec.swift; sourceTree = "<group>"; };
+		892E30F61CF4011F00E327A0 /* Future+when.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Future+when.swift"; sourceTree = "<group>"; };
 		8933E93219EE33F700ECFF3F /* UIColor+RSSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+RSSClient.h"; sourceTree = "<group>"; };
 		8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+RSSClient.m"; sourceTree = "<group>"; };
 		89348F2E1C60730D007D366B /* FakeDatabaseUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDatabaseUseCase.swift; sourceTree = "<group>"; };
@@ -990,6 +992,7 @@
 				89628BDE1CE1742600B4C624 /* DatabaseUseCase.swift */,
 				8978438C1CE1AB3000C74605 /* Repository.swift */,
 				89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */,
+				892E30F61CF4011F00E327A0 /* Future+when.swift */,
 				89CC82031B461A2B00648367 /* Helpers.swift */,
 				89CC82051B461A5500648367 /* KitModule.swift */,
 				898C48C61B40D2AC0097045A /* SearchIndex.swift */,
@@ -2118,6 +2121,7 @@
 				894304411B450A00000078DC /* OPMLService.swift in Sources */,
 				891754701C5B449E0036D96D /* RealmObjects.swift in Sources */,
 				89FF979E1BF058FB000080F7 /* DataStoreBackedArray.swift in Sources */,
+				892E30F71CF4011F00E327A0 /* Future+when.swift in Sources */,
 				8999CC0D1C2E710F00B81F5F /* DataService.swift in Sources */,
 				89628BE51CE1999400B4C624 /* ScriptService.swift in Sources */,
 				89500B241CDEA288004548C3 /* InMemoryDataService.swift in Sources */,

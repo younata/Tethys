@@ -1,5 +1,7 @@
 import CoreData
 import RealmSwift
+import Result
+import CBGPromise
 
 private enum BackingStore {
     case CoreData
@@ -41,17 +43,16 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
     public var endIndex: Index { return self.count }
 
     private var _internalCount: Int? = nil
-    private var internalCount: Int {
+    private let internalCountPromise = Promise<Int>()
+    private var internalCount: Future<Int> {
         get {
             if let count = self._internalCount {
-                return count
+                let promise = Promise<Int>()
+                promise.resolve(count)
+                return promise.future
             } else {
-                _internalCount = self.calculateCount()
-                return _internalCount ?? 0
+                return self.calculateCount()
             }
-        }
-        set {
-            self._internalCount = newValue
         }
     }
 
@@ -62,7 +63,7 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
     }
 
     public var count: Int {
-        return self.internalCount + self.appendedObjects.count
+        return self.internalCount.wait()! + self.appendedObjects.count
     }
 
     public var debugDescription: String {
@@ -179,11 +180,12 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
     }
 
     public subscript(position: Int) -> T {
+        let internalCount = self.internalCount.wait()!
         if self.backingStore != .Array {
             if position < self.internalObjects.count {
                 return self.internalObjects[position]
-            } else if position >= self.internalCount {
-                return self.appendedObjects[position - self.internalCount]
+            } else if position >= internalCount {
+                return self.appendedObjects[position - internalCount]
             } else {
                 self.fetchUpToPosition(position)
             }
@@ -197,7 +199,7 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
             self.appendedObjects.append(object)
         case .Array:
             self.internalObjects.append(object)
-            self.internalCount = self.internalObjects.count
+            self._internalCount = self.internalObjects.count
         }
     }
 
@@ -218,7 +220,7 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
         self.managedObjectContext = nil
         self.coreDataConversionFunction = nil
 
-        self.internalCount = array.count
+        self._internalCount = array.count
     }
 
     public init(realmDataType: Object.Type,
@@ -253,7 +255,7 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
             self.entityName = entityName
             self.managedObjectContext = managedObjectContext
             self.coreDataConversionFunction = conversionFunction
-            self._internalCount = self.calculateCount()
+            self.calculateCount().then { self._internalCount = $0 }
     }
 
     deinit {
@@ -278,7 +280,9 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
                     }
                 }
                 let start = self.internalObjects.count
-                let end = min(self.internalCount,
+                self.internalCount.wait()
+                let internalCount = self.internalCount.value!
+                let end = min(internalCount,
                               start + ((Int((position - start) / self.batchSize) + 1) * self.batchSize))
 
                 self.managedObjectContext?.performBlockAndWait {
@@ -299,26 +303,27 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
         }
     }
 
-    private func calculateCount() -> Int? {
+    private func calculateCount() -> Future<Int> {
+        let promise = Promise<Int>()
         let loadedObjects = self.internalObjects.count
         if loadedObjects != 0 {
-            return loadedObjects
+            promise.resolve(loadedObjects)
         }
-        var count: Int? = nil
         autoreleasepool {
             if self.backingStore == .CoreData {
-                count = 0
+                var count = 0
                 self.managedObjectContext?.performBlockAndWait {
                     let fetchRequest = NSFetchRequest(entityName: self.entityName)
                     fetchRequest.predicate = self.predicate
                     count = self.managedObjectContext!.countForFetchRequest(fetchRequest, error: nil)
                 }
-                self.internalObjects.reserveCapacity(count!)
+                self.internalObjects.reserveCapacity(count)
+                promise.resolve(count)
             } else if let list = self.realmObjectList() {
-                count = list.count
+                promise.resolve(list.count)
             }
         }
-        return count
+        return promise.future
     }
 
     private func realmObjectList() -> Results<Object>? {
@@ -331,50 +336,52 @@ public final class DataStoreBackedArray<T: AnyObject>: CollectionType, CustomDeb
             return nil
         }
         let results = realm.objects(dataType).filter(predicate).sorted(sortDescriptors)
-        self.internalCount = results.count
+        self._internalCount = results.count
         return results
     }
 }
 
 extension DataStoreBackedArray where T: Equatable {
-    public func remove(object: T) -> Bool {
-        self.fetchUpToPosition(self.internalCount - 1)
-        var idxToRemove: Int? = nil
-        for (idx, obj) in self.appendedObjects.enumerate() {
-            if obj == object {
-                idxToRemove = idx
-                break
+    public func remove(object: T) -> Future<Bool> {
+        return self.internalCount.map { (internalCount: Int) -> Bool in
+            self.fetchUpToPosition(internalCount - 1)
+            var idxToRemove: Int? = nil
+            for (idx, obj) in self.appendedObjects.enumerate() {
+                if obj == object {
+                    idxToRemove = idx
+                    break
+                }
             }
-        }
-        if let _ = idxToRemove {
-            self.appendedObjects = self.appendedObjects.filter { $0 != object }
+            if let _ = idxToRemove {
+                self.appendedObjects = self.appendedObjects.filter { $0 != object }
+                return true
+            }
+            for (idx, obj) in self.enumerate() {
+                if obj == object {
+                    idxToRemove = idx
+                    break
+                }
+            }
+            guard let idx = idxToRemove else {
+                return false
+            }
+            autoreleasepool {
+                if self.backingStore == .CoreData {
+                    self.managedObjectContext?.performBlockAndWait {
+                        let managedObject = self.managedArray[idx]
+                        self.managedObjectContext?.deleteObject(managedObject)
+                    }
+                } else if let objects = self.realmObjectList() {
+                    self.realm?.beginWrite()
+                    self.realm?.delete(objects[idx])
+                    _ = try? self.realm?.commitWrite()
+                }
+            }
+            self.internalObjects.removeAtIndex(idx)
+            self._internalCount! -= 1
+            
             return true
         }
-        for (idx, obj) in self.enumerate() {
-            if obj == object {
-                idxToRemove = idx
-                break
-            }
-        }
-        guard let idx = idxToRemove else {
-            return false
-        }
-        autoreleasepool {
-            if self.backingStore == .CoreData {
-                self.managedObjectContext?.performBlockAndWait {
-                    let managedObject = self.managedArray[idx]
-                    self.managedObjectContext?.deleteObject(managedObject)
-                }
-            } else if let objects = self.realmObjectList() {
-                self.realm?.beginWrite()
-                self.realm?.delete(objects[idx])
-                _ = try? self.realm?.commitWrite()
-            }
-        }
-        self.internalObjects.removeAtIndex(idx)
-        self.internalCount -= 1
-
-        return true
     }
 }
 

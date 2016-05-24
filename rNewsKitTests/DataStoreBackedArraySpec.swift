@@ -157,7 +157,7 @@ class DataStoreBackedArraySpec: QuickSpec {
                 let articles = articles.map({ Article(realmArticle: $0, feed: nil) })
                 let toRemove = articles[4]
 
-                expect(subject.remove(toRemove)) == true
+                expect(subject.remove(toRemove).wait()) == true
                 expect(subject.count) == totalObjectCount - 1
 
                 let expectedArticles = articles.filter { $0.title != toRemove.title }
@@ -166,11 +166,11 @@ class DataStoreBackedArraySpec: QuickSpec {
                 let article = Article(title: "025", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
                 subject.append(article)
                 expect(subject.count) == totalObjectCount
-                expect(subject.remove(article)) == true
+                expect(subject.remove(article).wait()) == true
                 expect(Array(subject)) == expectedArticles
 
                 let queryList = DataStoreBackedArray(articles)
-                expect(queryList.remove(toRemove)) == true
+                expect(queryList.remove(toRemove).wait()) == true
                 expect(Array(queryList)) == expectedArticles
             }
         }
@@ -334,7 +334,7 @@ class DataStoreBackedArraySpec: QuickSpec {
                 let articles = articles.map({ Article(coreDataArticle: $0, feed: nil) })
                 let toRemove = articles[4]
 
-                expect(subject.remove(toRemove)) == true
+                expect(subject.remove(toRemove).wait()) == true
                 expect(subject.count) == totalObjectCount - 1
 
                 let expectedArticles = articles.filter { $0.title != toRemove.title }
@@ -343,11 +343,11 @@ class DataStoreBackedArraySpec: QuickSpec {
                 let article = Article(title: "025", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
                 subject.append(article)
                 expect(subject.count) == totalObjectCount
-                expect(subject.remove(article)) == true
+                expect(subject.remove(article).wait()) == true
                 expect(Array(subject)) == expectedArticles
 
                 let queryList = DataStoreBackedArray(articles)
-                expect(queryList.remove(toRemove)) == true
+                expect(queryList.remove(toRemove).wait()) == true
                 expect(Array(queryList)) == expectedArticles
             }
         }

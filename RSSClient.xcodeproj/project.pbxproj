@@ -338,6 +338,9 @@
 		89D170A61C52D4AC00D546F9 /* EnclosuresList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D170A51C52D4AC00D546F9 /* EnclosuresList.swift */; };
 		89D170A81C52E98300D546F9 /* EnclosuresListSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D170A71C52E98300D546F9 /* EnclosuresListSpec.swift */; };
 		89D170B71C57318F00D546F9 /* AppHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D170B61C57318F00D546F9 /* AppHelpers.swift */; };
+		89D427DE1CF53D520093D186 /* rNewsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D427DD1CF53D520093D186 /* rNewsError.swift */; };
+		89D427E01CF540560093D186 /* rNewsErrorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D427DF1CF540560093D186 /* rNewsErrorSpec.swift */; };
+		89D427E21CF556A90093D186 /* HTTPError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D427E11CF556A90093D186 /* HTTPError.swift */; };
 		89D428031B8D0734006CD81C /* X.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89D428021B8D0734006CD81C /* X.framework */; };
 		89D970BB1B35BF6500ED84B8 /* WKWebView+rNewsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D970BA1B35BF6500ED84B8 /* WKWebView+rNewsTests.m */; };
 		89D970BD1B3929A600ED84B8 /* BackgroundFetchHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D970BC1B3929A600ED84B8 /* BackgroundFetchHandler.swift */; };
@@ -767,6 +770,9 @@
 		89D170A51C52D4AC00D546F9 /* EnclosuresList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnclosuresList.swift; sourceTree = "<group>"; };
 		89D170A71C52E98300D546F9 /* EnclosuresListSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnclosuresListSpec.swift; sourceTree = "<group>"; };
 		89D170B61C57318F00D546F9 /* AppHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppHelpers.swift; sourceTree = "<group>"; };
+		89D427DD1CF53D520093D186 /* rNewsError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = rNewsError.swift; sourceTree = "<group>"; };
+		89D427DF1CF540560093D186 /* rNewsErrorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = rNewsErrorSpec.swift; sourceTree = "<group>"; };
+		89D427E11CF556A90093D186 /* HTTPError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPError.swift; sourceTree = "<group>"; };
 		89D428021B8D0734006CD81C /* X.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = X.framework; path = ../Carthage/Build/iOS/X.framework; sourceTree = "<group>"; };
 		89D970B91B35BF6400ED84B8 /* WKWebView+rNewsTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WKWebView+rNewsTests.h"; sourceTree = "<group>"; };
 		89D970BA1B35BF6500ED84B8 /* WKWebView+rNewsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "WKWebView+rNewsTests.m"; sourceTree = "<group>"; };
@@ -1101,6 +1107,8 @@
 				8984FE881CB984A40096F4B3 /* Author.swift */,
 				8978D4E11B053A5900EDD6D0 /* Enclosure.swift */,
 				8978D4DB1B0533B600EDD6D0 /* Feed.swift */,
+				89D427DD1CF53D520093D186 /* rNewsError.swift */,
+				89D427E11CF556A90093D186 /* HTTPError.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1503,6 +1511,7 @@
 				8984FE8B1CBA1A180096F4B3 /* AuthorSpec.swift */,
 				8978D4E81B05AB4300EDD6D0 /* EnclosureSpec.swift */,
 				8978D4E41B05AB2800EDD6D0 /* FeedSpec.swift */,
+				89D427DF1CF540560093D186 /* rNewsErrorSpec.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -2126,9 +2135,11 @@
 				894304411B450A00000078DC /* OPMLService.swift in Sources */,
 				891754701C5B449E0036D96D /* RealmObjects.swift in Sources */,
 				89FF979E1BF058FB000080F7 /* DataStoreBackedArray.swift in Sources */,
+				89D427E21CF556A90093D186 /* HTTPError.swift in Sources */,
 				892E30F71CF4011F00E327A0 /* Future+when.swift in Sources */,
 				8999CC0D1C2E710F00B81F5F /* DataService.swift in Sources */,
 				89628BE51CE1999400B4C624 /* ScriptService.swift in Sources */,
+				89D427DE1CF53D520093D186 /* rNewsError.swift in Sources */,
 				89500B241CDEA288004548C3 /* InMemoryDataService.swift in Sources */,
 				891754731C5B485B0036D96D /* RealmService.swift in Sources */,
 				8943044C1B450A5E000078DC /* Enclosure.swift in Sources */,
@@ -2151,6 +2162,7 @@
 				8935F5DB1B4628B3000FFD5D /* EnclosureSpec.swift in Sources */,
 				8935F5E11B462B8C000FFD5D /* FakeOPMLService.swift in Sources */,
 				89146E441C88C73200EC8F10 /* ImportUseCaseSpec.swift in Sources */,
+				89D427E01CF540560093D186 /* rNewsErrorSpec.swift in Sources */,
 				895AC5201C80227B00A5F6A1 /* FakeDefaultDatabaseUseCase.swift in Sources */,
 				8984FE8F1CBAAFED0096F4B3 /* RealmMigratorSpec.swift in Sources */,
 				8935F5D71B4628B3000FFD5D /* DefaultDatabaseUseCaseSpec.swift in Sources */,

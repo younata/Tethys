@@ -36,39 +36,15 @@ class InMemoryDataService: DataService {
         self.enclosures.append(enclosure)
     }
 
-    func feedsMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Feed>> {
+    func allFeeds() -> Future<DataStoreBackedArray<Feed>> {
         let promise = Promise<DataStoreBackedArray<Feed>>()
-        promise.resolve(DataStoreBackedArray(self.feeds.filter({ predicate.evaluateWithObject($0) })))
+        promise.resolve(DataStoreBackedArray(self.feeds))
         return promise.future
     }
 
     func articlesMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Article>> {
         let promise = Promise<DataStoreBackedArray<Article>>()
         promise.resolve(DataStoreBackedArray(self.articles.filter({ predicate.evaluateWithObject($0) })))
-        return promise.future
-    }
-
-    func enclosuresMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Enclosure>> {
-        let promise = Promise<DataStoreBackedArray<Enclosure>>()
-        promise.resolve(DataStoreBackedArray(self.enclosures.filter({ predicate.evaluateWithObject($0) })))
-        return promise.future
-    }
-
-    func saveFeed(feed: Feed) -> Future<Void> {
-        let promise = Promise<Void>()
-        promise.resolve()
-        return promise.future
-    }
-
-    func saveArticle(article: Article) -> Future<Void> {
-        let promise = Promise<Void>()
-        promise.resolve()
-        return promise.future
-    }
-
-    func saveEnclosure(enclosure: Enclosure) -> Future<Void> {
-        let promise = Promise<Void>()
-        promise.resolve()
         return promise.future
     }
 
@@ -133,16 +109,6 @@ class InMemoryDataService: DataService {
     }
 
     func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Void> {
-        let promise = Promise<Void>()
-        promise.resolve()
-        return promise.future
-    }
-
-    func batchDelete(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Void> {
-        feeds.forEach { self.deleteFeed($0) }
-        articles.forEach { self.deleteArticle($0) }
-        enclosures.forEach { self.deleteEnclosure($0) }
-
         let promise = Promise<Void>()
         promise.resolve()
         return promise.future

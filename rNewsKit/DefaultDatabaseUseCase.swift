@@ -174,7 +174,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     }
 
     func saveArticle(article: Article) -> Future<Void> {
-        return self.dataService.saveArticle(article)
+        return self.dataService.batchSave([], articles: [article], enclosures: [])
     }
 
     func deleteArticle(article: Article) -> Future<Void> {

@@ -151,7 +151,6 @@
 		89735AC01C06DAA70032E09C /* FeedsListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89735ABF1C06DAA70032E09C /* FeedsListController.swift */; };
 		89735AC21C0771590032E09C /* FeedsListControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89735AC11C0771590032E09C /* FeedsListControllerSpec.swift */; };
 		8978438D1CE1AB3000C74605 /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978438C1CE1AB3000C74605 /* Repository.swift */; };
-		8978438F1CE1AB4400C74605 /* FakeDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978438E1CE1AB4400C74605 /* FakeDataService.swift */; };
 		897CD85C1A213F0900C97ECC /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89635F911A13C2E30052C248 /* MainMenu.xib */; };
 		897CD85E1A21C49000C97ECC /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897CD85D1A21C49000C97ECC /* FeedView.swift */; };
 		897F70FD1A3A4E7700ECE1A1 /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897F70FC1A3A4E7700ECE1A1 /* UnreadCounter.swift */; };
@@ -423,6 +422,13 @@
 			remoteGlobalIDString = 89C8307219D730E9009924DA;
 			remoteInfo = RSSClient;
 		};
+		89D427DB1CF4EC6D0093D186 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 89C8306B19D730E9009924DA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 89C8307219D730E9009924DA;
+			remoteInfo = RSSClient;
+		};
 		AE43560A1A7AC61400A961B9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 89C8306B19D730E9009924DA /* Project object */;
@@ -630,7 +636,6 @@
 		89735AC11C0771590032E09C /* FeedsListControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsListControllerSpec.swift; sourceTree = "<group>"; };
 		89744FB71A6970CA000AA7DE /* RSSClient 1.5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.5.xcdatamodel"; sourceTree = "<group>"; };
 		8978438C1CE1AB3000C74605 /* Repository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
-		8978438E1CE1AB4400C74605 /* FakeDataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDataService.swift; sourceTree = "<group>"; };
 		8978D4DB1B0533B600EDD6D0 /* Feed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
 		8978D4DE1B0535EB00EDD6D0 /* Article.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Article.swift; sourceTree = "<group>"; };
 		8978D4E11B053A5900EDD6D0 /* Enclosure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enclosure.swift; sourceTree = "<group>"; };
@@ -1463,7 +1468,6 @@
 				898C48C81B40FBE00097045A /* FakeSearchIndex.swift */,
 				8992D4321C3665B7004A5A35 /* FakeUpdateService.swift */,
 				89628BE01CE175F100B4C624 /* FakeDataSubscriber.swift */,
-				8978438E1CE1AB4400C74605 /* FakeDataService.swift */,
 				892E30E21CE2C84300E327A0 /* FakeScriptService.swift */,
 			);
 			path = Fakes;
@@ -1704,6 +1708,7 @@
 			);
 			dependencies = (
 				8943042D1B45089A000078DC /* PBXTargetDependency */,
+				89D427DC1CF4EC6D0093D186 /* PBXTargetDependency */,
 			);
 			name = rNewsKitTests;
 			productName = rNewsKitTests;
@@ -2147,7 +2152,6 @@
 				8935F5E11B462B8C000FFD5D /* FakeOPMLService.swift in Sources */,
 				89146E441C88C73200EC8F10 /* ImportUseCaseSpec.swift in Sources */,
 				895AC5201C80227B00A5F6A1 /* FakeDefaultDatabaseUseCase.swift in Sources */,
-				8978438F1CE1AB4400C74605 /* FakeDataService.swift in Sources */,
 				8984FE8F1CBAAFED0096F4B3 /* RealmMigratorSpec.swift in Sources */,
 				8935F5D71B4628B3000FFD5D /* DefaultDatabaseUseCaseSpec.swift in Sources */,
 				8935F5DE1B462AD2000FFD5D /* FakeOperationQueue.swift in Sources */,
@@ -2433,6 +2437,11 @@
 			isa = PBXTargetDependency;
 			target = 89C8307219D730E9009924DA /* RSSClient */;
 			targetProxy = 8992D43E1C37C9B0004A5A35 /* PBXContainerItemProxy */;
+		};
+		89D427DC1CF4EC6D0093D186 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 89C8307219D730E9009924DA /* RSSClient */;
+			targetProxy = 89D427DB1CF4EC6D0093D186 /* PBXContainerItemProxy */;
 		};
 		AE43560B1A7AC61400A961B9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

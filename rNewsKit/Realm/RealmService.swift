@@ -80,12 +80,12 @@ class RealmService: DataService {
 
     // Mark: - Read
 
-    func feedsMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Feed>> {
+    func allFeeds() -> Future<DataStoreBackedArray<Feed>> {
         let promise = Promise<DataStoreBackedArray<Feed>>()
         let sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
 
         let feeds = DataStoreBackedArray(realmDataType: RealmFeed.self,
-            predicate: predicate,
+            predicate: NSPredicate(value: true),
             realmConfiguration: self.realmConfiguration,
             conversionFunction: { Feed(realmFeed: $0 as! RealmFeed) },
             sortDescriptors: sortDescriptors)
@@ -106,63 +106,6 @@ class RealmService: DataService {
             conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) },
             sortDescriptors: sortDescriptors)
         promise.resolve(articles)
-        return promise.future
-    }
-
-    func enclosuresMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Enclosure>> {
-        let promise = Promise<DataStoreBackedArray<Enclosure>>()
-        let sortDescriptors = [NSSortDescriptor(key: "kind", ascending: true)]
-
-        let enclosures = DataStoreBackedArray(realmDataType: RealmEnclosure.self,
-            predicate: predicate,
-            realmConfiguration: self.realmConfiguration,
-            conversionFunction: { Enclosure(realmEnclosure: $0 as! RealmEnclosure, article: nil) },
-            sortDescriptors: sortDescriptors)
-        promise.resolve(enclosures)
-        return promise.future
-    }
-
-    // Mark: - Update
-
-    func saveFeed(feed: Feed) -> Future<Void> {
-        let promise = Promise<Void>()
-        guard let _ = feed.feedID as? String else { promise.resolve(); return promise.future }
-
-        self.realmTransaction {
-            self.synchronousUpdateFeed(feed)
-
-            self.mainQueue.addOperationWithBlock {
-                promise.resolve()
-            }
-        }
-        return promise.future
-    }
-
-    func saveArticle(article: Article) -> Future<Void> {
-        let promise = Promise<Void>()
-        guard let _ = article.articleID as? String else { promise.resolve(); return promise.future }
-
-        self.realmTransaction {
-            self.synchronousUpdateArticle(article)
-
-            self.mainQueue.addOperationWithBlock {
-                promise.resolve()
-            }
-        }
-        return promise.future
-    }
-
-    func saveEnclosure(enclosure: Enclosure) -> Future<Void> {
-        let promise = Promise<Void>()
-        guard let _ = enclosure.enclosureID as? String else { promise.resolve(); return promise.future}
-
-        self.realmTransaction {
-            self.synchronousUpdateEnclosure(enclosure)
-
-            self.mainQueue.addOperationWithBlock {
-                promise.resolve()
-            }
-        }
         return promise.future
     }
 
@@ -201,17 +144,6 @@ class RealmService: DataService {
         return promise.future
     }
 
-    func deleteEnclosure(enclosure: Enclosure) -> Future<Void> {
-        let promise = Promise<Void>()
-        self.realmTransaction {
-            self.synchronousDeleteEnclosure(enclosure)
-            self.mainQueue.addOperationWithBlock {
-                promise.resolve()
-            }
-        }
-        return promise.future
-    }
-
     // Mark: - Batch
 
     func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int) -> Future<([Feed], [Article], [Enclosure])> {
@@ -238,20 +170,6 @@ class RealmService: DataService {
             enclosures.forEach { self.synchronousUpdateEnclosure($0) }
             articles.forEach { self.synchronousUpdateArticle($0) }
             feeds.forEach { self.synchronousUpdateFeed($0) }
-
-            self.mainQueue.addOperationWithBlock {
-                promise.resolve()
-            }
-        }
-        return promise.future
-    }
-
-    func batchDelete(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Void> {
-        let promise = Promise<Void>()
-        self.realmTransaction {
-            enclosures.forEach(self.synchronousDeleteEnclosure)
-            articles.forEach(self.synchronousDeleteArticle)
-            feeds.forEach(self.synchronousDeleteFeed)
 
             self.mainQueue.addOperationWithBlock {
                 promise.resolve()

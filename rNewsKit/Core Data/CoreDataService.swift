@@ -2,7 +2,6 @@ import Foundation
 import CoreData
 import CBGPromise
 
-// swiftlint:disable file_length
 class CoreDataService: DataService {
     private let managedObjectContext: NSManagedObjectContext
 
@@ -77,11 +76,11 @@ class CoreDataService: DataService {
 
     // Mark: - Read
 
-    func feedsMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Feed>> {
+    func allFeeds() -> Future<DataStoreBackedArray<Feed>> {
         let promise = Promise<DataStoreBackedArray<Feed>>()
         let sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
         let feeds = DataStoreBackedArray(entityName: "Feed",
-            predicate: predicate,
+            predicate: NSPredicate(value: true),
             managedObjectContext: self.managedObjectContext,
             conversionFunction: { Feed(coreDataFeed: $0 as! CoreDataFeed) },
             sortDescriptors: sortDescriptors)
@@ -104,59 +103,6 @@ class CoreDataService: DataService {
         return promise.future
     }
 
-    func enclosuresMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Enclosure>> {
-        let promise = Promise<DataStoreBackedArray<Enclosure>>()
-        let sortDescriptors = [NSSortDescriptor(key: "kind", ascending: true)]
-        let enclosures = DataStoreBackedArray(entityName: "Enclosure",
-            predicate: predicate,
-            managedObjectContext: self.managedObjectContext,
-            conversionFunction: { Enclosure(coreDataEnclosure: $0 as! CoreDataEnclosure, article: nil) },
-            sortDescriptors: sortDescriptors)
-        promise.resolve(enclosures)
-        return promise.future
-    }
-
-    // Mark: - Update
-
-    func saveFeed(feed: Feed) -> Future<Void>{
-        let promise = Promise<Void>()
-        guard let _ = feed.feedID as? NSManagedObjectID else { promise.resolve(); return promise.future }
-
-        self.managedObjectContext.performBlock {
-            self.updateFeed(feed)
-            self.mainQueue.addOperationWithBlock {
-                promise.resolve()
-            }
-        }
-        return promise.future
-    }
-
-    func saveArticle(article: Article) -> Future<Void> {
-        let promise = Promise<Void>()
-        guard let _ = article.articleID as? NSManagedObjectID else { promise.resolve(); return promise.future }
-
-        self.managedObjectContext.performBlock {
-            self.updateArticle(article)
-            self.mainQueue.addOperationWithBlock {
-                promise.resolve()
-            }
-        }
-        return promise.future
-    }
-
-    func saveEnclosure(enclosure: Enclosure) -> Future<Void> {
-        let promise = Promise<Void>()
-        guard let _ = enclosure.enclosureID as? NSManagedObjectID else { promise.resolve(); return promise.future }
-
-        self.managedObjectContext.performBlock {
-            self.updateEnclosure(enclosure)
-            self.mainQueue.addOperationWithBlock {
-                promise.resolve()
-            }
-        }
-        return promise.future
-    }
-
     // Mark: - Delete
 
     func deleteFeed(feed: Feed) -> Future<Void> {
@@ -176,18 +122,6 @@ class CoreDataService: DataService {
         guard let _ = article.articleID as? NSManagedObjectID else { promise.resolve(); return promise.future }
         self.managedObjectContext.performBlock {
             self.deleteArticle(article, deleteEnclosures: true)
-            self.mainQueue.addOperationWithBlock {
-                promise.resolve()
-            }
-        }
-        return promise.future
-    }
-
-    func deleteEnclosure(enclosure: Enclosure) -> Future<Void> {
-        let promise = Promise<Void>()
-        guard let _ = enclosure.enclosureID as? NSManagedObjectID else { promise.resolve(); return promise.future }
-        self.managedObjectContext.performBlock {
-            self.privateDeleteEnclosure(enclosure)
             self.mainQueue.addOperationWithBlock {
                 promise.resolve()
             }
@@ -250,32 +184,6 @@ class CoreDataService: DataService {
         return promise.future
     }
 
-    func batchDelete(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Void> {
-        let promise = Promise<Void>()
-        self.managedObjectContext.performBlock {
-            autoreleasepool {
-                #if os(iOS)
-                    if #available(iOS 9, *) {
-                        let articleIdentifiers = articles.map { $0.identifier }
-
-                        self.searchIndex?.deleteIdentifierFromIndex(articleIdentifiers) {_ in }
-                    }
-                #endif
-
-                self.coreDataEnclosuresForEnclosures(enclosures).forEach(self.managedObjectContext.deleteObject)
-                self.coreDataArticlesForArticles(articles).forEach(self.managedObjectContext.deleteObject)
-                self.coreDataFeedsForFeeds(feeds).forEach(self.managedObjectContext.deleteObject)
-
-                _ = try? self.managedObjectContext.save()
-            }
-
-            self.mainQueue.addOperationWithBlock {
-                promise.resolve()
-            }
-        }
-        return promise.future
-    }
-
     func deleteEverything() -> Future<Void> {
         let promise = Promise<Void>()
         self.managedObjectContext.performBlock {
@@ -285,22 +193,15 @@ class CoreDataService: DataService {
                     let request = NSFetchRequest()
                     request.entity = NSEntityDescription.entityForName(entityType,
                         inManagedObjectContext: self.managedObjectContext)
+                    request.resultType = .ManagedObjectIDResultType
+                    request.includesPropertyValues = false
+                    request.includesSubentities = false
+                    request.returnsObjectsAsFaults = true
+                    let objects = (try? self.managedObjectContext.executeFetchRequest(request) ?? [])
+                        as? [NSManagedObject]
 
-                    if #available(iOS 9, *) {
-                        let store = self.managedObjectContext.persistentStoreCoordinator!
-                        let deleteRequest = NSBatchDeleteRequest(fetchRequest: request)
-                        _ = try? store.executeRequest(deleteRequest, withContext: self.managedObjectContext)
-                    } else {
-                        request.resultType = .ManagedObjectIDResultType
-                        request.includesPropertyValues = false
-                        request.includesSubentities = false
-                        request.returnsObjectsAsFaults = true
-                        let objects = (try? self.managedObjectContext.executeFetchRequest(request) ?? [])
-                            as? [NSManagedObject]
-
-                        objects?.forEach(self.managedObjectContext.deleteObject)
-                        _ = try? self.managedObjectContext.save()
-                    }
+                    objects?.forEach(self.managedObjectContext.deleteObject)
+                    _ = try? self.managedObjectContext.save()
                 }
             }
 
@@ -472,4 +373,3 @@ class CoreDataService: DataService {
         }
     }
 }
-// swiftlint:enable file_length

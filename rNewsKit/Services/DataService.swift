@@ -24,29 +24,21 @@ protocol DataService: class {
     func createArticle(feed: Feed?, callback: Article -> Void)
     func createEnclosure(article: Article?, callback: Enclosure -> Void)
 
-    func feedsMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Feed>>
+    func allFeeds() -> Future<DataStoreBackedArray<Feed>>
     func articlesMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Article>>
-    func enclosuresMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Enclosure>>
-
-    func saveFeed(feed: Feed) -> Future<Void>
-    func saveArticle(article: Article) -> Future<Void>
-    func saveEnclosure(enclosure: Enclosure) -> Future<Void>
-
 
     func deleteFeed(feed: Feed) -> Future<Void>
     func deleteArticle(article: Article) -> Future<Void>
-    func deleteEnclosure(enclosure: Enclosure) -> Future<Void>
 
     func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int) -> Future<([Feed], [Article], [Enclosure])>
     func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Void>
-    func batchDelete(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Void>
 
     func deleteEverything() -> Future<Void>
 }
 
 extension DataService {
-    func allFeeds() -> Future<DataStoreBackedArray<Feed>> {
-        return self.feedsMatchingPredicate(NSPredicate(value: true))
+    func saveFeed(feed: Feed) -> Future<Void> {
+        return self.batchSave([feed], articles: [], enclosures: [])
     }
 
     func updateFeed(feed: Feed, info: Muon.Feed) -> Future<Void> {

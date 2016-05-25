@@ -216,7 +216,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             afterEach {
                 if let enclosure = enclosure {
                     let deleteExpectation = spec.expectationWithDescription("Delete Enclosure")
-                    dataService.deleteEnclosure(enclosure).then {
+                    dataService.deleteEverything().then {
                         deleteExpectation.fulfill()
                     }
                     spec.waitForExpectationsWithTimeout(1, handler: nil)

@@ -119,15 +119,9 @@ class InMemoryDataServiceSpec: QuickSpec {
             describe("read operations") {
                 it("reads the feeds based on the predicate") {
                     let allExpectation = self.expectationWithDescription("Read all feeds")
-                    subject.feedsMatchingPredicate(NSPredicate(value: true)).then {
+                    subject.allFeeds().then {
                         expect(Array($0)) == [feed1, feed2]
                         allExpectation.fulfill()
-                    }
-
-                    let someExpectation = self.expectationWithDescription("Read some feeds")
-                    subject.feedsMatchingPredicate(NSPredicate(format: "title == %@", "feed1")).then {
-                        expect(Array($0)) == [feed1]
-                        someExpectation.fulfill()
                     }
 
                     self.waitForExpectationsWithTimeout(1, handler: nil)
@@ -151,72 +145,6 @@ class InMemoryDataServiceSpec: QuickSpec {
                     }
 
                     self.waitForExpectationsWithTimeout(1, handler: nil)
-                }
-
-                it("reads all enclosures based on the predicate") {
-                    let allExpectation = self.expectationWithDescription("Read all enclosures")
-                    subject.enclosuresMatchingPredicate(NSPredicate(value: true)).then {
-                        expect(Array($0)) == [enclosure1, enclosure2]
-                        allExpectation.fulfill()
-                    }
-
-                    let someExpectation = self.expectationWithDescription("Read some enclosures")
-                    subject.enclosuresMatchingPredicate(NSPredicate(format: "kind == %@", "1")).then {
-                        expect(Array($0)) == [enclosure1]
-                        someExpectation.fulfill()
-                    }
-
-                    self.waitForExpectationsWithTimeout(1, handler: nil)
-                }
-            }
-
-            describe("update operations") {
-                it("updates a feed") {
-                    let expectation = self.expectationWithDescription("update feed")
-
-                    feed1.summary = "hello world"
-
-                    subject.saveFeed(feed1).then {
-                        expectation.fulfill()
-                    }
-
-                    self.waitForExpectationsWithTimeout(1, handler: nil)
-
-                    let feed = subject.feeds.first
-                    expect(feed).toNot(beNil())
-                    expect(feed?.summary) == "hello world"
-                }
-
-                it("updates an article") {
-                    let expectation = self.expectationWithDescription("update article")
-
-                    article1.summary = "hello world"
-                    article1.addRelatedArticle(article2)
-
-                    subject.saveArticle(article1).then {
-                        expectation.fulfill()
-                    }
-
-                    self.waitForExpectationsWithTimeout(1, handler: nil)
-
-                    let article = subject.articles.first
-                    expect(article?.summary) == "hello world"
-                    expect(article?.relatedArticles).toNot(beEmpty())
-                }
-
-                it("updates an enclosure") {
-                    let expectation = self.expectationWithDescription("update enclosure")
-
-                    enclosure1.kind = "3"
-
-                    subject.saveEnclosure(enclosure1).then {
-                        expectation.fulfill()
-                    }
-
-                    self.waitForExpectationsWithTimeout(1, handler: nil)
-
-                    let enclosure = subject.enclosures.first
-                    expect(enclosure?.kind) == "3"
                 }
             }
 
@@ -246,18 +174,6 @@ class InMemoryDataServiceSpec: QuickSpec {
                     self.waitForExpectationsWithTimeout(1, handler: nil)
 
                     expect(subject.articles).toNot(contain(article1))
-                    expect(subject.enclosures).toNot(contain(enclosure1))
-                }
-
-                it("deletes enclosures") {
-                    let expectation = self.expectationWithDescription("delete enclosure")
-
-                    subject.deleteEnclosure(enclosure1).then {
-                        expectation.fulfill()
-                    }
-
-                    self.waitForExpectationsWithTimeout(1, handler: nil)
-
                     expect(subject.enclosures).toNot(contain(enclosure1))
                 }
             }

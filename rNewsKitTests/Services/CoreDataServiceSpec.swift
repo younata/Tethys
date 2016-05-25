@@ -158,15 +158,9 @@ class CoreDataServiceSpec: QuickSpec {
             describe("read operations") {
                 it("reads the feeds based on the predicate") {
                     let allExpectation = self.expectationWithDescription("Read all feeds")
-                    subject.feedsMatchingPredicate(NSPredicate(value: true)).then {
+                    subject.allFeeds().then {
                         expect(Array($0)) == [feed1, feed2]
                         allExpectation.fulfill()
-                    }
-
-                    let someExpectation = self.expectationWithDescription("Read some feeds")
-                    subject.feedsMatchingPredicate(NSPredicate(format: "title == %@", "feed1")).then {
-                        expect(Array($0)) == [feed1]
-                        someExpectation.fulfill()
                     }
 
                     self.waitForExpectationsWithTimeout(1, handler: nil)
@@ -186,105 +180,6 @@ class CoreDataServiceSpec: QuickSpec {
                     }
 
                     self.waitForExpectationsWithTimeout(1, handler: nil)
-                }
-
-                it("reads all enclosures based on the predicate") {
-                    let allExpectation = self.expectationWithDescription("Read all enclosures")
-                    subject.enclosuresMatchingPredicate(NSPredicate(value: true)).then {
-                        expect(Array($0)) == [enclosure1, enclosure2]
-                        allExpectation.fulfill()
-                    }
-
-                    let someExpectation = self.expectationWithDescription("Read some enclosures")
-                    subject.enclosuresMatchingPredicate(NSPredicate(format: "kind == %@", "1")).then {
-                        expect(Array($0)) == [enclosure1]
-                        someExpectation.fulfill()
-                    }
-
-                    self.waitForExpectationsWithTimeout(1, handler: nil)
-                }
-            }
-
-            describe("update operations") {
-                it("updates a feed") {
-                    let expectation = self.expectationWithDescription("update feed")
-
-                    feed1.summary = "hello world"
-
-                    subject.saveFeed(feed1).then {
-                        expectation.fulfill()
-                    }
-
-                    self.waitForExpectationsWithTimeout(1, handler: nil)
-
-                    let objects = coreDataEntities("Feed", matchingPredicate: NSPredicate(format: "SELF == %@", feed1.feedID as! NSManagedObjectID), managedObjectContext: objectContext) as! [CoreDataFeed]
-                    let feed = objects.first!
-                    expect(feed.summary) == "hello world"
-                }
-
-                it("updates an article") {
-                    let expectation = self.expectationWithDescription("update article")
-
-                    article1.summary = "hello world"
-
-                    subject.saveArticle(article1).then {
-                        expectation.fulfill()
-                    }
-
-                    self.waitForExpectationsWithTimeout(1, handler: nil)
-
-                    let objects = coreDataEntities("Article", matchingPredicate: NSPredicate(format: "SELF == %@", article1.articleID as! NSManagedObjectID), managedObjectContext: objectContext) as! [CoreDataArticle]
-                    let article = objects.first!
-                    expect(article.summary) == "hello world"
-                }
-
-                #if os(iOS)
-                    if #available(iOS 9.0, *) {
-                        it("should, on iOS 9, update the search index when an article is updated") {
-                            let expectation = self.expectationWithDescription("update article")
-
-                            article1.summary = "Hello world!"
-
-                            subject.saveArticle(article1).then {
-                                expectation.fulfill()
-                            }
-
-                            self.waitForExpectationsWithTimeout(1, handler: nil)
-
-                            expect(searchIndex.lastItemsAdded.count).to(equal(1))
-                            if let item = searchIndex.lastItemsAdded.first as? CSSearchableItem {
-                                let identifier = article1.identifier
-                                expect(item.uniqueIdentifier).to(equal(identifier))
-                                expect(item.domainIdentifier).to(beNil())
-                                expect(item.expirationDate).to(equal(NSDate.distantFuture()))
-                                let attributes = item.attributeSet
-                                expect(attributes.contentType).to(equal(kUTTypeHTML as String))
-                                expect(attributes.title).to(equal(article1.title))
-                                let keywords = ["article"] + article1.feed!.title.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                                expect(attributes.keywords).to(equal(keywords))
-                                expect(attributes.URL).to(equal(article1.link))
-                                expect(attributes.timestamp).to(equal(article1.updatedAt ?? article1.published))
-                                expect(attributes.authorNames).to(equal([""]))
-                                expect(attributes.contentDescription).to(equal("Hello world!"))
-                            }
-                        }
-                    }
-                #endif
-
-                it("updates an enclosure") {
-                    let expectation = self.expectationWithDescription("update enclosure")
-
-                    enclosure1.kind = "3"
-
-                    subject.saveEnclosure(enclosure1).then {
-                        expectation.fulfill()
-                    }
-
-                    self.waitForExpectationsWithTimeout(1, handler: nil)
-
-                    let objects = coreDataEntities("Enclosure", matchingPredicate: NSPredicate(format: "SELF == %@", enclosure1.enclosureID as! NSManagedObjectID), managedObjectContext: objectContext) as! [CoreDataEnclosure]
-                    let enclosure = objects.first!
-                    expect(enclosure.kind) == "3"
                 }
             }
 
@@ -328,19 +223,6 @@ class CoreDataServiceSpec: QuickSpec {
                     #endif
 
                     expect(articles).to(beEmpty())
-                }
-
-                it("deletes enclosures") {
-                    let expectation = self.expectationWithDescription("delete enclosure")
-
-                    subject.deleteEnclosure(enclosure1).then {
-                        expectation.fulfill()
-                    }
-
-                    self.waitForExpectationsWithTimeout(1, handler: nil)
-
-                    let enclosures = coreDataEntities("Enclosure", matchingPredicate: NSPredicate(format: "SELF == %@", enclosure1.enclosureID as! NSManagedObjectID), managedObjectContext: objectContext)
-                    expect(enclosures).to(beEmpty())
                 }
             }
         }

@@ -1,6 +1,7 @@
 import Foundation
 import CoreData
 import CBGPromise
+import Result
 
 class CoreDataService: DataService {
     private let managedObjectContext: NSManagedObjectContext
@@ -76,20 +77,20 @@ class CoreDataService: DataService {
 
     // Mark: - Read
 
-    func allFeeds() -> Future<DataStoreBackedArray<Feed>> {
-        let promise = Promise<DataStoreBackedArray<Feed>>()
+    func allFeeds() -> Future<Result<DataStoreBackedArray<Feed>, RNewsError>> {
+        let promise = Promise<Result<DataStoreBackedArray<Feed>, RNewsError>>()
         let sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
         let feeds = DataStoreBackedArray(entityName: "Feed",
             predicate: NSPredicate(value: true),
             managedObjectContext: self.managedObjectContext,
             conversionFunction: { Feed(coreDataFeed: $0 as! CoreDataFeed) },
             sortDescriptors: sortDescriptors)
-        promise.resolve(feeds)
+        promise.resolve(.Success(feeds))
         return promise.future
     }
 
-    func articlesMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Article>> {
-        let promise = Promise<DataStoreBackedArray<Article>>()
+    func articlesMatchingPredicate(predicate: NSPredicate) -> Future<Result<DataStoreBackedArray<Article>, RNewsError>> {
+        let promise = Promise<Result<DataStoreBackedArray<Article>, RNewsError>>()
         let sortDescriptors = [
             NSSortDescriptor(key: "updatedAt", ascending: false),
             NSSortDescriptor(key: "published", ascending: false)
@@ -99,31 +100,31 @@ class CoreDataService: DataService {
             managedObjectContext: self.managedObjectContext,
             conversionFunction: { Article(coreDataArticle: $0 as! CoreDataArticle, feed: nil) },
             sortDescriptors: sortDescriptors)
-        promise.resolve(articles)
+        promise.resolve(.Success(articles))
         return promise.future
     }
 
     // Mark: - Delete
 
-    func deleteFeed(feed: Feed) -> Future<Void> {
-        let promise = Promise<Void>()
-        guard let _ = feed.feedID as? NSManagedObjectID else { promise.resolve(); return promise.future }
+    func deleteFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {
+        let promise = Promise<Result<Void, RNewsError>>()
+        guard let _ = feed.feedID as? NSManagedObjectID else { promise.resolve(.Failure(.Database(.Unknown))); return promise.future }
         self.managedObjectContext.performBlock {
             self.deleteFeed(feed, deleteArticles: true)
             self.mainQueue.addOperationWithBlock {
-                promise.resolve()
+                promise.resolve(.Success())
             }
         }
         return promise.future
     }
 
-    func deleteArticle(article: Article) -> Future<Void> {
-        let promise = Promise<Void>()
-        guard let _ = article.articleID as? NSManagedObjectID else { promise.resolve(); return promise.future }
+    func deleteArticle(article: Article) -> Future<Result<Void, RNewsError>> {
+        let promise = Promise<Result<Void, RNewsError>>()
+        guard let _ = article.articleID as? NSManagedObjectID else { promise.resolve(.Failure(.Database(.Unknown))); return promise.future }
         self.managedObjectContext.performBlock {
             self.deleteArticle(article, deleteEnclosures: true)
             self.mainQueue.addOperationWithBlock {
-                promise.resolve()
+                promise.resolve(.Success())
             }
         }
         return promise.future
@@ -131,45 +132,46 @@ class CoreDataService: DataService {
 
     // Mark: - Batch
 
-    func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int) -> Future<([Feed], [Article], [Enclosure])> {
-        let promise = Promise<([Feed], [Article], [Enclosure])>()
-        let feedEntityDescription = NSEntityDescription.entityForName("Feed",
-            inManagedObjectContext: self.managedObjectContext)!
-        let articleEntityDescription = NSEntityDescription.entityForName("Article",
-            inManagedObjectContext: self.managedObjectContext)!
-        let enclosureEntityDescription = NSEntityDescription.entityForName("Enclosure",
-            inManagedObjectContext: self.managedObjectContext)!
+    func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int) ->
+        Future<Result<([Feed], [Article], [Enclosure]), RNewsError>> {
+            let promise = Promise<Result<([Feed], [Article], [Enclosure]), RNewsError>>()
+            let feedEntityDescription = NSEntityDescription.entityForName("Feed",
+                inManagedObjectContext: self.managedObjectContext)!
+            let articleEntityDescription = NSEntityDescription.entityForName("Article",
+                inManagedObjectContext: self.managedObjectContext)!
+            let enclosureEntityDescription = NSEntityDescription.entityForName("Enclosure",
+                inManagedObjectContext: self.managedObjectContext)!
 
-        self.managedObjectContext.performBlock {
-            autoreleasepool {
-                let cdfeeds = (0..<feedCount).map { _ in
-                    return CoreDataFeed(entity: feedEntityDescription,
-                        insertIntoManagedObjectContext: self.managedObjectContext)
-                }
-                let cdarticles = (0..<articleCount).map { _ in
-                    return CoreDataArticle(entity: articleEntityDescription,
-                        insertIntoManagedObjectContext: self.managedObjectContext)
-                }
-                let cdenclosures = (0..<enclosureCount).map { _ in
-                    return CoreDataEnclosure(entity: enclosureEntityDescription,
-                        insertIntoManagedObjectContext: self.managedObjectContext)
-                }
-                let _ = try? self.managedObjectContext.save()
+            self.managedObjectContext.performBlock {
+                autoreleasepool {
+                    let cdfeeds = (0..<feedCount).map { _ in
+                        return CoreDataFeed(entity: feedEntityDescription,
+                            insertIntoManagedObjectContext: self.managedObjectContext)
+                    }
+                    let cdarticles = (0..<articleCount).map { _ in
+                        return CoreDataArticle(entity: articleEntityDescription,
+                            insertIntoManagedObjectContext: self.managedObjectContext)
+                    }
+                    let cdenclosures = (0..<enclosureCount).map { _ in
+                        return CoreDataEnclosure(entity: enclosureEntityDescription,
+                            insertIntoManagedObjectContext: self.managedObjectContext)
+                    }
+                    let _ = try? self.managedObjectContext.save()
 
-                let feeds = cdfeeds.map(Feed.init)
-                let articles = cdarticles.map { Article(coreDataArticle: $0, feed: nil) }
-                let enclosures = cdenclosures.map { Enclosure(coreDataEnclosure: $0, article: nil) }
-
-                self.mainQueue.addOperationWithBlock {
-                    promise.resolve((feeds, articles, enclosures))
+                    let feeds = cdfeeds.map(Feed.init)
+                    let articles = cdarticles.map { Article(coreDataArticle: $0, feed: nil) }
+                    let enclosures = cdenclosures.map { Enclosure(coreDataEnclosure: $0, article: nil) }
+                    
+                    self.mainQueue.addOperationWithBlock {
+                        promise.resolve(.Success(feeds, articles, enclosures))
+                    }
                 }
             }
-        }
-        return promise.future
+            return promise.future
     }
 
-    func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Void> {
-        let promise = Promise<Void>()
+    func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Result<Void, RNewsError>> {
+        let promise = Promise<Result<Void, RNewsError>>()
         self.managedObjectContext.performBlock {
             autoreleasepool {
                 feeds.forEach(self.updateFeed)
@@ -178,14 +180,14 @@ class CoreDataService: DataService {
             }
 
             self.mainQueue.addOperationWithBlock {
-                promise.resolve()
+                promise.resolve(.Success())
             }
         }
         return promise.future
     }
 
-    func deleteEverything() -> Future<Void> {
-        let promise = Promise<Void>()
+    func deleteEverything() -> Future<Result<Void, RNewsError>> {
+        let promise = Promise<Result<Void, RNewsError>>()
         self.managedObjectContext.performBlock {
             self.managedObjectContext.reset()
             let deleteAllEntitiesOfType: String -> Void = { entityType in
@@ -210,7 +212,7 @@ class CoreDataService: DataService {
             deleteAllEntitiesOfType("Enclosure")
 
             self.mainQueue.addOperationWithBlock {
-                promise.resolve()
+                promise.resolve(.Success())
             }
         }
         return promise.future

@@ -1,5 +1,6 @@
 import Quick
 import Nimble
+import Result
 #if os(iOS)
     import CoreSpotlight
     import MobileCoreServices
@@ -120,7 +121,8 @@ class InMemoryDataServiceSpec: QuickSpec {
                 it("reads the feeds based on the predicate") {
                     let allExpectation = self.expectationWithDescription("Read all feeds")
                     subject.allFeeds().then {
-                        expect(Array($0)) == [feed1, feed2]
+                        guard case let Result.Success(feeds) = $0 else { return }
+                        expect(Array(feeds)) == [feed1, feed2]
                         allExpectation.fulfill()
                     }
 
@@ -129,7 +131,8 @@ class InMemoryDataServiceSpec: QuickSpec {
 
                 it("reads the articles based on the predicate") {
                     let allExpectation = self.expectationWithDescription("Read all articles")
-                    subject.articlesMatchingPredicate(NSPredicate(value: true)).then { articles in
+                    subject.articlesMatchingPredicate(NSPredicate(value: true)).then {
+                        guard case let Result.Success(articles) = $0 else { return }
                         expect(Array(articles)) == [article1, article2, article3]
 
                         expect(articles[1].relatedArticles).to(contain(article3))
@@ -140,7 +143,8 @@ class InMemoryDataServiceSpec: QuickSpec {
 
                     let someExpectation = self.expectationWithDescription("Read some articles")
                     subject.articlesMatchingPredicate(NSPredicate(format: "title == %@", "article1")).then {
-                        expect(Array($0)) == [article1]
+                        guard case let Result.Success(articles) = $0 else { return }
+                        expect(Array(articles)) == [article1]
                         someExpectation.fulfill()
                     }
 
@@ -153,6 +157,7 @@ class InMemoryDataServiceSpec: QuickSpec {
                     let expectation = self.expectationWithDescription("delete feed")
 
                     subject.deleteFeed(feed1).then {
+                        guard case Result.Success() = $0 else { return }
                         expectation.fulfill()
                     }
 
@@ -168,6 +173,7 @@ class InMemoryDataServiceSpec: QuickSpec {
                     let expectation = self.expectationWithDescription("delete article")
 
                     subject.deleteArticle(article1).then {
+                        guard case Result.Success() = $0 else { return }
                         expectation.fulfill()
                     }
 

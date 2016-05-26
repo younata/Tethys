@@ -1,4 +1,5 @@
 import CBGPromise
+import Result
 
 class InMemoryDataService: DataService {
     let mainQueue: NSOperationQueue
@@ -36,19 +37,19 @@ class InMemoryDataService: DataService {
         self.enclosures.append(enclosure)
     }
 
-    func allFeeds() -> Future<DataStoreBackedArray<Feed>> {
-        let promise = Promise<DataStoreBackedArray<Feed>>()
-        promise.resolve(DataStoreBackedArray(self.feeds))
+    func allFeeds() -> Future<Result<DataStoreBackedArray<Feed>, RNewsError>> {
+        let promise = Promise<Result<DataStoreBackedArray<Feed>, RNewsError>>()
+        promise.resolve(.Success(DataStoreBackedArray(self.feeds)))
         return promise.future
     }
 
-    func articlesMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Article>> {
-        let promise = Promise<DataStoreBackedArray<Article>>()
-        promise.resolve(DataStoreBackedArray(self.articles.filter({ predicate.evaluateWithObject($0) })))
+    func articlesMatchingPredicate(predicate: NSPredicate) -> Future<Result<DataStoreBackedArray<Article>, RNewsError>> {
+        let promise = Promise<Result<DataStoreBackedArray<Article>, RNewsError>>()
+        promise.resolve(.Success(DataStoreBackedArray(self.articles.filter({ predicate.evaluateWithObject($0) }))))
         return promise.future
     }
 
-    func deleteFeed(feed: Feed) -> Future<Void> {
+    func deleteFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {
         if let index = self.feeds.indexOf(feed) {
             self.feeds.removeAtIndex(index)
         }
@@ -57,12 +58,12 @@ class InMemoryDataService: DataService {
             self.deleteArticle(article)
             feed.removeArticle(article)
         }
-        let promise = Promise<Void>()
-        promise.resolve()
+        let promise = Promise<Result<Void, RNewsError>>()
+        promise.resolve(.Success())
         return promise.future
     }
 
-    func deleteArticle(article: Article) -> Future<Void> {
+    func deleteArticle(article: Article) -> Future<Result<Void, RNewsError>> {
         if let index = self.articles.indexOf(article) {
             self.articles.removeAtIndex(index)
         }
@@ -73,54 +74,56 @@ class InMemoryDataService: DataService {
             self.deleteEnclosure(enclosure)
             article.removeEnclosure(enclosure)
         }
-        let promise = Promise<Void>()
-        promise.resolve()
+        let promise = Promise<Result<Void, RNewsError>>()
+        promise.resolve(.Success())
         return promise.future
     }
 
-    func deleteEnclosure(enclosure: Enclosure) -> Future<Void> {
+    func deleteEnclosure(enclosure: Enclosure) -> Future<Result<Void, RNewsError>> {
         if let index = self.enclosures.indexOf(enclosure) {
             self.enclosures.removeAtIndex(index)
         }
         enclosure.article?.removeEnclosure(enclosure)
         enclosure.article = nil
-        let promise = Promise<Void>()
-        promise.resolve()
+        let promise = Promise<Result<Void, RNewsError>>()
+        promise.resolve(.Success())
         return promise.future
     }
 
-    func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int) -> Future<([Feed], [Article], [Enclosure])> {
-        let promise = Promise<([Feed], [Article], [Enclosure])>()
-        var feeds: [Feed] = []
-        var articles: [Article] = []
-        var enclosures: [Enclosure] = []
-        for _ in 0..<feedCount {
-            self.createFeed { feeds.append($0) }
-        }
-        for _ in 0..<articleCount {
-            self.createArticle(nil) { articles.append($0) }
-        }
-        for _ in 0..<enclosureCount {
-            self.createEnclosure(nil) { enclosures.append($0) }
-        }
+    func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int) ->
+        Future<Result<([Feed], [Article], [Enclosure]), RNewsError>> {
+            let promise = Promise<Result<([Feed], [Article], [Enclosure]), RNewsError>>()
+            var feeds: [Feed] = []
+            var articles: [Article] = []
+            var enclosures: [Enclosure] = []
+            for _ in 0..<feedCount {
+                self.createFeed { feeds.append($0) }
+            }
+            for _ in 0..<articleCount {
+                self.createArticle(nil) { articles.append($0) }
+            }
+            for _ in 0..<enclosureCount {
+                self.createEnclosure(nil) { enclosures.append($0) }
+            }
 
-        promise.resolve((feeds, articles, enclosures))
+            let success = Result<([Feed], [Article], [Enclosure]), RNewsError>(value: (feeds, articles, enclosures))
+            promise.resolve(success)
+            return promise.future
+    }
+
+    func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Result<Void, RNewsError>> {
+        let promise = Promise<Result<Void, RNewsError>>()
+        promise.resolve(.Success())
         return promise.future
     }
 
-    func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Void> {
-        let promise = Promise<Void>()
-        promise.resolve()
-        return promise.future
-    }
-
-    func deleteEverything() -> Future<Void> {
+    func deleteEverything() -> Future<Result<Void, RNewsError>> {
         self.feeds = []
         self.articles = []
         self.enclosures = []
 
-        let promise = Promise<Void>()
-        promise.resolve()
+        let promise = Promise<Result<Void, RNewsError>>()
+        promise.resolve(.Success())
         return promise.future
     }
 }

@@ -1,7 +1,7 @@
 import CBGPromise
 
 extension Promise {
-    class func when<T>(futures: [Future<T>]) -> Future<[T]> {
+    class func rnews_when<T>(futures: [Future<T>]) -> Future<[T]> {
         let promise = Promise<[T]>()
         var values: [T] = []
 

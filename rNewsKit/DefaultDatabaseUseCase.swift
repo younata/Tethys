@@ -4,6 +4,7 @@ import CoreData
 import JavaScriptCore
 import Muon
 import CBGPromise
+import Result
 #if os(iOS)
     import CoreSpotlight
     import MobileCoreServices
@@ -108,17 +109,22 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     // MARK: Private (DataRetriever)
 
     private func allFeeds(callback: [Feed] -> Void) {
-        self.dataService.allFeeds().then {
-            let unsorted = Array($0)
-            let feeds = unsorted.sort { return $0.displayTitle < $1.displayTitle }
+        self.dataService.allFeeds().then { result in
+            switch result {
+            case let .Success(unsorted_feeds):
+                let unsorted = Array(unsorted_feeds)
+                let feeds = unsorted.sort { return $0.displayTitle < $1.displayTitle }
 
-            let nonQueryFeeds = feeds.reduce(Array<Feed>()) { $0 + ($1.isQueryFeed ? [] : [$1]) }
-            let queryFeeds    = feeds.reduce(Array<Feed>()) { $0 + ($1.isQueryFeed ? [$1] : []) }
-            for feed in queryFeeds {
-                let articles = self.articlesMatchingQuery(feed.query!, feeds: nonQueryFeeds)
-                articles.forEach { feed.addArticle($0) }
+                let nonQueryFeeds = feeds.reduce(Array<Feed>()) { $0 + ($1.isQueryFeed ? [] : [$1]) }
+                let queryFeeds    = feeds.reduce(Array<Feed>()) { $0 + ($1.isQueryFeed ? [$1] : []) }
+                for feed in queryFeeds {
+                    let articles = self.articlesMatchingQuery(feed.query!, feeds: nonQueryFeeds)
+                    articles.forEach { feed.addArticle($0) }
+                }
+                callback(feeds)
+            default:
+                callback([])
             }
-            callback(feeds)
         }
     }
 
@@ -149,18 +155,24 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         self.dataService.createFeed(callback)
     }
 
-    func saveFeed(feed: Feed) -> Future<Void> {
+    func saveFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {
         return self.dataService.saveFeed(feed)
     }
 
-    func deleteFeed(feed: Feed) -> Future<Void> {
-        return self.dataService.deleteFeed(feed).then {
-            self.feeds {
-                for object in self.subscribers.allObjects {
-                    if let subscriber = object as? DataSubscriber {
-                        subscriber.deletedFeed(feed, feedsLeft: $0.count)
+    func deleteFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {
+        return self.dataService.deleteFeed(feed).then { result in
+            switch result {
+            case .Success:
+                self.feeds {
+                    for object in self.subscribers.allObjects {
+                        if let subscriber = object as? DataSubscriber {
+                            subscriber.deletedFeed(feed, feedsLeft: $0.count)
+                        }
                     }
                 }
+            case let .Failure(error):
+                print(error)
+                return
             }
         }
     }
@@ -173,12 +185,12 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         }
     }
 
-    func saveArticle(article: Article) -> Future<Void> {
+    func saveArticle(article: Article) -> Future<Result<Void, RNewsError>> {
         return self.dataService.batchSave([], articles: [article], enclosures: [])
     }
 
-    func deleteArticle(article: Article) -> Future<Void> {
-        return self.dataService.deleteArticle(article).then {
+    func deleteArticle(article: Article) -> Future<Result<Void, RNewsError>> {
+        return self.dataService.deleteArticle(article).then { _ in
             for object in self.subscribers.allObjects {
                 if let subscriber = object as? DataSubscriber {
                     subscriber.deletedArticle(article)
@@ -251,7 +263,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         for article in articles {
             article.read = read
         }
-        return self.dataService.batchSave([], articles: articles, enclosures: []).map { (_: Void) -> Int in
+        return self.dataService.batchSave([], articles: articles, enclosures: []).map { _ -> Int in
             for object in self.subscribers.allObjects {
                 if let subscriber = object as? DataSubscriber {
                     subscriber.markedArticles(articles, asRead: read)

@@ -1,6 +1,7 @@
 import RealmSwift
 import Foundation
 import CBGPromise
+import Result
 
 #if os(iOS)
     import UIKit
@@ -80,8 +81,8 @@ class RealmService: DataService {
 
     // Mark: - Read
 
-    func allFeeds() -> Future<DataStoreBackedArray<Feed>> {
-        let promise = Promise<DataStoreBackedArray<Feed>>()
+    func allFeeds() -> Future<Result<DataStoreBackedArray<Feed>, RNewsError>> {
+        let promise = Promise<Result<DataStoreBackedArray<Feed>, RNewsError>>()
         let sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
 
         let feeds = DataStoreBackedArray(realmDataType: RealmFeed.self,
@@ -89,12 +90,12 @@ class RealmService: DataService {
             realmConfiguration: self.realmConfiguration,
             conversionFunction: { Feed(realmFeed: $0 as! RealmFeed) },
             sortDescriptors: sortDescriptors)
-        promise.resolve(feeds)
+        promise.resolve(.Success(feeds))
         return promise.future
     }
 
-    func articlesMatchingPredicate(predicate: NSPredicate) -> Future<DataStoreBackedArray<Article>> {
-        let promise = Promise<DataStoreBackedArray<Article>>()
+    func articlesMatchingPredicate(predicate: NSPredicate) -> Future<Result<DataStoreBackedArray<Article>, RNewsError>> {
+        let promise = Promise<Result<DataStoreBackedArray<Article>, RNewsError>>()
         let sortDescriptors = [
             NSSortDescriptor(key: "updatedAt", ascending: false),
             NSSortDescriptor(key: "published", ascending: false)
@@ -105,14 +106,14 @@ class RealmService: DataService {
             realmConfiguration: self.realmConfiguration,
             conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) },
             sortDescriptors: sortDescriptors)
-        promise.resolve(articles)
+        promise.resolve(.Success(articles))
         return promise.future
     }
 
     // Mark: - Delete
 
-    func deleteFeed(feed: Feed) -> Future<Void> {
-        let promise = Promise<Void>()
+    func deleteFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {
+        let promise = Promise<Result<Void, RNewsError>>()
         let articleIdentifiers = feed.articlesArray.map { $0.identifier }
         #if os(iOS)
             if #available(iOS 9, *) {
@@ -122,14 +123,14 @@ class RealmService: DataService {
         self.realmTransaction {
             self.synchronousDeleteFeed(feed)
             self.mainQueue.addOperationWithBlock {
-                promise.resolve()
+                promise.resolve(.Success())
             }
         }
         return promise.future
     }
 
-    func deleteArticle(article: Article) -> Future<Void> {
-        let promise = Promise<Void>()
+    func deleteArticle(article: Article) -> Future<Result<Void, RNewsError>> {
+        let promise = Promise<Result<Void, RNewsError>>()
         #if os(iOS)
             if #available(iOS 9, *) {
                 self.searchIndex?.deleteIdentifierFromIndex([article.identifier]) {_ in }
@@ -138,7 +139,7 @@ class RealmService: DataService {
         self.realmTransaction {
             self.synchronousDeleteArticle(article)
             self.mainQueue.addOperationWithBlock {
-                promise.resolve()
+                promise.resolve(.Success())
             }
         }
         return promise.future
@@ -146,45 +147,46 @@ class RealmService: DataService {
 
     // Mark: - Batch
 
-    func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int) -> Future<([Feed], [Article], [Enclosure])> {
-        let promise = Promise<([Feed], [Article], [Enclosure])>()
-        self.realmTransaction {
-            let realmFeeds = (0..<feedCount).map { _ in self.realm.create(RealmFeed) }
-            let realmArticles = (0..<articleCount).map { _ in self.realm.create(RealmArticle) }
-            let realmEnclosures = (0..<enclosureCount).map { _ in self.realm.create(RealmEnclosure) }
+    func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int) ->
+        Future<Result<([Feed], [Article], [Enclosure]), RNewsError>> {
+            let promise = Promise<Result<([Feed], [Article], [Enclosure]), RNewsError>>()
+            self.realmTransaction {
+                let realmFeeds = (0..<feedCount).map { _ in self.realm.create(RealmFeed) }
+                let realmArticles = (0..<articleCount).map { _ in self.realm.create(RealmArticle) }
+                let realmEnclosures = (0..<enclosureCount).map { _ in self.realm.create(RealmEnclosure) }
 
-            let feeds = realmFeeds.map(Feed.init)
-            let articles = realmArticles.map { Article(realmArticle: $0, feed: nil) }
-            let enclosures = realmEnclosures.map { Enclosure(realmEnclosure: $0, article: nil) }
+                let feeds = realmFeeds.map(Feed.init)
+                let articles = realmArticles.map { Article(realmArticle: $0, feed: nil) }
+                let enclosures = realmEnclosures.map { Enclosure(realmEnclosure: $0, article: nil) }
 
-            self.mainQueue.addOperationWithBlock {
-                promise.resolve((feeds, articles, enclosures))
+                self.mainQueue.addOperationWithBlock {
+                    promise.resolve(.Success(feeds, articles, enclosures))
+                }
             }
-        }
-        return promise.future
+            return promise.future
     }
 
-    func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Void> {
-        let promise = Promise<Void>()
+    func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Result<Void, RNewsError>> {
+        let promise = Promise<Result<Void, RNewsError>>()
         self.realmTransaction {
             enclosures.forEach { self.synchronousUpdateEnclosure($0) }
             articles.forEach { self.synchronousUpdateArticle($0) }
             feeds.forEach { self.synchronousUpdateFeed($0) }
 
             self.mainQueue.addOperationWithBlock {
-                promise.resolve()
+                promise.resolve(.Success())
             }
         }
         return promise.future
     }
 
-    func deleteEverything() -> Future<Void> {
-        let promise = Promise<Void>()
+    func deleteEverything() -> Future<Result<Void, RNewsError>> {
+        let promise = Promise<Result<Void, RNewsError>>()
         self.realmTransaction {
             self.realm.deleteAll()
 
             self.mainQueue.addOperationWithBlock {
-                promise.resolve()
+                promise.resolve(.Success())
             }
         }
         return promise.future

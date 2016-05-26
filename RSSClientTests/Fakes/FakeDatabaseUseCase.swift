@@ -1,5 +1,6 @@
 import Foundation
 import CBGPromise
+import Result
 @testable import rNewsKit
 
 class FakeDatabaseUseCase: DatabaseUseCase {
@@ -59,21 +60,21 @@ class FakeDatabaseUseCase: DatabaseUseCase {
     }
 
     var lastSavedFeed: Feed? = nil
-    var saveFeedPromises: [Promise<Void>] = []
-    func saveFeed(feed: Feed) -> Future<Void> {
+    var saveFeedPromises: [Promise<Result<Void, RNewsError>>] = []
+    func saveFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {
         lastSavedFeed = feed
-        let promise = Promise<Void>()
+        let promise = Promise<Result<Void, RNewsError>>()
         saveFeedPromises.append(promise)
         return promise.future
     }
 
     var lastDeletedFeed: Feed? = nil
     var deletedFeeds = Array<Feed>()
-    var deleteFeedPromises: [Promise<Void>] = []
-    func deleteFeed(feed: Feed) -> Future<Void> {
+    var deleteFeedPromises: [Promise<Result<Void, RNewsError>>] = []
+    func deleteFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {
         deletedFeeds.append(feed)
         lastDeletedFeed = feed
-        let promise = Promise<Void>()
+        let promise = Promise<Result<Void, RNewsError>>()
         deleteFeedPromises.append(promise)
         return promise.future
     }
@@ -88,17 +89,17 @@ class FakeDatabaseUseCase: DatabaseUseCase {
         return self.markedReadPromise!.future
     }
 
-    func saveArticle(article: Article) -> Future<Void>{
+    func saveArticle(article: Article) -> Future<Result<Void, RNewsError>>{
         fatalError("should not have called saveArticle?")
     }
 
     var lastDeletedArticle: Article? = nil
-    var deleteArticlePromises: [Promise<Void>] = []
-    func deleteArticle(article: Article) -> Future<Void> {
+    var deleteArticlePromises: [Promise<Result<Void, RNewsError>>] = []
+    func deleteArticle(article: Article) -> Future<Result<Void, RNewsError>> {
         lastDeletedArticle = article
         article.feed?.removeArticle(article)
         article.feed = nil
-        let promise = Promise<Void>()
+        let promise = Promise<Result<Void, RNewsError>>()
         deleteArticlePromises.append(promise)
         return promise.future
     }

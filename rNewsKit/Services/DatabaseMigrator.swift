@@ -13,12 +13,18 @@ struct DatabaseMigrator: DatabaseMigratorType {
             progress(progressCalls / expectedProgressCalls)
         }
 
-        from.allFeeds().then { oldFeeds in
+        from.allFeeds().then { oldResult in
+            guard case let .Success(oldFeeds) = oldResult else {
+                return
+            }
             updateProgress()
             let oldArticles = oldFeeds.reduce([Article]()) { $0 + Array($1.articlesArray) }
             let oldEnclosures = oldArticles.reduce([Enclosure]()) { $0 + Array($1.enclosuresArray) }
 
-            to.allFeeds().then { existingFeeds in
+            to.allFeeds().then { newResult in
+                guard case let .Success(existingFeeds) = newResult else {
+                    return
+                }
                 updateProgress()
                 let existingArticles = existingFeeds.reduce([Article]()) { $0 + Array($1.articlesArray) }
                 let existingEnclosures = existingArticles.reduce([Enclosure]()) { $0 + Array($1.enclosuresArray) }
@@ -33,7 +39,10 @@ struct DatabaseMigrator: DatabaseMigratorType {
 
                 to.batchCreate(feedsToMigrate.count,
                     articleCount: articlesToMigrate.count,
-                    enclosureCount: enclosuresToMigrate.count).then { newFeeds, newArticles, newEnclosures in
+                    enclosureCount: enclosuresToMigrate.count).then { createResult in
+                        guard case let .Success(newFeeds, newArticles, newEnclosures) = createResult else {
+                            return
+                        }
                         for (idx, oldFeed) in feedsToMigrate.enumerate() {
                             let newFeed = newFeeds[idx]
                             feedsDictionary[oldFeed] = newFeed
@@ -71,7 +80,7 @@ struct DatabaseMigrator: DatabaseMigratorType {
 
                         to.batchSave(Array(feedsDictionary.values),
                             articles: Array(articlesDictionary.values),
-                            enclosures: Array(enclosuresDictionary.values)).then {
+                            enclosures: Array(enclosuresDictionary.values)).then { _ in
                                 updateProgress()
                                 finish()
                         }
@@ -81,7 +90,7 @@ struct DatabaseMigrator: DatabaseMigratorType {
     }
 
     func deleteEverything(database: DataService, progress: Double -> Void, finish: Void -> Void) {
-        database.deleteEverything().then {
+        database.deleteEverything().then { _ in
             progress(1.0)
             finish()
         }

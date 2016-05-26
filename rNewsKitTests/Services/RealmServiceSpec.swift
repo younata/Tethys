@@ -3,6 +3,7 @@ import Nimble
 import RealmSwift
 import Muon
 import CBGPromise
+import Result
 @testable import rNewsKit
 #if os(iOS)
     import CoreSpotlight
@@ -163,7 +164,8 @@ class RealmServiceSpec: QuickSpec {
                 it("reads the feeds based on the predicate") {
                     let allExpectation = self.expectationWithDescription("Read all feeds")
                     subject.allFeeds().then {
-                        expect(Array($0)) == [feed1, feed2]
+                        guard case let Result.Success(values) = $0 else { return }
+                        expect(Array(values)) == [feed1, feed2]
                         allExpectation.fulfill()
                     }
 
@@ -172,7 +174,8 @@ class RealmServiceSpec: QuickSpec {
 
                 it("reads the articles based on the predicate") {
                     let allExpectation = self.expectationWithDescription("Read all articles")
-                    subject.articlesMatchingPredicate(NSPredicate(value: true)).then { articles in
+                    subject.articlesMatchingPredicate(NSPredicate(value: true)).then {
+                        guard case let Result.Success(articles) = $0 else { return }
                         expect(Array(articles)) == [article1, article2, article3]
 
                         expect(articles[1].relatedArticles).to(contain(article3))
@@ -183,7 +186,8 @@ class RealmServiceSpec: QuickSpec {
 
                     let someExpectation = self.expectationWithDescription("Read some articles")
                     subject.articlesMatchingPredicate(NSPredicate(format: "title == %@", "article1")).then {
-                        expect(Array($0)) == [article1]
+                        guard case let Result.Success(articles) = $0 else { return }
+                        expect(Array(articles)) == [article1]
                         someExpectation.fulfill()
                     }
 
@@ -199,7 +203,7 @@ class RealmServiceSpec: QuickSpec {
 
                             article1.summary = "Hello world!"
 
-                            subject.batchSave([], articles: [article1], enclosures: []).then {
+                            subject.batchSave([], articles: [article1], enclosures: []).then { _ in
                                 expectation.fulfill()
                             }
 
@@ -234,6 +238,7 @@ class RealmServiceSpec: QuickSpec {
                     let articleIdentifiers = feed1.articlesArray.map { $0.identifier }
 
                     subject.deleteFeed(feed1).then {
+                        guard case Result.Success() = $0 else { return }
                         expectation.fulfill()
                     }
 
@@ -253,6 +258,7 @@ class RealmServiceSpec: QuickSpec {
                     let expectation = self.expectationWithDescription("delete article")
 
                     subject.deleteArticle(article1).then {
+                        guard case Result.Success() = $0 else { return }
                         expectation.fulfill()
                     }
 

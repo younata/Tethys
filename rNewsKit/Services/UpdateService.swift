@@ -73,7 +73,7 @@ class UpdateService: UpdateServiceType, NetworkClientDelegate {
         self.callbacksInProgress.removeValueForKey(url)
         let feed = feedCallback.feed
         let callback = feedCallback.callback
-        self.dataServiceFactory.currentDataService.updateFeed(feed, info: muonFeed).then {
+        self.dataServiceFactory.currentDataService.updateFeed(feed, info: muonFeed).then { _ in
             if feed.image == nil, let imageUrl = muonFeed.imageURL where !imageUrl.absoluteString.isEmpty {
                 self.callbacksInProgress[imageUrl] = feedCallback
                 self.downloadURL(imageUrl)
@@ -89,7 +89,7 @@ class UpdateService: UpdateServiceType, NetworkClientDelegate {
         let feed = imageCallback.feed
         let callback = imageCallback.callback
         feed.image = image
-        self.dataServiceFactory.currentDataService.saveFeed(feed).then {
+        self.dataServiceFactory.currentDataService.saveFeed(feed).then { _ in
             callback(feed, nil)
         }
     }

@@ -1,4 +1,5 @@
 import CBGPromise
+import Result
 #if os(iOS)
     import Reachability
 #elseif os(OSX)
@@ -16,12 +17,12 @@ public protocol DatabaseUseCase {
     func addSubscriber(subscriber: DataSubscriber)
 
     func newFeed(callback: Feed -> Void)
-    func saveFeed(feed: Feed) -> Future<Void>
-    func deleteFeed(feed: Feed) -> Future<Void>
+    func saveFeed(feed: Feed) -> Future<Result<Void, RNewsError>>
+    func deleteFeed(feed: Feed) -> Future<Result<Void, RNewsError>>
     func markFeedAsRead(feed: Feed) -> Future<Int>
 
-    func saveArticle(article: Article) -> Future<Void>
-    func deleteArticle(article: Article) -> Future<Void>
+    func saveArticle(article: Article) -> Future<Result<Void, RNewsError>>
+    func deleteArticle(article: Article) -> Future<Result<Void, RNewsError>>
     func markArticle(article: Article, asRead: Bool) -> Future<Void>
 
     func updateFeeds(callback: ([Feed], [NSError]) -> Void)

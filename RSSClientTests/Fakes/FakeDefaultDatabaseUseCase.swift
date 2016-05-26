@@ -1,6 +1,7 @@
 import Foundation
 import CoreData
 import CBGPromise
+import Result
 @testable import rNewsKit
 
 class FakeDefaultDatabaseUseCase : DefaultDatabaseUseCase {
@@ -22,19 +23,19 @@ class FakeDefaultDatabaseUseCase : DefaultDatabaseUseCase {
     }
 
     var lastSavedFeed: Feed? = nil
-    var saveFeedPromises: [Promise<Void>] = []
-    override func saveFeed(feed: Feed) -> Future<Void> {
+    var saveFeedPromises: [Promise<Result<Void, RNewsError>>] = []
+    override func saveFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {
         lastSavedFeed = feed
-        let promise = Promise<Void>()
+        let promise = Promise<Result<Void, RNewsError>>()
         saveFeedPromises.append(promise)
         return promise.future
     }
 
     var lastDeletedFeed: Feed? = nil
-    var deleteFeedPromises: [Promise<Void>] = []
-    override func deleteFeed(feed: Feed) -> Future<Void> {
+    var deleteFeedPromises: [Promise<Result<Void, RNewsError>>] = []
+    override func deleteFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {
         lastDeletedFeed = feed
-        let promise = Promise<Void>()
+        let promise = Promise<Result<Void, RNewsError>>()
         deleteFeedPromises.append(promise)
         return promise.future
     }
@@ -73,12 +74,12 @@ class FakeDefaultDatabaseUseCase : DefaultDatabaseUseCase {
     }
 
     var lastDeletedArticle: Article? = nil
-    var deleteArticlePromises: [Promise<Void>] = []
-    override func deleteArticle(article: Article) -> Future<Void> {
+    var deleteArticlePromises: [Promise<Result<Void, RNewsError>>] = []
+    override func deleteArticle(article: Article) -> Future<Result<Void, RNewsError>> {
         lastDeletedArticle = article
         article.feed?.removeArticle(article)
         article.feed = nil
-        let promise = Promise<Void>()
+        let promise = Promise<Result<Void, RNewsError>>()
         deleteArticlePromises.append(promise)
         return promise.future
     }

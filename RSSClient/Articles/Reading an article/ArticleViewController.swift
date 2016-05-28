@@ -18,7 +18,7 @@ public class ArticleViewController: UIViewController, Injectable {
 
         self.toolbarItems = [self.spacer(), self.shareButton, self.spacer()]
         if #available(iOS 9, *) {
-            if article.link != nil {
+            if let _ = article.link {
                 self.toolbarItems = [
                     self.spacer(), self.shareButton, self.spacer(), self.openInSafariButton, self.spacer()
                 ]
@@ -254,7 +254,6 @@ public class ArticleViewController: UIViewController, Injectable {
 
     private var nextContent: UIWebView? = nil
     private var nextContentRight: NSLayoutConstraint? = nil
-
     private func handleSwipe(gesture: ScreenEdgePanGestureRecognizer, fromLeftDirection left: Bool) {
         if left && self.lastArticleIndex == 0 { return }
         if !left && (self.lastArticleIndex + 1) >= self.articles.count { return }
@@ -288,15 +287,11 @@ public class ArticleViewController: UIViewController, Injectable {
                 self.setArticle(self.articles[self.lastArticleIndex], show: false)
                 self.nextContentRight?.constant = 0
                 let oldContent = content
-                if let nextContent = self.nextContent {
-                    self.content = nextContent
-                }
+                if let nextContent = self.nextContent { self.content = nextContent }
                 self.configureContent()
                 UIView.animateWithDuration(0.2, animations: {
                     self.view.layoutIfNeeded()
-                    }, completion: {_ in
-                        oldContent.removeFromSuperview()
-                })
+                }, completion: {_ in oldContent.removeFromSuperview() })
             } else {
                 self.nextContent?.removeFromSuperview()
                 self.nextContent = nil
@@ -350,8 +345,7 @@ public class ArticleViewController: UIViewController, Injectable {
     }
 
     @objc private func openInSafari() {
-        guard let url = self.article?.link else { return }
-        self.openURL(url)
+        if let url = self.article?.link { self.openURL(url) }
     }
 
     private func openURL(url: NSURL) {
@@ -374,24 +368,17 @@ extension ArticleViewController: UIWebViewDelegate {
             let predicate = NSPredicate(format: "link = %@", url.absoluteString)
             if let article = self.article?.relatedArticles.filterWithPredicate(predicate).first {
                 self.setArticle(article, read: true, show: true)
-            } else {
-                self.openURL(url)
-            }
+            } else { self.openURL(url) }
             return false
     }
 
-    public func webViewDidFinishLoad(webView: UIWebView) {
-        self.backgroundView.hidden = self.article != nil
-    }
+    public func webViewDidFinishLoad(webView: UIWebView) { self.backgroundView.hidden = self.article != nil }
 }
 
 extension ArticleViewController: NSUserActivityDelegate {
     public func userActivityWillSave(userActivity: NSUserActivity) {
         guard let article = self.article else { return }
-        userActivity.userInfo = [
-            "feed": article.feed?.title ?? "",
-            "article": article.identifier,
-        ]
+        userActivity.userInfo = ["feed": article.feed?.title ?? "", "article": article.identifier]
     }
 }
 

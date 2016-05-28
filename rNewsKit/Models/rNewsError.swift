@@ -38,6 +38,7 @@ public func == (lhs: NetworkError, rhs: NetworkError) -> Bool {
 public enum DatabaseError: ErrorType {
     case NotFound
     case Unknown
+    case EntryNotFound
 }
 
 public enum RNewsError: ErrorType {

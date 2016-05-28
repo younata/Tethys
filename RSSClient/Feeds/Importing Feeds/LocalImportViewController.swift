@@ -50,8 +50,8 @@ public class LocalImportViewController: UIViewController, Injectable {
 
         self.view.addSubview(self.tableViewController.tableView)
         self.tableViewController.tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
-        let inset = CGRectGetHeight(self.navigationController!.navigationBar.frame) +
-            CGRectGetHeight(UIApplication.sharedApplication().statusBarFrame)
+        let inset = self.navigationController!.navigationBar.frame.height +
+            UIApplication.sharedApplication().statusBarFrame.height
         self.tableViewTopOffset = self.tableViewController.tableView.autoPinEdgeToSuperviewEdge(.Top, withInset: inset)
 
         self.reloadItems()

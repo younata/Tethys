@@ -43,10 +43,6 @@ class OPMLServiceSpec: QuickSpec {
             injector.bind(DefaultDatabaseUseCase.self, toInstance: dataRepository)
             injector.bind(DataService.self, toInstance: dataService)
 
-            let previouslyImportedFeed = Feed(title: "imported", url: NSURL(string: "http://example.com/previouslyImportedFeed"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-
-            dataRepository.feedsList = [previouslyImportedFeed]
-
             subject = OPMLService(injector: injector)
         }
 
@@ -60,41 +56,44 @@ class OPMLServiceSpec: QuickSpec {
                 }
             }
 
-            it("should return a list of feeds imported") {
-                expect(feeds.count).to(equal(3))
-                guard feeds.count == 3 else {
-                    return
+            it("makes a request to the datarepository for the list of all feeds") {
+                expect(dataRepository.feedsPromises.count) == 1
+            }
+
+            context("when the feeds promise succeeds") {
+                beforeEach {
+                    let previouslyImportedFeed = Feed(title: "imported",
+                        url: NSURL(string: "http://example.com/previouslyImportedFeed"), summary: "", query: nil,
+                        tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    dataRepository.feedsPromises.first?.resolve(.Success([previouslyImportedFeed]))
                 }
-                feeds.sortInPlace { $0.title < $1.title }
-                let first = feeds[0]
-                expect(first.url).to(equal(NSURL(string: "http://example.com/feedWithTag")))
 
-                let second = feeds[1]
-                expect(second.url).to(equal(NSURL(string: "http://example.com/feedWithTitle")))
+                it("should return a list of feeds imported") {
+                    expect(feeds.count).to(equal(3))
+                    guard feeds.count == 3 else {
+                        return
+                    }
+                    feeds.sortInPlace { $0.title < $1.title }
+                    let first = feeds[0]
+                    expect(first.url).to(equal(NSURL(string: "http://example.com/feedWithTag")))
 
-                let query = feeds[2]
-                expect(query.title).to(equal("Query Feed"))
-                expect(query.url).to(beNil())
-                expect(query.query).to(equal("return true;"))
+                    let second = feeds[1]
+                    expect(second.url).to(equal(NSURL(string: "http://example.com/feedWithTitle")))
+
+                    let query = feeds[2]
+                    expect(query.title).to(equal("Query Feed"))
+                    expect(query.url).to(beNil())
+                    expect(query.query).to(equal("return true;"))
+                }
+            }
+
+            context("when the feeds promise fails") {
+                // TODO: Implement case when feeds promise fails
             }
         }
 
         describe("Writing OPML Files") {
-
-            var feed1: Feed! = nil
-            var feed2: Feed! = nil
-            var feed3: Feed! = nil
-
             beforeEach {
-                feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "", query: nil,
-                    tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                feed2 = Feed(title: "d", url: nil, summary: "", query: "", tags: [],
-                    waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                feed3 = Feed(title: "e", url: NSURL(string: "http://example.com/otherfeed"), summary: "", query: nil,
-                    tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-
-                dataRepository.feedsList = [feed1, feed2, feed3]
-
                 subject.writeOPML()
             }
 
@@ -104,34 +103,54 @@ class OPMLServiceSpec: QuickSpec {
                 let _ = try? fileManager.removeItemAtPath(file)
             }
 
-            it("should write an OPML file to ~/Documents/rnews.opml") {
-                let fileManager = NSFileManager.defaultManager()
-                let file = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
-                expect(fileManager.fileExistsAtPath(file)) == true
+            it("makes a request to the datarepository for the list of all feeds") {
+                expect(dataRepository.feedsPromises.count) == 1
+            }
 
-                let text = try! String(contentsOfFile: file, encoding: NSUTF8StringEncoding)
-
-                let parser = Lepton.Parser(text: text)
-
-                var testItems: [Lepton.Item] = []
-
-                parser.success {items in
-                    testItems = items
-                    expect(items.count).to(equal(2))
-                    if (items.count != 2) {
-                        return
-                    }
-                    let a = items[0]
-                    expect(a.title).to(equal("a"))
-                    expect(a.tags).to(equal(["a", "b", "c"]))
-                    let c = items[1]
-                    expect(c.title).to(equal("e"))
-                    expect(c.tags).to(equal(["dad"]))
+            context("when the feeds promise succeeds") {
+                beforeEach {
+                    let feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "", query: nil,
+                        tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feed2 = Feed(title: "d", url: nil, summary: "", query: "", tags: [],
+                        waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feed3 = Feed(title: "e", url: NSURL(string: "http://example.com/otherfeed"), summary: "", query: nil,
+                        tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    dataRepository.feedsPromises.first?.resolve(.Success([feed1, feed2, feed3]))
                 }
 
-                parser.main()
+                it("should write an OPML file to ~/Documents/rnews.opml") {
+                    let fileManager = NSFileManager.defaultManager()
+                    let file = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
+                    expect(fileManager.fileExistsAtPath(file)) == true
 
-                expect(testItems).toNot(beEmpty())
+                    let text = (try? String(contentsOfFile: file, encoding: NSUTF8StringEncoding)) ?? ""
+
+                    let parser = Lepton.Parser(text: text)
+
+                    var testItems: [Lepton.Item] = []
+
+                    parser.success {items in
+                        testItems = items
+                        expect(items.count).to(equal(2))
+                        if (items.count != 2) {
+                            return
+                        }
+                        let a = items[0]
+                        expect(a.title).to(equal("a"))
+                        expect(a.tags).to(equal(["a", "b", "c"]))
+                        let c = items[1]
+                        expect(c.title).to(equal("e"))
+                        expect(c.tags).to(equal(["dad"]))
+                    }
+                    
+                    parser.main()
+                    
+                    expect(testItems).toNot(beEmpty())
+                }
+            }
+
+            context("when the feeds promise fails") {
+                // TODO: Implement case when feeds promise fails
             }
         }
 
@@ -146,10 +165,8 @@ class OPMLServiceSpec: QuickSpec {
 
                 let feeds = [feed1, feed2, feed3]
 
-                dataRepository.feedsList = feeds
-
                 for subscriber in dataRepository.subscribers {
-                    subscriber.didUpdateFeeds(feeds)
+                    subscriber.didUpdateFeeds([])
                 }
             }
 
@@ -159,34 +176,63 @@ class OPMLServiceSpec: QuickSpec {
                 let _ = try? fileManager.removeItemAtPath(file)
             }
 
-            it("should write an OPML file to ~/Documents/rnews.opml") {
-                let fileManager = NSFileManager.defaultManager()
-                let file = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
-                expect(fileManager.fileExistsAtPath(file)) == true
+            it("makes a request to the datarepository for the list of all feeds") {
+                expect(dataRepository.feedsPromises.count) == 1
+            }
 
-                guard let text = try? String(contentsOfFile: file, encoding: NSUTF8StringEncoding) else { return }
+            context("when the feeds promise succeeds") {
+                beforeEach {
+                    let feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "", query: nil,
+                        tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feed2 = Feed(title: "d", url: nil, summary: "", query: "", tags: [],
+                        waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feed3 = Feed(title: "e", url: NSURL(string: "http://example.com/otherfeed"), summary: "", query: nil,
+                        tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-                let parser = Lepton.Parser(text: text)
-
-                var testItems: [Lepton.Item] = []
-
-                parser.success {items in
-                    testItems = items
-                    expect(items.count).to(equal(2))
-                    if (items.count != 2) {
-                        return
-                    }
-                    let a = items[0]
-                    expect(a.title).to(equal("a"))
-                    expect(a.tags).to(equal(["a", "b", "c"]))
-                    let c = items[1]
-                    expect(c.title).to(equal("e"))
-                    expect(c.tags).to(equal(["dad"]))
+                    dataRepository.feedsPromises.first?.resolve(.Success([feed1, feed2, feed3]))
                 }
 
-                parser.main()
+                it("should write an OPML file to ~/Documents/rnews.opml") {
+                    let fileManager = NSFileManager.defaultManager()
+                    let file = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
+                    expect(fileManager.fileExistsAtPath(file)) == true
 
-                expect(testItems).toNot(beEmpty())
+                    guard let text = try? String(contentsOfFile: file, encoding: NSUTF8StringEncoding) else { return }
+
+                    let parser = Lepton.Parser(text: text)
+
+                    var testItems: [Lepton.Item] = []
+
+                    parser.success {items in
+                        testItems = items
+                        expect(items.count).to(equal(2))
+                        if (items.count != 2) {
+                            return
+                        }
+                        let a = items[0]
+                        expect(a.title).to(equal("a"))
+                        expect(a.tags).to(equal(["a", "b", "c"]))
+                        let c = items[1]
+                        expect(c.title).to(equal("e"))
+                        expect(c.tags).to(equal(["dad"]))
+                    }
+                    
+                    parser.main()
+                    
+                    expect(testItems).toNot(beEmpty())
+                }
+            }
+
+            context("when the feeds promise fails") {
+                beforeEach {
+                    dataRepository.feedsPromises.first?.resolve(.Failure(.Unknown))
+                }
+
+                it("doesn't write anything to disk") {
+                    let fileManager = NSFileManager.defaultManager()
+                    let file = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
+                    expect(fileManager.fileExistsAtPath(file)) == false
+                }
             }
         }
     }

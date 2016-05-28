@@ -1,6 +1,7 @@
 import Ra
 import Muon
 import Lepton
+import Result
 
 public enum ImportUseCaseItem {
     case None(NSURL)
@@ -122,7 +123,8 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
         switch importType {
         case .Feed:
             let url = self.canonicalURLForFeedAtURL(url)
-            self.feedRepository.feeds { feeds in
+            self.feedRepository.feeds().then {
+                guard case let Result.Success(feeds) = $0 else { return }
                 let existingFeed = feeds.filter({ $0.url == url }).first
                 guard existingFeed == nil else {
                     return callback()

@@ -41,34 +41,40 @@ class FakeDefaultDatabaseUseCase : DefaultDatabaseUseCase {
     }
 
     var lastFeedMarkedRead: Feed? = nil
-    var lastMarkedReadPromise: Promise<Int>? = nil
-    override func markFeedAsRead(feed: Feed) -> Future<Int> {
+    var lastMarkedReadPromise: Promise<Result<Int, RNewsError>>? = nil
+    override func markFeedAsRead(feed: Feed) -> Future<Result<Int, RNewsError>> {
         lastFeedMarkedRead = feed
-        self.lastMarkedReadPromise = Promise<Int>()
+        self.lastMarkedReadPromise = Promise<Result<Int, RNewsError>>()
         return self.lastMarkedReadPromise!.future
     }
 
-    var tagsList: [String] = []
-    override func allTags(callback: ([String]) -> (Void)) {
-        callback(tagsList)
+    var allTagsPromises: [Promise<Result<[String], RNewsError>>] = []
+    override func allTags() -> Future<Result<[String], RNewsError>> {
+        let promise = Promise<Result<[String], RNewsError>>()
+        self.allTagsPromises.append(promise)
+        return promise.future
     }
 
-    var feedsList: [Feed] = []
-    override func feeds(callback: ([Feed]) -> (Void)) {
-        return callback(feedsList)
+    var feedsPromises: [Promise<Result<[Feed], RNewsError>>] = []
+    override func feeds() -> Future<Result<[Feed], RNewsError>> {
+        let promise = Promise<Result<[Feed], RNewsError>>()
+        self.feedsPromises.append(promise)
+        return promise.future
     }
 
-    var articlesList: [Article] = []
-    override func articlesMatchingQuery(query: String, callback: ([Article]) -> (Void)) {
-        return callback(articlesList)
+    var articlesMatchingQueryPromises: [Promise<Result<[Article], RNewsError>>] = []
+    override func articlesMatchingQuery(query: String) -> Future<Result<[Article], RNewsError>> {
+        let promise = Promise<Result<[Article], RNewsError>>()
+        self.articlesMatchingQueryPromises.append(promise)
+        return promise.future
     }
 
     var lastArticleMarkedRead: Article? = nil
-    var markArticleReadPromises: [Promise<Void>] = []
-    override func markArticle(article: Article, asRead read: Bool) -> Future<Void> {
+    var markArticleReadPromises: [Promise<Result<Void, RNewsError>>] = []
+    override func markArticle(article: Article, asRead read: Bool) -> Future<Result<Void, RNewsError>> {
         lastArticleMarkedRead = article
         article.read = read
-        let promise = Promise<Void>()
+        let promise = Promise<Result<Void, RNewsError>>()
         markArticleReadPromises.append(promise)
         return promise.future
     }

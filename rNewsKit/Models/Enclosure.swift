@@ -43,9 +43,9 @@ import JavaScriptCore
         guard let b = object as? Enclosure else {
             return false
         }
-        if let aEID = self.enclosureID as? NSManagedObjectID, let bEID = b.enclosureID as? NSManagedObjectID {
+        if let aEID = self.enclosureID as? NSManagedObjectID, bEID = b.enclosureID as? NSManagedObjectID {
             return aEID.URIRepresentation() == bEID.URIRepresentation()
-        } else if let aEID = self.enclosureID as? String, let bEID = b.enclosureID as? String {
+        } else if let aEID = self.enclosureID as? String, bEID = b.enclosureID as? String {
             return aEID == bEID
         }
         return self.url == b.url && self.kind == b.kind

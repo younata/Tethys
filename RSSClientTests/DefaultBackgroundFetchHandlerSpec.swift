@@ -14,7 +14,6 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
         beforeEach {
             injector = Injector()
             dataRepository = FakeDatabaseUseCase()
-            dataRepository.feedsList = []
             injector.bind(DatabaseUseCase.self, toInstance: dataRepository)
 
             subject = injector.create(DefaultBackgroundFetchHandler)!
@@ -37,7 +36,11 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
                 expect(dataRepository.didUpdateFeeds) == true
             }
 
-            context("when new articles are found") {
+            it("makes a request for the list of feeds") {
+                expect(dataRepository.feedsPromises.count) == 1
+            }
+
+            context("when the feeds list comes back and new articles are found") {
                 var articles: [Article] = []
                 var feeds: [Feed] = []
                 beforeEach {
@@ -57,7 +60,8 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
                     feeds = [feed1, feed2]
                     articles = [article1, article2, article3, article4]
 
-                    dataRepository.feedsList = feeds
+                    dataRepository.feedsPromises.last?.resolve(.Success([]))
+
                     dataRepository.updateFeedsCompletion(feeds, [])
                 }
 
@@ -72,6 +76,7 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
 
             context("when no new articles are found") {
                 beforeEach {
+                    dataRepository.feedsPromises.last?.resolve(.Success([]))
                     dataRepository.updateFeedsCompletion([], [])
                 }
 
@@ -86,6 +91,7 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
 
             context("when there is an error updating feeds") {
                 beforeEach {
+                    dataRepository.feedsPromises.last?.resolve(.Success([]))
                     dataRepository.updateFeedsCompletion([], [NSError(domain: "", code: 0, userInfo: nil)])
                 }
 
@@ -96,6 +102,10 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
                 it("should call the completion handler and indicate that there was an error") {
                     expect(fetchResult).to(equal(UIBackgroundFetchResult.Failed))
                 }
+            }
+
+            context("when the feeds request has an issue") { // TODO!
+
             }
         }
     }

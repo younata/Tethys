@@ -62,7 +62,7 @@ public class MainController: NSViewController {
 
     @IBAction public func openDocument(sender: AnyObject) {
         guard let injector = self.raInjector,
-              let panel = injector.create(NSOpenPanel) else {
+              panel = injector.create(NSOpenPanel) else {
                 return
         }
         panel.canChooseDirectories = false

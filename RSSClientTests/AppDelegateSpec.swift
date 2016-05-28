@@ -4,6 +4,7 @@ import Ra
 import rNews
 import rNewsKit
 import CoreSpotlight
+import Result
 
 private class FakeBackgroundFetchHandler: BackgroundFetchHandler {
     private var performFetchCalled = false
@@ -21,7 +22,7 @@ class AppDelegateSpec: QuickSpec {
         let application = UIApplication.sharedApplication()
         var injector: Ra.Injector! = nil
 
-        var dataRepository: FakeDatabaseUseCase! = nil
+        var dataUseCase: FakeDatabaseUseCase! = nil
 
         var notificationHandler: FakeNotificationHandler! = nil
         var backgroundFetchHandler: FakeBackgroundFetchHandler! = nil
@@ -34,8 +35,8 @@ class AppDelegateSpec: QuickSpec {
             injector.bind(kMainQueue, toInstance: FakeOperationQueue())
             injector.bind(kBackgroundQueue, toInstance: FakeOperationQueue())
 
-            dataRepository = FakeDatabaseUseCase()
-            injector.bind(DatabaseUseCase.self, toInstance: dataRepository)
+            dataUseCase = FakeDatabaseUseCase()
+            injector.bind(DatabaseUseCase.self, toInstance: dataUseCase)
 
             injector.bind(MigrationUseCase.self, toInstance: FakeMigrationUseCase())
             injector.bind(ImportUseCase.self, toInstance: FakeImportUseCase())
@@ -60,11 +61,11 @@ class AppDelegateSpec: QuickSpec {
 
                 subject.application(application, didFinishLaunchingWithOptions: ["test": true])
 
-                expect(dataRepository.didCreateFeed) == true
+                expect(dataUseCase.didCreateFeed) == true
 
                 let feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-                dataRepository.newFeedCallback(feed)
+                dataUseCase.newFeedCallback(feed)
 
                 expect(feed.title).to(equal("All Unread"))
                 expect(feed.summary).to(equal("All unread articles"))
@@ -79,7 +80,7 @@ class AppDelegateSpec: QuickSpec {
 
                 subject.application(application, didFinishLaunchingWithOptions: ["test": true])
 
-                expect(dataRepository.didCreateFeed) == false
+                expect(dataUseCase.didCreateFeed) == false
             }
 
             it("should enable notifications") {
@@ -92,7 +93,7 @@ class AppDelegateSpec: QuickSpec {
                 subject.application(application, didFinishLaunchingWithOptions: ["test": true])
 
                 var applicationInSubscribers = false
-                for subscriber in dataRepository.subscribers.allObjects {
+                for subscriber in dataUseCase.subscribers.allObjects {
                     if subscriber is UIApplication {
                         applicationInSubscribers = true
                         break
@@ -159,28 +160,63 @@ class AppDelegateSpec: QuickSpec {
                     expect(viewController).to(beAKindOf(FindFeedViewController.self))
                 }
 
-                it("opens an article list for a feed when a 'View Feed' action is selected") {
+                describe("selecting a 'View Feed' action") {
                     let feed = Feed(title: "title", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
                     let article = Article(title: "title", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
                     feed.addArticle(article)
-                    dataRepository.feedsList = [feed]
 
-                    let shortCut = UIApplicationShortcutItem(type: "com.rachelbrindle.RSSClient.viewfeed",
-                        localizedTitle: feed.displayTitle,
-                        localizedSubtitle: nil,
-                        icon: nil,
-                        userInfo: ["feed": feed.title])
+                    beforeEach {
+                        let shortCut = UIApplicationShortcutItem(type: "com.rachelbrindle.RSSClient.viewfeed",
+                            localizedTitle: feed.displayTitle,
+                            localizedSubtitle: nil,
+                            icon: nil,
+                            userInfo: ["feed": feed.title])
 
-                    subject.application(application, performActionForShortcutItem: shortCut) {completed in
-                        completedAction = completed
+                        subject.application(application, performActionForShortcutItem: shortCut) {completed in
+                            completedAction = completed
+                        }
                     }
 
-                    expect(completedAction) == true
+                    it("asks the dataUseCase for the feeds") {
+                        expect(dataUseCase.feedsPromises.count) == 1
+                    }
 
-                    let navController = (subject.window?.rootViewController as? UISplitViewController)?.viewControllers.first as? UINavigationController
-                    expect(navController?.visibleViewController).to(beAKindOf(ArticleListController.self))
-                    let articleController = navController?.visibleViewController as? ArticleListController
-                    expect(articleController?.feeds).to(equal([feed]))
+                    describe("when the promise succeeds") {
+                        context("and the selected feed is in the list") {
+                            beforeEach {
+                                dataUseCase.feedsPromises.last?.resolve(.Success([feed]))
+                            }
+
+                            it("opens an article list for the selected feed") {
+                                expect(completedAction) == true
+
+                                let navController = (subject.window?.rootViewController as? UISplitViewController)?.viewControllers.first as? UINavigationController
+                                expect(navController?.visibleViewController).to(beAKindOf(ArticleListController.self))
+                                let articleController = navController?.visibleViewController as? ArticleListController
+                                expect(articleController?.feeds).to(equal([feed]))
+                            }
+                        }
+
+                        context("and the selected feed is not in the list") {
+                            beforeEach {
+                                dataUseCase.feedsPromises.last?.resolve(.Success([]))
+                            }
+
+                            it("does nothing and returns false") {
+                                expect(completedAction) == false
+                            }
+                        }
+                    }
+
+                    describe("when the promise fails") {
+                        beforeEach {
+                            dataUseCase.feedsPromises.last?.resolve(.Failure(.Unknown))
+                        }
+
+                        it("does nothing and returns false") {
+                            expect(completedAction) == false
+                        }
+                    }
                 }
             }
         }
@@ -231,7 +267,7 @@ class AppDelegateSpec: QuickSpec {
                 let feed = Feed(title: "title", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
                 article = Article(title: "title", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
                 feed.addArticle(article)
-                dataRepository.feedsList = [feed]
+//                dataRepository.feedsList = [feed]
                 subject.application(UIApplication.sharedApplication(), didFinishLaunchingWithOptions: nil)
             }
 

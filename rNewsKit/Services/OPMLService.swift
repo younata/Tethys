@@ -1,6 +1,7 @@
 import Foundation
 import Ra
 import Lepton
+import Result
 
 public class OPMLService: NSObject, Injectable {
     private let dataRepository: DefaultDatabaseUseCase?
@@ -35,11 +36,12 @@ public class OPMLService: NSObject, Injectable {
     }
 
     public func importOPML(opml: NSURL, completion: ([Feed]) -> Void) {
-        guard let dataRepository = self.dataRepository, let dataService = self.dataService else {
+        guard let dataRepository = self.dataRepository, dataService = self.dataService else {
             completion([])
             return
         }
-        dataRepository.feeds {existingFeeds in
+        dataRepository.feeds().then {
+            guard case let Result.Success(existingFeeds) = $0 else { return }
             do {
                 let text = try String(contentsOfURL: opml, encoding: NSUTF8StringEncoding)
                 let parser = Lepton.Parser(text: text)
@@ -51,7 +53,7 @@ public class OPMLService: NSObject, Injectable {
                             continue
                         }
                         if item.isQueryFeed() {
-                            if let title = item.title, let query = item.query {
+                            if let title = item.title, query = item.query {
                                 dataService.createFeed { newFeed in
                                     newFeed.title = title
                                     newFeed.query = query
@@ -126,7 +128,8 @@ public class OPMLService: NSObject, Injectable {
 
     public func writeOPML() {
         let opmlLocation = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
-        self.dataRepository?.feeds {feeds in
+        self.dataRepository?.feeds().then {
+            guard case let Result.Success(feeds) = $0 else { return }
             do {
                 try self.generateOPMLContents(feeds).writeToFile(opmlLocation, atomically: true,
                     encoding: NSUTF8StringEncoding)

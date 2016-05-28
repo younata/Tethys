@@ -132,9 +132,9 @@ import RealmSwift
         guard let b = object as? Feed else {
             return false
         }
-        if let aID = self.feedID as? NSManagedObjectID, let bID = b.feedID as? NSManagedObjectID {
+        if let aID = self.feedID as? NSManagedObjectID, bID = b.feedID as? NSManagedObjectID {
             return aID.URIRepresentation() == bID.URIRepresentation()
-        } else if let aID = self.feedID as? NSURL, let bID = b.feedID as? NSURL {
+        } else if let aID = self.feedID as? NSURL, bID = b.feedID as? NSURL {
             return aID == bID
         }
         return self.title == b.title && self.url == b.url && self.summary == b.summary &&

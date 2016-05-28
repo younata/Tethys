@@ -27,7 +27,7 @@ public class ScreenEdgePanGestureRecognizer: UIPanGestureRecognizer {
 
 extension ScreenEdgePanGestureRecognizer: UIGestureRecognizerDelegate {
     public func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
-        if let view = self.view, let gestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
+        if let view = self.view, gestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
             let velocity = gestureRecognizer.velocityInView(view)
             guard fabs(velocity.x) > fabs(velocity.y) else { return false }
 

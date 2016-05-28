@@ -3,6 +3,7 @@ import BreakOutToRefresh
 import MAKDropDownMenu
 import Ra
 import CBGPromise
+import Result
 import rNewsKit
 
 // swiftlint:disable file_length
@@ -30,7 +31,7 @@ public class FeedsTableViewController: UIViewController, Injectable {
         let dropDownMenu = MAKDropDownMenu(forAutoLayout: ())
         dropDownMenu.delegate = self
         dropDownMenu.separatorHeight = 1.0 / UIScreen.mainScreen().scale
-        dropDownMenu.buttonsInsets = UIEdgeInsetsMake(dropDownMenu.separatorHeight, 0, 0, 0)
+        dropDownMenu.buttonsInsets = UIEdgeInsets(top: dropDownMenu.separatorHeight, left: 0, bottom: 0, right: 0)
         dropDownMenu.tintColor = UIColor.darkGreenColor()
         dropDownMenu.backgroundColor = UIColor(white: 0.75, alpha: 0.5)
         return dropDownMenu
@@ -91,7 +92,7 @@ public class FeedsTableViewController: UIViewController, Injectable {
     private let settingsViewController: Void -> SettingsViewController
     private let articleListController: Void -> ArticleListController
 
-    private var markReadFuture: Future<Int>? = nil
+    private var markReadFuture: Future<Result<Int, RNewsError>>? = nil
 
     // swiftlint:disable function_parameter_count
     public init(feedRepository: DatabaseUseCase,
@@ -316,8 +317,10 @@ public class FeedsTableViewController: UIViewController, Injectable {
         if let feeds = feeds where (tag == nil || tag?.isEmpty == true) {
             reloadWithFeeds(feeds)
         }
-        self.feedRepository.feedsMatchingTag(tag) {feeds in
-            reloadWithFeeds(feeds)
+        self.feedRepository.feedsMatchingTag(tag).then {
+            if case let Result.Success(feeds) = $0 {
+                reloadWithFeeds(feeds)
+            }
         }
     }
 
@@ -335,8 +338,8 @@ public class FeedsTableViewController: UIViewController, Injectable {
                 buttonTitles.append(NSLocalizedString("FeedsTableViewController_Command_QueryFeed", comment: ""))
             }
             self.dropDownMenu.titles = buttonTitles
-            let navBarHeight = CGRectGetHeight(self.navigationController!.navigationBar.frame)
-            let statusBarHeight = CGRectGetHeight(UIApplication.sharedApplication().statusBarFrame)
+            let navBarHeight = self.navigationController!.navigationBar.frame.height
+            let statusBarHeight = UIApplication.sharedApplication().statusBarFrame.height
             self.menuTopOffset.constant = navBarHeight + statusBarHeight
             self.dropDownMenu.openAnimated(true)
         }

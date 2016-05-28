@@ -1,6 +1,7 @@
 import UIKit
 import Ra
 import rNewsKit
+import Result
 
 public class QueryFeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Injectable {
     public var feed: Feed? = nil {
@@ -157,7 +158,7 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
     }
 
     public func tableView(tableView: UITableView, numberOfRowsInSection sectionNum: Int) -> Int {
-        if let theFeed = feed, let section = FeedSections(rawValue: sectionNum) where section == .Tags {
+        if let theFeed = feed, section = FeedSections(rawValue: sectionNum) where section == .Tags {
             return theFeed.tags.count + 1
         }
         return 1
@@ -271,8 +272,10 @@ public class QueryFeedViewController: UIViewController, UITableViewDelegate, UIT
             let preview = UITableViewRowAction(style: .Normal, title: previewTitle, handler: {(_, _) in
                 let articleListController = self.articleListController()
                 articleListController.previewMode = true
-                self.feedRepository.articlesMatchingQuery(self.feedQuery) {articles in
-                    articleListController.articles = DataStoreBackedArray(articles)
+                self.feedRepository.articlesMatchingQuery(self.feedQuery).then {
+                    if case let Result.Success(articles) = $0 {
+                        articleListController.articles = DataStoreBackedArray(articles)
+                    }
                 }
                 self.navigationController?.pushViewController(articleListController, animated: true)
             })

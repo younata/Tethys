@@ -3,6 +3,7 @@ import Nimble
 import rNews
 import UIKit
 import Ra
+import Result
 import rNewsKit
 
 class LocalNotificationHandlerSpec: QuickSpec {
@@ -62,7 +63,10 @@ class LocalNotificationHandlerSpec: QuickSpec {
         describe("handling notifications") {
             var window: UIWindow! = nil
             var navController: UINavigationController! = nil
-            var article: Article! = nil
+
+            let feed = Feed(title: "feedTitle", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")
+            let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
+            feed.addArticle(article)
             beforeEach {
                 let note = UILocalNotification()
                 note.category = "default"
@@ -73,11 +77,6 @@ class LocalNotificationHandlerSpec: QuickSpec {
                 navController = UINavigationController(rootViewController: injector.create(FeedsTableViewController)!)
                 splitVC.viewControllers = [navController]
 
-                let feed = Feed(title: "feedTitle", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")
-                article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
-                feed.addArticle(article)
-
-                dataRepository.feedsList = [feed]
 
                 window = UIWindow()
                 window.rootViewController = splitVC
@@ -90,59 +89,113 @@ class LocalNotificationHandlerSpec: QuickSpec {
                 window = nil
             }
 
-            it("should open the app and show the article") {
-                expect(navController.viewControllers.count).to(equal(3))
-                if let articleController = (navController.topViewController as? UINavigationController)?.topViewController as? ArticleViewController {
-                    expect(articleController.article).to(equal(article))
+            it("makes a request for the feeds") {
+                expect(dataRepository.feedsPromises.count) == 1
+            }
+
+            context("when the feeds request succeeds with a feed for that article") {
+                beforeEach {
+                    dataRepository.feedsPromises.last?.resolve(.Success([feed]))
+                }
+                it("opens the app and show the article") {
+                    expect(navController.viewControllers.count) == 3
+                    if let articleController = (navController.topViewController as? UINavigationController)?.topViewController as? ArticleViewController {
+                        expect(articleController.article) == article
+                    }
+                }
+            }
+
+            context("when the feeds request succeeds without a feed for that article") {
+                beforeEach {
+                    dataRepository.feedsPromises.last?.resolve(.Success([]))
+                }
+
+                it("just shows the list of feeds") {
+                    expect(navController.viewControllers.count) == 1
+                }
+            }
+
+            context("when the feeds request fails") {
+                beforeEach {
+                    dataRepository.feedsPromises.last?.resolve(.Failure(.Unknown))
+                }
+
+                it("just shows the list of feeds") {
+                    expect(navController.viewControllers.count) == 1
                 }
             }
         }
-        
-        describe("handling actions") {
-            var article: Article! = nil
-            beforeEach {
-                let feed = Feed(title: "feedTitle", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")
-                article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
-                feed.addArticle(article)
 
-                dataRepository.feedsList = [feed]
-            }
+        describe("handling actions") {
+            let feed = Feed(title: "feedTitle", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")
+            let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
+            feed.addArticle(article)
 
             describe("read") {
                 beforeEach {
+                    article.read = false
                     let note = UILocalNotification()
                     note.category = "default"
                     note.userInfo = ["feed": "feedIdentifier", "article": "articleIdentifier"]
                     subject.handleAction("read", notification: note)
                 }
 
-                it("should set the article's read value to true") {
-                    expect(article.read) == true
-                    expect(dataRepository.lastArticleMarkedRead).to(equal(article))
+                it("makes a request for the feeds") {
+                    expect(dataRepository.feedsPromises.count) == 1
+                }
+
+                context("when the feeds request succeeds with a feed for that article") {
+                    beforeEach {
+                        dataRepository.feedsPromises.last?.resolve(.Success([feed]))
+                    }
+
+                    it("should set the article's read value to true") {
+                        expect(article.read) == true
+                        expect(dataRepository.lastArticleMarkedRead) == article
+                    }
+                }
+
+                context("when the feeds request succeeds without a feed for that article") {
+                    beforeEach {
+                        dataRepository.feedsPromises.last?.resolve(.Success([]))
+                    }
+
+                    it("does nothing") { // TODO: FOR NOW! (Should display a notification about the action erroring!)
+                        expect(article.read) == false
+                        expect(dataRepository.lastArticleMarkedRead).to(beNil())
+                    }
+                }
+
+                context("when the feeds request fails") {
+                    beforeEach {
+                        dataRepository.feedsPromises.last?.resolve(.Failure(.Unknown))
+                    }
+
+                    it("does nothing") { // TODO: FOR NOW! (Should display a notification about the action erroring!)
+                        expect(article.read) == false
+                        expect(dataRepository.lastArticleMarkedRead).to(beNil())
+                    }
                 }
             }
         }
         
         describe("sending notifications") {
-            var article: Article! = nil
+            let feed = Feed(title: "feedTitle", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")
+            let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
+            feed.addArticle(article)
+
             beforeEach {
-                let feed = Feed(title: "feedTitle", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")
-                article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
-                feed.addArticle(article)
-
-                dataRepository.feedsList = [feed]
-
                 subject.sendLocalNotification(notificationSource, article: article)
             }
 
-            it("should add a local notification for that article") {
+            it("adds a local notification for that article") {
                 expect(notificationSource.scheduledNotes.count).to(equal(1))
                 if let note = notificationSource.scheduledNotes.first {
                     expect(note.category).to(equal("default"))
                     let feedTitle = article.feed?.displayTitle ?? ""
                     expect(note.alertBody).to(equal("New article in \(feedTitle): \(article.title)"))
                     expect(note.userInfo?.count).to(equal(2))
-                    expect(note.userInfo?["feed"] as? String).to(equal(article.feed?.identifier))
+                    expect(note.userInfo?["feed"] as? String).to(equal(feed.identifier))
                     expect(note.userInfo?["article"] as? String).to(equal(article.identifier))
                 }
             }

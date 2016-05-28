@@ -140,9 +140,9 @@ import JavaScriptCore
         guard let b = object as? Article else {
             return false
         }
-        if let aID = self.articleID as? NSManagedObjectID, let bID = b.articleID as? NSManagedObjectID {
+        if let aID = self.articleID as? NSManagedObjectID, bID = b.articleID as? NSManagedObjectID {
             return aID.URIRepresentation() == bID.URIRepresentation()
-        } else if let aID = self.articleID as? String, let bID = b.articleID as? String {
+        } else if let aID = self.articleID as? String, bID = b.articleID as? String {
             return aID == bID
         }
         return self.title == b.title && self.link == b.link && self.summary == b.summary &&

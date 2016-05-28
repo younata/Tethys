@@ -2,6 +2,7 @@ import UIKit
 import PureLayout
 import SafariServices
 import Ra
+import Result
 import rNewsKit
 
 // swiftlint:disable file_length
@@ -443,15 +444,17 @@ extension SettingsViewController: UITableViewDelegate {
         feedsListController.navigationItem.title = self.titleForQuickAction(indexPath.row)
 
         let quickActions = self.quickActionRepository.quickActions
-        self.feedRepository.feeds {feeds in
-            if !quickActions.isEmpty {
-                let quickActionFeeds = quickActions.indices.reduce([Feed]()) {
-                    guard let feed = self.feedForQuickAction($1, feeds: feeds) else { return $0 }
-                    return $0 + [feed]
+        self.feedRepository.feeds().then {
+            if case let Result.Success(feeds) = $0 {
+                if !quickActions.isEmpty {
+                    let quickActionFeeds = quickActions.indices.reduce([Feed]()) {
+                        guard let feed = self.feedForQuickAction($1, feeds: feeds) else { return $0 }
+                        return $0 + [feed]
+                    }
+                    feedsListController.feeds = feeds.filter { !quickActionFeeds.contains($0) }
+                } else {
+                    feedsListController.feeds = feeds
                 }
-                feedsListController.feeds = feeds.filter { !quickActionFeeds.contains($0) }
-            } else {
-                feedsListController.feeds = feeds
             }
         }
         feedsListController.tapFeed = {feed, _ in

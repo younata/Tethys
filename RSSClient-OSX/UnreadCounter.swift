@@ -57,8 +57,8 @@ public class UnreadCounter: NSView {
 
         let ctx = NSGraphicsContext.currentContext()
         let path = CGPathCreateMutable()
-        let height = CGRectGetHeight(self.bounds)
-        let width = CGRectGetWidth(self.bounds)
+        let height = self.bounds.height
+        let width = self.bounds.width
         CGPathMoveToPoint(path, nil, 0, height)
         CGPathAddLineToPoint(path, nil, width, height)
         CGPathAddLineToPoint(path, nil, width, 0)

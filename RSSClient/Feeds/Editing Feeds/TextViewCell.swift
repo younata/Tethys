@@ -29,11 +29,11 @@ public class TextViewCell: UITableViewCell {
         let bundle = NSBundle(forClass: self.classForCoder)
         let themeFileName = self.themeRepository?.syntaxHighlightFile ?? "mac_classic"
         if let languagePath = bundle.pathForResource("JavaScript", ofType: "tmLanguage"),
-            let languagePlist = NSDictionary(contentsOfFile: languagePath) as? [NSObject: AnyObject],
-            let language = Language(dictionary: languagePlist),
-            let themePath = bundle.pathForResource(themeFileName, ofType: "tmTheme"),
-            let themePlist = NSDictionary(contentsOfFile: themePath) as? [NSObject: AnyObject],
-            let theme = SyntaxKit.Theme(dictionary: themePlist) {
+            languagePlist = NSDictionary(contentsOfFile: languagePath) as? [NSObject: AnyObject],
+            language = Language(dictionary: languagePlist),
+            themePath = bundle.pathForResource(themeFileName, ofType: "tmTheme"),
+            themePlist = NSDictionary(contentsOfFile: themePath) as? [NSObject: AnyObject],
+            theme = SyntaxKit.Theme(dictionary: themePlist) {
                 return AttributedParser(language: language, theme: theme)
         }
         return nil

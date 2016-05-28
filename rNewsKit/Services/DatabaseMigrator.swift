@@ -55,7 +55,7 @@ struct DatabaseMigrator: DatabaseMigratorType {
                             let newArticle = newArticles[idx]
                             articlesDictionary[oldArticle] = newArticle
 
-                            if let oldFeed = oldArticle.feed, let feed = feedsDictionary[oldFeed] {
+                            if let oldFeed = oldArticle.feed, feed = feedsDictionary[oldFeed] {
                                 newArticle.feed = feed
                                 feed.addArticle(newArticle)
                             }
@@ -68,7 +68,7 @@ struct DatabaseMigrator: DatabaseMigratorType {
                             let newEnclosure = newEnclosures[idx]
                             enclosuresDictionary[oldEnclosure] = newEnclosure
 
-                            if let oldArticle = oldEnclosure.article, let article = articlesDictionary[oldArticle] {
+                            if let oldArticle = oldEnclosure.article, article = articlesDictionary[oldArticle] {
                                 newEnclosure.article = article
                                 article.addEnclosure(newEnclosure)
                             }

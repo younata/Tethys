@@ -138,7 +138,7 @@ public class ThemeRepository: NSObject, Injectable {
     public var theme: Theme {
         get {
             if let themeRawValue = self.privateValueForKey("theme") as? Int,
-                let theme = Theme(rawValue: themeRawValue) {
+                theme = Theme(rawValue: themeRawValue) {
                     return theme
             }
             return Theme.Default

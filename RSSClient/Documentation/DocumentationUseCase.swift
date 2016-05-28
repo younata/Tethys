@@ -34,7 +34,7 @@ public struct DefaultDocumentationUseCase: DocumentationUseCase, Injectable {
 
     public func htmlForDocument(document: Document) -> String? {
         if let documentUrl = self.bundle.URLForResource(document.rawValue, withExtension: "html"),
-            let documentString = try? String(contentsOfURL: documentUrl, encoding: NSUTF8StringEncoding) {
+            documentString = try? String(contentsOfURL: documentUrl, encoding: NSUTF8StringEncoding) {
                 return self.cssString() + documentString + self.prismJS() + "</body></html>"
         }
         return nil
@@ -43,7 +43,7 @@ public struct DefaultDocumentationUseCase: DocumentationUseCase, Injectable {
     private func cssString() -> String {
         let cssFileName = self.themeRepository.articleCSSFileName
         if let loc = self.bundle.URLForResource(cssFileName, withExtension: "css"),
-            let cssString = try? String(contentsOfURL: loc, encoding: NSUTF8StringEncoding) {
+            cssString = try? String(contentsOfURL: loc, encoding: NSUTF8StringEncoding) {
                 return "<html><head><style type=\"text/css\">\(cssString)</style></head><body>"
         }
         return "<html><body>"
@@ -51,7 +51,7 @@ public struct DefaultDocumentationUseCase: DocumentationUseCase, Injectable {
 
     private func prismJS() -> String {
         if let loc = self.bundle.URLForResource("prism.js", withExtension: "html"),
-            let prismJS = try? String(contentsOfURL: loc, encoding: NSUTF8StringEncoding) {
+            prismJS = try? String(contentsOfURL: loc, encoding: NSUTF8StringEncoding) {
                 return prismJS
         }
         return ""

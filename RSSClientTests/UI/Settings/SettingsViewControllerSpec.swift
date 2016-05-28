@@ -382,29 +382,51 @@ class SettingsViewControllerSpec: QuickSpec {
                             expect(cell?.textLabel?.text).to(equal("Add a Quick Action"))
                         }
 
-                        it("should bring up a dialog to add a new quick action when the add quick action cell is tapped") {
+                        describe("tapping the add cell") {
                             let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
 
                             let feeds = [
                                 Feed(title: "a", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
                                 Feed(title: "b", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                             ]
-                            feedRepository.feedsList = feeds
 
-                            subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
+                            beforeEach {
+                                subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
+                            }
 
-                            expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
+                            it("makes a request to the data use case for feeds") {
+                                expect(feedRepository.feedsPromises.count) == 1
+                            }
 
-                            if let feedsList = navigationController.visibleViewController as? FeedsListController {
-                                expect(feedsList.navigationItem.title).to(equal("Add a Quick Action"))
-                                expect(feedsList.feeds).to(equal(feeds))
-                                let feed = feeds[0]
-                                feedsList.tapFeed?(feed, 0)
-                                expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
-                                expect(fakeQuickActionRepository.quickActions.count).to(equal(1))
-                                if let quickAction = fakeQuickActionRepository.quickActions.first {
-                                    expect(quickAction.localizedTitle).to(equal(feed.title))
+                            it("displays a list of feeds") {
+                                expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
+                                if let feedsList = navigationController.visibleViewController as? FeedsListController {
+                                    expect(feedsList.navigationItem.title).to(equal("Add a Quick Action"))
+                                    expect(feedsList.feeds.count) == 0
                                 }
+                            }
+
+                            context("when the feeds promise succeeds") {
+                                beforeEach {
+                                    feedRepository.feedsPromises.last?.resolve(.Success(feeds))
+                                }
+
+                                it("sets the list of feeds") {
+                                    if let feedsList = navigationController.visibleViewController as? FeedsListController {
+                                        expect(feedsList.feeds.count) == feeds.count
+                                        let feed = feeds[0]
+                                        feedsList.tapFeed?(feed, 0)
+                                        expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
+                                        expect(fakeQuickActionRepository.quickActions.count).to(equal(1))
+                                        if let quickAction = fakeQuickActionRepository.quickActions.first {
+                                            expect(quickAction.localizedTitle).to(equal(feed.title))
+                                        }
+                                    }
+                                }
+                            }
+
+                            context("when the feeds promise fails") { // TODO: implement!
+
                             }
                         }
 
@@ -423,8 +445,6 @@ class SettingsViewControllerSpec: QuickSpec {
                         let feeds = [feedA, feedB]
 
                         beforeEach {
-                            feedRepository.feedsList = feeds
-
                             fakeQuickActionRepository.quickActions = [UIApplicationShortcutItem(type: "a", localizedTitle: "a")]
                             subject.tableView.reloadData()
                         }
@@ -445,22 +465,45 @@ class SettingsViewControllerSpec: QuickSpec {
                         describe("the cell for an existing quick action") {
                             let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
 
-                            it("should bring up a dialog to change the feed when one of the existing quick action cells is tapped") {
+                            beforeEach {
                                 subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
+                            }
 
+                            it("makes a request to the data use case for feeds") {
+                                expect(feedRepository.feedsPromises.count) == 1
+                            }
+
+                            it("displays a list of feeds cell") {
                                 expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
 
                                 if let feedsList = navigationController.visibleViewController as? FeedsListController {
                                     expect(feedsList.navigationItem.title).to(equal(feedA.title))
-                                    expect(feedsList.feeds).to(equal([feedB]))
-                                    let feed = feeds[1]
-                                    feedsList.tapFeed?(feed, 0)
-                                    expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
-                                    expect(fakeQuickActionRepository.quickActions.count).to(equal(1))
-                                    if let quickAction = fakeQuickActionRepository.quickActions.first {
-                                        expect(quickAction.localizedTitle).to(equal(feed.title))
+                                }
+                            }
+
+                            context("when the feeds promise succeeds") {
+                                beforeEach {
+                                    feedRepository.feedsPromises.last?.resolve(.Success(feeds))
+                                }
+
+                                it("should bring up a dialog to change the feed when one of the existing quick action cells is tapped") {
+                                    expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
+
+                                    if let feedsList = navigationController.visibleViewController as? FeedsListController {
+                                        expect(feedsList.feeds).to(equal([feedB]))
+                                        let feed = feeds[1]
+                                        feedsList.tapFeed?(feed, 0)
+                                        expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
+                                        expect(fakeQuickActionRepository.quickActions.count).to(equal(1))
+                                        if let quickAction = fakeQuickActionRepository.quickActions.first {
+                                            expect(quickAction.localizedTitle).to(equal(feed.title))
+                                        }
                                     }
                                 }
+                            }
+
+                            context("when the feeds promise fails") { // TODO: implement!
+
                             }
 
                             it("should have one edit action, which deletes the quick action when selected") {
@@ -482,22 +525,45 @@ class SettingsViewControllerSpec: QuickSpec {
                         describe("the cell to add a new quick action") {
                             let indexPath = NSIndexPath(forRow: 1, inSection: sectionNumber)
 
-                            it("should bring up a dialog to add a new quick action when the add quick action cell is tapped") {
+                            beforeEach {
                                 subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
+                            }
 
+                            it("makes a request to the data use case for feeds") {
+                                expect(feedRepository.feedsPromises.count) == 1
+                            }
+
+                            it("displays a list of feeds cell") {
                                 expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
 
                                 if let feedsList = navigationController.visibleViewController as? FeedsListController {
                                     expect(feedsList.navigationItem.title).to(equal("Add a new Quick Action"))
-                                    expect(feedsList.feeds).to(equal([feedB]))
-                                    let feed = feeds[1]
-                                    feedsList.tapFeed?(feed, 0)
-                                    expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
-                                    expect(fakeQuickActionRepository.quickActions.count).to(equal(2))
-                                    if let quickAction = fakeQuickActionRepository.quickActions.last {
-                                        expect(quickAction.localizedTitle).to(equal(feed.title))
+                                }
+                            }
+
+                            context("when the feeds promise succeeds") {
+                                beforeEach {
+                                    feedRepository.feedsPromises.last?.resolve(.Success(feeds))
+                                }
+
+                                it("should bring up a dialog to change the feed when one of the existing quick action cells is tapped") {
+                                    expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
+
+                                    if let feedsList = navigationController.visibleViewController as? FeedsListController {
+                                        expect(feedsList.feeds).to(equal([feedB]))
+                                        let feed = feeds[1]
+                                        feedsList.tapFeed?(feed, 0)
+                                        expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
+                                        expect(fakeQuickActionRepository.quickActions.count).to(equal(2))
+                                        if let quickAction = fakeQuickActionRepository.quickActions.last {
+                                            expect(quickAction.localizedTitle).to(equal(feed.title))
+                                        }
                                     }
                                 }
+                            }
+                            
+                            context("when the feeds promise fails") { // TODO: implement!
+                                
                             }
 
                             it("should not have any edit actions") {
@@ -523,7 +589,6 @@ class SettingsViewControllerSpec: QuickSpec {
                         beforeEach {
                             fakeQuickActionRepository.quickActions = [firstShortcut, secondShortcut, thirdShortcut]
 
-                            feedRepository.feedsList = feeds
                             subject.tableView.reloadData()
                         }
 
@@ -543,23 +608,50 @@ class SettingsViewControllerSpec: QuickSpec {
                             expect(thirdCell?.textLabel?.text).to(equal("c"))
                         }
 
-                        it("should bring up a dialog to change the feed when one of the existing quick action cells is tapped") {
+                        describe("when one of the existing quick action cells is tapped") {
                             let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
 
-                            subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
+                            beforeEach {
+                                subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
+                            }
 
-                            expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
+                            it("displays a list of feeds to change to") {
+                                expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
 
-                            if let feedsList = navigationController.visibleViewController as? FeedsListController {
-                                expect(feedsList.navigationItem.title).to(equal(feedA.title))
-                                expect(feedsList.feeds).to(equal([feedD]))
-                                let feed = feeds[3]
-                                feedsList.tapFeed?(feed, 0)
-                                expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
-                                expect(fakeQuickActionRepository.quickActions.count).to(equal(3))
-                                if let quickAction = fakeQuickActionRepository.quickActions.first {
-                                    expect(quickAction.localizedTitle).to(equal(feed.title))
+                                if let feedsList = navigationController.visibleViewController as? FeedsListController {
+                                    expect(feedsList.navigationItem.title).to(equal(feedA.title))
+                                    expect(feedsList.feeds) == []
                                 }
+                            }
+
+                            it("makes a request for the list of feeds") {
+                                expect(feedRepository.feedsPromises.count) == 1
+                            }
+
+                            context("when the feeds promise succeeds") {
+                                beforeEach {
+                                    feedRepository.feedsPromises.last?.resolve(.Success(feeds))
+                                }
+
+                                it("should bring up a dialog to change the feed") {
+                                    expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
+
+                                    if let feedsList = navigationController.visibleViewController as? FeedsListController {
+                                        expect(feedsList.navigationItem.title).to(equal(feedA.title))
+                                        expect(feedsList.feeds).to(equal([feedD]))
+                                        let feed = feeds[3]
+                                        feedsList.tapFeed?(feed, 0)
+                                        expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
+                                        expect(fakeQuickActionRepository.quickActions.count).to(equal(3))
+                                        if let quickAction = fakeQuickActionRepository.quickActions.first {
+                                            expect(quickAction.localizedTitle).to(equal(feed.title))
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            context("when the feeds promise fails") { // TODO: implement!
+                                
                             }
                         }
 

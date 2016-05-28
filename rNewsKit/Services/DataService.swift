@@ -166,7 +166,7 @@ extension DataService {
                 attributes.timestamp = article.updatedAt ?? article.published
                 attributes.authorNames = article.authors.map { $0.name }
 
-                if let image = article.feed?.image, let data = UIImagePNGRepresentation(image) {
+                if let image = article.feed?.image, data = UIImagePNGRepresentation(image) {
                     attributes.thumbnailData = data
                 }
 

@@ -13,7 +13,8 @@ public class AuthorActivity: UIActivity {
     }
 
     public override func activityTitle() -> String? {
-        return String.localizedStringWithFormat(NSLocalizedString("AuthorActivity_Title", comment: ""), self.author.name)
+        let formatString = NSLocalizedString("AuthorActivity_Title", comment: "")
+        return String.localizedStringWithFormat(formatString, self.author.name)
     }
 
     public override func activityImage() -> UIImage? {

@@ -1,6 +1,7 @@
 import UIKit
 import Ra
 import rNewsKit
+import Result
 import CoreSpotlight
 
 @UIApplicationMain
@@ -100,12 +101,17 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 completionHandler(true)
             } else if let feedTitle = shortcutItem.userInfo?["feed"] as? String
                 where shortcutItem.type == "com.rachelbrindle.RSSClient.viewfeed" {
-                    self.feedRepository.feeds {feeds in
-                        if let feed = feeds.filter({ return $0.title == feedTitle }).first {
-                            feedsViewController.showFeeds([feed], animated: false)
-                            completionHandler(true)
+                // swiftlint:disable conditional_binding_cascade
+                    self.feedRepository.feeds().then {
+                        if case let Result.Success(feeds) = $0,
+                            let feed = feeds.filter({ return $0.title == feedTitle }).first {
+                                feedsViewController.showFeeds([feed], animated: false)
+                                completionHandler(true)
+                        } else {
+                            completionHandler(false)
                         }
                     }
+                // swiftlint:enable conditional_binding_cascade
             } else {
                 completionHandler(false)
             }
@@ -142,12 +148,14 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             let type = userActivity.activityType
             if type == "com.rachelbrindle.rssclient.article",
                 let userInfo = userActivity.userInfo,
-                let feedTitle = userInfo["feed"] as? String,
-                let articleID = userInfo["article"] as? String {
-                    self.feedRepository.feeds {feeds in
-                        if let feed = feeds.filter({ return $0.title == feedTitle }).first,
-                            let article = feed.articlesArray.filter({ $0.identifier == articleID }).first {
-                                self.createControllerHierarchy(feed, article: article)
+                feedTitle = userInfo["feed"] as? String,
+                articleID = userInfo["article"] as? String {
+                    self.feedRepository.feeds().then() {
+                        if case let Result.Success(feeds) = $0 {
+                            if let feed = feeds.filter({ return $0.title == feedTitle }).first,
+                                article = feed.articlesArray.filter({ $0.identifier == articleID }).first {
+                                    self.createControllerHierarchy(feed, article: article)
+                            }
                         }
                     }
                     return true
@@ -155,12 +163,13 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             if #available(iOS 9.0, *) {
                 if type == CSSearchableItemActionType,
                     let uniqueID = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
-                        self.feedRepository.feeds {feeds in
+                        self.feedRepository.feeds().then {
+                            guard case let Result.Success(feeds) = $0 else { return }
                             guard let article = feeds.reduce(Array<Article>(), combine: {articles, feed in
                                 return articles + Array(feed.articlesArray)
                             }).filter({ article in
                                     return article.identifier == uniqueID
-                            }).first, let feed = article.feed else {
+                            }).first, feed = article.feed else {
                                 return
                             }
                             self.createControllerHierarchy(feed, article: article)

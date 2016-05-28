@@ -77,14 +77,15 @@ class ImportUseCaseSpec: QuickSpec {
                         }
 
                         it("asks the feed repository for a list of all feeds") {
-                            expect(feedRepository.didAskForFeeds) == true
+                            expect(feedRepository.feedsPromises.count) > 0
                         }
 
-                        describe("when the feed repository returns") {
+                        describe("when the feed repository succeeds") {
                             context("and a feed with the proposed feed url is in the feeds list") {
                                 beforeEach {
                                     let existingFeed = Feed(title: "", url: url, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                                    feedRepository.feedsCallback?([existingFeed])
+
+                                    feedRepository.feedsPromises.first?.resolve(.Success([existingFeed]))
                                 }
 
                                 it("does not ask the feed repository to import the feed") {
@@ -98,7 +99,7 @@ class ImportUseCaseSpec: QuickSpec {
 
                             context("and a feed with the proposed feed url is not in the feeds list") {
                                 beforeEach {
-                                    feedRepository.feedsCallback?([])
+                                    feedRepository.feedsPromises.first?.resolve(.Success([]))
                                 }
 
                                 it("asks the feed repository to import the feed") {
@@ -133,6 +134,13 @@ class ImportUseCaseSpec: QuickSpec {
                                     }
                                 }
                             }
+                        }
+
+                        describe("when the feed repository fails") {
+                            beforeEach {
+                                feedRepository.feedsPromises.first?.resolve(.Failure(.Unknown))
+                            }
+                            // TODO: implement the sad path
                         }
                     }
                 }
@@ -205,14 +213,15 @@ class ImportUseCaseSpec: QuickSpec {
                         }
 
                         it("asks the feed repository for a list of all feeds") {
-                            expect(feedRepository.didAskForFeeds) == true
+                            expect(feedRepository.feedsPromises.count) > 0
                         }
 
-                        describe("when the feed repository returns") {
+                        describe("when the feed repository succeeds") {
                             context("and a feed with the proposed feed url is in the feeds list") {
                                 beforeEach {
                                     let existingFeed = Feed(title: "", url: feed1Url, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                                    feedRepository.feedsCallback?([existingFeed])
+
+                                    feedRepository.feedsPromises.first?.resolve(.Success([existingFeed]))
                                 }
 
                                 it("does not ask the feed repository to import the feed") {
@@ -226,7 +235,7 @@ class ImportUseCaseSpec: QuickSpec {
 
                             context("and a feed with the proposed feed url is not in the feeds list") {
                                 beforeEach {
-                                    feedRepository.feedsCallback?([])
+                                    feedRepository.feedsPromises.first?.resolve(.Success([]))
                                 }
 
                                 it("asks the feed repository to import the feed") {
@@ -261,6 +270,13 @@ class ImportUseCaseSpec: QuickSpec {
                                     }
                                 }
                             }
+                        }
+
+                        describe("when the feed repository fails") {
+                            beforeEach {
+                                feedRepository.feedsPromises.first?.resolve(.Failure(.Unknown))
+                            }
+                            // TODO: implement the sad path
                         }
                     }
                 }
@@ -304,14 +320,15 @@ class ImportUseCaseSpec: QuickSpec {
                         }
 
                         it("asks the feed repository for the most recent list of feeds") {
-                            expect(feedRepository.didAskForFeeds) == true
+                            expect(feedRepository.feedsPromises.count) > 0
                         }
 
-                        describe("when the feeds come back") {
+                        describe("when the feeds repository succeeds") {
                             context("and a feed with the proposed feed url is in the feeds list") {
                                 beforeEach {
                                     let existingFeed = Feed(title: "", url: NSURL(string: "http://iotlist.co/posts.atom"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                                    feedRepository.feedsCallback?([existingFeed])
+
+                                    feedRepository.feedsPromises.first?.resolve(.Success([existingFeed]))
                                 }
 
                                 it("does not ask the feed repository to import the feed") {
@@ -325,7 +342,7 @@ class ImportUseCaseSpec: QuickSpec {
 
                             context("and a feed with the proposed feed url is not in the feeds list") {
                                 beforeEach {
-                                    feedRepository.feedsCallback?([])
+                                    feedRepository.feedsPromises.first?.resolve(.Success([]))
                                 }
 
                                 it("asks the feed repository to import the feed") {
@@ -360,6 +377,13 @@ class ImportUseCaseSpec: QuickSpec {
                                     }
                                 }
                             }
+                        }
+
+                        describe("when the feed repository fails") {
+                            beforeEach {
+                                feedRepository.feedsPromises.first?.resolve(.Failure(.Unknown))
+                            }
+                            // TODO: implement the sad path
                         }
                     }
                 }

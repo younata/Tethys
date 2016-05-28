@@ -60,7 +60,15 @@ class TagEditorViewControllerSpec: QuickSpec {
             expect(subject.navigationItem.rightBarButtonItem?.title).to(equal("Save"))
         }
 
-        describe("tapping the save button") {
+        it("asks for the list of all tags") {
+            expect(dataRepository.allTagsPromises.count) == 1
+        }
+
+        describe("when the tags promise successfully resolves with tags") {
+            beforeEach {
+                dataRepository.allTagsPromises.last?.resolve(.Success(["a"]))
+            }
+
             context("when there is data to save") {
                 beforeEach {
                     subject.tagPicker.textField(subject.tagPicker.textField, shouldChangeCharactersInRange: NSMakeRange(0, 0), replacementString: "a")
@@ -69,7 +77,7 @@ class TagEditorViewControllerSpec: QuickSpec {
 
                 it("should save the feed, with the added tag") {
                     let newFeed = Feed(title: "title", url: NSURL(string: ""), summary: "", query: nil, tags: ["a"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    expect(dataRepository.lastSavedFeed).to(equal(newFeed))
+                    expect(dataRepository.lastSavedFeed) == newFeed
                 }
 
                 it("should pop the navigation controller") {
@@ -81,6 +89,26 @@ class TagEditorViewControllerSpec: QuickSpec {
                 it("should not even be enabled") {
                     expect(subject.navigationItem.rightBarButtonItem?.enabled) == false
                 }
+            }
+        }
+
+        describe("when the tags promise successfully resolves without tags") {
+            beforeEach {
+                dataRepository.allTagsPromises.last?.resolve(.Success([]))
+            }
+
+            it("disables the save button") {
+                expect(subject.navigationItem.rightBarButtonItem?.enabled) == false
+            }
+        }
+
+        describe("when tha tags promise errors out") {
+            beforeEach {
+                dataRepository.allTagsPromises.last?.resolve(.Failure(.Unknown))
+            }
+
+            it("disables the save button") {
+                expect(subject.navigationItem.rightBarButtonItem?.enabled) == false
             }
         }
     }

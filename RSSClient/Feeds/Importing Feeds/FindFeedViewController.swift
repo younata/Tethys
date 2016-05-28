@@ -181,7 +181,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         if originalText.lowercaseString.hasPrefix("http") == false {
             textField.text = "http://\(originalText)"
         }
-        if let text = textField.text, let url = NSURL(string: text) {
+        if let text = textField.text, url = NSURL(string: text) {
             self.webContent.loadRequest(NSURLRequest(URL: url))
         } else if let url = NSURL(string: "https://duckduckgo.com/?q=" +
                 originalText.stringByReplacingOccurrencesOfString(" ", withString: "+")) {

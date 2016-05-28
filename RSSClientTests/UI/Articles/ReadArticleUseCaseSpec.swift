@@ -27,10 +27,10 @@ class ArticleUseCaseSpec: QuickSpec {
             }
 
             it("asks the feed repository for all feeds") {
-                expect(feedRepository.feedsCallback).toNot(beNil())
+                expect(feedRepository.feedsPromises.count) == 1
             }
 
-            describe("when the feeds returns") {
+            context("when the feeds promise resolves successfully") {
                 let article1 = Article(title: "a", link: nil, summary: "", authors: [Author(name: "author", email: nil)], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
                 let article2 = Article(title: "b", link: nil, summary: "", authors: [Author(name: "foo", email: nil)], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
                 let article3 = Article(title: "c", link: nil, summary: "", authors: [Author(name: "author", email: nil)], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
@@ -44,11 +44,21 @@ class ArticleUseCaseSpec: QuickSpec {
                 article4.feed = feed2
 
                 beforeEach {
-                    feedRepository.feedsCallback?([feed1, feed2])
+                    feedRepository.feedsPromises.last?.resolve(.Success([feed1, feed2]))
                 }
 
                 it("calls the callback with a list of articles from those feeds filtered by article") {
                     expect(receivedArticles) == [article1, article3]
+                }
+            }
+
+            context("when the feeds promise fails") {
+                beforeEach {
+                    feedRepository.feedsPromises.last?.resolve(.Failure(.Unknown))
+                }
+
+                it("calls the callback with nothing") {
+                    expect(receivedArticles) == []
                 }
             }
         }

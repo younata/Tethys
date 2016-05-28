@@ -1,5 +1,6 @@
 import UIKit
 import Ra
+import Result
 import rNewsKit
 
 public class TagEditorViewController: UIViewController, Injectable {
@@ -48,13 +49,16 @@ public class TagEditorViewController: UIViewController, Injectable {
 
         self.tagPicker.translatesAutoresizingMaskIntoConstraints = false
         self.tagPicker.themeRepository = self.themeRepository
-        self.feedRepository.allTags { tags in
-            self.tagPicker.configureWithTags(tags) {
-                self.tag = $0
+        self.feedRepository.allTags().then {
+            if case let Result.Success(tags) = $0 {
+                self.tagPicker.configureWithTags(tags) {
+                    self.tag = $0
+                }
             }
         }
         self.view.addSubview(self.tagPicker)
-        self.tagPicker.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsMake(16, 8, 0, 8), excludingEdge: .Bottom)
+        self.tagPicker.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsets(top: 16, left: 8, bottom: 0, right: 8),
+                                                              excludingEdge: .Bottom)
 
         self.view.addSubview(self.tagLabel)
         self.tagLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
@@ -72,7 +76,7 @@ public class TagEditorViewController: UIViewController, Injectable {
     }
 
     @objc private func save() {
-        if let feed = self.feed, let tag = tag {
+        if let feed = self.feed, tag = tag {
             feed.addTag(tag)
             self.feedRepository.saveFeed(feed)
             self.feed = feed

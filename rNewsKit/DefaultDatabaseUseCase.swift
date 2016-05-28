@@ -69,16 +69,17 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
 
     //MARK: - DataRetriever
 
-    func allTags(callback: [String] -> Void) {
-        self.feeds { feeds in
-            let setOfTags = feeds.reduce(Set<String>()) {set, feed in set.union(Set(feed.tags)) }
-            let tags = Array(setOfTags).sort { return $0.lowercaseString < $1.lowercaseString }
-            callback(tags)
+    func allTags() -> Future<Result<[String], RNewsError>> {
+        return self.feeds().map {
+            return $0.map { feeds in
+                let setOfTags = feeds.reduce(Set<String>()) {set, feed in set.union(Set(feed.tags)) }
+                return Array(setOfTags).sort { return $0.lowercaseString < $1.lowercaseString }
+            }
         }
     }
 
-    func feeds(callback: [Feed] -> Void) {
-        self.allFeeds(callback)
+    func feeds() -> Future<Result<[Feed], RNewsError>> {
+        return self.allFeeds()
     }
 
     func articlesOfFeeds(feeds: [Feed], matchingSearchQuery query: String) -> DataStoreBackedArray<Article> {
@@ -99,19 +100,19 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
             return articles.filterWithPredicate(compoundPredicate)
     }
 
-    func articlesMatchingQuery(query: String, callback: ([Article]) -> (Void)) {
-        self.feeds { feeds in
-            let queriedArticles = self.articlesMatchingQuery(query, feeds: feeds)
-            callback(queriedArticles)
+    func articlesMatchingQuery(query: String) -> Future<Result<[Article], RNewsError>> {
+        return self.feeds().map { result in
+            return result.map { feeds in
+                return self.articlesMatchingQuery(query, feeds: feeds)
+            }
         }
     }
 
     // MARK: Private (DataRetriever)
 
-    private func allFeeds(callback: [Feed] -> Void) {
-        self.dataService.allFeeds().then { result in
-            switch result {
-            case let .Success(unsorted_feeds):
+    private func allFeeds() -> Future<Result<[Feed], RNewsError>> {
+        return self.dataService.allFeeds().map { result in
+            return result.map { unsorted_feeds in
                 let unsorted = Array(unsorted_feeds)
                 let feeds = unsorted.sort { return $0.displayTitle < $1.displayTitle }
 
@@ -121,9 +122,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
                     let articles = self.articlesMatchingQuery(feed.query!, feeds: nonQueryFeeds)
                     articles.forEach { feed.addArticle($0) }
                 }
-                callback(feeds)
-            default:
-                callback([])
+                return feeds
             }
         }
     }
@@ -146,6 +145,9 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     // MARK: DataWriter
 
     private let subscribers = NSHashTable.weakObjectsHashTable()
+    private var allSubscribers: [DataSubscriber] {
+        return self.subscribers.allObjects.flatMap { $0 as? DataSubscriber }
+    }
 
     func addSubscriber(subscriber: DataSubscriber) {
         subscribers.addObject(subscriber)
@@ -160,28 +162,30 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     }
 
     func deleteFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {
-        return self.dataService.deleteFeed(feed).then { result in
+        return self.dataService.deleteFeed(feed).map { result -> Result<Void, RNewsError> in
             switch result {
             case .Success:
-                self.feeds {
-                    for object in self.subscribers.allObjects {
-                        if let subscriber = object as? DataSubscriber {
-                            subscriber.deletedFeed(feed, feedsLeft: $0.count)
+                self.feeds().then { feedsResult in
+                    feedsResult.map { (feeds: [Feed]) -> Void in
+                        for subscriber in self.allSubscribers {
+                            subscriber.deletedFeed(feed, feedsLeft: feeds.count)
                         }
                     }
                 }
+                return .Success()
             case let .Failure(error):
-                print(error)
-                return
+                return .Failure(error)
             }
         }
     }
 
-    func markFeedAsRead(feed: Feed) -> Future<Int> {
+    func markFeedAsRead(feed: Feed) -> Future<Result<Int, RNewsError>> {
         let articles = feed.articlesArray.filterWithPredicate(NSPredicate(format: "read != 1"))
-        return self.privateMarkArticles(Array(articles), asRead: true).map { (articlesCount: Int) -> Int in
-            feed.resetUnreadArticles()
-            return articlesCount
+        return self.privateMarkArticles(Array(articles), asRead: true).map {
+            return $0.map { articlesCount in
+                feed.resetUnreadArticles()
+                return articlesCount
+            }
         }
     }
 
@@ -199,9 +203,14 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         }
     }
 
-    func markArticle(article: Article, asRead: Bool) -> Future<Void> {
-        return self.privateMarkArticles([article], asRead: asRead).map { _ -> Void in
-            return
+    func markArticle(article: Article, asRead: Bool) -> Future<Result<Void, RNewsError>> {
+        return self.privateMarkArticles([article], asRead: asRead).map { result -> Result<Void, RNewsError> in
+            switch result {
+            case .Success(_):
+                return .Success()
+            case let .Failure(error):
+                return .Failure(error)
+            }
         }
     }
 
@@ -210,25 +219,27 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         self.updatingFeedsCallbacks.append(callback)
         guard self.updatingFeedsCallbacks.count == 1 else { return }
 
-        self.feeds {feeds in
-            guard feeds.isEmpty == false && self.reachable?.hasNetworkConnectivity == true else {
-                self.updatingFeedsCallbacks.forEach { $0([], []) }
-                self.updatingFeedsCallbacks = []
-                return
-            }
-
-            self.privateUpdateFeeds(feeds) {updatedFeeds, errors in
-                for updateCallback in self.updatingFeedsCallbacks {
-                    self.mainQueue.addOperationWithBlock { updateCallback(updatedFeeds, errors) }
+        self.feeds().map { result in
+            return result.map { feeds in
+                guard feeds.isEmpty == false && self.reachable?.hasNetworkConnectivity == true else {
+                    self.updatingFeedsCallbacks.forEach { $0([], []) }
+                    self.updatingFeedsCallbacks = []
+                    return
                 }
-                for object in self.subscribers.allObjects {
-                    if let subscriber = object as? DataSubscriber {
-                        self.mainQueue.addOperationWithBlock {
-                            subscriber.didUpdateFeeds(updatedFeeds)
+
+                self.privateUpdateFeeds(feeds) {updatedFeeds, errors in
+                    for updateCallback in self.updatingFeedsCallbacks {
+                        self.mainQueue.addOperationWithBlock { updateCallback(updatedFeeds, errors) }
+                    }
+                    for object in self.subscribers.allObjects {
+                        if let subscriber = object as? DataSubscriber {
+                            self.mainQueue.addOperationWithBlock {
+                                subscriber.didUpdateFeeds(updatedFeeds)
+                            }
                         }
                     }
+                    self.updatingFeedsCallbacks = []
                 }
-                self.updatingFeedsCallbacks = []
             }
         }
     }
@@ -252,10 +263,10 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
 
     //MARK: Private (DataWriter)
 
-    private func privateMarkArticles(articles: [Article], asRead read: Bool) -> Future<Int> {
+    private func privateMarkArticles(articles: [Article], asRead read: Bool) -> Future<Result<Int, RNewsError>> {
         guard articles.count > 0 else {
-            let promise = Promise<Int>()
-            promise.resolve(0)
+            let promise = Promise<Result<Int, RNewsError>>()
+            promise.resolve(.Success(0))
             return promise.future
         }
 
@@ -263,13 +274,15 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         for article in articles {
             article.read = read
         }
-        return self.dataService.batchSave([], articles: articles, enclosures: []).map { _ -> Int in
-            for object in self.subscribers.allObjects {
-                if let subscriber = object as? DataSubscriber {
-                    subscriber.markedArticles(articles, asRead: read)
+        return self.dataService.batchSave([], articles: articles, enclosures: []).map { result in
+            return result.map {
+                for object in self.subscribers.allObjects {
+                    if let subscriber = object as? DataSubscriber {
+                        subscriber.markedArticles(articles, asRead: read)
+                    }
                 }
+                return amountToChange
             }
-            return amountToChange
         }
     }
 
@@ -320,8 +333,13 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
 
                 feedsLeft -= 1
                 if feedsLeft == 0 {
-                    self.allFeeds {
-                        callback($0, errors)
+                    self.allFeeds().then { result in
+                        switch result {
+                        case let .Success(feeds):
+                            callback(feeds, errors)
+                        default:
+                            break
+                        }
                     }
                 }
             }

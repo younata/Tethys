@@ -4,6 +4,7 @@ import Nimble
 import Ra
 import CoreData
 import CBGPromise
+import Result
 #if os(iOS)
     import CoreSpotlight
     import MobileCoreServices
@@ -176,42 +177,55 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
         describe("as a DataRetriever") {
             describe("allTags") {
                 var calledHandler = false
-                var tags: [String] = []
+                var calledResults: Result<[String], RNewsError>?
 
                 beforeEach {
                     calledHandler = false
 
-                    subject.allTags {
+                    subject.allTags().then {
                         calledHandler = true
-                        tags = $0
+                        calledResults = $0
                     }
                 }
 
                 it("should return a list of all tags") {
                     expect(calledHandler) == true
-                    expect(tags).to(equal(["a", "b", "c", "d", "dad"]))
+                    expect(calledResults).toNot(beNil())
+                    switch calledResults! {
+                    case let .Success(tags):
+                        expect(tags) == ["a", "b", "c", "d", "dad"]
+                    case .Failure(_):
+                        expect(false) == true
+                    }
+
                 }
             }
 
             describe("feeds") {
                 var calledHandler = false
-                var calledFeeds: [Feed] = []
+                var calledResults: Result<[Feed], RNewsError>?
 
                 beforeEach {
                     calledHandler = false
 
-                    subject.feeds {
+                    subject.feeds().then {
                         calledHandler = true
-                        calledFeeds = $0
+                        calledResults = $0
                     }
                 }
 
                 it("returns the list of all feeds") {
                     expect(calledHandler) == true
-                    expect(calledFeeds).to(equal(feeds))
-                    for (idx, feed) in feeds.enumerate() {
-                        let calledFeed = calledFeeds[idx]
-                        expect(calledFeed.articlesArray == feed.articlesArray) == true
+                    expect(calledResults).toNot(beNil())
+                    switch calledResults! {
+                    case let .Success(receivedFeeds):
+                        expect(receivedFeeds) == feeds
+                        for (idx, feed) in feeds.enumerate() {
+                            let receivedFeed = receivedFeeds[idx]
+                            expect(receivedFeed.articlesArray == feed.articlesArray) == true
+                        }
+                    case .Failure(_):
+                        expect(false) == true
                     }
                 }
             }
@@ -225,20 +239,26 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
 
             describe("articlesMatchingQuery") {
                 var calledHandler = false
-                var calledArticles: [Article] = []
+                var calledResults: Result<[Article], RNewsError>? = nil
 
                 beforeEach {
                     calledHandler = false
 
-                    subject.articlesMatchingQuery("function(article) {return !article.read;}") {
+                    subject.articlesMatchingQuery("function(article) {return !article.read;}").then {
                         calledHandler = true
-                        calledArticles = $0
+                        calledResults = $0
                     }
                 }
 
                 it("should execute the javascript query upon all articles to compile the query feed") {
                     expect(calledHandler) == true
-                    expect(calledArticles) == [article1]
+                    expect(calledResults).toNot(beNil())
+                    switch calledResults! {
+                    case let .Success(articles):
+                        expect(articles) == [article1]
+                    case .Failure(_):
+                        expect(false) == true
+                    }
                 }
             }
         }
@@ -275,7 +295,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
             }
 
             describe("markFeedAsRead") {
-                var markedReadFuture: Future<Int>?
+                var markedReadFuture: Future<Result<Int, RNewsError>>?
                 beforeEach {
                     markedReadFuture = subject.markFeedAsRead(feed1)
                 }
@@ -292,7 +312,14 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                 }
 
                 it("resolves the promise with the number of articles marked read") {
-                    expect(markedReadFuture?.value) == 1
+                    expect(markedReadFuture?.value).toNot(beNil())
+                    let calledResults = markedReadFuture!.value!
+                    switch calledResults {
+                    case let .Success(value):
+                        expect(value) == 1
+                    case .Failure(_):
+                        expect(false) == true
+                    }
                 }
             }
 

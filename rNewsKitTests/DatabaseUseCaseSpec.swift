@@ -1,5 +1,7 @@
 import Quick
 import Nimble
+import CBGPromise
+import Result
 @testable import rNewsKit
 
 class DatabaseUseCaseSpec: QuickSpec {
@@ -12,57 +14,160 @@ class DatabaseUseCaseSpec: QuickSpec {
             Feed(title: "4", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
         ]
 
-        let article1 = Article(title: "b", link: NSURL(string: "https://example.com/article1.html"),
-                           summary: "<p>Hello world!</p>", authors: [], published: NSDate(), updatedAt: nil, identifier: "article1",
-                           content: "", read: false, estimatedReadingTime: 0, feed: feeds[0], flags: [], enclosures: [])
-
-        let article2 = Article(title: "c", link: NSURL(string: "https://example.com/article2.html"),
-                           summary: "<p>Hello world!</p>", authors: [], published: NSDate(), updatedAt: nil, identifier: "article2",
-                           content: "", read: true, estimatedReadingTime: 0, feed: feeds[0], flags: [], enclosures: [])
-
-
         beforeEach {
             subject = FakeDatabaseUseCase()
         }
 
         describe("feedsMatchingTag:") {
-            var calledHandler = false
-            var calledFeeds: [Feed] = []
-
-            beforeEach {
-                calledHandler = false
-            }
+            var feedsTagPromise: Future<Result<[Feed], RNewsError>>? = nil
 
             context("without a tag") {
-                it("should return all the feeds when nil tag is given") {
-                    subject.feedsMatchingTag(nil) {
-                        calledHandler = true
-                        calledFeeds = $0
+                context("when a nil tag is given") {
+                    beforeEach {
+                        feedsTagPromise = subject.feedsMatchingTag(nil)
                     }
 
-                    subject.feedsCallback?(feeds)
+                    it("returns an in-progress promise") {
+                        expect(feedsTagPromise).toNot(beNil())
+                        expect(feedsTagPromise?.value).to(beNil())
+                    }
 
-                    expect(calledHandler) == true
-                    expect(calledFeeds).to(equal(feeds))
+                    it("makes a call to the implemented feeds") {
+                        expect(subject.feedsPromises.count) == 1
+                    }
+
+                    it("returns all the feeds when feeds promise returns successfully") {
+                        guard let feedsPromise = subject.feedsPromises.first else { return }
+
+                        feedsPromise.resolve(.Success(feeds))
+
+                        if let calledResults = feedsTagPromise?.value {
+                            switch calledResults {
+                            case let .Success(receivedFeeds):
+                                expect(receivedFeeds) == feeds
+                            case .Failure(_):
+                                expect(false) == true
+                            }
+                        } else {
+                            expect(false) == true
+                        }
+                    }
+
+                    it("forwards the error when the feeds promise errors") {
+                        guard let feedsPromise = subject.feedsPromises.first else { return }
+
+                        feedsPromise.resolve(.Failure(.Unknown))
+
+                        if let calledResults = feedsTagPromise?.value {
+                            switch calledResults {
+                            case .Success(_):
+                                expect(false) == true
+                            case let .Failure(error):
+                                expect(error) == RNewsError.Unknown
+                            }
+                        } else {
+                            expect(false) == true
+                        }
+                    }
                 }
 
-                it("should return all the feeds when empty string is given as the tag") {
-                    subject.feedsMatchingTag("") {
-                        calledHandler = true
-                        calledFeeds = $0
+                context("when an empty string is given") {
+                    beforeEach {
+                        feedsTagPromise = subject.feedsMatchingTag("")
                     }
-                    subject.feedsCallback?(feeds)
-                    expect(calledFeeds).to(equal(feeds))
+
+                    it("returns an in-progress promise") {
+                        expect(feedsTagPromise).toNot(beNil())
+                        expect(feedsTagPromise?.value).to(beNil())
+                    }
+
+                    it("makes a call to the implemented feeds") {
+                        expect(subject.feedsPromises.count) == 1
+                    }
+
+                    it("returns all the feeds when feeds promise returns successfully") {
+                        guard let feedsPromise = subject.feedsPromises.first else { return }
+
+                        feedsPromise.resolve(.Success(feeds))
+
+                        if let calledResults = feedsTagPromise?.value {
+                            switch calledResults {
+                            case let .Success(receivedFeeds):
+                                expect(receivedFeeds) == feeds
+                            case .Failure(_):
+                                expect(false) == true
+                            }
+                        } else {
+                            expect(false) == true
+                        }
+                    }
+
+                    it("forwards the error when the feeds promise errors") {
+                        guard let feedsPromise = subject.feedsPromises.first else { return }
+
+                        feedsPromise.resolve(.Failure(.Unknown))
+
+                        if let calledResults = feedsTagPromise?.value {
+                            switch calledResults {
+                            case .Success(_):
+                                expect(false) == true
+                            case let .Failure(error):
+                                expect(error) == RNewsError.Unknown
+                            }
+                        } else {
+                            expect(false) == true
+                        }
+                    }
                 }
             }
 
-            it("should return feeds that partially match a tag") {
-                subject.feedsMatchingTag("a") {
-                    calledHandler = true
-                    calledFeeds = $0
+            context("with a tag") {
+                beforeEach {
+                    feedsTagPromise = subject.feedsMatchingTag("a")
                 }
-                subject.feedsCallback?(feeds)
-                expect(calledFeeds) == [feeds[0], feeds[2]]
+
+                it("returns an in-progress promise") {
+                    expect(feedsTagPromise).toNot(beNil())
+                    expect(feedsTagPromise?.value).to(beNil())
+                }
+
+                it("makes a call to the implemented feeds") {
+                    expect(subject.feedsPromises.count) == 1
+                }
+
+                it("returns all the feeds when feeds promise returns successfully") {
+                    guard let feedsPromise = subject.feedsPromises.first else { return }
+
+                    feedsPromise.resolve(.Success(feeds))
+
+                    if let calledResults = feedsTagPromise?.value {
+                        switch calledResults {
+                        case let .Success(receivedFeeds):
+                            expect(receivedFeeds) == [feeds[0], feeds[2]]
+                        case .Failure(_):
+                            expect(false) == true
+                        }
+                    } else {
+                        expect(false) == true
+                    }
+                }
+
+                it("forwards the error when the feeds promise errors") {
+                    guard let feedsPromise = subject.feedsPromises.first else { return }
+
+                    feedsPromise.resolve(.Failure(.Unknown))
+
+                    if let calledResults = feedsTagPromise?.value {
+                        switch calledResults {
+                        case .Success(_):
+                            expect(false) == true
+                        case let .Failure(error):
+                            expect(error) == RNewsError.Unknown
+                        }
+                    } else {
+                        expect(false) == true
+                    }
+                }
             }
         }
     }

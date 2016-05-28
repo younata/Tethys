@@ -54,8 +54,8 @@ public class UnreadCounter: UIView {
         super.layoutSubviews()
         let path = CGPathCreateMutable()
         CGPathMoveToPoint(path, nil, 0, 0)
-        CGPathAddLineToPoint(path, nil, CGRectGetWidth(self.bounds), 0)
-        CGPathAddLineToPoint(path, nil, CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds))
+        CGPathAddLineToPoint(path, nil, self.bounds.width, 0)
+        CGPathAddLineToPoint(path, nil, self.bounds.width, self.bounds.height)
         CGPathAddLineToPoint(path, nil, 0, 0)
         self.triangleLayer.path = path
     }

@@ -94,20 +94,21 @@ class RealmService: DataService {
         return promise.future
     }
 
-    func articlesMatchingPredicate(predicate: NSPredicate) -> Future<Result<DataStoreBackedArray<Article>, RNewsError>> {
-        let promise = Promise<Result<DataStoreBackedArray<Article>, RNewsError>>()
-        let sortDescriptors = [
-            NSSortDescriptor(key: "updatedAt", ascending: false),
-            NSSortDescriptor(key: "published", ascending: false)
-        ]
+    func articlesMatchingPredicate(predicate: NSPredicate) ->
+        Future<Result<DataStoreBackedArray<Article>, RNewsError>> {
+            let promise = Promise<Result<DataStoreBackedArray<Article>, RNewsError>>()
+            let sortDescriptors = [
+                NSSortDescriptor(key: "updatedAt", ascending: false),
+                NSSortDescriptor(key: "published", ascending: false)
+            ]
 
-        let articles = DataStoreBackedArray(realmDataType: RealmArticle.self,
-            predicate: predicate,
-            realmConfiguration: self.realmConfiguration,
-            conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) },
-            sortDescriptors: sortDescriptors)
-        promise.resolve(.Success(articles))
-        return promise.future
+            let articles = DataStoreBackedArray(realmDataType: RealmArticle.self,
+                predicate: predicate,
+                realmConfiguration: self.realmConfiguration,
+                conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) },
+                sortDescriptors: sortDescriptors)
+            promise.resolve(.Success(articles))
+            return promise.future
     }
 
     // Mark: - Delete

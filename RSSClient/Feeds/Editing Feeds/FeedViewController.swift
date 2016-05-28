@@ -251,7 +251,7 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
                 self.urlSession.dataTaskWithURL(url) {data, response, error in
                     if let response = response as? NSHTTPURLResponse {
                         if let data = data,
-                            let nstext = NSString(data: data, encoding: NSUTF8StringEncoding)
+                            nstext = NSString(data: data, encoding: NSUTF8StringEncoding)
                             where response.statusCode == 200 {
                                 let string = String(nstext)
                                 let fp = Muon.FeedParser(string: string)

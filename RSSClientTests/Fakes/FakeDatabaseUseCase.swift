@@ -16,20 +16,18 @@ class FakeDatabaseUseCase: DatabaseUseCase {
         self.perfomDatabaseUpdatesCallback = callback
     }
 
-    var tagsList: [String] = []
-    func allTags(callback: ([String]) -> (Void)) {
-        callback(tagsList)
+    var allTagsPromises: [Promise<Result<[String], RNewsError>>] = []
+    func allTags() -> Future<Result<[String], RNewsError>> {
+        let promise = Promise<Result<[String], RNewsError>>()
+        self.allTagsPromises.append(promise)
+        return promise.future
     }
 
-    var feedsList: [Feed]? = nil
-    var didAskForFeeds = false
-    var feedsCallback: (([Feed]) -> (Void))? = nil
-    func feeds(callback: ([Feed]) -> (Void)) {
-        didAskForFeeds = true
-        feedsCallback = callback
-        if let feedsList = feedsList {
-            return callback(feedsList)
-        }
+    var feedsPromises: [Promise<Result<[Feed], RNewsError>>] = []
+    func feeds() -> Future<Result<[Feed], RNewsError>> {
+        let promise = Promise<Result<[Feed], RNewsError>>()
+        self.feedsPromises.append(promise)
+        return promise.future
     }
 
     var articlesOfFeedList = Array<Article>()
@@ -37,9 +35,11 @@ class FakeDatabaseUseCase: DatabaseUseCase {
         return DataStoreBackedArray(articlesOfFeedList)
     }
 
-    var articlesList: [Article] = []
-    func articlesMatchingQuery(query: String, callback: ([Article]) -> (Void)) {
-        return callback(articlesList)
+    var articlesMatchingQueryPromises: [Promise<Result<[Article], RNewsError>>] = []
+    func articlesMatchingQuery(query: String) -> Future<Result<[Article], RNewsError>> {
+        let promise = Promise<Result<[Article], RNewsError>>()
+        self.articlesMatchingQueryPromises.append(promise)
+        return promise.future
     }
 
     // MARK: DataWriter
@@ -80,13 +80,11 @@ class FakeDatabaseUseCase: DatabaseUseCase {
     }
 
     var lastFeedMarkedRead: Feed? = nil
-    var markedReadFeeds = Array<Feed>()
-    var markedReadPromise: Promise<Int>? = nil
-    func markFeedAsRead(feed: Feed) -> Future<Int> {
-        markedReadFeeds.append(feed)
+    var lastFeedMarkedReadPromise: Promise<Result<Int, RNewsError>>? = nil
+    func markFeedAsRead(feed: Feed) -> Future<Result<Int, RNewsError>> {
         lastFeedMarkedRead = feed
-        self.markedReadPromise = Promise<Int>()
-        return self.markedReadPromise!.future
+        self.lastFeedMarkedReadPromise = Promise<Result<Int, RNewsError>>()
+        return self.lastFeedMarkedReadPromise!.future
     }
 
     func saveArticle(article: Article) -> Future<Result<Void, RNewsError>>{
@@ -105,11 +103,11 @@ class FakeDatabaseUseCase: DatabaseUseCase {
     }
 
     var lastArticleMarkedRead: Article? = nil
-    var markArticleReadPromises: [Promise<Void>] = []
-    func markArticle(article: Article, asRead read: Bool) -> Future<Void> {
+    var markArticleReadPromises: [Promise<Result<Void, RNewsError>>] = []
+    func markArticle(article: Article, asRead read: Bool) -> Future<Result<Void, RNewsError>> {
         lastArticleMarkedRead = article
         article.read = read
-        let promise = Promise<Void>()
+        let promise = Promise<Result<Void, RNewsError>>()
         markArticleReadPromises.append(promise)
         return promise.future
     }

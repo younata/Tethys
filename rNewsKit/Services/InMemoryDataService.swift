@@ -43,10 +43,11 @@ class InMemoryDataService: DataService {
         return promise.future
     }
 
-    func articlesMatchingPredicate(predicate: NSPredicate) -> Future<Result<DataStoreBackedArray<Article>, RNewsError>> {
-        let promise = Promise<Result<DataStoreBackedArray<Article>, RNewsError>>()
-        promise.resolve(.Success(DataStoreBackedArray(self.articles.filter({ predicate.evaluateWithObject($0) }))))
-        return promise.future
+    func articlesMatchingPredicate(predicate: NSPredicate) ->
+        Future<Result<DataStoreBackedArray<Article>, RNewsError>> {
+            let promise = Promise<Result<DataStoreBackedArray<Article>, RNewsError>>()
+            promise.resolve(.Success(DataStoreBackedArray(self.articles.filter({ predicate.evaluateWithObject($0) }))))
+            return promise.future
     }
 
     func deleteFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {

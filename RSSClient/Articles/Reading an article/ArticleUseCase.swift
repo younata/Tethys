@@ -1,6 +1,7 @@
 import UIKit
 import Ra
 import rNewsKit
+import Result
 
 public protocol ArticleUseCase {
     func articlesByAuthor(author: Author, callback: DataStoreBackedArray<Article> -> Void)
@@ -33,7 +34,11 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
     }
 
     public func articlesByAuthor(author: Author, callback: DataStoreBackedArray<Article> -> Void) {
-        self.feedRepository.feeds { feeds in
+        self.feedRepository.feeds().then {
+            guard case let Result.Success(feeds) = $0 else {
+                callback(DataStoreBackedArray<Article>([]))
+                return
+            }
             guard let initial = feeds.first?.articlesArray else { return callback(DataStoreBackedArray()) }
 
             let allArticles: DataStoreBackedArray<Article> = feeds[1..<feeds.count].reduce(initial) {
@@ -89,7 +94,7 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
 
     private lazy var prismJS: String = {
         if let prismURL = self.bundle.URLForResource("prism.js", withExtension: "html"),
-            let prism = try? String(contentsOfURL: prismURL, encoding: NSUTF8StringEncoding) as String {
+            prism = try? String(contentsOfURL: prismURL, encoding: NSUTF8StringEncoding) as String {
                 return prism
         }
         return ""
@@ -99,7 +104,7 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
         let prefix: String
         let cssFileName = self.themeRepository.articleCSSFileName
         if let cssURL = self.bundle.URLForResource(cssFileName, withExtension: "css"),
-            let css = try? String(contentsOfURL: cssURL, encoding: NSUTF8StringEncoding) {
+            css = try? String(contentsOfURL: cssURL, encoding: NSUTF8StringEncoding) {
                 prefix = "<html><head>" +
                     "<style type=\"text/css\">\(css)</style>" +
                     "<meta name=\"viewport\" content=\"initial-scale=1.0,maximum-scale=10.0\"/>" +

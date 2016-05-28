@@ -89,26 +89,30 @@ class CoreDataService: DataService {
         return promise.future
     }
 
-    func articlesMatchingPredicate(predicate: NSPredicate) -> Future<Result<DataStoreBackedArray<Article>, RNewsError>> {
-        let promise = Promise<Result<DataStoreBackedArray<Article>, RNewsError>>()
-        let sortDescriptors = [
-            NSSortDescriptor(key: "updatedAt", ascending: false),
-            NSSortDescriptor(key: "published", ascending: false)
-        ]
-        let articles = DataStoreBackedArray(entityName: "Article",
-            predicate: predicate,
-            managedObjectContext: self.managedObjectContext,
-            conversionFunction: { Article(coreDataArticle: $0 as! CoreDataArticle, feed: nil) },
-            sortDescriptors: sortDescriptors)
-        promise.resolve(.Success(articles))
-        return promise.future
+    func articlesMatchingPredicate(predicate: NSPredicate) ->
+        Future<Result<DataStoreBackedArray<Article>, RNewsError>> {
+            let promise = Promise<Result<DataStoreBackedArray<Article>, RNewsError>>()
+            let sortDescriptors = [
+                NSSortDescriptor(key: "updatedAt", ascending: false),
+                NSSortDescriptor(key: "published", ascending: false)
+            ]
+            let articles = DataStoreBackedArray(entityName: "Article",
+                predicate: predicate,
+                managedObjectContext: self.managedObjectContext,
+                conversionFunction: { Article(coreDataArticle: $0 as! CoreDataArticle, feed: nil) },
+                sortDescriptors: sortDescriptors)
+            promise.resolve(.Success(articles))
+            return promise.future
     }
 
     // Mark: - Delete
 
     func deleteFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
-        guard let _ = feed.feedID as? NSManagedObjectID else { promise.resolve(.Failure(.Database(.Unknown))); return promise.future }
+        guard let _ = feed.feedID as? NSManagedObjectID else {
+            promise.resolve(.Failure(.Database(.Unknown)))
+            return promise.future
+        }
         self.managedObjectContext.performBlock {
             self.deleteFeed(feed, deleteArticles: true)
             self.mainQueue.addOperationWithBlock {
@@ -120,7 +124,10 @@ class CoreDataService: DataService {
 
     func deleteArticle(article: Article) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
-        guard let _ = article.articleID as? NSManagedObjectID else { promise.resolve(.Failure(.Database(.Unknown))); return promise.future }
+        guard let _ = article.articleID as? NSManagedObjectID else {
+            promise.resolve(.Failure(.Database(.Unknown)))
+            return promise.future
+        }
         self.managedObjectContext.performBlock {
             self.deleteArticle(article, deleteEnclosures: true)
             self.mainQueue.addOperationWithBlock {
@@ -161,7 +168,7 @@ class CoreDataService: DataService {
                     let feeds = cdfeeds.map(Feed.init)
                     let articles = cdarticles.map { Article(coreDataArticle: $0, feed: nil) }
                     let enclosures = cdenclosures.map { Enclosure(coreDataEnclosure: $0, article: nil) }
-                    
+
                     self.mainQueue.addOperationWithBlock {
                         promise.resolve(.Success(feeds, articles, enclosures))
                     }

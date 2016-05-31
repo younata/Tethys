@@ -48,7 +48,7 @@ extension DataService {
         feed.title = info.title.stringByUnescapingHTML().stringByStrippingHTML()
         feed.summary = info.description
 
-        let articles = info.articles.filter { $0.title?.isEmpty == false }
+        let articles: [Muon.Article] = info.articles.filter { $0.title?.isEmpty == false }
 
         if articles.isEmpty {
             return self.saveFeed(feed)

@@ -91,13 +91,13 @@ import JavaScriptCore
         }
     }
     weak dynamic public internal(set) var feed: Feed? {
-        willSet {
-            if newValue != feed && newValue?.isQueryFeed != true {
+        didSet {
+            if oldValue != feed && feed?.isQueryFeed != true {
                 self.updated = true
-                if let oldValue = feed where oldValue.articlesArray.contains(self) {
+                if let oldValue = oldValue where oldValue.articlesArray.contains(self) {
                     oldValue.removeArticle(self)
                 }
-                if let nv = newValue where !nv.articlesArray.contains(self) {
+                if let nv = feed where !nv.articlesArray.contains(self) {
                     nv.addArticle(self)
                 }
             }

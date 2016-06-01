@@ -53,6 +53,12 @@
 		89146E501C88F0A600EC8F10 /* WorkFlow.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89BA95381C4C8E7C001FD453 /* WorkFlow.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89146E511C88F0B800EC8F10 /* WorkFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89BA95381C4C8E7C001FD453 /* WorkFlow.framework */; };
 		89146E521C88F0BC00EC8F10 /* WorkFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89BA95381C4C8E7C001FD453 /* WorkFlow.framework */; };
+		89150FD01CFE272F00A4B270 /* FetchResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89150FCF1CFE272F00A4B270 /* FetchResultsController.swift */; };
+		89150FD31CFE851A00A4B270 /* RealmFetchResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89150FD21CFE851A00A4B270 /* RealmFetchResultsController.swift */; };
+		89150FD41CFE851F00A4B270 /* RealmFetchResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89150FD21CFE851A00A4B270 /* RealmFetchResultsController.swift */; };
+		89150FD51CFE852500A4B270 /* FetchResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89150FCF1CFE272F00A4B270 /* FetchResultsController.swift */; };
+		89150FD71CFE875700A4B270 /* RealmFetchResultsControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89150FD61CFE875700A4B270 /* RealmFetchResultsControllerSpec.swift */; };
+		89150FD81CFE875C00A4B270 /* RealmFetchResultsControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89150FD61CFE875700A4B270 /* RealmFetchResultsControllerSpec.swift */; };
 		8916880B1BA8856400F9FFE0 /* rNewsKit.framework in Embed rNewsKit */ = {isa = PBXBuildFile; fileRef = 894304211B45089A000078DC /* rNewsKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		891754701C5B449E0036D96D /* RealmObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8917546F1C5B449E0036D96D /* RealmObjects.swift */; };
 		891754711C5B449E0036D96D /* RealmObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8917546F1C5B449E0036D96D /* RealmObjects.swift */; };
@@ -572,6 +578,9 @@
 		890B78C91C78E8650066E201 /* ReadArticleUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadArticleUseCaseSpec.swift; sourceTree = "<group>"; };
 		89122E601C5D725D00004B1F /* DatabaseMigrator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseMigrator.swift; sourceTree = "<group>"; };
 		89122E631C5D762000004B1F /* DatabaseMigratorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseMigratorSpec.swift; sourceTree = "<group>"; };
+		89150FCF1CFE272F00A4B270 /* FetchResultsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchResultsController.swift; sourceTree = "<group>"; };
+		89150FD21CFE851A00A4B270 /* RealmFetchResultsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmFetchResultsController.swift; sourceTree = "<group>"; };
+		89150FD61CFE875700A4B270 /* RealmFetchResultsControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmFetchResultsControllerSpec.swift; sourceTree = "<group>"; };
 		8917546F1C5B449E0036D96D /* RealmObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmObjects.swift; sourceTree = "<group>"; };
 		891754721C5B485B0036D96D /* RealmService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmService.swift; sourceTree = "<group>"; };
 		891754781C5B48D40036D96D /* RealmServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmServiceSpec.swift; sourceTree = "<group>"; };
@@ -963,6 +972,16 @@
 			path = "Use Cases";
 			sourceTree = "<group>";
 		};
+		89150FD11CFE84C200A4B270 /* FetchResultController */ = {
+			isa = PBXGroup;
+			children = (
+				89150FCF1CFE272F00A4B270 /* FetchResultsController.swift */,
+				89150FD21CFE851A00A4B270 /* RealmFetchResultsController.swift */,
+			);
+			name = FetchResultController;
+			path = FetchResultsController;
+			sourceTree = "<group>";
+		};
 		8917546E1C5B44680036D96D /* Realm */ = {
 			isa = PBXGroup;
 			children = (
@@ -995,6 +1014,7 @@
 			children = (
 				8999CC101C2E838400B81F5F /* Core Data */,
 				895AC5271C83816600A5F6A1 /* Models */,
+				89150FD11CFE84C200A4B270 /* FetchResultController */,
 				8917546E1C5B44680036D96D /* Realm */,
 				89D256731C3CC22A004066B9 /* Services */,
 				8943044D1B450A96000078DC /* Supporting files */,
@@ -1029,6 +1049,7 @@
 				8937F6BF1B79D0800044A442 /* KitModuleSpec.swift */,
 				89A341811B150DA90000C60B /* OPMLServiceSpec.swift */,
 				8903EB0B1C702FA3001C0189 /* WebPageParserSpec.swift */,
+				89150FD61CFE875700A4B270 /* RealmFetchResultsControllerSpec.swift */,
 			);
 			path = rNewsKitTests;
 			sourceTree = "<group>";
@@ -2146,6 +2167,8 @@
 				894304501B450BFB000078DC /* CoreDataArticle.swift in Sources */,
 				89122E611C5D725D00004B1F /* DatabaseMigrator.swift in Sources */,
 				894304521B450C19000078DC /* CoreDataFeed.swift in Sources */,
+				89150FD31CFE851A00A4B270 /* RealmFetchResultsController.swift in Sources */,
+				89150FD01CFE272F00A4B270 /* FetchResultsController.swift in Sources */,
 				898979661B70849000218498 /* DefaultDatabaseUseCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2178,6 +2201,7 @@
 				8935F5D91B4628B3000FFD5D /* FeedSpec.swift in Sources */,
 				89146E4E1C88F01F00EC8F10 /* FakeFileManager.swift in Sources */,
 				8935F5DF1B462AD2000FFD5D /* FakeURLSession.swift in Sources */,
+				89150FD71CFE875700A4B270 /* RealmFetchResultsControllerSpec.swift in Sources */,
 				8935F5D51B4628B3000FFD5D /* OPMLServiceSpec.swift in Sources */,
 				8935F5DA1B4628B3000FFD5D /* ArticleSpec.swift in Sources */,
 				8984FE8C1CBA1A180096F4B3 /* AuthorSpec.swift in Sources */,
@@ -2216,6 +2240,7 @@
 				898911C81C3267E3009A44E9 /* CoreDataService.swift in Sources */,
 				8989794E1B70808300218498 /* SearchIndex.swift in Sources */,
 				89146E431C88C70700EC8F10 /* ImportUseCase.swift in Sources */,
+				89150FD51CFE852500A4B270 /* FetchResultsController.swift in Sources */,
 				898979561B70808300218498 /* CoreDataFeed.swift in Sources */,
 				898979521B70808300218498 /* OPMLService.swift in Sources */,
 				895AC51C1C7FF27300A5F6A1 /* RealmMigrator.swift in Sources */,
@@ -2224,6 +2249,7 @@
 				89146E411C88C6A800EC8F10 /* MigrationUseCase.swift in Sources */,
 				8984FE8A1CB984A40096F4B3 /* Author.swift in Sources */,
 				8989795A1B70808300218498 /* Enclosure.swift in Sources */,
+				89150FD41CFE851F00A4B270 /* RealmFetchResultsController.swift in Sources */,
 				8903EB0A1C702843001C0189 /* WebPageParser.swift in Sources */,
 				898979531B70808300218498 /* DefaultDatabaseUseCase.swift in Sources */,
 				8989794F1B70808300218498 /* Helpers.swift in Sources */,
@@ -2247,6 +2273,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8992D4341C3665B7004A5A35 /* FakeUpdateService.swift in Sources */,
+				89150FD81CFE875C00A4B270 /* RealmFetchResultsControllerSpec.swift in Sources */,
 				89146E3F1C88C6A200EC8F10 /* MigrationUseCaseSpec.swift in Sources */,
 				8937F6C11B79D0800044A442 /* KitModuleSpec.swift in Sources */,
 				89FF97A21BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */,

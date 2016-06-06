@@ -95,7 +95,7 @@ public class BootstrapWorkFlow: Bootstrapper {
         ]
 
         if let (feed, article) = self.feedAndArticle {
-            let articleListController = feedsTableViewController.showFeeds([feed], animated: false)
+            let articleListController = feedsTableViewController.showFeed(feed, animated: false)
             articleListController.showArticle(article, animated: false)
         }
 

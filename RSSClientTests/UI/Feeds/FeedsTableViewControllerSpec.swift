@@ -580,7 +580,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                     it("should navigate to an ArticleListViewController for that feed") {
                                         expect(navigationController.topViewController).to(beAnInstanceOf(ArticleListController.self))
                                         if let articleList = navigationController.topViewController as? ArticleListController {
-                                            expect(articleList.feeds == [feed]) == true
+                                            expect(articleList.feed) == feed
                                         }
                                     }
                                 }
@@ -600,7 +600,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                     it("should return an ArticleListController configured with the feed's articles to present to the user") {
                                         expect(viewController).to(beAKindOf(ArticleListController.self))
                                         if let articleVC = viewController as? ArticleListController {
-                                            expect(articleVC.feeds == [feed]) == true
+                                            expect(articleVC.feed) == feed
                                         }
                                     }
 
@@ -760,7 +760,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                     it("should navigate to an ArticleListViewController for that feed") {
                                         expect(navigationController.topViewController).to(beAnInstanceOf(ArticleListController.self))
                                         if let articleList = navigationController.topViewController as? ArticleListController {
-                                            expect(articleList.feeds == [feed]) == true
+                                            expect(articleList.feed) == feed
                                         }
                                     }
                                 }
@@ -780,7 +780,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                     it("should return an ArticleListController configured with the feed's articles to present to the user") {
                                         expect(viewController).to(beAKindOf(ArticleListController.self))
                                         if let articleVC = viewController as? ArticleListController {
-                                            expect(articleVC.feeds == [feed]) == true
+                                            expect(articleVC.feed) == feed
                                         }
                                     }
 

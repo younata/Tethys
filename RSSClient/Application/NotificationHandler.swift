@@ -105,7 +105,7 @@ public struct LocalNotificationHandler: NotificationHandler, Injectable {
             feedsView = nc.viewControllers.first as? FeedsTableViewController,
             feed = article.feed {
                 nc.popToRootViewControllerAnimated(false)
-                let al = feedsView.showFeeds([feed], animated: false)
+                let al = feedsView.showFeed(feed, animated: false)
                 al.showArticle(article)
         }
     }

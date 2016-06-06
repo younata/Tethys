@@ -349,9 +349,9 @@ public class FeedsTableViewController: UIViewController, Injectable {
         return self.feeds[indexPath.row]
     }
 
-    private func configuredArticleListWithFeeds(feeds: [Feed]) -> ArticleListController {
+    private func configuredArticleListWithFeeds(feed: Feed) -> ArticleListController {
         let articleListController = self.articleListController()
-        articleListController.feeds = feeds
+        articleListController.feed = feed
         return articleListController
     }
 
@@ -359,8 +359,8 @@ public class FeedsTableViewController: UIViewController, Injectable {
         self.navigationController?.pushViewController(articleListController, animated: animated)
     }
 
-    internal func showFeeds(feeds: [Feed], animated: Bool) -> ArticleListController {
-        let al = self.configuredArticleListWithFeeds(feeds)
+    internal func showFeed(feed: Feed, animated: Bool) -> ArticleListController {
+        let al = self.configuredArticleListWithFeeds(feed)
         self.showArticleList(al, animated: animated)
         return al
     }
@@ -486,7 +486,7 @@ extension FeedsTableViewController: UIViewControllerPreviewingDelegate {
     public func previewingContext(previewingContext: UIViewControllerPreviewing,
         viewControllerForLocation location: CGPoint) -> UIViewController? {
             if let indexPath = self.tableView.indexPathForRowAtPoint(location), feed = self.feedAtIndexPath(indexPath) {
-                return configuredArticleListWithFeeds([feed])
+                return configuredArticleListWithFeeds(feed)
             }
             return nil
     }
@@ -524,7 +524,7 @@ extension FeedsTableViewController: UITableViewDelegate {
     public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
 
-        self.showFeeds([self.feedAtIndexPath(indexPath)], animated: true)
+        self.showFeed(self.feedAtIndexPath(indexPath), animated: true)
     }
 
     public func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {

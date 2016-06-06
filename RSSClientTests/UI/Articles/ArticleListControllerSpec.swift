@@ -107,7 +107,7 @@ class ArticleListControllerSpec: QuickSpec {
             }
 
             subject = injector.create(ArticleListController)!
-            subject.feeds = [feed]
+            subject.feed = feed
 
             navigationController = UINavigationController(rootViewController: subject)
 
@@ -120,7 +120,7 @@ class ArticleListControllerSpec: QuickSpec {
 
         describe("when a feed is backing the list") {
             beforeEach {
-                subject.feeds = [feed]
+                subject.feed = feed
             }
 
             it("displays a share sheet icon for sharing that feed") {
@@ -138,7 +138,7 @@ class ArticleListControllerSpec: QuickSpec {
 
         describe("when a feed is not backing the list") {
             beforeEach {
-                subject.feeds = []
+                subject.feed = nil
             }
 
             it("does not display a share sheet icon for sharing that feed") {

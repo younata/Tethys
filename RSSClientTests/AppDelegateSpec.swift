@@ -193,7 +193,7 @@ class AppDelegateSpec: QuickSpec {
                                 let navController = (subject.window?.rootViewController as? UISplitViewController)?.viewControllers.first as? UINavigationController
                                 expect(navController?.visibleViewController).to(beAKindOf(ArticleListController.self))
                                 let articleController = navController?.visibleViewController as? ArticleListController
-                                expect(articleController?.feeds).to(equal([feed]))
+                                expect(articleController?.feed) == feed
                             }
                         }
 

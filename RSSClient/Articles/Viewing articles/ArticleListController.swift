@@ -5,7 +5,7 @@ import Ra
 public class ArticleListController: UITableViewController, DataSubscriber, Injectable {
 
     internal var articles = DataStoreBackedArray<Article>()
-    public var feeds: [Feed] = [] {
+    public var feed: Feed? {
         didSet {
             self.resetArticles()
             self.resetBarItems()
@@ -74,8 +74,8 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
             self.tableView.tableHeaderView = self.searchBar
             self.navigationItem.rightBarButtonItem = self.editButtonItem()
 
-            if self.feeds.count == 1 {
-                self.navigationItem.title = self.feeds.first?.displayTitle
+            if let feed = self.feed {
+                self.navigationItem.title = feed.displayTitle
             }
 
             if #available(iOS 9.0, *) {
@@ -198,10 +198,7 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
     // Mark: Private
 
     private func resetArticles() {
-        guard var articles = self.feeds.first?.articlesArray else { return }
-        for feed in self.feeds[1..<self.feeds.count] {
-            articles = articles.combine(feed.articlesArray)
-        }
+        guard let articles = self.feed?.articlesArray else { return }
         self.articles = articles
         self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
     }
@@ -211,7 +208,7 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
 
         var barItems = [self.editButtonItem()]
 
-        if self.feeds.count == 1 {
+        if let _ = self.feed {
             let shareSheet = UIBarButtonItem(barButtonSystemItem: .Action,
                                              target: self,
                                              action: #selector(ArticleListController.shareFeed))
@@ -222,7 +219,7 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
     }
 
     @objc private func shareFeed() {
-        guard let url = self.feeds.first?.url else { return }
+        guard let url = self.feed?.url else { return }
         let shareSheet = UIActivityViewController(activityItems: [url], applicationActivities: nil)
         self.presentViewController(shareSheet, animated: true, completion: nil)
     }
@@ -232,8 +229,8 @@ extension ArticleListController: UISearchBarDelegate {
     public func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.isEmpty {
             self.resetArticles()
-        } else {
-            let articlesArray = self.feedRepository.articlesOfFeeds(self.feeds, matchingSearchQuery: searchText)
+        } else if let feed = self.feed {
+            let articlesArray = self.feedRepository.articlesOfFeeds([feed], matchingSearchQuery: searchText)
             if self.articles != articlesArray {
                 self.articles = articlesArray
                 self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)

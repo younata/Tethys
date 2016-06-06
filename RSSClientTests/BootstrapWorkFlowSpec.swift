@@ -67,7 +67,7 @@ class BootstrapWorkFlowSpec: QuickSpec {
                     let nc = vc as? UINavigationController
                     expect(nc?.topViewController).to(beAnInstanceOf(ArticleListController.self))
                     guard let articleListController = nc?.topViewController as? ArticleListController else { return }
-                    expect(articleListController.feeds) == [feed]
+                    expect(articleListController.feed) == feed
                 }
             }
 

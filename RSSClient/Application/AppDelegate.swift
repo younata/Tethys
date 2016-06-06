@@ -105,7 +105,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                     self.feedRepository.feeds().then {
                         if case let Result.Success(feeds) = $0,
                             let feed = feeds.filter({ return $0.title == feedTitle }).first {
-                                feedsViewController.showFeeds([feed], animated: false)
+                                feedsViewController.showFeed(feed, animated: false)
                                 completionHandler(true)
                         } else {
                             completionHandler(false)

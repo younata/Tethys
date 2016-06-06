@@ -5,7 +5,7 @@ import RealmSwift
 
 class RealmFetchResultsControllerSpec: QuickSpec {
     override func spec() {
-        fdescribe("RealmFetchResultsController") {
+        describe("RealmFetchResultsController") {
             var subject: RealmFetchResultsController<RealmArticle>!
             var realm: Realm!
             var objects: [RealmArticle] = []

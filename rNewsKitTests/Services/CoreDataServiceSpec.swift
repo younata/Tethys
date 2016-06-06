@@ -9,7 +9,7 @@ import Result
     import MobileCoreServices
 #endif
 
-private func coreDataEntities(entity: String,
+func coreDataEntities(entity: String,
     matchingPredicate predicate: NSPredicate,
     managedObjectContext: NSManagedObjectContext) -> [NSManagedObject] {
         let request = NSFetchRequest()

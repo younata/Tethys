@@ -361,6 +361,10 @@
 		89DB074F1CBF2AE1006D672D /* CBGPromise.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89DB074D1CBF2AC7006D672D /* CBGPromise.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89DBDA9A1A9EBB0C00959AC7 /* feed.rss in Resources */ = {isa = PBXBuildFile; fileRef = 89DBDA991A9EBB0C00959AC7 /* feed.rss */; };
 		89DBDA9C1A9FBCB200959AC7 /* feed2.rss in Resources */ = {isa = PBXBuildFile; fileRef = 89DBDA9B1A9FBC4100959AC7 /* feed2.rss */; };
+		89DE0EBD1CFEA71F00E06653 /* CoreDataFetchResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DE0EBC1CFEA71F00E06653 /* CoreDataFetchResultsController.swift */; };
+		89DE0EBE1CFEA71F00E06653 /* CoreDataFetchResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DE0EBC1CFEA71F00E06653 /* CoreDataFetchResultsController.swift */; };
+		89DE0EC01CFF200C00E06653 /* CoreDataFetchResultsControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DE0EBF1CFF200C00E06653 /* CoreDataFetchResultsControllerSpec.swift */; };
+		89DE0EC11CFF200C00E06653 /* CoreDataFetchResultsControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DE0EBF1CFF200C00E06653 /* CoreDataFetchResultsControllerSpec.swift */; };
 		89DFAA601B7684A0004CD9CA /* FeedViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DFAA5F1B7684A0004CD9CA /* FeedViewSpec.swift */; };
 		89E2A33D1B6A856900A40D4E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E2A33C1B6A856900A40D4E /* SettingsViewController.swift */; };
 		89E2A33F1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E2A33E1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift */; };
@@ -795,6 +799,8 @@
 		89DB074D1CBF2AC7006D672D /* CBGPromise.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CBGPromise.framework; path = Carthage/Build/iOS/CBGPromise.framework; sourceTree = SOURCE_ROOT; };
 		89DBDA991A9EBB0C00959AC7 /* feed.rss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = feed.rss; sourceTree = "<group>"; };
 		89DBDA9B1A9FBC4100959AC7 /* feed2.rss */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = feed2.rss; sourceTree = "<group>"; };
+		89DE0EBC1CFEA71F00E06653 /* CoreDataFetchResultsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataFetchResultsController.swift; sourceTree = "<group>"; };
+		89DE0EBF1CFF200C00E06653 /* CoreDataFetchResultsControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataFetchResultsControllerSpec.swift; sourceTree = "<group>"; };
 		89DFAA5D1B75CE65004CD9CA /* PCKMethodRedirector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PCKMethodRedirector.h; sourceTree = "<group>"; };
 		89DFAA5E1B75CE9B004CD9CA /* UITableViewRowAction+Spec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITableViewRowAction+Spec.h"; sourceTree = "<group>"; };
 		89DFAA5F1B7684A0004CD9CA /* FeedViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewSpec.swift; sourceTree = "<group>"; };
@@ -977,6 +983,7 @@
 			children = (
 				89150FCF1CFE272F00A4B270 /* FetchResultsController.swift */,
 				89150FD21CFE851A00A4B270 /* RealmFetchResultsController.swift */,
+				89DE0EBC1CFEA71F00E06653 /* CoreDataFetchResultsController.swift */,
 			);
 			name = FetchResultController;
 			path = FetchResultsController;
@@ -1050,6 +1057,7 @@
 				89A341811B150DA90000C60B /* OPMLServiceSpec.swift */,
 				8903EB0B1C702FA3001C0189 /* WebPageParserSpec.swift */,
 				89150FD61CFE875700A4B270 /* RealmFetchResultsControllerSpec.swift */,
+				89DE0EBF1CFF200C00E06653 /* CoreDataFetchResultsControllerSpec.swift */,
 			);
 			path = rNewsKitTests;
 			sourceTree = "<group>";
@@ -2161,6 +2169,7 @@
 				8999CC0D1C2E710F00B81F5F /* DataService.swift in Sources */,
 				89628BE51CE1999400B4C624 /* ScriptService.swift in Sources */,
 				89D427DE1CF53D520093D186 /* rNewsError.swift in Sources */,
+				89DE0EBD1CFEA71F00E06653 /* CoreDataFetchResultsController.swift in Sources */,
 				89500B241CDEA288004548C3 /* InMemoryDataService.swift in Sources */,
 				891754731C5B485B0036D96D /* RealmService.swift in Sources */,
 				8943044C1B450A5E000078DC /* Enclosure.swift in Sources */,
@@ -2189,6 +2198,7 @@
 				895AC5201C80227B00A5F6A1 /* FakeDefaultDatabaseUseCase.swift in Sources */,
 				8984FE8F1CBAAFED0096F4B3 /* RealmMigratorSpec.swift in Sources */,
 				8935F5D71B4628B3000FFD5D /* DefaultDatabaseUseCaseSpec.swift in Sources */,
+				89DE0EC01CFF200C00E06653 /* CoreDataFetchResultsControllerSpec.swift in Sources */,
 				8935F5DE1B462AD2000FFD5D /* FakeOperationQueue.swift in Sources */,
 				89CBDBFE1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift in Sources */,
 				898911C21C3267C6009A44E9 /* UpdateServiceSpec.swift in Sources */,
@@ -2261,6 +2271,7 @@
 				89500B251CDEA289004548C3 /* InMemoryDataService.swift in Sources */,
 				891754741C5B485B0036D96D /* RealmService.swift in Sources */,
 				898979591B70808300218498 /* Article.swift in Sources */,
+				89DE0EBE1CFEA71F00E06653 /* CoreDataFetchResultsController.swift in Sources */,
 				8989795B1B70809200218498 /* RSSClient.xcdatamodeld in Sources */,
 				89122E621C5D725D00004B1F /* DatabaseMigrator.swift in Sources */,
 				898979551B70808300218498 /* CoreDataArticle.swift in Sources */,
@@ -2289,6 +2300,7 @@
 				89122E651C5D762000004B1F /* DatabaseMigratorSpec.swift in Sources */,
 				898979B81B708F0C00218498 /* FakeURLSession.swift in Sources */,
 				898911C31C3267D6009A44E9 /* UpdateServiceSpec.swift in Sources */,
+				89DE0EC11CFF200C00E06653 /* CoreDataFetchResultsControllerSpec.swift in Sources */,
 				898911C41C3267D6009A44E9 /* DataServiceSpec.swift in Sources */,
 				898979A81B708E7800218498 /* DefaultDatabaseUseCaseSpec.swift in Sources */,
 				89CBDBFF1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift in Sources */,

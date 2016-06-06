@@ -38,12 +38,6 @@ struct RealmFetchResultsController<T: Object>: FetchResultsController {
         }
     }
 
-    subscript(index: Int) -> Element {
-        // swiftlint:disable force_try
-        return try! self.get(index)
-        // swiftlint:enable force_try
-    }
-
     func get(index: Int) throws -> Element {
         switch self.realmObjects {
         case let .Success(objects):

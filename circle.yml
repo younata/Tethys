@@ -1,8 +1,6 @@
 machine:
   xcode:
     version: 7.3
-  #pre:
-  #  - openssl aes-256-cbc -k "$MOBILE_PROVISION_DECRYPT_KEY" -in RSSClient/ci/rNews.mobileprovision.enc -d -a -out RSSClient/ci/rNews.mobileprovision
 
 dependencies:
   override:
@@ -10,12 +8,12 @@ dependencies:
     - brew upgrade carthage || true
     - carthage bootstrap --platform ios
     - bundle
+    - bundle exec match development
+    - bundle exec match appstore
 
 test:
   override:
     - bundle exec fastlane test
-  #post:
-    #- mv ~/Library/Logs/scan/* $CIRCLE_ARTIFACTS/
 
 deployment:
   beta_distribution:

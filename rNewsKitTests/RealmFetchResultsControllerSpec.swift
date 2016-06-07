@@ -63,6 +63,22 @@ class RealmFetchResultsControllerSpec: QuickSpec {
                 expect(subject.count) == totalObjectCount - 1
                 expect(realm.objects(RealmArticle)).toNot(contain(objects[1]))
             }
+
+            it("returns a new fetchResultsController when you filter stuff out of it") {
+                let filtered = subject.filter(NSPredicate(format: "title = %@", "003"))
+                expect(filtered.count) == 1
+                expect(filtered[0]) == objects[3]
+            }
+
+            it("can combine two fetchResultsControllers") {
+                let a = RealmFetchResultsController<RealmArticle>(configuration: realmConf, sortDescriptors: [], predicate: NSPredicate(format: "title = %@", "003"))
+                let b = RealmFetchResultsController<RealmArticle>(configuration: realmConf, sortDescriptors: [], predicate: NSPredicate(format: "title = %@", "004"))
+
+                let combined = a.combine(b)
+                expect(combined.count) == 2
+                expect(combined[0]) == objects[3]
+                expect(combined[1]) == objects[4]
+            }
         }
     }
 }

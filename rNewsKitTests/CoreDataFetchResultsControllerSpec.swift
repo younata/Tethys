@@ -52,6 +52,23 @@ class CoreDataFetchResultsControllerSpec: QuickSpec {
                 let articles = coreDataEntities("Article", matchingPredicate: NSPredicate(value: true), managedObjectContext: moc)
                 expect(articles).toNot(contain(objects[1]))
             }
+
+            it("returns a new fetchResultsController when you filter stuff out of it") {
+                let filtered = subject.filter(NSPredicate(format: "title = %@", "003"))
+                expect(filtered.count) == 1
+                expect(filtered[0]) == objects[3]
+            }
+
+            it("can combine two fetchResultsControllers") {
+                let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+                let a = CoreDataFetchResultsController<CoreDataArticle>(entityName: "Article", managedObjectContext: moc, sortDescriptors: [sortDescriptor], predicate: NSPredicate(format: "title = %@", "003"))
+                let b = CoreDataFetchResultsController<CoreDataArticle>(entityName: "Article", managedObjectContext: moc, sortDescriptors: [sortDescriptor], predicate: NSPredicate(format: "title = %@", "004"))
+
+                let combined = a.combine(b)
+                expect(combined.count) == 2
+                expect(combined[0]) == objects[3]
+                expect(combined[1]) == objects[4]
+            }
         }
     }
 }

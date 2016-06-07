@@ -60,4 +60,27 @@ struct CoreDataFetchResultsController<T: NSManagedObject>: FetchResultsControlle
             throw RNewsError.Database(.Unknown)
         }
     }
+
+    func filter(predicate: NSPredicate) -> CoreDataFetchResultsController<T> {
+        let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [self.predicate, predicate])
+        return self.applyPredicate(compoundPredicate)
+    }
+
+    func combine(fetchResultsController: CoreDataFetchResultsController<T>) -> CoreDataFetchResultsController<T> {
+        let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [self.predicate,
+            fetchResultsController.predicate])
+        return self.applyPredicate(compoundPredicate)
+    }
+
+    private var predicate: NSPredicate {
+        return self.fetchResultsController.fetchRequest.predicate ?? NSPredicate(value: true)
+    }
+
+    private func applyPredicate(predicate: NSPredicate) -> CoreDataFetchResultsController<T> {
+        let fetchRequest = self.fetchResultsController.fetchRequest
+        return CoreDataFetchResultsController<T>(entityName: fetchRequest.entityName ?? "",
+                                                 managedObjectContext: self.fetchResultsController.managedObjectContext,
+                                                 sortDescriptors: fetchRequest.sortDescriptors ?? [],
+                                                 predicate: predicate)
+    }
 }

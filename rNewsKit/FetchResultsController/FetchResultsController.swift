@@ -6,6 +6,8 @@ public protocol FetchResultsController {
     func get(index: Int) throws -> Element
     mutating func insert(item: Element) throws
     mutating func delete(index: Int) throws
+    func filter(predicate: NSPredicate) -> Self
+    func combine(fetchResultsController: Self) -> Self
 }
 
 extension FetchResultsController {

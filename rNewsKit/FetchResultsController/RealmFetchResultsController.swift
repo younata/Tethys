@@ -73,4 +73,21 @@ struct RealmFetchResultsController<T: Object>: FetchResultsController {
             throw RNewsError.Database(.Unknown)
         }
     }
+
+    func filter(predicate: NSPredicate) -> RealmFetchResultsController<T> {
+        let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [self.predicate, predicate])
+        return self.applyPredicate(compoundPredicate)
+    }
+
+    func combine(fetchResultsController: RealmFetchResultsController<T>) -> RealmFetchResultsController<T> {
+        let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [self.predicate,
+            fetchResultsController.predicate])
+        return self.applyPredicate(compoundPredicate)
+    }
+
+    private func applyPredicate(predicate: NSPredicate) -> RealmFetchResultsController<T> {
+        return RealmFetchResultsController<T>(configuration: self.realmConfiguration,
+                                              sortDescriptors: self.sortDescriptors,
+                                              predicate: predicate)
+    }
 }

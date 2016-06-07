@@ -17,10 +17,9 @@ test:
   #post:
     #- mv ~/Library/Logs/scan/* $CIRCLE_ARTIFACTS/
 
-#deployment:
-#  beta_distribution:
-#    branch: master
-#    commands:
-#      - bundle exec fastlane deploy_testflight
-
+deployment:
+  beta_distribution:
+    branch: master
+    commands:
+      - bundle exec fastlane deploy_testflight
 

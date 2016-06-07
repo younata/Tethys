@@ -31,7 +31,7 @@ class FakeDatabaseUseCase: DatabaseUseCase {
     }
 
     var articlesOfFeedList = Array<Article>()
-    func articlesOfFeeds(feeds: [Feed], matchingSearchQuery: String) -> DataStoreBackedArray<Article> {
+    func articlesOfFeed(feed: Feed, matchingSearchQuery: String) -> DataStoreBackedArray<Article> {
         return DataStoreBackedArray(articlesOfFeedList)
     }
 

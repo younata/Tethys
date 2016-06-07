@@ -82,15 +82,9 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         return self.allFeeds()
     }
 
-    func articlesOfFeeds(feeds: [Feed], matchingSearchQuery query: String) -> DataStoreBackedArray<Article> {
-            let feeds = feeds.filter { !$0.isQueryFeed }
-            guard !feeds.isEmpty else {
-                return DataStoreBackedArray()
-            }
-            var articles = feeds[0].articlesArray
-            for feed in feeds[1..<feeds.count] {
-                articles = articles.combine(feed.articlesArray)
-            }
+    func articlesOfFeed(feed: Feed, matchingSearchQuery query: String) -> DataStoreBackedArray<Article> {
+            guard !feed.isQueryFeed else { return DataStoreBackedArray() }
+            let articles = feed.articlesArray
             let predicates = [
                 NSPredicate(format: "title CONTAINS[cd] %@", query),
                 NSPredicate(format: "summary CONTAINS[cd] %@", query),

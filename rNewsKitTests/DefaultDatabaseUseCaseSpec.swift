@@ -230,9 +230,9 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                 }
             }
 
-            describe("articlesOfFeeds:MatchingSearchQuery:callback:") {
+            describe("articlesOfFeed:MatchingSearchQuery:callback:") {
                 it("should return all articles that match the given search query") {
-                    let searchedArticles = subject.articlesOfFeeds(feeds, matchingSearchQuery: "b")
+                    let searchedArticles = subject.articlesOfFeed(feeds[0], matchingSearchQuery: "b")
                     expect(Array(searchedArticles)) == [article1]
                 }
             }

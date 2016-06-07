@@ -11,7 +11,7 @@ public protocol DatabaseUseCase {
 
     func allTags() -> Future<Result<[String], RNewsError>>
     func feeds() -> Future<Result<[Feed], RNewsError>>
-    func articlesOfFeeds(feeds: [Feed], matchingSearchQuery: String) -> DataStoreBackedArray<Article>
+    func articlesOfFeed(feed: Feed, matchingSearchQuery: String) -> DataStoreBackedArray<Article>
     func articlesMatchingQuery(query: String) -> Future<Result<[Article], RNewsError>>
 
     func addSubscriber(subscriber: DataSubscriber)

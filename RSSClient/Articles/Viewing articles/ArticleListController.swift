@@ -230,7 +230,7 @@ extension ArticleListController: UISearchBarDelegate {
         if searchText.isEmpty {
             self.resetArticles()
         } else if let feed = self.feed {
-            let articlesArray = self.feedRepository.articlesOfFeeds([feed], matchingSearchQuery: searchText)
+            let articlesArray = self.feedRepository.articlesOfFeed(feed, matchingSearchQuery: searchText)
             if self.articles != articlesArray {
                 self.articles = articlesArray
                 self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)

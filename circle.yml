@@ -6,10 +6,8 @@ dependencies:
   override:
     - brew update
     - brew upgrade carthage || true
-    - carthage bootstrap --platform ios
     - bundle
-    - bundle exec match development --readonly true
-    - bundle exec match appstore --readonly true
+    - bundle exec fastlane setup
 
 test:
   override:

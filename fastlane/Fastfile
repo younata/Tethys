@@ -22,6 +22,12 @@ default_platform :ios
 
 
 platform :ios do
+  desc 'Sets up (usually for CI)'
+  lane :setup do
+    carthage(platform: 'ios')
+    match(type: 'appstore', readonly: true)
+  end
+
   desc 'Pushes'
   lane :push do
     increment_build_number(xcodeproj: 'RSSClient.xcodeproj')
@@ -51,7 +57,7 @@ platform :ios do
   desc 'Deploy a new version to TestFlight'
   lane :deploy_testflight do
     gym(project: 'RSSClient.xcodeproj', scheme: "RSSClient")
-    pilot(distribute_external: true, changelog: `git log -1 --format='%B'`)
+    pilot(distribute_external: false, changelog: `git log -2 --format='%B'`)
   end
 
   desc 'Deploy a new version to the App Store'

@@ -8,8 +8,8 @@ dependencies:
     - brew upgrade carthage || true
     - carthage bootstrap --platform ios
     - bundle
-    - bundle exec match development
-    - bundle exec match appstore
+    - bundle exec match development --readonly true
+    - bundle exec match appstore --readonly true
 
 test:
   override:

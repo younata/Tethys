@@ -13,6 +13,10 @@ struct CoreDataFetchResultsController<T: NSManagedObject>: FetchResultsControlle
         return fetchResultsController.sections?.first?.numberOfObjects ?? 0
     }
 
+    var predicate: NSPredicate {
+        return self.fetchResultsController.fetchRequest.predicate ?? NSPredicate(value: true)
+    }
+
     init(entityName: String, managedObjectContext: NSManagedObjectContext,
          sortDescriptors: [NSSortDescriptor], predicate: NSPredicate) {
         let fetchRequest = NSFetchRequest(entityName: entityName)
@@ -63,20 +67,16 @@ struct CoreDataFetchResultsController<T: NSManagedObject>: FetchResultsControlle
 
     func filter(predicate: NSPredicate) -> CoreDataFetchResultsController<T> {
         let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [self.predicate, predicate])
-        return self.applyPredicate(compoundPredicate)
+        return self.replacePredicate(compoundPredicate)
     }
 
     func combine(fetchResultsController: CoreDataFetchResultsController<T>) -> CoreDataFetchResultsController<T> {
         let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [self.predicate,
             fetchResultsController.predicate])
-        return self.applyPredicate(compoundPredicate)
+        return self.replacePredicate(compoundPredicate)
     }
 
-    private var predicate: NSPredicate {
-        return self.fetchResultsController.fetchRequest.predicate ?? NSPredicate(value: true)
-    }
-
-    private func applyPredicate(predicate: NSPredicate) -> CoreDataFetchResultsController<T> {
+    func replacePredicate(predicate: NSPredicate) -> CoreDataFetchResultsController<T> {
         let fetchRequest = self.fetchResultsController.fetchRequest
         return CoreDataFetchResultsController<T>(entityName: fetchRequest.entityName ?? "",
                                                  managedObjectContext: self.fetchResultsController.managedObjectContext,

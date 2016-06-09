@@ -5,9 +5,9 @@ import Result
 struct RealmFetchResultsController<T: Object>: FetchResultsController {
     typealias Element=T
 
+    let predicate: NSPredicate
     private let realmConfiguration: Realm.Configuration
     private let sortDescriptors: [SortDescriptor]
-    private let predicate: NSPredicate
     private let realmObjects: Result<Results<Element>, RNewsError>
 
     private func realm() throws -> Realm {
@@ -74,18 +74,7 @@ struct RealmFetchResultsController<T: Object>: FetchResultsController {
         }
     }
 
-    func filter(predicate: NSPredicate) -> RealmFetchResultsController<T> {
-        let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [self.predicate, predicate])
-        return self.applyPredicate(compoundPredicate)
-    }
-
-    func combine(fetchResultsController: RealmFetchResultsController<T>) -> RealmFetchResultsController<T> {
-        let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [self.predicate,
-            fetchResultsController.predicate])
-        return self.applyPredicate(compoundPredicate)
-    }
-
-    private func applyPredicate(predicate: NSPredicate) -> RealmFetchResultsController<T> {
+    func replacePredicate(predicate: NSPredicate) -> RealmFetchResultsController<T> {
         return RealmFetchResultsController<T>(configuration: self.realmConfiguration,
                                               sortDescriptors: self.sortDescriptors,
                                               predicate: predicate)

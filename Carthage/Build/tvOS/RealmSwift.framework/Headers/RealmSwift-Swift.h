@@ -138,7 +138,7 @@ typedef int swift_int4  __attribute__((__ext_vector_type__(4)));
 /// </code></li><li><code>NSData
 /// </code></li><li><code>RealmOptional<T>
 /// </code> for optional numeric properties</li><li><code>Object
-/// </code> subclasses, to model many-to-one relationships</li><li><code>List<T: Object>
+/// </code> subclasses, to model many-to-one relationships</li><li><code>List<T>
 /// </code>, to model many-to-many relationships</li></ul>
 /// <code>String
 /// </code>, <code>NSString
@@ -207,10 +207,10 @@ SWIFT_CLASS_NAMED("Object")
 /// an <code>Array
 /// </code> containing one element for each persisted property. An exception will be
 /// thrown if any required properties are not present and those properties were not defined with
-/// default values.<code>              When passing in an `Array`, all properties must be present,
-///               valid and in the same order as the properties defined in the model.
-/// 
-/// </code>
+/// default values.
+/// When passing in an <code>Array
+/// </code>, all properties must be present,
+/// valid and in the same order as the properties defined in the model.
 - (nonnull instancetype)initWithValue:(id _Nonnull)value OBJC_DESIGNATED_INITIALIZER;
 
 /// Indicates if the object can no longer be accessed because it is now invalid.

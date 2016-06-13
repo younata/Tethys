@@ -2,11 +2,10 @@ import CoreData
 
 private let cacheName = "CoreDataFetchResultsController"
 
-struct CoreDataFetchResultsController<T: NSManagedObject>: FetchResultsController {
-    typealias Element = T
+final class CoreDataFetchResultsController: FetchResultsController {
+    typealias Element = NSManagedObject
 
     private let fetchResultsController: NSFetchedResultsController
-
     private let initialError: RNewsError?
 
     var count: Int {
@@ -15,6 +14,14 @@ struct CoreDataFetchResultsController<T: NSManagedObject>: FetchResultsControlle
 
     var predicate: NSPredicate {
         return self.fetchResultsController.fetchRequest.predicate ?? NSPredicate(value: true)
+    }
+
+    private var sortDescriptors: [NSSortDescriptor] {
+        return self.fetchResultsController.fetchRequest.sortDescriptors ?? []
+    }
+
+    private var entityName: String {
+        return self.fetchResultsController.fetchRequest.entityName ?? ""
     }
 
     init(entityName: String, managedObjectContext: NSManagedObjectContext,
@@ -43,14 +50,14 @@ struct CoreDataFetchResultsController<T: NSManagedObject>: FetchResultsControlle
             throw RNewsError.Database(.EntryNotFound)
         }
         let indexPath = NSIndexPath(forRow: index, inSection: 0)
-        return self.fetchResultsController.objectAtIndexPath(indexPath) as! T
+        return self.fetchResultsController.objectAtIndexPath(indexPath) as! Element
     }
 
-    mutating func insert(item: Element) throws {
+    func insert(item: Element) throws {
         fatalError("Not implemented")
     }
 
-    mutating func delete(index: Int) throws {
+    func delete(index: Int) throws {
         do {
             let object = try self.get(index)
 
@@ -65,22 +72,29 @@ struct CoreDataFetchResultsController<T: NSManagedObject>: FetchResultsControlle
         }
     }
 
-    func filter(predicate: NSPredicate) -> CoreDataFetchResultsController<T> {
+    func filter(predicate: NSPredicate) -> CoreDataFetchResultsController {
         let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [self.predicate, predicate])
         return self.replacePredicate(compoundPredicate)
     }
 
-    func combine(fetchResultsController: CoreDataFetchResultsController<T>) -> CoreDataFetchResultsController<T> {
+    func combine(fetchResultsController: CoreDataFetchResultsController) -> CoreDataFetchResultsController {
         let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [self.predicate,
             fetchResultsController.predicate])
         return self.replacePredicate(compoundPredicate)
     }
 
-    func replacePredicate(predicate: NSPredicate) -> CoreDataFetchResultsController<T> {
+    func replacePredicate(predicate: NSPredicate) -> CoreDataFetchResultsController {
         let fetchRequest = self.fetchResultsController.fetchRequest
-        return CoreDataFetchResultsController<T>(entityName: fetchRequest.entityName ?? "",
-                                                 managedObjectContext: self.fetchResultsController.managedObjectContext,
-                                                 sortDescriptors: fetchRequest.sortDescriptors ?? [],
-                                                 predicate: predicate)
+        return CoreDataFetchResultsController(entityName: fetchRequest.entityName ?? "",
+                                              managedObjectContext: self.fetchResultsController.managedObjectContext,
+                                              sortDescriptors: fetchRequest.sortDescriptors ?? [],
+                                              predicate: predicate)
     }
+}
+
+func == (lhs: CoreDataFetchResultsController, rhs: CoreDataFetchResultsController) -> Bool {
+    return lhs.entityName == rhs.entityName &&
+        lhs.predicate == rhs.predicate &&
+        lhs.sortDescriptors == rhs.sortDescriptors &&
+        lhs.fetchResultsController.managedObjectContext == rhs.fetchResultsController.managedObjectContext
 }

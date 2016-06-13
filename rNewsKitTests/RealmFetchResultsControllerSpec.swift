@@ -6,7 +6,7 @@ import RealmSwift
 class RealmFetchResultsControllerSpec: QuickSpec {
     override func spec() {
         describe("RealmFetchResultsController") {
-            var subject: RealmFetchResultsController<RealmArticle>!
+            var subject: RealmFetchResultsController!
             var realm: Realm!
             var objects: [RealmArticle] = []
             let realmConf = Realm.Configuration(inMemoryIdentifier: "DataStoreBackedArraySpec")
@@ -30,7 +30,7 @@ class RealmFetchResultsControllerSpec: QuickSpec {
                 }
                 try! realm.commitWrite()
 
-                subject = RealmFetchResultsController(configuration: realmConf, sortDescriptors: [], predicate: NSPredicate(value: true))
+                subject = RealmFetchResultsController(configuration: realmConf, model: RealmArticle.self, sortDescriptors: [], predicate: NSPredicate(value: true))
             }
 
             it("gets the count correctly") {
@@ -71,8 +71,8 @@ class RealmFetchResultsControllerSpec: QuickSpec {
             }
 
             it("can combine two fetchResultsControllers") {
-                let a = RealmFetchResultsController<RealmArticle>(configuration: realmConf, sortDescriptors: [], predicate: NSPredicate(format: "title = %@", "003"))
-                let b = RealmFetchResultsController<RealmArticle>(configuration: realmConf, sortDescriptors: [], predicate: NSPredicate(format: "title = %@", "004"))
+                let a = RealmFetchResultsController(configuration: realmConf, model: RealmArticle.self, sortDescriptors: [], predicate: NSPredicate(format: "title = %@", "003"))
+                let b = RealmFetchResultsController(configuration: realmConf, model: RealmArticle.self, sortDescriptors: [], predicate: NSPredicate(format: "title = %@", "004"))
 
                 let combined = a.combine(b)
                 expect(combined.count) == 2

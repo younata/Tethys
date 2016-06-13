@@ -80,11 +80,13 @@ class CoreDataService: DataService {
     func allFeeds() -> Future<Result<DataStoreBackedArray<Feed>, RNewsError>> {
         let promise = Promise<Result<DataStoreBackedArray<Feed>, RNewsError>>()
         let sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-        let feeds = DataStoreBackedArray(entityName: "Feed",
-            predicate: NSPredicate(value: true),
-            managedObjectContext: self.managedObjectContext,
-            conversionFunction: { Feed(coreDataFeed: $0 as! CoreDataFeed) },
-            sortDescriptors: sortDescriptors)
+
+        let fetchResults = CoreDataFetchResultsController(entityName: "Feed",
+                                                          managedObjectContext: self.managedObjectContext,
+                                                          sortDescriptors: sortDescriptors,
+                                                          predicate: NSPredicate(value: true))
+        let feeds = DataStoreBackedArray(coreDataFetchResultsController: fetchResults,
+            conversionFunction: { Feed(coreDataFeed: $0 as! CoreDataFeed) })
         promise.resolve(.Success(feeds))
         return promise.future
     }
@@ -96,11 +98,12 @@ class CoreDataService: DataService {
                 NSSortDescriptor(key: "updatedAt", ascending: false),
                 NSSortDescriptor(key: "published", ascending: false)
             ]
-            let articles = DataStoreBackedArray(entityName: "Article",
-                predicate: predicate,
-                managedObjectContext: self.managedObjectContext,
-                conversionFunction: { Article(coreDataArticle: $0 as! CoreDataArticle, feed: nil) },
-                sortDescriptors: sortDescriptors)
+            let fetchResults = CoreDataFetchResultsController(entityName: "Article",
+                                                              managedObjectContext: self.managedObjectContext,
+                                                              sortDescriptors: sortDescriptors,
+                                                              predicate: predicate)
+            let articles = DataStoreBackedArray(coreDataFetchResultsController: fetchResults,
+                conversionFunction: { Article(coreDataArticle: $0 as! CoreDataArticle, feed: nil) })
             promise.resolve(.Success(articles))
             return promise.future
     }

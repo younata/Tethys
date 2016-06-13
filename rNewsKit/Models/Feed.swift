@@ -246,13 +246,13 @@ import RealmSwift
         if !self.isQueryFeed {
             let sortByUpdated = NSSortDescriptor(key: "updatedAt", ascending: false)
             let sortByPublished = NSSortDescriptor(key: "published", ascending: false)
-            self.articlesArray = DataStoreBackedArray(entityName: "Article",
-                predicate: NSPredicate(format: "feed == %@", feed),
-                managedObjectContext: feed.managedObjectContext!,
-                conversionFunction: {
-                    return Article(coreDataArticle: $0 as! CoreDataArticle, feed: self)
-                },
-                sortDescriptors: [sortByUpdated, sortByPublished])
+            let fetchResults = CoreDataFetchResultsController(entityName: "Article",
+                                                              managedObjectContext: feed.managedObjectContext!,
+                                                              sortDescriptors: [sortByUpdated, sortByPublished],
+                                                              predicate: NSPredicate(format: "feed == %@", feed))
+            self.articlesArray = DataStoreBackedArray(coreDataFetchResultsController: fetchResults) {
+                return Article(coreDataArticle: $0 as! CoreDataArticle, feed: self)
+            }
         }
 
         self.updated = false
@@ -282,16 +282,17 @@ import RealmSwift
         super.init()
         if !self.isQueryFeed {
             if let realm = feed.realm {
-                let sortByUpdated = NSSortDescriptor(key: "updatedAt", ascending: false)
-                let sortByPublished = NSSortDescriptor(key: "published", ascending: false)
+                let sortByUpdated = SortDescriptor(property: "updatedAt", ascending: false)
+                let sortByPublished = SortDescriptor(property: "published", ascending: false)
 
-                self.articlesArray = DataStoreBackedArray<Article>(realmDataType: RealmArticle.self,
-                    predicate: NSPredicate(format: "feed.id == %@", feed.id),
-                    realmConfiguration: realm.configuration,
-                    conversionFunction: {
-                        return Article(realmArticle: $0 as! RealmArticle, feed: self)
-                    },
-                    sortDescriptors: [sortByUpdated, sortByPublished])
+                let fetchResults = RealmFetchResultsController(configuration: realm.configuration,
+                                                               model: RealmArticle.self,
+                                                               sortDescriptors: [sortByUpdated, sortByPublished],
+                                                               predicate: NSPredicate(format: "feed.id == %@", feed.id))
+
+                self.articlesArray = DataStoreBackedArray<Article>(realmFetchResultsController: fetchResults) {
+                    return Article(realmArticle: $0 as! RealmArticle, feed: self)
+                }
             } else {
                 let articles = feed.articles.map { Article(realmArticle: $0, feed: self) }
                 self.articlesArray = DataStoreBackedArray(articles)

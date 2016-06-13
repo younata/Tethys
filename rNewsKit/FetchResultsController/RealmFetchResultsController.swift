@@ -2,27 +2,29 @@ import Foundation
 import RealmSwift
 import Result
 
-struct RealmFetchResultsController<T: Object>: FetchResultsController {
-    typealias Element=T
+final class RealmFetchResultsController: FetchResultsController {
+    typealias Element=Object
 
     let predicate: NSPredicate
     private let realmConfiguration: Realm.Configuration
     private let sortDescriptors: [SortDescriptor]
-    private let realmObjects: Result<Results<Element>, RNewsError>
+    private var realmObjects: Result<Results<Element>, RNewsError>
+    private let model: Object.Type
 
     private func realm() throws -> Realm {
         return try Realm(configuration: realmConfiguration)
     }
 
 
-    init(configuration: Realm.Configuration, sortDescriptors: [SortDescriptor], predicate: NSPredicate) {
+    init(configuration: Realm.Configuration, model: Object.Type, sortDescriptors: [SortDescriptor], predicate: NSPredicate) {
         self.realmConfiguration = configuration
+        self.model = model
         self.sortDescriptors = sortDescriptors
         self.predicate = predicate
 
         do {
             let realm = try Realm(configuration: configuration)
-            let objects = realm.objects(T).filter(predicate).sorted(sortDescriptors)
+            let objects = realm.objects(model).filter(predicate).sorted(sortDescriptors)
             self.realmObjects = .Success(objects)
         } catch {
             self.realmObjects = Result.Failure(.Database(.Unknown))
@@ -50,33 +52,50 @@ struct RealmFetchResultsController<T: Object>: FetchResultsController {
         }
     }
 
-    mutating func insert(item: Element) throws {
+    func insert(item: Element) throws {
         do {
             let realm = try Realm(configuration: self.realmConfiguration)
-            try realm.write {
+            if realm.inWriteTransaction {
                 realm.add(item)
+            } else {
+                try realm.write {
+                    realm.add(item)
+                }
             }
         } catch {
             throw RNewsError.Database(.Unknown)
         }
     }
 
-    mutating func delete(index: Int) throws {
+    func delete(index: Int) throws {
         let object = try self.get(index)
 
         do {
             let realm = try Realm(configuration: self.realmConfiguration)
-            try realm.write {
+            if realm.inWriteTransaction {
                 realm.delete(object)
+            } else {
+                try realm.write {
+                    realm.delete(object)
+                }
             }
+            let objects = realm.objects(self.model).filter(self.predicate).sorted(self.sortDescriptors)
+            self.realmObjects = .Success(objects)
         } catch {
             throw RNewsError.Database(.Unknown)
         }
     }
 
-    func replacePredicate(predicate: NSPredicate) -> RealmFetchResultsController<T> {
-        return RealmFetchResultsController<T>(configuration: self.realmConfiguration,
-                                              sortDescriptors: self.sortDescriptors,
-                                              predicate: predicate)
+    func replacePredicate(predicate: NSPredicate) -> RealmFetchResultsController {
+        return RealmFetchResultsController(configuration: self.realmConfiguration,
+                                           model: self.model,
+                                           sortDescriptors: self.sortDescriptors,
+                                           predicate: predicate)
     }
+}
+
+func == (lhs: RealmFetchResultsController, rhs: RealmFetchResultsController) -> Bool {
+    return lhs.model == rhs.model &&
+        lhs.sortDescriptors == rhs.sortDescriptors &&
+        lhs.predicate == rhs.predicate
 }

@@ -6,7 +6,7 @@ import CoreData
 class CoreDataFetchResultsControllerSpec: QuickSpec {
     override func spec() {
         describe("CoreDataFetchResultsController") {
-            var subject: CoreDataFetchResultsController<CoreDataArticle>!
+            var subject: CoreDataFetchResultsController!
             var objects: [CoreDataArticle] = []
             var moc: NSManagedObjectContext! = nil
 
@@ -61,8 +61,8 @@ class CoreDataFetchResultsControllerSpec: QuickSpec {
 
             it("can combine two fetchResultsControllers") {
                 let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
-                let a = CoreDataFetchResultsController<CoreDataArticle>(entityName: "Article", managedObjectContext: moc, sortDescriptors: [sortDescriptor], predicate: NSPredicate(format: "title = %@", "003"))
-                let b = CoreDataFetchResultsController<CoreDataArticle>(entityName: "Article", managedObjectContext: moc, sortDescriptors: [sortDescriptor], predicate: NSPredicate(format: "title = %@", "004"))
+                let a = CoreDataFetchResultsController(entityName: "Article", managedObjectContext: moc, sortDescriptors: [sortDescriptor], predicate: NSPredicate(format: "title = %@", "003"))
+                let b = CoreDataFetchResultsController(entityName: "Article", managedObjectContext: moc, sortDescriptors: [sortDescriptor], predicate: NSPredicate(format: "title = %@", "004"))
 
                 let combined = a.combine(b)
                 expect(combined.count) == 2

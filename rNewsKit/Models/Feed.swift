@@ -246,7 +246,6 @@ import RealmSwift
         if !self.isQueryFeed {
             let sortByUpdated = NSSortDescriptor(key: "updatedAt", ascending: false)
             let sortByPublished = NSSortDescriptor(key: "published", ascending: false)
-            let sortByTitle = NSSortDescriptor(key: "title", ascending: false)
 
             let sortDescriptors = [sortByUpdated, sortByPublished]
 

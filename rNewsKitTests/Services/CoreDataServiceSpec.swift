@@ -233,6 +233,8 @@ class CoreDataServiceSpec: QuickSpec {
             }
         }
 
-        dataServiceSharedSpec(subject, spec: self)
+        describe("As a data service") {
+            dataServiceSharedSpec(subject, spec: self)
+        }
     }
 }

@@ -246,9 +246,13 @@ import RealmSwift
         if !self.isQueryFeed {
             let sortByUpdated = NSSortDescriptor(key: "updatedAt", ascending: false)
             let sortByPublished = NSSortDescriptor(key: "published", ascending: false)
+            let sortByTitle = NSSortDescriptor(key: "title", ascending: false)
+
+            let sortDescriptors = [sortByUpdated, sortByPublished]
+
             let fetchResults = CoreDataFetchResultsController(entityName: "Article",
                                                               managedObjectContext: feed.managedObjectContext!,
-                                                              sortDescriptors: [sortByUpdated, sortByPublished],
+                                                              sortDescriptors: sortDescriptors,
                                                               predicate: NSPredicate(format: "feed == %@", feed))
             self.articlesArray = DataStoreBackedArray(coreDataFetchResultsController: fetchResults) {
                 return Article(coreDataArticle: $0 as! CoreDataArticle, feed: self)
@@ -284,10 +288,11 @@ import RealmSwift
             if let realm = feed.realm {
                 let sortByUpdated = SortDescriptor(property: "updatedAt", ascending: false)
                 let sortByPublished = SortDescriptor(property: "published", ascending: false)
+                let sortDescriptors = [sortByUpdated, sortByPublished]
 
                 let fetchResults = RealmFetchResultsController(configuration: realm.configuration,
                                                                model: RealmArticle.self,
-                                                               sortDescriptors: [sortByUpdated, sortByPublished],
+                                                               sortDescriptors: sortDescriptors,
                                                                predicate: NSPredicate(format: "feed.id == %@", feed.id))
 
                 self.articlesArray = DataStoreBackedArray<Article>(realmFetchResultsController: fetchResults) {

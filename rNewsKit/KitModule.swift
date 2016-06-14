@@ -28,9 +28,7 @@ public class KitModule: NSObject, Ra.InjectorModule {
             reachable = try? Reachability.reachabilityForInternetConnection()
         #endif
 
-        let backgroundQueue = NSOperationQueue()
-        backgroundQueue.qualityOfService = NSQualityOfService.Utility
-        backgroundQueue.maxConcurrentOperationCount = 1
+        let backgroundQueue = NSOperationQueue.mainQueue()
         injector.bind(kBackgroundQueue, toInstance: backgroundQueue)
 
         let urlSessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier(
@@ -58,7 +56,8 @@ public class KitModule: NSObject, Ra.InjectorModule {
         let updateService = UpdateService(
             dataServiceFactory: dataServiceFactory,
             urlSession: urlSession,
-            urlSessionDelegate: urlSessionDelegate
+            urlSessionDelegate: urlSessionDelegate,
+            workerQueue: backgroundQueue
         )
 
         let dataRepository = DefaultDatabaseUseCase(mainQueue: mainQueue,

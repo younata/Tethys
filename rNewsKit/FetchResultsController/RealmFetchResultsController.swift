@@ -8,29 +8,27 @@ final class RealmFetchResultsController: FetchResultsController {
     let predicate: NSPredicate
     private let realmConfiguration: Realm.Configuration
     private let sortDescriptors: [SortDescriptor]
+    private var realmObjects: Result<Results<Element>, RNewsError>
     private let model: Object.Type
 
     private func realm() throws -> Realm {
         return try Realm(configuration: realmConfiguration)
     }
 
-    private var realmObjects: Result<Results<Element>, RNewsError> {
-        get {
-            do {
-                let realm = try Realm(configuration: self.realmConfiguration)
-                let objects = realm.objects(self.model).filter(self.predicate).sorted(self.sortDescriptors)
-                return .Success(objects)
-            } catch {
-                return Result.Failure(.Database(.Unknown))
-            }
-        }
-    }
 
     init(configuration: Realm.Configuration, model: Object.Type, sortDescriptors: [SortDescriptor], predicate: NSPredicate) {
         self.realmConfiguration = configuration
         self.model = model
         self.sortDescriptors = sortDescriptors
         self.predicate = predicate
+
+        do {
+            let realm = try Realm(configuration: configuration)
+            let objects = realm.objects(model).filter(predicate).sorted(sortDescriptors)
+            self.realmObjects = .Success(objects)
+        } catch {
+            self.realmObjects = Result.Failure(.Database(.Unknown))
+        }
     }
 
     var count: Int {
@@ -81,6 +79,8 @@ final class RealmFetchResultsController: FetchResultsController {
                     realm.delete(object)
                 }
             }
+            let objects = realm.objects(self.model).filter(self.predicate).sorted(self.sortDescriptors)
+            self.realmObjects = .Success(objects)
         } catch {
             throw RNewsError.Database(.Unknown)
         }

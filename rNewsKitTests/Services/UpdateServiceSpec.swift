@@ -9,6 +9,7 @@ class UpdateServiceSpec: QuickSpec {
         var urlSessionDelegate: URLSessionDelegate!
         var dataServiceFactory: FakeDataServiceFactory!
         var dataService: InMemoryDataService!
+        var workerQueue: FakeOperationQueue!
 
         beforeEach {
             urlSessionDelegate = URLSessionDelegate()
@@ -21,7 +22,15 @@ class UpdateServiceSpec: QuickSpec {
             urlSession = FakeURLSession()
             urlSessionDelegate = URLSessionDelegate()
 
-            subject = UpdateService(dataServiceFactory: dataServiceFactory, urlSession: urlSession, urlSessionDelegate: urlSessionDelegate)
+            workerQueue = FakeOperationQueue()
+            workerQueue.runSynchronously = true
+
+            subject = UpdateService(
+                dataServiceFactory: dataServiceFactory,
+                urlSession: urlSession,
+                urlSessionDelegate: urlSessionDelegate,
+                workerQueue: workerQueue
+            )
         }
 
         describe("updating a feed") {

@@ -48,12 +48,17 @@ protocol UpdateServiceType: class {
 class UpdateService: UpdateServiceType, NetworkClientDelegate {
     private let dataServiceFactory: DataServiceFactoryType
     private let urlSession: NSURLSession
+    private let workerQueue: NSOperationQueue
 
     private var callbacksInProgress: [NSURL: (feed: Feed, callback: ((Feed, NSError?) -> Void))] = [:]
 
-    init(dataServiceFactory: DataServiceFactoryType, urlSession: NSURLSession, urlSessionDelegate: URLSessionDelegate) {
+    init(dataServiceFactory: DataServiceFactoryType,
+         urlSession: NSURLSession,
+         urlSessionDelegate: URLSessionDelegate,
+         workerQueue: NSOperationQueue) {
         self.dataServiceFactory = dataServiceFactory
         self.urlSession = urlSession
+        self.workerQueue = workerQueue
         urlSessionDelegate.delegate = self
     }
 
@@ -73,12 +78,14 @@ class UpdateService: UpdateServiceType, NetworkClientDelegate {
         self.callbacksInProgress.removeValueForKey(url)
         let feed = feedCallback.feed
         let callback = feedCallback.callback
-        self.dataServiceFactory.currentDataService.updateFeed(feed, info: muonFeed).then { _ in
-            if feed.image == nil, let imageUrl = muonFeed.imageURL where !imageUrl.absoluteString.isEmpty {
-                self.callbacksInProgress[imageUrl] = feedCallback
-                self.downloadURL(imageUrl)
-            } else {
-                callback(feed, nil)
+        self.workerQueue.addOperationWithBlock {
+            self.dataServiceFactory.currentDataService.updateFeed(feed, info: muonFeed).then { _ in
+                if feed.image == nil, let imageUrl = muonFeed.imageURL where !imageUrl.absoluteString.isEmpty {
+                    self.callbacksInProgress[imageUrl] = feedCallback
+                    self.downloadURL(imageUrl)
+                } else {
+                    callback(feed, nil)
+                }
             }
         }
     }
@@ -89,8 +96,10 @@ class UpdateService: UpdateServiceType, NetworkClientDelegate {
         let feed = imageCallback.feed
         let callback = imageCallback.callback
         feed.image = image
-        self.dataServiceFactory.currentDataService.saveFeed(feed).then { _ in
-            callback(feed, nil)
+        self.workerQueue.addOperationWithBlock {
+            self.dataServiceFactory.currentDataService.saveFeed(feed).then { _ in
+                callback(feed, nil)
+            }
         }
     }
 
@@ -106,7 +115,9 @@ class UpdateService: UpdateServiceType, NetworkClientDelegate {
         self.callbacksInProgress.removeValueForKey(url)
         let feed = callback.feed
         let function = callback.callback
-        function(feed, error)
+        self.workerQueue.addOperationWithBlock {
+            function(feed, error)
+        }
     }
 
     // MARK: Private

@@ -8,27 +8,36 @@ final class RealmFetchResultsController: FetchResultsController {
     let predicate: NSPredicate
     private let realmConfiguration: Realm.Configuration
     private let sortDescriptors: [SortDescriptor]
-    private var realmObjects: Result<Results<Element>, RNewsError>
     private let model: Object.Type
 
+    private var realmsForThreads: [NSThread: Realm] = [:]
     private func realm() throws -> Realm {
-        return try Realm(configuration: realmConfiguration)
+        let thread = NSThread.currentThread()
+        if let realm = self.realmsForThreads[thread] {
+            return realm
+        }
+        let realm = try Realm(configuration: realmConfiguration)
+        self.realmsForThreads[thread] = realm
+        return realm
+    }
+
+    private var realmObjects: Result<Results<Element>, RNewsError> {
+        do {
+            let realm = try self.realm()
+            let objects = realm.objects(model).filter(predicate).sorted(sortDescriptors)
+            return .Success(objects)
+        } catch {
+            return Result.Failure(.Database(.Unknown))
+        }
     }
 
 
-    init(configuration: Realm.Configuration, model: Object.Type, sortDescriptors: [SortDescriptor], predicate: NSPredicate) {
+    init(configuration: Realm.Configuration, model: Object.Type,
+         sortDescriptors: [SortDescriptor], predicate: NSPredicate) {
         self.realmConfiguration = configuration
         self.model = model
         self.sortDescriptors = sortDescriptors
         self.predicate = predicate
-
-        do {
-            let realm = try Realm(configuration: configuration)
-            let objects = realm.objects(model).filter(predicate).sorted(sortDescriptors)
-            self.realmObjects = .Success(objects)
-        } catch {
-            self.realmObjects = Result.Failure(.Database(.Unknown))
-        }
     }
 
     var count: Int {
@@ -54,7 +63,7 @@ final class RealmFetchResultsController: FetchResultsController {
 
     func insert(item: Element) throws {
         do {
-            let realm = try Realm(configuration: self.realmConfiguration)
+            let realm = try self.realm()
             if realm.inWriteTransaction {
                 realm.add(item)
             } else {
@@ -71,7 +80,7 @@ final class RealmFetchResultsController: FetchResultsController {
         let object = try self.get(index)
 
         do {
-            let realm = try Realm(configuration: self.realmConfiguration)
+            let realm = try self.realm()
             if realm.inWriteTransaction {
                 realm.delete(object)
             } else {
@@ -79,8 +88,6 @@ final class RealmFetchResultsController: FetchResultsController {
                     realm.delete(object)
                 }
             }
-            let objects = realm.objects(self.model).filter(self.predicate).sorted(self.sortDescriptors)
-            self.realmObjects = .Success(objects)
         } catch {
             throw RNewsError.Database(.Unknown)
         }

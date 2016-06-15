@@ -28,7 +28,9 @@ public class KitModule: NSObject, Ra.InjectorModule {
             reachable = try? Reachability.reachabilityForInternetConnection()
         #endif
 
-        let backgroundQueue = NSOperationQueue.mainQueue()
+        let backgroundQueue = NSOperationQueue()
+        backgroundQueue.qualityOfService = NSQualityOfService.Utility
+        backgroundQueue.maxConcurrentOperationCount = 1
         injector.bind(kBackgroundQueue, toInstance: backgroundQueue)
 
         let urlSessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier(

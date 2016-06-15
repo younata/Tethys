@@ -335,10 +335,10 @@ class RealmService: DataService {
             _ = try? self.realm.commitWrite()
         }
 
-        if self.mainQueue == NSOperationQueue.currentQueue() {
+        if self.workQueue == NSOperationQueue.currentQueue() {
             operation.start()
         } else {
-            self.mainQueue.addOperation(operation)
+            self.workQueue.addOperation(operation)
         }
     }
 }

@@ -339,7 +339,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                                 }
 
                                 it("should show a preview of all articles it captures when tapped") {
-                                    action?.handler()(action, indexPath)
+                                    action?.handler(action, indexPath)
                                     expect(navigationController.topViewController).to(beAnInstanceOf(ArticleListController.self))
                                     if let articleList = navigationController.topViewController as? ArticleListController {
                                         expect(articleList.previewMode) == true
@@ -597,7 +597,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                                 }
 
                                 it("should show a preview of all articles it captures when tapped") {
-                                    action?.handler()(action, indexPath)
+                                    action?.handler(action, indexPath)
                                     expect(navigationController.topViewController).to(beAnInstanceOf(ArticleListController.self))
                                     if let articleList = navigationController.topViewController as? ArticleListController {
                                         expect(articleList.previewMode) == true
@@ -660,7 +660,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
 
                                 it("should removes the tag when tapped") {
                                     let tag = feed.tags[tagIndex]
-                                    action.handler()(action, NSIndexPath(forRow: tagIndex, inSection: 3))
+                                    action.handler(action, NSIndexPath(forRow: tagIndex, inSection: 3))
                                     expect(feed.tags).toNot(contain(tag))
                                 }
                             }
@@ -677,7 +677,7 @@ class QueryFeedViewControllerSpec: QuickSpec {
                                 }
 
                                 it("should removes the tag when tapped") {
-                                    action.handler()(action, NSIndexPath(forRow: tagIndex, inSection: 3))
+                                    action.handler(action, NSIndexPath(forRow: tagIndex, inSection: 3))
                                     expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
                                     if let tagEditor = navigationController.topViewController as? TagEditorViewController {
                                         expect(tagEditor.tagIndex).to(equal(tagIndex))

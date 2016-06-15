@@ -83,12 +83,13 @@ class RealmService: DataService {
 
     func allFeeds() -> Future<Result<DataStoreBackedArray<Feed>, RNewsError>> {
         let promise = Promise<Result<DataStoreBackedArray<Feed>, RNewsError>>()
-        let sortDescriptors = [SortDescriptor(property: "title", ascending: true)]
+        let sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
 
-        let fetchResults = RealmFetchResultsController(configuration: self.realmConfiguration, model: RealmFeed.self,
-                                                       sortDescriptors: sortDescriptors, predicate: NSPredicate(value: true))
-        let feeds = DataStoreBackedArray(realmFetchResultsController: fetchResults,
-            conversionFunction: { Feed(realmFeed: $0 as! RealmFeed) })
+        let feeds = DataStoreBackedArray(realmDataType: RealmFeed.self,
+            predicate: NSPredicate(value: true),
+            realmConfiguration: self.realmConfiguration,
+            conversionFunction: { Feed(realmFeed: $0 as! RealmFeed) },
+            sortDescriptors: sortDescriptors)
         promise.resolve(.Success(feeds))
         return promise.future
     }
@@ -97,16 +98,15 @@ class RealmService: DataService {
         Future<Result<DataStoreBackedArray<Article>, RNewsError>> {
             let promise = Promise<Result<DataStoreBackedArray<Article>, RNewsError>>()
             let sortDescriptors = [
-                SortDescriptor(property: "updatedAt", ascending: false),
-                SortDescriptor(property: "published", ascending: false)
+                NSSortDescriptor(key: "updatedAt", ascending: false),
+                NSSortDescriptor(key: "published", ascending: false)
             ]
 
-            let fetchResults = RealmFetchResultsController(configuration: self.realmConfiguration,
-                                                           model: RealmArticle.self,
-                                                           sortDescriptors: sortDescriptors,
-                                                           predicate: predicate)
-            let articles = DataStoreBackedArray(realmFetchResultsController: fetchResults,
-                conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) })
+            let articles = DataStoreBackedArray(realmDataType: RealmArticle.self,
+                predicate: predicate,
+                realmConfiguration: self.realmConfiguration,
+                conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) },
+                sortDescriptors: sortDescriptors)
             promise.resolve(.Success(articles))
             return promise.future
     }
@@ -294,22 +294,14 @@ class RealmService: DataService {
 
     private func synchronousDeleteFeed(feed: Feed) {
         if let realmFeed = self.realmFeedForFeed(feed) {
-            while feed.articlesArray.count > 0 {
-                let article = feed.articlesArray[0]
-                self.synchronousDeleteArticle(article)
-                feed.removeArticle(article)
-            }
+            feed.articlesArray.forEach(self.synchronousDeleteArticle)
             self.realm.delete(realmFeed)
         }
     }
 
     private func synchronousDeleteArticle(article: Article) {
         if let realmArticle = self.realmArticleForArticle(article) {
-            while article.enclosuresArray.count > 0 {
-                let enclosure = article.enclosuresArray[0]
-                self.synchronousDeleteEnclosure(enclosure)
-                article.removeEnclosure(enclosure)
-            }
+            article.enclosuresArray.forEach(self.synchronousDeleteEnclosure)
             self.realm.delete(realmArticle)
         }
     }

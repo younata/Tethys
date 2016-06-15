@@ -37,10 +37,6 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             let item = Muon.Article(title: "article", link: nil, description: "", content: "", guid: "", published: nil, updated: nil, authors: [], enclosures: [muonEnclosure])
             let info = Muon.Feed(title: "a &amp; title", link: NSURL(string: "https://example.com")!, description: "description", articles: [item])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
-
-            let originalArticlesCount = feed.articlesArray.count
-            expect(originalArticlesCount) == 0
-
             dataService.updateFeed(feed, info: info).then {
                 if case Result.Success() = $0 {
                     updateExpectation.fulfill()
@@ -51,10 +47,10 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             expect(feed.title) == "a & title"
             expect(feed.summary) == "description"
             expect(feed.url).to(beNil())
-            expect(feed.articlesArray.count) == originalArticlesCount + 1
+            expect(feed.articlesArray.count).to(equal(1))
             if let article = feed.articlesArray.first {
                 expect(article.title) == "article"
-                expect(article.enclosuresArray.count) == 1
+                expect(article.enclosuresArray.count).to(equal(1))
                 if let enclosure = article.enclosuresArray.first {
                     expect(enclosure.kind) == muonEnclosure.type
                     expect(enclosure.url) == muonEnclosure.url
@@ -77,7 +73,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             expect(feed.title) == "a & title"
             expect(feed.summary) == "description"
             expect(feed.url).to(beNil())
-            expect(feed.articlesArray.count) == 1
+            expect(feed.articlesArray.count).to(equal(1))
             if let article = feed.articlesArray.first {
                 expect(article.title) == "article"
                 expect(article.link) == NSURL(string: "https://example.com/foo/bar/baz")
@@ -99,16 +95,13 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             expect(feed.title) == "a title"
             expect(feed.summary) == "description"
             expect(feed.url).to(beNil())
-            expect(feed.articlesArray.count) == 0
+            expect(feed.articlesArray.count).to(equal(0))
         }
 
         it("easily updates an existing feed that has articles with new articles") {
             guard let feed = feed else { fail(); return }
             var existingArticle: rNewsKit.Article! = nil
             let addArticleExpectation = spec.expectationWithDescription("existing article")
-
-            let originalArticlesCount = feed.articlesArray.count
-            expect(originalArticlesCount) == 0
 
             dataService.createArticle(feed) { article in
                 existingArticle = article
@@ -123,7 +116,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             spec.waitForExpectationsWithTimeout(1, handler: nil)
 
             expect(feed.articlesArray).to(contain(existingArticle))
-            expect(feed.articlesArray.count) == originalArticlesCount + 1
+            expect(feed.articlesArray.count) == 1
 
             let existingItem = Muon.Article(title: existingArticle.title, link: existingArticle.link, description: existingArticle.summary, content: existingArticle.content, guid: "", published: existingArticle.published, updated: nil, authors: [], enclosures: [])
             let item = Muon.Article(title: "article", link: nil, description: "", content: "", guid: "", published: nil, updated: nil, authors: [], enclosures: [])
@@ -134,20 +127,15 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
                 expect(feed.title) == "a title"
                 expect(feed.summary) == "description"
                 expect(feed.url).to(beNil())
-                expect(feed.articlesArray.count) == originalArticlesCount + 2
-                let articles: [rNewsKit.Article]
-                if dataService is CoreDataService { // TODO: figure out why CoreData stuff isn't sorting
-                    articles = feed.articlesArray.reverse()
-                } else {
-                    articles = Array(feed.articlesArray)
-                }
+                expect(feed.articlesArray.count).to(equal(2))
+                let articles = feed.articlesArray
                 if let firstArticle = articles.first {
-                    expect(firstArticle.title) == item.title
-                    expect(firstArticle.link) == NSURL(string: "https://example.com")
-                    expect(firstArticle) != existingArticle
+                    expect(firstArticle) == existingArticle
                 }
                 if let secondArticle = articles.last {
-                    expect(secondArticle) == existingArticle
+                    expect(secondArticle.title) == item.title
+                    expect(secondArticle.link) == NSURL(string: "https://example.com")
+                    expect(secondArticle) != existingArticle
                 }
                 updateExpectation.fulfill()
             }
@@ -172,9 +160,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             if let article = article {
                 let deleteExpectation = spec.expectationWithDescription("Delete Article")
                 dataService.deleteArticle(article).then {
-                    guard case Result.Success() = $0 else {
-                        return
-                    }
+                    guard case Result.Success() = $0 else { return }
 
                     deleteExpectation.fulfill()
                 }
@@ -268,8 +254,6 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
 
                 it("essentially no-ops, and specifically does not add another enclosure to the article") {
                     guard let article = article else { fail(); return; }
-                    let originalCount = article.enclosuresArray.count
-                    expect(originalCount) == 1
                     let upsertExpectation = spec.expectationWithDescription("Upsert Enclosure")
                     dataService.upsertEnclosureForArticle(article, fromItem: muonEnclosure).then { _ in
                         upsertExpectation.fulfill()
@@ -277,7 +261,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
 
                     spec.waitForExpectationsWithTimeout(1, handler: nil)
 
-                    expect(article.enclosuresArray.count) == originalCount
+                    expect(article.enclosuresArray.count) == 1
                 }
             }
 

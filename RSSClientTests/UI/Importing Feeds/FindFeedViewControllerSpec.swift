@@ -268,7 +268,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     beforeEach {
                         if let alert = subject.presentedViewController as? UIAlertController,
                             let action = alert.actions.first {
-                                action.handler()(action)
+                                action.handler(action)
                         }
                     }
 
@@ -281,7 +281,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     beforeEach {
                         if let alert = subject.presentedViewController as? UIAlertController,
                             let action = alert.actions.last {
-                                action.handler()(action)
+                                action.handler(action)
                         }
                     }
 
@@ -320,7 +320,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     beforeEach {
                         if let alert = subject.presentedViewController as? UIAlertController,
                             let action = alert.actions.first {
-                                action.handler()(action)
+                                action.handler(action)
                         }
                     }
 
@@ -333,7 +333,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     beforeEach {
                         if let alert = subject.presentedViewController as? UIAlertController,
                             let action = alert.actions.last {
-                                action.handler()(action)
+                                action.handler(action)
                         }
                     }
 
@@ -437,7 +437,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                             let actions = (subject.presentedViewController as? UIAlertController)?.actions ?? []
                             if actions.count == 3 {
                                 let action = actions[1]
-                                action.handler()(action)
+                                action.handler(action)
                             } else {
                                 fail("precondition failed")
                             }

@@ -514,7 +514,7 @@ class SettingsViewControllerSpec: QuickSpec {
 
                                 if let action = editActions?.first {
                                     expect(action.title).to(equal("Delete"))
-                                    action.handler()?(action, indexPath)
+                                    action.handler?(action, indexPath)
 
                                     expect(fakeQuickActionRepository.quickActions).to(beEmpty())
                                 }
@@ -663,7 +663,7 @@ class SettingsViewControllerSpec: QuickSpec {
 
                             if let action = editActions?.first {
                                 expect(action.title).to(equal("Delete"))
-                                action.handler()?(action, indexPath)
+                                action.handler?(action, indexPath)
 
                                 expect(fakeQuickActionRepository.quickActions).to(equal([secondShortcut, thirdShortcut]))
                             }

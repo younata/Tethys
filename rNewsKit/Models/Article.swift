@@ -210,26 +210,23 @@ import JavaScriptCore
         self.flags = article.flags
         self.enclosuresArray = DataStoreBackedArray()
         super.init()
-        let enclosuresResults = CoreDataFetchResultsController(entityName: "Enclosure",
-                                                          managedObjectContext: article.managedObjectContext!,
-                                                          sortDescriptors: [],
-                                                          predicate: NSPredicate(format: "article == %@", article))
-        self.enclosuresArray = DataStoreBackedArray(coreDataFetchResultsController: enclosuresResults) {
-            return Enclosure(coreDataEnclosure: $0 as! CoreDataEnclosure, article: self)
-        }
-
-        let relatedResults = CoreDataFetchResultsController(entityName: "Article",
-                                                            managedObjectContext: article.managedObjectContext!,
-                                                            sortDescriptors: [],
-                                                            predicate: NSPredicate(format: "self in %@", article.relatedArticles))
-        self.relatedArticles = DataStoreBackedArray(coreDataFetchResultsController: relatedResults) {
-            let article = $0 as! CoreDataArticle
-            let feed: Feed?
-            if let coreDataFeed = article.feed {
-                feed = Feed(coreDataFeed: coreDataFeed)
-            } else { feed = nil }
-            return Article(coreDataArticle: article, feed: feed)
-        }
+        self.enclosuresArray = DataStoreBackedArray(entityName: "Enclosure",
+            predicate: NSPredicate(format: "article == %@", article),
+            managedObjectContext: article.managedObjectContext!,
+            conversionFunction: {
+                return Enclosure(coreDataEnclosure: $0 as! CoreDataEnclosure, article: self)
+        })
+        self.relatedArticles = DataStoreBackedArray(entityName: "Article",
+            predicate: NSPredicate(format: "self in %@", article.relatedArticles),
+            managedObjectContext: article.managedObjectContext!,
+            conversionFunction: {
+                let article = $0 as! CoreDataArticle
+                let feed: Feed?
+                if let coreDataFeed = article.feed {
+                    feed = Feed(coreDataFeed: coreDataFeed)
+                } else { feed = nil }
+                return Article(coreDataArticle: article, feed: feed)
+        })
 
         self.articleID = article.objectID
 
@@ -254,28 +251,23 @@ import JavaScriptCore
         super.init()
         let enclosures = article.enclosures.map { Enclosure(realmEnclosure: $0, article: self) }
         if let realm = article.realm {
-            let enclosuresResults = RealmFetchResultsController(configuration: realm.configuration,
-                                                                model: RealmEnclosure.self,
-                                                                sortDescriptors: [],
-                                                                predicate: NSPredicate(format: "article.id == %@", article.id))
-            self.enclosuresArray = DataStoreBackedArray(realmFetchResultsController: enclosuresResults) {
-                return Enclosure(realmEnclosure: $0 as! RealmEnclosure, article: self)
-            }
+            self.enclosuresArray = DataStoreBackedArray(realmDataType: RealmEnclosure.self,
+                predicate: NSPredicate(format: "article.id == %@", article.id),
+                realmConfiguration: realm.configuration,
+                conversionFunction: { Enclosure(realmEnclosure: $0 as! RealmEnclosure, article: self) } )
 
             let relatedArticleIds = article.relatedArticles.map { $0.id }
-            let relatedArticlesResults = RealmFetchResultsController(configuration: realm.configuration,
-                                                                     model: RealmArticle.self,
-                                                                     sortDescriptors: [],
-                                                                     predicate: NSPredicate(format: "id IN %@", relatedArticleIds))
-
-            self.relatedArticles = DataStoreBackedArray(realmFetchResultsController: relatedArticlesResults) { object in
+            self.relatedArticles = DataStoreBackedArray(realmDataType: RealmArticle.self,
+                predicate: NSPredicate(format: "id IN %@", relatedArticleIds),
+                realmConfiguration: realm.configuration,
+                conversionFunction: { object in
                     let article = object as! RealmArticle
                     let feed: Feed?
                     if let realmFeed = article.feed {
                         feed = Feed(realmFeed: realmFeed)
                     } else { feed = nil }
                     return Article(realmArticle: article, feed: feed)
-            }
+            })
         } else {
             self.enclosuresArray = DataStoreBackedArray(enclosures)
         }
@@ -331,10 +323,9 @@ import JavaScriptCore
 
     public func removeRelatedArticle(article: Article) {
         if self.relatedArticles.contains(article) {
-            self.relatedArticles.remove(article).then { _ in
-                article.removeRelatedArticle(self)
-                self.updated = true
-            }
+            self.relatedArticles.remove(article)
+            article.removeRelatedArticle(self)
+            self.updated = true
         }
     }
 }

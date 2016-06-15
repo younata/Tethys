@@ -281,7 +281,7 @@ class ArticleViewControllerSpec: QuickSpec {
             }
 
             it("should show the content") {
-                expect(subject.content.loadedHTMLString()).to(contain(article.content))
+                expect(subject.content.loadedHTMLString).to(contain(article.content))
             }
         }
 
@@ -387,11 +387,11 @@ class ArticleViewControllerSpec: QuickSpec {
                 it("should bring up an activity view controller") {
                     expect(subject.presentedViewController).to(beAnInstanceOf(UIActivityViewController.self))
                     if let activityViewController = subject.presentedViewController as? UIActivityViewController {
-                        expect(activityViewController.activityItems().count).to(equal(1))
-                        expect(activityViewController.activityItems().first as? NSURL).to(equal(article.link))
+                        expect(activityViewController.activityItems.count).to(equal(1))
+                        expect(activityViewController.activityItems.first as? NSURL).to(equal(article.link))
 
-                        expect(activityViewController.applicationActivities() as? [NSObject]).toNot(beNil())
-                        if let activities = activityViewController.applicationActivities() as? [NSObject] {
+                        expect(activityViewController.applicationActivities as? [NSObject]).toNot(beNil())
+                        if let activities = activityViewController.applicationActivities as? [NSObject] {
                             expect(activities.first).to(beAnInstanceOf(TOActivitySafari.self))
                             expect(activities[1]).to(beAnInstanceOf(TOActivityChrome.self))
                             expect(activities.last).to(beAnInstanceOf(AuthorActivity.self))

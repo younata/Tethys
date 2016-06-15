@@ -4,23 +4,11 @@ import CoreData
 import RealmSwift
 @testable import rNewsKit
 
-private func dataStoreBackedArray<T>(realmDataType realmDataType: Object.Type, predicate: NSPredicate, realmConfiguration: Realm.Configuration, conversionFunction: Object -> T, sortDescriptors: [NSSortDescriptor] = []) -> DataStoreBackedArray<T> {
-    let sortDescriptors = sortDescriptors.map { SortDescriptor(property: $0.key!, ascending: $0.ascending) }
-
-    let fetchResults = RealmFetchResultsController(configuration: realmConfiguration, model: realmDataType, sortDescriptors: sortDescriptors, predicate: predicate)
-
-    return DataStoreBackedArray(realmFetchResultsController: fetchResults, conversionFunction: conversionFunction)
-}
-
-private func dataStoreBackedArray<T>(entityName entityName: String, predicate: NSPredicate, managedObjectContext: NSManagedObjectContext, conversionFunction: NSManagedObject -> T, sortDescriptors: [NSSortDescriptor] = []) -> DataStoreBackedArray<T> {
-    let fetchResults = CoreDataFetchResultsController(entityName: entityName, managedObjectContext: managedObjectContext, sortDescriptors: sortDescriptors, predicate: predicate)
-    return DataStoreBackedArray<T>(coreDataFetchResultsController: fetchResults, conversionFunction: conversionFunction)
-}
-
 class DataStoreBackedArraySpec: QuickSpec {
     override func spec() {
         var subject: DataStoreBackedArray<Article>! = nil
         let totalObjectCount = 125
+        let batchSize = 50
 
         describe("a Realm backed array") {
             var realm: Realm!
@@ -46,7 +34,7 @@ class DataStoreBackedArraySpec: QuickSpec {
 
                 let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
 
-                subject = dataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(value: true), realmConfiguration: realmConf, conversionFunction: {
+                subject = DataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(value: true), realmConfiguration: realmConf, conversionFunction: {
                     return Article(realmArticle: $0 as! RealmArticle, feed: nil)
                 }, sortDescriptors: [sortDescriptor])
             }
@@ -58,15 +46,29 @@ class DataStoreBackedArraySpec: QuickSpec {
             it("should implement isEmpty correctly") {
                 expect(subject.isEmpty) == false
 
-                let emptyArray = dataStoreBackedArray(realmDataType: RealmFeed.self, predicate: NSPredicate(value: true), realmConfiguration: realmConf, conversionFunction: { Feed(realmFeed: $0 as! RealmFeed) })
+                let emptyArray = DataStoreBackedArray<Feed>(realmDataType: RealmFeed.self, predicate: NSPredicate(value: true), realmConfiguration: realmConf, conversionFunction: { Feed(realmFeed: $0 as! RealmFeed) })
                 expect(emptyArray.isEmpty) == true
             }
 
             it("should correctly return the first object") {
                 expect(subject.first) == Article(realmArticle: articles[0], feed: nil)
 
-                let emptyArray = dataStoreBackedArray(realmDataType: RealmFeed.self, predicate: NSPredicate(value: true), realmConfiguration: realmConf, conversionFunction: { Feed(realmFeed: $0 as! RealmFeed) })
+                let emptyArray = DataStoreBackedArray<Feed>(realmDataType: RealmFeed.self, predicate: NSPredicate(value: true), realmConfiguration: realmConf, conversionFunction: { Feed(realmFeed: $0 as! RealmFeed) })
                 expect(emptyArray.first).to(beNil())
+            }
+
+            it("should not load anything until it's accessed") {
+                expect(subject.internalObjects.isEmpty) == true
+                expect(subject[0]) == Article(realmArticle: articles[0], feed: nil)
+
+                expect(subject.internalObjects.isEmpty) == false
+                let expectedArticles = Array(articles[0..<batchSize]).map { Article(realmArticle: $0, feed: nil) }
+                expect(subject.internalObjects) == expectedArticles
+            }
+
+            it("should load successively more things") {
+                expect(subject[batchSize + 5]) == Article(realmArticle: articles[batchSize + 5], feed: nil)
+                expect(subject.internalObjects.count) == batchSize * 2
             }
 
             it("should be iterable") {
@@ -84,16 +86,21 @@ class DataStoreBackedArraySpec: QuickSpec {
 
             it("should be equatable") {
                 let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
-                let shouldEqual = dataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(value: true), realmConfiguration: realmConf, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
+                let shouldEqual = DataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(value: true), realmConfiguration: realmConf, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
                 expect(shouldEqual == subject) == true
 
-                let entityNameOff = dataStoreBackedArray(realmDataType: RealmFeed.self, predicate: NSPredicate(value: true), realmConfiguration: realmConf, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
+                let entityNameOff = DataStoreBackedArray(realmDataType: RealmFeed.self, predicate: NSPredicate(value: true), realmConfiguration: realmConf, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
                 expect(subject == entityNameOff) != true
 
-                let predicateOff = dataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(value: false), realmConfiguration: realmConf, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
+                let predicateOff = DataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(value: false), realmConfiguration: realmConf, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
                 expect(predicateOff == subject) != true
 
-                let sortDescriptorOff = dataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(value: true), realmConfiguration: realmConf, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [])
+                let otherRealmConfiguration = Realm.Configuration(inMemoryIdentifier: "DataStoreBackedArraySpec2")
+
+                let realmOff = DataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(value: true), realmConfiguration: otherRealmConfiguration, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
+                expect(realmOff == subject) != true
+
+                let sortDescriptorOff = DataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(value: true), realmConfiguration: realmConf, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [])
                 expect(sortDescriptorOff == subject) != true
 
                 let expectedArticles = articles.map { Article(realmArticle: $0, feed: nil) }
@@ -111,14 +118,11 @@ class DataStoreBackedArraySpec: QuickSpec {
             it("should allow itself to be appended to") {
                 let article = Article(title: "025", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
 
-                expect(subject.contains(article)) == false
-
                 subject.append(article)
 
                 expect(subject.count) == totalObjectCount + 1
 
                 let expectedArticles = articles.map { Article(realmArticle: $0, feed: nil) }
-                expect(subject.contains(article)) == true
                 expect(Array(subject)) == expectedArticles + [article]
 
                 let queryList = DataStoreBackedArray(expectedArticles)
@@ -141,8 +145,8 @@ class DataStoreBackedArraySpec: QuickSpec {
 
                 let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
 
-                let a = dataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(format: "title == %@", "002"), realmConfiguration: realmConf, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
-                let b = dataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(format: "title == %@", "003"), realmConfiguration: realmConf, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
+                let a = DataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(format: "title == %@", "002"), realmConfiguration: realmConf, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
+                let b = DataStoreBackedArray(realmDataType: RealmArticle.self, predicate: NSPredicate(format: "title == %@", "003"), realmConfiguration: realmConf, conversionFunction: { Article(realmArticle: $0 as! RealmArticle, feed: nil) }, sortDescriptors: [sortDescriptor])
 
                 let articles = articles.map({ Article(realmArticle: $0, feed: nil) })
 
@@ -152,8 +156,6 @@ class DataStoreBackedArraySpec: QuickSpec {
             it("should allow an object to be removed from it") {
                 let articles = articles.map({ Article(realmArticle: $0, feed: nil) })
                 let toRemove = articles[4]
-
-                expect(subject.count) == totalObjectCount
 
                 expect(subject.remove(toRemove).wait()) == true
                 expect(subject.count) == totalObjectCount - 1
@@ -166,12 +168,10 @@ class DataStoreBackedArraySpec: QuickSpec {
                 expect(subject.count) == totalObjectCount
                 expect(subject.remove(article).wait()) == true
                 expect(Array(subject)) == expectedArticles
-                expect(subject.count) == totalObjectCount - 1
 
                 let queryList = DataStoreBackedArray(articles)
                 expect(queryList.remove(toRemove).wait()) == true
                 expect(Array(queryList)) == expectedArticles
-                expect(subject.count) == totalObjectCount - 1
             }
         }
 
@@ -194,7 +194,7 @@ class DataStoreBackedArraySpec: QuickSpec {
 
                 let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
 
-                subject = dataStoreBackedArray(entityName: "Article", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: {
+                subject = DataStoreBackedArray(entityName: "Article", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: {
                     return Article(coreDataArticle: $0 as! CoreDataArticle, feed: nil)
                 }, sortDescriptors: [sortDescriptor])
             }
@@ -210,15 +210,29 @@ class DataStoreBackedArraySpec: QuickSpec {
             it("should implement isEmpty correctly") {
                 expect(subject.isEmpty) == false
 
-                let emptyArray = dataStoreBackedArray(entityName: "Feed", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: { Feed(coreDataFeed: $0 as! CoreDataFeed) })
+                let emptyArray = DataStoreBackedArray<Feed>(entityName: "Feed", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: { Feed(coreDataFeed: $0 as! CoreDataFeed) })
                 expect(emptyArray.isEmpty) == true
             }
 
             it("should correctly return the first object") {
                 expect(subject.first) == Article(coreDataArticle: articles[0], feed: nil)
 
-                let emptyArray = dataStoreBackedArray(entityName: "Feed", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: { Feed(coreDataFeed: $0 as! CoreDataFeed) })
+                let emptyArray = DataStoreBackedArray<Feed>(entityName: "Feed", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: { Feed(coreDataFeed: $0 as! CoreDataFeed) })
                 expect(emptyArray.first).to(beNil())
+            }
+
+            it("should not load anything until it's accessed") {
+                expect(subject.internalObjects.isEmpty) == true
+                expect(subject[0]) == Article(coreDataArticle: articles[0], feed: nil)
+
+                expect(subject.internalObjects.isEmpty) == false
+                let expectedArticles = Array(articles[0..<batchSize]).map { Article(coreDataArticle: $0, feed: nil) }
+                expect(subject.internalObjects) == expectedArticles
+            }
+
+            it("should load successively more things") {
+                expect(subject[batchSize + 5]) == Article(coreDataArticle: articles[batchSize + 5], feed: nil)
+                expect(subject.internalObjects.count) == batchSize * 2
             }
 
             it("should be iterable") {
@@ -236,27 +250,27 @@ class DataStoreBackedArraySpec: QuickSpec {
 
             it("should be equatable") {
                 let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
-                let shouldEqual = dataStoreBackedArray(entityName: "Article", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: {
+                let shouldEqual = DataStoreBackedArray(entityName: "Article", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: {
                     return Article(coreDataArticle: $0 as! CoreDataArticle, feed: nil)
                     }, sortDescriptors: [sortDescriptor])
                 expect(shouldEqual == subject) == true
 
-                let entityNameOff = dataStoreBackedArray(entityName: "Feed", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: {
+                let entityNameOff = DataStoreBackedArray(entityName: "Feed", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: {
                     return Article(coreDataArticle: $0 as! CoreDataArticle, feed: nil)
                     }, sortDescriptors: [sortDescriptor])
                 expect(subject == entityNameOff) != true
 
-                let predicateOff = dataStoreBackedArray(entityName: "Article", predicate: NSPredicate(value: false), managedObjectContext: moc, conversionFunction: {
+                let predicateOff = DataStoreBackedArray(entityName: "Article", predicate: NSPredicate(value: false), managedObjectContext: moc, conversionFunction: {
                     return Article(coreDataArticle: $0 as! CoreDataArticle, feed: nil)
                     }, sortDescriptors: [sortDescriptor])
                 expect(predicateOff == subject) != true
 
-                let managedObjectContextOff = dataStoreBackedArray(entityName: "Article", predicate: NSPredicate(value: true), managedObjectContext: managedObjectContext(), conversionFunction: {
+                let managedObjectContextOff = DataStoreBackedArray(entityName: "Article", predicate: NSPredicate(value: true), managedObjectContext: managedObjectContext(), conversionFunction: {
                     return Article(coreDataArticle: $0 as! CoreDataArticle, feed: nil)
                     }, sortDescriptors: [sortDescriptor])
                 expect(managedObjectContextOff == subject) != true
 
-                let sortDescriptorOff = dataStoreBackedArray(entityName: "Article", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: {
+                let sortDescriptorOff = DataStoreBackedArray(entityName: "Article", predicate: NSPredicate(value: true), managedObjectContext: moc, conversionFunction: {
                     return Article(coreDataArticle: $0 as! CoreDataArticle, feed: nil)
                     }, sortDescriptors: [])
                 expect(sortDescriptorOff == subject) != true
@@ -303,11 +317,11 @@ class DataStoreBackedArraySpec: QuickSpec {
 
                 let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
 
-                let a = dataStoreBackedArray(entityName: "Article", predicate: NSPredicate(format: "title == %@", "002"), managedObjectContext: moc, conversionFunction: {
+                let a = DataStoreBackedArray(entityName: "Article", predicate: NSPredicate(format: "title == %@", "002"), managedObjectContext: moc, conversionFunction: {
                     return Article(coreDataArticle: $0 as! CoreDataArticle, feed: nil)
                     }, sortDescriptors: [sortDescriptor])
 
-                let b = dataStoreBackedArray(entityName: "Article", predicate: NSPredicate(format: "title == %@", "003"), managedObjectContext: moc, conversionFunction: {
+                let b = DataStoreBackedArray(entityName: "Article", predicate: NSPredicate(format: "title == %@", "003"), managedObjectContext: moc, conversionFunction: {
                     return Article(coreDataArticle: $0 as! CoreDataArticle, feed: nil)
                     }, sortDescriptors: [sortDescriptor])
 

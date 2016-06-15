@@ -130,7 +130,7 @@ class ArticleListControllerSpec: QuickSpec {
                     shareSheet.tap()
                     expect(subject.presentedViewController).to(beAnInstanceOf(UIActivityViewController))
                     if let activityVC = subject.presentedViewController as? UIActivityViewController {
-                        expect(activityVC.activityItems() as? [NSURL]) == [feed.url!]
+                        expect(activityVC.activityItems as? [NSURL]) == [feed.url!]
                     }
                 }
             }
@@ -365,7 +365,7 @@ class ArticleListControllerSpec: QuickSpec {
                             let indexPath = NSIndexPath(forRow: 0, inSection: 0)
                             if let delete = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.first {
                                 expect(delete.title).to(equal("Delete"))
-                                delete.handler()(delete, indexPath)
+                                delete.handler(delete, indexPath)
                                 expect(dataRepository.lastDeletedArticle).to(equal(articles.first))
                             }
                         }
@@ -375,7 +375,7 @@ class ArticleListControllerSpec: QuickSpec {
                                 let indexPath = NSIndexPath(forRow: 0, inSection: 0)
                                 if let markRead = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.last {
                                     expect(markRead.title).to(equal("Mark\nRead"))
-                                    markRead.handler()(markRead, indexPath)
+                                    markRead.handler(markRead, indexPath)
                                     expect(dataRepository.lastArticleMarkedRead).to(equal(articles.first))
                                     expect(articles.first?.read) == true
                                 }
@@ -387,7 +387,7 @@ class ArticleListControllerSpec: QuickSpec {
                                 let indexPath = NSIndexPath(forRow: 2, inSection: 0)
                                 if let markUnread = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.last {
                                     expect(markUnread.title).to(equal("Mark\nUnread"))
-                                    markUnread.handler()(markUnread, indexPath)
+                                    markUnread.handler(markUnread, indexPath)
                                     expect(dataRepository.lastArticleMarkedRead).to(equal(articles[2]))
                                     expect(articles[2].read) == false
                                 }

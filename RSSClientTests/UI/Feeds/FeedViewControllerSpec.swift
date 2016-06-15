@@ -355,7 +355,7 @@ class FeedViewControllerSpec: QuickSpec {
 
                             it("should removes the tag when tapped") {
                                 let tag = feed.tags[tagIndex]
-                                action.handler()(action, NSIndexPath(forRow: tagIndex, inSection: 3))
+                                action.handler(action, NSIndexPath(forRow: tagIndex, inSection: 3))
                                 expect(feed.tags).toNot(contain(tag))
                             }
                         }
@@ -372,7 +372,7 @@ class FeedViewControllerSpec: QuickSpec {
                             }
 
                             it("should removes the tag when tapped") {
-                                action.handler()(action, NSIndexPath(forRow: tagIndex, inSection: 3))
+                                action.handler(action, NSIndexPath(forRow: tagIndex, inSection: 3))
                                 expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
                                 if let tagEditor = navigationController.topViewController as? TagEditorViewController {
                                     expect(tagEditor.tagIndex).to(equal(tagIndex))

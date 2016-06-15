@@ -638,7 +638,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                                         describe("tapping it") {
                                             beforeEach {
-                                                action?.handler()(action, indexPath)
+                                                action?.handler(action, indexPath)
                                             }
 
                                             it("should delete the feed from the data store") {
@@ -660,7 +660,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                                         describe("tapping it") {
                                             beforeEach {
-                                                action?.handler()(action, indexPath)
+                                                action?.handler(action, indexPath)
                                             }
 
                                             it("marks all articles of that feed as read") {
@@ -693,7 +693,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                                         describe("tapping it") {
                                             beforeEach {
-                                                action?.handler()(action, indexPath)
+                                                action?.handler(action, indexPath)
                                             }
 
                                             it("should bring up a feed edit screen") {
@@ -719,13 +719,13 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                                         describe("tapping it") {
                                             beforeEach {
-                                                action?.handler()(action, indexPath)
+                                                action?.handler(action, indexPath)
                                             }
 
                                             it("should bring up a share sheet") {
                                                 expect(navigationController.visibleViewController).to(beAnInstanceOf(UIActivityViewController))
                                                 if let activityVC = navigationController.visibleViewController as? UIActivityViewController {
-                                                    expect(activityVC.activityItems() as? [NSURL]) == [feed.url!]
+                                                    expect(activityVC.activityItems as? [NSURL]) == [feed.url!]
                                                 }
                                             }
                                         }
@@ -818,7 +818,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                         
                                         describe("tapping it") {
                                             beforeEach {
-                                                action?.handler()(action, indexPath)
+                                                action?.handler(action, indexPath)
                                             }
                                             
                                             it("should delete the feed from the data store") {
@@ -840,7 +840,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                         
                                         describe("tapping it") {
                                             beforeEach {
-                                                action?.handler()(action, indexPath)
+                                                action?.handler(action, indexPath)
                                             }
                                             
                                             it("should mark all articles of that feed as read") {
@@ -862,7 +862,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                         
                                         describe("tapping it") {
                                             beforeEach {
-                                                action?.handler()(action, indexPath)
+                                                action?.handler(action, indexPath)
                                             }
                                             
                                             it("should bring up a feed edit screen") {

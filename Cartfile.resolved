@@ -12,6 +12,6 @@ github "TimOliver/TOBrowserActivityKit" "fdd6dab00d2ffcf8227348e9fc690bd0e9519f5
 github "younata/WorkFlow" "v0.2.0"
 github "soffes/X" "48d1541834487a4ecb0bb4b37ac1621dfd84ec8f"
 github "quick/nimble" "v4.0.1"
-github "quick/quick" "4c9e0514998ab382cadd30cf5f607d67d7c35b7f"
+github "quick/quick" "cf7eca8766854b10882a9da5f741e7eb31d08167"
 github "realm/realm-cocoa" "v1.0.1"
 github "soffes/SyntaxKit" "v0.1.1"

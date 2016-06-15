@@ -6,7 +6,7 @@ RSSClient.xcodeproj/xcuserdata/
 foo
 *swp
 *bcsymbolmap
-Carthage/Checkouts
+Carthage
 .release_token
 .bundle
 fastlane/

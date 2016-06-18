@@ -13,3 +13,4 @@ fastlane/
 rNews.app*
 rNews.ipa
 screenshots
+.mixpanel

@@ -43,6 +43,7 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
     private let opmlService: OPMLService
     private let fileManager: NSFileManager
     private let mainQueue: NSOperationQueue
+    private let analytics: Analytics
 
     private enum ImportType {
         case Feed
@@ -54,12 +55,14 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
                 feedRepository: DatabaseUseCase,
                 opmlService: OPMLService,
                 fileManager: NSFileManager,
-                mainQueue: NSOperationQueue) {
+                mainQueue: NSOperationQueue,
+                analytics: Analytics) {
         self.urlSession = urlSession
         self.feedRepository = feedRepository
         self.opmlService = opmlService
         self.fileManager = fileManager
         self.mainQueue = mainQueue
+        self.analytics = analytics
     }
 
     public required convenience init(injector: Injector) {
@@ -68,7 +71,8 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
             feedRepository: injector.create(DatabaseUseCase)!,
             opmlService: injector.create(OPMLService)!,
             fileManager: injector.create(NSFileManager)!,
-            mainQueue: injector.create(kMainQueue) as! NSOperationQueue
+            mainQueue: injector.create(kMainQueue) as! NSOperationQueue,
+            analytics: injector.create(Analytics)!
         )
     }
 

@@ -17,6 +17,8 @@ public class KitModule: NSObject, Ra.InjectorModule {
 
         injector.bind(NSURLSession.self, toInstance: NSURLSession.sharedSession())
 
+        injector.bind(Analytics.self, toInstance: MixPanelAnalytics())
+
         var searchIndex: SearchIndex? = nil
         var reachable: Reachable? = nil
 
@@ -78,5 +80,6 @@ public class KitModule: NSObject, Ra.InjectorModule {
 
         injector.bind(MigrationUseCase.self, toInstance: DefaultMigrationUseCase(injector: injector))
         injector.bind(ImportUseCase.self, to: DefaultImportUseCase.init)
+
     }
 }

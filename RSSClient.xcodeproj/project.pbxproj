@@ -2162,7 +2162,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "token_file=$SRCROOT/.mixpanel\ntoken=\"$(cat $token_file)\"\nif [ \"$token\" ]; then\n    plutil -replace MixpanelToken -string $token \"$TARGET_BUILD_DIR/$INFOPLIST_PATH\"\nelse\n    echo \"warning: Missing Mixpanel token, add it to $SRCROOT/.mixpanel\"\nfi";
+			shellScript = "token_file=$SRCROOT/.mixpanel\nif [ -e $token_file ]; then\n    token=\"$(cat $token_file)\"\n    if [ \"$token\" ]; then\n        plutil -replace MixpanelToken -string $token \"$TARGET_BUILD_DIR/$INFOPLIST_PATH\"\n    else\n        echo \"warning: Missing Mixpanel token, add it to $SRCROOT/.mixpanel\"\n    fi\nelse\n    echo \"warning: Missing Mixpanel token, add it to $SRCROOT/.mixpanel\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 

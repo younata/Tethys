@@ -370,6 +370,7 @@
 		89E1868D1D1363A1005C5880 /* Mixpanel.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89E1868C1D1363A1005C5880 /* Mixpanel.framework */; };
 		89E186921D136C38005C5880 /* FakeAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E186911D136C38005C5880 /* FakeAnalytics.swift */; };
 		89E186931D136C48005C5880 /* FakeAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E186911D136C38005C5880 /* FakeAnalytics.swift */; };
+		89E186981D165D0E005C5880 /* Mixpanel.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89E1868C1D1363A1005C5880 /* Mixpanel.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89E2A33D1B6A856900A40D4E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E2A33C1B6A856900A40D4E /* SettingsViewController.swift */; };
 		89E2A33F1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E2A33E1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift */; };
 		89EA6C361B4B2D8400456892 /* FakeDefaultDatabaseUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EA6C351B4B2D8400456892 /* FakeDefaultDatabaseUseCase.swift */; };
@@ -473,6 +474,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				89E186981D165D0E005C5880 /* Mixpanel.framework in Embed Frameworks */,
 				89DB07491CBE1862006D672D /* Result.framework in Embed Frameworks */,
 				89146E501C88F0A600EC8F10 /* WorkFlow.framework in Embed Frameworks */,
 				898911931C2FC8A2009A44E9 /* Realm.framework in Embed Frameworks */,

@@ -25,7 +25,6 @@ platform :ios do
   desc 'Sets up (usually for CI)'
   lane :setup do
     carthage(platform: 'iOS')
-    match(type: 'development', readonly: true)
     match(type: 'appstore', readonly: true)
   end
 
@@ -71,21 +70,6 @@ platform :ios do
     increment_version_number(xcodeproj: 'RSSClient.xcodeproj')
     commit_version_bump(xcodeproj: 'RSSClient.xcodeproj')
     push_to_git_remote
-  end
-
-  after_all do |lane|
-    # This block is called, only if the executed lane was successful
-    
-    # slack(
-    #   message: "Successfully deployed new App Update."
-    # )
-  end
-
-  error do |lane, exception|
-    # slack(
-    #   message: exception.message,
-    #   success: false
-    # )
   end
 end
 

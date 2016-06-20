@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<opml version="2.0">
-    <body>
-        <outline xmlURL="http://example.com/feedWithTag" title="nil" type="rss" tags="a tag"/>
-        <outline xmlURL="http://example.com/previouslyImportedFeed" title="imported" type="rss"/>
-        <outline xmlURL="http://example.com/feedWithTitle" title="Feed With Title" type="rss"/>
-        <outline xmlURL="" title="Query Feed" type="rss" query="return true;"/>
-</body>
-</opml>

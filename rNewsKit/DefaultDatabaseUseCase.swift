@@ -160,7 +160,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
             switch result {
             case .Success:
                 self.feeds().then { feedsResult in
-                    feedsResult.map { (feeds: [Feed]) -> Void in
+                    _ = feedsResult.map { (feeds: [Feed]) -> Void in
                         for subscriber in self.allSubscribers {
                             subscriber.deletedFeed(feed, feedsLeft: feeds.count)
                         }
@@ -177,7 +177,6 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         let articles = feed.articlesArray.filterWithPredicate(NSPredicate(format: "read != 1"))
         return self.privateMarkArticles(Array(articles), asRead: true).map {
             return $0.map { articlesCount in
-                feed.resetUnreadArticles()
                 return articlesCount
             }
         }

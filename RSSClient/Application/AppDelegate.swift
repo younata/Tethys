@@ -61,16 +61,6 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             self.createControllerHierarchy()
 
             self.feedRepository.addSubscriber(application)
-            let userDefaults = NSUserDefaults.standardUserDefaults()
-            if !userDefaults.boolForKey("firstLaunch") {
-                self.feedRepository.newFeed { feed in
-                    feed.title = NSLocalizedString("AppDelegate_UnreadFeed_Title", comment: "")
-                    feed.summary = NSLocalizedString("AppDelegate_UnreadFeed_Summary", comment: "")
-                    feed.query = "function(article) {\n    return !article.read;\n}"
-                }
-                userDefaults.setBool(true, forKey: "firstLaunch")
-            }
-
             self.notificationHandler.enableNotifications(application)
 
             application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)

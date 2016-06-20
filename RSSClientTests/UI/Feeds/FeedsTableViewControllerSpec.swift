@@ -893,20 +893,6 @@ class FeedsTableViewControllerSpec: QuickSpec {
                         expect(subject.onboardingView.superview).toNot(beNil())
                     }
                 }
-
-                context("when it only comes back with the 'all unread' feed") {
-                    beforeEach {
-                        feeds = [
-                            Feed(title: "All Unread", url: nil, summary: "All unread articles", query: "function(article) {\n    return !article.read;\n}", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                        ]
-
-                        dataUseCase.feedsPromises.first?.resolve(.Success(feeds))
-                    }
-
-                    it("still shows the onboarding view") {
-                        expect(subject.onboardingView.superview).toNot(beNil())
-                    }
-                }
             }
 
             xdescribe("when the feeds promise fails") { // TODO: Implement!

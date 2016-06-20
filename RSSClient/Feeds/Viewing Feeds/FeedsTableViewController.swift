@@ -549,7 +549,7 @@ extension FeedsTableViewController: UITableViewDelegate {
                 let feed = self.feedAtIndexPath(indexPath)
                 self.markReadFuture = self.feedRepository.markFeedAsRead(feed)
                 self.markReadFuture!.then { _ in
-                    self.reload(nil)
+                    self.reload(self.searchBar.text)
                     tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
                     self.markReadFuture = nil
                 }

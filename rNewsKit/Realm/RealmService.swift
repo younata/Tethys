@@ -123,6 +123,7 @@ class RealmService: DataService {
         #endif
         self.realmTransaction {
             self.synchronousDeleteFeed(feed)
+        }.then {
             self.mainQueue.addOperationWithBlock {
                 promise.resolve(.Success())
             }
@@ -139,6 +140,7 @@ class RealmService: DataService {
         #endif
         self.realmTransaction {
             self.synchronousDeleteArticle(article)
+        }.then {
             self.mainQueue.addOperationWithBlock {
                 promise.resolve(.Success())
             }
@@ -174,6 +176,7 @@ class RealmService: DataService {
             articles.forEach { self.synchronousUpdateArticle($0) }
             feeds.forEach { self.synchronousUpdateFeed($0) }
 
+        }.then {
             self.mainQueue.addOperationWithBlock {
                 promise.resolve(.Success())
             }
@@ -319,12 +322,14 @@ class RealmService: DataService {
         }
     }
 
-    private func realmTransaction(execBlock: Void -> Void) {
+    private func realmTransaction(execBlock: Void -> Void) -> Future<Void> {
+        let promise = Promise<Void>()
         let operation = NSBlockOperation {
             self.startRealmTransaction()
             execBlock()
             self.startRealmTransaction()
             _ = try? self.realm.commitWrite()
+            promise.resolve()
         }
 
         if self.workQueue == NSOperationQueue.currentQueue() {
@@ -332,5 +337,7 @@ class RealmService: DataService {
         } else {
             self.workQueue.addOperation(operation)
         }
+
+        return promise.future
     }
 }

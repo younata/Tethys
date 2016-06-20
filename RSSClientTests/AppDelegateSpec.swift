@@ -55,34 +55,6 @@ class AppDelegateSpec: QuickSpec {
         }
         
         describe("-application:didFinishLaunchingWithOptions:") {
-            it("should on first launch add a query feed for all unread articles") {
-                let userDefaults = NSUserDefaults.standardUserDefaults()
-                userDefaults.removeObjectForKey("firstLaunch")
-
-                subject.application(application, didFinishLaunchingWithOptions: ["test": true])
-
-                expect(dataUseCase.didCreateFeed) == true
-
-                let feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-
-                dataUseCase.newFeedCallback(feed)
-
-                expect(feed.title).to(equal("All Unread"))
-                expect(feed.summary).to(equal("All unread articles"))
-                expect(feed.query).to(equal("function(article) {\n    return !article.read;\n}"))
-                expect(userDefaults.boolForKey("firstLaunch")) == true
-
-            }
-
-            it("should not add a query feed on any subsequent launches") {
-                let userDefaults = NSUserDefaults.standardUserDefaults()
-                userDefaults.setBool(true, forKey: "firstLaunch")
-
-                subject.application(application, didFinishLaunchingWithOptions: ["test": true])
-
-                expect(dataUseCase.didCreateFeed) == false
-            }
-
             it("should enable notifications") {
                 subject.application(application, didFinishLaunchingWithOptions: ["test": true])
 

@@ -17,5 +17,6 @@ deployment:
   beta_distribution:
     branch: master
     commands:
+      - echo "$MIXPANEL_TOKEN" > .mixpanel
       - bundle exec fastlane deploy_testflight
 

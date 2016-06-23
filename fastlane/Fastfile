@@ -24,8 +24,9 @@ default_platform :ios
 platform :ios do
   desc 'Sets up (usually for CI)'
   lane :setup do
-    carthage(platform: 'iOS')
+    match(type: 'development', readonly: true)
     match(type: 'appstore', readonly: true)
+    carthage(platform: 'iOS')
   end
 
   desc 'Pushes'

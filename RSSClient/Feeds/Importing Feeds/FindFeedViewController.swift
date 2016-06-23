@@ -22,20 +22,24 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
     private let importUseCase: ImportUseCase
     private let themeRepository: ThemeRepository
+    private let analytics: Analytics
 
     private let placeholderAttributes: [String: AnyObject] = [NSForegroundColorAttributeName: UIColor.blackColor()]
 
     public init(importUseCase: ImportUseCase,
-                themeRepository: ThemeRepository) {
+                themeRepository: ThemeRepository,
+                analytics: Analytics) {
         self.importUseCase = importUseCase
         self.themeRepository = themeRepository
+        self.analytics = analytics
         super.init(nibName: nil, bundle: nil)
     }
 
     public required convenience init(injector: Injector) {
         self.init(
             importUseCase: injector.create(ImportUseCase)!,
-            themeRepository: injector.create(ThemeRepository)!
+            themeRepository: injector.create(ThemeRepository)!,
+            analytics: injector.create(Analytics)!
         )
     }
 
@@ -108,6 +112,8 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         self.loadingBar.progressTintColor = UIColor.darkGreenColor()
 
         self.themeRepository.addSubscriber(self)
+
+        self.analytics.logEvent("DidViewWebImport", data: nil)
     }
 
     deinit {
@@ -301,6 +307,7 @@ extension FindFeedViewController {
         indicator.configureWithMessage(message)
         self.importUseCase.importItem(link) {
             indicator.removeFromSuperview()
+            self.analytics.logEvent("DidUseWebImport", data: nil)
             self.dismiss()
         }
     }

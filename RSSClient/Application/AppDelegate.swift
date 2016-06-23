@@ -32,6 +32,10 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         self.anInjector.create(BackgroundFetchHandler)!
     }()
 
+    private lazy var analytics: Analytics = {
+        self.anInjector.create(Analytics)!
+    }()
+
     internal lazy var splitView: SplitViewController = {
         let splitView = self.anInjector.create(SplitViewController)!
         self.anInjector.bind(SplitViewController.self, toInstance: splitView)
@@ -63,6 +67,11 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
             self.feedRepository.addSubscriber(application)
             self.notificationHandler.enableNotifications(application)
 
+            if launchOptions == nil || launchOptions?.isEmpty == true ||
+                (launchOptions?.count == 1 && launchOptions?["test"] as? Bool == true) {
+                    self.analytics.logEvent("SessionBegan", data: nil)
+            }
+
             application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
 
             return true
@@ -88,6 +97,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
             if shortcutItem.type == "com.rachelbrindle.RSSClient.newfeed" {
                 feedsViewController.importFromWeb()
+                self.analytics.logEvent("QuickActionUsed", data: ["kind": "Add New Feed"])
                 completionHandler(true)
             } else if let feedTitle = shortcutItem.userInfo?["feed"] as? String
                 where shortcutItem.type == "com.rachelbrindle.RSSClient.viewfeed" {
@@ -96,6 +106,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                         if case let Result.Success(feeds) = $0,
                             let feed = feeds.filter({ return $0.title == feedTitle }).first {
                                 feedsViewController.showFeed(feed, animated: false)
+                                self.analytics.logEvent("QuickActionUsed", data: ["kind": "View Feed"])
                                 completionHandler(true)
                         } else {
                             completionHandler(false)

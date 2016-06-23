@@ -54,12 +54,16 @@ class LocalImportViewControllerSpec: QuickSpec {
 
         var themeRepository: FakeThemeRepository!
         var importUseCase: FakeImportUseCase!
+        var analytics: FakeAnalytics!
 
         beforeEach {
             injector = Ra.Injector()
 
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, toInstance: themeRepository)
+
+            analytics = FakeAnalytics()
+            injector.bind(Analytics.self, toInstance: analytics)
 
             importUseCase = FakeImportUseCase()
             injector.bind(ImportUseCase.self, toInstance: importUseCase)
@@ -94,6 +98,12 @@ class LocalImportViewControllerSpec: QuickSpec {
         it("asks the use case to scan for any importable items in the documents directory") {
             expect(importUseCase.scanDirectoryForImportablesCallCount) == 1
             expect(importUseCase.scanDirectoryForImportablesArgsForCall(0).0) == documentsUrl
+        }
+
+        it("tells analytics to log that the user viewed LocalImport") {
+            expect(analytics.logEventCallCount) == 1
+            expect(analytics.logEventArgsForCall(0).0) == "DidViewLocalImport"
+            expect(analytics.logEventArgsForCall(0).1).to(beNil())
         }
 
         describe("the explanation message") {
@@ -218,10 +228,19 @@ class LocalImportViewControllerSpec: QuickSpec {
                         expect(importUseCase.importItemArgsForCall(0).0) == opmlUrl
                     }
 
-                    it("dismisses the activity indicator when the import finishes") {
-                        importUseCase.importItemArgsForCall(0).1()
+                    describe("when the import finishes") {
+                        beforeEach {
+                            importUseCase.importItemArgsForCall(0).1()
+                        }
+                        it("tells analytics to log that the user used LocalImport") {
+                            expect(analytics.logEventCallCount) == 2
+                            expect(analytics.logEventArgsForCall(1).0) == "DidUseLocalImport"
+                            expect(analytics.logEventArgsForCall(1).1) == ["kind": "feed"]
+                        }
 
-                        expect(subject.view.subviews).toNot(contain(ActivityIndicator.self))
+                        it("dismisses the activity indicator") {
+                            expect(subject.view.subviews).toNot(contain(ActivityIndicator.self))
+                        }
                     }
                 }
             }
@@ -264,10 +283,19 @@ class LocalImportViewControllerSpec: QuickSpec {
                         expect(importUseCase.importItemArgsForCall(0).0) == feedUrl
                     }
 
-                    it("dismisses the activity indicator when the import finishes") {
-                        importUseCase.importItemArgsForCall(0).1()
+                    describe("when the import finishes") {
+                        beforeEach {
+                            importUseCase.importItemArgsForCall(0).1()
+                        }
+                        it("tells analytics to log that the user used LocalImport") {
+                            expect(analytics.logEventCallCount) == 2
+                            expect(analytics.logEventArgsForCall(1).0) == "DidUseLocalImport"
+                            expect(analytics.logEventArgsForCall(1).1) == ["kind": "opml"]
+                        }
 
-                        expect(subject.view.subviews).toNot(contain(ActivityIndicator.self))
+                        it("dismisses the activity indicator") {
+                            expect(subject.view.subviews).toNot(contain(ActivityIndicator.self))
+                        }
                     }
                 }
             }

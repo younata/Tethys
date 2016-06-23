@@ -18,6 +18,7 @@ class FindFeedViewControllerSpec: QuickSpec {
         var importUseCase: FakeImportUseCase!
         var opmlService: FakeOPMLService!
         var themeRepository: FakeThemeRepository!
+        var analytics: FakeAnalytics!
 
         beforeEach {
             injector = Ra.Injector()
@@ -30,6 +31,9 @@ class FindFeedViewControllerSpec: QuickSpec {
 
             opmlService = FakeOPMLService()
             injector.bind(OPMLService.self, toInstance: opmlService)
+
+            analytics = FakeAnalytics()
+            injector.bind(Analytics.self, toInstance: analytics)
 
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, toInstance: themeRepository)
@@ -62,6 +66,14 @@ class FindFeedViewControllerSpec: QuickSpec {
 
             it("should update the scroll indicator style") {
                 expect(subject.webContent.scrollView.indicatorStyle) == themeRepository.scrollIndicatorStyle
+            }
+        }
+
+        it("tells analytics to log that the user viewed WebImport") {
+            expect(analytics.logEventCallCount) == 1
+            if (analytics.logEventCallCount > 0) {
+                expect(analytics.logEventArgsForCall(0).0) == "DidViewWebImport"
+                expect(analytics.logEventArgsForCall(0).1).to(beNil())
             }
         }
 
@@ -204,6 +216,14 @@ class FindFeedViewControllerSpec: QuickSpec {
                             return $0.isKindOfClass(ActivityIndicator.classForCoder())
                             }.first
                         expect(indicator).to(beNil())
+                    }
+
+                    it("tells analytics to log that the user used WebImport") {
+                        expect(analytics.logEventCallCount) == 2
+                        if (analytics.logEventCallCount > 1) {
+                            expect(analytics.logEventArgsForCall(1).0) == "DidUseWebImport"
+                            expect(analytics.logEventArgsForCall(1).1).to(beNil())
+                        }
                     }
 
                     it("should dismiss itself") {

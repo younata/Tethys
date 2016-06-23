@@ -1,4 +1,5 @@
 import UIKit
+import UIKit.UIGestureRecognizerSubclass
 
 public class ScreenEdgePanGestureRecognizer: UIPanGestureRecognizer {
     public enum ScreenEdgeStartDirection {
@@ -29,12 +30,12 @@ extension ScreenEdgePanGestureRecognizer: UIGestureRecognizerDelegate {
     public func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
         if let view = self.view, gestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
             let velocity = gestureRecognizer.velocityInView(view)
-            guard fabs(velocity.x) > fabs(velocity.y) else { return false }
+            guard fabs(velocity.x) > (2 * fabs(velocity.y)) else { return false }
 
             let width = view.bounds.size.width
             let xLocation = gestureRecognizer.locationInView(view).x
-            let firstQuarter = xLocation / width < 0.25
-            let fourthQuarter = xLocation / width > 0.85
+            let firstQuarter = xLocation / width < 0.15
+            let fourthQuarter = xLocation / width > 0.90
             if firstQuarter {
                 self.startDirection = .Left
             } else if fourthQuarter {

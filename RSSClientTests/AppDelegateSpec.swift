@@ -26,6 +26,7 @@ class AppDelegateSpec: QuickSpec {
 
         var notificationHandler: FakeNotificationHandler! = nil
         var backgroundFetchHandler: FakeBackgroundFetchHandler! = nil
+        var analytics: FakeAnalytics! = nil
         
         beforeEach {
             subject = AppDelegate()
@@ -40,6 +41,9 @@ class AppDelegateSpec: QuickSpec {
 
             injector.bind(MigrationUseCase.self, toInstance: FakeMigrationUseCase())
             injector.bind(ImportUseCase.self, toInstance: FakeImportUseCase())
+
+            analytics = FakeAnalytics()
+            injector.bind(Analytics.self, toInstance: analytics)
 
             InjectorModule().configureInjector(injector)
 
@@ -59,6 +63,15 @@ class AppDelegateSpec: QuickSpec {
                 subject.application(application, didFinishLaunchingWithOptions: ["test": true])
 
                 expect(notificationHandler.enableNotificationsCallCount) == 1
+            }
+
+            it("tells analytics that the app was launched") {
+                subject.application(application, didFinishLaunchingWithOptions: ["test": true])
+                expect(analytics.logEventCallCount) == 1
+                if (analytics.logEventCallCount > 0) {
+                    expect(analytics.logEventArgsForCall(0).0) == "SessionBegan"
+                    expect(analytics.logEventArgsForCall(0).1).to(beNil())
+                }
             }
 
             it("should add the UIApplication object to the dataWriter's subscribers") {
@@ -113,23 +126,35 @@ class AppDelegateSpec: QuickSpec {
             describe("Quick actions") {
                 var completedAction: Bool? = nil
                 beforeEach {
-                    subject.application(application, didFinishLaunchingWithOptions: ["test": true])
+                    subject.application(application, didFinishLaunchingWithOptions: ["test": true, UIApplicationLaunchOptionsShortcutItemKey: ""])
 
                     completedAction = nil
                 }
 
-                it("opens an add feed from web window when the 'Add New Feed' action is selected") {
-                    let shortCut = UIApplicationShortcutItem(type: "com.rachelbrindle.RSSClient.newfeed", localizedTitle: "Add New Feed")
+                describe("when the 'Add New Feed' action is selected") {
+                    beforeEach {
+                        let shortCut = UIApplicationShortcutItem(type: "com.rachelbrindle.RSSClient.newfeed", localizedTitle: "Add New Feed")
 
-                    subject.application(application, performActionForShortcutItem: shortCut) {completed in
-                        completedAction = completed
+                        subject.application(application, performActionForShortcutItem: shortCut) {completed in
+                            completedAction = completed
+                        }
                     }
 
-                    expect(completedAction) == true
-                    let navController = (subject.window?.rootViewController as? UISplitViewController)?.viewControllers.first as? UINavigationController
-                    expect(navController?.visibleViewController).to(beAKindOf(UINavigationController.self))
-                    let viewController = (navController?.visibleViewController as? UINavigationController)?.topViewController
-                    expect(viewController).to(beAKindOf(FindFeedViewController.self))
+                    it("opens an add feed from web window when the 'Add New Feed' action is selected") {
+                        expect(completedAction) == true
+                        let navController = (subject.window?.rootViewController as? UISplitViewController)?.viewControllers.first as? UINavigationController
+                        expect(navController?.visibleViewController).to(beAKindOf(UINavigationController.self))
+                        let viewController = (navController?.visibleViewController as? UINavigationController)?.topViewController
+                        expect(viewController).to(beAKindOf(FindFeedViewController.self))
+                    }
+
+                    it("tells analytics to log that the user used quick actions to add a new feed") {
+                        expect(analytics.logEventCallCount) == 1
+                        if (analytics.logEventCallCount > 0) {
+                            expect(analytics.logEventArgsForCall(0).0) == "QuickActionUsed"
+                            expect(analytics.logEventArgsForCall(0).1) == ["kind": "Add New Feed"]
+                        }
+                    }
                 }
 
                 describe("selecting a 'View Feed' action") {
@@ -166,6 +191,14 @@ class AppDelegateSpec: QuickSpec {
                                 expect(navController?.visibleViewController).to(beAKindOf(ArticleListController.self))
                                 let articleController = navController?.visibleViewController as? ArticleListController
                                 expect(articleController?.feed) == feed
+                            }
+
+                            it("tells analytics to log that the user used quick actions to add a new feed") {
+                                expect(analytics.logEventCallCount) == 1
+                                if (analytics.logEventCallCount > 0) {
+                                    expect(analytics.logEventArgsForCall(0).0) == "QuickActionUsed"
+                                    expect(analytics.logEventArgsForCall(0).1) == ["kind": "View Feed"]
+                                }
                             }
                         }
 

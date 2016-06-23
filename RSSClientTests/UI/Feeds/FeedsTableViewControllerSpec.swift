@@ -14,6 +14,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
         var navigationController: UINavigationController! = nil
         var themeRepository: FakeThemeRepository! = nil
         var settingsRepository: SettingsRepository! = nil
+        var analytics: FakeAnalytics! = nil
 
         var feed1: Feed! = nil
         var feed2: Feed! = nil
@@ -35,6 +36,8 @@ class FeedsTableViewControllerSpec: QuickSpec {
             injector.bind(UrlOpener.self, toInstance: FakeUrlOpener())
             injector.bind(QuickActionRepository.self, toInstance: FakeQuickActionRepository())
             injector.bind(ImportUseCase.self, toInstance: FakeImportUseCase())
+            analytics = FakeAnalytics()
+            injector.bind(Analytics.self, toInstance: analytics)
 
             subject = injector.create(FeedsTableViewController)
 

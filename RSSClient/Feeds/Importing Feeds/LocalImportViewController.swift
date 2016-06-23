@@ -17,6 +17,7 @@ public class LocalImportViewController: UIViewController, Injectable {
 
     private let themeRepository: ThemeRepository
     private let importUseCase: ImportUseCase
+    private let analytics: Analytics
 
     public lazy var explanationLabel: ExplanationView = {
         let label = ExplanationView(forAutoLayout: ())
@@ -28,16 +29,19 @@ public class LocalImportViewController: UIViewController, Injectable {
     }()
 
     public init(themeRepository: ThemeRepository,
-        importUseCase: ImportUseCase) {
+        importUseCase: ImportUseCase,
+        analytics: Analytics) {
             self.themeRepository = themeRepository
             self.importUseCase = importUseCase
+            self.analytics = analytics
             super.init(nibName: nil, bundle: nil)
     }
 
     public required convenience init(injector: Injector) {
         self.init(
             themeRepository: injector.create(ThemeRepository)!,
-            importUseCase: injector.create(ImportUseCase)!
+            importUseCase: injector.create(ImportUseCase)!,
+            analytics: injector.create(Analytics)!
         )
     }
 
@@ -73,6 +77,7 @@ public class LocalImportViewController: UIViewController, Injectable {
         self.tableViewController.tableView.tableFooterView = UIView()
 
         self.themeRepository.addSubscriber(self)
+        self.analytics.logEvent("DidViewLocalImport", data: nil)
     }
 
     internal func dismiss() {
@@ -217,16 +222,20 @@ extension LocalImportViewController: UITableViewDelegate {
 
         let url: NSURL
         let activityIndicator: ActivityIndicator
+        let analyticsImportType: String
         if indexPath.section == 0 {
             url = opmls[indexPath.row].0
             activityIndicator = disableInteractionWithMessage(NSLocalizedString("Importing feeds", comment: ""))
-
+            analyticsImportType = "feed"
         } else if indexPath.section == 1 {
             url = feeds[indexPath.row].0
             activityIndicator = self.disableInteractionWithMessage(NSLocalizedString("Importing feed", comment: ""))
+            analyticsImportType = "opml"
         } else { return }
 
+
         self.importUseCase.importItem(url) {
+            self.analytics.logEvent("DidUseLocalImport", data: ["kind": analyticsImportType])
             self.reenableInteractionAndDismiss(activityIndicator)
         }
     }

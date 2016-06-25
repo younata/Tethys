@@ -9,7 +9,7 @@ class ArticleCellSpec: QuickSpec {
         var themeRepository: FakeThemeRepository! = nil
         var settingsRepository: SettingsRepository! = nil
 
-        let unupdatedArticle = Article(title: "title", link: nil, summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+        let unupdatedArticle = Article(title: "title", link: nil, summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 10, feed: nil, flags: [], enclosures: [])
         let readArticle = Article(title: "title", link: nil, summary: "summary", authors: [], published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: NSDate(timeIntervalSinceReferenceDate: 100000), identifier: "", content: "content", read: true, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
 
         beforeEach {
@@ -44,8 +44,14 @@ class ArticleCellSpec: QuickSpec {
                 settingsRepository.showEstimatedReadingLabel = false
             }
 
-            it("hides the readingTime label") {
-                expect(subject.readingTime.hidden) == true
+            it("removes the readingTime label from the view hierarchy") {
+                expect(subject.readingTime.superview).to(beNil())
+            }
+
+            it("re-adds the readingTime label to the view hierarchy when the user turns back on reading label") {
+                settingsRepository.showEstimatedReadingLabel = true
+                expect(subject.readingTime.superview).toNot(beNil())
+                expect(subject.readingTime.superview) == subject.contentView
             }
         }
 
@@ -61,10 +67,6 @@ class ArticleCellSpec: QuickSpec {
             dateFormatter.timeZone = NSCalendar.currentCalendar().timeZone
 
             expect(subject.published.text) == dateFormatter.stringFromDate(unupdatedArticle.published)
-        }
-
-        it("should not show the estimated reading time") {
-            expect(subject.readingTime.hidden) == true
         }
 
         it("should show the author") {

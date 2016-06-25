@@ -78,51 +78,7 @@ public class ArticleCell: UITableViewCell {
         let articleWantsToShow = article.estimatedReadingTime > 0
         let userWantsToShow = self.settingsRepository?.showEstimatedReadingLabel ?? true
 
-        let shouldShow = articleWantsToShow && userWantsToShow
-
-        if shouldShow && self.readingTime.superview == nil {
-            self.contentView.addSubview(self.readingTime)
-            self.configureSubviews()
-        } else if !shouldShow && self.readingTime.superview != nil {
-            self.readingTime.removeFromSuperview()
-            self.configureSubviews()
-        }
-    }
-
-    private func configureSubviews() {
-        self.contentView.updateConstraints()
-
-        self.title.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-        self.title.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
-
-        self.author.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-        self.author.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.title, withOffset: 8)
-
-        let bottomView: UIView
-        if self.readingTime.superview != nil {
-            bottomView = self.readingTime
-            self.readingTime.autoPinEdgeToSuperviewEdge(.Leading, withInset: 8)
-            self.readingTime.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
-            self.readingTime.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.author, withOffset: 4)
-        } else {
-            bottomView = self.contentView
-        }
-
-        self.enclosures.autoPinEdgeToSuperviewEdge(.Trailing, withInset: 4)
-        self.enclosures.autoPinEdge(.Leading, toEdge: .Trailing, ofView: bottomView, withOffset: 4)
-        self.enclosures.autoPinEdge(.Bottom, toEdge: .Bottom, ofView: bottomView)
-        self.enclosures.autoPinEdge(.Top, toEdge: .Top, ofView: bottomView)
-
-        self.unread.autoPinEdgeToSuperviewEdge(.Top)
-        self.unread.autoPinEdgeToSuperviewEdge(.Right)
-        self.unread.autoSetDimension(.Height, toSize: 30)
-        self.unreadWidth = unread.autoSetDimension(.Width, toSize: 30)
-
-        self.published.autoPinEdge(.Right, toEdge: .Left, ofView: unread, withOffset: -8)
-        self.published.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
-        self.published.autoPinEdge(.Left, toEdge: .Right, ofView: title, withOffset: 8)
-        self.published.autoMatchDimension(.Width, toDimension: .Width,
-                                          ofView: self.contentView, withMultiplier: 0.25)
+        self.readingTime.hidden = !(articleWantsToShow && userWantsToShow)
     }
 
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -138,22 +94,46 @@ public class ArticleCell: UITableViewCell {
         self.title.numberOfLines = 0
         self.title.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
 
+        self.title.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
+        self.title.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
+
         self.author.numberOfLines = 0
         self.author.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
+
+        self.author.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
+        self.author.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.title, withOffset: 8)
 
         self.readingTime.numberOfLines = 0
         self.readingTime.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
 
+        self.readingTime.autoPinEdgeToSuperviewEdge(.Leading, withInset: 8)
+        self.readingTime.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
+        self.readingTime.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.author, withOffset: 4)
+
         self.enclosures.numberOfLines = 0
         self.enclosures.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
 
+        self.enclosures.autoPinEdgeToSuperviewEdge(.Trailing, withInset: 4)
+        self.enclosures.autoPinEdge(.Leading, toEdge: .Trailing, ofView: self.readingTime, withOffset: 4)
+        self.enclosures.autoPinEdge(.Bottom, toEdge: .Bottom, ofView: self.readingTime)
+        self.enclosures.autoPinEdge(.Top, toEdge: .Top, ofView: self.readingTime)
+
         self.unread.hideUnreadText = true
+
+        self.unread.autoPinEdgeToSuperviewEdge(.Top)
+        self.unread.autoPinEdgeToSuperviewEdge(.Right)
+        self.unread.autoSetDimension(.Height, toSize: 30)
+        self.unreadWidth = unread.autoSetDimension(.Width, toSize: 30)
 
         self.published.textAlignment = .Right
         self.published.numberOfLines = 0
         self.published.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
 
-        self.configureSubviews()
+        self.published.autoPinEdge(.Right, toEdge: .Left, ofView: unread, withOffset: -8)
+        self.published.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
+        self.published.autoPinEdge(.Left, toEdge: .Right, ofView: title, withOffset: 8)
+        self.published.autoMatchDimension(.Width, toDimension: .Width,
+            ofView: self.contentView, withMultiplier: 0.25)
     }
 
     public required init(coder aDecoder: NSCoder) { fatalError() }

@@ -45,13 +45,13 @@ class ArticleCellSpec: QuickSpec {
             }
 
             it("removes the readingTime label from the view hierarchy") {
-                expect(subject.readingTime.superview).to(beNil())
+                expect(subject.readingTime.hidden) == true
+
             }
 
             it("re-adds the readingTime label to the view hierarchy when the user turns back on reading label") {
                 settingsRepository.showEstimatedReadingLabel = true
-                expect(subject.readingTime.superview).toNot(beNil())
-                expect(subject.readingTime.superview) == subject.contentView
+                expect(subject.readingTime.hidden) == false
             }
         }
 

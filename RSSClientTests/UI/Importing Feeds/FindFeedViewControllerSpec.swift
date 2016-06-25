@@ -83,22 +83,25 @@ class FindFeedViewControllerSpec: QuickSpec {
                 subject.textFieldShouldReturn(subject.navField)
             }
 
-            it("should auto-prepend 'http://' if it's not already there") {
-                expect(subject.navField.text) == "http://example.com"
+            it("should auto-prepend 'https://' if it's not already there") {
+                expect(subject.navField.text) == "https://example.com"
             }
 
             it("should navigate the webview that url") {
-                expect(webView.lastRequestLoaded?.URL) == NSURL(string: "http://example.com")
+                expect(webView.lastRequestLoaded?.URL) == NSURL(string: "https://example.com")
             }
         }
 
         describe("Entering an invalid url") {
-            beforeEach {
-                subject.navField.text = "not a url"
+            it("searches duckduckgo for that text when given a string with a single word") {
+                subject.navField.text = "notaurl"
                 subject.textFieldShouldReturn(subject.navField)
+                expect(webView.lastRequestLoaded?.URL) == NSURL(string: "https://duckduckgo.com/?q=notaurl")
             }
 
-            it("searches duckduckgo for that text") {
+            it("searches duckduckgo for that text when given a string with multiple words") {
+                subject.navField.text = "not a url"
+                subject.textFieldShouldReturn(subject.navField)
                 expect(webView.lastRequestLoaded?.URL) == NSURL(string: "https://duckduckgo.com/?q=not+a+url")
             }
         }
@@ -493,7 +496,7 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             describe("Failing to load the page") {
-                let err = NSError(domain: "", code: 0, userInfo: [:])
+                let err = NSError(domain: "", code: 0, userInfo: ["NSErrorFailingURLStringKey": "https://example.com"])
                 context("before loading the page (network error)") {
                     beforeEach {
                         subject.webView(subject.webContent, didFailProvisionalNavigation: nil, withError: err)
@@ -501,6 +504,20 @@ class FindFeedViewControllerSpec: QuickSpec {
 
                     it("should hide the webview") {
                         expect(subject.loadingBar.hidden) == true
+                    }
+
+                    it("shows an alert box") {
+                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController))
+                        if let alert = subject.presentedViewController as? UIAlertController {
+                            expect(alert.title) == "Unable to load page"
+                            expect(alert.message) == "The page at https://example.com failed to load"
+                            expect(alert.actions.count) == 1
+                            if let action = alert.actions.first {
+                                expect(action.title) == "Ok"
+                                action.handler(action)
+                                expect(subject.presentedViewController).to(beNil())
+                            }
+                        }
                     }
                 }
 
@@ -511,6 +528,20 @@ class FindFeedViewControllerSpec: QuickSpec {
 
                     it("should hide the webview") {
                         expect(subject.loadingBar.hidden) == true
+                    }
+
+                    it("shows an alert box") {
+                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController))
+                        if let alert = subject.presentedViewController as? UIAlertController {
+                            expect(alert.title) == "Unable to load page"
+                            expect(alert.message) == "The page at https://example.com failed to load"
+                            expect(alert.actions.count) == 1
+                            if let action = alert.actions.first {
+                                expect(action.title) == "Ok"
+                                action.handler(action)
+                                expect(subject.presentedViewController).to(beNil())
+                            }
+                        }
                     }
                 }
             }

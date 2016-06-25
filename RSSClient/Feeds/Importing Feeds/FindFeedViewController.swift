@@ -185,9 +185,9 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         textField.text = textField.text?.stringByTrimmingCharactersInSet(whitespace)
         let originalText = textField.text ?? ""
         if originalText.lowercaseString.hasPrefix("http") == false {
-            textField.text = "http://\(originalText)"
+            textField.text = "https://\(originalText)"
         }
-        if let text = textField.text, url = NSURL(string: text) {
+        if let text = textField.text, url = NSURL(string: text) where text.containsString(".") {
             self.webContent.loadRequest(NSURLRequest(URL: url))
         } else if let url = NSURL(string: "https://duckduckgo.com/?q=" +
                 originalText.stringByReplacingOccurrencesOfString(" ", withString: "+")) {
@@ -214,10 +214,27 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
 
     public func webView(webView: WKWebView, didFailNavigation _: WKNavigation!, withError error: NSError) {
         self.loadingBar.hidden = true
+        self.failedToLoadPage(error)
     }
 
     public func webView(webView: WKWebView, didFailProvisionalNavigation _: WKNavigation!, withError error: NSError) {
         self.loadingBar.hidden = true
+        self.failedToLoadPage(error)
+    }
+
+    private func failedToLoadPage(error: NSError) {
+        let alertTitle = NSLocalizedString("FindFeedViewController_Error_Navigation_title", comment: "")
+        let alertMessageFormat = NSLocalizedString("FindFeedViewController_Error_Navigation_message", comment: "")
+        let urlString = error.userInfo["NSErrorFailingURLStringKey"] as? String ?? ""
+        let alertMessage = NSString.localizedStringWithFormat(alertMessageFormat, urlString) as String
+        let alert = UIAlertController(title: alertTitle,
+                                      message: alertMessage,
+                                      preferredStyle: .Alert)
+        let dismiss = NSLocalizedString("Generic_Ok", comment: "")
+        alert.addAction(UIAlertAction(title: dismiss, style: .Default) { _ in
+            self.dismissViewControllerAnimated(true, completion: nil)
+        })
+        self.presentViewController(alert, animated: true, completion: nil)
     }
 
     public func webView(webView: WKWebView, didStartProvisionalNavigation _: WKNavigation!) {

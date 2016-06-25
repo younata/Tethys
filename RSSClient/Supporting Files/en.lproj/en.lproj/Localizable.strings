@@ -51,6 +51,8 @@
 "FindFeedViewController_FoundFeed_List_Title" = "Feed List Detected";
 "FindFeedViewController_FoundFeed_List_Subtitle" = "Import?";
 "FindFeedViewController_ImportFeeds_SelectFeed" = "Select a feed to import";
+"FindFeedViewController_Error_Navigation_title" = "Unable to load page";
+"FindFeedViewController_Error_Navigation_message" = "The page at %@ failed to load";
 
 "LocalImportViewController_Title" = "Local Import";
 "LocalImportViewController_Onboarding_Detail" = "To use Local Import, go into iTunes, select your phone, select apps, scroll down to installed apps, select rNews, and then click '+' to add an opml or rss feed to this app, refresh this page, and it'll automatically show up here so that you can import it.";
@@ -99,6 +101,7 @@
 
 
 "Generic_Dismiss" = "Dismiss";
+"Generic_Ok" = "Ok";
 "Generic_Save" = "Save";
 "Generic_Delete" = "Delete";
 "Generic_Edit" = "Edit";

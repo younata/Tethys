@@ -86,9 +86,9 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
             guard !feed.isQueryFeed else { return DataStoreBackedArray() }
             let articles = feed.articlesArray
             let predicates = [
-                NSPredicate(format: "title CONTAINS[cd] %@", query),
-                NSPredicate(format: "summary CONTAINS[cd] %@", query),
-                NSPredicate(format: "content CONTAINS[cd] %@", query),
+                NSPredicate(format: "title CONTAINS[c] %@", query),
+                NSPredicate(format: "summary CONTAINS[c] %@", query),
+                NSPredicate(format: "content CONTAINS[c] %@", query),
             ]
             let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
             return articles.filterWithPredicate(compoundPredicate)

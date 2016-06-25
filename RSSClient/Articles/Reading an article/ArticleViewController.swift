@@ -108,11 +108,8 @@ public class ArticleViewController: UIViewController, Injectable {
     public private(set) lazy var backgroundView: UIView = {
         let view = UIView(forAutoLayout: ())
 
-        let spinner = UIActivityIndicatorView(activityIndicatorStyle: self.themeRepository.spinnerStyle)
-        spinner.translatesAutoresizingMaskIntoConstraints = false
-
         view.addSubview(self.backgroundSpinnerView)
-        self.backgroundSpinnerView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
+        self.backgroundSpinnerView.autoCenterInSuperview()
 
         return view
     }()

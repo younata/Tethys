@@ -379,7 +379,6 @@
 		89F516571B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89F516561B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m */; };
 		89F517021B1C070C0005AB04 /* FeedViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F517011B1C070C0005AB04 /* FeedViewControllerSpec.swift */; };
 		89F5170A1B2014470005AB04 /* QueryFeedViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F517091B2014470005AB04 /* QueryFeedViewControllerSpec.swift */; };
-		89F98B9F1B9FC65A005C3CA8 /* ScreenEdgePanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98B9E1B9FC659005C3CA8 /* ScreenEdgePanGestureRecognizer.swift */; };
 		89F98BA11BA079A3005C3CA8 /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA01BA079A3005C3CA8 /* SwitchTableViewCell.swift */; };
 		89F98BA41BA079EA005C3CA8 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA31BA079EA005C3CA8 /* TableViewCell.swift */; };
 		89F98BA61BA07DC6005C3CA8 /* SettingsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA51BA07DC6005C3CA8 /* SettingsRepository.swift */; };
@@ -824,7 +823,6 @@
 		89F517011B1C070C0005AB04 /* FeedViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewControllerSpec.swift; sourceTree = "<group>"; };
 		89F517071B1C12A30005AB04 /* FakeURLSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeURLSession.swift; sourceTree = "<group>"; };
 		89F517091B2014470005AB04 /* QueryFeedViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryFeedViewControllerSpec.swift; sourceTree = "<group>"; };
-		89F98B9E1B9FC659005C3CA8 /* ScreenEdgePanGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScreenEdgePanGestureRecognizer.swift; sourceTree = "<group>"; };
 		89F98BA01BA079A3005C3CA8 /* SwitchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCell.swift; sourceTree = "<group>"; };
 		89F98BA31BA079EA005C3CA8 /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		89F98BA51BA07DC6005C3CA8 /* SettingsRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsRepository.swift; sourceTree = "<group>"; };
@@ -1609,7 +1607,6 @@
 				89C830B519D7DE97009924DA /* ArticleViewController.swift */,
 				8994F0EA1C8F53E600920E6D /* AuthorActivity.swift */,
 				8918D4D31B84593100DCDE0E /* ClearnessDark.css */,
-				89F98B9E1B9FC659005C3CA8 /* ScreenEdgePanGestureRecognizer.swift */,
 				8918D4D81B85887E00DCDE0E /* darkhub2.css */,
 				8924D8E81A094CF5003B7529 /* github2.css */,
 				8937F6BD1B7996F50044A442 /* prism.js.html */,
@@ -2388,7 +2385,6 @@
 				89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */,
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
 				89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */,
-				89F98B9F1B9FC65A005C3CA8 /* ScreenEdgePanGestureRecognizer.swift in Sources */,
 				8918D4A41B8115F800DCDE0E /* ExplanationView.swift in Sources */,
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
 				89F98BB51BA13056005C3CA8 /* UrlOpener.swift in Sources */,

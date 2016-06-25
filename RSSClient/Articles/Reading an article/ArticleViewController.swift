@@ -51,10 +51,6 @@ public class ArticleViewController: UIViewController, Injectable {
     private let articleUseCase: ArticleUseCase
     private let articleListController: Void -> ArticleListController
 
-    public lazy var panGestureRecognizer: ScreenEdgePanGestureRecognizer = {
-        return ScreenEdgePanGestureRecognizer(target: self, action: #selector(ArticleViewController.didSwipe(_:)))
-    }()
-
     public init(themeRepository: ThemeRepository,
                 urlOpener: UrlOpener,
                 articleUseCase: ArticleUseCase,
@@ -120,7 +116,6 @@ public class ArticleViewController: UIViewController, Injectable {
         self.view.backgroundColor = self.themeRepository.backgroundColor
         self.navigationController?.setToolbarHidden(false, animated: false)
 
-        self.view.addGestureRecognizer(self.panGestureRecognizer)
         self.view.addSubview(self.content)
         self.view.addSubview(self.enclosuresList)
         self.view.addSubview(self.backgroundView)
@@ -249,69 +244,6 @@ public class ArticleViewController: UIViewController, Injectable {
         webView.scrollView.indicatorStyle = themeRepository.scrollIndicatorStyle
     }
 
-    private var nextContent: UIWebView? = nil
-    private var nextContentRight: NSLayoutConstraint? = nil
-    private func handleSwipe(gesture: ScreenEdgePanGestureRecognizer, fromLeftDirection left: Bool) {
-        if left && self.lastArticleIndex == 0 { return }
-        if !left && (self.lastArticleIndex + 1) >= self.articles.count { return }
-
-        let offset = left ? -1 : 1
-
-        let width = self.view.bounds.width
-        let translation = CGFloat(offset) * width + gesture.translationInView(self.view).x
-        let nextArticleIndex = self.lastArticleIndex + offset
-        if gesture.state == .Began {
-            let a = self.articles[nextArticleIndex]
-            self.nextContent = UIWebView(forAutoLayout: ())
-            self.nextContent?.backgroundColor = self.themeRepository.backgroundColor
-            self.nextContent?.scrollView.contentInset = self.content.scrollView.contentInset
-            self.view.addSubview(self.nextContent!)
-            self.showArticle(a, onWebView: self.nextContent!)
-            self.nextContent?.autoPinEdgeToSuperviewEdge(.Top)
-            self.nextContent?.autoPinEdge(.Bottom, toEdge: .Top, ofView: self.enclosuresList)
-            self.nextContent?.autoMatchDimension(.Width, toDimension: .Width, ofView: self.view)
-            let edge: ALEdge = left ? .Leading : .Trailing
-            self.nextContentRight = self.nextContent!.autoPinEdgeToSuperviewEdge(edge, withInset: translation)
-        } else if gesture.state == .Changed {
-            self.nextContentRight?.constant = translation
-        } else if gesture.state == .Cancelled {
-            self.nextContent?.removeFromSuperview()
-            self.nextContent = nil
-        } else if gesture.state == .Ended {
-            let speed = gesture.velocityInView(self.view).x * CGFloat(-offset)
-            if speed >= 0 {
-                self.lastArticleIndex = nextArticleIndex
-                self.setArticle(self.articles[self.lastArticleIndex], show: false)
-                self.nextContentRight?.constant = 0
-                let oldContent = content
-                if let nextContent = self.nextContent { self.content = nextContent }
-                self.configureContent()
-                UIView.animateWithDuration(0.2, animations: {
-                    self.view.layoutIfNeeded()
-                }, completion: {_ in oldContent.removeFromSuperview() })
-            } else {
-                self.nextContent?.removeFromSuperview()
-                self.nextContent = nil
-            }
-        }
-    }
-
-    private func didSwipeFromLeft(gesture: ScreenEdgePanGestureRecognizer) {
-        self.handleSwipe(gesture, fromLeftDirection: true)
-    }
-
-    private func didSwipeFromRight(gesture: ScreenEdgePanGestureRecognizer) {
-        self.handleSwipe(gesture, fromLeftDirection: false)
-    }
-
-    @objc private func didSwipe(gesture: ScreenEdgePanGestureRecognizer) {
-        switch gesture.startDirection {
-        case .None: return
-        case .Left: self.didSwipeFromLeft(gesture)
-        case .Right: self.didSwipeFromRight(gesture)
-        }
-    }
-
     @objc private func share() {
         guard let article = self.article, link = article.link else { return }
         let safari = TOActivitySafari()
@@ -386,7 +318,6 @@ extension ArticleViewController: ThemeRepositorySubscriber {
         }
 
         self.setThemeForWebView(self.content)
-        if let nextContent = self.nextContent { self.setThemeForWebView(nextContent) }
 
         self.view.backgroundColor = themeRepository.backgroundColor
         self.navigationController?.navigationBar.barStyle = themeRepository.barStyle

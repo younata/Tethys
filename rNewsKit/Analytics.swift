@@ -12,8 +12,8 @@ struct MixPanelAnalytics: Analytics {
     private let mixpanel = Mixpanel.sharedInstanceWithToken(MixPanelToken())
 
     func logEvent(event: String, data: [String : String]?) {
-        #if !DEBUG
+        if !_isDebugAssertConfiguration() {
             mixpanel.track(event, properties: data)
-        #endif
+        }
     }
 }

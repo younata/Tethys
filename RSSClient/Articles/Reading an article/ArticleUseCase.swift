@@ -45,8 +45,16 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
                 return $0.combine($1.articlesArray)
             }
 
-            let predicate = NSPredicate(format: "SUBQUERY(authors, $author, $author.id = %@) .@count > 0",
-                author.identifier)
+            let predicate: NSPredicate
+            if let email = author.email {
+                predicate = NSPredicate(format: "SUBQUERY(authors, $author, $author.name = %@ AND " +
+                    "$author.email = %@) .@count > 0",
+                    author.name, email)
+            } else {
+                predicate = NSPredicate(format: "SUBQUERY(authors, $author, $author.name = %@ AND " +
+                    "$author.email = nil) .@count > 0",
+                    author.name)
+            }
 
             callback(allArticles.filterWithPredicate(predicate))
         }

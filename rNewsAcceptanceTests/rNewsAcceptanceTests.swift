@@ -30,11 +30,12 @@ class rNewsAcceptanceTests: XCTestCase {
         self.waitForThingToExist(app.navigationBars["Feeds"])
         app.navigationBars["Feeds"].buttons["Add"].tap()
         app.buttons["Add from Web"].tap()
-        
+
         let enterUrlTextField = app.textFields["Enter URL"]
         enterUrlTextField.tap()
         NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 10))
-        enterUrlTextField.typeText("http://younata.github.io\r")
+        app.typeText("http://younata.github.io")
+        app.buttons["Return"].tap()
         NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 10))
 
         let addFeedButton = app.toolbars.buttons["Add Feed"]
@@ -45,6 +46,7 @@ class rNewsAcceptanceTests: XCTestCase {
 
         let feedCell = app.cells.elementBoundByIndex(0)
 
+        NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 10))
         self.waitForThingToExist(feedCell)
     }
 

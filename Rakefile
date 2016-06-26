@@ -102,7 +102,7 @@ namespace "release" do
 
     client = Octokit::Client.new(:access_token => release_token)
     client.create_release("younata/RSSClient", version_str, {:name => version, :body => message})
-    if 200 <= client.last_response.status < 300
+    if 200 <= client.last_response.status or client.last_response_status <= 300
       puts 'Successfully uploaded release'
     else
       puts 'Error uploading release'

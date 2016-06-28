@@ -95,7 +95,7 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
                 default: break
                 }
                 scanCount += 1
-                if scanCount == ret.count {
+                if scanCount == contents.count {
                     callback(ret)
                 }
             }
@@ -104,7 +104,7 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
 
     public func scanForImportable(url: NSURL, callback: ImportUseCaseScanCompletion) {
         if url.fileURL {
-            guard let data = NSData(contentsOfURL: url) else {
+            guard !url.absoluteString.containsString("default.realm"), let data = NSData(contentsOfURL: url) else {
                 callback(.None(url))
                 return
             }
@@ -151,12 +151,12 @@ extension DefaultImportUseCase {
         guard let string = String(data: data, encoding: NSUTF8StringEncoding) else {
             return .None(url)
         }
-        if self.isDataAFeed(string) {
+        if let feedCount = self.isDataAFeed(string) {
             self.knownUrls[url] = .Feed
-            return .Feed(url, 0)
-        } else if self.isDataAnOPML(string) {
+            return .Feed(url, feedCount)
+        } else if let opmlCount = self.isDataAnOPML(string) {
             self.knownUrls[url] = .OPML
-            return .OPML(url, 0)
+            return .OPML(url, opmlCount)
         } else {
             let feedUrls = self.feedsInWebPage(url, webPage: string)
             feedUrls.forEach { self.knownUrls[$0] = .Feed }
@@ -164,11 +164,11 @@ extension DefaultImportUseCase {
         }
     }
 
-    private func isDataAFeed(data: String) -> Bool {
-        var ret = false
+    private func isDataAFeed(data: String) -> Int? {
+        var ret: Int? = nil
         let feedParser = FeedParser(string: data)
-        feedParser.success { _ in
-            ret = true
+        feedParser.success {
+            ret = $0.articles.count
         }
         feedParser.start()
         return ret
@@ -184,11 +184,11 @@ extension DefaultImportUseCase {
         return ret
     }
 
-    private func isDataAnOPML(data: String) -> Bool {
-        var ret = false
+    private func isDataAnOPML(data: String) -> Int? {
+        var ret: Int? = nil
         let opmlParser = Parser(text: data)
-        opmlParser.success { _ in
-            ret = true
+        opmlParser.success {
+            ret = $0.count
         }
         opmlParser.start()
         return ret

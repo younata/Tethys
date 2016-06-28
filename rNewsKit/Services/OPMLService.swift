@@ -7,13 +7,11 @@ public class OPMLService: NSObject, Injectable {
     private let dataRepository: DefaultDatabaseUseCase?
     private let mainQueue: NSOperationQueue?
     private let importQueue: NSOperationQueue?
-    private let dataService: DataService?
 
     required public init(injector: Injector) {
         self.dataRepository = injector.create(DefaultDatabaseUseCase)
         self.mainQueue = injector.create(kMainQueue) as? NSOperationQueue
         self.importQueue = injector.create(kBackgroundQueue) as? NSOperationQueue
-        self.dataService = injector.create(DataService)
 
         super.init()
 
@@ -36,7 +34,7 @@ public class OPMLService: NSObject, Injectable {
     }
 
     public func importOPML(opml: NSURL, completion: ([Feed]) -> Void) {
-        guard let dataRepository = self.dataRepository, dataService = self.dataService else {
+        guard let dataRepository = self.dataRepository else {
             completion([])
             return
         }
@@ -48,13 +46,26 @@ public class OPMLService: NSObject, Injectable {
                 parser.success {items in
                     var feeds: [Feed] = []
 
+                    var feedCount = 0
+
+                    let isComplete = {
+                        if feeds.count == feedCount {
+                            dataRepository.updateFeeds { _ in
+                                self.mainQueue?.addOperationWithBlock {
+                                    completion(feeds)
+                                }
+                            }
+                        }
+                    }
+
                     for item in items {
                         if self.feedAlreadyExists(existingFeeds, item: item) {
                             continue
                         }
                         if item.isQueryFeed() {
                             if let title = item.title, query = item.query {
-                                dataService.createFeed { newFeed in
+                                feedCount += 1
+                                dataRepository.newFeed { newFeed in
                                     newFeed.title = title
                                     newFeed.query = query
                                     newFeed.summary = item.summary ?? ""
@@ -62,22 +73,22 @@ public class OPMLService: NSObject, Injectable {
                                         newFeed.addTag(tag)
                                     }
                                     feeds.append(newFeed)
+                                    isComplete()
                                 }
                             }
                         } else {
                             if let feedURL = item.xmlURL {
-                                dataService.createFeed { newFeed in
+                                feedCount += 1
+                                dataRepository.newFeed { newFeed in
                                     newFeed.url = NSURL(string: feedURL)
                                     for tag in item.tags ?? [] {
                                         newFeed.addTag(tag)
                                     }
                                     feeds.append(newFeed)
+                                    isComplete()
                                 }
                             }
                         }
-                    }
-                    self.mainQueue?.addOperationWithBlock {
-                        completion(feeds)
                     }
                 }
                 parser.failure {error in

@@ -87,10 +87,6 @@ public class LocalImportViewController: UIViewController, Injectable {
     public func reloadItems() {
         let documentsUrl = NSURL(string: "file://\(NSHomeDirectory())/Documents/")!
         self.importUseCase.scanDirectoryForImportables(documentsUrl) { contents in
-            if contents.isEmpty {
-                self.showExplanationView()
-            }
-
             self.opmls = contents.flatMap { item in
                 switch item {
                 case .OPML(let url, let feeds): return (url, feeds)

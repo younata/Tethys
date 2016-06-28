@@ -49,8 +49,6 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             feeds = [feed1, feed2]
-
-//            dataRepository.feedsList = feeds
         }
 
         describe("when the view loads") {

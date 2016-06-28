@@ -41,7 +41,6 @@ class OPMLServiceSpec: QuickSpec {
             injector.bind(kMainQueue, toInstance: mainQueue)
             injector.bind(kBackgroundQueue, toInstance: importQueue)
             injector.bind(DefaultDatabaseUseCase.self, toInstance: dataRepository)
-            injector.bind(DataService.self, toInstance: dataService)
 
             subject = OPMLService(injector: injector)
         }
@@ -68,22 +67,32 @@ class OPMLServiceSpec: QuickSpec {
                     dataRepository.feedsPromises.first?.resolve(.Success([previouslyImportedFeed]))
                 }
 
-                it("should return a list of feeds imported") {
-                    expect(feeds.count).to(equal(3))
-                    guard feeds.count == 3 else {
-                        return
+                it("tells the data repository to update the feeds") {
+                    expect(dataRepository.didUpdateFeeds) == true
+                }
+
+                describe("when the data repository finishes") {
+                    beforeEach {
+                        dataRepository.updateFeedsCompletion(dataService.feeds, [])
                     }
-                    feeds.sortInPlace { $0.title < $1.title }
-                    let first = feeds[0]
-                    expect(first.url).to(equal(NSURL(string: "http://example.com/feedWithTag")))
 
-                    let second = feeds[1]
-                    expect(second.url).to(equal(NSURL(string: "http://example.com/feedWithTitle")))
+                    it("returns a list of feeds imported") {
+                        expect(feeds.count).to(equal(3))
+                        guard feeds.count == 3 else {
+                            return
+                        }
+                        feeds.sortInPlace { $0.title < $1.title }
+                        let first = feeds[0]
+                        expect(first.url).to(equal(NSURL(string: "http://example.com/feedWithTag")))
 
-                    let query = feeds[2]
-                    expect(query.title).to(equal("Query Feed"))
-                    expect(query.url).to(beNil())
-                    expect(query.query).to(equal("return true;"))
+                        let second = feeds[1]
+                        expect(second.url).to(equal(NSURL(string: "http://example.com/feedWithTitle")))
+
+                        let query = feeds[2]
+                        expect(query.title).to(equal("Query Feed"))
+                        expect(query.url).to(beNil())
+                        expect(query.query).to(equal("return true;"))
+                    }
                 }
             }
 
@@ -156,15 +165,6 @@ class OPMLServiceSpec: QuickSpec {
 
         describe("When feeds change") {
             beforeEach {
-                let feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "", query: nil,
-                    tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                let feed2 = Feed(title: "d", url: nil, summary: "", query: "", tags: [],
-                    waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                let feed3 = Feed(title: "e", url: NSURL(string: "http://example.com/otherfeed"), summary: "", query: nil,
-                    tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-
-                let feeds = [feed1, feed2, feed3]
-
                 for subscriber in dataRepository.subscribers {
                     subscriber.didUpdateFeeds([])
                 }

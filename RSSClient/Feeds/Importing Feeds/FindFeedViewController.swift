@@ -143,22 +143,18 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         let reloadContent = UIKeyCommand(input: "r", modifierFlags: [],
                                          action: #selector(FindFeedViewController.reloadWebPage))
 
-        if #available(iOS 9.0, *) {
-            focusNavField.discoverabilityTitle =
-                NSLocalizedString("FindFeedViewController_Commands_OpenURL", comment: "")
-            reloadContent.discoverabilityTitle =
-                NSLocalizedString("FindFeedViewController_Commands_Reload", comment: "")
-        }
+        focusNavField.discoverabilityTitle =
+            NSLocalizedString("FindFeedViewController_Commands_OpenURL", comment: "")
+        reloadContent.discoverabilityTitle =
+            NSLocalizedString("FindFeedViewController_Commands_Reload", comment: "")
 
         var commands = [focusNavField, reloadContent]
 
         if !self.rssLinks.isEmpty {
             let selector = #selector(FindFeedViewController.save as (FindFeedViewController) -> () -> ())
             let importFeed = UIKeyCommand(input: "i", modifierFlags: [], action: selector)
-            if #available(iOS 9.0, *) {
-                importFeed.discoverabilityTitle =
-                    NSLocalizedString("FindFeedViewController_FoundFeed_Import", comment: "")
-            }
+            importFeed.discoverabilityTitle =
+                NSLocalizedString("FindFeedViewController_FoundFeed_Import", comment: "")
             commands.append(importFeed)
         }
 

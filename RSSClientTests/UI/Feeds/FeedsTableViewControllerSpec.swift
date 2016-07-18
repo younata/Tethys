@@ -33,7 +33,6 @@ class FeedsTableViewControllerSpec: QuickSpec {
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, toInstance: themeRepository)
 
-            injector.bind(UrlOpener.self, toInstance: FakeUrlOpener())
             injector.bind(QuickActionRepository.self, toInstance: FakeQuickActionRepository())
             injector.bind(ImportUseCase.self, toInstance: FakeImportUseCase())
             analytics = FakeAnalytics()
@@ -221,10 +220,8 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             expect(cmd.input).to(equal(expectedCmd.input))
                             expect(cmd.modifierFlags).to(equal(expectedCmd.modifierFlags))
 
-                            if #available(iOS 9.0, *) {
-                                let expectedTitle = expectedDiscoverabilityTitles[idx]
-                                expect(cmd.discoverabilityTitle).to(equal(expectedTitle))
-                            }
+                            let expectedTitle = expectedDiscoverabilityTitles[idx]
+                            expect(cmd.discoverabilityTitle).to(equal(expectedTitle))
                         }
                     }
                 }
@@ -261,10 +258,8 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             expect(cmd.input).to(equal(expectedCmd.input))
                             expect(cmd.modifierFlags).to(equal(expectedCmd.modifierFlags))
 
-                            if #available(iOS 9.0, *) {
-                                let expectedTitle = expectedDiscoverabilityTitles[idx]
-                                expect(cmd.discoverabilityTitle).to(equal(expectedTitle))
-                            }
+                            let expectedTitle = expectedDiscoverabilityTitles[idx]
+                            expect(cmd.discoverabilityTitle).to(equal(expectedTitle))
                         }
                     }
                 }

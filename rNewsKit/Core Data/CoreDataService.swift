@@ -330,11 +330,9 @@ class CoreDataService: DataService {
         if let cdfeed = self.coreDataFeedForFeed(feed) {
             if deleteArticles {
                 #if os(iOS)
-                    if #available(iOS 9, *) {
-                        let articleIdentifiers = feed.articlesArray.map { $0.identifier }
+                    let articleIdentifiers = feed.articlesArray.map { $0.identifier }
 
-                        self.searchIndex?.deleteIdentifierFromIndex(articleIdentifiers) {_ in }
-                    }
+                    self.searchIndex?.deleteIdentifierFromIndex(articleIdentifiers) {_ in }
                 #endif
 
                 for article in cdfeed.articles {
@@ -366,9 +364,7 @@ class CoreDataService: DataService {
             self.managedObjectContext.refreshObject(cdarticle, mergeChanges: false)
 
             #if os(iOS)
-                if #available(iOS 9, *) {
-                    self.searchIndex?.deleteIdentifierFromIndex([article.identifier]) {_ in }
-                }
+                self.searchIndex?.deleteIdentifierFromIndex([article.identifier]) {_ in }
             #endif
         }
     }

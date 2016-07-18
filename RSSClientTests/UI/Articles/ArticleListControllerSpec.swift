@@ -77,8 +77,6 @@ class ArticleListControllerSpec: QuickSpec {
             mainQueue.runSynchronously = true
             injector.bind(kMainQueue, toInstance: mainQueue)
 
-            injector.bind(UrlOpener.self, toInstance: FakeUrlOpener())
-
             settingsRepository = SettingsRepository(userDefaults: nil)
             injector.bind(SettingsRepository.self, toInstance: settingsRepository)
 

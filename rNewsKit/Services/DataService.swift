@@ -152,30 +152,28 @@ extension DataService {
 
     func updateSearchIndexForArticle(article: Article) {
         #if os(iOS)
-            if #available(iOS 9.0, *) {
-                let identifier = article.identifier
+            let identifier = article.identifier
 
-                let attributes = CSSearchableItemAttributeSet(itemContentType: kUTTypeHTML as String)
-                attributes.title = article.title
-                let characterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
-                let trimmedSummary = article.summary.stringByTrimmingCharactersInSet(characterSet)
-                attributes.contentDescription = trimmedSummary
-                let feedTitleWords = article.feed?.title.componentsSeparatedByCharactersInSet(characterSet)
-                attributes.keywords = ["article"] + (feedTitleWords ?? [])
-                attributes.URL = article.link
-                attributes.timestamp = article.updatedAt ?? article.published
-                attributes.authorNames = article.authors.map { $0.name }
+            let attributes = CSSearchableItemAttributeSet(itemContentType: kUTTypeHTML as String)
+            attributes.title = article.title
+            let characterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
+            let trimmedSummary = article.summary.stringByTrimmingCharactersInSet(characterSet)
+            attributes.contentDescription = trimmedSummary
+            let feedTitleWords = article.feed?.title.componentsSeparatedByCharactersInSet(characterSet)
+            attributes.keywords = ["article"] + (feedTitleWords ?? [])
+            attributes.URL = article.link
+            attributes.timestamp = article.updatedAt ?? article.published
+            attributes.authorNames = article.authors.map { $0.name }
 
-                if let image = article.feed?.image, data = UIImagePNGRepresentation(image) {
-                    attributes.thumbnailData = data
-                }
-
-                let item = CSSearchableItem(uniqueIdentifier: identifier,
-                    domainIdentifier: nil,
-                    attributeSet: attributes)
-                item.expirationDate = NSDate.distantFuture()
-                self.searchIndex?.addItemsToIndex([item]) {_ in }
+            if let image = article.feed?.image, data = UIImagePNGRepresentation(image) {
+                attributes.thumbnailData = data
             }
+
+            let item = CSSearchableItem(uniqueIdentifier: identifier,
+                                        domainIdentifier: nil,
+                                        attributeSet: attributes)
+            item.expirationDate = NSDate.distantFuture()
+            self.searchIndex?.addItemsToIndex([item]) {_ in }
         #endif
     }
 

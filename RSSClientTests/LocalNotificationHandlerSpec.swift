@@ -20,7 +20,6 @@ class LocalNotificationHandlerSpec: QuickSpec {
 
             dataRepository = FakeDatabaseUseCase()
             injector.bind(DatabaseUseCase.self, toInstance: dataRepository)
-            injector.bind(UrlOpener.self, toInstance: FakeUrlOpener())
             let articleUseCase = FakeArticleUseCase()
             articleUseCase.readArticleReturns("")
             articleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))

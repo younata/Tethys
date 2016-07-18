@@ -17,12 +17,10 @@ public class ArticleViewController: UIViewController, Injectable {
         self.userActivity = self.articleUseCase.userActivityForArticle(article)
 
         self.toolbarItems = [self.spacer(), self.shareButton, self.spacer()]
-        if #available(iOS 9, *) {
-            if let _ = article.link {
-                self.toolbarItems = [
-                    self.spacer(), self.shareButton, self.spacer(), self.openInSafariButton, self.spacer()
-                ]
-            }
+        if let _ = article.link {
+            self.toolbarItems = [
+                self.spacer(), self.shareButton, self.spacer(), self.openInSafariButton, self.spacer()
+            ]
         }
         self.title = article.title
     }
@@ -47,16 +45,13 @@ public class ArticleViewController: UIViewController, Injectable {
     public var lastArticleIndex = 0
 
     public let themeRepository: ThemeRepository
-    public let urlOpener: UrlOpener
     private let articleUseCase: ArticleUseCase
     private let articleListController: Void -> ArticleListController
 
     public init(themeRepository: ThemeRepository,
-                urlOpener: UrlOpener,
                 articleUseCase: ArticleUseCase,
                 articleListController: Void -> ArticleListController) {
         self.themeRepository = themeRepository
-        self.urlOpener = urlOpener
         self.articleUseCase = articleUseCase
         self.articleListController = articleListController
 
@@ -66,7 +61,6 @@ public class ArticleViewController: UIViewController, Injectable {
     public required convenience init(injector: Injector) {
         self.init(
             themeRepository: injector.create(ThemeRepository)!,
-            urlOpener: injector.create(UrlOpener)!,
             articleUseCase: injector.create(ArticleUseCase)!,
             articleListController: { injector.create(ArticleListController)! }
         )
@@ -173,7 +167,7 @@ public class ArticleViewController: UIViewController, Injectable {
 
     public override var keyCommands: [UIKeyCommand]? {
         let addTitleToCmd: (UIKeyCommand, String) -> Void = {cmd, title in
-            if #available(iOS 9, *) { cmd.discoverabilityTitle = title }
+            cmd.discoverabilityTitle = title
         }
 
         var commands: [UIKeyCommand] = []
@@ -235,7 +229,7 @@ public class ArticleViewController: UIViewController, Injectable {
         self.content.scalesPageToFit = true
         self.content.opaque = false
         self.setThemeForWebView(self.content)
-        if #available(iOS 9, *) { self.content.allowsLinkPreview = true }
+        self.content.allowsLinkPreview = true
     }
 
     private func setThemeForWebView(webView: UIWebView) {
@@ -278,12 +272,10 @@ public class ArticleViewController: UIViewController, Injectable {
     }
 
     private func openURL(url: NSURL) {
-        if #available(iOS 9, *) { self.loadUrlInSafari(url)
-        } else { self.urlOpener.openURL(url) }
+        self.loadUrlInSafari(url)
     }
 
     private func loadUrlInSafari(url: NSURL) {
-        guard #available(iOS 9, *) else { return }
         let safari = SFSafariViewController(URL: url)
         self.presentViewController(safari, animated: true, completion: nil)
     }

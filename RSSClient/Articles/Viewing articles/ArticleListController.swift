@@ -78,10 +78,8 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
                 self.navigationItem.title = feed.displayTitle
             }
 
-            if #available(iOS 9.0, *) {
-                if self.traitCollection.forceTouchCapability == .Available {
-                    self.registerForPreviewingWithDelegate(self, sourceView: self.tableView)
-                }
+            if self.traitCollection.forceTouchCapability == .Available {
+                self.registerForPreviewingWithDelegate(self, sourceView: self.tableView)
             }
             self.resetBarItems()
         }

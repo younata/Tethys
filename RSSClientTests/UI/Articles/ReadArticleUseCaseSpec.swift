@@ -96,24 +96,20 @@ class ArticleUseCaseSpec: QuickSpec {
                 expect(userActivity.active) == true
             }
 
-            describe("on iOS 9") {
-                guard #available(iOS 9, *) else { return }
+            it("has required user info keys of 'feed' and 'article'") {
+                expect(userActivity.requiredUserInfoKeys) == ["feed", "article"]
+            }
 
-                it("has required user info keys of 'feed' and 'article'") {
-                    expect(userActivity.requiredUserInfoKeys) == ["feed", "article"]
-                }
+            it("is not eligible for public indexing") {
+                expect(userActivity.eligibleForPublicIndexing) == false
+            }
 
-                it("is not eligible for public indexing") {
-                    expect(userActivity.eligibleForPublicIndexing) == false
-                }
+            it("is eligible for search") {
+                expect(userActivity.eligibleForSearch) == true
+            }
 
-                it("is eligible for search") {
-                    expect(userActivity.eligibleForSearch) == true
-                }
-
-                it("uses the article's title, summary, author, and flags as it's keywords") {
-                    expect(userActivity.keywords) == ["articleTitle", "articleSummary", "articleAuthor", "flag"]
-                }
+            it("uses the article's title, summary, author, and flags as it's keywords") {
+                expect(userActivity.keywords) == ["articleTitle", "articleSummary", "articleAuthor", "flag"]
             }
 
             it("has a delegate") {

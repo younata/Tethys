@@ -181,10 +181,8 @@ public class FeedsTableViewController: UIViewController, Injectable {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(UIWebView.reload),
                                                          name: "UpdatedFeed", object: nil)
 
-        if #available(iOS 9.0, *) {
-            if self.traitCollection.forceTouchCapability == .Available {
-                self.registerForPreviewingWithDelegate(self, sourceView: self.tableView)
-            }
+        if self.traitCollection.forceTouchCapability == .Available {
+            self.registerForPreviewingWithDelegate(self, sourceView: self.tableView)
         }
 
         self.feedRepository.addSubscriber(self)
@@ -230,20 +228,18 @@ public class FeedsTableViewController: UIViewController, Injectable {
                                        action: #selector(FeedsTableViewController.createQueryFeed))
             commands.insert(command, atIndex: 3)
         }
-        if #available(iOS 9.0, *) {
-            var discoverabilityTitles = [
-                NSLocalizedString("FeedsTableViewController_Command_Search", comment: ""),
-                NSLocalizedString("FeedsTableViewController_Command_ImportWeb", comment: ""),
-                NSLocalizedString("FeedsTableViewController_Command_ImportLocal", comment: ""),
-                NSLocalizedString("FeedsTableViewController_Command_Settings", comment: ""),
+        var discoverabilityTitles = [
+            NSLocalizedString("FeedsTableViewController_Command_Search", comment: ""),
+            NSLocalizedString("FeedsTableViewController_Command_ImportWeb", comment: ""),
+            NSLocalizedString("FeedsTableViewController_Command_ImportLocal", comment: ""),
+            NSLocalizedString("FeedsTableViewController_Command_Settings", comment: ""),
             ]
-            if self.settingsRepository.queryFeedsEnabled {
-                let titleString = NSLocalizedString("FeedsTableViewController_Command_QueryFeed", comment: "")
-                discoverabilityTitles.insert(titleString, atIndex: 3)
-            }
-            for (idx, cmd) in commands.enumerate() {
-                cmd.discoverabilityTitle = discoverabilityTitles[idx]
-            }
+        if self.settingsRepository.queryFeedsEnabled {
+            let titleString = NSLocalizedString("FeedsTableViewController_Command_QueryFeed", comment: "")
+            discoverabilityTitles.insert(titleString, atIndex: 3)
+        }
+        for (idx, cmd) in commands.enumerate() {
+            cmd.discoverabilityTitle = discoverabilityTitles[idx]
         }
         return commands
     }

@@ -104,8 +104,6 @@ class CoreDataServiceSpec: QuickSpec {
             var article1: rNewsKit.Article!
             var article2: rNewsKit.Article!
             var article3: rNewsKit.Article!
-            var enclosure1: rNewsKit.Enclosure!
-            var enclosure2: rNewsKit.Enclosure!
 
             beforeEach {
                 let feedDescription = NSEntityDescription.entityForName("Feed", inManagedObjectContext: objectContext)!
@@ -150,8 +148,8 @@ class CoreDataServiceSpec: QuickSpec {
                     article2 = Article(coreDataArticle: cdarticle2, feed: feed1)
                     article3 = Article(coreDataArticle: cdarticle3, feed: feed2)
 
-                    enclosure1 = Enclosure(coreDataEnclosure: cdenclosure1, article: article1)
-                    enclosure2 = Enclosure(coreDataEnclosure: cdenclosure2, article: article1)
+                    _ = Enclosure(coreDataEnclosure: cdenclosure1, article: article1)
+                    _ = Enclosure(coreDataEnclosure: cdenclosure2, article: article1)
 
                 }
             }
@@ -201,9 +199,7 @@ class CoreDataServiceSpec: QuickSpec {
                     self.waitForExpectationsWithTimeout(1, handler: nil)
 
                     #if os(iOS)
-                        if #available(iOS 9, *) {
-                            expect(searchIndex.lastItemsDeleted) == articleIdentifiers
-                        }
+                        expect(searchIndex.lastItemsDeleted) == articleIdentifiers
                     #endif
 
                     let feeds = coreDataEntities("Feed", matchingPredicate: NSPredicate(format: "SELF == %@", feed1.feedID as! NSManagedObjectID), managedObjectContext: objectContext)
@@ -223,9 +219,7 @@ class CoreDataServiceSpec: QuickSpec {
                     let articles = coreDataEntities("Article", matchingPredicate: NSPredicate(format: "SELF == %@", article1.articleID as! NSManagedObjectID), managedObjectContext: objectContext)
 
                     #if os(iOS)
-                        if #available(iOS 9, *) {
-                            expect(searchIndex.lastItemsDeleted).to(contain(article1.identifier))
-                        }
+                        expect(searchIndex.lastItemsDeleted).to(contain(article1.identifier))
                     #endif
 
                     expect(articles).to(beEmpty())

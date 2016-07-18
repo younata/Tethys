@@ -9,11 +9,7 @@ class FakeSearchIndex: SearchIndex {
     var lastAddCompletionHandler: (NSError?) -> (Void) = {_ in }
     func addItemsToIndex(items: [NSObject], completionHandler: (NSError?) -> (Void)) {
         #if os(iOS)
-            if #available(iOS 9.0, *) {
-                assert(items is [CSSearchableItem])
-            } else {
-                fatalError("not available on iOS <9.0")
-            }
+            assert(items is [CSSearchableItem])
         #endif
         lastItemsAdded += items
         lastAddCompletionHandler = completionHandler

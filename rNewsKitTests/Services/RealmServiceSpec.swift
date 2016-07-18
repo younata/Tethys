@@ -107,8 +107,6 @@ class RealmServiceSpec: QuickSpec {
             var article1: rNewsKit.Article!
             var article2: rNewsKit.Article!
             var article3: rNewsKit.Article!
-            var enclosure1: rNewsKit.Enclosure!
-            var enclosure2: rNewsKit.Enclosure!
 
             beforeEach {
 
@@ -156,8 +154,8 @@ class RealmServiceSpec: QuickSpec {
                 article2 = Article(realmArticle: realmArticle2, feed: feed1)
                 article3 = Article(realmArticle: realmArticle3, feed: feed2)
 
-                enclosure1 = Enclosure(realmEnclosure: realmEnclosure1, article: article1)
-                enclosure2 = Enclosure(realmEnclosure: realmEnclosure2, article: article1)
+                _ = Enclosure(realmEnclosure: realmEnclosure1, article: article1)
+                _ = Enclosure(realmEnclosure: realmEnclosure2, article: article1)
             }
 
             describe("read operations") {
@@ -197,35 +195,33 @@ class RealmServiceSpec: QuickSpec {
 
             describe("update operations") {
                 #if os(iOS)
-                    if #available(iOS 9.0, *) {
-                        it("should, on iOS 9, update the search index when an article is updated") {
-                            let expectation = self.expectationWithDescription("update article")
+                    it("on iOS, updates the search index when an article is updated") {
+                        let expectation = self.expectationWithDescription("update article")
 
-                            article1.summary = "Hello world!"
+                        article1.summary = "Hello world!"
 
-                            subject.batchSave([], articles: [article1], enclosures: []).then { _ in
-                                expectation.fulfill()
-                            }
+                        subject.batchSave([], articles: [article1], enclosures: []).then { _ in
+                            expectation.fulfill()
+                        }
 
-                            self.waitForExpectationsWithTimeout(1, handler: nil)
+                        self.waitForExpectationsWithTimeout(1, handler: nil)
 
-                            expect(searchIndex.lastItemsAdded.count).to(equal(1))
-                            if let item = searchIndex.lastItemsAdded.first as? CSSearchableItem {
-                                let identifier = article1.identifier
-                                expect(item.uniqueIdentifier).to(equal(identifier))
-                                expect(item.domainIdentifier).to(beNil())
-                                expect(item.expirationDate).to(equal(NSDate.distantFuture()))
-                                let attributes = item.attributeSet
-                                expect(attributes.contentType).to(equal(kUTTypeHTML as String))
-                                expect(attributes.title).to(equal(article1.title))
-                                let keywords = ["article"] + article1.feed!.title.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                                expect(attributes.keywords).to(equal(keywords))
-                                expect(attributes.URL).to(equal(article1.link))
-                                expect(attributes.timestamp).to(equal(article1.updatedAt ?? article1.published))
-                                let authorNames = article1.authors.map({ $0.description })
-                                expect(attributes.authorNames) == authorNames
-                                expect(attributes.contentDescription) == "Hello world!"
-                            }
+                        expect(searchIndex.lastItemsAdded.count).to(equal(1))
+                        if let item = searchIndex.lastItemsAdded.first as? CSSearchableItem {
+                            let identifier = article1.identifier
+                            expect(item.uniqueIdentifier).to(equal(identifier))
+                            expect(item.domainIdentifier).to(beNil())
+                            expect(item.expirationDate).to(equal(NSDate.distantFuture()))
+                            let attributes = item.attributeSet
+                            expect(attributes.contentType).to(equal(kUTTypeHTML as String))
+                            expect(attributes.title).to(equal(article1.title))
+                            let keywords = ["article"] + article1.feed!.title.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                            expect(attributes.keywords).to(equal(keywords))
+                            expect(attributes.URL).to(equal(article1.link))
+                            expect(attributes.timestamp).to(equal(article1.updatedAt ?? article1.published))
+                            let authorNames = article1.authors.map({ $0.description })
+                            expect(attributes.authorNames) == authorNames
+                            expect(attributes.contentDescription) == "Hello world!"
                         }
                     }
                 #endif
@@ -245,9 +241,7 @@ class RealmServiceSpec: QuickSpec {
                     self.waitForExpectationsWithTimeout(1, handler: nil)
 
                     #if os(iOS)
-                        if #available(iOS 9, *) {
-                            expect(searchIndex.lastItemsDeleted) == articleIdentifiers
-                        }
+                        expect(searchIndex.lastItemsDeleted) == articleIdentifiers
                     #endif
 
                     let feed = realm.objectForPrimaryKey(RealmFeed.self, key: feed1.feedID as! String)
@@ -266,9 +260,7 @@ class RealmServiceSpec: QuickSpec {
 
 
                     #if os(iOS)
-                        if #available(iOS 9, *) {
-                            expect(searchIndex.lastItemsDeleted).to(contain(article1.identifier))
-                        }
+                        expect(searchIndex.lastItemsDeleted).to(contain(article1.identifier))
                     #endif
 
                     let article = realm.objectForPrimaryKey(RealmArticle.self, key: article1.articleID as! String)

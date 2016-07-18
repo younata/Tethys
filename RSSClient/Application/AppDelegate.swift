@@ -6,7 +6,6 @@ import CoreSpotlight
 
 @UIApplicationMain
 public class AppDelegate: UIResponder, UIApplicationDelegate {
-
     public lazy var window: UIWindow? = {
         let window = UIWindow(frame: UIScreen.mainScreen().bounds)
         window.backgroundColor = UIColor.whiteColor()
@@ -161,22 +160,20 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                     }
                     return true
             }
-            if #available(iOS 9.0, *) {
-                if type == CSSearchableItemActionType,
-                    let uniqueID = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
-                        self.feedRepository.feeds().then {
-                            guard case let Result.Success(feeds) = $0 else { return }
-                            guard let article = feeds.reduce(Array<Article>(), combine: {articles, feed in
-                                return articles + Array(feed.articlesArray)
-                            }).filter({ article in
-                                    return article.identifier == uniqueID
-                            }).first, feed = article.feed else {
-                                return
-                            }
-                            self.createControllerHierarchy(feed, article: article)
+            if type == CSSearchableItemActionType,
+                let uniqueID = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
+                    self.feedRepository.feeds().then {
+                        guard case let Result.Success(feeds) = $0 else { return }
+                        guard let article = feeds.reduce(Array<Article>(), combine: {articles, feed in
+                            return articles + Array(feed.articlesArray)
+                        }).filter({ article in
+                                return article.identifier == uniqueID
+                        }).first, feed = article.feed else {
+                            return
                         }
-                        return true
-                }
+                        self.createControllerHierarchy(feed, article: article)
+                    }
+                    return true
             }
             return false
     }

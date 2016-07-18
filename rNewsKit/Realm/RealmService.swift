@@ -117,9 +117,7 @@ class RealmService: DataService {
         let promise = Promise<Result<Void, RNewsError>>()
         let articleIdentifiers = feed.articlesArray.map { $0.identifier }
         #if os(iOS)
-            if #available(iOS 9, *) {
-                self.searchIndex?.deleteIdentifierFromIndex(articleIdentifiers) {_ in }
-            }
+            self.searchIndex?.deleteIdentifierFromIndex(articleIdentifiers) {_ in }
         #endif
         self.realmTransaction {
             self.synchronousDeleteFeed(feed)
@@ -134,9 +132,7 @@ class RealmService: DataService {
     func deleteArticle(article: Article) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
         #if os(iOS)
-            if #available(iOS 9, *) {
-                self.searchIndex?.deleteIdentifierFromIndex([article.identifier]) {_ in }
-            }
+            self.searchIndex?.deleteIdentifierFromIndex([article.identifier]) {_ in }
         #endif
         self.realmTransaction {
             self.synchronousDeleteArticle(article)

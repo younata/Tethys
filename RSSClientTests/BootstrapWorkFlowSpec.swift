@@ -20,7 +20,6 @@ class BootstrapWorkFlowSpec: QuickSpec {
             let injector = Injector()
             injector.bind(DatabaseUseCase.self, toInstance: feedRepository)
             injector.bind(MigrationUseCase.self, toInstance: migrationUseCase)
-            injector.bind(UrlOpener.self, toInstance: FakeUrlOpener())
             injector.bind(kMainQueue, toInstance: FakeOperationQueue())
             let articleUseCase = FakeArticleUseCase()
             articleUseCase.readArticleReturns("")

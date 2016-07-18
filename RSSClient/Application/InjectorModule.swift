@@ -21,7 +21,6 @@ public class InjectorModule: Ra.InjectorModule {
         injector.bind(DocumentationUseCase.self, to: DefaultDocumentationUseCase.init)
 
         let app = UIApplication.sharedApplication()
-        injector.bind(UrlOpener.self, toInstance: app)
         injector.bind(QuickActionRepository.self, toInstance: app)
 
         injector.bind(ThemeRepository.self, toInstance: ThemeRepository(injector: injector))

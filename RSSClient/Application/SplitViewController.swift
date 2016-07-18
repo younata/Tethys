@@ -29,14 +29,12 @@ public class SplitViewController: UISplitViewController, Injectable {
     }
 
     public override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        if #available(iOS 9, *) {
-            for vc in self.viewControllers {
-                if vc is SFSafariViewController {
+        for vc in self.viewControllers {
+            if vc is SFSafariViewController {
+                return .Default
+            } else if let nc = vc as? UINavigationController {
+                if nc.visibleViewController is SFSafariViewController {
                     return .Default
-                } else if let nc = vc as? UINavigationController {
-                    if nc.visibleViewController is SFSafariViewController {
-                        return .Default
-                    }
                 }
             }
         }

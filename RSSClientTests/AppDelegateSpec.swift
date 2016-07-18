@@ -122,105 +122,103 @@ class AppDelegateSpec: QuickSpec {
             }
         }
 
-        if #available(iOS 9.0, *) {
-            describe("Quick actions") {
-                var completedAction: Bool? = nil
+        describe("Quick actions") {
+            var completedAction: Bool? = nil
+            beforeEach {
+                subject.application(application, didFinishLaunchingWithOptions: ["test": true, UIApplicationLaunchOptionsShortcutItemKey: ""])
+
+                completedAction = nil
+            }
+
+            describe("when the 'Add New Feed' action is selected") {
                 beforeEach {
-                    subject.application(application, didFinishLaunchingWithOptions: ["test": true, UIApplicationLaunchOptionsShortcutItemKey: ""])
+                    let shortCut = UIApplicationShortcutItem(type: "com.rachelbrindle.RSSClient.newfeed", localizedTitle: "Add New Feed")
 
-                    completedAction = nil
-                }
-
-                describe("when the 'Add New Feed' action is selected") {
-                    beforeEach {
-                        let shortCut = UIApplicationShortcutItem(type: "com.rachelbrindle.RSSClient.newfeed", localizedTitle: "Add New Feed")
-
-                        subject.application(application, performActionForShortcutItem: shortCut) {completed in
-                            completedAction = completed
-                        }
-                    }
-
-                    it("opens an add feed from web window when the 'Add New Feed' action is selected") {
-                        expect(completedAction) == true
-                        let navController = (subject.window?.rootViewController as? UISplitViewController)?.viewControllers.first as? UINavigationController
-                        expect(navController?.visibleViewController).to(beAKindOf(UINavigationController.self))
-                        let viewController = (navController?.visibleViewController as? UINavigationController)?.topViewController
-                        expect(viewController).to(beAKindOf(FindFeedViewController.self))
-                    }
-
-                    it("tells analytics to log that the user used quick actions to add a new feed") {
-                        expect(analytics.logEventCallCount) == 1
-                        if (analytics.logEventCallCount > 0) {
-                            expect(analytics.logEventArgsForCall(0).0) == "QuickActionUsed"
-                            expect(analytics.logEventArgsForCall(0).1) == ["kind": "Add New Feed"]
-                        }
+                    subject.application(application, performActionForShortcutItem: shortCut) {completed in
+                        completedAction = completed
                     }
                 }
 
-                describe("selecting a 'View Feed' action") {
-                    let feed = Feed(title: "title", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
-                    let article = Article(title: "title", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
-                    feed.addArticle(article)
+                it("opens an add feed from web window when the 'Add New Feed' action is selected") {
+                    expect(completedAction) == true
+                    let navController = (subject.window?.rootViewController as? UISplitViewController)?.viewControllers.first as? UINavigationController
+                    expect(navController?.visibleViewController).to(beAKindOf(UINavigationController.self))
+                    let viewController = (navController?.visibleViewController as? UINavigationController)?.topViewController
+                    expect(viewController).to(beAKindOf(FindFeedViewController.self))
+                }
 
-                    beforeEach {
-                        let shortCut = UIApplicationShortcutItem(type: "com.rachelbrindle.RSSClient.viewfeed",
-                            localizedTitle: feed.displayTitle,
-                            localizedSubtitle: nil,
-                            icon: nil,
-                            userInfo: ["feed": feed.title])
-
-                        subject.application(application, performActionForShortcutItem: shortCut) {completed in
-                            completedAction = completed
-                        }
+                it("tells analytics to log that the user used quick actions to add a new feed") {
+                    expect(analytics.logEventCallCount) == 1
+                    if (analytics.logEventCallCount > 0) {
+                        expect(analytics.logEventArgsForCall(0).0) == "QuickActionUsed"
+                        expect(analytics.logEventArgsForCall(0).1) == ["kind": "Add New Feed"]
                     }
+                }
+            }
 
-                    it("asks the dataUseCase for the feeds") {
-                        expect(dataUseCase.feedsPromises.count) == 1
+            describe("selecting a 'View Feed' action") {
+                let feed = Feed(title: "title", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
+                let article = Article(title: "title", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [], enclosures: [])
+                feed.addArticle(article)
+
+                beforeEach {
+                    let shortCut = UIApplicationShortcutItem(type: "com.rachelbrindle.RSSClient.viewfeed",
+                        localizedTitle: feed.displayTitle,
+                        localizedSubtitle: nil,
+                        icon: nil,
+                        userInfo: ["feed": feed.title])
+
+                    subject.application(application, performActionForShortcutItem: shortCut) {completed in
+                        completedAction = completed
                     }
+                }
 
-                    describe("when the promise succeeds") {
-                        context("and the selected feed is in the list") {
-                            beforeEach {
-                                dataUseCase.feedsPromises.last?.resolve(.Success([feed]))
-                            }
+                it("asks the dataUseCase for the feeds") {
+                    expect(dataUseCase.feedsPromises.count) == 1
+                }
 
-                            it("opens an article list for the selected feed") {
-                                expect(completedAction) == true
-
-                                let navController = (subject.window?.rootViewController as? UISplitViewController)?.viewControllers.first as? UINavigationController
-                                expect(navController?.visibleViewController).to(beAKindOf(ArticleListController.self))
-                                let articleController = navController?.visibleViewController as? ArticleListController
-                                expect(articleController?.feed) == feed
-                            }
-
-                            it("tells analytics to log that the user used quick actions to add a new feed") {
-                                expect(analytics.logEventCallCount) == 1
-                                if (analytics.logEventCallCount > 0) {
-                                    expect(analytics.logEventArgsForCall(0).0) == "QuickActionUsed"
-                                    expect(analytics.logEventArgsForCall(0).1) == ["kind": "View Feed"]
-                                }
-                            }
-                        }
-
-                        context("and the selected feed is not in the list") {
-                            beforeEach {
-                                dataUseCase.feedsPromises.last?.resolve(.Success([]))
-                            }
-
-                            it("does nothing and returns false") {
-                                expect(completedAction) == false
-                            }
-                        }
-                    }
-
-                    describe("when the promise fails") {
+                describe("when the promise succeeds") {
+                    context("and the selected feed is in the list") {
                         beforeEach {
-                            dataUseCase.feedsPromises.last?.resolve(.Failure(.Unknown))
+                            dataUseCase.feedsPromises.last?.resolve(.Success([feed]))
+                        }
+
+                        it("opens an article list for the selected feed") {
+                            expect(completedAction) == true
+
+                            let navController = (subject.window?.rootViewController as? UISplitViewController)?.viewControllers.first as? UINavigationController
+                            expect(navController?.visibleViewController).to(beAKindOf(ArticleListController.self))
+                            let articleController = navController?.visibleViewController as? ArticleListController
+                            expect(articleController?.feed) == feed
+                        }
+
+                        it("tells analytics to log that the user used quick actions to add a new feed") {
+                            expect(analytics.logEventCallCount) == 1
+                            if (analytics.logEventCallCount > 0) {
+                                expect(analytics.logEventArgsForCall(0).0) == "QuickActionUsed"
+                                expect(analytics.logEventArgsForCall(0).1) == ["kind": "View Feed"]
+                            }
+                        }
+                    }
+
+                    context("and the selected feed is not in the list") {
+                        beforeEach {
+                            dataUseCase.feedsPromises.last?.resolve(.Success([]))
                         }
 
                         it("does nothing and returns false") {
                             expect(completedAction) == false
                         }
+                    }
+                }
+
+                describe("when the promise fails") {
+                    beforeEach {
+                        dataUseCase.feedsPromises.last?.resolve(.Failure(.Unknown))
+                    }
+
+                    it("does nothing and returns false") {
+                        expect(completedAction) == false
                     }
                 }
             }
@@ -291,39 +289,19 @@ class AppDelegateSpec: QuickSpec {
                 it("should not set the responderArray") {
                     expect(responderArray).to(beEmpty())
                 }
-
-                it("should show the article") {
-                    if let item = responderArray.first as? ArticleViewController {
-                        expect(item.article).to(equal(article))
-                    }
-                }
             }
 
-            describe("searchable user activities (iOS 9)") {
+            describe("searchable user activities") {
                 beforeEach {
-                    if #available(iOS 9.0, *) {
-                        let activity = NSUserActivity(activityType: CSSearchableItemActionType)
-                        activity.userInfo = [CSSearchableItemActivityIdentifier: "identifier"]
-                        expect(subject.application(UIApplication.sharedApplication(), continueUserActivity: activity) {responders in
-                            responderArray = responders as? [UIResponder] ?? []
-                        }) == true
-                    }
+                    let activity = NSUserActivity(activityType: CSSearchableItemActionType)
+                    activity.userInfo = [CSSearchableItemActivityIdentifier: "identifier"]
+                    expect(subject.application(UIApplication.sharedApplication(), continueUserActivity: activity) {responders in
+                        responderArray = responders as? [UIResponder] ?? []
+                    }) == true
                 }
 
                 it("should not set the responderArray") {
-                    guard #available(iOS 9.0, *) else {
-                        return
-                    }
                     expect(responderArray).to(beEmpty())
-                }
-
-                it("should show the article") {
-                    guard #available(iOS 9.0, *) else {
-                        return
-                    }
-                    if let item = responderArray.first as? ArticleViewController {
-                        expect(item.article).to(equal(article))
-                    }
                 }
             }
         }

@@ -23,10 +23,8 @@ public class KitModule: NSObject, Ra.InjectorModule {
         var reachable: Reachable? = nil
 
         #if os(iOS)
-            if #available(iOS 9.0, *) {
-                searchIndex = CSSearchableIndex.defaultSearchableIndex()
-                injector.bind(SearchIndex.self, toInstance: CSSearchableIndex.defaultSearchableIndex())
-            }
+            searchIndex = CSSearchableIndex.defaultSearchableIndex()
+            injector.bind(SearchIndex.self, toInstance: CSSearchableIndex.defaultSearchableIndex())
             reachable = try? Reachability.reachabilityForInternetConnection()
         #endif
 

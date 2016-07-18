@@ -9,6 +9,7 @@ github "younata/WorkFlow"
 github "tid-kijyun/Kanna"
 github "antitypical/Result"
 github "cbguder/CBGPromise" "master"
+github "younata/Sinope" "master"
 
 # objc
 github "PureLayout/PureLayout"

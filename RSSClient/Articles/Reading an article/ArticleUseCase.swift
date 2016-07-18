@@ -71,11 +71,9 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
 
     private lazy var userActivity: NSUserActivity = {
         let userActivity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
-        if #available(iOS 9.0, *) {
-            userActivity.requiredUserInfoKeys = ["feed", "article"]
-            userActivity.eligibleForPublicIndexing = false
-            userActivity.eligibleForSearch = true
-        }
+        userActivity.requiredUserInfoKeys = ["feed", "article"]
+        userActivity.eligibleForPublicIndexing = false
+        userActivity.eligibleForSearch = true
         userActivity.delegate = self
         return userActivity
     }()
@@ -91,10 +89,8 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
         self.mostRecentArticle = article
         self.userActivity.title = title
         self.userActivity.webpageURL = article.link
-        if #available(iOS 9, *) {
-            let authorWords = article.authors.flatMap { $0.description.componentsSeparatedByString(" ") }
-            self.userActivity.keywords = Set([article.title, article.summary] + article.flags + authorWords)
-        }
+        let authorWords = article.authors.flatMap { $0.description.componentsSeparatedByString(" ") }
+        self.userActivity.keywords = Set([article.title, article.summary] + article.flags + authorWords)
         self.userActivity.becomeCurrent()
         self.userActivity.needsSave = true
         return self.userActivity

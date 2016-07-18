@@ -122,12 +122,10 @@ class FindFeedViewControllerSpec: QuickSpec {
                     expect(keyCommand.input) == "l"
                 }
 
-                if #available(iOS 9, *) {
-                    it("is titled 'open URL'") {
-                        guard let keyCommand = subject.keyCommands?.first else { fail("precondition failed"); return }
+                it("is titled 'open URL'") {
+                    guard let keyCommand = subject.keyCommands?.first else { fail("precondition failed"); return }
 
-                        expect(keyCommand.discoverabilityTitle) == "Open URL"
-                    }
+                    expect(keyCommand.discoverabilityTitle) == "Open URL"
                 }
             }
 
@@ -138,12 +136,10 @@ class FindFeedViewControllerSpec: QuickSpec {
                     expect(keyCommand.input) == "r"
                 }
 
-                if #available(iOS 9, *) {
-                    it("is titled 'Reload'") {
-                        guard let keyCommand = subject.keyCommands?.last else { fail("precondition failed"); return }
+                it("is titled 'Reload'") {
+                    guard let keyCommand = subject.keyCommands?.last else { fail("precondition failed"); return }
 
-                        expect(keyCommand.discoverabilityTitle) == "Reload"
-                    }
+                    expect(keyCommand.discoverabilityTitle) == "Reload"
                 }
             }
 
@@ -168,12 +164,10 @@ class FindFeedViewControllerSpec: QuickSpec {
                     expect(keyCommand.input) == "i"
                 }
 
-                if #available(iOS 9, *) {
-                    it("is titled 'Import'") {
-                        guard let keyCommand = subject.keyCommands?.last else { fail("precondition failed"); return }
+                it("is titled 'Import'") {
+                    guard let keyCommand = subject.keyCommands?.last else { fail("precondition failed"); return }
 
-                        expect(keyCommand.discoverabilityTitle) == "Import"
-                    }
+                    expect(keyCommand.discoverabilityTitle) == "Import"
                 }
             }
         }

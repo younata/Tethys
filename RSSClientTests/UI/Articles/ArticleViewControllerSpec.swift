@@ -12,7 +12,6 @@ class ArticleViewControllerSpec: QuickSpec {
         var injector: Injector!
         var navigationController: UINavigationController!
         var themeRepository: FakeThemeRepository!
-        var urlOpener: FakeUrlOpener!
         var articleUseCase: FakeArticleUseCase!
 
         beforeEach {
@@ -20,9 +19,6 @@ class ArticleViewControllerSpec: QuickSpec {
 
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, toInstance: themeRepository)
-
-            urlOpener = FakeUrlOpener()
-            injector.bind(UrlOpener.self, toInstance: urlOpener)
 
             articleUseCase = FakeArticleUseCase()
             injector.bind(ArticleUseCase.self, toInstance: articleUseCase)
@@ -116,10 +112,8 @@ class ArticleViewControllerSpec: QuickSpec {
                     expect(cmd.input).to(equal(expectedCmd.input))
                     expect(cmd.modifierFlags).to(equal(expectedCmd.modifierFlags))
 
-                    if #available(iOS 9.0, *) {
-                        let expectedTitle = discoveryTitles[idx]
-                        expect(cmd.discoverabilityTitle).to(equal(expectedTitle))
-                    }
+                    let expectedTitle = discoveryTitles[idx]
+                    expect(cmd.discoverabilityTitle).to(equal(expectedTitle))
                 }
             }
 
@@ -342,19 +336,13 @@ class ArticleViewControllerSpec: QuickSpec {
                 expect(subject.enclosuresList.enclosures.isEmpty) == true
             }
 
-            if #available(iOS 9, *) {
-                it("should enable link preview with 3d touch on iOS 9") {
-                    expect(subject.content.allowsLinkPreview) == true
-                }
+            it("should enable link preview with 3d touch") {
+                expect(subject.content.allowsLinkPreview) == true
             }
 
-            it("should include the share button in the toolbar, and the open in safari button only if we're on iOS 9") {
+            it("should include the share button in the toolbar, and the open in safari button") {
                 expect(subject.toolbarItems?.contains(subject.shareButton)) == true
-                if #available(iOS 9, *) {
-                    expect(subject.toolbarItems?.contains(subject.openInSafariButton)) == true
-                } else {
-                    expect(subject.toolbarItems?.contains(subject.openInSafariButton)).to(equal(false))
-                }
+                expect(subject.toolbarItems?.contains(subject.openInSafariButton)) == true
             }
 
             it("should exclude the open in safari button if the article has no associated link") {
@@ -444,11 +432,7 @@ class ArticleViewControllerSpec: QuickSpec {
             it("should open the article in an SFSafariViewController if the open in safari button is tapped") {
                 subject.openInSafariButton.tap()
 
-                if #available(iOS 9, *) {
-                    expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
-                } else {
-                    expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
-                }
+                expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
             }
 
             context("tapping a link") {
@@ -459,15 +443,11 @@ class ArticleViewControllerSpec: QuickSpec {
                     // This test fails because of a type mismatch between what Realm/Core Data store (String), and what the Article model stores (NSURL).
                 }
 
-                it("opens in system safari (iOS <9) or an SFSafariViewController (iOS 9+)") {
+                it("opens in an SFSafariViewController") {
                     let url = NSURL(string: "https://example.com")!
                     let shouldInteract = subject.content.delegate?.webView?(subject.content, shouldStartLoadWithRequest: NSURLRequest(URL: url), navigationType: .LinkClicked)
                     expect(shouldInteract) == false
-                    if #available(iOS 9, *) {
-                        expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
-                    } else {
-                        expect(urlOpener.url).to(equal(url))
-                    }
+                    expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
                 }
             }
         }

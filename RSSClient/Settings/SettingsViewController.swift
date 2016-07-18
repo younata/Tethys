@@ -20,12 +20,8 @@ public class SettingsViewController: UIViewController, Injectable {
                 return
             } else {
                 let offset: Int
-                if #available(iOS 9, *) {
-                    if traits.forceTouchCapability == .Available {
-                        offset = 0
-                    } else {
-                        offset = 1
-                    }
+                if traits.forceTouchCapability == .Available {
+                    offset = 0
                 } else {
                     offset = 1
                 }
@@ -43,26 +39,18 @@ public class SettingsViewController: UIViewController, Injectable {
         }
 
         static func numberOfSettings(traits: UITraitCollection) -> Int {
-            if #available(iOS 9, *) {
-                if traits.forceTouchCapability == .Available {
-                    return 4
-                }
+            if traits.forceTouchCapability == .Available {
+                return 4
             }
             return 3
         }
 
         private var rawValue: Int {
-            let offset: Int
-            if #available(iOS 9, *) {
-                offset = 1
-            } else {
-                offset = 0
-            }
             switch self {
             case .Theme: return 0
             case .QuickActions: return 1
-            case .Advanced: return 1 + offset
-            case .Credits: return 2 + offset
+            case .Advanced: return 2
+            case .Credits: return 3
             }
         }
 
@@ -98,7 +86,6 @@ public class SettingsViewController: UIViewController, Injectable {
 
     private let themeRepository: ThemeRepository
     private let settingsRepository: SettingsRepository
-    private let urlOpener: UrlOpener
     private let quickActionRepository: QuickActionRepository
     private let feedRepository: DatabaseUseCase
     private let documentationViewController: Void -> DocumentationViewController
@@ -115,13 +102,11 @@ public class SettingsViewController: UIViewController, Injectable {
     // swiftlint:disable function_parameter_count
     public init(themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
-                urlOpener: UrlOpener,
                 quickActionRepository: QuickActionRepository,
                 feedRepository: DatabaseUseCase,
                 documentationViewController: Void -> DocumentationViewController) {
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
-        self.urlOpener = urlOpener
         self.quickActionRepository = quickActionRepository
         self.feedRepository = feedRepository
         self.documentationViewController = documentationViewController
@@ -134,7 +119,6 @@ public class SettingsViewController: UIViewController, Injectable {
         self.init(
             themeRepository: injector.create(ThemeRepository)!,
             settingsRepository: injector.create(SettingsRepository)!,
-            urlOpener: injector.create(UrlOpener)!,
             quickActionRepository: injector.create(QuickActionRepository)!,
             feedRepository: injector.create(DatabaseUseCase)!,
             documentationViewController: {injector.create(DocumentationViewController)!}
@@ -195,10 +179,8 @@ public class SettingsViewController: UIViewController, Injectable {
 
             let keyCommand = UIKeyCommand(input: "\(idx+1)", modifierFlags: .Command,
                                           action: #selector(SettingsViewController.didHitChangeTheme(_:)))
-            if #available(iOS 9, *) {
-                let title = NSLocalizedString("SettingsViewController_Commands_Theme", comment: "")
-                keyCommand.discoverabilityTitle = String(NSString.localizedStringWithFormat(title, theme.description))
-            }
+            let title = NSLocalizedString("SettingsViewController_Commands_Theme", comment: "")
+            keyCommand.discoverabilityTitle = String(NSString.localizedStringWithFormat(title, theme.description))
             commands.append(keyCommand)
         }
 
@@ -207,10 +189,8 @@ public class SettingsViewController: UIViewController, Injectable {
         let dismiss = UIKeyCommand(input: "w", modifierFlags: .Command,
                                    action: #selector(SettingsViewController.didTapDismiss))
 
-        if #available(iOS 9, *) {
-            save.discoverabilityTitle = NSLocalizedString("SettingsViewController_Commands_Save", comment: "")
-            dismiss.discoverabilityTitle = NSLocalizedString("SettingsViewController_Commands_Dismiss", comment: "")
-        }
+        save.discoverabilityTitle = NSLocalizedString("SettingsViewController_Commands_Save", comment: "")
+        dismiss.discoverabilityTitle = NSLocalizedString("SettingsViewController_Commands_Dismiss", comment: "")
 
         commands.append(save)
         commands.append(dismiss)
@@ -235,8 +215,6 @@ public class SettingsViewController: UIViewController, Injectable {
     }
 
     private func titleForQuickAction(row: Int) -> String {
-        guard #available(iOS 9, *) else { return "" }
-
         let quickActions = self.quickActionRepository.quickActions
         if row >= quickActions.count {
             let title: String
@@ -253,8 +231,6 @@ public class SettingsViewController: UIViewController, Injectable {
     }
 
     private func feedForQuickAction(row: Int, feeds: [Feed]) -> Feed? {
-        guard #available(iOS 9, *) else { return nil }
-
         let quickActions = self.quickActionRepository.quickActions
         guard row < quickActions.count else { return nil }
 
@@ -294,13 +270,10 @@ extension SettingsViewController: UITableViewDataSource {
         case .Theme:
             return 2
         case .QuickActions:
-            if #available(iOS 9, *) {
-                if self.quickActionRepository.quickActions.count == 3 {
-                    return 3
-                }
-                return self.quickActionRepository.quickActions.count + 1
+            if self.quickActionRepository.quickActions.count == 3 {
+                return 3
             }
-            return 0
+            return self.quickActionRepository.quickActions.count + 1
         case .Advanced:
             return 2
         case .Credits:
@@ -382,14 +355,12 @@ extension SettingsViewController: UITableViewDelegate {
     public func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection)
             where section == .QuickActions else { return false }
-        guard #available(iOS 9, *) else { return false }
         return indexPath.row < self.quickActionRepository.quickActions.count
     }
 
     public func tableView(tableView: UITableView,
         editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
             guard self.tableView(tableView, canEditRowAtIndexPath: indexPath) else { return nil }
-            guard #available(iOS 9, *) else { return nil }
             let deleteAction = UITableViewRowAction(style: .Default,
                 title: NSLocalizedString("Generic_Delete", comment: "")) {_, indexPath in
                     self.quickActionRepository.quickActions.removeAtIndex(indexPath.row)
@@ -428,17 +399,12 @@ extension SettingsViewController: UITableViewDelegate {
         case .Credits:
             tableView.deselectRowAtIndexPath(indexPath, animated: false)
             guard let url = NSURL(string: "https://twitter.com/younata") else { return }
-            if #available(iOS 9.0, *) {
-                let viewController = SFSafariViewController(URL: url)
-                self.presentViewController(viewController, animated: true, completion: nil)
-            } else {
-                self.urlOpener.openURL(url)
-            }
+            let viewController = SFSafariViewController(URL: url)
+            self.presentViewController(viewController, animated: true, completion: nil)
         }
     }
 
     private func didTapQuickActionCell(indexPath: NSIndexPath) {
-        guard #available(iOS 9, *) else { return }
         let feedsListController = FeedsListController()
         feedsListController.themeRepository = self.themeRepository
         feedsListController.navigationItem.title = self.titleForQuickAction(indexPath.row)

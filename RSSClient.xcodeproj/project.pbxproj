@@ -31,6 +31,8 @@
 		8903F5A51D3C8C2000546099 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8903F5A21D3C8C1400546099 /* Freddy.framework */; };
 		8903F5A61D3C8C2000546099 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8903F5A21D3C8C1400546099 /* Freddy.framework */; };
 		8903F5A71D3C8C3100546099 /* Freddy.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8903F5A21D3C8C1400546099 /* Freddy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8903F5A91D3EF0C700546099 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5A81D3EF0C700546099 /* Account.swift */; };
+		8903F5AB1D3EF9F800546099 /* LoginViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5AA1D3EF9F800546099 /* LoginViewControllerSpec.swift */; };
 		890894981BFEC670002848A4 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; };
 		890894991BFEC698002848A4 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; };
 		8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8908949A1BFED7B8002848A4 /* FakeReachable.swift */; };
@@ -589,6 +591,8 @@
 		8903EB141C72F8A7001C0189 /* Kanna.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Kanna.framework; path = ../Carthage/Build/iOS/Kanna.framework; sourceTree = "<group>"; };
 		8903F59F1D3BE5AB00546099 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		8903F5A21D3C8C1400546099 /* Freddy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Freddy.framework; path = Carthage/Build/iOS/Freddy.framework; sourceTree = SOURCE_ROOT; };
+		8903F5A81D3EF0C700546099 /* Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
+		8903F5AA1D3EF9F800546099 /* LoginViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewControllerSpec.swift; sourceTree = "<group>"; };
 		890894971BFEC670002848A4 /* Reachability.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reachability.framework; path = ../Carthage/Build/iOS/Reachability.framework; sourceTree = "<group>"; };
 		8908949A1BFED7B8002848A4 /* FakeReachable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeReachable.swift; sourceTree = "<group>"; };
 		890B78BB1C77A5100066E201 /* DocumentationUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationUseCase.swift; sourceTree = "<group>"; };
@@ -995,6 +999,7 @@
 		8903F5A11D3C15C300546099 /* Pasiphae */ = {
 			isa = PBXGroup;
 			children = (
+				8903F5AA1D3EF9F800546099 /* LoginViewControllerSpec.swift */,
 			);
 			name = Pasiphae;
 			sourceTree = "<group>";
@@ -1178,6 +1183,7 @@
 				8978D4DB1B0533B600EDD6D0 /* Feed.swift */,
 				89D427DD1CF53D520093D186 /* rNewsError.swift */,
 				89D427E11CF556A90093D186 /* HTTPError.swift */,
+				8903F5A81D3EF0C700546099 /* Account.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -2213,6 +2219,7 @@
 				894304541B450C6A000078DC /* CoreDataEnclosure.swift in Sources */,
 				895AC51B1C7FF27300A5F6A1 /* RealmMigrator.swift in Sources */,
 				8978438D1CE1AB3000C74605 /* Repository.swift in Sources */,
+				8903F5A91D3EF0C700546099 /* Account.swift in Sources */,
 				8999CC141C2E83D400B81F5F /* CoreDataService.swift in Sources */,
 				89CBDBF11C7D1206006B70F5 /* DataServiceFactory.swift in Sources */,
 				89146E401C88C6A700EC8F10 /* MigrationUseCase.swift in Sources */,
@@ -2494,6 +2501,7 @@
 				8903EAFD1C6F8A46001C0189 /* FakeNotificationHandler.swift in Sources */,
 				8997C8511B255A1900972930 /* TagPickerViewSpec.swift in Sources */,
 				899823B11B30BA7E00818755 /* NSUserActivity+rNewsTests.m in Sources */,
+				8903F5AB1D3EF9F800546099 /* LoginViewControllerSpec.swift in Sources */,
 				8953B1581B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift in Sources */,
 				89BFAC101C4C66AE007B3415 /* CustomMatchers.swift in Sources */,
 				89F5170A1B2014470005AB04 /* QueryFeedViewControllerSpec.swift in Sources */,

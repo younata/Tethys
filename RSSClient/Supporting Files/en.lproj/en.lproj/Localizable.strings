@@ -3,11 +3,13 @@
 
 "SettingsViewController_Table_Header_Theme" = "Theme";
 "SettingsViewController_Table_Header_QuickActions" = "Quick Actions";
+"SettinsgViewController_Table_Header_Accounts" = "Accounts";
 "SettingsViewController_Table_Header_Advanced" = "Advanced";
 "SettingsViewController_Table_Header_Credits" = "Credits";
 "SettingsViewController_Title" = "Settings";
 "SettingsViewController_QuickActions_AddFirst" = "Add a Quick Action";
 "SettingsViewController_QuickActions_AddAdditional" = "Add a new Quick Action";
+"SettingsViewController_Accounts_Pasiphae" = "rNews Backend";
 "SettingsViewController_Advanced_EnableQueryFeeds" = "Enable Query Feeds";
 "SettingsViewController_Advanced_ShowReadingTimes" = "Show Estimated Reading Times";
 "SettingsViewController_Credits_MainDeveloper_Name" = "Rachel Brindle"; // My name
@@ -60,6 +62,18 @@
 "LocalImportViewController_Cell_Feed_ArticleCount" = "%ld articles";
 "LocalImportViewController_TableHeader_OPMLs" = "Feed Lists";
 "LocalImportViewController_TableHeader_Feeds" = "Individual Feeds";
+
+"LoginViewController_Pasiphae_Title" = "Log in to rNews";
+"LoginViewController_Title_Accessibility_Label" = "Account Type";
+"LoginViewController_Detail_Accessibility_Label" = "Account Detail";
+"LoginViewController_Fields_Email" = "Email";
+"LoginViewController_Fields_Email_Accessibility_Hint" = "Enter email";
+"LoginViewController_Fields_Password" = "Password";
+"LoginViewController_Fields_Password_Accessibility_Hint" = "Enter password";
+"LoginViewController_Fields_Login" = "Login";
+"LoginViewController_Fields_Login_Accessibility_Hint" = "Log in to existing account";
+"LoginViewController_Fields_Register" = "Register";
+"LoginViewController_Fields_Register_Accessibility_Hint" = "Register for a new account";
 
 "MigrationViewController_Message" = "Optimizing your database, hang tight";
 

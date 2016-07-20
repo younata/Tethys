@@ -46,20 +46,20 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             it("should restyle the navigation bar") {
-                expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
+                expect(subject.navigationController?.navigationBar.barStyle) == themeRepository.barStyle
             }
 
             it("by changing the background color of the tableView") {
-                expect(subject.tableView.backgroundColor).to(equal(UIColor.blackColor()))
+                expect(subject.tableView.backgroundColor) == UIColor.blackColor()
             }
 
             it("should change the background color of the view") {
-                expect(subject.view.backgroundColor).to(equal(themeRepository.backgroundColor))
+                expect(subject.view.backgroundColor) == themeRepository.backgroundColor
             }
         }
 
         it("is titled 'Settings'") {
-            expect(subject.navigationItem.title).to(equal("Settings"))
+            expect(subject.navigationItem.title) == "Settings"
         }
 
         it("has a disabled save button") {
@@ -114,7 +114,7 @@ class SettingsViewControllerSpec: QuickSpec {
 
             it("has (number of themes - 1) + 2 commands") {
                 let keyCommands = subject.keyCommands
-                expect(keyCommands?.count).to(equal(3))
+                expect(keyCommands?.count) == 3
             }
 
             describe("the first (number of themes - 1) commands") {
@@ -139,11 +139,11 @@ class SettingsViewControllerSpec: QuickSpec {
 
                         for (idx, expectedCmd) in expectedCommands.enumerate() {
                             let cmd = commands[idx]
-                            expect(cmd.input).to(equal(expectedCmd.input))
-                            expect(cmd.modifierFlags).to(equal(expectedCmd.modifierFlags))
+                            expect(cmd.input) == expectedCmd.input
+                            expect(cmd.modifierFlags) == expectedCmd.modifierFlags
 
                             let expectedTitle = expectedDiscoverabilityTitles[idx]
-                            expect(cmd.discoverabilityTitle).to(equal(expectedTitle))
+                            expect(cmd.discoverabilityTitle) == expectedTitle
                         }
                     }
                 }
@@ -169,11 +169,11 @@ class SettingsViewControllerSpec: QuickSpec {
 
                         for (idx, expectedCmd) in expectedCommands.enumerate() {
                             let cmd = commands[idx]
-                            expect(cmd.input).to(equal(expectedCmd.input))
-                            expect(cmd.modifierFlags).to(equal(expectedCmd.modifierFlags))
+                            expect(cmd.input) == expectedCmd.input
+                            expect(cmd.modifierFlags) == expectedCmd.modifierFlags
 
                             let expectedTitle = expectedDiscoverabilityTitles[idx]
-                            expect(cmd.discoverabilityTitle).to(equal(expectedTitle))
+                            expect(cmd.discoverabilityTitle) == expectedTitle
                         }
                     }
                 }
@@ -198,14 +198,14 @@ class SettingsViewControllerSpec: QuickSpec {
                         "Dismiss without saving",
                     ]
 
-                    expect(commands.count).to(equal(expectedCommands.count))
+                    expect(commands.count) == expectedCommands.count
                     for (idx, cmd) in commands.enumerate() {
                         let expectedCmd = expectedCommands[idx]
-                        expect(cmd.input).to(equal(expectedCmd.input))
-                        expect(cmd.modifierFlags).to(equal(expectedCmd.modifierFlags))
+                        expect(cmd.input) == expectedCmd.input
+                        expect(cmd.modifierFlags) == expectedCmd.modifierFlags
 
                         let expectedTitle = expectedDiscoverabilityTitles[idx]
-                        expect(cmd.discoverabilityTitle).to(equal(expectedTitle))
+                        expect(cmd.discoverabilityTitle) == expectedTitle
                     }
                 }
             }
@@ -220,26 +220,16 @@ class SettingsViewControllerSpec: QuickSpec {
                 dataSource = subject.tableView.dataSource
             }
 
-            it("should have 4 sections if force touch is available") {
+            it("should have 5 sections if force touch is available") {
                 subject.traitCollection.forceTouchCapability = UIForceTouchCapability.Available
                 subject.tableView.reloadData()
-                expect(subject.tableView.numberOfSections).to(equal(4))
+                expect(subject.tableView.numberOfSections) == 5
             }
 
-            it("should have 3 sections if force touch is not available") {
+            it("should have 4 sections if force touch is not available") {
                 subject.traitCollection.forceTouchCapability = UIForceTouchCapability.Unavailable
                 subject.tableView.reloadData()
-                expect(subject.tableView.numberOfSections).to(equal(3))
-            }
-
-            it("should have 4 sections if force touch is available, else 3") {
-                let expectedSections: Int
-                if subject.traitCollection.forceTouchCapability == .Available {
-                    expectedSections = 4
-                } else {
-                    expectedSections = 3
-                }
-                expect(subject.tableView.numberOfSections).to(equal(expectedSections))
+                expect(subject.tableView.numberOfSections) == 4
             }
 
             describe("the theme section") {
@@ -247,11 +237,11 @@ class SettingsViewControllerSpec: QuickSpec {
 
                 it("should be titled 'Theme'") {
                     let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
-                    expect(title).to(equal("Theme"))
+                    expect(title) == "Theme"
                 }
 
                 it("should have 2 cells") {
-                    expect(subject.tableView.numberOfRowsInSection(sectionNumber)).to(equal(2))
+                    expect(subject.tableView.numberOfRowsInSection(sectionNumber)) == 2
                 }
 
                 describe("the first cell") {
@@ -263,7 +253,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("should be titled 'Default'") {
-                        expect(cell.textLabel?.text).to(equal("Default"))
+                        expect(cell.textLabel?.text) == "Default"
                     }
 
                     it("should have its theme repository set") {
@@ -288,7 +278,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("should be titled 'Dark'") {
-                        expect(cell.textLabel?.text).to(equal("Dark"))
+                        expect(cell.textLabel?.text) == "Dark"
                     }
 
                     it("should be selected if it's the current theme") { // which it is not
@@ -310,21 +300,21 @@ class SettingsViewControllerSpec: QuickSpec {
 
                         describe("it previews the change") {
                             it("by restyling the navigation bar") {
-                                expect(subject.navigationController?.navigationBar.barStyle).to(equal(UIBarStyle.Black))
+                                expect(subject.navigationController?.navigationBar.barStyle) == UIBarStyle.Black
                             }
 
                             it("by changing the background color of the tableView") {
-                                expect(subject.tableView.backgroundColor).to(equal(UIColor.blackColor()))
+                                expect(subject.tableView.backgroundColor) == UIColor.blackColor()
                             }
 
                             it("by changing the background color of the view") {
-                                expect(subject.view.backgroundColor).to(equal(UIColor.blackColor()))
+                                expect(subject.view.backgroundColor) == UIColor.blackColor()
                             }
                         }
                         
                         itBehavesLike("a changed setting") {
                             let op = NSBlockOperation {
-                                expect(themeRepository.theme).to(equal(ThemeRepository.Theme.Dark))
+                                expect(themeRepository.theme) == ThemeRepository.Theme.Dark
                             }
                             return ["saveToUserDefaults": op]
                         }
@@ -341,7 +331,7 @@ class SettingsViewControllerSpec: QuickSpec {
 
                 it("should be titled 'Quick Actions'") {
                     let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
-                    expect(title).to(equal("Quick Actions"))
+                    expect(title) == "Quick Actions"
                 }
 
                 context("when there are no existing quick actions") {
@@ -351,12 +341,12 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("should have a single cell, inviting the user to add a quick action") {
-                        expect(subject.tableView.numberOfRowsInSection(sectionNumber)).to(equal(1))
+                        expect(subject.tableView.numberOfRowsInSection(sectionNumber)) == 1
 
                         let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
                         let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: indexPath)
 
-                        expect(cell?.textLabel?.text).to(equal("Add a Quick Action"))
+                        expect(cell?.textLabel?.text) == "Add a Quick Action"
                     }
 
                     describe("tapping the add cell") {
@@ -378,7 +368,7 @@ class SettingsViewControllerSpec: QuickSpec {
                         it("displays a list of feeds") {
                             expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
                             if let feedsList = navigationController.visibleViewController as? FeedsListController {
-                                expect(feedsList.navigationItem.title).to(equal("Add a Quick Action"))
+                                expect(feedsList.navigationItem.title) == "Add a Quick Action"
                                 expect(feedsList.feeds.count) == 0
                             }
                         }
@@ -394,9 +384,9 @@ class SettingsViewControllerSpec: QuickSpec {
                                     let feed = feeds[0]
                                     feedsList.tapFeed?(feed, 0)
                                     expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
-                                    expect(fakeQuickActionRepository.quickActions.count).to(equal(1))
+                                    expect(fakeQuickActionRepository.quickActions.count) == 1
                                     if let quickAction = fakeQuickActionRepository.quickActions.first {
-                                        expect(quickAction.localizedTitle).to(equal(feed.title))
+                                        expect(quickAction.localizedTitle) == feed.title
                                     }
                                 }
                             }
@@ -427,16 +417,16 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("should show the existing actions, plus an invitation to add one more") {
-                        expect(subject.tableView.numberOfRowsInSection(sectionNumber)).to(equal(2))
+                        expect(subject.tableView.numberOfRowsInSection(sectionNumber)) == 2
                         let firstIndexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
                         let firstCell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: firstIndexPath)
 
-                        expect(firstCell?.textLabel?.text).to(equal("a"))
+                        expect(firstCell?.textLabel?.text) == "a"
 
                         let secondIndexPath = NSIndexPath(forRow: 1, inSection: sectionNumber)
                         let secondCell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: secondIndexPath)
 
-                        expect(secondCell?.textLabel?.text).to(equal("Add a new Quick Action"))
+                        expect(secondCell?.textLabel?.text) == "Add a new Quick Action"
                     }
 
                     describe("the cell for an existing quick action") {
@@ -454,7 +444,7 @@ class SettingsViewControllerSpec: QuickSpec {
                             expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
 
                             if let feedsList = navigationController.visibleViewController as? FeedsListController {
-                                expect(feedsList.navigationItem.title).to(equal(feedA.title))
+                                expect(feedsList.navigationItem.title) == feedA.title
                             }
                         }
 
@@ -467,13 +457,13 @@ class SettingsViewControllerSpec: QuickSpec {
                                 expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
 
                                 if let feedsList = navigationController.visibleViewController as? FeedsListController {
-                                    expect(feedsList.feeds).to(equal([feedB]))
+                                    expect(feedsList.feeds) == [feedB]
                                     let feed = feeds[1]
                                     feedsList.tapFeed?(feed, 0)
                                     expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
-                                    expect(fakeQuickActionRepository.quickActions.count).to(equal(1))
+                                    expect(fakeQuickActionRepository.quickActions.count) == 1
                                     if let quickAction = fakeQuickActionRepository.quickActions.first {
-                                        expect(quickAction.localizedTitle).to(equal(feed.title))
+                                        expect(quickAction.localizedTitle) == feed.title
                                     }
                                 }
                             }
@@ -487,10 +477,10 @@ class SettingsViewControllerSpec: QuickSpec {
                             let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
 
                             let editActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAtIndexPath: indexPath)
-                            expect(editActions?.count).to(equal(1))
+                            expect(editActions?.count) == 1
 
                             if let action = editActions?.first {
-                                expect(action.title).to(equal("Delete"))
+                                expect(action.title) == "Delete"
                                 action.handler?(action, indexPath)
 
                                 expect(fakeQuickActionRepository.quickActions).to(beEmpty())
@@ -514,7 +504,7 @@ class SettingsViewControllerSpec: QuickSpec {
                             expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
 
                             if let feedsList = navigationController.visibleViewController as? FeedsListController {
-                                expect(feedsList.navigationItem.title).to(equal("Add a new Quick Action"))
+                                expect(feedsList.navigationItem.title) == "Add a new Quick Action"
                             }
                         }
 
@@ -527,13 +517,13 @@ class SettingsViewControllerSpec: QuickSpec {
                                 expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
 
                                 if let feedsList = navigationController.visibleViewController as? FeedsListController {
-                                    expect(feedsList.feeds).to(equal([feedB]))
+                                    expect(feedsList.feeds) == [feedB]
                                     let feed = feeds[1]
                                     feedsList.tapFeed?(feed, 0)
                                     expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
-                                    expect(fakeQuickActionRepository.quickActions.count).to(equal(2))
+                                    expect(fakeQuickActionRepository.quickActions.count) == 2
                                     if let quickAction = fakeQuickActionRepository.quickActions.last {
-                                        expect(quickAction.localizedTitle).to(equal(feed.title))
+                                        expect(quickAction.localizedTitle) == feed.title
                                     }
                                 }
                             }
@@ -570,19 +560,19 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("should only have cells for the existing feeds") {
-                        expect(subject.tableView.numberOfRowsInSection(sectionNumber)).to(equal(3))
+                        expect(subject.tableView.numberOfRowsInSection(sectionNumber)) == 3
 
                         let firstIndexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
                         let firstCell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: firstIndexPath)
-                        expect(firstCell?.textLabel?.text).to(equal("a"))
+                        expect(firstCell?.textLabel?.text) == "a"
 
                         let secondIndexPath = NSIndexPath(forRow: 1, inSection: sectionNumber)
                         let secondCell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: secondIndexPath)
-                        expect(secondCell?.textLabel?.text).to(equal("b"))
+                        expect(secondCell?.textLabel?.text) == "b"
 
                         let thirdIndexPath = NSIndexPath(forRow: 2, inSection: sectionNumber)
                         let thirdCell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: thirdIndexPath)
-                        expect(thirdCell?.textLabel?.text).to(equal("c"))
+                        expect(thirdCell?.textLabel?.text) == "c"
                     }
 
                     describe("when one of the existing quick action cells is tapped") {
@@ -596,7 +586,7 @@ class SettingsViewControllerSpec: QuickSpec {
                             expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
 
                             if let feedsList = navigationController.visibleViewController as? FeedsListController {
-                                expect(feedsList.navigationItem.title).to(equal(feedA.title))
+                                expect(feedsList.navigationItem.title) == feedA.title
                                 expect(feedsList.feeds) == []
                             }
                         }
@@ -614,14 +604,14 @@ class SettingsViewControllerSpec: QuickSpec {
                                 expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
 
                                 if let feedsList = navigationController.visibleViewController as? FeedsListController {
-                                    expect(feedsList.navigationItem.title).to(equal(feedA.title))
-                                    expect(feedsList.feeds).to(equal([feedD]))
+                                    expect(feedsList.navigationItem.title) == feedA.title
+                                    expect(feedsList.feeds) == [feedD]
                                     let feed = feeds[3]
                                     feedsList.tapFeed?(feed, 0)
                                     expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
-                                    expect(fakeQuickActionRepository.quickActions.count).to(equal(3))
+                                    expect(fakeQuickActionRepository.quickActions.count) == 3
                                     if let quickAction = fakeQuickActionRepository.quickActions.first {
-                                        expect(quickAction.localizedTitle).to(equal(feed.title))
+                                        expect(quickAction.localizedTitle) == feed.title
                                     }
                                 }
                             }
@@ -636,20 +626,67 @@ class SettingsViewControllerSpec: QuickSpec {
                         let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
                         
                         let editActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAtIndexPath: indexPath)
-                        expect(editActions?.count).to(equal(1))
+                        expect(editActions?.count) == 1
                         
                         if let action = editActions?.first {
-                            expect(action.title).to(equal("Delete"))
+                            expect(action.title) == "Delete"
                             action.handler?(action, indexPath)
                             
-                            expect(fakeQuickActionRepository.quickActions).to(equal([secondShortcut, thirdShortcut]))
+                            expect(fakeQuickActionRepository.quickActions) == [secondShortcut, thirdShortcut]
+                        }
+                    }
+                }
+            }
+
+            describe("the accounts section") {
+                let sectionNumber = 1
+
+                beforeEach {
+                    subject.traitCollection.forceTouchCapability = UIForceTouchCapability.Unavailable
+                }
+
+                it("is titled 'Accounts'") {
+                    let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
+                    expect(title) == "Accounts"
+                }
+
+                it("has one cell") {
+                    expect(subject.tableView.numberOfRowsInSection(sectionNumber)) == 1
+                }
+
+                describe("the first cell") {
+                    var cell: TableViewCell! = nil
+                    let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
+
+                    beforeEach {
+                        cell = dataSource.tableView(subject.tableView, cellForRowAtIndexPath: indexPath) as! TableViewCell
+                    }
+
+                    it("is configured with the theme repository") {
+                        expect(cell.themeRepository) == themeRepository
+                    }
+
+                    it("is titled 'rNews Backend'") {
+                        expect(cell.textLabel?.text) == "rNews Backend"
+                    }
+
+                    describe("tapping the cell") {
+                        beforeEach {
+                            delegate.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
+                        }
+
+                        it("navigates to a page telling the user to login to Pasiphae") {
+                            expect(navigationController.topViewController).to(beAnInstanceOf(LoginViewController.self))
+                            if let loginViewController = navigationController.topViewController as? LoginViewController {
+                                expect(loginViewController.accountType) == Account.Pasiphae
+                            }
                         }
                     }
                 }
             }
 
             describe("the advanced section") {
-                let sectionNumber = 1
+                let sectionNumber = 2
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.Unavailable
@@ -657,11 +694,11 @@ class SettingsViewControllerSpec: QuickSpec {
 
                 it("is titled 'Advanced'") {
                     let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
-                    expect(title).to(equal("Advanced"))
+                    expect(title) == "Advanced"
                 }
 
                 it("has two cells") {
-                    expect(subject.tableView.numberOfRowsInSection(sectionNumber)).to(equal(2))
+                    expect(subject.tableView.numberOfRowsInSection(sectionNumber)) == 2
                 }
 
                 describe("the first cell") {
@@ -673,11 +710,11 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("is configured with the theme repository") {
-                        expect(cell.themeRepository).to(equal(themeRepository))
+                        expect(cell.themeRepository) == themeRepository
                     }
 
                     it("is titled 'Enable Query Feeds'") {
-                        expect(cell.textLabel?.text).to(equal("Enable Query Feeds"))
+                        expect(cell.textLabel?.text) == "Enable Query Feeds"
                     }
 
                     describe("tapping the switch on the cell") {
@@ -706,7 +743,7 @@ class SettingsViewControllerSpec: QuickSpec {
                         it("navigates to a leaf page describing what query feeds are and why they're awesome") {
                             expect(navigationController.topViewController).to(beAnInstanceOf(DocumentationViewController.self))
                             if let documentation = navigationController.topViewController as? DocumentationViewController {
-                                expect(documentation.document).to(equal(Document.QueryFeed))
+                                expect(documentation.document) == Document.QueryFeed
                             }
                         }
                     }
@@ -721,11 +758,11 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("is configured with the theme repository") {
-                        expect(cell.themeRepository).to(equal(themeRepository))
+                        expect(cell.themeRepository) == themeRepository
                     }
 
                     it("is titled 'Show Estimated Reading Times'") {
-                        expect(cell.textLabel?.text).to(equal("Show Estimated Reading Times"))
+                        expect(cell.textLabel?.text) == "Show Estimated Reading Times"
                     }
 
                     describe("tapping the switch on the cell") {
@@ -749,7 +786,7 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the credits section") {
-                let sectionNumber = 2
+                let sectionNumber = 3
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.Unavailable
@@ -757,7 +794,7 @@ class SettingsViewControllerSpec: QuickSpec {
 
                 it("should be titled 'Credits'") {
                     let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
-                    expect(title).to(equal("Credits"))
+                    expect(title) == "Credits"
                 }
 
                 let values: [(String, String, NSURL)] = [
@@ -765,7 +802,7 @@ class SettingsViewControllerSpec: QuickSpec {
                 ]
 
                 it("should have \(values.count) cells") {
-                    expect(subject.tableView.numberOfRowsInSection(sectionNumber)).to(equal(values.count))
+                    expect(subject.tableView.numberOfRowsInSection(sectionNumber)) == values.count
                 }
 
                 sharedExamples("a credits cell") { (sharedContext: SharedExampleContext) in
@@ -782,15 +819,15 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("should be configured with the theme repository") {
-                        expect(cell.themeRepository).to(equal(themeRepository))
+                        expect(cell.themeRepository) == themeRepository
                     }
 
                     it("should have the proper text") {
-                        expect(cell.textLabel?.text).to(equal(title))
+                        expect(cell.textLabel?.text) == title
                     }
 
                     it("should show the proper detail text") {
-                        expect(cell.detailTextLabel?.text).to(equal(detail))
+                        expect(cell.detailTextLabel?.text) == detail
                     }
 
                     describe("tapping it") {

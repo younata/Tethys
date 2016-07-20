@@ -7,10 +7,20 @@ import rNewsKit
 
 // swiftlint:disable file_length
 
+extension Account: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .Pasiphae:
+            return NSLocalizedString("SettingsViewController_Accounts_Pasiphae", comment: "")
+        }
+    }
+}
+
 public class SettingsViewController: UIViewController, Injectable {
     private enum SettingsSection: CustomStringConvertible {
         case Theme
         case QuickActions
+        case Accounts
         case Advanced
         case Credits
 
@@ -20,14 +30,16 @@ public class SettingsViewController: UIViewController, Injectable {
                 return
             } else {
                 let offset: Int
-                if traits.forceTouchCapability == .Available {
-                    offset = 0
+                if traits.forceTouchCapability != .Unavailable {
+                    offset = -1
                 } else {
-                    offset = 1
+                    offset = 0
                 }
                 switch rawValue + offset {
-                case 1:
+                case 0:
                     self = .QuickActions
+                case 1:
+                    self = .Accounts
                 case 2:
                     self = .Advanced
                 case 3:
@@ -40,17 +52,18 @@ public class SettingsViewController: UIViewController, Injectable {
 
         static func numberOfSettings(traits: UITraitCollection) -> Int {
             if traits.forceTouchCapability == .Available {
-                return 4
+                return 5
             }
-            return 3
+            return 4
         }
 
         private var rawValue: Int {
             switch self {
             case .Theme: return 0
             case .QuickActions: return 1
-            case .Advanced: return 2
-            case .Credits: return 3
+            case .Accounts: return 2
+            case .Advanced: return 3
+            case .Credits: return 4
             }
         }
 
@@ -60,6 +73,8 @@ public class SettingsViewController: UIViewController, Injectable {
                 return NSLocalizedString("SettingsViewController_Table_Header_Theme", comment: "")
             case .QuickActions:
                 return NSLocalizedString("SettingsViewController_Table_Header_QuickActions", comment: "")
+            case .Accounts:
+                return NSLocalizedString("SettinsgViewController_Table_Header_Accounts", comment: "")
             case .Advanced:
                 return NSLocalizedString("SettingsViewController_Table_Header_Advanced", comment: "")
             case .Credits:
@@ -89,6 +104,7 @@ public class SettingsViewController: UIViewController, Injectable {
     private let quickActionRepository: QuickActionRepository
     private let feedRepository: DatabaseUseCase
     private let documentationViewController: Void -> DocumentationViewController
+    private let loginViewController: Void -> LoginViewController
 
     private var oldTheme: ThemeRepository.Theme = .Default
     private lazy var queryFeedsEnabled: Bool = {
@@ -104,12 +120,14 @@ public class SettingsViewController: UIViewController, Injectable {
                 settingsRepository: SettingsRepository,
                 quickActionRepository: QuickActionRepository,
                 feedRepository: DatabaseUseCase,
-                documentationViewController: Void -> DocumentationViewController) {
+                documentationViewController: Void -> DocumentationViewController,
+                loginViewController: Void -> LoginViewController) {
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.quickActionRepository = quickActionRepository
         self.feedRepository = feedRepository
         self.documentationViewController = documentationViewController
+        self.loginViewController = loginViewController
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -121,7 +139,8 @@ public class SettingsViewController: UIViewController, Injectable {
             settingsRepository: injector.create(SettingsRepository)!,
             quickActionRepository: injector.create(QuickActionRepository)!,
             feedRepository: injector.create(DatabaseUseCase)!,
-            documentationViewController: {injector.create(DocumentationViewController)!}
+            documentationViewController: { injector.create(DocumentationViewController)! },
+            loginViewController: { injector.create(LoginViewController)! }
         )
     }
 
@@ -274,6 +293,8 @@ extension SettingsViewController: UITableViewDataSource {
                 return 3
             }
             return self.quickActionRepository.quickActions.count + 1
+        case .Accounts:
+            return 1
         case .Advanced:
             return 2
         case .Credits:
@@ -299,6 +320,14 @@ extension SettingsViewController: UITableViewDataSource {
             cell.themeRepository = self.themeRepository
 
             cell.textLabel?.text = self.titleForQuickAction(indexPath.row)
+
+            return cell
+        case .Accounts:
+            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TableViewCell
+            cell.themeRepository = self.themeRepository
+
+            let row = Account(rawValue: indexPath.row)!
+            cell.textLabel?.text = row.description
 
             return cell
         case .Advanced:
@@ -389,7 +418,13 @@ extension SettingsViewController: UITableViewDelegate {
             self.tableView.reloadData()
             self.tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
         case .QuickActions:
+            tableView.deselectRowAtIndexPath(indexPath, animated: false)
             self.didTapQuickActionCell(indexPath)
+        case .Accounts:
+            tableView.deselectRowAtIndexPath(indexPath, animated: false)
+            let loginViewController = self.loginViewController()
+            loginViewController.accountType = Account(rawValue: indexPath.row)
+            self.navigationController?.pushViewController(loginViewController, animated: true)
         case .Advanced:
             tableView.deselectRowAtIndexPath(indexPath, animated: false)
             guard AdvancedSection(rawValue: indexPath.row) == .EnableQueryFeeds else { return }

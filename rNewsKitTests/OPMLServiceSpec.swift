@@ -32,7 +32,7 @@ class OPMLServiceSpec: QuickSpec {
                 mainQueue: mainQueue,
                 reachable: nil,
                 dataServiceFactory: dataServiceFactory,
-                updateService: FakeUpdateService(),
+                updateUseCase: FakeUpdateUseCase(),
                 databaseMigrator: FakeDatabaseMigrator(),
                 scriptService: JavaScriptService()
             )

@@ -31,7 +31,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
         var dataServiceFactory: FakeDataServiceFactory!
         var dataService: InMemoryDataService!
 
-        var updateService: FakeUpdateService!
+        var updateUseCase: FakeUpdateUseCase!
 
         var databaseMigrator: FakeDatabaseMigrator!
 
@@ -54,7 +54,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                 waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
 
             feed3 = Feed(title: "e", url: NSURL(string: "https://example.com/feed3.feed"), summary: "", query: nil,
-                tags: ["dad"], waitPeriod: 0, remainingWait: 1, articles: [], image: nil)
+                tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             feeds = [feed1, feed2, feed3]
 
@@ -69,14 +69,14 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
             dataService.feeds = feeds
             dataService.articles = [article1, article2]
 
-            updateService = FakeUpdateService()
+            updateUseCase = FakeUpdateUseCase()
 
             databaseMigrator = FakeDatabaseMigrator()
 
             subject = DefaultDatabaseUseCase(mainQueue: mainQueue,
                 reachable: reachable,
                 dataServiceFactory: dataServiceFactory,
-                updateService: updateService,
+                updateUseCase: updateUseCase,
                 databaseMigrator: databaseMigrator,
                 scriptService: JavaScriptService()
             )
@@ -402,11 +402,16 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                 var callbackError: NSError? = nil
                 var feed: Feed! = nil
 
+                var updateFeedsPromise: Promise<Result<Void, RNewsError>>!
+
                 beforeEach {
                     didCallCallback = false
                     callbackError = nil
 
                     feed = feed1
+
+                    updateFeedsPromise = Promise<Result<Void, RNewsError>>()
+                    updateUseCase.updateFeedsReturns(updateFeedsPromise.future)
                 }
 
                 context("when the network is not reachable") {
@@ -421,12 +426,8 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                         }
                     }
 
-                    it("should not inform any subscribers") {
-                        expect(dataSubscriber.didStartUpdatingFeeds) == false
-                    }
-
                     it("should not make an update request") {
-                        expect(updateService.updatedFeed).to(beNil())
+                        expect(updateUseCase.updateFeedsCallCount) == 0
                     }
 
                     it("should call the completion handler without an error and with the original feed") {
@@ -444,29 +445,22 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                         }
                     }
 
-                    it("should inform any subscribers") {
-                        expect(dataSubscriber.didStartUpdatingFeeds) == true
-                    }
-
-                    it("should make a network request for the feed if it has a remaniing wait of 0") {
-                        expect(updateService.updatedFeed) == feed
+                    it("should make a request to update the feed") {
+                        expect(updateUseCase.updateFeedsCallCount) == 1
+                        guard updateUseCase.updateFeedsCallCount == 1 else { return }
+                        let args = updateUseCase.updateFeedsArgsForCall(0)
+                        expect(args.0) == [feed]
+                        expect(args.1 as? [FakeDataSubscriber]) == [dataSubscriber]
                     }
 
                     context("when the network request succeeds") {
                         beforeEach {
-                            expect(updateService.updatedFeedCallback).toNot(beNil())
-                            updateService.updatedFeedCallback?(feed, nil)
+                            updateFeedsPromise.resolve(.Success())
                             mainQueue.runNextOperation()
-                        }
-
-                        it("should inform subscribers that we downloaded a thing and are about to process it") {
-                            expect(dataSubscriber.updateFeedsProgressFinished).to(equal(1))
-                            expect(dataSubscriber.updateFeedsProgressTotal).to(equal(1))
                         }
 
                         describe("when the last operation completes") {
                             beforeEach {
-                                mainQueue.runNextOperation()
                                 mainQueue.runNextOperation()
                             }
 
@@ -486,9 +480,15 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
             describe("updateFeeds:") {
                 var didCallCallback = false
                 var callbackErrors: [NSError] = []
+
+                var updateFeedsPromise: Promise<Result<Void, RNewsError>>!
+
                 beforeEach {
                     didCallCallback = false
                     callbackErrors = []
+
+                    updateFeedsPromise = Promise<Result<Void, RNewsError>>()
+                    updateUseCase.updateFeedsReturns(updateFeedsPromise.future)
                 }
 
                 context("when there are no feeds in the data store") {
@@ -498,10 +498,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                             didCallCallback = true
                             callbackErrors = errors
                         }
-                    }
-
-                    it("should not inform any subscribers") {
-                        expect(dataSubscriber.didStartUpdatingFeeds) == false
                     }
 
                     it("should call the callback with no errors") {
@@ -526,21 +522,8 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                         }
                     }
 
-                    it("should not inform any subscribers") {
-                        expect(dataSubscriber.didStartUpdatingFeeds) == false
-                    }
-
-                    it("should not make a network request for every feed in the data store w/ a url and a remaining wait of 0") {
-                        expect(updateService.updatedFeed).to(beNil())
-                    }
-
-                    it("should not decrement the remainingWait of every feed that did have a remaining wait of > 0") {
-                        expect(feed3.remainingWait) == 1
-                    }
-
-                    it("should inform subscribers that we finished updating") {
-                        expect(dataSubscriber.updateFeedsProgressFinished).to(equal(0))
-                        expect(dataSubscriber.updateFeedsProgressTotal).to(equal(0))
+                    it("should not make any network requests") {
+                        expect(updateUseCase.updateFeedsCallCount) == 0
                     }
 
                     it("should call the completion handler without an error") {
@@ -553,7 +536,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                     }
                 }
 
-                context("when there are feeds in the data story") {
+                context("when there are feeds in the data store") {
                     beforeEach {
                         didCallCallback = false
                         callbackErrors = []
@@ -563,36 +546,24 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                         }
                     }
 
-                    it("should inform any subscribers") {
-                        expect(dataSubscriber.didStartUpdatingFeeds) == true
-                    }
-
-                    it("should make a network request for every feed in the data store w/ a url and a remaining wait of 0") {
-                        expect(updateService.updatedFeed) == feed1
-                    }
-
-                    it("should decrement the remainingWait of every feed that did have a remaining wait of > 0") {
-                        expect(feed3.remainingWait) == 0
+                    it("makes a feeds update for every feed in the data store w/ a url") {
+                        expect(updateUseCase.updateFeedsCallCount) == 1
+                        guard updateUseCase.updateFeedsCallCount == 1 else { return }
+                        let args = updateUseCase.updateFeedsArgsForCall(0)
+                        expect(args.0) == [feed1, feed3]
+                        expect(args.1 as? [FakeDataSubscriber]) == [dataSubscriber]
                     }
 
                     context("trying to update feeds while a request is still in progress") {
                         var didCallUpdateCallback = false
 
                         beforeEach {
-                            updateService.updatedFeed = nil
-                            dataSubscriber.didStartUpdatingFeeds = false
-
                             subject.updateFeeds {feeds, errors in
                                 didCallUpdateCallback = true
                             }
                         }
-
-                        it("should not inform any subscribers") {
-                            expect(dataSubscriber.didStartUpdatingFeeds) == false
-                        }
-
                         it("should not make any update requests") {
-                            expect(updateService.updatedFeed).to(beNil())
+                            expect(updateUseCase.updateFeedsCallCount) == 1
                         }
 
                         it("should not immediately call the callback") {
@@ -602,7 +573,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                         context("when the original update request finishes") {
                             beforeEach {
                                 mainQueue.runSynchronously = true
-                                updateService.updatedFeedCallback?(feed1, nil)
+                                updateFeedsPromise.resolve(.Success())
                             }
 
                             it("should call both completion handlers") {
@@ -616,12 +587,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                     context("when the update request succeeds") {
                         beforeEach {
                             mainQueue.runSynchronously = true
-                            updateService.updatedFeedCallback?(feed1, nil)
-                        }
-
-                        it("should inform subscribers that we downloaded a thing and are about to process it") {
-                            expect(dataSubscriber.updateFeedsProgressFinished).to(equal(1))
-                            expect(dataSubscriber.updateFeedsProgressTotal).to(equal(1))
+                            updateFeedsPromise.resolve(.Success())
                         }
 
                         it("should call the completion handler without an error") {

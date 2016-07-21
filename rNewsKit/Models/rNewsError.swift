@@ -1,3 +1,5 @@
+import Sinope
+
 public enum NetworkError: ErrorType, CustomStringConvertible {
     case InternetDown
     case DNS
@@ -45,6 +47,7 @@ public enum RNewsError: ErrorType {
     case Network(NSURL, NetworkError)
     case HTTP(Int)
     case Database(DatabaseError)
+    case Backend(SinopeError)
     case Unknown
 }
 
@@ -57,6 +60,8 @@ public func == (lhs: RNewsError, rhs: RNewsError) -> Bool {
     case (let .HTTP(lhsError), let .HTTP(rhsError)):
         return lhsError == rhsError
     case (let .Database(lhsError), let .Database(rhsError)):
+        return lhsError == rhsError
+    case (let .Backend(lhsError), let .Backend(rhsError)):
         return lhsError == rhsError
     case (.Unknown, .Unknown):
         return true

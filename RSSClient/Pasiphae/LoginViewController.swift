@@ -114,7 +114,8 @@ public class LoginViewController: UIViewController, Injectable {
         button.setTitle(NSLocalizedString("LoginViewController_Fields_Register", comment: ""), forState: .Normal)
         button.titleLabel?.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
         button.accessibilityLabel = NSLocalizedString("LoginViewController_Fields_Register", comment: "")
-        button.accessibilityHint = NSLocalizedString("LoginViewController_Fields_Register_Accessibility_Hint", comment: "")
+        button.accessibilityHint = NSLocalizedString("LoginViewController_Fields_Register_Accessibility_Hint",
+                                                     comment: "")
         return button
     }()
 

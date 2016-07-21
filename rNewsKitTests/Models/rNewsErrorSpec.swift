@@ -64,6 +64,15 @@ class rNewsErrorSpec: QuickSpec {
                     expect(a) != c
                 }
 
+                it("reports two Backend errors of the same kind as equal") {
+                    let a = RNewsError.Backend(.Unknown)
+                    let b = RNewsError.Backend(.Unknown)
+                    let c = RNewsError.Backend(.Network)
+
+                    expect(a) == b
+                    expect(a) != c
+                }
+
                 it("reports two Unknown errors as equal") {
                     let a = RNewsError.Unknown
                     let b = RNewsError.Unknown

@@ -33,6 +33,14 @@
 		8903F5A71D3C8C3100546099 /* Freddy.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8903F5A21D3C8C1400546099 /* Freddy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8903F5A91D3EF0C700546099 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5A81D3EF0C700546099 /* Account.swift */; };
 		8903F5AB1D3EF9F800546099 /* LoginViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5AA1D3EF9F800546099 /* LoginViewControllerSpec.swift */; };
+		8903F5AD1D4002FD00546099 /* AccountRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5AC1D4002FD00546099 /* AccountRepository.swift */; };
+		8903F5AF1D40225D00546099 /* AccountRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5AE1D40225D00546099 /* AccountRepositorySpec.swift */; };
+		8903F5B01D4022AD00546099 /* FakeUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C676531BA264F40037A224 /* FakeUserDefaults.swift */; };
+		8903F5B41D40245E00546099 /* FakeSinopeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5B31D40245E00546099 /* FakeSinopeRepository.swift */; };
+		8903F5B81D403FEF00546099 /* UpdateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5B71D403FEF00546099 /* UpdateUseCase.swift */; };
+		8903F5BC1D404EA800546099 /* FakeUpdateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5BB1D404EA800546099 /* FakeUpdateUseCase.swift */; };
+		8903F5C01D412EF500546099 /* UpdateUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5BF1D412EF500546099 /* UpdateUseCaseSpec.swift */; };
+		8903F5C11D412EF500546099 /* UpdateUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5BF1D412EF500546099 /* UpdateUseCaseSpec.swift */; };
 		890894981BFEC670002848A4 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; };
 		890894991BFEC698002848A4 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; };
 		8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8908949A1BFED7B8002848A4 /* FakeReachable.swift */; };
@@ -593,6 +601,12 @@
 		8903F5A21D3C8C1400546099 /* Freddy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Freddy.framework; path = Carthage/Build/iOS/Freddy.framework; sourceTree = SOURCE_ROOT; };
 		8903F5A81D3EF0C700546099 /* Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		8903F5AA1D3EF9F800546099 /* LoginViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewControllerSpec.swift; sourceTree = "<group>"; };
+		8903F5AC1D4002FD00546099 /* AccountRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountRepository.swift; sourceTree = "<group>"; };
+		8903F5AE1D40225D00546099 /* AccountRepositorySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountRepositorySpec.swift; sourceTree = "<group>"; };
+		8903F5B31D40245E00546099 /* FakeSinopeRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeSinopeRepository.swift; sourceTree = "<group>"; };
+		8903F5B71D403FEF00546099 /* UpdateUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateUseCase.swift; sourceTree = "<group>"; };
+		8903F5BB1D404EA800546099 /* FakeUpdateUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeUpdateUseCase.swift; sourceTree = "<group>"; };
+		8903F5BF1D412EF500546099 /* UpdateUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateUseCaseSpec.swift; sourceTree = "<group>"; };
 		890894971BFEC670002848A4 /* Reachability.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reachability.framework; path = ../Carthage/Build/iOS/Reachability.framework; sourceTree = "<group>"; };
 		8908949A1BFED7B8002848A4 /* FakeReachable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeReachable.swift; sourceTree = "<group>"; };
 		890B78BB1C77A5100066E201 /* DocumentationUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationUseCase.swift; sourceTree = "<group>"; };
@@ -1009,6 +1023,7 @@
 			children = (
 				8903EB001C6F9DFB001C0189 /* ImportUseCase.swift */,
 				89CBDC0A1C7D432F006B70F5 /* MigrationUseCase.swift */,
+				8903F5B71D403FEF00546099 /* UpdateUseCase.swift */,
 			);
 			path = "Use Cases";
 			sourceTree = "<group>";
@@ -1018,6 +1033,7 @@
 			children = (
 				8903EB021C6FA022001C0189 /* ImportUseCaseSpec.swift */,
 				89CBDC101C7D781E006B70F5 /* MigrationUseCaseSpec.swift */,
+				8903F5BF1D412EF500546099 /* UpdateUseCaseSpec.swift */,
 			);
 			path = "Use Cases";
 			sourceTree = "<group>";
@@ -1047,6 +1063,7 @@
 			isa = PBXGroup;
 			children = (
 				892E30E71CF218F600E327A0 /* FeedRepositorySpec.swift */,
+				8903F5AE1D40225D00546099 /* AccountRepositorySpec.swift */,
 			);
 			path = Repositories;
 			sourceTree = "<group>";
@@ -1080,6 +1097,7 @@
 				898C48C61B40D2AC0097045A /* SearchIndex.swift */,
 				8903EB081C702843001C0189 /* WebPageParser.swift */,
 				89E1868A1D13629D005C5880 /* Analytics.swift */,
+				8903F5AC1D4002FD00546099 /* AccountRepository.swift */,
 			);
 			path = rNewsKit;
 			sourceTree = "<group>";
@@ -1556,6 +1574,8 @@
 				8992D4321C3665B7004A5A35 /* FakeUpdateService.swift */,
 				89628BE01CE175F100B4C624 /* FakeDataSubscriber.swift */,
 				892E30E21CE2C84300E327A0 /* FakeScriptService.swift */,
+				8903F5B31D40245E00546099 /* FakeSinopeRepository.swift */,
+				8903F5BB1D404EA800546099 /* FakeUpdateUseCase.swift */,
 			);
 			path = Fakes;
 			sourceTree = "<group>";
@@ -2221,6 +2241,7 @@
 				8978438D1CE1AB3000C74605 /* Repository.swift in Sources */,
 				8903F5A91D3EF0C700546099 /* Account.swift in Sources */,
 				8999CC141C2E83D400B81F5F /* CoreDataService.swift in Sources */,
+				8903F5B81D403FEF00546099 /* UpdateUseCase.swift in Sources */,
 				89CBDBF11C7D1206006B70F5 /* DataServiceFactory.swift in Sources */,
 				89146E401C88C6A700EC8F10 /* MigrationUseCase.swift in Sources */,
 				8984FE891CB984A40096F4B3 /* Author.swift in Sources */,
@@ -2242,6 +2263,7 @@
 				89500B241CDEA288004548C3 /* InMemoryDataService.swift in Sources */,
 				891754731C5B485B0036D96D /* RealmService.swift in Sources */,
 				8943044C1B450A5E000078DC /* Enclosure.swift in Sources */,
+				8903F5AD1D4002FD00546099 /* AccountRepository.swift in Sources */,
 				894304501B450BFB000078DC /* CoreDataArticle.swift in Sources */,
 				89122E611C5D725D00004B1F /* DatabaseMigrator.swift in Sources */,
 				894304521B450C19000078DC /* CoreDataFeed.swift in Sources */,
@@ -2255,9 +2277,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8903F5B41D40245E00546099 /* FakeSinopeRepository.swift in Sources */,
 				8937F6C01B79D0800044A442 /* KitModuleSpec.swift in Sources */,
 				89CBDBF91C7D32EE006B70F5 /* FakeDataServiceFactory.swift in Sources */,
 				89FF97A11BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */,
+				8903F5C01D412EF500546099 /* UpdateUseCaseSpec.swift in Sources */,
 				8999CC0F1C2E796100B81F5F /* DataServiceSpec.swift in Sources */,
 				8992D4331C3665B7004A5A35 /* FakeUpdateService.swift in Sources */,
 				8935F5DB1B4628B3000FFD5D /* EnclosureSpec.swift in Sources */,
@@ -2269,6 +2293,9 @@
 				8984FE8F1CBAAFED0096F4B3 /* RealmMigratorSpec.swift in Sources */,
 				8935F5D71B4628B3000FFD5D /* DefaultDatabaseUseCaseSpec.swift in Sources */,
 				89DE0EC01CFF200C00E06653 /* CoreDataFetchResultsControllerSpec.swift in Sources */,
+				8903F5AF1D40225D00546099 /* AccountRepositorySpec.swift in Sources */,
+				8903F5B01D4022AD00546099 /* FakeUserDefaults.swift in Sources */,
+				8903F5BC1D404EA800546099 /* FakeUpdateUseCase.swift in Sources */,
 				8935F5DE1B462AD2000FFD5D /* FakeOperationQueue.swift in Sources */,
 				89CBDBFE1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift in Sources */,
 				898911C21C3267C6009A44E9 /* UpdateServiceSpec.swift in Sources */,
@@ -2383,6 +2410,7 @@
 				8903EB0D1C702FA3001C0189 /* WebPageParserSpec.swift in Sources */,
 				898979A41B708E7800218498 /* FakeSearchIndex.swift in Sources */,
 				898979A71B708E7800218498 /* OPMLServiceSpec.swift in Sources */,
+				8903F5C11D412EF500546099 /* UpdateUseCaseSpec.swift in Sources */,
 				89146E4D1C88F01800EC8F10 /* FakeDatabaseUseCase.swift in Sources */,
 				898979AC1B708E7800218498 /* EnclosureSpec.swift in Sources */,
 			);

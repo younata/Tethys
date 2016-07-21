@@ -20,7 +20,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     private let reachable: Reachable?
 
     private let dataServiceFactory: DataServiceFactoryType
-    private let updateService: UpdateServiceType
+    private let updateUseCase: UpdateUseCase
     private let databaseMigrator: DatabaseMigratorType
     let scriptService: ScriptService
 
@@ -32,13 +32,13 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     init(mainQueue: NSOperationQueue,
         reachable: Reachable?,
         dataServiceFactory: DataServiceFactoryType,
-        updateService: UpdateServiceType,
+        updateUseCase: UpdateUseCase,
         databaseMigrator: DatabaseMigratorType,
         scriptService: ScriptService) {
             self.mainQueue = mainQueue
             self.reachable = reachable
             self.dataServiceFactory = dataServiceFactory
-            self.updateService = updateService
+            self.updateUseCase = updateUseCase
             self.databaseMigrator = databaseMigrator
             self.scriptService = scriptService
     }
@@ -214,6 +214,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
 
         self.feeds().map { result in
             return result.map { feeds in
+                let feeds = feeds.filter { !$0.isQueryFeed }
                 guard feeds.isEmpty == false && self.reachable?.hasNetworkConnectivity == true else {
                     self.updatingFeedsCallbacks.forEach { $0([], []) }
                     self.updatingFeedsCallbacks = []
@@ -280,60 +281,13 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     }
 
     private func privateUpdateFeeds(feeds: [Feed], callback: ([Feed], [NSError]) -> (Void)) {
-        var feedsLeft = feeds.count
-        guard feedsLeft != 0 else {
-            callback([], [])
-            return
-        }
-
-        for object in self.subscribers.allObjects {
-            if let subscriber = object as? DataSubscriber {
-                subscriber.willUpdateFeeds()
-            }
-        }
-
-        var updatedFeeds: [Feed] = []
-        var errors: [NSError] = []
-
-        var totalProgress = feedsLeft
-        var currentProgress = 0
-
-        for feed in feeds {
-            guard let _ = feed.url where feed.remainingWait == 0 else {
-                feed.remainingWait -= 1
-                self.dataService.saveFeed(feed)
-                feedsLeft -= 1
-                totalProgress -= 1
-                if feedsLeft == 0 {
-                    callback(updatedFeeds, errors)
-                }
-                continue
-            }
-            self.updateService.updateFeed(feed) { feed, error in
-                if let error = error {
-                    errors.append(error)
-                }
-                updatedFeeds.append(feed)
-
-                currentProgress += 1
-                self.mainQueue.addOperationWithBlock {
-                    for object in self.subscribers.allObjects {
-                        if let subscriber = object as? DataSubscriber {
-                            subscriber.didUpdateFeedsProgress(currentProgress, total: totalProgress)
-                        }
-                    }
-                }
-
-                feedsLeft -= 1
-                if feedsLeft == 0 {
-                    self.allFeeds().then { result in
-                        switch result {
-                        case let .Success(feeds):
-                            callback(feeds, errors)
-                        default:
-                            break
-                        }
-                    }
+        self.updateUseCase.updateFeeds(feeds, subscribers: self.allSubscribers).then { res in
+            self.allFeeds().then { result in
+                switch result {
+                case let .Success(feeds):
+                    callback(feeds, [])
+                default:
+                    break
                 }
             }
         }

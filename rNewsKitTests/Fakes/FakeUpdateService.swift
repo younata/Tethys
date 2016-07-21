@@ -2,11 +2,11 @@ import Foundation
 @testable import rNewsKit
 
 class FakeUpdateService: UpdateServiceType {
-    var updatedFeed: Feed? = nil
-    var updatedFeedCallback: ((Feed, NSError?) -> Void)? = nil
+    var updatedFeeds: [Feed] = []
+    var updateFeedCallbacks: [((Feed, NSError?) -> Void)] = []
 
     func updateFeed(feed: Feed, callback: (Feed, NSError?) -> Void) {
-        self.updatedFeed = feed
-        self.updatedFeedCallback = callback
+        self.updatedFeeds.append(feed)
+        self.updateFeedCallbacks.append(callback)
     }
 }

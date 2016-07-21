@@ -62,10 +62,15 @@ public class KitModule: NSObject, Ra.InjectorModule {
             workerQueue: backgroundQueue
         )
 
+        let updateUseCase = DefaultUpdateUseCase(
+            updateService: updateService,
+            mainQueue: mainQueue
+        )
+
         let dataRepository = DefaultDatabaseUseCase(mainQueue: mainQueue,
             reachable: reachable,
             dataServiceFactory: dataServiceFactory,
-            updateService: updateService,
+            updateUseCase: updateUseCase,
             databaseMigrator: DatabaseMigrator(),
             scriptService: JavaScriptService()
         )

@@ -5,6 +5,7 @@ import CoreData
     import CoreSpotlight
     import Reachability
 #endif
+import Sinope
 
 public let kMainQueue = "kMainQueue"
 public let kBackgroundQueue = "kBackgroundQueue"
@@ -55,16 +56,25 @@ public class KitModule: NSObject, Ra.InjectorModule {
             bundle: NSBundle(forClass: self.classForCoder),
             fileManager: NSFileManager.defaultManager())
 
+        let sinopeRepository = PasiphaeFactory().repository(NSURLSession.sharedSession())
+
         let updateService = UpdateService(
             dataServiceFactory: dataServiceFactory,
             urlSession: urlSession,
             urlSessionDelegate: urlSessionDelegate,
-            workerQueue: backgroundQueue
+            workerQueue: backgroundQueue,
+            sinopeRepository: sinopeRepository
         )
+
+        let userDefaults = NSUserDefaults.standardUserDefaults()
+        let accountRepository = DefaultAccountRepository(repository: sinopeRepository,
+                                                         userDefaults: userDefaults)
 
         let updateUseCase = DefaultUpdateUseCase(
             updateService: updateService,
-            mainQueue: mainQueue
+            mainQueue: mainQueue,
+            accountRepository: accountRepository,
+            userDefaults: userDefaults
         )
 
         let dataRepository = DefaultDatabaseUseCase(mainQueue: mainQueue,

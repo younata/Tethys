@@ -1,5 +1,9 @@
 import Quick
 import Nimble
+import CBGPromise
+import Result
+import Sinope
+import Freddy
 @testable import rNewsKit
 
 class UpdateServiceSpec: QuickSpec {
@@ -10,6 +14,7 @@ class UpdateServiceSpec: QuickSpec {
         var dataServiceFactory: FakeDataServiceFactory!
         var dataService: InMemoryDataService!
         var workerQueue: FakeOperationQueue!
+        var sinopeRepository: FakeSinopeRepository!
 
         beforeEach {
             urlSessionDelegate = URLSessionDelegate()
@@ -25,18 +30,89 @@ class UpdateServiceSpec: QuickSpec {
             workerQueue = FakeOperationQueue()
             workerQueue.runSynchronously = true
 
+            sinopeRepository = FakeSinopeRepository()
+
             subject = UpdateService(
                 dataServiceFactory: dataServiceFactory,
                 urlSession: urlSession,
                 urlSessionDelegate: urlSessionDelegate,
-                workerQueue: workerQueue
+                workerQueue: workerQueue,
+                sinopeRepository: sinopeRepository
             )
+        }
+
+        describe("updating multiple feeds") {
+            var updateFeedsFuture: Future<Result<(NSDate, [rNewsKit.Feed]), RNewsError>>!
+            var fetchPromise: Promise<Result<(NSDate, [Sinope.Feed]), SinopeError>>!
+            let date = NSDate()
+
+            beforeEach {
+                fetchPromise = Promise<Result<(NSDate, [Sinope.Feed]), SinopeError>>()
+                sinopeRepository.fetchReturns(fetchPromise.future)
+                updateFeedsFuture = subject.updateFeeds(date)
+            }
+
+            it("returns an in-progress promise") {
+                expect(updateFeedsFuture.value).to(beNil())
+            }
+
+            it("makes a request to the sinopeRepository") {
+                expect(sinopeRepository.fetchCallCount) == 1
+                guard sinopeRepository.fetchCallCount == 1 else { return }
+                let args = sinopeRepository.fetchArgsForCall(0)
+                expect(args) == date
+            }
+
+            describe("when the request succeeds") {
+                var feed: rNewsKit.Feed! = nil
+                let updatedDate = NSDate()
+
+                beforeEach {
+                    feed = rNewsKit.Feed(title: "feed", url: NSURL(string: "https://example.com/feed"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    dataService.feeds = [feed]
+                    // hm.
+
+                    let data: NSData = ("{\"title\": \"feed title\"," +
+                        "\"url\": \"https://example.com/feed\"," +
+                        "\"summary\": \"test\"," +
+                        "\"image_url\": \"https://example.com/image.png\"," +
+                        "\"articles\": [" +
+                        "{\"title\": \"Example 1\", \"url\": \"https://example.com/1/\", \"summary\": \"test\", \"published\": \"2015-12-23T00:00:00.000Z\", \"updated\": null, \"content\": null, \"authors\": []}" +
+                        "]}").dataUsingEncoding(NSUTF8StringEncoding)!
+
+                    let json = try! JSON(data: data)
+                    let sinopeFeed = try! Feed(json: json)
+
+                    fetchPromise.resolve(.Success(updatedDate, [sinopeFeed]))
+                }
+
+                it("should resolve the promise with all updated feeds") {
+                    expect(updateFeedsFuture.value).toNot(beNil())
+                    guard let receivedDate = updateFeedsFuture.value?.value?.0 else { return }
+                    guard let feed = updateFeedsFuture.value?.value?.1.first else { return }
+                    expect(receivedDate) == updatedDate
+                    expect(feed.title) == "feed title"
+                    expect(feed.summary) == "test"
+                    expect(feed.articlesArray.count) == 1
+                }
+            }
+
+            describe("when the request fails") {
+                beforeEach {
+                    fetchPromise.resolve(.Failure(.Unknown))
+                }
+
+                it("wraps the error") {
+                    expect(updateFeedsFuture.value).toNot(beNil())
+                    expect(updateFeedsFuture.value?.error) == RNewsError.Backend(.Unknown)
+                }
+            }
         }
 
         describe("updating a feed") {
             context("trying to update a query feed") {
-                let query = Feed(title: "query", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                var updatedFeed: Feed? = nil
+                let query = rNewsKit.Feed(title: "query", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                var updatedFeed: rNewsKit.Feed? = nil
                 var receivedError: NSError? = nil
 
                 beforeEach {
@@ -62,12 +138,12 @@ class UpdateServiceSpec: QuickSpec {
             }
 
             describe("updating a standard feed") {
-                var feed: Feed! = nil
-                var updatedFeed: Feed? = nil
+                var feed: rNewsKit.Feed! = nil
+                var updatedFeed: rNewsKit.Feed? = nil
                 var receivedError: NSError? = nil
 
                 beforeEach {
-                    feed = Feed(title: "feed", url: NSURL(string: "https://example.com/feed"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    feed = rNewsKit.Feed(title: "feed", url: NSURL(string: "https://example.com/feed"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     dataService.feeds = [feed]
 
                     updatedFeed = nil

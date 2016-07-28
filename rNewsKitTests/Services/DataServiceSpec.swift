@@ -3,7 +3,6 @@ import Nimble
 import CoreData
 import Result
 @testable import rNewsKit
-import Muon
 
 func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
     describe("feeds") {
@@ -33,9 +32,9 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
 
         it("easily allows a feed to be updated with inserted articles") {
             guard let feed = feed else { fail(); return }
-            let muonEnclosure = Muon.Enclosure(url: NSURL(string: "https://example.com/enclosure.mp3")!, length: 0, type: "audio/mpeg")
-            let item = Muon.Article(title: "article", link: nil, description: "", content: "", guid: "", published: nil, updated: nil, authors: [], enclosures: [muonEnclosure])
-            let info = Muon.Feed(title: "a &amp; title", link: NSURL(string: "https://example.com")!, description: "description", articles: [item])
+            let fakeEnclosure = FakeImportableEnclosure(url: NSURL(string: "https://example.com/enclosure.mp3")!, length: 0, type: "audio/mpeg")
+            let item = FakeImportableArticle(title: "article", url: NSURL(string: "/foo/bar/baz")!, summary: "", content: "", published: NSDate(), updated: nil, authors: [], enclosures: [fakeEnclosure])
+            let info = FakeImportableFeed(title: "a &amp; title", link: NSURL(string: "https://example.com")!, description: "description", imageURL: nil, articles: [item])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
             dataService.updateFeed(feed, info: info).then {
                 if case Result.Success() = $0 {
@@ -52,16 +51,16 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
                 expect(article.title) == "article"
                 expect(article.enclosuresArray.count).to(equal(1))
                 if let enclosure = article.enclosuresArray.first {
-                    expect(enclosure.kind) == muonEnclosure.type
-                    expect(enclosure.url) == muonEnclosure.url
+                    expect(enclosure.kind) == fakeEnclosure.type
+                    expect(enclosure.url) == fakeEnclosure.url
                 }
             }
         }
 
         it("makes the item link relative to the feed link in the event the item link has a nil scheme") {
             guard let feed = feed else { fail(); return }
-            let item = Muon.Article(title: "article", link: NSURL(string: "/foo/bar/baz"), description: "", content: "", guid: "", published: nil, updated: nil, authors: [], enclosures: [])
-            let info = Muon.Feed(title: "a &amp; title", link: NSURL(string: "https://example.com/qux")!, description: "description", articles: [item])
+            let item = FakeImportableArticle(title: "article", url: NSURL(string: "/foo/bar/baz")!, summary: "", content: "", published: NSDate(), updated: nil, authors: [], enclosures: [])
+            let info = FakeImportableFeed(title: "a &amp; title", link: NSURL(string: "https://example.com/qux")!, description: "description", imageURL: nil, articles: [item])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
             dataService.updateFeed(feed, info: info).then {
                 if case Result.Success() = $0 {
@@ -82,8 +81,8 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
 
         it("does not insert items that have empty titles") {
             guard let feed = feed else { fail(); return }
-            let item = Muon.Article(title: "", link: nil, description: "", content: "", guid: "", published: nil, updated: nil, authors: [], enclosures: [])
-            let info = Muon.Feed(title: "a title", link: NSURL(string: "https://example.com")!, description: "description", articles: [item])
+            let item = FakeImportableArticle(title: "", url: NSURL(string: "/foo/bar/baz")!, summary: "", content: "", published: NSDate(), updated: nil, authors: [], enclosures: [])
+            let info = FakeImportableFeed(title: "a title", link: NSURL(string: "https://example.com")!, description: "description", imageURL: nil, articles: [item])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
             dataService.updateFeed(feed, info: info).then {
                 if case Result.Success() = $0 {
@@ -118,9 +117,9 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             expect(feed.articlesArray).to(contain(existingArticle))
             expect(feed.articlesArray.count) == 1
 
-            let existingItem = Muon.Article(title: existingArticle.title, link: existingArticle.link, description: existingArticle.summary, content: existingArticle.content, guid: "", published: existingArticle.published, updated: nil, authors: [], enclosures: [])
-            let item = Muon.Article(title: "article", link: nil, description: "", content: "", guid: "", published: nil, updated: nil, authors: [], enclosures: [])
-            let info = Muon.Feed(title: "a title", link: NSURL(string: "https://example.com")!, description: "description", articles: [existingItem, item])
+            let existingItem = FakeImportableArticle(title: existingArticle.title, url: existingArticle.link!, summary: existingArticle.summary, content: existingArticle.content, published: existingArticle.published, updated: nil, authors: [], enclosures: [])
+            let item = FakeImportableArticle(title: "article", url: NSURL(string: "")!, summary: "", content: "", published: NSDate(), updated: nil, authors: [], enclosures: [])
+            let info = FakeImportableFeed(title: "a title", link: NSURL(string: "https://example.com")!, description: "description", imageURL: nil, articles: [existingItem, item])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
             dataService.updateFeed(feed, info: info).then {
                 guard case Result.Success() = $0 else { return }
@@ -181,7 +180,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
 
             let content = "<html><body><a href=\"/foo/bar/\"></a></body></html>"
 
-            let item = Muon.Article(title: "a <p></p>&amp; title", link: NSURL(string: "https://example.com/foo/baz"), description: "description", content: content, guid: "guid", published: NSDate(timeIntervalSince1970: 10), updated: NSDate(timeIntervalSince1970: 15), authors: [], enclosures: [])
+            let item = FakeImportableArticle(title: "a <p></p>&amp; title", url: NSURL(string: "https://example.com/foo/baz")!, summary: "description", content: content, published: NSDate(timeIntervalSince1970: 10), updated: NSDate(timeIntervalSince1970: 15), authors: [], enclosures: [])
 
             let updateExpectation = spec.expectationWithDescription("Update Article")
             dataService.updateArticle(article!, item: item, feedURL: NSURL(string: "https://example.com/")!).then { _ in
@@ -193,11 +192,11 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
 
         it("easily allows an article to be updated, filtering out title information") {
             guard let article = article else { fail(); return }
-            let author = Muon.Author(name: "Rachel Brindle", email: NSURL(string: "mailto:rachel@example.com"), uri: NSURL(string: "https://example.com/rachel"))
+            let author = FakeImportableAuthor(name: "Rachel Brindle", email: NSURL(string: "mailto:rachel@example.com"))
             let content = (0..<100).map({_ in "<p>this was a content space</p>"}).reduce("", combine: +)
 
-            let muonEnclosure = Muon.Enclosure(url: NSURL(string: "https://example.com/enclosure.mp3")!, length: 0, type: "audio/mpeg")
-            let item = Muon.Article(title: "a <p></p>&amp; title", link: NSURL(string: "https://example.com"), description: "description", content: content, guid: "guid", published: NSDate(timeIntervalSince1970: 10), updated: NSDate(timeIntervalSince1970: 15), authors: [author], enclosures: [muonEnclosure])
+            let muonEnclosure = FakeImportableEnclosure(url: NSURL(string: "https://example.com/enclosure.mp3")!, length: 0, type: "audio/mpeg")
+            let item = FakeImportableArticle(title: "a <p></p>&amp; title", url: NSURL(string: "https://example.com")!, summary: "description", content: content, published: NSDate(timeIntervalSince1970: 10), updated: NSDate(timeIntervalSince1970: 15), authors: [author], enclosures: [muonEnclosure])
 
             let updateExpectation = spec.expectationWithDescription("Update Article")
             if let searchIndex = dataService.searchIndex as? FakeSearchIndex {
@@ -223,7 +222,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
         }
 
         describe("updating enclosures") {
-            let muonEnclosure = Muon.Enclosure(url: NSURL(string: "https://example.com")!, length: 10, type: "html")
+            let muonEnclosure = FakeImportableEnclosure(url: NSURL(string: "https://example.com")!, length: 10, type: "html")
             var enclosure: rNewsKit.Enclosure?
 
             afterEach {

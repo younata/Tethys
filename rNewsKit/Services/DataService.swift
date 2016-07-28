@@ -1,5 +1,4 @@
 import Foundation
-import Muon
 import CBGPromise
 import Result
 #if os(OSX)
@@ -43,12 +42,12 @@ extension DataService {
         return self.batchSave([feed], articles: [], enclosures: [])
     }
 
-    func updateFeed(feed: Feed, info: Muon.Feed) -> Future<Result<Void, RNewsError>> {
+    func updateFeed(feed: Feed, info: ImportableFeed) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
         feed.title = info.title.stringByUnescapingHTML().stringByStrippingHTML()
         feed.summary = info.description
 
-        let articles: [Muon.Article] = info.articles.filter { $0.title?.isEmpty == false }
+        let articles: [ImportableArticle] = info.importableArticles.filter { $0.title.isEmpty == false }
 
         if articles.isEmpty {
             return self.saveFeed(feed)
@@ -80,7 +79,7 @@ extension DataService {
         for item in articles {
             importTasks.append {
                 let filter: rNewsKit.Article -> Bool = { article in
-                    return item.title == article.title || item.link == article.link
+                    return item.title == article.title || item.url == article.link
                 }
                 let article = feed.articlesArray.filter(filter).first
                 if let article = article ?? articlesToSave.filter(filter).first {
@@ -103,33 +102,33 @@ extension DataService {
         return promise.future
     }
 
-    func updateArticle(article: Article, item: Muon.Article, feedURL: NSURL) ->
+    func updateArticle(article: Article, item: ImportableArticle, feedURL: NSURL) ->
         Future<Result<(Article, [Enclosure]), RNewsError>> {
             let characterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
-            let authors = item.authors.map {
+            let authors = item.importableAuthors.map {
                 return rNewsKit.Author(name: $0.name, email: $0.email)
             }
 
             let title = (item.title ?? article.title ?? "unknown").stringByTrimmingCharactersInSet(characterSet)
             article.title = title.stringByUnescapingHTML().stringByStrippingHTML()
-            article.link = NSURL(string: item.link?.absoluteString ?? "", relativeToURL: feedURL)?.absoluteURL
+            article.link = NSURL(string: item.url.absoluteString, relativeToURL: feedURL)?.absoluteURL
             article.published = item.published ?? article.published
             article.updatedAt = item.updated
-            article.summary = item.description ?? ""
-            article.content = item.content ?? ""
+            article.summary = item.summary
+            article.content = item.content
 
-            article.estimatedReadingTime = estimateReadingTime(item.content ?? item.description ?? "")
+            article.estimatedReadingTime = estimateReadingTime(item.content ?? item.summary)
 
             article.authors = authors
 
-            let enclosures: [Enclosure] = item.enclosures.flatMap {
+            let enclosures: [Enclosure] = item.importableEnclosures.flatMap {
                 if let result = self.upsertEnclosureForArticle(article, fromItem: $0).wait() {
                     return result
                 }
                 return nil
             }
 
-            let content = item.content ?? item.description ?? ""
+            let content = item.content ?? item.summary
 
             let promise = Promise<Result<(Article, [Enclosure]), RNewsError>>()
 
@@ -177,7 +176,7 @@ extension DataService {
         #endif
     }
 
-    func upsertEnclosureForArticle(article: Article, fromItem item: Muon.Enclosure) -> Future<Enclosure?> {
+    func upsertEnclosureForArticle(article: Article, fromItem item: ImportableEnclosure) -> Future<Enclosure?> {
             let promise = Promise<Enclosure?>()
 
             let url = item.url

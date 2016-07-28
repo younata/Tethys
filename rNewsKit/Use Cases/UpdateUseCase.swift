@@ -8,19 +8,43 @@ protocol UpdateUseCase {
 final class DefaultUpdateUseCase: UpdateUseCase {
     private let updateService: UpdateServiceType
     private let mainQueue: NSOperationQueue
+    private let accountRepository: InternalAccountRepository
+    private let userDefaults: NSUserDefaults
 
-    init(updateService: UpdateServiceType, mainQueue: NSOperationQueue) {
+    init(updateService: UpdateServiceType,
+         mainQueue: NSOperationQueue,
+         accountRepository: InternalAccountRepository,
+         userDefaults: NSUserDefaults) {
         self.updateService = updateService
         self.mainQueue = mainQueue
+        self.accountRepository = accountRepository
+        self.userDefaults = userDefaults
     }
 
     func updateFeeds(feeds: [Feed], subscribers: [DataSubscriber]) -> Future<Result<Void, RNewsError>> {
-        return self.updateFeedsFromRSS(feeds, subscribers: subscribers)
+        if self.accountRepository.loggedIn() {
+            return self.updateFeedsFromBackend(subscribers)
+        } else {
+            return self.updateFeedsFromRSS(feeds, subscribers: subscribers)
+        }
     }
 
-    func updateFeedsFromBackend(date: NSDate?, subscribers: [DataSubscriber]) -> Future<Result<Void, RNewsError>> {
-        let promise = Promise<Result<Void, RNewsError>>()
-        return promise.future
+    func updateFeedsFromBackend(subscribers: [DataSubscriber]) -> Future<Result<Void, RNewsError>> {
+        for subscriber in subscribers {
+            subscriber.willUpdateFeeds()
+        }
+        let date = self.userDefaults.objectForKey("pasiphae_last_update_date") as? NSDate
+        return self.updateService.updateFeeds(date).map { (res: Result<(NSDate, [Feed]), RNewsError>) in
+            return res.map { updatedDate, _ in
+                self.userDefaults.setObject(updatedDate, forKey: "pasiphae_last_update_date")
+                self.mainQueue.addOperationWithBlock {
+                    for subscriber in subscribers {
+                        subscriber.didUpdateFeedsProgress(1, total: 1)
+                    }
+                }
+                return
+            }
+        }
     }
 
     func updateFeedsFromRSS(feeds: [Feed], subscribers: [DataSubscriber]) -> Future<Result<Void, RNewsError>> {

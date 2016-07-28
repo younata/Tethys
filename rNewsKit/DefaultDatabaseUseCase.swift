@@ -2,7 +2,6 @@ import Foundation
 import Ra
 import CoreData
 import JavaScriptCore
-import Muon
 import CBGPromise
 import Result
 #if os(iOS)
@@ -286,8 +285,8 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
                 switch result {
                 case let .Success(feeds):
                     callback(feeds, [])
-                default:
-                    break
+                case .Failure(_):
+                    callback([], [NSError(domain: "RNewsError", code: 0, userInfo: [:])])
                 }
             }
         }

@@ -29,7 +29,7 @@ class LoginViewControllerSpec: QuickSpec {
             expect(subject.registerButton.enabled) == false
         }
 
-        fdescribe("changing the theme") {
+        describe("changing the theme") {
             beforeEach {
                 themeRepository.theme = .Dark
             }
@@ -51,7 +51,7 @@ class LoginViewControllerSpec: QuickSpec {
             }
         }
 
-        fdescribe("setting an accountType") {
+        describe("setting an accountType") {
             describe("to .Pasiphae") {
                 beforeEach {
                     subject.accountType = .Pasiphae
@@ -71,7 +71,7 @@ class LoginViewControllerSpec: QuickSpec {
             }
         }
 
-        fdescribe("logging in") {
+        describe("logging in") {
             let enterEmail = {
                 subject.emailField.text = "foo@example.com"
                 subject.emailField.delegate?.textField?(subject.emailField,

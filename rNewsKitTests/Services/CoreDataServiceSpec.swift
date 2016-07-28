@@ -1,7 +1,6 @@
 import Quick
 import Nimble
 import CoreData
-import Muon
 import Result
 @testable import rNewsKit
 #if os(iOS)

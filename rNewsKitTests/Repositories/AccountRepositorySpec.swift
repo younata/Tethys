@@ -5,21 +5,6 @@ import Result
 import Sinope
 @testable import rNewsKit
 
-class FakeAccountRepositoryDelegate : AccountRepositoryDelegate {
-    init() {
-    }
-
-    private(set) var accountRepositoryDidLogInCallCount : Int = 0
-    private var accountRepositoryDidLogInArgs : Array<(AccountRepository)> = []
-    func accountRepositoryDidLogInArgsForCall(callIndex: Int) -> (AccountRepository) {
-        return self.accountRepositoryDidLogInArgs[callIndex]
-    }
-    func accountRepositoryDidLogIn(accountRepository: AccountRepository) {
-        self.accountRepositoryDidLogInCallCount += 1
-        self.accountRepositoryDidLogInArgs.append((accountRepository))
-    }
-}
-
 class AccountRepositorySpec: QuickSpec {
     override func spec() {
         var subject: DefaultAccountRepository!

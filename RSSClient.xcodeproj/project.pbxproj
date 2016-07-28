@@ -41,6 +41,9 @@
 		8903F5BC1D404EA800546099 /* FakeUpdateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5BB1D404EA800546099 /* FakeUpdateUseCase.swift */; };
 		8903F5C01D412EF500546099 /* UpdateUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5BF1D412EF500546099 /* UpdateUseCaseSpec.swift */; };
 		8903F5C11D412EF500546099 /* UpdateUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5BF1D412EF500546099 /* UpdateUseCaseSpec.swift */; };
+		8903F5C31D414E5000546099 /* PasiphaeFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5C21D414E5000546099 /* PasiphaeFactory.swift */; };
+		8903F5CB1D416B6700546099 /* FakeAccountRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5CA1D416B6700546099 /* FakeAccountRepository.swift */; };
+		8903F5CF1D4177DE00546099 /* Importable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5CE1D4177DE00546099 /* Importable.swift */; };
 		890894981BFEC670002848A4 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; };
 		890894991BFEC698002848A4 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; };
 		8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8908949A1BFED7B8002848A4 /* FakeReachable.swift */; };
@@ -304,6 +307,7 @@
 		89AA8A8E1B536B98000E2C88 /* SyntaxKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89AA8A8C1B536B90000E2C88 /* SyntaxKit.framework */; };
 		89AA8A911B536BEB000E2C88 /* JavaScript.tmLanguage in Resources */ = {isa = PBXBuildFile; fileRef = 89AA8A901B536BEB000E2C88 /* JavaScript.tmLanguage */; };
 		89AA8A931B537048000E2C88 /* mac_classic.tmTheme in Resources */ = {isa = PBXBuildFile; fileRef = 89AA8A921B537048000E2C88 /* mac_classic.tmTheme */; };
+		89AFF9FF1D4870F7002255E8 /* FakeImportables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */; };
 		89B8BBDD1B9C5B1000B2C112 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89B8BBDF1B9C5B1000B2C112 /* Launch Screen.xib */; };
 		89BA95391C4C8E7C001FD453 /* WorkFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89BA95381C4C8E7C001FD453 /* WorkFlow.framework */; };
 		89BA953A1C4C8E7C001FD453 /* WorkFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89BA95381C4C8E7C001FD453 /* WorkFlow.framework */; };
@@ -607,6 +611,9 @@
 		8903F5B71D403FEF00546099 /* UpdateUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateUseCase.swift; sourceTree = "<group>"; };
 		8903F5BB1D404EA800546099 /* FakeUpdateUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeUpdateUseCase.swift; sourceTree = "<group>"; };
 		8903F5BF1D412EF500546099 /* UpdateUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateUseCaseSpec.swift; sourceTree = "<group>"; };
+		8903F5C21D414E5000546099 /* PasiphaeFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasiphaeFactory.swift; sourceTree = "<group>"; };
+		8903F5CA1D416B6700546099 /* FakeAccountRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeAccountRepository.swift; sourceTree = "<group>"; };
+		8903F5CE1D4177DE00546099 /* Importable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Importable.swift; sourceTree = "<group>"; };
 		890894971BFEC670002848A4 /* Reachability.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reachability.framework; path = ../Carthage/Build/iOS/Reachability.framework; sourceTree = "<group>"; };
 		8908949A1BFED7B8002848A4 /* FakeReachable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeReachable.swift; sourceTree = "<group>"; };
 		890B78BB1C77A5100066E201 /* DocumentationUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationUseCase.swift; sourceTree = "<group>"; };
@@ -762,6 +769,7 @@
 		89AA8A8C1B536B90000E2C88 /* SyntaxKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SyntaxKit.framework; path = Carthage/Build/iOS/SyntaxKit.framework; sourceTree = SOURCE_ROOT; };
 		89AA8A901B536BEB000E2C88 /* JavaScript.tmLanguage */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = JavaScript.tmLanguage; sourceTree = "<group>"; };
 		89AA8A921B537048000E2C88 /* mac_classic.tmTheme */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = mac_classic.tmTheme; sourceTree = "<group>"; };
+		89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeImportables.swift; sourceTree = "<group>"; };
 		89B8BBDE1B9C5B1000B2C112 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = "Base.lproj/Launch Screen.xib"; sourceTree = "<group>"; };
 		89B8BBE11B9C5B1500B2C112 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = "en.lproj/Launch Screen.xib"; sourceTree = "<group>"; };
 		89BA95381C4C8E7C001FD453 /* WorkFlow.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WorkFlow.framework; path = Carthage/Build/iOS/WorkFlow.framework; sourceTree = SOURCE_ROOT; };
@@ -1097,6 +1105,7 @@
 				898C48C61B40D2AC0097045A /* SearchIndex.swift */,
 				8903EB081C702843001C0189 /* WebPageParser.swift */,
 				89E1868A1D13629D005C5880 /* Analytics.swift */,
+				8903F5C21D414E5000546099 /* PasiphaeFactory.swift */,
 				8903F5AC1D4002FD00546099 /* AccountRepository.swift */,
 			);
 			path = rNewsKit;
@@ -1202,6 +1211,7 @@
 				89D427DD1CF53D520093D186 /* rNewsError.swift */,
 				89D427E11CF556A90093D186 /* HTTPError.swift */,
 				8903F5A81D3EF0C700546099 /* Account.swift */,
+				8903F5CE1D4177DE00546099 /* Importable.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1576,6 +1586,8 @@
 				892E30E21CE2C84300E327A0 /* FakeScriptService.swift */,
 				8903F5B31D40245E00546099 /* FakeSinopeRepository.swift */,
 				8903F5BB1D404EA800546099 /* FakeUpdateUseCase.swift */,
+				8903F5CA1D416B6700546099 /* FakeAccountRepository.swift */,
+				89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */,
 			);
 			path = Fakes;
 			sourceTree = "<group>";
@@ -1928,6 +1940,7 @@
 				8916880A1BA8854E00F9FFE0 /* Embed rNewsKit */,
 				89D170B91C5835C600D546F9 /* Remove Frameworks folder from rNewsKit */,
 				89E1868E1D136772005C5880 /* Add Mixpanel Token */,
+				8903F5C41D41504000546099 /* Add Pasiphae Information */,
 			);
 			buildRules = (
 			);
@@ -2132,6 +2145,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		8903F5C41D41504000546099 /* Add Pasiphae Information */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Add Pasiphae Information";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "token_file=$SRCROOT/.pasiphae\nif [ -e $token_file ]; then\n    token=\"$(cat $token_file)\"\n    if [ \"$token\" ]; then\n        plutil -replace PasiphaeToken -string $token \"$TARGET_BUILD_DIR/$INFOPLIST_PATH\"\n    else\n        echo \"warning: Missing Pasiphae token, add it to $SRCROOT/.pasiphae\"\n    fi\nelse\n    echo \"warning: Missing Pasiphae token, add it to $SRCROOT/.pasiphae\"\nfi\n\nurl_file=$SRCROOT/.pasiphaeURL\nif [ -e $url_file ]; then\n    url=\"$(cat $url_file)\"\n    if [ \"$url\" ]; then\n        plutil -replace PasiphaeURL -string $url \"$TARGET_BUILD_DIR/$INFOPLIST_PATH\"\n    else\n        echo \"warning: Missing Pasiphae url, add it to $SRCROOT/.pasiphaeURL\"\n    fi\nelse\n    echo \"warning: Missing Pasiphae url, add it to $SRCROOT/.pasiphaeURL\"\nfi";
+		};
 		896320951C17FF8300B7C980 /* Lint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2234,6 +2261,7 @@
 				89628BDF1CE1742600B4C624 /* DatabaseUseCase.swift in Sources */,
 				8943044A1B450A5E000078DC /* Feed.swift in Sources */,
 				89CC82041B461A2B00648367 /* Helpers.swift in Sources */,
+				8903F5CF1D4177DE00546099 /* Importable.swift in Sources */,
 				89146E421C88C70600EC8F10 /* ImportUseCase.swift in Sources */,
 				89CC82061B461A5500648367 /* KitModule.swift in Sources */,
 				894304541B450C6A000078DC /* CoreDataEnclosure.swift in Sources */,
@@ -2250,6 +2278,7 @@
 				8943044B1B450A5E000078DC /* Article.swift in Sources */,
 				89CC82001B46198200648367 /* SearchIndex.swift in Sources */,
 				894304451B450A0A000078DC /* RSSClient.xcdatamodeld in Sources */,
+				8903F5C31D414E5000546099 /* PasiphaeFactory.swift in Sources */,
 				894304411B450A00000078DC /* OPMLService.swift in Sources */,
 				891754701C5B449E0036D96D /* RealmObjects.swift in Sources */,
 				89FF979E1BF058FB000080F7 /* DataStoreBackedArray.swift in Sources */,
@@ -2291,7 +2320,9 @@
 				89D427E01CF540560093D186 /* rNewsErrorSpec.swift in Sources */,
 				895AC5201C80227B00A5F6A1 /* FakeDefaultDatabaseUseCase.swift in Sources */,
 				8984FE8F1CBAAFED0096F4B3 /* RealmMigratorSpec.swift in Sources */,
+				8903F5CB1D416B6700546099 /* FakeAccountRepository.swift in Sources */,
 				8935F5D71B4628B3000FFD5D /* DefaultDatabaseUseCaseSpec.swift in Sources */,
+				89AFF9FF1D4870F7002255E8 /* FakeImportables.swift in Sources */,
 				89DE0EC01CFF200C00E06653 /* CoreDataFetchResultsControllerSpec.swift in Sources */,
 				8903F5AF1D40225D00546099 /* AccountRepositorySpec.swift in Sources */,
 				8903F5B01D4022AD00546099 /* FakeUserDefaults.swift in Sources */,

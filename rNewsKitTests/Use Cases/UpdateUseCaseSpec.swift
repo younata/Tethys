@@ -51,7 +51,7 @@ class UpdateUseCaseSpec: QuickSpec {
             subject = DefaultUpdateUseCase(updateService: updateService, mainQueue: mainQueue, accountRepository: accountRepository, userDefaults: userDefaults)
         }
 
-        fdescribe("-updateFeeds") {
+        describe("-updateFeeds") {
             describe("with a Pasiphae account") {
                 var receivedFuture: Future<Result<Void, RNewsError>>!
                 var updateFeedsPromise: Promise<Result<(NSDate, [rNewsKit.Feed]), RNewsError>>!

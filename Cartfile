@@ -1,6 +1,6 @@
 # swift
 github "younata/Ra"
-github "younata/Muon" "master"
+github "younata/Muon"
 github "younata/Lepton"
 github "younata/BreakOutToRefresh" "resizing"
 github "younata/SyntaxKit" "master"

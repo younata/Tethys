@@ -5,6 +5,7 @@ import Ra
 import CoreData
 import CBGPromise
 import Result
+import Sinope
 #if os(iOS)
     import CoreSpotlight
     import MobileCoreServices
@@ -16,13 +17,13 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
 
         var mainQueue: FakeOperationQueue!
 
-        var feeds: [Feed] = []
-        var feed1: Feed!
-        var feed2: Feed!
-        var feed3: Feed!
+        var feeds: [rNewsKit.Feed] = []
+        var feed1: rNewsKit.Feed!
+        var feed2: rNewsKit.Feed!
+        var feed3: rNewsKit.Feed!
 
-        var article1: Article!
-        var article2: Article!
+        var article1: rNewsKit.Article!
+        var article2: rNewsKit.Article!
 
         var dataSubscriber: FakeDataSubscriber!
 
@@ -34,26 +35,28 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
         var updateUseCase: FakeUpdateUseCase!
 
         var databaseMigrator: FakeDatabaseMigrator!
+        var accountRepository: FakeAccountRepository!
+        var sinopeRepository: FakeSinopeRepository!
 
         beforeEach {
-            feed1 = Feed(title: "a", url: NSURL(string: "https://example.com/feed1.feed"), summary: "",
+            feed1 = rNewsKit.Feed(title: "a", url: NSURL(string: "https://example.com/feed1.feed"), summary: "",
                 query: nil, tags: ["a", "b", "c", "d"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-            article1 = Article(title: "b", link: NSURL(string: "https://example.com/article1.html"),
+            article1 = rNewsKit.Article(title: "b", link: NSURL(string: "https://example.com/article1.html"),
                 summary: "<p>Hello world!</p>", authors: [], published: NSDate(), updatedAt: nil, identifier: "article1",
                 content: "", read: false, estimatedReadingTime: 0, feed: feed1, flags: [], enclosures: [])
 
-            article2 = Article(title: "c", link: NSURL(string: "https://example.com/article2.html"),
+            article2 = rNewsKit.Article(title: "c", link: NSURL(string: "https://example.com/article2.html"),
                 summary: "<p>Hello world!</p>", authors: [], published: NSDate(), updatedAt: nil, identifier: "article2",
                 content: "", read: true, estimatedReadingTime: 0, feed: feed1, flags: [], enclosures: [])
 
             feed1.addArticle(article1)
             feed1.addArticle(article2)
 
-            feed2 = Feed(title: "d", url: nil, summary: "", query: "function(article) {return true;}", tags: ["b", "d"],
+            feed2 = rNewsKit.Feed(title: "d", url: nil, summary: "", query: "function(article) {return true;}", tags: ["b", "d"],
                 waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
 
-            feed3 = Feed(title: "e", url: NSURL(string: "https://example.com/feed3.feed"), summary: "", query: nil,
+            feed3 = rNewsKit.Feed(title: "e", url: NSURL(string: "https://example.com/feed3.feed"), summary: "", query: nil,
                 tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             feeds = [feed1, feed2, feed3]
@@ -73,12 +76,19 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
 
             databaseMigrator = FakeDatabaseMigrator()
 
+            accountRepository = FakeAccountRepository()
+            sinopeRepository = FakeSinopeRepository()
+
+            accountRepository.loggedInReturns(true)
+            accountRepository.backendRepositoryReturns(sinopeRepository)
+
             subject = DefaultDatabaseUseCase(mainQueue: mainQueue,
                 reachable: reachable,
                 dataServiceFactory: dataServiceFactory,
                 updateUseCase: updateUseCase,
                 databaseMigrator: databaseMigrator,
-                scriptService: JavaScriptService()
+                scriptService: JavaScriptService(),
+                accountRepository: accountRepository
             )
 
             dataSubscriber = FakeDataSubscriber()
@@ -203,7 +213,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
 
             describe("feeds") {
                 var calledHandler = false
-                var calledResults: Result<[Feed], RNewsError>?
+                var calledResults: Result<[rNewsKit.Feed], RNewsError>?
 
                 beforeEach {
                     calledHandler = false
@@ -239,7 +249,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
 
             describe("articlesMatchingQuery") {
                 var calledHandler = false
-                var calledResults: Result<[Article], RNewsError>? = nil
+                var calledResults: Result<[rNewsKit.Article], RNewsError>? = nil
 
                 beforeEach {
                     calledHandler = false
@@ -265,32 +275,91 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
 
         describe("as a DataWriter") {
             describe("newFeed") {
-                var createdFeed: Feed? = nil
-                beforeEach {
-                    subject.newFeed {feed in
-                        createdFeed = feed
+                var createdFeed: rNewsKit.Feed? = nil
+                describe("and the user makes a standard feed") {
+                    beforeEach {
+                        sinopeRepository.subscribeReturns(Promise<Result<[NSURL], SinopeError>>().future)
+                        subject.newFeed {feed in
+                            feed.url = NSURL(string: "https://example.com/feed")
+                            createdFeed = feed
+                        }
+                    }
+
+                    it("should call back with a created feed") {
+                        expect(dataService.feeds).to(contain(createdFeed))
+                        expect(dataService.feeds.count) == 4
+                    }
+
+                    it("tells the pasiphae repository to subscribe to this feed") {
+                        expect(sinopeRepository.subscribeCallCount) == 1
+                        guard sinopeRepository.subscribeCallCount == 1 else { return }
+                        let urls = sinopeRepository.subscribeArgsForCall(0)
+                        expect(urls) == [NSURL(string: "https://example.com/feed")!]
                     }
                 }
 
-                it("should call back with a created feed") {
-                    expect(dataService.feeds).to(contain(createdFeed))
-                    expect(dataService.feeds.count) == 4
+                describe("and the user does not assign a url to the created feed") {
+                    beforeEach {
+                        subject.newFeed {feed in
+                            createdFeed = feed
+                        }
+                    }
+
+                    it("should call back with a created feed") {
+                        expect(dataService.feeds).to(contain(createdFeed))
+                        expect(dataService.feeds.count) == 4
+                    }
+
+                    it("does not tell the pasiphae repository to subscribe to this feed") {
+                        expect(sinopeRepository.subscribeCallCount) == 0
+                    }
                 }
             }
 
             describe("deleteFeed") {
-                beforeEach {
-                    mainQueue.runSynchronously = true
-                    subject.deleteFeed(feed1)
+                describe("deleting a standard feed") {
+                    beforeEach {
+                        sinopeRepository.unsubscribeReturns(Promise<Result<[NSURL], SinopeError>>().future)
+
+                        mainQueue.runSynchronously = true
+                        subject.deleteFeed(feed1)
+                    }
+
+                    it("should remove the feed from the data service") {
+                        expect(dataService.feeds).toNot(contain(feed1))
+                    }
+
+                    it("tells the pasiphae repository to unsubscribe from the feed") {
+                        expect(sinopeRepository.unsubscribeCallCount) == 1
+                        guard sinopeRepository.unsubscribeCallCount == 1 else { return }
+                        let urls = sinopeRepository.unsubscribeArgsForCall(0)
+                        expect(urls) == [NSURL(string: "https://example.com/feed1.feed")!]
+                    }
+
+                    it("should inform any subscribers") {
+                        expect(dataSubscriber.deletedFeed).to(equal(feed1))
+                        expect(dataSubscriber.deletedFeedsLeft).to(equal(2))
+                    }
                 }
 
-                it("should remove the feed from the data service") {
-                    expect(dataService.feeds).toNot(contain(feed1))
-                }
+                describe("deleting a query feed") {
+                    beforeEach {
+                        mainQueue.runSynchronously = true
+                        subject.deleteFeed(feed2)
+                    }
 
-                it("should inform any subscribers") {
-                    expect(dataSubscriber.deletedFeed).to(equal(feed1))
-                    expect(dataSubscriber.deletedFeedsLeft).to(equal(2))
+                    it("should remove the feed from the data service") {
+                        expect(dataService.feeds).toNot(contain(feed2))
+                    }
+
+                    it("does not tell the pasiphae repository to unsubscribe from the feed") {
+                        expect(sinopeRepository.unsubscribeCallCount) == 0
+                    }
+
+                    it("should inform any subscribers") {
+                        expect(dataSubscriber.deletedFeed).to(equal(feed2))
+                        expect(dataSubscriber.deletedFeedsLeft).to(equal(2))
+                    }
                 }
             }
 
@@ -324,7 +393,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
             }
 
             describe("saveArticle") {
-                var article: Article! = nil
+                var article: rNewsKit.Article! = nil
                 var image: Image! = nil
 
                 beforeEach {
@@ -348,7 +417,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
             }
 
             describe("deleteArticle") {
-                var article: Article! = nil
+                var article: rNewsKit.Article! = nil
 
                 beforeEach {
                     article = article1
@@ -366,7 +435,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
             }
 
             describe("markArticle:asRead:") {
-                var article: Article! = nil
+                var article: rNewsKit.Article! = nil
 
                 beforeEach {
                     article = article1
@@ -400,7 +469,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
             describe("updateFeed:callback:") {
                 var didCallCallback = false
                 var callbackError: NSError? = nil
-                var feed: Feed! = nil
+                var feed: rNewsKit.Feed! = nil
 
                 var updateFeedsPromise: Promise<Result<Void, RNewsError>>!
 
@@ -415,7 +484,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                 }
 
                 context("when the network is not reachable") {
-                    var updatedFeed: Feed? = nil
+                    var updatedFeed: rNewsKit.Feed? = nil
                     beforeEach {
                         reachable.hasNetworkConnectivity = false
 

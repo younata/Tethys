@@ -21,6 +21,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     private let dataServiceFactory: DataServiceFactoryType
     private let updateUseCase: UpdateUseCase
     private let databaseMigrator: DatabaseMigratorType
+    private let accountRepository: InternalAccountRepository
     let scriptService: ScriptService
 
 
@@ -33,13 +34,15 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         dataServiceFactory: DataServiceFactoryType,
         updateUseCase: UpdateUseCase,
         databaseMigrator: DatabaseMigratorType,
-        scriptService: ScriptService) {
+        scriptService: ScriptService,
+        accountRepository: InternalAccountRepository) {
             self.mainQueue = mainQueue
             self.reachable = reachable
             self.dataServiceFactory = dataServiceFactory
             self.updateUseCase = updateUseCase
             self.databaseMigrator = databaseMigrator
             self.scriptService = scriptService
+            self.accountRepository = accountRepository
     }
 
     func databaseUpdateAvailable() -> Bool {
@@ -147,7 +150,12 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     }
 
     func newFeed(callback: (Feed) -> (Void)) {
-        self.dataService.createFeed(callback)
+        self.dataService.createFeed {
+            callback($0)
+            if let url = $0.url, sinopeRepository = self.accountRepository.backendRepository() {
+                sinopeRepository.subscribe([url])
+            }
+        }
     }
 
     func saveFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {
@@ -158,6 +166,9 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         return self.dataService.deleteFeed(feed).map { result -> Result<Void, RNewsError> in
             switch result {
             case .Success:
+                if let url = feed.url, sinopeRepository = self.accountRepository.backendRepository() {
+                    sinopeRepository.unsubscribe([url])
+                }
                 self.feeds().then { feedsResult in
                     _ = feedsResult.map { (feeds: [Feed]) -> Void in
                         for subscriber in self.allSubscribers {

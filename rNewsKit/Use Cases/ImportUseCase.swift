@@ -133,9 +133,12 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
                 guard existingFeed == nil else {
                     return callback()
                 }
+                var feed: Feed?
                 self.feedRepository.newFeed {
                     $0.url = url
-                    self.feedRepository.updateFeed($0) { _ in callback() }
+                    feed = $0
+                }.then { _ in
+                    self.feedRepository.updateFeed(feed!) { _ in callback() }
                 }
             }
         case .OPML:

@@ -149,13 +149,24 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         subscribers.addObject(subscriber)
     }
 
-    func newFeed(callback: (Feed) -> (Void)) {
+    func newFeed(callback: (Feed) -> (Void)) -> Future<Result<Void, RNewsError>> {
+        let promise = Promise<Result<Void, RNewsError>>()
         self.dataService.createFeed {
             callback($0)
             if let url = $0.url, sinopeRepository = self.accountRepository.backendRepository() {
-                sinopeRepository.subscribe([url])
+                sinopeRepository.subscribe([url]).then { res in
+                    switch res {
+                    case .Success(_):
+                        promise.resolve(.Success())
+                    case let .Failure(error):
+                        promise.resolve(.Failure(.Backend(error)))
+                    }
+                }
+            } else {
+                promise.resolve(.Success())
             }
         }
+        return promise.future
     }
 
     func saveFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {
@@ -163,22 +174,33 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     }
 
     func deleteFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {
-        return self.dataService.deleteFeed(feed).map { result -> Result<Void, RNewsError> in
+        return self.dataService.deleteFeed(feed).map { result -> Future<Result<Void, RNewsError>> in
             switch result {
             case .Success:
+                let future: Future<Result<[NSURL], RNewsError>>
                 if let url = feed.url, sinopeRepository = self.accountRepository.backendRepository() {
-                    sinopeRepository.unsubscribe([url])
+                    future = sinopeRepository.unsubscribe([url]).map { res in
+                        return res.mapError { return RNewsError.Backend($0) }
+                    }
+                } else {
+                    let promise = Promise<Result<[NSURL], RNewsError>>()
+                    promise.resolve(.Success([]))
+                    future = promise.future
                 }
-                self.feeds().then { feedsResult in
-                    _ = feedsResult.map { (feeds: [Feed]) -> Void in
-                        for subscriber in self.allSubscribers {
-                            subscriber.deletedFeed(feed, feedsLeft: feeds.count)
+                return future.map { _ in
+                    return self.feeds().map { feedsResult -> Result<Void, RNewsError> in
+                        _ = feedsResult.map { (feeds: [Feed]) -> Void in
+                            for subscriber in self.allSubscribers {
+                                subscriber.deletedFeed(feed, feedsLeft: feeds.count)
+                            }
                         }
+                        return .Success()
                     }
                 }
-                return .Success()
             case let .Failure(error):
-                return .Failure(error)
+                let promise = Promise<Result<Void, RNewsError>>()
+                promise.resolve(.Failure(error))
+                return promise.future
             }
         }
     }

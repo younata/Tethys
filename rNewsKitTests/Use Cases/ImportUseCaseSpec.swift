@@ -113,6 +113,7 @@ class ImportUseCaseSpec: QuickSpec {
                                 context("when the feed repository creates the feed") {
                                     var feed: Feed!
                                     beforeEach {
+                                        feedRepository.didUpdateFeed = nil
                                         feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                                         feedRepository.newFeedCallback(feed)
                                     }
@@ -121,20 +122,30 @@ class ImportUseCaseSpec: QuickSpec {
                                         expect(feed.url) == url
                                     }
 
-                                    it("it tells the feed repository to update the feed from the network") {
-                                        expect(feedRepository.didUpdateFeed) == feed
+                                    it("waits for the feed to actaully be saved to the database (and potentially pasiphae)") {
+                                        expect(feedRepository.didUpdateFeed).to(beNil())
                                     }
 
-                                    it("calls the callback when the feed repository finishes updating the feed") {
-                                        feedRepository.updateSingleFeedCallback(feed, nil)
+                                    context("when the feed is saved to the database") {
+                                        beforeEach {
+                                            feedRepository.newFeedPromises.last?.resolve(.Success())
+                                        }
 
-                                        expect(didImport) == true
-                                    }
+                                        it("it tells the feed repository to update the feed from the network") {
+                                            expect(feedRepository.didUpdateFeed) == feed
+                                        }
 
-                                    it("calls the callback when the feed repository errors updating the feed") {
-                                        feedRepository.updateSingleFeedCallback(feed, NSError(domain: "", code: 0, userInfo: nil))
+                                        it("calls the callback when the feed repository finishes updating the feed") {
+                                            feedRepository.updateSingleFeedCallback(feed, nil)
 
-                                        expect(didImport) == true
+                                            expect(didImport) == true
+                                        }
+
+                                        it("calls the callback when the feed repository errors updating the feed") {
+                                            feedRepository.updateSingleFeedCallback(feed, NSError(domain: "", code: 0, userInfo: nil))
+                                            
+                                            expect(didImport) == true
+                                        }
                                     }
                                 }
                             }
@@ -251,6 +262,7 @@ class ImportUseCaseSpec: QuickSpec {
                                     beforeEach {
                                         feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                                         feedRepository.newFeedCallback(feed)
+                                        feedRepository.newFeedPromises.last?.resolve(.Success())
                                     }
 
                                     it("sets that feed's url") {
@@ -358,6 +370,7 @@ class ImportUseCaseSpec: QuickSpec {
                                     beforeEach {
                                         feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                                         feedRepository.newFeedCallback(feed)
+                                        feedRepository.newFeedPromises.last?.resolve(.Success())
                                     }
 
                                     it("sets that feed's url") {

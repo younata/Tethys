@@ -31,9 +31,9 @@ public class SettingsViewController: UIViewController, Injectable {
             } else {
                 let offset: Int
                 switch traits.forceTouchCapability {
-                case .Available, .Unknown:
+                case .Available:
                     offset = 0
-                case .Unavailable:
+                case .Unavailable, .Unknown:
                     offset = 1
                 }
                 switch rawValue + offset {
@@ -178,17 +178,21 @@ public class SettingsViewController: UIViewController, Injectable {
 
         self.themeRepository.addSubscriber(self)
 
-        let selectedIndexPath = NSIndexPath(forRow: self.themeRepository.theme.rawValue,
-            inSection: SettingsSection.Theme.rawValue)
-        self.tableView.selectRowAtIndexPath(selectedIndexPath, animated: false, scrollPosition: .None)
-
         self.oldTheme = self.themeRepository.theme
+        self.reloadTable()
     }
 
     public override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
 
         self.splitViewController?.setNeedsStatusBarAppearanceUpdate()
+        self.reloadTable()
+    }
+
+    public override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        self.reloadTable()
     }
 
     public override func canBecomeFirstResponder() -> Bool { return true }
@@ -222,20 +226,27 @@ public class SettingsViewController: UIViewController, Injectable {
         return commands
     }
 
-    internal func didHitChangeTheme(keyCommand: UIKeyCommand) {}
+    @objc private func didHitChangeTheme(keyCommand: UIKeyCommand) {}
 
-    internal func didTapDismiss() {
+    @objc private func didTapDismiss() {
         if self.oldTheme != self.themeRepository.theme {
             self.themeRepository.theme = self.oldTheme
         }
         self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
 
-    internal func didTapSave() {
+    @objc private func didTapSave() {
         self.oldTheme = self.themeRepository.theme
         self.settingsRepository.queryFeedsEnabled = self.queryFeedsEnabled
         self.settingsRepository.showEstimatedReadingLabel = self.showReadingTimes
         self.didTapDismiss()
+    }
+
+    private func reloadTable() {
+        self.tableView.reloadData()
+        let selectedIndexPath = NSIndexPath(forRow: self.themeRepository.theme.rawValue,
+                                            inSection: SettingsSection.Theme.rawValue)
+        self.tableView.selectRowAtIndexPath(selectedIndexPath, animated: false, scrollPosition: .None)
     }
 
     private func titleForQuickAction(row: Int) -> String {

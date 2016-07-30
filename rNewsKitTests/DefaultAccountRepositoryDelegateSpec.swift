@@ -9,10 +9,13 @@ class DefaultAccountRepositoryDelegateSpec: QuickSpec {
     override func spec() {
         var subject: DefaultAccountRepositoryDelegate!
         var databaseUseCase: FakeDatabaseUseCase!
+        var mainQueue: FakeOperationQueue
 
         beforeEach {
             databaseUseCase = FakeDatabaseUseCase()
-            subject = DefaultAccountRepositoryDelegate(databaseUseCase: databaseUseCase)
+            mainQueue = FakeOperationQueue()
+            mainQueue.runSynchronously = true
+            subject = DefaultAccountRepositoryDelegate(databaseUseCase: databaseUseCase, mainQueue: mainQueue)
         }
 
         describe("accountRepositoryDidLogIn:") {

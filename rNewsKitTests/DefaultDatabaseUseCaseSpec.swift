@@ -79,7 +79,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
             accountRepository = FakeAccountRepository()
             sinopeRepository = FakeSinopeRepository()
 
-            accountRepository.loggedInReturns(true)
+            accountRepository.loggedInReturns("foo@example.com")
             accountRepository.backendRepositoryReturns(sinopeRepository)
 
             subject = DefaultDatabaseUseCase(mainQueue: mainQueue,

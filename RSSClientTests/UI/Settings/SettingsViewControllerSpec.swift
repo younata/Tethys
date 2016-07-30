@@ -13,6 +13,7 @@ class SettingsViewControllerSpec: QuickSpec {
         var feedRepository: FakeDatabaseUseCase! = nil
         var settingsRepository: SettingsRepository! = nil
         var fakeQuickActionRepository: FakeQuickActionRepository! = nil
+        var accountRepository: FakeAccountRepository! = nil
 
         beforeEach {
             let injector = Injector()
@@ -33,7 +34,9 @@ class SettingsViewControllerSpec: QuickSpec {
             feedRepository = FakeDatabaseUseCase()
             injector.bind(DatabaseUseCase.self, toInstance: feedRepository)
 
-            injector.bind(AccountRepository.self, toInstance: FakeAccountRepository())
+            accountRepository = FakeAccountRepository()
+            accountRepository.loggedInReturns(nil)
+            injector.bind(AccountRepository.self, toInstance: accountRepository)
             let mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
             injector.bind(kMainQueue, toInstance: mainQueue)
@@ -673,6 +676,21 @@ class SettingsViewControllerSpec: QuickSpec {
 
                     it("is titled 'rNews Backend'") {
                         expect(cell.textLabel?.text) == "rNews Backend"
+                    }
+
+                    it("has no text in it's detail label") {
+                        expect(cell.detailTextLabel?.text).to(beNil())
+                    }
+
+                    describe("when logged in") {
+                        beforeEach {
+                            accountRepository.loggedInReturns("foo@example.com")
+                            cell = dataSource.tableView(subject.tableView, cellForRowAtIndexPath: indexPath) as! TableViewCell
+                        }
+
+                        it("shows the user's email in the detail label") {
+                            expect(cell.detailTextLabel?.text) == "foo@example.com"
+                        }
                     }
 
                     describe("tapping the cell") {

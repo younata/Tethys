@@ -45,13 +45,13 @@ class FakeAccountRepository : AccountRepository, InternalAccountRepository, Equa
     }
 
     private(set) var loggedInCallCount : Int = 0
-    var loggedInStub : (() -> (Bool))?
-    func loggedInReturns(stubbedValues: (Bool)) {
-        self.loggedInStub = {() -> (Bool) in
+    var loggedInStub : (() -> (String?))?
+    func loggedInReturns(stubbedValues: (String?)) {
+        self.loggedInStub = {() -> (String?) in
             return stubbedValues
         }
     }
-    func loggedIn() -> (Bool) {
+    func loggedIn() -> (String?) {
         self.loggedInCallCount += 1
         return self.loggedInStub!()
     }

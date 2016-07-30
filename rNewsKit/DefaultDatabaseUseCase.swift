@@ -190,8 +190,10 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
                 return future.map { _ in
                     return self.feeds().map { feedsResult -> Result<Void, RNewsError> in
                         _ = feedsResult.map { (feeds: [Feed]) -> Void in
-                            for subscriber in self.allSubscribers {
-                                subscriber.deletedFeed(feed, feedsLeft: feeds.count)
+                            self.mainQueue.addOperationWithBlock {
+                                for subscriber in self.allSubscribers {
+                                    subscriber.deletedFeed(feed, feedsLeft: feeds.count)
+                                }
                             }
                         }
                         return .Success()

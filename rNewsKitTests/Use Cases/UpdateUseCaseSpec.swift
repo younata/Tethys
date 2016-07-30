@@ -59,7 +59,7 @@ class UpdateUseCaseSpec: QuickSpec {
                 let initialDate = NSDate()
 
                 beforeEach {
-                    accountRepository.loggedInReturns(true)
+                    accountRepository.loggedInReturns("foo@example.com")
                     updateFeedsPromise = Promise<Result<(NSDate, [rNewsKit.Feed]), RNewsError>>()
                     updateService.updateFeedsReturns(updateFeedsPromise.future)
 
@@ -114,7 +114,7 @@ class UpdateUseCaseSpec: QuickSpec {
             describe("without a Pasiphae account") {
                 var receivedFuture: Future<Result<Void, RNewsError>>!
                 beforeEach {
-                    accountRepository.loggedInReturns(false)
+                    accountRepository.loggedInReturns(nil)
 
                     receivedFuture = subject.updateFeeds(feeds, subscribers: [dataSubscriber])
                 }

@@ -86,7 +86,10 @@ public class KitModule: NSObject, Ra.InjectorModule {
             accountRepository: accountRepository
         )
 
-        accountRepository.delegate = DefaultAccountRepositoryDelegate(databaseUseCase: dataRepository)
+        accountRepository.delegate = DefaultAccountRepositoryDelegate(
+            databaseUseCase: dataRepository,
+            mainQueue: mainQueue
+        )
 
         injector.bind(DatabaseUseCase.self, toInstance: dataRepository)
         injector.bind(DefaultDatabaseUseCase.self, toInstance: dataRepository)

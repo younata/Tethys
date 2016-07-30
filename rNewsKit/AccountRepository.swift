@@ -5,7 +5,7 @@ import Sinope
 public protocol AccountRepository: class {
     func login(email: String, password: String) -> Future<Result<Void, RNewsError>>
     func register(email: String, password: String) -> Future<Result<Void, RNewsError>>
-    func loggedIn() -> Bool
+    func loggedIn() -> String?
 }
 
 protocol AccountRepositoryDelegate {
@@ -19,6 +19,7 @@ protocol InternalAccountRepository: AccountRepository {
 }
 
 private let pasiphae_token = "pasiphae_token"
+private let pasiphae_login = "pasiphae_login"
 
 final class DefaultAccountRepository: InternalAccountRepository {
     private let repository: Sinope.Repository
@@ -41,6 +42,7 @@ final class DefaultAccountRepository: InternalAccountRepository {
             switch res {
             case .Success():
                 self.userDefaults.setValue(self.repository.authToken ?? "", forKey: pasiphae_token)
+                self.userDefaults.setValue(email, forKey: pasiphae_login)
                 self.delegate?.accountRepositoryDidLogIn(self)
                 return Result.Success()
             case let .Failure(error):
@@ -54,6 +56,7 @@ final class DefaultAccountRepository: InternalAccountRepository {
             switch res {
             case .Success():
                 self.userDefaults.setValue(self.repository.authToken ?? "", forKey: pasiphae_token)
+                self.userDefaults.setValue(email, forKey: pasiphae_login)
                 self.delegate?.accountRepositoryDidLogIn(self)
                 return Result.Success()
             case let .Failure(error):
@@ -62,14 +65,17 @@ final class DefaultAccountRepository: InternalAccountRepository {
         }
     }
 
-    func loggedIn() -> Bool {
-        return self.userDefaults.stringForKey(pasiphae_token) != nil
+    func loggedIn() -> String? {
+        if self.userDefaults.stringForKey(pasiphae_token) != nil {
+            return self.userDefaults.stringForKey(pasiphae_login)
+        }
+        return nil
     }
 
     // MARK: InternalAccountRepository
 
     func backendRepository() -> Sinope.Repository? {
-        if self.loggedIn() {
+        if self.loggedIn() != nil {
             return self.repository
         }
         return nil

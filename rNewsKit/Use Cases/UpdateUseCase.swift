@@ -22,7 +22,7 @@ final class DefaultUpdateUseCase: UpdateUseCase {
     }
 
     func updateFeeds(feeds: [Feed], subscribers: [DataSubscriber]) -> Future<Result<Void, RNewsError>> {
-        if self.accountRepository.loggedIn() {
+        if self.accountRepository.loggedIn() != nil {
             return self.updateFeedsFromBackend(subscribers)
         } else {
             return self.updateFeedsFromRSS(feeds, subscribers: subscribers)

@@ -2,9 +2,11 @@ import Sinope
 
 final class DefaultAccountRepositoryDelegate: AccountRepositoryDelegate {
     private let databaseUseCase: DatabaseUseCase
+    private let mainQueue: NSOperationQueue
 
-    init(databaseUseCase: DatabaseUseCase) {
+    init(databaseUseCase: DatabaseUseCase, mainQueue: NSOperationQueue) {
         self.databaseUseCase = databaseUseCase
+        self.mainQueue = mainQueue
     }
 
     func accountRepositoryDidLogIn(accountRepository: InternalAccountRepository) {
@@ -25,7 +27,9 @@ final class DefaultAccountRepositoryDelegate: AccountRepositoryDelegate {
         sinopeRepository.subscribe(urls).then { subscribeResult in
             switch subscribeResult {
             case .Success(_):
-                self.databaseUseCase.updateFeeds { _ in }
+                self.mainQueue.addOperationWithBlock {
+                    self.databaseUseCase.updateFeeds { _ in }
+                }
             case .Failure(_):
                 break
             }

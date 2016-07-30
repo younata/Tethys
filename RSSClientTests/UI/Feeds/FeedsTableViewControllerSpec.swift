@@ -38,6 +38,8 @@ class FeedsTableViewControllerSpec: QuickSpec {
             analytics = FakeAnalytics()
             injector.bind(Analytics.self, toInstance: analytics)
 
+            injector.bind(AccountRepository.self, toInstance: FakeAccountRepository())
+
             subject = injector.create(FeedsTableViewController)
 
             navigationController = UINavigationController(rootViewController: subject)

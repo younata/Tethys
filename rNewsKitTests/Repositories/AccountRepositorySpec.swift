@@ -22,17 +22,18 @@ class AccountRepositorySpec: QuickSpec {
         }
 
         it("is logged out if user defaults has no login token") {
-            expect(subject.loggedIn()) == false
+            expect(subject.loggedIn()).to(beNil())
         }
 
         describe("if the user token has been saved to user defaults") {
             beforeEach {
                 userDefaults.setObject("oogabooga", forKey: "pasiphae_token")
+                userDefaults.setObject("myTestUser", forKey: "pasiphae_login")
                 subject = DefaultAccountRepository(repository: repository, userDefaults: userDefaults)
             }
 
             it("reports the user as logged in") {
-                expect(subject.loggedIn()) == true
+                expect(subject.loggedIn()) == "myTestUser"
             }
 
             it("logs in to the SinopeRepository") {
@@ -82,7 +83,7 @@ class AccountRepositorySpec: QuickSpec {
                 }
 
                 it("reports the user as logged in") {
-                    expect(subject.loggedIn()) == true
+                    expect(subject.loggedIn()) == "foo@example.com"
                 }
 
                 it("informs the delegate that we logged in") {
@@ -142,7 +143,7 @@ class AccountRepositorySpec: QuickSpec {
                 }
 
                 it("reports the user as logged in") {
-                    expect(subject.loggedIn()) == true
+                    expect(subject.loggedIn()) == "foo@example.com"
                 }
 
                 it("informs the delegate that we logged in") {
@@ -169,6 +170,7 @@ class AccountRepositorySpec: QuickSpec {
 
             it("returns a repository if the user has logged in") {
                 userDefaults.setObject("oogabooga", forKey: "pasiphae_token")
+                userDefaults.setObject("myTestUser", forKey: "pasiphae_login")
                 subject = DefaultAccountRepository(repository: repository, userDefaults: userDefaults)
 
                 expect(subject.backendRepository() as? FakeSinopeRepository) == repository

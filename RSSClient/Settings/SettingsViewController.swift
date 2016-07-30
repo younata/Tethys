@@ -102,7 +102,8 @@ public class SettingsViewController: UIViewController, Injectable {
     private let themeRepository: ThemeRepository
     private let settingsRepository: SettingsRepository
     private let quickActionRepository: QuickActionRepository
-    private let feedRepository: DatabaseUseCase
+    private let databaseUseCase: DatabaseUseCase
+    private let accountRepository: AccountRepository
     private let documentationViewController: Void -> DocumentationViewController
     private let loginViewController: Void -> LoginViewController
 
@@ -119,13 +120,15 @@ public class SettingsViewController: UIViewController, Injectable {
     public init(themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
                 quickActionRepository: QuickActionRepository,
-                feedRepository: DatabaseUseCase,
+                databaseUseCase: DatabaseUseCase,
+                accountRepository: AccountRepository,
                 documentationViewController: Void -> DocumentationViewController,
                 loginViewController: Void -> LoginViewController) {
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.quickActionRepository = quickActionRepository
-        self.feedRepository = feedRepository
+        self.databaseUseCase = databaseUseCase
+        self.accountRepository = accountRepository
         self.documentationViewController = documentationViewController
         self.loginViewController = loginViewController
 
@@ -138,7 +141,8 @@ public class SettingsViewController: UIViewController, Injectable {
             themeRepository: injector.create(ThemeRepository)!,
             settingsRepository: injector.create(SettingsRepository)!,
             quickActionRepository: injector.create(QuickActionRepository)!,
-            feedRepository: injector.create(DatabaseUseCase)!,
+            databaseUseCase: injector.create(DatabaseUseCase)!,
+            accountRepository: injector.create(AccountRepository)!,
             documentationViewController: { injector.create(DocumentationViewController)! },
             loginViewController: { injector.create(LoginViewController)! }
         )
@@ -328,6 +332,7 @@ extension SettingsViewController: UITableViewDataSource {
 
             let row = Account(rawValue: indexPath.row)!
             cell.textLabel?.text = row.description
+            cell.detailTextLabel?.text = self.accountRepository.loggedIn()
 
             return cell
         case .Advanced:
@@ -445,7 +450,7 @@ extension SettingsViewController: UITableViewDelegate {
         feedsListController.navigationItem.title = self.titleForQuickAction(indexPath.row)
 
         let quickActions = self.quickActionRepository.quickActions
-        self.feedRepository.feeds().then {
+        self.databaseUseCase.feeds().then {
             if case let Result.Success(feeds) = $0 {
                 if !quickActions.isEmpty {
                     let quickActionFeeds = quickActions.indices.reduce([Feed]()) {

@@ -88,6 +88,8 @@ public class LoginViewController: UIViewController, Injectable {
 
     public let emailField: UITextField = {
         let field = UITextField(forAutoLayout: ())
+        field.autocapitalizationType = .None
+        field.autocorrectionType = .No
         field.placeholder = NSLocalizedString("LoginViewController_Fields_Email", comment: "")
         field.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
         field.accessibilityLabel = NSLocalizedString("LoginViewController_Fields_Email", comment: "")
@@ -161,6 +163,7 @@ public class LoginViewController: UIViewController, Injectable {
 
         let mainStackView = UIStackView(forAutoLayout: ())
         mainStackView.axis = .Vertical
+        mainStackView.spacing = 10
         mainStackView.distribution = .EqualCentering
         mainStackView.alignment = .Center
 
@@ -174,12 +177,19 @@ public class LoginViewController: UIViewController, Injectable {
         buttonStack.axis = .Horizontal
         buttonStack.spacing = 8
         buttonStack.alignment = .FirstBaseline
+        buttonStack.distribution = .EqualCentering
+        buttonStack.spacing = 20
         mainStackView.addArrangedSubview(buttonStack)
 
         self.view.addSubview(mainStackView)
-        mainStackView.autoPinEdgeToSuperviewEdge(.Top, withInset: 100)
+        mainStackView.autoAlignAxisToSuperviewAxis(.Horizontal)
         mainStackView.autoPinEdgeToSuperviewMargin(.Leading)
         mainStackView.autoPinEdgeToSuperviewMargin(.Trailing)
+
+        self.emailField.autoPinEdgeToSuperviewEdge(.Leading, withInset: 40)
+        self.emailField.autoPinEdgeToSuperviewEdge(.Trailing, withInset: 40)
+        self.passwordField.autoPinEdgeToSuperviewEdge(.Leading, withInset: 40)
+        self.passwordField.autoPinEdgeToSuperviewEdge(.Trailing, withInset: 40)
 
         self.loginButton.addTarget(self,
                                       action: #selector(LoginViewController.login),

@@ -388,25 +388,43 @@ extension SettingsViewController: UITableViewDelegate {
 
     public func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection)
-            where section == .QuickActions else { return false }
-        return indexPath.row < self.quickActionRepository.quickActions.count
+            where section == .QuickActions || section == .Accounts else { return false }
+        if section == .QuickActions {
+            return indexPath.row < self.quickActionRepository.quickActions.count
+        }
+        return true
     }
 
     public func tableView(tableView: UITableView,
         editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-            guard self.tableView(tableView, canEditRowAtIndexPath: indexPath) else { return nil }
-            let deleteAction = UITableViewRowAction(style: .Default,
-                title: NSLocalizedString("Generic_Delete", comment: "")) {_, indexPath in
-                    self.quickActionRepository.quickActions.removeAtIndex(indexPath.row)
-                    if self.quickActionRepository.quickActions.count != 2 {
-                        tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-                    } else {
-                        tableView.reloadRowsAtIndexPaths([
-                                indexPath, NSIndexPath(forRow: 2, inSection: indexPath.section)
-                            ], withRowAnimation: .Automatic)
-                    }
+        guard self.tableView(tableView, canEditRowAtIndexPath: indexPath) else { return nil }
+
+        guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection) else {return nil}
+        switch section {
+        case .QuickActions:
+            let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
+            let deleteAction = UITableViewRowAction(style: .Default, title: deleteTitle) {_, indexPath in
+                self.quickActionRepository.quickActions.removeAtIndex(indexPath.row)
+                if self.quickActionRepository.quickActions.count != 2 {
+                    tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                } else {
+                    tableView.reloadRowsAtIndexPaths([
+                        indexPath, NSIndexPath(forRow: 2, inSection: indexPath.section)
+                        ], withRowAnimation: .Automatic)
+                }
             }
             return [deleteAction]
+        case .Accounts:
+            guard self.accountRepository.loggedIn() != nil else { return [] }
+            let logOutTitle = NSLocalizedString("SettingsViewController_Accounts_Log_Out", comment: "")
+            let logOutAction = UITableViewRowAction(style: .Default, title: logOutTitle) {_ in
+                self.accountRepository.logOut()
+                tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
+            }
+            return [logOutAction]
+        default:
+            return nil
+        }
     }
 
     public func tableView(tableView: UITableView,

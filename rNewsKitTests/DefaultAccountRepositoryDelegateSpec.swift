@@ -9,7 +9,7 @@ class DefaultAccountRepositoryDelegateSpec: QuickSpec {
     override func spec() {
         var subject: DefaultAccountRepositoryDelegate!
         var databaseUseCase: FakeDatabaseUseCase!
-        var mainQueue: FakeOperationQueue
+        var mainQueue: FakeOperationQueue!
 
         beforeEach {
             databaseUseCase = FakeDatabaseUseCase()

@@ -10,6 +10,7 @@
 "SettingsViewController_QuickActions_AddFirst" = "Add a Quick Action";
 "SettingsViewController_QuickActions_AddAdditional" = "Add a new Quick Action";
 "SettingsViewController_Accounts_Pasiphae" = "rNews Backend";
+"SettingsViewController_Accounts_Log_Out" = "Log Out";
 "SettingsViewController_Advanced_EnableQueryFeeds" = "Enable Query Feeds";
 "SettingsViewController_Advanced_ShowReadingTimes" = "Show Estimated Reading Times";
 "SettingsViewController_Credits_MainDeveloper_Name" = "Rachel Brindle"; // My name

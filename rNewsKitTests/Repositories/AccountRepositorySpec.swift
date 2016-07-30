@@ -176,5 +176,18 @@ class AccountRepositorySpec: QuickSpec {
                 expect(subject.backendRepository() as? FakeSinopeRepository) == repository
             }
         }
+
+        describe("logging out") {
+            it("unsets the pasiphae token and login info") {
+                userDefaults.setObject("oogabooga", forKey: "pasiphae_token")
+                userDefaults.setObject("myTestUser", forKey: "pasiphae_login")
+
+                subject = DefaultAccountRepository(repository: repository, userDefaults: userDefaults)
+                subject.logOut()
+
+                expect(userDefaults.stringForKey("pasiphae_token")).to(beNil())
+                expect(userDefaults.stringForKey("pasiphae_login")).to(beNil())
+            }
+        }
     }
 }

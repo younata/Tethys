@@ -6,6 +6,7 @@ public protocol AccountRepository: class {
     func login(email: String, password: String) -> Future<Result<Void, RNewsError>>
     func register(email: String, password: String) -> Future<Result<Void, RNewsError>>
     func loggedIn() -> String?
+    func logOut()
 }
 
 protocol AccountRepositoryDelegate {
@@ -70,6 +71,11 @@ final class DefaultAccountRepository: InternalAccountRepository {
             return self.userDefaults.stringForKey(pasiphae_login)
         }
         return nil
+    }
+
+    func logOut() {
+        self.userDefaults.removeObjectForKey(pasiphae_token)
+        self.userDefaults.removeObjectForKey(pasiphae_login)
     }
 
     // MARK: InternalAccountRepository

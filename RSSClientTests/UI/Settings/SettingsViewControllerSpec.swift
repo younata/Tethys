@@ -682,6 +682,10 @@ class SettingsViewControllerSpec: QuickSpec {
                         expect(cell.detailTextLabel?.text).to(beNil())
                     }
 
+                    it("has no edit actions") {
+                        expect(delegate.tableView?(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.count) == 0
+                    }
+
                     describe("when logged in") {
                         beforeEach {
                             accountRepository.loggedInReturns("foo@example.com")
@@ -690,6 +694,19 @@ class SettingsViewControllerSpec: QuickSpec {
 
                         it("shows the user's email in the detail label") {
                             expect(cell.detailTextLabel?.text) == "foo@example.com"
+                        }
+
+                        it("has 1 edit action") {
+                            expect(delegate.tableView?(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.count) == 1
+                        }
+
+                        describe("the edit action") {
+                            it("logs the user out") {
+                                let editAction = delegate.tableView?(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.first
+                                expect(editAction?.title) == "Log Out"
+                                editAction?.handler(editAction, indexPath)
+                                expect(accountRepository.logOutCallCount) == 1
+                            }
                         }
                     }
 

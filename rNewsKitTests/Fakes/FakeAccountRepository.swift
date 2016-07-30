@@ -56,6 +56,11 @@ class FakeAccountRepository : AccountRepository, InternalAccountRepository, Equa
         return self.loggedInStub!()
     }
 
+    private(set) var logOutCallCount : Int = 0
+    func logOut() {
+        self.logOutCallCount += 1
+    }
+
     var delegate: AccountRepositoryDelegate?
 
     private(set) var backendRepositoryCallCount : Int = 0

@@ -67,6 +67,14 @@ class LoginViewControllerSpec: QuickSpec {
             it("changes the text color of the errorLabel") {
                 expect(subject.errorLabel.textColor) == themeRepository.errorColor
             }
+
+            it("changes the text color of the email field") {
+                expect(subject.emailField.textColor) == themeRepository.textColor
+            }
+
+            it("changes the text color of the password field") {
+                expect(subject.passwordField.textColor) == themeRepository.textColor
+            }
         }
 
         describe("setting an accountType") {

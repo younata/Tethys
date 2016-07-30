@@ -30,19 +30,20 @@ public class SettingsViewController: UIViewController, Injectable {
                 return
             } else {
                 let offset: Int
-                if traits.forceTouchCapability != .Unavailable {
-                    offset = -1
-                } else {
+                switch traits.forceTouchCapability {
+                case .Available, .Unknown:
                     offset = 0
+                case .Unavailable:
+                    offset = 1
                 }
                 switch rawValue + offset {
-                case 0:
-                    self = .QuickActions
                 case 1:
-                    self = .Accounts
+                    self = .QuickActions
                 case 2:
-                    self = .Advanced
+                    self = .Accounts
                 case 3:
+                    self = .Advanced
+                case 4:
                     self = .Credits
                 default:
                     return nil

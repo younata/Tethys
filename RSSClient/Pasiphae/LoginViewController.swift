@@ -90,7 +90,9 @@ public class LoginViewController: UIViewController, Injectable {
         let field = UITextField(forAutoLayout: ())
         field.autocapitalizationType = .None
         field.autocorrectionType = .No
-        field.placeholder = NSLocalizedString("LoginViewController_Fields_Email", comment: "")
+        let placeholder = NSAttributedString(string: NSLocalizedString("LoginViewController_Fields_Email", comment: ""),
+                                             attributes: [NSForegroundColorAttributeName: UIColor.grayColor()])
+        field.attributedPlaceholder = placeholder
         field.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
         field.accessibilityLabel = NSLocalizedString("LoginViewController_Fields_Email", comment: "")
         field.accessibilityHint = NSLocalizedString("LoginViewController_Fields_Email_Accessibility_Hint", comment: "")
@@ -100,10 +102,15 @@ public class LoginViewController: UIViewController, Injectable {
     public let passwordField: UITextField = {
         let field = UITextField(forAutoLayout: ())
         field.secureTextEntry = true
+        let placeholder = NSAttributedString(string: NSLocalizedString("LoginViewController_Fields_Password",
+                                                                       comment: ""),
+                                             attributes: [NSForegroundColorAttributeName: UIColor.grayColor()])
+        field.attributedPlaceholder = placeholder
         field.placeholder = NSLocalizedString("LoginViewController_Fields_Password", comment: "")
         field.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
         field.accessibilityLabel = NSLocalizedString("LoginViewController_Fields_Password", comment: "")
-        field.accessibilityHint = NSLocalizedString("LoginViewController_Fields_Password_Accessibility_Hint", comment: "")
+        field.accessibilityHint = NSLocalizedString("LoginViewController_Fields_Password_Accessibility_Hint",
+                                                    comment: "")
         return field
     }()
 
@@ -250,5 +257,8 @@ extension LoginViewController: ThemeRepositorySubscriber {
         self.titleLabel.textColor = themeRepository.textColor
         self.detailLabel.textColor = themeRepository.textColor
         self.errorLabel.textColor = themeRepository.errorColor
+
+        self.emailField.textColor = themeRepository.textColor
+        self.passwordField.textColor = themeRepository.textColor
     }
 }

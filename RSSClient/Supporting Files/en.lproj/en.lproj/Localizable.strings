@@ -66,6 +66,7 @@
 "LoginViewController_Pasiphae_Title" = "Log in to rNews";
 "LoginViewController_Title_Accessibility_Label" = "Account Type";
 "LoginViewController_Detail_Accessibility_Label" = "Account Detail";
+"LoginViewController_Error_Accessibility_Label" = "Login Error";
 "LoginViewController_Fields_Email" = "Email";
 "LoginViewController_Fields_Email_Accessibility_Hint" = "Enter email";
 "LoginViewController_Fields_Password" = "Password";
@@ -74,6 +75,8 @@
 "LoginViewController_Fields_Login_Accessibility_Hint" = "Log in to existing account";
 "LoginViewController_Fields_Register" = "Register";
 "LoginViewController_Fields_Register_Accessibility_Hint" = "Register for a new account";
+"LoginViewController_Login_Message" = "Logging In";
+"LoginViewController_Register_Message" = "Registering";
 
 "MigrationViewController_Message" = "Optimizing your database, hang tight";
 

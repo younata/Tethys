@@ -86,8 +86,11 @@ public class KitModule: NSObject, Ra.InjectorModule {
             accountRepository: accountRepository
         )
 
+        accountRepository.delegate = DefaultAccountRepositoryDelegate(databaseUseCase: dataRepository)
+
         injector.bind(DatabaseUseCase.self, toInstance: dataRepository)
         injector.bind(DefaultDatabaseUseCase.self, toInstance: dataRepository)
+        injector.bind(AccountRepository.self, toInstance: accountRepository)
 
         let opmlService = OPMLService(injector: injector)
         injector.bind(OPMLService.self, toInstance: opmlService)

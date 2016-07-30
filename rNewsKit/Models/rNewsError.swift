@@ -37,18 +37,37 @@ public func == (lhs: NetworkError, rhs: NetworkError) -> Bool {
     }
 }
 
-public enum DatabaseError: ErrorType {
+public enum DatabaseError: ErrorType, CustomStringConvertible {
     case NotFound
     case Unknown
     case EntryNotFound
+
+    public var description: String {
+        return ""
+    }
 }
 
-public enum RNewsError: ErrorType {
+public enum RNewsError: ErrorType, CustomStringConvertible {
     case Network(NSURL, NetworkError)
     case HTTP(Int)
     case Database(DatabaseError)
     case Backend(SinopeError)
     case Unknown
+
+    public var description: String {
+        switch self {
+        case let .Network(url, error):
+            return "Unable to load \(url) - \(error)"
+        case let .HTTP(status):
+            return "Error loading resource, received \(status)"
+        case let .Database(error):
+            return "Error reading from database - \(error)"
+        case let .Backend(error):
+            return "Backend Error - \(error)"
+        case .Unknown:
+            return "Unknown Error - please try again"
+        }
+    }
 }
 
 extension RNewsError: Equatable {}

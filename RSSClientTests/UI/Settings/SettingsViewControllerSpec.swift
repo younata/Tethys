@@ -33,6 +33,11 @@ class SettingsViewControllerSpec: QuickSpec {
             feedRepository = FakeDatabaseUseCase()
             injector.bind(DatabaseUseCase.self, toInstance: feedRepository)
 
+            injector.bind(AccountRepository.self, toInstance: FakeAccountRepository())
+            let mainQueue = FakeOperationQueue()
+            mainQueue.runSynchronously = true
+            injector.bind(kMainQueue, toInstance: mainQueue)
+
             subject = injector.create(SettingsViewController)!
 
             navigationController = UINavigationController(rootViewController: subject)

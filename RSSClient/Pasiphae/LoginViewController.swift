@@ -2,6 +2,8 @@ import UIKit
 import PureLayout
 import rNewsKit
 import Ra
+import CBGPromise
+import Result
 
 extension Account {
     public var titleText: String {
@@ -75,6 +77,15 @@ public class LoginViewController: UIViewController, Injectable {
         return label
     }()
 
+    public let errorLabel: UILabel = {
+        let label = UILabel(forAutoLayout: ())
+        label.numberOfLines = 0
+        label.textAlignment = .Center
+        label.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+        label.accessibilityLabel = NSLocalizedString("LoginViewController_Error_Accessibility_Label", comment: "")
+        return label
+    }()
+
     public let emailField: UITextField = {
         let field = UITextField(forAutoLayout: ())
         field.placeholder = NSLocalizedString("LoginViewController_Fields_Email", comment: "")
@@ -119,14 +130,22 @@ public class LoginViewController: UIViewController, Injectable {
         return button
     }()
 
-    public init(themeRepository: ThemeRepository) {
+    private let accountRepository: AccountRepository
+    private let mainQueue: NSOperationQueue
+
+    public init(themeRepository: ThemeRepository, accountRepository: AccountRepository, mainQueue: NSOperationQueue) {
+        self.accountRepository = accountRepository
+        self.mainQueue = mainQueue
+
         super.init(nibName: nil, bundle: nil)
         themeRepository.addSubscriber(self)
     }
 
     public convenience required init(injector: Injector) {
         self.init(
-            themeRepository: injector.create(ThemeRepository)!
+            themeRepository: injector.create(ThemeRepository)!,
+            accountRepository: injector.create(AccountRepository)!,
+            mainQueue: injector.create(kMainQueue) as! NSOperationQueue
         )
     }
 
@@ -149,6 +168,7 @@ public class LoginViewController: UIViewController, Injectable {
         mainStackView.addArrangedSubview(self.detailLabel)
         mainStackView.addArrangedSubview(self.emailField)
         mainStackView.addArrangedSubview(self.passwordField)
+        mainStackView.addArrangedSubview(self.errorLabel)
 
         let buttonStack = UIStackView(arrangedSubviews: [self.registerButton, self.loginButton])
         buttonStack.axis = .Horizontal
@@ -161,7 +181,55 @@ public class LoginViewController: UIViewController, Injectable {
         mainStackView.autoPinEdgeToSuperviewMargin(.Leading)
         mainStackView.autoPinEdgeToSuperviewMargin(.Trailing)
 
+        self.loginButton.addTarget(self,
+                                      action: #selector(LoginViewController.login),
+                                      forControlEvents: .TouchUpInside)
+        self.registerButton.addTarget(self,
+                                      action: #selector(LoginViewController.register),
+                                      forControlEvents: .TouchUpInside)
+
         self.view.backgroundColor = UIColor.whiteColor()
+    }
+
+    @objc private func login() {
+        let message = NSLocalizedString("LoginViewController_Login_Message", comment: "")
+        self.sendLoginOrRegisterRequest(message, requestMaker: self.accountRepository.login)
+    }
+
+    @objc private func register() {
+        let message = NSLocalizedString("LoginViewController_Register_Message", comment: "")
+        self.sendLoginOrRegisterRequest(message, requestMaker: self.accountRepository.register)
+    }
+
+    private func sendLoginOrRegisterRequest(message: String, requestMaker: (String, String) ->
+        Future<Result<Void, RNewsError>>) {
+        let activityIndicator = self.disableInteractionWithMessage(message)
+        requestMaker(self.emailField.text ?? "", self.passwordField.text ?? "").then { res in
+            self.mainQueue.addOperationWithBlock {
+                activityIndicator.removeFromSuperview()
+                switch res {
+                case .Success():
+                    self.navigationController?.popViewControllerAnimated(false)
+                case let .Failure(error):
+                    self.errorLabel.text = error.description
+                }
+            }
+        }
+    }
+
+    private func disableInteractionWithMessage(message: String) -> ActivityIndicator {
+        let activityIndicator = ActivityIndicator(forAutoLayout: ())
+        activityIndicator.configureWithMessage(message)
+        let color = activityIndicator.backgroundColor
+        activityIndicator.backgroundColor = UIColor.clearColor()
+
+        self.view.addSubview(activityIndicator)
+        activityIndicator.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
+
+        UIView.animateWithDuration(0.3) {
+            activityIndicator.backgroundColor = color
+        }
+        return activityIndicator
     }
 }
 
@@ -171,5 +239,6 @@ extension LoginViewController: ThemeRepositorySubscriber {
         self.view.backgroundColor = themeRepository.backgroundColor
         self.titleLabel.textColor = themeRepository.textColor
         self.detailLabel.textColor = themeRepository.textColor
+        self.errorLabel.textColor = themeRepository.errorColor
     }
 }

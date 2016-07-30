@@ -2,14 +2,14 @@ import CBGPromise
 import Result
 import Sinope
 
-public protocol AccountRepository {
+public protocol AccountRepository: class {
     func login(email: String, password: String) -> Future<Result<Void, RNewsError>>
     func register(email: String, password: String) -> Future<Result<Void, RNewsError>>
     func loggedIn() -> Bool
 }
 
 protocol AccountRepositoryDelegate {
-    func accountRepositoryDidLogIn(accountRepository: AccountRepository)
+    func accountRepositoryDidLogIn(accountRepository: InternalAccountRepository)
 }
 
 protocol InternalAccountRepository: AccountRepository {

@@ -96,7 +96,7 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
         guard let feeds = dataService.allFeeds().wait()?.value else { return [] }
         var updatedFeeds: [rNewsKit.Feed] = []
         for importableFeed in sinopeFeeds {
-            let predicate = NSPredicate(format: "url == %@", importableFeed.link)
+            let predicate = NSPredicate(format: "url == %@", importableFeed.link.absoluteString)
             guard let feed = feeds.filterWithPredicate(predicate).first else {
                 continue
             }

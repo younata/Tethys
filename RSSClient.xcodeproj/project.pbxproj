@@ -308,6 +308,9 @@
 		89AA8A911B536BEB000E2C88 /* JavaScript.tmLanguage in Resources */ = {isa = PBXBuildFile; fileRef = 89AA8A901B536BEB000E2C88 /* JavaScript.tmLanguage */; };
 		89AA8A931B537048000E2C88 /* mac_classic.tmTheme in Resources */ = {isa = PBXBuildFile; fileRef = 89AA8A921B537048000E2C88 /* mac_classic.tmTheme */; };
 		89AFF9FF1D4870F7002255E8 /* FakeImportables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */; };
+		89AFFA001D4B97DC002255E8 /* FakeAccountRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5CA1D416B6700546099 /* FakeAccountRepository.swift */; };
+		89AFFA041D4BF234002255E8 /* DefaultAccountRepositoryDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFFA031D4BF234002255E8 /* DefaultAccountRepositoryDelegate.swift */; };
+		89AFFA061D4C32A7002255E8 /* DefaultAccountRepositoryDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFFA051D4C32A7002255E8 /* DefaultAccountRepositoryDelegateSpec.swift */; };
 		89B8BBDD1B9C5B1000B2C112 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89B8BBDF1B9C5B1000B2C112 /* Launch Screen.xib */; };
 		89BA95391C4C8E7C001FD453 /* WorkFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89BA95381C4C8E7C001FD453 /* WorkFlow.framework */; };
 		89BA953A1C4C8E7C001FD453 /* WorkFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89BA95381C4C8E7C001FD453 /* WorkFlow.framework */; };
@@ -770,6 +773,8 @@
 		89AA8A901B536BEB000E2C88 /* JavaScript.tmLanguage */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = JavaScript.tmLanguage; sourceTree = "<group>"; };
 		89AA8A921B537048000E2C88 /* mac_classic.tmTheme */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = mac_classic.tmTheme; sourceTree = "<group>"; };
 		89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeImportables.swift; sourceTree = "<group>"; };
+		89AFFA031D4BF234002255E8 /* DefaultAccountRepositoryDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultAccountRepositoryDelegate.swift; sourceTree = "<group>"; };
+		89AFFA051D4C32A7002255E8 /* DefaultAccountRepositoryDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultAccountRepositoryDelegateSpec.swift; sourceTree = "<group>"; };
 		89B8BBDE1B9C5B1000B2C112 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = "Base.lproj/Launch Screen.xib"; sourceTree = "<group>"; };
 		89B8BBE11B9C5B1500B2C112 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = "en.lproj/Launch Screen.xib"; sourceTree = "<group>"; };
 		89BA95381C4C8E7C001FD453 /* WorkFlow.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WorkFlow.framework; path = Carthage/Build/iOS/WorkFlow.framework; sourceTree = SOURCE_ROOT; };
@@ -1107,6 +1112,7 @@
 				89E1868A1D13629D005C5880 /* Analytics.swift */,
 				8903F5C21D414E5000546099 /* PasiphaeFactory.swift */,
 				8903F5AC1D4002FD00546099 /* AccountRepository.swift */,
+				89AFFA031D4BF234002255E8 /* DefaultAccountRepositoryDelegate.swift */,
 			);
 			path = rNewsKit;
 			sourceTree = "<group>";
@@ -1130,6 +1136,7 @@
 				8903EB0B1C702FA3001C0189 /* WebPageParserSpec.swift */,
 				89150FD61CFE875700A4B270 /* RealmFetchResultsControllerSpec.swift */,
 				89DE0EBF1CFF200C00E06653 /* CoreDataFetchResultsControllerSpec.swift */,
+				89AFFA051D4C32A7002255E8 /* DefaultAccountRepositoryDelegateSpec.swift */,
 			);
 			path = rNewsKitTests;
 			sourceTree = "<group>";
@@ -2290,6 +2297,7 @@
 				89DE0EBD1CFEA71F00E06653 /* CoreDataFetchResultsController.swift in Sources */,
 				89E1868B1D13629D005C5880 /* Analytics.swift in Sources */,
 				89500B241CDEA288004548C3 /* InMemoryDataService.swift in Sources */,
+				89AFFA041D4BF234002255E8 /* DefaultAccountRepositoryDelegate.swift in Sources */,
 				891754731C5B485B0036D96D /* RealmService.swift in Sources */,
 				8943044C1B450A5E000078DC /* Enclosure.swift in Sources */,
 				8903F5AD1D4002FD00546099 /* AccountRepository.swift in Sources */,
@@ -2311,6 +2319,7 @@
 				89CBDBF91C7D32EE006B70F5 /* FakeDataServiceFactory.swift in Sources */,
 				89FF97A11BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */,
 				8903F5C01D412EF500546099 /* UpdateUseCaseSpec.swift in Sources */,
+				89AFFA061D4C32A7002255E8 /* DefaultAccountRepositoryDelegateSpec.swift in Sources */,
 				8999CC0F1C2E796100B81F5F /* DataServiceSpec.swift in Sources */,
 				8992D4331C3665B7004A5A35 /* FakeUpdateService.swift in Sources */,
 				8935F5DB1B4628B3000FFD5D /* EnclosureSpec.swift in Sources */,
@@ -2557,6 +2566,7 @@
 				89E186921D136C38005C5880 /* FakeAnalytics.swift in Sources */,
 				8903EB0F1C703570001C0189 /* FakeImportUseCase.swift in Sources */,
 				89F516571B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m in Sources */,
+				89AFFA001D4B97DC002255E8 /* FakeAccountRepository.swift in Sources */,
 				8903EAFD1C6F8A46001C0189 /* FakeNotificationHandler.swift in Sources */,
 				8997C8511B255A1900972930 /* TagPickerViewSpec.swift in Sources */,
 				899823B11B30BA7E00818755 /* NSUserActivity+rNewsTests.m in Sources */,

@@ -3,21 +3,35 @@ import Nimble
 import rNewsKit
 import rNews
 import Ra
+import CBGPromise
+import Result
 
 class LoginViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: LoginViewController!
         var themeRepository: ThemeRepository!
         var navigationController: UINavigationController!
+        var accountRepository: FakeAccountRepository!
+        var rootViewController: UIViewController!
+        var mainQueue: FakeOperationQueue!
 
         beforeEach {
             let injector = Injector()
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, toInstance: themeRepository)
 
+            accountRepository = FakeAccountRepository()
+            injector.bind(AccountRepository.self, toInstance: accountRepository)
+
+            mainQueue = FakeOperationQueue()
+            mainQueue.runSynchronously = true
+            injector.bind(kMainQueue, toInstance: mainQueue)
+
             subject = injector.create(LoginViewController)!
 
-            navigationController = UINavigationController(rootViewController: subject)
+            rootViewController = UIViewController()
+            navigationController = UINavigationController(rootViewController: rootViewController)
+            navigationController.pushViewController(subject, animated: false)
             expect(subject.view).toNot(beNil())
         }
 
@@ -48,6 +62,10 @@ class LoginViewControllerSpec: QuickSpec {
 
             it("changes the text color of the detailLabel") {
                 expect(subject.detailLabel.textColor) == themeRepository.textColor
+            }
+
+            it("changes the text color of the errorLabel") {
+                expect(subject.errorLabel.textColor) == themeRepository.errorColor
             }
         }
 
@@ -80,7 +98,7 @@ class LoginViewControllerSpec: QuickSpec {
             }
 
             let enterPassword = {
-                subject.passwordField.text = "foo@example.com"
+                subject.passwordField.text = "testere"
                 subject.passwordField.delegate?.textField?(subject.emailField,
                                                         shouldChangeCharactersInRange: NSRange(location: 0, length: 0),
                                                         replacementString: "")
@@ -129,14 +147,124 @@ class LoginViewControllerSpec: QuickSpec {
                 }
 
                 describe("tapping the login button") {
+                    var loginPromise: Promise<Result<Void, RNewsError>>!
+
                     beforeEach {
-                        subject.loginButton.tap()
+                        loginPromise = Promise<Result<Void, RNewsError>>()
+                        accountRepository.loginReturns(loginPromise.future)
+
+                        subject.loginButton.sendActionsForControlEvents(.TouchUpInside)
+                    }
+
+                    it("asks the account repository to log in") {
+                        expect(accountRepository.loginCallCount) == 1
+                        guard accountRepository.loginCallCount == 1 else { return }
+                        let args = accountRepository.loginArgsForCall(0)
+                        expect(args.0) == "foo@example.com"
+                        expect(args.1) == "testere"
+                    }
+
+                    it("should present an activity indicator") {
+                        var indicator : ActivityIndicator? = nil
+                        for view in subject.view.subviews {
+                            if view is ActivityIndicator {
+                                indicator = view as? ActivityIndicator
+                                break
+                            }
+                        }
+                        expect(indicator).toNot(beNil())
+                        if let activityIndicator = indicator {
+                            expect(activityIndicator.message).to(equal("Logging In"))
+                        }
+                    }
+
+                    describe("when the user successfully logs in") {
+                        beforeEach {
+                            loginPromise.resolve(.Success())
+                        }
+
+                        it("dismisses the activity indicator") {
+                            expect(subject.view.subviews).toNot(contain(ActivityIndicator.self))
+                        }
+
+                        it("dismisses the view controller") {
+                            expect(navigationController.topViewController) == rootViewController
+                        }
+                    }
+
+                    describe("when the user fails to log in") {
+                        beforeEach {
+                            loginPromise.resolve(.Failure(.Unknown))
+                        }
+
+                        it("dismisses the activity indicator") {
+                            expect(subject.view.subviews).toNot(contain(ActivityIndicator.self))
+                        }
+
+                        it("shows an error indicating what went wrong") {
+                            expect(subject.errorLabel.text) == "Unknown Error - please try again"
+                        }
                     }
                 }
 
                 describe("tapping the register button") {
+                    var registerPromise: Promise<Result<Void, RNewsError>>!
+
                     beforeEach {
-                        subject.registerButton.tap()
+                        registerPromise = Promise<Result<Void, RNewsError>>()
+                        accountRepository.registerReturns(registerPromise.future)
+
+                        subject.registerButton.sendActionsForControlEvents(.TouchUpInside)
+                    }
+
+                    it("asks the account repository to register") {
+                        expect(accountRepository.registerCallCount) == 1
+                        guard accountRepository.registerCallCount == 1 else { return }
+                        let args = accountRepository.registerArgsForCall(0)
+                        expect(args.0) == "foo@example.com"
+                        expect(args.1) == "testere"
+                    }
+
+                    it("should present an activity indicator") {
+                        var indicator : ActivityIndicator? = nil
+                        for view in subject.view.subviews {
+                            if view is ActivityIndicator {
+                                indicator = view as? ActivityIndicator
+                                break
+                            }
+                        }
+                        expect(indicator).toNot(beNil())
+                        if let activityIndicator = indicator {
+                            expect(activityIndicator.message).to(equal("Registering"))
+                        }
+                    }
+
+                    describe("when the user successfully registers") {
+                        beforeEach {
+                            registerPromise.resolve(.Success())
+                        }
+
+                        it("dismisses the activity indicator") {
+                            expect(subject.view.subviews).toNot(contain(ActivityIndicator.self))
+                        }
+
+                        it("dismisses the view controller") {
+                            expect(navigationController.topViewController) == rootViewController
+                        }
+                    }
+
+                    describe("when the user fails to register") {
+                        beforeEach {
+                            registerPromise.resolve(.Failure(.Unknown))
+                        }
+
+                        it("dismisses the activity indicator") {
+                            expect(subject.view.subviews).toNot(contain(ActivityIndicator.self))
+                        }
+
+                        it("shows an error indicating what went wrong") {
+                            expect(subject.errorLabel.text) == "Unknown Error - please try again"
+                        }
                     }
                 }
             }

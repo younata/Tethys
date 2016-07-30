@@ -80,11 +80,11 @@ class FakeAccountRepositoryDelegate : AccountRepositoryDelegate, Equatable {
     }
 
     private(set) var accountRepositoryDidLogInCallCount : Int = 0
-    private var accountRepositoryDidLogInArgs : Array<(AccountRepository)> = []
-    func accountRepositoryDidLogInArgsForCall(callIndex: Int) -> (AccountRepository) {
+    private var accountRepositoryDidLogInArgs : Array<(InternalAccountRepository)> = []
+    func accountRepositoryDidLogInArgsForCall(callIndex: Int) -> (InternalAccountRepository) {
         return self.accountRepositoryDidLogInArgs[callIndex]
     }
-    func accountRepositoryDidLogIn(accountRepository: AccountRepository) {
+    func accountRepositoryDidLogIn(accountRepository: InternalAccountRepository) {
         self.accountRepositoryDidLogInCallCount += 1
         self.accountRepositoryDidLogInArgs.append((accountRepository))
     }

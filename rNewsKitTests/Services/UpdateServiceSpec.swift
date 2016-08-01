@@ -46,10 +46,19 @@ class UpdateServiceSpec: QuickSpec {
             var fetchPromise: Promise<Result<(NSDate, [Sinope.Feed]), SinopeError>>!
             let date = NSDate()
 
+            var progressCallbackCallCount = 0
+            var progressCallbackArgs: [(Int, Int)] = []
+
             beforeEach {
+                progressCallbackCallCount = 0
+                progressCallbackArgs = []
+
                 fetchPromise = Promise<Result<(NSDate, [Sinope.Feed]), SinopeError>>()
                 sinopeRepository.fetchReturns(fetchPromise.future)
-                updateFeedsFuture = subject.updateFeeds(date)
+                updateFeedsFuture = subject.updateFeeds(date) { currentProgress, estimatedProgress in
+                    progressCallbackArgs.append((currentProgress, estimatedProgress))
+                    progressCallbackCallCount += 1
+                }
             }
 
             it("returns an in-progress promise") {
@@ -84,6 +93,14 @@ class UpdateServiceSpec: QuickSpec {
                     let sinopeFeed = try! Feed(json: json)
 
                     fetchPromise.resolve(.Success(updatedDate, [sinopeFeed]))
+                }
+
+                it("calls the callback as the feeds are processed") {
+                    expect(progressCallbackCallCount) == 2
+                    expect(progressCallbackArgs[0].0) == 1
+                    expect(progressCallbackArgs[0].1) == 2
+                    expect(progressCallbackArgs[1].0) == 2
+                    expect(progressCallbackArgs[1].1) == 2
                 }
 
                 it("should resolve the promise with all updated feeds") {

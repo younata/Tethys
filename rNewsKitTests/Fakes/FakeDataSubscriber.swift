@@ -27,9 +27,11 @@ class FakeDataSubscriber: NSObject, DataSubscriber {
 
     var updateFeedsProgressFinished = 0
     var updateFeedsProgressTotal = 0
+    var didUpdateFeedsArgs: [(Int, Int)] = []
     func didUpdateFeedsProgress(finished: Int, total: Int) {
         updateFeedsProgressFinished = finished
         updateFeedsProgressTotal = total
+        didUpdateFeedsArgs.append((finished, total))
     }
 
 

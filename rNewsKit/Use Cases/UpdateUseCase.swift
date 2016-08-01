@@ -34,14 +34,16 @@ final class DefaultUpdateUseCase: UpdateUseCase {
             subscriber.willUpdateFeeds()
         }
         let date = self.userDefaults.objectForKey("pasiphae_last_update_date") as? NSDate
-        return self.updateService.updateFeeds(date).map { (res: Result<(NSDate, [Feed]), RNewsError>) in
+        let future = self.updateService.updateFeeds(date) { progress, total in
+            self.mainQueue.addOperationWithBlock {
+                for subscriber in subscribers {
+                    subscriber.didUpdateFeedsProgress(progress, total: total)
+                }
+            }
+        }
+        return future.map { (res: Result<(NSDate, [Feed]), RNewsError>) in
             return res.map { updatedDate, _ in
                 self.userDefaults.setObject(updatedDate, forKey: "pasiphae_last_update_date")
-                self.mainQueue.addOperationWithBlock {
-                    for subscriber in subscribers {
-                        subscriber.didUpdateFeedsProgress(1, total: 1)
-                    }
-                }
                 return
             }
         }

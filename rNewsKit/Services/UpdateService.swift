@@ -48,7 +48,8 @@ final class URLSessionDelegate: NSObject, NSURLSessionDownloadDelegate {
 
 protocol UpdateServiceType: class {
     func updateFeed(feed: rNewsKit.Feed, callback: (rNewsKit.Feed, NSError?) -> Void)
-    func updateFeeds(date: NSDate?) -> Future<Result<(NSDate, [rNewsKit.Feed]), RNewsError>>
+    func updateFeeds(date: NSDate?, progressCallback: (Int, Int) -> Void) ->
+        Future<Result<(NSDate, [rNewsKit.Feed]), RNewsError>>
 }
 
 final class UpdateService: UpdateServiceType, NetworkClientDelegate {
@@ -80,42 +81,45 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
         self.downloadURL(url)
     }
 
-    func updateFeeds(date: NSDate?) -> Future<Result<(NSDate, [rNewsKit.Feed]), RNewsError>> {
-        return self.sinopeRepository.fetch(date).map {result -> Result<(NSDate, [rNewsKit.Feed]), RNewsError> in
-            switch result {
-            case let .Success(date, sinopeFeeds):
-                return .Success(date, self.updateFeedsFromSinopeFeeds(sinopeFeeds))
-            case let .Failure(error):
-                return .Failure(RNewsError.Backend(error))
+    func updateFeeds(date: NSDate?, progressCallback progress: (Int, Int) -> Void) ->
+        Future<Result<(NSDate, [rNewsKit.Feed]), RNewsError>> {
+            return self.sinopeRepository.fetch(date).map {result -> Result<(NSDate, [rNewsKit.Feed]), RNewsError> in
+                switch result {
+                case let .Success(date, sinopeFeeds):
+                    progress(1, 1 + sinopeFeeds.count)
+                    return .Success(date, self.updateFeedsFromSinopeFeeds(sinopeFeeds, progressCallback: progress))
+                case let .Failure(error):
+                    return .Failure(RNewsError.Backend(error))
+                }
             }
-        }
     }
 
-    private func updateFeedsFromSinopeFeeds(sinopeFeeds: [Sinope.Feed]) -> [rNewsKit.Feed] {
-        let dataService = self.dataServiceFactory.currentDataService
-        guard let feeds = dataService.allFeeds().wait()?.value else { return [] }
-        var updatedFeeds: [rNewsKit.Feed] = []
-        for importableFeed in sinopeFeeds {
-            let predicate = NSPredicate(format: "url == %@", importableFeed.link.absoluteString)
-            guard let feed = feeds.filterWithPredicate(predicate).first else {
-                continue
-            }
-
-            self.dataServiceFactory.currentDataService.updateFeed(feed, info: importableFeed).map { res -> Void in
-                switch res {
-                case .Success():
-//                    if feed.image == nil, let imageUrl = singleFeed.imageURL where !imageUrl.absoluteString.isEmpty {
-//                        self.callbacksInProgress[imageUrl] = feedCallback
-//                        self.downloadURL(imageUrl)
-//                    }
-                    updatedFeeds.append(feed)
-                    break
-                case .Failure(_):
-                    break
+    private func updateFeedsFromSinopeFeeds(sinopeFeeds: [Sinope.Feed], progressCallback: (Int, Int) -> Void) ->
+        [rNewsKit.Feed] {
+            let total = 1 + sinopeFeeds.count
+            var current = 1
+            let dataService = self.dataServiceFactory.currentDataService
+            guard let feeds = dataService.allFeeds().wait()?.value else { return [] }
+            var updatedFeeds: [rNewsKit.Feed] = []
+            for importableFeed in sinopeFeeds {
+                current += 1
+                progressCallback(current, total)
+                let predicate = NSPredicate(format: "url == %@", importableFeed.link.absoluteString)
+                guard let feed = feeds.filterWithPredicate(predicate).first else {
+                    continue
                 }
-            }.wait()
-        }
-        return updatedFeeds
+
+                self.dataServiceFactory.currentDataService.updateFeed(feed, info: importableFeed).map { res -> Void in
+                    switch res {
+                    case .Success():
+                        updatedFeeds.append(feed)
+                        break
+                    case .Failure(_):
+                        break
+                    }
+                    }.wait()
+            }
+            return updatedFeeds
     }
 
     // MARK: NetworkClientDelegate

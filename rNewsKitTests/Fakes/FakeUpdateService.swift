@@ -13,18 +13,18 @@ class FakeUpdateService: UpdateServiceType {
 
     private(set) var updateFeedsCallCount : Int = 0
     var updateFeedsStub : (() -> (Future<Result<(NSDate, [rNewsKit.Feed]), RNewsError>>))?
-    private var updateFeedsArgs : Array<(NSDate?)> = []
+    private var updateFeedsArgs : Array<(NSDate?, ((Int, Int) -> Void))> = []
     func updateFeedsReturns(stubbedValues: (Future<Result<(NSDate, [rNewsKit.Feed]), RNewsError>>)) {
         self.updateFeedsStub = {() -> (Future<Result<(NSDate, [rNewsKit.Feed]), RNewsError>>) in
             return stubbedValues
         }
     }
-    func updateFeedsArgsForCall(callIndex: Int) -> (NSDate?) {
+    func updateFeedsArgsForCall(callIndex: Int) -> (NSDate?, ((Int, Int) -> Void)) {
         return self.updateFeedsArgs[callIndex]
     }
-    func updateFeeds(date: NSDate?) -> (Future<Result<(NSDate, [rNewsKit.Feed]), RNewsError>>) {
+    func updateFeeds(date: NSDate?, progressCallback: ((Int, Int) -> Void)) -> (Future<Result<(NSDate, [rNewsKit.Feed]), RNewsError>>) {
         self.updateFeedsCallCount += 1
-        self.updateFeedsArgs.append((date))
+        self.updateFeedsArgs.append((date, progressCallback))
         return self.updateFeedsStub!()
     }
 }

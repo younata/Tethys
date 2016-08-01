@@ -46,6 +46,7 @@ class UpdateUseCaseSpec: QuickSpec {
 
             updateService = FakeUpdateService()
             mainQueue = FakeOperationQueue()
+            mainQueue.runSynchronously = true
             accountRepository = FakeAccountRepository()
             userDefaults = FakeUserDefaults()
             subject = DefaultUpdateUseCase(updateService: updateService, mainQueue: mainQueue, accountRepository: accountRepository, userDefaults: userDefaults)
@@ -76,19 +77,23 @@ class UpdateUseCaseSpec: QuickSpec {
                     expect(updateService.updateFeedsCallCount) == 1
                     guard updateService.updateFeedsCallCount == 1 else { return }
                     let args = updateService.updateFeedsArgsForCall(0)
-                    expect(args) == initialDate
+                    expect(args.0) == initialDate
+                }
+
+                it("informs the data subscribers whenever there's stuff to update") {
+                    guard updateService.updateFeedsCallCount == 1 else { fail(); return }
+                    let args = updateService.updateFeedsArgsForCall(0)
+                    args.1(1, 2)
+
+                    expect(dataSubscriber.didUpdateFeedsArgs.count) == 1
+                    expect(dataSubscriber.didUpdateFeedsArgs[0].0) == 1
+                    expect(dataSubscriber.didUpdateFeedsArgs[0].1) == 2
                 }
 
                 describe("when the update request succeeds") {
                     let updatedDate = NSDate()
                     beforeEach {
-                        mainQueue.runSynchronously = true
                         updateFeedsPromise.resolve(.Success(updatedDate, []))
-                    }
-
-                    it("informs subscribers that we downloaded and processed everything") {
-                        expect(dataSubscriber.updateFeedsProgressFinished).to(equal(1))
-                        expect(dataSubscriber.updateFeedsProgressTotal).to(equal(1))
                     }
 
                     it("stores the new updated date for future calls") {

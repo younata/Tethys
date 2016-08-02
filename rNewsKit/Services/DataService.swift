@@ -109,7 +109,17 @@ extension DataService {
                 return rNewsKit.Author(name: $0.name, email: $0.email)
             }
 
-            let title = (item.title ?? article.title ?? "unknown").stringByTrimmingCharactersInSet(characterSet)
+            let itemTitle: String
+            if item.title.isEmpty {
+                if article.title.isEmpty {
+                    itemTitle = "unknown"
+                } else {
+                    itemTitle = article.title
+                }
+            } else {
+                itemTitle = item.title
+            }
+            let title = (itemTitle).stringByTrimmingCharactersInSet(characterSet)
             article.title = title.stringByUnescapingHTML().stringByStrippingHTML()
             article.link = NSURL(string: item.url.absoluteString, relativeToURL: feedURL)?.absoluteURL
             article.published = item.published ?? article.published
@@ -117,7 +127,8 @@ extension DataService {
             article.summary = item.summary
             article.content = item.content
 
-            article.estimatedReadingTime = estimateReadingTime(item.content ?? item.summary)
+            let content = item.content.isEmpty ? item.summary : item.content;
+            article.estimatedReadingTime = estimateReadingTime(content)
 
             article.authors = authors
 
@@ -127,8 +138,6 @@ extension DataService {
                 }
                 return nil
             }
-
-            let content = item.content ?? item.summary
 
             let promise = Promise<Result<(Article, [Enclosure]), RNewsError>>()
 

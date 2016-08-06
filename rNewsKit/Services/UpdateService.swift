@@ -86,7 +86,7 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
             return self.sinopeRepository.fetch(date).map {result -> Result<(NSDate, [rNewsKit.Feed]), RNewsError> in
                 switch result {
                 case let .Success(date, sinopeFeeds):
-                    progress(1, 1 + sinopeFeeds.count)
+                    progress(sinopeFeeds.count, 2 * sinopeFeeds.count)
                     return .Success(date, self.updateFeedsFromSinopeFeeds(sinopeFeeds, progressCallback: progress))
                 case let .Failure(error):
                     return .Failure(RNewsError.Backend(error))
@@ -96,16 +96,16 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
 
     private func updateFeedsFromSinopeFeeds(sinopeFeeds: [Sinope.Feed], progressCallback: (Int, Int) -> Void) ->
         [rNewsKit.Feed] {
-            let total = 1 + sinopeFeeds.count
-            var current = 1
+            var current = sinopeFeeds.count
+            let total = current * 2
             let dataService = self.dataServiceFactory.currentDataService
-            guard let feeds = dataService.allFeeds().wait()?.value else { return [] }
+            guard let feedsArray = dataService.allFeeds().wait()?.value else { return [] }
+            let feeds = Array(feedsArray)
             var updatedFeeds: [rNewsKit.Feed] = []
             for importableFeed in sinopeFeeds {
                 current += 1
                 progressCallback(current, total)
-                let predicate = NSPredicate(format: "url == %@", importableFeed.link.absoluteString)
-                guard let feed = feeds.filterWithPredicate(predicate).first else {
+                guard let feed = feeds.filter({ $0.url == importableFeed.link }).first else {
                     continue
                 }
 

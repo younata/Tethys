@@ -20,7 +20,7 @@ protocol DataService: class {
     var searchIndex: SearchIndex? { get }
     var mainQueue: NSOperationQueue { get }
 
-    func createFeed(callback: Feed -> Void)
+    func createFeed(callback: Feed -> Void) -> Future<Result<Feed, RNewsError>>
     func createArticle(feed: Feed?, callback: Article -> Void)
     func createEnclosure(article: Article?, callback: Enclosure -> Void)
 

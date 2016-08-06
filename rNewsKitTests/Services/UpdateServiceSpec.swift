@@ -114,6 +114,54 @@ class UpdateServiceSpec: QuickSpec {
                 }
             }
 
+            fdescribe("and the request succeeds with feeds that don't exist locally yet") {
+                let updatedDate = NSDate()
+
+                beforeEach {
+                    dataService.feeds = []
+
+                    let data: NSData = ("{\"title\": \"feed title\"," +
+                        "\"url\": \"https://example.com/feed\"," +
+                        "\"summary\": \"test\"," +
+                        "\"image_url\": \"https://example.com/image.png\"," +
+                        "\"articles\": [" +
+                        "{\"title\": \"Example 1\", \"url\": \"https://example.com/1/\", \"summary\": \"test\", \"published\": \"2015-12-23T00:00:00.000Z\", \"updated\": null, \"content\": null, \"authors\": []}" +
+                        "]}").dataUsingEncoding(NSUTF8StringEncoding)!
+
+                    let json = try! JSON(data: data)
+                    let sinopeFeed = try! Feed(json: json)
+
+                    fetchPromise.resolve(.Success(updatedDate, [sinopeFeed]))
+                }
+
+                it("creates a new feed with that data") {
+                    expect(dataService.feeds.count) == 1
+                    guard let feed = dataService.feeds.first else { return }
+                    expect(feed.title) == "feed title"
+                    expect(feed.summary) == "test"
+                    expect(feed.url) == NSURL(string: "https://example.com/feed")
+                    expect(feed.articlesArray.count) == 1
+                }
+
+                it("calls the callback as the feeds are processed") {
+                    expect(progressCallbackCallCount) == 2
+                    expect(progressCallbackArgs[0].0) == 1
+                    expect(progressCallbackArgs[0].1) == 2
+                    expect(progressCallbackArgs[1].0) == 2
+                    expect(progressCallbackArgs[1].1) == 2
+                }
+
+                it("should resolve the promise with all updated feeds") {
+                    expect(updateFeedsFuture.value).toNot(beNil())
+                    guard let receivedDate = updateFeedsFuture.value?.value?.0 else { return }
+                    guard let feed = updateFeedsFuture.value?.value?.1.first else { return }
+                    expect(receivedDate) == updatedDate
+                    expect(feed.title) == "feed title"
+                    expect(feed.summary) == "test"
+                    expect(feed.articlesArray.count) == 1
+                }
+            }
+
             describe("when the request fails") {
                 beforeEach {
                     fetchPromise.resolve(.Failure(.Unknown))

@@ -14,11 +14,14 @@ class InMemoryDataService: DataService {
     var articles = [Article]()
     var enclosures = [Enclosure]()
 
-    func createFeed(callback: Feed -> Void) {
+    func createFeed(callback: Feed -> Void) -> Future<Result<Feed, RNewsError>> {
         let feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0,
                         articles: [], image: nil)
         callback(feed)
         self.feeds.append(feed)
+        let promise = Promise<Result<Feed, RNewsError>>()
+        promise.resolve(.Success(feed))
+        return promise.future
     }
 
     func createArticle(feed: Feed?, callback: Article -> Void) {

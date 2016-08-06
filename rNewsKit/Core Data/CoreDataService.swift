@@ -21,9 +21,10 @@ class CoreDataService: DataService {
 
     // Mark: - Create
 
-    func createFeed(callback: (Feed) -> (Void)) {
+    func createFeed(callback: (Feed) -> (Void)) -> Future<Result<Feed, RNewsError>> {
         let entityDescription = NSEntityDescription.entityForName("Feed",
             inManagedObjectContext: self.managedObjectContext)!
+        let promise = Promise<Result<Feed, RNewsError>>()
         self.managedObjectContext.performBlock {
             let cdfeed = CoreDataFeed(entity: entityDescription,
                 insertIntoManagedObjectContext: self.managedObjectContext)
@@ -35,7 +36,9 @@ class CoreDataService: DataService {
             self.mainQueue.addOperations([operation], waitUntilFinished: true)
 
             self.updateFeed(feed)
+            promise.resolve(.Success(feed))
         }
+        return promise.future
     }
 
     func createArticle(feed: Feed?, callback: (Article) -> (Void)) {

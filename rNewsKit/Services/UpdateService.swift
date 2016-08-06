@@ -105,8 +105,16 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
             for importableFeed in sinopeFeeds {
                 current += 1
                 progressCallback(current, total)
-                guard let feed = feeds.filter({ $0.url == importableFeed.link }).first else {
-                    continue
+                let dataService = self.dataServiceFactory.currentDataService
+                let feed: rNewsKit.Feed
+                if let existingFeed = feeds.filter({ $0.url == importableFeed.link }).first {
+                    feed = existingFeed
+                } else {
+                    let promise = dataService.createFeed { $0.url = importableFeed.url }
+
+                    if let createdFeed = promise.wait()?.value {
+                        feed = createdFeed
+                    } else { return [] }
                 }
 
                 self.dataServiceFactory.currentDataService.updateFeed(feed, info: importableFeed).map { res -> Void in

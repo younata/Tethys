@@ -41,7 +41,8 @@ class RealmService: DataService {
         return realm
     }
 
-    func createFeed(callback: (Feed) -> (Void)) {
+    func createFeed(callback: (Feed) -> (Void)) -> Future<Result<Feed, RNewsError>> {
+        let promise = Promise<Result<Feed, RNewsError>>()
         self.realmTransaction {
             let realmFeed = self.realm.create(RealmFeed)
             let feed = Feed(realmFeed: realmFeed)
@@ -50,7 +51,10 @@ class RealmService: DataService {
             self.mainQueue.addOperations([operation], waitUntilFinished: true)
 
             self.synchronousUpdateFeed(feed, realmFeed: realmFeed)
+
+            promise.resolve(.Success(feed))
         }
+        return promise.future
     }
 
     func createArticle(feed: Feed?, callback: (Article) -> (Void)) {

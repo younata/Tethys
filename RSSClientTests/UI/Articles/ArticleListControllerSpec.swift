@@ -224,10 +224,7 @@ class ArticleListControllerSpec: QuickSpec {
                 it("should return an ArticleViewController configured with the article to present to the user") {
                     expect(viewController).to(beAKindOf(ArticleViewController.self))
                     if let articleVC = viewController as? ArticleViewController {
-                        expect(articleVC.article).to(equal(articles[0]))
-                        expect(Array(articleVC.articles)).to(equal(articles))
-                        expect(articleVC.lastArticleIndex).to(equal(0))
-                    }
+                        expect(articleVC.article).to(equal(articles[0]))                    }
                 }
 
                 it("should not mark the article as read") {
@@ -402,8 +399,6 @@ class ArticleListControllerSpec: QuickSpec {
                             expect(navigationController.topViewController).to(beAnInstanceOf(ArticleViewController.self))
                             if let articleController = navigationController.topViewController as? ArticleViewController {
                                 expect(articleController.article).to(equal(articles[1]))
-                                expect(Array(articleController.articles)).to(equal(articles))
-                                expect(articleController.lastArticleIndex).to(equal(1))
                             }
                         }
                     }

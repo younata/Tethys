@@ -41,9 +41,6 @@ public class ArticleViewController: UIViewController, Injectable {
 
     private let linkString = NSLocalizedString("ArticleViewController_TabBar_ViewLink", comment: "")
 
-    public var articles = DataStoreBackedArray<Article>()
-    public var lastArticleIndex = 0
-
     public let themeRepository: ThemeRepository
     private let articleUseCase: ArticleUseCase
     private let articleListController: Void -> ArticleListController
@@ -171,20 +168,6 @@ public class ArticleViewController: UIViewController, Injectable {
         }
 
         var commands: [UIKeyCommand] = []
-        if self.lastArticleIndex != 0 {
-            let cmd = UIKeyCommand(input: "p", modifierFlags: .Control,
-                                   action: #selector(ArticleViewController.showPreviousArticle))
-            addTitleToCmd(cmd, NSLocalizedString("ArticleViewController_Command_ViewPreviousArticle", comment: ""))
-            commands.append(cmd)
-        }
-
-        if self.lastArticleIndex < (self.articles.count - 1) {
-            let cmd = UIKeyCommand(input: "n", modifierFlags: .Control,
-                                   action: #selector(ArticleViewController.showNextArticle))
-            addTitleToCmd(cmd, NSLocalizedString("ArticleViewController_Command_ViewNextArticle", comment: ""))
-            commands.append(cmd)
-        }
-
         let markAsRead = UIKeyCommand(input: "r", modifierFlags: .Shift,
                                       action: #selector(ArticleViewController.toggleArticleRead))
         addTitleToCmd(markAsRead, NSLocalizedString("ArticleViewController_Command_ToggleRead", comment: ""))
@@ -203,20 +186,6 @@ public class ArticleViewController: UIViewController, Injectable {
         commands.append(showShareSheet)
 
         return commands
-    }
-
-    @objc private func showPreviousArticle() {
-        guard self.lastArticleIndex > 0 else { return }
-        self.lastArticleIndex -= 1
-        self.setArticle(self.articles[lastArticleIndex])
-        if let article = self.article { self.showArticle(article, onWebView: self.content) }
-    }
-
-    @objc private func showNextArticle() {
-        guard self.lastArticleIndex < self.articles.count else { return }
-        self.lastArticleIndex += 1
-        self.setArticle(self.articles[lastArticleIndex])
-        if let article = self.article { self.showArticle(article, onWebView: self.content) }
     }
 
     @objc private func toggleArticleRead() {
@@ -288,7 +257,11 @@ extension ArticleViewController: UIWebViewDelegate {
             guard let url = request.URL where navigationType == .LinkClicked else { return true }
             let predicate = NSPredicate(format: "link = %@", url.absoluteString)
             if let article = self.article?.relatedArticles.filterWithPredicate(predicate).first {
-                self.setArticle(article, read: true, show: true)
+                let articleController = ArticleViewController(themeRepository: self.themeRepository,
+                                                              articleUseCase: self.articleUseCase,
+                                                              articleListController: self.articleListController)
+                articleController.setArticle(article, read: true, show: true)
+                self.navigationController?.pushViewController(articleController, animated: true)
             } else { self.openURL(url) }
             return false
     }

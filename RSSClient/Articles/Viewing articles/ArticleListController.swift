@@ -111,12 +111,6 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
     private func configuredArticleController(article: Article, read: Bool = true) -> ArticleViewController {
         let articleViewController = self.articleViewController()
         articleViewController.setArticle(article, read: read)
-        articleViewController.articles = self.articles
-        if self.articles.count != 0 {
-            articleViewController.lastArticleIndex = self.articles.indexOf(article) ?? 0
-        } else {
-            articleViewController.lastArticleIndex = 0
-        }
         return articleViewController
     }
 

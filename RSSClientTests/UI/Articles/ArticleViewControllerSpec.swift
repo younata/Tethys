@@ -119,14 +119,10 @@ class ArticleViewControllerSpec: QuickSpec {
 
             let article = Article(title: "article", link: NSURL(string: "https://example.com/article"), summary: "summary", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
             let article1 = Article(title: "article1", link: nil, summary: "summary", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier1", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
-            let article2 = Article(title: "article2", link: NSURL(string: "https://example.com/article"), summary: "summary", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier2", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
-            let article3 = Article(title: "article3", link: NSURL(string: "https://example.com/article"), summary: "summary", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier3", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
 
-            context("when there is only one article") {
+            context("when viewing an article that has a link") {
                 beforeEach {
                     subject.setArticle(article, read: false, show: false)
-                    subject.articles = DataStoreBackedArray([article])
-                    subject.lastArticleIndex = 0
                 }
 
                 it("should not list the next/previous article commands") {
@@ -144,105 +140,22 @@ class ArticleViewControllerSpec: QuickSpec {
                     hasKindsOfKeyCommands(expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
                 }
             }
-
-            context("when at the beginning of an article list") {
-                beforeEach {
-                    subject.setArticle(article2, read: false, show: false)
-                    subject.articles = DataStoreBackedArray([article, article1, article2, article3])
-                    subject.lastArticleIndex = 0
-                }
-
-                it("should not list the previous article command") {
-                    let expectedCommands = [
-                        UIKeyCommand(input: "n", modifierFlags: .Control, action: Selector()),
-                        UIKeyCommand(input: "r", modifierFlags: .Shift, action: Selector()),
-                        UIKeyCommand(input: "l", modifierFlags: .Command, action: Selector()),
-                        UIKeyCommand(input: "s", modifierFlags: .Command, action: Selector()),
-                    ]
-                    let expectedDiscoverabilityTitles = [
-                        "Next Article",
-                        "Toggle Read",
-                        "Open Article in WebView",
-                        "Open Share Sheet",
-                    ]
-
-                    hasKindsOfKeyCommands(expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
-                }
-            }
-
-            context("when at the end of an article list") {
-                beforeEach {
-                    subject.setArticle(article3, read: false, show: false)
-                    subject.articles = DataStoreBackedArray([article, article1, article2, article3])
-                    subject.lastArticleIndex = 3
-                }
-
-                it("should not list the next article command") {
-                    let expectedCommands = [
-                        UIKeyCommand(input: "p", modifierFlags: .Control, action: Selector()),
-                        UIKeyCommand(input: "r", modifierFlags: .Shift, action: Selector()),
-                        UIKeyCommand(input: "l", modifierFlags: .Command, action: Selector()),
-                        UIKeyCommand(input: "s", modifierFlags: .Command, action: Selector()),
-                    ]
-                    let expectedDiscoverabilityTitles = [
-                        "Previous Article",
-                        "Toggle Read",
-                        "Open Article in WebView",
-                        "Open Share Sheet",
-                    ]
-
-                    hasKindsOfKeyCommands(expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
-                }
-            }
-
+            
             context("when viewing an article that does not have a link") {
                 beforeEach {
                     subject.setArticle(article1, read: false, show: false)
-                    subject.articles = DataStoreBackedArray([article, article1, article2, article3])
-                    subject.lastArticleIndex = 1
                 }
 
                 it("should not list the next article command") {
                     let expectedCommands = [
-                        UIKeyCommand(input: "p", modifierFlags: .Control, action: Selector()),
-                        UIKeyCommand(input: "n", modifierFlags: .Control, action: Selector()),
                         UIKeyCommand(input: "r", modifierFlags: .Shift, action: Selector()),
                         UIKeyCommand(input: "s", modifierFlags: .Command, action: Selector()),
                     ]
                     let expectedDiscoverabilityTitles = [
-                        "Previous Article",
-                        "Next Article",
                         "Toggle Read",
                         "Open Share Sheet",
                     ]
 
-                    hasKindsOfKeyCommands(expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
-                }
-            }
-
-            context("when in the middle of an article list") {
-                beforeEach {
-                    subject.setArticle(article2, read: false, show: false)
-                    subject.articles = DataStoreBackedArray([article, article1, article2, article3])
-                    subject.lastArticleIndex = 2
-                }
-
-                it("should list the complete list of key commands") {
-                    let expectedCommands = [
-                        UIKeyCommand(input: "p", modifierFlags: .Control, action: Selector()),
-                        UIKeyCommand(input: "n", modifierFlags: .Control, action: Selector()),
-                        UIKeyCommand(input: "r", modifierFlags: .Shift, action: Selector()),
-                        UIKeyCommand(input: "l", modifierFlags: .Command, action: Selector()),
-                        UIKeyCommand(input: "s", modifierFlags: .Command, action: Selector()),
-                    ]
-                    let expectedDiscoverabilityTitles = [
-                        "Previous Article",
-                        "Next Article",
-                        "Toggle Read",
-                        "Open Article in WebView",
-                        "Open Share Sheet",
-                    ]
-                    
                     hasKindsOfKeyCommands(expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
                 }
             }
@@ -439,7 +352,10 @@ class ArticleViewControllerSpec: QuickSpec {
                 it("navigates to that article if the link goes to a related article") {
                     let shouldInteract = subject.content.delegate?.webView?(subject.content, shouldStartLoadWithRequest: NSURLRequest(URL: article2.link!), navigationType: .LinkClicked)
                     expect(shouldInteract) == false
-//                    expect(subject.article) == article2
+//                    expect(navigationController.topViewController) != subject
+//                    expect(navigationController.topViewController).to(beAnInstanceOf(ArticleViewController.self))
+//                    guard let articleViewController = navigationController.topViewController as? ArticleViewController else { return }
+//                    expect(articleViewController.article) != article
                     // This test fails because of a type mismatch between what Realm/Core Data store (String), and what the Article model stores (NSURL).
                 }
 

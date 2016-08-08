@@ -190,6 +190,10 @@ public class FeedsTableViewController: UIViewController, Injectable {
         self.reload(self.searchBar.text)
     }
 
+    public override func viewWillAppear(animated: Bool) {
+        self.updateRefreshViewSize(self.view.bounds.size)
+    }
+
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
@@ -197,6 +201,7 @@ public class FeedsTableViewController: UIViewController, Injectable {
     private func updateRefreshViewSize(size: CGSize) {
         let height: CGFloat = 100
         self.refreshView.frame = CGRect(x: 0, y: -height, width: size.width, height: height)
+        self.refreshView.layoutSubviews()
     }
 
     public override func viewWillTransitionToSize(size: CGSize,

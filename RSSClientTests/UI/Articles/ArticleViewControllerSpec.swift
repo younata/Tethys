@@ -192,6 +192,10 @@ class ArticleViewControllerSpec: QuickSpec {
             }
         }
 
+        it("does not show the loading spinner") {
+            expect(subject.backgroundSpinnerView.hidden) == true
+        }
+
         describe("setting the article") {
             let article = Article(title: "article", link: NSURL(string: "https://example.com/"), summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: NSDate(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"], enclosures: [])
             let article2 = Article(title: "article2", link: NSURL(string: "https://example.com/2"), summary: "summary2", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"], enclosures: [])
@@ -207,6 +211,10 @@ class ArticleViewControllerSpec: QuickSpec {
                 article.feed = feed
                 feed.addArticle(article)
                 subject.setArticle(article)
+            }
+
+            it("shows the background spinner view") {
+                expect(subject.backgroundSpinnerView.hidden) == false
             }
 
             it("asks the use case for the html to show") {

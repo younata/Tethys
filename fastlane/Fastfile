@@ -24,7 +24,8 @@ default_platform :ios
 platform :ios do
   desc 'Sets up (usually for CI)'
   lane :setup do
-    match(type: 'appstore', readonly: true)
+    match(type: 'development', app_identifier: 'com.rachelbrindle.RSSClient', readonly: true)
+    match(type: 'appstore', app_identifier: 'com.rachelbrindle.RSSClient', readonly: true)
     carthage(platform: 'iOS')
   end
 

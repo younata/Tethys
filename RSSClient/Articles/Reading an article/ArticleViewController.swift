@@ -150,6 +150,7 @@ public class ArticleViewController: UIViewController, Injectable {
     private func updateLeftBarButtonItem(traitCollection: UITraitCollection) {
         if traitCollection.horizontalSizeClass == .Regular {
             self.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
+            self.navigationItem.leftItemsSupplementBackButton = true
         } else {
             self.navigationItem.leftBarButtonItem = nil
         }

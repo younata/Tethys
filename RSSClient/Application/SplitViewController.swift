@@ -46,7 +46,7 @@ public class SplitViewController: UISplitViewController, Injectable {
 
         self.themeRepository.addSubscriber(self)
         self.delegate = self
-        self.preferredDisplayMode = .PrimaryOverlay
+        self.preferredDisplayMode = .AllVisible
     }
 }
 
@@ -62,14 +62,4 @@ extension SplitViewController: UISplitViewControllerDelegate {
         ontoPrimaryViewController primaryViewController: UIViewController) -> Bool {
             return self.collapseDetailViewController
     }
-
-    // swiftlint:disable line_length
-    public func primaryViewControllerForCollapsingSplitViewController(splitViewController: UISplitViewController) -> UIViewController? {
-        return self.viewControllers.first
-    }
-
-    public func targetDisplayModeForActionInSplitViewController(svc: UISplitViewController) -> UISplitViewControllerDisplayMode {
-        return .AllVisible
-    }
-    // swiftlint:enable line_length
 }

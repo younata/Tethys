@@ -11,7 +11,11 @@ public class ArticleViewController: UIViewController, Injectable {
     public func setArticle(article: Article?, read: Bool = true, show: Bool = true) {
         self.article = article
 
-        self.backgroundSpinnerView.hidden = article == nil
+        if let _ = article {
+            self.backgroundSpinnerView.startAnimating()
+        } else {
+            self.backgroundSpinnerView.stopAnimating()
+        }
 
         guard let article = article else { return }
         if show { self.showArticle(article, onWebView: self.content) }
@@ -90,7 +94,6 @@ public class ArticleViewController: UIViewController, Injectable {
     public private(set) lazy var backgroundSpinnerView: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView(activityIndicatorStyle: self.themeRepository.spinnerStyle)
         spinner.translatesAutoresizingMaskIntoConstraints = false
-        spinner.startAnimating()
         return spinner
     }()
 
@@ -112,7 +115,11 @@ public class ArticleViewController: UIViewController, Injectable {
         self.view.addSubview(self.content)
         self.view.addSubview(self.enclosuresList)
         self.view.addSubview(self.backgroundView)
-        self.backgroundSpinnerView.hidden = article == nil
+        if let _ = self.article {
+            self.backgroundSpinnerView.startAnimating()
+        } else {
+            self.backgroundSpinnerView.stopAnimating()
+        }
 
         self.content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
         self.content.autoPinEdge(.Bottom, toEdge: .Top, ofView: self.enclosuresList)

@@ -76,7 +76,7 @@ public class FindFeedViewController: UIViewController, WKNavigationDelegate, UIT
         self.reload = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self,
                                       action: #selector(FindFeedViewController.reloadWebPage))
 
-        let cancelTitle = NSLocalizedString("FindFeedViewController_Cancel", comment: "")
+        let cancelTitle = NSLocalizedString("Generic_Cancel", comment: "")
         self.cancelTextEntry = UIBarButtonItem(title: cancelTitle, style: .Plain,
             target: self, action: #selector(FindFeedViewController.dismissNavFieldKeyboard))
 
@@ -297,7 +297,7 @@ extension FindFeedViewController {
                     self.dismissViewControllerAnimated(true, completion: nil)
                 })
             }
-            let cancelTitle = NSLocalizedString("FindFeedViewController_Cancel", comment: "")
+            let cancelTitle = NSLocalizedString("Generic_Cancel", comment: "")
             alert.addAction(UIAlertAction(title: cancelTitle, style: .Cancel) { _ in
                 self.dismissViewControllerAnimated(true, completion: nil)
             })

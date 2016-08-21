@@ -639,8 +639,53 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                                 action?.handler(action, indexPath)
                                             }
 
-                                            it("should delete the feed from the data store") {
-                                                expect(dataUseCase.lastDeletedFeed).to(equal(feed))
+                                            it("does not yet delete the feed from the data store") {
+                                                expect(dataUseCase.lastDeletedFeed).to(beNil())
+                                            }
+
+                                            it("presents an alert asking for confirmation that the user wants to do this") {
+                                                expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                                guard let alert = subject.presentedViewController as? UIAlertController else { return }
+                                                expect(alert.preferredStyle) == UIAlertControllerStyle.Alert
+                                                expect(alert.title) == "Delete \(feed.displayTitle)?"
+
+                                                expect(alert.actions.count) == 2
+                                                expect(alert.actions.first?.title) == "Delete"
+                                                expect(alert.actions.last?.title) == "Cancel"
+                                            }
+
+                                            describe("tapping 'Delete'") {
+                                                beforeEach {
+                                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                                    guard let alert = subject.presentedViewController as? UIAlertController else { return }
+
+                                                    alert.actions.first?.handler(alert.actions.first!)
+                                                }
+
+                                                it("deletes the feed from the data store") {
+                                                    expect(dataUseCase.lastDeletedFeed) == feed
+                                                }
+
+                                                it("dismisses the alert") {
+                                                    expect(subject.presentedViewController).to(beNil())
+                                                }
+                                            }
+
+                                            describe("tapping 'Cancel'") {
+                                                beforeEach {
+                                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                                    guard let alert = subject.presentedViewController as? UIAlertController else { return }
+
+                                                    alert.actions.last?.handler(alert.actions.last!)
+                                                }
+
+                                                it("does not delete the feed from the data store") {
+                                                    expect(dataUseCase.lastDeletedFeed).to(beNil())
+                                                }
+
+                                                it("dismisses the alert") {
+                                                    expect(subject.presentedViewController).to(beNil())
+                                                }
                                             }
                                         }
                                     }
@@ -818,9 +863,54 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                             beforeEach {
                                                 action?.handler(action, indexPath)
                                             }
-                                            
-                                            it("should delete the feed from the data store") {
-                                                expect(dataUseCase.lastDeletedFeed).to(equal(feed))
+
+                                            it("does not yet delete the feed from the data store") {
+                                                expect(dataUseCase.lastDeletedFeed).to(beNil())
+                                            }
+
+                                            it("presents an alert asking for confirmation that the user wants to do this") {
+                                                expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                                guard let alert = subject.presentedViewController as? UIAlertController else { return }
+                                                expect(alert.preferredStyle) == UIAlertControllerStyle.Alert
+                                                expect(alert.title) == "Delete \(feed.displayTitle)?"
+
+                                                expect(alert.actions.count) == 2
+                                                expect(alert.actions.first?.title) == "Delete"
+                                                expect(alert.actions.last?.title) == "Cancel"
+                                            }
+
+                                            describe("tapping 'Delete'") {
+                                                beforeEach {
+                                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                                    guard let alert = subject.presentedViewController as? UIAlertController else { return }
+
+                                                    alert.actions.first?.handler(alert.actions.first!)
+                                                }
+
+                                                it("deletes the feed from the data store") {
+                                                    expect(dataUseCase.lastDeletedFeed) == feed
+                                                }
+
+                                                it("dismisses the alert") {
+                                                    expect(subject.presentedViewController).to(beNil())
+                                                }
+                                            }
+
+                                            describe("tapping 'Cancel'") {
+                                                beforeEach {
+                                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                                    guard let alert = subject.presentedViewController as? UIAlertController else { return }
+
+                                                    alert.actions.last?.handler(alert.actions.last!)
+                                                }
+
+                                                it("does not delete the feed from the data store") {
+                                                    expect(dataUseCase.lastDeletedFeed).to(beNil())
+                                                }
+                                                
+                                                it("dismisses the alert") {
+                                                    expect(subject.presentedViewController).to(beNil())
+                                                }
                                             }
                                         }
                                     }

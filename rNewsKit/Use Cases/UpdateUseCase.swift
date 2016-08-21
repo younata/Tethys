@@ -30,8 +30,10 @@ final class DefaultUpdateUseCase: UpdateUseCase {
     }
 
     func updateFeedsFromBackend(subscribers: [DataSubscriber]) -> Future<Result<Void, RNewsError>> {
-        for subscriber in subscribers {
-            subscriber.willUpdateFeeds()
+        self.mainQueue.addOperationWithBlock {
+            for subscriber in subscribers {
+                subscriber.willUpdateFeeds()
+            }
         }
         let date = self.userDefaults.objectForKey("pasiphae_last_update_date") as? NSDate
         let future = self.updateService.updateFeeds(date) { progress, total in

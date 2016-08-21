@@ -40,7 +40,6 @@
 "FeedsTableViewController_Table_EditAction_Edit" = "Edit";
 
 "FindFeedViewController_AddFeed" = "Add Feed";
-"FindFeedViewController_Cancel" = "Cancel";
 "FindFeedViewController_Commands_OpenURL" = "Open URL";
 "FindFeedViewController_Commands_Reload" = "Reload";
 "FindFeedViewController_URLBar_Placeholder" = "Enter URL";
@@ -124,6 +123,8 @@
 "Generic_Delete" = "Delete";
 "Generic_Edit" = "Edit";
 "Generic_Share" = "Share";
+"Generic_Cancel" = "Cancel";
+"Generic_ConfirmDelete" = "Delete %@?";
 
 "%ld enclosures" = "%ld enclosures";
 

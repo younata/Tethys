@@ -540,9 +540,21 @@ extension FeedsTableViewController: UITableViewDelegate {
             let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
             let delete = UITableViewRowAction(style: .Default, title: deleteTitle) {(_, indexPath: NSIndexPath!) in
                 let feed = self.feedAtIndexPath(indexPath)
-                self.feeds = self.feeds.filter { $0 != feed }
-                self.feedRepository.deleteFeed(feed)
-                tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                let confirmDelete = NSLocalizedString("Generic_ConfirmDelete", comment: "")
+                let deleteAlertTitle = NSString.localizedStringWithFormat(confirmDelete, feed.displayTitle) as String
+                let alert = UIAlertController(title: deleteAlertTitle, message: "", preferredStyle: .Alert)
+                alert.addAction(UIAlertAction(title: deleteTitle, style: .Destructive) { _ in
+                    self.feeds = self.feeds.filter { $0 != feed }
+                    self.feedRepository.deleteFeed(feed)
+                    tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                })
+                let cancelTitle = NSLocalizedString("Generic_Cancel", comment: "")
+                alert.addAction(UIAlertAction(title: cancelTitle, style: .Cancel) { _ in
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                    tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
+                })
+                self.presentViewController(alert, animated: true, completion: nil)
             }
 
             let readTitle = NSLocalizedString("FeedsTableViewController_Table_EditAction_MarkRead", comment: "")

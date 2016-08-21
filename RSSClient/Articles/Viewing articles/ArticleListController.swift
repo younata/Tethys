@@ -170,11 +170,25 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
                 return nil
             }
             let article = self.articleForIndexPath(indexPath)
-            let delete = UITableViewRowAction(style: .Default, title: NSLocalizedString("Generic_Delete", comment: ""),
+            let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
+            let delete = UITableViewRowAction(style: .Default, title: deleteTitle,
                 handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
-                    self.articles.remove(article)
-                    self.feedRepository.deleteArticle(article)
-                    tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+
+                    let confirmDelete = NSLocalizedString("Generic_ConfirmDelete", comment: "")
+                    let deleteAlertTitle = NSString.localizedStringWithFormat(confirmDelete, article.title) as String
+                    let alert = UIAlertController(title: deleteAlertTitle, message: "", preferredStyle: .Alert)
+                    alert.addAction(UIAlertAction(title: deleteTitle, style: .Destructive) { _ in
+                        self.articles.remove(article)
+                        self.feedRepository.deleteArticle(article)
+                        tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                        self.dismissViewControllerAnimated(true, completion: nil)
+                    })
+                    let cancelTitle = NSLocalizedString("Generic_Cancel", comment: "")
+                    alert.addAction(UIAlertAction(title: cancelTitle, style: .Cancel) { _ in
+                        tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
+                        self.dismissViewControllerAnimated(true, completion: nil)
+                    })
+                    self.presentViewController(alert, animated: true, completion: nil)
             })
             let unread = NSLocalizedString("ArticleListController_Cell_EditAction_MarkUnread", comment: "")
             let read = NSLocalizedString("ArticleListController_Cell_EditAction_MarkRead", comment: "")

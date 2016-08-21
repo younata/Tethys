@@ -356,12 +356,71 @@ class ArticleListControllerSpec: QuickSpec {
                     }
 
                     describe("the edit actions") {
-                        it("should delete the article with the first action item") {
+                        describe("the first action") {
+                            var action: UITableViewRowAction! = nil
                             let indexPath = NSIndexPath(forRow: 0, inSection: 0)
-                            if let delete = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.first {
-                                expect(delete.title).to(equal("Delete"))
-                                delete.handler(delete, indexPath)
-                                expect(dataRepository.lastDeletedArticle).to(equal(articles.first))
+
+                            beforeEach {
+                                action = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.first
+                            }
+
+                            it("states that it deletes the article") {
+                                expect(action?.title) == "Delete"
+                            }
+
+                            describe("tapping it") {
+                                beforeEach {
+                                    action.handler(action, indexPath)
+                                }
+
+                                it("does not yet delete the article") {
+                                    expect(dataRepository.lastDeletedArticle).to(beNil())
+                                }
+
+                                it("presents an alert asking for confirmation that the user wants to do this") {
+                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                    guard let alert = subject.presentedViewController as? UIAlertController else { return }
+                                    expect(alert.preferredStyle) == UIAlertControllerStyle.Alert
+                                    expect(alert.title) == "Delete \(articles.first!.title)?"
+
+                                    expect(alert.actions.count) == 2
+                                    expect(alert.actions.first?.title) == "Delete"
+                                    expect(alert.actions.last?.title) == "Cancel"
+                                }
+
+                                describe("tapping 'Delete'") {
+                                    beforeEach {
+                                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                        guard let alert = subject.presentedViewController as? UIAlertController else { return }
+
+                                        alert.actions.first?.handler(alert.actions.first!)
+                                    }
+
+                                    it("deletes the article") {
+                                        expect(dataRepository.lastDeletedArticle) == articles.first
+                                    }
+
+                                    it("dismisses the alert") {
+                                        expect(subject.presentedViewController).to(beNil())
+                                    }
+                                }
+
+                                describe("tapping 'Cancel'") {
+                                    beforeEach {
+                                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                        guard let alert = subject.presentedViewController as? UIAlertController else { return }
+
+                                        alert.actions.last?.handler(alert.actions.last!)
+                                    }
+
+                                    it("does not delete the article") {
+                                        expect(dataRepository.lastDeletedArticle).to(beNil())
+                                    }
+
+                                    it("dismisses the alert") {
+                                        expect(subject.presentedViewController).to(beNil())
+                                    }
+                                }
                             }
                         }
 

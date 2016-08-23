@@ -42,6 +42,71 @@ extension DataService {
         return self.batchSave([feed], articles: [], enclosures: [])
     }
 
+    func updateFeeds(feeds: [(Feed, ImportableFeed)], progress: (Int -> Void)) -> Future<Result<Void, RNewsError>> {
+        let promise = Promise<Result<Void, RNewsError>>()
+
+        let feedsToSave = feeds.map { $0.0 }
+        var articlesToSave: [Article] = []
+        var enclosuresToSave: [Enclosure] = []
+
+        var importTasks: [Void -> Void] = []
+
+        let checkIfFinished: Result<(Article, [Enclosure]), RNewsError> -> Void = { result in
+            switch result {
+            case let .Success(article, enclosures):
+                articlesToSave.append(article)
+                enclosuresToSave += enclosures
+                if importTasks.isEmpty {
+                    progress(1)
+                    self.batchSave(feedsToSave, articles: articlesToSave, enclosures: enclosures).then { _ in
+                        promise.resolve(.Success())
+                    }
+                } else {
+                    importTasks.popLast()?()
+                }
+            case let .Failure(error):
+                promise.resolve(.Failure(error))
+                return
+            }
+        }
+
+        for (feed, info) in feeds {
+            feed.title = info.title.stringByUnescapingHTML().stringByStrippingHTML()
+            feed.summary = info.description
+
+            let articles: [ImportableArticle] = info.importableArticles.filter { $0.title.isEmpty == false }
+
+            if articles.isEmpty {
+                continue
+            }
+
+            for item in articles {
+                importTasks.append {
+                    let filter: rNewsKit.Article -> Bool = { article in
+                        return item.title == article.title || item.url == article.link
+                    }
+                    let article = feed.articlesArray.filter(filter).first
+                    if let article = article ?? articlesToSave.filter(filter).first {
+                        self.updateArticle(article, item: item, feedURL: info.link).then(checkIfFinished)
+                    } else {
+                        self.createArticle(feed) { article in
+                            feed.addArticle(article)
+                            self.updateArticle(article, item: item, feedURL: info.link).then(checkIfFinished)
+                        }
+                    }
+                }
+            }
+        }
+
+        if let task = importTasks.popLast() {
+            task()
+        } else {
+            let result = Result<Void, RNewsError>(value: ())
+            promise.resolve(result)
+        }
+        return promise.future
+    }
+
     func updateFeed(feed: Feed, info: ImportableFeed) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
         feed.title = info.title.stringByUnescapingHTML().stringByStrippingHTML()

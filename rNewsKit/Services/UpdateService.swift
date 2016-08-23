@@ -86,7 +86,7 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
             return self.sinopeRepository.fetch(date).map {result -> Result<(NSDate, [rNewsKit.Feed]), RNewsError> in
                 switch result {
                 case let .Success(date, sinopeFeeds):
-                    progress(sinopeFeeds.count, 2 * sinopeFeeds.count)
+                    progress(1, 3)
                     return .Success(date, self.updateFeedsFromSinopeFeeds(sinopeFeeds, progressCallback: progress))
                 case let .Failure(error):
                     return .Failure(RNewsError.Backend(error))
@@ -96,15 +96,11 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
 
     private func updateFeedsFromSinopeFeeds(sinopeFeeds: [Sinope.Feed], progressCallback: (Int, Int) -> Void) ->
         [rNewsKit.Feed] {
-            var current = sinopeFeeds.count
-            let total = current * 2
             let dataService = self.dataServiceFactory.currentDataService
             guard let feedsArray = dataService.allFeeds().wait()?.value else { return [] }
             let feeds = Array(feedsArray)
-            var updatedFeeds: [rNewsKit.Feed] = []
-            for importableFeed in sinopeFeeds {
-                current += 1
-                progressCallback(current, total)
+
+            let feedsToUpdate: [(rNewsKit.Feed, ImportableFeed)] = sinopeFeeds.flatMap { importableFeed in
                 let dataService = self.dataServiceFactory.currentDataService
                 let feed: rNewsKit.Feed
                 if let existingFeed = feeds.filter({ $0.url == importableFeed.link }).first {
@@ -114,20 +110,16 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
 
                     if let createdFeed = promise.wait()?.value {
                         feed = createdFeed
-                    } else { return [] }
+                    } else { return nil }
                 }
-
-                self.dataServiceFactory.currentDataService.updateFeed(feed, info: importableFeed).map { res -> Void in
-                    switch res {
-                    case .Success():
-                        updatedFeeds.append(feed)
-                        break
-                    case .Failure(_):
-                        break
-                    }
-                    }.wait()
+                return (feed, importableFeed)
             }
-            return updatedFeeds
+
+            self.dataServiceFactory.currentDataService.updateFeeds(feedsToUpdate, progress: {_ in
+                progressCallback(2, 3)
+            }).then({ _ in progressCallback(3, 3)}).wait()
+
+            return feedsToUpdate.map { $0.0 }
     }
 
     // MARK: NetworkClientDelegate

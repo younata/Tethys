@@ -96,11 +96,13 @@ class UpdateServiceSpec: QuickSpec {
                 }
 
                 it("calls the callback as the feeds are processed") {
-                    expect(progressCallbackCallCount) == 2
+                    expect(progressCallbackCallCount) == 3
                     expect(progressCallbackArgs[0].0) == 1
-                    expect(progressCallbackArgs[0].1) == 2
+                    expect(progressCallbackArgs[0].1) == 3
                     expect(progressCallbackArgs[1].0) == 2
-                    expect(progressCallbackArgs[1].1) == 2
+                    expect(progressCallbackArgs[1].1) == 3
+                    expect(progressCallbackArgs[2].0) == 3
+                    expect(progressCallbackArgs[2].1) == 3
                 }
 
                 it("should resolve the promise with all updated feeds") {
@@ -114,7 +116,7 @@ class UpdateServiceSpec: QuickSpec {
                 }
             }
 
-            fdescribe("and the request succeeds with feeds that don't exist locally yet") {
+            describe("and the request succeeds with feeds that don't exist locally yet") {
                 let updatedDate = NSDate()
 
                 beforeEach {
@@ -144,11 +146,13 @@ class UpdateServiceSpec: QuickSpec {
                 }
 
                 it("calls the callback as the feeds are processed") {
-                    expect(progressCallbackCallCount) == 2
+                    expect(progressCallbackCallCount) == 3
                     expect(progressCallbackArgs[0].0) == 1
-                    expect(progressCallbackArgs[0].1) == 2
+                    expect(progressCallbackArgs[0].1) == 3
                     expect(progressCallbackArgs[1].0) == 2
-                    expect(progressCallbackArgs[1].1) == 2
+                    expect(progressCallbackArgs[1].1) == 3
+                    expect(progressCallbackArgs[2].0) == 3
+                    expect(progressCallbackArgs[2].1) == 3
                 }
 
                 it("should resolve the promise with all updated feeds") {

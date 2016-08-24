@@ -107,7 +107,7 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
                 progressCallback(current, total)
                 let dataService = self.dataServiceFactory.currentDataService
                 let feed: rNewsKit.Feed
-                if let existingFeed = feeds.filter({ $0.url == importableFeed.link }).first {
+                if let existingFeed = feeds.objectPassingTest({ $0.url == importableFeed.link }) {
                     feed = existingFeed
                 } else {
                     let promise = dataService.createFeed { $0.url = importableFeed.url }

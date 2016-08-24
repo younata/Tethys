@@ -481,15 +481,15 @@ class QueryFeedViewControllerSpec: QuickSpec {
                         }
                     }
 
-                    context("when the feed has a tag that starts with '_'") {
+                    context("when the feed has a tag that starts with '`'") {
                         beforeEach {
                             subject.feed = Feed(title: "a title", url: nil, summary: "a summary", query: "a query",
-                                tags: ["_custom summary"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                tags: ["`custom summary"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                             cell = subject.tableView(subject.tableView,
                                 cellForRowAtIndexPath: indexPath) as? TextFieldCell
                         }
 
-                        it("should use that tag as the title, minus the leading '_'") {
+                        it("should use that tag as the title, minus the leading '`'") {
                             expect(cell?.textField.text).to(equal("custom summary"))
                         }
                     }

@@ -271,7 +271,7 @@ public class SettingsViewController: UIViewController, Injectable {
 
         let quickAction = quickActions[row]
 
-        return feeds.filter({$0.title == quickAction.localizedTitle}).first
+        return feeds.objectPassingTest({$0.title == quickAction.localizedTitle})
     }
 }
 

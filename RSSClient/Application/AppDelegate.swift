@@ -103,7 +103,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 // swiftlint:disable conditional_binding_cascade
                     self.feedRepository.feeds().then {
                         if case let Result.Success(feeds) = $0,
-                            let feed = feeds.filter({ return $0.title == feedTitle }).first {
+                            let feed = feeds.objectPassingTest({ return $0.title == feedTitle }) {
                                 feedsViewController.showFeed(feed, animated: false)
                                 self.analytics.logEvent("QuickActionUsed", data: ["kind": "View Feed"])
                                 completionHandler(true)
@@ -152,7 +152,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 articleID = userInfo["article"] as? String {
                     self.feedRepository.feeds().then() {
                         if case let Result.Success(feeds) = $0 {
-                            if let feed = feeds.filter({ return $0.title == feedTitle }).first,
+                            if let feed = feeds.objectPassingTest({ return $0.title == feedTitle }),
                                 article = feed.articlesArray.filter({ $0.identifier == articleID }).first {
                                     self.createControllerHierarchy(feed, article: article)
                             }
@@ -166,9 +166,9 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                         guard case let Result.Success(feeds) = $0 else { return }
                         guard let article = feeds.reduce(Array<Article>(), combine: {articles, feed in
                             return articles + Array(feed.articlesArray)
-                        }).filter({ article in
+                        }).objectPassingTest({ article in
                                 return article.identifier == uniqueID
-                        }).first, feed = article.feed else {
+                        }), feed = article.feed else {
                             return
                         }
                         self.createControllerHierarchy(feed, article: article)

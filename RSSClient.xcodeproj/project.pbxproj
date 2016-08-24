@@ -93,6 +93,7 @@
 		892152011B8FA33900CBF7E4 /* X.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 892151FF1B8FA31800CBF7E4 /* X.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		892152031B8FA93C00CBF7E4 /* ArticleListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892152021B8FA93C00CBF7E4 /* ArticleListViewController.swift */; };
 		8924D8E91A094CF5003B7529 /* github2.css in Resources */ = {isa = PBXBuildFile; fileRef = 8924D8E81A094CF5003B7529 /* github2.css */; };
+		8924FE2E1D6D51DC0060D26D /* Array+rNewsKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924FE2D1D6D51DC0060D26D /* Array+rNewsKit.swift */; };
 		892CBDEA1C7A27FE0062E578 /* FakeArticleUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892CBDE91C7A27FE0062E578 /* FakeArticleUseCase.swift */; };
 		892E30E31CE2C84300E327A0 /* FakeScriptService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E30E21CE2C84300E327A0 /* FakeScriptService.swift */; };
 		892E30E41CE78D4900E327A0 /* FakeScriptService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E30E21CE2C84300E327A0 /* FakeScriptService.swift */; };
@@ -640,6 +641,7 @@
 		892151FF1B8FA31800CBF7E4 /* X.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = X.framework; path = ../Carthage/Build/Mac/X.framework; sourceTree = "<group>"; };
 		892152021B8FA93C00CBF7E4 /* ArticleListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListViewController.swift; sourceTree = "<group>"; };
 		8924D8E81A094CF5003B7529 /* github2.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = github2.css; sourceTree = "<group>"; };
+		8924FE2D1D6D51DC0060D26D /* Array+rNewsKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+rNewsKit.swift"; sourceTree = "<group>"; };
 		892CBDE91C7A27FE0062E578 /* FakeArticleUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeArticleUseCase.swift; sourceTree = "<group>"; };
 		892E30E21CE2C84300E327A0 /* FakeScriptService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeScriptService.swift; sourceTree = "<group>"; };
 		892E30E71CF218F600E327A0 /* FeedRepositorySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedRepositorySpec.swift; sourceTree = "<group>"; };
@@ -1113,6 +1115,7 @@
 				8903F5C21D414E5000546099 /* PasiphaeFactory.swift */,
 				8903F5AC1D4002FD00546099 /* AccountRepository.swift */,
 				89AFFA031D4BF234002255E8 /* DefaultAccountRepositoryDelegate.swift */,
+				8924FE2D1D6D51DC0060D26D /* Array+rNewsKit.swift */,
 			);
 			path = rNewsKit;
 			sourceTree = "<group>";
@@ -2304,6 +2307,7 @@
 				894304501B450BFB000078DC /* CoreDataArticle.swift in Sources */,
 				89122E611C5D725D00004B1F /* DatabaseMigrator.swift in Sources */,
 				894304521B450C19000078DC /* CoreDataFeed.swift in Sources */,
+				8924FE2E1D6D51DC0060D26D /* Array+rNewsKit.swift in Sources */,
 				89150FD31CFE851A00A4B270 /* RealmFetchResultsController.swift in Sources */,
 				89150FD01CFE272F00A4B270 /* FetchResultsController.swift in Sources */,
 				898979661B70849000218498 /* DefaultDatabaseUseCase.swift in Sources */,

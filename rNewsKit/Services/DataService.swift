@@ -76,13 +76,16 @@ extension DataService {
             }
         }
 
+        let articleUrls = articles.flatMap { $0.url.absoluteString }
+        let articlesPredicate = NSPredicate(format: "link IN %@", articleUrls)
+        let feedArticles = Array(feed.articlesArray.filterWithPredicate(articlesPredicate))
         for item in articles {
+            let filter: rNewsKit.Article -> Bool = { article in
+                return item.url == article.link
+            }
+            let article = feedArticles.objectPassingTest(filter)
             importTasks.append {
-                let filter: rNewsKit.Article -> Bool = { article in
-                    return item.title == article.title || item.url == article.link
-                }
-                let article = feed.articlesArray.filter(filter).first
-                if let article = article ?? articlesToSave.filter(filter).first {
+                if let article = article ?? articlesToSave.objectPassingTest(filter) {
                     self.updateArticle(article, item: item, feedURL: info.link).then(checkIfFinished)
                 } else {
                     self.createArticle(feed) { article in

@@ -36,7 +36,7 @@ import RealmSwift
     }
 
     public var displayTitle: String {
-        if let tagTitle = self.tags.filter({$0.hasPrefix("~")}).last {
+        if let tagTitle = self.tags.objectPassingTest({$0.hasPrefix("~")}) {
             return tagTitle.substringFromIndex(tagTitle.startIndex.successor())
         }
         if self.title.isEmpty {
@@ -61,7 +61,7 @@ import RealmSwift
     }
 
     public var displaySummary: String {
-        if let tagSummary = self.tags.filter({$0.hasPrefix("_")}).last {
+        if let tagSummary = self.tags.objectPassingTest({$0.hasPrefix("`")}) {
             return tagSummary.substringFromIndex(tagSummary.startIndex.successor())
         }
         return self.summary

@@ -114,7 +114,8 @@ class UpdateServiceSpec: QuickSpec {
                 }
             }
 
-            fdescribe("and the request succeeds with feeds that don't exist locally yet") {
+
+            describe("and the request succeeds with feeds that don't exist locally yet") {
                 let updatedDate = NSDate()
 
                 beforeEach {

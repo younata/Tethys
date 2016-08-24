@@ -88,7 +88,7 @@ public struct LocalNotificationHandler: NotificationHandler, Injectable {
         return self.feedRepository.feeds().map { result -> Result<Article, RNewsError> in
             switch result {
             case let .Success(feeds):
-                let feed = feeds.filter({ $0.identifier == feedID }).first
+                let feed = feeds.objectPassingTest({ $0.identifier == feedID })
                 if let article = feed?.articlesArray.filter({ $0.identifier == articleID }).first {
                     return .Success(article)
                 }

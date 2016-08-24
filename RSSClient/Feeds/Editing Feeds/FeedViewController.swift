@@ -156,9 +156,7 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
             let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TableViewCell
             cell.textLabel?.text = ""
             cell.themeRepository = self.themeRepository
-            if let title = feed?.tags.filter({$0.hasPrefix("~")}).first {
-                cell.textLabel?.text = title.substringFromIndex(title.startIndex.successor())
-            } else if let title = feed?.displayTitle where !title.isEmpty {
+            if let title = feed?.displayTitle where !title.isEmpty {
                 cell.textLabel?.text = title
             }
             return cell
@@ -168,9 +166,7 @@ public class FeedViewController: UIViewController, UITableViewDelegate, UITableV
             let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TableViewCell
             cell.textLabel?.text = ""
             cell.themeRepository = self.themeRepository
-            if let summary = feed?.tags.filter({$0.hasPrefix("`")}).first {
-                cell.textLabel?.text = summary.substringFromIndex(summary.startIndex.successor())
-            } else if let summary = feed?.displaySummary where !summary.isEmpty {
+            if let summary = feed?.displaySummary where !summary.isEmpty {
                 cell.textLabel?.text = summary
             } else {
                 cell.textLabel?.text = NSLocalizedString("FeedViewController_Cell_Summary_Placeholder", comment: "")

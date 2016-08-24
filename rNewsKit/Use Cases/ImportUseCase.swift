@@ -129,7 +129,7 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
             let url = self.canonicalURLForFeedAtURL(url)
             self.feedRepository.feeds().then {
                 guard case let Result.Success(feeds) = $0 else { return }
-                let existingFeed = feeds.filter({ $0.url == url }).first
+                let existingFeed = feeds.objectPassingTest({ $0.url == url })
                 guard existingFeed == nil else {
                     return callback()
                 }

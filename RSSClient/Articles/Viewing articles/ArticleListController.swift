@@ -72,6 +72,7 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
 
         if !self.previewMode {
             self.tableView.tableHeaderView = self.searchBar
+            self.navigationItem.rightBarButtonItem = self.editButtonItem()
 
             if let feed = self.feed {
                 self.navigationItem.title = feed.displayTitle

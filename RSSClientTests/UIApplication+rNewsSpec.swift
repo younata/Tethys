@@ -21,28 +21,28 @@ class UIApplicationRNewsSpec: QuickSpec {
         it("increments the badge number when an article is marked as unread") {
             let currentBadgeCount = subject.applicationIconBadgeNumber
 
-            let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+            let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
             subject.markedArticles([article], asRead: false)
 
             expect(subject.applicationIconBadgeNumber - currentBadgeCount) == 1
         }
 
         it("decrements the badge number when an article is marked as read") {
-            let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+            let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
             subject.markedArticles([article], asRead: true)
 
             expect(subject.applicationIconBadgeNumber).to(equal(0))
         }
 
         it("decrements the badge number if an unread article is deleted") {
-            let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+            let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
             subject.deletedArticle(article)
 
             expect(subject.applicationIconBadgeNumber).to(equal(0))
         }
 
         it("does nothing to the badge number if a read article is deleted") {
-            let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: true, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+            let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: true, estimatedReadingTime: 0, feed: nil, flags: [])
             subject.deletedArticle(article)
 
             expect(subject.applicationIconBadgeNumber).to(equal(1))

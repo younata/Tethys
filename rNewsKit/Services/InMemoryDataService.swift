@@ -12,7 +12,6 @@ class InMemoryDataService: DataService {
 
     var feeds = [Feed]()
     var articles = [Article]()
-    var enclosures = [Enclosure]()
 
     func createFeed(callback: Feed -> Void) -> Future<Result<Feed, RNewsError>> {
         let feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0,
@@ -26,18 +25,10 @@ class InMemoryDataService: DataService {
 
     func createArticle(feed: Feed?, callback: Article -> Void) {
         let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil,
-                              identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [],
-                              enclosures: [])
+                              identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
         feed?.addArticle(article)
         callback(article)
         self.articles.append(article)
-    }
-
-    func createEnclosure(article: Article?, callback: Enclosure -> Void) {
-        let enclosure = Enclosure(url: NSURL(), kind: "", article: article)
-        article?.addEnclosure(enclosure)
-        callback(enclosure)
-        self.enclosures.append(enclosure)
     }
 
     func allFeeds() -> Future<Result<DataStoreBackedArray<Feed>, RNewsError>> {
@@ -73,49 +64,29 @@ class InMemoryDataService: DataService {
         }
         article.feed?.removeArticle(article)
         article.feed = nil
-        for _ in 0..<article.enclosuresArray.count {
-            guard let enclosure = article.enclosuresArray.first else { break }
-            self.deleteEnclosure(enclosure)
-            article.removeEnclosure(enclosure)
-        }
         let promise = Promise<Result<Void, RNewsError>>()
         promise.resolve(.Success())
         return promise.future
     }
 
-    func deleteEnclosure(enclosure: Enclosure) -> Future<Result<Void, RNewsError>> {
-        if let index = self.enclosures.indexOf(enclosure) {
-            self.enclosures.removeAtIndex(index)
-        }
-        enclosure.article?.removeEnclosure(enclosure)
-        enclosure.article = nil
-        let promise = Promise<Result<Void, RNewsError>>()
-        promise.resolve(.Success())
-        return promise.future
-    }
-
-    func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int) ->
-        Future<Result<([Feed], [Article], [Enclosure]), RNewsError>> {
-            let promise = Promise<Result<([Feed], [Article], [Enclosure]), RNewsError>>()
+    func batchCreate(feedCount: Int, articleCount: Int) ->
+        Future<Result<([Feed], [Article]), RNewsError>> {
+            let promise = Promise<Result<([Feed], [Article]), RNewsError>>()
             var feeds: [Feed] = []
             var articles: [Article] = []
-            var enclosures: [Enclosure] = []
             for _ in 0..<feedCount {
                 self.createFeed { feeds.append($0) }
             }
             for _ in 0..<articleCount {
                 self.createArticle(nil) { articles.append($0) }
             }
-            for _ in 0..<enclosureCount {
-                self.createEnclosure(nil) { enclosures.append($0) }
-            }
 
-            let success = Result<([Feed], [Article], [Enclosure]), RNewsError>(value: (feeds, articles, enclosures))
+            let success = Result<([Feed], [Article]), RNewsError>(value: (feeds, articles))
             promise.resolve(success)
             return promise.future
     }
 
-    func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Result<Void, RNewsError>> {
+    func batchSave(feeds: [Feed], articles: [Article]) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
         promise.resolve(.Success())
         return promise.future
@@ -124,7 +95,6 @@ class InMemoryDataService: DataService {
     func deleteEverything() -> Future<Result<Void, RNewsError>> {
         self.feeds = []
         self.articles = []
-        self.enclosures = []
 
         let promise = Promise<Result<Void, RNewsError>>()
         promise.resolve(.Success())

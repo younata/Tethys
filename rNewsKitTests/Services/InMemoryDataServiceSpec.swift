@@ -59,21 +59,6 @@ class InMemoryDataServiceSpec: QuickSpec {
                 guard let article = articles.first else { return }
                 expect(article.title) == "Hello"
             }
-
-            it("new enclosure creates a new enclosure object") {
-                let expectation = self.expectationWithDescription("Create Enclosure")
-
-                subject.createEnclosure(nil) { enclosure in
-                    enclosure.kind = "hi"
-                    expectation.fulfill()
-                }
-
-                self.waitForExpectationsWithTimeout(1, handler: nil)
-
-                let enclosures = subject.enclosures
-                expect(enclosures.count) == 1
-                expect(enclosures.first?.kind) == "hi"
-            }
         }
 
         describe("after creates") {
@@ -82,8 +67,6 @@ class InMemoryDataServiceSpec: QuickSpec {
             var article1: rNewsKit.Article!
             var article2: rNewsKit.Article!
             var article3: rNewsKit.Article!
-            var enclosure1: rNewsKit.Enclosure!
-            var enclosure2: rNewsKit.Enclosure!
 
             beforeEach {
                 feed1 = Feed(title: "feed1", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
@@ -91,30 +74,24 @@ class InMemoryDataServiceSpec: QuickSpec {
 
                 article1 = Article(title: "article1", link: NSURL(string: "https://example.com/article1"), summary: "",
                     authors: [], published: NSDate(timeIntervalSince1970: 15), updatedAt: nil, identifier: "",
-                    content: "", read: false, estimatedReadingTime: 0, feed: feed1, flags: [], enclosures: [])
+                    content: "", read: false, estimatedReadingTime: 0, feed: feed1, flags: [])
                 feed1.addArticle(article1)
 
                 article2 = Article(title: "article2", link: nil, summary: "", authors: [],
                     published: NSDate(timeIntervalSince1970: 10), updatedAt: nil, identifier: "", content: "",
-                    read: false, estimatedReadingTime: 0, feed: feed1, flags: [], enclosures: [])
+                    read: false, estimatedReadingTime: 0, feed: feed1, flags: [])
                 feed1.addArticle(article2)
 
                 article3 = Article(title: "article3", link: nil, summary: "", authors: [],
                     published: NSDate(timeIntervalSince1970: 5), updatedAt: nil, identifier: "", content: "",
-                    read: false, estimatedReadingTime: 0, feed: feed2, flags: [], enclosures: [])
+                    read: false, estimatedReadingTime: 0, feed: feed2, flags: [])
                 feed2.addArticle(article3)
 
                 article3.relatedArticles.append(article2)
                 article2.relatedArticles.append(article3)
 
-                enclosure1 = Enclosure(url: NSURL(string: "")!, kind: "1", article: article1)
-                article1.addEnclosure(enclosure1)
-                enclosure2 = Enclosure(url: NSURL(string: "")!, kind: "2", article: article2)
-                article2.addEnclosure(enclosure2)
-
                 subject.feeds = [feed1, feed2]
                 subject.articles = [article1, article2, article3]
-                subject.enclosures = [enclosure1, enclosure2]
             }
 
             describe("read operations") {
@@ -166,7 +143,6 @@ class InMemoryDataServiceSpec: QuickSpec {
                     expect(subject.feeds).toNot(contain(feed1))
                     expect(subject.articles).toNot(contain(article1))
                     expect(subject.articles).toNot(contain(article2))
-                    expect(subject.enclosures).to(beEmpty())
                 }
 
                 it("deletes articles") {
@@ -180,7 +156,6 @@ class InMemoryDataServiceSpec: QuickSpec {
                     self.waitForExpectationsWithTimeout(1, handler: nil)
 
                     expect(subject.articles).toNot(contain(article1))
-                    expect(subject.enclosures).toNot(contain(enclosure1))
                 }
             }
         }

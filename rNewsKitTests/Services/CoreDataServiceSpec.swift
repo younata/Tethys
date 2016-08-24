@@ -77,24 +77,6 @@ class CoreDataServiceSpec: QuickSpec {
                 guard let article = articles.first else { return }
                 expect(article.title) == "Hello"
             }
-
-            it("new enclosure creates a new enclosure object") {
-                let expectation = self.expectationWithDescription("Create Enclosure")
-
-                subject.createEnclosure(nil) { enclosure in
-                    enclosure.kind = "hi"
-                    expectation.fulfill()
-                }
-
-                self.waitForExpectationsWithTimeout(1, handler: nil)
-
-                let managedObjects = coreDataEntities("Enclosure", matchingPredicate: NSPredicate(value: true), managedObjectContext: objectContext)
-                expect(managedObjects is [CoreDataEnclosure]) == true
-                guard let enclosures = managedObjects as? [CoreDataEnclosure] else { return }
-                expect(enclosures.count) == 1
-                guard let enclosure = enclosures.first else { return }
-                expect(enclosure.kind) == "hi"
-            }
         }
 
         describe("after creates") {
@@ -146,10 +128,6 @@ class CoreDataServiceSpec: QuickSpec {
                     article1 = Article(coreDataArticle: cdarticle1, feed: feed1)
                     article2 = Article(coreDataArticle: cdarticle2, feed: feed1)
                     article3 = Article(coreDataArticle: cdarticle3, feed: feed2)
-
-                    _ = Enclosure(coreDataEnclosure: cdenclosure1, article: article1)
-                    _ = Enclosure(coreDataEnclosure: cdenclosure2, article: article1)
-
                 }
             }
 

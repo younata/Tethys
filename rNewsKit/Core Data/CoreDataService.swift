@@ -59,25 +59,6 @@ class CoreDataService: DataService {
         }
     }
 
-    func createEnclosure(article: Article?, callback: (Enclosure) -> (Void)) {
-        let entityDescription = NSEntityDescription.entityForName("Enclosure",
-            inManagedObjectContext: self.managedObjectContext)!
-        self.managedObjectContext.performBlock {
-            let cdenclosure = CoreDataEnclosure(entity: entityDescription,
-                insertIntoManagedObjectContext: self.managedObjectContext)
-            let _ = try? self.managedObjectContext.save()
-            let enclosure = Enclosure(coreDataEnclosure: cdenclosure, article: article)
-            article?.addEnclosure(enclosure)
-            enclosure.article = article
-            let operation = NSBlockOperation {
-                callback(enclosure)
-            }
-            self.mainQueue.addOperations([operation], waitUntilFinished: true)
-
-            self.updateEnclosure(enclosure)
-        }
-    }
-
     // Mark: - Read
 
     func allFeeds() -> Future<Result<DataStoreBackedArray<Feed>, RNewsError>> {
@@ -142,16 +123,13 @@ class CoreDataService: DataService {
 
     // Mark: - Batch
 
-    func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int) ->
-        Future<Result<([Feed], [Article], [Enclosure]), RNewsError>> {
-            let promise = Promise<Result<([Feed], [Article], [Enclosure]), RNewsError>>()
+    func batchCreate(feedCount: Int, articleCount: Int) ->
+        Future<Result<([Feed], [Article]), RNewsError>> {
+            let promise = Promise<Result<([Feed], [Article]), RNewsError>>()
             let feedEntityDescription = NSEntityDescription.entityForName("Feed",
                 inManagedObjectContext: self.managedObjectContext)!
             let articleEntityDescription = NSEntityDescription.entityForName("Article",
                 inManagedObjectContext: self.managedObjectContext)!
-            let enclosureEntityDescription = NSEntityDescription.entityForName("Enclosure",
-                inManagedObjectContext: self.managedObjectContext)!
-
             self.managedObjectContext.performBlock {
                 autoreleasepool {
                     let cdfeeds = (0..<feedCount).map { _ in
@@ -162,31 +140,25 @@ class CoreDataService: DataService {
                         return CoreDataArticle(entity: articleEntityDescription,
                             insertIntoManagedObjectContext: self.managedObjectContext)
                     }
-                    let cdenclosures = (0..<enclosureCount).map { _ in
-                        return CoreDataEnclosure(entity: enclosureEntityDescription,
-                            insertIntoManagedObjectContext: self.managedObjectContext)
-                    }
                     let _ = try? self.managedObjectContext.save()
 
                     let feeds = cdfeeds.map(Feed.init)
                     let articles = cdarticles.map { Article(coreDataArticle: $0, feed: nil) }
-                    let enclosures = cdenclosures.map { Enclosure(coreDataEnclosure: $0, article: nil) }
 
                     self.mainQueue.addOperationWithBlock {
-                        promise.resolve(.Success(feeds, articles, enclosures))
+                        promise.resolve(.Success(feeds, articles))
                     }
                 }
             }
             return promise.future
     }
 
-    func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Result<Void, RNewsError>> {
+    func batchSave(feeds: [Feed], articles: [Article]) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
         self.managedObjectContext.performBlock {
             autoreleasepool {
                 feeds.forEach(self.updateFeed)
                 articles.forEach(self.updateArticle)
-                enclosures.forEach(self.updateEnclosure)
             }
 
             self.mainQueue.addOperationWithBlock {
@@ -239,10 +211,6 @@ class CoreDataService: DataService {
         return self.coreDataArticlesForArticles([article]).first
     }
 
-    private func coreDataEnclosureForEnclosure(enclosure: Enclosure) -> CoreDataEnclosure? {
-        return self.coreDataEnclosuresForEnclosures([enclosure]).first
-    }
-
     private func coreDataFeedsForFeeds(feeds: [Feed]) -> [CoreDataFeed] {
         let request = NSFetchRequest()
         request.entity = NSEntityDescription.entityForName("Feed",
@@ -259,15 +227,6 @@ class CoreDataService: DataService {
         let ids = articles.flatMap { $0.articleID as? NSManagedObjectID }
         request.predicate = NSPredicate(format: "self IN %@", ids)
         return (try? self.managedObjectContext.executeFetchRequest(request) ?? []) as? [CoreDataArticle] ?? []
-    }
-
-    private func coreDataEnclosuresForEnclosures(enclosures: [Enclosure]) -> [CoreDataEnclosure] {
-        let request = NSFetchRequest()
-        request.entity = NSEntityDescription.entityForName("Enclosure",
-            inManagedObjectContext: managedObjectContext)
-        let ids = enclosures.flatMap { $0.enclosureID as? NSManagedObjectID }
-        request.predicate = NSPredicate(format: "self IN %@", ids)
-        return (try? self.managedObjectContext.executeFetchRequest(request) ?? []) as? [CoreDataEnclosure] ?? []
     }
 
     // synchronous update!
@@ -314,21 +273,6 @@ class CoreDataService: DataService {
         }
     }
 
-    private func updateEnclosure(enclosure: Enclosure) {
-        if let cdenclosure = self.coreDataEnclosureForEnclosure(enclosure) {
-            cdenclosure.url = enclosure.url.absoluteString
-            cdenclosure.kind = enclosure.kind
-
-            if let article = enclosure.article, cdarticle = self.coreDataArticleForArticle(article) {
-                cdenclosure.article = cdarticle
-            }
-
-            let _ = try? self.managedObjectContext.save()
-
-            self.managedObjectContext.refreshObject(cdenclosure, mergeChanges: false)
-        }
-    }
-
     private func deleteFeed(feed: Feed, deleteArticles: Bool) {
         if let cdfeed = self.coreDataFeedForFeed(feed) {
             if deleteArticles {
@@ -369,15 +313,6 @@ class CoreDataService: DataService {
             #if os(iOS)
                 self.searchIndex?.deleteIdentifierFromIndex([article.identifier]) {_ in }
             #endif
-        }
-    }
-
-    private func privateDeleteEnclosure(enclosure: Enclosure) {
-        if let cdenclosure = self.coreDataEnclosureForEnclosure(enclosure) {
-            self.managedObjectContext.deleteObject(cdenclosure)
-            let _ = try? self.managedObjectContext.save()
-
-            self.managedObjectContext.refreshObject(cdenclosure, mergeChanges: false)
         }
     }
 }

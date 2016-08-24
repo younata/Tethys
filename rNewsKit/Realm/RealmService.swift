@@ -70,19 +70,6 @@ class RealmService: DataService {
         }
     }
 
-    func createEnclosure(article: Article?, callback: (Enclosure) -> (Void)) {
-        self.realmTransaction {
-            let realmEnclosure = self.realm.create(RealmEnclosure)
-            let enclosure = Enclosure(realmEnclosure: realmEnclosure, article: article)
-            article?.addEnclosure(enclosure)
-
-            let operation = NSBlockOperation { callback(enclosure) }
-            self.mainQueue.addOperations([operation], waitUntilFinished: true)
-
-            self.synchronousUpdateEnclosure(enclosure, realmEnclosure: realmEnclosure)
-        }
-    }
-
     // Mark: - Read
 
     func allFeeds() -> Future<Result<DataStoreBackedArray<Feed>, RNewsError>> {
@@ -150,29 +137,26 @@ class RealmService: DataService {
 
     // Mark: - Batch
 
-    func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int) ->
-        Future<Result<([Feed], [Article], [Enclosure]), RNewsError>> {
-            let promise = Promise<Result<([Feed], [Article], [Enclosure]), RNewsError>>()
+    func batchCreate(feedCount: Int, articleCount: Int) ->
+        Future<Result<([Feed], [Article]), RNewsError>> {
+            let promise = Promise<Result<([Feed], [Article]), RNewsError>>()
             self.realmTransaction {
                 let realmFeeds = (0..<feedCount).map { _ in self.realm.create(RealmFeed) }
                 let realmArticles = (0..<articleCount).map { _ in self.realm.create(RealmArticle) }
-                let realmEnclosures = (0..<enclosureCount).map { _ in self.realm.create(RealmEnclosure) }
 
                 let feeds = realmFeeds.map(Feed.init)
                 let articles = realmArticles.map { Article(realmArticle: $0, feed: nil) }
-                let enclosures = realmEnclosures.map { Enclosure(realmEnclosure: $0, article: nil) }
 
                 self.mainQueue.addOperationWithBlock {
-                    promise.resolve(.Success(feeds, articles, enclosures))
+                    promise.resolve(.Success(feeds, articles))
                 }
             }
             return promise.future
     }
 
-    func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Result<Void, RNewsError>> {
+    func batchSave(feeds: [Feed], articles: [Article]) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
         self.realmTransaction {
-            enclosures.forEach { self.synchronousUpdateEnclosure($0) }
             articles.forEach { self.synchronousUpdateArticle($0) }
             feeds.forEach { self.synchronousUpdateFeed($0) }
 
@@ -206,11 +190,6 @@ class RealmService: DataService {
     private func realmArticleForArticle(article: Article) -> RealmArticle? {
         guard let articleID = article.articleID as? String else { return nil }
         return self.realm.objectForPrimaryKey(RealmArticle.self, key: articleID)
-    }
-
-    private func realmEnclosureForEnclosure(enclosure: Enclosure) -> RealmEnclosure? {
-        guard let enclosureID = enclosure.enclosureID as? String else { return nil }
-        return self.realm.objectForPrimaryKey(RealmEnclosure.self, key: enclosureID)
     }
 
     // Synchronous update!
@@ -282,19 +261,6 @@ class RealmService: DataService {
         }
     }
 
-    private func synchronousUpdateEnclosure(enclosure: Enclosure, realmEnclosure: RealmEnclosure? = nil) {
-        self.startRealmTransaction()
-
-        if let renclosure = realmEnclosure ?? self.realmEnclosureForEnclosure(enclosure) {
-            renclosure.url = enclosure.url.absoluteString
-            renclosure.kind = enclosure.kind
-
-            if let article = enclosure.article, rarticle = self.realmArticleForArticle(article) {
-                renclosure.article = rarticle
-            }
-        }
-    }
-
     private func synchronousDeleteFeed(feed: Feed) {
         if let realmFeed = self.realmFeedForFeed(feed) {
             feed.articlesArray.forEach(self.synchronousDeleteArticle)
@@ -304,14 +270,7 @@ class RealmService: DataService {
 
     private func synchronousDeleteArticle(article: Article) {
         if let realmArticle = self.realmArticleForArticle(article) {
-            article.enclosuresArray.forEach(self.synchronousDeleteEnclosure)
             self.realm.delete(realmArticle)
-        }
-    }
-
-    private func synchronousDeleteEnclosure(enclosure: Enclosure) {
-        if let realmEnclosure = self.realmEnclosureForEnclosure(enclosure) {
-            self.realm.delete(realmEnclosure)
         }
     }
 

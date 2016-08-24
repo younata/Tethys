@@ -15,7 +15,7 @@ class ArticleSpec: QuickSpec {
                 realm.deleteAll()
             }
 
-            subject = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+            subject = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
         }
 
         describe("creating from a CoreDataArticle") {
@@ -57,9 +57,9 @@ class ArticleSpec: QuickSpec {
 
             it("should report two articles not created with datastore objects with the same property equality as equal") {
                 let date = NSDate()
-                let a = Article(title: "", link: nil, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
-                let b = Article(title: "blah", link: NSURL(), summary: "hello", authors: [Author("anAuthor")], published: NSDate(timeIntervalSince1970: 0), updatedAt: nil, identifier: "hi", content: "hello there", read: true, estimatedReadingTime: 70, feed: nil, flags: ["flag"], enclosures: [])
-                let c = Article(title: "", link: nil, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                let a = Article(title: "", link: nil, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                let b = Article(title: "blah", link: NSURL(), summary: "hello", authors: [Author("anAuthor")], published: NSDate(timeIntervalSince1970: 0), updatedAt: nil, identifier: "hi", content: "hello there", read: true, estimatedReadingTime: 70, feed: nil, flags: ["flag"])
+                let c = Article(title: "", link: nil, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
 
                 expect(a).toNot(equal(b))
                 expect(a).to(equal(c))
@@ -92,113 +92,12 @@ class ArticleSpec: QuickSpec {
 
             it("should report two articles not created with coredataarticles with the same property equality as having the same hashValue") {
                 let date = NSDate()
-                let a = Article(title: "", link: nil, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
-                let b = Article(title: "blah", link: NSURL(), summary: "hello", authors: [Author("anAuthor")], published: NSDate(timeIntervalSince1970: 0), updatedAt: nil, identifier: "hi", content: "hello there", read: true, estimatedReadingTime: 60, feed: nil, flags: ["flag"], enclosures: [])
-                let c = Article(title: "", link: nil, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                let a = Article(title: "", link: nil, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                let b = Article(title: "blah", link: NSURL(), summary: "hello", authors: [Author("anAuthor")], published: NSDate(timeIntervalSince1970: 0), updatedAt: nil, identifier: "hi", content: "hello there", read: true, estimatedReadingTime: 60, feed: nil, flags: ["flag"])
+                let c = Article(title: "", link: nil, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
 
                 expect(a.hashValue).toNot(equal(b.hashValue))
                 expect(a.hashValue).to(equal(c.hashValue))
-            }
-        }
-
-        describe("adding an enclosure") {
-            var enclosure: Enclosure! = nil
-
-            beforeEach {
-                enclosure = Enclosure(url: NSURL(string: "http://example.com")!, kind: "", article: nil)
-            }
-
-            context("when the enclosure is not associated with any article") {
-                it("should add the enclosure and set the enclosure's article if it's not set already") {
-                    subject.addEnclosure(enclosure)
-
-                    expect(enclosure.updated) == true
-                    expect(subject.updated) == true
-                    expect(enclosure.article).to(equal(subject))
-                    expect(subject.enclosuresArray).to(contain(enclosure))
-                }
-            }
-
-            context("when the enclosure is already associated with this article") {
-
-                beforeEach {
-                    subject = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [enclosure])
-
-                    expect(enclosure.article).to(equal(subject))
-                    expect(subject.enclosuresArray).to(contain(enclosure))
-                    expect(subject.updated) == false
-                }
-
-                it("essentially no-ops") {
-                    subject.addEnclosure(enclosure)
-
-                    expect(subject.updated) == false
-                    expect(enclosure.article).to(equal(subject))
-                    expect(subject.enclosuresArray).to(contain(enclosure))
-                }
-            }
-
-            context("when the enclosure is associated with a different article") {
-                var otherArticle: Article! = nil
-
-                beforeEach {
-                    otherArticle = Article(title: "blah", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [enclosure])
-                }
-
-                it("should remove the enclosure from the other article and add it to this article") {
-                    subject.addEnclosure(enclosure)
-
-                    expect(enclosure.updated) == true
-                    expect(subject.updated) == true
-                    expect(otherArticle.updated) == true
-                    expect(enclosure.article).to(equal(subject))
-                    expect(subject.enclosuresArray).to(contain(enclosure))
-                    expect(otherArticle.enclosuresArray).toNot(contain(enclosure))
-                }
-            }
-        }
-
-        describe("removing an enclosure") {
-            var enclosure: Enclosure! = nil
-
-            beforeEach {
-                enclosure = Enclosure(url: NSURL(string: "http://example.com")!, kind: "", article: nil)
-            }
-
-            context("when the enclosure is not associated with any article") {
-                it("essentially no-ops") {
-                    subject.removeEnclosure(enclosure)
-                    expect(subject.updated) == false
-                }
-            }
-
-            context("when the enclosure is associated with this article") {
-                beforeEach {
-                    subject = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [enclosure])
-                    expect(enclosure.article).to(equal(subject))
-                    expect(subject.enclosuresArray).to(contain(enclosure))
-                }
-
-                it("should remove the enclosure from the article") {
-                    subject.removeEnclosure(enclosure)
-                    expect(subject.updated) == true
-                    expect(subject.enclosuresArray).toNot(contain(enclosure))
-                    expect(enclosure.article).to(beNil())
-                }
-            }
-
-            context("when the enclosure is associated with a different article") {
-                var otherArticle: Article! = nil
-
-                beforeEach {
-                    otherArticle = Article(title: "blah", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [enclosure])
-                }
-
-                it("essentially no-ops") {
-                    subject.removeEnclosure(enclosure)
-                    expect(subject.updated) == false
-                    expect(otherArticle.updated) == false
-                }
             }
         }
 
@@ -213,7 +112,7 @@ class ArticleSpec: QuickSpec {
 
             context("trying to add the same flag again") {
                 beforeEach {
-                    subject = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: ["flag"], enclosures: [])
+                    subject = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: ["flag"])
                 }
 
                 it("should no-op") {
@@ -227,7 +126,7 @@ class ArticleSpec: QuickSpec {
         describe("removing a flag") {
             context("that is already a flag in the article") {
                 it("should remove the flag") {
-                    subject = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: ["flag"], enclosures: [])
+                    subject = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: ["flag"])
                     subject.removeFlag("flag")
 
                     expect(subject.flags).toNot(contain("flags"))
@@ -288,8 +187,8 @@ class ArticleSpec: QuickSpec {
             var b: Article!
 
             beforeEach {
-                a = Article(title: "a", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
-                b = Article(title: "b", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                a = Article(title: "a", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                b = Article(title: "b", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
             }
 
             it("doesn't let itself be added as a related article") {
@@ -402,14 +301,9 @@ class ArticleSpec: QuickSpec {
                     expect(subject.updated) == true
                 }
 
-                it("enclosures") {
-                    subject.addEnclosure(Enclosure(url: NSURL(string: "http://example.com")!, kind: "", article: nil))
-                    expect(subject.updated) == true
-                }
-
                 it("relatedArticles") {
-                    let a = Article(title: "a", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
-                    let b = Article(title: "b", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                    let a = Article(title: "a", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                    let b = Article(title: "b", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
 
                     a.addRelatedArticle(b)
 

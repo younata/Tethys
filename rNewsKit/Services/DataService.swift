@@ -22,7 +22,6 @@ protocol DataService: class {
 
     func createFeed(callback: Feed -> Void) -> Future<Result<Feed, RNewsError>>
     func createArticle(feed: Feed?, callback: Article -> Void)
-    func createEnclosure(article: Article?, callback: Enclosure -> Void)
 
     func allFeeds() -> Future<Result<DataStoreBackedArray<Feed>, RNewsError>>
     func articlesMatchingPredicate(predicate: NSPredicate) -> Future<Result<DataStoreBackedArray<Article>, RNewsError>>
@@ -30,16 +29,16 @@ protocol DataService: class {
     func deleteFeed(feed: Feed) -> Future<Result<Void, RNewsError>>
     func deleteArticle(article: Article) -> Future<Result<Void, RNewsError>>
 
-    func batchCreate(feedCount: Int, articleCount: Int, enclosureCount: Int) ->
-        Future<Result<([Feed], [Article], [Enclosure]), RNewsError>>
-    func batchSave(feeds: [Feed], articles: [Article], enclosures: [Enclosure]) -> Future<Result<Void, RNewsError>>
+    func batchCreate(feedCount: Int, articleCount: Int) ->
+        Future<Result<([Feed], [Article]), RNewsError>>
+    func batchSave(feeds: [Feed], articles: [Article]) -> Future<Result<Void, RNewsError>>
 
     func deleteEverything() -> Future<Result<Void, RNewsError>>
 }
 
 extension DataService {
     func saveFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {
-        return self.batchSave([feed], articles: [], enclosures: [])
+        return self.batchSave([feed], articles: [])
     }
 
     func updateFeed(feed: Feed, info: ImportableFeed) -> Future<Result<Void, RNewsError>> {
@@ -54,17 +53,15 @@ extension DataService {
         }
 
         var articlesToSave: [Article] = []
-        var enclosuresToSave: [Enclosure] = []
 
         var importTasks: [Void -> Void] = []
 
-        let checkIfFinished: Result<(Article, [Enclosure]), RNewsError> -> Void = { result in
+        let checkIfFinished: Result<(Article), RNewsError> -> Void = { result in
             switch result {
-            case let .Success(article, enclosures):
+            case let .Success(article):
                 articlesToSave.append(article)
-                enclosuresToSave += enclosures
                 if importTasks.isEmpty {
-                    self.batchSave([feed], articles: articlesToSave, enclosures: enclosures).then { _ in
+                    self.batchSave([feed], articles: articlesToSave).then { _ in
                         promise.resolve(.Success())
                     }
                 } else {
@@ -106,7 +103,7 @@ extension DataService {
     }
 
     func updateArticle(article: Article, item: ImportableArticle, feedURL: NSURL) ->
-        Future<Result<(Article, [Enclosure]), RNewsError>> {
+        Future<Result<Article, RNewsError>> {
             let characterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
             let authors = item.importableAuthors.map {
                 return rNewsKit.Author(name: $0.name, email: $0.email)
@@ -135,14 +132,7 @@ extension DataService {
 
             article.authors = authors
 
-            let enclosures: [Enclosure] = item.importableEnclosures.flatMap {
-                if let result = self.upsertEnclosureForArticle(article, fromItem: $0).wait() {
-                    return result
-                }
-                return nil
-            }
-
-            let promise = Promise<Result<(Article, [Enclosure]), RNewsError>>()
+            let promise = Promise<Result<Article, RNewsError>>()
 
             let parser = WebPageParser(string: content) { urls in
                 let links = urls.flatMap { NSURL(string: $0.absoluteString, relativeToURL: feedURL)?.absoluteString }
@@ -150,7 +140,7 @@ extension DataService {
                     switch result {
                     case let .Success(related):
                         related.forEach(article.addRelatedArticle)
-                        promise.resolve(.Success(article, enclosures))
+                        promise.resolve(.Success(article))
                     case let .Failure(error):
                         promise.resolve(.Failure(error))
                     }
@@ -186,26 +176,5 @@ extension DataService {
             item.expirationDate = NSDate.distantFuture()
             self.searchIndex?.addItemsToIndex([item]) {_ in }
         #endif
-    }
-
-    func upsertEnclosureForArticle(article: Article, fromItem item: ImportableEnclosure) -> Future<Enclosure?> {
-            let promise = Promise<Enclosure?>()
-
-            let url = item.url
-            for enclosure in article.enclosuresArray where enclosure.url == url {
-                if enclosure.kind != item.type {
-                    enclosure.kind = item.type
-                    promise.resolve(enclosure)
-                } else {
-                    promise.resolve(nil)
-                }
-                return promise.future
-            }
-            self.createEnclosure(article) {enclosure in
-                enclosure.url = url
-                enclosure.kind = item.type
-            }
-            promise.resolve(nil)
-            return promise.future
     }
 }

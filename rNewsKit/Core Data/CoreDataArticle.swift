@@ -13,6 +13,5 @@ class CoreDataArticle: NSManagedObject {
     @NSManaged var estimatedReadingTime: NSNumber?
     @NSManaged var flags: [String]
     @NSManaged var feed: CoreDataFeed?
-    @NSManaged var enclosures: Set<CoreDataEnclosure>
     @NSManaged var relatedArticles: Set<CoreDataArticle>
 }

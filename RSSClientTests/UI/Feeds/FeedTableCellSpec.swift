@@ -67,10 +67,10 @@ class FeedTableCellSpec: QuickSpec {
                 beforeEach {
                     let article1 = Article(title: "a", link: nil, summary: "", authors: [],
                         published: NSDate(), updatedAt: nil, identifier: "", content: "",
-                        read: true, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                        read: true, estimatedReadingTime: 0, feed: nil, flags: [])
                     let article2 = Article(title: "b", link: nil, summary: "", authors: [],
                         published: NSDate(), updatedAt: nil, identifier: "", content: "",
-                        read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                        read: false, estimatedReadingTime: 0, feed: nil, flags: [])
                     feed = Feed(title: "Hello", url: nil, summary: "World", query: nil, tags: [],
                         waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
                     subject.feed = feed

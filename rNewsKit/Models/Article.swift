@@ -15,7 +15,6 @@ import JavaScriptCore
     var read: Bool { get set }
     weak var feed: Feed? { get }
     var flags: [String] { get }
-    var enclosures: [Enclosure] { get }
     var relatedArticlesArray: [Article] { get }
 }
 
@@ -105,11 +104,6 @@ import JavaScriptCore
     }
     dynamic public private(set) var flags: [String] = []
 
-    @available(*, deprecated=1.0, renamed="enclosuresArray")
-    dynamic public var enclosures: [Enclosure] { return Array(self.enclosuresArray) }
-
-    public internal(set) var enclosuresArray: DataStoreBackedArray<Enclosure>
-
     public private(set) var relatedArticles = DataStoreBackedArray<Article>()
     public var relatedArticlesArray: [Article] { return Array(self.relatedArticles) }
 
@@ -160,7 +154,7 @@ import JavaScriptCore
     // swiftlint:disable function_parameter_count
     public init(title: String, link: NSURL?, summary: String, authors: [Author], published: NSDate,
         updatedAt: NSDate?, identifier: String, content: String, read: Bool, estimatedReadingTime: Int,
-        feed: Feed?, flags: [String], enclosures: [Enclosure]) {
+        feed: Feed?, flags: [String]) {
             self.title = title
             self.link = link
             self.summary = summary
@@ -173,11 +167,7 @@ import JavaScriptCore
             self.feed = feed
             self.flags = flags
             self.estimatedReadingTime = estimatedReadingTime
-            self.enclosuresArray = DataStoreBackedArray(enclosures)
             super.init()
-            for enclosure in self.enclosuresArray {
-                enclosure.article = self
-            }
             self.updated = false
     }
     // swiftlint:enable function_parameter_count
@@ -208,14 +198,7 @@ import JavaScriptCore
         }
         self.feed = feed
         self.flags = article.flags
-        self.enclosuresArray = DataStoreBackedArray()
         super.init()
-        self.enclosuresArray = DataStoreBackedArray(entityName: "Enclosure",
-            predicate: NSPredicate(format: "article == %@", article),
-            managedObjectContext: article.managedObjectContext!,
-            conversionFunction: {
-                return Enclosure(coreDataEnclosure: $0 as! CoreDataEnclosure, article: self)
-        })
         self.relatedArticles = DataStoreBackedArray(entityName: "Article",
             predicate: NSPredicate(format: "self in %@", article.relatedArticles),
             managedObjectContext: article.managedObjectContext!,
@@ -247,15 +230,8 @@ import JavaScriptCore
         estimatedReadingTime = article.estimatedReadingTime
         self.feed = feed
         self.flags = article.flags.map { $0.string }
-        self.enclosuresArray = DataStoreBackedArray()
         super.init()
-        let enclosures = article.enclosures.map { Enclosure(realmEnclosure: $0, article: self) }
         if let realm = article.realm {
-            self.enclosuresArray = DataStoreBackedArray(realmDataType: RealmEnclosure.self,
-                predicate: NSPredicate(format: "article.id == %@", article.id),
-                realmConfiguration: realm.configuration,
-                conversionFunction: { Enclosure(realmEnclosure: $0 as! RealmEnclosure, article: self) } )
-
             let relatedArticleIds = article.relatedArticles.map { $0.id }
             self.relatedArticles = DataStoreBackedArray(realmDataType: RealmArticle.self,
                 predicate: NSPredicate(format: "id IN %@", relatedArticleIds),
@@ -268,8 +244,6 @@ import JavaScriptCore
                     } else { feed = nil }
                     return Article(realmArticle: article, feed: feed)
             })
-        } else {
-            self.enclosuresArray = DataStoreBackedArray(enclosures)
         }
         self.articleID = article.id
         self.updated = false
@@ -285,29 +259,6 @@ import JavaScriptCore
     public func removeFlag(flag: String) {
         if self.flags.contains(flag) {
             self.flags = self.flags.filter { $0 != flag }
-            self.updated = true
-        }
-    }
-
-    public func addEnclosure(enclosure: Enclosure) {
-        if !self.enclosuresArray.contains(enclosure) {
-            self.enclosuresArray.append(enclosure)
-            if let otherArticle = enclosure.article where otherArticle != self {
-                otherArticle.removeEnclosure(enclosure)
-            }
-            if enclosure.article != self {
-                enclosure.article = self
-            }
-            self.updated = true
-        }
-    }
-
-    public func removeEnclosure(enclosure: Enclosure) {
-        if self.enclosuresArray.contains(enclosure) {
-            self.enclosuresArray.remove(enclosure)
-            if enclosure.article == self {
-                enclosure.article = nil
-            }
             self.updated = true
         }
     }

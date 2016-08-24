@@ -6,7 +6,7 @@ protocol DatabaseMigratorType {
 struct DatabaseMigrator: DatabaseMigratorType {
     func migrate(from: DataService, to: DataService, progress: Double -> Void, finish: Void -> Void) {
         var progressCalls: Double = 0
-        let expectedProgressCalls: Double = 6
+        let expectedProgressCalls: Double = 4
 
         let updateProgress = {
             progressCalls += 1
@@ -19,7 +19,6 @@ struct DatabaseMigrator: DatabaseMigratorType {
             }
             updateProgress()
             let oldArticles = oldFeeds.reduce([Article]()) { $0 + Array($1.articlesArray) }
-            let oldEnclosures = oldArticles.reduce([Enclosure]()) { $0 + Array($1.enclosuresArray) }
 
             to.allFeeds().then { newResult in
                 guard case let .Success(existingFeeds) = newResult else {
@@ -27,63 +26,42 @@ struct DatabaseMigrator: DatabaseMigratorType {
                 }
                 updateProgress()
                 let existingArticles = existingFeeds.reduce([Article]()) { $0 + Array($1.articlesArray) }
-                let existingEnclosures = existingArticles.reduce([Enclosure]()) { $0 + Array($1.enclosuresArray) }
 
                 let feedsToMigrate = oldFeeds.filter { !existingFeeds.contains($0) }
                 let articlesToMigrate = oldArticles.filter { !existingArticles.contains($0) }
-                let enclosuresToMigrate = oldEnclosures.filter { !existingEnclosures.contains($0) }
 
                 var feedsDictionary: [Feed: Feed] = [:]
                 var articlesDictionary: [Article: Article] = [:]
-                var enclosuresDictionary: [Enclosure: Enclosure] = [:]
 
-                to.batchCreate(feedsToMigrate.count,
-                    articleCount: articlesToMigrate.count,
-                    enclosureCount: enclosuresToMigrate.count).then { createResult in
-                        guard case let .Success(newFeeds, newArticles, newEnclosures) = createResult else {
-                            return
-                        }
-                        for (idx, oldFeed) in feedsToMigrate.enumerate() {
-                            let newFeed = newFeeds[idx]
-                            feedsDictionary[oldFeed] = newFeed
-                        }
-                        feedsDictionary.forEach(self.migrateFeed)
+                to.batchCreate(feedsToMigrate.count, articleCount: articlesToMigrate.count).then { createResult in
+                    guard case let .Success(newFeeds, newArticles) = createResult else {
+                        return
+                    }
+                    for (idx, oldFeed) in feedsToMigrate.enumerate() {
+                        let newFeed = newFeeds[idx]
+                        feedsDictionary[oldFeed] = newFeed
+                    }
+                    feedsDictionary.forEach(self.migrateFeed)
 
+                    updateProgress()
+
+                    for (idx, oldArticle) in articlesToMigrate.enumerate() {
+                        let newArticle = newArticles[idx]
+                        articlesDictionary[oldArticle] = newArticle
+
+                        if let oldFeed = oldArticle.feed, feed = feedsDictionary[oldFeed] {
+                            newArticle.feed = feed
+                            feed.addArticle(newArticle)
+                        }
+                    }
+                    articlesDictionary.forEach(self.migrateArticle)
+
+                    updateProgress()
+
+                    to.batchSave(Array(feedsDictionary.values), articles: Array(articlesDictionary.values)).then { _ in
                         updateProgress()
-
-                        for (idx, oldArticle) in articlesToMigrate.enumerate() {
-                            let newArticle = newArticles[idx]
-                            articlesDictionary[oldArticle] = newArticle
-
-                            if let oldFeed = oldArticle.feed, feed = feedsDictionary[oldFeed] {
-                                newArticle.feed = feed
-                                feed.addArticle(newArticle)
-                            }
-                        }
-                        articlesDictionary.forEach(self.migrateArticle)
-
-                        updateProgress()
-
-                        for (idx, oldEnclosure) in enclosuresToMigrate.enumerate() {
-                            let newEnclosure = newEnclosures[idx]
-                            enclosuresDictionary[oldEnclosure] = newEnclosure
-
-                            if let oldArticle = oldEnclosure.article, article = articlesDictionary[oldArticle] {
-                                newEnclosure.article = article
-                                article.addEnclosure(newEnclosure)
-                            }
-
-                        }
-                        enclosuresDictionary.forEach(self.migrateEnclosure)
-
-                        updateProgress()
-
-                        to.batchSave(Array(feedsDictionary.values),
-                            articles: Array(articlesDictionary.values),
-                            enclosures: Array(enclosuresDictionary.values)).then { _ in
-                                updateProgress()
-                                finish()
-                        }
+                        finish()
+                    }
                 }
             }
         }
@@ -134,10 +112,5 @@ struct DatabaseMigrator: DatabaseMigratorType {
         for flag in oldArticle.flags {
             newArticle.addFlag(flag)
         }
-    }
-
-    private func migrateEnclosure(from oldEnclosure: Enclosure, to newEnclosure: Enclosure) {
-        newEnclosure.url = oldEnclosure.url
-        newEnclosure.kind = oldEnclosure.kind
     }
 }

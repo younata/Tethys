@@ -72,31 +72,15 @@ class RealmServiceSpec: QuickSpec {
                 expect(article.title) == "Hello"
             }
 
-            it("new enclosure creates a new enclosure object") {
-                let expectation = self.expectationWithDescription("Create Enclosure")
-
-                subject.createEnclosure(nil) { enclosure in
-                    enclosure.kind = "hi"
-                    expectation.fulfill()
-                }
-
-                self.waitForExpectationsWithTimeout(1, handler: nil)
-
-                let enclosures = realm.objects(RealmEnclosure)
-                expect(enclosures.count) == 1
-                expect(enclosures.first?.kind) == "hi"
-            }
-
             it("can batch create things") {
                 let expectation = self.expectationWithDescription("Batch Create")
 
-                subject.batchCreate(2, articleCount: 3, enclosureCount: 4).then { _ in
+                subject.batchCreate(2, articleCount: 3).then { _ in
                     expectation.fulfill()
                 }
 
                 expect(realm.objects(RealmFeed).count) == 2
                 expect(realm.objects(RealmArticle).count) == 3
-                expect(realm.objects(RealmEnclosure).count) == 4
             }
         }
 
@@ -108,7 +92,6 @@ class RealmServiceSpec: QuickSpec {
             var article3: rNewsKit.Article!
 
             beforeEach {
-
                 realm.beginWrite()
                 let realmFeed1 = RealmFeed()
                 let realmFeed2 = RealmFeed()
@@ -152,9 +135,6 @@ class RealmServiceSpec: QuickSpec {
                 article1 = Article(realmArticle: realmArticle1, feed: feed1)
                 article2 = Article(realmArticle: realmArticle2, feed: feed1)
                 article3 = Article(realmArticle: realmArticle3, feed: feed2)
-
-                _ = Enclosure(realmEnclosure: realmEnclosure1, article: article1)
-                _ = Enclosure(realmEnclosure: realmEnclosure2, article: article1)
             }
 
             describe("read operations") {
@@ -199,7 +179,7 @@ class RealmServiceSpec: QuickSpec {
 
                         article1.summary = "Hello world!"
 
-                        subject.batchSave([], articles: [article1], enclosures: []).then { _ in
+                        subject.batchSave([], articles: [article1]).then { _ in
                             expectation.fulfill()
                         }
 

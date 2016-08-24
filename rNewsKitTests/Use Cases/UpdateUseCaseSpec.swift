@@ -28,11 +28,11 @@ class UpdateUseCaseSpec: QuickSpec {
 
             article1 = Article(title: "b", link: NSURL(string: "https://example.com/article1.html"),
                 summary: "<p>Hello world!</p>", authors: [], published: NSDate(), updatedAt: nil, identifier: "article1",
-                content: "", read: false, estimatedReadingTime: 0, feed: feed1, flags: [], enclosures: [])
+                content: "", read: false, estimatedReadingTime: 0, feed: feed1, flags: [])
 
             article2 = Article(title: "c", link: NSURL(string: "https://example.com/article2.html"),
                 summary: "<p>Hello world!</p>", authors: [], published: NSDate(), updatedAt: nil, identifier: "article2",
-                content: "", read: true, estimatedReadingTime: 0, feed: feed1, flags: [], enclosures: [])
+                content: "", read: true, estimatedReadingTime: 0, feed: feed1, flags: [])
 
             feed1.addArticle(article1)
             feed1.addArticle(article2)

@@ -116,7 +116,7 @@ class DataStoreBackedArraySpec: QuickSpec {
             }
 
             it("should allow itself to be appended to") {
-                let article = Article(title: "025", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                let article = Article(title: "025", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
 
                 subject.append(article)
 
@@ -163,7 +163,7 @@ class DataStoreBackedArraySpec: QuickSpec {
                 let expectedArticles = articles.filter { $0.title != toRemove.title }
                 expect(Array(subject)) == expectedArticles
 
-                let article = Article(title: "025", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                let article = Article(title: "025", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
                 subject.append(article)
                 expect(subject.count) == totalObjectCount
                 expect(subject.remove(article).wait()) == true
@@ -288,7 +288,7 @@ class DataStoreBackedArraySpec: QuickSpec {
             }
 
             it("should allow itself to be appended to") {
-                let article = Article(title: "025", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                let article = Article(title: "025", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
 
                 subject.append(article)
 
@@ -340,7 +340,7 @@ class DataStoreBackedArraySpec: QuickSpec {
                 let expectedArticles = articles.filter { $0.title != toRemove.title }
                 expect(Array(subject)) == expectedArticles
 
-                let article = Article(title: "025", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [], enclosures: [])
+                let article = Article(title: "025", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
                 subject.append(article)
                 expect(subject.count) == totalObjectCount
                 expect(subject.remove(article).wait()) == true

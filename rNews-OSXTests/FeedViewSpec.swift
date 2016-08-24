@@ -154,10 +154,10 @@ class FeedViewSpec: QuickSpec {
         context("when configured with a feed with unread articles") {
             let article1 = Article(title: "a", link: nil, summary: "", authors: [],
                 published: NSDate(), updatedAt: nil, identifier: "", content: "",
-                read: true, feed: nil, flags: [], enclosures: [])
+                read: true, feed: nil, flags: [])
             let article2 = Article(title: "b", link: nil, summary: "", authors: [],
                 published: NSDate(), updatedAt: nil, identifier: "", content: "",
-                read: false, feed: nil, flags: [], enclosures: [])
+                read: false, feed: nil, flags: [])
             let feed = Feed(title: "Hello", url: nil, summary: "World", query: nil, tags: [],
                 waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
 

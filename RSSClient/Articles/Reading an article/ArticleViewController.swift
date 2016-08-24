@@ -33,9 +33,6 @@ public class ArticleViewController: UIViewController, Injectable {
 
     public var content = UIWebView(forAutoLayout: ())
 
-    public let enclosuresList = EnclosuresList(frame: CGRect.zero)
-    private var enclosuresListHeight: NSLayoutConstraint?
-
     public private(set) lazy var shareButton: UIBarButtonItem = {
         return UIBarButtonItem(barButtonSystemItem: .Action, target: self,
                                action: #selector(ArticleViewController.share))
@@ -74,14 +71,6 @@ public class ArticleViewController: UIViewController, Injectable {
     private func showArticle(article: Article, onWebView webView: UIWebView) {
         webView.loadHTMLString(self.articleUseCase.readArticle(article), baseURL: article.link)
 
-        let enclosures = article.enclosuresArray.filter(enclosureIsSupported)
-        self.view.layoutIfNeeded()
-        if !enclosures.isEmpty {
-            self.enclosuresListHeight?.constant = (enclosures.count == 1 ? 70 : 100)
-        } else {
-            self.enclosuresListHeight?.constant = 0
-        }
-        self.enclosuresList.configure(DataStoreBackedArray(enclosures), viewController: self)
         self.view.layoutIfNeeded()
 
         webView.scrollView.scrollIndicatorInsets.bottom = 0
@@ -113,7 +102,6 @@ public class ArticleViewController: UIViewController, Injectable {
         self.navigationController?.setToolbarHidden(false, animated: false)
 
         self.view.addSubview(self.content)
-        self.view.addSubview(self.enclosuresList)
         self.view.addSubview(self.backgroundView)
         if let _ = self.article {
             self.backgroundSpinnerView.startAnimating()
@@ -122,19 +110,14 @@ public class ArticleViewController: UIViewController, Injectable {
         }
 
         self.content.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
-        self.content.autoPinEdge(.Bottom, toEdge: .Top, ofView: self.enclosuresList)
-        self.enclosuresList.autoPinEdgeToSuperviewEdge(.Leading)
-        self.enclosuresList.autoPinEdgeToSuperviewEdge(.Trailing)
-        self.view.addConstraint(NSLayoutConstraint(item: self.enclosuresList, attribute: .Bottom, relatedBy: .Equal,
+        self.view.addConstraint(NSLayoutConstraint(item: self.content, attribute: .Bottom, relatedBy: .Equal,
             toItem: self.bottomLayoutGuide, attribute: .Top, multiplier: 1, constant: 0))
-        self.enclosuresListHeight = self.enclosuresList.autoSetDimension(.Height, toSize: 0)
 
         self.updateLeftBarButtonItem(self.traitCollection)
 
         self.backgroundView.autoPinEdgesToSuperviewEdges()
 
         self.themeRepository.addSubscriber(self)
-        self.enclosuresList.themeRepository = self.themeRepository
         self.configureContent()
     }
 

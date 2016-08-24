@@ -31,7 +31,6 @@ class ArticleCellSpec: QuickSpec {
                 expect(subject.published.textColor) == themeRepository.textColor
                 expect(subject.author.textColor) == themeRepository.textColor
                 expect(subject.readingTime.textColor) == themeRepository.textColor
-                expect(subject.enclosures.textColor) == themeRepository.textColor
             }
 
             it("changes the cell's background colors") {
@@ -77,10 +76,6 @@ class ArticleCellSpec: QuickSpec {
             expect(subject.unread.unread) != 0
         }
 
-        it("should not show the enclosures label") {
-            expect(subject.enclosures.hidden) == true
-        }
-
         context("setting an read article") {
             beforeEach {
                 subject.article = readArticle
@@ -115,49 +110,6 @@ class ArticleCellSpec: QuickSpec {
                 dateFormatter.timeZone = NSCalendar.currentCalendar().timeZone
 
                 expect(subject.published.text) == dateFormatter.stringFromDate(readArticle.updatedAt!)
-            }
-        }
-
-        context("setting an article with a supported enclosure") {
-            beforeEach {
-                let enclosure = Enclosure(url: NSURL(string: "https://example.com/enclosure")!, kind: "video/mp4", article: nil)
-                let article = Article(title: "title", link: nil, summary: "summary", authors: [], published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 15, feed: nil, flags: [], enclosures: [enclosure])
-                enclosure.article = article
-                subject.article = article
-            }
-
-            it("should show the enclosures label indicating 1 item") {
-                expect(subject.enclosures.hidden) == false
-                expect(subject.enclosures.text) == "1 item"
-            }
-        }
-
-        context("setting an article with multiple supported enclosures") {
-            beforeEach {
-                let enclosure = Enclosure(url: NSURL(string: "https://example.com/enclosure")!, kind: "video/mp4", article: nil)
-                let enclosure2 = Enclosure(url: NSURL(string: "https://example.com/enclosure2")!, kind: "video/mp4", article: nil)
-                let article = Article(title: "title", link: nil, summary: "summary", authors: [], published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 15, feed: nil, flags: [], enclosures: [enclosure, enclosure2])
-                enclosure.article = article
-                enclosure2.article = article
-                subject.article = article
-            }
-
-            it("should show the enclosures label indicating 2 items") {
-                expect(subject.enclosures.hidden) == false
-                expect(subject.enclosures.text) == "2 items"
-            }
-        }
-
-        context("setting an article with no supported enclosures") {
-            beforeEach {
-                let enclosure = Enclosure(url: NSURL(string: "https://example.com/enclosure")!, kind: "application/json", article: nil)
-                let article = Article(title: "title", link: nil, summary: "summary", authors: [], published: NSDate(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 15, feed: nil, flags: [], enclosures: [enclosure])
-                enclosure.article = article
-                subject.article = article
-            }
-
-            it("should not show the enclosures label") {
-                expect(subject.enclosures.hidden) == true
             }
         }
     }

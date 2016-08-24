@@ -81,7 +81,7 @@ extension DataService {
         let feedArticles = Array(feed.articlesArray.filterWithPredicate(articlesPredicate))
         for item in articles {
             let filter: rNewsKit.Article -> Bool = { article in
-                return item.url == article.link
+                return item.title == article.title || item.url == article.link
             }
             let article = feedArticles.objectPassingTest(filter)
             importTasks.append {
@@ -130,7 +130,7 @@ extension DataService {
             article.summary = item.summary
             article.content = item.content
 
-            let content = item.content.isEmpty ? item.summary : item.content;
+            let content = item.content.isEmpty ? item.summary : item.content
             article.estimatedReadingTime = estimateReadingTime(content)
 
             article.authors = authors

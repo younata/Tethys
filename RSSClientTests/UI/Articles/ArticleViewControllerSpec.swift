@@ -226,37 +226,6 @@ class ArticleViewControllerSpec: QuickSpec {
                 expect(subject.userActivity) === userActivity
             }
 
-            it("should not show the enclosures list if the article has no enclosures") {
-                expect(subject.enclosuresList.bounds.height).to(beCloseTo(0))
-                expect(subject.enclosuresList.enclosures.isEmpty) == true
-            }
-
-            it("should show the enclosure list if the article has supported enclosures") {
-                let articleWithEnclosures = Article(title: "article2", link: NSURL(string: "https://example.com/"), summary: "has enclosures", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier2", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"], enclosures: [])
-                let enclosure = Enclosure(url: NSURL(string: "https://example.com/enclosure")!, kind: "video/mp4", article: nil)
-
-                enclosure.article = articleWithEnclosures
-                articleWithEnclosures.addEnclosure(enclosure)
-
-                subject.setArticle(articleWithEnclosures)
-
-                expect(subject.enclosuresList.bounds.height) > 10.0
-                expect(Array(subject.enclosuresList.enclosures)) == [enclosure]
-                expect(subject.enclosuresList.viewControllerToPresentOn) == subject
-            }
-
-            it("should not show the enclosure list if the article has no supported enclosures") {
-                let articleWithEnclosures = Article(title: "article2", link: NSURL(string: "https://example.com/"), summary: "has enclosures", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier2", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"], enclosures: [])
-                let enclosure = Enclosure(url: NSURL(string: "https://example.com/enclosure")!, kind: "application/json", article: nil)
-
-                enclosure.article = articleWithEnclosures
-                articleWithEnclosures.addEnclosure(enclosure)
-                subject.setArticle(articleWithEnclosures)
-
-                expect(subject.enclosuresList.bounds.height).to(beCloseTo(0))
-                expect(subject.enclosuresList.enclosures.isEmpty) == true
-            }
-
             it("should enable link preview with 3d touch") {
                 expect(subject.content.allowsLinkPreview) == true
             }

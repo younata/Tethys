@@ -125,6 +125,3 @@
 "Generic_Share" = "Share";
 "Generic_Cancel" = "Cancel";
 "Generic_ConfirmDelete" = "Delete %@?";
-
-"%ld enclosures" = "%ld enclosures";
-

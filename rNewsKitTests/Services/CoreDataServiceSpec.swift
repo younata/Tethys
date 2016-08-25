@@ -89,7 +89,6 @@ class CoreDataServiceSpec: QuickSpec {
             beforeEach {
                 let feedDescription = NSEntityDescription.entityForName("Feed", inManagedObjectContext: objectContext)!
                 let articleDescription = NSEntityDescription.entityForName("Article", inManagedObjectContext: objectContext)!
-                let enclosureDescription = NSEntityDescription.entityForName("Enclosure", inManagedObjectContext: objectContext)!
 
                 objectContext.performBlockAndWait {
                     let cdfeed1 = CoreDataFeed(entity: feedDescription, insertIntoManagedObjectContext: objectContext)
@@ -111,14 +110,6 @@ class CoreDataServiceSpec: QuickSpec {
                     cdarticle1.feed = cdfeed1
                     cdarticle2.feed = cdfeed1
                     cdarticle3.feed = cdfeed2
-
-                    let cdenclosure1 = CoreDataEnclosure(entity: enclosureDescription, insertIntoManagedObjectContext: objectContext)
-                    let cdenclosure2 = CoreDataEnclosure(entity: enclosureDescription, insertIntoManagedObjectContext: objectContext)
-
-                    cdenclosure1.kind = "1"
-                    cdenclosure2.kind = "2"
-                    cdenclosure1.article = cdarticle1
-                    cdenclosure2.article = cdarticle1
 
                     try! objectContext.save()
 

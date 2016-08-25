@@ -31,8 +31,3 @@ func createArticle(managedObjectContext: NSManagedObjectContext) -> CoreDataArti
     let entityDescription = NSEntityDescription.entityForName("Article", inManagedObjectContext: managedObjectContext)!
     return CoreDataArticle(entity: entityDescription, insertIntoManagedObjectContext: managedObjectContext)
 }
-
-func createEnclosure(managedObjectContext: NSManagedObjectContext) -> CoreDataEnclosure {
-    let entityDescription = NSEntityDescription.entityForName("Enclosure", inManagedObjectContext: managedObjectContext)!
-    return CoreDataEnclosure(entity: entityDescription, insertIntoManagedObjectContext: managedObjectContext)
-}

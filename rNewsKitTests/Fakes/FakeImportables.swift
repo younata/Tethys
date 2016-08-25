@@ -30,17 +30,12 @@ struct FakeImportableArticle: ImportableArticle {
     let updated: NSDate?
 
     var authors: [FakeImportableAuthor]
-    var enclosures: [FakeImportableEnclosure]
 
     var importableAuthors: [ImportableAuthor] {
         return self.authors.map { $0 as ImportableAuthor }
     }
 
-    var importableEnclosures: [ImportableEnclosure] {
-        return self.enclosures.map { $0 as ImportableEnclosure }
-    }
-
-    init(title: String, url: NSURL, summary: String, content: String, published: NSDate, updated: NSDate?, authors: [FakeImportableAuthor] = [], enclosures: [FakeImportableEnclosure] = []) {
+    init(title: String, url: NSURL, summary: String, content: String, published: NSDate, updated: NSDate?, authors: [FakeImportableAuthor] = []) {
         self.title = title
         self.url = url
         self.summary = summary
@@ -48,7 +43,6 @@ struct FakeImportableArticle: ImportableArticle {
         self.published = published
         self.updated = updated
         self.authors = authors
-        self.enclosures = enclosures
     }
 }
 
@@ -59,17 +53,5 @@ struct FakeImportableAuthor: ImportableAuthor {
     init(name: String, email: NSURL?) {
         self.name = name
         self.email = email
-    }
-}
-
-struct FakeImportableEnclosure: ImportableEnclosure {
-    let url: NSURL
-    let length: Int
-    let type: String
-
-    init(url: NSURL, length: Int, type: String) {
-        self.url = url
-        self.length = length
-        self.type = type
     }
 }

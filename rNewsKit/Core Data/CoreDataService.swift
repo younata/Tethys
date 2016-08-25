@@ -113,7 +113,7 @@ class CoreDataService: DataService {
             return promise.future
         }
         self.managedObjectContext.performBlock {
-            self.deleteArticle(article, deleteEnclosures: true)
+            self.privateDeleteArticle(article)
             self.mainQueue.addOperationWithBlock {
                 promise.resolve(.Success())
             }
@@ -191,7 +191,6 @@ class CoreDataService: DataService {
 
             deleteAllEntitiesOfType("Feed")
             deleteAllEntitiesOfType("Article")
-            deleteAllEntitiesOfType("Enclosure")
 
             self.mainQueue.addOperationWithBlock {
                 promise.resolve(.Success())
@@ -283,10 +282,6 @@ class CoreDataService: DataService {
                 #endif
 
                 for article in cdfeed.articles {
-                    for enclosure in article.enclosures {
-                        self.managedObjectContext.deleteObject(enclosure)
-                        self.managedObjectContext.refreshObject(enclosure, mergeChanges: false)
-                    }
                     self.managedObjectContext.deleteObject(article)
                     self.managedObjectContext.refreshObject(article, mergeChanges: false)
                 }
@@ -298,13 +293,8 @@ class CoreDataService: DataService {
         }
     }
 
-    private func deleteArticle(article: Article, deleteEnclosures: Bool) {
+    private func privateDeleteArticle(article: Article) {
         if let cdarticle = self.coreDataArticleForArticle(article) {
-            if deleteEnclosures {
-                for enclosure in cdarticle.enclosures {
-                    self.managedObjectContext.deleteObject(enclosure)
-                }
-            }
             self.managedObjectContext.deleteObject(cdarticle)
             let _ = try? self.managedObjectContext.save()
 

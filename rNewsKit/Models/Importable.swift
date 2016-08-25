@@ -17,20 +17,12 @@ protocol ImportableArticle {
     var published: NSDate { get }
     var updated: NSDate? { get }
     var importableAuthors: [ImportableAuthor] { get }
-    var importableEnclosures: [ImportableEnclosure] { get }
 }
 
 protocol ImportableAuthor {
     var name: String { get }
     var email: NSURL? { get }
 }
-
-protocol ImportableEnclosure {
-    var url: NSURL { get }
-    var length: Int { get }
-    var type: String { get }
-}
-
 // MARK: Muon conformance
 extension Muon.Feed: ImportableFeed {
     var importableArticles: [ImportableArticle] {
@@ -49,13 +41,8 @@ extension Muon.Article: ImportableArticle {
     var importableAuthors: [ImportableAuthor] {
         return self.authors.map { $0 as ImportableAuthor }
     }
-
-    var importableEnclosures: [ImportableEnclosure] {
-        return self.enclosures.map { $0 as ImportableEnclosure }
-    }
 }
 extension Muon.Author: ImportableAuthor {}
-extension Muon.Enclosure: ImportableEnclosure {}
 
 // MARK: Sinope conformance
 extension Sinope.Feed: ImportableFeed {
@@ -72,7 +59,6 @@ extension Sinope.Article: ImportableArticle {
     var importableAuthors: [ImportableAuthor] {
         return self.authors.map { $0 as ImportableAuthor }
     }
-    var importableEnclosures: [ImportableEnclosure] { return [] }
 }
 
 extension Sinope.Author: ImportableAuthor {}

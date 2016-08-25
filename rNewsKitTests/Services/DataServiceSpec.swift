@@ -32,8 +32,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
 
         it("easily allows a feed to be updated with inserted articles") {
             guard let feed = feed else { fail(); return }
-            let fakeEnclosure = FakeImportableEnclosure(url: NSURL(string: "https://example.com/enclosure.mp3")!, length: 0, type: "audio/mpeg")
-            let item = FakeImportableArticle(title: "article", url: NSURL(string: "/foo/bar/baz")!, summary: "", content: "", published: NSDate(), updated: nil, authors: [], enclosures: [fakeEnclosure])
+            let item = FakeImportableArticle(title: "article", url: NSURL(string: "/foo/bar/baz")!, summary: "", content: "", published: NSDate(), updated: nil, authors: [])
             let info = FakeImportableFeed(title: "a &amp; title", link: NSURL(string: "https://example.com")!, description: "description", imageURL: nil, articles: [item])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
             dataService.updateFeed(feed, info: info).then {
@@ -190,8 +189,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
             let author = FakeImportableAuthor(name: "Rachel Brindle", email: NSURL(string: "mailto:rachel@example.com"))
             let content = (0..<100).map({_ in "<p>this was a content space</p>"}).reduce("", combine: +)
 
-            let muonEnclosure = FakeImportableEnclosure(url: NSURL(string: "https://example.com/enclosure.mp3")!, length: 0, type: "audio/mpeg")
-            let item = FakeImportableArticle(title: "a <p></p>&amp; title", url: NSURL(string: "https://example.com")!, summary: "description", content: content, published: NSDate(timeIntervalSince1970: 10), updated: NSDate(timeIntervalSince1970: 15), authors: [author], enclosures: [muonEnclosure])
+            let item = FakeImportableArticle(title: "a <p></p>&amp; title", url: NSURL(string: "https://example.com")!, summary: "description", content: content, published: NSDate(timeIntervalSince1970: 10), updated: NSDate(timeIntervalSince1970: 15), authors: [author])
 
             let updateExpectation = spec.expectationWithDescription("Update Article")
             if let searchIndex = dataService.searchIndex as? FakeSearchIndex {

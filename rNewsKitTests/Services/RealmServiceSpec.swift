@@ -116,15 +116,7 @@ class RealmServiceSpec: QuickSpec {
                 realmArticle3.relatedArticles.append(realmArticle2)
                 realmArticle2.relatedArticles.append(realmArticle3)
 
-                let realmEnclosure1 = RealmEnclosure()
-                let realmEnclosure2 = RealmEnclosure()
-
-                realmEnclosure1.kind = "1"
-                realmEnclosure2.kind = "2"
-                realmEnclosure1.article = realmArticle1
-                realmEnclosure2.article = realmArticle1
-
-                for object in [realmFeed1, realmFeed2, realmArticle1, realmArticle2, realmArticle3, realmEnclosure1, realmEnclosure2] {
+                for object in [realmFeed1, realmFeed2, realmArticle1, realmArticle2, realmArticle3] {
                     realm.add(object)
                 }
                 _ = try? realm.commitWrite()

@@ -31,31 +31,6 @@ class SettingsRepositorySpec: QuickSpec {
             expect(subscriber.didCallChangeSetting) == false
         }
 
-        describe("Query Feeds") {
-            it("are initially disabled") {
-                expect(subject.queryFeedsEnabled) == false
-            }
-
-            describe("when set") {
-                beforeEach {
-                    subject.queryFeedsEnabled = true
-                }
-
-                it("records the result") {
-                    expect(subject.queryFeedsEnabled) == true
-                }
-
-                it("notifies subscribers") {
-                    expect(subscriber.didCallChangeSetting) == true
-                }
-
-                it("persists if userDefaults is not nil") {
-                    let newRepository = SettingsRepository(userDefaults: userDefaults)
-                    expect(newRepository.queryFeedsEnabled) == true
-                }
-            }
-        }
-
         describe("estimatedReadingLabel") {
             it("is initially yes") {
                 expect(subject.showEstimatedReadingLabel) == true

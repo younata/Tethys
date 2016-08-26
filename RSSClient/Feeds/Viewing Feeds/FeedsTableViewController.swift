@@ -88,7 +88,6 @@ public class FeedsTableViewController: UIViewController, Injectable {
     private let findFeedViewController: Void -> FindFeedViewController
     private let localImportViewController: Void -> LocalImportViewController
     private let feedViewController: Void -> FeedViewController
-    private let queryFeedViewController: Void -> QueryFeedViewController
     private let settingsViewController: Void -> SettingsViewController
     private let articleListController: Void -> ArticleListController
 
@@ -101,7 +100,6 @@ public class FeedsTableViewController: UIViewController, Injectable {
                 findFeedViewController: Void -> FindFeedViewController,
                 localImportViewController: Void -> LocalImportViewController,
                 feedViewController: Void -> FeedViewController,
-                queryFeedViewController: Void -> QueryFeedViewController,
                 settingsViewController: Void -> SettingsViewController,
                 articleListController: Void -> ArticleListController
         ) {
@@ -111,7 +109,6 @@ public class FeedsTableViewController: UIViewController, Injectable {
         self.findFeedViewController = findFeedViewController
         self.localImportViewController = localImportViewController
         self.feedViewController = feedViewController
-        self.queryFeedViewController = queryFeedViewController
         self.settingsViewController = settingsViewController
         self.articleListController = articleListController
         super.init(nibName: nil, bundle: nil)
@@ -126,7 +123,6 @@ public class FeedsTableViewController: UIViewController, Injectable {
             findFeedViewController: {injector.create(FindFeedViewController)!},
             localImportViewController: {injector.create(LocalImportViewController)!},
             feedViewController: {injector.create(FeedViewController)!},
-            queryFeedViewController: {injector.create(QueryFeedViewController)!},
             settingsViewController: {injector.create(SettingsViewController)!},
             articleListController: {injector.create(ArticleListController)!}
         )
@@ -219,7 +215,7 @@ public class FeedsTableViewController: UIViewController, Injectable {
     public override func canBecomeFirstResponder() -> Bool { return true }
 
     public override var keyCommands: [UIKeyCommand]? {
-        var commands = [
+        let commands = [
             UIKeyCommand(input: "f", modifierFlags: .Command, action: #selector(FeedsTableViewController.search)),
             UIKeyCommand(input: "i", modifierFlags: .Command,
                 action: #selector(FeedsTableViewController.importFromWeb)),
@@ -228,21 +224,12 @@ public class FeedsTableViewController: UIViewController, Injectable {
             UIKeyCommand(input: ",", modifierFlags: .Command,
                 action: #selector(FeedsTableViewController.presentSettings)),
         ]
-        if self.settingsRepository.queryFeedsEnabled {
-            let command = UIKeyCommand(input: "i", modifierFlags: [.Command, .Alternate],
-                                       action: #selector(FeedsTableViewController.createQueryFeed))
-            commands.insert(command, atIndex: 3)
-        }
-        var discoverabilityTitles = [
+        let discoverabilityTitles = [
             NSLocalizedString("FeedsTableViewController_Command_Search", comment: ""),
             NSLocalizedString("FeedsTableViewController_Command_ImportWeb", comment: ""),
             NSLocalizedString("FeedsTableViewController_Command_ImportLocal", comment: ""),
             NSLocalizedString("FeedsTableViewController_Command_Settings", comment: ""),
-            ]
-        if self.settingsRepository.queryFeedsEnabled {
-            let titleString = NSLocalizedString("FeedsTableViewController_Command_QueryFeed", comment: "")
-            discoverabilityTitles.insert(titleString, atIndex: 3)
-        }
+        ]
         for (idx, cmd) in commands.enumerate() {
             cmd.discoverabilityTitle = discoverabilityTitles[idx]
         }
@@ -254,8 +241,6 @@ public class FeedsTableViewController: UIViewController, Injectable {
     internal func importFromWeb() { self.presentController(self.findFeedViewController()) }
 
     @objc private func importFromLocal() { self.presentController(self.localImportViewController()) }
-
-    @objc private func createQueryFeed() { self.presentController(self.queryFeedViewController()) }
 
     @objc private func search() { self.searchBar.becomeFirstResponder() }
 
@@ -331,13 +316,10 @@ public class FeedsTableViewController: UIViewController, Injectable {
         if self.dropDownMenu.isOpen {
             self.dropDownMenu.closeAnimated(true)
         } else {
-            var buttonTitles = [
+            let buttonTitles = [
                 NSLocalizedString("FeedsTableViewController_Command_ImportWeb", comment: ""),
                 NSLocalizedString("FeedsTableViewController_Command_ImportLocal", comment: ""),
             ]
-            if self.settingsRepository.queryFeedsEnabled {
-                buttonTitles.append(NSLocalizedString("FeedsTableViewController_Command_QueryFeed", comment: ""))
-            }
             self.dropDownMenu.titles = buttonTitles
             let navBarHeight = self.navigationController!.navigationBar.frame.height
             let statusBarHeight = UIApplication.sharedApplication().statusBarFrame.height
@@ -437,8 +419,6 @@ extension FeedsTableViewController: MAKDropDownMenuDelegate {
             self.importFromWeb()
         } else if itemIndex == 1 {
             self.importFromLocal()
-        } else if itemIndex == 2 {
-            self.createQueryFeed()
         }
         menu.closeAnimated(true)
     }
@@ -572,11 +552,7 @@ extension FeedsTableViewController: UITableViewDelegate {
             let edit = UITableViewRowAction(style: .Normal, title: editTitle) {_, indexPath in
                 let feed = self.feedAtIndexPath(indexPath)
                 var viewController: UIViewController! = nil
-                if feed.isQueryFeed {
-                    let queryFeedViewController = self.queryFeedViewController()
-                    queryFeedViewController.feed = feed
-                    viewController = queryFeedViewController
-                } else {
+                if !feed.isQueryFeed {
                     let feedViewController = self.feedViewController()
                     feedViewController.feed = feed
                     viewController = feedViewController
@@ -586,9 +562,7 @@ extension FeedsTableViewController: UITableViewDelegate {
             }
             edit.backgroundColor = UIColor.blueColor()
             let feed = self.feedAtIndexPath(indexPath)
-            if feed.isQueryFeed {
-                return [delete, markRead, edit]
-            } else {
+            if !feed.isQueryFeed {
                 let shareTitle = NSLocalizedString("Generic_Share", comment: "")
                 let share = UITableViewRowAction(style: .Normal, title: shareTitle) {_ in
                     guard let url = feed.url else { return }
@@ -598,5 +572,6 @@ extension FeedsTableViewController: UITableViewDelegate {
                 share.backgroundColor = UIColor.darkGreenColor()
                 return [delete, markRead, edit, share]
             }
+            return []
     }
 }

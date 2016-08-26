@@ -18,8 +18,6 @@ public class InjectorModule: Ra.InjectorModule {
 
         injector.bind(NSBundle.self, toInstance: NSBundle.mainBundle())
 
-        injector.bind(DocumentationUseCase.self, to: DefaultDocumentationUseCase.init)
-
         let app = UIApplication.sharedApplication()
         injector.bind(QuickActionRepository.self, toInstance: app)
 

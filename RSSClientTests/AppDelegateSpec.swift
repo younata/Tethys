@@ -53,7 +53,6 @@ class AppDelegateSpec: QuickSpec {
             backgroundFetchHandler = FakeBackgroundFetchHandler()
             injector.bind(BackgroundFetchHandler.self, toInstance: backgroundFetchHandler)
 
-
             subject.anInjector = injector
             subject.window = UIWindow(frame: CGRectMake(0, 0, 320, 480))
         }

@@ -8,10 +8,10 @@ class DatabaseUseCaseSpec: QuickSpec {
     override func spec() {
         var subject: FakeDatabaseUseCase!
         let feeds = [
-            Feed(title: "1", url: nil, summary: "", query: nil, tags: ["a", "b", "c", "d"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
-            Feed(title: "2", url: nil, summary: "", query: nil, tags: ["b", "d"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
-            Feed(title: "3", url: nil, summary: "", query: nil, tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
-            Feed(title: "4", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
+            Feed(title: "1", url: NSURL(string: "https://example.com/1"), summary: "", query: nil, tags: ["a", "b", "c", "d"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
+            Feed(title: "2", url: NSURL(string: "https://example.com/2"), summary: "", query: nil, tags: ["b", "d"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
+            Feed(title: "3", url: NSURL(string: "https://example.com/3"), summary: "", query: nil, tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
+            Feed(title: "4", url: NSURL(string: "https://example.com/4"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
         ]
 
         beforeEach {

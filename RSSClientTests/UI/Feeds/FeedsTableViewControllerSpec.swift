@@ -188,81 +188,35 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     expect(subject.canBecomeFirstResponder()) == true
                 }
 
-                context("when query feeds are enabled") {
-                    beforeEach {
-                        settingsRepository.queryFeedsEnabled = true
+                it("have a list of key commands") {
+                    let keyCommands = subject.keyCommands
+                    expect(keyCommands).toNot(beNil())
+                    guard let commands = keyCommands else {
+                        return
                     }
 
-                    it("have a list of key commands") {
-                        let keyCommands = subject.keyCommands
-                        expect(keyCommands).toNot(beNil())
-                        guard let commands = keyCommands else {
-                            return
-                        }
+                    // cmd+f, cmd+i, cmd+shift+i, cmd+opt+i
+                    let expectedCommands = [
+                        UIKeyCommand(input: "f", modifierFlags: .Command, action: Selector()),
+                        UIKeyCommand(input: "i", modifierFlags: .Command, action: Selector()),
+                        UIKeyCommand(input: "i", modifierFlags: [.Command, .Shift], action: Selector()),
+                        UIKeyCommand(input: ",", modifierFlags: .Command, action: Selector()),
+                        ]
+                    let expectedDiscoverabilityTitles = [
+                        "Filter by tags",
+                        "Add from Web",
+                        "Add from Local",
+                        "Open settings",
+                        ]
 
-                        // cmd+f, cmd+i, cmd+shift+i, cmd+opt+i
-                        let expectedCommands = [
-                            UIKeyCommand(input: "f", modifierFlags: .Command, action: Selector()),
-                            UIKeyCommand(input: "i", modifierFlags: .Command, action: Selector()),
-                            UIKeyCommand(input: "i", modifierFlags: [.Command, .Shift], action: Selector()),
-                            UIKeyCommand(input: "i", modifierFlags: [.Command, .Alternate], action: Selector()),
-                            UIKeyCommand(input: ",", modifierFlags: .Command, action: Selector()),
-                            ]
-                        let expectedDiscoverabilityTitles = [
-                            "Filter by tags",
-                            "Add from Web",
-                            "Add from Local",
-                            "Create Query Feed",
-                            "Open settings",
-                            ]
+                    expect(commands.count).to(equal(expectedCommands.count))
+                    for (idx, cmd) in commands.enumerate() {
+                        let expectedCmd = expectedCommands[idx]
+                        expect(cmd.input).to(equal(expectedCmd.input))
+                        expect(cmd.modifierFlags).to(equal(expectedCmd.modifierFlags))
 
-                        expect(commands.count).to(equal(expectedCommands.count))
-                        for (idx, cmd) in commands.enumerate() {
-                            let expectedCmd = expectedCommands[idx]
-                            expect(cmd.input).to(equal(expectedCmd.input))
-                            expect(cmd.modifierFlags).to(equal(expectedCmd.modifierFlags))
-
-                            let expectedTitle = expectedDiscoverabilityTitles[idx]
-                            expect(cmd.discoverabilityTitle).to(equal(expectedTitle))
-                        }
-                    }
-                }
-
-                context("when query feeds are disabled") {
-                    beforeEach {
-                        settingsRepository.queryFeedsEnabled = false
-                    }
-
-                    it("have a list of key commands") {
-                        let keyCommands = subject.keyCommands
-                        expect(keyCommands).toNot(beNil())
-                        guard let commands = keyCommands else {
-                            return
-                        }
-
-                        // cmd+f, cmd+i, cmd+shift+i, cmd+opt+i
-                        let expectedCommands = [
-                            UIKeyCommand(input: "f", modifierFlags: .Command, action: Selector()),
-                            UIKeyCommand(input: "i", modifierFlags: .Command, action: Selector()),
-                            UIKeyCommand(input: "i", modifierFlags: [.Command, .Shift], action: Selector()),
-                            UIKeyCommand(input: ",", modifierFlags: .Command, action: Selector()),
-                            ]
-                        let expectedDiscoverabilityTitles = [
-                            "Filter by tags",
-                            "Add from Web",
-                            "Add from Local",
-                            "Open settings",
-                            ]
-
-                        expect(commands.count).to(equal(expectedCommands.count))
-                        for (idx, cmd) in commands.enumerate() {
-                            let expectedCmd = expectedCommands[idx]
-                            expect(cmd.input).to(equal(expectedCmd.input))
-                            expect(cmd.modifierFlags).to(equal(expectedCmd.modifierFlags))
-
-                            let expectedTitle = expectedDiscoverabilityTitles[idx]
-                            expect(cmd.discoverabilityTitle).to(equal(expectedTitle))
-                        }
+                        let expectedTitle = expectedDiscoverabilityTitles[idx]
+                        expect(cmd.discoverabilityTitle).to(equal(expectedTitle))
                     }
                 }
             }
@@ -299,42 +253,17 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     expect(subject.dropDownMenu.isOpen) == true
                 }
 
-                context("when query feeds are available") {
-                    beforeEach {
-                        settingsRepository.queryFeedsEnabled = true
-                    }
+                it("should have 2 options") {
+                    subject.dropDownMenu.closeAnimated(false)
 
-                    it("should have 3 options") {
-                        subject.dropDownMenu.closeAnimated(false)
+                    addButton = subject.navigationItem.rightBarButtonItems?.first
+                    addButton.tap()
+                    buttons = subject.dropDownMenu.valueForKey("_buttons") as? [UIButton] ?? []
+                    expect(buttons).toNot(beEmpty())
 
-                        addButton = subject.navigationItem.rightBarButtonItems?.first
-                        addButton.tap()
-                        buttons = subject.dropDownMenu.valueForKey("_buttons") as? [UIButton] ?? []
-                        expect(buttons).toNot(beEmpty())
-
-                        let expectedTitles = ["Add from Web", "Add from Local", "Create Query Feed"]
-                        let titles: [String] = buttons.map { $0.titleForState(.Normal) ?? "" }
-                        expect(titles).to(equal(expectedTitles))
-                    }
-                }
-
-                context("when query feeds are not available") {
-                    beforeEach {
-                        settingsRepository.queryFeedsEnabled = false
-                    }
-
-                    it("should have 2 options") {
-                        subject.dropDownMenu.closeAnimated(false)
-
-                        addButton = subject.navigationItem.rightBarButtonItems?.first
-                        addButton.tap()
-                        buttons = subject.dropDownMenu.valueForKey("_buttons") as? [UIButton] ?? []
-                        expect(buttons).toNot(beEmpty())
-
-                        let expectedTitles = ["Add from Web", "Add from Local"]
-                        let titles: [String] = buttons.map { $0.titleForState(.Normal) ?? "" }
-                        expect(titles).to(equal(expectedTitles))
-                    }
+                    let expectedTitles = ["Add from Web", "Add from Local"]
+                    let titles: [String] = buttons.map { $0.titleForState(.Normal) ?? "" }
+                    expect(titles).to(equal(expectedTitles))
                 }
 
                 context("tapping on the add feed button again") {
@@ -380,32 +309,6 @@ class FeedsTableViewControllerSpec: QuickSpec {
                         expect(subject.presentedViewController).to(beAnInstanceOf(UINavigationController.self))
                         if let nc = subject.presentedViewController as? UINavigationController {
                             expect(nc.topViewController).to(beAnInstanceOf(LocalImportViewController.self))
-                        }
-                    }
-                }
-
-                context("tapping on create query feed") {
-                    beforeEach {
-                        subject.dropDownMenu.closeAnimated(false)
-
-                        settingsRepository.queryFeedsEnabled = true
-                        addButton = subject.navigationItem.rightBarButtonItems?.first
-                        addButton.tap()
-                        buttons = subject.dropDownMenu.valueForKey("_buttons") as? [UIButton] ?? []
-                        expect(buttons.count).to(beGreaterThan(2))
-
-                        let button = buttons[2]
-                        button.sendActionsForControlEvents(UIControlEvents.TouchUpInside)
-                    }
-
-                    it("should close the dropDownMenu") {
-                        expect(subject.dropDownMenu.isOpen) == false
-                    }
-
-                    it("should present a QueryFeedViewController") {
-                        expect(subject.presentedViewController).to(beAnInstanceOf(UINavigationController.self))
-                        if let nc = subject.presentedViewController as? UINavigationController {
-                            expect(nc.topViewController).to(beAnInstanceOf(QueryFeedViewController.self))
                         }
                     }
                 }
@@ -769,195 +672,6 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                                 expect(navigationController.visibleViewController).to(beAnInstanceOf(UIActivityViewController))
                                                 if let activityVC = navigationController.visibleViewController as? UIActivityViewController {
                                                     expect(activityVC.activityItems as? [NSURL]) == [feed.url!]
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            context("for a query feed") {
-                                beforeEach {
-                                    cell = subject.tableView.visibleCells.last as? FeedTableCell
-                                    feed = feeds[1]
-
-                                    expect(cell).to(beAnInstanceOf(FeedTableCell.self))
-                                }
-
-                                it("should be configured with the theme repository") {
-                                    expect(cell?.themeRepository) === themeRepository
-                                }
-
-                                it("should be configured with the feed") {
-                                    expect(cell?.feed) == feed
-                                }
-
-                                describe("tapping on a cell") {
-                                    beforeEach {
-                                        let indexPath = NSIndexPath(forRow: 1, inSection: 0)
-                                        if let _ = cell {
-                                            subject.tableView(subject.tableView, didSelectRowAtIndexPath: indexPath)
-                                        }
-                                    }
-
-                                    it("should navigate to an ArticleListViewController for that feed") {
-                                        expect(navigationController.topViewController).to(beAnInstanceOf(ArticleListController.self))
-                                        if let articleList = navigationController.topViewController as? ArticleListController {
-                                            expect(articleList.feed) == feed
-                                        }
-                                    }
-                                }
-
-                                describe("force pressing a cell") {
-                                    var viewControllerPreviewing: FakeUIViewControllerPreviewing! = nil
-                                    var viewController: UIViewController? = nil
-
-                                    beforeEach {
-                                        viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRectZero, delegate: subject)
-
-                                        let rect = subject.tableView.rectForRowAtIndexPath(NSIndexPath(forRow: 1, inSection: 0))
-                                        let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
-                                        viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
-                                    }
-
-                                    it("should return an ArticleListController configured with the feed's articles to present to the user") {
-                                        expect(viewController).to(beAKindOf(ArticleListController.self))
-                                        if let articleVC = viewController as? ArticleListController {
-                                            expect(articleVC.feed) == feed
-                                        }
-                                    }
-
-                                    it("should push the view controller when commited") {
-                                        if let vc = viewController {
-                                            subject.previewingContext(viewControllerPreviewing, commitViewController: vc)
-                                            expect(navigationController.topViewController) === viewController
-                                        }
-                                    }
-                                }
-
-                                describe("exposing edit actions") {
-                                    var actions: [UITableViewRowAction] = []
-                                    var action: UITableViewRowAction? = nil
-                                    let indexPath = NSIndexPath(forRow: 1, inSection: 0)
-                                    beforeEach {
-                                        action = nil
-                                        if let _ = cell {
-                                            actions = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath) ?? []
-                                        }
-                                    }
-
-                                    it("should have 3 actions") {
-                                        expect(actions.count).to(equal(3))
-                                    }
-
-                                    describe("the first action") {
-                                        beforeEach {
-                                            action = actions.first
-                                        }
-                                        
-                                        it("should state it deletes the feed") {
-                                            expect(action?.title).to(equal("Delete"))
-                                        }
-                                        
-                                        describe("tapping it") {
-                                            beforeEach {
-                                                action?.handler(action, indexPath)
-                                            }
-
-                                            it("does not yet delete the feed from the data store") {
-                                                expect(dataUseCase.lastDeletedFeed).to(beNil())
-                                            }
-
-                                            it("presents an alert asking for confirmation that the user wants to do this") {
-                                                expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                                guard let alert = subject.presentedViewController as? UIAlertController else { return }
-                                                expect(alert.preferredStyle) == UIAlertControllerStyle.Alert
-                                                expect(alert.title) == "Delete \(feed.displayTitle)?"
-
-                                                expect(alert.actions.count) == 2
-                                                expect(alert.actions.first?.title) == "Delete"
-                                                expect(alert.actions.last?.title) == "Cancel"
-                                            }
-
-                                            describe("tapping 'Delete'") {
-                                                beforeEach {
-                                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                                    guard let alert = subject.presentedViewController as? UIAlertController else { return }
-
-                                                    alert.actions.first?.handler(alert.actions.first!)
-                                                }
-
-                                                it("deletes the feed from the data store") {
-                                                    expect(dataUseCase.lastDeletedFeed) == feed
-                                                }
-
-                                                it("dismisses the alert") {
-                                                    expect(subject.presentedViewController).to(beNil())
-                                                }
-                                            }
-
-                                            describe("tapping 'Cancel'") {
-                                                beforeEach {
-                                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                                    guard let alert = subject.presentedViewController as? UIAlertController else { return }
-
-                                                    alert.actions.last?.handler(alert.actions.last!)
-                                                }
-
-                                                it("does not delete the feed from the data store") {
-                                                    expect(dataUseCase.lastDeletedFeed).to(beNil())
-                                                }
-                                                
-                                                it("dismisses the alert") {
-                                                    expect(subject.presentedViewController).to(beNil())
-                                                }
-                                            }
-                                        }
-                                    }
-                                    
-                                    describe("the second action") {
-                                        beforeEach {
-                                            if actions.count > 1 {
-                                                action = actions[1]
-                                            }
-                                        }
-                                        
-                                        it("should state it marks all items in the feed as read") {
-                                            expect(action?.title).to(equal("Mark\nRead"))
-                                        }
-                                        
-                                        describe("tapping it") {
-                                            beforeEach {
-                                                action?.handler(action, indexPath)
-                                            }
-                                            
-                                            it("should mark all articles of that feed as read") {
-                                                expect(dataUseCase.lastFeedMarkedRead).to(equal(feed))
-                                            }
-                                        }
-                                    }
-                                    
-                                    describe("the second action") {
-                                        beforeEach {
-                                            if actions.count > 2 {
-                                                action = actions[2]
-                                            }
-                                        }
-                                        
-                                        it("should state it edits the feed") {
-                                            expect(action?.title).to(equal("Edit"))
-                                        }
-                                        
-                                        describe("tapping it") {
-                                            beforeEach {
-                                                action?.handler(action, indexPath)
-                                            }
-                                            
-                                            it("should bring up a feed edit screen") {
-                                                expect(navigationController.visibleViewController).to(beAnInstanceOf(UINavigationController.self))
-                                                if let nc = navigationController.visibleViewController as? UINavigationController {
-                                                    expect(nc.viewControllers.count).to(equal(1))
-                                                    expect(nc.topViewController).to(beAnInstanceOf(QueryFeedViewController.self))
                                                 }
                                             }
                                         }

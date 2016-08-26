@@ -27,10 +27,6 @@ class SettingsViewControllerSpec: QuickSpec {
             fakeQuickActionRepository = FakeQuickActionRepository()
             injector.bind(QuickActionRepository.self, toInstance: fakeQuickActionRepository)
 
-            let documentationUseCase = FakeDocumentationUseCase()
-            documentationUseCase.htmlForDocumentReturns("example")
-            injector.bind(DocumentationUseCase.self, toInstance: documentationUseCase)
-
             feedRepository = FakeDatabaseUseCase()
             injector.bind(DatabaseUseCase.self, toInstance: feedRepository)
 
@@ -737,61 +733,13 @@ class SettingsViewControllerSpec: QuickSpec {
                     expect(title) == "Advanced"
                 }
 
-                it("has two cells") {
-                    expect(subject.tableView.numberOfRowsInSection(sectionNumber)) == 2
+                it("has one cell") {
+                    expect(subject.tableView.numberOfRowsInSection(sectionNumber)) == 1
                 }
 
                 describe("the first cell") {
                     var cell: SwitchTableViewCell! = nil
                     let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
-
-                    beforeEach {
-                        cell = dataSource.tableView(subject.tableView, cellForRowAtIndexPath: indexPath) as! SwitchTableViewCell
-                    }
-
-                    it("is configured with the theme repository") {
-                        expect(cell.themeRepository) == themeRepository
-                    }
-
-                    it("is titled 'Enable Query Feeds'") {
-                        expect(cell.textLabel?.text) == "Enable Query Feeds"
-                    }
-
-                    describe("tapping the switch on the cell") {
-                        beforeEach {
-                            cell.theSwitch.on = true
-                            cell.onTapSwitch?(cell.theSwitch)
-                        }
-
-                        it("does not yet change the settings repository") {
-                            expect(settingsRepository.queryFeedsEnabled) == false
-                        }
-
-                        itBehavesLike("a changed setting") {
-                            let op = NSBlockOperation {
-                                expect(settingsRepository.queryFeedsEnabled) == true
-                            }
-                            return ["saveToUserDefaults": op]
-                        }
-                    }
-
-                    describe("tapping the cell") {
-                        beforeEach {
-                            delegate.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
-                        }
-
-                        it("navigates to a leaf page describing what query feeds are and why they're awesome") {
-                            expect(navigationController.topViewController).to(beAnInstanceOf(DocumentationViewController.self))
-                            if let documentation = navigationController.topViewController as? DocumentationViewController {
-                                expect(documentation.document) == Document.QueryFeed
-                            }
-                        }
-                    }
-                }
-
-                describe("the second cell") {
-                    var cell: SwitchTableViewCell! = nil
-                    let indexPath = NSIndexPath(forRow: 1, inSection: sectionNumber)
 
                     beforeEach {
                         cell = dataSource.tableView(subject.tableView, cellForRowAtIndexPath: indexPath) as! SwitchTableViewCell

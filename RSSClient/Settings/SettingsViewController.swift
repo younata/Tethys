@@ -85,17 +85,16 @@ public class SettingsViewController: UIViewController, Injectable {
     }
 
     private enum AdvancedSection: Int, CustomStringConvertible {
-        case EnableQueryFeeds = 0
-        case ShowReadingTimes = 1
+        case ShowReadingTimes = 0
 
         private var description: String {
             switch self {
-            case .EnableQueryFeeds:
-                return NSLocalizedString("SettingsViewController_Advanced_EnableQueryFeeds", comment: "")
             case .ShowReadingTimes:
                 return NSLocalizedString("SettingsViewController_Advanced_ShowReadingTimes", comment: "")
             }
         }
+
+        private static let numberOfOptions = 1
     }
 
     public let tableView = UITableView(frame: CGRect.zero, style: .Grouped)
@@ -105,13 +104,9 @@ public class SettingsViewController: UIViewController, Injectable {
     private let quickActionRepository: QuickActionRepository
     private let databaseUseCase: DatabaseUseCase
     private let accountRepository: AccountRepository
-    private let documentationViewController: Void -> DocumentationViewController
     private let loginViewController: Void -> LoginViewController
 
     private var oldTheme: ThemeRepository.Theme = .Default
-    private lazy var queryFeedsEnabled: Bool = {
-        return self.settingsRepository.queryFeedsEnabled
-    }()
 
     private lazy var showReadingTimes: Bool = {
         return self.settingsRepository.showEstimatedReadingLabel
@@ -123,14 +118,12 @@ public class SettingsViewController: UIViewController, Injectable {
                 quickActionRepository: QuickActionRepository,
                 databaseUseCase: DatabaseUseCase,
                 accountRepository: AccountRepository,
-                documentationViewController: Void -> DocumentationViewController,
                 loginViewController: Void -> LoginViewController) {
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.quickActionRepository = quickActionRepository
         self.databaseUseCase = databaseUseCase
         self.accountRepository = accountRepository
-        self.documentationViewController = documentationViewController
         self.loginViewController = loginViewController
 
         super.init(nibName: nil, bundle: nil)
@@ -144,7 +137,6 @@ public class SettingsViewController: UIViewController, Injectable {
             quickActionRepository: injector.create(QuickActionRepository)!,
             databaseUseCase: injector.create(DatabaseUseCase)!,
             accountRepository: injector.create(AccountRepository)!,
-            documentationViewController: { injector.create(DocumentationViewController)! },
             loginViewController: { injector.create(LoginViewController)! }
         )
     }
@@ -237,7 +229,6 @@ public class SettingsViewController: UIViewController, Injectable {
 
     @objc private func didTapSave() {
         self.oldTheme = self.themeRepository.theme
-        self.settingsRepository.queryFeedsEnabled = self.queryFeedsEnabled
         self.settingsRepository.showEstimatedReadingLabel = self.showReadingTimes
         self.didTapDismiss()
     }
@@ -312,7 +303,7 @@ extension SettingsViewController: UITableViewDataSource {
         case .Accounts:
             return 1
         case .Advanced:
-            return 2
+            return AdvancedSection.numberOfOptions
         case .Credits:
             return 1
         }
@@ -355,12 +346,6 @@ extension SettingsViewController: UITableViewDataSource {
             cell.themeRepository = self.themeRepository
             cell.onTapSwitch = {_ in }
             switch row {
-            case .EnableQueryFeeds:
-                cell.theSwitch.on = self.queryFeedsEnabled
-                cell.onTapSwitch = {aSwitch in
-                    self.queryFeedsEnabled = aSwitch.on
-                    self.navigationItem.rightBarButtonItem?.enabled = true
-                }
             case .ShowReadingTimes:
                 cell.theSwitch.on = self.showReadingTimes
                 cell.onTapSwitch = {aSwitch in
@@ -462,10 +447,6 @@ extension SettingsViewController: UITableViewDelegate {
             self.navigationController?.pushViewController(loginViewController, animated: true)
         case .Advanced:
             tableView.deselectRowAtIndexPath(indexPath, animated: false)
-            guard AdvancedSection(rawValue: indexPath.row) == .EnableQueryFeeds else { return }
-            let documentationViewController = self.documentationViewController()
-            documentationViewController.configure(.QueryFeed)
-            self.navigationController?.pushViewController(documentationViewController, animated: true)
         case .Credits:
             tableView.deselectRowAtIndexPath(indexPath, animated: false)
             guard let url = NSURL(string: "https://twitter.com/younata") else { return }

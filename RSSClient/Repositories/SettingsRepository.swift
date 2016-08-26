@@ -7,15 +7,7 @@ public protocol SettingsRepositorySubscriber: NSObjectProtocol {
 
 public class SettingsRepository: Injectable {
     private enum SettingsKeys: String {
-        case QueryFeedsEnabled = "queryFeedsEnabled"
         case ShowEstimatedReadingLabel = "showEstimatedReadingLabel"
-    }
-
-    public var queryFeedsEnabled: Bool = false {
-        didSet {
-            self.informSubscribers()
-            self.userDefaults?.setBool(queryFeedsEnabled, forKey: SettingsKeys.QueryFeedsEnabled.rawValue)
-        }
     }
 
     public var showEstimatedReadingLabel: Bool = true {
@@ -45,7 +37,6 @@ public class SettingsRepository: Injectable {
     public init(userDefaults: NSUserDefaults? = nil) {
         self.userDefaults = userDefaults
 
-        self.queryFeedsEnabled = self.userDefaults?.boolForKey(SettingsKeys.QueryFeedsEnabled.rawValue) ?? false
         if self.userDefaults?.objectForKey(SettingsKeys.ShowEstimatedReadingLabel.rawValue) != nil {
             self.showEstimatedReadingLabel =
                 self.userDefaults?.boolForKey(SettingsKeys.ShowEstimatedReadingLabel.rawValue) ?? true

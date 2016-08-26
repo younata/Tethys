@@ -11,15 +11,12 @@
 "SettingsViewController_QuickActions_AddAdditional" = "Add a new Quick Action";
 "SettingsViewController_Accounts_Pasiphae" = "rNews Backend";
 "SettingsViewController_Accounts_Log_Out" = "Log Out";
-"SettingsViewController_Advanced_EnableQueryFeeds" = "Enable Query Feeds";
 "SettingsViewController_Advanced_ShowReadingTimes" = "Show Estimated Reading Times";
 "SettingsViewController_Credits_MainDeveloper_Name" = "Rachel Brindle"; // My name
 "SettingsViewController_Credits_MainDeveloper_Detail" = "Developer";
 "SettingsViewController_Commands_Theme" = "Change Theme to '%@'";
 "SettingsViewController_Commands_Save" = "Save and dismiss";
 "SettingsViewController_Commands_Dismiss" = "Dismiss without saving";
-
-"DocumentTitle_QueryFeeds" = "Query Feeds";
 
 "FeedsTableViewController_SearchBar_Placeholder" = "Filter by Tag";
 "FeedsTableViewController_Onboarding_Title" = "Welcome to rNews!";
@@ -32,7 +29,6 @@
 "FeedsTableViewController_Command_ImportWeb" = "Add from Web";
 "FeedsTableViewController_Command_ImportLocal" = "Add from Local";
 "FeedsTableViewController_Command_Settings" = "Open settings";
-"FeedsTableViewController_Command_QueryFeed" = "Create Query Feed";
 "FeedsTableViewController_UpdateFeeds_Error_Title" = "Unable to update feeds";
 "FeedsTableViewController_UpdateFeeds_Error_Accept" = "OK";
 "FeedsTableViewController_Table_EditAction_Delete" = "Delete";
@@ -86,12 +82,6 @@
 "FeedViewController_Table_Header_Tags" = "Tags";
 "FeedViewController_Cell_Summary_Placeholder" = "No Summary Available";
 "FeedViewController_Cell_AddTag" = "Add Tag";
-
-"QueryFeedViewController_Title_New" = "New Query Feed";
-"QueryFeedViewController_Table_Header_Query" = "Query";
-"QueryFeedViewController_Cell_Title_Placeholder" = "Enter a title";
-"QueryFeedViewController_Cell_Summary_Placeholder" = "Enter a summary";
-"QueryFeedViewController_Cell_Action_Preview" = "Preview";
 
 "TagEditorViewController_Explanation" = "Prefixing a tag with '~' will set the title to that, minus the leading ~. Prefixing a tag with '`' will set the summary to that, minus the leading `. Tags cannot contain commas (,)";
 

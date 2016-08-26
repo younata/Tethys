@@ -48,9 +48,6 @@
 		890894991BFEC698002848A4 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; };
 		8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8908949A1BFED7B8002848A4 /* FakeReachable.swift */; };
 		8908949C1BFED826002848A4 /* Reachability.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		890B78BC1C77A5100066E201 /* DocumentationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890B78BB1C77A5100066E201 /* DocumentationUseCase.swift */; };
-		890B78BE1C77A52B0066E201 /* DocumentationUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890B78BD1C77A52B0066E201 /* DocumentationUseCaseSpec.swift */; };
-		890B78C21C77A83D0066E201 /* FakeDocumentationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890B78C11C77A83D0066E201 /* FakeDocumentationUseCase.swift */; };
 		890B78C81C77FD200066E201 /* ArticleUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890B78C71C77FD200066E201 /* ArticleUseCase.swift */; };
 		890B78CA1C78E8650066E201 /* ReadArticleUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890B78C91C78E8650066E201 /* ReadArticleUseCaseSpec.swift */; };
 		89122E611C5D725D00004B1F /* DatabaseMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89122E601C5D725D00004B1F /* DatabaseMigrator.swift */; };
@@ -319,7 +316,6 @@
 		89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509EF1A2EB18300CBD000 /* FeedViewController.swift */; };
 		89C509F41A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F31A2EE56E00CBD000 /* TagEditorViewController.swift */; };
 		89C509F71A2F825400CBD000 /* TextViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F61A2F825400CBD000 /* TextViewCell.swift */; };
-		89C509FA1A2F865F00CBD000 /* QueryFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F91A2F865F00CBD000 /* QueryFeedViewController.swift */; };
 		89C676541BA264F40037A224 /* FakeUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C676531BA264F40037A224 /* FakeUserDefaults.swift */; };
 		89C676561BA28FE60037A224 /* FakeFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C676551BA28FE60037A224 /* FakeFileManager.swift */; };
 		89C8307919D730E9009924DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307819D730E9009924DA /* AppDelegate.swift */; };
@@ -395,15 +391,11 @@
 		89EF4FD81A96852D0052A82F /* test.opml in Resources */ = {isa = PBXBuildFile; fileRef = 89EF4FD71A96852D0052A82F /* test.opml */; };
 		89F516571B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89F516561B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m */; };
 		89F517021B1C070C0005AB04 /* FeedViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F517011B1C070C0005AB04 /* FeedViewControllerSpec.swift */; };
-		89F5170A1B2014470005AB04 /* QueryFeedViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F517091B2014470005AB04 /* QueryFeedViewControllerSpec.swift */; };
 		89F98BA11BA079A3005C3CA8 /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA01BA079A3005C3CA8 /* SwitchTableViewCell.swift */; };
 		89F98BA41BA079EA005C3CA8 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA31BA079EA005C3CA8 /* TableViewCell.swift */; };
 		89F98BA61BA07DC6005C3CA8 /* SettingsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA51BA07DC6005C3CA8 /* SettingsRepository.swift */; };
 		89F98BA81BA07E50005C3CA8 /* SettingsRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA71BA07E50005C3CA8 /* SettingsRepositorySpec.swift */; };
 		89F98BAA1BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA91BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift */; };
-		89F98BAC1BA0E428005C3CA8 /* DocumentationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BAB1BA0E428005C3CA8 /* DocumentationViewController.swift */; };
-		89F98BAE1BA0E449005C3CA8 /* DocumentationViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BAD1BA0E449005C3CA8 /* DocumentationViewControllerSpec.swift */; };
-		89F98BB11BA0EDF1005C3CA8 /* queryFeedDocumentation.html in Resources */ = {isa = PBXBuildFile; fileRef = 89F98BB01BA0EDF1005C3CA8 /* queryFeedDocumentation.html */; };
 		89FAE2741B92893E009A3604 /* FakeThemeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FAE2731B92893E009A3604 /* FakeThemeRepository.swift */; };
 		89FF979E1BF058FB000080F7 /* DataStoreBackedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */; };
 		89FF979F1BF058FB000080F7 /* DataStoreBackedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */; };
@@ -611,9 +603,6 @@
 		8903F5CE1D4177DE00546099 /* Importable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Importable.swift; sourceTree = "<group>"; };
 		890894971BFEC670002848A4 /* Reachability.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reachability.framework; path = ../Carthage/Build/iOS/Reachability.framework; sourceTree = "<group>"; };
 		8908949A1BFED7B8002848A4 /* FakeReachable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeReachable.swift; sourceTree = "<group>"; };
-		890B78BB1C77A5100066E201 /* DocumentationUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationUseCase.swift; sourceTree = "<group>"; };
-		890B78BD1C77A52B0066E201 /* DocumentationUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationUseCaseSpec.swift; sourceTree = "<group>"; };
-		890B78C11C77A83D0066E201 /* FakeDocumentationUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDocumentationUseCase.swift; sourceTree = "<group>"; };
 		890B78C71C77FD200066E201 /* ArticleUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleUseCase.swift; sourceTree = "<group>"; };
 		890B78C91C78E8650066E201 /* ReadArticleUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadArticleUseCaseSpec.swift; sourceTree = "<group>"; };
 		89122E601C5D725D00004B1F /* DatabaseMigrator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseMigrator.swift; sourceTree = "<group>"; };
@@ -779,7 +768,6 @@
 		89C509EF1A2EB18300CBD000 /* FeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 		89C509F31A2EE56E00CBD000 /* TagEditorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagEditorViewController.swift; sourceTree = "<group>"; };
 		89C509F61A2F825400CBD000 /* TextViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextViewCell.swift; sourceTree = "<group>"; };
-		89C509F91A2F865F00CBD000 /* QueryFeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryFeedViewController.swift; sourceTree = "<group>"; };
 		89C676531BA264F40037A224 /* FakeUserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeUserDefaults.swift; sourceTree = "<group>"; };
 		89C676551BA28FE60037A224 /* FakeFileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeFileManager.swift; sourceTree = "<group>"; };
 		89C8307319D730E9009924DA /* rNews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rNews.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -852,15 +840,11 @@
 		89F516561B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIBarButtonItem+rNewsTests.m"; sourceTree = "<group>"; };
 		89F517011B1C070C0005AB04 /* FeedViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewControllerSpec.swift; sourceTree = "<group>"; };
 		89F517071B1C12A30005AB04 /* FakeURLSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeURLSession.swift; sourceTree = "<group>"; };
-		89F517091B2014470005AB04 /* QueryFeedViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryFeedViewControllerSpec.swift; sourceTree = "<group>"; };
 		89F98BA01BA079A3005C3CA8 /* SwitchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCell.swift; sourceTree = "<group>"; };
 		89F98BA31BA079EA005C3CA8 /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		89F98BA51BA07DC6005C3CA8 /* SettingsRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsRepository.swift; sourceTree = "<group>"; };
 		89F98BA71BA07E50005C3CA8 /* SettingsRepositorySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsRepositorySpec.swift; sourceTree = "<group>"; };
 		89F98BA91BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCellSpec.swift; sourceTree = "<group>"; };
-		89F98BAB1BA0E428005C3CA8 /* DocumentationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationViewController.swift; sourceTree = "<group>"; };
-		89F98BAD1BA0E449005C3CA8 /* DocumentationViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationViewControllerSpec.swift; sourceTree = "<group>"; };
-		89F98BB01BA0EDF1005C3CA8 /* queryFeedDocumentation.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = queryFeedDocumentation.html; sourceTree = "<group>"; };
 		89FAE2731B92893E009A3604 /* FakeThemeRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeThemeRepository.swift; sourceTree = "<group>"; };
 		89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreBackedArray.swift; sourceTree = "<group>"; };
 		89FF97A01BF05CDC000080F7 /* DataStoreBackedArraySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreBackedArraySpec.swift; sourceTree = "<group>"; };
@@ -1167,15 +1151,6 @@
 			path = Articles;
 			sourceTree = "<group>";
 		};
-		895AC5241C80BBF500A5F6A1 /* Documentation */ = {
-			isa = PBXGroup;
-			children = (
-				890B78BD1C77A52B0066E201 /* DocumentationUseCaseSpec.swift */,
-				89F98BAD1BA0E449005C3CA8 /* DocumentationViewControllerSpec.swift */,
-			);
-			path = Documentation;
-			sourceTree = "<group>";
-		};
 		895AC5251C80BC0700A5F6A1 /* Feeds */ = {
 			isa = PBXGroup;
 			children = (
@@ -1183,7 +1158,6 @@
 				89F517011B1C070C0005AB04 /* FeedViewControllerSpec.swift */,
 				89735AC11C0771590032E09C /* FeedsListControllerSpec.swift */,
 				898ECDE01B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift */,
-				89F517091B2014470005AB04 /* QueryFeedViewControllerSpec.swift */,
 			);
 			path = Feeds;
 			sourceTree = "<group>";
@@ -1355,7 +1329,6 @@
 			children = (
 				8903F5A11D3C15C300546099 /* Pasiphae */,
 				895AC5231C80BBD700A5F6A1 /* Articles */,
-				895AC5241C80BBF500A5F6A1 /* Documentation */,
 				895AC5251C80BC0700A5F6A1 /* Feeds */,
 				89CB98BD1B13945500C87160 /* Importing Feeds */,
 				89CBDC031C7D42C2006B70F5 /* Migration */,
@@ -1404,7 +1377,6 @@
 				89EF4FE31A97DAD70052A82F /* Application */,
 				89C830B419D7D2D2009924DA /* Articles */,
 				8933E93519EE342F00ECFF3F /* Categories */,
-				89F98BAF1BA0E694005C3CA8 /* Documentation */,
 				89C830B119D7D2B7009924DA /* Feeds */,
 				89CB98BB1B13921200C87160 /* Frameworks */,
 				89F98BA21BA079DE005C3CA8 /* Generic Cells */,
@@ -1628,7 +1600,6 @@
 			children = (
 				89EF4FE21A97DA270052A82F /* Tags */,
 				89C509EF1A2EB18300CBD000 /* FeedViewController.swift */,
-				89C509F91A2F865F00CBD000 /* QueryFeedViewController.swift */,
 				89DA7D2B1A66111E0050685B /* TextFieldCell.swift */,
 				89C509F61A2F825400CBD000 /* TextViewCell.swift */,
 				89DA7D2D1A6613100050685B /* ValidatorView.swift */,
@@ -1710,23 +1681,12 @@
 			path = "Generic Cells";
 			sourceTree = "<group>";
 		};
-		89F98BAF1BA0E694005C3CA8 /* Documentation */ = {
-			isa = PBXGroup;
-			children = (
-				890B78BB1C77A5100066E201 /* DocumentationUseCase.swift */,
-				89F98BAB1BA0E428005C3CA8 /* DocumentationViewController.swift */,
-				89F98BB01BA0EDF1005C3CA8 /* queryFeedDocumentation.html */,
-			);
-			path = Documentation;
-			sourceTree = "<group>";
-		};
 		AE4356071A7ABAD500A961B9 /* Fakes */ = {
 			isa = PBXGroup;
 			children = (
 				89E186911D136C38005C5880 /* FakeAnalytics.swift */,
 				892CBDE91C7A27FE0062E578 /* FakeArticleUseCase.swift */,
 				89EA6C351B4B2D8400456892 /* FakeDefaultDatabaseUseCase.swift */,
-				890B78C11C77A83D0066E201 /* FakeDocumentationUseCase.swift */,
 				89348F2E1C60730D007D366B /* FakeDatabaseUseCase.swift */,
 				89C676551BA28FE60037A224 /* FakeFileManager.swift */,
 				8903EB0E1C703570001C0189 /* FakeImportUseCase.swift */,
@@ -2098,7 +2058,6 @@
 			files = (
 				89C8308319D730E9009924DA /* Images.xcassets in Resources */,
 				8924D8E91A094CF5003B7529 /* github2.css in Resources */,
-				89F98BB11BA0EDF1005C3CA8 /* queryFeedDocumentation.html in Resources */,
 				89AA8A931B537048000E2C88 /* mac_classic.tmTheme in Resources */,
 				89B8BBDD1B9C5B1000B2C112 /* Launch Screen.xib in Resources */,
 				895901B31A32B61A002E2C62 /* Localizable.strings in Resources */,
@@ -2453,7 +2412,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				890B78BC1C77A5100066E201 /* DocumentationUseCase.swift in Sources */,
 				8994F0EB1C8F53E600920E6D /* AuthorActivity.swift in Sources */,
 				8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */,
 				89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */,
@@ -2480,7 +2438,6 @@
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
 				89F98BA41BA079EA005C3CA8 /* TableViewCell.swift in Sources */,
-				89F98BAC1BA0E428005C3CA8 /* DocumentationViewController.swift in Sources */,
 				890B78C81C77FD200066E201 /* ArticleUseCase.swift in Sources */,
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
 				89DA7D2C1A66111E0050685B /* TextFieldCell.swift in Sources */,
@@ -2488,7 +2445,6 @@
 				8903F5A01D3BE5AB00546099 /* LoginViewController.swift in Sources */,
 				89CBDC151C7D7D96006B70F5 /* UIApplication+DataSubscriber.swift in Sources */,
 				89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */,
-				89C509FA1A2F865F00CBD000 /* QueryFeedViewController.swift in Sources */,
 				89E2A33D1B6A856900A40D4E /* SettingsViewController.swift in Sources */,
 				89C509F41A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */,
 				8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */,
@@ -2507,10 +2463,8 @@
 				8997C7F51B248D5A00972930 /* FakeWebView.swift in Sources */,
 				892E30E41CE78D4900E327A0 /* FakeScriptService.swift in Sources */,
 				89F98BA81BA07E50005C3CA8 /* SettingsRepositorySpec.swift in Sources */,
-				890B78BE1C77A52B0066E201 /* DocumentationUseCaseSpec.swift in Sources */,
 				89CB98BF1B13947800C87160 /* FeedTableCellSpec.swift in Sources */,
 				8997C7F71B25074900972930 /* ValidatorViewSpec.swift in Sources */,
-				890B78C21C77A83D0066E201 /* FakeDocumentationUseCase.swift in Sources */,
 				893F93E41B237EBC00B52194 /* UnreadCounterSpec.swift in Sources */,
 				89FAE2741B92893E009A3604 /* FakeThemeRepository.swift in Sources */,
 				8903A6271C4ABA7800E896BF /* NotificationViewSpec.swift in Sources */,
@@ -2521,7 +2475,6 @@
 				899823A91B2C76B800818755 /* TagEditorViewControllerSpec.swift in Sources */,
 				89F517021B1C070C0005AB04 /* FeedViewControllerSpec.swift in Sources */,
 				898ECDE11B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift in Sources */,
-				89F98BAE1BA0E449005C3CA8 /* DocumentationViewControllerSpec.swift in Sources */,
 				89735ABC1C0694C70032E09C /* UITraitCollection+rNewsTests.m in Sources */,
 				89EA6C371B4B308F00456892 /* FakeOPMLService.swift in Sources */,
 				890B78CA1C78E8650066E201 /* ReadArticleUseCaseSpec.swift in Sources */,
@@ -2541,7 +2494,6 @@
 				8903F5AB1D3EF9F800546099 /* LoginViewControllerSpec.swift in Sources */,
 				8953B1581B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift in Sources */,
 				89BFAC101C4C66AE007B3415 /* CustomMatchers.swift in Sources */,
-				89F5170A1B2014470005AB04 /* QueryFeedViewControllerSpec.swift in Sources */,
 				89CBDC051C7D42D7006B70F5 /* MigrationViewControllerSpec.swift in Sources */,
 				89CB984A1B12C50000C87160 /* ActivityIndicatorSpec.swift in Sources */,
 				89CBDC111C7D781E006B70F5 /* MigrationUseCaseSpec.swift in Sources */,

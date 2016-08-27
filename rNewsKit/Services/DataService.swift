@@ -54,51 +54,50 @@ extension DataService {
 
         var articlesToSave: [Article] = []
 
+        var importTasks: [Void -> Void] = []
+
+        let checkIfFinished: Result<(Article), RNewsError> -> Void = { result in
+            switch result {
+            case let .Success(article):
+                articlesToSave.append(article)
+                if importTasks.isEmpty {
+                    self.batchSave([feed], articles: articlesToSave).then { _ in
+                        promise.resolve(.Success())
+                    }
+                } else {
+                    importTasks.popLast()?()
+                }
+            case let .Failure(error):
+                promise.resolve(.Failure(error))
+                return
+            }
+        }
+
         let articleUrls = articles.flatMap { $0.url.absoluteString }
         let articlesPredicate = NSPredicate(format: "link IN %@", articleUrls)
         let feedArticles = Array(feed.articlesArray.filterWithPredicate(articlesPredicate))
-
-        let operationQueue = NSOperationQueue()
-        operationQueue.maxConcurrentOperationCount = 1
-
-        var articlesToCreate: [ImportableArticle] = []
-
         for item in articles {
             let filter: rNewsKit.Article -> Bool = { article in
                 return item.title == article.title || item.url == article.link
             }
             let article = feedArticles.objectPassingTest(filter)
-            operationQueue.addOperationWithBlock {
+            importTasks.append {
                 if let article = article ?? articlesToSave.objectPassingTest(filter) {
-                    self.updateArticle(article, item: item, feedURL: info.link).then { _ in
-                        articlesToSave.append(article)
-                    }.wait()
+                    self.updateArticle(article, item: item, feedURL: info.link).then(checkIfFinished)
                 } else {
-                    articlesToCreate.append(item)
+                    self.createArticle(feed) { article in
+                        feed.addArticle(article)
+                        self.updateArticle(article, item: item, feedURL: info.link).then(checkIfFinished)
+                    }
                 }
             }
         }
 
-        operationQueue.waitUntilAllOperationsAreFinished()
-
-        self.batchCreate(0, articleCount: articlesToCreate.count).then { res in
-            if case let .Success(_, createdArticles) = res {
-                for (idx, article) in createdArticles.enumerate() {
-                    operationQueue.addOperationWithBlock {
-                        feed.addArticle(article)
-                        let item = articlesToCreate[idx]
-                        self.updateArticle(article, item: item, feedURL: info.link).then { _ in
-                            articlesToSave.append(article)
-                        }.wait()
-                    }
-                }
-            }
-        }.wait()
-
-        operationQueue.waitUntilAllOperationsAreFinished()
-
-        self.batchSave([feed], articles: articlesToSave).then { _ in
-            promise.resolve(.Success())
+        if let task = importTasks.popLast() {
+            task()
+        } else {
+            let result = Result<Void, RNewsError>(value: ())
+            promise.resolve(result)
         }
         return promise.future
     }

@@ -44,8 +44,8 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
                 var articles: [Article] = []
                 var feeds: [Feed] = []
                 beforeEach {
-                    let feed1 = Feed(title: "a", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    let feed2 = Feed(title: "b", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feed1 = Feed(title: "a", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feed2 = Feed(title: "b", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                     let article1 = Article(title: "a", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "a", content: "", read: false, estimatedReadingTime: 0, feed: feed1, flags: [])
                     let article2 = Article(title: "b", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "b", content: "", read: false, estimatedReadingTime: 0, feed: feed1, flags: [])

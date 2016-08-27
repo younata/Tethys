@@ -17,7 +17,6 @@ class FeedsTableViewControllerSpec: QuickSpec {
         var analytics: FakeAnalytics! = nil
 
         var feed1: Feed! = nil
-        var feed2: Feed! = nil
 
         var feeds: [Feed] = []
 
@@ -44,12 +43,10 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
             navigationController = UINavigationController(rootViewController: subject)
 
-            feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "", query: nil,
+            feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "",
                 tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-            feed2 = Feed(title: "d", url: nil, summary: "", query: "article.read == false;", tags: [],
-                waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-            feeds = [feed1, feed2]
+            feeds = [feed1]
         }
 
         describe("when the view loads") {
@@ -321,7 +318,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
             describe("when the feeds promise succeeds") {
                 context("with a set of feeds") {
                     beforeEach {
-                        feeds = [feed1, feed2]
+                        feeds = [feed1]
                         dataUseCase.feedsPromises.first?.resolve(.Success(feeds))
                     }
 
@@ -393,7 +390,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                         context("when the call succeeds") {
                             var feed3: Feed! = nil
                             beforeEach {
-                                feed3 = Feed(title: "d", url: nil, summary: "", query: "", tags: [],
+                                feed3 = Feed(title: "d", url: nil, summary: "", tags: [],
                                     waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                                 dataUseCase.updateFeedsCompletion([], [])
                                 for object in dataUseCase.subscribers.allObjects {
@@ -413,7 +410,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                             it("reloads the tableView when the promise returns") {
                                 dataUseCase.feedsPromises.last?.resolve(.Success(feeds + [feed3]))
-                                expect(subject.tableView.numberOfRowsInSection(0)) == 3 // cause it was 2
+                                expect(subject.tableView.numberOfRowsInSection(0)) == 2 // cause it was 1
                             }
                         }
 

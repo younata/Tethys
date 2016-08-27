@@ -6,9 +6,9 @@ import Ra
 
 class FeedViewControllerSpec: QuickSpec {
     override func spec() {
-        var feed = Feed(title: "title", url: NSURL(string: "http://example.com/feed"), summary: "summary", query: nil,
+        var feed = Feed(title: "title", url: NSURL(string: "http://example.com/feed"), summary: "summary",
             tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-        let otherFeed = Feed(title: "", url: NSURL(string: "http://example.com/feed"), summary: "", query: nil,
+        let otherFeed = Feed(title: "", url: NSURL(string: "http://example.com/feed"), summary: "",
             tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
         var navigationController: UINavigationController!
@@ -44,7 +44,7 @@ class FeedViewControllerSpec: QuickSpec {
             presentingController = UIViewController()
             presentingController.presentViewController(navigationController, animated: false, completion: nil)
 
-            feed = Feed(title: "title", url: NSURL(string: "http://example.com/feed"), summary: "summary", query: nil,
+            feed = Feed(title: "title", url: NSURL(string: "http://example.com/feed"), summary: "summary",
                 tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             subject.feed = feed
@@ -128,7 +128,7 @@ class FeedViewControllerSpec: QuickSpec {
 
                     context("when the feed has a tag that starts with '~'") {
                         beforeEach {
-                            subject.feed = Feed(title: "a title", url: NSURL(string: ""), summary: "", query: nil,
+                            subject.feed = Feed(title: "a title", url: NSURL(string: ""), summary: "",
                                 tags: ["~custom title"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                             cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 0)) as! TableViewCell
@@ -272,7 +272,7 @@ class FeedViewControllerSpec: QuickSpec {
 
                 context("when the feed has a tag that starts with '`'") {
                     beforeEach {
-                        subject.feed = Feed(title: "a title", url: NSURL(string: ""), summary: "a summary", query: nil,
+                        subject.feed = Feed(title: "a title", url: NSURL(string: ""), summary: "a summary",
                             tags: ["`custom summary"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                         cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 2)) as! TableViewCell

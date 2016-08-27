@@ -357,8 +357,8 @@ class SettingsViewControllerSpec: QuickSpec {
                         let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
 
                         let feeds = [
-                            Feed(title: "a", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
-                            Feed(title: "b", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                            Feed(title: "a", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
+                            Feed(title: "b", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                         ]
 
                         beforeEach {
@@ -410,8 +410,8 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
 
                 context("when there are one or two existing quick actions") {
-                    let feedA = Feed(title: "a", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    let feedB = Feed(title: "b", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feedA = Feed(title: "a", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feedB = Feed(title: "b", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                     let feeds = [feedA, feedB]
 
@@ -550,10 +550,10 @@ class SettingsViewControllerSpec: QuickSpec {
                     let secondShortcut = UIApplicationShortcutItem(type: "b", localizedTitle: "b")
                     let thirdShortcut = UIApplicationShortcutItem(type: "c", localizedTitle: "c")
 
-                    let feedA = Feed(title: "a", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    let feedB = Feed(title: "b", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    let feedC = Feed(title: "c", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    let feedD = Feed(title: "d", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feedA = Feed(title: "a", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feedB = Feed(title: "b", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feedC = Feed(title: "c", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feedD = Feed(title: "d", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                     let feeds = [feedA, feedB, feedC, feedD]
 

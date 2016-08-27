@@ -15,8 +15,8 @@ class FeedsListControllerSpec: QuickSpec {
         beforeEach {
             subject = FeedsListController()
             feeds = [
-                Feed(title: "a", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
-                Feed(title: "b", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
+                Feed(title: "a", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
+                Feed(title: "b", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
             ]
             subject.feeds = feeds
 

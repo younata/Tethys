@@ -5,7 +5,6 @@ class CoreDataFeed: NSManagedObject {
     @NSManaged var title: String?
     @NSManaged var url: String?
     @NSManaged var summary: String?
-    @NSManaged var query: String?
     @NSManaged var tags: [String]
     @NSManaged var waitPeriod: NSNumber?
     @NSManaged var remainingWait: NSNumber?

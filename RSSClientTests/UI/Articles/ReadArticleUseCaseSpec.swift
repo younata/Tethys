@@ -36,8 +36,8 @@ class ArticleUseCaseSpec: QuickSpec {
                 let article3 = Article(title: "c", link: nil, summary: "", authors: [Author(name: "author", email: nil)], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
                 let article4 = Article(title: "d", link: nil, summary: "", authors: [Author(name: "bar", email: nil)], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
 
-                let feed1 = Feed(title: "ab", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
-                let feed2 = Feed(title: "cd", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [article3, article4], image: nil)
+                let feed1 = Feed(title: "ab", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
+                let feed2 = Feed(title: "cd", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article3, article4], image: nil)
                 article1.feed = feed1
                 article2.feed = feed1
                 article3.feed = feed2
@@ -70,7 +70,7 @@ class ArticleUseCaseSpec: QuickSpec {
             var userActivity: NSUserActivity!
 
             beforeEach {
-                feed = Feed(title: "feedTitle", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                feed = Feed(title: "feedTitle", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                 article = Article(title: "articleTitle", link: NSURL(string: "https://example.com"), summary: "articleSummary", authors: [Author(name: "articleAuthor", email: nil)], published: NSDate(), updatedAt: NSDate(), identifier: "identifier", content: "", read: true, estimatedReadingTime: 4, feed: feed, flags: ["flag"])
 
                 userActivity = subject.userActivityForArticle(article)

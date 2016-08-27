@@ -22,8 +22,6 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     private let updateUseCase: UpdateUseCase
     private let databaseMigrator: DatabaseMigratorType
     private let accountRepository: InternalAccountRepository
-    let scriptService: ScriptService
-
 
     private var dataService: DataService {
         return self.dataServiceFactory.currentDataService
@@ -34,14 +32,12 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         dataServiceFactory: DataServiceFactoryType,
         updateUseCase: UpdateUseCase,
         databaseMigrator: DatabaseMigratorType,
-        scriptService: ScriptService,
         accountRepository: InternalAccountRepository) {
             self.mainQueue = mainQueue
             self.reachable = reachable
             self.dataServiceFactory = dataServiceFactory
             self.updateUseCase = updateUseCase
             self.databaseMigrator = databaseMigrator
-            self.scriptService = scriptService
             self.accountRepository = accountRepository
     }
 
@@ -85,7 +81,6 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     }
 
     func articlesOfFeed(feed: Feed, matchingSearchQuery query: String) -> DataStoreBackedArray<Article> {
-            guard !feed.isQueryFeed else { return DataStoreBackedArray() }
             let articles = feed.articlesArray
             let predicates = [
                 NSPredicate(format: "title CONTAINS[c] %@", query),
@@ -96,46 +91,15 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
             return articles.filterWithPredicate(compoundPredicate)
     }
 
-    func articlesMatchingQuery(query: String) -> Future<Result<[Article], RNewsError>> {
-        return self.feeds().map { result in
-            return result.map { feeds in
-                return self.articlesMatchingQuery(query, feeds: feeds)
-            }
-        }
-    }
-
     // MARK: Private (DataRetriever)
 
     private func allFeeds() -> Future<Result<[Feed], RNewsError>> {
         return self.dataService.allFeeds().map { result in
             return result.map { unsorted_feeds in
                 let unsorted = Array(unsorted_feeds)
-                let feeds = unsorted.sort { return $0.displayTitle < $1.displayTitle }
-
-                let nonQueryFeeds = feeds.reduce(Array<Feed>()) { $0 + ($1.isQueryFeed ? [] : [$1]) }
-                let queryFeeds    = feeds.reduce(Array<Feed>()) { $0 + ($1.isQueryFeed ? [$1] : []) }
-                for feed in queryFeeds {
-                    let articles = self.articlesMatchingQuery(feed.query!, feeds: nonQueryFeeds)
-                    articles.forEach { feed.addArticle($0) }
-                }
-                return feeds
+                return unsorted.sort { return $0.displayTitle < $1.displayTitle }
             }
         }
-    }
-
-    private func articlesMatchingQuery(query: String, feeds: [Feed]) -> [Article] {
-        let nonQueryFeeds = feeds.reduce(Array<Feed>()) { $0 + ($1.isQueryFeed ? [] : [$1]) }
-        let articles = nonQueryFeeds.reduce(Array<Article>()) { $0 + $1.articlesArray }
-        let script = "var query = \(query)\n" +
-            "var script = function(articles) {\n" +
-            "  var ret = [];\n" +
-            "  for (var i = 0; i < articles.length; i++) {\n" +
-            "    var article = articles[i];\n" +
-            "    if (query(article)) { ret.push(article) }\n" +
-            "  }\n" +
-            "  return ret\n" +
-        "}"
-        return self.scriptService.runScript(script, arguments: [articles])
     }
 
     // MARK: DataWriter
@@ -248,7 +212,6 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
 
         self.feeds().map { result in
             return result.map { feeds in
-                let feeds = feeds.filter { !$0.isQueryFeed }
                 guard feeds.isEmpty == false && self.reachable?.hasNetworkConnectivity == true else {
                     self.updatingFeedsCallbacks.forEach { $0([], []) }
                     self.updatingFeedsCallbacks = []

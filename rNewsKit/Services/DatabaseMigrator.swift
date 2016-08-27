@@ -78,7 +78,6 @@ struct DatabaseMigrator: DatabaseMigratorType {
         newFeed.title = oldFeed.title
         newFeed.url = oldFeed.url
         newFeed.summary = oldFeed.summary
-        newFeed.query = oldFeed.query
         for tag in newFeed.tags {
             newFeed.removeTag(tag)
         }

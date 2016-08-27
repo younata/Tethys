@@ -82,7 +82,6 @@ public class KitModule: NSObject, Ra.InjectorModule {
             dataServiceFactory: dataServiceFactory,
             updateUseCase: updateUseCase,
             databaseMigrator: DatabaseMigrator(),
-            scriptService: JavaScriptService(),
             accountRepository: accountRepository
         )
 

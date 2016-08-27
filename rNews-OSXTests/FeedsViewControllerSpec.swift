@@ -11,8 +11,8 @@ class FeedsViewControllerSpec: QuickSpec {
         var injector: Injector! = nil
         var dataReadWriter: FakeDataReadWriter! = nil
 
-        let feed1 = Feed(title: "feed1", url: nil, summary: "feed1Summary", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-        let feed2 = Feed(title: "feed2", url: nil, summary: "feed2Summary", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+        let feed1 = Feed(title: "feed1", url: nil, summary: "feed1Summary", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+        let feed2 = Feed(title: "feed2", url: nil, summary: "feed2Summary", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
         let feeds = [feed1, feed2]
 
@@ -211,7 +211,7 @@ class FeedsViewControllerSpec: QuickSpec {
         }
 
         describe("when the feeds update") {
-            let feed3 = Feed(title: "feed3", url: nil, summary: "feed3Summary", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            let feed3 = Feed(title: "feed3", url: nil, summary: "feed3Summary", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             let updatedFeeds = [feed1, feed2, feed3]
 

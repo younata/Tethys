@@ -48,7 +48,7 @@ class FeedTableCellSpec: QuickSpec {
             var feed: Feed! = nil
             context("with a feed that has no unread articles") {
                 beforeEach {
-                    feed = Feed(title: "Hello", url: nil, summary: "World", query: nil, tags: [],
+                    feed = Feed(title: "Hello", url: nil, summary: "World", tags: [],
                         waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     subject.feed = feed
                 }
@@ -71,7 +71,7 @@ class FeedTableCellSpec: QuickSpec {
                     let article2 = Article(title: "b", link: nil, summary: "", authors: [],
                         published: NSDate(), updatedAt: nil, identifier: "", content: "",
                         read: false, estimatedReadingTime: 0, feed: nil, flags: [])
-                    feed = Feed(title: "Hello", url: nil, summary: "World", query: nil, tags: [],
+                    feed = Feed(title: "Hello", url: nil, summary: "World", tags: [],
                         waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
                     subject.feed = feed
                 }
@@ -89,7 +89,7 @@ class FeedTableCellSpec: QuickSpec {
                 var image: UIImage! = nil
                 beforeEach {
                     image = UIImage(named: "GrayIcon")
-                    feed = Feed(title: "Hello", url: nil, summary: "World", query: nil, tags: [],
+                    feed = Feed(title: "Hello", url: nil, summary: "World", tags: [],
                         waitPeriod: 0, remainingWait: 0, articles: [], image: image)
                     subject.feed = feed
                 }
@@ -111,7 +111,7 @@ class FeedTableCellSpec: QuickSpec {
 
             context("with a feed that doesn't have an image") {
                 beforeEach {
-                    feed = Feed(title: "Hello", url: nil, summary: "World", query: nil, tags: [],
+                    feed = Feed(title: "Hello", url: nil, summary: "World", tags: [],
                         waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     subject.feed = feed
                 }

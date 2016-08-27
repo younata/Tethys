@@ -235,7 +235,6 @@ class CoreDataService: DataService {
             cdfeed.title = feed.title
             cdfeed.url = feed.url?.absoluteString
             cdfeed.summary = feed.summary
-            cdfeed.query = feed.query
             cdfeed.tags = feed.tags
             cdfeed.waitPeriodInt = feed.waitPeriod
             cdfeed.remainingWaitInt = feed.remainingWait

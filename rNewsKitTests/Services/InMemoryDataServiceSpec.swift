@@ -69,8 +69,8 @@ class InMemoryDataServiceSpec: QuickSpec {
             var article3: rNewsKit.Article!
 
             beforeEach {
-                feed1 = Feed(title: "feed1", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                feed2 = Feed(title: "feed2", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                feed1 = Feed(title: "feed1", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                feed2 = Feed(title: "feed2", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                 article1 = Article(title: "article1", link: NSURL(string: "https://example.com/article1"), summary: "",
                     authors: [], published: NSDate(timeIntervalSince1970: 15), updatedAt: nil, identifier: "",

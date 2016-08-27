@@ -2,96 +2,80 @@ import Foundation
 import CoreData
 import JavaScriptCore
 
-@objc public protocol ArticleJSExport: JSExport {
-    var title: String { get }
-    var link: NSURL? { get }
-    var summary: String { get }
-    var authors: [Author] { get }
-    var published: NSDate { get }
-    var updatedAt: NSDate? { get }
-    var identifier: String { get }
-    var content: String { get }
-    var estimatedReadingTime: Int { get }
-    var read: Bool { get set }
-    weak var feed: Feed? { get }
-    var flags: [String] { get }
-    var relatedArticlesArray: [Article] { get }
-}
-
-@objc public final class Article: NSObject, ArticleJSExport {
-    dynamic public internal(set) var title: String {
+public final class Article: NSObject {
+    public internal(set) var title: String {
         willSet {
             if newValue != title {
                 self.updated = true
             }
         }
     }
-    dynamic public internal(set) var link: NSURL? {
+    public internal(set) var link: NSURL? {
         willSet {
             if newValue != link {
                 self.updated = true
             }
         }
     }
-    dynamic public internal(set) var summary: String {
+    public internal(set) var summary: String {
         willSet {
             if newValue != summary {
                 self.updated = true
             }
         }
     }
-    dynamic public internal(set) var authors: [Author] {
+    public internal(set) var authors: [Author] {
         willSet {
             if newValue != authors {
                 self.updated = true
             }
         }
     }
-    dynamic public internal(set) var published: NSDate {
+    public internal(set) var published: NSDate {
         willSet {
             if newValue != published {
                 self.updated = true
             }
         }
     }
-    dynamic public internal(set) var updatedAt: NSDate? {
+    public internal(set) var updatedAt: NSDate? {
         willSet {
             if newValue != updatedAt {
                 self.updated = true
             }
         }
     }
-    dynamic public internal(set) var identifier: String {
+    public internal(set) var identifier: String {
         willSet {
             if newValue != identifier {
                 self.updated = true
             }
         }
     }
-    dynamic public internal(set) var content: String {
+    public internal(set) var content: String {
         willSet {
             if newValue != content {
                 self.updated = true
             }
         }
     }
-    dynamic public internal(set) var estimatedReadingTime: Int {
+    public internal(set) var estimatedReadingTime: Int {
         willSet {
             if newValue != estimatedReadingTime {
                 self.updated = true
             }
         }
     }
-    dynamic public var read: Bool {
+    public var read: Bool {
         willSet {
             if newValue != read {
                 self.updated = true
             }
         }
     }
-    weak dynamic public internal(set) var feed: Feed? {
+    weak public internal(set) var feed: Feed? {
         didSet {
-            if oldValue != feed && feed?.isQueryFeed != true {
+            if oldValue != feed {
                 self.updated = true
                 if let oldValue = oldValue where oldValue.articlesArray.contains(self) {
                     oldValue.removeArticle(self)
@@ -102,7 +86,7 @@ import JavaScriptCore
             }
         }
     }
-    dynamic public private(set) var flags: [String] = []
+    public private(set) var flags: [String] = []
 
     public private(set) var relatedArticles = DataStoreBackedArray<Article>()
     public var relatedArticlesArray: [Article] { return Array(self.relatedArticles) }
@@ -279,4 +263,8 @@ import JavaScriptCore
             self.updated = true
         }
     }
+}
+
+public func == (lhs: Article, rhs: Article) -> Bool {
+    return lhs.isEqual(rhs)
 }

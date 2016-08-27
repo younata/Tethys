@@ -20,7 +20,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
         var feeds: [rNewsKit.Feed] = []
         var feed1: rNewsKit.Feed!
         var feed2: rNewsKit.Feed!
-        var feed3: rNewsKit.Feed!
 
         var article1: rNewsKit.Article!
         var article2: rNewsKit.Article!
@@ -40,7 +39,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
 
         beforeEach {
             feed1 = rNewsKit.Feed(title: "a", url: NSURL(string: "https://example.com/feed1.feed"), summary: "",
-                query: nil, tags: ["a", "b", "c", "d"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                tags: ["a", "b", "c", "d"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             article1 = rNewsKit.Article(title: "b", link: NSURL(string: "https://example.com/article1.html"),
                 summary: "<p>Hello world!</p>", authors: [], published: NSDate(), updatedAt: nil, identifier: "article1",
@@ -53,13 +52,10 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
             feed1.addArticle(article1)
             feed1.addArticle(article2)
 
-            feed2 = rNewsKit.Feed(title: "d", url: nil, summary: "", query: "function(article) {return true;}", tags: ["b", "d"],
-                waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
-
-            feed3 = rNewsKit.Feed(title: "e", url: NSURL(string: "https://example.com/feed3.feed"), summary: "", query: nil,
+            feed2 = rNewsKit.Feed(title: "e", url: NSURL(string: "https://example.com/feed2.feed"), summary: "",
                 tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-            feeds = [feed1, feed2, feed3]
+            feeds = [feed1, feed2]
 
             reachable = FakeReachable(hasNetworkConnectivity: true)
 
@@ -87,7 +83,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                 dataServiceFactory: dataServiceFactory,
                 updateUseCase: updateUseCase,
                 databaseMigrator: databaseMigrator,
-                scriptService: JavaScriptService(),
                 accountRepository: accountRepository
             )
 
@@ -239,38 +234,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                     }
                 }
             }
-
-            describe("articlesOfFeed:MatchingSearchQuery:callback:") {
-                it("should return all articles that match the given search query") {
-                    let searchedArticles = subject.articlesOfFeed(feeds[0], matchingSearchQuery: "b")
-                    expect(Array(searchedArticles)) == [article1]
-                }
-            }
-
-            describe("articlesMatchingQuery") {
-                var calledHandler = false
-                var calledResults: Result<[rNewsKit.Article], RNewsError>? = nil
-
-                beforeEach {
-                    calledHandler = false
-
-                    subject.articlesMatchingQuery("function(article) {return !article.read;}").then {
-                        calledHandler = true
-                        calledResults = $0
-                    }
-                }
-
-                it("should execute the javascript query upon all articles to compile the query feed") {
-                    expect(calledHandler) == true
-                    expect(calledResults).toNot(beNil())
-                    switch calledResults! {
-                    case let .Success(articles):
-                        expect(articles) == [article1]
-                    case .Failure(_):
-                        expect(false) == true
-                    }
-                }
-            }
         }
 
         describe("as a DataWriter") {
@@ -291,7 +254,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
 
                     it("should call back with a created feed") {
                         expect(dataService.feeds).to(contain(createdFeed))
-                        expect(dataService.feeds.count) == 4
+                        expect(dataService.feeds.count) == 3
                     }
 
                     it("tells the sinope repository to subscribe to this feed") {
@@ -319,7 +282,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
 
                     it("should call back with a created feed") {
                         expect(dataService.feeds).to(contain(createdFeed))
-                        expect(dataService.feeds.count) == 4
+                        expect(dataService.feeds.count) == 3
                     }
 
                     it("does not tell the pasiphae repository to subscribe to this feed") {
@@ -333,61 +296,39 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
             }
 
             describe("deleteFeed") {
-                describe("deleting a standard feed") {
-                    var unsubscribePromise: Promise<Result<[NSURL], SinopeError>>!
-                    beforeEach {
-                        unsubscribePromise = Promise<Result<[NSURL], SinopeError>>()
-                        sinopeRepository.unsubscribeReturns(unsubscribePromise.future)
+                var unsubscribePromise: Promise<Result<[NSURL], SinopeError>>!
+                beforeEach {
+                    unsubscribePromise = Promise<Result<[NSURL], SinopeError>>()
+                    sinopeRepository.unsubscribeReturns(unsubscribePromise.future)
 
-                        mainQueue.runSynchronously = true
-                        subject.deleteFeed(feed1)
-                    }
-
-                    it("should remove the feed from the data service") {
-                        expect(dataService.feeds).toNot(contain(feed1))
-                    }
-
-                    it("tells the pasiphae repository to unsubscribe from the feed") {
-                        expect(sinopeRepository.unsubscribeCallCount) == 1
-                        guard sinopeRepository.unsubscribeCallCount == 1 else { return }
-                        let urls = sinopeRepository.unsubscribeArgsForCall(0)
-                        expect(urls) == [NSURL(string: "https://example.com/feed1.feed")!]
-                    }
-
-                    it("does not inform any subscribers") {
-                        expect(dataSubscriber.deletedFeed).to(beNil())
-                        expect(dataSubscriber.deletedFeedsLeft).to(beNil())
-                    }
-
-                    describe("when the unsubscribe promise resolves") {
-                        beforeEach {
-                            unsubscribePromise.resolve(.Success([]))
-                        }
-
-                        it("should inform any subscribers") {
-                            expect(dataSubscriber.deletedFeed).to(equal(feed1))
-                            expect(dataSubscriber.deletedFeedsLeft).to(equal(2))
-                        }
-                    }
+                    mainQueue.runSynchronously = true
+                    subject.deleteFeed(feed1)
                 }
 
-                describe("deleting a query feed") {
+                it("should remove the feed from the data service") {
+                    expect(dataService.feeds).toNot(contain(feed1))
+                }
+
+                it("tells the pasiphae repository to unsubscribe from the feed") {
+                    expect(sinopeRepository.unsubscribeCallCount) == 1
+                    guard sinopeRepository.unsubscribeCallCount == 1 else { return }
+                    let urls = sinopeRepository.unsubscribeArgsForCall(0)
+                    expect(urls) == [NSURL(string: "https://example.com/feed1.feed")!]
+                }
+
+                it("does not inform any subscribers") {
+                    expect(dataSubscriber.deletedFeed).to(beNil())
+                    expect(dataSubscriber.deletedFeedsLeft).to(beNil())
+                }
+
+                describe("when the unsubscribe promise resolves") {
                     beforeEach {
-                        mainQueue.runSynchronously = true
-                        subject.deleteFeed(feed2)
-                    }
-
-                    it("should remove the feed from the data service") {
-                        expect(dataService.feeds).toNot(contain(feed2))
-                    }
-
-                    it("does not tell the pasiphae repository to unsubscribe from the feed") {
-                        expect(sinopeRepository.unsubscribeCallCount) == 0
+                        unsubscribePromise.resolve(.Success([]))
                     }
 
                     it("should inform any subscribers") {
-                        expect(dataSubscriber.deletedFeed).to(equal(feed2))
-                        expect(dataSubscriber.deletedFeedsLeft).to(equal(2))
+                        expect(dataSubscriber.deletedFeed).to(equal(feed1))
+                        expect(dataSubscriber.deletedFeedsLeft).to(equal(1))
                     }
                 }
             }
@@ -648,7 +589,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                         expect(updateUseCase.updateFeedsCallCount) == 1
                         guard updateUseCase.updateFeedsCallCount == 1 else { return }
                         let args = updateUseCase.updateFeedsArgsForCall(0)
-                        expect(args.0) == [feed1, feed3]
+                        expect(args.0) == [feed1, feed2]
                         expect(args.1 as? [FakeDataSubscriber]) == [dataSubscriber]
                     }
 

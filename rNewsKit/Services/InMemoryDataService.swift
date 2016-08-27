@@ -14,7 +14,7 @@ class InMemoryDataService: DataService {
     var articles = [Article]()
 
     func createFeed(callback: Feed -> Void) -> Future<Result<Feed, RNewsError>> {
-        let feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0,
+        let feed = Feed(title: "", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0,
                         articles: [], image: nil)
         callback(feed)
         self.feeds.append(feed)

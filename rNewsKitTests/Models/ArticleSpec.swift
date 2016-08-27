@@ -149,7 +149,7 @@ class ArticleSpec: QuickSpec {
             var feed: Feed! = nil
 
             beforeEach {
-                feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                feed = Feed(title: "", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                 subject.feed = feed
             }
@@ -165,20 +165,12 @@ class ArticleSpec: QuickSpec {
             }
 
             it("should remove from the old and add to the new when changing feeds") {
-                let newFeed = Feed(title: "blah", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let newFeed = Feed(title: "blah", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                 subject.feed = newFeed
 
                 expect(feed.articlesArray).toNot(contain(subject))
                 expect(newFeed.articlesArray).to(contain(subject))
-            }
-
-            it("should no-op when trying to change the feed to a query feed") {
-                let query = Feed(title: "blah", url: nil, summary: "", query: "true", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-
-                subject.feed = query
-
-                expect(feed.articlesArray).to(contain(subject))
             }
         }
 
@@ -292,7 +284,7 @@ class ArticleSpec: QuickSpec {
                 it("feed") {
                     subject.feed = nil
                     expect(subject.updated) == false
-                    subject.feed = Feed(title: "", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    subject.feed = Feed(title: "", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     expect(subject.updated) == true
                 }
 

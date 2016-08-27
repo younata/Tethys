@@ -156,7 +156,7 @@ class AppDelegateSpec: QuickSpec {
             }
 
             describe("selecting a 'View Feed' action") {
-                let feed = Feed(title: "title", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
+                let feed = Feed(title: "title", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
                 let article = Article(title: "title", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
                 feed.addArticle(article)
 
@@ -266,7 +266,7 @@ class AppDelegateSpec: QuickSpec {
             var article: Article! = nil
 
             beforeEach {
-                let feed = Feed(title: "title", url: nil, summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
+                let feed = Feed(title: "title", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
                 article = Article(title: "title", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
                 feed.addArticle(article)
 //                dataRepository.feedsList = [feed]

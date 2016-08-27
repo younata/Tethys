@@ -77,7 +77,7 @@ class UpdateServiceSpec: QuickSpec {
                 let updatedDate = NSDate()
 
                 beforeEach {
-                    feed = rNewsKit.Feed(title: "feed", url: NSURL(string: "https://example.com/feed"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    feed = rNewsKit.Feed(title: "feed", url: NSURL(string: "https://example.com/feed"), summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     dataService.feeds = [feed]
                     // hm.
 
@@ -177,7 +177,7 @@ class UpdateServiceSpec: QuickSpec {
 
         describe("updating a feed") {
             context("trying to update a query feed") {
-                let query = rNewsKit.Feed(title: "query", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let query = rNewsKit.Feed(title: "query", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                 var updatedFeed: rNewsKit.Feed? = nil
                 var receivedError: NSError? = nil
 
@@ -209,7 +209,7 @@ class UpdateServiceSpec: QuickSpec {
                 var receivedError: NSError? = nil
 
                 beforeEach {
-                    feed = rNewsKit.Feed(title: "feed", url: NSURL(string: "https://example.com/feed"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    feed = rNewsKit.Feed(title: "feed", url: NSURL(string: "https://example.com/feed"), summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     dataService.feeds = [feed]
 
                     updatedFeed = nil

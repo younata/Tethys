@@ -40,8 +40,8 @@ class DefaultAccountRepositoryDelegateSpec: QuickSpec {
                     subscribePromise = Promise<Result<[NSURL], SinopeError>>()
                     sinopeRepository.subscribeReturns(subscribePromise.future)
 
-                    let feed = Feed(title: "title", url: NSURL(string: "https://example.com"), summary: "", query: nil, tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    let feed2 = Feed(title: "title", url: nil, summary: "", query: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feed = Feed(title: "title", url: NSURL(string: "https://example.com"), summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feed2 = Feed(title: "title", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                     databaseUseCase.feedsPromises.last?.resolve(.Success([feed, feed2]))
                 }

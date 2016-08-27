@@ -16,11 +16,9 @@ protocol Repository {
 
 class FeedRepository: Repository {
     private let dataService: DataService
-    private let scriptService: ScriptService
 
-    init(dataService: DataService, scriptService: ScriptService) {
+    init(dataService: DataService) {
         self.dataService = dataService
-        self.scriptService = scriptService
     }
 
     private var _feeds: [Feed]? = nil

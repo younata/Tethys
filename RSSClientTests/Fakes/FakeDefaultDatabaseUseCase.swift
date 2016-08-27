@@ -62,13 +62,6 @@ class FakeDefaultDatabaseUseCase : DefaultDatabaseUseCase {
         return promise.future
     }
 
-    var articlesMatchingQueryPromises: [Promise<Result<[Article], RNewsError>>] = []
-    override func articlesMatchingQuery(query: String) -> Future<Result<[Article], RNewsError>> {
-        let promise = Promise<Result<[Article], RNewsError>>()
-        self.articlesMatchingQueryPromises.append(promise)
-        return promise.future
-    }
-
     var lastArticleMarkedRead: Article? = nil
     var markArticleReadPromises: [Promise<Result<Void, RNewsError>>] = []
     override func markArticle(article: Article, asRead read: Bool) -> Future<Result<Void, RNewsError>> {

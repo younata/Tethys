@@ -37,7 +37,6 @@ class OPMLServiceSpec: QuickSpec {
                 dataServiceFactory: dataServiceFactory,
                 updateUseCase: FakeUpdateUseCase(),
                 databaseMigrator: FakeDatabaseMigrator(),
-                scriptService: JavaScriptService(),
                 accountRepository: accountRepository
             )
 
@@ -66,7 +65,7 @@ class OPMLServiceSpec: QuickSpec {
             context("when the feeds promise succeeds") {
                 beforeEach {
                     let previouslyImportedFeed = Feed(title: "imported",
-                        url: NSURL(string: "http://example.com/previouslyImportedFeed"), summary: "", query: nil,
+                        url: NSURL(string: "http://example.com/previouslyImportedFeed"), summary: "",
                         tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     dataRepository.feedsPromises.first?.resolve(.Success([previouslyImportedFeed]))
                 }
@@ -81,8 +80,8 @@ class OPMLServiceSpec: QuickSpec {
                     }
 
                     it("returns a list of feeds imported") {
-                        expect(feeds.count).to(equal(3))
-                        guard feeds.count == 3 else {
+                        expect(feeds.count).to(equal(2))
+                        guard feeds.count == 2 else {
                             return
                         }
                         feeds.sortInPlace { $0.title < $1.title }
@@ -91,11 +90,6 @@ class OPMLServiceSpec: QuickSpec {
 
                         let second = feeds[1]
                         expect(second.url).to(equal(NSURL(string: "http://example.com/feedWithTitle")))
-
-                        let query = feeds[2]
-                        expect(query.title).to(equal("Query Feed"))
-                        expect(query.url).to(beNil())
-                        expect(query.query).to(equal("return true;"))
                     }
                 }
             }
@@ -122,11 +116,11 @@ class OPMLServiceSpec: QuickSpec {
 
             context("when the feeds promise succeeds") {
                 beforeEach {
-                    let feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "", query: nil,
+                    let feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "",
                         tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    let feed2 = Feed(title: "d", url: nil, summary: "", query: "", tags: [],
+                    let feed2 = Feed(title: "d", url: nil, summary: "", tags: [],
                         waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    let feed3 = Feed(title: "e", url: NSURL(string: "http://example.com/otherfeed"), summary: "", query: nil,
+                    let feed3 = Feed(title: "e", url: NSURL(string: "http://example.com/otherfeed"), summary: "",
                         tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     dataRepository.feedsPromises.first?.resolve(.Success([feed1, feed2, feed3]))
                 }
@@ -186,11 +180,11 @@ class OPMLServiceSpec: QuickSpec {
 
             context("when the feeds promise succeeds") {
                 beforeEach {
-                    let feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "", query: nil,
+                    let feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "",
                         tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    let feed2 = Feed(title: "d", url: nil, summary: "", query: "", tags: [],
+                    let feed2 = Feed(title: "d", url: nil, summary: "", tags: [],
                         waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    let feed3 = Feed(title: "e", url: NSURL(string: "http://example.com/otherfeed"), summary: "", query: nil,
+                    let feed3 = Feed(title: "e", url: NSURL(string: "http://example.com/otherfeed"), summary: "",
                         tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                     dataRepository.feedsPromises.first?.resolve(.Success([feed1, feed2, feed3]))

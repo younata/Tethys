@@ -201,7 +201,6 @@ class RealmService: DataService {
             rfeed.title = feed.title
             rfeed.url = feed.url?.absoluteString
             rfeed.summary = feed.summary
-            rfeed.query = feed.query
             let tags: [RealmString] = feed.tags.map { str in
                 let realmString = RealmString()
                 realmString.string = str

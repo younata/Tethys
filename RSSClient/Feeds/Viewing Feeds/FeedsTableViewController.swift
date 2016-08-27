@@ -551,27 +551,20 @@ extension FeedsTableViewController: UITableViewDelegate {
             let editTitle = NSLocalizedString("Generic_Edit", comment: "")
             let edit = UITableViewRowAction(style: .Normal, title: editTitle) {_, indexPath in
                 let feed = self.feedAtIndexPath(indexPath)
-                var viewController: UIViewController! = nil
-                if !feed.isQueryFeed {
-                    let feedViewController = self.feedViewController()
-                    feedViewController.feed = feed
-                    viewController = feedViewController
-                }
-                self.presentViewController(UINavigationController(rootViewController: viewController),
+                let feedViewController = self.feedViewController()
+                feedViewController.feed = feed
+                self.presentViewController(UINavigationController(rootViewController: feedViewController),
                     animated: true, completion: nil)
             }
             edit.backgroundColor = UIColor.blueColor()
             let feed = self.feedAtIndexPath(indexPath)
-            if !feed.isQueryFeed {
-                let shareTitle = NSLocalizedString("Generic_Share", comment: "")
-                let share = UITableViewRowAction(style: .Normal, title: shareTitle) {_ in
-                    guard let url = feed.url else { return }
-                    let shareSheet = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-                    self.presentViewController(shareSheet, animated: true, completion: nil)
-                }
-                share.backgroundColor = UIColor.darkGreenColor()
-                return [delete, markRead, edit, share]
+            let shareTitle = NSLocalizedString("Generic_Share", comment: "")
+            let share = UITableViewRowAction(style: .Normal, title: shareTitle) {_ in
+                guard let url = feed.url else { return }
+                let shareSheet = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+                self.presentViewController(shareSheet, animated: true, completion: nil)
             }
-            return []
+            share.backgroundColor = UIColor.darkGreenColor()
+            return [delete, markRead, edit, share]
     }
 }

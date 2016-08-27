@@ -21,7 +21,6 @@ public class OPMLService: NSObject, Injectable {
     private func feedAlreadyExists(existingFeeds: [Feed], item: Lepton.Item) -> Bool {
         return existingFeeds.filter({
             let titleMatches = item.title == $0.title
-            let queryMatches = item.query == $0.query
             let tagsMatches = (item.tags ?? []) == $0.tags
             let urlMatches: Bool
             if let urlString = item.xmlURL {
@@ -29,7 +28,7 @@ public class OPMLService: NSObject, Injectable {
             } else {
                 urlMatches = $0.url == nil
             }
-            return titleMatches && queryMatches && tagsMatches && urlMatches
+            return titleMatches && tagsMatches && urlMatches
         }).isEmpty == false
     }
 
@@ -62,31 +61,15 @@ public class OPMLService: NSObject, Injectable {
                         if self.feedAlreadyExists(existingFeeds, item: item) {
                             continue
                         }
-                        if item.isQueryFeed() {
-                            if let title = item.title, query = item.query {
-                                feedCount += 1
-                                dataRepository.newFeed { newFeed in
-                                    newFeed.title = title
-                                    newFeed.query = query
-                                    newFeed.summary = item.summary ?? ""
-                                    for tag in (item.tags ?? []) {
-                                        newFeed.addTag(tag)
-                                    }
-                                    feeds.append(newFeed)
-                                    isComplete()
+                        if let feedURL = item.xmlURL {
+                            feedCount += 1
+                            dataRepository.newFeed { newFeed in
+                                newFeed.url = NSURL(string: feedURL)
+                                for tag in item.tags ?? [] {
+                                    newFeed.addTag(tag)
                                 }
-                            }
-                        } else {
-                            if let feedURL = item.xmlURL {
-                                feedCount += 1
-                                dataRepository.newFeed { newFeed in
-                                    newFeed.url = NSURL(string: feedURL)
-                                    for tag in item.tags ?? [] {
-                                        newFeed.addTag(tag)
-                                    }
-                                    feeds.append(newFeed)
-                                    isComplete()
-                                }
+                                feeds.append(newFeed)
+                                isComplete()
                             }
                         }
                     }
@@ -120,7 +103,7 @@ public class OPMLService: NSObject, Injectable {
 
         var ret = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
         ret += "<opml version=\"2.0\">\n    <body>\n"
-        for feed in feeds.filter({return $0.query == nil}) {
+        for feed in feeds {
             let title = "title=\"\(sanitize(feed.title))\""
             let url = "xmlUrl=\"\(sanitize(feed.url?.absoluteString))\""
             let tags: String

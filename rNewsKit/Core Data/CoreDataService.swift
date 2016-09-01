@@ -28,6 +28,7 @@ class CoreDataService: DataService {
         self.managedObjectContext.performBlock {
             let cdfeed = CoreDataFeed(entity: entityDescription,
                 insertIntoManagedObjectContext: self.managedObjectContext)
+            cdfeed.url = ""
             let _ = try? self.managedObjectContext.save()
             let feed = Feed(coreDataFeed: cdfeed)
             let operation = NSBlockOperation {
@@ -233,7 +234,7 @@ class CoreDataService: DataService {
     private func updateFeed(feed: Feed) {
         if let cdfeed = self.coreDataFeedForFeed(feed) {
             cdfeed.title = feed.title
-            cdfeed.url = feed.url?.absoluteString
+            cdfeed.url = feed.url.absoluteString
             cdfeed.summary = feed.summary
             cdfeed.tags = feed.tags
             cdfeed.waitPeriodInt = feed.waitPeriod

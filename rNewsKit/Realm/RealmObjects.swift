@@ -12,11 +12,12 @@ class RealmString: Object {
 
 class RealmFeed: Object {
     dynamic var title: String?
-    dynamic var url: String?
+    dynamic var url: String = ""
     dynamic var summary: String?
     let tags = List<RealmString>()
     dynamic var waitPeriod: Int = 0
     dynamic var remainingWait: Int = 0
+    dynamic var lastUpdated = NSDate(timeIntervalSinceReferenceDate: 494208000)
     var articles: [RealmArticle] {
         return LinkingObjects(fromType: RealmArticle.self, property: "feed").sort {
             let aDate: NSDate

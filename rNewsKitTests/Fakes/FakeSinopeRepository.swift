@@ -128,20 +128,37 @@ final class FakeSinopeRepository : Sinope.Repository, Equatable {
     }
 
     private(set) var fetchCallCount : Int = 0
-    var fetchStub : ((NSDate?) -> (Future<Result<(NSDate, [Feed]), SinopeError>>))?
-    private var fetchArgs : Array<(NSDate?)> = []
-    func fetchReturns(stubbedValues: (Future<Result<(NSDate, [Feed]), SinopeError>>)) {
-        self.fetchStub = {(date: NSDate?) -> (Future<Result<(NSDate, [Feed]), SinopeError>>) in
+    var fetchStub : (([NSURL: NSDate]) -> (Future<Result<([Feed]), SinopeError>>))?
+    private var fetchArgs : Array<([NSURL: NSDate])> = []
+    func fetchReturns(stubbedValues: (Future<Result<([Feed]), SinopeError>>)) {
+        self.fetchStub = {(feeds: [NSURL: NSDate]) -> (Future<Result<([Feed]), SinopeError>>) in
             return stubbedValues
         }
     }
-    func fetchArgsForCall(callIndex: Int) -> (NSDate?) {
+    func fetchArgsForCall(callIndex: Int) -> ([NSURL: NSDate]) {
         return self.fetchArgs[callIndex]
     }
-    func fetch(date: NSDate?) -> (Future<Result<(NSDate, [Feed]), SinopeError>>) {
+    func fetch(feeds: [NSURL: NSDate]) -> (Future<Result<([Feed]), SinopeError>>) {
         self.fetchCallCount += 1
-        self.fetchArgs.append((date))
-        return self.fetchStub!(date)
+        self.fetchArgs.append((feeds))
+        return self.fetchStub!(feeds)
+    }
+
+    private(set) var checkCallCount : Int = 0
+    var checkStub : ((NSURL) -> (Future<Result<[NSURL: Bool], SinopeError>>))?
+    private var checkArgs : Array<(NSURL)> = []
+    func checkReturns(stubbedValues: (Future<Result<[NSURL: Bool], SinopeError>>)) {
+        self.checkStub = {(url: NSURL) -> (Future<Result<[NSURL: Bool], SinopeError>>) in
+            return stubbedValues
+        }
+    }
+    func checkArgsForCall(callIndex: Int) -> (NSURL) {
+        return self.checkArgs[callIndex]
+    }
+    func check(url: NSURL) -> Future<Result<[NSURL : Bool], SinopeError>> {
+        self.checkCallCount += 1
+        self.checkArgs.append((url))
+        return self.checkStub!(url)
     }
 
     static func reset() {

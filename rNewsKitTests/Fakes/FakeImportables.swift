@@ -4,6 +4,7 @@ struct FakeImportableFeed: ImportableFeed {
     let title: String
     let link: NSURL
     let description: String
+    let lastUpdated: NSDate
     let imageURL: NSURL?
 
     var articles: [FakeImportableArticle]
@@ -12,10 +13,11 @@ struct FakeImportableFeed: ImportableFeed {
         return self.articles.map { $0 as ImportableArticle }
     }
 
-    init(title: String, link: NSURL, description: String, imageURL: NSURL?, articles: [FakeImportableArticle] = []) {
+    init(title: String, link: NSURL, description: String, lastUpdated: NSDate, imageURL: NSURL?, articles: [FakeImportableArticle] = []) {
         self.title = title
         self.link = link
         self.description = description
+        self.lastUpdated = lastUpdated
         self.imageURL = imageURL
         self.articles = articles
     }

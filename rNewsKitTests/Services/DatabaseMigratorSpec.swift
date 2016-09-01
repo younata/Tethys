@@ -22,13 +22,13 @@ class DatabaseMigratorSpec: QuickSpec {
 
             var finishCount = 0
 
-            let oldFeed1 = Feed(title: "oldfeed1", url: NSURL(string: "https://example.com/feed1"), summary: "oldfeedsummary1", tags: ["a", "tag"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            let oldFeed1 = Feed(title: "oldfeed1", url: NSURL(string: "https://example.com/feed1")!, summary: "oldfeedsummary1", tags: ["a", "tag"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
             let oldContent: String = (0..<100).map { _ in "there are five words "}
                 .reduce(" there are five words ", combine: +)
             let oldArticle1 = Article(title: "oldarticle1", link: NSURL(string: "https://example.com/feed1/1"), summary: "old1Summary", authors: [Author("me1")], published: NSDate(timeIntervalSince1970: 1), updatedAt: nil, identifier: "ident1", content: oldContent, read: true, estimatedReadingTime: 0, feed: oldFeed1, flags: ["hello", "there"])
             oldFeed1.addArticle(oldArticle1)
 
-            let oldFeed2 = Feed(title: "oldfeed2", url: NSURL(string: "https://example.com/feed2"), summary: "oldfeedsummary2", tags: ["a", "tag", "2"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            let oldFeed2 = Feed(title: "oldfeed2", url: NSURL(string: "https://example.com/feed2")!, summary: "oldfeedsummary2", tags: ["a", "tag", "2"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
             let oldArticle2 = Article(title: "oldarticle2", link: NSURL(string: "https://example.com/feed2/2"), summary: "old2summary", authors: [Author("me2")], published: NSDate(timeIntervalSince1970: 1), updatedAt: nil, identifier: "ident2", content: "content2", read: true, estimatedReadingTime: 20, feed: oldFeed2, flags: ["hello", "there"])
             oldFeed2.addArticle(oldArticle2)
 
@@ -96,13 +96,13 @@ class DatabaseMigratorSpec: QuickSpec {
             beforeEach {
                 database = InMemoryDataService(mainQueue: mainQueue, searchIndex: FakeSearchIndex())
 
-                let oldFeed1 = Feed(title: "oldfeed1", url: NSURL(string: "https://example.com/feed1"), summary: "oldfeedsummary1", tags: ["a", "tag"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let oldFeed1 = Feed(title: "oldfeed1", url: NSURL(string: "https://example.com/feed1")!, summary: "oldfeedsummary1", tags: ["a", "tag"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                 let oldContent: String = (0..<100).map { _ in "there are five words "}
                     .reduce(" there are five words ", combine: +)
                 let oldArticle1 = Article(title: "oldarticle1", link: NSURL(string: "https://example.com/feed1/1"), summary: "old1Summary", authors: [Author("me1")], published: NSDate(timeIntervalSince1970: 1), updatedAt: nil, identifier: "ident1", content: oldContent, read: true, estimatedReadingTime: 0, feed: oldFeed1, flags: ["hello", "there"])
                 oldFeed1.addArticle(oldArticle1)
 
-                let oldFeed2 = Feed(title: "oldfeed2", url: NSURL(string: "https://example.com/feed2"), summary: "oldfeedsummary2", tags: ["a", "tag", "2"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let oldFeed2 = Feed(title: "oldfeed2", url: NSURL(string: "https://example.com/feed2")!, summary: "oldfeedsummary2", tags: ["a", "tag", "2"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                 let oldArticle2 = Article(title: "oldarticle2", link: NSURL(string: "https://example.com/feed2/2"), summary: "old2summary", authors: [Author("me2")], published: NSDate(timeIntervalSince1970: 1), updatedAt: nil, identifier: "ident2", content: "content2", read: true, estimatedReadingTime: 20, feed: oldFeed2, flags: ["hello", "there"])
                 oldFeed2.addArticle(oldArticle2)
 

@@ -23,29 +23,27 @@ final class DefaultUpdateUseCase: UpdateUseCase {
 
     func updateFeeds(feeds: [Feed], subscribers: [DataSubscriber]) -> Future<Result<Void, RNewsError>> {
         if self.accountRepository.loggedIn() != nil {
-            return self.updateFeedsFromBackend(subscribers)
+            return self.updateFeedsFromBackend(feeds, subscribers: subscribers)
         } else {
             return self.updateFeedsFromRSS(feeds, subscribers: subscribers)
         }
     }
 
-    func updateFeedsFromBackend(subscribers: [DataSubscriber]) -> Future<Result<Void, RNewsError>> {
+    func updateFeedsFromBackend(feeds: [Feed], subscribers: [DataSubscriber]) -> Future<Result<Void, RNewsError>> {
         self.mainQueue.addOperationWithBlock {
             for subscriber in subscribers {
                 subscriber.willUpdateFeeds()
             }
         }
-        let date = self.userDefaults.objectForKey("pasiphae_last_update_date") as? NSDate
-        let future = self.updateService.updateFeeds(date) { progress, total in
+        let future = self.updateService.updateFeeds(feeds) { progress, total in
             self.mainQueue.addOperationWithBlock {
                 for subscriber in subscribers {
                     subscriber.didUpdateFeedsProgress(progress, total: total)
                 }
             }
         }
-        return future.map { (res: Result<(NSDate, [Feed]), RNewsError>) in
-            return res.map { updatedDate, _ in
-                self.userDefaults.setObject(updatedDate, forKey: "pasiphae_last_update_date")
+        return future.map { (res: Result<[Feed], RNewsError>) in
+            return res.map { _ in
                 return
             }
         }

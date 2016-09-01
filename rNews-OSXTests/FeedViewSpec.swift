@@ -40,7 +40,7 @@ class FeedViewSpec: QuickSpec {
         }
 
         describe("gesture recognizers") {
-            let feed = Feed(title: "feed", url: nil, summary: "feedSummary", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            let feed = Feed(title: "feed", url: NSURL(string: "https://example.com")!, summary: "feedSummary", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             var delegate: FakeFeedViewDelegate! = nil
 
@@ -136,7 +136,7 @@ class FeedViewSpec: QuickSpec {
         }
 
         context("when configured with a standard feed") {
-            let feed = Feed(title: "feed", url: nil, summary: "feedSummary", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            let feed = Feed(title: "feed", url: NSURL(string: "https://example.com")!, summary: "feedSummary", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             beforeEach {
                 subject.configure(feed, delegate: FakeFeedViewDelegate())
@@ -158,7 +158,7 @@ class FeedViewSpec: QuickSpec {
             let article2 = Article(title: "b", link: nil, summary: "", authors: [],
                 published: NSDate(), updatedAt: nil, identifier: "", content: "",
                 read: false, feed: nil, flags: [])
-            let feed = Feed(title: "Hello", url: nil, summary: "World", tags: [],
+            let feed = Feed(title: "Hello", url: NSURL(string: "https://example.com")!, summary: "World", tags: [],
                 waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
 
             beforeEach {
@@ -180,7 +180,7 @@ class FeedViewSpec: QuickSpec {
             beforeEach {
                 let data = NSData(contentsOfURL: NSURL(string: "https://avatars3.githubusercontent.com/u/285321?v=3&s=40")!)!
                 let image = NSImage(data: data)
-                feed = Feed(title: "feed", url: nil, summary: "feedSummary", tags: [],
+                feed = Feed(title: "feed", url: NSURL(string: "https://example.com")!, summary: "feedSummary", tags: [],
                     waitPeriod: 0, remainingWait: 0, articles: [], image: image)
                 subject.configure(feed, delegate: FakeFeedViewDelegate())
             }

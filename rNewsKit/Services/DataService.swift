@@ -45,6 +45,7 @@ extension DataService {
         let promise = Promise<Result<Void, RNewsError>>()
         feed.title = info.title.stringByUnescapingHTML().stringByStrippingHTML()
         feed.summary = info.description
+        feed.lastUpdated = info.lastUpdated
 
         let articles: [ImportableArticle] = info.importableArticles.filter { $0.title.isEmpty == false }
 
@@ -74,8 +75,10 @@ extension DataService {
         }
 
         let articleUrls = articles.flatMap { $0.url.absoluteString }
-        let articlesPredicate = NSPredicate(format: "link IN %@", articleUrls)
+        let articleTitles = articles.map { $0.title }
+        let articlesPredicate = NSPredicate(format: "link IN %@ OR title IN %@", articleUrls, articleTitles)
         let feedArticles = Array(feed.articlesArray.filterWithPredicate(articlesPredicate))
+
         for item in articles {
             let filter: rNewsKit.Article -> Bool = { article in
                 return item.title == article.title || item.url == article.link

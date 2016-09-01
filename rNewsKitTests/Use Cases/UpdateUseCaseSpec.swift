@@ -23,7 +23,7 @@ class UpdateUseCaseSpec: QuickSpec {
         var userDefaults: FakeUserDefaults!
 
         beforeEach {
-            feed1 = Feed(title: "a", url: NSURL(string: "https://example.com/feed1.feed"), summary: "",
+            feed1 = Feed(title: "a", url: NSURL(string: "https://example.com/feed1.feed")!, summary: "",
                 tags: ["a", "b", "c", "d"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             article1 = Article(title: "b", link: NSURL(string: "https://example.com/article1.html"),
@@ -37,7 +37,7 @@ class UpdateUseCaseSpec: QuickSpec {
             feed1.addArticle(article1)
             feed1.addArticle(article2)
 
-            feed3 = Feed(title: "e", url: NSURL(string: "https://example.com/feed3.feed"), summary: "",
+            feed3 = Feed(title: "e", url: NSURL(string: "https://example.com/feed3.feed")!, summary: "",
                 tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             feeds = [feed1, feed3]
@@ -55,16 +55,12 @@ class UpdateUseCaseSpec: QuickSpec {
         describe("-updateFeeds") {
             describe("with a Pasiphae account") {
                 var receivedFuture: Future<Result<Void, RNewsError>>!
-                var updateFeedsPromise: Promise<Result<(NSDate, [rNewsKit.Feed]), RNewsError>>!
-
-                let initialDate = NSDate()
+                var updateFeedsPromise: Promise<Result<[rNewsKit.Feed], RNewsError>>!
 
                 beforeEach {
                     accountRepository.loggedInReturns("foo@example.com")
-                    updateFeedsPromise = Promise<Result<(NSDate, [rNewsKit.Feed]), RNewsError>>()
+                    updateFeedsPromise = Promise<Result<[rNewsKit.Feed], RNewsError>>()
                     updateService.updateFeedsReturns(updateFeedsPromise.future)
-
-                    userDefaults.setObject(initialDate, forKey: "pasiphae_last_update_date")
 
                     receivedFuture = subject.updateFeeds(feeds, subscribers: [dataSubscriber])
                 }
@@ -77,7 +73,7 @@ class UpdateUseCaseSpec: QuickSpec {
                     expect(updateService.updateFeedsCallCount) == 1
                     guard updateService.updateFeedsCallCount == 1 else { return }
                     let args = updateService.updateFeedsArgsForCall(0)
-                    expect(args.0) == initialDate
+                    expect(args.0) == feeds
                 }
 
                 it("informs the data subscribers whenever there's stuff to update") {
@@ -93,11 +89,7 @@ class UpdateUseCaseSpec: QuickSpec {
                 describe("when the update request succeeds") {
                     let updatedDate = NSDate()
                     beforeEach {
-                        updateFeedsPromise.resolve(.Success(updatedDate, []))
-                    }
-
-                    it("stores the new updated date for future calls") {
-                        expect(userDefaults.objectForKey("pasiphae_last_update_date") as? NSDate) == updatedDate
+                        updateFeedsPromise.resolve(.Success([]))
                     }
 
                     it("resolves the promise successfully") {

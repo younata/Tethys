@@ -32,8 +32,9 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
 
         it("easily allows a feed to be updated with inserted articles") {
             guard let feed = feed else { fail(); return }
+            let itemUpdateDate = NSDate(timeIntervalSinceNow: -5)
             let item = FakeImportableArticle(title: "article", url: NSURL(string: "/foo/bar/baz")!, summary: "", content: "", published: NSDate(), updated: nil, authors: [])
-            let info = FakeImportableFeed(title: "a &amp; title", link: NSURL(string: "https://example.com")!, description: "description", imageURL: nil, articles: [item])
+            let info = FakeImportableFeed(title: "a &amp; title", link: NSURL(string: "https://example.com")!, description: "description", lastUpdated: itemUpdateDate, imageURL: nil, articles: [item])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
             dataService.updateFeed(feed, info: info).then {
                 if case Result.Success() = $0 {
@@ -44,7 +45,8 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
 
             expect(feed.title) == "a & title"
             expect(feed.summary) == "description"
-            expect(feed.url).to(beNil())
+            expect(feed.url) == NSURL(string: "")
+            expect(feed.lastUpdated) == itemUpdateDate
             expect(feed.articlesArray.count).to(equal(1))
             if let article = feed.articlesArray.first {
                 expect(article.title) == "article"
@@ -54,7 +56,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
         it("makes the item link relative to the feed link in the event the item link has a nil scheme") {
             guard let feed = feed else { fail(); return }
             let item = FakeImportableArticle(title: "article", url: NSURL(string: "/foo/bar/baz")!, summary: "", content: "", published: NSDate(), updated: nil, authors: [])
-            let info = FakeImportableFeed(title: "a &amp; title", link: NSURL(string: "https://example.com/qux")!, description: "description", imageURL: nil, articles: [item])
+            let info = FakeImportableFeed(title: "a &amp; title", link: NSURL(string: "https://example.com/qux")!, description: "description", lastUpdated: NSDate(), imageURL: nil, articles: [item])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
             dataService.updateFeed(feed, info: info).then {
                 if case Result.Success() = $0 {
@@ -65,7 +67,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
 
             expect(feed.title) == "a & title"
             expect(feed.summary) == "description"
-            expect(feed.url).to(beNil())
+            expect(feed.url) == NSURL(string: "")
             expect(feed.articlesArray.count).to(equal(1))
             if let article = feed.articlesArray.first {
                 expect(article.title) == "article"
@@ -76,7 +78,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
         it("does not insert items that have empty titles") {
             guard let feed = feed else { fail(); return }
             let item = FakeImportableArticle(title: "", url: NSURL(string: "/foo/bar/baz")!, summary: "", content: "", published: NSDate(), updated: nil, authors: [])
-            let info = FakeImportableFeed(title: "a title", link: NSURL(string: "https://example.com")!, description: "description", imageURL: nil, articles: [item])
+            let info = FakeImportableFeed(title: "a title", link: NSURL(string: "https://example.com")!, description: "description", lastUpdated: NSDate(), imageURL: nil, articles: [item])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
             dataService.updateFeed(feed, info: info).then {
                 if case Result.Success() = $0 {
@@ -87,7 +89,7 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
 
             expect(feed.title) == "a title"
             expect(feed.summary) == "description"
-            expect(feed.url).to(beNil())
+            expect(feed.url) == NSURL(string: "")
             expect(feed.articlesArray.count).to(equal(0))
         }
 
@@ -113,13 +115,14 @@ func dataServiceSharedSpec(dataService: DataService, spec: QuickSpec) {
 
             let existingItem = FakeImportableArticle(title: existingArticle.title, url: existingArticle.link!, summary: existingArticle.summary, content: existingArticle.content, published: existingArticle.published, updated: nil, authors: [])
             let item = FakeImportableArticle(title: "article", url: NSURL(string: "")!, summary: "", content: "", published: NSDate(), updated: nil, authors: [])
-            let info = FakeImportableFeed(title: "a title", link: NSURL(string: "https://example.com")!, description: "description", imageURL: nil, articles: [existingItem, item])
+            let info = FakeImportableFeed(title: "a title", link: NSURL(string: "https://example.com")!, description: "description", lastUpdated: NSDate(), imageURL: nil, articles: [existingItem, item])
             let updateExpectation = spec.expectationWithDescription("Update Feed")
             dataService.updateFeed(feed, info: info).then {
                 guard case Result.Success() = $0 else { return }
                 expect(feed.title) == "a title"
                 expect(feed.summary) == "description"
-                expect(feed.url).to(beNil())
+                expect(feed.url) == NSURL(string: "")
+                expect(feed.lastUpdated) == info.lastUpdated
                 expect(feed.articlesArray.count).to(equal(2))
                 let articles = feed.articlesArray
                 if let firstArticle = articles.first {

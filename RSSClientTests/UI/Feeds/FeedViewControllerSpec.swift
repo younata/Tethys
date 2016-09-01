@@ -6,9 +6,9 @@ import Ra
 
 class FeedViewControllerSpec: QuickSpec {
     override func spec() {
-        var feed = Feed(title: "title", url: NSURL(string: "http://example.com/feed"), summary: "summary",
+        var feed = Feed(title: "title", url: NSURL(string: "http://example.com/feed")!, summary: "summary",
             tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-        let otherFeed = Feed(title: "", url: NSURL(string: "http://example.com/feed"), summary: "",
+        let otherFeed = Feed(title: "", url: NSURL(string: "http://example.com/feed")!, summary: "",
             tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
         var navigationController: UINavigationController!
@@ -44,7 +44,7 @@ class FeedViewControllerSpec: QuickSpec {
             presentingController = UIViewController()
             presentingController.presentViewController(navigationController, animated: false, completion: nil)
 
-            feed = Feed(title: "title", url: NSURL(string: "http://example.com/feed"), summary: "summary",
+            feed = Feed(title: "title", url: NSURL(string: "http://example.com/feed")!, summary: "summary",
                 tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             subject.feed = feed
@@ -128,7 +128,7 @@ class FeedViewControllerSpec: QuickSpec {
 
                     context("when the feed has a tag that starts with '~'") {
                         beforeEach {
-                            subject.feed = Feed(title: "a title", url: NSURL(string: ""), summary: "",
+                            subject.feed = Feed(title: "a title", url: NSURL(string: "")!, summary: "",
                                 tags: ["~custom title"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                             cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 0)) as! TableViewCell
@@ -179,7 +179,7 @@ class FeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should be preconfigured with the feed's url") {
-                        expect(cell.textField.text).to(equal(feed.url?.absoluteString))
+                        expect(cell.textField.text).to(equal(feed.url.absoluteString))
                     }
 
                     it("should set the cell's themeRepository") {
@@ -272,7 +272,7 @@ class FeedViewControllerSpec: QuickSpec {
 
                 context("when the feed has a tag that starts with '`'") {
                     beforeEach {
-                        subject.feed = Feed(title: "a title", url: NSURL(string: ""), summary: "a summary",
+                        subject.feed = Feed(title: "a title", url: NSURL(string: "")!, summary: "a summary",
                             tags: ["`custom summary"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                         cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 2)) as! TableViewCell

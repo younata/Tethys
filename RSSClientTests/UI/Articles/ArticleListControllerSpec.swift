@@ -93,7 +93,7 @@ class ArticleListControllerSpec: QuickSpec {
 
             publishedOffset = 0
 
-            feed = Feed(title: "", url: NSURL(string: "https://example.com"), summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            feed = Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
             let d = fakeArticle(feed)
             let c = fakeArticle(feed, read: true)
             let b = fakeArticle(feed, isUpdated: true)
@@ -128,7 +128,7 @@ class ArticleListControllerSpec: QuickSpec {
                     shareSheet.tap()
                     expect(subject.presentedViewController).to(beAnInstanceOf(UIActivityViewController))
                     if let activityVC = subject.presentedViewController as? UIActivityViewController {
-                        expect(activityVC.activityItems as? [NSURL]) == [feed.url!]
+                        expect(activityVC.activityItems as? [NSURL]) == [feed.url]
                     }
                 }
             }

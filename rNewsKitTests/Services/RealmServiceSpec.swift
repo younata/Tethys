@@ -43,7 +43,7 @@ class RealmServiceSpec: QuickSpec {
 
                 subject.createFeed { feed in
                     feed.title = "Hello"
-                    feed.url = NSURL(string: "https://example.com/feed")
+                    feed.url = NSURL(string: "https://example.com/feed")!
                     expectation.fulfill()
                 }
 

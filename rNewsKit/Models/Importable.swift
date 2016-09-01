@@ -6,6 +6,7 @@ protocol ImportableFeed {
     var link: NSURL { get }
     var description: String { get }
     var imageURL: NSURL? { get }
+    var lastUpdated: NSDate { get }
     var importableArticles: [ImportableArticle] { get }
 }
 
@@ -27,6 +28,10 @@ protocol ImportableAuthor {
 extension Muon.Feed: ImportableFeed {
     var importableArticles: [ImportableArticle] {
         return self.articles.map { $0 as ImportableArticle }
+    }
+
+    var lastUpdated: NSDate {
+        return NSDate()
     }
 }
 extension Muon.Article: ImportableArticle {

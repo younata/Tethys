@@ -63,7 +63,7 @@ class LocalNotificationHandlerSpec: QuickSpec {
             var window: UIWindow! = nil
             var navController: UINavigationController! = nil
 
-            let feed = Feed(title: "feedTitle", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")
+            let feed = Feed(title: "feedTitle", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")
             let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
             feed.addArticle(article)
             beforeEach {
@@ -126,7 +126,7 @@ class LocalNotificationHandlerSpec: QuickSpec {
         }
 
         describe("handling actions") {
-            let feed = Feed(title: "feedTitle", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")
+            let feed = Feed(title: "feedTitle", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")
             let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
             feed.addArticle(article)
 
@@ -179,7 +179,7 @@ class LocalNotificationHandlerSpec: QuickSpec {
         }
         
         describe("sending notifications") {
-            let feed = Feed(title: "feedTitle", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")
+            let feed = Feed(title: "feedTitle", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")
             let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
             feed.addArticle(article)
 

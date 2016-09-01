@@ -3,11 +3,12 @@ import CoreData
 @objc
 class CoreDataFeed: NSManagedObject {
     @NSManaged var title: String?
-    @NSManaged var url: String?
+    @NSManaged var url: String
     @NSManaged var summary: String?
     @NSManaged var tags: [String]
     @NSManaged var waitPeriod: NSNumber?
     @NSManaged var remainingWait: NSNumber?
+    @NSManaged var lastUpdated: NSDate
     @NSManaged var articles: Set<CoreDataArticle>
     @NSManaged var image: AnyObject?
 

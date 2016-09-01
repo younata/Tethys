@@ -94,7 +94,9 @@ class CoreDataServiceSpec: QuickSpec {
                     let cdfeed1 = CoreDataFeed(entity: feedDescription, insertIntoManagedObjectContext: objectContext)
                     let cdfeed2 = CoreDataFeed(entity: feedDescription, insertIntoManagedObjectContext: objectContext)
                     cdfeed1.title = "feed1"
+                    cdfeed1.url = ""
                     cdfeed2.title = "feed2"
+                    cdfeed2.url = ""
 
                     let cdarticle1 = CoreDataArticle(entity: articleDescription, insertIntoManagedObjectContext: objectContext)
                     let cdarticle2 = CoreDataArticle(entity: articleDescription, insertIntoManagedObjectContext: objectContext)

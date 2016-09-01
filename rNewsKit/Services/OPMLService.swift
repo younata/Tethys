@@ -26,7 +26,7 @@ public class OPMLService: NSObject, Injectable {
             if let urlString = item.xmlURL {
                 urlMatches = NSURL(string: urlString) == $0.url
             } else {
-                urlMatches = $0.url == nil
+                urlMatches = false
             }
             return titleMatches && tagsMatches && urlMatches
         }).isEmpty == false
@@ -61,10 +61,10 @@ public class OPMLService: NSObject, Injectable {
                         if self.feedAlreadyExists(existingFeeds, item: item) {
                             continue
                         }
-                        if let feedURL = item.xmlURL {
+                        if let feedURLString = item.xmlURL, feedURL = NSURL(string: feedURLString) {
                             feedCount += 1
                             dataRepository.newFeed { newFeed in
-                                newFeed.url = NSURL(string: feedURL)
+                                newFeed.url = feedURL
                                 for tag in item.tags ?? [] {
                                     newFeed.addTag(tag)
                                 }
@@ -105,7 +105,7 @@ public class OPMLService: NSObject, Injectable {
         ret += "<opml version=\"2.0\">\n    <body>\n"
         for feed in feeds {
             let title = "title=\"\(sanitize(feed.title))\""
-            let url = "xmlUrl=\"\(sanitize(feed.url?.absoluteString))\""
+            let url = "xmlUrl=\"\(sanitize(feed.url.absoluteString))\""
             let tags: String
             if feed.tags.count != 0 {
                 let tagsList: String = feed.tags.joinWithSeparator(",")

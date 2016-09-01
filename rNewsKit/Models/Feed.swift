@@ -25,12 +25,12 @@ public final class Feed: Hashable, CustomStringConvertible {
             return tagTitle.substringFromIndex(tagTitle.startIndex.successor())
         }
         if self.title.isEmpty {
-            return self.url?.absoluteString ?? self.title
+            return self.url.absoluteString
         }
         return self.title
     }
 
-    public var url: NSURL? {
+    public var url: NSURL {
         willSet {
             if newValue != url {
                 self.updated = true
@@ -50,6 +50,14 @@ public final class Feed: Hashable, CustomStringConvertible {
             return tagSummary.substringFromIndex(tagSummary.startIndex.successor())
         }
         return self.summary
+    }
+
+    public var lastUpdated: NSDate {
+        willSet {
+            if newValue != lastUpdated {
+                self.updated = true
+            }
+        }
     }
 
     public private(set) var tags: [String]
@@ -89,10 +97,10 @@ public final class Feed: Hashable, CustomStringConvertible {
         } else if let id = feedID as? String {
             return id.hash
         }
-        let nonNilHashValues = title.hashValue ^ summary.hashValue ^ waitPeriod.hashValue ^ remainingWait.hashValue
+        let nonNilHashValues = title.hashValue ^ url.hash ^ summary.hashValue ^ waitPeriod.hashValue ^ remainingWait.hashValue
         let possiblyNilHashValues: Int
-        if let link = url, image = image {
-                possiblyNilHashValues = link.hash ^ image.hash
+        if let image = image {
+                possiblyNilHashValues = image.hash
         } else {
             possiblyNilHashValues = 0
         }
@@ -172,8 +180,9 @@ public final class Feed: Hashable, CustomStringConvertible {
     }
 
     // swiftlint:disable function_parameter_count
-    public init(title: String, url: NSURL?, summary: String, tags: [String],
-        waitPeriod: Int, remainingWait: Int, articles: [Article], image: Image?, identifier: String = "") {
+    public init(title: String, url: NSURL, summary: String, tags: [String],
+        waitPeriod: Int, remainingWait: Int, articles: [Article], image: Image?,
+        lastUpdated: NSDate = NSDate(), identifier: String = "") {
             self.title = title
             self.url = url
             self.summary = summary
@@ -182,6 +191,7 @@ public final class Feed: Hashable, CustomStringConvertible {
             self.remainingWait = remainingWait
             self.image = image
             self.articlesArray = DataStoreBackedArray(articles)
+            self.lastUpdated = lastUpdated
             self.identifier = identifier
 
             for article in articles {
@@ -195,17 +205,12 @@ public final class Feed: Hashable, CustomStringConvertible {
 
     internal init(coreDataFeed feed: CoreDataFeed) {
         self.title = feed.title ?? ""
-        let url: NSURL?
-        if let feedURL = feed.url {
-            url = NSURL(string: feedURL)
-        } else {
-            url = nil
-        }
-        self.url = url
+        self.url = NSURL(string: feed.url)!
         self.summary = feed.summary ?? ""
         self.tags = feed.tags
         self.waitPeriod = feed.waitPeriodInt
         self.remainingWait = feed.remainingWaitInt
+        self.lastUpdated = feed.lastUpdated
 
         self.image = feed.image as? Image
         self.feedID = feed.objectID
@@ -227,15 +232,12 @@ public final class Feed: Hashable, CustomStringConvertible {
 
     internal init(realmFeed feed: RealmFeed) {
         self.title = feed.title ?? ""
-        let url: NSURL?
-        if let feedURL = feed.url {
-            url = NSURL(string: feedURL)
-        } else { url = nil }
-        self.url = url
+        self.url = NSURL(string: feed.url)!
         self.summary = feed.summary ?? ""
         self.tags = feed.tags.map { $0.string }
         self.waitPeriod = feed.waitPeriod
         self.remainingWait = feed.remainingWait
+        self.lastUpdated = feed.lastUpdated
 
         if let data = feed.imageData {
             self.image = Image(data: data)

@@ -38,7 +38,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
         var sinopeRepository: FakeSinopeRepository!
 
         beforeEach {
-            feed1 = rNewsKit.Feed(title: "a", url: NSURL(string: "https://example.com/feed1.feed"), summary: "",
+            feed1 = rNewsKit.Feed(title: "a", url: NSURL(string: "https://example.com/feed1.feed")!, summary: "",
                 tags: ["a", "b", "c", "d"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             article1 = rNewsKit.Article(title: "b", link: NSURL(string: "https://example.com/article1.html"),
@@ -52,7 +52,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
             feed1.addArticle(article1)
             feed1.addArticle(article2)
 
-            feed2 = rNewsKit.Feed(title: "e", url: NSURL(string: "https://example.com/feed2.feed"), summary: "",
+            feed2 = rNewsKit.Feed(title: "e", url: NSURL(string: "https://example.com/feed2.feed")!, summary: "",
                 tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             feeds = [feed1, feed2]
@@ -247,7 +247,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                         subscribePromise = Promise<Result<[NSURL], SinopeError>>()
                         sinopeRepository.subscribeReturns(subscribePromise.future)
                         newFeedFuture = subject.newFeed {feed in
-                            feed.url = NSURL(string: "https://example.com/feed")
+                            feed.url = NSURL(string: "https://example.com/feed")!
                             createdFeed = feed
                         }
                     }

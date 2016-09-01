@@ -199,7 +199,7 @@ class RealmService: DataService {
 
         if let rfeed = realmFeed ?? self.realmFeedForFeed(feed) {
             rfeed.title = feed.title
-            rfeed.url = feed.url?.absoluteString
+            rfeed.url = feed.url.absoluteString
             rfeed.summary = feed.summary
             let tags: [RealmString] = feed.tags.map { str in
                 let realmString = RealmString()

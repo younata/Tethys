@@ -48,8 +48,8 @@ final class URLSessionDelegate: NSObject, NSURLSessionDownloadDelegate {
 
 protocol UpdateServiceType: class {
     func updateFeed(feed: rNewsKit.Feed, callback: (rNewsKit.Feed, NSError?) -> Void)
-    func updateFeeds(date: NSDate?, progressCallback: (Int, Int) -> Void) ->
-        Future<Result<(NSDate, [rNewsKit.Feed]), RNewsError>>
+    func updateFeeds(feeds: [rNewsKit.Feed], progressCallback: (Int, Int) -> Void) ->
+        Future<Result<[rNewsKit.Feed], RNewsError>>
 }
 
 final class UpdateService: UpdateServiceType, NetworkClientDelegate {
@@ -73,21 +73,21 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
     }
 
     func updateFeed(feed: Feed, callback: (Feed, NSError?) -> Void) {
-        guard let url = feed.url else {
-            callback(feed, nil)
-            return
-        }
-        self.callbacksInProgress[url] = (feed, callback)
-        self.downloadURL(url)
+        self.callbacksInProgress[feed.url] = (feed, callback)
+        self.downloadURL(feed.url)
     }
 
-    func updateFeeds(date: NSDate?, progressCallback progress: (Int, Int) -> Void) ->
-        Future<Result<(NSDate, [rNewsKit.Feed]), RNewsError>> {
-            return self.sinopeRepository.fetch(date).map {result -> Result<(NSDate, [rNewsKit.Feed]), RNewsError> in
+    func updateFeeds(feeds: [rNewsKit.Feed], progressCallback progress: (Int, Int) -> Void) ->
+        Future<Result<[rNewsKit.Feed], RNewsError>> {
+            var urlsToDates: [NSURL: NSDate] = [:]
+            for feed in feeds {
+                urlsToDates[feed.url] = feed.lastUpdated
+            }
+            return self.sinopeRepository.fetch(urlsToDates).map {result -> Result<[rNewsKit.Feed], RNewsError> in
                 switch result {
-                case let .Success(date, sinopeFeeds):
+                case let .Success(sinopeFeeds):
                     progress(sinopeFeeds.count, 2 * sinopeFeeds.count)
-                    return .Success(date, self.updateFeedsFromSinopeFeeds(sinopeFeeds, progressCallback: progress))
+                    return .Success(self.updateFeedsFromSinopeFeeds(sinopeFeeds, progressCallback: progress))
                 case let .Failure(error):
                     return .Failure(RNewsError.Backend(error))
                 }

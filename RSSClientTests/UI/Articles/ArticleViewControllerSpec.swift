@@ -200,7 +200,7 @@ class ArticleViewControllerSpec: QuickSpec {
             let article = Article(title: "article", link: NSURL(string: "https://example.com/"), summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: NSDate(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
             let article2 = Article(title: "article2", link: NSURL(string: "https://example.com/2"), summary: "summary2", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
             article.addRelatedArticle(article2)
-            let feed = Feed(title: "feed", url: NSURL(string: "https://example.com"), summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
+            let feed = Feed(title: "feed", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
 
             let userActivity = NSUserActivity(activityType: "com.example.test")
 
@@ -237,7 +237,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
             it("should exclude the open in safari button if the article has no associated link") {
                 let article2 = Article(title: "article2", link: nil, summary: "summary", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier", content: "<h1>Hello World</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
-                let feed2 = Feed(title: "feed2", url: NSURL(string: "https://example.com"), summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
+                let feed2 = Feed(title: "feed2", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
                 article2.feed = feed2
                 feed2.addArticle(article2)
 

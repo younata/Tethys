@@ -42,9 +42,11 @@ class UpdateServiceSpec: QuickSpec {
         }
 
         describe("updating multiple feeds") {
-            var updateFeedsFuture: Future<Result<(NSDate, [rNewsKit.Feed]), RNewsError>>!
-            var fetchPromise: Promise<Result<(NSDate, [Sinope.Feed]), SinopeError>>!
+            var updateFeedsFuture: Future<Result<[rNewsKit.Feed], RNewsError>>!
+            var fetchPromise: Promise<Result<[Sinope.Feed], SinopeError>>!
             let date = NSDate()
+            let feedToUpdate = rNewsKit.Feed(title: "feed", url: NSURL(string: "https://example.com/feed")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, lastUpdated: date)
+
 
             var progressCallbackCallCount = 0
             var progressCallbackArgs: [(Int, Int)] = []
@@ -53,9 +55,9 @@ class UpdateServiceSpec: QuickSpec {
                 progressCallbackCallCount = 0
                 progressCallbackArgs = []
 
-                fetchPromise = Promise<Result<(NSDate, [Sinope.Feed]), SinopeError>>()
+                fetchPromise = Promise<Result<[Sinope.Feed], SinopeError>>()
                 sinopeRepository.fetchReturns(fetchPromise.future)
-                updateFeedsFuture = subject.updateFeeds(date) { currentProgress, estimatedProgress in
+                updateFeedsFuture = subject.updateFeeds([feedToUpdate]) { currentProgress, estimatedProgress in
                     progressCallbackArgs.append((currentProgress, estimatedProgress))
                     progressCallbackCallCount += 1
                 }
@@ -69,7 +71,7 @@ class UpdateServiceSpec: QuickSpec {
                 expect(sinopeRepository.fetchCallCount) == 1
                 guard sinopeRepository.fetchCallCount == 1 else { return }
                 let args = sinopeRepository.fetchArgsForCall(0)
-                expect(args) == date
+                expect(args) == [feedToUpdate.url: feedToUpdate.lastUpdated]
             }
 
             describe("when the request succeeds") {
@@ -77,7 +79,7 @@ class UpdateServiceSpec: QuickSpec {
                 let updatedDate = NSDate()
 
                 beforeEach {
-                    feed = rNewsKit.Feed(title: "feed", url: NSURL(string: "https://example.com/feed"), summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    feed = rNewsKit.Feed(title: "feed", url: NSURL(string: "https://example.com/feed")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     dataService.feeds = [feed]
                     // hm.
 
@@ -85,6 +87,7 @@ class UpdateServiceSpec: QuickSpec {
                         "\"url\": \"https://example.com/feed\"," +
                         "\"summary\": \"test\"," +
                         "\"image_url\": \"https://example.com/image.png\"," +
+                        "\"last_updated\": \"2015-12-23T00:00:00.000Z\"," +
                         "\"articles\": [" +
                         "{\"title\": \"Example 1\", \"url\": \"https://example.com/1/\", \"summary\": \"test\", \"published\": \"2015-12-23T00:00:00.000Z\", \"updated\": null, \"content\": null, \"authors\": []}" +
                         "]}").dataUsingEncoding(NSUTF8StringEncoding)!
@@ -92,7 +95,7 @@ class UpdateServiceSpec: QuickSpec {
                     let json = try! JSON(data: data)
                     let sinopeFeed = try! Feed(json: json)
 
-                    fetchPromise.resolve(.Success(updatedDate, [sinopeFeed]))
+                    fetchPromise.resolve(.Success([sinopeFeed]))
                 }
 
                 it("calls the callback as the feeds are processed") {
@@ -105,9 +108,7 @@ class UpdateServiceSpec: QuickSpec {
 
                 it("should resolve the promise with all updated feeds") {
                     expect(updateFeedsFuture.value).toNot(beNil())
-                    guard let receivedDate = updateFeedsFuture.value?.value?.0 else { return }
-                    guard let feed = updateFeedsFuture.value?.value?.1.first else { return }
-                    expect(receivedDate) == updatedDate
+                    guard let feed = updateFeedsFuture.value?.value?.first else { return }
                     expect(feed.title) == "feed title"
                     expect(feed.summary) == "test"
                     expect(feed.articlesArray.count) == 1
@@ -125,6 +126,7 @@ class UpdateServiceSpec: QuickSpec {
                         "\"url\": \"https://example.com/feed\"," +
                         "\"summary\": \"test\"," +
                         "\"image_url\": \"https://example.com/image.png\"," +
+                        "\"last_updated\": \"2015-12-23T00:00:00.000Z\"," +
                         "\"articles\": [" +
                         "{\"title\": \"Example 1\", \"url\": \"https://example.com/1/\", \"summary\": \"test\", \"published\": \"2015-12-23T00:00:00.000Z\", \"updated\": null, \"content\": null, \"authors\": []}" +
                         "]}").dataUsingEncoding(NSUTF8StringEncoding)!
@@ -132,7 +134,7 @@ class UpdateServiceSpec: QuickSpec {
                     let json = try! JSON(data: data)
                     let sinopeFeed = try! Feed(json: json)
 
-                    fetchPromise.resolve(.Success(updatedDate, [sinopeFeed]))
+                    fetchPromise.resolve(.Success([sinopeFeed]))
                 }
 
                 it("creates a new feed with that data") {
@@ -154,9 +156,7 @@ class UpdateServiceSpec: QuickSpec {
 
                 it("should resolve the promise with all updated feeds") {
                     expect(updateFeedsFuture.value).toNot(beNil())
-                    guard let receivedDate = updateFeedsFuture.value?.value?.0 else { return }
-                    guard let feed = updateFeedsFuture.value?.value?.1.first else { return }
-                    expect(receivedDate) == updatedDate
+                    guard let feed = updateFeedsFuture.value?.value?.first else { return }
                     expect(feed.title) == "feed title"
                     expect(feed.summary) == "test"
                     expect(feed.articlesArray.count) == 1
@@ -176,40 +176,13 @@ class UpdateServiceSpec: QuickSpec {
         }
 
         describe("updating a feed") {
-            context("trying to update a query feed") {
-                let query = rNewsKit.Feed(title: "query", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                var updatedFeed: rNewsKit.Feed? = nil
-                var receivedError: NSError? = nil
-
-                beforeEach {
-                    dataService.feeds = [query]
-                    receivedError = nil
-                    subject.updateFeed(query) {
-                        updatedFeed = $0
-                        receivedError = $1
-                    }
-                }
-
-                it("should not make a network request") {
-                    expect(urlSession.lastURL).to(beNil())
-                }
-
-                it("should call the callback with the original feed") {
-                    expect(updatedFeed) == query
-                }
-
-                it("should not have any error in the callback") {
-                    expect(receivedError).to(beNil())
-                }
-            }
-
             describe("updating a standard feed") {
                 var feed: rNewsKit.Feed! = nil
                 var updatedFeed: rNewsKit.Feed? = nil
                 var receivedError: NSError? = nil
 
                 beforeEach {
-                    feed = rNewsKit.Feed(title: "feed", url: NSURL(string: "https://example.com/feed"), summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    feed = rNewsKit.Feed(title: "feed", url: NSURL(string: "https://example.com/feed")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     dataService.feeds = [feed]
 
                     updatedFeed = nil

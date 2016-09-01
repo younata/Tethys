@@ -829,6 +829,7 @@
 		89E2A33C1B6A856900A40D4E /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		89E2A33E1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewControllerSpec.swift; sourceTree = "<group>"; };
 		89E67D631C33CB8000819646 /* InMemoryDataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InMemoryDataService.swift; sourceTree = "<group>"; };
+		89E951A71D776B0B00912043 /* RSSClient 1.10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "RSSClient 1.10.xcdatamodel"; sourceTree = "<group>"; };
 		89EA6C351B4B2D8400456892 /* FakeDefaultDatabaseUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDefaultDatabaseUseCase.swift; sourceTree = "<group>"; };
 		89EF4FD71A96852D0052A82F /* test.opml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = test.opml; sourceTree = "<group>"; };
 		89F516551B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIBarButtonItem+rNewsTests.h"; sourceTree = "<group>"; };
@@ -3201,6 +3202,7 @@
 		89C8307A19D730E9009924DA /* RSSClient.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				89E951A71D776B0B00912043 /* RSSClient 1.10.xcdatamodel */,
 				89B562C51D70D8A8006BFDB7 /* RSSClient 1.9.xcdatamodel */,
 				8924FE2F1D6E39650060D26D /* RSSClient 1.8.xcdatamodel */,
 				895901A11A2FFDDD002E2C62 /* RSSClient 1. 2.xcdatamodel */,
@@ -3212,7 +3214,7 @@
 				8903A6231C48919E00E896BF /* RSSClient 1.7.xcdatamodel */,
 				89C8307B19D730E9009924DA /* RSSClient.xcdatamodel */,
 			);
-			currentVersion = 89B562C51D70D8A8006BFDB7 /* RSSClient 1.9.xcdatamodel */;
+			currentVersion = 89E951A71D776B0B00912043 /* RSSClient 1.10.xcdatamodel */;
 			path = RSSClient.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

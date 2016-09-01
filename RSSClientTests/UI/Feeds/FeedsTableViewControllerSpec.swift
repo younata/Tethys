@@ -43,7 +43,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
             navigationController = UINavigationController(rootViewController: subject)
 
-            feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "",
+            feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed")!, summary: "",
                 tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             feeds = [feed1]
@@ -390,7 +390,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                         context("when the call succeeds") {
                             var feed3: Feed! = nil
                             beforeEach {
-                                feed3 = Feed(title: "d", url: nil, summary: "", tags: [],
+                                feed3 = Feed(title: "d", url: NSURL(string: "https://example.com")!, summary: "", tags: [],
                                     waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                                 dataUseCase.updateFeedsCompletion([], [])
                                 for object in dataUseCase.subscribers.allObjects {
@@ -668,7 +668,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                             it("should bring up a share sheet") {
                                                 expect(navigationController.visibleViewController).to(beAnInstanceOf(UIActivityViewController))
                                                 if let activityVC = navigationController.visibleViewController as? UIActivityViewController {
-                                                    expect(activityVC.activityItems as? [NSURL]) == [feed.url!]
+                                                    expect(activityVC.activityItems as? [NSURL]) == [feed.url]
                                                 }
                                             }
                                         }

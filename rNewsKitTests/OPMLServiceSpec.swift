@@ -65,7 +65,7 @@ class OPMLServiceSpec: QuickSpec {
             context("when the feeds promise succeeds") {
                 beforeEach {
                     let previouslyImportedFeed = Feed(title: "imported",
-                        url: NSURL(string: "http://example.com/previouslyImportedFeed"), summary: "",
+                        url: NSURL(string: "http://example.com/previouslyImportedFeed")!, summary: "",
                         tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     dataRepository.feedsPromises.first?.resolve(.Success([previouslyImportedFeed]))
                 }
@@ -116,13 +116,11 @@ class OPMLServiceSpec: QuickSpec {
 
             context("when the feeds promise succeeds") {
                 beforeEach {
-                    let feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "",
+                    let feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed")!, summary: "",
                         tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    let feed2 = Feed(title: "d", url: nil, summary: "", tags: [],
-                        waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    let feed3 = Feed(title: "e", url: NSURL(string: "http://example.com/otherfeed"), summary: "",
+                    let feed3 = Feed(title: "e", url: NSURL(string: "http://example.com/otherfeed")!, summary: "",
                         tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    dataRepository.feedsPromises.first?.resolve(.Success([feed1, feed2, feed3]))
+                    dataRepository.feedsPromises.first?.resolve(.Success([feed1, feed3]))
                 }
 
                 it("should write an OPML file to ~/Documents/rnews.opml") {
@@ -180,14 +178,12 @@ class OPMLServiceSpec: QuickSpec {
 
             context("when the feeds promise succeeds") {
                 beforeEach {
-                    let feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed"), summary: "",
+                    let feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed")!, summary: "",
                         tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    let feed2 = Feed(title: "d", url: nil, summary: "", tags: [],
-                        waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    let feed3 = Feed(title: "e", url: NSURL(string: "http://example.com/otherfeed"), summary: "",
+                    let feed3 = Feed(title: "e", url: NSURL(string: "http://example.com/otherfeed")!, summary: "",
                         tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-                    dataRepository.feedsPromises.first?.resolve(.Success([feed1, feed2, feed3]))
+                    dataRepository.feedsPromises.first?.resolve(.Success([feed1, feed3]))
                 }
 
                 it("should write an OPML file to ~/Documents/rnews.opml") {

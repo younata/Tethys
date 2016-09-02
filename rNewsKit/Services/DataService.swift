@@ -89,7 +89,7 @@ extension DataService {
                     self.updateArticle(article, item: item, feedURL: info.link).then(checkIfFinished)
                 } else {
                     self.createArticle(feed) { article in
-                        feed.addArticle(article)
+//                        feed.addArticle(article)
                         self.updateArticle(article, item: item, feedURL: info.link).then(checkIfFinished)
                     }
                 }

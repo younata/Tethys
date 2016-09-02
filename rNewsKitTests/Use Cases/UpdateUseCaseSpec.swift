@@ -71,15 +71,12 @@ class UpdateUseCaseSpec: QuickSpec {
 
                 it("makes an update request to pasiphae") {
                     expect(updateService.updateFeedsCallCount) == 1
-                    guard updateService.updateFeedsCallCount == 1 else { return }
-                    let args = updateService.updateFeedsArgsForCall(0)
-                    expect(args.0) == feeds
                 }
 
                 it("informs the data subscribers whenever there's stuff to update") {
                     guard updateService.updateFeedsCallCount == 1 else { fail(); return }
                     let args = updateService.updateFeedsArgsForCall(0)
-                    args.1(1, 2)
+                    args(1, 2)
 
                     expect(dataSubscriber.didUpdateFeedsArgs.count) == 1
                     expect(dataSubscriber.didUpdateFeedsArgs[0].0) == 1
@@ -87,7 +84,6 @@ class UpdateUseCaseSpec: QuickSpec {
                 }
 
                 describe("when the update request succeeds") {
-                    let updatedDate = NSDate()
                     beforeEach {
                         updateFeedsPromise.resolve(.Success([]))
                     }

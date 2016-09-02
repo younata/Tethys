@@ -48,7 +48,7 @@ final class URLSessionDelegate: NSObject, NSURLSessionDownloadDelegate {
 
 protocol UpdateServiceType: class {
     func updateFeed(feed: rNewsKit.Feed, callback: (rNewsKit.Feed, NSError?) -> Void)
-    func updateFeeds(feeds: [rNewsKit.Feed], progressCallback: (Int, Int) -> Void) ->
+    func updateFeeds(progress: (Int, Int) -> Void) ->
         Future<Result<[rNewsKit.Feed], RNewsError>>
 }
 
@@ -77,11 +77,21 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
         self.downloadURL(feed.url)
     }
 
-    func updateFeeds(feeds: [rNewsKit.Feed], progressCallback progress: (Int, Int) -> Void) ->
+    func updateFeeds(progress: (Int, Int) -> Void) ->
         Future<Result<[rNewsKit.Feed], RNewsError>> {
+            let dataService = self.dataServiceFactory.currentDataService
+            guard let feedsArray = dataService.allFeeds().wait()?.value else {
+                let promise = Promise<Result<[rNewsKit.Feed], RNewsError>>()
+                promise.resolve(.Failure(RNewsError.Unknown))
+                return promise.future
+            }
+            let feeds = Array(feedsArray)
+
             var urlsToDates: [NSURL: NSDate] = [:]
             for feed in feeds {
-                urlsToDates[feed.url] = feed.lastUpdated
+                if feed.lastUpdated != NSDate(timeIntervalSinceReferenceDate: 0) {
+                    urlsToDates[feed.url] = feed.lastUpdated
+                }
             }
             return self.sinopeRepository.fetch(urlsToDates).map {result -> Result<[rNewsKit.Feed], RNewsError> in
                 switch result {

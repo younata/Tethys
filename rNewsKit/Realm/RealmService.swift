@@ -209,6 +209,7 @@ class RealmService: DataService {
             rfeed.tags.replaceRange(0..<rfeed.tags.count, with: tags)
             rfeed.waitPeriod = feed.waitPeriod
             rfeed.remainingWait = feed.remainingWait
+            rfeed.lastUpdated = feed.lastUpdated
             #if os(iOS)
                 if let image = feed.image {
                     rfeed.imageData = UIImagePNGRepresentation(image)

@@ -35,7 +35,7 @@ final class DefaultUpdateUseCase: UpdateUseCase {
                 subscriber.willUpdateFeeds()
             }
         }
-        let future = self.updateService.updateFeeds(feeds) { progress, total in
+        let future = self.updateService.updateFeeds { progress, total in
             self.mainQueue.addOperationWithBlock {
                 for subscriber in subscribers {
                     subscriber.didUpdateFeedsProgress(progress, total: total)

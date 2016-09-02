@@ -47,17 +47,18 @@ class UpdateServiceSpec: QuickSpec {
             let date = NSDate()
             let feedToUpdate = rNewsKit.Feed(title: "feed", url: NSURL(string: "https://example.com/feed")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, lastUpdated: date)
 
-
             var progressCallbackCallCount = 0
             var progressCallbackArgs: [(Int, Int)] = []
 
             beforeEach {
+                dataService.feeds = [feedToUpdate]
+
                 progressCallbackCallCount = 0
                 progressCallbackArgs = []
 
                 fetchPromise = Promise<Result<[Sinope.Feed], SinopeError>>()
                 sinopeRepository.fetchReturns(fetchPromise.future)
-                updateFeedsFuture = subject.updateFeeds([feedToUpdate]) { currentProgress, estimatedProgress in
+                updateFeedsFuture = subject.updateFeeds { currentProgress, estimatedProgress in
                     progressCallbackArgs.append((currentProgress, estimatedProgress))
                     progressCallbackCallCount += 1
                 }
@@ -76,7 +77,6 @@ class UpdateServiceSpec: QuickSpec {
 
             describe("when the request succeeds") {
                 var feed: rNewsKit.Feed! = nil
-                let updatedDate = NSDate()
 
                 beforeEach {
                     feed = rNewsKit.Feed(title: "feed", url: NSURL(string: "https://example.com/feed")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
@@ -117,8 +117,6 @@ class UpdateServiceSpec: QuickSpec {
 
 
             describe("and the request succeeds with feeds that don't exist locally yet") {
-                let updatedDate = NSDate()
-
                 beforeEach {
                     dataService.feeds = []
 

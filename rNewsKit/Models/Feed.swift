@@ -232,7 +232,7 @@ public final class Feed: Hashable, CustomStringConvertible {
 
     internal init(realmFeed feed: RealmFeed) {
         self.title = feed.title ?? ""
-        self.url = NSURL(string: feed.url)!
+        self.url = NSURL(string: feed.url ?? "")!
         self.summary = feed.summary ?? ""
         self.tags = feed.tags.map { $0.string }
         self.waitPeriod = feed.waitPeriod

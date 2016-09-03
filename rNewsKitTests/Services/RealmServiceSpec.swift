@@ -165,6 +165,30 @@ class RealmServiceSpec: QuickSpec {
             }
 
             describe("update operations") {
+                it("doesn't create multiple copies of the same RealmString when a feed is saved") {
+                    feed1.addTag("hello")
+                    feed1.addTag("goodbye")
+                    subject.batchSave([feed1], articles: []).wait()
+
+                    expect(realm.objects(RealmString).count) == 2
+
+                    subject.batchSave([feed1], articles: []).wait()
+
+                    expect(realm.objects(RealmString).count) == 2
+                }
+
+                it("doesn't create multiple copies of the same RealmAuthor when an article is saved again") {
+                    article1.authors = [
+                        Author(name: "hello", email: NSURL(string: "goodbye"))
+                    ]
+                    subject.batchSave([], articles: [article1]).wait()
+
+                    expect(realm.objects(RealmAuthor).count) == 1
+
+                    subject.batchSave([], articles: [article1]).wait()
+                    expect(realm.objects(RealmAuthor).count) == 1
+                }
+
                 #if os(iOS)
                     it("on iOS, updates the search index when an article is updated") {
                         let expectation = self.expectationWithDescription("update article")

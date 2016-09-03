@@ -187,9 +187,19 @@ class RealmService: DataService {
         return self.realm.objectForPrimaryKey(RealmFeed.self, key: feedID)
     }
 
+    private func realmStringForString(string: String) -> RealmString? {
+        let predicate = NSPredicate(format: "string = %@", string)
+        return self.realm.objects(RealmString).filter(predicate).first
+    }
+
     private func realmArticleForArticle(article: Article) -> RealmArticle? {
         guard let articleID = article.articleID as? String else { return nil }
         return self.realm.objectForPrimaryKey(RealmArticle.self, key: articleID)
+    }
+
+    private func realmAuthorForAuthor(author: Author) -> RealmAuthor? {
+        let predicate = NSPredicate(format: "name = %@ AND email = %@", author.name, author.email?.absoluteString ?? "")
+        return self.realm.objects(RealmAuthor).filter(predicate).first
     }
 
     // Synchronous update!
@@ -202,7 +212,7 @@ class RealmService: DataService {
             rfeed.url = feed.url.absoluteString
             rfeed.summary = feed.summary
             let tags: [RealmString] = feed.tags.map { str in
-                let realmString = RealmString()
+                let realmString = self.realmStringForString(str) ?? RealmString()
                 realmString.string = str
                 return realmString
             }
@@ -230,7 +240,7 @@ class RealmService: DataService {
             rarticle.link = article.link?.absoluteString ?? ""
             rarticle.summary = article.summary
             let authors: [RealmAuthor] = article.authors.map {
-                let author = RealmAuthor()
+                let author = self.realmAuthorForAuthor($0) ?? RealmAuthor()
                 author.name = $0.name
                 author.email = $0.email?.absoluteString
                 return author

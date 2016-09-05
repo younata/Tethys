@@ -27,8 +27,8 @@ class AccountRepositorySpec: QuickSpec {
 
         describe("if the user token has been saved to user defaults") {
             beforeEach {
-                userDefaults.setObject("oogabooga", forKey: "pasiphae_token")
-                userDefaults.setObject("myTestUser", forKey: "pasiphae_login")
+                userDefaults.set("oogabooga", forKey: "pasiphae_token")
+                userDefaults.set("myTestUser", forKey: "pasiphae_login")
                 subject = DefaultAccountRepository(repository: repository, userDefaults: userDefaults)
             }
 
@@ -79,7 +79,7 @@ class AccountRepositorySpec: QuickSpec {
                 }
 
                 it("saves the result to the user defaults") {
-                    expect(userDefaults.stringForKey("pasiphae_token")) == "oogabooga"
+                    expect(userDefaults.string(forKey: "pasiphae_token")) == "oogabooga"
                 }
 
                 it("reports the user as logged in") {
@@ -139,7 +139,7 @@ class AccountRepositorySpec: QuickSpec {
                 }
 
                 it("saves the result to the user defaults") {
-                    expect(userDefaults.stringForKey("pasiphae_token")) == "oogabooga"
+                    expect(userDefaults.string(forKey: "pasiphae_token")) == "oogabooga"
                 }
 
                 it("reports the user as logged in") {
@@ -169,8 +169,8 @@ class AccountRepositorySpec: QuickSpec {
             }
 
             it("returns a repository if the user has logged in") {
-                userDefaults.setObject("oogabooga", forKey: "pasiphae_token")
-                userDefaults.setObject("myTestUser", forKey: "pasiphae_login")
+                userDefaults.set("oogabooga", forKey: "pasiphae_token")
+                userDefaults.set("myTestUser", forKey: "pasiphae_login")
                 subject = DefaultAccountRepository(repository: repository, userDefaults: userDefaults)
 
                 expect(subject.backendRepository() as? FakeSinopeRepository) == repository
@@ -179,14 +179,14 @@ class AccountRepositorySpec: QuickSpec {
 
         describe("logging out") {
             it("unsets the pasiphae token and login info") {
-                userDefaults.setObject("oogabooga", forKey: "pasiphae_token")
-                userDefaults.setObject("myTestUser", forKey: "pasiphae_login")
+                userDefaults.set("oogabooga", forKey: "pasiphae_token")
+                userDefaults.set("myTestUser", forKey: "pasiphae_login")
 
                 subject = DefaultAccountRepository(repository: repository, userDefaults: userDefaults)
                 subject.logOut()
 
-                expect(userDefaults.stringForKey("pasiphae_token")).to(beNil())
-                expect(userDefaults.stringForKey("pasiphae_login")).to(beNil())
+                expect(userDefaults.string(forKey: "pasiphae_token")).to(beNil())
+                expect(userDefaults.string(forKey: "pasiphae_login")).to(beNil())
             }
         }
     }

@@ -1,38 +1,38 @@
 func documentsDirectory() -> NSString {
-    return (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents")
+    return (NSHomeDirectory() as NSString).appendingPathComponent("Documents")
 }
 
 extension String {
     func stringByStrippingHTML() -> String {
-        guard let removeEntityCodes = try? NSRegularExpression(pattern: "(&nbsp;|&#160;)", options: .CaseInsensitive),
-            makeOneLine = try? NSRegularExpression(pattern: "[\n\r]", options: .CaseInsensitive),
-            removeScripts = try? NSRegularExpression(pattern: "<script.*?</script>", options: .CaseInsensitive),
-            removeHTMLTags = try? NSRegularExpression(pattern: "<.*?>", options: .CaseInsensitive) else {
+        guard let removeEntityCodes = try? NSRegularExpression(pattern: "(&nbsp;|&#160;)", options: .caseInsensitive),
+            let makeOneLine = try? NSRegularExpression(pattern: "[\n\r]", options: .caseInsensitive),
+            let removeScripts = try? NSRegularExpression(pattern: "<script.*?</script>", options: .caseInsensitive),
+            let removeHTMLTags = try? NSRegularExpression(pattern: "<.*?>", options: .caseInsensitive) else {
                 return self
         }
 
         let mutableString = NSMutableString(string: self)
 
         for regex in [removeEntityCodes, makeOneLine, removeScripts, removeHTMLTags] {
-            regex.replaceMatchesInString(mutableString,
+            regex.replaceMatches(in: mutableString,
                 options: [],
                 range: NSRange(location: 0, length: mutableString.length),
                 withTemplate: " ")
         }
-        return mutableString.componentsSeparatedByString(" ").filter({!$0.isEmpty}).joinWithSeparator(" ")
+        return mutableString.components(separatedBy: " ").filter({!$0.isEmpty}).joined(separator: " ")
     }
 
     func stringByUnescapingHTML() -> String {
-        var result = self.stringByReplacingOccurrencesOfString("&quot;", withString: "\"")
-        result = result.stringByReplacingOccurrencesOfString("&#39;", withString: "'")
-        result = result.stringByReplacingOccurrencesOfString("&lt;", withString: "<")
-        result = result.stringByReplacingOccurrencesOfString("&gt;", withString: ">")
-        return result.stringByReplacingOccurrencesOfString("&amp;", withString: "&")
+        var result = self.replacingOccurrences(of: "&quot;", with: "\"")
+        result = result.replacingOccurrences(of: "&#39;", with: "'")
+        result = result.replacingOccurrences(of: "&lt;", with: "<")
+        result = result.replacingOccurrences(of: "&gt;", with: ">")
+        return result.replacingOccurrences(of: "&amp;", with: "&")
     }
 }
 
-func estimateReadingTime(htmlString: String) -> Int {
-    let words = htmlString.stringByStrippingHTML().componentsSeparatedByString(" ")
+func estimateReadingTime(_ htmlString: String) -> Int {
+    let words = htmlString.stringByStrippingHTML().components(separatedBy: " ")
 
     return Int(round(Double(words.count) / 200.0))
 }

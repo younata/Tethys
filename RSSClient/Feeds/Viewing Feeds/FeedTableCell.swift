@@ -2,7 +2,7 @@ import UIKit
 import PureLayout
 import rNewsKit
 
-public class FeedTableCell: UITableViewCell {
+public final class FeedTableCell: UITableViewCell {
     public var feed: Feed? = nil {
         didSet {
             if let f = feed {
@@ -46,12 +46,12 @@ public class FeedTableCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         self.nameLabel.numberOfLines = 0
-        self.nameLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
+        self.nameLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
 
         self.summaryLabel.numberOfLines = 0
-        self.summaryLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
+        self.summaryLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.subheadline)
 
-        self.iconView.contentMode = .ScaleAspectFit
+        self.iconView.contentMode = .scaleAspectFit
 
         self.unreadCounter.hideUnreadText = false
         self.unreadCounter.translatesAutoresizingMaskIntoConstraints = false
@@ -61,35 +61,35 @@ public class FeedTableCell: UITableViewCell {
         self.contentView.addSubview(self.iconView)
         self.contentView.addSubview(self.unreadCounter)
 
-        self.nameLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
-        self.nameLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-        self.nameLabel.autoPinEdge(.Right, toEdge: .Left, ofView: self.iconView, withOffset: -8)
+        self.nameLabel.autoPinEdge(toSuperviewEdge: .top, withInset: 4)
+        self.nameLabel.autoPinEdge(toSuperviewEdge: .left, withInset: 8)
+        self.nameLabel.autoPinEdge(.right, to: .left, of: self.iconView, withOffset: -8)
 
-        self.summaryLabel.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4, relation: .GreaterThanOrEqual)
-        self.summaryLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-        self.summaryLabel.autoPinEdge(.Right, toEdge: .Left, ofView: self.iconView, withOffset: -8)
-        self.summaryLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.nameLabel, withOffset: 8,
-            relation: .GreaterThanOrEqual)
+        self.summaryLabel.autoPinEdge(toSuperviewEdge: .bottom, withInset: 4, relation: .greaterThanOrEqual)
+        self.summaryLabel.autoPinEdge(toSuperviewEdge: .left, withInset: 8)
+        self.summaryLabel.autoPinEdge(.right, to: .left, of: self.iconView, withOffset: -8)
+        self.summaryLabel.autoPinEdge(.top, to: .bottom, of: self.nameLabel, withOffset: 8,
+            relation: .greaterThanOrEqual)
 
-        self.iconView.autoPinEdgeToSuperviewEdge(.Top, withInset: 0, relation: .GreaterThanOrEqual)
-        self.iconView.autoPinEdgeToSuperviewEdge(.Right)
-        self.iconView.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0, relation: .GreaterThanOrEqual)
-        self.iconView.autoAlignAxisToSuperviewAxis(.Horizontal)
-        self.iconWidth = self.iconView.autoSetDimension(.Width, toSize: 45, relation: .LessThanOrEqual)
-        self.iconHeight = self.iconView.autoSetDimension(.Height, toSize: 0, relation: .LessThanOrEqual)
+        self.iconView.autoPinEdge(toSuperviewEdge: .top, withInset: 0, relation: .greaterThanOrEqual)
+        self.iconView.autoPinEdge(toSuperviewEdge: .right)
+        self.iconView.autoPinEdge(toSuperviewEdge: .bottom, withInset: 0, relation: .greaterThanOrEqual)
+        self.iconView.autoAlignAxis(toSuperviewAxis: .horizontal)
+        self.iconWidth = self.iconView.autoSetDimension(.width, toSize: 45, relation: .lessThanOrEqual)
+        self.iconHeight = self.iconView.autoSetDimension(.height, toSize: 0, relation: .lessThanOrEqual)
 
-        self.unreadCounter.autoPinEdgeToSuperviewEdge(.Top)
-        self.unreadCounter.autoPinEdgeToSuperviewEdge(.Right)
-        self.unreadCounter.autoSetDimension(.Height, toSize: 45)
-        self.unreadCounter.autoMatchDimension(.Width, toDimension: .Height, ofView: self.unreadCounter)
-        self.unreadCounter.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0, relation: .GreaterThanOrEqual)
+        self.unreadCounter.autoPinEdge(toSuperviewEdge: .top)
+        self.unreadCounter.autoPinEdge(toSuperviewEdge: .right)
+        self.unreadCounter.autoSetDimension(.height, toSize: 45)
+        self.unreadCounter.autoMatch(.width, to: .height, of: self.unreadCounter)
+        self.unreadCounter.autoPinEdge(toSuperviewEdge: .bottom, withInset: 0, relation: .greaterThanOrEqual)
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError() }
 }
 
 extension FeedTableCell: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
+    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.nameLabel.textColor = self.themeRepository?.textColor
         self.summaryLabel.textColor = self.themeRepository?.textColor
 

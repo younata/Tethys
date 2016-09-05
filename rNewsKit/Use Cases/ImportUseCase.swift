@@ -4,58 +4,58 @@ import Lepton
 import Result
 
 public enum ImportUseCaseItem {
-    case None(NSURL)
-    case WebPage(NSURL, [NSURL])
-    case Feed(NSURL, Int)
-    case OPML(NSURL, Int)
+    case none(URL)
+    case webPage(URL, [URL])
+    case feed(URL, Int)
+    case opml(URL, Int)
 }
 
 extension ImportUseCaseItem: Equatable {}
 
 public func == (lhs: ImportUseCaseItem, rhs: ImportUseCaseItem) -> Bool {
     switch (lhs, rhs) {
-    case (.None(let lhsUrl), .None(let rhsUrl)):
+    case (.none(let lhsUrl), .none(let rhsUrl)):
         return lhsUrl == rhsUrl
-    case (.WebPage(let lhsUrl, let lhsFeeds), .WebPage(let rhsUrl, let rhsFeeds)):
+    case (.webPage(let lhsUrl, let lhsFeeds), .webPage(let rhsUrl, let rhsFeeds)):
         return lhsUrl == rhsUrl && lhsFeeds == rhsFeeds
-    case (.Feed(let lhsUrl, _), .Feed(let rhsUrl, _)):
+    case (.feed(let lhsUrl, _), .feed(let rhsUrl, _)):
         return lhsUrl == rhsUrl
-    case (.OPML(let lhsUrl, _), .OPML(let rhsUrl, _)):
+    case (.opml(let lhsUrl, _), .opml(let rhsUrl, _)):
         return lhsUrl == rhsUrl
     default:
         return false
     }
 }
 
-public typealias ImportUseCaseScanCompletion = ImportUseCaseItem -> Void
-public typealias ImportUseCaseScanDirectoryCompletion = [ImportUseCaseItem] -> Void
-public typealias ImportUseCaseImport = Void -> Void
+public typealias ImportUseCaseScanCompletion = (ImportUseCaseItem) -> Void
+public typealias ImportUseCaseScanDirectoryCompletion = ([ImportUseCaseItem]) -> Void
+public typealias ImportUseCaseImport = (Void) -> Void
 
 public protocol ImportUseCase {
-    func scanDirectoryForImportables(url: NSURL, callback: ImportUseCaseScanDirectoryCompletion)
-    func scanForImportable(url: NSURL, callback: ImportUseCaseScanCompletion)
-    func importItem(url: NSURL, callback: ImportUseCaseImport)
+    func scanDirectoryForImportables(_ url: URL, callback: ImportUseCaseScanDirectoryCompletion)
+    func scanForImportable(_ url: URL, callback: ImportUseCaseScanCompletion)
+    func importItem(_ url: URL, callback: ImportUseCaseImport)
 }
 
 public final class DefaultImportUseCase: ImportUseCase, Injectable {
-    private let urlSession: NSURLSession
+    private let urlSession: URLSession
     private let feedRepository: DatabaseUseCase
     private let opmlService: OPMLService
-    private let fileManager: NSFileManager
-    private let mainQueue: NSOperationQueue
+    private let fileManager: FileManager
+    private let mainQueue: OperationQueue
     private let analytics: Analytics
 
     private enum ImportType {
-        case Feed
-        case OPML
+        case feed
+        case opml
     }
-    private var knownUrls: [NSURL: ImportType] = [:]
+    private var knownUrls: [URL: ImportType] = [:]
 
-    public init(urlSession: NSURLSession,
+    public init(urlSession: URLSession,
                 feedRepository: DatabaseUseCase,
                 opmlService: OPMLService,
-                fileManager: NSFileManager,
-                mainQueue: NSOperationQueue,
+                fileManager: FileManager,
+                mainQueue: OperationQueue,
                 analytics: Analytics) {
         self.urlSession = urlSession
         self.feedRepository = feedRepository
@@ -67,20 +67,20 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            urlSession: injector.create(NSURLSession)!,
+            urlSession: injector.create(URLSession)!,
             feedRepository: injector.create(DatabaseUseCase)!,
             opmlService: injector.create(OPMLService)!,
-            fileManager: injector.create(NSFileManager)!,
-            mainQueue: injector.create(kMainQueue) as! NSOperationQueue,
+            fileManager: injector.create(FileManager)!,
+            mainQueue: injector.create(kMainQueue) as! OperationQueue,
             analytics: injector.create(Analytics)!
         )
     }
 
-    public func scanDirectoryForImportables(url: NSURL, callback: ImportUseCaseScanDirectoryCompletion) {
+    public func scanDirectoryForImportables(_ url: URL, callback: ImportUseCaseScanDirectoryCompletion) {
         guard let path = url.path else { callback([]); return }
 
-        let contents = ((try? self.fileManager.contentsOfDirectoryAtPath(path)) ?? []).flatMap {
-            return NSURL(string: $0, relativeToURL: url)?.absoluteURL
+        let contents = ((try? self.fileManager.contentsOfDirectory(atPath: path)) ?? []).flatMap {
+            return URL(string: $0, relativeTo: url)?.absoluteURL
         }
 
         var ret: [ImportUseCaseItem] = []
@@ -90,8 +90,8 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
         for url in contents {
             self.scanForImportable(url) {
                 switch $0 {
-                case .OPML(_): ret.append($0)
-                case .Feed(_): ret.append($0)
+                case .opml(_): ret.append($0)
+                case .feed(_): ret.append($0)
                 default: break
                 }
                 scanCount += 1
@@ -102,30 +102,30 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
         }
     }
 
-    public func scanForImportable(url: NSURL, callback: ImportUseCaseScanCompletion) {
-        if url.fileURL {
-            guard !url.absoluteString.containsString("default.realm"), let data = NSData(contentsOfURL: url) else {
-                callback(.None(url))
+    public func scanForImportable(_ url: URL, callback: ImportUseCaseScanCompletion) {
+        if url.isFileURL {
+            guard !url.absoluteString.contains("default.realm"), let data = try? Data(contentsOf: url) else {
+                callback(.none(url))
                 return
             }
             callback(self.scanDataForItem(data, url: url))
         } else {
-            self.urlSession.dataTaskWithURL(url) { data, _, error in
+            self.urlSession.dataTask(with: url) { data, _, error in
                 guard error == nil, let data = data else {
-                    callback(.None(url))
+                    callback(.none(url))
                     return
                 }
-                self.mainQueue.addOperationWithBlock {
+                self.mainQueue.addOperation {
                     callback(self.scanDataForItem(data, url: url))
                 }
             }.resume()
         }
     }
 
-    public func importItem(url: NSURL, callback: ImportUseCaseImport) {
+    public func importItem(_ url: URL, callback: ImportUseCaseImport) {
         guard let importType = self.knownUrls[url] else { callback(); return }
         switch importType {
-        case .Feed:
+        case .feed:
             let url = self.canonicalURLForFeedAtURL(url)
             self.feedRepository.feeds().then {
                 guard case let Result.Success(feeds) = $0 else { return }
@@ -141,7 +141,7 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
                     self.feedRepository.updateFeed(feed!) { _ in callback() }
                 }
             }
-        case .OPML:
+        case .opml:
             self.opmlService.importOPML(url) { _ in callback() }
         }
     }
@@ -150,24 +150,24 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
 // MARK: private
 
 extension DefaultImportUseCase {
-    private func scanDataForItem(data: NSData, url: NSURL) -> ImportUseCaseItem {
-        guard let string = String(data: data, encoding: NSUTF8StringEncoding) else {
-            return .None(url)
+    fileprivate func scanDataForItem(_ data: Data, url: URL) -> ImportUseCaseItem {
+        guard let string = String(data: data, encoding: String.Encoding.utf8) else {
+            return .none(url)
         }
         if let feedCount = self.isDataAFeed(string) {
-            self.knownUrls[url] = .Feed
-            return .Feed(url, feedCount)
+            self.knownUrls[url] = .feed
+            return .feed(url, feedCount)
         } else if let opmlCount = self.isDataAnOPML(string) {
-            self.knownUrls[url] = .OPML
-            return .OPML(url, opmlCount)
+            self.knownUrls[url] = .opml
+            return .opml(url, opmlCount)
         } else {
             let feedUrls = self.feedsInWebPage(url, webPage: string)
-            feedUrls.forEach { self.knownUrls[$0] = .Feed }
-            return .WebPage(url, feedUrls)
+            feedUrls.forEach { self.knownUrls[$0] = .feed }
+            return .webPage(url, feedUrls)
         }
     }
 
-    private func isDataAFeed(data: String) -> Int? {
+    fileprivate func isDataAFeed(_ data: String) -> Int? {
         var ret: Int? = nil
         let feedParser = FeedParser(string: data)
         feedParser.success {
@@ -177,17 +177,17 @@ extension DefaultImportUseCase {
         return ret
     }
 
-    private func canonicalURLForFeedAtURL(url: NSURL) -> NSURL {
-        guard url.fileURL else { return url }
+    fileprivate func canonicalURLForFeedAtURL(_ url: URL) -> URL {
+        guard url.isFileURL else { return url }
         let string = (try? String(contentsOfURL: url)) ?? ""
-        var ret: NSURL! = nil
+        var ret: URL! = nil
         FeedParser(string: string).success {
             ret = $0.link
         }.start()
         return ret
     }
 
-    private func isDataAnOPML(data: String) -> Int? {
+    fileprivate func isDataAnOPML(_ data: String) -> Int? {
         var ret: Int? = nil
         let opmlParser = Parser(text: data)
         opmlParser.success {
@@ -197,12 +197,12 @@ extension DefaultImportUseCase {
         return ret
     }
 
-    private func feedsInWebPage(url: NSURL, webPage: String) -> [NSURL] {
-        var ret: [NSURL] = []
+    fileprivate func feedsInWebPage(_ url: URL, webPage: String) -> [URL] {
+        var ret: [URL] = []
         let webPageParser = WebPageParser(string: webPage) {
-            ret = $0.map { NSURL(string: $0.absoluteString, relativeToURL: url)?.absoluteURL ?? $0 }
+            ret = $0.map { URL(string: $0.absoluteString!, relativeTo: url)?.absoluteURL ?? $0 as URL }
         }
-        webPageParser.searchType = .Feeds
+        webPageParser.searchType = .feeds
         webPageParser.start()
         return ret
     }

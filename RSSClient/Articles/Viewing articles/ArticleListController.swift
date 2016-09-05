@@ -2,7 +2,7 @@ import UIKit
 import rNewsKit
 import Ra
 
-public class ArticleListController: UITableViewController, DataSubscriber, Injectable {
+public final class ArticleListController: UITableViewController, DataSubscriber, Injectable {
 
     internal var articles = DataStoreBackedArray<Article>()
     public var feed: Feed? {
@@ -17,12 +17,12 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
     private let feedRepository: DatabaseUseCase
     private let themeRepository: ThemeRepository
     private let settingsRepository: SettingsRepository
-    private let articleViewController: Void -> ArticleViewController
+    private let articleViewController: (Void) -> ArticleViewController
 
     public lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar(frame: CGRect(x: 0, y: 0, width: 320, height: 32))
-        searchBar.autocorrectionType = .No
-        searchBar.autocapitalizationType = .None
+        searchBar.autocorrectionType = .no
+        searchBar.autocapitalizationType = .none
         searchBar.placeholder = NSLocalizedString("ArticleListController_Search", comment: "")
         searchBar.delegate = self
         return searchBar
@@ -31,7 +31,7 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
     public init(feedRepository: DatabaseUseCase,
                 themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
-                articleViewController: Void -> ArticleViewController) {
+                articleViewController: (Void) -> ArticleViewController) {
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
@@ -57,9 +57,9 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
         super.viewDidLoad()
 
         self.tableView.estimatedRowHeight = 40
-        self.tableView.keyboardDismissMode = .OnDrag
-        self.tableView.registerClass(ArticleCell.self, forCellReuseIdentifier: "read")
-        self.tableView.registerClass(ArticleCell.self, forCellReuseIdentifier: "unread")
+        self.tableView.keyboardDismissMode = .onDrag
+        self.tableView.register(ArticleCell.self, forCellReuseIdentifier: "read")
+        self.tableView.register(ArticleCell.self, forCellReuseIdentifier: "unread")
         // Prevents a green triangle which'll (dis)appear depending on whether
         // article loaded into it is read or not.
 
@@ -77,45 +77,45 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
                 self.navigationItem.title = feed.displayTitle
             }
 
-            if self.traitCollection.forceTouchCapability == .Available {
-                self.registerForPreviewingWithDelegate(self, sourceView: self.tableView)
+            if self.traitCollection.forceTouchCapability == .available {
+                self.registerForPreviewing(with: self, sourceView: self.tableView)
             }
             self.resetBarItems()
         }
     }
 
-    public func deletedArticle(article: Article) {}
+    public func deletedArticle(_ article: Article) {}
     public func willUpdateFeeds() {}
-    public func didUpdateFeedsProgress(finished: Int, total: Int) {}
-    public func didUpdateFeeds(feeds: [Feed]) {}
-    public func deletedFeed(feed: Feed, feedsLeft: Int) {}
+    public func didUpdateFeedsProgress(_ finished: Int, total: Int) {}
+    public func didUpdateFeeds(_ feeds: [Feed]) {}
+    public func deletedFeed(_ feed: Feed, feedsLeft: Int) {}
 
-    public func markedArticles(articles: [Article], asRead read: Bool) {
+    public func markedArticles(_ articles: [Article], asRead read: Bool) {
         let indices = articles.flatMap { self.articles.indexOf($0) }
 
-        let indexPaths = indices.map { NSIndexPath(forRow: $0, inSection: 0) }
+        let indexPaths = indices.map { IndexPath(forRow: $0, inSection: 0) }
         self.tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .Right)
     }
 
-    private func articleForIndexPath(indexPath: NSIndexPath) -> Article {
+    private func articleForIndexPath(_ indexPath: NSIndexPath) -> Article {
         return self.articles[indexPath.row]
     }
 
-    public func showArticle(article: Article, animated: Bool = true) -> ArticleViewController {
+    public func showArticle(_ article: Article, animated: Bool = true) -> ArticleViewController {
         let avc = self.configuredArticleController(article)
         self.showArticleController(avc, animated: animated)
         return avc
     }
 
-    private func configuredArticleController(article: Article, read: Bool = true) -> ArticleViewController {
+    private func configuredArticleController(_ article: Article, read: Bool = true) -> ArticleViewController {
         let articleViewController = self.articleViewController()
         articleViewController.setArticle(article, read: read)
         return articleViewController
     }
 
-    private func showArticleController(avc: ArticleViewController, animated: Bool) {
+    private func showArticleController(_ avc: ArticleViewController, animated: Bool) {
         if let splitView = self.splitViewController {
-            let delegate = UIApplication.sharedApplication().delegate as? AppDelegate
+            let delegate = UIApplication.shared.delegate as? AppDelegate
             delegate?.splitView.collapseDetailViewController = false
             splitView.showDetailViewController(UINavigationController(rootViewController: avc),
                 sender: self)
@@ -128,12 +128,12 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
 
     // MARK: - Table view data source
 
-    public override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.articles.count
     }
 
-    public override func tableView(tableView: UITableView,
-        cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    public override func tableView(_ tableView: UITableView,
+        cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             let article = self.articleForIndexPath(indexPath)
             let cellTypeToUse = (article.read ? "read" : "unread")
             // Prevents a green triangle which'll (dis)appear depending
@@ -148,30 +148,30 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
         return cell
     }
 
-    public override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: false)
+    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
 
         if !self.previewMode {
             self.showArticle(self.articleForIndexPath(indexPath))
         }
     }
 
-    public override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    public override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return !self.previewMode
     }
 
-    public override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle,
-        forRowAtIndexPath indexPath: NSIndexPath) {}
+    public override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle,
+        forRowAt indexPath: IndexPath) {}
 
-    public override func tableView(tableView: UITableView,
-        editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+    public override func tableView(_ tableView: UITableView,
+        editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
             if self.previewMode {
                 return nil
             }
             let article = self.articleForIndexPath(indexPath)
             let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
-            let delete = UITableViewRowAction(style: .Default, title: deleteTitle,
-                handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
+            let delete = UITableViewRowAction(style: .default, title: deleteTitle,
+                handler: {(action: UITableViewRowAction!, indexPath: IndexPath!) in
 
                     let confirmDelete = NSLocalizedString("Generic_ConfirmDelete", comment: "")
                     let deleteAlertTitle = NSString.localizedStringWithFormat(confirmDelete, article.title) as String
@@ -193,7 +193,7 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
             let read = NSLocalizedString("ArticleListController_Cell_EditAction_MarkRead", comment: "")
             let toggleText = article.read ? unread : read
             let toggle = UITableViewRowAction(style: .Normal, title: toggleText,
-                handler: {(action: UITableViewRowAction!, indexPath: NSIndexPath!) in
+                handler: {(action: UITableViewRowAction!, indexPath: IndexPath!) in
                     article.read = !article.read
                     self.feedRepository.markArticle(article, asRead: article.read)
             })
@@ -205,16 +205,16 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
     private func resetArticles() {
         guard let articles = self.feed?.articlesArray else { return }
         self.articles = articles
-        self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+        self.tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
     }
 
     private func resetBarItems() {
         guard !self.previewMode else { return }
 
-        var barItems = [self.editButtonItem()]
+        var barItems = [self.editButtonItem]
 
         if let _ = self.feed {
-            let shareSheet = UIBarButtonItem(barButtonSystemItem: .Action,
+            let shareSheet = UIBarButtonItem(barButtonSystemItem: .action,
                                              target: self,
                                              action: #selector(ArticleListController.shareFeed))
             barItems.append(shareSheet)
@@ -231,33 +231,33 @@ public class ArticleListController: UITableViewController, DataSubscriber, Injec
 }
 
 extension ArticleListController: UISearchBarDelegate {
-    public func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+    public func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.isEmpty {
             self.resetArticles()
         } else if let feed = self.feed {
             let articlesArray = self.feedRepository.articlesOfFeed(feed, matchingSearchQuery: searchText)
             if self.articles != articlesArray {
                 self.articles = articlesArray
-                self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+                self.tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
             }
         }
     }
 }
 
 extension ArticleListController: UIViewControllerPreviewingDelegate {
-    public func previewingContext(previewingContext: UIViewControllerPreviewing,
+    public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
         viewControllerForLocation location: CGPoint) -> UIViewController? {
-            if let indexPath = self.tableView.indexPathForRowAtPoint(location) where !self.previewMode {
+            if let indexPath = self.tableView.indexPathForRow(at: location) , !self.previewMode {
                 let article = self.articleForIndexPath(indexPath)
                 return self.configuredArticleController(article, read: false)
             }
             return nil
     }
 
-    public func previewingContext(previewingContext: UIViewControllerPreviewing,
-        commitViewController viewControllerToCommit: UIViewController) {
+    public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
+        commit viewControllerToCommit: UIViewController) {
             if let articleController = viewControllerToCommit as? ArticleViewController,
-                article = articleController.article where !self.previewMode {
+                let article = articleController.article, !self.previewMode {
                     self.feedRepository.markArticle(article, asRead: true)
                     self.showArticleController(articleController, animated: true)
             }
@@ -265,7 +265,7 @@ extension ArticleListController: UIViewControllerPreviewingDelegate {
 }
 
 extension ArticleListController: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
+    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.tableView.backgroundColor = themeRepository.backgroundColor
         self.tableView.separatorColor = themeRepository.textColor
         self.tableView.indicatorStyle = themeRepository.scrollIndicatorStyle

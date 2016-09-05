@@ -2,26 +2,26 @@ import CBGPromise
 import Result
 
 protocol UpdateUseCase {
-    func updateFeeds(feeds: [Feed], subscribers: [DataSubscriber]) -> Future<Result<Void, RNewsError>>
+    func updateFeeds(_ feeds: [Feed], subscribers: [DataSubscriber]) -> Future<Result<Void, RNewsError>>
 }
 
 final class DefaultUpdateUseCase: UpdateUseCase {
     private let updateService: UpdateServiceType
-    private let mainQueue: NSOperationQueue
+    private let mainQueue: OperationQueue
     private let accountRepository: InternalAccountRepository
-    private let userDefaults: NSUserDefaults
+    private let userDefaults: UserDefaults
 
     init(updateService: UpdateServiceType,
-         mainQueue: NSOperationQueue,
+         mainQueue: OperationQueue,
          accountRepository: InternalAccountRepository,
-         userDefaults: NSUserDefaults) {
+         userDefaults: UserDefaults) {
         self.updateService = updateService
         self.mainQueue = mainQueue
         self.accountRepository = accountRepository
         self.userDefaults = userDefaults
     }
 
-    func updateFeeds(feeds: [Feed], subscribers: [DataSubscriber]) -> Future<Result<Void, RNewsError>> {
+    func updateFeeds(_ feeds: [Feed], subscribers: [DataSubscriber]) -> Future<Result<Void, RNewsError>> {
         if self.accountRepository.loggedIn() != nil {
             return self.updateFeedsFromBackend(feeds, subscribers: subscribers)
         } else {
@@ -29,8 +29,8 @@ final class DefaultUpdateUseCase: UpdateUseCase {
         }
     }
 
-    func updateFeedsFromBackend(feeds: [Feed], subscribers: [DataSubscriber]) -> Future<Result<Void, RNewsError>> {
-        self.mainQueue.addOperationWithBlock {
+    func updateFeedsFromBackend(_ feeds: [Feed], subscribers: [DataSubscriber]) -> Future<Result<Void, RNewsError>> {
+        self.mainQueue.addOperation {
             for subscriber in subscribers {
                 subscriber.willUpdateFeeds()
             }
@@ -49,7 +49,7 @@ final class DefaultUpdateUseCase: UpdateUseCase {
         }
     }
 
-    func updateFeedsFromRSS(feeds: [Feed], subscribers: [DataSubscriber]) -> Future<Result<Void, RNewsError>> {
+    func updateFeedsFromRSS(_ feeds: [Feed], subscribers: [DataSubscriber]) -> Future<Result<Void, RNewsError>> {
         var feedsLeft = feeds.count
         let promise = Promise<Result<Void, RNewsError>>()
         guard feedsLeft != 0 else {

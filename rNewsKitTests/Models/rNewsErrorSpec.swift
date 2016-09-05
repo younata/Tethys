@@ -36,10 +36,10 @@ class rNewsErrorSpec: QuickSpec {
         describe("RNewsError") {
             describe("equality") {
                 it("reports two Network errors of the same kind as equal") {
-                    let a = RNewsError.Network(NSURL(string: "https://example.com")!, .InternetDown)
-                    let b = RNewsError.Network(NSURL(string: "https://example.com")!, .InternetDown)
-                    let c = RNewsError.Network(NSURL(string: "https://example.org")!, .InternetDown)
-                    let d = RNewsError.Network(NSURL(string: "https://example.com")!, .DNS)
+                    let a = RNewsError.Network(URL(string: "https://example.com")!, .InternetDown)
+                    let b = RNewsError.Network(URL(string: "https://example.com")!, .InternetDown)
+                    let c = RNewsError.Network(URL(string: "https://example.org")!, .InternetDown)
+                    let d = RNewsError.Network(URL(string: "https://example.com")!, .DNS)
 
                     expect(a) == b
                     expect(a) != c
@@ -81,7 +81,7 @@ class rNewsErrorSpec: QuickSpec {
                 }
 
                 it("reports two disperate errors as unequal") {
-                    let a = RNewsError.Network(NSURL(string: "")!, .Unknown)
+                    let a = RNewsError.Network(URL(string: "")!, .Unknown)
                     let b = RNewsError.HTTP(0)
                     let c = RNewsError.Database(.Unknown)
                     let d = RNewsError.Unknown

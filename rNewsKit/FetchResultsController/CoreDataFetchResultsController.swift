@@ -5,7 +5,7 @@ private let cacheName = "CoreDataFetchResultsController"
 final class CoreDataFetchResultsController: FetchResultsController {
     typealias Element = NSManagedObject
 
-    private let fetchResultsController: NSFetchedResultsController
+    private let fetchResultsController: NSFetchedResultsController<AnyObject>
     private let initialError: RNewsError?
 
     var count: Int {
@@ -38,52 +38,52 @@ final class CoreDataFetchResultsController: FetchResultsController {
             try self.fetchResultsController.performFetch()
             self.initialError = nil
         } catch {
-            self.initialError = .Database(DatabaseError.Unknown)
+            self.initialError = .database(DatabaseError.unknown)
         }
     }
 
-    func get(index: Int) throws -> Element {
+    func get(_ index: Int) throws -> Element {
         if let error = self.initialError {
             throw error
         }
         if index < 0 || index >= self.count {
-            throw RNewsError.Database(.EntryNotFound)
+            throw RNewsError.database(.entryNotFound)
         }
-        let indexPath = NSIndexPath(forRow: index, inSection: 0)
-        return self.fetchResultsController.objectAtIndexPath(indexPath) as! Element
+        let indexPath = IndexPath(row: index, section: 0)
+        return self.fetchResultsController.object(at: indexPath) as! Element
     }
 
-    func insert(item: Element) throws {
+    func insert(_ item: Element) throws {
         fatalError("Not implemented")
     }
 
-    func delete(index: Int) throws {
+    func delete(_ index: Int) throws {
         do {
             let object = try self.get(index)
 
-            self.fetchResultsController.managedObjectContext.deleteObject(object)
+            self.fetchResultsController.managedObjectContext.delete(object)
 
-            NSFetchedResultsController.deleteCacheWithName(cacheName)
+            NSFetchedResultsController.deleteCache(withName: cacheName)
             _ = try? self.fetchResultsController.performFetch()
-        } catch RNewsError.Database(let error) {
+        } catch RNewsError.database(let error) {
             throw error
         } catch {
-            throw RNewsError.Database(.Unknown)
+            throw RNewsError.database(.unknown)
         }
     }
 
-    func filter(predicate: NSPredicate) -> CoreDataFetchResultsController {
+    func filter(_ predicate: NSPredicate) -> CoreDataFetchResultsController {
         let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [self.predicate, predicate])
         return self.replacePredicate(compoundPredicate)
     }
 
-    func combine(fetchResultsController: CoreDataFetchResultsController) -> CoreDataFetchResultsController {
+    func combine(_ fetchResultsController: CoreDataFetchResultsController) -> CoreDataFetchResultsController {
         let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [self.predicate,
             fetchResultsController.predicate])
         return self.replacePredicate(compoundPredicate)
     }
 
-    func replacePredicate(predicate: NSPredicate) -> CoreDataFetchResultsController {
+    func replacePredicate(_ predicate: NSPredicate) -> CoreDataFetchResultsController {
         let fetchRequest = self.fetchResultsController.fetchRequest
         return CoreDataFetchResultsController(entityName: fetchRequest.entityName ?? "",
                                               managedObjectContext: self.fetchResultsController.managedObjectContext,

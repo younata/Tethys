@@ -3,15 +3,15 @@ import Ra
 import rNewsKit
 
 public func documentsDirectory() -> NSString {
-    return (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents")
+    return (NSHomeDirectory() as NSString).appendingPathComponent("Documents")
 }
 
-public class LocalImportViewController: UIViewController, Injectable {
-    private var opmls: [(NSURL, Int)] = []
-    private var feeds: [(NSURL, Int)] = []
+public final class LocalImportViewController: UIViewController, Injectable {
+    private var opmls: [(URL, Int)] = []
+    private var feeds: [(URL, Int)] = []
     private var contentsOfDirectory: [String] = []
 
-    public let tableViewController = UITableViewController(style: .Plain)
+    public let tableViewController = UITableViewController(style: .plain)
 
     private var tableViewTopOffset: NSLayoutConstraint!
 
@@ -24,7 +24,7 @@ public class LocalImportViewController: UIViewController, Injectable {
         label.themeRepository = self.themeRepository
         label.title = NSLocalizedString("LocalImportViewController_Title", comment: "")
         label.detail = NSLocalizedString("LocalImportViewController_Onboarding_Detail", comment: "")
-        label.backgroundColor = UIColor.lightGrayColor()
+        label.backgroundColor = UIColor.lightGray
         return label
     }()
 
@@ -53,25 +53,25 @@ public class LocalImportViewController: UIViewController, Injectable {
         super.viewDidLoad()
 
         self.view.addSubview(self.tableViewController.tableView)
-        self.tableViewController.tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
+        self.tableViewController.tableView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero, excludingEdge: .top)
         let inset = self.navigationController!.navigationBar.frame.height +
-            UIApplication.sharedApplication().statusBarFrame.height
-        self.tableViewTopOffset = self.tableViewController.tableView.autoPinEdgeToSuperviewEdge(.Top, withInset: inset)
+            UIApplication.shared.statusBarFrame.height
+        self.tableViewTopOffset = self.tableViewController.tableView.autoPinEdge(toSuperviewEdge: .top, withInset: inset)
 
         self.reloadItems()
 
         self.tableViewController.refreshControl = UIRefreshControl()
         self.tableViewController.refreshControl?.addTarget(self,
                                                            action: #selector(LocalImportViewController.reloadItems),
-                                                           forControlEvents: .ValueChanged)
+                                                           for: .valueChanged)
 
         self.navigationItem.title = NSLocalizedString("LocalImportViewController_Title", comment: "")
         let dismissTitle = NSLocalizedString("Generic_Dismiss", comment: "")
-        let dismissButton = UIBarButtonItem(title: dismissTitle, style: .Plain, target: self,
+        let dismissButton = UIBarButtonItem(title: dismissTitle, style: .plain, target: self,
                                             action: #selector(LocalImportViewController.dismiss))
         self.navigationItem.leftBarButtonItem = dismissButton
 
-        self.tableViewController.tableView.registerClass(TableViewCell.self, forCellReuseIdentifier: "cell")
+        self.tableViewController.tableView.register(TableViewCell.self, forCellReuseIdentifier: "cell")
         self.tableViewController.tableView.delegate = self
         self.tableViewController.tableView.dataSource = self
         self.tableViewController.tableView.tableFooterView = UIView()
@@ -81,11 +81,11 @@ public class LocalImportViewController: UIViewController, Injectable {
     }
 
     internal func dismiss() {
-        self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+        self.navigationController?.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
     public func reloadItems() {
-        let documentsUrl = NSURL(string: "file://\(NSHomeDirectory())/Documents/")!
+        let documentsUrl = URL(string: "file://\(NSHomeDirectory())/Documents/")!
         self.importUseCase.scanDirectoryForImportables(documentsUrl) { contents in
             self.opmls = contents.flatMap { item in
                 switch item {
@@ -115,7 +115,7 @@ public class LocalImportViewController: UIViewController, Injectable {
 
     // MARK: - Private
 
-    private func showExplanationView() {
+    fileprivate func showExplanationView() {
         self.explanationLabel.removeFromSuperview()
         let opmlIsEmptyOrHasOnlyRNews: Bool
         if self.opmls.count == 1, let opmlUrl = self.opmls.first?.0 {
@@ -126,36 +126,36 @@ public class LocalImportViewController: UIViewController, Injectable {
         if self.feeds.isEmpty && opmlIsEmptyOrHasOnlyRNews {
             self.view.addSubview(self.explanationLabel)
             self.explanationLabel.autoCenterInSuperview()
-            self.explanationLabel.autoMatchDimension(.Width,
-                toDimension: .Width,
-                ofView: self.view,
+            self.explanationLabel.autoMatch(.width,
+                to: .width,
+                of: self.view,
                 withMultiplier: 0.75)
         }
     }
 
-    private func disableInteractionWithMessage(message: String) -> ActivityIndicator {
+    fileprivate func disableInteractionWithMessage(_ message: String) -> ActivityIndicator {
         let activityIndicator = ActivityIndicator(forAutoLayout: ())
         activityIndicator.configureWithMessage(message)
         let color = activityIndicator.backgroundColor
-        activityIndicator.backgroundColor = UIColor.clearColor()
+        activityIndicator.backgroundColor = UIColor.clear
 
         self.view.addSubview(activityIndicator)
-        activityIndicator.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
+        activityIndicator.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero)
 
-        UIView.animateWithDuration(0.3) {
+        UIView.animate(withDuration: 0.3) {
             activityIndicator.backgroundColor = color
         }
         return activityIndicator
     }
 
-    private func reenableInteractionAndDismiss(activityIndicator: ActivityIndicator) {
+    fileprivate func reenableInteractionAndDismiss(_ activityIndicator: ActivityIndicator) {
         activityIndicator.removeFromSuperview()
         self.dismiss()
     }
 }
 
 extension LocalImportViewController: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
+    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.tableViewController.tableView.backgroundColor = themeRepository.backgroundColor
         self.tableViewController.tableView.separatorColor = themeRepository.textColor
         self.tableViewController.tableView.indicatorStyle = themeRepository.scrollIndicatorStyle
@@ -165,11 +165,11 @@ extension LocalImportViewController: ThemeRepositorySubscriber {
 }
 
 extension LocalImportViewController: UITableViewDataSource {
-    public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    public func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
 
-    public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0: return self.opmls.count
         case 1: return self.feeds.count
@@ -177,21 +177,21 @@ extension LocalImportViewController: UITableViewDataSource {
         }
     }
 
-    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
 
-        cell.selectionStyle = .Gray
+        cell.selectionStyle = .gray
 
-        if indexPath.section == 0 {
-            let (url, feeds) = opmls[indexPath.row]
+        if (indexPath as NSIndexPath).section == 0 {
+            let (url, feeds) = opmls[(indexPath as NSIndexPath).row]
             cell.textLabel?.text = url.lastPathComponent
             let feedCount = NSLocalizedString("LocalImportViewController_Cell_FeedList_FeedCount", comment: "")
-            cell.detailTextLabel?.text = NSString.localizedStringWithFormat(feedCount, feeds) as String
-        } else if indexPath.section == 1 {
-            let (url, articles) = feeds[indexPath.row]
+            cell.detailTextLabel?.text = NSString.localizedStringWithFormat(feedCount as NSString, feeds) as String
+        } else if (indexPath as NSIndexPath).section == 1 {
+            let (url, articles) = feeds[(indexPath as NSIndexPath).row]
             cell.textLabel?.text = url.lastPathComponent
             let articleCount = NSLocalizedString("LocalImportViewController_Cell_Feed_ArticleCount", comment: "")
-            cell.detailTextLabel?.text = NSString.localizedStringWithFormat(articleCount, articles) as String
+            cell.detailTextLabel?.text = NSString.localizedStringWithFormat(articleCount as NSString, articles) as String
         }
 
         (cell as? TableViewCell)?.themeRepository = self.themeRepository
@@ -199,7 +199,7 @@ extension LocalImportViewController: UITableViewDataSource {
         return cell
     }
 
-    public func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    public func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
         case 0:
             if self.opmls.isEmpty { return nil }
@@ -213,18 +213,18 @@ extension LocalImportViewController: UITableViewDataSource {
 }
 
 extension LocalImportViewController: UITableViewDelegate {
-    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: false)
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
 
-        let url: NSURL
+        let url: URL
         let activityIndicator: ActivityIndicator
         let analyticsImportType: String
-        if indexPath.section == 0 {
-            url = opmls[indexPath.row].0
+        if (indexPath as NSIndexPath).section == 0 {
+            url = opmls[(indexPath as NSIndexPath).row].0
             activityIndicator = disableInteractionWithMessage(NSLocalizedString("Importing feeds", comment: ""))
             analyticsImportType = "feed"
-        } else if indexPath.section == 1 {
-            url = feeds[indexPath.row].0
+        } else if (indexPath as NSIndexPath).section == 1 {
+            url = feeds[(indexPath as NSIndexPath).row].0
             activityIndicator = self.disableInteractionWithMessage(NSLocalizedString("Importing feed", comment: ""))
             analyticsImportType = "opml"
         } else { return }

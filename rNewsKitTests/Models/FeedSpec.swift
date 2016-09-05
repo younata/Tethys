@@ -16,19 +16,19 @@ class FeedSpec: QuickSpec {
                 realm.deleteAll()
             }
 
-            subject = Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", tags: [],
+            subject = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [],
                 waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
         }
 
         it("uses it's url as the title if the title is blank") {
-            subject = Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", tags: [],
+            subject = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [],
                 waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             expect(subject.displayTitle).to(equal("https://example.com"))
         }
 
         describe("waitPeriodInRefreshes") {
-            func feedWithWaitPeriod(waitPeriod: Int) -> Feed {
+            func feedWithWaitPeriod(_ waitPeriod: Int) -> Feed {
                 return Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", tags: [],
                     waitPeriod: waitPeriod, remainingWait: 0, articles: [], image: nil)
             }
@@ -56,7 +56,7 @@ class FeedSpec: QuickSpec {
         }
 
         it("unreadArticles() should return articles with read->false") {
-            func article(name: String, read: Bool) -> Article {
+            func article(_ name: String, read: Bool) -> Article {
                 return Article(title: name, link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: read, estimatedReadingTime: 0, feed: nil, flags: [])
             }
 
@@ -99,9 +99,9 @@ class FeedSpec: QuickSpec {
             }
 
             it("should report two feeds not created with coredatafeeds with the same property equality as equal") {
-                let a = Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                let b = Feed(title: "blah", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                let c = Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let a = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let b = Feed(title: "blah", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let c = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                 expect(a).toNot(equal(b))
                 expect(a).to(equal(c))
@@ -134,9 +134,9 @@ class FeedSpec: QuickSpec {
             }
 
             it("should report two feeds not created with coredatafeeds with the same property equality as having the same hashValue") {
-                let a = Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                let b = Feed(title: "blah", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                let c = Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let a = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let b = Feed(title: "blah", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let c = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                 expect(a.hashValue).toNot(equal(b.hashValue))
                 expect(a.hashValue).to(equal(c.hashValue))
@@ -146,7 +146,7 @@ class FeedSpec: QuickSpec {
         describe("adding an article") {
             var article: Article! = nil
             beforeEach {
-                article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
             }
 
             context("to a regular feed") {
@@ -163,7 +163,7 @@ class FeedSpec: QuickSpec {
 
                 context("when the article is already associated with this feed") {
                     beforeEach {
-                        subject = Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", tags: [],
+                        subject = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [],
                             waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
                     }
 
@@ -178,7 +178,7 @@ class FeedSpec: QuickSpec {
                 context("when the article is associated with a different feed") {
                     var otherFeed: Feed! = nil
                     beforeEach {
-                        otherFeed = Feed(title: "blah", url: NSURL(string: "https://example.com")!, summary: "", tags: [],
+                        otherFeed = Feed(title: "blah", url: URL(string: "https://example.com")!, summary: "", tags: [],
                             waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
                     }
 
@@ -199,7 +199,7 @@ class FeedSpec: QuickSpec {
         describe("removing an article") {
             var article: Article! = nil
             beforeEach {
-                article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
             }
 
             context("from a regular feed") {
@@ -212,7 +212,7 @@ class FeedSpec: QuickSpec {
 
                 context("when the article is associated with this feed") {
                     beforeEach {
-                        subject = Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", tags: [],
+                        subject = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [],
                             waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
                     }
 
@@ -227,7 +227,7 @@ class FeedSpec: QuickSpec {
                 context("when the article is associated with a different feed") {
                     var otherFeed: Feed! = nil
                     beforeEach {
-                        otherFeed = Feed(title: "blah", url: NSURL(string: "https://example.com")!, summary: "", tags: [],
+                        otherFeed = Feed(title: "blah", url: URL(string: "https://example.com")!, summary: "", tags: [],
                             waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
                     }
 
@@ -250,7 +250,7 @@ class FeedSpec: QuickSpec {
 
             context("trying to add the same flag again") {
                 beforeEach {
-                    subject = Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", tags: ["tag"],
+                    subject = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: ["tag"],
                         waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                 }
 
@@ -285,7 +285,7 @@ class FeedSpec: QuickSpec {
         describe("removing a tag") {
             context("that is already a flag in the article") {
                 it("should remove the flag") {
-                    subject = Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", tags: ["tag"],
+                    subject = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: ["tag"],
                         waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                     subject.removeTag("tag")
@@ -353,7 +353,7 @@ class FeedSpec: QuickSpec {
                 }
 
                 it("articles") {
-                    let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                    let article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
                     subject.addArticle(article)
                     expect(subject.updated) == true
                 }

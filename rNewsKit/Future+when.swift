@@ -1,14 +1,14 @@
 import CBGPromise
 
 extension Promise {
-    class func rnews_when<T>(futures: [Future<T>]) -> Future<[T]> {
+    class func rnews_when<T>(_ futures: [Future<T>]) -> Future<[T]> {
         let promise = Promise<[T]>()
         var values: [T] = []
 
         values.reserveCapacity(futures.count)
         var currentCount = 0
 
-        for (idx, future) in futures.enumerate() {
+        for (idx, future) in futures.enumerated() {
             future.then {
                 values[idx] = $0
                 currentCount += 1

@@ -1,8 +1,8 @@
 import Foundation
 import Ra
 
-public class InjectorModule: Ra.InjectorModule {
-    public func configureInjector(injector: Injector) {
+public final class InjectorModule: Ra.InjectorModule {
+    public func configureInjector(_ injector: Injector) {
         // Views
         injector.bind(UnreadCounter.self) { _ in
             let unreadCounter = UnreadCounter(frame: CGRect.zero)
@@ -16,15 +16,15 @@ public class InjectorModule: Ra.InjectorModule {
             return tagPicker
         }
 
-        injector.bind(NSBundle.self, toInstance: NSBundle.mainBundle())
+        injector.bind(string: Bundle.self, to: Bundle.mainBundle())
 
-        let app = UIApplication.sharedApplication()
-        injector.bind(QuickActionRepository.self, toInstance: app)
+        let app = UIApplication.shared
+        injector.bind(string: QuickActionRepository.self, to: app)
 
-        injector.bind(ThemeRepository.self, toInstance: ThemeRepository(injector: injector))
+        injector.bind(string: ThemeRepository.self, to: ThemeRepository(injector: injector))
 
-        let userDefaults = NSUserDefaults.standardUserDefaults()
-        injector.bind(SettingsRepository.self, toInstance: SettingsRepository(userDefaults: userDefaults))
+        let userDefaults = UserDefaults.standard
+        injector.bind(string: SettingsRepository.self, to: SettingsRepository(userDefaults: userDefaults))
 
         injector.bind(BackgroundFetchHandler.self, to: DefaultBackgroundFetchHandler.init)
 
@@ -32,7 +32,7 @@ public class InjectorModule: Ra.InjectorModule {
 
         injector.bind(ArticleUseCase.self, to: DefaultArticleUseCase.init)
 
-        injector.bind(NSFileManager.self, toInstance: NSFileManager.defaultManager())
+        injector.bind(string: FileManager.self, to: FileManager.defaultManager())
     }
 
     public init() {}

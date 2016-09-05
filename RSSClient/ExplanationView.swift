@@ -1,7 +1,7 @@
 import UIKit
 import PureLayout
 
-public class ExplanationView: UIView {
+public final class ExplanationView: UIView {
 
     public var title: String {
         get { return self.titleLabel.text ?? "" }
@@ -25,22 +25,22 @@ public class ExplanationView: UIView {
     public override init(frame: CGRect) {
         super.init(frame: frame)
 
-        self.titleLabel.textAlignment = .Center
+        self.titleLabel.textAlignment = .center
         self.titleLabel.numberOfLines = 0
-        self.titleLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
+        self.titleLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
 
-        self.detailLabel.textAlignment = .Center
+        self.detailLabel.textAlignment = .center
         self.detailLabel.numberOfLines = 0
-        self.detailLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+        self.detailLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
         self.addSubview(self.titleLabel)
         self.addSubview(self.detailLabel)
 
-        self.titleLabel.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsets(top: 20, left: 20, bottom: 0, right: 20),
-            excludingEdge: .Bottom)
-        self.detailLabel.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsets(top: 0, left: 8, bottom: 8, right: 8),
-            excludingEdge: .Top)
+        self.titleLabel.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 20, left: 20, bottom: 0, right: 20),
+            excludingEdge: .bottom)
+        self.detailLabel.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 0, left: 8, bottom: 8, right: 8),
+            excludingEdge: .top)
 
-        self.detailLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.titleLabel, withOffset: 8)
+        self.detailLabel.autoPinEdge(.top, to: .bottom, of: self.titleLabel, withOffset: 8)
 
         self.layer.cornerRadius = 5
     }
@@ -51,7 +51,7 @@ public class ExplanationView: UIView {
 }
 
 extension ExplanationView: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
+    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.titleLabel.textColor = self.themeRepository?.textColor
         self.detailLabel.textColor = self.themeRepository?.textColor
     }

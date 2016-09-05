@@ -3,14 +3,14 @@ import Result
 import Sinope
 
 public protocol AccountRepository: class {
-    func login(email: String, password: String) -> Future<Result<Void, RNewsError>>
-    func register(email: String, password: String) -> Future<Result<Void, RNewsError>>
+    func login(_ email: String, password: String) -> Future<Result<Void, RNewsError>>
+    func register(_ email: String, password: String) -> Future<Result<Void, RNewsError>>
     func loggedIn() -> String?
     func logOut()
 }
 
 protocol AccountRepositoryDelegate {
-    func accountRepositoryDidLogIn(accountRepository: InternalAccountRepository)
+    func accountRepositoryDidLogIn(_ accountRepository: InternalAccountRepository)
 }
 
 protocol InternalAccountRepository: AccountRepository {
@@ -24,21 +24,21 @@ private let pasiphae_login = "pasiphae_login"
 
 final class DefaultAccountRepository: InternalAccountRepository {
     private let repository: Sinope.Repository
-    private let userDefaults: NSUserDefaults
+    private let userDefaults: UserDefaults
 
     var delegate: AccountRepositoryDelegate?
 
-    init(repository: Sinope.Repository, userDefaults: NSUserDefaults) {
+    init(repository: Sinope.Repository, userDefaults: UserDefaults) {
         self.repository = repository
         self.userDefaults = userDefaults
 
-        if let token = self.userDefaults.stringForKey(pasiphae_token) {
+        if let token = self.userDefaults.string(forKey: pasiphae_token) {
             self.repository.login(token)
         }
     }
 
     // MARK: AccountRepository
-    func login(email: String, password: String) -> Future<Result<Void, RNewsError>> {
+    func login(_ email: String, password: String) -> Future<Result<Void, RNewsError>> {
         return self.repository.login(email, password: password).map { res -> Result<Void, RNewsError> in
             switch res {
             case .Success():
@@ -52,7 +52,7 @@ final class DefaultAccountRepository: InternalAccountRepository {
         }
     }
 
-    func register(email: String, password: String) -> Future<Result<Void, RNewsError>> {
+    func register(_ email: String, password: String) -> Future<Result<Void, RNewsError>> {
         return self.repository.createAccount(email, password: password).map { res -> Result<Void, RNewsError> in
             switch res {
             case .Success():
@@ -67,15 +67,15 @@ final class DefaultAccountRepository: InternalAccountRepository {
     }
 
     func loggedIn() -> String? {
-        if self.userDefaults.stringForKey(pasiphae_token) != nil {
-            return self.userDefaults.stringForKey(pasiphae_login)
+        if self.userDefaults.string(forKey: pasiphae_token) != nil {
+            return self.userDefaults.string(forKey: pasiphae_login)
         }
         return nil
     }
 
     func logOut() {
-        self.userDefaults.removeObjectForKey(pasiphae_token)
-        self.userDefaults.removeObjectForKey(pasiphae_login)
+        self.userDefaults.removeObject(forKey: pasiphae_token)
+        self.userDefaults.removeObject(forKey: pasiphae_login)
     }
 
     // MARK: InternalAccountRepository

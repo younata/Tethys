@@ -5,7 +5,7 @@ public protocol SettingsRepositorySubscriber: NSObjectProtocol {
     func didChangeSetting(_: SettingsRepository)
 }
 
-public class SettingsRepository: Injectable {
+public final class SettingsRepository: Injectable {
     private enum SettingsKeys: String {
         case ShowEstimatedReadingLabel = "showEstimatedReadingLabel"
     }
@@ -13,14 +13,14 @@ public class SettingsRepository: Injectable {
     public var showEstimatedReadingLabel: Bool = true {
         didSet {
             self.informSubscribers()
-            self.userDefaults?.setBool(showEstimatedReadingLabel,
+            self.userDefaults?.set(showEstimatedReadingLabel,
                                        forKey: SettingsKeys.ShowEstimatedReadingLabel.rawValue)
         }
     }
 
-    public func addSubscriber(subscriber: SettingsRepositorySubscriber) {
+    public func addSubscriber(_ subscriber: SettingsRepositorySubscriber) {
         subscriber.didChangeSetting(self)
-        self.subscribers.addObject(subscriber)
+        self.subscribers.add(subscriber)
     }
 
     private func informSubscribers() {
@@ -31,20 +31,20 @@ public class SettingsRepository: Injectable {
         }
     }
 
-    private let subscribers = NSHashTable.weakObjectsHashTable()
-    private let userDefaults: NSUserDefaults?
+    private let subscribers = NSHashTable.weakObjects()
+    private let userDefaults: UserDefaults?
 
-    public init(userDefaults: NSUserDefaults? = nil) {
+    public init(userDefaults: UserDefaults? = nil) {
         self.userDefaults = userDefaults
 
-        if self.userDefaults?.objectForKey(SettingsKeys.ShowEstimatedReadingLabel.rawValue) != nil {
+        if self.userDefaults?.object(forKey: SettingsKeys.ShowEstimatedReadingLabel.rawValue) != nil {
             self.showEstimatedReadingLabel =
-                self.userDefaults?.boolForKey(SettingsKeys.ShowEstimatedReadingLabel.rawValue) ?? true
+                self.userDefaults?.bool(forKey: SettingsKeys.ShowEstimatedReadingLabel.rawValue) ?? true
         }
     }
 
     public required convenience init(injector: Injector) {
-        self.init(userDefaults: injector.create(NSUserDefaults))
+        self.init(userDefaults: injector.create(UserDefaults))
     }
 
     deinit {

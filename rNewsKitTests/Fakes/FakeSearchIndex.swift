@@ -7,7 +7,7 @@ import rNewsKit
 class FakeSearchIndex: SearchIndex {
     var lastItemsAdded: [NSObject] = []
     var lastAddCompletionHandler: (NSError?) -> (Void) = {_ in }
-    func addItemsToIndex(items: [NSObject], completionHandler: (NSError?) -> (Void)) {
+    func addItemsToIndex(_ items: [NSObject], completionHandler: @escaping (NSError?) -> (Void)) {
         #if os(iOS)
             assert(items is [CSSearchableItem])
         #endif
@@ -18,7 +18,7 @@ class FakeSearchIndex: SearchIndex {
     var lastItemsDeleted: [String] = []
     var lastDeleteCompletionHandler: (NSError?) -> (Void) = {_ in }
 
-    func deleteIdentifierFromIndex(items: [String], completionHandler: (NSError?) -> (Void)) {
+    func deleteIdentifierFromIndex(_ items: [String], completionHandler: @escaping (NSError?) -> (Void)) {
         lastItemsDeleted = items
         lastDeleteCompletionHandler = completionHandler
     }

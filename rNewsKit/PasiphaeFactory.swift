@@ -1,16 +1,16 @@
 import Sinope
 
 struct PasiphaeFactory {
-    func baseURL() -> NSURL {
-        let urlString = NSBundle.mainBundle().objectForInfoDictionaryKey("PasiphaeURL") as? String ?? ""
-        return NSURL(string: urlString)!
+    func baseURL() -> URL {
+        let urlString = Bundle.main.object(forInfoDictionaryKey: "PasiphaeURL") as? String ?? ""
+        return URL(string: urlString)!
     }
 
     func appToken() -> String {
-        return NSBundle.mainBundle().objectForInfoDictionaryKey("PasiphaeToken") as? String ?? ""
+        return Bundle.main.object(forInfoDictionaryKey: "PasiphaeToken") as? String ?? ""
     }
 
-    func repository(networkClient: Sinope.NetworkClient) -> Sinope.Repository {
+    func repository(_ networkClient: Sinope.NetworkClient) -> Sinope.Repository {
         return Sinope.DefaultRepository(
             self.baseURL(),
             networkClient: networkClient,

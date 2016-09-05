@@ -15,7 +15,7 @@ class ArticleSpec: QuickSpec {
                 realm.deleteAll()
             }
 
-            subject = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+            subject = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
         }
 
         describe("creating from a CoreDataArticle") {
@@ -56,9 +56,9 @@ class ArticleSpec: QuickSpec {
             }
 
             it("should report two articles not created with datastore objects with the same property equality as equal") {
-                let date = NSDate()
+                let date = Date()
                 let a = Article(title: "", link: nil, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
-                let b = Article(title: "blah", link: NSURL(), summary: "hello", authors: [Author("anAuthor")], published: NSDate(timeIntervalSince1970: 0), updatedAt: nil, identifier: "hi", content: "hello there", read: true, estimatedReadingTime: 70, feed: nil, flags: ["flag"])
+                let b = Article(title: "blah", link: URL(), summary: "hello", authors: [Author("anAuthor")], published: Date(timeIntervalSince1970: 0), updatedAt: nil, identifier: "hi", content: "hello there", read: true, estimatedReadingTime: 70, feed: nil, flags: ["flag"])
                 let c = Article(title: "", link: nil, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
 
                 expect(a).toNot(equal(b))
@@ -91,9 +91,9 @@ class ArticleSpec: QuickSpec {
             }
 
             it("should report two articles not created with coredataarticles with the same property equality as having the same hashValue") {
-                let date = NSDate()
+                let date = Date()
                 let a = Article(title: "", link: nil, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
-                let b = Article(title: "blah", link: NSURL(), summary: "hello", authors: [Author("anAuthor")], published: NSDate(timeIntervalSince1970: 0), updatedAt: nil, identifier: "hi", content: "hello there", read: true, estimatedReadingTime: 60, feed: nil, flags: ["flag"])
+                let b = Article(title: "blah", link: URL(), summary: "hello", authors: [Author("anAuthor")], published: Date(timeIntervalSince1970: 0), updatedAt: nil, identifier: "hi", content: "hello there", read: true, estimatedReadingTime: 60, feed: nil, flags: ["flag"])
                 let c = Article(title: "", link: nil, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
 
                 expect(a.hashValue).toNot(equal(b.hashValue))
@@ -112,7 +112,7 @@ class ArticleSpec: QuickSpec {
 
             context("trying to add the same flag again") {
                 beforeEach {
-                    subject = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: ["flag"])
+                    subject = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: ["flag"])
                 }
 
                 it("should no-op") {
@@ -126,7 +126,7 @@ class ArticleSpec: QuickSpec {
         describe("removing a flag") {
             context("that is already a flag in the article") {
                 it("should remove the flag") {
-                    subject = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: ["flag"])
+                    subject = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: ["flag"])
                     subject.removeFlag("flag")
 
                     expect(subject.flags).toNot(contain("flags"))
@@ -149,7 +149,7 @@ class ArticleSpec: QuickSpec {
             var feed: Feed! = nil
 
             beforeEach {
-                feed = Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                 subject.feed = feed
             }
@@ -165,7 +165,7 @@ class ArticleSpec: QuickSpec {
             }
 
             it("should remove from the old and add to the new when changing feeds") {
-                let newFeed = Feed(title: "blah", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let newFeed = Feed(title: "blah", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                 subject.feed = newFeed
 
@@ -179,8 +179,8 @@ class ArticleSpec: QuickSpec {
             var b: Article!
 
             beforeEach {
-                a = Article(title: "a", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
-                b = Article(title: "b", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                a = Article(title: "a", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                b = Article(title: "b", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
             }
 
             it("doesn't let itself be added as a related article") {
@@ -221,7 +221,7 @@ class ArticleSpec: QuickSpec {
                 it("link") {
                     subject.link = nil
                     expect(subject.updated) == false
-                    subject.link = NSURL(string: "http://example.com")
+                    subject.link = URL(string: "http://example.com")
                     expect(subject.updated) == true
                 }
 
@@ -242,14 +242,14 @@ class ArticleSpec: QuickSpec {
                 it("published") {
                     subject.published = subject.published
                     expect(subject.updated) == false
-                    subject.published = NSDate(timeIntervalSince1970: 0)
+                    subject.published = Date(timeIntervalSince1970: 0)
                     expect(subject.updated) == true
                 }
 
                 it("updatedAt") {
                     subject.updatedAt = nil
                     expect(subject.updated) == false
-                    subject.updatedAt = NSDate()
+                    subject.updatedAt = Date()
                     expect(subject.updated) == true
                 }
 
@@ -284,7 +284,7 @@ class ArticleSpec: QuickSpec {
                 it("feed") {
                     subject.feed = nil
                     expect(subject.updated) == false
-                    subject.feed = Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    subject.feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     expect(subject.updated) == true
                 }
 
@@ -294,8 +294,8 @@ class ArticleSpec: QuickSpec {
                 }
 
                 it("relatedArticles") {
-                    let a = Article(title: "a", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
-                    let b = Article(title: "b", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                    let a = Article(title: "a", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                    let b = Article(title: "b", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
 
                     a.addRelatedArticle(b)
 

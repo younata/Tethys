@@ -12,15 +12,15 @@ class FakeUpdateUseCase : UpdateUseCase, Equatable {
     private(set) var updateFeedsCallCount : Int = 0
     var updateFeedsStub : (([Feed], [DataSubscriber]) -> (Future<Result<Void, RNewsError>>))?
     private var updateFeedsArgs : Array<([Feed], [DataSubscriber])> = []
-    func updateFeedsReturns(stubbedValues: (Future<Result<Void, RNewsError>>)) {
+    func updateFeedsReturns(_ stubbedValues: (Future<Result<Void, RNewsError>>)) {
         self.updateFeedsStub = {(feeds: [Feed], subscribers: [DataSubscriber]) -> (Future<Result<Void, RNewsError>>) in
             return stubbedValues
         }
     }
-    func updateFeedsArgsForCall(callIndex: Int) -> ([Feed], [DataSubscriber]) {
+    func updateFeedsArgsForCall(_ callIndex: Int) -> ([Feed], [DataSubscriber]) {
         return self.updateFeedsArgs[callIndex]
     }
-    func updateFeeds(feeds: [Feed], subscribers: [DataSubscriber]) -> (Future<Result<Void, RNewsError>>) {
+    func updateFeeds(_ feeds: [Feed], subscribers: [DataSubscriber]) -> (Future<Result<Void, RNewsError>>) {
         self.updateFeedsCallCount += 1
         self.updateFeedsArgs.append((feeds, subscribers))
         return self.updateFeedsStub!(feeds, subscribers)

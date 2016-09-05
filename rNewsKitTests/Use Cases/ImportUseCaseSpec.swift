@@ -42,7 +42,7 @@ class ImportUseCaseSpec: QuickSpec {
             }
 
             context("when asked to scan a network URL") {
-                let url = NSURL(string: "https://example.com/item")!
+                let url = URL(string: "https://example.com/item")!
 
 
                 beforeEach {
@@ -56,8 +56,8 @@ class ImportUseCaseSpec: QuickSpec {
                 }
 
                 context("when the network returns a feed file") {
-                    let feedURL = NSBundle(forClass: self.classForCoder).URLForResource("feed", withExtension: "rss")!
-                    let feedData = NSData(contentsOfURL: feedURL)
+                    let feedURL = Bundle(for: self.classForCoder).url(forResource: "feed", withExtension: "rss")!
+                    let feedData = try? Data(contentsOf: feedURL)
 
                     beforeEach {
                         urlSession.lastCompletionHandler(feedData, nil, nil)
@@ -114,7 +114,7 @@ class ImportUseCaseSpec: QuickSpec {
                                     var feed: Feed!
                                     beforeEach {
                                         feedRepository.didUpdateFeed = nil
-                                        feed = Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                        feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                                         feedRepository.newFeedCallback(feed)
                                     }
 
@@ -161,8 +161,8 @@ class ImportUseCaseSpec: QuickSpec {
                 }
 
                 context("when the network returns an OPML file") {
-                    let opmlURL = NSBundle(forClass: self.classForCoder).URLForResource("test", withExtension: "opml")!
-                    let opmlData = NSData(contentsOfURL: opmlURL)
+                    let opmlURL = Bundle(for: self.classForCoder).url(forResource: "test", withExtension: "opml")!
+                    let opmlData = try? Data(contentsOf: opmlURL)
 
                     beforeEach {
                         urlSession.lastCompletionHandler(opmlData, nil, nil)
@@ -199,12 +199,12 @@ class ImportUseCaseSpec: QuickSpec {
 
                 context("when the network returns a standard web page") {
                     let feed1html = "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" href=\"/feed.xml\">"
-                    let feed1Url = NSURL(string: "/feed.xml", relativeToURL: url)!.absoluteURL
+                    let feed1Url = URL(string: "/feed.xml", relativeTo: url)!.absoluteURL
                     let feed2html = "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" href=\"/feed2.xml\">"
-                    let feed2Url = NSURL(string: "/feed2.xml", relativeToURL: url)!.absoluteURL
+                    let feed2Url = URL(string: "/feed2.xml", relativeTo: url)!.absoluteURL
 
                     let webPageString = "<html><head>\(feed1html)\(feed2html)</head><body></body></html>"
-                    let webPageData = webPageString.dataUsingEncoding(NSUTF8StringEncoding)!
+                    let webPageData = webPageString.data(using: String.Encoding.utf8)!
 
                     beforeEach {
                         urlSession.lastCompletionHandler(webPageData, nil, nil)
@@ -260,7 +260,7 @@ class ImportUseCaseSpec: QuickSpec {
                                 context("when the feed repository creates the feed") {
                                     var feed: Feed!
                                     beforeEach {
-                                        feed = Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                        feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                                         feedRepository.newFeedCallback(feed)
                                         feedRepository.newFeedPromises.last?.resolve(.Success())
                                     }
@@ -311,7 +311,7 @@ class ImportUseCaseSpec: QuickSpec {
 
             context("when asked to scan a file system URL") {
                 context("and that file is a feed file") {
-                    let feedURL = NSBundle(forClass: self.classForCoder).URLForResource("feed", withExtension: "rss")!
+                    let feedURL = Bundle(for: self.classForCoder).url(forResource: "feed", withExtension: "rss")!
 
                     beforeEach {
                         subject.scanForImportable(feedURL) {
@@ -342,7 +342,7 @@ class ImportUseCaseSpec: QuickSpec {
                         describe("when the feeds repository succeeds") {
                             context("and a feed with the proposed feed url is in the feeds list") {
                                 beforeEach {
-                                    let existingFeed = Feed(title: "", url: NSURL(string: "http://iotlist.co/posts.atom")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                    let existingFeed = Feed(title: "", url: URL(string: "http://iotlist.co/posts.atom")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                                     feedRepository.feedsPromises.first?.resolve(.Success([existingFeed]))
                                 }
@@ -368,13 +368,13 @@ class ImportUseCaseSpec: QuickSpec {
                                 context("when the feed repository creates the feed") {
                                     var feed: Feed!
                                     beforeEach {
-                                        feed = Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                        feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                                         feedRepository.newFeedCallback(feed)
                                         feedRepository.newFeedPromises.last?.resolve(.Success())
                                     }
 
                                     it("sets that feed's url") {
-                                        expect(feed.url) == NSURL(string: "http://iotlist.co/posts.atom")
+                                        expect(feed.url) == URL(string: "http://iotlist.co/posts.atom")
                                     }
 
                                     it("it tells the feed repository to update the feed from the network") {
@@ -406,7 +406,7 @@ class ImportUseCaseSpec: QuickSpec {
                 }
 
                 context("and that file is an opml file") {
-                    let opmlURL = NSBundle(forClass: self.classForCoder).URLForResource("test", withExtension: "opml")!
+                    let opmlURL = Bundle(for: self.classForCoder).url(forResource: "test", withExtension: "opml")!
 
                     beforeEach {
                         subject.scanForImportable(opmlURL) {
@@ -443,7 +443,7 @@ class ImportUseCaseSpec: QuickSpec {
                 }
 
                 context("and that file is neither") {
-                    let url = NSBundle(forClass: self.classForCoder).URLForResource("test", withExtension: "jpg")!
+                    let url = Bundle(for: self.classForCoder).url(forResource: "test", withExtension: "jpg")!
 
                     beforeEach {
                         subject.scanForImportable(url) {
@@ -463,7 +463,7 @@ class ImportUseCaseSpec: QuickSpec {
         }
 
         describe("-importItem:callback:") {
-            let url = NSURL(string: "https://example.com/item")!
+            let url = URL(string: "https://example.com/item")!
 
             it("informs the user that we don't have data for this url") {
                 var didImport = false
@@ -477,11 +477,11 @@ class ImportUseCaseSpec: QuickSpec {
         }
 
         describe("-scanDirectoryForImportables:callback:") {
-            let feedURL = NSBundle(forClass: self.classForCoder).URLForResource("feed", withExtension: "rss")!
-            let opmlURL = NSBundle(forClass: self.classForCoder).URLForResource("test", withExtension: "opml")!
+            let feedURL = Bundle(for: self.classForCoder).url(forResource: "feed", withExtension: "rss")!
+            let opmlURL = Bundle(for: self.classForCoder).url(forResource: "test", withExtension: "opml")!
 
             it("it scans the directory for all urls in that directory") {
-                let bundle = NSBundle(forClass: self.classForCoder)
+                let bundle = Bundle(for: self.classForCoder)
 
                 fileManager.contentsOfDirectories[bundle.resourcePath!] = ["feed.rss", "test.opml"]
 

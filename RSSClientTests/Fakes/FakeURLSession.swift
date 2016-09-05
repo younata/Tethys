@@ -1,14 +1,14 @@
 import Foundation
 
-class FakeDataTask: NSURLSessionDataTask {
+class FakeDataTask: URLSessionDataTask {
     override func resume() {}
 
     override func cancel() {}
 }
 
-class FakeDownloadTask: NSURLSessionDownloadTask {
-    var _request: NSURLRequest?
-    override var originalRequest: NSURLRequest? {
+class FakeDownloadTask: URLSessionDownloadTask {
+    var _request: URLRequest?
+    override var originalRequest: URLRequest? {
         return _request
     }
 
@@ -22,18 +22,18 @@ class FakeDownloadTask: NSURLSessionDownloadTask {
         }
     }
 
-    var _response: NSURLResponse?
-    override var response: NSURLResponse? { return _response }
+    var _response: URLResponse?
+    override var response: URLResponse? { return _response }
 
     override func resume() {}
 
     override func cancel() {}
 }
 
-class FakeURLSession: NSURLSession {
-    var lastURL: NSURL? = nil
-    var lastCompletionHandler: (NSData?, NSURLResponse?, NSError?) -> (Void) = {_, _, _ in }
-    override func dataTaskWithURL(url: NSURL, completionHandler: (NSData?, NSURLResponse?, NSError?) -> Void) -> NSURLSessionDataTask {
+class FakeURLSession: URLSession {
+    var lastURL: URL? = nil
+    var lastCompletionHandler: (Data?, URLResponse?, NSError?) -> (Void) = {_, _, _ in }
+    override func dataTask(with url: URL, completionHandler: (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
         lastURL = url
         lastCompletionHandler = completionHandler
         let task = FakeDataTask()
@@ -42,8 +42,8 @@ class FakeURLSession: NSURLSession {
     }
 
     var lastDownloadTask: FakeDownloadTask?
-    override func downloadTaskWithRequest(request: NSURLRequest) -> NSURLSessionDownloadTask {
-        lastURL = request.URL
+    override func downloadTask(with request: URLRequest) -> URLSessionDownloadTask {
+        lastURL = request.url
         let task = FakeDownloadTask()
         task._request = request
         lastDownloadTask = task
@@ -51,10 +51,10 @@ class FakeURLSession: NSURLSession {
         return task
     }
 
-    private var dataTasks = [NSURLSessionDataTask]()
-    private var downloadTasks = [NSURLSessionDownloadTask]()
+    fileprivate var dataTasks = [URLSessionDataTask]()
+    fileprivate var downloadTasks = [URLSessionDownloadTask]()
 
-    override func getTasksWithCompletionHandler(completionHandler: ([NSURLSessionDataTask], [NSURLSessionUploadTask], [NSURLSessionDownloadTask]) -> Void) {
+    override func getTasksWithCompletionHandler(_ completionHandler: ([URLSessionDataTask], [URLSessionUploadTask], [URLSessionDownloadTask]) -> Void) {
         completionHandler(dataTasks, [], downloadTasks)
     }
 }

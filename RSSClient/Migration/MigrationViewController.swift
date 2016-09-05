@@ -7,21 +7,21 @@ public final class MigrationViewController: UIViewController, Injectable {
     public let label: UILabel = {
         let label = UILabel(forAutoLayout: ())
         label.text = NSLocalizedString("MigrationViewController_Message", comment: "")
-        label.textAlignment = .Center
+        label.textAlignment = .center
         return label
     }()
 
     public let progressBar: UIProgressView = {
-        let bar = UIProgressView(progressViewStyle: .Default)
+        let bar = UIProgressView(progressViewStyle: .default)
         bar.translatesAutoresizingMaskIntoConstraints = true
-        bar.progressTintColor = UIColor.darkGreenColor()
+        bar.progressTintColor = UIColor.darkGreen()
         return bar
     }()
 
-    private let activityIndicator = UIActivityIndicatorView(forAutoLayout: ())
-    private let mainQueue: NSOperationQueue
+    fileprivate let activityIndicator = UIActivityIndicatorView(forAutoLayout: ())
+    fileprivate let mainQueue: OperationQueue
 
-    public init(migrationUseCase: MigrationUseCase, themeRepository: ThemeRepository, mainQueue: NSOperationQueue) {
+    public init(migrationUseCase: MigrationUseCase, themeRepository: ThemeRepository, mainQueue: OperationQueue) {
         self.mainQueue = mainQueue
 
         super.init(nibName: nil, bundle: nil)
@@ -50,22 +50,22 @@ public final class MigrationViewController: UIViewController, Injectable {
         self.view.addSubview(self.activityIndicator)
 
         self.label.autoCenterInSuperview()
-        self.label.autoPinEdgeToSuperviewEdge(.Leading, withInset: 20)
-        self.label.autoPinEdgeToSuperviewEdge(.Trailing, withInset: 20)
+        self.label.autoPinEdge(toSuperviewEdge: .leading, withInset: 20)
+        self.label.autoPinEdge(toSuperviewEdge: .trailing, withInset: 20)
 
-        self.progressBar.autoPinEdgeToSuperviewEdge(.Leading, withInset: 20)
-        self.progressBar.autoPinEdgeToSuperviewEdge(.Trailing, withInset: 20)
-        self.progressBar.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.label)
+        self.progressBar.autoPinEdge(toSuperviewEdge: .leading, withInset: 20)
+        self.progressBar.autoPinEdge(toSuperviewEdge: .trailing, withInset: 20)
+        self.progressBar.autoPinEdge(.top, to: .bottom, of: self.label)
 
-        self.activityIndicator.autoAlignAxisToSuperviewAxis(.Vertical)
-        self.activityIndicator.autoPinEdge(.Bottom, toEdge: .Top, ofView: self.label, withOffset: -8)
+        self.activityIndicator.autoAlignAxis(toSuperviewAxis: .vertical)
+        self.activityIndicator.autoPinEdge(.bottom, to: .top, of: self.label, withOffset: -8)
 
         self.activityIndicator.startAnimating()
     }
 }
 
 extension MigrationViewController: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
+    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.view.backgroundColor = themeRepository.backgroundColor
         self.label.textColor = themeRepository.textColor
         self.activityIndicator.color = themeRepository.textColor
@@ -73,11 +73,11 @@ extension MigrationViewController: ThemeRepositorySubscriber {
 }
 
 extension MigrationViewController: MigrationUseCaseSubscriber {
-    public func migrationUseCase(migrationUseCase: MigrationUseCase, didUpdateProgress progress: Double) {
-        self.mainQueue.addOperationWithBlock {
+    public func migrationUseCase(_ migrationUseCase: MigrationUseCase, didUpdateProgress progress: Double) {
+        self.mainQueue.addOperation {
             self.progressBar.setProgress(Float(progress), animated: true)
         }
     }
 
-    public func migrationUseCaseDidFinish(migrationUseCase: MigrationUseCase) {}
+    public func migrationUseCaseDidFinish(_ migrationUseCase: MigrationUseCase) {}
 }

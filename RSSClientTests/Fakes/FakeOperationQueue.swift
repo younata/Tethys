@@ -1,6 +1,6 @@
 import Foundation
 
-class FakeOperationQueue : NSOperationQueue {
+class FakeOperationQueue: OperationQueue {
     var runSynchronously: Bool = false
 
     func reset() {
@@ -11,11 +11,11 @@ class FakeOperationQueue : NSOperationQueue {
         assert(internalOperations.count != 0, "Can't run an operation that doesn't exist")
         if let op = internalOperations.first {
             performOperationAndWait(op)
-            internalOperations.removeAtIndex(0)
+            internalOperations.remove(at: 0)
         }
     }
 
-    override func addOperation(op: NSOperation) {
+    override func addOperation(_ op: Operation) {
         if runSynchronously {
             performOperationAndWait(op)
         } else {
@@ -23,7 +23,7 @@ class FakeOperationQueue : NSOperationQueue {
         }
     }
 
-    override func addOperations(operations: [NSOperation], waitUntilFinished wait: Bool) {
+    override func addOperations(_ operations: [Operation], waitUntilFinished wait: Bool) {
         let oldRunSynchronously = runSynchronously
         runSynchronously = runSynchronously || wait
         for op in operations {
@@ -32,8 +32,8 @@ class FakeOperationQueue : NSOperationQueue {
         runSynchronously = oldRunSynchronously
     }
 
-    override func addOperationWithBlock(block: () -> Void) {
-        addOperation(NSBlockOperation(block: block))
+    override func addOperation(_ block: @escaping () -> Void) {
+        addOperation(BlockOperation(block: block))
     }
 
     override func cancelAllOperations() {
@@ -45,17 +45,17 @@ class FakeOperationQueue : NSOperationQueue {
 
     override init() {
         super.init()
-        suspended = true
+        isSuspended = true
         reset()
     }
 
-    var internalOperations: [NSOperation] = []
+    var internalOperations: [Operation] = []
 
     override var operationCount: Int {
         return internalOperations.count
     }
 
-    private func performOperationAndWait(op: NSOperation) {
+    private func performOperationAndWait(_ op: Operation) {
         op.start()
         op.waitUntilFinished()
     }

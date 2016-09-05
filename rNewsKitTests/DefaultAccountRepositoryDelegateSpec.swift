@@ -40,7 +40,7 @@ class DefaultAccountRepositoryDelegateSpec: QuickSpec {
                     subscribePromise = Promise<Result<[NSURL], SinopeError>>()
                     sinopeRepository.subscribeReturns(subscribePromise.future)
 
-                    let feed = Feed(title: "title", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feed = Feed(title: "title", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                     databaseUseCase.feedsPromises.last?.resolve(.Success([feed]))
                 }
@@ -49,7 +49,7 @@ class DefaultAccountRepositoryDelegateSpec: QuickSpec {
                     expect(sinopeRepository.subscribeCallCount) == 1
                     guard sinopeRepository.subscribeCallCount == 1 else { return }
                     let args = sinopeRepository.subscribeArgsForCall(0)
-                    expect(args) == [NSURL(string: "https://example.com")!]
+                    expect(args) == [URL(string: "https://example.com")!]
                 }
 
                 describe("when the subscribe request succeeds") {

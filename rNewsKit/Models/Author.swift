@@ -1,13 +1,7 @@
 import Foundation
-import JavaScriptCore
 
-@objc public protocol AuthorJSExport: JSExport {
-    var name: String { get }
-    var email: NSURL? { get }
-}
-
-@objc public final class Author: NSObject, AuthorJSExport {
-    dynamic public internal(set) var name: String {
+@objc public final class Author: NSObject {
+    public internal(set) var name: String {
         willSet {
             if newValue != name {
                 updated = true
@@ -15,7 +9,7 @@ import JavaScriptCore
         }
     }
 
-    dynamic public internal(set) var email: NSURL? {
+    public internal(set) var email: URL? {
         willSet {
             if newValue != email {
                 updated = true
@@ -32,11 +26,11 @@ import JavaScriptCore
 
     @objc private var id: String { return self.identifier }
 
-    public convenience init(_ name: String, email: NSURL? = nil) {
+    public convenience init(_ name: String, email: URL? = nil) {
         self.init(name: name, email: email)
     }
 
-    public init(name: String, email: NSURL?) {
+    public init(name: String, email: URL?) {
         self.name = name
         self.email = email
 
@@ -47,13 +41,13 @@ import JavaScriptCore
         return self.name.hash ^ (self.email?.hash ?? 0)
     }
 
-    public override func isEqual(object: AnyObject?) -> Bool {
+    public override func isEqual(_ object: Any?) -> Bool {
         guard let other = object as? Author else { return false }
         return other.name == self.name && other.email == self.email
     }
 
     public override var description: String {
-        if let email = self.email?.resourceSpecifier where !email.isEmpty {
+        if let email = self.email?.resourceSpecifier , !email.isEmpty {
             return "\(self.name) <\(email)>"
         }
         return self.name
@@ -61,9 +55,9 @@ import JavaScriptCore
 
     internal init(realmAuthor author: RealmAuthor) {
         self.name = author.name
-        let email: NSURL?
+        let email: URL?
         if let emailString = author.email {
-            email = NSURL(string: emailString)
+            email = URL(string: emailString)
         } else {
             email = nil
         }

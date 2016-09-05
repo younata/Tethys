@@ -16,99 +16,99 @@ extension Account: CustomStringConvertible {
     }
 }
 
-public class SettingsViewController: UIViewController, Injectable {
-    private enum SettingsSection: CustomStringConvertible {
-        case Theme
-        case QuickActions
-        case Accounts
-        case Advanced
-        case Credits
+public final class SettingsViewController: UIViewController, Injectable {
+    fileprivate enum SettingsSection: CustomStringConvertible {
+        case theme
+        case quickActions
+        case accounts
+        case advanced
+        case credits
 
-        private init?(rawValue: Int, traits: UITraitCollection) {
+        fileprivate init?(rawValue: Int, traits: UITraitCollection) {
             if rawValue == 0 {
-                self = .Theme
+                self = .theme
                 return
             } else {
                 let offset: Int
                 switch traits.forceTouchCapability {
-                case .Available:
+                case .available:
                     offset = 0
-                case .Unavailable, .Unknown:
+                case .unavailable, .unknown:
                     offset = 1
                 }
                 switch rawValue + offset {
                 case 1:
-                    self = .QuickActions
+                    self = .quickActions
                 case 2:
-                    self = .Accounts
+                    self = .accounts
                 case 3:
-                    self = .Advanced
+                    self = .advanced
                 case 4:
-                    self = .Credits
+                    self = .credits
                 default:
                     return nil
                 }
             }
         }
 
-        static func numberOfSettings(traits: UITraitCollection) -> Int {
-            if traits.forceTouchCapability == .Available {
+        static func numberOfSettings(_ traits: UITraitCollection) -> Int {
+            if traits.forceTouchCapability == .available {
                 return 5
             }
             return 4
         }
 
-        private var rawValue: Int {
+        fileprivate var rawValue: Int {
             switch self {
-            case .Theme: return 0
-            case .QuickActions: return 1
-            case .Accounts: return 2
-            case .Advanced: return 3
-            case .Credits: return 4
+            case .theme: return 0
+            case .quickActions: return 1
+            case .accounts: return 2
+            case .advanced: return 3
+            case .credits: return 4
             }
         }
 
-        private var description: String {
+        fileprivate var description: String {
             switch self {
-            case .Theme:
+            case .theme:
                 return NSLocalizedString("SettingsViewController_Table_Header_Theme", comment: "")
-            case .QuickActions:
+            case .quickActions:
                 return NSLocalizedString("SettingsViewController_Table_Header_QuickActions", comment: "")
-            case .Accounts:
+            case .accounts:
                 return NSLocalizedString("SettinsgViewController_Table_Header_Accounts", comment: "")
-            case .Advanced:
+            case .advanced:
                 return NSLocalizedString("SettingsViewController_Table_Header_Advanced", comment: "")
-            case .Credits:
+            case .credits:
                 return NSLocalizedString("SettingsViewController_Table_Header_Credits", comment: "")
             }
         }
     }
 
-    private enum AdvancedSection: Int, CustomStringConvertible {
-        case ShowReadingTimes = 0
+    fileprivate enum AdvancedSection: Int, CustomStringConvertible {
+        case showReadingTimes = 0
 
-        private var description: String {
+        fileprivate var description: String {
             switch self {
-            case .ShowReadingTimes:
+            case .showReadingTimes:
                 return NSLocalizedString("SettingsViewController_Advanced_ShowReadingTimes", comment: "")
             }
         }
 
-        private static let numberOfOptions = 1
+        fileprivate static let numberOfOptions = 1
     }
 
-    public let tableView = UITableView(frame: CGRect.zero, style: .Grouped)
+    public let tableView = UITableView(frame: CGRect.zero, style: .grouped)
 
-    private let themeRepository: ThemeRepository
-    private let settingsRepository: SettingsRepository
-    private let quickActionRepository: QuickActionRepository
-    private let databaseUseCase: DatabaseUseCase
-    private let accountRepository: AccountRepository
-    private let loginViewController: Void -> LoginViewController
+    fileprivate let themeRepository: ThemeRepository
+    fileprivate let settingsRepository: SettingsRepository
+    fileprivate let quickActionRepository: QuickActionRepository
+    fileprivate let databaseUseCase: DatabaseUseCase
+    fileprivate let accountRepository: AccountRepository
+    fileprivate let loginViewController: (Void) -> LoginViewController
 
-    private var oldTheme: ThemeRepository.Theme = .Default
+    fileprivate var oldTheme: ThemeRepository.Theme = .default
 
-    private lazy var showReadingTimes: Bool = {
+    fileprivate lazy var showReadingTimes: Bool = {
         return self.settingsRepository.showEstimatedReadingLabel
     }()
 
@@ -118,7 +118,7 @@ public class SettingsViewController: UIViewController, Injectable {
                 quickActionRepository: QuickActionRepository,
                 databaseUseCase: DatabaseUseCase,
                 accountRepository: AccountRepository,
-                loginViewController: Void -> LoginViewController) {
+                loginViewController: (Void) -> LoginViewController) {
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.quickActionRepository = quickActionRepository
@@ -149,20 +149,20 @@ public class SettingsViewController: UIViewController, Injectable {
         super.viewDidLoad()
 
         self.navigationItem.title = NSLocalizedString("SettingsViewController_Title", comment: "")
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Save,
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save,
             target: self,
             action: #selector(SettingsViewController.didTapSave))
-        self.navigationItem.rightBarButtonItem?.enabled = false
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel,
+        self.navigationItem.rightBarButtonItem?.isEnabled = false
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
             target: self,
             action: #selector(SettingsViewController.didTapDismiss))
 
         self.tableView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(self.tableView)
-        self.tableView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
+        self.tableView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero)
 
-        self.tableView.registerClass(TableViewCell.self, forCellReuseIdentifier: "cell")
-        self.tableView.registerClass(SwitchTableViewCell.self, forCellReuseIdentifier: "switch")
+        self.tableView.register(TableViewCell.self, forCellReuseIdentifier: "cell")
+        self.tableView.register(SwitchTableViewCell.self, forCellReuseIdentifier: "switch")
 
         self.tableView.delegate = self
         self.tableView.dataSource = self
@@ -174,14 +174,14 @@ public class SettingsViewController: UIViewController, Injectable {
         self.reloadTable()
     }
 
-    public override func viewDidAppear(animated: Bool) {
+    public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         self.splitViewController?.setNeedsStatusBarAppearanceUpdate()
         self.reloadTable()
     }
 
-    public override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+    public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
         self.reloadTable()
@@ -192,21 +192,21 @@ public class SettingsViewController: UIViewController, Injectable {
     public override var keyCommands: [UIKeyCommand]? {
         var commands: [UIKeyCommand] = []
 
-        for (idx, theme) in ThemeRepository.Theme.array().enumerate() {
+        for (idx, theme) in ThemeRepository.Theme.array().enumerated() {
             guard theme != self.themeRepository.theme else {
                 continue
             }
 
-            let keyCommand = UIKeyCommand(input: "\(idx+1)", modifierFlags: .Command,
+            let keyCommand = UIKeyCommand(input: "\(idx+1)", modifierFlags: .command,
                                           action: #selector(SettingsViewController.didHitChangeTheme(_:)))
             let title = NSLocalizedString("SettingsViewController_Commands_Theme", comment: "")
-            keyCommand.discoverabilityTitle = String(NSString.localizedStringWithFormat(title, theme.description))
+            keyCommand.discoverabilityTitle = String(NSString.localizedStringWithFormat(title as NSString, theme.description))
             commands.append(keyCommand)
         }
 
-        let save = UIKeyCommand(input: "s", modifierFlags: .Command,
+        let save = UIKeyCommand(input: "s", modifierFlags: .command,
                                 action: #selector(SettingsViewController.didTapSave))
-        let dismiss = UIKeyCommand(input: "w", modifierFlags: .Command,
+        let dismiss = UIKeyCommand(input: "w", modifierFlags: .command,
                                    action: #selector(SettingsViewController.didTapDismiss))
 
         save.discoverabilityTitle = NSLocalizedString("SettingsViewController_Commands_Save", comment: "")
@@ -218,29 +218,29 @@ public class SettingsViewController: UIViewController, Injectable {
         return commands
     }
 
-    @objc private func didHitChangeTheme(keyCommand: UIKeyCommand) {}
+    @objc fileprivate func didHitChangeTheme(_ keyCommand: UIKeyCommand) {}
 
-    @objc private func didTapDismiss() {
+    @objc fileprivate func didTapDismiss() {
         if self.oldTheme != self.themeRepository.theme {
             self.themeRepository.theme = self.oldTheme
         }
-        self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+        self.navigationController?.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
-    @objc private func didTapSave() {
+    @objc fileprivate func didTapSave() {
         self.oldTheme = self.themeRepository.theme
         self.settingsRepository.showEstimatedReadingLabel = self.showReadingTimes
         self.didTapDismiss()
     }
 
-    private func reloadTable() {
+    fileprivate func reloadTable() {
         self.tableView.reloadData()
-        let selectedIndexPath = NSIndexPath(forRow: self.themeRepository.theme.rawValue,
-                                            inSection: SettingsSection.Theme.rawValue)
-        self.tableView.selectRowAtIndexPath(selectedIndexPath, animated: false, scrollPosition: .None)
+        let selectedIndexPath = IndexPath(row: self.themeRepository.theme.rawValue,
+                                            section: SettingsSection.theme.rawValue)
+        self.tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: .none)
     }
 
-    private func titleForQuickAction(row: Int) -> String {
+    fileprivate func titleForQuickAction(_ row: Int) -> String {
         let quickActions = self.quickActionRepository.quickActions
         if row >= quickActions.count {
             let title: String
@@ -256,7 +256,7 @@ public class SettingsViewController: UIViewController, Injectable {
         }
     }
 
-    private func feedForQuickAction(row: Int, feeds: [Feed]) -> Feed? {
+    fileprivate func feedForQuickAction(_ row: Int, feeds: [Feed]) -> Feed? {
         let quickActions = self.quickActionRepository.quickActions
         guard row < quickActions.count else { return nil }
 
@@ -267,70 +267,70 @@ public class SettingsViewController: UIViewController, Injectable {
 }
 
 extension SettingsViewController: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
+    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.navigationController?.navigationBar.barStyle = self.themeRepository.barStyle
         self.view.backgroundColor = self.themeRepository.backgroundColor
 
-        func colorWithDefault(color: UIColor) -> UIColor? {
-            return self.themeRepository.theme == .Default ? nil : color
+        func colorWithDefault(_ color: UIColor) -> UIColor? {
+            return self.themeRepository.theme == .default ? nil : color
         }
 
         self.tableView.backgroundColor = colorWithDefault(self.themeRepository.backgroundColor)
         for section in 0..<self.tableView.numberOfSections {
-            let headerView = self.tableView.headerViewForSection(section)
+            let headerView = self.tableView.headerView(forSection: section)
             headerView?.textLabel?.textColor = colorWithDefault(self.themeRepository.tintColor)
         }
     }
 }
 
 extension SettingsViewController: UITableViewDataSource {
-    public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    public func numberOfSections(in tableView: UITableView) -> Int {
         return SettingsSection.numberOfSettings(self.traitCollection)
     }
 
-    public func tableView(tableView: UITableView, numberOfRowsInSection sectionNum: Int) -> Int {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection sectionNum: Int) -> Int {
         guard let section = SettingsSection(rawValue: sectionNum, traits: self.traitCollection) else {
             return 0
         }
         switch section {
-        case .Theme:
+        case .theme:
             return 2
-        case .QuickActions:
+        case .quickActions:
             if self.quickActionRepository.quickActions.count == 3 {
                 return 3
             }
             return self.quickActionRepository.quickActions.count + 1
-        case .Accounts:
+        case .accounts:
             return 1
-        case .Advanced:
+        case .advanced:
             return AdvancedSection.numberOfOptions
-        case .Credits:
+        case .credits:
             return 1
         }
     }
 
-    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection) else {
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let section = SettingsSection(rawValue: (indexPath as NSIndexPath).section, traits: self.traitCollection) else {
             return TableViewCell()
         }
         switch section {
-        case .Theme:
-            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TableViewCell
-            guard let theme = ThemeRepository.Theme(rawValue: indexPath.row) else {
+        case .theme:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
+            guard let theme = ThemeRepository.Theme(rawValue: (indexPath as NSIndexPath).row) else {
                 return cell
             }
             cell.themeRepository = self.themeRepository
             cell.textLabel?.text = theme.description
             return cell
-        case .QuickActions:
-            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TableViewCell
+        case .quickActions:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
             cell.themeRepository = self.themeRepository
 
-            cell.textLabel?.text = self.titleForQuickAction(indexPath.row)
+            cell.textLabel?.text = self.titleForQuickAction((indexPath as NSIndexPath).row)
 
             return cell
-        case .Accounts:
-            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TableViewCell
+        case .accounts:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
             cell.themeRepository = self.themeRepository
 
             let row = Account(rawValue: indexPath.row)!
@@ -338,24 +338,24 @@ extension SettingsViewController: UITableViewDataSource {
             cell.detailTextLabel?.text = self.accountRepository.loggedIn()
 
             return cell
-        case .Advanced:
-            let cell = tableView.dequeueReusableCellWithIdentifier("switch",
-                forIndexPath: indexPath) as! SwitchTableViewCell
-            let row = AdvancedSection(rawValue: indexPath.row)!
+        case .advanced:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "switch",
+                for: indexPath) as! SwitchTableViewCell
+            let row = AdvancedSection(rawValue: (indexPath as NSIndexPath).row)!
             cell.textLabel?.text = row.description
             cell.themeRepository = self.themeRepository
             cell.onTapSwitch = {_ in }
             switch row {
-            case .ShowReadingTimes:
-                cell.theSwitch.on = self.showReadingTimes
+            case .showReadingTimes:
+                cell.theSwitch.isOn = self.showReadingTimes
                 cell.onTapSwitch = {aSwitch in
-                    self.showReadingTimes = aSwitch.on
-                    self.navigationItem.rightBarButtonItem?.enabled = true
+                    self.showReadingTimes = aSwitch.isOn
+                    self.navigationItem.rightBarButtonItem?.isEnabled = true
                 }
             }
             return cell
-        case .Credits:
-            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TableViewCell
+        case .credits:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
             cell.themeRepository = self.themeRepository
             cell.textLabel?.text = NSLocalizedString("SettingsViewController_Credits_MainDeveloper_Name", comment: "")
             cell.detailTextLabel?.text =
@@ -364,7 +364,7 @@ extension SettingsViewController: UITableViewDataSource {
         }
     }
 
-    public func tableView(tableView: UITableView, titleForHeaderInSection sectionNum: Int) -> String? {
+    public func tableView(_ tableView: UITableView, titleForHeaderInSection sectionNum: Int) -> String? {
         guard let section = SettingsSection(rawValue: sectionNum, traits: self.traitCollection) else {
             return nil
         }
@@ -373,50 +373,50 @@ extension SettingsViewController: UITableViewDataSource {
 }
 
 extension SettingsViewController: UITableViewDelegate {
-    public func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-        guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection) else {
+    public func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        guard let section = SettingsSection(rawValue: (indexPath as NSIndexPath).section, traits: self.traitCollection) else {
             return
         }
 
-        if section == .Theme {
-            tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
+        if section == .theme {
+            tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
         }
     }
 
-    public func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection)
-            where section == .QuickActions || section == .Accounts else { return false }
-        if section == .QuickActions {
-            return indexPath.row < self.quickActionRepository.quickActions.count
+    public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        guard let section = SettingsSection(rawValue: (indexPath as NSIndexPath).section, traits: self.traitCollection)
+            , section == .quickActions || section == .accounts else { return false }
+        if section == .quickActions {
+            return (indexPath as NSIndexPath).row < self.quickActionRepository.quickActions.count
         }
         return true
     }
 
-    public func tableView(tableView: UITableView,
-        editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-        guard self.tableView(tableView, canEditRowAtIndexPath: indexPath) else { return nil }
+    public func tableView(_ tableView: UITableView,
+        editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        guard self.tableView(tableView, canEditRowAt: indexPath) else { return nil }
 
-        guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection) else {return nil}
+        guard let section = SettingsSection(rawValue: (indexPath as NSIndexPath).section, traits: self.traitCollection) else {return nil}
         switch section {
-        case .QuickActions:
+        case .quickActions:
             let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
-            let deleteAction = UITableViewRowAction(style: .Default, title: deleteTitle) {_, indexPath in
-                self.quickActionRepository.quickActions.removeAtIndex(indexPath.row)
+            let deleteAction = UITableViewRowAction(style: .default, title: deleteTitle) {_, indexPath in
+                self.quickActionRepository.quickActions.remove(at: (indexPath as NSIndexPath).row)
                 if self.quickActionRepository.quickActions.count != 2 {
-                    tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                    tableView.deleteRows(at: [indexPath], with: .automatic)
                 } else {
-                    tableView.reloadRowsAtIndexPaths([
-                        indexPath, NSIndexPath(forRow: 2, inSection: indexPath.section)
-                        ], withRowAnimation: .Automatic)
+                    tableView.reloadRows(at: [
+                        indexPath, IndexPath(row: 2, section: (indexPath as NSIndexPath).section)
+                        ], with: .automatic)
                 }
             }
             return [deleteAction]
-        case .Accounts:
+        case .accounts:
             guard self.accountRepository.loggedIn() != nil else { return [] }
             let logOutTitle = NSLocalizedString("SettingsViewController_Accounts_Log_Out", comment: "")
-            let logOutAction = UITableViewRowAction(style: .Default, title: logOutTitle) {_ in
+            let logOutAction = UITableViewRowAction(style: .default, title: logOutTitle) {_ in
                 self.accountRepository.logOut()
-                tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
+                tableView.reloadRows(at: [indexPath], with: .left)
             }
             return [logOutAction]
         default:
@@ -424,41 +424,41 @@ extension SettingsViewController: UITableViewDelegate {
         }
     }
 
-    public func tableView(tableView: UITableView,
-        commitEditingStyle editingStyle: UITableViewCellEditingStyle,
-        forRowAtIndexPath indexPath: NSIndexPath) {}
+    public func tableView(_ tableView: UITableView,
+        commit editingStyle: UITableViewCellEditingStyle,
+        forRowAt indexPath: IndexPath) {}
 
-    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection) else { return }
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let section = SettingsSection(rawValue: (indexPath as NSIndexPath).section, traits: self.traitCollection) else { return }
         switch section {
-        case .Theme:
-            guard let theme = ThemeRepository.Theme(rawValue: indexPath.row) else { return }
+        case .theme:
+            guard let theme = ThemeRepository.Theme(rawValue: (indexPath as NSIndexPath).row) else { return }
             self.themeRepository.theme = theme
-            self.navigationItem.rightBarButtonItem?.enabled = true
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
             self.tableView.reloadData()
-            self.tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
-        case .QuickActions:
-            tableView.deselectRowAtIndexPath(indexPath, animated: false)
+            self.tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+        case .quickActions:
+            tableView.deselectRow(at: indexPath, animated: false)
             self.didTapQuickActionCell(indexPath)
-        case .Accounts:
-            tableView.deselectRowAtIndexPath(indexPath, animated: false)
+        case .accounts:
+            tableView.deselectRow(at: indexPath, animated: false)
             let loginViewController = self.loginViewController()
             loginViewController.accountType = Account(rawValue: indexPath.row)
             self.navigationController?.pushViewController(loginViewController, animated: true)
-        case .Advanced:
-            tableView.deselectRowAtIndexPath(indexPath, animated: false)
-        case .Credits:
-            tableView.deselectRowAtIndexPath(indexPath, animated: false)
-            guard let url = NSURL(string: "https://twitter.com/younata") else { return }
-            let viewController = SFSafariViewController(URL: url)
-            self.presentViewController(viewController, animated: true, completion: nil)
+        case .advanced:
+            tableView.deselectRow(at: indexPath, animated: false)
+        case .credits:
+            tableView.deselectRow(at: indexPath, animated: false)
+            guard let url = URL(string: "https://twitter.com/younata") else { return }
+            let viewController = SFSafariViewController(url: url)
+            self.present(viewController, animated: true, completion: nil)
         }
     }
 
-    private func didTapQuickActionCell(indexPath: NSIndexPath) {
+    fileprivate func didTapQuickActionCell(_ indexPath: IndexPath) {
         let feedsListController = FeedsListController()
         feedsListController.themeRepository = self.themeRepository
-        feedsListController.navigationItem.title = self.titleForQuickAction(indexPath.row)
+        feedsListController.navigationItem.title = self.titleForQuickAction((indexPath as NSIndexPath).row)
 
         let quickActions = self.quickActionRepository.quickActions
         self.databaseUseCase.feeds().then {

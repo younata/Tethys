@@ -15,7 +15,7 @@ class AuthorSpec: QuickSpec {
                 realm.deleteAll()
             }
 
-            subject = Author(name: "test", email: NSURL(string: "foo@example.com"))
+            subject = Author(name: "test", email: URL(string: "foo@example.com"))
         }
 
         describe("description") {
@@ -29,7 +29,7 @@ class AuthorSpec: QuickSpec {
             }
 
             it("does not include the '<>' if email is empty but non-nil") {
-                let author = Author(name: "Rachel", email: NSURL(string: ""))
+                let author = Author(name: "Rachel", email: URL(string: ""))
                 expect(author.description) == "Rachel"
             }
         }

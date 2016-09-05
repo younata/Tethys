@@ -7,11 +7,11 @@ class WebPageParserSpec: QuickSpec {
     override func spec() {
         var subject: WebPageParser!
 
-        let bundle = NSBundle(forClass: self.classForCoder)
-        let url = bundle.URLForResource("webpage", withExtension: "html")!
-        let webPage = try! String(contentsOfURL: url, encoding: NSUTF8StringEncoding)
+        let bundle = Bundle(for: self.classForCoder)
+        let url = bundle.url(forResource: "webpage", withExtension: "html")!
+        let webPage = try! String(contentsOfURL: url, encoding: String.Encoding.utf8)
 
-        var receivedUrls: [NSURL]? = nil
+        var receivedUrls: [URL]? = nil
 
         beforeEach {
             receivedUrls = nil
@@ -25,7 +25,7 @@ class WebPageParserSpec: QuickSpec {
                 subject.searchType = .Feeds
                 subject.start()
 
-                expect(receivedUrls) == [NSURL(string: "/feed.xml")!, NSURL(string: "/feed2.xml")!]
+                expect(receivedUrls) == [URL(string: "/feed.xml")!, URL(string: "/feed2.xml")!]
             }
         }
 
@@ -49,7 +49,7 @@ class WebPageParserSpec: QuickSpec {
                     "/feed.xml",
                     "https://github.com/younata",
                     "https://twitter.com/younata"
-                ].flatMap(NSURL.init)
+                ].flatMap(URL.init)
 
                 expect(receivedUrls) == urls
             }

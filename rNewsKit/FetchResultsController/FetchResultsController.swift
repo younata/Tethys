@@ -6,10 +6,10 @@ public protocol FetchResultsController: class, Equatable {
     var count: Int { get }
     var predicate: NSPredicate { get }
 
-    func get(index: Int) throws -> Element
-    func insert(item: Element) throws
-    func delete(index: Int) throws
-    func replacePredicate(predicate: NSPredicate) -> Self
+    func get(_ index: Int) throws -> Element
+    func insert(_ item: Element) throws
+    func delete(_ index: Int) throws
+    func replacePredicate(_ predicate: NSPredicate) -> Self
 }
 
 extension FetchResultsController {
@@ -19,12 +19,12 @@ extension FetchResultsController {
         // swiftlint:enable force_try
     }
 
-    func filter(predicate: NSPredicate) -> Self {
+    func filter(_ predicate: NSPredicate) -> Self {
         let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [self.predicate, predicate])
         return self.replacePredicate(compoundPredicate)
     }
 
-    func combine(fetchResultsController: Self) -> Self {
+    func combine(_ fetchResultsController: Self) -> Self {
         let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [self.predicate,
             fetchResultsController.predicate])
         return self.replacePredicate(compoundPredicate)
@@ -32,7 +32,7 @@ extension FetchResultsController {
 }
 
 extension FetchResultsController where Element: Equatable {
-    func contains(item: Element) throws -> Bool {
+    func contains(_ item: Element) throws -> Bool {
         for i in 0..<self.count {
             let val = try self.get(i)
             if val == item {

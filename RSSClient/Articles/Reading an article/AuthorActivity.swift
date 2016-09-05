@@ -1,6 +1,6 @@
 import rNewsKit
 
-public class AuthorActivity: UIActivity {
+public final class AuthorActivity: UIActivity {
     private let author: Author
 
     public init(author: Author) {
@@ -21,11 +21,11 @@ public class AuthorActivity: UIActivity {
         return UIImage(named: "GrayIcon")
     }
 
-    public override func canPerformWithActivityItems(activityItems: [AnyObject]) -> Bool {
+    public override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
         return true
     }
 
-    public override func performActivity() {
+    public override func perform() {
         self.activityDidFinish(true)
     }
 }

@@ -25,7 +25,7 @@ class FakeDataServiceFactory : DataServiceFactoryType {
         return set_currentDataServiceArgs.count
     }
 
-    func setCurrentDataServiceArgsForCall(index : Int) throws -> DataService {
+    func setCurrentDataServiceArgsForCall(_ index : Int) throws -> DataService {
         if index < 0 || index >= set_currentDataServiceArgs.count {
             throw NSError.init(domain: "swift-generate-fake-domain", code: 1, userInfo: nil)
         }
@@ -34,7 +34,7 @@ class FakeDataServiceFactory : DataServiceFactoryType {
 
     private(set) var newDataServiceCallCount : Int = 0
     var newDataServiceStub : (() -> (DataService))?
-    func newDataServiceReturns(stubbedValues: (DataService)) {
+    func newDataServiceReturns(_ stubbedValues: (DataService)) {
         self.newDataServiceStub = {() -> (DataService) in
             return stubbedValues
         }

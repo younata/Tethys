@@ -1,14 +1,14 @@
 import Kanna
 
-public class WebPageParser: NSOperation {
+public final class WebPageParser: Operation {
     public enum SearchType {
-        case Feeds
-        case Links
-        case Default
+        case feeds
+        case links
+        case `default`
 
         var acceptableTypes: [String] {
             switch self {
-            case .Feeds:
+            case .feeds:
                 return [
                     "application/rss+xml",
                     "application/rdf+xml",
@@ -16,20 +16,20 @@ public class WebPageParser: NSOperation {
                     "application/xml",
                     "text/xml"
                 ]
-            case .Links, .Default:
+            case .links, .default:
                 return []
             }
         }
     }
 
     private let webPage: String
-    private let callback: [NSURL] -> Void
+    private let callback: ([URL]) -> Void
 
-    private var urls = [NSURL]()
+    private var urls = [URL]()
 
-    public var searchType: SearchType = .Default
+    public var searchType: SearchType = .default
 
-    public init(string: String, callback: [NSURL] -> Void) {
+    public init(string: String, callback: @escaping ([URL]) -> Void) {
         self.webPage = string
         self.callback = callback
         super.init()
@@ -38,19 +38,19 @@ public class WebPageParser: NSOperation {
     public override func start() {
         super.start()
 
-        if let doc = Kanna.HTML(html: self.webPage, encoding: NSUTF8StringEncoding) {
+        if let doc = Kanna.HTML(html: self.webPage, encoding: String.Encoding.utf8) {
             switch self.searchType {
-            case .Feeds:
+            case .feeds:
                 for link in doc.xpath("//link") where link["rel"] == "alternate" &&
                     self.searchType.acceptableTypes.contains(link["type"] ?? "") {
-                        if let urlString = link["href"], url = NSURL(string: urlString) {
-                            self.urls.append(url)
+                        if let urlString = link["href"], let url = NSURL(string: urlString) {
+                            self.urls.append(url as URL)
                         }
                 }
-            case .Links:
+            case .links:
                 for link in doc.xpath("//a") {
-                    if let urlString = link["href"], url = NSURL(string: urlString) {
-                        self.urls.append(url)
+                    if let urlString = link["href"], let url = NSURL(string: urlString) {
+                        self.urls.append(url as URL)
                     }
                 }
             default:

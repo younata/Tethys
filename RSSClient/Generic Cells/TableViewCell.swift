@@ -1,6 +1,6 @@
 import UIKit
 
-public class TableViewCell: UITableViewCell, ThemeRepositorySubscriber {
+public final class TableViewCell: UITableViewCell, ThemeRepositorySubscriber {
     public var themeRepository: ThemeRepository? = nil {
         didSet {
             self.themeRepository?.addSubscriber(self)
@@ -13,26 +13,26 @@ public class TableViewCell: UITableViewCell, ThemeRepositorySubscriber {
         self.detailTextLabel?.text = nil
     }
 
-    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
+    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.textLabel?.textColor = self.themeRepository?.textColor
         self.detailTextLabel?.textColor = self.themeRepository?.textColor
 
-        self.updateBackgroundColor(self.selected)
+        self.updateBackgroundColor(self.isSelected)
     }
 
-    public override func setSelected(selected: Bool, animated: Bool) {
+    public override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         self.updateBackgroundColor(selected)
     }
 
-    private func updateBackgroundColor(selected: Bool) {
-        self.backgroundColor = selected ? UIColor.darkGreenColor() : self.themeRepository?.backgroundColor
+    private func updateBackgroundColor(_ selected: Bool) {
+        self.backgroundColor = selected ? UIColor.darkGreen() : self.themeRepository?.backgroundColor
     }
 
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
-        self.selectionStyle = .None
+        super.init(style: .value1, reuseIdentifier: reuseIdentifier)
+        self.selectionStyle = .none
     }
 
     public required init(coder aDecoder: NSCoder) { fatalError("not supported") }

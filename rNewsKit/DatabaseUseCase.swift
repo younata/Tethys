@@ -7,37 +7,37 @@ import Result
 
 public protocol DatabaseUseCase {
     func databaseUpdateAvailable() -> Bool
-    func performDatabaseUpdates(progress: Double -> Void, callback: Void -> Void)
+    func performDatabaseUpdates(_ progress: (Double) -> Void, callback: (Void) -> Void)
 
     func allTags() -> Future<Result<[String], RNewsError>>
     func feeds() -> Future<Result<[Feed], RNewsError>>
-    func articlesOfFeed(feed: Feed, matchingSearchQuery: String) -> DataStoreBackedArray<Article>
+    func articlesOfFeed(_ feed: Feed, matchingSearchQuery: String) -> DataStoreBackedArray<Article>
 
-    func addSubscriber(subscriber: DataSubscriber)
+    func addSubscriber(_ subscriber: DataSubscriber)
 
-    func newFeed(callback: Feed -> Void) -> Future<Result<Void, RNewsError>>
-    func saveFeed(feed: Feed) -> Future<Result<Void, RNewsError>>
-    func deleteFeed(feed: Feed) -> Future<Result<Void, RNewsError>>
-    func markFeedAsRead(feed: Feed) -> Future<Result<Int, RNewsError>>
+    func newFeed(_ callback: (Feed) -> Void) -> Future<Result<Void, RNewsError>>
+    func saveFeed(_ feed: Feed) -> Future<Result<Void, RNewsError>>
+    func deleteFeed(_ feed: Feed) -> Future<Result<Void, RNewsError>>
+    func markFeedAsRead(_ feed: Feed) -> Future<Result<Int, RNewsError>>
 
-    func saveArticle(article: Article) -> Future<Result<Void, RNewsError>>
-    func deleteArticle(article: Article) -> Future<Result<Void, RNewsError>>
-    func markArticle(article: Article, asRead: Bool) -> Future<Result<Void, RNewsError>>
+    func saveArticle(_ article: Article) -> Future<Result<Void, RNewsError>>
+    func deleteArticle(_ article: Article) -> Future<Result<Void, RNewsError>>
+    func markArticle(_ article: Article, asRead: Bool) -> Future<Result<Void, RNewsError>>
 
-    func updateFeeds(callback: ([Feed], [NSError]) -> Void)
-    func updateFeed(feed: Feed, callback: (Feed?, NSError?) -> Void)
+    func updateFeeds(_ callback: ([Feed], [NSError]) -> Void)
+    func updateFeed(_ feed: Feed, callback: (Feed?, NSError?) -> Void)
 }
 
 public protocol DataSubscriber: NSObjectProtocol {
-    func markedArticles(articles: [Article], asRead read: Bool)
+    func markedArticles(_ articles: [Article], asRead read: Bool)
 
-    func deletedArticle(article: Article)
+    func deletedArticle(_ article: Article)
 
-    func deletedFeed(feed: Feed, feedsLeft: Int)
+    func deletedFeed(_ feed: Feed, feedsLeft: Int)
 
     func willUpdateFeeds()
-    func didUpdateFeedsProgress(finished: Int, total: Int)
-    func didUpdateFeeds(feeds: [Feed])
+    func didUpdateFeedsProgress(_ finished: Int, total: Int)
+    func didUpdateFeeds(_ feeds: [Feed])
 }
 
 protocol Reachable {
@@ -53,8 +53,8 @@ protocol Reachable {
 #endif
 
 extension DatabaseUseCase {
-    public func feedsMatchingTag(tag: String?) -> Future<Result<[Feed], RNewsError>> {
-        if let theTag = tag where !theTag.isEmpty {
+    public func feeds(matchingTag tag: String?) -> Future<Result<[Feed], RNewsError>> {
+        if let theTag = tag, !theTag.isEmpty {
             return self.feeds().map { result in
                 return result.map { allFeeds in
                     return allFeeds.filter { feed in

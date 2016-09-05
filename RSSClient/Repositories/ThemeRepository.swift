@@ -2,14 +2,14 @@ import UIKit
 import Ra
 
 public protocol ThemeRepositorySubscriber: NSObjectProtocol {
-    func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository)
+    func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository)
 }
 
-public class ThemeRepository: NSObject, Injectable {
+public final class ThemeRepository: NSObject, Injectable {
     public private(set) var backgroundColor: UIColor {
         get {
             let color = self.colorForKey("backgroundColor")
-            return color ?? UIColor.whiteColor()
+            return color ?? UIColor.white
         }
         set {
             self.setColor(newValue, forKey: "backgroundColor")
@@ -19,7 +19,7 @@ public class ThemeRepository: NSObject, Injectable {
     public private(set) var textColor: UIColor {
         get {
             let color = self.colorForKey("textColor")
-            return color ?? UIColor.blackColor()
+            return color ?? UIColor.black
         }
         set {
             self.setColor(newValue, forKey: "textColor")
@@ -32,7 +32,7 @@ public class ThemeRepository: NSObject, Injectable {
             return fname ?? "github2"
         }
         set {
-            self.privateSetValue(newValue, forKey: "articleCss")
+            self.privateSetValue(newValue as AnyObject, forKey: "articleCss")
         }
     }
 
@@ -42,39 +42,39 @@ public class ThemeRepository: NSObject, Injectable {
             return fname ?? "mac_classic"
         }
         set {
-            self.privateSetValue(newValue, forKey: "syntax")
+            self.privateSetValue(newValue as AnyObject, forKey: "syntax")
         }
     }
 
     public private(set) var barStyle: UIBarStyle {
         get {
-            if let rawValue = self.privateValueForKey("barStyle") as? Int, barStyle = UIBarStyle(rawValue: rawValue) {
+            if let rawValue = self.privateValueForKey("barStyle") as? Int, let barStyle = UIBarStyle(rawValue: rawValue) {
                 return barStyle
             }
-            return UIBarStyle.Default
+            return UIBarStyle.default
         }
         set {
-            self.privateSetValue(newValue.rawValue, forKey: "barStyle")
+            self.privateSetValue(newValue.rawValue as AnyObject, forKey: "barStyle")
         }
     }
 
     public private(set) var statusBarStyle: UIStatusBarStyle {
         get {
             if let rawValue = self.privateValueForKey("statusBarStyle") as? Int,
-                barStyle = UIStatusBarStyle(rawValue: rawValue) {
+                let barStyle = UIStatusBarStyle(rawValue: rawValue) {
                     return barStyle
             }
-            return UIStatusBarStyle.Default
+            return UIStatusBarStyle.default
         }
         set {
-            self.privateSetValue(newValue.rawValue, forKey: "statusBarStyle")
+            self.privateSetValue(newValue.rawValue as AnyObject, forKey: "statusBarStyle")
         }
     }
 
     public private(set) var tintColor: UIColor {
         get {
             let color = self.colorForKey("tintColor")
-            return color ?? UIColor.whiteColor()
+            return color ?? UIColor.white
         }
         set {
             self.setColor(newValue, forKey: "tintColor")
@@ -84,26 +84,26 @@ public class ThemeRepository: NSObject, Injectable {
     public private(set) var scrollIndicatorStyle: UIScrollViewIndicatorStyle {
         get {
             if let rawValue = self.privateValueForKey("scrollIndicatorStyle") as? Int,
-                scrollIndicatorStyle = UIScrollViewIndicatorStyle(rawValue: rawValue) {
+                let scrollIndicatorStyle = UIScrollViewIndicatorStyle(rawValue: rawValue) {
                     return scrollIndicatorStyle
             }
-            return .Black
+            return .black
         }
         set {
-            self.privateSetValue(newValue.rawValue, forKey: "scrollIndicatorStyle")
+            self.privateSetValue(newValue.rawValue as AnyObject, forKey: "scrollIndicatorStyle")
         }
     }
 
     public private(set) var spinnerStyle: UIActivityIndicatorViewStyle {
         get {
             if let rawValue = self.privateValueForKey("spinnerStyle") as? Int,
-                spinnerStyle = UIActivityIndicatorViewStyle(rawValue: rawValue) {
+                let spinnerStyle = UIActivityIndicatorViewStyle(rawValue: rawValue) {
                 return spinnerStyle
             }
-            return .Gray
+            return .gray
         }
         set {
-            self.privateSetValue(newValue.rawValue, forKey: "spinnerStyle")
+            self.privateSetValue(newValue.rawValue as AnyObject, forKey: "spinnerStyle")
         }
     }
 
@@ -118,56 +118,56 @@ public class ThemeRepository: NSObject, Injectable {
     }
 
     public enum Theme: Int, CustomStringConvertible {
-        case Default = 0
-        case Dark = 1
+        case `default` = 0
+        case dark = 1
 
         public var description: String {
             switch self {
-            case .Default:
+            case .default:
                 return NSLocalizedString("Default", comment: "")
-            case .Dark:
+            case .dark:
                 return NSLocalizedString("Dark", comment: "")
             }
         }
 
         public static func array() -> [Theme] {
-            return [.Default, .Dark]
+            return [.default, .dark]
         }
     }
 
     public var theme: Theme {
         get {
             if let themeRawValue = self.privateValueForKey("theme") as? Int,
-                theme = Theme(rawValue: themeRawValue) {
+                let theme = Theme(rawValue: themeRawValue) {
                     return theme
             }
-            return Theme.Default
+            return Theme.default
         }
         set {
-            self.privateSetValue(newValue.rawValue, forKey: "theme")
+            self.privateSetValue(newValue.rawValue as AnyObject, forKey: "theme")
 
             switch newValue {
-            case .Default:
-                self.backgroundColor = UIColor.whiteColor()
-                self.textColor = UIColor.blackColor()
+            case .default:
+                self.backgroundColor = UIColor.white
+                self.textColor = UIColor.black
                 self.articleCSSFileName = "github2"
-                self.tintColor = UIColor.whiteColor()
+                self.tintColor = UIColor.white
                 self.syntaxHighlightFile = "mac_classic"
-                self.barStyle = .Default
-                self.statusBarStyle = .Default
-                self.scrollIndicatorStyle = .Black
-                self.spinnerStyle = .Gray
+                self.barStyle = .default
+                self.statusBarStyle = .default
+                self.scrollIndicatorStyle = .black
+                self.spinnerStyle = .gray
                 self.errorColor = UIColor(red: 1, green: 0, blue: 0.2, alpha: 1)
-            case .Dark:
-                self.backgroundColor = UIColor.blackColor()
-                self.textColor = UIColor.whiteColor()
+            case .dark:
+                self.backgroundColor = UIColor.black
+                self.textColor = UIColor.white
                 self.articleCSSFileName = "darkhub2"
-                self.tintColor = UIColor.darkGrayColor()
+                self.tintColor = UIColor.darkGray
                 self.syntaxHighlightFile = "twilight"
-                self.barStyle = .Black
-                self.statusBarStyle = .LightContent
-                self.scrollIndicatorStyle = .White
-                self.spinnerStyle = .White
+                self.barStyle = .black
+                self.statusBarStyle = .lightContent
+                self.scrollIndicatorStyle = .white
+                self.spinnerStyle = .white
                 self.errorColor = UIColor(red: 0.75, green: 0, blue: 0.1, alpha: 1)
             }
 
@@ -180,59 +180,59 @@ public class ThemeRepository: NSObject, Injectable {
         }
     }
 
-    private let userDefaults: NSUserDefaults?
+    private let userDefaults: UserDefaults?
 
-    private let subscribers = NSHashTable.weakObjectsHashTable()
+    private let subscribers = NSHashTable.weakObjects()
 
-    public func addSubscriber(subscriber: ThemeRepositorySubscriber) {
-        self.subscribers.addObject(subscriber)
+    public func addSubscriber(_ subscriber: ThemeRepositorySubscriber) {
+        self.subscribers.add(subscriber)
         subscriber.themeRepositoryDidChangeTheme(self)
     }
 
     private var values: [String: AnyObject] = [:]
-    private func privateValueForKey(key: String) -> AnyObject? {
+    private func privateValueForKey(_ key: String) -> AnyObject? {
         if let _ = self.userDefaults {
-            return self.userDefaults?.valueForKey(key)
+            return self.userDefaults?.value(forKey: key)
         } else {
             return self.values[key]
         }
     }
 
-    private func privateSetValue(value: AnyObject, forKey key: String) {
+    private func privateSetValue(_ value: AnyObject, forKey key: String) {
         if let _ = self.userDefaults {
-            self.userDefaults?.setObject(value, forKey: key)
+            self.userDefaults?.set(value, forKey: key)
         } else {
             self.values[key] = value
         }
     }
 
-    private func colorForKey(key: String) -> UIColor? {
+    private func colorForKey(_ key: String) -> UIColor? {
         if let _ = self.userDefaults {
-            guard let data = self.userDefaults?.objectForKey(key) as? NSData else {
+            guard let data = self.userDefaults?.object(forKey: key) as? Data else {
                 return nil
             }
-            return NSKeyedUnarchiver.unarchiveObjectWithData(data) as? UIColor
+            return NSKeyedUnarchiver.unarchiveObject(with: data) as? UIColor
         } else {
             return self.privateValueForKey(key) as? UIColor
         }
     }
 
-    private func setColor(color: UIColor, forKey key: String) {
+    private func setColor(_ color: UIColor, forKey key: String) {
         if let _ = self.userDefaults {
-            let data = NSKeyedArchiver.archivedDataWithRootObject(color)
-            self.userDefaults?.setObject(data, forKey: key)
+            let data = NSKeyedArchiver.archivedData(withRootObject: color)
+            self.userDefaults?.set(data, forKey: key)
         } else {
             self.values[key] = color
         }
     }
 
-    public init(userDefaults: NSUserDefaults?) {
+    public init(userDefaults: UserDefaults?) {
         self.userDefaults = userDefaults
     }
 
     public required init(injector: Ra.Injector) {
-        self.userDefaults = injector.create(NSUserDefaults) ??
-            NSUserDefaults.standardUserDefaults()
+        self.userDefaults = injector.create(UserDefaults) ??
+            UserDefaults.standardUserDefaults()
     }
 
     deinit {

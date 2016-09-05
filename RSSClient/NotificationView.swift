@@ -1,28 +1,28 @@
 import UIKit
 import PureLayout
 
-public class NotificationView: UIView {
+public final class NotificationView: UIView {
     public let titleLabel: UILabel = {
         let label = UILabel(forAutoLayout: ())
-        label.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
-        label.hidden = true
+        label.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
+        label.isHidden = true
         label.numberOfLines = 0
         return label
     }()
 
     public let messageLabel: UILabel = {
         let label = UILabel(forAutoLayout: ())
-        label.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
-        label.hidden = true
+        label.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.subheadline)
+        label.isHidden = true
         label.numberOfLines = 0
         return label
     }()
 
-    public func display(title: String, message: String, animated: Bool = true) {
+    public func display(_ title: String, message: String, animated: Bool = true) {
         self.titleLabel.text = title
-        self.titleLabel.hidden = false
+        self.titleLabel.isHidden = false
         self.messageLabel.text = message
-        self.messageLabel.hidden = false
+        self.messageLabel.isHidden = false
 
         let height = self.requiredHeight(title, message: message)
         self.heightConstraint?.constant = height
@@ -34,13 +34,13 @@ public class NotificationView: UIView {
         }
     }
 
-    public func hide(animated: Bool = true, delay: NSTimeInterval = 2.0) {
+    public func hide(_ animated: Bool = true, delay: TimeInterval = 2.0) {
         self.heightConstraint?.constant = 0
         self.changeLayout(animated, spring: false, delay: delay) {_ in
             self.titleLabel.text = nil
-            self.titleLabel.hidden = true
+            self.titleLabel.isHidden = true
             self.messageLabel.text = nil
-            self.messageLabel.hidden = true
+            self.messageLabel.isHidden = true
         }
     }
 
@@ -59,35 +59,35 @@ public class NotificationView: UIView {
         self.addSubview(self.titleLabel)
         self.addSubview(self.messageLabel)
 
-        self.titleLabel.autoPinEdgesToSuperviewMarginsExcludingEdge(.Bottom)
-        self.messageLabel.autoPinEdgesToSuperviewMarginsExcludingEdge(.Top)
-        self.messageLabel.autoPinEdge(.Top,
-            toEdge: .Bottom,
-            ofView: self.titleLabel,
+        self.titleLabel.autoPinEdges(toSuperviewMarginsExcludingEdge: .bottom)
+        self.messageLabel.autoPinEdges(toSuperviewMarginsExcludingEdge: .top)
+        self.messageLabel.autoPinEdge(.top,
+            to: .bottom,
+            of: self.titleLabel,
             withOffset: 4,
-            relation: .LessThanOrEqual)
+            relation: .lessThanOrEqual)
 
         self.translatesAutoresizingMaskIntoConstraints = false
-        self.heightConstraint = self.autoSetDimension(.Height, toSize: 0)
+        self.heightConstraint = self.autoSetDimension(.height, toSize: 0)
     }
 
-    private func requiredHeight(title: String, message: String) -> CGFloat {
+    private func requiredHeight(_ title: String, message: String) -> CGFloat {
         let titleFont = self.titleLabel.font
         let messageFont = self.messageLabel.font
 
         let marginHeight = self.layoutMargins.top + self.layoutMargins.bottom + 4
 
-        let sizeOptions: NSStringDrawingOptions = [.UsesDeviceMetrics, .UsesFontLeading, .UsesLineFragmentOrigin]
+        let sizeOptions: NSStringDrawingOptions = [.usesDeviceMetrics, .usesFontLeading, .usesLineFragmentOrigin]
 
         let width = self.bounds.width - (self.layoutMargins.left + self.layoutMargins.right)
         let size = CGSize(width: width, height: CGFloat.infinity)
 
-        let titleHeight = NSString(string: title).boundingRectWithSize(size,
+        let titleHeight = NSString(string: title).boundingRect(with: size,
             options: sizeOptions,
             attributes: [NSFontAttributeName: titleFont],
             context: nil).size.height
 
-        let messageHeight = NSString(string: message).boundingRectWithSize(size,
+        let messageHeight = NSString(string: message).boundingRect(with: size,
             options: sizeOptions,
             attributes: [NSFontAttributeName: messageFont],
             context: nil).size.height
@@ -95,17 +95,17 @@ public class NotificationView: UIView {
         return marginHeight + titleHeight + messageHeight
     }
 
-    private func recomputeMask(bounds: CGRect) {
+    private func recomputeMask(_ bounds: CGRect) {
         let bezierPath = UIBezierPath(roundedRect: bounds,
-            byRoundingCorners: [.BottomLeft, .BottomRight],
+            byRoundingCorners: [.bottomLeft, .bottomRight],
             cornerRadii: CGSize(width: 10, height: 10))
         self.maskLayer.frame = bounds
-        self.maskLayer.path = bezierPath.CGPath
+        self.maskLayer.path = bezierPath.cgPath
     }
 
-    private func changeLayout(animated: Bool, spring: Bool, delay: NSTimeInterval, completion: Bool -> Void) {
-        let duration: NSTimeInterval = animated ? 0.75 : 0
-        UIView.animateWithDuration(duration,
+    private func changeLayout(_ animated: Bool, spring: Bool, delay: TimeInterval, completion: (Bool) -> Void) {
+        let duration: TimeInterval = animated ? 0.75 : 0
+        UIView.animate(withDuration: duration,
             delay: delay,
             usingSpringWithDamping: spring ? 0.5 : 1.0,
             initialSpringVelocity: 0,
@@ -117,7 +117,7 @@ public class NotificationView: UIView {
 }
 
 extension NotificationView: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
+    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.titleLabel.textColor = themeRepository.backgroundColor
         self.messageLabel.textColor = themeRepository.backgroundColor
         self.backgroundColor = themeRepository.errorColor

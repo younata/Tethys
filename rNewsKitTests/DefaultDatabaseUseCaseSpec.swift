@@ -38,21 +38,21 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
         var sinopeRepository: FakeSinopeRepository!
 
         beforeEach {
-            feed1 = rNewsKit.Feed(title: "a", url: NSURL(string: "https://example.com/feed1.feed")!, summary: "",
+            feed1 = rNewsKit.Feed(title: "a", url: URL(string: "https://example.com/feed1.feed")!, summary: "",
                 tags: ["a", "b", "c", "d"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-            article1 = rNewsKit.Article(title: "b", link: NSURL(string: "https://example.com/article1.html"),
-                summary: "<p>Hello world!</p>", authors: [], published: NSDate(), updatedAt: nil, identifier: "article1",
+            article1 = rNewsKit.Article(title: "b", link: URL(string: "https://example.com/article1.html"),
+                summary: "<p>Hello world!</p>", authors: [], published: Date(), updatedAt: nil, identifier: "article1",
                 content: "", read: false, estimatedReadingTime: 0, feed: feed1, flags: [])
 
-            article2 = rNewsKit.Article(title: "c", link: NSURL(string: "https://example.com/article2.html"),
-                summary: "<p>Hello world!</p>", authors: [], published: NSDate(), updatedAt: nil, identifier: "article2",
+            article2 = rNewsKit.Article(title: "c", link: URL(string: "https://example.com/article2.html"),
+                summary: "<p>Hello world!</p>", authors: [], published: Date(), updatedAt: nil, identifier: "article2",
                 content: "", read: true, estimatedReadingTime: 0, feed: feed1, flags: [])
 
             feed1.addArticle(article1)
             feed1.addArticle(article2)
 
-            feed2 = rNewsKit.Feed(title: "e", url: NSURL(string: "https://example.com/feed2.feed")!, summary: "",
+            feed2 = rNewsKit.Feed(title: "e", url: URL(string: "https://example.com/feed2.feed")!, summary: "",
                 tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             feeds = [feed1, feed2]
@@ -261,7 +261,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                         expect(sinopeRepository.subscribeCallCount) == 1
                         guard sinopeRepository.subscribeCallCount == 1 else { return }
                         let urls = sinopeRepository.subscribeArgsForCall(0)
-                        expect(urls) == [NSURL(string: "https://example.com/feed")!]
+                        expect(urls) == [URL(string: "https://example.com/feed")!]
                     }
 
                     it("resolves the future when the sinope repository finishes") {
@@ -313,7 +313,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                     expect(sinopeRepository.unsubscribeCallCount) == 1
                     guard sinopeRepository.unsubscribeCallCount == 1 else { return }
                     let urls = sinopeRepository.unsubscribeArgsForCall(0)
-                    expect(urls) == [NSURL(string: "https://example.com/feed1.feed")!]
+                    expect(urls) == [URL(string: "https://example.com/feed1.feed")!]
                 }
 
                 it("does not inform any subscribers") {
@@ -367,8 +367,8 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                 var image: Image! = nil
 
                 beforeEach {
-                    let bundle = NSBundle(forClass: self.classForCoder)
-                    let imageData = NSData(contentsOfURL: bundle.URLForResource("test", withExtension: "jpg")!)
+                    let bundle = Bundle(for: self.classForCoder)
+                    let imageData = try? Data(contentsOf: bundle.url(forResource: "test", withExtension: "jpg")!)
                     image = Image(data: imageData!)
 
                     article = article1

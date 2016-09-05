@@ -1,11 +1,11 @@
 import CBGPromise
 import Result
 
-class InMemoryDataService: DataService {
-    let mainQueue: NSOperationQueue
+final class InMemoryDataService: DataService {
+    let mainQueue: OperationQueue
     let searchIndex: SearchIndex?
 
-    init(mainQueue: NSOperationQueue, searchIndex: SearchIndex?) {
+    init(mainQueue: OperationQueue, searchIndex: SearchIndex?) {
         self.mainQueue = mainQueue
         self.searchIndex = searchIndex
     }
@@ -13,8 +13,8 @@ class InMemoryDataService: DataService {
     var feeds = [Feed]()
     var articles = [Article]()
 
-    func createFeed(callback: Feed -> Void) -> Future<Result<Feed, RNewsError>> {
-        let feed = Feed(title: "", url: NSURL(string: "")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0,
+    func createFeed(_ callback: (Feed) -> Void) -> Future<Result<Feed, RNewsError>> {
+        let feed = Feed(title: "", url: URL(string: "")! as NSURL, summary: "", tags: [], waitPeriod: 0, remainingWait: 0,
                         articles: [], image: nil)
         callback(feed)
         self.feeds.append(feed)
@@ -23,8 +23,8 @@ class InMemoryDataService: DataService {
         return promise.future
     }
 
-    func createArticle(feed: Feed?, callback: Article -> Void) {
-        let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil,
+    func createArticle(_ feed: Feed?, callback: (Article) -> Void) {
+        let article = Article(title: "", link: nil, summary: "", authors: [], published: Date() as NSDate, updatedAt: nil,
                               identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
         feed?.addArticle(article)
         callback(article)
@@ -37,14 +37,14 @@ class InMemoryDataService: DataService {
         return promise.future
     }
 
-    func articlesMatchingPredicate(predicate: NSPredicate) ->
+    func articlesMatchingPredicate(_ predicate: NSPredicate) ->
         Future<Result<DataStoreBackedArray<Article>, RNewsError>> {
             let promise = Promise<Result<DataStoreBackedArray<Article>, RNewsError>>()
             promise.resolve(.Success(DataStoreBackedArray(self.articles.filter({ predicate.evaluateWithObject($0) }))))
             return promise.future
     }
 
-    func deleteFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {
+    func deleteFeed(_ feed: Feed) -> Future<Result<Void, RNewsError>> {
         if let index = self.feeds.indexOf(feed) {
             self.feeds.removeAtIndex(index)
         }
@@ -58,7 +58,7 @@ class InMemoryDataService: DataService {
         return promise.future
     }
 
-    func deleteArticle(article: Article) -> Future<Result<Void, RNewsError>> {
+    func deleteArticle(_ article: Article) -> Future<Result<Void, RNewsError>> {
         if let index = self.articles.indexOf(article) {
             self.articles.removeAtIndex(index)
         }
@@ -69,7 +69,7 @@ class InMemoryDataService: DataService {
         return promise.future
     }
 
-    func batchCreate(feedCount: Int, articleCount: Int) ->
+    func batchCreate(_ feedCount: Int, articleCount: Int) ->
         Future<Result<([Feed], [Article]), RNewsError>> {
             let promise = Promise<Result<([Feed], [Article]), RNewsError>>()
             var feeds: [Feed] = []
@@ -86,7 +86,7 @@ class InMemoryDataService: DataService {
             return promise.future
     }
 
-    func batchSave(feeds: [Feed], articles: [Article]) -> Future<Result<Void, RNewsError>> {
+    func batchSave(_ feeds: [Feed], articles: [Article]) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
         promise.resolve(.Success())
         return promise.future

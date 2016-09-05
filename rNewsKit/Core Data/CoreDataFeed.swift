@@ -8,25 +8,25 @@ class CoreDataFeed: NSManagedObject {
     @NSManaged var tags: [String]
     @NSManaged var waitPeriod: NSNumber?
     @NSManaged var remainingWait: NSNumber?
-    @NSManaged var lastUpdated: NSDate
+    @NSManaged var lastUpdated: Date
     @NSManaged var articles: Set<CoreDataArticle>
     @NSManaged var image: AnyObject?
 
     var waitPeriodInt: Int {
         get {
-            return self.waitPeriod?.integerValue ?? 0
+            return self.waitPeriod?.intValue ?? 0
         }
         set {
-            self.waitPeriod = NSNumber(integer: newValue)
+            self.waitPeriod = NSNumber(value: newValue)
         }
     }
 
     var remainingWaitInt: Int {
         get {
-            return self.remainingWait?.integerValue ?? 0
+            return self.remainingWait?.intValue ?? 0
         }
         set {
-            self.remainingWait = NSNumber(integer: newValue)
+            self.remainingWait = NSNumber(value: newValue)
         }
     }
 }

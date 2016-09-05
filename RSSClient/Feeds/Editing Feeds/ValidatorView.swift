@@ -1,61 +1,60 @@
 import UIKit
 import PureLayout
 
-public class ValidatorView: UIView {
-
+public final class ValidatorView: UIView {
     public enum ValidatorState {
-        case Invalid
-        case Valid
-        case Validating
+        case invalid
+        case valid
+        case validating
     }
 
-    public private(set) var state: ValidatorState = .Invalid
+    public private(set) var state: ValidatorState = .invalid
 
     public private(set) lazy var progressIndicator: UIActivityIndicatorView = {
-        let progressIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+        let progressIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
         progressIndicator.translatesAutoresizingMaskIntoConstraints = false
 
         self.addSubview(progressIndicator)
 
-        progressIndicator.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
+        progressIndicator.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero)
         return progressIndicator
     }()
 
     private let checkMark = CAShapeLayer()
 
     public func beginValidating() {
-        state = .Validating
+        state = .validating
         checkMark.removeFromSuperlayer()
 
-        progressIndicator.hidden = false
+        progressIndicator.isHidden = false
         progressIndicator.alpha = 1
         progressIndicator.startAnimating()
     }
 
-    public func endValidating(valid: Bool = true) {
-        state = valid ? .Valid : .Invalid
+    public func endValidating(_ valid: Bool = true) {
+        state = valid ? .valid : .invalid
 
         progressIndicator.stopAnimating()
 
-        if state == .Valid {
+        if state == .valid {
             checkMark.path = checkmarkPath(self.frame, checkmarkWidth: 10)
-            checkMark.fillColor = UIColor.redColor().CGColor
-        } else if state == .Invalid {
+            checkMark.fillColor = UIColor.red.cgColor
+        } else if state == .invalid {
             checkMark.path = xPath(self.frame, xWidth: 10)
-            checkMark.fillColor = UIColor.darkGreenColor().CGColor
+            checkMark.fillColor = UIColor.darkGreen().cgColor
         }
 
-        UIView.animateWithDuration(0.2, animations: {
+        UIView.animate(withDuration: 0.2, animations: {
             self.progressIndicator.alpha = 0
         }, completion: {(completion: Bool) in
-            self.progressIndicator.hidden = true
+            self.progressIndicator.isHidden = true
             self.progressIndicator.alpha = 1
             self.layer.addSublayer(self.checkMark)
         })
     }
 
-    private func checkmarkPath(frame: CGRect, checkmarkWidth: CGFloat) -> CGPath {
-        let path = CGPathCreateMutable()
+    private func checkmarkPath(_ frame: CGRect, checkmarkWidth: CGFloat) -> CGPath {
+        let path = CGMutablePath()
 
         let w = frame.width
         let h = frame.height
@@ -74,8 +73,8 @@ public class ValidatorView: UIView {
         return path
     }
 
-    private func xPath(frame: CGRect, xWidth: CGFloat) -> CGPath {
-        let path = CGPathCreateMutable()
+    private func xPath(_ frame: CGRect, xWidth: CGFloat) -> CGPath {
+        let path = CGMutablePath()
 
         let w = frame.width
         let h = frame.height

@@ -22,19 +22,19 @@ extension Account {
 }
 
 @objc private class LoginTextFieldDelegate: NSObject, UITextFieldDelegate {
-    private let textFields: [UITextField]
-    private let onValidation: Bool -> Void
+    fileprivate let textFields: [UITextField]
+    fileprivate let onValidation: (Bool) -> Void
 
-    private init(textFields: [UITextField], onValidation: Bool -> Void) {
+    fileprivate init(textFields: [UITextField], onValidation: @escaping (Bool) -> Void) {
         self.textFields = textFields
         self.onValidation = onValidation
     }
 
-    @objc private func textField(textField: UITextField,
-                                 shouldChangeCharactersInRange range: NSRange,
+    @objc fileprivate func textField(_ textField: UITextField,
+                                 shouldChangeCharactersIn range: NSRange,
                                                                replacementString string: String) -> Bool {
-        let string = NSString(string: textField.text ?? "").stringByReplacingCharactersInRange(range,
-                                                                                               withString: string)
+        let string = NSString(string: textField.text ?? "").replacingCharacters(in: range,
+                                                                                               with: string)
         let textFieldStrings: [String] = self.textFields.filter({ $0 != textField }).map({$0.text ?? ""}) + [string]
 
         let valid = textFieldStrings.reduce(true) { $0 && !$1.isEmpty }
@@ -44,7 +44,7 @@ extension Account {
     }
 }
 
-public class LoginViewController: UIViewController, Injectable {
+public final class LoginViewController: UIViewController, Injectable {
     public var accountType: Account? {
         didSet {
             self.title = self.accountType?.description
@@ -55,15 +55,15 @@ public class LoginViewController: UIViewController, Injectable {
 
     private lazy var textFieldDelegate: LoginTextFieldDelegate = {
         return LoginTextFieldDelegate(textFields: [self.emailField, self.passwordField]) { valid in
-            self.loginButton.enabled = valid
-            self.registerButton.enabled = valid
+            self.loginButton.isEnabled = valid
+            self.registerButton.isEnabled = valid
         }
     }()
 
     public let titleLabel: UILabel = {
         let label = UILabel(forAutoLayout: ())
-        label.textAlignment = .Center
-        label.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
+        label.textAlignment = .center
+        label.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
         label.accessibilityLabel = NSLocalizedString("LoginViewController_Title_Accessibility_Label", comment: "")
         return label
     }()
@@ -71,8 +71,8 @@ public class LoginViewController: UIViewController, Injectable {
     public let detailLabel: UILabel = {
         let label = UILabel(forAutoLayout: ())
         label.numberOfLines = 0
-        label.textAlignment = .Center
-        label.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+        label.textAlignment = .center
+        label.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
         label.accessibilityLabel = NSLocalizedString("LoginViewController_Detail_Accessibility_Label", comment: "")
         return label
     }()
@@ -80,20 +80,20 @@ public class LoginViewController: UIViewController, Injectable {
     public let errorLabel: UILabel = {
         let label = UILabel(forAutoLayout: ())
         label.numberOfLines = 0
-        label.textAlignment = .Center
-        label.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+        label.textAlignment = .center
+        label.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
         label.accessibilityLabel = NSLocalizedString("LoginViewController_Error_Accessibility_Label", comment: "")
         return label
     }()
 
     public let emailField: UITextField = {
         let field = UITextField(forAutoLayout: ())
-        field.autocapitalizationType = .None
-        field.autocorrectionType = .No
+        field.autocapitalizationType = .none
+        field.autocorrectionType = .no
         let placeholder = NSAttributedString(string: NSLocalizedString("LoginViewController_Fields_Email", comment: ""),
-                                             attributes: [NSForegroundColorAttributeName: UIColor.grayColor()])
+                                             attributes: [NSForegroundColorAttributeName: UIColor.gray])
         field.attributedPlaceholder = placeholder
-        field.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
+        field.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.subheadline)
         field.accessibilityLabel = NSLocalizedString("LoginViewController_Fields_Email", comment: "")
         field.accessibilityHint = NSLocalizedString("LoginViewController_Fields_Email_Accessibility_Hint", comment: "")
         return field
@@ -101,13 +101,13 @@ public class LoginViewController: UIViewController, Injectable {
 
     public let passwordField: UITextField = {
         let field = UITextField(forAutoLayout: ())
-        field.secureTextEntry = true
+        field.isSecureTextEntry = true
         let placeholder = NSAttributedString(string: NSLocalizedString("LoginViewController_Fields_Password",
                                                                        comment: ""),
-                                             attributes: [NSForegroundColorAttributeName: UIColor.grayColor()])
+                                             attributes: [NSForegroundColorAttributeName: UIColor.gray])
         field.attributedPlaceholder = placeholder
         field.placeholder = NSLocalizedString("LoginViewController_Fields_Password", comment: "")
-        field.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
+        field.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.subheadline)
         field.accessibilityLabel = NSLocalizedString("LoginViewController_Fields_Password", comment: "")
         field.accessibilityHint = NSLocalizedString("LoginViewController_Fields_Password_Accessibility_Hint",
                                                     comment: "")
@@ -115,24 +115,24 @@ public class LoginViewController: UIViewController, Injectable {
     }()
 
     public let loginButton: UIButton = {
-        let button = UIButton(type: .System)
+        let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.enabled = false
-        button.setTitleColor(UIColor.darkGreenColor(), forState: .Normal)
-        button.setTitle(NSLocalizedString("LoginViewController_Fields_Login", comment: ""), forState: .Normal)
-        button.titleLabel?.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
+        button.isEnabled = false
+        button.setTitleColor(UIColor.darkGreen(), for: UIControlState())
+        button.setTitle(NSLocalizedString("LoginViewController_Fields_Login", comment: ""), for: UIControlState())
+        button.titleLabel?.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.subheadline)
         button.accessibilityLabel = NSLocalizedString("LoginViewController_Fields_Login", comment: "")
         button.accessibilityHint = NSLocalizedString("LoginViewController_Fields_Login_Accessibility_Hint", comment: "")
         return button
     }()
 
     public let registerButton: UIButton = {
-        let button = UIButton(type: .System)
+        let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.enabled = false
-        button.setTitleColor(UIColor.darkGreenColor(), forState: .Normal)
-        button.setTitle(NSLocalizedString("LoginViewController_Fields_Register", comment: ""), forState: .Normal)
-        button.titleLabel?.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
+        button.isEnabled = false
+        button.setTitleColor(UIColor.darkGreen(), for: UIControlState())
+        button.setTitle(NSLocalizedString("LoginViewController_Fields_Register", comment: ""), for: UIControlState())
+        button.titleLabel?.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.subheadline)
         button.accessibilityLabel = NSLocalizedString("LoginViewController_Fields_Register", comment: "")
         button.accessibilityHint = NSLocalizedString("LoginViewController_Fields_Register_Accessibility_Hint",
                                                      comment: "")
@@ -140,9 +140,9 @@ public class LoginViewController: UIViewController, Injectable {
     }()
 
     private let accountRepository: AccountRepository
-    private let mainQueue: NSOperationQueue
+    private let mainQueue: OperationQueue
 
-    public init(themeRepository: ThemeRepository, accountRepository: AccountRepository, mainQueue: NSOperationQueue) {
+    public init(themeRepository: ThemeRepository, accountRepository: AccountRepository, mainQueue: OperationQueue) {
         self.accountRepository = accountRepository
         self.mainQueue = mainQueue
 
@@ -169,10 +169,10 @@ public class LoginViewController: UIViewController, Injectable {
         self.passwordField.delegate = self.textFieldDelegate
 
         let mainStackView = UIStackView(forAutoLayout: ())
-        mainStackView.axis = .Vertical
+        mainStackView.axis = .vertical
         mainStackView.spacing = 10
-        mainStackView.distribution = .EqualCentering
-        mainStackView.alignment = .Center
+        mainStackView.distribution = .equalCentering
+        mainStackView.alignment = .center
 
         mainStackView.addArrangedSubview(self.titleLabel)
         mainStackView.addArrangedSubview(self.detailLabel)
@@ -181,31 +181,31 @@ public class LoginViewController: UIViewController, Injectable {
         mainStackView.addArrangedSubview(self.errorLabel)
 
         let buttonStack = UIStackView(arrangedSubviews: [self.registerButton, self.loginButton])
-        buttonStack.axis = .Horizontal
+        buttonStack.axis = .horizontal
         buttonStack.spacing = 8
-        buttonStack.alignment = .FirstBaseline
-        buttonStack.distribution = .EqualCentering
+        buttonStack.alignment = .firstBaseline
+        buttonStack.distribution = .equalCentering
         buttonStack.spacing = 20
         mainStackView.addArrangedSubview(buttonStack)
 
         self.view.addSubview(mainStackView)
-        mainStackView.autoAlignAxisToSuperviewAxis(.Horizontal)
-        mainStackView.autoPinEdgeToSuperviewMargin(.Leading)
-        mainStackView.autoPinEdgeToSuperviewMargin(.Trailing)
+        mainStackView.autoAlignAxis(toSuperviewAxis: .horizontal)
+        mainStackView.autoPinEdge(toSuperviewMargin: .leading)
+        mainStackView.autoPinEdge(toSuperviewMargin: .trailing)
 
-        self.emailField.autoPinEdgeToSuperviewEdge(.Leading, withInset: 40)
-        self.emailField.autoPinEdgeToSuperviewEdge(.Trailing, withInset: 40)
-        self.passwordField.autoPinEdgeToSuperviewEdge(.Leading, withInset: 40)
-        self.passwordField.autoPinEdgeToSuperviewEdge(.Trailing, withInset: 40)
+        self.emailField.autoPinEdge(toSuperviewEdge: .leading, withInset: 40)
+        self.emailField.autoPinEdge(toSuperviewEdge: .trailing, withInset: 40)
+        self.passwordField.autoPinEdge(toSuperviewEdge: .leading, withInset: 40)
+        self.passwordField.autoPinEdge(toSuperviewEdge: .trailing, withInset: 40)
 
         self.loginButton.addTarget(self,
                                       action: #selector(LoginViewController.login),
-                                      forControlEvents: .TouchUpInside)
+                                      for: .touchUpInside)
         self.registerButton.addTarget(self,
                                       action: #selector(LoginViewController.register),
-                                      forControlEvents: .TouchUpInside)
+                                      for: .touchUpInside)
 
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
     }
 
     @objc private func login() {
@@ -218,7 +218,7 @@ public class LoginViewController: UIViewController, Injectable {
         self.sendLoginOrRegisterRequest(message, requestMaker: self.accountRepository.register)
     }
 
-    private func sendLoginOrRegisterRequest(message: String, requestMaker: (String, String) ->
+    private func sendLoginOrRegisterRequest(_ message: String, requestMaker: (String, String) ->
         Future<Result<Void, RNewsError>>) {
         let activityIndicator = self.disableInteractionWithMessage(message)
         requestMaker(self.emailField.text ?? "", self.passwordField.text ?? "").then { res in
@@ -234,16 +234,16 @@ public class LoginViewController: UIViewController, Injectable {
         }
     }
 
-    private func disableInteractionWithMessage(message: String) -> ActivityIndicator {
+    private func disableInteractionWithMessage(_ message: String) -> ActivityIndicator {
         let activityIndicator = ActivityIndicator(forAutoLayout: ())
         activityIndicator.configureWithMessage(message)
         let color = activityIndicator.backgroundColor
-        activityIndicator.backgroundColor = UIColor.clearColor()
+        activityIndicator.backgroundColor = UIColor.clear
 
         self.view.addSubview(activityIndicator)
-        activityIndicator.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero)
+        activityIndicator.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero)
 
-        UIView.animateWithDuration(0.3) {
+        UIView.animate(withDuration: 0.3) {
             activityIndicator.backgroundColor = color
         }
         return activityIndicator
@@ -251,7 +251,7 @@ public class LoginViewController: UIViewController, Injectable {
 }
 
 extension LoginViewController: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
+    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
         self.view.backgroundColor = themeRepository.backgroundColor
         self.titleLabel.textColor = themeRepository.textColor

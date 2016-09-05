@@ -2,7 +2,7 @@ import UIKit
 import rNewsKit
 import PureLayout
 
-public class FeedsListController: UIViewController {
+public final class FeedsListController: UIViewController {
     public var feeds = [Feed]() {
         didSet {
             self.tableView.reloadData()
@@ -25,15 +25,15 @@ public class FeedsListController: UIViewController {
 
         self.tableView.dataSource = self
         self.tableView.delegate = self
-        self.tableView.registerClass(FeedTableCell.self, forCellReuseIdentifier: "unread")
-        self.tableView.registerClass(FeedTableCell.self, forCellReuseIdentifier: "read")
+        self.tableView.register(FeedTableCell.self, forCellReuseIdentifier: "unread")
+        self.tableView.register(FeedTableCell.self, forCellReuseIdentifier: "read")
         self.view.addSubview(self.tableView)
         self.tableView.autoPinEdgesToSuperviewEdges()
     }
 }
 
 extension FeedsListController: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
+    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.tableView.backgroundColor = self.themeRepository?.backgroundColor
         self.tableView.separatorColor = self.themeRepository?.textColor
         if let themeRepo = self.themeRepository {
@@ -43,11 +43,11 @@ extension FeedsListController: ThemeRepositorySubscriber {
 }
 
 extension FeedsListController: UITableViewDataSource {
-    public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.feeds.count
     }
 
-    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let feed = self.feeds[indexPath.row]
         let identifier = feed.unreadArticles.isEmpty ? "unread" : "read"
 
@@ -62,18 +62,18 @@ extension FeedsListController: UITableViewDataSource {
 }
 
 extension FeedsListController: UITableViewDelegate {
-    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: false)
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
 
         self.tapFeed?(self.feeds[indexPath.row], indexPath.row)
     }
 
-    public func tableView(tableView: UITableView,
-        editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+    public func tableView(_ tableView: UITableView,
+        editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
             return self.editActionsForFeed?(self.feeds[indexPath.row])
     }
 
-    public func tableView(tableView: UITableView,
-        commitEditingStyle editingStyle: UITableViewCellEditingStyle,
-        forRowAtIndexPath indexPath: NSIndexPath) {}
+    public func tableView(_ tableView: UITableView,
+        commit editingStyle: UITableViewCellEditingStyle,
+        forRowAt indexPath: IndexPath) {}
 }

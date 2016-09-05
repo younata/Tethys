@@ -3,22 +3,22 @@ import Ra
 import Lepton
 import Result
 
-public class OPMLService: NSObject, Injectable {
+public final class OPMLService: NSObject, Injectable {
     private let dataRepository: DefaultDatabaseUseCase?
-    private let mainQueue: NSOperationQueue?
-    private let importQueue: NSOperationQueue?
+    private let mainQueue: OperationQueue?
+    private let importQueue: OperationQueue?
 
     required public init(injector: Injector) {
         self.dataRepository = injector.create(DefaultDatabaseUseCase)
-        self.mainQueue = injector.create(kMainQueue) as? NSOperationQueue
-        self.importQueue = injector.create(kBackgroundQueue) as? NSOperationQueue
+        self.mainQueue = injector.create(kMainQueue) as? OperationQueue
+        self.importQueue = injector.create(kBackgroundQueue) as? OperationQueue
 
         super.init()
 
         self.dataRepository?.addSubscriber(self)
     }
 
-    private func feedAlreadyExists(existingFeeds: [Feed], item: Lepton.Item) -> Bool {
+    private func feedAlreadyExists(_ existingFeeds: [Feed], item: Lepton.Item) -> Bool {
         return existingFeeds.filter({
             let titleMatches = item.title == $0.title
             let tagsMatches = (item.tags ?? []) == $0.tags
@@ -32,7 +32,7 @@ public class OPMLService: NSObject, Injectable {
         }).isEmpty == false
     }
 
-    public func importOPML(opml: NSURL, completion: ([Feed]) -> Void) {
+    public func importOPML(_ opml: URL, completion: @escaping ([Feed]) -> Void) {
         guard let dataRepository = self.dataRepository else {
             completion([])
             return
@@ -61,7 +61,7 @@ public class OPMLService: NSObject, Injectable {
                         if self.feedAlreadyExists(existingFeeds, item: item) {
                             continue
                         }
-                        if let feedURLString = item.xmlURL, feedURL = NSURL(string: feedURLString) {
+                        if let feedURLString = item.xmlURL, let feedURL = NSURL(string: feedURLString) {
                             feedCount += 1
                             dataRepository.newFeed { newFeed in
                                 newFeed.url = feedURL
@@ -87,17 +87,17 @@ public class OPMLService: NSObject, Injectable {
         }
     }
 
-    private func generateOPMLContents(feeds: [Feed]) -> String {
-        func sanitize(str: String?) -> String {
+    private func generateOPMLContents(_ feeds: [Feed]) -> String {
+        func sanitize(_ str: String?) -> String {
             if str == nil {
                 return ""
             }
             var s = str!
-            s = s.stringByReplacingOccurrencesOfString("\"", withString: "&quot;")
-            s = s.stringByReplacingOccurrencesOfString("'", withString: "&apos;")
-            s = s.stringByReplacingOccurrencesOfString("<", withString: "&gt;")
-            s = s.stringByReplacingOccurrencesOfString(">", withString: "&lt;")
-            s = s.stringByReplacingOccurrencesOfString("&", withString: "&amp;")
+            s = s.replacingOccurrences(of: "\"", with: "&quot;")
+            s = s.replacingOccurrences(of: "'", with: "&apos;")
+            s = s.replacingOccurrences(of: "<", with: "&gt;")
+            s = s.replacingOccurrences(of: ">", with: "&lt;")
+            s = s.replacingOccurrences(of: "&", with: "&amp;")
             return s
         }
 
@@ -108,7 +108,7 @@ public class OPMLService: NSObject, Injectable {
             let url = "xmlUrl=\"\(sanitize(feed.url.absoluteString))\""
             let tags: String
             if feed.tags.count != 0 {
-                let tagsList: String = feed.tags.joinWithSeparator(",")
+                let tagsList: String = feed.tags.joined(separator: ",")
                 tags = "tags=\"\(tagsList)\""
             } else {
                 tags = ""
@@ -121,7 +121,7 @@ public class OPMLService: NSObject, Injectable {
     }
 
     public func writeOPML() {
-        let opmlLocation = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
+        let opmlLocation = documentsDirectory().appendingPathComponent("rnews.opml")
         self.dataRepository?.feeds().then {
             guard case let Result.Success(feeds) = $0 else { return }
             do {
@@ -133,13 +133,13 @@ public class OPMLService: NSObject, Injectable {
 }
 
 extension OPMLService: DataSubscriber {
-    public func markedArticles(articles: [Article], asRead read: Bool) {}
-    public func deletedArticle(article: Article) {}
+    public func markedArticles(_ articles: [Article], asRead read: Bool) {}
+    public func deletedArticle(_ article: Article) {}
     public func willUpdateFeeds() {}
-    public func didUpdateFeedsProgress(finished: Int, total: Int) {}
-    public func deletedFeed(feed: Feed, feedsLeft: Int) {}
+    public func didUpdateFeedsProgress(_ finished: Int, total: Int) {}
+    public func deletedFeed(_ feed: Feed, feedsLeft: Int) {}
 
-    public func didUpdateFeeds(feeds: [Feed]) {
+    public func didUpdateFeeds(_ feeds: [Feed]) {
         self.writeOPML()
     }
 }

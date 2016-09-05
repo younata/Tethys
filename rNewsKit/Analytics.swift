@@ -1,17 +1,17 @@
 public protocol Analytics {
-    func logEvent(event: String, data: [String: String]?)
+    func logEvent(_ event: String, data: [String: String]?)
 }
 
 import Mixpanel
 
 func MixPanelToken() -> String {
-    return NSBundle.mainBundle().objectForInfoDictionaryKey("MixpanelToken") as? String ?? ""
+    return Bundle.main.object(forInfoDictionaryKey: "MixpanelToken") as? String ?? ""
 }
 
 struct MixPanelAnalytics: Analytics {
-    private let mixpanel = Mixpanel.sharedInstanceWithToken(MixPanelToken())
+    private let mixpanel = Mixpanel.sharedInstance(withToken: MixPanelToken())
 
-    func logEvent(event: String, data: [String : String]?) {
+    func logEvent(_ event: String, data: [String : String]?) {
         if !_isDebugAssertConfiguration() {
             mixpanel.track(event, properties: data)
         }

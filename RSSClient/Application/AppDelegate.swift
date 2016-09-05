@@ -5,10 +5,10 @@ import Result
 import CoreSpotlight
 
 @UIApplicationMain
-public class AppDelegate: UIResponder, UIApplicationDelegate {
+public final class AppDelegate: UIResponder, UIApplicationDelegate {
     public lazy var window: UIWindow? = {
-        let window = UIWindow(frame: UIScreen.mainScreen().bounds)
-        window.backgroundColor = UIColor.whiteColor()
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.backgroundColor = UIColor.white
         window.makeKeyAndVisible()
         return window
     }()
@@ -45,15 +45,15 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         return BootstrapWorkFlow(window: self.window!, injector: self.anInjector)
     }()
 
-    public func application(application: UIApplication,
-        didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-            UINavigationBar.appearance().tintColor = UIColor.darkGreenColor()
-            UIBarButtonItem.appearance().tintColor = UIColor.darkGreenColor()
-            UITabBar.appearance().tintColor = UIColor.darkGreenColor()
+    public func application(_ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [NSObject: Any]?) -> Bool {
+            UINavigationBar.appearance().tintColor = UIColor.darkGreen()
+            UIBarButtonItem.appearance().tintColor = UIColor.darkGreen()
+            UITabBar.appearance().tintColor = UIColor.darkGreen()
 
-            if NSProcessInfo.processInfo().environment["deleteDocuments"] == "1" {
-                let url = NSURL(string: "file://\(NSHomeDirectory())")!.URLByAppendingPathComponent("Documents")
-                _ = try? NSFileManager.defaultManager().removeItemAtURL(url)
+            if ProcessInfo.processInfo.environment["deleteDocuments"] == "1" {
+                let url = URL(string: "file://\(NSHomeDirectory())")!.appendingPathComponent("Documents")
+                _ = try? FileManager.default.removeItem(at: url)
             }
 
             if NSClassFromString("XCTestCase") != nil && launchOptions?["test"] as? Bool != true {
@@ -79,15 +79,15 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: Quick Actions
 
     @available(iOS 9, *)
-    public func application(application: UIApplication,
-        performActionForShortcutItem shortcutItem: UIApplicationShortcutItem,
-        completionHandler: (Bool) -> Void) {
+    public func application(_ application: UIApplication,
+        performActionFor shortcutItem: UIApplicationShortcutItem,
+        completionHandler: @escaping (Bool) -> Void) {
             let splitView = self.window?.rootViewController as? UISplitViewController
             guard let navigationController = splitView?.viewControllers.first as? UINavigationController else {
                 completionHandler(false)
                 return
             }
-            navigationController.popToRootViewControllerAnimated(false)
+            navigationController.popToRootViewController(animated: false)
 
             guard let feedsViewController = navigationController.topViewController as? FeedsTableViewController else {
                 completionHandler(false)
@@ -98,8 +98,8 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                 feedsViewController.importFromWeb()
                 self.analytics.logEvent("QuickActionUsed", data: ["kind": "Add New Feed"])
                 completionHandler(true)
-            } else if let feedTitle = shortcutItem.userInfo?["feed"] as? String
-                where shortcutItem.type == "com.rachelbrindle.RSSClient.viewfeed" {
+            } else if let feedTitle = shortcutItem.userInfo?["feed"] as? String,
+                shortcutItem.type == "com.rachelbrindle.RSSClient.viewfeed" {
                 // swiftlint:disable conditional_binding_cascade
                     self.feedRepository.feeds().then {
                         if case let Result.Success(feeds) = $0,
@@ -119,21 +119,21 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // MARK: Local Notifications
 
-    public func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
+    public func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
         if let window = self.window {
             self.notificationHandler.handleLocalNotification(notification, window: window)
         }
     }
 
-    public func application(application: UIApplication, handleActionWithIdentifier identifier: String?,
-        forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
+    public func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?,
+        for notification: UILocalNotification, completionHandler: () -> Void) {
             self.notificationHandler.handleAction(identifier, notification: notification)
             completionHandler()
     }
 
     // MARK: Background Fetch
 
-    public func application(application: UIApplication,
+    public func application(_ application: UIApplication,
         performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
             self.backgroundFetchHandler.performFetch(self.notificationHandler,
                 notificationSource: application,
@@ -142,18 +142,18 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // MARK: - User Activities
 
-    public func application(application: UIApplication,
-        continueUserActivity userActivity: NSUserActivity,
-        restorationHandler: ([AnyObject]?) -> Void) -> Bool {
+    public func application(_ application: UIApplication,
+        continue userActivity: NSUserActivity,
+        restorationHandler: (Any?) -> Void) -> Bool {
             let type = userActivity.activityType
             if type == "com.rachelbrindle.rssclient.article",
                 let userInfo = userActivity.userInfo,
-                feedTitle = userInfo["feed"] as? String,
-                articleID = userInfo["article"] as? String {
+                let feedTitle = userInfo["feed"] as? String,
+                let articleID = userInfo["article"] as? String {
                     self.feedRepository.feeds().then() {
                         if case let Result.Success(feeds) = $0 {
                             if let feed = feeds.objectPassingTest({ return $0.title == feedTitle }),
-                                article = feed.articlesArray.filter({ $0.identifier == articleID }).first {
+                                let article = feed.articlesArray.filter({ $0.identifier == articleID }).first {
                                     self.createControllerHierarchy(feed, article: article)
                             }
                         }
@@ -168,7 +168,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
                             return articles + Array(feed.articlesArray)
                         }).objectPassingTest({ article in
                                 return article.identifier == uniqueID
-                        }), feed = article.feed else {
+                        }), let feed = article.feed else {
                             return
                         }
                         self.createControllerHierarchy(feed, article: article)
@@ -180,9 +180,9 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // MARK: - Private
 
-    private func createControllerHierarchy(feed: Feed? = nil, article: Article? = nil) {
+    private func createControllerHierarchy(_ feed: Feed? = nil, article: Article? = nil) {
         let feedAndArticle: (Feed, Article)?
-        if let feed = feed, article = article {
+        if let feed = feed, let article = article {
             feedAndArticle = (feed, article)
         } else {
             feedAndArticle = nil

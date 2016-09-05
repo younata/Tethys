@@ -10,7 +10,7 @@ public final class Article: NSObject {
             }
         }
     }
-    public internal(set) var link: NSURL? {
+    public internal(set) var link: URL? {
         willSet {
             if newValue != link {
                 self.updated = true
@@ -31,14 +31,14 @@ public final class Article: NSObject {
             }
         }
     }
-    public internal(set) var published: NSDate {
+    public internal(set) var published: Date {
         willSet {
             if newValue != published {
                 self.updated = true
             }
         }
     }
-    public internal(set) var updatedAt: NSDate? {
+    public internal(set) var updatedAt: Date? {
         willSet {
             if newValue != updatedAt {
                 self.updated = true
@@ -77,10 +77,10 @@ public final class Article: NSObject {
         didSet {
             if oldValue != feed {
                 self.updated = true
-                if let oldValue = oldValue where oldValue.articlesArray.contains(self) {
+                if let oldValue = oldValue, oldValue.articlesArray.contains(self) {
                     oldValue.removeArticle(self)
                 }
-                if let nv = feed where !nv.articlesArray.contains(self) {
+                if let nv = feed, !nv.articlesArray.contains(self) {
                     nv.addArticle(self)
                 }
             }
@@ -95,7 +95,7 @@ public final class Article: NSObject {
 
     public override var hashValue: Int {
         if let id = articleID as? NSManagedObjectID {
-            return id.URIRepresentation().hash
+            return id.uriRepresentation().hash
         } else if let id = articleID as? String {
             return id.hash
         }
@@ -114,13 +114,13 @@ public final class Article: NSObject {
         return nonNilHashValues ^ flagsHashValues ^ possiblyNilHashValues
     }
 
-    public override func isEqual(object: AnyObject?) -> Bool {
+    public override func isEqual(_ object: Any?) -> Bool {
         guard let b = object as? Article else {
             return false
         }
-        if let aID = self.articleID as? NSManagedObjectID, bID = b.articleID as? NSManagedObjectID {
-            return aID.URIRepresentation() == bID.URIRepresentation()
-        } else if let aID = self.articleID as? String, bID = b.articleID as? String {
+        if let aID = self.articleID as? NSManagedObjectID, let bID = b.articleID as? NSManagedObjectID {
+            return aID.uriRepresentation() == bID.uriRepresentation()
+        } else if let aID = self.articleID as? String, let bID = b.articleID as? String {
             return aID == bID
         }
         return self.title == b.title && self.link == b.link && self.summary == b.summary &&
@@ -136,8 +136,8 @@ public final class Article: NSObject {
     }
 
     // swiftlint:disable function_parameter_count
-    public init(title: String, link: NSURL?, summary: String, authors: [Author], published: NSDate,
-        updatedAt: NSDate?, identifier: String, content: String, read: Bool, estimatedReadingTime: Int,
+    public init(title: String, link: URL?, summary: String, authors: [Author], published: Date,
+        updatedAt: Date?, identifier: String, content: String, read: Bool, estimatedReadingTime: Int,
         feed: Feed?, flags: [String]) {
             self.title = title
             self.link = link
@@ -161,23 +161,23 @@ public final class Article: NSObject {
     internal init(coreDataArticle article: CoreDataArticle, feed: Feed?) {
         title = article.title ?? ""
         if let articleLink = article.link {
-            link = NSURL(string: articleLink)
+            link = URL(string: articleLink)
         } else {
             link = nil
         }
 
         summary = article.summary ?? ""
         authors = [Author(article.author ?? "")]
-        published = article.published ?? NSDate()
+        published = article.published ?? Date()
         updatedAt = article.updatedAt
-        identifier = article.objectID.URIRepresentation().absoluteString ?? ""
+        identifier = article.objectID.uriRepresentation().absoluteString ?? ""
         content = article.content ?? ""
         read = article.read
-        if let readingTime = article.estimatedReadingTime?.integerValue {
+        if let readingTime = article.estimatedReadingTime?.intValue {
             estimatedReadingTime = readingTime
         } else {
             let readingTime = estimateReadingTime(article.content ?? article.summary ?? "")
-            article.estimatedReadingTime = NSNumber(integer: readingTime)
+            article.estimatedReadingTime = NSNumber(value: readingTime)
             estimatedReadingTime = readingTime
         }
         self.feed = feed
@@ -202,11 +202,11 @@ public final class Article: NSObject {
 
     internal init(realmArticle article: RealmArticle, feed: Feed?) {
         title = article.title ?? ""
-        link = NSURL(string: article.link)
+        link = URL(string: article.link)
         summary = article.summary ?? ""
 
         self.authors = article.authors.map(Author.init)
-        published = article.published ?? NSDate()
+        published = article.published ?? Date()
         updatedAt = article.updatedAt
         identifier = article.id
         content = article.content ?? ""
@@ -233,21 +233,21 @@ public final class Article: NSObject {
         self.updated = false
     }
 
-    public func addFlag(flag: String) {
+    public func addFlag(_ flag: String) {
         if !self.flags.contains(flag) {
             self.flags.append(flag)
             self.updated = true
         }
     }
 
-    public func removeFlag(flag: String) {
+    public func removeFlag(_ flag: String) {
         if self.flags.contains(flag) {
             self.flags = self.flags.filter { $0 != flag }
             self.updated = true
         }
     }
 
-    public func addRelatedArticle(article: Article) {
+    public func addRelatedArticle(_ article: Article) {
         guard article != self else { return }
         if !self.relatedArticles.contains(article) {
             self.relatedArticles.append(article)
@@ -256,7 +256,7 @@ public final class Article: NSObject {
         }
     }
 
-    public func removeRelatedArticle(article: Article) {
+    public func removeRelatedArticle(_ article: Article) {
         if self.relatedArticles.contains(article) {
             self.relatedArticles.remove(article)
             article.removeRelatedArticle(self)

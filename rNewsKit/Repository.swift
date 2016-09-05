@@ -1,8 +1,8 @@
 import CBGPromise
 import Result
 
-enum RepositoryError: ErrorType {
-    case Unknown
+enum RepositoryError: Error {
+    case unknown
 }
 
 protocol Repository {
@@ -10,8 +10,8 @@ protocol Repository {
 
     func get() -> Future<Result<[Data], RepositoryError>>
     func create() -> Future<Result<Data, RepositoryError>>
-    func save(data: Data) -> Future<Result<Void, RepositoryError>>
-    func delete(data: Data) -> Future<Result<Void, RepositoryError>>
+    func save(_ data: Data) -> Future<Result<Void, RepositoryError>>
+    func delete(_ data: Data) -> Future<Result<Void, RepositoryError>>
 }
 
 class FeedRepository: Repository {
@@ -36,14 +36,14 @@ class FeedRepository: Repository {
         return promise.future
     }
 
-    func save(data: Feed) -> Future<Result<Void, RepositoryError>> {
+    func save(_ data: Feed) -> Future<Result<Void, RepositoryError>> {
         self._feeds = nil
         return self.dataService.saveFeed(data).map { _ -> Result<Void, RepositoryError> in
             return Result(error: .Unknown)
         }
     }
 
-    func delete(data: Feed) -> Future<Result<Void, RepositoryError>> {
+    func delete(_ data: Feed) -> Future<Result<Void, RepositoryError>> {
         self._feeds = self._feeds?.filter { $0 != data }
 
         return self.dataService.deleteFeed(data).map { _ -> Result<Void, RepositoryError> in

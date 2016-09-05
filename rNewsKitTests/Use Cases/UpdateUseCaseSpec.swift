@@ -23,21 +23,21 @@ class UpdateUseCaseSpec: QuickSpec {
         var userDefaults: FakeUserDefaults!
 
         beforeEach {
-            feed1 = Feed(title: "a", url: NSURL(string: "https://example.com/feed1.feed")!, summary: "",
+            feed1 = Feed(title: "a", url: URL(string: "https://example.com/feed1.feed")!, summary: "",
                 tags: ["a", "b", "c", "d"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-            article1 = Article(title: "b", link: NSURL(string: "https://example.com/article1.html"),
-                summary: "<p>Hello world!</p>", authors: [], published: NSDate(), updatedAt: nil, identifier: "article1",
+            article1 = Article(title: "b", link: URL(string: "https://example.com/article1.html"),
+                summary: "<p>Hello world!</p>", authors: [], published: Date(), updatedAt: nil, identifier: "article1",
                 content: "", read: false, estimatedReadingTime: 0, feed: feed1, flags: [])
 
-            article2 = Article(title: "c", link: NSURL(string: "https://example.com/article2.html"),
-                summary: "<p>Hello world!</p>", authors: [], published: NSDate(), updatedAt: nil, identifier: "article2",
+            article2 = Article(title: "c", link: URL(string: "https://example.com/article2.html"),
+                summary: "<p>Hello world!</p>", authors: [], published: Date(), updatedAt: nil, identifier: "article2",
                 content: "", read: true, estimatedReadingTime: 0, feed: feed1, flags: [])
 
             feed1.addArticle(article1)
             feed1.addArticle(article2)
 
-            feed3 = Feed(title: "e", url: NSURL(string: "https://example.com/feed3.feed")!, summary: "",
+            feed3 = Feed(title: "e", url: URL(string: "https://example.com/feed3.feed")!, summary: "",
                 tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             feeds = [feed1, feed3]

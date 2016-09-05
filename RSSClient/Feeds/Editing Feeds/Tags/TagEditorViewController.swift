@@ -3,13 +3,13 @@ import Ra
 import Result
 import rNewsKit
 
-public class TagEditorViewController: UIViewController, Injectable {
+public final class TagEditorViewController: UIViewController, Injectable {
 
     public var feed: Feed? = nil
     public var tagIndex: Int? = nil
     public let tagPicker = TagPickerView(frame: CGRect.zero)
 
-    private let tagLabel = UILabel(forAutoLayout: ())
+    fileprivate let tagLabel = UILabel(forAutoLayout: ())
     private var tag: String? = nil {
         didSet {
             self.navigationItem.rightBarButtonItem?.enabled = self.feed != nil && self.tag != nil
@@ -38,13 +38,13 @@ public class TagEditorViewController: UIViewController, Injectable {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.edgesForExtendedLayout = .None
+        self.edgesForExtendedLayout = UIRectEdge()
 
         let saveTitle = NSLocalizedString("Generic_Save", comment: "")
-        let saveButton = UIBarButtonItem(title: saveTitle, style: .Plain, target: self,
+        let saveButton = UIBarButtonItem(title: saveTitle, style: .plain, target: self,
                                          action: #selector(TagEditorViewController.save))
         self.navigationItem.rightBarButtonItem = saveButton
-        self.navigationItem.rightBarButtonItem?.enabled = false
+        self.navigationItem.rightBarButtonItem?.isEnabled = false
         self.navigationItem.title = self.feed?.displayTitle ?? ""
 
         self.tagPicker.translatesAutoresizingMaskIntoConstraints = false
@@ -57,14 +57,14 @@ public class TagEditorViewController: UIViewController, Injectable {
             }
         }
         self.view.addSubview(self.tagPicker)
-        self.tagPicker.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsets(top: 16, left: 8, bottom: 0, right: 8),
-                                                              excludingEdge: .Bottom)
+        self.tagPicker.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 16, left: 8, bottom: 0, right: 8),
+                                                              excludingEdge: .bottom)
 
         self.view.addSubview(self.tagLabel)
-        self.tagLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-        self.tagLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
-        self.tagLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: tagPicker, withOffset: 8)
-        self.tagLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+        self.tagLabel.autoPinEdge(toSuperviewEdge: .left, withInset: 8)
+        self.tagLabel.autoPinEdge(toSuperviewEdge: .right, withInset: 8)
+        self.tagLabel.autoPinEdge(.top, to: .bottom, of: tagPicker, withOffset: 8)
+        self.tagLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
         self.tagLabel.numberOfLines = 0
         self.tagLabel.text = NSLocalizedString("TagEditorViewController_Explanation", comment: "")
 
@@ -72,11 +72,11 @@ public class TagEditorViewController: UIViewController, Injectable {
     }
 
     @objc private func dismiss() {
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
     }
 
     @objc private func save() {
-        if let feed = self.feed, tag = tag {
+        if let feed = self.feed, let tag = tag {
             feed.addTag(tag)
             self.feedRepository.saveFeed(feed)
             self.feed = feed
@@ -87,7 +87,7 @@ public class TagEditorViewController: UIViewController, Injectable {
 }
 
 extension TagEditorViewController: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
+    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.view.backgroundColor = themeRepository.backgroundColor
 
         self.tagPicker.picker.tintColor = themeRepository.textColor

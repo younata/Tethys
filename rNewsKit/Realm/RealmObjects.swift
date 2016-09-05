@@ -17,11 +17,11 @@ class RealmFeed: Object {
     let tags = List<RealmString>()
     dynamic var waitPeriod: Int = 0
     dynamic var remainingWait: Int = 0
-    dynamic var lastUpdated = NSDate(timeIntervalSinceReferenceDate: 0)
+    dynamic var lastUpdated = Date(timeIntervalSinceReferenceDate: 0)
     var articles: [RealmArticle] {
-        return LinkingObjects(fromType: RealmArticle.self, property: "feed").sort {
-            let aDate: NSDate
-            let bDate: NSDate
+        return LinkingObjects(fromType: RealmArticle.self, property: "feed").sorted {
+            let aDate: Date
+            let bDate: Date
             if let date = $0.updatedAt {
                 aDate = date
             } else {
@@ -35,9 +35,9 @@ class RealmFeed: Object {
             return aDate.timeIntervalSince1970 > bDate.timeIntervalSince1970
         }
     }
-    dynamic var imageData: NSData?
+    dynamic var imageData: Data?
 
-    dynamic var id: String = NSUUID().UUIDString
+    dynamic var id: String = UUID().uuidString
     override static func primaryKey() -> String? {
         return "id"
     }
@@ -47,7 +47,7 @@ class RealmAuthor: Object {
     dynamic var name = ""
     dynamic var email: String?
 
-    dynamic var id: String = NSUUID().UUIDString
+    dynamic var id: String = UUID().uuidString
     override static func primaryKey() -> String? {
         return "id"
     }
@@ -57,8 +57,8 @@ class RealmArticle: Object {
     dynamic var title: String?
     dynamic var link = ""
     dynamic var summary: String?
-    dynamic var published = NSDate(timeIntervalSinceNow: 0)
-    dynamic var updatedAt: NSDate?
+    dynamic var published = Date(timeIntervalSinceNow: 0)
+    dynamic var updatedAt: Date?
     dynamic var identifier: String?
     dynamic var content: String?
     dynamic var read = false
@@ -68,7 +68,7 @@ class RealmArticle: Object {
     let authors = List<RealmAuthor>()
     let relatedArticles = List<RealmArticle>()
 
-    dynamic var id: String = NSUUID().UUIDString
+    dynamic var id: String = UUID().uuidString
     override static func primaryKey() -> String? {
         return "id"
     }

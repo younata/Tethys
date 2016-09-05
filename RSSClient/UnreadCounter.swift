@@ -1,47 +1,47 @@
 import UIKit
 import PureLayout
 
-private class OutlinedLabel: UILabel {
-    private var outlineColor = UIColor.darkGreenColor()
+fileprivate class OutlinedLabel: UILabel {
+    fileprivate var outlineColor = UIColor.darkGreen()
 
-    private override func drawTextInRect(rect: CGRect) {
+    fileprivate override func drawText(in rect: CGRect) {
         let textColor = self.textColor
         let context = UIGraphicsGetCurrentContext()
-        CGContextSetLineWidth(context, 2)
-        CGContextSetLineJoin(context, .Round)
+        context?.setLineWidth(2)
+        context?.setLineJoin(.round)
 
-        CGContextSetTextDrawingMode(context, .Stroke)
+        context?.setTextDrawingMode(.stroke)
         self.textColor = self.outlineColor
-        super.drawTextInRect(rect)
+        super.drawText(in: rect)
 
-        CGContextSetTextDrawingMode(context, .Fill)
+        context?.setTextDrawingMode(.fill)
         self.textColor = textColor
-        super.drawTextInRect(rect)
+        super.drawText(in: rect)
     }
 }
 
-public class UnreadCounter: UIView {
-    private let numberFormatter = NSNumberFormatter()
+public final class UnreadCounter: UIView {
+    private let numberFormatter = NumberFormatter()
     private let triangleLayer = CAShapeLayer()
     private let outlineLabel = OutlinedLabel(forAutoLayout: ())
 
     public var countLabel: UILabel { return self.outlineLabel }
-    public var triangleColor = UIColor.darkGreenColor() {
+    public var triangleColor = UIColor.darkGreen() {
         didSet {
-            self.triangleLayer.fillColor = self.triangleColor.CGColor
+            self.triangleLayer.fillColor = self.triangleColor?.cgColor
             self.outlineLabel.outlineColor = self.triangleColor
         }
     }
 
-    public var countColor = UIColor.whiteColor() {
+    public var countColor = UIColor.white {
         didSet {
             self.countLabel.textColor = self.countColor
         }
     }
 
     public var hideUnreadText: Bool {
-        get { return self.countLabel.hidden }
-        set { self.countLabel.hidden = newValue }
+        get { return self.countLabel.isHidden }
+        set { self.countLabel.isHidden = newValue }
     }
 
     public var unread: UInt = 0 {
@@ -52,7 +52,7 @@ public class UnreadCounter: UIView {
 
     public override func layoutSubviews() {
         super.layoutSubviews()
-        let path = CGPathCreateMutable()
+        let path = CGMutablePath()
         CGPathMoveToPoint(path, nil, 0, 0)
         CGPathAddLineToPoint(path, nil, self.bounds.width, 0)
         CGPathAddLineToPoint(path, nil, self.bounds.width, self.bounds.height)
@@ -62,30 +62,30 @@ public class UnreadCounter: UIView {
 
     private func unreadDidChange() {
         if self.unread == 0 {
-            self.hidden = true
+            self.isHidden = true
         } else {
-            self.countLabel.text = self.numberFormatter.stringFromNumber(self.unread)
-            self.hidden = false
+            self.countLabel.text = self.numberFormatter.string(from: NSNumber(self.unread))
+            self.isHidden = false
         }
     }
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
 
-        self.backgroundColor = UIColor.clearColor()
+        self.backgroundColor = UIColor.clear
 
-        self.triangleLayer.strokeColor = UIColor.clearColor().CGColor
-        self.triangleLayer.fillColor = self.triangleColor.CGColor
+        self.triangleLayer.strokeColor = UIColor.clear.cgColor
+        self.triangleLayer.fillColor = self.triangleColor?.cgColor
         self.layer.addSublayer(self.triangleLayer)
 
-        self.countLabel.hidden = true
-        self.countLabel.textAlignment = .Right
-        self.countLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+        self.countLabel.isHidden = true
+        self.countLabel.textAlignment = .right
+        self.countLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
         self.countLabel.textColor = self.countColor
 
         self.addSubview(self.countLabel)
-        self.countLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
-        self.countLabel.autoPinEdgeToSuperviewEdge(.Trailing, withInset: 4)
+        self.countLabel.autoPinEdge(toSuperviewEdge: .top, withInset: 4)
+        self.countLabel.autoPinEdge(toSuperviewEdge: .trailing, withInset: 4)
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError("not supported") }

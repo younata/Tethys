@@ -22,7 +22,7 @@ public final class Feed: Hashable, CustomStringConvertible {
 
     public var displayTitle: String {
         if let tagTitle = self.tags.objectPassingTest({$0.hasPrefix("~")}) {
-            return tagTitle.substringFromIndex(tagTitle.startIndex.successor())
+            return tagTitle.substring(from: tagTitle.characters.index(after: tagTitle.startIndex))
         }
         if self.title.isEmpty {
             return self.url.absoluteString
@@ -30,7 +30,7 @@ public final class Feed: Hashable, CustomStringConvertible {
         return self.title
     }
 
-    public var url: NSURL {
+    public var url: URL {
         willSet {
             if newValue != url {
                 self.updated = true
@@ -47,12 +47,12 @@ public final class Feed: Hashable, CustomStringConvertible {
 
     public var displaySummary: String {
         if let tagSummary = self.tags.objectPassingTest({$0.hasPrefix("`")}) {
-            return tagSummary.substringFromIndex(tagSummary.startIndex.successor())
+            return tagSummary.substring(from: tagSummary.characters.index(after: tagSummary.startIndex))
         }
         return self.summary
     }
 
-    public var lastUpdated: NSDate {
+    public var lastUpdated: Date {
         willSet {
             if newValue != lastUpdated {
                 self.updated = true
@@ -60,7 +60,7 @@ public final class Feed: Hashable, CustomStringConvertible {
         }
     }
 
-    public private(set) var tags: [String]
+    public fileprivate(set) var tags: [String]
     public var waitPeriod: Int {
         willSet {
             if newValue != waitPeriod {
@@ -76,7 +76,7 @@ public final class Feed: Hashable, CustomStringConvertible {
         }
     }
 
-    @available(*, deprecated=1.0, renamed="articlesArray")
+    @available(*, deprecated: 1.0, renamed: "articlesArray")
     public var articles: [Article] { return Array(self.articlesArray) }
 
     public internal(set) var articlesArray: DataStoreBackedArray<Article>
@@ -93,7 +93,7 @@ public final class Feed: Hashable, CustomStringConvertible {
 
     public var hashValue: Int {
         if let id = feedID as? NSManagedObjectID {
-            return id.URIRepresentation().hash
+            return id.uriRepresentation().hash
         } else if let id = feedID as? String {
             return id.hash
         }
@@ -104,7 +104,7 @@ public final class Feed: Hashable, CustomStringConvertible {
         } else {
             possiblyNilHashValues = 0
         }
-        let tagsHashValues = tags.map({$0.hashValue}).reduce(0, combine: ^)
+        let tagsHashValues = tags.map({$0.hashValue}).reduce(0, ^)
         return nonNilHashValues ^ possiblyNilHashValues ^ tagsHashValues
     }
 
@@ -112,13 +112,13 @@ public final class Feed: Hashable, CustomStringConvertible {
         return "Feed: title: \(title), url: \(url), summary: \(summary), tags: \(tags)\n"
     }
 
-    public func isEqual(object: AnyObject?) -> Bool {
+    public func isEqual(_ object: AnyObject?) -> Bool {
         guard let b = object as? Feed else {
             return false
         }
-        if let aID = self.feedID as? NSManagedObjectID, bID = b.feedID as? NSManagedObjectID {
-            return aID.URIRepresentation() == bID.URIRepresentation()
-        } else if let aID = self.feedID as? NSURL, bID = b.feedID as? NSURL {
+        if let aID = self.feedID as? NSManagedObjectID, let bID = b.feedID as? NSManagedObjectID {
+            return aID.uriRepresentation() == bID.uriRepresentation()
+        } else if let aID = self.feedID as? URL, let bID = b.feedID as? URL {
             return aID == bID
         }
         return self.title == b.title && self.url == b.url && self.summary == b.summary && self.tags == b.tags &&
@@ -140,18 +140,18 @@ public final class Feed: Hashable, CustomStringConvertible {
         return self.articlesArray.filterWithPredicate(NSPredicate(format: "read == %@", false))
     }()
 
-    public func addArticle(article: Article) {
+    public func addArticle(_ article: Article) {
         if !self.articlesArray.contains(article) {
             self.articlesArray.append(article)
             self.updated = true
-            if let otherFeed = article.feed where otherFeed != self {
+            if let otherFeed = article.feed , otherFeed != self {
                 otherFeed.removeArticle(article)
             }
             article.feed = self
         }
     }
 
-    public func removeArticle(article: Article) {
+    public func removeArticle(_ article: Article) {
         if self.articlesArray.contains(article) {
             self.articlesArray.remove(article)
             self.updated = true
@@ -161,14 +161,14 @@ public final class Feed: Hashable, CustomStringConvertible {
         }
     }
 
-    public func addTag(tag: String) {
+    public func addTag(_ tag: String) {
         if !tags.contains(tag) {
             updated = true
             tags.append(tag)
         }
     }
 
-    public func removeTag(tag: String) {
+    public func removeTag(_ tag: String) {
         if tags.contains(tag) {
             updated = true
             tags = tags.filter { $0 != tag }
@@ -180,9 +180,9 @@ public final class Feed: Hashable, CustomStringConvertible {
     }
 
     // swiftlint:disable function_parameter_count
-    public init(title: String, url: NSURL, summary: String, tags: [String],
+    public init(title: String, url: URL, summary: String, tags: [String],
         waitPeriod: Int, remainingWait: Int, articles: [Article], image: Image?,
-        lastUpdated: NSDate = NSDate(), identifier: String = "") {
+        lastUpdated: Date = Date(), identifier: String = "") {
             self.title = title
             self.url = url
             self.summary = summary
@@ -205,7 +205,7 @@ public final class Feed: Hashable, CustomStringConvertible {
 
     internal init(coreDataFeed feed: CoreDataFeed) {
         self.title = feed.title ?? ""
-        self.url = NSURL(string: feed.url)!
+        self.url = URL(string: feed.url)!
         self.summary = feed.summary ?? ""
         self.tags = feed.tags
         self.waitPeriod = feed.waitPeriodInt
@@ -214,7 +214,7 @@ public final class Feed: Hashable, CustomStringConvertible {
 
         self.image = feed.image as? Image
         self.feedID = feed.objectID
-        self.identifier = feedID?.URIRepresentation().absoluteString ?? ""
+        self.identifier = feedID?.uriRepresentation().absoluteString ?? ""
         self.articlesArray = DataStoreBackedArray<Article>()
 
         let sortByUpdated = NSSortDescriptor(key: "updatedAt", ascending: false)
@@ -232,7 +232,7 @@ public final class Feed: Hashable, CustomStringConvertible {
 
     internal init(realmFeed feed: RealmFeed) {
         self.title = feed.title ?? ""
-        self.url = NSURL(string: feed.url ?? "")!
+        self.url = URL(string: feed.url ?? "")!
         self.summary = feed.summary ?? ""
         self.tags = feed.tags.map { $0.string }
         self.waitPeriod = feed.waitPeriod

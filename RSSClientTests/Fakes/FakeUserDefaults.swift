@@ -1,6 +1,6 @@
 import Foundation
 
-class FakeUserDefaults: NSUserDefaults {
+class FakeUserDefaults: UserDefaults {
 
     private var internalDictionary: [String: AnyObject] = [:]
 
@@ -12,75 +12,75 @@ class FakeUserDefaults: NSUserDefaults {
         super.init(suiteName: suitename)
     }
 
-    override func objectForKey(defaultName: String) -> AnyObject? {
+    override func object(forKey defaultName: String) -> Any? {
         return self.internalDictionary[defaultName]
     }
 
-    override func setObject(value: AnyObject?, forKey defaultName: String) {
+    override func set(_ value: Any?, forKey defaultName: String) {
         self.internalDictionary[defaultName] = value
     }
 
-    override func removeObjectForKey(defaultName: String) {
-        self.internalDictionary.removeValueForKey(defaultName)
+    override func removeObject(forKey defaultName: String) {
+        self.internalDictionary.removeValue(forKey: defaultName)
     }
 
-    override func stringForKey(defaultName: String) -> String? {
+    override func string(forKey defaultName: String) -> String? {
         return self.internalDictionary[defaultName] as? String
     }
 
-    override func arrayForKey(defaultName: String) -> [AnyObject]? {
+    override func array(forKey defaultName: String) -> [Any]? {
         return self.internalDictionary[defaultName] as? [AnyObject]
     }
 
-    override func dictionaryForKey(defaultName: String) -> [String: AnyObject]? {
+    override func dictionary(forKey defaultName: String) -> [String: Any]? {
         return self.internalDictionary[defaultName] as? [String: AnyObject]
     }
 
-    override func dataForKey(defaultName: String) -> NSData? {
-        return self.internalDictionary[defaultName] as? NSData
+    override func data(forKey defaultName: String) -> Data? {
+        return self.internalDictionary[defaultName] as? Data
     }
 
-    override func stringArrayForKey(defaultName: String) -> [String]? {
+    override func stringArray(forKey defaultName: String) -> [String]? {
         return self.internalDictionary[defaultName] as? [String]
     }
 
-    override func integerForKey(defaultName: String) -> Int {
+    override func integer(forKey defaultName: String) -> Int {
         return self.internalDictionary[defaultName] as? Int ?? 0
     }
 
-    override func floatForKey(defaultName: String) -> Float {
+    override func float(forKey defaultName: String) -> Float {
         return self.internalDictionary[defaultName] as? Float ?? 0.0
     }
 
-    override func doubleForKey(defaultName: String) -> Double {
+    override func double(forKey defaultName: String) -> Double {
         return self.internalDictionary[defaultName] as? Double ?? 0.0
     }
 
-    override func boolForKey(defaultName: String) -> Bool {
+    override func bool(forKey defaultName: String) -> Bool {
         return self.internalDictionary[defaultName] as? Bool ?? false
     }
 
-    override func URLForKey(defaultName: String) -> NSURL? {
-        return self.internalDictionary[defaultName] as? NSURL
+    override func url(forKey defaultName: String) -> URL? {
+        return self.internalDictionary[defaultName] as? URL
     }
 
-    override func setInteger(value: Int, forKey defaultName: String) {
+    override func set(_ value: Int, forKey defaultName: String) {
         self.internalDictionary[defaultName] = value
     }
 
-    override func setFloat(value: Float, forKey defaultName: String) {
+    override func set(_ value: Float, forKey defaultName: String) {
         self.internalDictionary[defaultName] = value
     }
 
-    override func setDouble(value: Double, forKey defaultName: String) {
+    override func set(_ value: Double, forKey defaultName: String) {
         self.internalDictionary[defaultName] = value
     }
 
-    override func setBool(value: Bool, forKey defaultName: String) {
+    override func set(_ value: Bool, forKey defaultName: String) {
         self.internalDictionary[defaultName] = value
     }
 
-    override func setURL(url: NSURL?, forKey defaultName: String) {
+    override func set(_ url: URL?, forKey defaultName: String) {
         self.internalDictionary[defaultName] = url
     }
 

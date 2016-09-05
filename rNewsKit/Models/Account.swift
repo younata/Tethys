@@ -1,3 +1,3 @@
 public enum Account: Int {
-    case Pasiphae = 0
+    case pasiphae = 0
 }

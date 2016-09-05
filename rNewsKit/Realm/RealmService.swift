@@ -9,16 +9,16 @@ import Result
     import Cocoa
 #endif
 
-class RealmService: DataService {
+final class RealmService: DataService {
     private let realmConfiguration: Realm.Configuration
 
-    let mainQueue: NSOperationQueue
-    let workQueue: NSOperationQueue
+    let mainQueue: OperationQueue
+    let workQueue: OperationQueue
     let searchIndex: SearchIndex?
 
     init(realmConfiguration: Realm.Configuration,
-        mainQueue: NSOperationQueue,
-        workQueue: NSOperationQueue,
+        mainQueue: OperationQueue,
+        workQueue: OperationQueue,
         searchIndex: SearchIndex?) {
             self.realmConfiguration = realmConfiguration
             self.mainQueue = mainQueue
@@ -26,9 +26,9 @@ class RealmService: DataService {
             self.searchIndex = searchIndex
     }
 
-    private var realmsForThreads: [NSThread: Realm] = [:]
+    private var realmsForThreads: [Thread: Realm] = [:]
     private var realm: Realm {
-        let thread = NSThread.currentThread()
+        let thread = Thread.current
         if let realm = self.realmsForThreads[thread] {
             return realm
         }
@@ -41,13 +41,13 @@ class RealmService: DataService {
         return realm
     }
 
-    func createFeed(callback: (Feed) -> (Void)) -> Future<Result<Feed, RNewsError>> {
+    func createFeed(_ callback: (Feed) -> (Void)) -> Future<Result<Feed, RNewsError>> {
         let promise = Promise<Result<Feed, RNewsError>>()
         self.realmTransaction {
             let realmFeed = self.realm.create(RealmFeed)
             let feed = Feed(realmFeed: realmFeed)
 
-            let operation = NSBlockOperation { callback(feed) }
+            let operation = BlockOperation { callback(feed) }
             self.mainQueue.addOperations([operation], waitUntilFinished: true)
 
             self.synchronousUpdateFeed(feed, realmFeed: realmFeed)
@@ -57,13 +57,13 @@ class RealmService: DataService {
         return promise.future
     }
 
-    func createArticle(feed: Feed?, callback: (Article) -> (Void)) {
+    func createArticle(_ feed: Feed?, callback: @escaping (Article) -> (Void)) {
         self.realmTransaction {
             let realmArticle = self.realm.create(RealmArticle)
             let article = Article(realmArticle: realmArticle, feed: feed)
             feed?.addArticle(article)
 
-            let operation = NSBlockOperation { callback(article) }
+            let operation = BlockOperation { callback(article) }
             self.mainQueue.addOperations([operation], waitUntilFinished: true)
 
             self.synchronousUpdateArticle(article, realmArticle: realmArticle)
@@ -76,16 +76,16 @@ class RealmService: DataService {
         let promise = Promise<Result<DataStoreBackedArray<Feed>, RNewsError>>()
         let sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
 
-        let feeds = DataStoreBackedArray(realmDataType: RealmFeed.self,
+        let feeds = DataStoreBackedArray(entityName: RealmFeed.self,
             predicate: NSPredicate(value: true),
-            realmConfiguration: self.realmConfiguration,
+            managedObjectContext: self.realmConfiguration,
             conversionFunction: { Feed(realmFeed: $0 as! RealmFeed) },
             sortDescriptors: sortDescriptors)
         promise.resolve(.Success(feeds))
         return promise.future
     }
 
-    func articlesMatchingPredicate(predicate: NSPredicate) ->
+    func articlesMatchingPredicate(_ predicate: NSPredicate) ->
         Future<Result<DataStoreBackedArray<Article>, RNewsError>> {
             let promise = Promise<Result<DataStoreBackedArray<Article>, RNewsError>>()
             let sortDescriptors = [
@@ -104,7 +104,7 @@ class RealmService: DataService {
 
     // Mark: - Delete
 
-    func deleteFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {
+    func deleteFeed(_ feed: Feed) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
         let articleIdentifiers = feed.articlesArray.map { $0.identifier }
         #if os(iOS)
@@ -120,7 +120,7 @@ class RealmService: DataService {
         return promise.future
     }
 
-    func deleteArticle(article: Article) -> Future<Result<Void, RNewsError>> {
+    func deleteArticle(_ article: Article) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
         #if os(iOS)
             self.searchIndex?.deleteIdentifierFromIndex([article.identifier]) {_ in }
@@ -137,7 +137,7 @@ class RealmService: DataService {
 
     // Mark: - Batch
 
-    func batchCreate(feedCount: Int, articleCount: Int) ->
+    func batchCreate(_ feedCount: Int, articleCount: Int) ->
         Future<Result<([Feed], [Article]), RNewsError>> {
             let promise = Promise<Result<([Feed], [Article]), RNewsError>>()
             self.realmTransaction {
@@ -154,7 +154,7 @@ class RealmService: DataService {
             return promise.future
     }
 
-    func batchSave(feeds: [Feed], articles: [Article]) -> Future<Result<Void, RNewsError>> {
+    func batchSave(_ feeds: [Feed], articles: [Article]) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
         self.realmTransaction {
             articles.forEach { self.synchronousUpdateArticle($0) }
@@ -182,29 +182,29 @@ class RealmService: DataService {
 
     // Mark: - Private
 
-    private func realmFeedForFeed(feed: Feed) -> RealmFeed? {
+    private func realmFeedForFeed(_ feed: Feed) -> RealmFeed? {
         guard let feedID = feed.feedID as? String else { return nil }
         return self.realm.objectForPrimaryKey(RealmFeed.self, key: feedID)
     }
 
-    private func realmStringForString(string: String) -> RealmString? {
+    private func realmStringForString(_ string: String) -> RealmString? {
         let predicate = NSPredicate(format: "string = %@", string)
         return self.realm.objects(RealmString).filter(predicate).first
     }
 
-    private func realmArticleForArticle(article: Article) -> RealmArticle? {
+    private func realmArticleForArticle(_ article: Article) -> RealmArticle? {
         guard let articleID = article.articleID as? String else { return nil }
         return self.realm.objectForPrimaryKey(RealmArticle.self, key: articleID)
     }
 
-    private func realmAuthorForAuthor(author: Author) -> RealmAuthor? {
+    private func realmAuthorForAuthor(_ author: Author) -> RealmAuthor? {
         let predicate = NSPredicate(format: "name = %@ AND email = %@", author.name, author.email?.absoluteString ?? "")
         return self.realm.objects(RealmAuthor).filter(predicate).first
     }
 
     // Synchronous update!
 
-    private func synchronousUpdateFeed(feed: Feed, realmFeed: RealmFeed? = nil) {
+    private func synchronousUpdateFeed(_ feed: Feed, realmFeed: RealmFeed? = nil) {
         self.startRealmTransaction()
 
         if let rfeed = realmFeed ?? self.realmFeedForFeed(feed) {
@@ -216,7 +216,7 @@ class RealmService: DataService {
                 realmString.string = str
                 return realmString
             }
-            rfeed.tags.replaceRange(0..<rfeed.tags.count, with: tags)
+            rfeed.tags.replaceSubrange(0..<rfeed.tags.count, with: tags)
             rfeed.waitPeriod = feed.waitPeriod
             rfeed.remainingWait = feed.remainingWait
             rfeed.lastUpdated = feed.lastUpdated
@@ -232,7 +232,7 @@ class RealmService: DataService {
         }
     }
 
-    private func synchronousUpdateArticle(article: Article, realmArticle: RealmArticle? = nil) {
+    private func synchronousUpdateArticle(_ article: Article, realmArticle: RealmArticle? = nil) {
         self.startRealmTransaction()
 
         if let rarticle = realmArticle ?? self.realmArticleForArticle(article) {
@@ -263,7 +263,7 @@ class RealmService: DataService {
             rarticle.relatedArticles.appendContentsOf(relatedArticles)
             rarticle.estimatedReadingTime = article.estimatedReadingTime
 
-            if let feed = article.feed, rfeed = self.realmFeedForFeed(feed) {
+            if let feed = article.feed, let rfeed = self.realmFeedForFeed(feed) {
                 rarticle.feed = rfeed
             }
 
@@ -271,14 +271,14 @@ class RealmService: DataService {
         }
     }
 
-    private func synchronousDeleteFeed(feed: Feed) {
+    private func synchronousDeleteFeed(_ feed: Feed) {
         if let realmFeed = self.realmFeedForFeed(feed) {
             feed.articlesArray.forEach(self.synchronousDeleteArticle)
             self.realm.delete(realmFeed)
         }
     }
 
-    private func synchronousDeleteArticle(article: Article) {
+    private func synchronousDeleteArticle(_ article: Article) {
         if let realmArticle = self.realmArticleForArticle(article) {
             self.realm.delete(realmArticle)
         }
@@ -291,9 +291,9 @@ class RealmService: DataService {
         }
     }
 
-    private func realmTransaction(execBlock: Void -> Void) -> Future<Void> {
+    private func realmTransaction(_ execBlock: @escaping (Void) -> Void) -> Future<Void> {
         let promise = Promise<Void>()
-        let operation = NSBlockOperation {
+        let operation = BlockOperation {
             self.startRealmTransaction()
             execBlock()
             self.startRealmTransaction()
@@ -301,7 +301,7 @@ class RealmService: DataService {
             promise.resolve()
         }
 
-        if self.workQueue == NSOperationQueue.currentQueue() {
+        if self.workQueue == OperationQueue.current {
             operation.start()
         } else {
             self.workQueue.addOperation(operation)

@@ -3,26 +3,26 @@ import Sinope
 
 protocol ImportableFeed {
     var title: String { get }
-    var link: NSURL { get }
+    var link: URL { get }
     var description: String { get }
-    var imageURL: NSURL? { get }
-    var lastUpdated: NSDate { get }
+    var imageURL: URL? { get }
+    var lastUpdated: Date { get }
     var importableArticles: [ImportableArticle] { get }
 }
 
 protocol ImportableArticle {
     var title: String { get }
-    var url: NSURL { get }
+    var url: URL { get }
     var summary: String { get }
     var content: String { get }
-    var published: NSDate { get }
-    var updated: NSDate? { get }
+    var published: Date { get }
+    var updated: Date? { get }
     var importableAuthors: [ImportableAuthor] { get }
 }
 
 protocol ImportableAuthor {
     var name: String { get }
-    var email: NSURL? { get }
+    var email: URL? { get }
 }
 // MARK: Muon conformance
 extension Muon.Feed: ImportableFeed {

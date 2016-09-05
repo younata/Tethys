@@ -44,8 +44,8 @@ class UpdateServiceSpec: QuickSpec {
         describe("updating multiple feeds") {
             var updateFeedsFuture: Future<Result<[rNewsKit.Feed], RNewsError>>!
             var fetchPromise: Promise<Result<[Sinope.Feed], SinopeError>>!
-            let date = NSDate()
-            let feedToUpdate = rNewsKit.Feed(title: "feed", url: NSURL(string: "https://example.com/feed")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, lastUpdated: date)
+            let date = Date()
+            let feedToUpdate = rNewsKit.Feed(title: "feed", url: URL(string: "https://example.com/feed")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, lastUpdated: date)
 
             var progressCallbackCallCount = 0
             var progressCallbackArgs: [(Int, Int)] = []
@@ -79,18 +79,18 @@ class UpdateServiceSpec: QuickSpec {
                 var feed: rNewsKit.Feed! = nil
 
                 beforeEach {
-                    feed = rNewsKit.Feed(title: "feed", url: NSURL(string: "https://example.com/feed")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    feed = rNewsKit.Feed(title: "feed", url: URL(string: "https://example.com/feed")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     dataService.feeds = [feed]
                     // hm.
 
-                    let data: NSData = ("{\"title\": \"feed title\"," +
+                    let data: Data = ("{\"title\": \"feed title\"," +
                         "\"url\": \"https://example.com/feed\"," +
                         "\"summary\": \"test\"," +
                         "\"image_url\": \"https://example.com/image.png\"," +
                         "\"last_updated\": \"2015-12-23T00:00:00.000Z\"," +
                         "\"articles\": [" +
                         "{\"title\": \"Example 1\", \"url\": \"https://example.com/1/\", \"summary\": \"test\", \"published\": \"2015-12-23T00:00:00.000Z\", \"updated\": null, \"content\": null, \"authors\": []}" +
-                        "]}").dataUsingEncoding(NSUTF8StringEncoding)!
+                        "]}").data(using: String.Encoding.utf8)!
 
                     let json = try! JSON(data: data)
                     let sinopeFeed = try! Feed(json: json)
@@ -120,14 +120,14 @@ class UpdateServiceSpec: QuickSpec {
                 beforeEach {
                     dataService.feeds = []
 
-                    let data: NSData = ("{\"title\": \"feed title\"," +
+                    let data: Data = ("{\"title\": \"feed title\"," +
                         "\"url\": \"https://example.com/feed\"," +
                         "\"summary\": \"test\"," +
                         "\"image_url\": \"https://example.com/image.png\"," +
                         "\"last_updated\": \"2015-12-23T00:00:00.000Z\"," +
                         "\"articles\": [" +
                         "{\"title\": \"Example 1\", \"url\": \"https://example.com/1/\", \"summary\": \"test\", \"published\": \"2015-12-23T00:00:00.000Z\", \"updated\": null, \"content\": null, \"authors\": []}" +
-                        "]}").dataUsingEncoding(NSUTF8StringEncoding)!
+                        "]}").data(using: String.Encoding.utf8)!
 
                     let json = try! JSON(data: data)
                     let sinopeFeed = try! Feed(json: json)
@@ -140,7 +140,7 @@ class UpdateServiceSpec: QuickSpec {
                     guard let feed = dataService.feeds.first else { return }
                     expect(feed.title) == "feed title"
                     expect(feed.summary) == "test"
-                    expect(feed.url) == NSURL(string: "https://example.com/feed")
+                    expect(feed.url) == URL(string: "https://example.com/feed")
                     expect(feed.articlesArray.count) == 1
                 }
 
@@ -180,7 +180,7 @@ class UpdateServiceSpec: QuickSpec {
                 var receivedError: NSError? = nil
 
                 beforeEach {
-                    feed = rNewsKit.Feed(title: "feed", url: NSURL(string: "https://example.com/feed")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    feed = rNewsKit.Feed(title: "feed", url: URL(string: "https://example.com/feed")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     dataService.feeds = [feed]
 
                     updatedFeed = nil
@@ -200,7 +200,7 @@ class UpdateServiceSpec: QuickSpec {
                     context("and the downloaded feed data has no image url") {
                         beforeEach {
                             guard urlSession.lastDownloadTask != nil else { fail(); return }
-                            let location = NSBundle(forClass: self.classForCoder).URLForResource("feed", withExtension: "rss")!
+                            let location = Bundle(for: self.classForCoder).url(forResource: "feed", withExtension: "rss")!
                             urlSessionDelegate.URLSession(urlSession, downloadTask: urlSession.lastDownloadTask!, didFinishDownloadingToURL: location)
                         }
 
@@ -220,7 +220,7 @@ class UpdateServiceSpec: QuickSpec {
                     context("and the downloaded feed data has an image url and the feed has no image downloaded yet") {
                         beforeEach {
                             guard urlSession.lastDownloadTask != nil else { fail(); return }
-                            let location = NSBundle(forClass: self.classForCoder).URLForResource("feed2", withExtension: "rss")!
+                            let location = Bundle(for: self.classForCoder).url(forResource: "feed2", withExtension: "rss")!
                             urlSessionDelegate.URLSession(urlSession, downloadTask: urlSession.lastDownloadTask!, didFinishDownloadingToURL: location)
                         }
 
@@ -229,14 +229,14 @@ class UpdateServiceSpec: QuickSpec {
                         }
 
                         it("should try to download the image") {
-                            expect(urlSession.lastURL) == NSURL(string: "http://example.org/icon.png")
+                            expect(urlSession.lastURL) == URL(string: "http://example.org/icon.png")
                         }
 
                         context("when the image download completes") {
                             beforeEach {
                                 guard let task = urlSession.lastDownloadTask else { fail(); return }
-                                task._response = NSURLResponse(URL: NSURL(string: "http://example.org/icon.png")!, MIMEType: "image/jpg", expectedContentLength: 0, textEncodingName: nil)
-                                let location = NSBundle(forClass: self.classForCoder).URLForResource("test", withExtension: "jpg")!
+                                task._response = URLResponse(url: URL(string: "http://example.org/icon.png")!, mimeType: "image/jpg", expectedContentLength: 0, textEncodingName: nil)
+                                let location = Bundle(for: self.classForCoder).url(forResource: "test", withExtension: "jpg")!
                                 urlSessionDelegate.URLSession(urlSession, downloadTask: task, didFinishDownloadingToURL: location)
                             }
 
@@ -256,7 +256,7 @@ class UpdateServiceSpec: QuickSpec {
                             let error = NSError(domain: "com.example.error", code: 20, userInfo: nil)
                             beforeEach {
                                 guard let task = urlSession.lastDownloadTask else { fail(); return }
-                                task._response = NSURLResponse(URL: NSURL(string: "http://example.org/icon.png")!, MIMEType: "image/jpg", expectedContentLength: 0, textEncodingName: nil)
+                                task._response = URLResponse(url: URL(string: "http://example.org/icon.png")!, mimeType: "image/jpg", expectedContentLength: 0, textEncodingName: nil)
                                 urlSessionDelegate.URLSession(urlSession, task: task, didCompleteWithError: error)
                             }
 
@@ -276,13 +276,13 @@ class UpdateServiceSpec: QuickSpec {
                     describe("and the downloaded feed data has image url but the feed has an image downloaded already") {
                         beforeEach {
                             guard urlSession.lastDownloadTask != nil else { fail(); return }
-                            let bundle = NSBundle(forClass: self.classForCoder)
+                            let bundle = Bundle(for: self.classForCoder)
 
-                            let image = bundle.URLForResource("test", withExtension: "jpg")!
-                            feed.image = Image(data: NSData(contentsOfURL: image)!)
+                            let image = bundle.url(forResource: "test", withExtension: "jpg")!
+                            feed.image = Image(data: Data(contentsOfURL: image)!)
                             expect(feed.image).toNot(beNil())
 
-                            let location = bundle.URLForResource("feed2", withExtension: "rss")!
+                            let location = bundle.url(forResource: "feed2", withExtension: "rss")!
                             urlSessionDelegate.URLSession(urlSession, downloadTask: urlSession.lastDownloadTask!, didFinishDownloadingToURL: location)
                         }
 

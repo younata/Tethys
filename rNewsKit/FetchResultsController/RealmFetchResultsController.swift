@@ -10,9 +10,9 @@ final class RealmFetchResultsController: FetchResultsController {
     private let sortDescriptors: [SortDescriptor]
     private let model: Object.Type
 
-    private var realmsForThreads: [NSThread: Realm] = [:]
+    private var realmsForThreads: [Thread: Realm] = [:]
     private func realm() throws -> Realm {
-        let thread = NSThread.currentThread()
+        let thread = Thread.current
         if let realm = self.realmsForThreads[thread] {
             return realm
         }
@@ -49,11 +49,11 @@ final class RealmFetchResultsController: FetchResultsController {
         }
     }
 
-    func get(index: Int) throws -> Element {
+    func get(_ index: Int) throws -> Element {
         switch self.realmObjects {
         case let .Success(objects):
             if index < 0 || index >= self.count {
-                throw RNewsError.Database(.EntryNotFound)
+                throw RNewsError.database(.entryNotFound)
             }
             return objects[index]
         case let .Failure(error):
@@ -61,7 +61,7 @@ final class RealmFetchResultsController: FetchResultsController {
         }
     }
 
-    func insert(item: Element) throws {
+    func insert(_ item: Element) throws {
         do {
             let realm = try self.realm()
             if realm.inWriteTransaction {
@@ -72,11 +72,11 @@ final class RealmFetchResultsController: FetchResultsController {
                 }
             }
         } catch {
-            throw RNewsError.Database(.Unknown)
+            throw RNewsError.database(.unknown)
         }
     }
 
-    func delete(index: Int) throws {
+    func delete(_ index: Int) throws {
         let object = try self.get(index)
 
         do {
@@ -89,11 +89,11 @@ final class RealmFetchResultsController: FetchResultsController {
                 }
             }
         } catch {
-            throw RNewsError.Database(.Unknown)
+            throw RNewsError.database(.unknown)
         }
     }
 
-    func replacePredicate(predicate: NSPredicate) -> RealmFetchResultsController {
+    func replacePredicate(_ predicate: NSPredicate) -> RealmFetchResultsController {
         return RealmFetchResultsController(configuration: self.realmConfiguration,
                                            model: self.model,
                                            sortDescriptors: self.sortDescriptors,

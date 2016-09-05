@@ -22,15 +22,15 @@ final class FakeSinopeRepository : Sinope.Repository, Equatable {
     private(set) var createAccountCallCount : Int = 0
     var createAccountStub : ((String, String) -> (Future<Result<Void, SinopeError>>))?
     private var createAccountArgs : Array<(String, String)> = []
-    func createAccountReturns(stubbedValues: (Future<Result<Void, SinopeError>>)) {
+    func createAccountReturns(_ stubbedValues: (Future<Result<Void, SinopeError>>)) {
         self.createAccountStub = {(email: String, password: String) -> (Future<Result<Void, SinopeError>>) in
             return stubbedValues
         }
     }
-    func createAccountArgsForCall(callIndex: Int) -> (String, String) {
+    func createAccountArgsForCall(_ callIndex: Int) -> (String, String) {
         return self.createAccountArgs[callIndex]
     }
-    func createAccount(email: String, password: String) -> (Future<Result<Void, SinopeError>>) {
+    func createAccount(_ email: String, password: String) -> (Future<Result<Void, SinopeError>>) {
         self.createAccountCallCount += 1
         self.createAccountArgs.append((email, password))
         return self.createAccountStub!(email, password)
@@ -39,15 +39,15 @@ final class FakeSinopeRepository : Sinope.Repository, Equatable {
     private(set) var loginCallCount : Int = 0
     var loginStub : ((String, String) -> (Future<Result<Void, SinopeError>>))?
     private var loginArgs : Array<(String, String)> = []
-    func loginReturns(stubbedValues: (Future<Result<Void, SinopeError>>)) {
+    func loginReturns(_ stubbedValues: (Future<Result<Void, SinopeError>>)) {
         self.loginStub = {(email: String, password: String) -> (Future<Result<Void, SinopeError>>) in
             return stubbedValues
         }
     }
-    func loginArgsForCall(callIndex: Int) -> (String, String) {
+    func loginArgsForCall(_ callIndex: Int) -> (String, String) {
         return self.loginArgs[callIndex]
     }
-    func login(email: String, password: String) -> (Future<Result<Void, SinopeError>>) {
+    func login(_ email: String, password: String) -> (Future<Result<Void, SinopeError>>) {
         self.loginCallCount += 1
         self.loginArgs.append((email, password))
         return self.loginStub!(email, password)
@@ -55,10 +55,10 @@ final class FakeSinopeRepository : Sinope.Repository, Equatable {
 
     private(set) var loginAuthTokenCallCount : Int = 0
     private var loginAuthTokenArgs : Array<(String)> = []
-    func loginAuthTokenArgsForCall(callIndex: Int) -> (String) {
+    func loginAuthTokenArgsForCall(_ callIndex: Int) -> (String) {
         return self.loginAuthTokenArgs[callIndex]
     }
-    func login(authToken: String) {
+    func login(_ authToken: String) {
         self.loginAuthTokenCallCount += 1
         self._authToken = authToken
         self.loginAuthTokenArgs.append((authToken))
@@ -67,15 +67,15 @@ final class FakeSinopeRepository : Sinope.Repository, Equatable {
     private(set) var addDeviceTokenCallCount : Int = 0
     var addDeviceTokenStub : ((String) -> (Future<Result<Void, SinopeError>>))?
     private var addDeviceTokenArgs : Array<(String)> = []
-    func addDeviceTokenReturns(stubbedValues: (Future<Result<Void, SinopeError>>)) {
+    func addDeviceTokenReturns(_ stubbedValues: (Future<Result<Void, SinopeError>>)) {
         self.addDeviceTokenStub = {(token: String) -> (Future<Result<Void, SinopeError>>) in
             return stubbedValues
         }
     }
-    func addDeviceTokenArgsForCall(callIndex: Int) -> (String) {
+    func addDeviceTokenArgsForCall(_ callIndex: Int) -> (String) {
         return self.addDeviceTokenArgs[callIndex]
     }
-    func addDeviceToken(token: String) -> (Future<Result<Void, SinopeError>>) {
+    func addDeviceToken(_ token: String) -> (Future<Result<Void, SinopeError>>) {
         self.addDeviceTokenCallCount += 1
         self.addDeviceTokenArgs.append((token))
         return self.addDeviceTokenStub!(token)
@@ -83,7 +83,7 @@ final class FakeSinopeRepository : Sinope.Repository, Equatable {
 
     private(set) var deleteAccountCallCount : Int = 0
     var deleteAccountStub : (() -> (Future<Result<Void, SinopeError>>))?
-    func deleteAccountReturns(stubbedValues: (Future<Result<Void, SinopeError>>)) {
+    func deleteAccountReturns(_ stubbedValues: (Future<Result<Void, SinopeError>>)) {
         self.deleteAccountStub = {() -> (Future<Result<Void, SinopeError>>) in
             return stubbedValues
         }
@@ -94,71 +94,71 @@ final class FakeSinopeRepository : Sinope.Repository, Equatable {
     }
 
     private(set) var subscribeCallCount : Int = 0
-    var subscribeStub : (([NSURL]) -> (Future<Result<[NSURL], SinopeError>>))?
-    private var subscribeArgs : Array<([NSURL])> = []
-    func subscribeReturns(stubbedValues: (Future<Result<[NSURL], SinopeError>>)) {
-        self.subscribeStub = {(feeds: [NSURL]) -> (Future<Result<[NSURL], SinopeError>>) in
+    var subscribeStub : (([URL]) -> (Future<Result<[NSURL], SinopeError>>))?
+    private var subscribeArgs : Array<([URL])> = []
+    func subscribeReturns(_ stubbedValues: (Future<Result<[NSURL], SinopeError>>)) {
+        self.subscribeStub = {(feeds: [URL]) -> (Future<Result<[NSURL], SinopeError>>) in
             return stubbedValues
         }
     }
-    func subscribeArgsForCall(callIndex: Int) -> ([NSURL]) {
+    func subscribeArgsForCall(_ callIndex: Int) -> ([URL]) {
         return self.subscribeArgs[callIndex]
     }
-    func subscribe(feeds: [NSURL]) -> (Future<Result<[NSURL], SinopeError>>) {
+    func subscribe(_ feeds: [NSURL]) -> (Future<Result<[NSURL], SinopeError>>) {
         self.subscribeCallCount += 1
-        self.subscribeArgs.append((feeds))
-        return self.subscribeStub!(feeds)
+        self.subscribeArgs.append((feeds as ([URL])))
+        return self.subscribeStub!(feeds as [URL])
     }
 
     private(set) var unsubscribeCallCount : Int = 0
-    var unsubscribeStub : (([NSURL]) -> (Future<Result<[NSURL], SinopeError>>))?
-    private var unsubscribeArgs : Array<([NSURL])> = []
-    func unsubscribeReturns(stubbedValues: (Future<Result<[NSURL], SinopeError>>)) {
-        self.unsubscribeStub = {(feeds: [NSURL]) -> (Future<Result<[NSURL], SinopeError>>) in
+    var unsubscribeStub : (([URL]) -> (Future<Result<[NSURL], SinopeError>>))?
+    private var unsubscribeArgs : Array<([URL])> = []
+    func unsubscribeReturns(_ stubbedValues: (Future<Result<[NSURL], SinopeError>>)) {
+        self.unsubscribeStub = {(feeds: [URL]) -> (Future<Result<[NSURL], SinopeError>>) in
             return stubbedValues
         }
     }
-    func unsubscribeArgsForCall(callIndex: Int) -> ([NSURL]) {
+    func unsubscribeArgsForCall(_ callIndex: Int) -> ([URL]) {
         return self.unsubscribeArgs[callIndex]
     }
-    func unsubscribe(feeds: [NSURL]) -> (Future<Result<[NSURL], SinopeError>>) {
+    func unsubscribe(_ feeds: [NSURL]) -> (Future<Result<[NSURL], SinopeError>>) {
         self.unsubscribeCallCount += 1
-        self.unsubscribeArgs.append((feeds))
-        return self.unsubscribeStub!(feeds)
+        self.unsubscribeArgs.append((feeds as ([URL])))
+        return self.unsubscribeStub!(feeds as [URL])
     }
 
     private(set) var fetchCallCount : Int = 0
-    var fetchStub : (([NSURL: NSDate]) -> (Future<Result<([Feed]), SinopeError>>))?
-    private var fetchArgs : Array<([NSURL: NSDate])> = []
-    func fetchReturns(stubbedValues: (Future<Result<([Feed]), SinopeError>>)) {
-        self.fetchStub = {(feeds: [NSURL: NSDate]) -> (Future<Result<([Feed]), SinopeError>>) in
+    var fetchStub : (([URL: Date]) -> (Future<Result<([Feed]), SinopeError>>))?
+    private var fetchArgs : Array<([URL: Date])> = []
+    func fetchReturns(_ stubbedValues: (Future<Result<([Feed]), SinopeError>>)) {
+        self.fetchStub = {(feeds: [URL: Date]) -> (Future<Result<([Feed]), SinopeError>>) in
             return stubbedValues
         }
     }
-    func fetchArgsForCall(callIndex: Int) -> ([NSURL: NSDate]) {
+    func fetchArgsForCall(_ callIndex: Int) -> ([URL: Date]) {
         return self.fetchArgs[callIndex]
     }
-    func fetch(feeds: [NSURL: NSDate]) -> (Future<Result<([Feed]), SinopeError>>) {
+    func fetch(_ feeds: [NSURL: NSDate]) -> (Future<Result<([Feed]), SinopeError>>) {
         self.fetchCallCount += 1
-        self.fetchArgs.append((feeds))
-        return self.fetchStub!(feeds)
+        self.fetchArgs.append((feeds as ([URL : Date])))
+        return self.fetchStub!(feeds as [URL : Date])
     }
 
     private(set) var checkCallCount : Int = 0
-    var checkStub : ((NSURL) -> (Future<Result<[NSURL: Bool], SinopeError>>))?
-    private var checkArgs : Array<(NSURL)> = []
-    func checkReturns(stubbedValues: (Future<Result<[NSURL: Bool], SinopeError>>)) {
-        self.checkStub = {(url: NSURL) -> (Future<Result<[NSURL: Bool], SinopeError>>) in
+    var checkStub : ((URL) -> (Future<Result<[NSURL: Bool], SinopeError>>))?
+    private var checkArgs : Array<(URL)> = []
+    func checkReturns(_ stubbedValues: (Future<Result<[NSURL: Bool], SinopeError>>)) {
+        self.checkStub = {(url: URL) -> (Future<Result<[NSURL: Bool], SinopeError>>) in
             return stubbedValues
         }
     }
-    func checkArgsForCall(callIndex: Int) -> (NSURL) {
+    func checkArgsForCall(_ callIndex: Int) -> (URL) {
         return self.checkArgs[callIndex]
     }
-    func check(url: NSURL) -> Future<Result<[NSURL : Bool], SinopeError>> {
+    func check(_ url: NSURL) -> Future<Result<[NSURL : Bool], SinopeError>> {
         self.checkCallCount += 1
-        self.checkArgs.append((url))
-        return self.checkStub!(url)
+        self.checkArgs.append((url) as (URL))
+        return self.checkStub!(url as URL)
     }
 
     static func reset() {

@@ -4,12 +4,12 @@ import SyntaxKit
 public class TextViewCell: UITableViewCell {
     public lazy var textView: UITextView = {
         let textView = UITextView(forAutoLayout: ())
-        textView.scrollEnabled = false
+        textView.isScrollEnabled = false
         textView.delegate = self
-        textView.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+        textView.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
 
         self.contentView.addSubview(textView)
-        textView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16))
+        textView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16))
         return textView
     }()
 
@@ -25,15 +25,15 @@ public class TextViewCell: UITableViewCell {
         }
     }
 
-    private func reloadParser() -> AttributedParser? {
-        let bundle = NSBundle(forClass: self.classForCoder)
+    fileprivate func reloadParser() -> AttributedParser? {
+        let bundle = Bundle(for: self.classForCoder)
         let themeFileName = self.themeRepository?.syntaxHighlightFile ?? "mac_classic"
-        if let languagePath = bundle.pathForResource("JavaScript", ofType: "tmLanguage"),
-            languagePlist = NSDictionary(contentsOfFile: languagePath) as? [NSObject: AnyObject],
-            language = Language(dictionary: languagePlist),
-            themePath = bundle.pathForResource(themeFileName, ofType: "tmTheme"),
-            themePlist = NSDictionary(contentsOfFile: themePath) as? [NSObject: AnyObject],
-            theme = SyntaxKit.Theme(dictionary: themePlist) {
+        if let languagePath = bundle.path(forResource: "JavaScript", ofType: "tmLanguage"),
+            let languagePlist = NSDictionary(contentsOfFile: languagePath) as? [NSObject: AnyObject],
+            let language = Language(dictionary: languagePlist),
+            let themePath = bundle.path(forResource: themeFileName, ofType: "tmTheme"),
+            let themePlist = NSDictionary(contentsOfFile: themePath) as? [NSObject: AnyObject],
+            let theme = SyntaxKit.Theme(dictionary: themePlist) {
                 return AttributedParser(language: language, theme: theme)
         }
         return nil
@@ -44,8 +44,8 @@ public class TextViewCell: UITableViewCell {
             self.textView.delegate = nil
             let selection = textView.selectedRange
             let baseAttributes: [String: AnyObject]?
-            let textColor = self.themeRepository?.textColor ?? UIColor.blackColor()
-            let pointSize = UIFont.preferredFontForTextStyle(UIFontTextStyleBody).pointSize
+            let textColor = self.themeRepository?.textColor ?? UIColor.black
+            let pointSize = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body).pointSize
             if let font = UIFont(name: "Menlo-Regular", size: pointSize) {
                 baseAttributes = [NSFontAttributeName: font, NSForegroundColorAttributeName: textColor]
             } else {
@@ -60,7 +60,7 @@ public class TextViewCell: UITableViewCell {
 }
 
 extension TextViewCell: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
+    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.backgroundColor = self.themeRepository?.backgroundColor
         self.textView.backgroundColor = self.themeRepository?.backgroundColor
         self.textView.textColor = self.themeRepository?.textColor
@@ -75,7 +75,7 @@ extension TextViewCell: ThemeRepositorySubscriber {
 }
 
 extension TextViewCell: UITextViewDelegate {
-    public func textViewDidChange(textView: UITextView) {
+    public func textViewDidChange(_ textView: UITextView) {
         self.applyStyling()
         self.onTextChange?(textView.text)
     }

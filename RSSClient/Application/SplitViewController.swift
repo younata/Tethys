@@ -2,7 +2,7 @@ import UIKit
 import SafariServices
 import Ra
 
-public class SplitViewController: UISplitViewController, Injectable {
+public final class SplitViewController: UISplitViewController, Injectable {
     public var collapseDetailViewController: Bool = true
 
     public private(set) lazy var masterNavigationController: UINavigationController = {
@@ -31,14 +31,14 @@ public class SplitViewController: UISplitViewController, Injectable {
     public override func preferredStatusBarStyle() -> UIStatusBarStyle {
         for vc in self.viewControllers {
             if vc is SFSafariViewController {
-                return .Default
+                return .default
             } else if let nc = vc as? UINavigationController {
                 if nc.visibleViewController is SFSafariViewController {
-                    return .Default
+                    return .default
                 }
             }
         }
-        return self.themeRepository.statusBarStyle ?? super.preferredStatusBarStyle()
+        return self.themeRepository.statusBarStyle ?? super.preferredStatusBarStyle
     }
 
     public override func viewDidLoad() {
@@ -46,20 +46,20 @@ public class SplitViewController: UISplitViewController, Injectable {
 
         self.themeRepository.addSubscriber(self)
         self.delegate = self
-        self.preferredDisplayMode = .AllVisible
+        self.preferredDisplayMode = .allVisible
     }
 }
 
 extension SplitViewController: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
+    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.setNeedsStatusBarAppearanceUpdate()
     }
 }
 
 extension SplitViewController: UISplitViewControllerDelegate {
-    public func splitViewController(splitViewController: UISplitViewController,
-        collapseSecondaryViewController secondaryViewController: UIViewController,
-        ontoPrimaryViewController primaryViewController: UIViewController) -> Bool {
+    public func splitViewController(_ splitViewController: UISplitViewController,
+        collapseSecondary secondaryViewController: UIViewController,
+        onto primaryViewController: UIViewController) -> Bool {
             return self.collapseDetailViewController
     }
 }

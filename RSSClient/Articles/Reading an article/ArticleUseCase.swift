@@ -4,21 +4,21 @@ import rNewsKit
 import Result
 
 public protocol ArticleUseCase {
-    func articlesByAuthor(author: Author, callback: DataStoreBackedArray<Article> -> Void)
+    func articlesByAuthor(_ author: Author, callback: (DataStoreBackedArray<Article>) -> Void)
 
-    func readArticle(article: Article) -> String
-    func userActivityForArticle(article: Article) -> NSUserActivity
-    func toggleArticleRead(article: Article)
+    func readArticle(_ article: Article) -> String
+    func userActivityForArticle(_ article: Article) -> NSUserActivity
+    func toggleArticleRead(_ article: Article)
 }
 
 public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
     private let feedRepository: DatabaseUseCase
     private let themeRepository: ThemeRepository
-    private let bundle: NSBundle
+    private let bundle: Bundle
 
     public init(feedRepository: DatabaseUseCase,
                 themeRepository: ThemeRepository,
-                bundle: NSBundle) {
+                bundle: Bundle) {
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository
         self.bundle = bundle
@@ -33,7 +33,7 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
         )
     }
 
-    public func articlesByAuthor(author: Author, callback: DataStoreBackedArray<Article> -> Void) {
+    public func articlesByAuthor(_ author: Author, callback: (DataStoreBackedArray<Article>) -> Void) {
         self.feedRepository.feeds().then {
             guard case let Result.Success(feeds) = $0 else {
                 callback(DataStoreBackedArray<Article>([]))
@@ -60,26 +60,26 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
         }
     }
 
-    public func readArticle(article: Article) -> String {
+    public func readArticle(_ article: Article) -> String {
         if !article.read { self.feedRepository.markArticle(article, asRead: true) }
         return self.htmlForArticle(article)
     }
 
-    public func toggleArticleRead(article: Article) {
+    public func toggleArticleRead(_ article: Article) {
         self.feedRepository.markArticle(article, asRead: !article.read)
     }
 
     private lazy var userActivity: NSUserActivity = {
         let userActivity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
         userActivity.requiredUserInfoKeys = ["feed", "article"]
-        userActivity.eligibleForPublicIndexing = false
-        userActivity.eligibleForSearch = true
+        userActivity.isEligibleForPublicIndexing = false
+        userActivity.isEligibleForSearch = true
         userActivity.delegate = self
         return userActivity
     }()
     private weak var mostRecentArticle: Article?
 
-    public func userActivityForArticle(article: Article) -> NSUserActivity {
+    public func userActivityForArticle(_ article: Article) -> NSUserActivity {
         let title: String
         if let feedTitle = article.feed?.title {
             title = "\(feedTitle): \(article.title)"
@@ -97,18 +97,18 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
     }
 
     private lazy var prismJS: String = {
-        if let prismURL = self.bundle.URLForResource("prism.js", withExtension: "html"),
-            prism = try? String(contentsOfURL: prismURL, encoding: NSUTF8StringEncoding) as String {
+        if let prismURL = self.bundle.url(forResource: "prism.js", withExtension: "html"),
+            let prism = try? String(contentsOfURL: prismURL, encoding: String.Encoding.utf8) as String {
                 return prism
         }
         return ""
     }()
 
-    private func htmlForArticle(article: Article) -> String {
+    private func htmlForArticle(_ article: Article) -> String {
         let prefix: String
         let cssFileName = self.themeRepository.articleCSSFileName
-        if let cssURL = self.bundle.URLForResource(cssFileName, withExtension: "css"),
-            css = try? String(contentsOfURL: cssURL, encoding: NSUTF8StringEncoding) {
+        if let cssURL = self.bundle.url(forResource: cssFileName, withExtension: "css"),
+            let css = try? String(contentsOfURL: cssURL, encoding: String.Encoding.utf8) {
                 prefix = "<html><head>" +
                     "<style type=\"text/css\">\(css)</style>" +
                     "<meta name=\"viewport\" content=\"initial-scale=1.0,maximum-scale=10.0\"/>" +
@@ -126,7 +126,7 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
 }
 
 extension DefaultArticleUseCase: NSUserActivityDelegate {
-    public func userActivityWillSave(userActivity: NSUserActivity) {
+    public func userActivityWillSave(_ userActivity: NSUserActivity) {
         guard let article = self.mostRecentArticle else { return }
         userActivity.userInfo = [
             "feed": article.feed?.title ?? "",

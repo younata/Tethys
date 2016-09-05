@@ -6,10 +6,10 @@ import Result
 class CoreDataService: DataService {
     private let managedObjectContext: NSManagedObjectContext
 
-    let mainQueue: NSOperationQueue
+    let mainQueue: OperationQueue
     let searchIndex: SearchIndex?
 
-    init(managedObjectContext: NSManagedObjectContext, mainQueue: NSOperationQueue, searchIndex: SearchIndex?) {
+    init(managedObjectContext: NSManagedObjectContext, mainQueue: OperationQueue, searchIndex: SearchIndex?) {
         self.managedObjectContext = managedObjectContext
         self.mainQueue = mainQueue
         self.searchIndex = searchIndex
@@ -21,17 +21,17 @@ class CoreDataService: DataService {
 
     // Mark: - Create
 
-    func createFeed(callback: (Feed) -> (Void)) -> Future<Result<Feed, RNewsError>> {
-        let entityDescription = NSEntityDescription.entityForName("Feed",
-            inManagedObjectContext: self.managedObjectContext)!
+    func createFeed(_ callback: (Feed) -> (Void)) -> Future<Result<Feed, RNewsError>> {
+        let entityDescription = NSEntityDescription.entity(forEntityName: "Feed",
+            in: self.managedObjectContext)!
         let promise = Promise<Result<Feed, RNewsError>>()
-        self.managedObjectContext.performBlock {
+        self.managedObjectContext.perform {
             let cdfeed = CoreDataFeed(entity: entityDescription,
-                insertIntoManagedObjectContext: self.managedObjectContext)
+                insertInto: self.managedObjectContext)
             cdfeed.url = ""
             let _ = try? self.managedObjectContext.save()
             let feed = Feed(coreDataFeed: cdfeed)
-            let operation = NSBlockOperation {
+            let operation = BlockOperation {
                 callback(feed)
             }
             self.mainQueue.addOperations([operation], waitUntilFinished: true)
@@ -42,16 +42,16 @@ class CoreDataService: DataService {
         return promise.future
     }
 
-    func createArticle(feed: Feed?, callback: (Article) -> (Void)) {
-        let entityDescription = NSEntityDescription.entityForName("Article",
-            inManagedObjectContext: self.managedObjectContext)!
-        self.managedObjectContext.performBlock {
+    func createArticle(_ feed: Feed?, callback: @escaping (Article) -> (Void)) {
+        let entityDescription = NSEntityDescription.entity(forEntityName: "Article",
+            in: self.managedObjectContext)!
+        self.managedObjectContext.perform {
             let cdarticle = CoreDataArticle(entity: entityDescription,
-                insertIntoManagedObjectContext: self.managedObjectContext)
+                insertInto: self.managedObjectContext)
             let _ = try? self.managedObjectContext.save()
             let article = Article(coreDataArticle: cdarticle, feed: feed)
             feed?.addArticle(article)
-            let operation = NSBlockOperation {
+            let operation = BlockOperation {
                 callback(article)
             }
             self.mainQueue.addOperations([operation], waitUntilFinished: true)
@@ -74,7 +74,7 @@ class CoreDataService: DataService {
         return promise.future
     }
 
-    func articlesMatchingPredicate(predicate: NSPredicate) ->
+    func articlesMatchingPredicate(_ predicate: NSPredicate) ->
         Future<Result<DataStoreBackedArray<Article>, RNewsError>> {
             let promise = Promise<Result<DataStoreBackedArray<Article>, RNewsError>>()
             let sortDescriptors = [
@@ -92,13 +92,13 @@ class CoreDataService: DataService {
 
     // Mark: - Delete
 
-    func deleteFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {
+    func deleteFeed(_ feed: Feed) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
         guard let _ = feed.feedID as? NSManagedObjectID else {
             promise.resolve(.Failure(.Database(.Unknown)))
             return promise.future
         }
-        self.managedObjectContext.performBlock {
+        self.managedObjectContext.perform {
             self.deleteFeed(feed, deleteArticles: true)
             self.mainQueue.addOperationWithBlock {
                 promise.resolve(.Success())
@@ -107,13 +107,13 @@ class CoreDataService: DataService {
         return promise.future
     }
 
-    func deleteArticle(article: Article) -> Future<Result<Void, RNewsError>> {
+    func deleteArticle(_ article: Article) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
         guard let _ = article.articleID as? NSManagedObjectID else {
             promise.resolve(.Failure(.Database(.Unknown)))
             return promise.future
         }
-        self.managedObjectContext.performBlock {
+        self.managedObjectContext.perform {
             self.privateDeleteArticle(article)
             self.mainQueue.addOperationWithBlock {
                 promise.resolve(.Success())
@@ -124,14 +124,14 @@ class CoreDataService: DataService {
 
     // Mark: - Batch
 
-    func batchCreate(feedCount: Int, articleCount: Int) ->
+    func batchCreate(_ feedCount: Int, articleCount: Int) ->
         Future<Result<([Feed], [Article]), RNewsError>> {
             let promise = Promise<Result<([Feed], [Article]), RNewsError>>()
-            let feedEntityDescription = NSEntityDescription.entityForName("Feed",
-                inManagedObjectContext: self.managedObjectContext)!
-            let articleEntityDescription = NSEntityDescription.entityForName("Article",
-                inManagedObjectContext: self.managedObjectContext)!
-            self.managedObjectContext.performBlock {
+            let feedEntityDescription = NSEntityDescription.entity(forEntityName: "Feed",
+                in: self.managedObjectContext)!
+            let articleEntityDescription = NSEntityDescription.entity(forEntityName: "Article",
+                in: self.managedObjectContext)!
+            self.managedObjectContext.perform {
                 autoreleasepool {
                     let cdfeeds = (0..<feedCount).map { _ in
                         return CoreDataFeed(entity: feedEntityDescription,
@@ -154,9 +154,9 @@ class CoreDataService: DataService {
             return promise.future
     }
 
-    func batchSave(feeds: [Feed], articles: [Article]) -> Future<Result<Void, RNewsError>> {
+    func batchSave(_ feeds: [Feed], articles: [Article]) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
-        self.managedObjectContext.performBlock {
+        self.managedObjectContext.perform {
             autoreleasepool {
                 feeds.forEach(self.updateFeed)
                 articles.forEach(self.updateArticle)
@@ -171,21 +171,21 @@ class CoreDataService: DataService {
 
     func deleteEverything() -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
-        self.managedObjectContext.performBlock {
+        self.managedObjectContext.perform {
             self.managedObjectContext.reset()
-            let deleteAllEntitiesOfType: String -> Void = { entityType in
+            let deleteAllEntitiesOfType: (String) -> Void = { entityType in
                 autoreleasepool {
                     let request = NSFetchRequest()
-                    request.entity = NSEntityDescription.entityForName(entityType,
-                        inManagedObjectContext: self.managedObjectContext)
-                    request.resultType = .ManagedObjectIDResultType
+                    request.entity = NSEntityDescription.entity(forEntityName: entityType,
+                        in: self.managedObjectContext)
+                    request.resultType = .managedObjectIDResultType
                     request.includesPropertyValues = false
                     request.includesSubentities = false
                     request.returnsObjectsAsFaults = true
-                    let objects = (try? self.managedObjectContext.executeFetchRequest(request) ?? [])
+                    let objects = (try? self.managedObjectContext.fetch(request) ?? [])
                         as? [NSManagedObject]
 
-                    objects?.forEach(self.managedObjectContext.deleteObject)
+                    objects?.forEach(self.managedObjectContext.delete(_:))
                     _ = try? self.managedObjectContext.save()
                 }
             }
@@ -203,38 +203,38 @@ class CoreDataService: DataService {
     // Mark: - Private
 
     // Danger will robinson, this is meant to be inside a managedObjectContext's performBlock block!
-    private func coreDataFeedForFeed(feed: Feed) -> CoreDataFeed? {
+    private func coreDataFeedForFeed(_ feed: Feed) -> CoreDataFeed? {
         return self.coreDataFeedsForFeeds([feed]).first
     }
 
-    private func coreDataArticleForArticle(article: Article) -> CoreDataArticle? {
+    private func coreDataArticleForArticle(_ article: Article) -> CoreDataArticle? {
         return self.coreDataArticlesForArticles([article]).first
     }
 
-    private func coreDataFeedsForFeeds(feeds: [Feed]) -> [CoreDataFeed] {
+    private func coreDataFeedsForFeeds(_ feeds: [Feed]) -> [CoreDataFeed] {
         let request = NSFetchRequest()
-        request.entity = NSEntityDescription.entityForName("Feed",
-            inManagedObjectContext: managedObjectContext)
+        request.entity = NSEntityDescription.entity(forEntityName: "Feed",
+            in: managedObjectContext)
         let ids = feeds.flatMap { $0.feedID as? NSManagedObjectID }
         request.predicate = NSPredicate(format: "self IN %@", ids)
-        return (try? self.managedObjectContext.executeFetchRequest(request) ?? []) as? [CoreDataFeed] ?? []
+        return (try? self.managedObjectContext.fetch(request) ?? []) as? [CoreDataFeed] ?? []
     }
 
-    private func coreDataArticlesForArticles(articles: [Article]) -> [CoreDataArticle] {
+    private func coreDataArticlesForArticles(_ articles: [Article]) -> [CoreDataArticle] {
         let request = NSFetchRequest()
-        request.entity = NSEntityDescription.entityForName("Article",
-            inManagedObjectContext: managedObjectContext)
+        request.entity = NSEntityDescription.entity(forEntityName: "Article",
+            in: managedObjectContext)
         let ids = articles.flatMap { $0.articleID as? NSManagedObjectID }
         request.predicate = NSPredicate(format: "self IN %@", ids)
-        return (try? self.managedObjectContext.executeFetchRequest(request) ?? []) as? [CoreDataArticle] ?? []
+        return (try? self.managedObjectContext.fetch(request) ?? []) as? [CoreDataArticle] ?? []
     }
 
     // synchronous update!
 
-    private func updateFeed(feed: Feed) {
+    private func updateFeed(_ feed: Feed) {
         if let cdfeed = self.coreDataFeedForFeed(feed) {
             cdfeed.title = feed.title
-            cdfeed.url = feed.url.absoluteString
+            cdfeed.url = feed.url.absoluteString!
             cdfeed.summary = feed.summary
             cdfeed.tags = feed.tags
             cdfeed.waitPeriodInt = feed.waitPeriod
@@ -243,11 +243,11 @@ class CoreDataService: DataService {
 
             let _ = try? self.managedObjectContext.save()
 
-            self.managedObjectContext.refreshObject(cdfeed, mergeChanges: false)
+            self.managedObjectContext.refresh(cdfeed, mergeChanges: false)
         }
     }
 
-    private func updateArticle(article: Article) {
+    private func updateArticle(_ article: Article) {
         if let cdarticle = self.coreDataArticleForArticle(article) {
             cdarticle.title = article.title
             cdarticle.link = article.link?.absoluteString
@@ -258,21 +258,21 @@ class CoreDataService: DataService {
             cdarticle.content = article.content
             cdarticle.read = article.read
             cdarticle.flags = article.flags
-            cdarticle.estimatedReadingTime = NSNumber(integer: article.estimatedReadingTime)
+            cdarticle.estimatedReadingTime = NSNumber(value: article.estimatedReadingTime)
 
-            if let feed = article.feed, cdfeed = self.coreDataFeedForFeed(feed) {
+            if let feed = article.feed, let cdfeed = self.coreDataFeedForFeed(feed) {
                 cdarticle.feed = cdfeed
             }
 
             let _ = try? self.managedObjectContext.save()
 
-            self.managedObjectContext.refreshObject(cdarticle, mergeChanges: false)
+            self.managedObjectContext.refresh(cdarticle, mergeChanges: false)
 
             self.updateSearchIndexForArticle(article)
         }
     }
 
-    private func deleteFeed(feed: Feed, deleteArticles: Bool) {
+    private func deleteFeed(_ feed: Feed, deleteArticles: Bool) {
         if let cdfeed = self.coreDataFeedForFeed(feed) {
             if deleteArticles {
                 #if os(iOS)
@@ -282,23 +282,23 @@ class CoreDataService: DataService {
                 #endif
 
                 for article in cdfeed.articles {
-                    self.managedObjectContext.deleteObject(article)
-                    self.managedObjectContext.refreshObject(article, mergeChanges: false)
+                    self.managedObjectContext.delete(article)
+                    self.managedObjectContext.refresh(article, mergeChanges: false)
                 }
             }
-            self.managedObjectContext.deleteObject(cdfeed)
+            self.managedObjectContext.delete(cdfeed)
             let _ = try? self.managedObjectContext.save()
 
-            self.managedObjectContext.refreshObject(cdfeed, mergeChanges: false)
+            self.managedObjectContext.refresh(cdfeed, mergeChanges: false)
         }
     }
 
-    private func privateDeleteArticle(article: Article) {
+    private func privateDeleteArticle(_ article: Article) {
         if let cdarticle = self.coreDataArticleForArticle(article) {
-            self.managedObjectContext.deleteObject(cdarticle)
+            self.managedObjectContext.delete(cdarticle)
             let _ = try? self.managedObjectContext.save()
 
-            self.managedObjectContext.refreshObject(cdarticle, mergeChanges: false)
+            self.managedObjectContext.refresh(cdarticle, mergeChanges: false)
 
             #if os(iOS)
                 self.searchIndex?.deleteIdentifierFromIndex([article.identifier]) {_ in }

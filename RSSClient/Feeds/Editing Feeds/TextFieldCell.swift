@@ -1,11 +1,10 @@
 import UIKit
 
-public class TextFieldCell: UITableViewCell {
-
+public final class TextFieldCell: UITableViewCell {
     public lazy var textField: UITextField = {
         let textField = UITextField(forAutoLayout: ())
         textField.delegate = self
-        textField.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+        textField.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
 
         return textField
     }()
@@ -14,7 +13,7 @@ public class TextFieldCell: UITableViewCell {
 
     public var showValidator: Bool = false {
         didSet {
-            self.validView.hidden = !self.showValidator
+            self.validView.isHidden = !self.showValidator
         }
     }
 
@@ -30,9 +29,9 @@ public class TextFieldCell: UITableViewCell {
         return validView
     }()
 
-    public var isValid: Bool { return self.validView.state == .Valid }
+    public var isValid: Bool { return self.validView.state == .valid }
 
-    public func setValid(valid: Bool) {
+    public func setValid(_ valid: Bool) {
         self.validView.endValidating(valid)
     }
 
@@ -40,31 +39,31 @@ public class TextFieldCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         self.contentView.addSubview(self.textField)
-        self.textField.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0),
-            excludingEdge: .Trailing)
+        self.textField.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0),
+            excludingEdge: .trailing)
 
         self.contentView.addSubview(self.validView)
-        self.validView.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Leading)
-        self.validView.autoPinEdge(.Leading, toEdge: .Trailing, ofView: self.textField)
+        self.validView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero, excludingEdge: .leading)
+        self.validView.autoPinEdge(.leading, to: .trailing, of: self.textField)
 
-        self.selectionStyle = .None
+        self.selectionStyle = .none
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError("nope") }
 }
 
 extension TextFieldCell: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
+    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.textField.textColor = self.themeRepository?.textColor
         self.backgroundColor = self.themeRepository?.backgroundColor
     }
 }
 
 extension TextFieldCell: UITextFieldDelegate {
-    public func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange,
+    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
         replacementString string: String) -> Bool {
             guard let text = textField.text else { return true }
-            let changedText = (text as NSString).stringByReplacingCharactersInRange(range, withString: string)
+            let changedText = (text as NSString).replacingCharacters(in: range, with: string)
 
             if self.showValidator {
                 self.validView.beginValidating()

@@ -3,19 +3,19 @@
 class FakeDataSubscriber: NSObject, DataSubscriber {
     var markedArticles: [Article]? = nil
     var read: Bool? = nil
-    func markedArticles(articles: [Article], asRead: Bool) {
+    func markedArticles(_ articles: [Article], asRead: Bool) {
         markedArticles = articles
         read = asRead
     }
 
     var deletedArticle: Article? = nil
-    func deletedArticle(article: Article) {
+    func deletedArticle(_ article: Article) {
         deletedArticle = article
     }
 
     var deletedFeed: Feed? = nil
     var deletedFeedsLeft: Int? = nil
-    func deletedFeed(feed: Feed, feedsLeft: Int) {
+    func deletedFeed(_ feed: Feed, feedsLeft: Int) {
         deletedFeed = feed
         deletedFeedsLeft = feedsLeft
     }
@@ -28,7 +28,7 @@ class FakeDataSubscriber: NSObject, DataSubscriber {
     var updateFeedsProgressFinished = 0
     var updateFeedsProgressTotal = 0
     var didUpdateFeedsArgs: [(Int, Int)] = []
-    func didUpdateFeedsProgress(finished: Int, total: Int) {
+    func didUpdateFeedsProgress(_ finished: Int, total: Int) {
         updateFeedsProgressFinished = finished
         updateFeedsProgressTotal = total
         didUpdateFeedsArgs.append((finished, total))
@@ -36,7 +36,7 @@ class FakeDataSubscriber: NSObject, DataSubscriber {
 
 
     var updatedFeeds: [Feed]? = nil
-    func didUpdateFeeds(feeds: [Feed]) {
+    func didUpdateFeeds(_ feeds: [Feed]) {
         updatedFeeds = feeds
     }
 }

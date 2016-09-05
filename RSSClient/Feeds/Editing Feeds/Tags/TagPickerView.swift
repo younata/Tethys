@@ -1,7 +1,7 @@
 import UIKit
 import PureLayout
 
-public class TagPickerView: UIView {
+public final class TagPickerView: UIView {
     public lazy var textField: UITextField = {
         let textField = UITextField(forAutoLayout: ())
         textField.delegate = self
@@ -10,8 +10,8 @@ public class TagPickerView: UIView {
         textField.layer.cornerRadius = 5
 
         self.addSubview(textField)
-        textField.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Bottom)
-        textField.autoSetDimension(.Height, toSize: 40)
+        textField.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero, excludingEdge: .bottom)
+        textField.autoSetDimension(.height, toSize: 40)
         return textField
     }()
 
@@ -21,15 +21,15 @@ public class TagPickerView: UIView {
         picker.dataSource = self
 
         self.addSubview(picker)
-        picker.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsetsZero, excludingEdge: .Top)
-        picker.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.textField)
-        picker.autoSetDimension(.Height, toSize: 120)
+        picker.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero, excludingEdge: .top)
+        picker.autoPinEdge(.top, to: .bottom, of: self.textField)
+        picker.autoSetDimension(.height, toSize: 120)
         return picker
     }()
 
-    private var allTags: [String] = []
-    private var didSelect: (String) -> Void = {(_) in }
-    private var existingSolutions: [String] = [] {
+    fileprivate var allTags: [String] = []
+    fileprivate var didSelect: (String) -> Void = {(_) in }
+    fileprivate var existingSolutions: [String] = [] {
         didSet {
             self.picker.reloadComponent(0)
         }
@@ -41,7 +41,7 @@ public class TagPickerView: UIView {
         }
     }
 
-    public func configureWithTags(tags: [String], onSelect: (String) -> Void) {
+    public func configureWithTags(_ tags: [String], onSelect: @escaping (String) -> Void) {
         self.allTags = tags
         self.didSelect = onSelect
 
@@ -49,13 +49,13 @@ public class TagPickerView: UIView {
         self.textFieldDidChange("")
     }
 
-    private func textFieldDidChange(text: String) -> Bool {
+    private func textFieldDidChange(_ text: String) -> Bool {
         let solutions: [String]
         if text.isEmpty {
             solutions = self.allTags
         } else {
             solutions = self.allTags.filter {
-                return $0.rangeOfString(text) != nil
+                return $0.range(of: text) != nil
             }
             self.didSelect(text)
         }
@@ -65,23 +65,23 @@ public class TagPickerView: UIView {
 }
 
 extension TagPickerView: UIPickerViewDataSource, UIPickerViewDelegate {
-    public func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+    public func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
 
-    public func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    public func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return self.existingSolutions.count
     }
 
-    public func pickerView(pickerView: UIPickerView,
+    public func pickerView(_ pickerView: UIPickerView,
         attributedTitleForRow row: Int,
         forComponent component: Int) -> NSAttributedString? {
-            let textColor = self.themeRepository?.textColor ?? UIColor.blackColor()
+            let textColor = self.themeRepository?.textColor ?? UIColor.black
             return NSAttributedString(string: self.existingSolutions[row],
                 attributes: [NSForegroundColorAttributeName: textColor])
     }
 
-    public func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    public func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if row < self.existingSolutions.count {
             let solution = self.existingSolutions[row]
             self.textField.text = solution
@@ -91,18 +91,18 @@ extension TagPickerView: UIPickerViewDataSource, UIPickerViewDelegate {
 }
 
 extension TagPickerView: UITextFieldDelegate {
-    public func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange,
+    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
         replacementString string: String) -> Bool {
             guard let text = textField.text else {
                 return false
             }
-            let replacedText = (text as NSString).stringByReplacingCharactersInRange(range, withString: string)
+            let replacedText = (text as NSString).replacingCharacters(in: range, with: string)
             return textFieldDidChange(replacedText)
     }
 }
 
 extension TagPickerView: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
+    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.picker.reloadComponent(0)
     }
 }

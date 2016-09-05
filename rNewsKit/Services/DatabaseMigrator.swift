@@ -1,10 +1,10 @@
 protocol DatabaseMigratorType {
-    func migrate(from: DataService, to: DataService, progress: Double -> Void, finish: Void -> Void)
-    func deleteEverything(database: DataService, progress: Double -> Void, finish: Void -> Void)
+    func migrate(_ from: DataService, to: DataService, progress: (Double) -> Void, finish: (Void) -> Void)
+    func deleteEverything(_ database: DataService, progress: (Double) -> Void, finish: (Void) -> Void)
 }
 
 struct DatabaseMigrator: DatabaseMigratorType {
-    func migrate(from: DataService, to: DataService, progress: Double -> Void, finish: Void -> Void) {
+    func migrate(_ from: DataService, to: DataService, progress: @escaping (Double) -> Void, finish: @escaping (Void) -> Void) {
         var progressCalls: Double = 0
         let expectedProgressCalls: Double = 4
 
@@ -49,7 +49,7 @@ struct DatabaseMigrator: DatabaseMigratorType {
                         let newArticle = newArticles[idx]
                         articlesDictionary[oldArticle] = newArticle
 
-                        if let oldFeed = oldArticle.feed, feed = feedsDictionary[oldFeed] {
+                        if let oldFeed = oldArticle.feed, let feed = feedsDictionary[oldFeed] {
                             newArticle.feed = feed
                             feed.addArticle(newArticle)
                         }
@@ -67,7 +67,7 @@ struct DatabaseMigrator: DatabaseMigratorType {
         }
     }
 
-    func deleteEverything(database: DataService, progress: Double -> Void, finish: Void -> Void) {
+    func deleteEverything(_ database: DataService, progress: @escaping (Double) -> Void, finish: @escaping (Void) -> Void) {
         database.deleteEverything().then { _ in
             progress(1.0)
             finish()

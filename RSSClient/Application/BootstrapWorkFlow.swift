@@ -3,19 +3,19 @@ import rNewsKit
 import Ra
 
 public protocol Bootstrapper {
-    func begin(feedAndArticle: (feed: Feed, article: Article)?)
+    func begin(_ feedAndArticle: (feed: Feed, article: Article)?)
 }
 
-public class BootstrapWorkFlow: Bootstrapper {
+public final class BootstrapWorkFlow: Bootstrapper {
     private var workflow: LinearWorkFlow!
 
     private let window: UIWindow
     private let feedRepository: DatabaseUseCase
     private let migrationUseCase: MigrationUseCase
     private let splitViewController: SplitViewController
-    private let migrationViewController: Void -> MigrationViewController
-    private let feedsTableViewController: Void -> FeedsTableViewController
-    private let articleViewController: Void -> ArticleViewController
+    private let migrationViewController: (Void) -> MigrationViewController
+    private let feedsTableViewController: (Void) -> FeedsTableViewController
+    private let articleViewController: (Void) -> ArticleViewController
 
     private let initialLaunch = false
 
@@ -24,9 +24,9 @@ public class BootstrapWorkFlow: Bootstrapper {
         feedRepository: DatabaseUseCase,
         migrationUseCase: MigrationUseCase,
         splitViewController: SplitViewController,
-        migrationViewController: Void -> MigrationViewController,
-        feedsTableViewController: Void -> FeedsTableViewController,
-        articleViewController: Void -> ArticleViewController) {
+        migrationViewController: (Void) -> MigrationViewController,
+        feedsTableViewController: (Void) -> FeedsTableViewController,
+        articleViewController: (Void) -> ArticleViewController) {
         self.window = window
         self.feedRepository = feedRepository
         self.migrationUseCase = migrationUseCase
@@ -50,7 +50,7 @@ public class BootstrapWorkFlow: Bootstrapper {
     }
 
     private var feedAndArticle: (feed: Feed, article: Article)?
-    public func begin(feedAndArticle: (feed: Feed, article: Article)? = nil) {
+    public func begin(_ feedAndArticle: (feed: Feed, article: Article)? = nil) {
         self.feedAndArticle = feedAndArticle
         if self.initialLaunch {
 
@@ -70,10 +70,10 @@ public class BootstrapWorkFlow: Bootstrapper {
         }
     }
 
-    public func workFlowDidAdvance(workFlow: WorkFlow) {
+    public func workFlowDidAdvance(_ workFlow: WorkFlow) {
     }
 
-    public func workFlowDidFinish(workFlow: WorkFlow) {
+    public func workFlowDidFinish(_ workFlow: WorkFlow) {
         self.showFeedsController()
     }
 

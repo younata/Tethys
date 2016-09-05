@@ -8,18 +8,18 @@ protocol DataServiceFactoryType: class {
 }
 
 final class DataServiceFactory: DataServiceFactoryType {
-    private let mainQueue: NSOperationQueue
-    private let realmQueue: NSOperationQueue
+    private let mainQueue: OperationQueue
+    private let realmQueue: OperationQueue
     private let searchIndex: SearchIndex?
-    private let bundle: NSBundle
-    private let fileManager: NSFileManager
+    private let bundle: Bundle
+    private let fileManager: FileManager
 
 
-    init(mainQueue: NSOperationQueue,
-        realmQueue: NSOperationQueue,
+    init(mainQueue: OperationQueue,
+        realmQueue: OperationQueue,
         searchIndex: SearchIndex?,
-        bundle: NSBundle,
-        fileManager: NSFileManager) {
+        bundle: Bundle,
+        fileManager: FileManager) {
             self.mainQueue = mainQueue
             self.realmQueue = realmQueue
             self.searchIndex = searchIndex
@@ -56,25 +56,25 @@ final class DataServiceFactory: DataServiceFactoryType {
 
     private func useCoreData() -> Bool {
         guard let url = Realm.Configuration.defaultConfiguration.fileURL else { return true }
-        return !self.fileManager.fileExistsAtPath(url.path ?? "")
+        return !self.fileManager.fileExists(atPath: url.path ?? "")
     }
 
     private func coreDataService() -> CoreDataService {
-        let modelURL = self.bundle.URLForResource("RSSClient", withExtension: "momd")!
-        let managedObjectModel = NSManagedObjectModel(contentsOfURL: modelURL)!
+        let modelURL = self.bundle.url(forResource: "RSSClient", withExtension: "momd")!
+        let managedObjectModel = NSManagedObjectModel(contentsOf: modelURL)!
 
-        let storeURL = NSURL.fileURLWithPath(documentsDirectory().stringByAppendingPathComponent("RSSClient.sqlite"))
+        let storeURL = URL(fileURLWithPath: documentsDirectory().appendingPathComponent("RSSClient.sqlite"))
         let persistentStore = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
-        let options: [String: AnyObject] = [NSMigratePersistentStoresAutomaticallyOption: true,
-            NSInferMappingModelAutomaticallyOption: true]
+        let options: [String: AnyObject] = [NSMigratePersistentStoresAutomaticallyOption: true as AnyObject,
+            NSInferMappingModelAutomaticallyOption: true as AnyObject]
         do {
-            try persistentStore.addPersistentStoreWithType(NSSQLiteStoreType,
-                configuration: managedObjectModel.configurations.last,
-                URL: storeURL, options: options)
+            try persistentStore.addPersistentStore(ofType: NSSQLiteStoreType,
+                configurationName: managedObjectModel.configurations.last,
+                at: storeURL, options: options)
         } catch {
             fatalError()
         }
-        let managedObjectContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+        let managedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         managedObjectContext.persistentStoreCoordinator = persistentStore
         managedObjectContext.undoManager = nil
 

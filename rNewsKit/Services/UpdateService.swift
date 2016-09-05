@@ -5,28 +5,28 @@ import CBGPromise
 import Result
 
 protocol NetworkClientDelegate: class {
-    func didDownloadImage(image: Image, url: NSURL)
-    func didDownloadFeed(feed: ImportableFeed, url: NSURL)
-    func didDownloadData(data: NSData, url: NSURL)
-    func didFailToDownloadDataFromUrl(url: NSURL, error: NSError?)
+    func didDownloadImage(_ image: Image, url: URL)
+    func didDownloadFeed(_ feed: ImportableFeed, url: URL)
+    func didDownloadData(_ data: Data, url: URL)
+    func didFailToDownloadDataFromUrl(_ url: URL, error: NSError?)
 }
 
-final class URLSessionDelegate: NSObject, NSURLSessionDownloadDelegate {
+final class URLSessionDelegate: NSObject, URLSessionDownloadDelegate {
     weak var delegate: NetworkClientDelegate?
 
-    func URLSession(_ : NSURLSession, downloadTask: NSURLSessionDownloadTask, didFinishDownloadingToURL url: NSURL) {
-        guard let data = NSData(contentsOfURL: url) else {
+    func urlSession(_ : URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo url: URL) {
+        guard let data = try? Data(contentsOf: url) else {
             let error = NSError(domain: "com.rachelbrindle.rNews", code: 20, userInfo: nil)
             self.delegate?.didFailToDownloadDataFromUrl(url, error: error)
             return
         }
-        let originalUrl = downloadTask.originalRequest?.URL ?? NSURL()
-        let mimetype = downloadTask.response?.MIMEType
+        let originalUrl = downloadTask.originalRequest?.url ?? URL()
+        let mimetype = downloadTask.response?.mimeType
 
         if mimetype?.hasPrefix("image") == true, let image = Image(data: data) {
             self.delegate?.didDownloadImage(image, url: originalUrl)
             return
-        } else if let str = String(data: data, encoding: NSUTF8StringEncoding) {
+        } else if let str = String(data: data, encoding: String.Encoding.utf8) {
             let feedParser = Muon.FeedParser(string: str)
             feedParser.failure { _ in
                 self.delegate?.didDownloadData(data, url: originalUrl)
@@ -40,30 +40,30 @@ final class URLSessionDelegate: NSObject, NSURLSessionDownloadDelegate {
         self.delegate?.didDownloadData(data, url: originalUrl)
     }
 
-    func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
-        let url = task.originalRequest?.URL ?? NSURL()
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        let url = task.originalRequest?.url ?? URL()
         self.delegate?.didFailToDownloadDataFromUrl(url, error: error)
     }
 }
 
 protocol UpdateServiceType: class {
-    func updateFeed(feed: rNewsKit.Feed, callback: (rNewsKit.Feed, NSError?) -> Void)
-    func updateFeeds(progress: (Int, Int) -> Void) ->
+    func updateFeed(_ feed: rNewsKit.Feed, callback: (rNewsKit.Feed, NSError?) -> Void)
+    func updateFeeds(_ progress: (Int, Int) -> Void) ->
         Future<Result<[rNewsKit.Feed], RNewsError>>
 }
 
 final class UpdateService: UpdateServiceType, NetworkClientDelegate {
     private let dataServiceFactory: DataServiceFactoryType
-    private let urlSession: NSURLSession
-    private let workerQueue: NSOperationQueue
+    private let urlSession: URLSession
+    private let workerQueue: OperationQueue
     private let sinopeRepository: Sinope.Repository
 
-    private var callbacksInProgress: [NSURL: (feed: rNewsKit.Feed, callback: ((rNewsKit.Feed, NSError?) -> Void))] = [:]
+    private var callbacksInProgress: [URL: (feed: rNewsKit.Feed, callback: ((rNewsKit.Feed, NSError?) -> Void))] = [:]
 
     init(dataServiceFactory: DataServiceFactoryType,
-         urlSession: NSURLSession,
+         urlSession: URLSession,
          urlSessionDelegate: URLSessionDelegate,
-         workerQueue: NSOperationQueue,
+         workerQueue: OperationQueue,
          sinopeRepository: Sinope.Repository) {
         self.dataServiceFactory = dataServiceFactory
         self.urlSession = urlSession
@@ -72,12 +72,12 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
         urlSessionDelegate.delegate = self
     }
 
-    func updateFeed(feed: Feed, callback: (Feed, NSError?) -> Void) {
-        self.callbacksInProgress[feed.url] = (feed, callback)
-        self.downloadURL(feed.url)
+    func updateFeed(_ feed: Feed, callback: (Feed, NSError?) -> Void) {
+        self.callbacksInProgress[feed.url as URL] = (feed, callback)
+        self.downloadURL(feed.url as URL)
     }
 
-    func updateFeeds(progress: (Int, Int) -> Void) ->
+    func updateFeeds(_ progress: (Int, Int) -> Void) ->
         Future<Result<[rNewsKit.Feed], RNewsError>> {
             let dataService = self.dataServiceFactory.currentDataService
             guard let feedsArray = dataService.allFeeds().wait()?.value else {
@@ -87,7 +87,7 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
             }
             let feeds = Array(feedsArray)
 
-            var urlsToDates: [NSURL: NSDate] = [:]
+            var urlsToDates: [URL: Date] = [:]
             for feed in feeds {
                 if feed.lastUpdated != NSDate(timeIntervalSinceReferenceDate: 0) {
                     urlsToDates[feed.url] = feed.lastUpdated
@@ -104,7 +104,7 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
             }
     }
 
-    private func updateFeedsFromSinopeFeeds(sinopeFeeds: [Sinope.Feed], progressCallback: (Int, Int) -> Void) ->
+    private func updateFeedsFromSinopeFeeds(_ sinopeFeeds: [Sinope.Feed], progressCallback: (Int, Int) -> Void) ->
         [rNewsKit.Feed] {
             var current = sinopeFeeds.count
             let total = current * 2
@@ -142,14 +142,14 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
 
     // MARK: NetworkClientDelegate
 
-    func didDownloadFeed(singleFeed: ImportableFeed, url: NSURL) {
+    func didDownloadFeed(_ singleFeed: ImportableFeed, url: URL) {
         guard let feedCallback = self.callbacksInProgress[url] else { return }
-        self.callbacksInProgress.removeValueForKey(url)
+        self.callbacksInProgress.removeValue(forKey: url)
         let feed = feedCallback.feed
         let callback = feedCallback.callback
         self.workerQueue.addOperationWithBlock {
             self.dataServiceFactory.currentDataService.updateFeed(feed, info: singleFeed).then { _ in
-                if feed.image == nil, let imageUrl = singleFeed.imageURL where !imageUrl.absoluteString.isEmpty {
+                if feed.image == nil, let imageUrl = singleFeed.imageURL , !imageUrl.absoluteString.isEmpty {
                     self.callbacksInProgress[imageUrl] = feedCallback
                     self.downloadURL(imageUrl)
                 } else {
@@ -159,9 +159,9 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
         }
     }
 
-    func didDownloadImage(image: Image, url: NSURL) {
+    func didDownloadImage(_ image: Image, url: URL) {
         guard let imageCallback = self.callbacksInProgress[url] else { return }
-        self.callbacksInProgress.removeValueForKey(url)
+        self.callbacksInProgress.removeValue(forKey: url)
         let feed = imageCallback.feed
         let callback = imageCallback.callback
         feed.image = image
@@ -172,27 +172,27 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
         }
     }
 
-    func didDownloadData(data: NSData, url: NSURL) {
+    func didDownloadData(_ data: Data, url: URL) {
         let error = NSError(domain: "com.rachelbrindle.rnews.parseError",
             code: 1,
             userInfo: [NSLocalizedDescriptionKey: "Unable to parse data"])
         self.didFailToDownloadDataFromUrl(url, error: error)
     }
 
-    func didFailToDownloadDataFromUrl(url: NSURL, error: NSError?) {
+    func didFailToDownloadDataFromUrl(_ url: URL, error: NSError?) {
         guard error != nil, let callback = self.callbacksInProgress[url] else { return }
-        self.callbacksInProgress.removeValueForKey(url)
+        self.callbacksInProgress.removeValue(forKey: url)
         let feed = callback.feed
         let function = callback.callback
-        self.workerQueue.addOperationWithBlock {
+        self.workerQueue.addOperation {
             function(feed, error)
         }
     }
 
     // MARK: Private
 
-    private func downloadURL(url: NSURL) {
-        let request = NSURLRequest(URL: url, cachePolicy: .UseProtocolCachePolicy, timeoutInterval: 30)
-        self.urlSession.downloadTaskWithRequest(request).resume()
+    private func downloadURL(_ url: URL) {
+        let request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 30)
+        self.urlSession.downloadTask(with: request).resume()
     }
 }

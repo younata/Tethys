@@ -1920,9 +1920,11 @@
 					894304201B45089A000078DC = {
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = 9D456YCUH2;
+						LastSwiftMigration = 0800;
 					};
 					894304291B45089A000078DC = {
 						CreatedOnToolsVersion = 7.0;
+						LastSwiftMigration = 0800;
 					};
 					89635F881A13C2E30052C248 = {
 						CreatedOnToolsVersion = 6.1;
@@ -1945,6 +1947,7 @@
 					89C8307219D730E9009924DA = {
 						CreatedOnToolsVersion = 6.0.1;
 						DevelopmentTeam = 9D456YCUH2;
+						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -2612,6 +2615,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.rNewsKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -2638,6 +2642,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.rNewsKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -2658,6 +2663,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.rNewsKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -2676,6 +2682,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.rNewsKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -3019,6 +3026,7 @@
 				PROVISIONING_PROFILE = "efd16637-c71e-45cb-9f44-f10d48509c2c";
 				SWIFT_OBJC_BRIDGING_HEADER = "RSSClient/RSSClient-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Debug;
@@ -3046,6 +3054,7 @@
 				PRODUCT_NAME = rNews;
 				PROVISIONING_PROFILE = "102ff7ac-9378-49de-8e9e-fa6cf25e9870";
 				SWIFT_OBJC_BRIDGING_HEADER = "RSSClient/RSSClient-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Release;

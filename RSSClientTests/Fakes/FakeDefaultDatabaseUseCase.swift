@@ -10,21 +10,21 @@ class FakeDefaultDatabaseUseCase : DefaultDatabaseUseCase {
         return self.databaseUpdateIsAvailable
     }
 
-    var performDatabaseUpdatesProgress: (Double -> Void)? = nil
-    var performDatabaseUpdatesCallback: (Void -> Void)? = nil
-    override func performDatabaseUpdates(progress: Double -> Void, callback: Void -> Void) {
+    var performDatabaseUpdatesProgress: ((Double) -> Void)? = nil
+    var performDatabaseUpdatesCallback: ((Void) -> Void)? = nil
+    override func performDatabaseUpdates(_ progress: (Double) -> Void, callback: (Void) -> Void) {
         self.performDatabaseUpdatesProgress = progress
         self.performDatabaseUpdatesCallback = callback
     }
 
     var subscribers = Array<DataSubscriber>()
-    override func addSubscriber(subscriber: DataSubscriber) {
+    override func addSubscriber(_ subscriber: DataSubscriber) {
         self.subscribers.append(subscriber)
     }
 
     var lastSavedFeed: Feed? = nil
     var saveFeedPromises: [Promise<Result<Void, RNewsError>>] = []
-    override func saveFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {
+    override func saveFeed(_ feed: Feed) -> Future<Result<Void, RNewsError>> {
         lastSavedFeed = feed
         let promise = Promise<Result<Void, RNewsError>>()
         saveFeedPromises.append(promise)
@@ -33,7 +33,7 @@ class FakeDefaultDatabaseUseCase : DefaultDatabaseUseCase {
 
     var lastDeletedFeed: Feed? = nil
     var deleteFeedPromises: [Promise<Result<Void, RNewsError>>] = []
-    override func deleteFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {
+    override func deleteFeed(_ feed: Feed) -> Future<Result<Void, RNewsError>> {
         lastDeletedFeed = feed
         let promise = Promise<Result<Void, RNewsError>>()
         deleteFeedPromises.append(promise)
@@ -42,7 +42,7 @@ class FakeDefaultDatabaseUseCase : DefaultDatabaseUseCase {
 
     var lastFeedMarkedRead: Feed? = nil
     var lastMarkedReadPromise: Promise<Result<Int, RNewsError>>? = nil
-    override func markFeedAsRead(feed: Feed) -> Future<Result<Int, RNewsError>> {
+    override func markFeedAsRead(_ feed: Feed) -> Future<Result<Int, RNewsError>> {
         lastFeedMarkedRead = feed
         self.lastMarkedReadPromise = Promise<Result<Int, RNewsError>>()
         return self.lastMarkedReadPromise!.future
@@ -64,7 +64,7 @@ class FakeDefaultDatabaseUseCase : DefaultDatabaseUseCase {
 
     var lastArticleMarkedRead: Article? = nil
     var markArticleReadPromises: [Promise<Result<Void, RNewsError>>] = []
-    override func markArticle(article: Article, asRead read: Bool) -> Future<Result<Void, RNewsError>> {
+    override func markArticle(_ article: Article, asRead read: Bool) -> Future<Result<Void, RNewsError>> {
         lastArticleMarkedRead = article
         article.read = read
         let promise = Promise<Result<Void, RNewsError>>()
@@ -74,7 +74,7 @@ class FakeDefaultDatabaseUseCase : DefaultDatabaseUseCase {
 
     var lastDeletedArticle: Article? = nil
     var deleteArticlePromises: [Promise<Result<Void, RNewsError>>] = []
-    override func deleteArticle(article: Article) -> Future<Result<Void, RNewsError>> {
+    override func deleteArticle(_ article: Article) -> Future<Result<Void, RNewsError>> {
         lastDeletedArticle = article
         article.feed?.removeArticle(article)
         article.feed = nil
@@ -85,7 +85,7 @@ class FakeDefaultDatabaseUseCase : DefaultDatabaseUseCase {
 
     var didUpdateFeeds = false
     var updateFeedsCompletion: ([Feed], [NSError]) -> (Void) = {_ in }
-    override func updateFeeds(callback: ([Feed], [NSError]) -> (Void)) {
+    override func updateFeeds(_ callback: ([Feed], [NSError]) -> (Void)) {
         didUpdateFeeds = true
         updateFeedsCompletion = callback
     }

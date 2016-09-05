@@ -18,30 +18,30 @@ import Result
 
 protocol DataService: class {
     var searchIndex: SearchIndex? { get }
-    var mainQueue: NSOperationQueue { get }
+    var mainQueue: OperationQueue { get }
 
-    func createFeed(callback: Feed -> Void) -> Future<Result<Feed, RNewsError>>
-    func createArticle(feed: Feed?, callback: Article -> Void)
+    func createFeed(_ callback: (Feed) -> Void) -> Future<Result<Feed, RNewsError>>
+    func createArticle(_ feed: Feed?, callback: (Article) -> Void)
 
     func allFeeds() -> Future<Result<DataStoreBackedArray<Feed>, RNewsError>>
-    func articlesMatchingPredicate(predicate: NSPredicate) -> Future<Result<DataStoreBackedArray<Article>, RNewsError>>
+    func articlesMatchingPredicate(_ predicate: NSPredicate) -> Future<Result<DataStoreBackedArray<Article>, RNewsError>>
 
-    func deleteFeed(feed: Feed) -> Future<Result<Void, RNewsError>>
-    func deleteArticle(article: Article) -> Future<Result<Void, RNewsError>>
+    func deleteFeed(_ feed: Feed) -> Future<Result<Void, RNewsError>>
+    func deleteArticle(_ article: Article) -> Future<Result<Void, RNewsError>>
 
-    func batchCreate(feedCount: Int, articleCount: Int) ->
+    func batchCreate(_ feedCount: Int, articleCount: Int) ->
         Future<Result<([Feed], [Article]), RNewsError>>
-    func batchSave(feeds: [Feed], articles: [Article]) -> Future<Result<Void, RNewsError>>
+    func batchSave(_ feeds: [Feed], articles: [Article]) -> Future<Result<Void, RNewsError>>
 
     func deleteEverything() -> Future<Result<Void, RNewsError>>
 }
 
 extension DataService {
-    func saveFeed(feed: Feed) -> Future<Result<Void, RNewsError>> {
+    func saveFeed(_ feed: Feed) -> Future<Result<Void, RNewsError>> {
         return self.batchSave([feed], articles: [])
     }
 
-    func updateFeed(feed: Feed, info: ImportableFeed) -> Future<Result<Void, RNewsError>> {
+    func updateFeed(_ feed: Feed, info: ImportableFeed) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
         feed.title = info.title.stringByUnescapingHTML().stringByStrippingHTML()
         feed.summary = info.description
@@ -55,9 +55,9 @@ extension DataService {
 
         var articlesToSave: [Article] = []
 
-        var importTasks: [Void -> Void] = []
+        var importTasks: [(Void) -> Void] = []
 
-        let checkIfFinished: Result<(Article), RNewsError> -> Void = { result in
+        let checkIfFinished: (Result<(Article), RNewsError>) -> Void = { result in
             switch result {
             case let .Success(article):
                 articlesToSave.append(article)
@@ -80,7 +80,7 @@ extension DataService {
         let feedArticles = Array(feed.articlesArray.filterWithPredicate(articlesPredicate))
 
         for item in articles {
-            let filter: rNewsKit.Article -> Bool = { article in
+            let filter: (rNewsKit.Article) -> Bool = { article in
                 return item.title == article.title || item.url == article.link
             }
             let article = feedArticles.objectPassingTest(filter)
@@ -89,7 +89,6 @@ extension DataService {
                     self.updateArticle(article, item: item, feedURL: info.link).then(checkIfFinished)
                 } else {
                     self.createArticle(feed) { article in
-//                        feed.addArticle(article)
                         self.updateArticle(article, item: item, feedURL: info.link).then(checkIfFinished)
                     }
                 }
@@ -105,9 +104,9 @@ extension DataService {
         return promise.future
     }
 
-    func updateArticle(article: Article, item: ImportableArticle, feedURL: NSURL) ->
+    func updateArticle(_ article: Article, item: ImportableArticle, feedURL: URL) ->
         Future<Result<Article, RNewsError>> {
-            let characterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
+            let characterSet = CharacterSet.whitespacesAndNewlines
             let authors = item.importableAuthors.map {
                 return rNewsKit.Author(name: $0.name, email: $0.email)
             }
@@ -122,9 +121,9 @@ extension DataService {
             } else {
                 itemTitle = item.title
             }
-            let title = (itemTitle).stringByTrimmingCharactersInSet(characterSet)
+            let title = (itemTitle).trimmingCharacters(in: characterSet)
             article.title = title.stringByUnescapingHTML().stringByStrippingHTML()
-            article.link = NSURL(string: item.url.absoluteString, relativeToURL: feedURL)?.absoluteURL
+            article.link = URL(string: item.url.absoluteString!, relativeTo: feedURL)?.absoluteURL
             article.published = item.published ?? article.published
             article.updatedAt = item.updated
             article.summary = item.summary
@@ -138,7 +137,7 @@ extension DataService {
             let promise = Promise<Result<Article, RNewsError>>()
 
             let parser = WebPageParser(string: content) { urls in
-                let links = urls.flatMap { NSURL(string: $0.absoluteString, relativeToURL: feedURL)?.absoluteString }
+                let links = urls.flatMap { URL(string: $0.absoluteString!, relativeTo: feedURL)?.absoluteString }
                 self.articlesMatchingPredicate(NSPredicate(format: "link IN %@", links)).then { result in
                     switch result {
                     case let .Success(related):
@@ -149,34 +148,34 @@ extension DataService {
                     }
                 }
             }
-            parser.searchType = .Links
+            parser.searchType = .links
             parser.start()
             return promise.future
     }
 
-    func updateSearchIndexForArticle(article: Article) {
+    func updateSearchIndexForArticle(_ article: Article) {
         #if os(iOS)
             let identifier = article.identifier
 
             let attributes = CSSearchableItemAttributeSet(itemContentType: kUTTypeHTML as String)
             attributes.title = article.title
-            let characterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
-            let trimmedSummary = article.summary.stringByTrimmingCharactersInSet(characterSet)
+            let characterSet = CharacterSet.whitespacesAndNewlines
+            let trimmedSummary = article.summary.trimmingCharacters(in: characterSet)
             attributes.contentDescription = trimmedSummary
-            let feedTitleWords = article.feed?.title.componentsSeparatedByCharactersInSet(characterSet)
+            let feedTitleWords = article.feed?.title.components(separatedBy: characterSet)
             attributes.keywords = ["article"] + (feedTitleWords ?? [])
-            attributes.URL = article.link
-            attributes.timestamp = article.updatedAt ?? article.published
+            attributes.url = article.link
+            attributes.timestamp = (article.updatedAt ?? article.published) as Date
             attributes.authorNames = article.authors.map { $0.name }
 
-            if let image = article.feed?.image, data = UIImagePNGRepresentation(image) {
+            if let image = article.feed?.image, let data = UIImagePNGRepresentation(image) {
                 attributes.thumbnailData = data
             }
 
             let item = CSSearchableItem(uniqueIdentifier: identifier,
                                         domainIdentifier: nil,
                                         attributeSet: attributes)
-            item.expirationDate = NSDate.distantFuture()
+            item.expirationDate = Date.distantFuture
             self.searchIndex?.addItemsToIndex([item]) {_ in }
         #endif
     }

@@ -5,10 +5,10 @@ import CBGPromise
 import Result
 
 public protocol NotificationHandler {
-    func enableNotifications(notificationSource: LocalNotificationSource)
-    func handleLocalNotification(notification: UILocalNotification, window: UIWindow)
-    func handleAction(identifier: String?, notification: UILocalNotification)
-    func sendLocalNotification(notificationSource: LocalNotificationSource, article: Article)
+    func enableNotifications(_ notificationSource: LocalNotificationSource)
+    func handleLocalNotification(_ notification: UILocalNotification, window: UIWindow)
+    func handleAction(_ identifier: String?, notification: UILocalNotification)
+    func sendLocalNotification(_ notificationSource: LocalNotificationSource, article: Article)
 }
 
 public struct LocalNotificationHandler: NotificationHandler, Injectable {
@@ -22,26 +22,26 @@ public struct LocalNotificationHandler: NotificationHandler, Injectable {
         self.init(feedRepository: injector.create(DatabaseUseCase)!)
     }
 
-    public func enableNotifications(notificationSource: LocalNotificationSource) {
+    public func enableNotifications(_ notificationSource: LocalNotificationSource) {
         let markReadAction = UIMutableUserNotificationAction()
         markReadAction.identifier = "read"
         markReadAction.title = NSLocalizedString("NotificationHandler_LocalNotification_MarkRead_Action", comment: "")
-        markReadAction.activationMode = .Background
-        markReadAction.authenticationRequired = false
+        markReadAction.activationMode = .background
+        markReadAction.isAuthenticationRequired = false
 
         let category = UIMutableUserNotificationCategory()
         category.identifier = "default"
-        category.setActions([markReadAction], forContext: .Minimal)
-        category.setActions([markReadAction], forContext: .Default)
+        category.setActions([markReadAction], for: .minimal)
+        category.setActions([markReadAction], for: .default)
 
-        let types = UIUserNotificationType.Badge.union(.Alert).union(.Sound)
-        let notificationSettings = UIUserNotificationSettings(forTypes: types,
+        let types = UIUserNotificationType.badge.union(.alert).union(.sound)
+        let notificationSettings = UIUserNotificationSettings(types: types,
             categories: Set<UIUserNotificationCategory>([category]))
 
         notificationSource.notificationSettings = notificationSettings
     }
 
-    public func handleLocalNotification(notification: UILocalNotification, window: UIWindow) {
+    public func handleLocalNotification(_ notification: UILocalNotification, window: UIWindow) {
         guard let userInfo = notification.userInfo else { return }
 
         self.articleFromUserInfo(userInfo).then { result in
@@ -51,8 +51,8 @@ public struct LocalNotificationHandler: NotificationHandler, Injectable {
         }
     }
 
-    public func handleAction(identifier: String?, notification: UILocalNotification) {
-        guard let userInfo = notification.userInfo where identifier == "read" else { return }
+    public func handleAction(_ identifier: String?, notification: UILocalNotification) {
+        guard let userInfo = notification.userInfo , identifier == "read" else { return }
 
         self.articleFromUserInfo(userInfo).then {
             if case let Result.Success(article) = $0 {
@@ -61,7 +61,7 @@ public struct LocalNotificationHandler: NotificationHandler, Injectable {
         }
     }
 
-    public func sendLocalNotification(notificationSource: LocalNotificationSource, article: Article) {
+    public func sendLocalNotification(_ notificationSource: LocalNotificationSource, article: Article) {
         let note = UILocalNotification()
         let alertTitle = NSLocalizedString("NotificationHandler_LocalNotification_MarkRead_Title", comment: "")
         note.alertBody = NSString.localizedStringWithFormat(alertTitle,
@@ -73,14 +73,14 @@ public struct LocalNotificationHandler: NotificationHandler, Injectable {
 
         let dict = ["feed": feedID, "article": articleID]
         note.userInfo = dict
-        note.fireDate = NSDate()
+        note.fireDate = Date()
         note.category = "default"
         notificationSource.scheduleNote(note)
     }
 
-    private func articleFromUserInfo(userInfo: [NSObject: AnyObject]) -> Future<Result<Article, RNewsError>> {
+    private func articleFromUserInfo(_ userInfo: [String: Any]) -> Future<Result<Article, RNewsError>> {
         guard let feedID = userInfo["feed"] as? String,
-              articleID = userInfo["article"] as? String else {
+              let articleID = userInfo["article"] as? String else {
                 let promise = Promise<Result<Article, RNewsError>>()
                 promise.resolve(.Failure(.Database(.EntryNotFound)))
                 return promise.future
@@ -99,12 +99,12 @@ public struct LocalNotificationHandler: NotificationHandler, Injectable {
         }
     }
 
-    private func showArticle(article: Article, window: UIWindow) {
+    private func showArticle(_ article: Article, window: UIWindow) {
         let splitView = window.rootViewController as? UISplitViewController
         if let nc = splitView?.viewControllers.first as? UINavigationController,
-            feedsView = nc.viewControllers.first as? FeedsTableViewController,
-            feed = article.feed {
-                nc.popToRootViewControllerAnimated(false)
+            let feedsView = nc.viewControllers.first as? FeedsTableViewController,
+            let feed = article.feed {
+                nc.popToRootViewController(animated: false)
                 let al = feedsView.showFeed(feed, animated: false)
                 al.showArticle(article)
         }

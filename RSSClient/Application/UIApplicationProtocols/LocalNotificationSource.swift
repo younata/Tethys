@@ -5,7 +5,7 @@ public protocol LocalNotificationSource: class {
     var notificationSettings: UIUserNotificationSettings? { get set }
     var canScheduleNote: Bool { get }
 
-    func scheduleNote(note: UILocalNotification)
+    func scheduleNote(_ note: UILocalNotification)
 }
 
 extension UIApplication: LocalNotificationSource {
@@ -15,7 +15,7 @@ extension UIApplication: LocalNotificationSource {
 
     public var notificationSettings: UIUserNotificationSettings? {
         get {
-            return self.currentUserNotificationSettings()
+            return self.currentUserNotificationSettings
         }
         set {
             if let newSettings = newValue {
@@ -25,10 +25,10 @@ extension UIApplication: LocalNotificationSource {
     }
 
     public var canScheduleNote: Bool {
-        return self.applicationState == .Background
+        return self.applicationState == .background
     }
 
-    public func scheduleNote(note: UILocalNotification) {
+    public func scheduleNote(_ note: UILocalNotification) {
         if self.canScheduleNote {
             self.scheduleLocalNotification(note)
         }

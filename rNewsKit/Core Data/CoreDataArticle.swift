@@ -5,8 +5,8 @@ class CoreDataArticle: NSManagedObject {
     @NSManaged var link: String?
     @NSManaged var summary: String?
     @NSManaged var author: String?
-    @NSManaged var published: NSDate!
-    @NSManaged var updatedAt: NSDate?
+    @NSManaged var published: Date!
+    @NSManaged var updatedAt: Date?
     @NSManaged var identifier: String?
     @NSManaged var content: String?
     @NSManaged var read: Bool

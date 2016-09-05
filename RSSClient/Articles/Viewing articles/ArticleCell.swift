@@ -2,20 +2,20 @@ import UIKit
 import WebKit
 import rNewsKit
 
-public class ArticleCell: UITableViewCell {
+public final class ArticleCell: UITableViewCell {
     public var article: Article? {
         didSet {
             self.title.text = self.article?.title ?? ""
-            let publishedDate = self.article?.updatedAt ?? self.article?.published ?? NSDate()
+            let publishedDate = self.article?.updatedAt ?? self.article?.published ?? Date()
             self.published.text = self.dateFormatter.stringFromDate(publishedDate) ?? ""
             self.author.text = self.article?.authors.map({$0.description}).joinWithSeparator(", ") ?? ""
             let hasNotRead = self.article?.read != true
             self.unread.unread = hasNotRead ? 1 : 0
             self.unreadWidth.constant = hasNotRead ? 30 : 0
-            if let readingTime = self.article?.estimatedReadingTime where readingTime > 0 {
+            if let readingTime = self.article?.estimatedReadingTime, readingTime > 0 {
                 self.managedReadingTimeHidden()
                 let localizedFormat = NSLocalizedString("ArticleCell_EstimatedReadingTime", comment: "")
-                let formattedTime = self.timeFormatter.stringFromTimeInterval(NSTimeInterval(readingTime * 60)) ?? ""
+                let formattedTime = self.timeFormatter.stringFromTimeInterval(TimeInterval(readingTime * 60)) ?? ""
                 self.readingTime.text = NSString.localizedStringWithFormat(localizedFormat, formattedTime) as String
             } else {
                 self.managedReadingTimeHidden()
@@ -44,20 +44,20 @@ public class ArticleCell: UITableViewCell {
 
     private var unreadWidth: NSLayoutConstraint! = nil
 
-    private let dateFormatter: NSDateFormatter = {
-        let dateFormatter = NSDateFormatter()
+    private let dateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
 
-        dateFormatter.timeStyle = .NoStyle
-        dateFormatter.dateStyle = .ShortStyle
-        dateFormatter.timeZone = NSCalendar.currentCalendar().timeZone
+        dateFormatter.timeStyle = .none
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeZone = NSCalendar.current.timeZone
 
         return dateFormatter
     }()
 
-    private let timeFormatter: NSDateComponentsFormatter = {
-        let formatter = NSDateComponentsFormatter()
-        formatter.allowedUnits = [.Hour, .Minute]
-        formatter.unitsStyle = .Full
+    private let timeFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.hour, .minute]
+        formatter.unitsStyle = .full
         return formatter
     }()
 
@@ -79,47 +79,47 @@ public class ArticleCell: UITableViewCell {
         self.contentView.addSubview(self.readingTime)
 
         self.title.numberOfLines = 0
-        self.title.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
+        self.title.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
 
-        self.title.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-        self.title.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
+        self.title.autoPinEdge(toSuperviewEdge: .left, withInset: 8)
+        self.title.autoPinEdge(toSuperviewEdge: .top, withInset: 4)
 
         self.author.numberOfLines = 0
-        self.author.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
+        self.author.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.subheadline)
 
-        self.author.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-        self.author.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.title, withOffset: 8)
+        self.author.autoPinEdge(toSuperviewEdge: .left, withInset: 8)
+        self.author.autoPinEdge(.top, to: .bottom, of: self.title, withOffset: 8)
 
         self.readingTime.numberOfLines = 0
-        self.readingTime.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
+        self.readingTime.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.subheadline)
 
-        self.readingTime.autoPinEdgeToSuperviewEdge(.Leading, withInset: 8)
-        self.readingTime.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
-        self.readingTime.autoPinEdge(.Top, toEdge: .Bottom, ofView: self.author, withOffset: 4)
+        self.readingTime.autoPinEdge(toSuperviewEdge: .leading, withInset: 8)
+        self.readingTime.autoPinEdge(toSuperviewEdge: .bottom, withInset: 4)
+        self.readingTime.autoPinEdge(.top, to: .bottom, of: self.author, withOffset: 4)
 
         self.unread.hideUnreadText = true
 
-        self.unread.autoPinEdgeToSuperviewEdge(.Top)
-        self.unread.autoPinEdgeToSuperviewEdge(.Right)
-        self.unread.autoSetDimension(.Height, toSize: 30)
-        self.unreadWidth = unread.autoSetDimension(.Width, toSize: 30)
+        self.unread.autoPinEdge(toSuperviewEdge: .top)
+        self.unread.autoPinEdge(toSuperviewEdge: .right)
+        self.unread.autoSetDimension(.height, toSize: 30)
+        self.unreadWidth = unread.autoSetDimension(.width, toSize: 30)
 
-        self.published.textAlignment = .Right
+        self.published.textAlignment = .right
         self.published.numberOfLines = 0
-        self.published.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
+        self.published.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.subheadline)
 
-        self.published.autoPinEdge(.Right, toEdge: .Left, ofView: unread, withOffset: -8)
-        self.published.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
-        self.published.autoPinEdge(.Left, toEdge: .Right, ofView: title, withOffset: 8)
-        self.published.autoMatchDimension(.Width, toDimension: .Width,
-            ofView: self.contentView, withMultiplier: 0.25)
+        self.published.autoPinEdge(.right, to: .left, of: unread, withOffset: -8)
+        self.published.autoPinEdge(toSuperviewEdge: .top, withInset: 4)
+        self.published.autoPinEdge(.left, to: .right, of: title, withOffset: 8)
+        self.published.autoMatch(.width, to: .width,
+            of: self.contentView, withMultiplier: 0.25)
     }
 
     public required init(coder aDecoder: NSCoder) { fatalError() }
 }
 
 extension ArticleCell: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
+    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.title.textColor = themeRepository.textColor
         self.published.textColor = themeRepository.textColor
         self.author.textColor = themeRepository.textColor
@@ -130,7 +130,7 @@ extension ArticleCell: ThemeRepositorySubscriber {
 }
 
 extension ArticleCell: SettingsRepositorySubscriber {
-    public func didChangeSetting(settingsRepository: SettingsRepository) {
+    public func didChangeSetting(_ settingsRepository: SettingsRepository) {
         self.managedReadingTimeHidden()
     }
 }

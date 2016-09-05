@@ -3,7 +3,7 @@ import RealmSwift
 struct RealmMigrator {
     static func beginMigration() {
         let schemaVersion: UInt64 = 5
-        if NSUserDefaults.standardUserDefaults().boolForKey("FASTLANE_SNAPSHOT") {
+        if UserDefaults.standard.bool(forKey: "FASTLANE_SNAPSHOT") {
             Realm.Configuration.defaultConfiguration = Realm.Configuration(
                 inMemoryIdentifier: "SnapShot",
                 schemaVersion: schemaVersion,
@@ -17,11 +17,11 @@ struct RealmMigrator {
         }
     }
 
-    static func realmMigration(migration: Migration, oldSchemaVersion: UInt64) {
+    static func realmMigration(_ migration: Migration, oldSchemaVersion: UInt64) {
         if oldSchemaVersion < 1 {
             migration.enumerate(RealmArticle.className()) { oldObject, newObject in
                 if let oldAuthor = oldObject?["author"] as? String {
-                    let oldAuthors = oldAuthor.componentsSeparatedByString(", ")
+                    let oldAuthors = oldAuthor.components(separatedBy: ", ")
                     let newAuthors: [MigrationObject] = oldAuthors.flatMap { oldAuthor in
                         let newAuthor = migration.create(RealmAuthor.className())
                         let (name, email) = self.nameAndEmailFromAuthorString(oldAuthor)
@@ -41,29 +41,29 @@ struct RealmMigrator {
         }
         if oldSchemaVersion < 5 {
             migration.enumerate(RealmFeed.className()) { oldObject, newObject in
-                if let oldObject = oldObject, newObject = newObject where oldObject["url"] == nil {
+                if let oldObject = oldObject, let newObject = newObject , oldObject["url"] == nil {
                         migration.delete(newObject)
                 }
             }
         }
     }
 
-    static func nameAndEmailFromAuthorString(author: String) -> (name: String, email: String) {
-        let author = author.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-        let components = author.componentsSeparatedByString(" ")
+    static func nameAndEmailFromAuthorString(_ author: String) -> (name: String, email: String) {
+        let author = author.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        let components = author.components(separatedBy: " ")
         if components.count == 0 { return ("", "") }
-        let bracketCharacterSet = NSCharacterSet(charactersInString: "<>")
+        let bracketCharacterSet = CharacterSet(charactersIn: "<>")
 
         if components.count == 1 {
             let string = components[0]
             if string.hasPrefix("<") && string.hasSuffix(">") {
-                return ("", string.stringByTrimmingCharactersInSet(bracketCharacterSet))
+                return ("", string.trimmingCharacters(in: bracketCharacterSet))
             } else {
                 return (string, "")
             }
         }
         let nameComponents = components[0..<(components.count - 1)]
-        let name = nameComponents.joinWithSeparator(" ")
-        return (name, components.last!.stringByTrimmingCharactersInSet(bracketCharacterSet))
+        let name = nameComponents.joined(separator: " ")
+        return (name, components.last!.trimmingCharacters(in: bracketCharacterSet))
     }
 }

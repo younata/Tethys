@@ -9,10 +9,10 @@ class FakeAnalytics : Analytics, Equatable {
 
     private(set) var logEventCallCount : Int = 0
     private var logEventArgs : Array<(String, [String: String]?)> = []
-    func logEventArgsForCall(callIndex: Int) -> (String, [String: String]?) {
+    func logEventArgsForCall(_ callIndex: Int) -> (String, [String: String]?) {
         return self.logEventArgs[callIndex]
     }
-    func logEvent(event: String, data: [String: String]?) {
+    func logEvent(_ event: String, data: [String: String]?) {
         self.logEventCallCount += 1
         self.logEventArgs.append((event, data))
     }

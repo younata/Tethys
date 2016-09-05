@@ -4,7 +4,7 @@ import rNewsKit
 import Result
 
 public protocol BackgroundFetchHandler {
-    func performFetch(notificationHandler: NotificationHandler,
+    func performFetch(_ notificationHandler: NotificationHandler,
         notificationSource: LocalNotificationSource,
         completionHandler: (UIBackgroundFetchResult) -> Void)
 }
@@ -20,9 +20,9 @@ public struct DefaultBackgroundFetchHandler: BackgroundFetchHandler, Injectable 
         self.feedRepository = injector.create(DatabaseUseCase)!
     }
 
-    public func performFetch(notificationHandler: NotificationHandler,
+    public func performFetch(_ notificationHandler: NotificationHandler,
         notificationSource: LocalNotificationSource,
-        completionHandler: (UIBackgroundFetchResult) -> Void) {
+        completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
             let articlesIdentifierPromise = self.feedRepository.feeds().map { result -> [String] in
                 if case let Result.Success(feeds) = result {
                     return feeds.reduce([]) {

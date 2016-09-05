@@ -10,53 +10,53 @@ import Sinope
 public let kMainQueue = "kMainQueue"
 public let kBackgroundQueue = "kBackgroundQueue"
 
-public class KitModule: NSObject, Ra.InjectorModule {
-    public func configureInjector(injector: Injector) {
+public final class KitModule: NSObject, Ra.InjectorModule {
+    public func configureInjector(_ injector: Injector) {
         // Operation Queues
-        let mainQueue = NSOperationQueue.mainQueue()
-        injector.bind(kMainQueue, toInstance: mainQueue)
+        let mainQueue = OperationQueue.main
+        injector.bind(string: kMainQueue, to: mainQueue)
 
-        injector.bind(NSURLSession.self, toInstance: NSURLSession.sharedSession())
+        injector.bind(string: URLSession.self, to: URLSession.sharedSession())
 
-        injector.bind(Analytics.self, toInstance: MixPanelAnalytics())
+        injector.bind(string: Analytics.self, to: MixPanelAnalytics())
 
         var searchIndex: SearchIndex? = nil
         var reachable: Reachable? = nil
 
         #if os(iOS)
-            searchIndex = CSSearchableIndex.defaultSearchableIndex()
-            injector.bind(SearchIndex.self, toInstance: CSSearchableIndex.defaultSearchableIndex())
+            searchIndex = CSSearchableIndex.default()
+            injector.bind(string: SearchIndex.self, to: CSSearchableIndex.defaultSearchableIndex())
             reachable = try? Reachability.reachabilityForInternetConnection()
         #endif
 
-        let backgroundQueue = NSOperationQueue()
-        backgroundQueue.qualityOfService = NSQualityOfService.Utility
+        let backgroundQueue = OperationQueue()
+        backgroundQueue.qualityOfService = QualityOfService.utility
         backgroundQueue.maxConcurrentOperationCount = 1
-        injector.bind(kBackgroundQueue, toInstance: backgroundQueue)
+        injector.bind(string: kBackgroundQueue, to: backgroundQueue)
 
-        let urlSessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier(
-            "com.rachelbrindle.rnews"
+        let urlSessionConfiguration = URLSessionConfiguration.background(
+            withIdentifier: "com.rachelbrindle.rnews"
         )
-        urlSessionConfiguration.discretionary = false
+        urlSessionConfiguration.isDiscretionary = false
         let urlSessionDelegate = URLSessionDelegate()
 
         RealmMigrator.beginMigration()
 
-        let urlSession = NSURLSession(configuration: urlSessionConfiguration,
+        let urlSession = URLSession(configuration: urlSessionConfiguration,
             delegate: urlSessionDelegate,
-            delegateQueue: NSOperationQueue())
+            delegateQueue: OperationQueue())
 
-        let realmQueue = NSOperationQueue()
-        realmQueue.qualityOfService = .UserInitiated
+        let realmQueue = OperationQueue()
+        realmQueue.qualityOfService = .userInitiated
         realmQueue.maxConcurrentOperationCount = 1
 
         let dataServiceFactory = DataServiceFactory(mainQueue: mainQueue,
             realmQueue: realmQueue,
             searchIndex: searchIndex,
-            bundle: NSBundle(forClass: self.classForCoder),
-            fileManager: NSFileManager.defaultManager())
+            bundle: Bundle(for: self.classForCoder),
+            fileManager: FileManager.default)
 
-        let sinopeRepository = PasiphaeFactory().repository(NSURLSession.sharedSession())
+        let sinopeRepository = PasiphaeFactory().repository(URLSession.sharedSession())
 
         let updateService = UpdateService(
             dataServiceFactory: dataServiceFactory,
@@ -66,7 +66,7 @@ public class KitModule: NSObject, Ra.InjectorModule {
             sinopeRepository: sinopeRepository
         )
 
-        let userDefaults = NSUserDefaults.standardUserDefaults()
+        let userDefaults = UserDefaults.standard
         let accountRepository = DefaultAccountRepository(repository: sinopeRepository,
                                                          userDefaults: userDefaults)
 
@@ -95,9 +95,9 @@ public class KitModule: NSObject, Ra.InjectorModule {
         injector.bind(AccountRepository.self, toInstance: accountRepository)
 
         let opmlService = OPMLService(injector: injector)
-        injector.bind(OPMLService.self, toInstance: opmlService)
+        injector.bind(string: OPMLService.self, to: opmlService)
 
-        injector.bind(MigrationUseCase.self, toInstance: DefaultMigrationUseCase(injector: injector))
+        injector.bind(string: MigrationUseCase.self, to: DefaultMigrationUseCase(injector: injector))
         injector.bind(ImportUseCase.self, to: DefaultImportUseCase.init)
 
     }

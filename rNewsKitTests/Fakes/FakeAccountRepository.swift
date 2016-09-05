@@ -13,15 +13,15 @@ class FakeAccountRepository : AccountRepository, InternalAccountRepository, Equa
     private(set) var loginCallCount : Int = 0
     var loginStub : ((String, String) -> (Future<Result<Void, RNewsError>>))?
     private var loginArgs : Array<(String, String)> = []
-    func loginReturns(stubbedValues: (Future<Result<Void, RNewsError>>)) {
+    func loginReturns(_ stubbedValues: (Future<Result<Void, RNewsError>>)) {
         self.loginStub = {(email: String, password: String) -> (Future<Result<Void, RNewsError>>) in
             return stubbedValues
         }
     }
-    func loginArgsForCall(callIndex: Int) -> (String, String) {
+    func loginArgsForCall(_ callIndex: Int) -> (String, String) {
         return self.loginArgs[callIndex]
     }
-    func login(email: String, password: String) -> (Future<Result<Void, RNewsError>>) {
+    func login(_ email: String, password: String) -> (Future<Result<Void, RNewsError>>) {
         self.loginCallCount += 1
         self.loginArgs.append((email, password))
         return self.loginStub!(email, password)
@@ -30,15 +30,15 @@ class FakeAccountRepository : AccountRepository, InternalAccountRepository, Equa
     private(set) var registerCallCount : Int = 0
     var registerStub : ((String, String) -> (Future<Result<Void, RNewsError>>))?
     private var registerArgs : Array<(String, String)> = []
-    func registerReturns(stubbedValues: (Future<Result<Void, RNewsError>>)) {
+    func registerReturns(_ stubbedValues: (Future<Result<Void, RNewsError>>)) {
         self.registerStub = {(email: String, password: String) -> (Future<Result<Void, RNewsError>>) in
             return stubbedValues
         }
     }
-    func registerArgsForCall(callIndex: Int) -> (String, String) {
+    func registerArgsForCall(_ callIndex: Int) -> (String, String) {
         return self.registerArgs[callIndex]
     }
-    func register(email: String, password: String) -> (Future<Result<Void, RNewsError>>) {
+    func register(_ email: String, password: String) -> (Future<Result<Void, RNewsError>>) {
         self.registerCallCount += 1
         self.registerArgs.append((email, password))
         return self.registerStub!(email, password)
@@ -46,7 +46,7 @@ class FakeAccountRepository : AccountRepository, InternalAccountRepository, Equa
 
     private(set) var loggedInCallCount : Int = 0
     var loggedInStub : (() -> (String?))?
-    func loggedInReturns(stubbedValues: (String?)) {
+    func loggedInReturns(_ stubbedValues: (String?)) {
         self.loggedInStub = {() -> (String?) in
             return stubbedValues
         }
@@ -65,7 +65,7 @@ class FakeAccountRepository : AccountRepository, InternalAccountRepository, Equa
 
     private(set) var backendRepositoryCallCount : Int = 0
     var backendRepositoryStub : (() -> Sinope.Repository?)?
-    func backendRepositoryReturns(stubbedValues: (Sinope.Repository?)) {
+    func backendRepositoryReturns(_ stubbedValues: (Sinope.Repository?)) {
         self.backendRepositoryStub = {() -> (Sinope.Repository?) in
             return stubbedValues
         }
@@ -86,10 +86,10 @@ class FakeAccountRepositoryDelegate : AccountRepositoryDelegate, Equatable {
 
     private(set) var accountRepositoryDidLogInCallCount : Int = 0
     private var accountRepositoryDidLogInArgs : Array<(InternalAccountRepository)> = []
-    func accountRepositoryDidLogInArgsForCall(callIndex: Int) -> (InternalAccountRepository) {
+    func accountRepositoryDidLogInArgsForCall(_ callIndex: Int) -> (InternalAccountRepository) {
         return self.accountRepositoryDidLogInArgs[callIndex]
     }
-    func accountRepositoryDidLogIn(accountRepository: InternalAccountRepository) {
+    func accountRepositoryDidLogIn(_ accountRepository: InternalAccountRepository) {
         self.accountRepositoryDidLogInCallCount += 1
         self.accountRepositoryDidLogInArgs.append((accountRepository))
     }

@@ -3,8 +3,8 @@ import Nimble
 import rNews
 
 private class FakeSettingsRepositorySubscriber: NSObject, SettingsRepositorySubscriber {
-    private var didCallChangeSetting = false
-    private func didChangeSetting(_: SettingsRepository) {
+    fileprivate var didCallChangeSetting = false
+    fileprivate func didChangeSetting(_: SettingsRepository) {
         didCallChangeSetting = true
     }
 }

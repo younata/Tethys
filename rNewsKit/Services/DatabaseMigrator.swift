@@ -1,10 +1,16 @@
 protocol DatabaseMigratorType {
-    func migrate(_ from: DataService, to: DataService, progress: (Double) -> Void, finish: (Void) -> Void)
-    func deleteEverything(_ database: DataService, progress: (Double) -> Void, finish: (Void) -> Void)
+    func migrate(_ from: DataService, to: DataService,
+                 progress: @escaping (Double) -> Void,
+                 finish: @escaping (Void) -> Void)
+    func deleteEverything(_ database: DataService,
+                          progress: @escaping (Double) -> Void,
+                          finish: @escaping (Void) -> Void)
 }
 
 struct DatabaseMigrator: DatabaseMigratorType {
-    func migrate(_ from: DataService, to: DataService, progress: @escaping (Double) -> Void, finish: @escaping (Void) -> Void) {
+    func migrate(_ from: DataService, to: DataService,
+                 progress: @escaping (Double) -> Void,
+                 finish: @escaping (Void) -> Void) {
         var progressCalls: Double = 0
         let expectedProgressCalls: Double = 4
 
@@ -13,15 +19,15 @@ struct DatabaseMigrator: DatabaseMigratorType {
             progress(progressCalls / expectedProgressCalls)
         }
 
-        from.allFeeds().then { oldResult in
-            guard case let .Success(oldFeeds) = oldResult else {
+        _ = from.allFeeds().then { oldResult in
+            guard case let .success(oldFeeds) = oldResult else {
                 return
             }
             updateProgress()
             let oldArticles = oldFeeds.reduce([Article]()) { $0 + Array($1.articlesArray) }
 
-            to.allFeeds().then { newResult in
-                guard case let .Success(existingFeeds) = newResult else {
+            _ = to.allFeeds().then { newResult in
+                guard case let .success(existingFeeds) = newResult else {
                     return
                 }
                 updateProgress()
@@ -33,11 +39,11 @@ struct DatabaseMigrator: DatabaseMigratorType {
                 var feedsDictionary: [Feed: Feed] = [:]
                 var articlesDictionary: [Article: Article] = [:]
 
-                to.batchCreate(feedsToMigrate.count, articleCount: articlesToMigrate.count).then { createResult in
-                    guard case let .Success(newFeeds, newArticles) = createResult else {
+                _ = to.batchCreate(feedsToMigrate.count, articleCount: articlesToMigrate.count).then { createResult in
+                    guard case let .success(newFeeds, newArticles) = createResult else {
                         return
                     }
-                    for (idx, oldFeed) in feedsToMigrate.enumerate() {
+                    for (idx, oldFeed) in feedsToMigrate.enumerated() {
                         let newFeed = newFeeds[idx]
                         feedsDictionary[oldFeed] = newFeed
                     }
@@ -45,7 +51,7 @@ struct DatabaseMigrator: DatabaseMigratorType {
 
                     updateProgress()
 
-                    for (idx, oldArticle) in articlesToMigrate.enumerate() {
+                    for (idx, oldArticle) in articlesToMigrate.enumerated() {
                         let newArticle = newArticles[idx]
                         articlesDictionary[oldArticle] = newArticle
 
@@ -58,7 +64,8 @@ struct DatabaseMigrator: DatabaseMigratorType {
 
                     updateProgress()
 
-                    to.batchSave(Array(feedsDictionary.values), articles: Array(articlesDictionary.values)).then { _ in
+                    _ = to.batchSave(Array(feedsDictionary.values),
+                                     articles: Array(articlesDictionary.values)).then { _ in
                         updateProgress()
                         finish()
                     }
@@ -67,8 +74,10 @@ struct DatabaseMigrator: DatabaseMigratorType {
         }
     }
 
-    func deleteEverything(_ database: DataService, progress: @escaping (Double) -> Void, finish: @escaping (Void) -> Void) {
-        database.deleteEverything().then { _ in
+    func deleteEverything(_ database: DataService,
+                          progress: @escaping (Double) -> Void,
+                          finish: @escaping (Void) -> Void) {
+        _ = database.deleteEverything().then { _ in
             progress(1.0)
             finish()
         }

@@ -93,11 +93,12 @@ public final class Feed: Hashable, CustomStringConvertible {
 
     public var hashValue: Int {
         if let id = feedID as? NSManagedObjectID {
-            return id.uriRepresentation().hash
+            return id.uriRepresentation().hashValue
         } else if let id = feedID as? String {
             return id.hash
         }
-        let nonNilHashValues = title.hashValue ^ url.hash ^ summary.hashValue ^ waitPeriod.hashValue ^ remainingWait.hashValue
+        let nonNilHashValues = title.hashValue ^ url.hashValue ^ summary.hashValue ^
+            waitPeriod.hashValue ^ remainingWait.hashValue
         let possiblyNilHashValues: Int
         if let image = image {
                 possiblyNilHashValues = image.hash
@@ -137,14 +138,14 @@ public final class Feed: Hashable, CustomStringConvertible {
     }
 
     public private(set) lazy var unreadArticles: DataStoreBackedArray<Article> = {
-        return self.articlesArray.filterWithPredicate(NSPredicate(format: "read == %@", false))
+        return self.articlesArray.filterWithPredicate(NSPredicate(format: "read == %@", false as CVarArg))
     }()
 
     public func addArticle(_ article: Article) {
         if !self.articlesArray.contains(article) {
             self.articlesArray.append(article)
             self.updated = true
-            if let otherFeed = article.feed , otherFeed != self {
+            if let otherFeed = article.feed, otherFeed != self {
                 otherFeed.removeArticle(article)
             }
             article.feed = self
@@ -153,7 +154,7 @@ public final class Feed: Hashable, CustomStringConvertible {
 
     public func removeArticle(_ article: Article) {
         if self.articlesArray.contains(article) {
-            self.articlesArray.remove(article)
+            _ = self.articlesArray.remove(article)
             self.updated = true
             if article.feed == self {
                 article.feed = nil
@@ -176,7 +177,8 @@ public final class Feed: Hashable, CustomStringConvertible {
     }
 
     internal func resetUnreadArticles() {
-        self.unreadArticles = self.articlesArray.filterWithPredicate(NSPredicate(format: "read == %@", false))
+        self.unreadArticles = self.articlesArray.filterWithPredicate(NSPredicate(format: "read == %@",
+                                                                                 false as CVarArg))
     }
 
     // swiftlint:disable function_parameter_count
@@ -244,7 +246,7 @@ public final class Feed: Hashable, CustomStringConvertible {
         } else {
             self.image = nil
         }
-        self.feedID = feed.id
+        self.feedID = feed.id as AnyObject
         self.identifier = feed.id
         self.articlesArray = DataStoreBackedArray<Article>()
         if let realm = feed.realm {

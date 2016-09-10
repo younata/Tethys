@@ -15,13 +15,13 @@ class rNewsAcceptanceTests: XCTestCase {
         super.tearDown()
     }
 
-    func waitForThingToExist(thing: AnyObject) {
+    func waitForThingToExist(_ thing: AnyObject) {
         self.waitForPredicate(NSPredicate(format: "exists == true"), object: thing)
     }
 
-    func waitForPredicate(predicate: NSPredicate, object: AnyObject) {
-        expectationForPredicate(predicate, evaluatedWithObject: object, handler: nil)
-        waitForExpectationsWithTimeout(120, handler: nil)
+    func waitForPredicate(_ predicate: NSPredicate, object: AnyObject) {
+        expectation(for: predicate, evaluatedWith: object, handler: nil)
+        waitForExpectations(timeout: 120, handler: nil)
     }
 
     func loadWebFeed() {
@@ -33,10 +33,10 @@ class rNewsAcceptanceTests: XCTestCase {
 
         let enterUrlTextField = app.textFields["Enter URL"]
         enterUrlTextField.tap()
-        NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 10))
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 10))
         app.typeText("http://younata.github.io")
         app.buttons["Return"].tap()
-        NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 10))
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 10))
 
         let addFeedButton = app.toolbars.buttons["Add Feed"]
 
@@ -44,9 +44,9 @@ class rNewsAcceptanceTests: XCTestCase {
 
         addFeedButton.tap()
 
-        let feedCell = app.cells.elementBoundByIndex(0)
+        let feedCell = app.cells.element(boundBy: 0)
 
-        NSRunLoop.mainRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 10))
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 10))
         self.waitForThingToExist(feedCell)
     }
 
@@ -57,7 +57,7 @@ class rNewsAcceptanceTests: XCTestCase {
 
         snapshot("01-feedsList", waitForLoadingIndicator: false)
 
-        app.cells.elementBoundByIndex(0).tap()
+        app.cells.element(boundBy: 0).tap()
 
         self.waitForThingToExist(app.navigationBars["Rachel Brindle"])
 

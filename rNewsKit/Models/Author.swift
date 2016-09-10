@@ -38,7 +38,7 @@ import Foundation
     }
 
     public override var hashValue: Int {
-        return self.name.hash ^ (self.email?.hash ?? 0)
+        return self.name.hash ^ (self.email?.hashValue ?? 0)
     }
 
     public override func isEqual(_ object: Any?) -> Bool {
@@ -47,7 +47,7 @@ import Foundation
     }
 
     public override var description: String {
-        if let email = self.email?.resourceSpecifier , !email.isEmpty {
+        if let emailURL = self.email, let email = (emailURL as NSURL).resourceSpecifier {
             return "\(self.name) <\(email)>"
         }
         return self.name

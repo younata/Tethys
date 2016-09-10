@@ -6,9 +6,9 @@ import Ra
 
 class FeedViewControllerSpec: QuickSpec {
     override func spec() {
-        var feed = Feed(title: "title", url: NSURL(string: "http://example.com/feed")!, summary: "summary",
+        var feed = Feed(title: "title", url: URL(string: "http://example.com/feed")!, summary: "summary",
             tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-        let otherFeed = Feed(title: "", url: NSURL(string: "http://example.com/feed")!, summary: "",
+        let otherFeed = Feed(title: "", url: URL(string: "http://example.com/feed")!, summary: "",
             tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
         var navigationController: UINavigationController!
@@ -25,7 +25,7 @@ class FeedViewControllerSpec: QuickSpec {
             injector = Injector()
 
             urlSession = FakeURLSession()
-            injector.bind(NSURLSession.self, toInstance: urlSession)
+            injector.bind(URLSession.self, toInstance: urlSession)
 
             themeRepository = FakeThemeRepository()
             injector.bind(ThemeRepository.self, toInstance: themeRepository)
@@ -44,7 +44,7 @@ class FeedViewControllerSpec: QuickSpec {
             presentingController = UIViewController()
             presentingController.presentViewController(navigationController, animated: false, completion: nil)
 
-            feed = Feed(title: "title", url: NSURL(string: "http://example.com/feed")!, summary: "summary",
+            feed = Feed(title: "title", url: URL(string: "http://example.com/feed")!, summary: "summary",
                 tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             subject.feed = feed
@@ -128,7 +128,7 @@ class FeedViewControllerSpec: QuickSpec {
 
                     context("when the feed has a tag that starts with '~'") {
                         beforeEach {
-                            subject.feed = Feed(title: "a title", url: NSURL(string: "")!, summary: "",
+                            subject.feed = Feed(title: "a title", url: URL(string: "")!, summary: "",
                                 tags: ["~custom title"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                             cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 0)) as! TableViewCell
@@ -198,11 +198,11 @@ class FeedViewControllerSpec: QuickSpec {
                         }
 
                         context("when the request succeeds") {
-                            let urlResponse = NSHTTPURLResponse(URL: NSURL(string: "")!, statusCode: 200, HTTPVersion: nil, headerFields: nil)
+                            let urlResponse = NSHTTPURLResponse(URL: URL(string: "")!, statusCode: 200, HTTPVersion: nil, headerFields: nil)
                             context("if the response (text) is a valid feed") {
                                 beforeEach {
                                     let rss = NSBundle(forClass: self.classForCoder).pathForResource("feed2", ofType: "rss")!
-                                    let data = NSData(contentsOfFile: rss)
+                                    let data = Data(contentsOfFile: rss)
                                     urlSession.lastCompletionHandler(data, urlResponse, nil)
                                 }
                                 
@@ -272,7 +272,7 @@ class FeedViewControllerSpec: QuickSpec {
 
                 context("when the feed has a tag that starts with '`'") {
                     beforeEach {
-                        subject.feed = Feed(title: "a title", url: NSURL(string: "")!, summary: "a summary",
+                        subject.feed = Feed(title: "a title", url: URL(string: "")!, summary: "a summary",
                             tags: ["`custom summary"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                         cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 2)) as! TableViewCell

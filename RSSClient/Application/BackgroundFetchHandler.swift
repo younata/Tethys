@@ -24,7 +24,7 @@ public struct DefaultBackgroundFetchHandler: BackgroundFetchHandler, Injectable 
         notificationSource: LocalNotificationSource,
         completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
             let articlesIdentifierPromise = self.feedRepository.feeds().map { result -> [String] in
-                if case let Result.Success(feeds) = result {
+                if case let Result.success(feeds) = result {
                     return feeds.reduce([]) {
                         return $0 + $1.articlesArray
                     }.map {

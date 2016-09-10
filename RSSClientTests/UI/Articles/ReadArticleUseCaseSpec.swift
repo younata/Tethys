@@ -9,7 +9,7 @@ class ArticleUseCaseSpec: QuickSpec {
         var subject: DefaultArticleUseCase!
         var feedRepository: FakeDatabaseUseCase!
         var themeRepository: FakeThemeRepository!
-        let bundle = NSBundle.mainBundle()
+        let bundle = Bundle.main
 
         beforeEach {
             feedRepository = FakeDatabaseUseCase()
@@ -31,20 +31,20 @@ class ArticleUseCaseSpec: QuickSpec {
             }
 
             context("when the feeds promise resolves successfully") {
-                let article1 = Article(title: "a", link: nil, summary: "", authors: [Author(name: "author", email: nil)], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
-                let article2 = Article(title: "b", link: nil, summary: "", authors: [Author(name: "foo", email: nil)], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
-                let article3 = Article(title: "c", link: nil, summary: "", authors: [Author(name: "author", email: nil)], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
-                let article4 = Article(title: "d", link: nil, summary: "", authors: [Author(name: "bar", email: nil)], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                let article1 = Article(title: "a", link: nil, summary: "", authors: [Author(name: "author", email: nil)], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                let article2 = Article(title: "b", link: nil, summary: "", authors: [Author(name: "foo", email: nil)], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                let article3 = Article(title: "c", link: nil, summary: "", authors: [Author(name: "author", email: nil)], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                let article4 = Article(title: "d", link: nil, summary: "", authors: [Author(name: "bar", email: nil)], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
 
-                let feed1 = Feed(title: "ab", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
-                let feed2 = Feed(title: "cd", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article3, article4], image: nil)
+                let feed1 = Feed(title: "ab", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
+                let feed2 = Feed(title: "cd", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article3, article4], image: nil)
                 article1.feed = feed1
                 article2.feed = feed1
                 article3.feed = feed2
                 article4.feed = feed2
 
                 beforeEach {
-                    feedRepository.feedsPromises.last?.resolve(.Success([feed1, feed2]))
+                    feedRepository.feedsPromises.last?.resolve(.success([feed1, feed2]))
                 }
 
                 it("calls the callback with a list of articles from those feeds filtered by article") {
@@ -54,7 +54,7 @@ class ArticleUseCaseSpec: QuickSpec {
 
             context("when the feeds promise fails") {
                 beforeEach {
-                    feedRepository.feedsPromises.last?.resolve(.Failure(.Unknown))
+                    feedRepository.feedsPromises.last?.resolve(.failure(.Unknown))
                 }
 
                 it("calls the callback with nothing") {
@@ -70,8 +70,8 @@ class ArticleUseCaseSpec: QuickSpec {
             var userActivity: NSUserActivity!
 
             beforeEach {
-                feed = Feed(title: "feedTitle", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                article = Article(title: "articleTitle", link: NSURL(string: "https://example.com"), summary: "articleSummary", authors: [Author(name: "articleAuthor", email: nil)], published: NSDate(), updatedAt: NSDate(), identifier: "identifier", content: "", read: true, estimatedReadingTime: 4, feed: feed, flags: ["flag"])
+                feed = Feed(title: "feedTitle", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                article = Article(title: "articleTitle", link: URL(string: "https://example.com"), summary: "articleSummary", authors: [Author(name: "articleAuthor", email: nil)], published: Date(), updatedAt: Date(), identifier: "identifier", content: "", read: true, estimatedReadingTime: 4, feed: feed, flags: ["flag"])
 
                 userActivity = subject.userActivityForArticle(article)
             }
@@ -85,7 +85,7 @@ class ArticleUseCaseSpec: QuickSpec {
             }
 
             it("has the webpageURL set to the article's link") {
-                expect(userActivity.webpageURL) == NSURL(string: "https://example.com")!
+                expect(userActivity.webpageURL) == URL(string: "https://example.com")!
             }
 
             it("needs to be saved") {
@@ -101,11 +101,11 @@ class ArticleUseCaseSpec: QuickSpec {
             }
 
             it("is not eligible for public indexing") {
-                expect(userActivity.eligibleForPublicIndexing) == false
+                expect(userActivity.isEligibleForPublicIndexing) == false
             }
 
             it("is eligible for search") {
-                expect(userActivity.eligibleForSearch) == true
+                expect(userActivity.isEligibleForSearch) == true
             }
 
             it("uses the article's title, summary, author, and flags as it's keywords") {
@@ -126,7 +126,7 @@ class ArticleUseCaseSpec: QuickSpec {
 
         describe("-readArticle:") {
             it("marks the article as read if it wasn't already") {
-                let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: NSDate(), identifier: "", content: "", read: false, estimatedReadingTime: 3, feed: nil, flags: [])
+                let article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: false, estimatedReadingTime: 3, feed: nil, flags: [])
 
                 subject.readArticle(article)
 
@@ -135,7 +135,7 @@ class ArticleUseCaseSpec: QuickSpec {
             }
 
             it("doesn't mark the article as read if it already was") {
-                let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: NSDate(), identifier: "", content: "", read: true, estimatedReadingTime: 4, feed: nil, flags: [])
+                let article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: true, estimatedReadingTime: 4, feed: nil, flags: [])
 
                 subject.readArticle(article)
 
@@ -146,14 +146,14 @@ class ArticleUseCaseSpec: QuickSpec {
                 var html: String!
 
                 beforeEach {
-                    let article = Article(title: "articleTitle", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: NSDate(), identifier: "", content: "Example Content", read: true, estimatedReadingTime: 4, feed: nil, flags: [])
+                    let article = Article(title: "articleTitle", link: nil, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "Example Content", read: true, estimatedReadingTime: 4, feed: nil, flags: [])
 
                     html = subject.readArticle(article)
                 }
 
                 it("is prefixed with the proper css") {
                     let cssURL = bundle.URLForResource(themeRepository.articleCSSFileName, withExtension: "css")!
-                    let css = try! String(contentsOfURL: cssURL, encoding: NSUTF8StringEncoding)
+                    let css = try! String(contentsOfURL: cssURL, encoding: String.Encoding.utf8)
 
                     let expectedPrefix = "<html><head>" +
                         "<style type=\"text/css\">\(css)</style>" +
@@ -164,8 +164,8 @@ class ArticleUseCaseSpec: QuickSpec {
                 }
 
                 it("is postfixed with prismJS") {
-                    let prismURL = bundle.URLForResource("prism.js", withExtension: "html")!
-                    let prismJS = try! String(contentsOfURL: prismURL, encoding: NSUTF8StringEncoding)
+                    let prismURL = bundle.url(forResource: "prism.js", withExtension: "html")!
+                    let prismJS = try! String(contentsOfURL: prismURL, encoding: String.Encoding.utf8)
                     expect(html.hasSuffix(prismJS + "</body></html>")) == true
                 }
 
@@ -179,15 +179,15 @@ class ArticleUseCaseSpec: QuickSpec {
 
                 it("is properly structured") {
                     let cssURL = bundle.URLForResource(themeRepository.articleCSSFileName, withExtension: "css")!
-                    let css = try! String(contentsOfURL: cssURL, encoding: NSUTF8StringEncoding)
+                    let css = try! String(contentsOfURL: cssURL, encoding: String.Encoding.utf8)
 
                     let expectedPrefix = "<html><head>" +
                         "<style type=\"text/css\">\(css)</style>" +
                         "<meta name=\"viewport\" content=\"initial-scale=1.0,maximum-scale=10.0\"/>" +
                     "</head><body>"
 
-                    let prismURL = bundle.URLForResource("prism.js", withExtension: "html")!
-                    let prismJS = try! String(contentsOfURL: prismURL, encoding: NSUTF8StringEncoding)
+                    let prismURL = bundle.url(forResource: "prism.js", withExtension: "html")!
+                    let prismJS = try! String(contentsOfURL: prismURL, encoding: String.Encoding.utf8)
 
                     let expectedPostfix = prismJS + "</body></html>"
 
@@ -200,7 +200,7 @@ class ArticleUseCaseSpec: QuickSpec {
 
         describe("-toggleArticleRead:") {
             it("marks the article as read if it wasn't already") {
-                let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: NSDate(), identifier: "", content: "", read: false, estimatedReadingTime: 3, feed: nil, flags: [])
+                let article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: false, estimatedReadingTime: 3, feed: nil, flags: [])
 
                 subject.toggleArticleRead(article)
 
@@ -209,7 +209,7 @@ class ArticleUseCaseSpec: QuickSpec {
             }
 
             it("marks the article as unread if it already was") {
-                let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: NSDate(), identifier: "", content: "", read: true, estimatedReadingTime: 4, feed: nil, flags: [])
+                let article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: true, estimatedReadingTime: 4, feed: nil, flags: [])
 
                 subject.toggleArticleRead(article)
 

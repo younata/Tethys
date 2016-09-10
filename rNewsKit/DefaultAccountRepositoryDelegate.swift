@@ -10,27 +10,27 @@ final class DefaultAccountRepositoryDelegate: AccountRepositoryDelegate {
     }
 
     func accountRepositoryDidLogIn(_ accountRepository: InternalAccountRepository) {
-        self.databaseUseCase.feeds().then { feedsResult in
+        _ = self.databaseUseCase.feeds().then { feedsResult in
             switch feedsResult {
-            case let .Success(feeds):
+            case let .success(feeds):
                 let urls = feeds.flatMap { $0.url }
                 if let sinopeRepository = accountRepository.backendRepository() {
                     self.subscribe(urls: urls, sinopeRepository: sinopeRepository)
                 }
-            case .Failure(_):
+            case .failure(_):
                 break
             }
         }
     }
 
     private func subscribe(urls: [URL], sinopeRepository: Sinope.Repository) {
-        sinopeRepository.subscribe(urls).then { subscribeResult in
+        _ = sinopeRepository.subscribe(urls).then { subscribeResult in
             switch subscribeResult {
-            case .Success(_):
+            case .success(_):
                 self.mainQueue.addOperation {
                     self.databaseUseCase.updateFeeds { _ in }
                 }
-            case .Failure(_):
+            case .failure(_):
                 break
             }
         }

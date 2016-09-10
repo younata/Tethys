@@ -247,7 +247,7 @@ extension ArticleListController: UISearchBarDelegate {
 extension ArticleListController: UIViewControllerPreviewingDelegate {
     public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
         viewControllerForLocation location: CGPoint) -> UIViewController? {
-            if let indexPath = self.tableView.indexPathForRow(at: location) , !self.previewMode {
+            if let indexPath = self.tableView.indexPathForRow(at: location), !self.previewMode {
                 let article = self.articleForIndexPath(indexPath)
                 return self.configuredArticleController(article, read: false)
             }

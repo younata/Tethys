@@ -43,7 +43,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
             navigationController = UINavigationController(rootViewController: subject)
 
-            feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed")!, summary: "",
+            feed1 = Feed(title: "a", url: URL(string: "http://example.com/feed")!, summary: "",
                 tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             feeds = [feed1]
@@ -159,7 +159,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     beforeEach {
                         subject.presentViewController(UIViewController(), animated: false, completion: nil)
 
-                        let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                        let article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
                         subscriber?.markedArticles([article], asRead: true)
                     }
 
@@ -170,7 +170,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                 context("deleting an article") {
                     beforeEach {
-                        let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                        let article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
                         subscriber?.deletedArticle(article)
                     }
                     
@@ -319,7 +319,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 context("with a set of feeds") {
                     beforeEach {
                         feeds = [feed1]
-                        dataUseCase.feedsPromises.first?.resolve(.Success(feeds))
+                        dataUseCase.feedsPromises.first?.resolve(.success(feeds))
                     }
 
                     it("does not show the onboarding view") {
@@ -338,7 +338,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                             context("when the feeds come back") {
                                 beforeEach {
-                                    dataUseCase.feedsPromises.last?.resolve(.Success(feeds))
+                                    dataUseCase.feedsPromises.last?.resolve(.success(feeds))
                                 }
 
                                 it("should filter feeds down to only those with tags that match the search string") {
@@ -362,7 +362,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                             context("when the feeds come back") {
                                 beforeEach {
-                                    dataUseCase.feedsPromises.last?.resolve(.Success(feeds))
+                                    dataUseCase.feedsPromises.last?.resolve(.success(feeds))
                                 }
 
                                 it("should not show the onboarding view") {
@@ -390,7 +390,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                         context("when the call succeeds") {
                             var feed3: Feed! = nil
                             beforeEach {
-                                feed3 = Feed(title: "d", url: NSURL(string: "https://example.com")!, summary: "", tags: [],
+                                feed3 = Feed(title: "d", url: URL(string: "https://example.com")!, summary: "", tags: [],
                                     waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                                 dataUseCase.updateFeedsCompletion([], [])
                                 for object in dataUseCase.subscribers.allObjects {
@@ -409,14 +409,14 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             }
 
                             it("reloads the tableView when the promise returns") {
-                                dataUseCase.feedsPromises.last?.resolve(.Success(feeds + [feed3]))
+                                dataUseCase.feedsPromises.last?.resolve(.success(feeds + [feed3]))
                                 expect(subject.tableView.numberOfRowsInSection(0)) == 2 // cause it was 1
                             }
                         }
 
                         context("when the call fails") {
                             beforeEach {
-                                let error = NSError(domain: "NSURLErrorDomain", code: -1001, userInfo: [NSLocalizedFailureReasonErrorKey: "The request timed out.", "feedTitle": "foo"])
+                                let error = NSError(domain: "URLErrorDomain", code: -1001, userInfo: [NSLocalizedFailureReasonErrorKey: "The request timed out.", "feedTitle": "foo"])
                                 UIView.pauseAnimations()
                                 dataUseCase.updateFeedsCompletion([], [error])
                             }
@@ -611,13 +611,13 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                             }
 
                                             it("when the subscriber gets a marked articles notice it does not refresh it's feed cache") {
-                                                let article = Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                                                let article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
                                                 dataUseCase.subscribersArray.first?.markedArticles([article], asRead: true)
                                                 expect(dataUseCase.feedsPromises.count) == 1
                                             }
 
                                             it("causes a refresh of the feeds") {
-                                                dataUseCase.lastFeedMarkedReadPromise?.resolve(.Success(0))
+                                                dataUseCase.lastFeedMarkedReadPromise?.resolve(.success(0))
                                                 expect(dataUseCase.feedsPromises.count) == 2
                                             }
                                         }
@@ -668,7 +668,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                             it("should bring up a share sheet") {
                                                 expect(navigationController.visibleViewController).to(beAnInstanceOf(UIActivityViewController))
                                                 if let activityVC = navigationController.visibleViewController as? UIActivityViewController {
-                                                    expect(activityVC.activityItems as? [NSURL]) == [feed.url]
+                                                    expect(activityVC.activityItems as? [URL]) == [feed.url]
                                                 }
                                             }
                                         }
@@ -681,7 +681,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                 context("but no feeds were found") {
                     beforeEach {
-                        dataUseCase.feedsPromises.first?.resolve(.Success([]))
+                        dataUseCase.feedsPromises.first?.resolve(.success([]))
                     }
 
                     it("hides the activity indicator") {
@@ -697,7 +697,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
             xdescribe("when the feeds promise fails") { // TODO: Implement!
                 beforeEach {
                     UIView.pauseAnimations()
-                    dataUseCase.feedsPromises.first?.resolve(.Failure(.Unknown))
+                    dataUseCase.feedsPromises.first?.resolve(.failure(.Unknown))
                 }
 
                 afterEach {

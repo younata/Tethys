@@ -19,11 +19,11 @@ struct RealmMigrator {
 
     static func realmMigration(_ migration: Migration, oldSchemaVersion: UInt64) {
         if oldSchemaVersion < 1 {
-            migration.enumerate(RealmArticle.className()) { oldObject, newObject in
+            migration.enumerateObjects(ofType: RealmArticle.className()) { oldObject, newObject in
                 if let oldAuthor = oldObject?["author"] as? String {
                     let oldAuthors = oldAuthor.components(separatedBy: ", ")
                     let newAuthors: [MigrationObject] = oldAuthors.flatMap { oldAuthor in
-                        let newAuthor = migration.create(RealmAuthor.className())
+                        let newAuthor = migration.createObject(ofType: RealmAuthor.className())
                         let (name, email) = self.nameAndEmailFromAuthorString(oldAuthor)
                         newAuthor["name"] = name
                         newAuthor["email"] = email
@@ -37,11 +37,11 @@ struct RealmMigrator {
             }
         }
         if oldSchemaVersion < 2 {
-            migration.deleteData("RealmEnclosure")
+            migration.deleteData(forType: "RealmEnclosure")
         }
         if oldSchemaVersion < 5 {
-            migration.enumerate(RealmFeed.className()) { oldObject, newObject in
-                if let oldObject = oldObject, let newObject = newObject , oldObject["url"] == nil {
+            migration.enumerateObjects(ofType: RealmFeed.className()) { oldObject, newObject in
+                if let oldObject = oldObject, let newObject = newObject, oldObject["url"] == nil {
                         migration.delete(newObject)
                 }
             }

@@ -41,7 +41,7 @@ private func createFeed(feed: (url: String, title: String, articles: [String]), 
     }
 }
 
-private let documentsUrl = NSURL(string: "file://\(NSHomeDirectory())/Documents/")!
+private let documentsUrl = URL(string: "file://\(NSHomeDirectory())/Documents/")!
 
 class LocalImportViewControllerSpec: QuickSpec {
     override func spec() {

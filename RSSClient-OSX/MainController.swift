@@ -2,7 +2,7 @@ import Cocoa
 import rNewsKit
 import Ra
 
-public class MainController: NSViewController {
+public final class MainController: NSViewController {
     @IBOutlet public var window: NSWindow? = nil
 
     public lazy var feedsList: FeedsViewController = {
@@ -15,7 +15,7 @@ public class MainController: NSViewController {
 
     public lazy var splitViewController: NSSplitViewController = {
         let controller = NSSplitViewController()
-        controller.splitView.vertical = false
+        controller.splitView.isVertical = false
         self.addChildViewController(controller)
         return controller
     }()
@@ -36,7 +36,7 @@ public class MainController: NSViewController {
         return self.raInjector?.create(DataWriter)
     }()
 
-    public func configure(injector: Injector) {
+    public func configure(_ injector: Injector) {
         self.raInjector = injector
         self.feedsList.configure(injector)
     }
@@ -60,9 +60,9 @@ public class MainController: NSViewController {
         self.window?.makeFirstResponder(self)
     }
 
-    @IBAction public func openDocument(sender: AnyObject) {
+    @IBAction public func openDocument(_ sender: AnyObject) {
         guard let injector = self.raInjector,
-              panel = injector.create(NSOpenPanel) else {
+              let panel = injector.create(NSOpenPanel) else {
                 return
         }
         panel.canChooseDirectories = false
@@ -72,7 +72,7 @@ public class MainController: NSViewController {
             guard result == NSFileHandlingPanelOKButton else {
                 return
             }
-            for url in panel.URLs as [NSURL] {
+            for url in panel.URLs as [URL] {
                 self.opmlManager?.importOPML(url) {feeds in
                     if !feeds.isEmpty {
                         self.dataWriter?.updateFeeds {_ in }
@@ -82,7 +82,7 @@ public class MainController: NSViewController {
         }
     }
 
-    func showArticles(feed: Feed) {
+    func showArticles(_ feed: Feed) {
         let articlesList = ArticleListViewController()
         articlesList.configure(feed.articles)
         let articlesSplitViewItem = NSSplitViewItem(viewController: articlesList)

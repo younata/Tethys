@@ -89,7 +89,7 @@ class ImportUseCaseSpec: QuickSpec {
                                 beforeEach {
                                     let existingFeed = Feed(title: "", url: url, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-                                    feedRepository.feedsPromises.first?.resolve(.Success([existingFeed]))
+                                    feedRepository.feedsPromises.first?.resolve(.success([existingFeed]))
                                 }
 
                                 it("does not ask the feed repository to import the feed") {
@@ -103,7 +103,7 @@ class ImportUseCaseSpec: QuickSpec {
 
                             context("and a feed with the proposed feed url is not in the feeds list") {
                                 beforeEach {
-                                    feedRepository.feedsPromises.first?.resolve(.Success([]))
+                                    feedRepository.feedsPromises.first?.resolve(.success([]))
                                 }
 
                                 it("asks the feed repository to import the feed") {
@@ -128,7 +128,7 @@ class ImportUseCaseSpec: QuickSpec {
 
                                     context("when the feed is saved to the database") {
                                         beforeEach {
-                                            feedRepository.newFeedPromises.last?.resolve(.Success())
+                                            feedRepository.newFeedPromises.last?.resolve(.success())
                                         }
 
                                         it("it tells the feed repository to update the feed from the network") {
@@ -153,7 +153,7 @@ class ImportUseCaseSpec: QuickSpec {
 
                         describe("when the feed repository fails") {
                             beforeEach {
-                                feedRepository.feedsPromises.first?.resolve(.Failure(.Unknown))
+                                feedRepository.feedsPromises.first?.resolve(.failure(.Unknown))
                             }
                             // TODO: implement the sad path
                         }
@@ -236,7 +236,7 @@ class ImportUseCaseSpec: QuickSpec {
                                 beforeEach {
                                     let existingFeed = Feed(title: "", url: feed1Url, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-                                    feedRepository.feedsPromises.first?.resolve(.Success([existingFeed]))
+                                    feedRepository.feedsPromises.first?.resolve(.success([existingFeed]))
                                 }
 
                                 it("does not ask the feed repository to import the feed") {
@@ -250,7 +250,7 @@ class ImportUseCaseSpec: QuickSpec {
 
                             context("and a feed with the proposed feed url is not in the feeds list") {
                                 beforeEach {
-                                    feedRepository.feedsPromises.first?.resolve(.Success([]))
+                                    feedRepository.feedsPromises.first?.resolve(.success([]))
                                 }
 
                                 it("asks the feed repository to import the feed") {
@@ -262,7 +262,7 @@ class ImportUseCaseSpec: QuickSpec {
                                     beforeEach {
                                         feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                                         feedRepository.newFeedCallback(feed)
-                                        feedRepository.newFeedPromises.last?.resolve(.Success())
+                                        feedRepository.newFeedPromises.last?.resolve(.success())
                                     }
 
                                     it("sets that feed's url") {
@@ -290,7 +290,7 @@ class ImportUseCaseSpec: QuickSpec {
 
                         describe("when the feed repository fails") {
                             beforeEach {
-                                feedRepository.feedsPromises.first?.resolve(.Failure(.Unknown))
+                                feedRepository.feedsPromises.first?.resolve(.failure(.Unknown))
                             }
                             // TODO: implement the sad path
                         }
@@ -344,7 +344,7 @@ class ImportUseCaseSpec: QuickSpec {
                                 beforeEach {
                                     let existingFeed = Feed(title: "", url: URL(string: "http://iotlist.co/posts.atom")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-                                    feedRepository.feedsPromises.first?.resolve(.Success([existingFeed]))
+                                    feedRepository.feedsPromises.first?.resolve(.success([existingFeed]))
                                 }
 
                                 it("does not ask the feed repository to import the feed") {
@@ -358,7 +358,7 @@ class ImportUseCaseSpec: QuickSpec {
 
                             context("and a feed with the proposed feed url is not in the feeds list") {
                                 beforeEach {
-                                    feedRepository.feedsPromises.first?.resolve(.Success([]))
+                                    feedRepository.feedsPromises.first?.resolve(.success([]))
                                 }
 
                                 it("asks the feed repository to import the feed") {
@@ -370,7 +370,7 @@ class ImportUseCaseSpec: QuickSpec {
                                     beforeEach {
                                         feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                                         feedRepository.newFeedCallback(feed)
-                                        feedRepository.newFeedPromises.last?.resolve(.Success())
+                                        feedRepository.newFeedPromises.last?.resolve(.success())
                                     }
 
                                     it("sets that feed's url") {
@@ -398,7 +398,7 @@ class ImportUseCaseSpec: QuickSpec {
 
                         describe("when the feed repository fails") {
                             beforeEach {
-                                feedRepository.feedsPromises.first?.resolve(.Failure(.Unknown))
+                                feedRepository.feedsPromises.first?.resolve(.failure(.Unknown))
                             }
                             // TODO: implement the sad path
                         }

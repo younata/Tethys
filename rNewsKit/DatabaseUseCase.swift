@@ -7,15 +7,14 @@ import Result
 
 public protocol DatabaseUseCase {
     func databaseUpdateAvailable() -> Bool
-    func performDatabaseUpdates(_ progress: (Double) -> Void, callback: (Void) -> Void)
+    func performDatabaseUpdates(_ progress: @escaping (Double) -> Void, callback: @escaping (Void) -> Void)
 
     func allTags() -> Future<Result<[String], RNewsError>>
     func feeds() -> Future<Result<[Feed], RNewsError>>
-    func articlesOfFeed(_ feed: Feed, matchingSearchQuery: String) -> DataStoreBackedArray<Article>
 
     func addSubscriber(_ subscriber: DataSubscriber)
 
-    func newFeed(_ callback: (Feed) -> Void) -> Future<Result<Void, RNewsError>>
+    func newFeed(_ callback: @escaping (Feed) -> Void) -> Future<Result<Void, RNewsError>>
     func saveFeed(_ feed: Feed) -> Future<Result<Void, RNewsError>>
     func deleteFeed(_ feed: Feed) -> Future<Result<Void, RNewsError>>
     func markFeedAsRead(_ feed: Feed) -> Future<Result<Int, RNewsError>>
@@ -24,8 +23,8 @@ public protocol DatabaseUseCase {
     func deleteArticle(_ article: Article) -> Future<Result<Void, RNewsError>>
     func markArticle(_ article: Article, asRead: Bool) -> Future<Result<Void, RNewsError>>
 
-    func updateFeeds(_ callback: ([Feed], [NSError]) -> Void)
-    func updateFeed(_ feed: Feed, callback: (Feed?, NSError?) -> Void)
+    func updateFeeds(_ callback: @escaping ([Feed], [NSError]) -> Void)
+    func updateFeed(_ feed: Feed, callback: @escaping (Feed?, NSError?) -> Void)
 }
 
 public protocol DataSubscriber: NSObjectProtocol {
@@ -47,7 +46,7 @@ protocol Reachable {
 #if os(iOS)
     extension Reachability: Reachable {
         var hasNetworkConnectivity: Bool {
-            return self.currentReachabilityStatus != .NotReachable
+            return self.currentReachabilityStatus != .notReachable
         }
     }
 #endif
@@ -60,7 +59,7 @@ extension DatabaseUseCase {
                     return allFeeds.filter { feed in
                         let tags = feed.tags
                         for t in tags {
-                            if t.rangeOfString(theTag) != nil {
+                            if t.range(of: theTag) != nil {
                                 return true
                             }
                         }

@@ -46,16 +46,16 @@ class FakeUIViewControllerPreviewing: NSObject, UIViewControllerPreviewing {
 private var publishedOffset = -1
 func fakeArticle(feed: Feed, isUpdated: Bool = false, read: Bool = false) -> Article {
     publishedOffset += 1
-    let publishDate: NSDate
-    let updatedDate: NSDate?
+    let publishDate: Date
+    let updatedDate: Date?
     if isUpdated {
-        updatedDate = NSDate(timeIntervalSinceReferenceDate: NSTimeInterval(publishedOffset))
-        publishDate = NSDate(timeIntervalSinceReferenceDate: 0)
+        updatedDate = Date(timeIntervalSinceReferenceDate: NSTimeInterval(publishedOffset))
+        publishDate = Date(timeIntervalSinceReferenceDate: 0)
     } else {
-        publishDate = NSDate(timeIntervalSinceReferenceDate: NSTimeInterval(publishedOffset))
+        publishDate = Date(timeIntervalSinceReferenceDate: NSTimeInterval(publishedOffset))
         updatedDate = nil
     }
-    return Article(title: "article \(publishedOffset)", link: NSURL(string: "http://example.com"), summary: "", authors: [Author(name: "Rachel", email: nil)], published: publishDate, updatedAt: updatedDate, identifier: "\(publishedOffset)", content: "", read: read, estimatedReadingTime: 0, feed: feed, flags: [])
+    return Article(title: "article \(publishedOffset)", link: URL(string: "http://example.com"), summary: "", authors: [Author(name: "Rachel", email: nil)], published: publishDate, updatedAt: updatedDate, identifier: "\(publishedOffset)", content: "", read: read, estimatedReadingTime: 0, feed: feed, flags: [])
 }
 
 class ArticleListControllerSpec: QuickSpec {
@@ -93,7 +93,7 @@ class ArticleListControllerSpec: QuickSpec {
 
             publishedOffset = 0
 
-            feed = Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
             let d = fakeArticle(feed)
             let c = fakeArticle(feed, read: true)
             let b = fakeArticle(feed, isUpdated: true)
@@ -128,7 +128,7 @@ class ArticleListControllerSpec: QuickSpec {
                     shareSheet.tap()
                     expect(subject.presentedViewController).to(beAnInstanceOf(UIActivityViewController))
                     if let activityVC = subject.presentedViewController as? UIActivityViewController {
-                        expect(activityVC.activityItems as? [NSURL]) == [feed.url]
+                        expect(activityVC.activityItems as? [URL]) == [feed.url]
                     }
                 }
             }

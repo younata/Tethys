@@ -21,15 +21,15 @@ class FakeWebView: WKWebView {
         return nil
     }
 
-    var fakeUrl: NSURL? = nil
+    var fakeUrl: Foundation.URL? = nil
 
-    override var URL: NSURL {
-        return fakeUrl ?? NSURL(string: "http://example.com")!
+    override var url: Foundation.URL {
+        return fakeUrl ?? Foundation.URL(string: "http://example.com")!
     }
 
     var lastJavascriptEvaluated: String? = nil
-    var lastJavascriptHandler: (AnyObject!, NSError!) -> Void = {_ in }
-    override func evaluateJavaScript(javaScriptString: String, completionHandler: ((AnyObject!, NSError!) -> Void)?) {
+    var lastJavascriptHandler: (AnyObject?, NSError?) -> Void = {_ in }
+    override func evaluateJavaScript(_ javaScriptString: String, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
         lastJavascriptEvaluated = javaScriptString
         if let handler = completionHandler {
             lastJavascriptHandler = handler

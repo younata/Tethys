@@ -4,18 +4,18 @@ import Foundation
 #endif
 
 public protocol SearchIndex: class {
-    func addItemsToIndex(_ items: [NSObject], completionHandler: (NSError?) -> (Void))
-    func deleteIdentifierFromIndex(_ items: [String], completionHandler: (NSError?) -> (Void))
+    func addItemsToIndex(_ items: [NSObject], completionHandler: @escaping (Error?) -> (Void))
+    func deleteIdentifierFromIndex(_ items: [String], completionHandler: @escaping (Error?) -> (Void))
 }
 
 #if os(iOS)
     @available(iOSApplicationExtension 9.0, *)
     extension CSSearchableIndex: SearchIndex {
-        public func addItemsToIndex(_ items: [NSObject], completionHandler: (NSError?) -> (Void)) {
+        public func addItemsToIndex(_ items: [NSObject], completionHandler: @escaping (Error?) -> (Void)) {
             self.indexSearchableItems(items as! [CSSearchableItem], completionHandler: completionHandler)
         }
 
-        public func deleteIdentifierFromIndex(_ items: [String], completionHandler: (NSError?) -> (Void)) {
+        public func deleteIdentifierFromIndex(_ items: [String], completionHandler: @escaping (Error?) -> (Void)) {
             self.deleteSearchableItems(withIdentifiers: items, completionHandler: completionHandler)
         }
     }

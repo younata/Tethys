@@ -175,7 +175,8 @@ public final class FeedsTableViewController: UIViewController, Injectable {
         self.navigationItem.title = NSLocalizedString("FeedsTableViewController_Title", comment: "")
 
         NotificationCenter.default.addObserver(self, selector: #selector(UIWebView.reload),
-                                                         name: NSNotification.Name(rawValue: "UpdatedFeed"), object: nil)
+                                                         name: NSNotification.Name(rawValue: "UpdatedFeed"),
+                                                         object: nil)
 
         if self.traitCollection.forceTouchCapability == .available {
             self.registerForPreviewing(with: self, sourceView: self.tableView)
@@ -304,7 +305,7 @@ public final class FeedsTableViewController: UIViewController, Injectable {
             reloadWithFeeds(feeds)
         }
         self.feedRepository.feedsMatchingTag(tag).then {
-            if case let Result.Success(feeds) = $0 {
+            if case let Result.success(feeds) = $0 {
                 reloadWithFeeds(feeds)
             }
         }
@@ -466,8 +467,9 @@ extension FeedsTableViewController: BreakOutToRefreshDelegate, UIScrollViewDeleg
 extension FeedsTableViewController: UIViewControllerPreviewingDelegate {
     public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
         viewControllerForLocation location: CGPoint) -> UIViewController? {
-            if let indexPath = self.tableView.indexPathForRow(at: location), let feed = self.feedAtIndexPath(indexPath) {
-                return configuredArticleListWithFeeds(feed)
+            if let indexPath = self.tableView.indexPathForRow(at: location),
+                let feed = self.feedAtIndexPath(indexPath) {
+                    return configuredArticleListWithFeeds(feed)
             }
             return nil
     }

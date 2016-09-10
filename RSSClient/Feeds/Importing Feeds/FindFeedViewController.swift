@@ -183,7 +183,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         if originalText.lowercased().hasPrefix("http") == false {
             textField.text = "https://\(originalText)"
         }
-        if let text = textField.text, let url = URL(string: text) , text.contains(".") {
+        if let text = textField.text, let url = URL(string: text), text.contains(".") {
             self.webContent.load(URLRequest(url: url))
         } else if let url = URL(string: "https://duckduckgo.com/?q=" +
                 originalText.replacingOccurrences(of: " ", with: "+")) {
@@ -241,7 +241,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.navField.attributedPlaceholder = NSAttributedString(string: urlLoading,
             attributes: self.placeholderAttributes)
         self.addFeedButton.isEnabled = false
-        if let url = webView.url , lookForFeeds {
+        if let url = webView.url, lookForFeeds {
             self.importUseCase.scanForImportable(url) { item in
                 switch item {
                 case .Feed(let url, _):
@@ -283,7 +283,7 @@ extension FindFeedViewController {
     }
 
     @objc private func save() {
-        if let rl = self.rssLinks.first , self.rssLinks.count == 1 {
+        if let rl = self.rssLinks.first, self.rssLinks.count == 1 {
             self.save(rl)
         } else if self.rssLinks.count > 1 {
             // yay!
@@ -291,7 +291,8 @@ extension FindFeedViewController {
             let alert = UIAlertController(title: alertTitle, message: nil, preferredStyle: .alert)
             for link in self.rssLinks {
                 let pathWithPrecedingSlash = link.path ?? ""
-                let path = pathWithPrecedingSlash.substring(from: pathWithPrecedingSlash.characters.index(after: pathWithPrecedingSlash.startIndex))
+                let path = pathWithPrecedingSlash.substring(from:
+                    pathWithPrecedingSlash.characters.index(after: pathWithPrecedingSlash.startIndex))
                 alert.addAction(UIAlertAction(title: path, style: .default) { _ in
                     self.save(link)
                     self.dismiss(animated: true, completion: nil)

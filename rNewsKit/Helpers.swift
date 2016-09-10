@@ -1,5 +1,5 @@
-func documentsDirectory() -> NSString {
-    return (NSHomeDirectory() as NSString).appendingPathComponent("Documents")
+func documentsDirectory() -> String {
+    return NSHomeDirectory() + "/Documents"
 }
 
 extension String {

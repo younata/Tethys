@@ -29,10 +29,10 @@ class KitModuleSpec: QuickSpec {
         #endif
 
         it("binds a URLSession to the shared session") {
-            let urlSession = injector.create(NSURLSession)
+            let urlSession = injector.create(URLSession)
             expect(urlSession).toNot(beNil())
 
-            expect(urlSession) === NSURLSession.sharedSession()
+            expect(urlSession) === URLSession.sharedSession()
         }
 
         it("binds a DatabaseUseCase") {

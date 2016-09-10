@@ -69,7 +69,7 @@ class AccountRepositorySpec: QuickSpec {
                 beforeEach {
                     repository._authToken = "oogabooga"
 
-                    loginRepositoryPromise.resolve(.Success())
+                    loginRepositoryPromise.resolve(.success())
                 }
 
                 it("successfully resolves the future") {
@@ -93,7 +93,7 @@ class AccountRepositorySpec: QuickSpec {
 
             describe("when the call fails") {
                 beforeEach {
-                    loginRepositoryPromise.resolve(.Failure(.Network))
+                    loginRepositoryPromise.resolve(.failure(.Network))
                 }
 
                 it("resolves the future with an error") {
@@ -129,7 +129,7 @@ class AccountRepositorySpec: QuickSpec {
                 beforeEach {
                     repository._authToken = "oogabooga"
 
-                    registerRepositoryPromise.resolve(.Success())
+                    registerRepositoryPromise.resolve(.success())
                 }
 
                 it("successfully resolves the future") {
@@ -153,7 +153,7 @@ class AccountRepositorySpec: QuickSpec {
 
             describe("when the call fails") {
                 beforeEach {
-                    registerRepositoryPromise.resolve(.Failure(.Network))
+                    registerRepositoryPromise.resolve(.failure(.Network))
                 }
 
                 it("resolves the future with an error") {

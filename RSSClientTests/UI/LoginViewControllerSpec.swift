@@ -188,7 +188,7 @@ class LoginViewControllerSpec: QuickSpec {
 
                     describe("when the user successfully logs in") {
                         beforeEach {
-                            loginPromise.resolve(.Success())
+                            loginPromise.resolve(.success())
                         }
 
                         it("dismisses the activity indicator") {
@@ -202,7 +202,7 @@ class LoginViewControllerSpec: QuickSpec {
 
                     describe("when the user fails to log in") {
                         beforeEach {
-                            loginPromise.resolve(.Failure(.Unknown))
+                            loginPromise.resolve(.failure(.Unknown))
                         }
 
                         it("dismisses the activity indicator") {
@@ -249,7 +249,7 @@ class LoginViewControllerSpec: QuickSpec {
 
                     describe("when the user successfully registers") {
                         beforeEach {
-                            registerPromise.resolve(.Success())
+                            registerPromise.resolve(.success())
                         }
 
                         it("dismisses the activity indicator") {
@@ -263,7 +263,7 @@ class LoginViewControllerSpec: QuickSpec {
 
                     describe("when the user fails to register") {
                         beforeEach {
-                            registerPromise.resolve(.Failure(.Unknown))
+                            registerPromise.resolve(.failure(.Unknown))
                         }
 
                         it("dismisses the activity indicator") {

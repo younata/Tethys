@@ -200,7 +200,8 @@ public final class SettingsViewController: UIViewController, Injectable {
             let keyCommand = UIKeyCommand(input: "\(idx+1)", modifierFlags: .command,
                                           action: #selector(SettingsViewController.didHitChangeTheme(_:)))
             let title = NSLocalizedString("SettingsViewController_Commands_Theme", comment: "")
-            keyCommand.discoverabilityTitle = String(NSString.localizedStringWithFormat(title as NSString, theme.description))
+            keyCommand.discoverabilityTitle = String(NSString.localizedStringWithFormat(title as NSString,
+                                                                                        theme.description))
             commands.append(keyCommand)
         }
 
@@ -310,13 +311,13 @@ extension SettingsViewController: UITableViewDataSource {
     }
 
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let section = SettingsSection(rawValue: (indexPath as NSIndexPath).section, traits: self.traitCollection) else {
+        guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection) else {
             return TableViewCell()
         }
         switch section {
         case .theme:
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
-            guard let theme = ThemeRepository.Theme(rawValue: (indexPath as NSIndexPath).row) else {
+            guard let theme = ThemeRepository.Theme(rawValue: indexPath.row) else {
                 return cell
             }
             cell.themeRepository = self.themeRepository
@@ -326,7 +327,7 @@ extension SettingsViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
             cell.themeRepository = self.themeRepository
 
-            cell.textLabel?.text = self.titleForQuickAction((indexPath as NSIndexPath).row)
+            cell.textLabel?.text = self.titleForQuickAction(indexPath.row)
 
             return cell
         case .accounts:
@@ -341,7 +342,7 @@ extension SettingsViewController: UITableViewDataSource {
         case .advanced:
             let cell = tableView.dequeueReusableCell(withIdentifier: "switch",
                 for: indexPath) as! SwitchTableViewCell
-            let row = AdvancedSection(rawValue: (indexPath as NSIndexPath).row)!
+            let row = AdvancedSection(rawValue: indexPath.row)!
             cell.textLabel?.text = row.description
             cell.themeRepository = self.themeRepository
             cell.onTapSwitch = {_ in }
@@ -374,7 +375,7 @@ extension SettingsViewController: UITableViewDataSource {
 
 extension SettingsViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        guard let section = SettingsSection(rawValue: (indexPath as NSIndexPath).section, traits: self.traitCollection) else {
+        guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection) else {
             return
         }
 
@@ -384,10 +385,10 @@ extension SettingsViewController: UITableViewDelegate {
     }
 
     public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        guard let section = SettingsSection(rawValue: (indexPath as NSIndexPath).section, traits: self.traitCollection)
-            , section == .quickActions || section == .accounts else { return false }
+        guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection),
+            section == .quickActions || section == .accounts else { return false }
         if section == .quickActions {
-            return (indexPath as NSIndexPath).row < self.quickActionRepository.quickActions.count
+            return indexPath.row < self.quickActionRepository.quickActions.count
         }
         return true
     }
@@ -396,17 +397,17 @@ extension SettingsViewController: UITableViewDelegate {
         editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         guard self.tableView(tableView, canEditRowAt: indexPath) else { return nil }
 
-        guard let section = SettingsSection(rawValue: (indexPath as NSIndexPath).section, traits: self.traitCollection) else {return nil}
+        guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection) else {return nil}
         switch section {
         case .quickActions:
             let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
             let deleteAction = UITableViewRowAction(style: .default, title: deleteTitle) {_, indexPath in
-                self.quickActionRepository.quickActions.remove(at: (indexPath as NSIndexPath).row)
+                self.quickActionRepository.quickActions.remove(at: indexPath.row)
                 if self.quickActionRepository.quickActions.count != 2 {
                     tableView.deleteRows(at: [indexPath], with: .automatic)
                 } else {
                     tableView.reloadRows(at: [
-                        indexPath, IndexPath(row: 2, section: (indexPath as NSIndexPath).section)
+                        indexPath, IndexPath(row: 2, section: indexPath.section)
                         ], with: .automatic)
                 }
             }
@@ -429,10 +430,10 @@ extension SettingsViewController: UITableViewDelegate {
         forRowAt indexPath: IndexPath) {}
 
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let section = SettingsSection(rawValue: (indexPath as NSIndexPath).section, traits: self.traitCollection) else { return }
+        guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection) else { return }
         switch section {
         case .theme:
-            guard let theme = ThemeRepository.Theme(rawValue: (indexPath as NSIndexPath).row) else { return }
+            guard let theme = ThemeRepository.Theme(rawValue: indexPath.row) else { return }
             self.themeRepository.theme = theme
             self.navigationItem.rightBarButtonItem?.isEnabled = true
             self.tableView.reloadData()
@@ -458,11 +459,11 @@ extension SettingsViewController: UITableViewDelegate {
     fileprivate func didTapQuickActionCell(_ indexPath: IndexPath) {
         let feedsListController = FeedsListController()
         feedsListController.themeRepository = self.themeRepository
-        feedsListController.navigationItem.title = self.titleForQuickAction((indexPath as NSIndexPath).row)
+        feedsListController.navigationItem.title = self.titleForQuickAction(indexPath.row)
 
         let quickActions = self.quickActionRepository.quickActions
         self.databaseUseCase.feeds().then {
-            if case let Result.Success(feeds) = $0 {
+            if case let Result.success(feeds) = $0 {
                 if !quickActions.isEmpty {
                     let quickActionFeeds = quickActions.indices.reduce([Feed]()) {
                         guard let feed = self.feedForQuickAction($1, feeds: feeds) else { return $0 }

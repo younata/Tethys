@@ -36,7 +36,7 @@ final class DefaultUpdateUseCase: UpdateUseCase {
             }
         }
         let future = self.updateService.updateFeeds { progress, total in
-            self.mainQueue.addOperationWithBlock {
+            self.mainQueue.addOperation {
                 for subscriber in subscribers {
                     subscriber.didUpdateFeedsProgress(progress, total: total)
                 }
@@ -53,7 +53,7 @@ final class DefaultUpdateUseCase: UpdateUseCase {
         var feedsLeft = feeds.count
         let promise = Promise<Result<Void, RNewsError>>()
         guard feedsLeft != 0 else {
-            promise.resolve(.Failure(.Unknown))
+            promise.resolve(.failure(.unknown))
             return promise.future
         }
 
@@ -71,7 +71,7 @@ final class DefaultUpdateUseCase: UpdateUseCase {
                 updatedFeeds.append(feed)
 
                 currentProgress += 1
-                self.mainQueue.addOperationWithBlock {
+                self.mainQueue.addOperation {
                     for subscriber in subscribers {
                         subscriber.didUpdateFeedsProgress(currentProgress, total: totalProgress)
                     }
@@ -79,7 +79,7 @@ final class DefaultUpdateUseCase: UpdateUseCase {
 
                 feedsLeft -= 1
                 if feedsLeft == 0 {
-                    promise.resolve(.Success())
+                    promise.resolve(.success())
                 }
             }
         }

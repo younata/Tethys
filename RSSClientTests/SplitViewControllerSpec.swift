@@ -34,7 +34,7 @@ class SplitViewControllerSpec: QuickSpec {
 
             context("when an SFSafariViewController is on the master view controller") {
                 beforeEach {
-                    master.topViewController?.presentViewController(SFSafariViewController(URL: NSURL(string: "https://example.com")!), animated: false, completion: nil)
+                    master.topViewController?.presentViewController(SFSafariViewController(URL: URL(string: "https://example.com")!), animated: false, completion: nil)
                 }
 
                 it("changes the preferredStatusBarStyle to black") {
@@ -44,7 +44,7 @@ class SplitViewControllerSpec: QuickSpec {
 
             context("when an SFSafariViewController is on the detail view controller") {
                 beforeEach {
-                    detail.topViewController?.presentViewController(SFSafariViewController(URL: NSURL(string: "https://example.com")!), animated: false, completion: nil)
+                    detail.topViewController?.presentViewController(SFSafariViewController(URL: URL(string: "https://example.com")!), animated: false, completion: nil)
                 }
 
                 it("changes the preferredStatusBarStyle to black") {

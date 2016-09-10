@@ -42,7 +42,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
                 articleUseCase.readArticleReturns("hello")
                 articleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
-                subject.setArticle(Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: []))
+                subject.setArticle(Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: []))
 
                 expect(subject.backgroundView.hidden) == true
             }
@@ -117,8 +117,8 @@ class ArticleViewControllerSpec: QuickSpec {
                 }
             }
 
-            let article = Article(title: "article", link: NSURL(string: "https://example.com/article"), summary: "summary", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
-            let article1 = Article(title: "article1", link: nil, summary: "summary", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier1", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+            let article = Article(title: "article", link: URL(string: "https://example.com/article"), summary: "summary", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+            let article1 = Article(title: "article1", link: nil, summary: "summary", authors: [], published: Date(), updatedAt: nil, identifier: "identifier1", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
 
             context("when viewing an article that has a link") {
                 beforeEach {
@@ -162,7 +162,7 @@ class ArticleViewControllerSpec: QuickSpec {
         }
 
         describe("continuing from user activity") {
-            let article = Article(title: "article", link: NSURL(string: "https://example.com/article"), summary: "summary", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+            let article = Article(title: "article", link: URL(string: "https://example.com/article"), summary: "summary", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
 
             beforeEach {
                 articleUseCase.readArticleStub = {
@@ -197,10 +197,10 @@ class ArticleViewControllerSpec: QuickSpec {
         }
 
         describe("setting the article") {
-            let article = Article(title: "article", link: NSURL(string: "https://example.com/"), summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: NSDate(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
-            let article2 = Article(title: "article2", link: NSURL(string: "https://example.com/2"), summary: "summary2", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
+            let article = Article(title: "article", link: URL(string: "https://example.com/"), summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: Date(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
+            let article2 = Article(title: "article2", link: URL(string: "https://example.com/2"), summary: "summary2", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
             article.addRelatedArticle(article2)
-            let feed = Feed(title: "feed", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
+            let feed = Feed(title: "feed", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
 
             let userActivity = NSUserActivity(activityType: "com.example.test")
 
@@ -236,8 +236,8 @@ class ArticleViewControllerSpec: QuickSpec {
             }
 
             it("should exclude the open in safari button if the article has no associated link") {
-                let article2 = Article(title: "article2", link: nil, summary: "summary", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier", content: "<h1>Hello World</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
-                let feed2 = Feed(title: "feed2", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
+                let article2 = Article(title: "article2", link: nil, summary: "summary", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "<h1>Hello World</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
+                let feed2 = Feed(title: "feed2", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
                 article2.feed = feed2
                 feed2.addArticle(article2)
 
@@ -266,7 +266,7 @@ class ArticleViewControllerSpec: QuickSpec {
                     expect(subject.presentedViewController).to(beAnInstanceOf(UIActivityViewController.self))
                     if let activityViewController = subject.presentedViewController as? UIActivityViewController {
                         expect(activityViewController.activityItems.count).to(equal(1))
-                        expect(activityViewController.activityItems.first as? NSURL).to(equal(article.link))
+                        expect(activityViewController.activityItems.first as? URL).to(equal(article.link))
 
                         expect(activityViewController.applicationActivities as? [NSObject]).toNot(beNil())
                         if let activities = activityViewController.applicationActivities as? [NSObject] {
@@ -294,7 +294,7 @@ class ArticleViewControllerSpec: QuickSpec {
                     describe("when the use case returns") {
                         var articleListController: ArticleListController!
 
-                        let articleByAuthor = Article(title: "article23", link: NSURL(string: "https://example.com/"), summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: NSDate(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
+                        let articleByAuthor = Article(title: "article23", link: URL(string: "https://example.com/"), summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: Date(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
 
                         beforeEach {
                             articleListController = ArticleListController(
@@ -327,18 +327,18 @@ class ArticleViewControllerSpec: QuickSpec {
 
             context("tapping a link") {
                 it("navigates to that article if the link goes to a related article") {
-                    let shouldInteract = subject.content.delegate?.webView?(subject.content, shouldStartLoadWithRequest: NSURLRequest(URL: article2.link!), navigationType: .LinkClicked)
+                    let shouldInteract = subject.content.delegate?.webView?(subject.content, shouldStartLoadWithRequest: URLRequest(URL: article2.link!), navigationType: .LinkClicked)
                     expect(shouldInteract) == false
 //                    expect(navigationController.topViewController) != subject
 //                    expect(navigationController.topViewController).to(beAnInstanceOf(ArticleViewController.self))
 //                    guard let articleViewController = navigationController.topViewController as? ArticleViewController else { return }
 //                    expect(articleViewController.article) != article
-                    // This test fails because of a type mismatch between what Realm/Core Data store (String), and what the Article model stores (NSURL).
+                    // This test fails because of a type mismatch between what Realm/Core Data store (String), and what the Article model stores (URL).
                 }
 
                 it("opens in an SFSafariViewController") {
-                    let url = NSURL(string: "https://example.com")!
-                    let shouldInteract = subject.content.delegate?.webView?(subject.content, shouldStartLoadWithRequest: NSURLRequest(URL: url), navigationType: .LinkClicked)
+                    let url = URL(string: "https://example.com")!
+                    let shouldInteract = subject.content.delegate?.webView?(subject.content, shouldStartLoadWithRequest: URLRequest(URL: url), navigationType: .LinkClicked)
                     expect(shouldInteract) == false
                     expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
                 }

@@ -43,7 +43,7 @@ class RealmServiceSpec: QuickSpec {
 
                 subject.createFeed { feed in
                     feed.title = "Hello"
-                    feed.url = NSURL(string: "https://example.com/feed")!
+                    feed.url = URL(string: "https://example.com/feed")!
                     expectation.fulfill()
                 }
 
@@ -104,11 +104,11 @@ class RealmServiceSpec: QuickSpec {
 
                 realmArticle1.title = "article1"
                 realmArticle1.link = "https://example.com/article1"
-                realmArticle1.published = NSDate(timeIntervalSince1970: 15)
+                realmArticle1.published = Date(timeIntervalSince1970: 15)
                 realmArticle2.title = "article2"
-                realmArticle2.published = NSDate(timeIntervalSince1970: 10)
+                realmArticle2.published = Date(timeIntervalSince1970: 10)
                 realmArticle3.title = "article3"
-                realmArticle3.published = NSDate(timeIntervalSince1970: 5)
+                realmArticle3.published = Date(timeIntervalSince1970: 5)
                 realmArticle1.feed = realmFeed1
                 realmArticle2.feed = realmFeed1
                 realmArticle3.feed = realmFeed2
@@ -133,7 +133,7 @@ class RealmServiceSpec: QuickSpec {
                 it("reads the feeds based on the predicate") {
                     let allExpectation = self.expectationWithDescription("Read all feeds")
                     subject.allFeeds().then {
-                        guard case let Result.Success(values) = $0 else { return }
+                        guard case let Result.success(values) = $0 else { return }
                         expect(Array(values)) == [feed1, feed2]
                         allExpectation.fulfill()
                     }
@@ -144,7 +144,7 @@ class RealmServiceSpec: QuickSpec {
                 it("reads the articles based on the predicate") {
                     let allExpectation = self.expectationWithDescription("Read all articles")
                     subject.articlesMatchingPredicate(NSPredicate(value: true)).then {
-                        guard case let Result.Success(articles) = $0 else { return }
+                        guard case let Result.success(articles) = $0 else { return }
                         expect(Array(articles)) == [article1, article2, article3]
 
                         expect(articles[1].relatedArticles).to(contain(article3))
@@ -155,7 +155,7 @@ class RealmServiceSpec: QuickSpec {
 
                     let someExpectation = self.expectationWithDescription("Read some articles")
                     subject.articlesMatchingPredicate(NSPredicate(format: "title == %@", "article1")).then {
-                        guard case let Result.Success(articles) = $0 else { return }
+                        guard case let Result.success(articles) = $0 else { return }
                         expect(Array(articles)) == [article1]
                         someExpectation.fulfill()
                     }
@@ -179,7 +179,7 @@ class RealmServiceSpec: QuickSpec {
 
                 it("doesn't create multiple copies of the same RealmAuthor when an article is saved again") {
                     article1.authors = [
-                        Author(name: "hello", email: NSURL(string: "goodbye"))
+                        Author(name: "hello", email: URL(string: "goodbye"))
                     ]
                     subject.batchSave([], articles: [article1]).wait()
 
@@ -206,7 +206,7 @@ class RealmServiceSpec: QuickSpec {
                             let identifier = article1.identifier
                             expect(item.uniqueIdentifier).to(equal(identifier))
                             expect(item.domainIdentifier).to(beNil())
-                            expect(item.expirationDate).to(equal(NSDate.distantFuture()))
+                            expect(item.expirationDate).to(equal(Date.distantFuture()))
                             let attributes = item.attributeSet
                             expect(attributes.contentType).to(equal(kUTTypeHTML as String))
                             expect(attributes.title).to(equal(article1.title))
@@ -229,7 +229,7 @@ class RealmServiceSpec: QuickSpec {
                     let articleIdentifiers = feed1.articlesArray.map { $0.identifier }
 
                     subject.deleteFeed(feed1).then {
-                        guard case Result.Success() = $0 else { return }
+                        guard case Result.success() = $0 else { return }
                         expectation.fulfill()
                     }
 
@@ -247,7 +247,7 @@ class RealmServiceSpec: QuickSpec {
                     let expectation = self.expectationWithDescription("delete article")
 
                     subject.deleteArticle(article1).then {
-                        guard case Result.Success() = $0 else { return }
+                        guard case Result.success() = $0 else { return }
                         expectation.fulfill()
                     }
 

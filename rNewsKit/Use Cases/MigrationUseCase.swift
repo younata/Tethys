@@ -20,11 +20,11 @@ public final class DefaultMigrationUseCase: MigrationUseCase, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            feedRepository: injector.create(DatabaseUseCase)!
+            feedRepository: injector.create(kind: DatabaseUseCase.self)!
         )
     }
 
-    private let _subscribers = NSHashTable.weakObjects()
+    private let _subscribers = NSHashTable<AnyObject>.weakObjects()
     private var subscribers: [MigrationUseCaseSubscriber] {
         return self._subscribers.allObjects.flatMap { $0 as? MigrationUseCaseSubscriber }
     }
@@ -43,7 +43,7 @@ public final class DefaultMigrationUseCase: MigrationUseCase, Injectable {
     }
 
     private var workFlowCallbacks: [WorkFlowFinishCallback] = []
-    public func beginWork(_ finish: WorkFlowFinishCallback) {
+    public func beginWork(_ finish: @escaping WorkFlowFinishCallback) {
         self.workFlowCallbacks.append(finish)
         self.beginMigration()
     }

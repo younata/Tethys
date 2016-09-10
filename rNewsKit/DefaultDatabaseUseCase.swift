@@ -71,7 +71,8 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         return self.feeds().map {
             return $0.map { feeds in
                 let setOfTags = feeds.reduce(Set<String>()) {set, feed in set.union(Set(feed.tags)) }
-                return Array(setOfTags).sort { return $0.lowercaseString < $1.lowercaseString }
+                let arrayOfTags: [String] = Array(setOfTags)
+                return arrayOfTags.sorted()
             }
         }
     }
@@ -97,14 +98,14 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         return self.dataService.allFeeds().map { result in
             return result.map { unsorted_feeds in
                 let unsorted = Array(unsorted_feeds)
-                return unsorted.sort { return $0.displayTitle < $1.displayTitle }
+                return unsorted.sorted { return $0.displayTitle < $1.displayTitle }
             }
         }
     }
 
     // MARK: DataWriter
 
-    private let subscribers = NSHashTable.weakObjects()
+    private let subscribers = NSHashTable<AnyObject>.weakObjects()
     private var allSubscribers: [DataSubscriber] {
         return self.subscribers.allObjects.flatMap { $0 as? DataSubscriber }
     }
@@ -113,21 +114,21 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         subscribers.add(subscriber)
     }
 
-    func newFeed(_ callback: (Feed) -> (Void)) -> Future<Result<Void, RNewsError>> {
+    func newFeed(_ callback: @escaping (Feed) -> (Void)) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
-        self.dataService.createFeed {
+        _ = self.dataService.createFeed {
             callback($0)
             if !$0.url.absoluteString.isEmpty, let sinopeRepository = self.accountRepository.backendRepository() {
-                sinopeRepository.subscribe([$0.url]).then { res in
+                _ = sinopeRepository.subscribe([$0.url]).then { res in
                     switch res {
-                    case .Success(_):
-                        promise.resolve(.Success())
-                    case let .Failure(error):
-                        promise.resolve(.Failure(.Backend(error)))
+                    case .success(_):
+                        promise.resolve(.success())
+                    case let .failure(error):
+                        promise.resolve(.failure(.backend(error)))
                     }
                 }
             } else {
-                promise.resolve(.Success())
+                promise.resolve(.success())
             }
         }
         return promise.future
@@ -140,32 +141,32 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     func deleteFeed(_ feed: Feed) -> Future<Result<Void, RNewsError>> {
         return self.dataService.deleteFeed(feed).map { result -> Future<Result<Void, RNewsError>> in
             switch result {
-            case .Success:
-                let future: Future<Result<[NSURL], RNewsError>>
+            case .success:
+                let future: Future<Result<[URL], RNewsError>>
                 if let sinopeRepository = self.accountRepository.backendRepository() {
                     future = sinopeRepository.unsubscribe([feed.url]).map { res in
-                        return res.mapError { return RNewsError.Backend($0) }
+                        return res.mapError { return RNewsError.backend($0) }
                     }
                 } else {
-                    let promise = Promise<Result<[NSURL], RNewsError>>()
-                    promise.resolve(.Success([]))
+                    let promise = Promise<Result<[URL], RNewsError>>()
+                    promise.resolve(.success([]))
                     future = promise.future
                 }
                 return future.map { _ in
                     return self.feeds().map { feedsResult -> Result<Void, RNewsError> in
                         _ = feedsResult.map { (feeds: [Feed]) -> Void in
-                            self.mainQueue.addOperationWithBlock {
+                            self.mainQueue.addOperation {
                                 for subscriber in self.allSubscribers {
                                     subscriber.deletedFeed(feed, feedsLeft: feeds.count)
                                 }
                             }
                         }
-                        return .Success()
+                        return .success()
                     }
                 }
-            case let .Failure(error):
+            case let .failure(error):
                 let promise = Promise<Result<Void, RNewsError>>()
-                promise.resolve(.Failure(error))
+                promise.resolve(.failure(error))
                 return promise.future
             }
         }
@@ -197,10 +198,10 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     func markArticle(_ article: Article, asRead: Bool) -> Future<Result<Void, RNewsError>> {
         return self.privateMarkArticles([article], asRead: asRead).map { result -> Result<Void, RNewsError> in
             switch result {
-            case .Success(_):
-                return .Success()
-            case let .Failure(error):
-                return .Failure(error)
+            case .success(_):
+                return .success()
+            case let .failure(error):
+                return .failure(error)
             }
         }
     }
@@ -210,7 +211,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         self.updatingFeedsCallbacks.append(callback)
         guard self.updatingFeedsCallbacks.count == 1 else { return }
 
-        self.feeds().map { result in
+        _ = self.feeds().map { result in
             return result.map { feeds in
                 guard feeds.isEmpty == false && self.reachable?.hasNetworkConnectivity == true else {
                     self.updatingFeedsCallbacks.forEach { $0([], []) }
@@ -220,11 +221,11 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
 
                 self.privateUpdateFeeds(feeds) {updatedFeeds, errors in
                     for updateCallback in self.updatingFeedsCallbacks {
-                        self.mainQueue.addOperationWithBlock { updateCallback(updatedFeeds, errors) }
+                        self.mainQueue.addOperation { updateCallback(updatedFeeds, errors) }
                     }
                     for object in self.subscribers.allObjects {
                         if let subscriber = object as? DataSubscriber {
-                            self.mainQueue.addOperationWithBlock {
+                            self.mainQueue.addOperation {
                                 subscriber.didUpdateFeeds(updatedFeeds)
                             }
                         }
@@ -257,7 +258,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     private func privateMarkArticles(_ articles: [Article], asRead read: Bool) -> Future<Result<Int, RNewsError>> {
         guard articles.count > 0 else {
             let promise = Promise<Result<Int, RNewsError>>()
-            promise.resolve(.Success(0))
+            promise.resolve(.success(0))
             return promise.future
         }
 
@@ -278,12 +279,12 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     }
 
     private func privateUpdateFeeds(_ feeds: [Feed], callback: @escaping ([Feed], [NSError]) -> (Void)) {
-        self.updateUseCase.updateFeeds(feeds, subscribers: self.allSubscribers).then { res in
-            self.allFeeds().then { result in
+        _ = self.updateUseCase.updateFeeds(feeds, subscribers: self.allSubscribers).then { res in
+            _ = self.allFeeds().then { result in
                 switch result {
-                case let .Success(feeds):
+                case let .success(feeds):
                     callback(feeds, [])
-                case .Failure(_):
+                case .failure(_):
                     callback([], [NSError(domain: "RNewsError", code: 0, userInfo: [:])])
                 }
             }

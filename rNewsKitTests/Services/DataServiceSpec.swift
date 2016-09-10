@@ -22,7 +22,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             if let feed = feed {
                 let deleteFeedExpectation = spec.expectation(withDescription: "Delete Feed")
                 dataService.deleteFeed(feed).then {
-                    if case Result.Success() = $0 {
+                    if case Result.success() = $0 {
                         deleteFeedExpectation.fulfill()
                     }
                 }
@@ -37,7 +37,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             let info = FakeImportableFeed(title: "a &amp; title", link: URL(string: "https://example.com")!, description: "description", lastUpdated: itemUpdateDate, imageURL: nil, articles: [item])
             let updateExpectation = spec.expectation(withDescription: "Update Feed")
             dataService.updateFeed(feed, info: info).then {
-                if case Result.Success() = $0 {
+                if case Result.success() = $0 {
                     updateExpectation.fulfill()
                 }
             }
@@ -59,7 +59,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             let info = FakeImportableFeed(title: "a &amp; title", link: URL(string: "https://example.com/qux")!, description: "description", lastUpdated: Date(), imageURL: nil, articles: [item])
             let updateExpectation = spec.expectation(withDescription: "Update Feed")
             dataService.updateFeed(feed, info: info).then {
-                if case Result.Success() = $0 {
+                if case Result.success() = $0 {
                     updateExpectation.fulfill()
                 }
             }
@@ -81,7 +81,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             let info = FakeImportableFeed(title: "a title", link: URL(string: "https://example.com")!, description: "description", lastUpdated: Date(), imageURL: nil, articles: [item])
             let updateExpectation = spec.expectation(withDescription: "Update Feed")
             dataService.updateFeed(feed, info: info).then {
-                if case Result.Success() = $0 {
+                if case Result.success() = $0 {
                     updateExpectation.fulfill()
                 }
             }
@@ -101,10 +101,10 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             dataService.createArticle(feed) { article in
                 existingArticle = article
                 existingArticle.title = "blah"
-                existingArticle.link = NSURL(string: "https://example.com/article")
+                existingArticle.link = URL(string: "https://example.com/article")
                 existingArticle.summary = "summary"
                 existingArticle.content = "content"
-                existingArticle.published = NSDate(timeIntervalSince1970: 10)
+                existingArticle.published = Date(timeIntervalSince1970: 10)
                 expect(existingArticle.feed) == feed
                 addArticleExpectation.fulfill()
             }
@@ -118,10 +118,10 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             let info = FakeImportableFeed(title: "a title", link: URL(string: "https://example.com")!, description: "description", lastUpdated: Date(), imageURL: nil, articles: [existingItem, item])
             let updateExpectation = spec.expectation(withDescription: "Update Feed")
             dataService.updateFeed(feed, info: info).then {
-                guard case Result.Success() = $0 else { return }
+                guard case Result.success() = $0 else { return }
                 expect(feed.title) == "a title"
                 expect(feed.summary) == "description"
-                expect(feed.url) == NSURL(string: "")
+                expect(feed.url) == URL(string: "")
                 expect(feed.lastUpdated) == info.lastUpdated
                 expect(feed.articlesArray.count).to(equal(2))
                 let articles = feed.articlesArray
@@ -130,7 +130,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
                 }
                 if let secondArticle = articles.last {
                     expect(secondArticle.title) == item.title
-                    expect(secondArticle.link) == NSURL(string: "https://example.com")
+                    expect(secondArticle.link) == URL(string: "https://example.com")
                     expect(secondArticle) != existingArticle
                 }
                 updateExpectation.fulfill()
@@ -156,7 +156,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             if let article = article {
                 let deleteExpectation = spec.expectation(withDescription: "Delete Article")
                 dataService.deleteArticle(article).then {
-                    guard case Result.Success() = $0 else { return }
+                    guard case Result.success() = $0 else { return }
 
                     deleteExpectation.fulfill()
                 }
@@ -169,7 +169,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             let createExpectation = spec.expectation(withDescription: "Create Article")
             dataService.createArticle(nil) {
                 otherArticle = $0
-                $0.link = NSURL(string: "https://example.com/foo/bar/")
+                $0.link = URL(string: "https://example.com/foo/bar/")
                 createExpectation.fulfill()
             }
             spec.waitForExpectations(withTimeout: 1, handler: nil)
@@ -200,12 +200,12 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             }
             dataService.updateArticle(article, item: item, feedURL: URL(string: "https://example.com/foo/bar/baz")!).then { _ in
                 expect(article.title) == "a & title"
-                expect(article.link) == NSURL(string: "https://example.com")
-                expect(article.published) == NSDate(timeIntervalSince1970: 10)
-                expect(article.updatedAt) == NSDate(timeIntervalSince1970: 15)
+                expect(article.link) == URL(string: "https://example.com")
+                expect(article.published) == Date(timeIntervalSince1970: 10)
+                expect(article.updatedAt) == Date(timeIntervalSince1970: 15)
                 expect(article.summary) == "description"
                 expect(article.content) == content
-                expect(article.authors) == [Author(name: "Rachel Brindle", email: NSURL(string: "mailto:rachel@example.com"))]
+                expect(article.authors) == [Author(name: "Rachel Brindle", email: URL(string: "mailto:rachel@example.com"))]
                 expect(article.estimatedReadingTime) == 3
                 updateExpectation.fulfill()
             }

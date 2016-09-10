@@ -357,8 +357,8 @@ class SettingsViewControllerSpec: QuickSpec {
                         let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
 
                         let feeds = [
-                            Feed(title: "a", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
-                            Feed(title: "b", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                            Feed(title: "a", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
+                            Feed(title: "b", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                         ]
 
                         beforeEach {
@@ -379,7 +379,7 @@ class SettingsViewControllerSpec: QuickSpec {
 
                         context("when the feeds promise succeeds") {
                             beforeEach {
-                                feedRepository.feedsPromises.last?.resolve(.Success(feeds))
+                                feedRepository.feedsPromises.last?.resolve(.success(feeds))
                             }
 
                             it("sets the list of feeds") {
@@ -410,8 +410,8 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
 
                 context("when there are one or two existing quick actions") {
-                    let feedA = Feed(title: "a", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    let feedB = Feed(title: "b", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feedA = Feed(title: "a", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feedB = Feed(title: "b", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                     let feeds = [feedA, feedB]
 
@@ -454,7 +454,7 @@ class SettingsViewControllerSpec: QuickSpec {
 
                         context("when the feeds promise succeeds") {
                             beforeEach {
-                                feedRepository.feedsPromises.last?.resolve(.Success(feeds))
+                                feedRepository.feedsPromises.last?.resolve(.success(feeds))
                             }
 
                             it("should bring up a dialog to change the feed when one of the existing quick action cells is tapped") {
@@ -514,7 +514,7 @@ class SettingsViewControllerSpec: QuickSpec {
 
                         context("when the feeds promise succeeds") {
                             beforeEach {
-                                feedRepository.feedsPromises.last?.resolve(.Success(feeds))
+                                feedRepository.feedsPromises.last?.resolve(.success(feeds))
                             }
 
                             it("should bring up a dialog to change the feed when one of the existing quick action cells is tapped") {
@@ -550,10 +550,10 @@ class SettingsViewControllerSpec: QuickSpec {
                     let secondShortcut = UIApplicationShortcutItem(type: "b", localizedTitle: "b")
                     let thirdShortcut = UIApplicationShortcutItem(type: "c", localizedTitle: "c")
 
-                    let feedA = Feed(title: "a", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    let feedB = Feed(title: "b", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    let feedC = Feed(title: "c", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    let feedD = Feed(title: "d", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feedA = Feed(title: "a", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feedB = Feed(title: "b", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feedC = Feed(title: "c", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feedD = Feed(title: "d", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                     let feeds = [feedA, feedB, feedC, feedD]
 
@@ -601,7 +601,7 @@ class SettingsViewControllerSpec: QuickSpec {
 
                         context("when the feeds promise succeeds") {
                             beforeEach {
-                                feedRepository.feedsPromises.last?.resolve(.Success(feeds))
+                                feedRepository.feedsPromises.last?.resolve(.success(feeds))
                             }
 
                             it("should bring up a dialog to change the feed") {
@@ -785,8 +785,8 @@ class SettingsViewControllerSpec: QuickSpec {
                     expect(title) == "Credits"
                 }
 
-                let values: [(String, String, NSURL)] = [
-                    ("Rachel Brindle", "Developer", NSURL(string: "https://twitter.com/younata")!),
+                let values: [(String, String, URL)] = [
+                    ("Rachel Brindle", "Developer", URL(string: "https://twitter.com/younata")!),
                 ]
 
                 it("should have \(values.count) cells") {

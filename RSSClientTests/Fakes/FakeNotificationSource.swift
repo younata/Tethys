@@ -7,7 +7,7 @@ class FakeNotificationSource: LocalNotificationSource {
 
     var canScheduleNote = true
 
-    func scheduleNote(note: UILocalNotification) {
+    func scheduleNote(_ note: UILocalNotification) {
         scheduledNotes.append(note)
     }
 

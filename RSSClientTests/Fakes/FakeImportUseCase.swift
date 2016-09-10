@@ -8,31 +8,31 @@ class FakeImportUseCase : ImportUseCase {
     init() {}
 
     private(set) var scanDirectoryForImportablesCallCount : Int = 0
-    private var scanDirectoryForImportablesArgs : Array<(NSURL, ImportUseCaseScanDirectoryCompletion)> = []
-    func scanDirectoryForImportablesArgsForCall(callIndex: Int) -> (NSURL, ImportUseCaseScanDirectoryCompletion) {
+    private var scanDirectoryForImportablesArgs : Array<(URL, ImportUseCaseScanDirectoryCompletion)> = []
+    func scanDirectoryForImportablesArgsForCall(callIndex: Int) -> (URL, ImportUseCaseScanDirectoryCompletion) {
         return self.scanDirectoryForImportablesArgs[callIndex]
     }
-    func scanDirectoryForImportables(url: NSURL, callback: ImportUseCaseScanDirectoryCompletion) {
+    func scanDirectoryForImportables(url: URL, callback: ImportUseCaseScanDirectoryCompletion) {
         self.scanDirectoryForImportablesCallCount += 1
         self.scanDirectoryForImportablesArgs.append((url, callback))
     }
 
     private(set) var scanForImportableCallCount : Int = 0
-    private var scanForImportableArgs : Array<(NSURL, ImportUseCaseScanCompletion)> = []
-    func scanForImportableArgsForCall(callIndex: Int) -> (NSURL, ImportUseCaseScanCompletion) {
+    private var scanForImportableArgs : Array<(URL, ImportUseCaseScanCompletion)> = []
+    func scanForImportableArgsForCall(callIndex: Int) -> (URL, ImportUseCaseScanCompletion) {
         return self.scanForImportableArgs[callIndex]
     }
-    func scanForImportable(url: NSURL, callback: ImportUseCaseScanCompletion) {
+    func scanForImportable(url: URL, callback: ImportUseCaseScanCompletion) {
         self.scanForImportableCallCount += 1
         self.scanForImportableArgs.append((url, callback))
     }
 
     private(set) var importItemCallCount : Int = 0
-    private var importItemArgs : Array<(NSURL, ImportUseCaseImport)> = []
-    func importItemArgsForCall(callIndex: Int) -> (NSURL, ImportUseCaseImport) {
+    private var importItemArgs : Array<(URL, ImportUseCaseImport)> = []
+    func importItemArgsForCall(callIndex: Int) -> (URL, ImportUseCaseImport) {
         return self.importItemArgs[callIndex]
     }
-    func importItem(url: NSURL, callback: ImportUseCaseImport) {
+    func importItem(url: URL, callback: ImportUseCaseImport) {
         self.importItemCallCount += 1
         self.importItemArgs.append((url, callback))
     }

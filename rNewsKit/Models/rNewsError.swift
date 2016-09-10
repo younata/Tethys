@@ -62,7 +62,7 @@ public enum RNewsError: Error, CustomStringConvertible {
             return "Error loading resource, received \(status)"
         case let .database(error):
             return "Error reading from database - \(error)"
-        case let .Backend(error):
+        case let .backend(error):
             return "Backend Error - \(error)"
         case .unknown:
             return "Unknown Error - please try again"
@@ -80,7 +80,7 @@ public func == (lhs: RNewsError, rhs: RNewsError) -> Bool {
         return lhsError == rhsError
     case (let .database(lhsError), let .database(rhsError)):
         return lhsError == rhsError
-    case (let .Backend(lhsError), let .Backend(rhsError)):
+    case (let .backend(lhsError), let .backend(rhsError)):
         return lhsError == rhsError
     case (.unknown, .unknown):
         return true

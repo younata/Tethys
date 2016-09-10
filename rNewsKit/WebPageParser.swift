@@ -43,13 +43,13 @@ public final class WebPageParser: Operation {
             case .feeds:
                 for link in doc.xpath("//link") where link["rel"] == "alternate" &&
                     self.searchType.acceptableTypes.contains(link["type"] ?? "") {
-                        if let urlString = link["href"], let url = NSURL(string: urlString) {
+                        if let urlString = link["href"], let url = URL(string: urlString) {
                             self.urls.append(url as URL)
                         }
                 }
             case .links:
                 for link in doc.xpath("//a") {
-                    if let urlString = link["href"], let url = NSURL(string: urlString) {
+                    if let urlString = link["href"], let url = URL(string: urlString) {
                         self.urls.append(url as URL)
                     }
                 }

@@ -3,7 +3,7 @@ import Sinope
 
 protocol ImportableFeed {
     var title: String { get }
-    var link: URL { get }
+    var url: URL { get }
     var description: String { get }
     var imageURL: URL? { get }
     var lastUpdated: Date { get }
@@ -26,17 +26,21 @@ protocol ImportableAuthor {
 }
 // MARK: Muon conformance
 extension Muon.Feed: ImportableFeed {
+    var url: URL {
+        return self.link!
+    }
+
     var importableArticles: [ImportableArticle] {
         return self.articles.map { $0 as ImportableArticle }
     }
 
-    var lastUpdated: NSDate {
-        return NSDate()
+    var lastUpdated: Date {
+        return Date()
     }
 }
 extension Muon.Article: ImportableArticle {
-    var url: NSURL {
-        return self.link
+    var url: URL {
+        return self.link!
     }
 
     var summary: String {
@@ -51,9 +55,8 @@ extension Muon.Author: ImportableAuthor {}
 
 // MARK: Sinope conformance
 extension Sinope.Feed: ImportableFeed {
-    var link: NSURL { return self.url }
     var description: String { return self.summary }
-    var imageURL: NSURL? { return self.imageUrl }
+    var imageURL: URL? { return self.imageUrl }
 
     var importableArticles: [ImportableArticle] {
         return self.articles.map { $0 as ImportableArticle }

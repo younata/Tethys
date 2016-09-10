@@ -1,7 +1,7 @@
 import Cocoa
 import rNewsKit
 
-public class ArticleListViewController: NSViewController {
+public final class ArticleListViewController: NSViewController {
     public private(set) var articles = Array<Article>()
 
     func configure(articles: [Article]) {

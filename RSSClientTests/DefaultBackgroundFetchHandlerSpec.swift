@@ -44,13 +44,13 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
                 var articles: [Article] = []
                 var feeds: [Feed] = []
                 beforeEach {
-                    let feed1 = Feed(title: "a", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    let feed2 = Feed(title: "b", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feed1 = Feed(title: "a", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feed2 = Feed(title: "b", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-                    let article1 = Article(title: "a", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "a", content: "", read: false, estimatedReadingTime: 0, feed: feed1, flags: [])
-                    let article2 = Article(title: "b", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "b", content: "", read: false, estimatedReadingTime: 0, feed: feed1, flags: [])
-                    let article3 = Article(title: "c", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "c", content: "", read: false, estimatedReadingTime: 0, feed: feed2, flags: [])
-                    let article4 = Article(title: "d", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "d", content: "", read: false, estimatedReadingTime: 0, feed: feed2, flags: [])
+                    let article1 = Article(title: "a", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "a", content: "", read: false, estimatedReadingTime: 0, feed: feed1, flags: [])
+                    let article2 = Article(title: "b", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "b", content: "", read: false, estimatedReadingTime: 0, feed: feed1, flags: [])
+                    let article3 = Article(title: "c", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "c", content: "", read: false, estimatedReadingTime: 0, feed: feed2, flags: [])
+                    let article4 = Article(title: "d", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "d", content: "", read: false, estimatedReadingTime: 0, feed: feed2, flags: [])
 
                     feed1.addArticle(article1)
                     feed1.addArticle(article2)
@@ -60,7 +60,7 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
                     feeds = [feed1, feed2]
                     articles = [article1, article2, article3, article4]
 
-                    dataRepository.feedsPromises.last?.resolve(.Success([]))
+                    dataRepository.feedsPromises.last?.resolve(.success([]))
 
                     dataRepository.updateFeedsCompletion(feeds, [])
                 }
@@ -76,7 +76,7 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
 
             context("when no new articles are found") {
                 beforeEach {
-                    dataRepository.feedsPromises.last?.resolve(.Success([]))
+                    dataRepository.feedsPromises.last?.resolve(.success([]))
                     dataRepository.updateFeedsCompletion([], [])
                 }
 
@@ -91,7 +91,7 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
 
             context("when there is an error updating feeds") {
                 beforeEach {
-                    dataRepository.feedsPromises.last?.resolve(.Success([]))
+                    dataRepository.feedsPromises.last?.resolve(.success([]))
                     dataRepository.updateFeedsCompletion([], [NSError(domain: "", code: 0, userInfo: nil)])
                 }
 

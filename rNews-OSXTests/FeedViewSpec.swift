@@ -5,21 +5,21 @@ import rNewsKit
 import AppKit
 
 private class FakeFeedViewDelegate: FeedViewDelegate {
-    private var clickedFeed: Feed? = nil
-    private func didClickFeed(feed: Feed) {
+    fileprivate var clickedFeed: Feed? = nil
+    fileprivate func didClickFeed(_ feed: Feed) {
         clickedFeed = feed
     }
 
-    private var feedOfRequestedMenuOptions: Feed? = nil
-    private var menuOptions: [String] = []
-    private func menuOptionsForFeed(feed: Feed) -> [String] {
+    fileprivate var feedOfRequestedMenuOptions: Feed? = nil
+    fileprivate var menuOptions: [String] = []
+    fileprivate func menuOptionsForFeed(_ feed: Feed) -> [String] {
         feedOfRequestedMenuOptions = feed
         return menuOptions
     }
 
-    private var selectedMenuOption: String? = nil
-    private var selectedFeed: Feed? = nil
-    private func didSelectMenuOption(menuOption: String, forFeed: Feed) {
+    fileprivate var selectedMenuOption: String? = nil
+    fileprivate var selectedFeed: Feed? = nil
+    fileprivate func didSelectMenuOption(_ menuOption: String, forFeed: Feed) {
         selectedMenuOption = menuOption
         selectedFeed = forFeed
     }
@@ -40,7 +40,7 @@ class FeedViewSpec: QuickSpec {
         }
 
         describe("gesture recognizers") {
-            let feed = Feed(title: "feed", url: NSURL(string: "https://example.com")!, summary: "feedSummary", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            let feed = Feed(title: "feed", url: URL(string: "https://example.com")!, summary: "feedSummary", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             var delegate: FakeFeedViewDelegate! = nil
 
@@ -136,7 +136,7 @@ class FeedViewSpec: QuickSpec {
         }
 
         context("when configured with a standard feed") {
-            let feed = Feed(title: "feed", url: NSURL(string: "https://example.com")!, summary: "feedSummary", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            let feed = Feed(title: "feed", url: URL(string: "https://example.com")!, summary: "feedSummary", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
             beforeEach {
                 subject.configure(feed, delegate: FakeFeedViewDelegate())
@@ -153,12 +153,12 @@ class FeedViewSpec: QuickSpec {
 
         context("when configured with a feed with unread articles") {
             let article1 = Article(title: "a", link: nil, summary: "", authors: [],
-                published: NSDate(), updatedAt: nil, identifier: "", content: "",
+                published: Date(), updatedAt: nil, identifier: "", content: "",
                 read: true, feed: nil, flags: [])
             let article2 = Article(title: "b", link: nil, summary: "", authors: [],
-                published: NSDate(), updatedAt: nil, identifier: "", content: "",
+                published: Date(), updatedAt: nil, identifier: "", content: "",
                 read: false, feed: nil, flags: [])
-            let feed = Feed(title: "Hello", url: NSURL(string: "https://example.com")!, summary: "World", tags: [],
+            let feed = Feed(title: "Hello", url: URL(string: "https://example.com")!, summary: "World", tags: [],
                 waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
 
             beforeEach {
@@ -178,9 +178,9 @@ class FeedViewSpec: QuickSpec {
             var feed: Feed! = nil
 
             beforeEach {
-                let data = NSData(contentsOfURL: NSURL(string: "https://avatars3.githubusercontent.com/u/285321?v=3&s=40")!)!
+                let data = Data(contentsOfURL: URL(string: "https://avatars3.githubusercontent.com/u/285321?v=3&s=40")!)!
                 let image = NSImage(data: data)
-                feed = Feed(title: "feed", url: NSURL(string: "https://example.com")!, summary: "feedSummary", tags: [],
+                feed = Feed(title: "feed", url: URL(string: "https://example.com")!, summary: "feedSummary", tags: [],
                     waitPeriod: 0, remainingWait: 0, articles: [], image: image)
                 subject.configure(feed, delegate: FakeFeedViewDelegate())
             }

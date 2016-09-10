@@ -39,13 +39,13 @@ class DatabaseUseCaseSpec: QuickSpec {
                     it("returns all the feeds when feeds promise returns successfully") {
                         guard let feedsPromise = subject.feedsPromises.first else { return }
 
-                        feedsPromise.resolve(.Success(feeds))
+                        feedsPromise.resolve(.success(feeds))
 
                         if let calledResults = feedsTagPromise?.value {
                             switch calledResults {
-                            case let .Success(receivedFeeds):
+                            case let .success(receivedFeeds):
                                 expect(receivedFeeds) == feeds
-                            case .Failure(_):
+                            case .failure(_):
                                 expect(false) == true
                             }
                         } else {
@@ -56,13 +56,13 @@ class DatabaseUseCaseSpec: QuickSpec {
                     it("forwards the error when the feeds promise errors") {
                         guard let feedsPromise = subject.feedsPromises.first else { return }
 
-                        feedsPromise.resolve(.Failure(.Unknown))
+                        feedsPromise.resolve(.failure(.Unknown))
 
                         if let calledResults = feedsTagPromise?.value {
                             switch calledResults {
-                            case .Success(_):
+                            case .success(_):
                                 expect(false) == true
-                            case let .Failure(error):
+                            case let .failure(error):
                                 expect(error) == RNewsError.Unknown
                             }
                         } else {
@@ -88,13 +88,13 @@ class DatabaseUseCaseSpec: QuickSpec {
                     it("returns all the feeds when feeds promise returns successfully") {
                         guard let feedsPromise = subject.feedsPromises.first else { return }
 
-                        feedsPromise.resolve(.Success(feeds))
+                        feedsPromise.resolve(.success(feeds))
 
                         if let calledResults = feedsTagPromise?.value {
                             switch calledResults {
-                            case let .Success(receivedFeeds):
+                            case let .success(receivedFeeds):
                                 expect(receivedFeeds) == feeds
-                            case .Failure(_):
+                            case .failure(_):
                                 expect(false) == true
                             }
                         } else {
@@ -105,13 +105,13 @@ class DatabaseUseCaseSpec: QuickSpec {
                     it("forwards the error when the feeds promise errors") {
                         guard let feedsPromise = subject.feedsPromises.first else { return }
 
-                        feedsPromise.resolve(.Failure(.Unknown))
+                        feedsPromise.resolve(.failure(.Unknown))
 
                         if let calledResults = feedsTagPromise?.value {
                             switch calledResults {
-                            case .Success(_):
+                            case .success(_):
                                 expect(false) == true
-                            case let .Failure(error):
+                            case let .failure(error):
                                 expect(error) == RNewsError.Unknown
                             }
                         } else {
@@ -138,13 +138,13 @@ class DatabaseUseCaseSpec: QuickSpec {
                 it("returns all the feeds when feeds promise returns successfully") {
                     guard let feedsPromise = subject.feedsPromises.first else { return }
 
-                    feedsPromise.resolve(.Success(feeds))
+                    feedsPromise.resolve(.success(feeds))
 
                     if let calledResults = feedsTagPromise?.value {
                         switch calledResults {
-                        case let .Success(receivedFeeds):
+                        case let .success(receivedFeeds):
                             expect(receivedFeeds) == [feeds[0], feeds[2]]
-                        case .Failure(_):
+                        case .failure(_):
                             expect(false) == true
                         }
                     } else {
@@ -155,13 +155,13 @@ class DatabaseUseCaseSpec: QuickSpec {
                 it("forwards the error when the feeds promise errors") {
                     guard let feedsPromise = subject.feedsPromises.first else { return }
 
-                    feedsPromise.resolve(.Failure(.Unknown))
+                    feedsPromise.resolve(.failure(.Unknown))
 
                     if let calledResults = feedsTagPromise?.value {
                         switch calledResults {
-                        case .Success(_):
+                        case .success(_):
                             expect(false) == true
-                        case let .Failure(error):
+                        case let .failure(error):
                             expect(error) == RNewsError.Unknown
                         }
                     } else {

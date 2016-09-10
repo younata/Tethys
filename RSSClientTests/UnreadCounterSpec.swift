@@ -8,7 +8,7 @@ class UnreadCounterSpec: QuickSpec {
         var subject: UnreadCounter! = nil
 
         beforeEach {
-            subject = UnreadCounter(frame: CGRectZero)
+            subject = UnreadCounter(frame: CGRect.zero)
         }
 
         it("should be transparent") {

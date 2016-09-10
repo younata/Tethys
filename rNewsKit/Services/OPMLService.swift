@@ -9,9 +9,9 @@ public final class OPMLService: NSObject, Injectable {
     private let importQueue: OperationQueue?
 
     required public init(injector: Injector) {
-        self.dataRepository = injector.create(DefaultDatabaseUseCase)
-        self.mainQueue = injector.create(kMainQueue) as? OperationQueue
-        self.importQueue = injector.create(kBackgroundQueue) as? OperationQueue
+        self.dataRepository = injector.create(kind: DefaultDatabaseUseCase.self)
+        self.mainQueue = injector.create(string: kMainQueue) as? OperationQueue
+        self.importQueue = injector.create(string: kBackgroundQueue) as? OperationQueue
 
         super.init()
 
@@ -21,10 +21,10 @@ public final class OPMLService: NSObject, Injectable {
     private func feedAlreadyExists(_ existingFeeds: [Feed], item: Lepton.Item) -> Bool {
         return existingFeeds.filter({
             let titleMatches = item.title == $0.title
-            let tagsMatches = (item.tags ?? []) == $0.tags
+            let tagsMatches = item.tags == $0.tags
             let urlMatches: Bool
             if let urlString = item.xmlURL {
-                urlMatches = NSURL(string: urlString) == $0.url
+                urlMatches = URL(string: urlString) == $0.url
             } else {
                 urlMatches = false
             }
@@ -37,12 +37,12 @@ public final class OPMLService: NSObject, Injectable {
             completion([])
             return
         }
-        dataRepository.feeds().then {
-            guard case let Result.Success(existingFeeds) = $0 else { return }
+        _ = dataRepository.feeds().then {
+            guard case let Result.success(existingFeeds) = $0 else { return }
             do {
-                let text = try String(contentsOfURL: opml, encoding: NSUTF8StringEncoding)
+                let text = try String(contentsOf: opml, encoding: String.Encoding.utf8)
                 let parser = Lepton.Parser(text: text)
-                parser.success {items in
+                _ = parser.success {items in
                     var feeds: [Feed] = []
 
                     var feedCount = 0
@@ -50,7 +50,7 @@ public final class OPMLService: NSObject, Injectable {
                     let isComplete = {
                         if feeds.count == feedCount {
                             dataRepository.updateFeeds { _ in
-                                self.mainQueue?.addOperationWithBlock {
+                                self.mainQueue?.addOperation {
                                     completion(feeds)
                                 }
                             }
@@ -61,11 +61,11 @@ public final class OPMLService: NSObject, Injectable {
                         if self.feedAlreadyExists(existingFeeds, item: item) {
                             continue
                         }
-                        if let feedURLString = item.xmlURL, let feedURL = NSURL(string: feedURLString) {
+                        if let feedURLString = item.xmlURL, let feedURL = URL(string: feedURLString) {
                             feedCount += 1
-                            dataRepository.newFeed { newFeed in
+                            _ = dataRepository.newFeed { newFeed in
                                 newFeed.url = feedURL
-                                for tag in item.tags ?? [] {
+                                for tag in item.tags {
                                     newFeed.addTag(tag)
                                 }
                                 feeds.append(newFeed)
@@ -74,8 +74,8 @@ public final class OPMLService: NSObject, Injectable {
                         }
                     }
                 }
-                parser.failure {error in
-                    self.mainQueue?.addOperationWithBlock {
+                _ = parser.failure {error in
+                    self.mainQueue?.addOperation {
                         completion([])
                     }
                 }
@@ -121,14 +121,14 @@ public final class OPMLService: NSObject, Injectable {
     }
 
     public func writeOPML() {
-        let opmlLocation = documentsDirectory().appendingPathComponent("rnews.opml")
-        self.dataRepository?.feeds().then {
-            guard case let Result.Success(feeds) = $0 else { return }
+        let opmlLocation = documentsDirectory() + "/rnews.opml"
+        _ = self.dataRepository?.feeds().then {
+            guard case let Result.success(feeds) = $0 else { return }
             do {
-                try self.generateOPMLContents(feeds).writeToFile(opmlLocation, atomically: true,
-                    encoding: NSUTF8StringEncoding)
+                try self.generateOPMLContents(feeds).write(toFile: opmlLocation, atomically: true,
+                    encoding: String.Encoding.utf8)
             } catch _ {}
-        }
+        }.wait()
     }
 }
 

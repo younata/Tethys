@@ -65,9 +65,9 @@ class OPMLServiceSpec: QuickSpec {
             context("when the feeds promise succeeds") {
                 beforeEach {
                     let previouslyImportedFeed = Feed(title: "imported",
-                        url: NSURL(string: "http://example.com/previouslyImportedFeed")!, summary: "",
+                        url: URL(string: "http://example.com/previouslyImportedFeed")!, summary: "",
                         tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    dataRepository.feedsPromises.first?.resolve(.Success([previouslyImportedFeed]))
+                    dataRepository.feedsPromises.first?.resolve(.success([previouslyImportedFeed]))
                 }
 
                 it("tells the data repository to update the feeds") {
@@ -86,10 +86,10 @@ class OPMLServiceSpec: QuickSpec {
                         }
                         feeds.sortInPlace { $0.title < $1.title }
                         let first = feeds[0]
-                        expect(first.url).to(equal(NSURL(string: "http://example.com/feedWithTag")))
+                        expect(first.url).to(equal(URL(string: "http://example.com/feedWithTag")))
 
                         let second = feeds[1]
-                        expect(second.url).to(equal(NSURL(string: "http://example.com/feedWithTitle")))
+                        expect(second.url).to(equal(URL(string: "http://example.com/feedWithTitle")))
                     }
                 }
             }
@@ -116,11 +116,11 @@ class OPMLServiceSpec: QuickSpec {
 
             context("when the feeds promise succeeds") {
                 beforeEach {
-                    let feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed")!, summary: "",
+                    let feed1 = Feed(title: "a", url: URL(string: "http://example.com/feed")!, summary: "",
                         tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    let feed3 = Feed(title: "e", url: NSURL(string: "http://example.com/otherfeed")!, summary: "",
+                    let feed3 = Feed(title: "e", url: URL(string: "http://example.com/otherfeed")!, summary: "",
                         tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    dataRepository.feedsPromises.first?.resolve(.Success([feed1, feed3]))
+                    dataRepository.feedsPromises.first?.resolve(.success([feed1, feed3]))
                 }
 
                 it("should write an OPML file to ~/Documents/rnews.opml") {
@@ -178,12 +178,12 @@ class OPMLServiceSpec: QuickSpec {
 
             context("when the feeds promise succeeds") {
                 beforeEach {
-                    let feed1 = Feed(title: "a", url: NSURL(string: "http://example.com/feed")!, summary: "",
+                    let feed1 = Feed(title: "a", url: URL(string: "http://example.com/feed")!, summary: "",
                         tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    let feed3 = Feed(title: "e", url: NSURL(string: "http://example.com/otherfeed")!, summary: "",
+                    let feed3 = Feed(title: "e", url: URL(string: "http://example.com/otherfeed")!, summary: "",
                         tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-                    dataRepository.feedsPromises.first?.resolve(.Success([feed1, feed3]))
+                    dataRepository.feedsPromises.first?.resolve(.success([feed1, feed3]))
                 }
 
                 it("should write an OPML file to ~/Documents/rnews.opml") {
@@ -219,7 +219,7 @@ class OPMLServiceSpec: QuickSpec {
 
             context("when the feeds promise fails") {
                 beforeEach {
-                    dataRepository.feedsPromises.first?.resolve(.Failure(.Unknown))
+                    dataRepository.feedsPromises.first?.resolve(.failure(.Unknown))
                 }
 
                 it("doesn't write anything to disk") {

@@ -8,8 +8,8 @@ static char * kHtmlKey;
 
 @interface WKWebView (rNewsTestsPrivate)
 
-- (nullable WKNavigation *)original_loadRequest:(nonnull NSURLRequest *)request;
-- (nullable WKNavigation *)original_loadHTMLString:(nonnull NSString *)string baseURL:(nullable NSURL *)baseURL;
+- (nullable WKNavigation *)original_loadRequest:(nonnull URLRequest *)request;
+- (nullable WKNavigation *)original_loadHTMLString:(nonnull NSString *)string baseURL:(nullable URL *)baseURL;
 
 @end
 
@@ -27,23 +27,23 @@ static char * kHtmlKey;
                             andRenameItTo:@selector(original_loadHTMLString:baseURL:)];
 }
 
-- (void)setCurrentURL:(NSURL * __nullable)currentURL {
+- (void)setCurrentURL:(URL * __nullable)currentURL {
     objc_setAssociatedObject(self, &kUrlKey, currentURL, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (NSURL * __nullable)currentURL {
+- (URL * __nullable)currentURL {
     return objc_getAssociatedObject(self, &kUrlKey);
 }
 
-- (NSURL * __nullable)URL {
+- (URL * __nullable)URL {
     return self.currentURL;
 }
 
-- (NSURLRequest * __nullable)lastRequestLoaded {
+- (URLRequest * __nullable)lastRequestLoaded {
     return objc_getAssociatedObject(self, &kRequestKey);
 }
 
-- (nullable WKNavigation *)_loadRequest:(nonnull NSURLRequest *)request {
+- (nullable WKNavigation *)_loadRequest:(nonnull URLRequest *)request {
     objc_setAssociatedObject(self, &kRequestKey, request, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     return nil;
 }
@@ -52,7 +52,7 @@ static char * kHtmlKey;
     return objc_getAssociatedObject(self, &kHtmlKey);
 }
 
-- (nullable WKNavigation *)_loadHTMLString:(nonnull NSString *)string baseURL:(nullable NSURL *)baseURL {
+- (nullable WKNavigation *)_loadHTMLString:(nonnull NSString *)string baseURL:(nullable URL *)baseURL {
     objc_setAssociatedObject(self, &kHtmlKey, string, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     return nil;
 }

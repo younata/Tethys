@@ -85,7 +85,7 @@ class UpdateUseCaseSpec: QuickSpec {
 
                 describe("when the update request succeeds") {
                     beforeEach {
-                        updateFeedsPromise.resolve(.Success([]))
+                        updateFeedsPromise.resolve(.success([]))
                     }
 
                     it("resolves the promise successfully") {
@@ -95,7 +95,7 @@ class UpdateUseCaseSpec: QuickSpec {
 
                 describe("when the update request fails") {
                     beforeEach {
-                        updateFeedsPromise.resolve(.Failure(.Unknown))
+                        updateFeedsPromise.resolve(.failure(.Unknown))
                     }
 
                     it("resolves the promise with the error") {

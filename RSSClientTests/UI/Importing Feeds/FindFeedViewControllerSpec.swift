@@ -88,7 +88,7 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             it("should navigate the webview that url") {
-                expect(webView.lastRequestLoaded?.URL) == NSURL(string: "https://example.com")
+                expect(webView.lastRequestLoaded?.URL) == URL(string: "https://example.com")
             }
         }
 
@@ -96,13 +96,13 @@ class FindFeedViewControllerSpec: QuickSpec {
             it("searches duckduckgo for that text when given a string with a single word") {
                 subject.navField.text = "notaurl"
                 subject.textFieldShouldReturn(subject.navField)
-                expect(webView.lastRequestLoaded?.URL) == NSURL(string: "https://duckduckgo.com/?q=notaurl")
+                expect(webView.lastRequestLoaded?.URL) == URL(string: "https://duckduckgo.com/?q=notaurl")
             }
 
             it("searches duckduckgo for that text when given a string with multiple words") {
                 subject.navField.text = "not a url"
                 subject.textFieldShouldReturn(subject.navField)
-                expect(webView.lastRequestLoaded?.URL) == NSURL(string: "https://duckduckgo.com/?q=not+a+url")
+                expect(webView.lastRequestLoaded?.URL) == URL(string: "https://duckduckgo.com/?q=not+a+url")
             }
         }
 
@@ -144,8 +144,8 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             context("when a feed is detected in a web page") {
-                let url = NSURL(string: "https://example.com/feed")!
-                let feedURL = NSURL(string: "https://example.com/feed1")!
+                let url = URL(string: "https://example.com/feed")!
+                let feedURL = URL(string: "https://example.com/feed1")!
 
                 beforeEach {
                     webView.fakeUrl = url
@@ -174,7 +174,7 @@ class FindFeedViewControllerSpec: QuickSpec {
 
         describe("WKWebView and Delegates") {
             beforeEach {
-                webView.fakeUrl = NSURL(string: "https://example.com/feed.xml")
+                webView.fakeUrl = URL(string: "https://example.com/feed.xml")
                 subject.webView(subject.webContent, didStartProvisionalNavigation: nil)
             }
 
@@ -186,10 +186,10 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             sharedExamples("importing a feed") { (sharedContext: SharedExampleContext) in
-                var url: NSURL!
+                var url: URL!
 
                 beforeEach {
-                    url = (sharedContext()["url"] as? NSURL) ?? NSURL(string: "https://example.com/feed")!
+                    url = (sharedContext()["url"] as? URL) ?? URL(string: "https://example.com/feed")!
                 }
 
                 it("asks the import use case to import the feed at the url") {
@@ -255,11 +255,11 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             it("asks the import use case to check if the page at the url has a feed") {
-                expect(importUseCase.scanForImportableArgsForCall(0).0) == NSURL(string: "https://example.com/feed.xml")
+                expect(importUseCase.scanForImportableArgsForCall(0).0) == URL(string: "https://example.com/feed.xml")
             }
 
             context("when the use case finds a feed") {
-                let url = NSURL(string: "https://example.com/feed")!
+                let url = URL(string: "https://example.com/feed")!
                 beforeEach {
                     showRootController()
                     importUseCase.scanForImportableArgsForCall(0).1(.Feed(url, 0))
@@ -311,7 +311,7 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             context("when the use case finds an opml file") {
-                let url = NSURL(string: "https://example.com/feed")!
+                let url = URL(string: "https://example.com/feed")!
                 beforeEach {
                     showRootController()
                     importUseCase.scanForImportableArgsForCall(0).1(.OPML(url, 0))
@@ -389,8 +389,8 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             context("when the use case finds a web page with a single feed") {
-                let url = NSURL(string: "https://example.com/feed")!
-                let feedURL = NSURL(string: "https://example.com/feed1")!
+                let url = URL(string: "https://example.com/feed")!
+                let feedURL = URL(string: "https://example.com/feed1")!
 
                 beforeEach {
                     importUseCase.scanForImportableArgsForCall(0).1(.WebPage(url, [feedURL]))
@@ -413,9 +413,9 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             context("when the use case finds a web page with multiple feeds") {
-                let url = NSURL(string: "https://example.com/feed")!
-                let feedURL1 = NSURL(string: "https://example.com/feed1")!
-                let feedURL2 = NSURL(string: "https://example.com/feed2")!
+                let url = URL(string: "https://example.com/feed")!
+                let feedURL1 = URL(string: "https://example.com/feed1")!
+                let feedURL2 = URL(string: "https://example.com/feed2")!
 
                 beforeEach {
                     importUseCase.scanForImportableArgsForCall(0).1(.WebPage(url, [feedURL1, feedURL2]))
@@ -468,7 +468,7 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             context("when the use case finds a web page with no feeds") {
-                let url = NSURL(string: "https://example.com/feed")!
+                let url = URL(string: "https://example.com/feed")!
                 beforeEach {
                     importUseCase.scanForImportableArgsForCall(0).1(.WebPage(url, []))
                 }
@@ -479,7 +479,7 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             context("when the use case finds nothing") {
-                let url = NSURL(string: "https://example.com/feed")!
+                let url = URL(string: "https://example.com/feed")!
                 beforeEach {
                     importUseCase.scanForImportableArgsForCall(0).1(.None(url))
                 }

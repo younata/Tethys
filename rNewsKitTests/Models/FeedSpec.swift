@@ -29,7 +29,7 @@ class FeedSpec: QuickSpec {
 
         describe("waitPeriodInRefreshes") {
             func feedWithWaitPeriod(_ waitPeriod: Int) -> Feed {
-                return Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", tags: [],
+                return Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [],
                     waitPeriod: waitPeriod, remainingWait: 0, articles: [], image: nil)
             }
 
@@ -57,7 +57,7 @@ class FeedSpec: QuickSpec {
 
         it("unreadArticles() should return articles with read->false") {
             func article(_ name: String, read: Bool) -> Article {
-                return Article(title: name, link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "", content: "", read: read, estimatedReadingTime: 0, feed: nil, flags: [])
+                return Article(title: name, link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: read, estimatedReadingTime: 0, feed: nil, flags: [])
             }
 
             let a = article("a", read: true)

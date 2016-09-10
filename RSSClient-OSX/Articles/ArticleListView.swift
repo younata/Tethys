@@ -1,7 +1,7 @@
 import Cocoa
 import rNewsKit
 
-class ArticleListView: NSTableRowView {
+final class ArticleListView: NSTableRowView {
     var article: Article? = nil {
         didSet {
             if let a = article {
@@ -31,7 +31,7 @@ class ArticleListView: NSTableRowView {
     var titleHeight: NSLayoutConstraint? = nil
     var authorHeight: NSLayoutConstraint? = nil
 
-    let dateFormatter = NSDateFormatter()
+    let dateFormatter = DateFormatter()
 
     override func layout() {
         titleHeight?.constant = ceil(NSAttributedString(string: title.string!,
@@ -73,9 +73,9 @@ class ArticleListView: NSTableRowView {
         published.autoPinEdge(.Left, toEdge: .Right, ofView: title, withOffset: 8)
         published.autoMatchDimension(.Width, toDimension: .Width, ofView: published.superview, withMultiplier: 0.25)
 
-        dateFormatter.timeStyle = .NoStyle
-        dateFormatter.dateStyle = .ShortStyle
-        dateFormatter.timeZone = NSCalendar.currentCalendar().timeZone
+        dateFormatter.timeStyle = .none
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeZone = NSCalendar.current.timeZone
 
         for tv in [title, author, published] {
             tv.textContainerInset = NSMakeSize(0, 0)

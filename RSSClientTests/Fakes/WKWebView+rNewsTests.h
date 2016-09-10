@@ -2,8 +2,8 @@
 
 @interface WKWebView (rNewsTests)
 
-@property (nullable, nonatomic, strong) NSURL *currentURL;
-@property (nullable, nonatomic, strong, readonly) NSURLRequest *lastRequestLoaded;
+@property (nullable, nonatomic, strong) URL *currentURL;
+@property (nullable, nonatomic, strong, readonly) URLRequest *lastRequestLoaded;
 @property (nullable, nonatomic, strong, readonly) NSString *lastHTMLStringLoaded;
 
 @end

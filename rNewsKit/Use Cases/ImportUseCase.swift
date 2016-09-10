@@ -32,9 +32,9 @@ public typealias ImportUseCaseScanDirectoryCompletion = ([ImportUseCaseItem]) ->
 public typealias ImportUseCaseImport = (Void) -> Void
 
 public protocol ImportUseCase {
-    func scanDirectoryForImportables(_ url: URL, callback: ImportUseCaseScanDirectoryCompletion)
-    func scanForImportable(_ url: URL, callback: ImportUseCaseScanCompletion)
-    func importItem(_ url: URL, callback: ImportUseCaseImport)
+    func scanDirectoryForImportables(_ url: URL, callback: @escaping ImportUseCaseScanDirectoryCompletion)
+    func scanForImportable(_ url: URL, callback: @escaping ImportUseCaseScanCompletion)
+    func importItem(_ url: URL, callback: @escaping ImportUseCaseImport)
 }
 
 public final class DefaultImportUseCase: ImportUseCase, Injectable {
@@ -49,7 +49,7 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
         case feed
         case opml
     }
-    private var knownUrls: [URL: ImportType] = [:]
+    fileprivate var knownUrls: [URL: ImportType] = [:]
 
     public init(urlSession: URLSession,
                 feedRepository: DatabaseUseCase,
@@ -67,17 +67,17 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            urlSession: injector.create(URLSession)!,
-            feedRepository: injector.create(DatabaseUseCase)!,
-            opmlService: injector.create(OPMLService)!,
-            fileManager: injector.create(FileManager)!,
-            mainQueue: injector.create(kMainQueue) as! OperationQueue,
-            analytics: injector.create(Analytics)!
+            urlSession: injector.create(kind: URLSession.self)!,
+            feedRepository: injector.create(kind: DatabaseUseCase.self)!,
+            opmlService: injector.create(kind: OPMLService.self)!,
+            fileManager: injector.create(kind: FileManager.self)!,
+            mainQueue: injector.create(string: kMainQueue) as! OperationQueue,
+            analytics: injector.create(kind: Analytics.self)!
         )
     }
 
-    public func scanDirectoryForImportables(_ url: URL, callback: ImportUseCaseScanDirectoryCompletion) {
-        guard let path = url.path else { callback([]); return }
+    public func scanDirectoryForImportables(_ url: URL, callback: @escaping ImportUseCaseScanDirectoryCompletion) {
+        let path = url.path
 
         let contents = ((try? self.fileManager.contentsOfDirectory(atPath: path)) ?? []).flatMap {
             return URL(string: $0, relativeTo: url)?.absoluteURL
@@ -102,7 +102,7 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
         }
     }
 
-    public func scanForImportable(_ url: URL, callback: ImportUseCaseScanCompletion) {
+    public func scanForImportable(_ url: URL, callback: @escaping ImportUseCaseScanCompletion) {
         if url.isFileURL {
             guard !url.absoluteString.contains("default.realm"), let data = try? Data(contentsOf: url) else {
                 callback(.none(url))
@@ -122,19 +122,19 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
         }
     }
 
-    public func importItem(_ url: URL, callback: ImportUseCaseImport) {
+    public func importItem(_ url: URL, callback: @escaping ImportUseCaseImport) {
         guard let importType = self.knownUrls[url] else { callback(); return }
         switch importType {
         case .feed:
             let url = self.canonicalURLForFeedAtURL(url)
-            self.feedRepository.feeds().then {
-                guard case let Result.Success(feeds) = $0 else { return }
+            _ = self.feedRepository.feeds().then {
+                guard case let Result.success(feeds) = $0 else { return }
                 let existingFeed = feeds.objectPassingTest({ $0.url == url })
                 guard existingFeed == nil else {
                     return callback()
                 }
                 var feed: Feed?
-                self.feedRepository.newFeed {
+                _ = self.feedRepository.newFeed {
                     $0.url = url
                     feed = $0
                 }.then { _ in
@@ -170,7 +170,7 @@ extension DefaultImportUseCase {
     fileprivate func isDataAFeed(_ data: String) -> Int? {
         var ret: Int? = nil
         let feedParser = FeedParser(string: data)
-        feedParser.success {
+        _ = feedParser.success {
             ret = $0.articles.count
         }
         feedParser.start()
@@ -179,7 +179,7 @@ extension DefaultImportUseCase {
 
     fileprivate func canonicalURLForFeedAtURL(_ url: URL) -> URL {
         guard url.isFileURL else { return url }
-        let string = (try? String(contentsOfURL: url)) ?? ""
+        let string = (try? String(contentsOf: url)) ?? ""
         var ret: URL! = nil
         FeedParser(string: string).success {
             ret = $0.link
@@ -190,7 +190,7 @@ extension DefaultImportUseCase {
     fileprivate func isDataAnOPML(_ data: String) -> Int? {
         var ret: Int? = nil
         let opmlParser = Parser(text: data)
-        opmlParser.success {
+        _ = opmlParser.success {
             ret = $0.count
         }
         opmlParser.start()
@@ -200,7 +200,7 @@ extension DefaultImportUseCase {
     fileprivate func feedsInWebPage(_ url: URL, webPage: String) -> [URL] {
         var ret: [URL] = []
         let webPageParser = WebPageParser(string: webPage) {
-            ret = $0.map { URL(string: $0.absoluteString!, relativeTo: url)?.absoluteURL ?? $0 as URL }
+            ret = $0.map { URL(string: $0.absoluteString, relativeTo: url)?.absoluteURL ?? $0 as URL }
         }
         webPageParser.searchType = .feeds
         webPageParser.start()

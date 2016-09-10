@@ -56,7 +56,8 @@ public final class LocalImportViewController: UIViewController, Injectable {
         self.tableViewController.tableView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero, excludingEdge: .top)
         let inset = self.navigationController!.navigationBar.frame.height +
             UIApplication.shared.statusBarFrame.height
-        self.tableViewTopOffset = self.tableViewController.tableView.autoPinEdge(toSuperviewEdge: .top, withInset: inset)
+        self.tableViewTopOffset = self.tableViewController.tableView.autoPinEdge(toSuperviewEdge: .top,
+                                                                                 withInset: inset)
 
         self.reloadItems()
 
@@ -191,7 +192,8 @@ extension LocalImportViewController: UITableViewDataSource {
             let (url, articles) = feeds[(indexPath as NSIndexPath).row]
             cell.textLabel?.text = url.lastPathComponent
             let articleCount = NSLocalizedString("LocalImportViewController_Cell_Feed_ArticleCount", comment: "")
-            cell.detailTextLabel?.text = NSString.localizedStringWithFormat(articleCount as NSString, articles) as String
+            cell.detailTextLabel?.text = NSString.localizedStringWithFormat(articleCount as NSString,
+                                                                            articles) as String
         }
 
         (cell as? TableViewCell)?.themeRepository = self.themeRepository

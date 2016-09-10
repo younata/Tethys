@@ -20,11 +20,12 @@ protocol DataService: class {
     var searchIndex: SearchIndex? { get }
     var mainQueue: OperationQueue { get }
 
-    func createFeed(_ callback: (Feed) -> Void) -> Future<Result<Feed, RNewsError>>
-    func createArticle(_ feed: Feed?, callback: (Article) -> Void)
+    func createFeed(_ callback: @escaping (Feed) -> Void) -> Future<Result<Feed, RNewsError>>
+    func createArticle(_ feed: Feed?, callback: @escaping (Article) -> Void)
 
     func allFeeds() -> Future<Result<DataStoreBackedArray<Feed>, RNewsError>>
-    func articlesMatchingPredicate(_ predicate: NSPredicate) -> Future<Result<DataStoreBackedArray<Article>, RNewsError>>
+    func articlesMatchingPredicate(_ predicate: NSPredicate) ->
+        Future<Result<DataStoreBackedArray<Article>, RNewsError>>
 
     func deleteFeed(_ feed: Feed) -> Future<Result<Void, RNewsError>>
     func deleteArticle(_ article: Article) -> Future<Result<Void, RNewsError>>
@@ -59,17 +60,17 @@ extension DataService {
 
         let checkIfFinished: (Result<(Article), RNewsError>) -> Void = { result in
             switch result {
-            case let .Success(article):
+            case let .success(article):
                 articlesToSave.append(article)
                 if importTasks.isEmpty {
-                    self.batchSave([feed], articles: articlesToSave).then { _ in
-                        promise.resolve(.Success())
+                    _ = self.batchSave([feed], articles: articlesToSave).then { _ in
+                        promise.resolve(.success())
                     }
                 } else {
                     importTasks.popLast()?()
                 }
-            case let .Failure(error):
-                promise.resolve(.Failure(error))
+            case let .failure(error):
+                promise.resolve(.failure(error))
                 return
             }
         }
@@ -86,10 +87,10 @@ extension DataService {
             let article = feedArticles.objectPassingTest(filter)
             importTasks.append {
                 if let article = article ?? articlesToSave.objectPassingTest(filter) {
-                    self.updateArticle(article, item: item, feedURL: info.link).then(checkIfFinished)
+                    _ = self.updateArticle(article, item: item, feedURL: info.url).then(callback: checkIfFinished)
                 } else {
                     self.createArticle(feed) { article in
-                        self.updateArticle(article, item: item, feedURL: info.link).then(checkIfFinished)
+                        _ = self.updateArticle(article, item: item, feedURL: info.url).then(callback: checkIfFinished)
                     }
                 }
             }
@@ -123,8 +124,8 @@ extension DataService {
             }
             let title = (itemTitle).trimmingCharacters(in: characterSet)
             article.title = title.stringByUnescapingHTML().stringByStrippingHTML()
-            article.link = URL(string: item.url.absoluteString!, relativeTo: feedURL)?.absoluteURL
-            article.published = item.published ?? article.published
+            article.link = URL(string: item.url.absoluteString, relativeTo: feedURL)?.absoluteURL
+            article.published = item.published
             article.updatedAt = item.updated
             article.summary = item.summary
             article.content = item.content
@@ -137,14 +138,14 @@ extension DataService {
             let promise = Promise<Result<Article, RNewsError>>()
 
             let parser = WebPageParser(string: content) { urls in
-                let links = urls.flatMap { URL(string: $0.absoluteString!, relativeTo: feedURL)?.absoluteString }
-                self.articlesMatchingPredicate(NSPredicate(format: "link IN %@", links)).then { result in
+                let links = urls.flatMap { URL(string: $0.absoluteString, relativeTo: feedURL)?.absoluteString }
+                _ = self.articlesMatchingPredicate(NSPredicate(format: "link IN %@", links)).then { result in
                     switch result {
-                    case let .Success(related):
+                    case let .success(related):
                         related.forEach(article.addRelatedArticle)
-                        promise.resolve(.Success(article))
-                    case let .Failure(error):
-                        promise.resolve(.Failure(error))
+                        promise.resolve(.success(article))
+                    case let .failure(error):
+                        promise.resolve(.failure(error))
                     }
                 }
             }

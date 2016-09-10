@@ -41,13 +41,13 @@ final class DefaultAccountRepository: InternalAccountRepository {
     func login(_ email: String, password: String) -> Future<Result<Void, RNewsError>> {
         return self.repository.login(email, password: password).map { res -> Result<Void, RNewsError> in
             switch res {
-            case .Success():
+            case .success():
                 self.userDefaults.setValue(self.repository.authToken ?? "", forKey: pasiphae_token)
                 self.userDefaults.setValue(email, forKey: pasiphae_login)
                 self.delegate?.accountRepositoryDidLogIn(self)
-                return Result.Success()
-            case let .Failure(error):
-                return Result.Failure(RNewsError.Backend(error))
+                return Result.success()
+            case let .failure(error):
+                return Result.failure(RNewsError.backend(error))
             }
         }
     }
@@ -55,13 +55,13 @@ final class DefaultAccountRepository: InternalAccountRepository {
     func register(_ email: String, password: String) -> Future<Result<Void, RNewsError>> {
         return self.repository.createAccount(email, password: password).map { res -> Result<Void, RNewsError> in
             switch res {
-            case .Success():
+            case .success():
                 self.userDefaults.setValue(self.repository.authToken ?? "", forKey: pasiphae_token)
                 self.userDefaults.setValue(email, forKey: pasiphae_login)
                 self.delegate?.accountRepositoryDidLogIn(self)
-                return Result.Success()
-            case let .Failure(error):
-                return Result.Failure(RNewsError.Backend(error))
+                return Result.success()
+            case let .failure(error):
+                return Result.failure(RNewsError.backend(error))
             }
         }
     }

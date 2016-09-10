@@ -56,14 +56,14 @@ final class DataServiceFactory: DataServiceFactoryType {
 
     private func useCoreData() -> Bool {
         guard let url = Realm.Configuration.defaultConfiguration.fileURL else { return true }
-        return !self.fileManager.fileExists(atPath: url.path ?? "")
+        return !self.fileManager.fileExists(atPath: url.path )
     }
 
     private func coreDataService() -> CoreDataService {
         let modelURL = self.bundle.url(forResource: "RSSClient", withExtension: "momd")!
         let managedObjectModel = NSManagedObjectModel(contentsOf: modelURL)!
 
-        let storeURL = URL(fileURLWithPath: documentsDirectory().appendingPathComponent("RSSClient.sqlite"))
+        let storeURL = URL(fileURLWithPath: documentsDirectory() + "/RSSClient.sqlite")
         let persistentStore = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
         let options: [String: AnyObject] = [NSMigratePersistentStoresAutomaticallyOption: true as AnyObject,
             NSInferMappingModelAutomaticallyOption: true as AnyObject]

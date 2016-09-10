@@ -48,8 +48,9 @@ public final class ThemeRepository: NSObject, Injectable {
 
     public private(set) var barStyle: UIBarStyle {
         get {
-            if let rawValue = self.privateValueForKey("barStyle") as? Int, let barStyle = UIBarStyle(rawValue: rawValue) {
-                return barStyle
+            if let rawValue = self.privateValueForKey("barStyle") as? Int,
+                let barStyle = UIBarStyle(rawValue: rawValue) {
+                    return barStyle
             }
             return UIBarStyle.default
         }

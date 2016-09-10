@@ -225,9 +225,9 @@ public final class LoginViewController: UIViewController, Injectable {
             self.mainQueue.addOperationWithBlock {
                 activityIndicator.removeFromSuperview()
                 switch res {
-                case .Success():
+                case .success():
                     self.navigationController?.popViewControllerAnimated(false)
-                case let .Failure(error):
+                case let .failure(error):
                     self.errorLabel.text = error.description
                 }
             }

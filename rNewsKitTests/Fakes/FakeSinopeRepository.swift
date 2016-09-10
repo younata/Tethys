@@ -94,34 +94,34 @@ final class FakeSinopeRepository : Sinope.Repository, Equatable {
     }
 
     private(set) var subscribeCallCount : Int = 0
-    var subscribeStub : (([URL]) -> (Future<Result<[NSURL], SinopeError>>))?
+    var subscribeStub : (([URL]) -> (Future<Result<[URL], SinopeError>>))?
     private var subscribeArgs : Array<([URL])> = []
-    func subscribeReturns(_ stubbedValues: (Future<Result<[NSURL], SinopeError>>)) {
-        self.subscribeStub = {(feeds: [URL]) -> (Future<Result<[NSURL], SinopeError>>) in
+    func subscribeReturns(_ stubbedValues: (Future<Result<[URL], SinopeError>>)) {
+        self.subscribeStub = {(feeds: [URL]) -> (Future<Result<[URL], SinopeError>>) in
             return stubbedValues
         }
     }
     func subscribeArgsForCall(_ callIndex: Int) -> ([URL]) {
         return self.subscribeArgs[callIndex]
     }
-    func subscribe(_ feeds: [NSURL]) -> (Future<Result<[NSURL], SinopeError>>) {
+    func subscribe(_ feeds: [URL]) -> (Future<Result<[URL], SinopeError>>) {
         self.subscribeCallCount += 1
         self.subscribeArgs.append((feeds as ([URL])))
         return self.subscribeStub!(feeds as [URL])
     }
 
     private(set) var unsubscribeCallCount : Int = 0
-    var unsubscribeStub : (([URL]) -> (Future<Result<[NSURL], SinopeError>>))?
+    var unsubscribeStub : (([URL]) -> (Future<Result<[URL], SinopeError>>))?
     private var unsubscribeArgs : Array<([URL])> = []
-    func unsubscribeReturns(_ stubbedValues: (Future<Result<[NSURL], SinopeError>>)) {
-        self.unsubscribeStub = {(feeds: [URL]) -> (Future<Result<[NSURL], SinopeError>>) in
+    func unsubscribeReturns(_ stubbedValues: (Future<Result<[URL], SinopeError>>)) {
+        self.unsubscribeStub = {(feeds: [URL]) -> (Future<Result<[URL], SinopeError>>) in
             return stubbedValues
         }
     }
     func unsubscribeArgsForCall(_ callIndex: Int) -> ([URL]) {
         return self.unsubscribeArgs[callIndex]
     }
-    func unsubscribe(_ feeds: [NSURL]) -> (Future<Result<[NSURL], SinopeError>>) {
+    func unsubscribe(_ feeds: [URL]) -> (Future<Result<[URL], SinopeError>>) {
         self.unsubscribeCallCount += 1
         self.unsubscribeArgs.append((feeds as ([URL])))
         return self.unsubscribeStub!(feeds as [URL])
@@ -138,24 +138,24 @@ final class FakeSinopeRepository : Sinope.Repository, Equatable {
     func fetchArgsForCall(_ callIndex: Int) -> ([URL: Date]) {
         return self.fetchArgs[callIndex]
     }
-    func fetch(_ feeds: [NSURL: NSDate]) -> (Future<Result<([Feed]), SinopeError>>) {
+    func fetch(_ feeds: [URL: Date]) -> (Future<Result<([Feed]), SinopeError>>) {
         self.fetchCallCount += 1
         self.fetchArgs.append((feeds as ([URL : Date])))
         return self.fetchStub!(feeds as [URL : Date])
     }
 
     private(set) var checkCallCount : Int = 0
-    var checkStub : ((URL) -> (Future<Result<[NSURL: Bool], SinopeError>>))?
+    var checkStub : ((URL) -> (Future<Result<[URL: Bool], SinopeError>>))?
     private var checkArgs : Array<(URL)> = []
-    func checkReturns(_ stubbedValues: (Future<Result<[NSURL: Bool], SinopeError>>)) {
-        self.checkStub = {(url: URL) -> (Future<Result<[NSURL: Bool], SinopeError>>) in
+    func checkReturns(_ stubbedValues: (Future<Result<[URL: Bool], SinopeError>>)) {
+        self.checkStub = {(url: URL) -> (Future<Result<[URL: Bool], SinopeError>>) in
             return stubbedValues
         }
     }
     func checkArgsForCall(_ callIndex: Int) -> (URL) {
         return self.checkArgs[callIndex]
     }
-    func check(_ url: NSURL) -> Future<Result<[NSURL : Bool], SinopeError>> {
+    func check(_ url: URL) -> Future<Result<[URL : Bool], SinopeError>> {
         self.checkCallCount += 1
         self.checkArgs.append((url) as (URL))
         return self.checkStub!(url as URL)

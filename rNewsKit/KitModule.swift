@@ -11,28 +11,27 @@ public let kMainQueue = "kMainQueue"
 public let kBackgroundQueue = "kBackgroundQueue"
 
 public final class KitModule: NSObject, Ra.InjectorModule {
-    public func configureInjector(_ injector: Injector) {
+    public func configureInjector(injector: Injector) {
         // Operation Queues
         let mainQueue = OperationQueue.main
-        injector.bind(string: kMainQueue, to: mainQueue)
+        injector.bind(string: kMainQueue, toInstance: mainQueue)
 
-        injector.bind(string: URLSession.self, to: URLSession.sharedSession())
-
-        injector.bind(string: Analytics.self, to: MixPanelAnalytics())
+        injector.bind(kind: URLSession.self, toInstance: URLSession.shared)
+        injector.bind(kind: Analytics.self, toInstance: MixPanelAnalytics())
 
         var searchIndex: SearchIndex? = nil
         var reachable: Reachable? = nil
 
         #if os(iOS)
             searchIndex = CSSearchableIndex.default()
-            injector.bind(string: SearchIndex.self, to: CSSearchableIndex.defaultSearchableIndex())
-            reachable = try? Reachability.reachabilityForInternetConnection()
+            injector.bind(kind: SearchIndex.self, toInstance: CSSearchableIndex.default())
+            reachable = Reachability()
         #endif
 
         let backgroundQueue = OperationQueue()
         backgroundQueue.qualityOfService = QualityOfService.utility
         backgroundQueue.maxConcurrentOperationCount = 1
-        injector.bind(string: kBackgroundQueue, to: backgroundQueue)
+        injector.bind(string: kBackgroundQueue, toInstance: backgroundQueue)
 
         let urlSessionConfiguration = URLSessionConfiguration.background(
             withIdentifier: "com.rachelbrindle.rnews"
@@ -56,7 +55,7 @@ public final class KitModule: NSObject, Ra.InjectorModule {
             bundle: Bundle(for: self.classForCoder),
             fileManager: FileManager.default)
 
-        let sinopeRepository = PasiphaeFactory().repository(URLSession.sharedSession())
+        let sinopeRepository = PasiphaeFactory().repository(URLSession.shared)
 
         let updateService = UpdateService(
             dataServiceFactory: dataServiceFactory,
@@ -90,15 +89,15 @@ public final class KitModule: NSObject, Ra.InjectorModule {
             mainQueue: mainQueue
         )
 
-        injector.bind(DatabaseUseCase.self, toInstance: dataRepository)
-        injector.bind(DefaultDatabaseUseCase.self, toInstance: dataRepository)
-        injector.bind(AccountRepository.self, toInstance: accountRepository)
+        injector.bind(kind: DatabaseUseCase.self, toInstance: dataRepository)
+        injector.bind(kind: DefaultDatabaseUseCase.self, toInstance: dataRepository)
+        injector.bind(kind: AccountRepository.self, toInstance: accountRepository)
 
         let opmlService = OPMLService(injector: injector)
-        injector.bind(string: OPMLService.self, to: opmlService)
+        injector.bind(kind: OPMLService.self, toInstance: opmlService)
 
-        injector.bind(string: MigrationUseCase.self, to: DefaultMigrationUseCase(injector: injector))
-        injector.bind(ImportUseCase.self, to: DefaultImportUseCase.init)
+        injector.bind(kind: MigrationUseCase.self, toInstance: DefaultMigrationUseCase(injector: injector))
+        injector.bind(kind: ImportUseCase.self, to: DefaultImportUseCase.init)
 
     }
 }

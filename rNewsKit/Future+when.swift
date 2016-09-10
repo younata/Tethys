@@ -9,7 +9,7 @@ extension Promise {
         var currentCount = 0
 
         for (idx, future) in futures.enumerated() {
-            future.then {
+            _ = future.then {
                 values[idx] = $0
                 currentCount += 1
                 if currentCount == futures.count {

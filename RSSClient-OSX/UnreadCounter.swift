@@ -2,12 +2,12 @@ import Cocoa
 import PureLayout_Mac
 import rNewsKit
 
-public class UnreadCounter: NSView {
+public final class UnreadCounter: NSView {
 
     let countLabel = NSText(forAutoLayout: ())
 
     var triangleColor: NSColor = NSColor.darkGreenColor()
-    var countColor: NSColor = NSColor.whiteColor() {
+    var countColor: NSColor = NSColor.white {
         didSet {
             countLabel.textColor = countColor
         }
@@ -20,7 +20,7 @@ public class UnreadCounter: NSView {
         didSet {
             if unread == 0 {
                 countLabel.string = ""
-                color = NSColor.clearColor()
+                color = NSColor.clear
             } else {
                 if hideUnreadText {
                     countLabel.string = ""
@@ -52,19 +52,19 @@ public class UnreadCounter: NSView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func drawRect(dirtyRect: NSRect) {
-        super.drawRect(dirtyRect)
+    public override func draw(_ dirtyRect: NSRect) {
+        super.draw(dirtyRect)
 
-        let ctx = NSGraphicsContext.currentContext()
-        let path = CGPathCreateMutable()
+        let ctx = NSGraphicsContext.current()
+        let path = CGMutablePath()
         let height = self.bounds.height
         let width = self.bounds.width
         CGPathMoveToPoint(path, nil, 0, height)
         CGPathAddLineToPoint(path, nil, width, height)
         CGPathAddLineToPoint(path, nil, width, 0)
         CGPathAddLineToPoint(path, nil, 0, height)
-        CGContextAddPath(ctx?.CGContext, path)
-        CGContextSetFillColorWithColor(ctx?.CGContext, self.color.CGColor)
-        CGContextFillPath(ctx?.CGContext)
+        ctx?.cgContext.addPath(path)
+        ctx?.cgContext.setFillColor(self.color.cgColor)
+        (ctx?.cgContext)?.fillPath()
     }
 }

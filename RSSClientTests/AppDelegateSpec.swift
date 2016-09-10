@@ -156,8 +156,8 @@ class AppDelegateSpec: QuickSpec {
             }
 
             describe("selecting a 'View Feed' action") {
-                let feed = Feed(title: "title", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
-                let article = Article(title: "title", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
+                let feed = Feed(title: "title", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
+                let article = Article(title: "title", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
                 feed.addArticle(article)
 
                 beforeEach {
@@ -179,7 +179,7 @@ class AppDelegateSpec: QuickSpec {
                 describe("when the promise succeeds") {
                     context("and the selected feed is in the list") {
                         beforeEach {
-                            dataUseCase.feedsPromises.last?.resolve(.Success([feed]))
+                            dataUseCase.feedsPromises.last?.resolve(.success([feed]))
                         }
 
                         it("opens an article list for the selected feed") {
@@ -202,7 +202,7 @@ class AppDelegateSpec: QuickSpec {
 
                     context("and the selected feed is not in the list") {
                         beforeEach {
-                            dataUseCase.feedsPromises.last?.resolve(.Success([]))
+                            dataUseCase.feedsPromises.last?.resolve(.success([]))
                         }
 
                         it("does nothing and returns false") {
@@ -213,7 +213,7 @@ class AppDelegateSpec: QuickSpec {
 
                 describe("when the promise fails") {
                     beforeEach {
-                        dataUseCase.feedsPromises.last?.resolve(.Failure(.Unknown))
+                        dataUseCase.feedsPromises.last?.resolve(.failure(.Unknown))
                     }
 
                     it("does nothing and returns false") {
@@ -266,8 +266,8 @@ class AppDelegateSpec: QuickSpec {
             var article: Article! = nil
 
             beforeEach {
-                let feed = Feed(title: "title", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
-                article = Article(title: "title", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: nil, identifier: "identifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
+                let feed = Feed(title: "title", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
+                article = Article(title: "title", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
                 feed.addArticle(article)
 //                dataRepository.feedsList = [feed]
                 subject.application(UIApplication.sharedApplication(), didFinishLaunchingWithOptions: nil)

@@ -2,10 +2,10 @@
 
 struct FakeImportableFeed: ImportableFeed {
     let title: String
-    let link: NSURL
+    let link: URL
     let description: String
-    let lastUpdated: NSDate
-    let imageURL: NSURL?
+    let lastUpdated: Date
+    let imageURL: URL?
 
     var articles: [FakeImportableArticle]
 
@@ -13,7 +13,7 @@ struct FakeImportableFeed: ImportableFeed {
         return self.articles.map { $0 as ImportableArticle }
     }
 
-    init(title: String, link: NSURL, description: String, lastUpdated: NSDate, imageURL: NSURL?, articles: [FakeImportableArticle] = []) {
+    init(title: String, link: URL, description: String, lastUpdated: Date, imageURL: URL?, articles: [FakeImportableArticle] = []) {
         self.title = title
         self.link = link
         self.description = description
@@ -25,11 +25,11 @@ struct FakeImportableFeed: ImportableFeed {
 
 struct FakeImportableArticle: ImportableArticle {
     let title: String
-    let url: NSURL
+    let url: URL
     let summary: String
     let content: String
-    let published: NSDate
-    let updated: NSDate?
+    let published: Date
+    let updated: Date?
 
     var authors: [FakeImportableAuthor]
 
@@ -37,7 +37,7 @@ struct FakeImportableArticle: ImportableArticle {
         return self.authors.map { $0 as ImportableAuthor }
     }
 
-    init(title: String, url: NSURL, summary: String, content: String, published: NSDate, updated: NSDate?, authors: [FakeImportableAuthor] = []) {
+    init(title: String, url: URL, summary: String, content: String, published: Date, updated: Date?, authors: [FakeImportableAuthor] = []) {
         self.title = title
         self.url = url
         self.summary = summary
@@ -50,9 +50,9 @@ struct FakeImportableArticle: ImportableArticle {
 
 struct FakeImportableAuthor: ImportableAuthor {
     let name: String
-    let email: NSURL?
+    let email: URL?
 
-    init(name: String, email: NSURL?) {
+    init(name: String, email: URL?) {
         self.name = name
         self.email = email
     }

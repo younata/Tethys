@@ -50,7 +50,7 @@ public final class TagEditorViewController: UIViewController, Injectable {
         self.tagPicker.translatesAutoresizingMaskIntoConstraints = false
         self.tagPicker.themeRepository = self.themeRepository
         self.feedRepository.allTags().then {
-            if case let Result.Success(tags) = $0 {
+            if case let Result.success(tags) = $0 {
                 self.tagPicker.configureWithTags(tags) {
                     self.tag = $0
                 }

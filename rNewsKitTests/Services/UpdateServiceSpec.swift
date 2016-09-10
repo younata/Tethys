@@ -95,7 +95,7 @@ class UpdateServiceSpec: QuickSpec {
                     let json = try! JSON(data: data)
                     let sinopeFeed = try! Feed(json: json)
 
-                    fetchPromise.resolve(.Success([sinopeFeed]))
+                    fetchPromise.resolve(.success([sinopeFeed]))
                 }
 
                 it("calls the callback as the feeds are processed") {
@@ -132,7 +132,7 @@ class UpdateServiceSpec: QuickSpec {
                     let json = try! JSON(data: data)
                     let sinopeFeed = try! Feed(json: json)
 
-                    fetchPromise.resolve(.Success([sinopeFeed]))
+                    fetchPromise.resolve(.success([sinopeFeed]))
                 }
 
                 it("creates a new feed with that data") {
@@ -163,7 +163,7 @@ class UpdateServiceSpec: QuickSpec {
 
             describe("when the request fails") {
                 beforeEach {
-                    fetchPromise.resolve(.Failure(.Unknown))
+                    fetchPromise.resolve(.failure(.Unknown))
                 }
 
                 it("wraps the error") {

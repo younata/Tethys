@@ -35,14 +35,14 @@ class DefaultAccountRepositoryDelegateSpec: QuickSpec {
             }
 
             describe("when the request comes back successfully") {
-                var subscribePromise: Promise<Result<[NSURL], SinopeError>>!
+                var subscribePromise: Promise<Result<[URL], SinopeError>>!
                 beforeEach {
-                    subscribePromise = Promise<Result<[NSURL], SinopeError>>()
+                    subscribePromise = Promise<Result<[URL], SinopeError>>()
                     sinopeRepository.subscribeReturns(subscribePromise.future)
 
                     let feed = Feed(title: "title", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-                    databaseUseCase.feedsPromises.last?.resolve(.Success([feed]))
+                    databaseUseCase.feedsPromises.last?.resolve(.success([feed]))
                 }
 
                 it("tells the sinope repository to subscribe to feeds with urls") {
@@ -54,7 +54,7 @@ class DefaultAccountRepositoryDelegateSpec: QuickSpec {
 
                 describe("when the subscribe request succeeds") {
                     beforeEach {
-                        subscribePromise.resolve(.Success([]))
+                        subscribePromise.resolve(.success([]))
                     }
 
                     it("asks the databaseusecase to update its feeds") {
@@ -64,7 +64,7 @@ class DefaultAccountRepositoryDelegateSpec: QuickSpec {
 
                 describe("when the subscribe request fails") {
                     beforeEach {
-                        subscribePromise.resolve(.Failure(.Unknown))
+                        subscribePromise.resolve(.failure(.Unknown))
                     }
                     it("does not the databaseusecase to update its feeds") {
                         expect(databaseUseCase.didUpdateFeeds) == false
@@ -74,7 +74,7 @@ class DefaultAccountRepositoryDelegateSpec: QuickSpec {
 
             describe("when the request fails") {
                 beforeEach {
-                    databaseUseCase.feedsPromises.last?.resolve(.Failure(.Unknown))
+                    databaseUseCase.feedsPromises.last?.resolve(.failure(.Unknown))
                 }
 
                 it("does not tell the sinope repository to subscribe to feeds with urls") {

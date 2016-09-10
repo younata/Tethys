@@ -102,7 +102,7 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
                 shortcutItem.type == "com.rachelbrindle.RSSClient.viewfeed" {
                 // swiftlint:disable conditional_binding_cascade
                     self.feedRepository.feeds().then {
-                        if case let Result.Success(feeds) = $0,
+                        if case let Result.success(feeds) = $0,
                             let feed = feeds.objectPassingTest({ return $0.title == feedTitle }) {
                                 feedsViewController.showFeed(feed, animated: false)
                                 self.analytics.logEvent("QuickActionUsed", data: ["kind": "View Feed"])
@@ -151,7 +151,7 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
                 let feedTitle = userInfo["feed"] as? String,
                 let articleID = userInfo["article"] as? String {
                     self.feedRepository.feeds().then() {
-                        if case let Result.Success(feeds) = $0 {
+                        if case let Result.success(feeds) = $0 {
                             if let feed = feeds.objectPassingTest({ return $0.title == feedTitle }),
                                 let article = feed.articlesArray.filter({ $0.identifier == articleID }).first {
                                     self.createControllerHierarchy(feed, article: article)
@@ -163,7 +163,7 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
             if type == CSSearchableItemActionType,
                 let uniqueID = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
                     self.feedRepository.feeds().then {
-                        guard case let Result.Success(feeds) = $0 else { return }
+                        guard case let Result.success(feeds) = $0 else { return }
                         guard let article = feeds.reduce(Array<Article>(), combine: {articles, feed in
                             return articles + Array(feed.articlesArray)
                         }).objectPassingTest({ article in

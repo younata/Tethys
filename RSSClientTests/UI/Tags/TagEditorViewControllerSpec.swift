@@ -13,7 +13,7 @@ class TagEditorViewControllerSpec: QuickSpec {
         var themeRepository: FakeThemeRepository! = nil
         let rootViewController = UIViewController()
 
-        var feed = Feed(title: "title", url: NSURL(string: "")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+        var feed = Feed(title: "title", url: URL(string: "")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
         beforeEach {
             injector = Injector()
@@ -27,7 +27,7 @@ class TagEditorViewControllerSpec: QuickSpec {
             navigationController = UINavigationController(rootViewController: rootViewController)
             navigationController.pushViewController(subject, animated: false)
 
-            feed = Feed(title: "title", url: NSURL(string: "")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            feed = Feed(title: "title", url: URL(string: "")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
             subject.feed = feed
 
             expect(subject.view).toNot(beNil())
@@ -66,7 +66,7 @@ class TagEditorViewControllerSpec: QuickSpec {
 
         describe("when the tags promise successfully resolves with tags") {
             beforeEach {
-                dataRepository.allTagsPromises.last?.resolve(.Success(["a"]))
+                dataRepository.allTagsPromises.last?.resolve(.success(["a"]))
             }
 
             context("when there is data to save") {
@@ -76,7 +76,7 @@ class TagEditorViewControllerSpec: QuickSpec {
                 }
 
                 it("should save the feed, with the added tag") {
-                    let newFeed = Feed(title: "title", url: NSURL(string: "")!, summary: "", tags: ["a"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let newFeed = Feed(title: "title", url: URL(string: "")!, summary: "", tags: ["a"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     expect(dataRepository.lastSavedFeed) == newFeed
                 }
 
@@ -94,7 +94,7 @@ class TagEditorViewControllerSpec: QuickSpec {
 
         describe("when the tags promise successfully resolves without tags") {
             beforeEach {
-                dataRepository.allTagsPromises.last?.resolve(.Success([]))
+                dataRepository.allTagsPromises.last?.resolve(.success([]))
             }
 
             it("disables the save button") {
@@ -104,7 +104,7 @@ class TagEditorViewControllerSpec: QuickSpec {
 
         describe("when tha tags promise errors out") {
             beforeEach {
-                dataRepository.allTagsPromises.last?.resolve(.Failure(.Unknown))
+                dataRepository.allTagsPromises.last?.resolve(.failure(.Unknown))
             }
 
             it("disables the save button") {

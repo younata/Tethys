@@ -24,13 +24,13 @@ class FeedRepository: Repository {
     private var _feeds: [Feed]? = nil
     func get() -> Future<Result<[Feed], RepositoryError>> {
         let promise = Promise<Result<[Feed], RepositoryError>>()
-        promise.resolve(Result(error: .Unknown))
+        promise.resolve(Result(error: .unknown))
         return promise.future
     }
 
     func create() -> Future<Result<Feed, RepositoryError>> {
         let promise = Promise<Result<Feed, RepositoryError>>()
-        self.dataService.createFeed {
+        _ = self.dataService.createFeed {
             promise.resolve(Result(value: $0))
         }
         return promise.future
@@ -39,7 +39,7 @@ class FeedRepository: Repository {
     func save(_ data: Feed) -> Future<Result<Void, RepositoryError>> {
         self._feeds = nil
         return self.dataService.saveFeed(data).map { _ -> Result<Void, RepositoryError> in
-            return Result(error: .Unknown)
+            return Result(error: .unknown)
         }
     }
 
@@ -47,7 +47,7 @@ class FeedRepository: Repository {
         self._feeds = self._feeds?.filter { $0 != data }
 
         return self.dataService.deleteFeed(data).map { _ -> Result<Void, RepositoryError> in
-            return Result(error: .Unknown)
+            return Result(error: .unknown)
         }
     }
 }

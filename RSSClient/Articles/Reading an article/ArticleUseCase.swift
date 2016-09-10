@@ -35,7 +35,7 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
 
     public func articlesByAuthor(_ author: Author, callback: (DataStoreBackedArray<Article>) -> Void) {
         self.feedRepository.feeds().then {
-            guard case let Result.Success(feeds) = $0 else {
+            guard case let Result.success(feeds) = $0 else {
                 callback(DataStoreBackedArray<Article>([]))
                 return
             }

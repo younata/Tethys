@@ -45,17 +45,17 @@ public struct LocalNotificationHandler: NotificationHandler, Injectable {
         guard let userInfo = notification.userInfo else { return }
 
         self.articleFromUserInfo(userInfo).then { result in
-            if case let Result.Success(article) = result {
+            if case let Result.success(article) = result {
                 self.showArticle(article, window: window)
             }
         }
     }
 
     public func handleAction(_ identifier: String?, notification: UILocalNotification) {
-        guard let userInfo = notification.userInfo , identifier == "read" else { return }
+        guard let userInfo = notification.userInfo, identifier == "read" else { return }
 
         self.articleFromUserInfo(userInfo).then {
-            if case let Result.Success(article) = $0 {
+            if case let Result.success(article) = $0 {
                 self.feedRepository.markArticle(article, asRead: true)
             }
         }
@@ -82,19 +82,19 @@ public struct LocalNotificationHandler: NotificationHandler, Injectable {
         guard let feedID = userInfo["feed"] as? String,
               let articleID = userInfo["article"] as? String else {
                 let promise = Promise<Result<Article, RNewsError>>()
-                promise.resolve(.Failure(.Database(.EntryNotFound)))
+                promise.resolve(.failure(.Database(.EntryNotFound)))
                 return promise.future
         }
         return self.feedRepository.feeds().map { result -> Result<Article, RNewsError> in
             switch result {
-            case let .Success(feeds):
+            case let .success(feeds):
                 let feed = feeds.objectPassingTest({ $0.identifier == feedID })
                 if let article = feed?.articlesArray.filter({ $0.identifier == articleID }).first {
-                    return .Success(article)
+                    return .success(article)
                 }
-                return .Failure(.Database(.EntryNotFound))
-            case let .Failure(error):
-                return .Failure(error)
+                return .failure(.Database(.EntryNotFound))
+            case let .failure(error):
+                return .failure(error)
             }
         }
     }

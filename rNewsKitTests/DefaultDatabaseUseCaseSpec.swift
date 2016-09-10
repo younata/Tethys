@@ -197,9 +197,9 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                     expect(calledHandler) == true
                     expect(calledResults).toNot(beNil())
                     switch calledResults! {
-                    case let .Success(tags):
+                    case let .success(tags):
                         expect(tags) == ["a", "b", "c", "d", "dad"]
-                    case .Failure(_):
+                    case .failure(_):
                         expect(false) == true
                     }
 
@@ -223,13 +223,13 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                     expect(calledHandler) == true
                     expect(calledResults).toNot(beNil())
                     switch calledResults! {
-                    case let .Success(receivedFeeds):
+                    case let .success(receivedFeeds):
                         expect(receivedFeeds) == feeds
                         for (idx, feed) in feeds.enumerate() {
                             let receivedFeed = receivedFeeds[idx]
                             expect(receivedFeed.articlesArray == feed.articlesArray) == true
                         }
-                    case .Failure(_):
+                    case .failure(_):
                         expect(false) == true
                     }
                 }
@@ -239,15 +239,15 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
         describe("as a DataWriter") {
             describe("newFeed") {
                 var createdFeed: rNewsKit.Feed? = nil
-                var subscribePromise: Promise<Result<[NSURL], SinopeError>>!
+                var subscribePromise: Promise<Result<[URL], SinopeError>>!
                 var newFeedFuture: Future<Result<Void, RNewsError>>!
 
                 describe("and the user makes a standard feed") {
                     beforeEach {
-                        subscribePromise = Promise<Result<[NSURL], SinopeError>>()
+                        subscribePromise = Promise<Result<[URL], SinopeError>>()
                         sinopeRepository.subscribeReturns(subscribePromise.future)
                         newFeedFuture = subject.newFeed {feed in
-                            feed.url = NSURL(string: "https://example.com/feed")!
+                            feed.url = URL(string: "https://example.com/feed")!
                             createdFeed = feed
                         }
                     }
@@ -267,7 +267,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                     it("resolves the future when the sinope repository finishes") {
                         expect(newFeedFuture.value).to(beNil())
 
-                        subscribePromise.resolve(.Success([]))
+                        subscribePromise.resolve(.success([]))
 
                         expect(newFeedFuture.value?.value).toNot(beNil())
                     }
@@ -296,9 +296,9 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
             }
 
             describe("deleteFeed") {
-                var unsubscribePromise: Promise<Result<[NSURL], SinopeError>>!
+                var unsubscribePromise: Promise<Result<[URL], SinopeError>>!
                 beforeEach {
-                    unsubscribePromise = Promise<Result<[NSURL], SinopeError>>()
+                    unsubscribePromise = Promise<Result<[URL], SinopeError>>()
                     sinopeRepository.unsubscribeReturns(unsubscribePromise.future)
 
                     mainQueue.runSynchronously = true
@@ -323,7 +323,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
 
                 describe("when the unsubscribe promise resolves") {
                     beforeEach {
-                        unsubscribePromise.resolve(.Success([]))
+                        unsubscribePromise.resolve(.success([]))
                     }
 
                     it("should inform any subscribers") {
@@ -354,9 +354,9 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                     expect(markedReadFuture?.value).toNot(beNil())
                     let calledResults = markedReadFuture!.value!
                     switch calledResults {
-                    case let .Success(value):
+                    case let .success(value):
                         expect(value) == 1
-                    case .Failure(_):
+                    case .failure(_):
                         expect(false) == true
                     }
                 }
@@ -494,7 +494,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
 
                     context("when the network request succeeds") {
                         beforeEach {
-                            updateFeedsPromise.resolve(.Success())
+                            updateFeedsPromise.resolve(.success())
                             mainQueue.runNextOperation()
                         }
 
@@ -612,7 +612,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                         context("when the original update request finishes") {
                             beforeEach {
                                 mainQueue.runSynchronously = true
-                                updateFeedsPromise.resolve(.Success())
+                                updateFeedsPromise.resolve(.success())
                             }
 
                             it("should call both completion handlers") {
@@ -626,7 +626,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                     context("when the update request succeeds") {
                         beforeEach {
                             mainQueue.runSynchronously = true
-                            updateFeedsPromise.resolve(.Success())
+                            updateFeedsPromise.resolve(.success())
                         }
 
                         it("should call the completion handler without an error") {

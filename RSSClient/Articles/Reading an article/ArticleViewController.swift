@@ -248,7 +248,7 @@ extension ArticleViewController: UIWebViewDelegate {
     public func webView(_ webView: UIWebView,
         shouldStartLoadWith request: URLRequest,
         navigationType: UIWebViewNavigationType) -> Bool {
-            guard let url = request.url , navigationType == .linkClicked else { return true }
+            guard let url = request.url, navigationType == .linkClicked else { return true }
             let predicate = NSPredicate(format: "link = %@", url.absoluteString)
             if let article = self.article?.relatedArticles.filterWithPredicate(predicate).first {
                 let articleController = ArticleViewController(themeRepository: self.themeRepository,

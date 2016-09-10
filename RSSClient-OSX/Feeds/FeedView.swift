@@ -2,13 +2,13 @@ import Cocoa
 import rNewsKit
 
 public protocol FeedViewDelegate {
-    func didClickFeed(feed: Feed)
-    func menuOptionsForFeed(feed: Feed) -> [String]
-    func didSelectMenuOption(menuOption: String, forFeed: Feed)
+    func didClickFeed(_ feed: Feed)
+    func menuOptionsForFeed(_ feed: Feed) -> [String]
+    func didSelectMenuOption(_ menuOption: String, forFeed: Feed)
 
 }
 
-public class FeedView: NSView {
+public final class FeedView: NSView {
     public private(set) var feed: Feed? = nil {
         didSet {
             if let f = feed {
@@ -29,7 +29,7 @@ public class FeedView: NSView {
 
     public private(set) var delegate: FeedViewDelegate? = nil
 
-    public func configure(feed: Feed, delegate: FeedViewDelegate) {
+    public func configure(_ feed: Feed, delegate: FeedViewDelegate) {
         self.feed = feed
         self.delegate = delegate
     }
@@ -41,13 +41,13 @@ public class FeedView: NSView {
 
     var nameHeight: NSLayoutConstraint? = nil
 
-    public override func mouseUp(theEvent: NSEvent) {
+    public override func mouseUp(with theEvent: NSEvent) {
         if let feed = self.feed {
             self.delegate?.didClickFeed(feed)
         }
     }
 
-    public override func menuForEvent(event: NSEvent) -> NSMenu? {
+    public override func menu(for event: NSEvent) -> NSMenu? {
         guard let feed = self.feed else {
             return nil
         }
@@ -62,7 +62,7 @@ public class FeedView: NSView {
         return menu
     }
 
-    internal func didSelectMenuItem(menuItem: NSMenuItem) {
+    internal func didSelectMenuItem(_ menuItem: NSMenuItem) {
         guard let feed = self.feed else {
             return
         }

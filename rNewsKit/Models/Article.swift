@@ -95,13 +95,13 @@ public final class Article: NSObject {
 
     public override var hashValue: Int {
         if let id = articleID as? NSManagedObjectID {
-            return id.uriRepresentation().hash
+            return id.uriRepresentation().hashValue
         } else if let id = articleID as? String {
             return id.hash
         }
         let authorsHashValue = authors.reduce(0) { $0 ^ $1.hashValue }
         let nonNilHashValues = title.hashValue ^ summary.hashValue ^ authorsHashValue ^
-            published.hash ^ identifier.hashValue ^ content.hashValue & read.hashValue &
+            published.hashValue ^ identifier.hashValue ^ content.hashValue & read.hashValue &
             estimatedReadingTime.hashValue
         let flagsHashValues = flags.reduce(0) { $0 ^ $1.hashValue }
         var possiblyNilHashValues = 0
@@ -109,7 +109,7 @@ public final class Article: NSObject {
             possiblyNilHashValues ^= link.hashValue
         }
         if let updatedAt = updatedAt {
-            possiblyNilHashValues ^= updatedAt.hash
+            possiblyNilHashValues ^= updatedAt.hashValue
         }
         return nonNilHashValues ^ flagsHashValues ^ possiblyNilHashValues
     }
@@ -170,7 +170,7 @@ public final class Article: NSObject {
         authors = [Author(article.author ?? "")]
         published = article.published ?? Date()
         updatedAt = article.updatedAt
-        identifier = article.objectID.uriRepresentation().absoluteString ?? ""
+        identifier = article.objectID.uriRepresentation().absoluteString
         content = article.content ?? ""
         read = article.read
         if let readingTime = article.estimatedReadingTime?.intValue {
@@ -206,7 +206,7 @@ public final class Article: NSObject {
         summary = article.summary ?? ""
 
         self.authors = article.authors.map(Author.init)
-        published = article.published ?? Date()
+        published = article.published
         updatedAt = article.updatedAt
         identifier = article.id
         content = article.content ?? ""
@@ -218,7 +218,7 @@ public final class Article: NSObject {
         if let realm = article.realm {
             let relatedArticleIds = article.relatedArticles.map { $0.id }
             self.relatedArticles = DataStoreBackedArray(realmDataType: RealmArticle.self,
-                predicate: NSPredicate(format: "id IN %@", relatedArticleIds),
+                predicate: NSPredicate(format: "id IN %@", relatedArticleIds as! CVarArg),
                 realmConfiguration: realm.configuration,
                 conversionFunction: { object in
                     let article = object as! RealmArticle
@@ -229,7 +229,7 @@ public final class Article: NSObject {
                     return Article(realmArticle: article, feed: feed)
             })
         }
-        self.articleID = article.id
+        self.articleID = article.id as AnyObject?
         self.updated = false
     }
 
@@ -258,7 +258,7 @@ public final class Article: NSObject {
 
     public func removeRelatedArticle(_ article: Article) {
         if self.relatedArticles.contains(article) {
-            self.relatedArticles.remove(article)
+            _ = self.relatedArticles.remove(article)
             article.removeRelatedArticle(self)
             self.updated = true
         }

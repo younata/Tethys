@@ -46,8 +46,8 @@ class MainControllerSpec: QuickSpec {
         }
 
         describe("showing articles") {
-            let feed = Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-            let articles = [Article(title: "", link: nil, summary: "", authors: [], published: NSDate(), updatedAt: NSDate(), identifier: "", content: "", read: true, feed: nil, flags: [])]
+            let feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            let articles = [Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: true, feed: nil, flags: [])]
             beforeEach {
                 feed.addArticle(articles[0])
                 subject.feedsList.onFeedSelection(feed)
@@ -75,15 +75,15 @@ class MainControllerSpec: QuickSpec {
                     self.sheetModalHandler = handler
                 }
 
-                var fakeUrls = Array<NSURL>()
-                override var URLs: [NSURL] {
+                var fakeUrls = Array<URL>()
+                override var URLs: [URL] {
                     return fakeUrls
                 }
             }
 
             var openPanel: FakeOpenPanel! = nil
 
-            let urlToImport = NSURL(string: "file:///Users/Shared/opml.xml")!
+            let urlToImport = URL(string: "file:///Users/Shared/opml.xml")!
 
             beforeEach {
                 openPanel = FakeOpenPanel()
@@ -109,7 +109,7 @@ class MainControllerSpec: QuickSpec {
                 }
 
                 context("and the file is actually an opml file") {
-                    let feed = Feed(title: "", url: NSURL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     beforeEach {
                         opmlManager.importOPMLCompletion([feed])
                     }

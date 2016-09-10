@@ -128,7 +128,7 @@ class CoreDataServiceSpec: QuickSpec {
                 it("reads the feeds based on the predicate") {
                     let allExpectation = self.expectation(withDescription: "Read all feeds")
                     subject.allFeeds().then {
-                        guard case let Result.Success(feeds) = $0 else { return }
+                        guard case let Result.success(feeds) = $0 else { return }
                         expect(Array(feeds)) == [feed1, feed2]
                         allExpectation.fulfill()
                     }
@@ -139,14 +139,14 @@ class CoreDataServiceSpec: QuickSpec {
                 it("reads the articles based on the predicate") {
                     let allExpectation = self.expectation(withDescription: "Read all articles")
                     subject.articlesMatchingPredicate(NSPredicate(value: true)).then {
-                        guard case let Result.Success(articles) = $0 else { return }
+                        guard case let Result.success(articles) = $0 else { return }
                         expect(Array(articles)) == [article1, article2, article3]
                         allExpectation.fulfill()
                     }
 
                     let someExpectation = self.expectation(withDescription: "Read some articles")
                     subject.articlesMatchingPredicate(NSPredicate(format: "feed == %@", feed1.feedID as! NSManagedObjectID)).then {
-                        guard case let Result.Success(articles) = $0 else { return }
+                        guard case let Result.success(articles) = $0 else { return }
                         expect(Array(articles)) == [article1, article2]
                         someExpectation.fulfill()
                     }
@@ -162,7 +162,7 @@ class CoreDataServiceSpec: QuickSpec {
                     let articleIdentifiers = feed1.articlesArray.map { $0.identifier }
 
                     subject.deleteFeed(feed1).then {
-                        guard case Result.Success() = $0 else { return }
+                        guard case Result.success() = $0 else { return }
                         expectation.fulfill()
                     }
 
@@ -180,7 +180,7 @@ class CoreDataServiceSpec: QuickSpec {
                     let expectation = self.expectation(withDescription: "delete article")
 
                     subject.deleteArticle(article1).then {
-                        guard case Result.Success() = $0 else { return }
+                        guard case Result.success() = $0 else { return }
                         expectation.fulfill()
                     }
 

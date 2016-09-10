@@ -21,7 +21,7 @@ class CoreDataService: DataService {
 
     // Mark: - Create
 
-    func createFeed(_ callback: (Feed) -> (Void)) -> Future<Result<Feed, RNewsError>> {
+    func createFeed(_ callback: @escaping (Feed) -> (Void)) -> Future<Result<Feed, RNewsError>> {
         let entityDescription = NSEntityDescription.entity(forEntityName: "Feed",
             in: self.managedObjectContext)!
         let promise = Promise<Result<Feed, RNewsError>>()
@@ -37,7 +37,7 @@ class CoreDataService: DataService {
             self.mainQueue.addOperations([operation], waitUntilFinished: true)
 
             self.updateFeed(feed)
-            promise.resolve(.Success(feed))
+            promise.resolve(.success(feed))
         }
         return promise.future
     }
@@ -70,7 +70,7 @@ class CoreDataService: DataService {
             managedObjectContext: self.managedObjectContext,
             conversionFunction: { Feed(coreDataFeed: $0 as! CoreDataFeed) },
             sortDescriptors: sortDescriptors)
-        promise.resolve(.Success(feeds))
+        promise.resolve(.success(feeds))
         return promise.future
     }
 
@@ -86,7 +86,7 @@ class CoreDataService: DataService {
                 managedObjectContext: self.managedObjectContext,
                 conversionFunction: { Article(coreDataArticle: $0 as! CoreDataArticle, feed: nil) },
                 sortDescriptors: sortDescriptors)
-            promise.resolve(.Success(articles))
+            promise.resolve(.success(articles))
             return promise.future
     }
 
@@ -95,13 +95,13 @@ class CoreDataService: DataService {
     func deleteFeed(_ feed: Feed) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
         guard let _ = feed.feedID as? NSManagedObjectID else {
-            promise.resolve(.Failure(.Database(.Unknown)))
+            promise.resolve(.failure(.database(.unknown)))
             return promise.future
         }
         self.managedObjectContext.perform {
             self.deleteFeed(feed, deleteArticles: true)
-            self.mainQueue.addOperationWithBlock {
-                promise.resolve(.Success())
+            self.mainQueue.addOperation {
+                promise.resolve(.success())
             }
         }
         return promise.future
@@ -110,13 +110,13 @@ class CoreDataService: DataService {
     func deleteArticle(_ article: Article) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
         guard let _ = article.articleID as? NSManagedObjectID else {
-            promise.resolve(.Failure(.Database(.Unknown)))
+            promise.resolve(.failure(.database(.unknown)))
             return promise.future
         }
         self.managedObjectContext.perform {
             self.privateDeleteArticle(article)
-            self.mainQueue.addOperationWithBlock {
-                promise.resolve(.Success())
+            self.mainQueue.addOperation {
+                promise.resolve(.success())
             }
         }
         return promise.future
@@ -135,19 +135,19 @@ class CoreDataService: DataService {
                 autoreleasepool {
                     let cdfeeds = (0..<feedCount).map { _ in
                         return CoreDataFeed(entity: feedEntityDescription,
-                            insertIntoManagedObjectContext: self.managedObjectContext)
+                            insertInto: self.managedObjectContext)
                     }
                     let cdarticles = (0..<articleCount).map { _ in
                         return CoreDataArticle(entity: articleEntityDescription,
-                            insertIntoManagedObjectContext: self.managedObjectContext)
+                            insertInto: self.managedObjectContext)
                     }
                     let _ = try? self.managedObjectContext.save()
 
                     let feeds = cdfeeds.map(Feed.init)
                     let articles = cdarticles.map { Article(coreDataArticle: $0, feed: nil) }
 
-                    self.mainQueue.addOperationWithBlock {
-                        promise.resolve(.Success(feeds, articles))
+                    self.mainQueue.addOperation {
+                        promise.resolve(.success(feeds, articles))
                     }
                 }
             }
@@ -162,8 +162,8 @@ class CoreDataService: DataService {
                 articles.forEach(self.updateArticle)
             }
 
-            self.mainQueue.addOperationWithBlock {
-                promise.resolve(.Success())
+            self.mainQueue.addOperation {
+                promise.resolve(.success())
             }
         }
         return promise.future
@@ -175,15 +175,14 @@ class CoreDataService: DataService {
             self.managedObjectContext.reset()
             let deleteAllEntitiesOfType: (String) -> Void = { entityType in
                 autoreleasepool {
-                    let request = NSFetchRequest()
+                    let request = NSFetchRequest<NSManagedObject>()
                     request.entity = NSEntityDescription.entity(forEntityName: entityType,
                         in: self.managedObjectContext)
                     request.resultType = .managedObjectIDResultType
                     request.includesPropertyValues = false
                     request.includesSubentities = false
                     request.returnsObjectsAsFaults = true
-                    let objects = (try? self.managedObjectContext.fetch(request) ?? [])
-                        as? [NSManagedObject]
+                    let objects = (try? self.managedObjectContext.fetch(request) )
 
                     objects?.forEach(self.managedObjectContext.delete(_:))
                     _ = try? self.managedObjectContext.save()
@@ -193,8 +192,8 @@ class CoreDataService: DataService {
             deleteAllEntitiesOfType("Feed")
             deleteAllEntitiesOfType("Article")
 
-            self.mainQueue.addOperationWithBlock {
-                promise.resolve(.Success())
+            self.mainQueue.addOperation {
+                promise.resolve(.success())
             }
         }
         return promise.future
@@ -212,21 +211,21 @@ class CoreDataService: DataService {
     }
 
     private func coreDataFeedsForFeeds(_ feeds: [Feed]) -> [CoreDataFeed] {
-        let request = NSFetchRequest()
+        let request = NSFetchRequest<NSManagedObject>()
         request.entity = NSEntityDescription.entity(forEntityName: "Feed",
             in: managedObjectContext)
         let ids = feeds.flatMap { $0.feedID as? NSManagedObjectID }
         request.predicate = NSPredicate(format: "self IN %@", ids)
-        return (try? self.managedObjectContext.fetch(request) ?? []) as? [CoreDataFeed] ?? []
+        return (try? self.managedObjectContext.fetch(request) ) as? [CoreDataFeed] ?? []
     }
 
     private func coreDataArticlesForArticles(_ articles: [Article]) -> [CoreDataArticle] {
-        let request = NSFetchRequest()
+        let request = NSFetchRequest<NSManagedObject>()
         request.entity = NSEntityDescription.entity(forEntityName: "Article",
             in: managedObjectContext)
         let ids = articles.flatMap { $0.articleID as? NSManagedObjectID }
         request.predicate = NSPredicate(format: "self IN %@", ids)
-        return (try? self.managedObjectContext.fetch(request) ?? []) as? [CoreDataArticle] ?? []
+        return (try? self.managedObjectContext.fetch(request) ) as? [CoreDataArticle] ?? []
     }
 
     // synchronous update!
@@ -234,7 +233,7 @@ class CoreDataService: DataService {
     private func updateFeed(_ feed: Feed) {
         if let cdfeed = self.coreDataFeedForFeed(feed) {
             cdfeed.title = feed.title
-            cdfeed.url = feed.url.absoluteString!
+            cdfeed.url = feed.url.absoluteString
             cdfeed.summary = feed.summary
             cdfeed.tags = feed.tags
             cdfeed.waitPeriodInt = feed.waitPeriod

@@ -3,7 +3,7 @@ import rNewsKit
 import Ra
 
 @NSApplicationMain
-public class AppDelegate: NSObject, NSApplicationDelegate {
+public final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet weak var window: NSWindow? {
         didSet {
@@ -15,28 +15,28 @@ public class AppDelegate: NSObject, NSApplicationDelegate {
 
     var windowController: NSWindowController? = nil
 
-    public func applicationDidFinishLaunching(aNotification: NSNotification) {
+    public func applicationDidFinishLaunching(_ aNotification: Notification) {
         let injector = Injector(module: KitModule(), AppModule())
         mainController?.window = window
         mainController?.configure(injector)
     }
 
-    public func applicationWillTerminate(aNotification: NSNotification) {
+    public func applicationWillTerminate(_ aNotification: Notification) {
     }
 
-    public func applicationDockMenu(sender: NSApplication) -> NSMenu? {
+    public func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
         return nil
     }
 
-    func openFile(filename: String, finish: ([Feed]) -> (Void)) -> Bool {
+    public func openFile(_ filename: String, finish: ([Feed]) -> (Void)) -> Bool {
         return false
     }
 
-    public func application(sender: NSApplication, openFile filename: String) -> Bool {
+    public func application(_ sender: NSApplication, openFile filename: String) -> Bool {
         return false
     }
 
-    public func application(sender: AnyObject, openFileWithoutUI filename: String) -> Bool {
+    public func application(_ sender: Any, openFileWithoutUI filename: String) -> Bool {
         return openFile(filename) {(_) in }
     }
 }

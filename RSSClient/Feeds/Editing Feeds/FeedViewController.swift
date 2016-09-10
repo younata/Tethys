@@ -63,7 +63,7 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
     public required convenience init(injector: Injector) {
         self.init(
             feedRepository: injector.create(DatabaseUseCase)!,
-            urlSession: injector.create(NSURLSession)!,
+            urlSession: injector.create(URLSession)!,
             themeRepository: injector.create(ThemeRepository)!,
             tagEditorViewController: {injector.create(TagEditorViewController)!}
         )
@@ -136,7 +136,7 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
         if feed == nil {
             return 0
         }
-        if let section = FeedSections(rawValue: sectionNum) , section == .tags {
+        if let section = FeedSections(rawValue: sectionNum), section == .tags {
             return feed!.tags.count + 1
         }
         return 1
@@ -156,7 +156,7 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
             cell.textLabel?.text = ""
             cell.themeRepository = self.themeRepository
-            if let title = feed?.displayTitle , !title.isEmpty {
+            if let title = feed?.displayTitle, !title.isEmpty {
                 cell.textLabel?.text = title
             }
             return cell
@@ -166,7 +166,7 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
             cell.textLabel?.text = ""
             cell.themeRepository = self.themeRepository
-            if let summary = feed?.displaySummary , !summary.isEmpty {
+            if let summary = feed?.displaySummary, !summary.isEmpty {
                 cell.textLabel?.text = summary
             } else {
                 cell.textLabel?.text = NSLocalizedString("FeedViewController_Cell_Summary_Placeholder", comment: "")
@@ -191,7 +191,7 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
 
     public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         let isTagsSection = FeedSections(rawValue: (indexPath as NSIndexPath).section) == .tags
-        let isEditableTag = (indexPath as NSIndexPath).row != (tableView.numberOfRows(inSection: FeedSections.tags.rawValue) - 1)
+        let isEditableTag = indexPath.row != (tableView.numberOfRows(inSection: FeedSections.tags.rawValue) - 1)
 
         return isTagsSection && isEditableTag
     }
@@ -231,7 +231,8 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
         tableView.deselectRow(at: indexPath, animated: false)
 
         if FeedSections(rawValue: (indexPath as NSIndexPath).section) == .tags,
-            let count = feed?.tags.count , indexPath.row == count {
+            let count = feed?.tags.count,
+            indexPath.row == count {
                 showTagEditor((indexPath as NSIndexPath).row)
         }
     }
@@ -247,8 +248,8 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
                 self.urlSession.dataTask(with: url) {data, response, error in
                     if let response = response as? HTTPURLResponse {
                         if let data = data,
-                            let nstext = NSString(data: data, encoding: String.Encoding.utf8.rawValue)
-                            , response.statusCode == 200 {
+                            let nstext = NSString(data: data, encoding: String.Encoding.utf8.rawValue),
+                            response.statusCode == 200 {
                                 let string = String(nstext)
                                 let fp = Muon.FeedParser(string: string)
                                 fp.failure {_ in tc.setValid(false) }

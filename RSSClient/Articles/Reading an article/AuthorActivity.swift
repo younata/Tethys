@@ -8,16 +8,16 @@ public final class AuthorActivity: UIActivity {
         super.init()
     }
 
-    public override func activityType() -> String? {
-        return "com.rachelbrindle.rnews.author"
+    public override var activityType: UIActivityType? {
+        return UIActivityType("com.rachelbrindle.rnews.author")
     }
 
-    public override func activityTitle() -> String? {
+    public override var activityTitle: String? {
         let formatString = NSLocalizedString("AuthorActivity_Title", comment: "")
         return String.localizedStringWithFormat(formatString, self.author.name)
     }
 
-    public override func activityImage() -> UIImage? {
+    public override var activityImage: UIImage? {
         return UIImage(named: "GrayIcon")
     }
 

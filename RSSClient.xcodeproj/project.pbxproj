@@ -267,7 +267,6 @@
 		899788811C508BB400B408C4 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899788801C508BB400B408C4 /* SnapshotHelper.swift */; };
 		8997C7F51B248D5A00972930 /* FakeWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C7F41B248D5A00972930 /* FakeWebView.swift */; };
 		8997C7F71B25074900972930 /* ValidatorViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C7F61B25074900972930 /* ValidatorViewSpec.swift */; };
-		8997C7F91B250FD200972930 /* TextViewCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C7F81B250FD200972930 /* TextViewCellSpec.swift */; };
 		8997C7FB1B25169E00972930 /* TextFieldCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C7FA1B25169E00972930 /* TextFieldCellSpec.swift */; };
 		8997C8511B255A1900972930 /* TagPickerViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C8501B255A1900972930 /* TagPickerViewSpec.swift */; };
 		8997C8531B2566A600972930 /* ArticleCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C8521B2566A600972930 /* ArticleCellSpec.swift */; };
@@ -305,7 +304,6 @@
 		89C204C71A740D8900C792D2 /* LocalNotificationHandlerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204C61A740D8900C792D2 /* LocalNotificationHandlerSpec.swift */; };
 		89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509EF1A2EB18300CBD000 /* FeedViewController.swift */; };
 		89C509F41A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F31A2EE56E00CBD000 /* TagEditorViewController.swift */; };
-		89C509F71A2F825400CBD000 /* TextViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F61A2F825400CBD000 /* TextViewCell.swift */; };
 		89C676541BA264F40037A224 /* FakeUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C676531BA264F40037A224 /* FakeUserDefaults.swift */; };
 		89C676561BA28FE60037A224 /* FakeFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C676551BA28FE60037A224 /* FakeFileManager.swift */; };
 		89C8307919D730E9009924DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307819D730E9009924DA /* AppDelegate.swift */; };
@@ -714,7 +712,6 @@
 		899788801C508BB400B408C4 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
 		8997C7F41B248D5A00972930 /* FakeWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeWebView.swift; sourceTree = "<group>"; };
 		8997C7F61B25074900972930 /* ValidatorViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidatorViewSpec.swift; sourceTree = "<group>"; };
-		8997C7F81B250FD200972930 /* TextViewCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextViewCellSpec.swift; sourceTree = "<group>"; };
 		8997C7FA1B25169E00972930 /* TextFieldCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldCellSpec.swift; sourceTree = "<group>"; };
 		8997C8501B255A1900972930 /* TagPickerViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagPickerViewSpec.swift; sourceTree = "<group>"; };
 		8997C8521B2566A600972930 /* ArticleCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleCellSpec.swift; sourceTree = "<group>"; };
@@ -749,7 +746,6 @@
 		89C204C61A740D8900C792D2 /* LocalNotificationHandlerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalNotificationHandlerSpec.swift; sourceTree = "<group>"; };
 		89C509EF1A2EB18300CBD000 /* FeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 		89C509F31A2EE56E00CBD000 /* TagEditorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagEditorViewController.swift; sourceTree = "<group>"; };
-		89C509F61A2F825400CBD000 /* TextViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextViewCell.swift; sourceTree = "<group>"; };
 		89C676531BA264F40037A224 /* FakeUserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeUserDefaults.swift; sourceTree = "<group>"; };
 		89C676551BA28FE60037A224 /* FakeFileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeFileManager.swift; sourceTree = "<group>"; };
 		89C8307319D730E9009924DA /* rNews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rNews.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1394,7 +1390,6 @@
 				89C204C11A73FEDA00C792D2 /* SplitViewControllerSpec.swift */,
 				89F98BA91BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift */,
 				8997C7FA1B25169E00972930 /* TextFieldCellSpec.swift */,
-				8997C7F81B250FD200972930 /* TextViewCellSpec.swift */,
 				8918D4DC1B859D3B00DCDE0E /* ThemeRepositorySpec.swift */,
 				8953B1571B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift */,
 				893F93E31B237EBC00B52194 /* UnreadCounterSpec.swift */,
@@ -1566,7 +1561,6 @@
 				89EF4FE21A97DA270052A82F /* Tags */,
 				89C509EF1A2EB18300CBD000 /* FeedViewController.swift */,
 				89DA7D2B1A66111E0050685B /* TextFieldCell.swift */,
-				89C509F61A2F825400CBD000 /* TextViewCell.swift */,
 				89DA7D2D1A6613100050685B /* ValidatorView.swift */,
 			);
 			path = "Editing Feeds";
@@ -2393,7 +2387,6 @@
 				89D970C31B392B0300ED84B8 /* LocalNotificationSource.swift in Sources */,
 				8918D4DB1B8598D100DCDE0E /* ThemeRepository.swift in Sources */,
 				89F98BA11BA079A3005C3CA8 /* SwitchTableViewCell.swift in Sources */,
-				89C509F71A2F825400CBD000 /* TextViewCell.swift in Sources */,
 				89CBDC011C7D41C9006B70F5 /* MigrationViewController.swift in Sources */,
 				89C204C41A7400D100C792D2 /* NotificationHandler.swift in Sources */,
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
@@ -2461,7 +2454,6 @@
 				89D970BF1B3929D600ED84B8 /* DefaultBackgroundFetchHandlerSpec.swift in Sources */,
 				899823AC1B2C883B00818755 /* ArticleListControllerSpec.swift in Sources */,
 				899823AE1B30B64000818755 /* ArticleViewControllerSpec.swift in Sources */,
-				8997C7F91B250FD200972930 /* TextViewCellSpec.swift in Sources */,
 				8994F0F41C8F899600920E6D /* UIViewController+rNewsTests.m in Sources */,
 				89C676561BA28FE60037A224 /* FakeFileManager.swift in Sources */,
 				89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */,

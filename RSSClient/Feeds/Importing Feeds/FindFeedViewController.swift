@@ -10,7 +10,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
 
     public let loadingBar = UIProgressView(progressViewStyle: .bar)
     public let navField = UITextField(frame: CGRect(x: 0, y: 0, width: 200, height: 30))
-    private var rssLinks = [URL]()
+    fileprivate var rssLinks = [URL]()
 
     public var addFeedButton: UIBarButtonItem!
     public var back: UIBarButtonItem!
@@ -20,9 +20,9 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
 
     public var lookForFeeds = true
 
-    private let importUseCase: ImportUseCase
-    private let themeRepository: ThemeRepository
-    private let analytics: Analytics
+    fileprivate let importUseCase: ImportUseCase
+    fileprivate let themeRepository: ThemeRepository
+    fileprivate let analytics: Analytics
 
     private let placeholderAttributes: [String: AnyObject] = [NSForegroundColorAttributeName: UIColor.black]
 
@@ -37,9 +37,9 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
 
     public required convenience init(injector: Injector) {
         self.init(
-            importUseCase: injector.create(ImportUseCase)!,
-            themeRepository: injector.create(ThemeRepository)!,
-            analytics: injector.create(Analytics)!
+            importUseCase: injector.create(kind: ImportUseCase.self)!,
+            themeRepository: injector.create(kind: ThemeRepository.self)!,
+            analytics: injector.create(kind: Analytics.self)!
         )
     }
 
@@ -54,7 +54,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
 
         self.webContent.navigationDelegate = self
         self.view.addSubview(self.webContent)
-        self.webContent.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero)
+        self.webContent.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
 
         self.webContent.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: nil)
 
@@ -72,7 +72,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
 
         let dismissTitle = NSLocalizedString("Generic_Dismiss", comment: "")
         let dismiss = UIBarButtonItem(title: dismissTitle, style: .plain, target: self,
-                                      action: #selector(FindFeedViewController.dismiss))
+                                      action: #selector(FindFeedViewController.dismissFromNavigation))
         self.reload = UIBarButtonItem(barButtonSystemItem: .refresh, target: self,
                                       action: #selector(FindFeedViewController.reloadWebPage))
 
@@ -82,7 +82,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
 
         self.navigationController?.isToolbarHidden = false
         func spacer() -> UIBarButtonItem {
-            return UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: Selector())
+            return UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         }
         if self.lookForFeeds {
             self.toolbarItems = [self.back, self.forward, spacer(), dismiss, spacer(), self.addFeedButton]
@@ -105,7 +105,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
 
         self.loadingBar.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(self.loadingBar)
-        self.loadingBar.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero, excludingEdge: .bottom)
+        self.loadingBar.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .bottom)
         self.loadingBar.autoSetDimension(.height, toSize: 1)
         self.loadingBar.progress = 0
         self.loadingBar.isHidden = true
@@ -128,13 +128,13 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
     }
 
     public override func observeValue(forKeyPath keyPath: String?, of object: Any?,
-        change: [String : Any]?, context: UnsafeMutableRawPointer?) {
+        change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == "estimatedProgress" && object as? NSObject == self.webContent {
             self.loadingBar.progress = Float(self.webContent.estimatedProgress)
         }
     }
 
-    public override func canBecomeFirstResponder() -> Bool { return true }
+    public override var canBecomeFirstResponder: Bool { return true }
 
     public override var keyCommands: [UIKeyCommand]? {
 
@@ -244,14 +244,14 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         if let url = webView.url, lookForFeeds {
             self.importUseCase.scanForImportable(url) { item in
                 switch item {
-                case .Feed(let url, _):
+                case .feed(let url, _):
                     self.askToImportFeed(url)
-                case .WebPage(_, let feeds):
+                case .webPage(_, let feeds):
                     if !feeds.isEmpty {
                         self.rssLinks = feeds
-                        self.addFeedButton.enabled = true
+                        self.addFeedButton.isEnabled = true
                     }
-                case .OPML(let url, _):
+                case .opml(let url, _):
                     self.askToImportOPML(url)
                 default: break
                 }
@@ -262,27 +262,27 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
 
 // MARK: Private
 extension FindFeedViewController {
-    @objc private func focusNavField() {
+    @objc fileprivate func focusNavField() {
         self.navField.becomeFirstResponder()
 
         self.navField.selectAll(nil)
     }
 
-    @objc private func reloadWebPage() {
+    @objc fileprivate func reloadWebPage() {
         self.webContent.reload()
     }
 
-    @objc private func dismissNavFieldKeyboard() {
+    @objc fileprivate func dismissNavFieldKeyboard() {
         self.navField.resignFirstResponder()
 
         self.navField.text = nil
     }
 
-    @objc private func dismiss() {
+    @objc fileprivate func dismissFromNavigation() {
         self.navigationController?.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
-    @objc private func save() {
+    @objc fileprivate func save() {
         if let rl = self.rssLinks.first, self.rssLinks.count == 1 {
             self.save(rl)
         } else if self.rssLinks.count > 1 {
@@ -290,7 +290,7 @@ extension FindFeedViewController {
             let alertTitle = NSLocalizedString("FindFeedViewController_ImportFeeds_SelectFeed", comment: "")
             let alert = UIAlertController(title: alertTitle, message: nil, preferredStyle: .alert)
             for link in self.rssLinks {
-                let pathWithPrecedingSlash = link.path ?? ""
+                let pathWithPrecedingSlash = link.path
                 let path = pathWithPrecedingSlash.substring(from:
                     pathWithPrecedingSlash.characters.index(after: pathWithPrecedingSlash.startIndex))
                 alert.addAction(UIAlertAction(title: path, style: .default) { _ in
@@ -304,39 +304,39 @@ extension FindFeedViewController {
             })
             self.present(alert, animated: true, completion: nil)
         } else {
-            self.dismiss()
+            self.dismissFromNavigation()
         }
     }
 
-    private func save(_ link: URL, opml: Bool = false) {
+    fileprivate func save(_ link: URL, opml: Bool = false) {
         let indicator = ActivityIndicator(forAutoLayout: ())
         self.view.addSubview(indicator)
-        indicator.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero)
+        indicator.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
 
         let feedMessageTemplate = NSLocalizedString("FindFeedViewController_Save_Feed", comment: "")
         let opmlMessageTemplate = NSLocalizedString("FindFeedViewController_Save_Feed_List", comment: "")
 
         let messageTemplate = opml ? opmlMessageTemplate : feedMessageTemplate
         let message = NSString.localizedStringWithFormat(messageTemplate as NSString, link as CVarArg) as String
-        indicator.configureWithMessage(message)
+        indicator.configure(message: message)
         self.importUseCase.importItem(link) {
             indicator.removeFromSuperview()
             self.analytics.logEvent("DidUseWebImport", data: nil)
-            self.dismiss()
+            self.dismissFromNavigation()
         }
     }
 
-    private func askToImportFeed(_ url: URL) {
+    fileprivate func askToImportFeed(_ url: URL) {
         let title = NSLocalizedString("FindFeedViewController_FoundFeed_Title", comment: "")
         let messageFormat = NSLocalizedString("FindFeedViewController_FoundFeed_Subtitle", comment: "")
-        let message = String.localizedStringWithFormat(messageFormat, url.lastPathComponent ?? "")
+        let message = String.localizedStringWithFormat(messageFormat, url.lastPathComponent)
 
         self.displayAlertToSave(title, alertMessage: message) {
             self.save(url, opml: false)
         }
     }
 
-    private func askToImportOPML(_ url: URL) {
+    fileprivate func askToImportOPML(_ url: URL) {
         let title = NSLocalizedString("FindFeedViewController_FoundFeed_List_Title", comment: "")
         let message = NSLocalizedString("FindFeedViewController_FoundFeed_List_Subtitle", comment: "")
 
@@ -345,7 +345,7 @@ extension FindFeedViewController {
         }
     }
 
-    private func displayAlertToSave(_ alertTitle: String, alertMessage: String, success: @escaping (Void) -> Void) {
+    fileprivate func displayAlertToSave(_ alertTitle: String, alertMessage: String, success: @escaping (Void) -> Void) {
         let doNotSave = NSLocalizedString("FindFeedViewController_FoundFeed_Decline", comment: "")
         let save = NSLocalizedString("FindFeedViewController_FoundFeed_Import", comment: "")
 

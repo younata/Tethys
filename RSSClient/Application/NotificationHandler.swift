@@ -19,7 +19,7 @@ public struct LocalNotificationHandler: NotificationHandler, Injectable {
     }
 
     public init(injector: Injector) {
-        self.init(feedRepository: injector.create(DatabaseUseCase)!)
+        self.init(feedRepository: injector.create(kind: DatabaseUseCase.self)!)
     }
 
     public func enableNotifications(_ notificationSource: LocalNotificationSource) {
@@ -44,7 +44,7 @@ public struct LocalNotificationHandler: NotificationHandler, Injectable {
     public func handleLocalNotification(_ notification: UILocalNotification, window: UIWindow) {
         guard let userInfo = notification.userInfo else { return }
 
-        self.articleFromUserInfo(userInfo).then { result in
+        _ = self.articleFromUserInfo(userInfo as! [String : Any]).then { result in
             if case let Result.success(article) = result {
                 self.showArticle(article, window: window)
             }
@@ -54,7 +54,7 @@ public struct LocalNotificationHandler: NotificationHandler, Injectable {
     public func handleAction(_ identifier: String?, notification: UILocalNotification) {
         guard let userInfo = notification.userInfo, identifier == "read" else { return }
 
-        self.articleFromUserInfo(userInfo).then {
+        _ = self.articleFromUserInfo(userInfo as! [String : Any]).then {
             if case let Result.success(article) = $0 {
                 self.feedRepository.markArticle(article, asRead: true)
             }
@@ -64,9 +64,9 @@ public struct LocalNotificationHandler: NotificationHandler, Injectable {
     public func sendLocalNotification(_ notificationSource: LocalNotificationSource, article: Article) {
         let note = UILocalNotification()
         let alertTitle = NSLocalizedString("NotificationHandler_LocalNotification_MarkRead_Title", comment: "")
-        note.alertBody = NSString.localizedStringWithFormat(alertTitle,
+        note.alertBody = NSString.localizedStringWithFormat(alertTitle as NSString,
             article.feed?.displayTitle ?? "",
-            article.title ?? "") as String
+            article.title) as String
 
         let feedID = article.feed?.identifier ?? ""
         let articleID = article.identifier
@@ -82,7 +82,7 @@ public struct LocalNotificationHandler: NotificationHandler, Injectable {
         guard let feedID = userInfo["feed"] as? String,
               let articleID = userInfo["article"] as? String else {
                 let promise = Promise<Result<Article, RNewsError>>()
-                promise.resolve(.failure(.Database(.EntryNotFound)))
+                promise.resolve(.failure(.database(.entryNotFound)))
                 return promise.future
         }
         return self.feedRepository.feeds().map { result -> Result<Article, RNewsError> in
@@ -92,7 +92,7 @@ public struct LocalNotificationHandler: NotificationHandler, Injectable {
                 if let article = feed?.articlesArray.filter({ $0.identifier == articleID }).first {
                     return .success(article)
                 }
-                return .failure(.Database(.EntryNotFound))
+                return .failure(.database(.entryNotFound))
             case let .failure(error):
                 return .failure(error)
             }

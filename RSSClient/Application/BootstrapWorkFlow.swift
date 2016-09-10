@@ -24,9 +24,9 @@ public final class BootstrapWorkFlow: Bootstrapper {
         feedRepository: DatabaseUseCase,
         migrationUseCase: MigrationUseCase,
         splitViewController: SplitViewController,
-        migrationViewController: (Void) -> MigrationViewController,
-        feedsTableViewController: (Void) -> FeedsTableViewController,
-        articleViewController: (Void) -> ArticleViewController) {
+        migrationViewController: @escaping (Void) -> MigrationViewController,
+        feedsTableViewController: @escaping (Void) -> FeedsTableViewController,
+        articleViewController: @escaping (Void) -> ArticleViewController) {
         self.window = window
         self.feedRepository = feedRepository
         self.migrationUseCase = migrationUseCase
@@ -40,12 +40,12 @@ public final class BootstrapWorkFlow: Bootstrapper {
     public convenience init(window: UIWindow, injector: Injector) {
         self.init(
             window: window,
-            feedRepository: injector.create(DatabaseUseCase)!,
-            migrationUseCase: injector.create(MigrationUseCase)!,
-            splitViewController: injector.create(SplitViewController)!,
-            migrationViewController: { injector.create(MigrationViewController)! },
-            feedsTableViewController: { injector.create(FeedsTableViewController)! },
-            articleViewController: { injector.create(ArticleViewController)! }
+            feedRepository: injector.create(kind: DatabaseUseCase.self)!,
+            migrationUseCase: injector.create(kind: MigrationUseCase.self)!,
+            splitViewController: injector.create(kind: SplitViewController.self)!,
+            migrationViewController: { injector.create(kind: MigrationViewController.self)! },
+            feedsTableViewController: { injector.create(kind: FeedsTableViewController.self)! },
+            articleViewController: { injector.create(kind: ArticleViewController.self)! }
         )
     }
 
@@ -96,7 +96,7 @@ public final class BootstrapWorkFlow: Bootstrapper {
 
         if let (feed, article) = self.feedAndArticle {
             let articleListController = feedsTableViewController.showFeed(feed, animated: false)
-            articleListController.showArticle(article, animated: false)
+            _ = articleListController.showArticle(article, animated: false)
         }
 
         self.window.rootViewController = self.splitViewController

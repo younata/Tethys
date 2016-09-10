@@ -21,14 +21,14 @@ public final class SplitViewController: UISplitViewController, Injectable {
     }
 
     public required convenience init(injector: Injector) {
-        self.init(themeRepository: injector.create(ThemeRepository)!)
+        self.init(themeRepository: injector.create(kind: ThemeRepository.self)!)
     }
 
     public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func preferredStatusBarStyle() -> UIStatusBarStyle {
+    public override var preferredStatusBarStyle: UIStatusBarStyle {
         for vc in self.viewControllers {
             if vc is SFSafariViewController {
                 return .default
@@ -38,7 +38,7 @@ public final class SplitViewController: UISplitViewController, Injectable {
                 }
             }
         }
-        return self.themeRepository.statusBarStyle ?? super.preferredStatusBarStyle
+        return self.themeRepository.statusBarStyle
     }
 
     public override func viewDidLoad() {

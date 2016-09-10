@@ -19,8 +19,8 @@ public final class ExplanationView: UIView {
         }
     }
 
-    private let titleLabel = UILabel(forAutoLayout: ())
-    private let detailLabel = UILabel(forAutoLayout: ())
+    fileprivate let titleLabel = UILabel(forAutoLayout: ())
+    fileprivate let detailLabel = UILabel(forAutoLayout: ())
 
     public override init(frame: CGRect) {
         super.init(frame: frame)

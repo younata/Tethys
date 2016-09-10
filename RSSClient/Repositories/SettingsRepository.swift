@@ -31,7 +31,7 @@ public final class SettingsRepository: Injectable {
         }
     }
 
-    private let subscribers = NSHashTable.weakObjects()
+    private let subscribers = NSHashTable<AnyObject>.weakObjects()
     private let userDefaults: UserDefaults?
 
     public init(userDefaults: UserDefaults? = nil) {
@@ -44,7 +44,7 @@ public final class SettingsRepository: Injectable {
     }
 
     public required convenience init(injector: Injector) {
-        self.init(userDefaults: injector.create(UserDefaults))
+        self.init(userDefaults: injector.create(kind: UserDefaults.self))
     }
 
     deinit {

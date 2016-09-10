@@ -4,7 +4,7 @@ import rNewsKit
 import Result
 
 public protocol ArticleUseCase {
-    func articlesByAuthor(_ author: Author, callback: (DataStoreBackedArray<Article>) -> Void)
+    func articlesByAuthor(_ author: Author, callback: @escaping (DataStoreBackedArray<Article>) -> Void)
 
     func readArticle(_ article: Article) -> String
     func userActivityForArticle(_ article: Article) -> NSUserActivity
@@ -27,14 +27,14 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            feedRepository: injector.create(DatabaseUseCase)!,
-            themeRepository: injector.create(ThemeRepository)!,
-            bundle: injector.create(NSBundle)!
+            feedRepository: injector.create(kind: DatabaseUseCase.self)!,
+            themeRepository: injector.create(kind: ThemeRepository.self)!,
+            bundle: injector.create(kind: Bundle.self)!
         )
     }
 
-    public func articlesByAuthor(_ author: Author, callback: (DataStoreBackedArray<Article>) -> Void) {
-        self.feedRepository.feeds().then {
+    public func articlesByAuthor(_ author: Author, callback: @escaping (DataStoreBackedArray<Article>) -> Void) {
+        _ = self.feedRepository.feeds().then {
             guard case let Result.success(feeds) = $0 else {
                 callback(DataStoreBackedArray<Article>([]))
                 return
@@ -49,7 +49,7 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
             if let email = author.email {
                 predicate = NSPredicate(format: "SUBQUERY(authors, $author, $author.name = %@ AND " +
                     "$author.email = %@) .@count > 0",
-                    author.name, email)
+                    author.name, email as CVarArg)
             } else {
                 predicate = NSPredicate(format: "SUBQUERY(authors, $author, $author.name = %@ AND " +
                     "$author.email = nil) .@count > 0",
@@ -61,12 +61,12 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
     }
 
     public func readArticle(_ article: Article) -> String {
-        if !article.read { self.feedRepository.markArticle(article, asRead: true) }
+        if !article.read { _ = self.feedRepository.markArticle(article, asRead: true) }
         return self.htmlForArticle(article)
     }
 
     public func toggleArticleRead(_ article: Article) {
-        self.feedRepository.markArticle(article, asRead: !article.read)
+        _ = self.feedRepository.markArticle(article, asRead: !article.read)
     }
 
     private lazy var userActivity: NSUserActivity = {
@@ -77,7 +77,7 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
         userActivity.delegate = self
         return userActivity
     }()
-    private weak var mostRecentArticle: Article?
+    fileprivate weak var mostRecentArticle: Article?
 
     public func userActivityForArticle(_ article: Article) -> NSUserActivity {
         let title: String
@@ -89,7 +89,7 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
         self.mostRecentArticle = article
         self.userActivity.title = title
         self.userActivity.webpageURL = article.link
-        let authorWords = article.authors.flatMap { $0.description.componentsSeparatedByString(" ") }
+        let authorWords = article.authors.flatMap { $0.description.components(separatedBy: " ") }
         self.userActivity.keywords = Set([article.title, article.summary] + article.flags + authorWords)
         self.userActivity.becomeCurrent()
         self.userActivity.needsSave = true
@@ -98,7 +98,7 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
 
     private lazy var prismJS: String = {
         if let prismURL = self.bundle.url(forResource: "prism.js", withExtension: "html"),
-            let prism = try? String(contentsOfURL: prismURL, encoding: String.Encoding.utf8) as String {
+            let prism = try? String(contentsOf: prismURL) {
                 return prism
         }
         return ""
@@ -108,7 +108,7 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
         let prefix: String
         let cssFileName = self.themeRepository.articleCSSFileName
         if let cssURL = self.bundle.url(forResource: cssFileName, withExtension: "css"),
-            let css = try? String(contentsOfURL: cssURL, encoding: String.Encoding.utf8) {
+            let css = try? String(contentsOf: cssURL) {
                 prefix = "<html><head>" +
                     "<style type=\"text/css\">\(css)</style>" +
                     "<meta name=\"viewport\" content=\"initial-scale=1.0,maximum-scale=10.0\"/>" +

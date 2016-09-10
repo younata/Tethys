@@ -10,7 +10,7 @@ import rNewsKit
 extension Account: CustomStringConvertible {
     public var description: String {
         switch self {
-        case .Pasiphae:
+        case .pasiphae:
             return NSLocalizedString("SettingsViewController_Accounts_Pasiphae", comment: "")
         }
     }
@@ -118,7 +118,7 @@ public final class SettingsViewController: UIViewController, Injectable {
                 quickActionRepository: QuickActionRepository,
                 databaseUseCase: DatabaseUseCase,
                 accountRepository: AccountRepository,
-                loginViewController: (Void) -> LoginViewController) {
+                loginViewController: @escaping (Void) -> LoginViewController) {
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.quickActionRepository = quickActionRepository
@@ -132,12 +132,12 @@ public final class SettingsViewController: UIViewController, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            themeRepository: injector.create(ThemeRepository)!,
-            settingsRepository: injector.create(SettingsRepository)!,
-            quickActionRepository: injector.create(QuickActionRepository)!,
-            databaseUseCase: injector.create(DatabaseUseCase)!,
-            accountRepository: injector.create(AccountRepository)!,
-            loginViewController: { injector.create(LoginViewController)! }
+            themeRepository: injector.create(kind: ThemeRepository.self)!,
+            settingsRepository: injector.create(kind: SettingsRepository.self)!,
+            quickActionRepository: injector.create(kind: QuickActionRepository.self)!,
+            databaseUseCase: injector.create(kind: DatabaseUseCase.self)!,
+            accountRepository: injector.create(kind: AccountRepository.self)!,
+            loginViewController: { injector.create(kind: LoginViewController.self)! }
         )
     }
 
@@ -159,7 +159,7 @@ public final class SettingsViewController: UIViewController, Injectable {
 
         self.tableView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(self.tableView)
-        self.tableView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero)
+        self.tableView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
 
         self.tableView.register(TableViewCell.self, forCellReuseIdentifier: "cell")
         self.tableView.register(SwitchTableViewCell.self, forCellReuseIdentifier: "switch")
@@ -187,7 +187,7 @@ public final class SettingsViewController: UIViewController, Injectable {
         self.reloadTable()
     }
 
-    public override func canBecomeFirstResponder() -> Bool { return true }
+    public override var canBecomeFirstResponder: Bool { return true }
 
     public override var keyCommands: [UIKeyCommand]? {
         var commands: [UIKeyCommand] = []
@@ -462,7 +462,7 @@ extension SettingsViewController: UITableViewDelegate {
         feedsListController.navigationItem.title = self.titleForQuickAction(indexPath.row)
 
         let quickActions = self.quickActionRepository.quickActions
-        self.databaseUseCase.feeds().then {
+        _ = self.databaseUseCase.feeds().then {
             if case let Result.success(feeds) = $0 {
                 if !quickActions.isEmpty {
                     let quickActionFeeds = quickActions.indices.reduce([Feed]()) {
@@ -484,12 +484,12 @@ extension SettingsViewController: UITableViewDelegate {
                 self.quickActionRepository.quickActions.append(newQuickAction)
                 if self.quickActionRepository.quickActions.count <= 3 {
                     let quickActionsCount = self.quickActionRepository.quickActions.count
-                    let insertedIndexPath = NSIndexPath(forRow: quickActionsCount, inSection: indexPath.section)
-                    self.tableView.insertRowsAtIndexPaths([insertedIndexPath], withRowAnimation: .Automatic)
+                    let insertedIndexPath = IndexPath(row: quickActionsCount, section: indexPath.section)
+                    self.tableView.insertRows(at: [insertedIndexPath], with: .automatic)
                 }
             }
-            self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-            self.navigationController?.popViewControllerAnimated(true)
+            self.tableView.reloadRows(at: [indexPath], with: .automatic)
+            self.navigationController?.popViewController(animated: true)
         }
         self.navigationController?.pushViewController(feedsListController, animated: true)
     }

@@ -6,7 +6,7 @@ import Result
 public protocol BackgroundFetchHandler {
     func performFetch(_ notificationHandler: NotificationHandler,
         notificationSource: LocalNotificationSource,
-        completionHandler: (UIBackgroundFetchResult) -> Void)
+        completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
 }
 
 public struct DefaultBackgroundFetchHandler: BackgroundFetchHandler, Injectable {
@@ -17,7 +17,7 @@ public struct DefaultBackgroundFetchHandler: BackgroundFetchHandler, Injectable 
     }
 
     public init(injector: Injector) {
-        self.feedRepository = injector.create(DatabaseUseCase)!
+        self.feedRepository = injector.create(kind: DatabaseUseCase.self)!
     }
 
     public func performFetch(_ notificationHandler: NotificationHandler,
@@ -37,13 +37,13 @@ public struct DefaultBackgroundFetchHandler: BackgroundFetchHandler, Injectable 
 
             feedRepository.updateFeeds {newFeeds, errors in
                 guard errors.isEmpty else {
-                    completionHandler(.Failed)
+                    completionHandler(.failed)
                     return
                 }
-                articlesIdentifierPromise.then { originalArticlesList in
+                _ = articlesIdentifierPromise.then { originalArticlesList in
                     let currentArticleList: [Article] = newFeeds.reduce([]) { return $0 + Array($1.articlesArray) }
                     guard currentArticleList.count != originalArticlesList.count else {
-                        completionHandler(.NoData)
+                        completionHandler(.noData)
                         return
                     }
                     let filteredArticleList: [Article] = currentArticleList.filter {
@@ -54,8 +54,8 @@ public struct DefaultBackgroundFetchHandler: BackgroundFetchHandler, Injectable 
                         for article in filteredArticleList {
                             notificationHandler.sendLocalNotification(notificationSource, article: article)
                         }
-                        completionHandler(.NewData)
-                    } else { completionHandler(.NoData) }
+                        completionHandler(.newData)
+                    } else { completionHandler(.noData) }
                 }
             }
     }

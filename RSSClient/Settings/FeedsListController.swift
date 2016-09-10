@@ -51,8 +51,8 @@ extension FeedsListController: UITableViewDataSource {
         let feed = self.feeds[indexPath.row]
         let identifier = feed.unreadArticles.isEmpty ? "unread" : "read"
 
-        guard let cell = tableView.dequeueReusableCellWithIdentifier(identifier,
-            forIndexPath: indexPath) as? FeedTableCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: identifier,
+                                                       for: indexPath) as? FeedTableCell else {
                 return UITableViewCell()
         }
         cell.feed = feed

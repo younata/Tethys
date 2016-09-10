@@ -14,10 +14,10 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
 
     public var previewMode: Bool = false
 
-    private let feedRepository: DatabaseUseCase
-    private let themeRepository: ThemeRepository
-    private let settingsRepository: SettingsRepository
-    private let articleViewController: (Void) -> ArticleViewController
+    fileprivate let feedRepository: DatabaseUseCase
+    fileprivate let themeRepository: ThemeRepository
+    fileprivate let settingsRepository: SettingsRepository
+    fileprivate let articleViewController: (Void) -> ArticleViewController
 
     public lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar(frame: CGRect(x: 0, y: 0, width: 320, height: 32))
@@ -31,21 +31,21 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
     public init(feedRepository: DatabaseUseCase,
                 themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
-                articleViewController: (Void) -> ArticleViewController) {
+                articleViewController: @escaping (Void) -> ArticleViewController) {
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.articleViewController = articleViewController
 
-        super.init(style: .Plain)
+        super.init(style: .plain)
     }
 
     public required convenience init(injector: Injector) {
         self.init(
-            feedRepository: injector.create(DatabaseUseCase)!,
-            themeRepository: injector.create(ThemeRepository)!,
-            settingsRepository: injector.create(SettingsRepository)!,
-            articleViewController: { injector.create(ArticleViewController)! }
+            feedRepository: injector.create(kind: DatabaseUseCase.self)!,
+            themeRepository: injector.create(kind: ThemeRepository.self)!,
+            settingsRepository: injector.create(kind: SettingsRepository.self)!,
+            articleViewController: { injector.create(kind: ArticleViewController.self)! }
         )
     }
 
@@ -91,13 +91,13 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
     public func deletedFeed(_ feed: Feed, feedsLeft: Int) {}
 
     public func markedArticles(_ articles: [Article], asRead read: Bool) {
-        let indices = articles.flatMap { self.articles.indexOf($0) }
+        let indices = articles.flatMap { self.articles.index(of: $0) }
 
-        let indexPaths = indices.map { IndexPath(forRow: $0, inSection: 0) }
-        self.tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .Right)
+        let indexPaths = indices.map { IndexPath(row: $0, section: 0) }
+        self.tableView.reloadRows(at: indexPaths, with: .right)
     }
 
-    private func articleForIndexPath(_ indexPath: NSIndexPath) -> Article {
+    fileprivate func articleForIndexPath(_ indexPath: IndexPath) -> Article {
         return self.articles[indexPath.row]
     }
 
@@ -107,13 +107,13 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
         return avc
     }
 
-    private func configuredArticleController(_ article: Article, read: Bool = true) -> ArticleViewController {
+    fileprivate func configuredArticleController(_ article: Article, read: Bool = true) -> ArticleViewController {
         let articleViewController = self.articleViewController()
         articleViewController.setArticle(article, read: read)
         return articleViewController
     }
 
-    private func showArticleController(_ avc: ArticleViewController, animated: Bool) {
+    fileprivate func showArticleController(_ avc: ArticleViewController, animated: Bool) {
         if let splitView = self.splitViewController {
             let delegate = UIApplication.shared.delegate as? AppDelegate
             delegate?.splitView.collapseDetailViewController = false
@@ -138,8 +138,8 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
             let cellTypeToUse = (article.read ? "read" : "unread")
             // Prevents a green triangle which'll (dis)appear depending
             // on whether article loaded into it is read or not.
-            let cell = tableView.dequeueReusableCellWithIdentifier(cellTypeToUse,
-                forIndexPath: indexPath) as! ArticleCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellTypeToUse,
+                                                 for: indexPath) as! ArticleCell
 
             cell.themeRepository = self.themeRepository
             cell.settingsRepository = self.settingsRepository
@@ -152,7 +152,7 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
         tableView.deselectRow(at: indexPath, animated: false)
 
         if !self.previewMode {
-            self.showArticle(self.articleForIndexPath(indexPath))
+            _ = self.showArticle(self.articleForIndexPath(indexPath))
         }
     }
 
@@ -174,41 +174,42 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
                 handler: {(action: UITableViewRowAction!, indexPath: IndexPath!) in
 
                     let confirmDelete = NSLocalizedString("Generic_ConfirmDelete", comment: "")
-                    let deleteAlertTitle = NSString.localizedStringWithFormat(confirmDelete, article.title) as String
-                    let alert = UIAlertController(title: deleteAlertTitle, message: "", preferredStyle: .Alert)
-                    alert.addAction(UIAlertAction(title: deleteTitle, style: .Destructive) { _ in
-                        self.articles.remove(article)
-                        self.feedRepository.deleteArticle(article)
-                        tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-                        self.dismissViewControllerAnimated(true, completion: nil)
+                    let deleteAlertTitle = NSString.localizedStringWithFormat(confirmDelete as NSString,
+                                                                              article.title) as String
+                    let alert = UIAlertController(title: deleteAlertTitle, message: "", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: deleteTitle, style: .destructive) { _ in
+                        _ = self.articles.remove(article)
+                        _ = self.feedRepository.deleteArticle(article)
+                        tableView.deleteRows(at: [indexPath], with: .automatic)
+                        self.dismiss(animated: true, completion: nil)
                     })
                     let cancelTitle = NSLocalizedString("Generic_Cancel", comment: "")
-                    alert.addAction(UIAlertAction(title: cancelTitle, style: .Cancel) { _ in
-                        tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
-                        self.dismissViewControllerAnimated(true, completion: nil)
+                    alert.addAction(UIAlertAction(title: cancelTitle, style: .cancel) { _ in
+                        tableView.reloadRows(at: [indexPath], with: .right)
+                        self.dismiss(animated: true, completion: nil)
                     })
-                    self.presentViewController(alert, animated: true, completion: nil)
+                    self.present(alert, animated: true, completion: nil)
             })
             let unread = NSLocalizedString("ArticleListController_Cell_EditAction_MarkUnread", comment: "")
             let read = NSLocalizedString("ArticleListController_Cell_EditAction_MarkRead", comment: "")
             let toggleText = article.read ? unread : read
-            let toggle = UITableViewRowAction(style: .Normal, title: toggleText,
+            let toggle = UITableViewRowAction(style: .normal, title: toggleText,
                 handler: {(action: UITableViewRowAction!, indexPath: IndexPath!) in
                     article.read = !article.read
-                    self.feedRepository.markArticle(article, asRead: article.read)
+                    _ = self.feedRepository.markArticle(article, asRead: article.read)
             })
             return [delete, toggle]
     }
 
     // Mark: Private
 
-    private func resetArticles() {
+    fileprivate func resetArticles() {
         guard let articles = self.feed?.articlesArray else { return }
         self.articles = articles
         self.tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
     }
 
-    private func resetBarItems() {
+    fileprivate func resetBarItems() {
         guard !self.previewMode else { return }
 
         var barItems = [self.editButtonItem]
@@ -223,10 +224,10 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
         self.navigationItem.rightBarButtonItems = barItems
     }
 
-    @objc private func shareFeed() {
+    @objc fileprivate func shareFeed() {
         guard let url = self.feed?.url else { return }
         let shareSheet = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-        self.presentViewController(shareSheet, animated: true, completion: nil)
+        self.present(shareSheet, animated: true, completion: nil)
     }
 }
 
@@ -235,7 +236,7 @@ extension ArticleListController: UISearchBarDelegate {
         if searchText.isEmpty {
             self.resetArticles()
         } else if let feed = self.feed {
-            let articlesArray = self.feedRepository.articlesOfFeed(feed, matchingSearchQuery: searchText)
+            let articlesArray = self.feedRepository.articles(feed: feed, matchingSearchQuery: searchText)
             if self.articles != articlesArray {
                 self.articles = articlesArray
                 self.tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
@@ -258,7 +259,7 @@ extension ArticleListController: UIViewControllerPreviewingDelegate {
         commit viewControllerToCommit: UIViewController) {
             if let articleController = viewControllerToCommit as? ArticleViewController,
                 let article = articleController.article, !self.previewMode {
-                    self.feedRepository.markArticle(article, asRead: true)
+                    _ = self.feedRepository.markArticle(article, asRead: true)
                     self.showArticleController(articleController, animated: true)
             }
     }

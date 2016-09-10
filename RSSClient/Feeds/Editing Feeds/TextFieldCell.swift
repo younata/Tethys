@@ -43,7 +43,7 @@ public final class TextFieldCell: UITableViewCell {
             excludingEdge: .trailing)
 
         self.contentView.addSubview(self.validView)
-        self.validView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero, excludingEdge: .leading)
+        self.validView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .leading)
         self.validView.autoPinEdge(.leading, to: .trailing, of: self.textField)
 
         self.selectionStyle = .none

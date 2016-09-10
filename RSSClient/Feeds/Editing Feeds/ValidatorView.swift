@@ -16,7 +16,7 @@ public final class ValidatorView: UIView {
 
         self.addSubview(progressIndicator)
 
-        progressIndicator.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero)
+        progressIndicator.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
         return progressIndicator
     }()
 
@@ -61,14 +61,13 @@ public final class ValidatorView: UIView {
 
         let cm = checkmarkWidth / 2
 
-        CGPathMoveToPoint(path, nil, 0, h * (2.0 / 3.0) + cm)
-        CGPathAddLineToPoint(path, nil, w / 3.0, h)
-        CGPathAddLineToPoint(path, nil, w, cm)
-
-        CGPathAddLineToPoint(path, nil, w, -cm)
-        CGPathAddLineToPoint(path, nil, w / 3.0, h - cm)
-        CGPathAddLineToPoint(path, nil, 0, h * (2.0 / 3.0) - cm)
-        CGPathAddLineToPoint(path, nil, 0, h * (2.0 / 3.0) + cm)
+        path.move(to: CGPoint(x: 0, y: h * (2.0 / 3.0) + cm))
+        path.addLine(to: CGPoint(x: w / 3.0, y: h))
+        path.addLine(to: CGPoint(x: w, y: cm))
+        path.addLine(to: CGPoint(x: w, y: -cm))
+        path.addLine(to: CGPoint(x: w / 3.0, y: h - cm))
+        path.addLine(to: CGPoint(x: 0, y: h * (2.0 / 3.0 - cm)))
+        path.addLine(to: CGPoint(x: 0, y: h * (2.0 / 3.0 + cm)))
 
         return path
     }
@@ -81,20 +80,20 @@ public final class ValidatorView: UIView {
 
         let xm = xWidth / 2
 
-        CGPathMoveToPoint(path, nil, 0, h / 2 + xm)
-        CGPathAddLineToPoint(path, nil, w / 2 - xm, h / 2 + xm)
-        CGPathAddLineToPoint(path, nil, w / 2 - xm, h)
-        CGPathAddLineToPoint(path, nil, w / 2 + xm, h)
-        CGPathAddLineToPoint(path, nil, w / 2 + xm, h / 2 + xm)
-        CGPathAddLineToPoint(path, nil, w, h / 2 + xm)
+        path.move(to: CGPoint(x: 0, y: h / 2 + xm))
+        path.addLine(to: CGPoint(x: w / 2 - xm, y: h / 2 + xm))
+        path.addLine(to: CGPoint(x: w / 2 - xm, y: h))
+        path.addLine(to: CGPoint(x: w / 2 + xm, y: h))
+        path.addLine(to: CGPoint(x: w / 2 + xm, y: h / 2 + xm))
+        path.addLine(to: CGPoint(x: w, y: h / 2 + xm))
 
-        CGPathAddLineToPoint(path, nil, w, h / 2 - xm)
-        CGPathAddLineToPoint(path, nil, w / 2 + xm, h / 2 - xm)
-        CGPathAddLineToPoint(path, nil, w / 2 + xm, 0)
-        CGPathAddLineToPoint(path, nil, w / 2 - xm, 0)
-        CGPathAddLineToPoint(path, nil, w / 2 - xm, h / 2 - xm)
-        CGPathAddLineToPoint(path, nil, 0, h / 2 - xm)
-        CGPathAddLineToPoint(path, nil, 0, h / 2 + xm)
+        path.addLine(to: CGPoint(x: w, y: h / 2 - xm))
+        path.addLine(to: CGPoint(x: w / 2 + xm, y: h / 2 - xm))
+        path.addLine(to: CGPoint(x: w / 2 + xm, y: 0))
+        path.addLine(to: CGPoint(x: w / 2 - xm, y: 0))
+        path.addLine(to: CGPoint(x: w / 2 - xm, y: h / 2 - xm))
+        path.addLine(to: CGPoint(x: 0, y: h / 2 - xm))
+        path.addLine(to: CGPoint(x: 0, y: h / 2 + xm))
 
         return path
     }

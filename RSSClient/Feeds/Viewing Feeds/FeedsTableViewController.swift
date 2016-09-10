@@ -57,7 +57,7 @@ public final class FeedsTableViewController: UIViewController, Injectable {
 
     public lazy var refreshView: BreakOutToRefreshView = {
         let refreshView = BreakOutToRefreshView(scrollView: self.tableView)
-        refreshView.delegate = self
+        refreshView.breakoutDelegate = self
         refreshView.scenebackgroundColor = UIColor.white
         refreshView.paddleColor = UIColor.blue
         refreshView.ballColor = UIColor.darkGreen()
@@ -75,33 +75,33 @@ public final class FeedsTableViewController: UIViewController, Injectable {
 
     public let loadingView = ActivityIndicator(forAutoLayout: ())
 
-    private var feeds: [Feed] = []
+    fileprivate var feeds: [Feed] = []
     private let tableViewController = UITableViewController(style: .plain)
     private var menuTopOffset: NSLayoutConstraint!
 
     public let notificationView = NotificationView(forAutoLayout: ())
 
-    private let feedRepository: DatabaseUseCase
-    private let themeRepository: ThemeRepository
-    private let settingsRepository: SettingsRepository
+    fileprivate let feedRepository: DatabaseUseCase
+    fileprivate let themeRepository: ThemeRepository
+    fileprivate let settingsRepository: SettingsRepository
 
-    private let findFeedViewController: (Void) -> FindFeedViewController
-    private let localImportViewController: (Void) -> LocalImportViewController
-    private let feedViewController: (Void) -> FeedViewController
-    private let settingsViewController: (Void) -> SettingsViewController
-    private let articleListController: (Void) -> ArticleListController
+    fileprivate let findFeedViewController: (Void) -> FindFeedViewController
+    fileprivate let localImportViewController: (Void) -> LocalImportViewController
+    fileprivate let feedViewController: (Void) -> FeedViewController
+    fileprivate let settingsViewController: (Void) -> SettingsViewController
+    fileprivate let articleListController: (Void) -> ArticleListController
 
-    private var markReadFuture: Future<Result<Int, RNewsError>>? = nil
+    fileprivate var markReadFuture: Future<Result<Int, RNewsError>>? = nil
 
     // swiftlint:disable function_parameter_count
     public init(feedRepository: DatabaseUseCase,
                 themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
-                findFeedViewController: (Void) -> FindFeedViewController,
-                localImportViewController: (Void) -> LocalImportViewController,
-                feedViewController: (Void) -> FeedViewController,
-                settingsViewController: (Void) -> SettingsViewController,
-                articleListController: (Void) -> ArticleListController
+                findFeedViewController: @escaping (Void) -> FindFeedViewController,
+                localImportViewController: @escaping (Void) -> LocalImportViewController,
+                feedViewController: @escaping (Void) -> FeedViewController,
+                settingsViewController: @escaping (Void) -> SettingsViewController,
+                articleListController: @escaping (Void) -> ArticleListController
         ) {
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository
@@ -117,14 +117,14 @@ public final class FeedsTableViewController: UIViewController, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            feedRepository: injector.create(DatabaseUseCase)!,
-            themeRepository: injector.create(ThemeRepository)!,
-            settingsRepository: injector.create(SettingsRepository)!,
-            findFeedViewController: {injector.create(FindFeedViewController)!},
-            localImportViewController: {injector.create(LocalImportViewController)!},
-            feedViewController: {injector.create(FeedViewController)!},
-            settingsViewController: {injector.create(SettingsViewController)!},
-            articleListController: {injector.create(ArticleListController)!}
+            feedRepository: injector.create(kind: DatabaseUseCase.self)!,
+            themeRepository: injector.create(kind: ThemeRepository.self)!,
+            settingsRepository: injector.create(kind: SettingsRepository.self)!,
+            findFeedViewController: {injector.create(kind: FindFeedViewController.self)!},
+            localImportViewController: {injector.create(kind: LocalImportViewController.self)!},
+            feedViewController: {injector.create(kind: FeedViewController.self)!},
+            settingsViewController: {injector.create(kind: SettingsViewController.self)!},
+            articleListController: {injector.create(kind: ArticleListController.self)!}
         )
     }
 
@@ -138,19 +138,19 @@ public final class FeedsTableViewController: UIViewController, Injectable {
         self.addChildViewController(self.tableViewController)
         self.tableView.keyboardDismissMode = .onDrag
         self.view.addSubview(self.tableView)
-        self.tableView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero)
+        self.tableView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
         self.tableView.addSubview(self.refreshView)
         self.updateRefreshViewSize(self.view.bounds.size)
         self.tableView.delegate = self
 
         self.navigationController?.navigationBar.addSubview(self.updateBar)
         if let _ = self.updateBar.superview {
-            self.updateBar.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero, excludingEdge: .top)
+            self.updateBar.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .top)
             self.updateBar.autoSetDimension(.height, toSize: 3)
         }
 
         self.view.addSubview(self.dropDownMenu)
-        self.dropDownMenu.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero, excludingEdge: .top)
+        self.dropDownMenu.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .top)
         self.menuTopOffset = self.dropDownMenu.autoPinEdge(toSuperviewEdge: .top)
 
         self.themeRepository.addSubscriber(self.notificationView)
@@ -213,7 +213,7 @@ public final class FeedsTableViewController: UIViewController, Injectable {
         self.refreshView.endRefreshing()
     }
 
-    public override func canBecomeFirstResponder() -> Bool { return true }
+    public override var canBecomeFirstResponder: Bool { return true }
 
     public override var keyCommands: [UIKeyCommand]? {
         let commands = [
@@ -241,11 +241,11 @@ public final class FeedsTableViewController: UIViewController, Injectable {
 
     internal func importFromWeb() { self.presentController(self.findFeedViewController()) }
 
-    @objc private func importFromLocal() { self.presentController(self.localImportViewController()) }
+    @objc fileprivate func importFromLocal() { self.presentController(self.localImportViewController()) }
 
-    @objc private func search() { self.searchBar.becomeFirstResponder() }
+    @objc fileprivate func search() { self.searchBar.becomeFirstResponder() }
 
-    @objc private func presentSettings() { self.presentController(self.settingsViewController()) }
+    @objc fileprivate func presentSettings() { self.presentController(self.settingsViewController()) }
 
     private func presentController(_ viewController: UIViewController) {
         let nc = UINavigationController(rootViewController: viewController)
@@ -260,20 +260,20 @@ public final class FeedsTableViewController: UIViewController, Injectable {
     }
 
     private func showLoadingView(_ message: String) {
-        self.loadingView.configureWithMessage(message)
+        self.loadingView.configure(message: message)
         self.view.addSubview(self.loadingView)
         self.loadingView.autoPinEdgesToSuperviewEdges()
     }
 
-    private func reload(_ tag: String?, feeds: [Feed]? = nil) {
+    fileprivate func reload(_ tag: String?, feeds: [Feed]? = nil) {
         let reloadWithFeeds: ([Feed]) -> (Void) = {feeds in
-            let sortedFeeds = feeds.sort {(f1: Feed, f2: Feed) in
+            let sortedFeeds = feeds.sorted {(f1: Feed, f2: Feed) in
                 let f1Unread = f1.unreadArticles.count
                 let f2Unread = f2.unreadArticles.count
                 if f1Unread != f2Unread {
                     return f1Unread > f2Unread
                 }
-                return f1.displayTitle.lowercaseString < f2.displayTitle.lowercaseString
+                return f1.displayTitle.lowercased() < f2.displayTitle.lowercased()
             }
 
             if self.refreshView.isRefreshing { self.refreshView.endRefreshing() }
@@ -286,32 +286,32 @@ public final class FeedsTableViewController: UIViewController, Injectable {
             if filteredFeeds.isEmpty && (tag == nil || tag?.isEmpty == true) {
                 self.view.addSubview(self.onboardingView)
                 self.onboardingView.autoCenterInSuperview()
-                self.onboardingView.autoMatchDimension(.Width,
-                    toDimension: .Width,
-                    ofView: self.view,
-                    withMultiplier: 0.75)
+                self.onboardingView.autoMatch(.width,
+                                              to: .width,
+                                              of: self.view,
+                                              withMultiplier: 0.75)
             }
 
             let oldFeeds = self.feeds
             self.feeds = sortedFeeds
             if oldFeeds != sortedFeeds {
-                self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Right)
+                self.tableView.reloadSections(IndexSet(integer: 0), with: .right)
             } else {
-                self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
+                self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
             }
         }
 
         if let feeds = feeds, (tag == nil || tag?.isEmpty == true) {
             reloadWithFeeds(feeds)
         }
-        self.feedRepository.feedsMatchingTag(tag).then {
+        _ = self.feedRepository.feeds(matchingTag: tag).then {
             if case let Result.success(feeds) = $0 {
                 reloadWithFeeds(feeds)
             }
         }
     }
 
-    @objc private func didTapAddFeed() {
+    @objc fileprivate func didTapAddFeed() {
         guard self.navigationController?.visibleViewController == self else { return }
 
         if self.dropDownMenu.isOpen {
@@ -329,17 +329,17 @@ public final class FeedsTableViewController: UIViewController, Injectable {
         }
     }
 
-    private func feedAtIndexPath(_ indexPath: NSIndexPath) -> Feed! {
+    fileprivate func feedAtIndexPath(_ indexPath: IndexPath) -> Feed {
         return self.feeds[indexPath.row]
     }
 
-    private func configuredArticleListWithFeeds(_ feed: Feed) -> ArticleListController {
+    fileprivate func configuredArticleListWithFeeds(_ feed: Feed) -> ArticleListController {
         let articleListController = self.articleListController()
         articleListController.feed = feed
         return articleListController
     }
 
-    private func showArticleList(_ articleListController: ArticleListController, animated: Bool) {
+    fileprivate func showArticleList(_ articleListController: ArticleListController, animated: Bool) {
         self.navigationController?.pushViewController(articleListController, animated: animated)
     }
 
@@ -439,7 +439,7 @@ extension FeedsTableViewController: BreakOutToRefreshDelegate, UIScrollViewDeleg
                     let title = error.userInfo["feedTitle"]!
                     let failureReason = error.localizedFailureReason ?? error.localizedDescription
                     return "\(title): \(failureReason)"
-                }).joinWithSeparator("\n")
+                }).joined(separator: "\n")
 
                 let alertMessage = messageString
                 self.notificationView.display(alertTitle, message: alertMessage)
@@ -467,9 +467,9 @@ extension FeedsTableViewController: BreakOutToRefreshDelegate, UIScrollViewDeleg
 extension FeedsTableViewController: UIViewControllerPreviewingDelegate {
     public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
         viewControllerForLocation location: CGPoint) -> UIViewController? {
-            if let indexPath = self.tableView.indexPathForRow(at: location),
-                let feed = self.feedAtIndexPath(indexPath) {
-                    return configuredArticleListWithFeeds(feed)
+            if let indexPath = self.tableView.indexPathForRow(at: location) {
+                let feed = self.feedAtIndexPath(indexPath)
+                return configuredArticleListWithFeeds(feed)
             }
             return nil
     }
@@ -484,17 +484,17 @@ extension FeedsTableViewController: UIViewControllerPreviewingDelegate {
 
 extension FeedsTableViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return feeds.count
+        return self.feeds.count
     }
 
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let feed = feedAtIndexPath(indexPath)
+        let feed = self.feedAtIndexPath(indexPath)
         let cellTypeToUse = (feed.unreadArticles.isEmpty ? "unread": "read")
         // Prevents a green triangle which'll (dis)appear depending on
         // whether new feed loaded into it has unread articles or not.
 
-        if let cell = tableView.dequeueReusableCellWithIdentifier(cellTypeToUse,
-            forIndexPath: indexPath) as? FeedTableCell {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: cellTypeToUse,
+                                                    for: indexPath) as? FeedTableCell {
                 cell.feed = feed
                 cell.themeRepository = self.themeRepository
                 return cell
@@ -507,7 +507,7 @@ extension FeedsTableViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
 
-        self.showFeed(self.feedAtIndexPath(indexPath), animated: true)
+        _ = self.showFeed(self.feedAtIndexPath(indexPath), animated: true)
     }
 
     public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -523,29 +523,30 @@ extension FeedsTableViewController: UITableViewDelegate {
             let delete = UITableViewRowAction(style: .default, title: deleteTitle) {(_, indexPath: IndexPath!) in
                 let feed = self.feedAtIndexPath(indexPath)
                 let confirmDelete = NSLocalizedString("Generic_ConfirmDelete", comment: "")
-                let deleteAlertTitle = NSString.localizedStringWithFormat(confirmDelete, feed.displayTitle) as String
-                let alert = UIAlertController(title: deleteAlertTitle, message: "", preferredStyle: .Alert)
-                alert.addAction(UIAlertAction(title: deleteTitle, style: .Destructive) { _ in
+                let deleteAlertTitle = NSString.localizedStringWithFormat(confirmDelete as NSString,
+                                                                          feed.displayTitle) as String
+                let alert = UIAlertController(title: deleteAlertTitle, message: "", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: deleteTitle, style: .destructive) { _ in
                     self.feeds = self.feeds.filter { $0 != feed }
-                    self.feedRepository.deleteFeed(feed)
-                    tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-                    self.dismissViewControllerAnimated(true, completion: nil)
+                    _ = self.feedRepository.deleteFeed(feed)
+                    tableView.deleteRows(at: [indexPath], with: .automatic)
+                    self.dismiss(animated: true, completion: nil)
                 })
                 let cancelTitle = NSLocalizedString("Generic_Cancel", comment: "")
-                alert.addAction(UIAlertAction(title: cancelTitle, style: .Cancel) { _ in
-                    self.dismissViewControllerAnimated(true, completion: nil)
-                    tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
+                alert.addAction(UIAlertAction(title: cancelTitle, style: .cancel) { _ in
+                    self.dismiss(animated: true, completion: nil)
+                    tableView.reloadRows(at: [indexPath], with: .right)
                 })
-                self.presentViewController(alert, animated: true, completion: nil)
+                self.present(alert, animated: true, completion: nil)
             }
 
             let readTitle = NSLocalizedString("FeedsTableViewController_Table_EditAction_MarkRead", comment: "")
             let markRead = UITableViewRowAction(style: .normal, title: readTitle) {_, indexPath in
                 let feed = self.feedAtIndexPath(indexPath)
                 self.markReadFuture = self.feedRepository.markFeedAsRead(feed)
-                self.markReadFuture!.then { _ in
+                _ = self.markReadFuture!.then { _ in
                     self.reload(self.searchBar.text)
-                    tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                    tableView.reloadRows(at: [indexPath], with: .automatic)
                     self.markReadFuture = nil
                 }
             }
@@ -563,7 +564,7 @@ extension FeedsTableViewController: UITableViewDelegate {
             let shareTitle = NSLocalizedString("Generic_Share", comment: "")
             let share = UITableViewRowAction(style: .normal, title: shareTitle) {_ in
                 let shareSheet = UIActivityViewController(activityItems: [feed.url], applicationActivities: nil)
-                self.presentViewController(shareSheet, animated: true, completion: nil)
+                self.present(shareSheet, animated: true, completion: nil)
             }
             share.backgroundColor = UIColor.darkGreen()
             return [delete, markRead, edit, share]

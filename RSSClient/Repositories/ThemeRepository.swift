@@ -183,7 +183,7 @@ public final class ThemeRepository: NSObject, Injectable {
 
     private let userDefaults: UserDefaults?
 
-    private let subscribers = NSHashTable.weakObjects()
+    private let subscribers = NSHashTable<AnyObject>.weakObjects()
 
     public func addSubscriber(_ subscriber: ThemeRepositorySubscriber) {
         self.subscribers.add(subscriber)
@@ -191,7 +191,7 @@ public final class ThemeRepository: NSObject, Injectable {
     }
 
     private var values: [String: AnyObject] = [:]
-    private func privateValueForKey(_ key: String) -> AnyObject? {
+    private func privateValueForKey(_ key: String) -> Any? {
         if let _ = self.userDefaults {
             return self.userDefaults?.value(forKey: key)
         } else {
@@ -232,8 +232,8 @@ public final class ThemeRepository: NSObject, Injectable {
     }
 
     public required init(injector: Ra.Injector) {
-        self.userDefaults = injector.create(UserDefaults) ??
-            UserDefaults.standardUserDefaults()
+        self.userDefaults = injector.create(kind: UserDefaults.self) ??
+            UserDefaults.standard
     }
 
     deinit {

@@ -7,16 +7,17 @@ public final class ArticleCell: UITableViewCell {
         didSet {
             self.title.text = self.article?.title ?? ""
             let publishedDate = self.article?.updatedAt ?? self.article?.published ?? Date()
-            self.published.text = self.dateFormatter.stringFromDate(publishedDate) ?? ""
-            self.author.text = self.article?.authors.map({$0.description}).joinWithSeparator(", ") ?? ""
+            self.published.text = self.dateFormatter.string(from: publishedDate) ?? ""
+            self.author.text = self.article?.authors.map({$0.description}).joined(separator: ", ") ?? ""
             let hasNotRead = self.article?.read != true
             self.unread.unread = hasNotRead ? 1 : 0
             self.unreadWidth.constant = hasNotRead ? 30 : 0
             if let readingTime = self.article?.estimatedReadingTime, readingTime > 0 {
                 self.managedReadingTimeHidden()
                 let localizedFormat = NSLocalizedString("ArticleCell_EstimatedReadingTime", comment: "")
-                let formattedTime = self.timeFormatter.stringFromTimeInterval(TimeInterval(readingTime * 60)) ?? ""
-                self.readingTime.text = NSString.localizedStringWithFormat(localizedFormat, formattedTime) as String
+                let formattedTime = self.timeFormatter.string(from: TimeInterval(readingTime * 60)) ?? ""
+                self.readingTime.text = NSString.localizedStringWithFormat(localizedFormat as NSString,
+                                                                           formattedTime) as String
             } else {
                 self.managedReadingTimeHidden()
                 self.readingTime.text = nil
@@ -61,12 +62,12 @@ public final class ArticleCell: UITableViewCell {
         return formatter
     }()
 
-    private func managedReadingTimeHidden() {
+    fileprivate func managedReadingTimeHidden() {
         guard let article = self.article else { return }
         let articleWantsToShow = article.estimatedReadingTime > 0
         let userWantsToShow = self.settingsRepository?.showEstimatedReadingLabel ?? true
 
-        self.readingTime.hidden = !(articleWantsToShow && userWantsToShow)
+        self.readingTime.isHidden = !(articleWantsToShow && userWantsToShow)
     }
 
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {

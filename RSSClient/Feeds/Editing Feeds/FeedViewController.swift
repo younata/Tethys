@@ -51,7 +51,7 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
     public init(feedRepository: DatabaseUseCase,
                 urlSession: URLSession,
                 themeRepository: ThemeRepository,
-                tagEditorViewController: (Void) -> TagEditorViewController) {
+                tagEditorViewController: @escaping (Void) -> TagEditorViewController) {
         self.feedRepository = feedRepository
         self.urlSession = urlSession
         self.themeRepository = themeRepository
@@ -62,10 +62,10 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
 
     public required convenience init(injector: Injector) {
         self.init(
-            feedRepository: injector.create(DatabaseUseCase)!,
-            urlSession: injector.create(URLSession)!,
-            themeRepository: injector.create(ThemeRepository)!,
-            tagEditorViewController: {injector.create(TagEditorViewController)!}
+            feedRepository: injector.create(kind: DatabaseUseCase.self)!,
+            urlSession: injector.create(kind: URLSession.self)!,
+            themeRepository: injector.create(kind: ThemeRepository.self)!,
+            tagEditorViewController: {injector.create(kind: TagEditorViewController.self)!}
         )
     }
 
@@ -78,7 +78,7 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
 
         let dismissTitle = NSLocalizedString("Generic_Dismiss", comment: "")
         let dismissButton = UIBarButtonItem(title: dismissTitle, style: .plain, target: self,
-                                            action: #selector(FeedViewController.dismiss))
+                                            action: #selector(FeedViewController.dismissFromNavigation))
         self.navigationItem.leftBarButtonItem = dismissButton
 
         let saveTitle = NSLocalizedString("Generic_Save", comment: "")
@@ -89,7 +89,7 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
         self.navigationItem.title = self.feed?.displayTitle ?? ""
 
         self.view.addSubview(self.tableView)
-        self.tableView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero)
+        self.tableView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
 
         self.intervalFormatter.calendar = NSCalendar.current
         self.intervalFormatter.dateStyle = .medium
@@ -103,21 +103,21 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
         self.tableView.reloadData()
     }
 
-    internal func dismiss() {
+    @objc fileprivate func dismissFromNavigation() {
         self.navigationController?.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
-    internal func save() {
+    @objc fileprivate func save() {
         if let theFeed = self.feed {
-            self.feedRepository.saveFeed(theFeed)
+            _ = self.feedRepository.saveFeed(theFeed)
         }
-        self.dismiss()
+        self.dismissFromNavigation()
     }
 
     private func showTagEditor(_ tagIndex: Int) -> TagEditorViewController {
         let tagEditorViewController = self.tagEditorViewController()
         tagEditorViewController.feed = self.feed
-        if tagIndex < self.feed?.tags.count {
+        if tagIndex < (self.feed?.tags.count ?? 0) {
             tagEditorViewController.tagIndex = tagIndex
             tagEditorViewController.tagPicker.textField.text = self.feed?.tags[tagIndex]
         }
@@ -198,7 +198,7 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
 
     public func tableView(_ tableView: UITableView,
         editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-            if feed == nil || FeedSections(rawValue: indexPath.section) != .Tags {
+            if feed == nil || FeedSections(rawValue: indexPath.section) != .tags {
                 return nil
             }
             let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
@@ -218,7 +218,7 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
             })
             let editTitle = NSLocalizedString("Generic_Edit", comment: "")
             let edit = UITableViewRowAction(style: .normal, title: editTitle, handler: {(_, indexPath) in
-                self.showTagEditor((indexPath as NSIndexPath).row)
+                _ = self.showTagEditor(indexPath.row)
             })
             return [delete, edit]
     }
@@ -230,10 +230,10 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
 
-        if FeedSections(rawValue: (indexPath as NSIndexPath).section) == .tags,
+        if FeedSections(rawValue: indexPath.section) == .tags,
             let count = feed?.tags.count,
             indexPath.row == count {
-                showTagEditor((indexPath as NSIndexPath).row)
+                _ = showTagEditor(indexPath.row)
         }
     }
 
@@ -252,8 +252,8 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
                             response.statusCode == 200 {
                                 let string = String(nstext)
                                 let fp = Muon.FeedParser(string: string)
-                                fp.failure {_ in tc.setValid(false) }
-                                fp.success {_ in tc.setValid(true) }
+                                _ = fp.failure {_ in tc.setValid(false) }
+                                _ = fp.success {_ in tc.setValid(true) }
                                 fp.start()
                         } else { tc.setValid(false) }
                     } else { tc.setValid(false) }

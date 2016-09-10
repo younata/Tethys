@@ -20,24 +20,24 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
     }()
 
     private lazy var feedRepository: DatabaseUseCase = {
-        return self.anInjector.create(DatabaseUseCase)!
+        return self.anInjector.create(kind: DatabaseUseCase.self)!
     }()
 
     private lazy var notificationHandler: NotificationHandler = {
-        self.anInjector.create(NotificationHandler)!
+        self.anInjector.create(kind: NotificationHandler.self)!
     }()
 
     private lazy var backgroundFetchHandler: BackgroundFetchHandler = {
-        self.anInjector.create(BackgroundFetchHandler)!
+        self.anInjector.create(kind: BackgroundFetchHandler.self)!
     }()
 
     private lazy var analytics: Analytics = {
-        self.anInjector.create(Analytics)!
+        self.anInjector.create(kind: Analytics.self)!
     }()
 
     internal lazy var splitView: SplitViewController = {
-        let splitView = self.anInjector.create(SplitViewController)!
-        self.anInjector.bind(SplitViewController.self, toInstance: splitView)
+        let splitView = self.anInjector.create(kind: SplitViewController.self)!
+        self.anInjector.bind(kind: SplitViewController.self, toInstance: splitView)
         return splitView
     }()
 
@@ -46,7 +46,7 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
     }()
 
     public func application(_ application: UIApplication,
-        didFinishLaunchingWithOptions launchOptions: [NSObject: Any]?) -> Bool {
+        didFinishLaunchingWithOptions launchOptions: [String: Any]?) -> Bool {
             UINavigationBar.appearance().tintColor = UIColor.darkGreen()
             UIBarButtonItem.appearance().tintColor = UIColor.darkGreen()
             UITabBar.appearance().tintColor = UIColor.darkGreen()
@@ -134,7 +134,7 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: Background Fetch
 
     public func application(_ application: UIApplication,
-        performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
             self.backgroundFetchHandler.performFetch(self.notificationHandler,
                 notificationSource: application,
                 completionHandler: completionHandler)
@@ -164,7 +164,7 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
                 let uniqueID = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
                     self.feedRepository.feeds().then {
                         guard case let Result.success(feeds) = $0 else { return }
-                        guard let article = feeds.reduce(Array<Article>(), combine: {articles, feed in
+                        guard let article = feeds.reduce(Array<Article>(), {articles, feed in
                             return articles + Array(feed.articlesArray)
                         }).objectPassingTest({ article in
                                 return article.identifier == uniqueID

@@ -241,7 +241,7 @@ public final class LoginViewController: UIViewController, Injectable {
         activityIndicator.backgroundColor = UIColor.clear
 
         self.view.addSubview(activityIndicator)
-        activityIndicator.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero)
+        activityIndicator.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
 
         UIView.animate(withDuration: 0.3) {
             activityIndicator.backgroundColor = color

@@ -32,9 +32,9 @@ public final class MigrationViewController: UIViewController, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            migrationUseCase: injector.create(MigrationUseCase)!,
-            themeRepository: injector.create(ThemeRepository)!,
-            mainQueue: injector.create(kMainQueue) as! NSOperationQueue
+            migrationUseCase: injector.create(kind: MigrationUseCase.self)!,
+            themeRepository: injector.create(kind: ThemeRepository.self)!,
+            mainQueue: injector.create(string: kMainQueue) as! OperationQueue
         )
     }
 

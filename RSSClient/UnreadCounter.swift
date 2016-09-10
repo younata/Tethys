@@ -53,10 +53,10 @@ public final class UnreadCounter: UIView {
     public override func layoutSubviews() {
         super.layoutSubviews()
         let path = CGMutablePath()
-        CGPathMoveToPoint(path, nil, 0, 0)
-        CGPathAddLineToPoint(path, nil, self.bounds.width, 0)
-        CGPathAddLineToPoint(path, nil, self.bounds.width, self.bounds.height)
-        CGPathAddLineToPoint(path, nil, 0, 0)
+        path.move(to: CGPoint(x: 0, y: 0))
+        path.addLine(to: CGPoint(x: self.bounds.width, y: 0))
+        path.addLine(to: CGPoint(x: self.bounds.width, y: self.bounds.height))
+        path.addLine(to: CGPoint(x: 0, y: 0))
         self.triangleLayer.path = path
     }
 
@@ -64,7 +64,7 @@ public final class UnreadCounter: UIView {
         if self.unread == 0 {
             self.isHidden = true
         } else {
-            self.countLabel.text = self.numberFormatter.string(from: NSNumber(self.unread))
+            self.countLabel.text = self.numberFormatter.string(from: NSNumber(value: self.unread))
             self.isHidden = false
         }
     }

@@ -2,22 +2,22 @@ import UIKit
 import Ra
 import rNewsKit
 
-public func documentsDirectory() -> NSString {
-    return (NSHomeDirectory() as NSString).appendingPathComponent("Documents")
+public func documentsDirectory() -> String {
+    return NSHomeDirectory() + "/Documents"
 }
 
 public final class LocalImportViewController: UIViewController, Injectable {
-    private var opmls: [(URL, Int)] = []
-    private var feeds: [(URL, Int)] = []
-    private var contentsOfDirectory: [String] = []
+    fileprivate var opmls: [(URL, Int)] = []
+    fileprivate var feeds: [(URL, Int)] = []
+    fileprivate var contentsOfDirectory: [String] = []
 
     public let tableViewController = UITableViewController(style: .plain)
 
-    private var tableViewTopOffset: NSLayoutConstraint!
+    fileprivate var tableViewTopOffset: NSLayoutConstraint!
 
-    private let themeRepository: ThemeRepository
-    private let importUseCase: ImportUseCase
-    private let analytics: Analytics
+    fileprivate let themeRepository: ThemeRepository
+    fileprivate let importUseCase: ImportUseCase
+    fileprivate let analytics: Analytics
 
     public lazy var explanationLabel: ExplanationView = {
         let label = ExplanationView(forAutoLayout: ())
@@ -39,9 +39,9 @@ public final class LocalImportViewController: UIViewController, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            themeRepository: injector.create(ThemeRepository)!,
-            importUseCase: injector.create(ImportUseCase)!,
-            analytics: injector.create(Analytics)!
+            themeRepository: injector.create(kind: ThemeRepository.self)!,
+            importUseCase: injector.create(kind: ImportUseCase.self)!,
+            analytics: injector.create(kind: Analytics.self)!
         )
     }
 
@@ -53,7 +53,7 @@ public final class LocalImportViewController: UIViewController, Injectable {
         super.viewDidLoad()
 
         self.view.addSubview(self.tableViewController.tableView)
-        self.tableViewController.tableView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero, excludingEdge: .top)
+        self.tableViewController.tableView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .top)
         let inset = self.navigationController!.navigationBar.frame.height +
             UIApplication.shared.statusBarFrame.height
         self.tableViewTopOffset = self.tableViewController.tableView.autoPinEdge(toSuperviewEdge: .top,
@@ -69,7 +69,7 @@ public final class LocalImportViewController: UIViewController, Injectable {
         self.navigationItem.title = NSLocalizedString("LocalImportViewController_Title", comment: "")
         let dismissTitle = NSLocalizedString("Generic_Dismiss", comment: "")
         let dismissButton = UIBarButtonItem(title: dismissTitle, style: .plain, target: self,
-                                            action: #selector(LocalImportViewController.dismiss))
+                                            action: #selector(LocalImportViewController.localImportDismiss))
         self.navigationItem.leftBarButtonItem = dismissButton
 
         self.tableViewController.tableView.register(TableViewCell.self, forCellReuseIdentifier: "cell")
@@ -81,7 +81,7 @@ public final class LocalImportViewController: UIViewController, Injectable {
         self.analytics.logEvent("DidViewLocalImport", data: nil)
     }
 
-    internal func dismiss() {
+    internal func localImportDismiss() {
         self.navigationController?.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
@@ -90,23 +90,23 @@ public final class LocalImportViewController: UIViewController, Injectable {
         self.importUseCase.scanDirectoryForImportables(documentsUrl) { contents in
             self.opmls = contents.flatMap { item in
                 switch item {
-                case .OPML(let url, let feeds): return (url, feeds)
+                case .opml(let url, let feeds): return (url, feeds)
                 default: return nil
                 }
             }
 
             self.feeds = contents.flatMap { item in
                 switch item {
-                case .Feed(let url, let articles): return (url, articles)
+                case .feed(let url, let articles): return (url, articles)
                 default: return nil
                 }
             }
 
-            self.feeds.sortInPlace { $0.0.absoluteString < $1.0.absoluteString }
-            self.opmls.sortInPlace { $0.0.absoluteString < $1.0.absoluteString }
+            self.feeds.sort { $0.0.absoluteString < $1.0.absoluteString }
+            self.opmls.sort { $0.0.absoluteString < $1.0.absoluteString }
             self.showExplanationView()
-            let sections = NSIndexSet(indexesInRange: NSRange(location: 0, length: 2))
-            self.tableViewController.tableView.reloadSections(sections, withRowAnimation: .Automatic)
+            let sections = IndexSet(integersIn: 0..<2)
+            self.tableViewController.tableView.reloadSections(sections, with: .automatic)
 
             self.tableViewController.refreshControl?.endRefreshing()
         }
@@ -114,7 +114,7 @@ public final class LocalImportViewController: UIViewController, Injectable {
 
     }
 
-    // MARK: - Private
+    // MARK: - fileprivate
 
     fileprivate func showExplanationView() {
         self.explanationLabel.removeFromSuperview()
@@ -136,12 +136,12 @@ public final class LocalImportViewController: UIViewController, Injectable {
 
     fileprivate func disableInteractionWithMessage(_ message: String) -> ActivityIndicator {
         let activityIndicator = ActivityIndicator(forAutoLayout: ())
-        activityIndicator.configureWithMessage(message)
+        activityIndicator.configure(message: message)
         let color = activityIndicator.backgroundColor
         activityIndicator.backgroundColor = UIColor.clear
 
         self.view.addSubview(activityIndicator)
-        activityIndicator.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero)
+        activityIndicator.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
 
         UIView.animate(withDuration: 0.3) {
             activityIndicator.backgroundColor = color
@@ -151,7 +151,7 @@ public final class LocalImportViewController: UIViewController, Injectable {
 
     fileprivate func reenableInteractionAndDismiss(_ activityIndicator: ActivityIndicator) {
         activityIndicator.removeFromSuperview()
-        self.dismiss()
+        self.localImportDismiss()
     }
 }
 

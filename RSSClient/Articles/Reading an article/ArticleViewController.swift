@@ -45,8 +45,8 @@ public final class ArticleViewController: UIViewController, Injectable {
     private let linkString = NSLocalizedString("ArticleViewController_TabBar_ViewLink", comment: "")
 
     public let themeRepository: ThemeRepository
-    private let articleUseCase: ArticleUseCase
-    private let articleListController: (Void) -> ArticleListController
+    fileprivate let articleUseCase: ArticleUseCase
+    fileprivate let articleListController: (Void) -> ArticleListController
 
     public init(themeRepository: ThemeRepository,
                 articleUseCase: ArticleUseCase,
@@ -60,15 +60,15 @@ public final class ArticleViewController: UIViewController, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            themeRepository: injector.create(ThemeRepository)!,
-            articleUseCase: injector.create(ArticleUseCase)!,
-            articleListController: { injector.create(ArticleListController)! }
+            themeRepository: injector.create(kind: ThemeRepository.self)!,
+            articleUseCase: injector.create(kind: ArticleUseCase.self)!,
+            articleListController: { injector.create(kind: ArticleListController.self)! }
         )
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
-    private func showArticle(_ article: Article, onWebView webView: UIWebView) {
+    fileprivate func showArticle(_ article: Article, onWebView webView: UIWebView) {
         webView.loadHTMLString(self.articleUseCase.readArticle(article), baseURL: article.link)
 
         self.view.layoutIfNeeded()
@@ -77,7 +77,7 @@ public final class ArticleViewController: UIViewController, Injectable {
     }
 
     private func spacer() -> UIBarButtonItem {
-        return UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: Selector())
+        return UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
     }
 
     public private(set) lazy var backgroundSpinnerView: UIActivityIndicatorView = {
@@ -109,7 +109,7 @@ public final class ArticleViewController: UIViewController, Injectable {
             self.backgroundSpinnerView.stopAnimating()
         }
 
-        self.content.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero, excludingEdge: .bottom)
+        self.content.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .bottom)
         self.view.addConstraint(NSLayoutConstraint(item: self.content, attribute: .bottom, relatedBy: .equal,
             toItem: self.bottomLayoutGuide, attribute: .top, multiplier: 1, constant: 0))
 
@@ -154,7 +154,7 @@ public final class ArticleViewController: UIViewController, Injectable {
         self.updateLeftBarButtonItem(self.traitCollection)
     }
 
-    public override func canBecomeFirstResponder() -> Bool { return true }
+    public override var canBecomeFirstResponder: Bool { return true }
 
     public override var keyCommands: [UIKeyCommand]? {
         let addTitleToCmd: (UIKeyCommand, String) -> Void = {cmd, title in
@@ -182,7 +182,7 @@ public final class ArticleViewController: UIViewController, Injectable {
         return commands
     }
 
-    @objc private func toggleArticleRead() {
+    @objc fileprivate func toggleArticleRead() {
         guard let article = self.article else { return }
         self.articleUseCase.toggleArticleRead(article)
     }
@@ -195,13 +195,13 @@ public final class ArticleViewController: UIViewController, Injectable {
         self.content.allowsLinkPreview = true
     }
 
-    private func setThemeForWebView(_ webView: UIWebView) {
+    fileprivate func setThemeForWebView(_ webView: UIWebView) {
         webView.backgroundColor = themeRepository.backgroundColor
         webView.scrollView.backgroundColor = themeRepository.backgroundColor
         webView.scrollView.indicatorStyle = themeRepository.scrollIndicatorStyle
     }
 
-    @objc private func share() {
+    @objc fileprivate func share() {
         guard let article = self.article, let link = article.link else { return }
         let safari = TOActivitySafari()
         let chrome = TOActivityChrome()
@@ -218,23 +218,23 @@ public final class ArticleViewController: UIViewController, Injectable {
             applicationActivities: activities)
         activity.completionWithItemsHandler = { activityType, completed, _, _ in
             guard completed, let authorActivity = authorActivity else { return }
-            if activityType == authorActivity.activityType(), let author = article.authors.first {
+            if activityType == authorActivity.activityType, let author = article.authors.first {
                 self.articleUseCase.articlesByAuthor(author) {
                     let articleListController = self.articleListController()
                     articleListController.articles = $0
                     articleListController.title = article.authors.first?.description
-                    self.showViewController(articleListController, sender: self)
+                    self.show(articleListController, sender: self)
                 }
             }
         }
-        self.presentViewController(activity, animated: true, completion: nil)
+        self.present(activity, animated: true, completion: nil)
     }
 
     @objc private func openInSafari() {
         if let url = self.article?.link { self.openURL(url) }
     }
 
-    private func openURL(_ url: URL) {
+    fileprivate func openURL(_ url: URL) {
         self.loadUrlInSafari(url)
     }
 
@@ -260,7 +260,7 @@ extension ArticleViewController: UIWebViewDelegate {
             return false
     }
 
-    public func webViewDidFinishLoad(_ webView: UIWebView) { self.backgroundView.hidden = self.article != nil }
+    public func webViewDidFinishLoad(_ webView: UIWebView) { self.backgroundView.isHidden = self.article != nil }
 }
 
 extension ArticleViewController: NSUserActivityDelegate {

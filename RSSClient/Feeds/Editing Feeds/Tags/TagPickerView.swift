@@ -10,7 +10,7 @@ public final class TagPickerView: UIView {
         textField.layer.cornerRadius = 5
 
         self.addSubview(textField)
-        textField.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero, excludingEdge: .bottom)
+        textField.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .bottom)
         textField.autoSetDimension(.height, toSize: 40)
         return textField
     }()
@@ -21,7 +21,7 @@ public final class TagPickerView: UIView {
         picker.dataSource = self
 
         self.addSubview(picker)
-        picker.autoPinEdgesToSuperviewEdges(with: UIEdgeInsetsZero, excludingEdge: .top)
+        picker.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .top)
         picker.autoPinEdge(.top, to: .bottom, of: self.textField)
         picker.autoSetDimension(.height, toSize: 120)
         return picker
@@ -46,10 +46,10 @@ public final class TagPickerView: UIView {
         self.didSelect = onSelect
 
         self.picker.reloadComponent(0)
-        self.textFieldDidChange("")
+        _ = self.textFieldDidChange("")
     }
 
-    private func textFieldDidChange(_ text: String) -> Bool {
+    fileprivate func textFieldDidChange(_ text: String) -> Bool {
         let solutions: [String]
         if text.isEmpty {
             solutions = self.allTags
@@ -85,7 +85,7 @@ extension TagPickerView: UIPickerViewDataSource, UIPickerViewDelegate {
         if row < self.existingSolutions.count {
             let solution = self.existingSolutions[row]
             self.textField.text = solution
-            self.textFieldDidChange(solution)
+            _ = self.textFieldDidChange(solution)
         }
     }
 }

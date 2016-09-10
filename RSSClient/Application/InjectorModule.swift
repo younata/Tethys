@@ -16,7 +16,7 @@ public final class InjectorModule: Ra.InjectorModule {
             return tagPicker
         }
 
-        injector.bind(kind: Bundle.self, toInstance: Bundle.mainBundle())
+        injector.bind(kind: Bundle.self, toInstance: Bundle.main)
 
         let app = UIApplication.shared
         injector.bind(kind: QuickActionRepository.self, toInstance: app)
@@ -26,13 +26,13 @@ public final class InjectorModule: Ra.InjectorModule {
         let userDefaults = UserDefaults.standard
         injector.bind(kind: SettingsRepository.self, toInstance: SettingsRepository(userDefaults: userDefaults))
 
-        injector.bind(kind: BackgroundFetchHandler.self, toInstance: DefaultBackgroundFetchHandler.init)
+        injector.bind(kind: BackgroundFetchHandler.self, to: DefaultBackgroundFetchHandler.init)
 
-        injector.bind(kind: NotificationHandler.self, toInstance: LocalNotificationHandler.init)
+        injector.bind(kind: NotificationHandler.self, to: LocalNotificationHandler.init)
 
-        injector.bind(kind: ArticleUseCase.self, toInstance: DefaultArticleUseCase.init)
+        injector.bind(kind: ArticleUseCase.self, to: DefaultArticleUseCase.init)
 
-        injector.bind(kind: FileManager.self, toInstance: FileManager.defaultManager())
+        injector.bind(kind: FileManager.self, toInstance: FileManager.default)
     }
 
     public init() {}

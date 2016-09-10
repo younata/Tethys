@@ -73,7 +73,7 @@ extension FeedsListController: UITableViewDelegate {
             return self.editActionsForFeed?(self.feeds[indexPath.row])
     }
 
-    public func tableView(_ tableView: UITableView,
+    @objc(tableView:commitEditingStyle:forRowAtIndexPath:) public func tableView(_ tableView: UITableView,
         commit editingStyle: UITableViewCellEditingStyle,
         forRowAt indexPath: IndexPath) {}
 }

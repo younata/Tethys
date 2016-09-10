@@ -8,14 +8,14 @@ import Result
 extension Account {
     public var titleText: String {
         switch self {
-        case .Pasiphae:
+        case .pasiphae:
             return NSLocalizedString("LoginViewController_Pasiphae_Title", comment: "")
         }
     }
 
     public var detailText: String {
         switch self {
-        case .Pasiphae:
+        case .pasiphae:
             return ""
         }
     }
@@ -152,9 +152,9 @@ public final class LoginViewController: UIViewController, Injectable {
 
     public convenience required init(injector: Injector) {
         self.init(
-            themeRepository: injector.create(ThemeRepository)!,
-            accountRepository: injector.create(AccountRepository)!,
-            mainQueue: injector.create(kMainQueue) as! NSOperationQueue
+            themeRepository: injector.create(kind: ThemeRepository.self)!,
+            accountRepository: injector.create(kind: AccountRepository.self)!,
+            mainQueue: injector.create(string: kMainQueue) as! OperationQueue
         )
     }
 
@@ -221,12 +221,12 @@ public final class LoginViewController: UIViewController, Injectable {
     private func sendLoginOrRegisterRequest(_ message: String, requestMaker: (String, String) ->
         Future<Result<Void, RNewsError>>) {
         let activityIndicator = self.disableInteractionWithMessage(message)
-        requestMaker(self.emailField.text ?? "", self.passwordField.text ?? "").then { res in
-            self.mainQueue.addOperationWithBlock {
+        _ = requestMaker(self.emailField.text ?? "", self.passwordField.text ?? "").then { res in
+            self.mainQueue.addOperation {
                 activityIndicator.removeFromSuperview()
                 switch res {
                 case .success():
-                    self.navigationController?.popViewControllerAnimated(false)
+                    _ = self.navigationController?.popViewController(animated: false)
                 case let .failure(error):
                     self.errorLabel.text = error.description
                 }
@@ -236,7 +236,7 @@ public final class LoginViewController: UIViewController, Injectable {
 
     private func disableInteractionWithMessage(_ message: String) -> ActivityIndicator {
         let activityIndicator = ActivityIndicator(forAutoLayout: ())
-        activityIndicator.configureWithMessage(message)
+        activityIndicator.configure(message: message)
         let color = activityIndicator.backgroundColor
         activityIndicator.backgroundColor = UIColor.clear
 

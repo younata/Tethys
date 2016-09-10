@@ -384,7 +384,8 @@ extension SettingsViewController: UITableViewDelegate {
         }
     }
 
-    public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+    @objc(tableView:canEditRowAtIndexPath:) public func tableView(_ tableView: UITableView,
+                                                                  canEditRowAt indexPath: IndexPath) -> Bool {
         guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection),
             section == .quickActions || section == .accounts else { return false }
         if section == .quickActions {
@@ -425,7 +426,7 @@ extension SettingsViewController: UITableViewDelegate {
         }
     }
 
-    public func tableView(_ tableView: UITableView,
+    @objc(tableView:commitEditingStyle:forRowAtIndexPath:) public func tableView(_ tableView: UITableView,
         commit editingStyle: UITableViewCellEditingStyle,
         forRowAt indexPath: IndexPath) {}
 
@@ -489,7 +490,7 @@ extension SettingsViewController: UITableViewDelegate {
                 }
             }
             self.tableView.reloadRows(at: [indexPath], with: .automatic)
-            self.navigationController?.popViewController(animated: true)
+            _ = self.navigationController?.popViewController(animated: true)
         }
         self.navigationController?.pushViewController(feedsListController, animated: true)
     }

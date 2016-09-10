@@ -103,7 +103,7 @@ public final class NotificationView: UIView {
         self.maskLayer.path = bezierPath.cgPath
     }
 
-    private func changeLayout(_ animated: Bool, spring: Bool, delay: TimeInterval, completion: (Bool) -> Void) {
+    private func changeLayout(_ animated: Bool, spring: Bool, delay: TimeInterval, completion: @escaping (Bool) -> Void) {
         let duration: TimeInterval = animated ? 0.75 : 0
         UIView.animate(withDuration: duration,
             delay: delay,

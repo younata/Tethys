@@ -510,11 +510,12 @@ extension FeedsTableViewController: UITableViewDelegate {
         _ = self.showFeed(self.feedAtIndexPath(indexPath), animated: true)
     }
 
-    public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+    @objc(tableView:canEditRowAtIndexPath:) public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
 
-    public func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle,
+    @objc(tableView:commitEditingStyle:forRowAtIndexPath:) public func tableView(_ tableView: UITableView,
+        commit editingStyle: UITableViewCellEditingStyle,
         forRowAt indexPath: IndexPath) {}
 
     public func tableView(_ tableView: UITableView,

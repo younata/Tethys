@@ -12,7 +12,7 @@ public final class TagEditorViewController: UIViewController, Injectable {
     fileprivate let tagLabel = UILabel(forAutoLayout: ())
     private var tag: String? = nil {
         didSet {
-            self.navigationItem.rightBarButtonItem?.enabled = self.feed != nil && self.tag != nil
+            self.navigationItem.rightBarButtonItem?.isEnabled = self.feed != nil && self.tag != nil
         }
     }
     private let feedRepository: DatabaseUseCase
@@ -26,8 +26,8 @@ public final class TagEditorViewController: UIViewController, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            feedRepository: injector.create(DatabaseUseCase)!,
-            themeRepository: injector.create(ThemeRepository)!
+            feedRepository: injector.create(kind: DatabaseUseCase.self)!,
+            themeRepository: injector.create(kind: ThemeRepository.self)!
         )
     }
 
@@ -49,7 +49,7 @@ public final class TagEditorViewController: UIViewController, Injectable {
 
         self.tagPicker.translatesAutoresizingMaskIntoConstraints = false
         self.tagPicker.themeRepository = self.themeRepository
-        self.feedRepository.allTags().then {
+        _ = self.feedRepository.allTags().then {
             if case let Result.success(tags) = $0 {
                 self.tagPicker.configureWithTags(tags) {
                     self.tag = $0
@@ -72,13 +72,13 @@ public final class TagEditorViewController: UIViewController, Injectable {
     }
 
     @objc private func dismiss() {
-        self.navigationController?.popViewController(animated: true)
+        _ = self.navigationController?.popViewController(animated: true)
     }
 
     @objc private func save() {
         if let feed = self.feed, let tag = tag {
             feed.addTag(tag)
-            self.feedRepository.saveFeed(feed)
+            _ = self.feedRepository.saveFeed(feed)
             self.feed = feed
         }
 

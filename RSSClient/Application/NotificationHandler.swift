@@ -56,7 +56,7 @@ public struct LocalNotificationHandler: NotificationHandler, Injectable {
 
         _ = self.articleFromUserInfo(userInfo as! [String : Any]).then {
             if case let Result.success(article) = $0 {
-                self.feedRepository.markArticle(article, asRead: true)
+                _ = self.feedRepository.markArticle(article, asRead: true)
             }
         }
     }
@@ -106,7 +106,7 @@ public struct LocalNotificationHandler: NotificationHandler, Injectable {
             let feed = article.feed {
                 nc.popToRootViewController(animated: false)
                 let al = feedsView.showFeed(feed, animated: false)
-                al.showArticle(article)
+                _ = al.showArticle(article)
         }
     }
 }

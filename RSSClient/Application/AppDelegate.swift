@@ -6,12 +6,7 @@ import CoreSpotlight
 
 @UIApplicationMain
 public final class AppDelegate: UIResponder, UIApplicationDelegate {
-    public lazy var window: UIWindow? = {
-        let window = UIWindow(frame: UIScreen.main.bounds)
-        window.backgroundColor = UIColor.white
-        window.makeKeyAndVisible()
-        return window
-    }()
+    public var window: UIWindow?
 
     public lazy var anInjector: Ra.Injector = {
         let kitModule = KitModule()
@@ -42,11 +37,22 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
     }()
 
     private lazy var bootstrapper: Bootstrapper = {
-        return BootstrapWorkFlow(window: self.window!, injector: self.anInjector)
+        return BootstrapWorkFlow(window: self.getWindow(), injector: self.anInjector)
     }()
 
+    private func getWindow() -> UIWindow {
+        if let window = self.window {
+            return window
+        }
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.backgroundColor = UIColor.white
+        window.makeKeyAndVisible()
+        self.window = window
+        return window
+    }
+
     public func application(_ application: UIApplication,
-        didFinishLaunchingWithOptions launchOptions: [String: Any]?) -> Bool {
+        didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
             UINavigationBar.appearance().tintColor = UIColor.darkGreen()
             UIBarButtonItem.appearance().tintColor = UIColor.darkGreen()
             UITabBar.appearance().tintColor = UIColor.darkGreen()
@@ -56,8 +62,8 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
                 _ = try? FileManager.default.removeItem(at: url)
             }
 
-            if NSClassFromString("XCTestCase") != nil && launchOptions?["test"] as? Bool != true {
-                self.window?.rootViewController = UIViewController()
+            if NSClassFromString("XCTestCase") != nil && launchOptions?[UIApplicationLaunchOptionsKey("test")] as? Bool != true {
+                self.getWindow().rootViewController = UIViewController()
                 return true
             }
 
@@ -67,7 +73,7 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
             self.notificationHandler.enableNotifications(application)
 
             if launchOptions == nil || launchOptions?.isEmpty == true ||
-                (launchOptions?.count == 1 && launchOptions?["test"] as? Bool == true) {
+                (launchOptions?.count == 1 && launchOptions?[UIApplicationLaunchOptionsKey("test")] as? Bool == true) {
                     self.analytics.logEvent("SessionBegan", data: nil)
             }
 
@@ -82,7 +88,7 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
     public func application(_ application: UIApplication,
         performActionFor shortcutItem: UIApplicationShortcutItem,
         completionHandler: @escaping (Bool) -> Void) {
-            let splitView = self.window?.rootViewController as? UISplitViewController
+            let splitView = self.getWindow().rootViewController as? UISplitViewController
             guard let navigationController = splitView?.viewControllers.first as? UINavigationController else {
                 completionHandler(false)
                 return
@@ -101,10 +107,10 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
             } else if let feedTitle = shortcutItem.userInfo?["feed"] as? String,
                 shortcutItem.type == "com.rachelbrindle.RSSClient.viewfeed" {
                 // swiftlint:disable conditional_binding_cascade
-                    self.feedRepository.feeds().then {
+                    _ = self.feedRepository.feeds().then {
                         if case let Result.success(feeds) = $0,
                             let feed = feeds.objectPassingTest({ return $0.title == feedTitle }) {
-                                feedsViewController.showFeed(feed, animated: false)
+                                _ = feedsViewController.showFeed(feed, animated: false)
                                 self.analytics.logEvent("QuickActionUsed", data: ["kind": "View Feed"])
                                 completionHandler(true)
                         } else {
@@ -120,13 +126,11 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: Local Notifications
 
     public func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
-        if let window = self.window {
-            self.notificationHandler.handleLocalNotification(notification, window: window)
-        }
+        self.notificationHandler.handleLocalNotification(notification, window: self.getWindow())
     }
 
     public func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?,
-        for notification: UILocalNotification, completionHandler: () -> Void) {
+        for notification: UILocalNotification, completionHandler: @escaping () -> Void) {
             self.notificationHandler.handleAction(identifier, notification: notification)
             completionHandler()
     }
@@ -144,13 +148,13 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
 
     public func application(_ application: UIApplication,
         continue userActivity: NSUserActivity,
-        restorationHandler: (Any?) -> Void) -> Bool {
+        restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
             let type = userActivity.activityType
             if type == "com.rachelbrindle.rssclient.article",
                 let userInfo = userActivity.userInfo,
                 let feedTitle = userInfo["feed"] as? String,
                 let articleID = userInfo["article"] as? String {
-                    self.feedRepository.feeds().then() {
+                    _ = self.feedRepository.feeds().then() {
                         if case let Result.success(feeds) = $0 {
                             if let feed = feeds.objectPassingTest({ return $0.title == feedTitle }),
                                 let article = feed.articlesArray.filter({ $0.identifier == articleID }).first {
@@ -162,7 +166,7 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             if type == CSSearchableItemActionType,
                 let uniqueID = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
-                    self.feedRepository.feeds().then {
+                    _ = self.feedRepository.feeds().then {
                         guard case let Result.success(feeds) = $0 else { return }
                         guard let article = feeds.reduce(Array<Article>(), {articles, feed in
                             return articles + Array(feed.articlesArray)

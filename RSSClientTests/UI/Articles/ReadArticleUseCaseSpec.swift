@@ -8,12 +8,12 @@ class ArticleUseCaseSpec: QuickSpec {
     override func spec() {
         var subject: DefaultArticleUseCase!
         var feedRepository: FakeDatabaseUseCase!
-        var themeRepository: FakeThemeRepository!
+        var themeRepository: ThemeRepository!
         let bundle = Bundle.main
 
         beforeEach {
             feedRepository = FakeDatabaseUseCase()
-            themeRepository = FakeThemeRepository()
+            themeRepository = ThemeRepository(userDefaults: nil)
             subject = DefaultArticleUseCase(feedRepository: feedRepository, themeRepository: themeRepository, bundle: bundle)
         }
 
@@ -54,7 +54,7 @@ class ArticleUseCaseSpec: QuickSpec {
 
             context("when the feeds promise fails") {
                 beforeEach {
-                    feedRepository.feedsPromises.last?.resolve(.failure(.Unknown))
+                    feedRepository.feedsPromises.last?.resolve(.failure(.unknown))
                 }
 
                 it("calls the callback with nothing") {
@@ -128,7 +128,7 @@ class ArticleUseCaseSpec: QuickSpec {
             it("marks the article as read if it wasn't already") {
                 let article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: false, estimatedReadingTime: 3, feed: nil, flags: [])
 
-                subject.readArticle(article)
+                _ = subject.readArticle(article)
 
                 expect(feedRepository.lastArticleMarkedRead) == article
                 expect(article.read) == true
@@ -137,7 +137,7 @@ class ArticleUseCaseSpec: QuickSpec {
             it("doesn't mark the article as read if it already was") {
                 let article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: true, estimatedReadingTime: 4, feed: nil, flags: [])
 
-                subject.readArticle(article)
+                _ = subject.readArticle(article)
 
                 expect(feedRepository.lastArticleMarkedRead).to(beNil())
             }
@@ -152,8 +152,8 @@ class ArticleUseCaseSpec: QuickSpec {
                 }
 
                 it("is prefixed with the proper css") {
-                    let cssURL = bundle.URLForResource(themeRepository.articleCSSFileName, withExtension: "css")!
-                    let css = try! String(contentsOfURL: cssURL, encoding: String.Encoding.utf8)
+                    let cssURL = bundle.url(forResource: themeRepository.articleCSSFileName, withExtension: "css")!
+                    let css = try! String(contentsOf: cssURL)
 
                     let expectedPrefix = "<html><head>" +
                         "<style type=\"text/css\">\(css)</style>" +
@@ -165,7 +165,7 @@ class ArticleUseCaseSpec: QuickSpec {
 
                 it("is postfixed with prismJS") {
                     let prismURL = bundle.url(forResource: "prism.js", withExtension: "html")!
-                    let prismJS = try! String(contentsOfURL: prismURL, encoding: String.Encoding.utf8)
+                    let prismJS = try! String(contentsOf: prismURL)
                     expect(html.hasSuffix(prismJS + "</body></html>")) == true
                 }
 
@@ -178,8 +178,8 @@ class ArticleUseCaseSpec: QuickSpec {
                 }
 
                 it("is properly structured") {
-                    let cssURL = bundle.URLForResource(themeRepository.articleCSSFileName, withExtension: "css")!
-                    let css = try! String(contentsOfURL: cssURL, encoding: String.Encoding.utf8)
+                    let cssURL = bundle.url(forResource: themeRepository.articleCSSFileName, withExtension: "css")!
+                    let css = try! String(contentsOf: cssURL)
 
                     let expectedPrefix = "<html><head>" +
                         "<style type=\"text/css\">\(css)</style>" +
@@ -187,7 +187,7 @@ class ArticleUseCaseSpec: QuickSpec {
                     "</head><body>"
 
                     let prismURL = bundle.url(forResource: "prism.js", withExtension: "html")!
-                    let prismJS = try! String(contentsOfURL: prismURL, encoding: String.Encoding.utf8)
+                    let prismJS = try! String(contentsOf: prismURL)
 
                     let expectedPostfix = prismJS + "</body></html>"
 

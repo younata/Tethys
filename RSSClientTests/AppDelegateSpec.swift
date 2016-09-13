@@ -6,20 +6,20 @@ import rNewsKit
 import CoreSpotlight
 import Result
 
-private class FakeBackgroundFetchHandler: BackgroundFetchHandler {
-    private var performFetchCalled = false
-    private func performFetch(notificationHandler: NotificationHandler, notificationSource: LocalNotificationSource, completionHandler: (UIBackgroundFetchResult) -> Void) {
+fileprivate class FakeBackgroundFetchHandler: BackgroundFetchHandler {
+    fileprivate var performFetchCalled = false
+    fileprivate func performFetch(_ notificationHandler: NotificationHandler, notificationSource: LocalNotificationSource, completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         performFetchCalled = true
     }
 
-    private var handleEventsCalled = false
+    fileprivate var handleEventsCalled = false
 }
 
 class AppDelegateSpec: QuickSpec {
     override func spec() {
         var subject: AppDelegate! = nil
         
-        let application = UIApplication.sharedApplication()
+        let application = UIApplication.shared
         var injector: Ra.Injector! = nil
 
         var dataUseCase: FakeDatabaseUseCase! = nil
@@ -33,39 +33,39 @@ class AppDelegateSpec: QuickSpec {
 
             injector = Ra.Injector()
 
-            injector.bind(kMainQueue, toInstance: FakeOperationQueue())
-            injector.bind(kBackgroundQueue, toInstance: FakeOperationQueue())
+            injector.bind(string: kMainQueue, toInstance: FakeOperationQueue())
+            injector.bind(string: kBackgroundQueue, toInstance: FakeOperationQueue())
 
             dataUseCase = FakeDatabaseUseCase()
-            injector.bind(DatabaseUseCase.self, toInstance: dataUseCase)
+            injector.bind(kind: DatabaseUseCase.self, toInstance: dataUseCase)
 
-            injector.bind(MigrationUseCase.self, toInstance: FakeMigrationUseCase())
-            injector.bind(ImportUseCase.self, toInstance: FakeImportUseCase())
+            injector.bind(kind: MigrationUseCase.self, toInstance: FakeMigrationUseCase())
+            injector.bind(kind: ImportUseCase.self, toInstance: FakeImportUseCase())
 
             analytics = FakeAnalytics()
-            injector.bind(Analytics.self, toInstance: analytics)
+            injector.bind(kind: Analytics.self, toInstance: analytics)
 
-            InjectorModule().configureInjector(injector)
+            InjectorModule().configureInjector(injector: injector)
 
             notificationHandler = FakeNotificationHandler()
-            injector.bind(NotificationHandler.self, toInstance: notificationHandler)
+            injector.bind(kind: NotificationHandler.self, toInstance: notificationHandler)
 
             backgroundFetchHandler = FakeBackgroundFetchHandler()
-            injector.bind(BackgroundFetchHandler.self, toInstance: backgroundFetchHandler)
+            injector.bind(kind: BackgroundFetchHandler.self, toInstance: backgroundFetchHandler)
 
             subject.anInjector = injector
-            subject.window = UIWindow(frame: CGRectMake(0, 0, 320, 480))
+            subject.window = UIWindow(frame: CGRect(x: 0, y: 0, width: 320, height: 480))
         }
         
         describe("-application:didFinishLaunchingWithOptions:") {
             it("should enable notifications") {
-                subject.application(application, didFinishLaunchingWithOptions: ["test": true])
+                subject.application(application, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsKey(rawValue: "test"): true])
 
                 expect(notificationHandler.enableNotificationsCallCount) == 1
             }
 
             it("tells analytics that the app was launched") {
-                subject.application(application, didFinishLaunchingWithOptions: ["test": true])
+                subject.application(application, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsKey(rawValue: "test"): true])
                 expect(analytics.logEventCallCount) == 1
                 if (analytics.logEventCallCount > 0) {
                     expect(analytics.logEventArgsForCall(0).0) == "SessionBegan"
@@ -74,7 +74,7 @@ class AppDelegateSpec: QuickSpec {
             }
 
             it("should add the UIApplication object to the dataWriter's subscribers") {
-                subject.application(application, didFinishLaunchingWithOptions: ["test": true])
+                subject.application(application, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsKey(rawValue: "test"): true])
 
                 var applicationInSubscribers = false
                 for subscriber in dataUseCase.subscribers.allObjects {
@@ -90,7 +90,7 @@ class AppDelegateSpec: QuickSpec {
                 var splitViewController: UISplitViewController! = nil
                 
                 beforeEach {
-                    subject.application(application, didFinishLaunchingWithOptions: ["test": true])
+                    subject.application(application, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsKey(rawValue: "test"): true])
 
                     splitViewController = subject.window!.rootViewController as! UISplitViewController
                 }
@@ -124,7 +124,7 @@ class AppDelegateSpec: QuickSpec {
         describe("Quick actions") {
             var completedAction: Bool? = nil
             beforeEach {
-                subject.application(application, didFinishLaunchingWithOptions: ["test": true, UIApplicationLaunchOptionsShortcutItemKey: ""])
+                _ = subject.application(application, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsKey(rawValue: "test"): true, UIApplicationLaunchOptionsKey.shortcutItem: ""])
 
                 completedAction = nil
             }
@@ -133,7 +133,7 @@ class AppDelegateSpec: QuickSpec {
                 beforeEach {
                     let shortCut = UIApplicationShortcutItem(type: "com.rachelbrindle.RSSClient.newfeed", localizedTitle: "Add New Feed")
 
-                    subject.application(application, performActionForShortcutItem: shortCut) {completed in
+                    subject.application(application, performActionFor: shortCut) {completed in
                         completedAction = completed
                     }
                 }
@@ -167,7 +167,7 @@ class AppDelegateSpec: QuickSpec {
                         icon: nil,
                         userInfo: ["feed": feed.title])
 
-                    subject.application(application, performActionForShortcutItem: shortCut) {completed in
+                    subject.application(application, performActionFor: shortCut) {completed in
                         completedAction = completed
                     }
                 }
@@ -213,7 +213,7 @@ class AppDelegateSpec: QuickSpec {
 
                 describe("when the promise fails") {
                     beforeEach {
-                        dataUseCase.feedsPromises.last?.resolve(.failure(.Unknown))
+                        dataUseCase.feedsPromises.last?.resolve(.failure(.unknown))
                     }
 
                     it("does nothing and returns false") {
@@ -226,7 +226,7 @@ class AppDelegateSpec: QuickSpec {
         describe("Local notifications") {
             describe("receiving notifications") {
                 beforeEach {
-                    subject.application(UIApplication.sharedApplication(), didReceiveLocalNotification: UILocalNotification())
+                    subject.application(UIApplication.shared, didReceive: UILocalNotification())
                 }
                 it("should forward to the notification handler") {
                     expect(notificationHandler.handleLocalNotificationCallCount) == 1
@@ -237,13 +237,13 @@ class AppDelegateSpec: QuickSpec {
                 var completionHandlerCalled: Bool = false
                 beforeEach {
                     completionHandlerCalled = false
-                    subject.application(UIApplication.sharedApplication(), handleActionWithIdentifier: "read", forLocalNotification: UILocalNotification()) {
+                    subject.application(UIApplication.shared, handleActionWithIdentifier: "read", for: UILocalNotification()) {
                         completionHandlerCalled = true
                     }
                 }
                 it("should forward to the notification handler") {
                     expect(notificationHandler.handleActionCallCount) == 1
-                    expect(notificationHandler.handleActionArgsForCall(0).0).to(equal("read"))
+                    expect(notificationHandler.handleActionArgsForCall(callIndex: 0).0).to(equal("read"))
                 }
                 it("should call the completionHandler") {
                     expect(completionHandlerCalled) == true
@@ -253,7 +253,7 @@ class AppDelegateSpec: QuickSpec {
 
         describe("background fetch") {
             beforeEach {
-                subject.application(UIApplication.sharedApplication()) {res in }
+                subject.application(UIApplication.shared) {res in }
             }
 
             it("should forward the call to the backgroundFetchHandler") {
@@ -269,8 +269,7 @@ class AppDelegateSpec: QuickSpec {
                 let feed = Feed(title: "title", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
                 article = Article(title: "title", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
                 feed.addArticle(article)
-//                dataRepository.feedsList = [feed]
-                subject.application(UIApplication.sharedApplication(), didFinishLaunchingWithOptions: nil)
+                _ = subject.application(UIApplication.shared, didFinishLaunchingWithOptions: nil)
             }
 
             describe("normal user activities") {
@@ -280,7 +279,7 @@ class AppDelegateSpec: QuickSpec {
                         "feed": "feed",
                         "article": "identifier",
                     ]
-                    expect(subject.application(UIApplication.sharedApplication(), continueUserActivity: activity) {responders in
+                    expect(subject.application(UIApplication.shared, continue: activity) {responders in
                         responderArray = responders as? [UIResponder] ?? []
                     }) == true
                 }
@@ -294,7 +293,7 @@ class AppDelegateSpec: QuickSpec {
                 beforeEach {
                     let activity = NSUserActivity(activityType: CSSearchableItemActionType)
                     activity.userInfo = [CSSearchableItemActivityIdentifier: "identifier"]
-                    expect(subject.application(UIApplication.sharedApplication(), continueUserActivity: activity) {responders in
+                    expect(subject.application(UIApplication.shared, continue: activity) {responders in
                         responderArray = responders as? [UIResponder] ?? []
                     }) == true
                 }

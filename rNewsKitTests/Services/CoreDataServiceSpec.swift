@@ -11,7 +11,7 @@ import Result
 func coreDataEntities(_ entity: String,
     matchingPredicate predicate: NSPredicate,
     managedObjectContext: NSManagedObjectContext) -> [NSManagedObject] {
-        let request = NSFetchRequest()
+        let request = NSFetchRequest<NSManagedObject>()
         request.entity = NSEntityDescription.entity(forEntityName: entity,
             in: managedObjectContext)
         request.predicate = predicate
@@ -43,14 +43,9 @@ class CoreDataServiceSpec: QuickSpec {
 
         describe("create operations") {
             it("new feed creates a new feed object") {
-                let expectation = self.expectation(withDescription: "Create Feed")
-
-                subject.createFeed { feed in
+                _ = subject.createFeed { feed in
                     feed.title = "Hello"
-                    expectation.fulfill()
-                }
-
-                self.waitForExpectations(withTimeout: 1, handler: nil)
+                }.wait()
 
                 let managedObjects = coreDataEntities("Feed", matchingPredicate: NSPredicate(value: true), managedObjectContext: objectContext)
                 expect(managedObjects is [CoreDataFeed]) == true
@@ -61,14 +56,14 @@ class CoreDataServiceSpec: QuickSpec {
             }
 
             it("new article creates a new article object") {
-                let expectation = self.expectation(withDescription: "Create Article")
+                let expectation = self.expectation(description: "Create Article")
 
                 subject.createArticle(nil) { article in
                     article.title = "Hello"
                     expectation.fulfill()
                 }
 
-                self.waitForExpectations(withTimeout: 1, handler: nil)
+                self.waitForExpectations(timeout: 1, handler: nil)
 
                 let managedObjects = coreDataEntities("Article", matchingPredicate: NSPredicate(value: true), managedObjectContext: objectContext)
                 expect(managedObjects is [CoreDataArticle]) == true
@@ -91,16 +86,16 @@ class CoreDataServiceSpec: QuickSpec {
                 let articleDescription = NSEntityDescription.entity(forEntityName: "Article", in: objectContext)!
 
                 objectContext.performAndWait {
-                    let cdfeed1 = CoreDataFeed(entity: feedDescription, insertIntoManagedObjectContext: objectContext)
-                    let cdfeed2 = CoreDataFeed(entity: feedDescription, insertIntoManagedObjectContext: objectContext)
+                    let cdfeed1 = CoreDataFeed(entity: feedDescription, insertInto: objectContext)
+                    let cdfeed2 = CoreDataFeed(entity: feedDescription, insertInto: objectContext)
                     cdfeed1.title = "feed1"
                     cdfeed1.url = ""
                     cdfeed2.title = "feed2"
                     cdfeed2.url = ""
 
-                    let cdarticle1 = CoreDataArticle(entity: articleDescription, insertIntoManagedObjectContext: objectContext)
-                    let cdarticle2 = CoreDataArticle(entity: articleDescription, insertIntoManagedObjectContext: objectContext)
-                    let cdarticle3 = CoreDataArticle(entity: articleDescription, insertIntoManagedObjectContext: objectContext)
+                    let cdarticle1 = CoreDataArticle(entity: articleDescription, insertInto: objectContext)
+                    let cdarticle2 = CoreDataArticle(entity: articleDescription, insertInto: objectContext)
+                    let cdarticle3 = CoreDataArticle(entity: articleDescription, insertInto: objectContext)
 
                     cdarticle1.title = "article1"
                     cdarticle1.link = "https://example.com/article1"
@@ -126,47 +121,47 @@ class CoreDataServiceSpec: QuickSpec {
 
             describe("read operations") {
                 it("reads the feeds based on the predicate") {
-                    let allExpectation = self.expectation(withDescription: "Read all feeds")
-                    subject.allFeeds().then {
+                    let allExpectation = self.expectation(description: "Read all feeds")
+                    _ = subject.allFeeds().then {
                         guard case let Result.success(feeds) = $0 else { return }
                         expect(Array(feeds)) == [feed1, feed2]
                         allExpectation.fulfill()
                     }
 
-                    self.waitForExpectations(withTimeout: 1, handler: nil)
+                    self.waitForExpectations(timeout: 1, handler: nil)
                 }
 
                 it("reads the articles based on the predicate") {
-                    let allExpectation = self.expectation(withDescription: "Read all articles")
-                    subject.articlesMatchingPredicate(NSPredicate(value: true)).then {
+                    let allExpectation = self.expectation(description: "Read all articles")
+                    _ = subject.articlesMatchingPredicate(NSPredicate(value: true)).then {
                         guard case let Result.success(articles) = $0 else { return }
                         expect(Array(articles)) == [article1, article2, article3]
                         allExpectation.fulfill()
                     }
 
-                    let someExpectation = self.expectation(withDescription: "Read some articles")
-                    subject.articlesMatchingPredicate(NSPredicate(format: "feed == %@", feed1.feedID as! NSManagedObjectID)).then {
+                    let someExpectation = self.expectation(description: "Read some articles")
+                    _ = subject.articlesMatchingPredicate(NSPredicate(format: "feed == %@", feed1.feedID as! NSManagedObjectID)).then {
                         guard case let Result.success(articles) = $0 else { return }
                         expect(Array(articles)) == [article1, article2]
                         someExpectation.fulfill()
                     }
 
-                    self.waitForExpectations(withTimeout: 1, handler: nil)
+                    self.waitForExpectations(timeout: 1, handler: nil)
                 }
             }
 
             describe("delete operations") {
                 it("deletes feeds") {
-                    let expectation = self.expectation(withDescription: "delete feed")
+                    let expectation = self.expectation(description: "delete feed")
 
                     let articleIdentifiers = feed1.articlesArray.map { $0.identifier }
 
-                    subject.deleteFeed(feed1).then {
+                    _ = subject.deleteFeed(feed1).then {
                         guard case Result.success() = $0 else { return }
                         expectation.fulfill()
                     }
 
-                    self.waitForExpectations(withTimeout: 1, handler: nil)
+                    self.waitForExpectations(timeout: 1, handler: nil)
 
                     #if os(iOS)
                         expect(searchIndex.lastItemsDeleted) == articleIdentifiers
@@ -177,14 +172,14 @@ class CoreDataServiceSpec: QuickSpec {
                 }
 
                 it("deletes articles") {
-                    let expectation = self.expectation(withDescription: "delete article")
+                    let expectation = self.expectation(description: "delete article")
 
-                    subject.deleteArticle(article1).then {
+                    _ = subject.deleteArticle(article1).then {
                         guard case Result.success() = $0 else { return }
                         expectation.fulfill()
                     }
 
-                    self.waitForExpectations(withTimeout: 1, handler: nil)
+                    self.waitForExpectations(timeout: 1, handler: nil)
 
                     let articles = coreDataEntities("Article", matchingPredicate: NSPredicate(format: "SELF == %@", article1.articleID as! NSManagedObjectID), managedObjectContext: objectContext)
 

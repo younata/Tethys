@@ -6,7 +6,7 @@ class FakeUpdateService: UpdateServiceType {
     var updatedFeeds: [Feed] = []
     var updateFeedCallbacks: [((Feed, NSError?) -> Void)] = []
 
-    func updateFeed(_ feed: Feed, callback: (Feed, NSError?) -> Void) {
+    func updateFeed(_ feed: Feed, callback: @escaping (Feed, NSError?) -> Void) {
         self.updatedFeeds.append(feed)
         self.updateFeedCallbacks.append(callback)
     }
@@ -22,7 +22,7 @@ class FakeUpdateService: UpdateServiceType {
     func updateFeedsArgsForCall(_ callIndex: Int) -> (((Int, Int) -> Void)) {
         return self.updateFeedsArgs[callIndex]
     }
-    func updateFeeds(_ progress: ((Int, Int) -> Void)) -> (Future<Result<[rNewsKit.Feed], RNewsError>>) {
+    func updateFeeds(_ progress: @escaping ((Int, Int) -> Void)) -> (Future<Result<[rNewsKit.Feed], RNewsError>>) {
         self.updateFeedsCallCount += 1
         self.updateFeedsArgs.append((progress))
         return self.updateFeedsStub!()

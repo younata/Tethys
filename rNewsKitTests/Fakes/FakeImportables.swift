@@ -2,7 +2,7 @@
 
 struct FakeImportableFeed: ImportableFeed {
     let title: String
-    let link: URL
+    let url: URL
     let description: String
     let lastUpdated: Date
     let imageURL: URL?
@@ -15,7 +15,7 @@ struct FakeImportableFeed: ImportableFeed {
 
     init(title: String, link: URL, description: String, lastUpdated: Date, imageURL: URL?, articles: [FakeImportableArticle] = []) {
         self.title = title
-        self.link = link
+        self.url = link
         self.description = description
         self.lastUpdated = lastUpdated
         self.imageURL = imageURL

@@ -12,7 +12,7 @@ class FakeImportUseCase : ImportUseCase {
     func scanDirectoryForImportablesArgsForCall(callIndex: Int) -> (URL, ImportUseCaseScanDirectoryCompletion) {
         return self.scanDirectoryForImportablesArgs[callIndex]
     }
-    func scanDirectoryForImportables(url: URL, callback: ImportUseCaseScanDirectoryCompletion) {
+    func scanDirectoryForImportables(_ url: URL, callback: @escaping ImportUseCaseScanDirectoryCompletion) {
         self.scanDirectoryForImportablesCallCount += 1
         self.scanDirectoryForImportablesArgs.append((url, callback))
     }
@@ -22,7 +22,7 @@ class FakeImportUseCase : ImportUseCase {
     func scanForImportableArgsForCall(callIndex: Int) -> (URL, ImportUseCaseScanCompletion) {
         return self.scanForImportableArgs[callIndex]
     }
-    func scanForImportable(url: URL, callback: ImportUseCaseScanCompletion) {
+    func scanForImportable(_ url: URL, callback: @escaping ImportUseCaseScanCompletion) {
         self.scanForImportableCallCount += 1
         self.scanForImportableArgs.append((url, callback))
     }
@@ -32,7 +32,7 @@ class FakeImportUseCase : ImportUseCase {
     func importItemArgsForCall(callIndex: Int) -> (URL, ImportUseCaseImport) {
         return self.importItemArgs[callIndex]
     }
-    func importItem(url: URL, callback: ImportUseCaseImport) {
+    func importItem(_ url: URL, callback: @escaping ImportUseCaseImport) {
         self.importItemCallCount += 1
         self.importItemArgs.append((url, callback))
     }

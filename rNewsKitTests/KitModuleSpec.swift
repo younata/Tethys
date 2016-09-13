@@ -15,32 +15,32 @@ class KitModuleSpec: QuickSpec {
         }
 
         it("binds the main operation queue to kMainQueue") {
-            expect(injector.create(kMainQueue) as? NSOperationQueue).to(beIdenticalTo(NSOperationQueue.mainQueue()))
+            expect(injector.create(string: kMainQueue) as? OperationQueue).to(beIdenticalTo(OperationQueue.main))
         }
 
         it("binds a single background queue") {
-            expect(injector.create(kBackgroundQueue) as? NSObject).to(beIdenticalTo(injector.create(kBackgroundQueue) as? NSObject))
+            expect(injector.create(string: kBackgroundQueue) as? NSObject).to(beIdenticalTo(injector.create(string: kBackgroundQueue) as? NSObject))
         }
 
         #if os(iOS)
             it("binds a searchIndex") {
-                expect(injector.create(SearchIndex)! === CSSearchableIndex.defaultSearchableIndex()) == true
+                expect(injector.create(kind: SearchIndex.self)! === CSSearchableIndex.default()) == true
             }
         #endif
 
         it("binds a URLSession to the shared session") {
-            let urlSession = injector.create(URLSession)
+            let urlSession = injector.create(kind: URLSession.self)
             expect(urlSession).toNot(beNil())
 
-            expect(urlSession) === URLSession.sharedSession()
+            expect(urlSession) === URLSession.shared
         }
 
         it("binds a DatabaseUseCase") {
-            expect(injector.create(DatabaseUseCase.self) is DefaultDatabaseUseCase) == true
+            expect(injector.create(kind: DatabaseUseCase.self) is DefaultDatabaseUseCase) == true
         }
 
         it("binds an opml manager with a singleton scope") {
-            expect(injector.create(OPMLService)).to(beIdenticalTo(injector.create(OPMLService)))
+            expect(injector.create(kind: OPMLService.self)).to(beIdenticalTo(injector.create(kind: OPMLService.self)))
         }
     }
 }

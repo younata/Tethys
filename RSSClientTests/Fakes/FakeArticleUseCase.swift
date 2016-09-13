@@ -13,7 +13,7 @@ class FakeArticleUseCase : ArticleUseCase {
     func articlesByAuthorArgsForCall(_ callIndex: Int) -> (Author, (DataStoreBackedArray<Article>) -> Void) {
         return self.articlesByAuthorArgs[callIndex]
     }
-    func articlesByAuthor(_ author: Author, callback: (DataStoreBackedArray<Article>) -> Void) {
+    func articlesByAuthor(_ author: Author, callback: @escaping (DataStoreBackedArray<Article>) -> Void) {
         self.articlesByAuthorCallCount += 1
         self.articlesByAuthorArgs.append((author, callback))
     }

@@ -12,7 +12,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
         var subject: FeedsTableViewController! = nil
         var dataUseCase: FakeDatabaseUseCase! = nil
         var navigationController: UINavigationController! = nil
-        var themeRepository: FakeThemeRepository! = nil
+        var themeRepository: ThemeRepository! = nil
         var settingsRepository: SettingsRepository! = nil
         var analytics: FakeAnalytics! = nil
 
@@ -24,22 +24,22 @@ class FeedsTableViewControllerSpec: QuickSpec {
             let injector = Injector()
 
             dataUseCase = FakeDatabaseUseCase()
-            injector.bind(DatabaseUseCase.self, toInstance: dataUseCase)
+            injector.bind(kind: DatabaseUseCase.self, toInstance: dataUseCase)
 
             settingsRepository = SettingsRepository(userDefaults: nil)
-            injector.bind(SettingsRepository.self, toInstance: settingsRepository)
+            injector.bind(kind: SettingsRepository.self, toInstance: settingsRepository)
 
-            themeRepository = FakeThemeRepository()
-            injector.bind(ThemeRepository.self, toInstance: themeRepository)
+            themeRepository = ThemeRepository(userDefaults: nil)
+            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
 
-            injector.bind(QuickActionRepository.self, toInstance: FakeQuickActionRepository())
-            injector.bind(ImportUseCase.self, toInstance: FakeImportUseCase())
+            injector.bind(kind: QuickActionRepository.self, toInstance: FakeQuickActionRepository())
+            injector.bind(kind: ImportUseCase.self, toInstance: FakeImportUseCase())
             analytics = FakeAnalytics()
-            injector.bind(Analytics.self, toInstance: analytics)
+            injector.bind(kind: Analytics.self, toInstance: analytics)
 
-            injector.bind(AccountRepository.self, toInstance: FakeAccountRepository())
+            injector.bind(kind: AccountRepository.self, toInstance: FakeAccountRepository())
 
-            subject = injector.create(FeedsTableViewController)
+            subject = injector.create(kind: FeedsTableViewController.self)
 
             navigationController = UINavigationController(rootViewController: subject)
 
@@ -57,12 +57,12 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
             it("dismisses the keyboard upon drag") {
                 expect(subject.view).toNot(beNil())
-                expect(subject.tableView.keyboardDismissMode).to(equal(UIScrollViewKeyboardDismissMode.OnDrag))
+                expect(subject.tableView.keyboardDismissMode).to(equal(UIScrollViewKeyboardDismissMode.onDrag))
             }
 
             describe("listening to theme repository updates") {
                 beforeEach {
-                    themeRepository.theme = .Dark
+                    themeRepository.theme = .dark
                 }
 
                 it("updates the tableView") {
@@ -115,7 +115,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     }
 
                     it("should unhide the updateBar") {
-                        expect(subject.updateBar.hidden) == false
+                        expect(subject.updateBar.isHidden) == false
                     }
 
                     it("should set the updateBar progress to 0") {
@@ -141,7 +141,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             }
 
                             it("should hide the updateBar") {
-                                expect(subject.updateBar.hidden) == true
+                                expect(subject.updateBar.isHidden) == true
                             }
 
                             it("should stop the pull to refresh") {
@@ -157,7 +157,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                 context("marking an article as read") {
                     beforeEach {
-                        subject.presentViewController(UIViewController(), animated: false, completion: nil)
+                        subject.present(UIViewController(), animated: false, completion: nil)
 
                         let article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
                         subscriber?.markedArticles([article], asRead: true)
@@ -182,7 +182,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
             describe("Key Commands") {
                 it("can become first responder") {
-                    expect(subject.canBecomeFirstResponder()) == true
+                    expect(subject.canBecomeFirstResponder) == true
                 }
 
                 it("have a list of key commands") {
@@ -194,10 +194,10 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                     // cmd+f, cmd+i, cmd+shift+i, cmd+opt+i
                     let expectedCommands = [
-                        UIKeyCommand(input: "f", modifierFlags: .Command, action: Selector()),
-                        UIKeyCommand(input: "i", modifierFlags: .Command, action: Selector()),
-                        UIKeyCommand(input: "i", modifierFlags: [.Command, .Shift], action: Selector()),
-                        UIKeyCommand(input: ",", modifierFlags: .Command, action: Selector()),
+                        UIKeyCommand(input: "f", modifierFlags: .command, action: Selector("")),
+                        UIKeyCommand(input: "i", modifierFlags: .command, action: Selector("")),
+                        UIKeyCommand(input: "i", modifierFlags: [.command, .shift], action: Selector("")),
+                        UIKeyCommand(input: ",", modifierFlags: .command, action: Selector("")),
                         ]
                     let expectedDiscoverabilityTitles = [
                         "Filter by tags",
@@ -207,7 +207,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                         ]
 
                     expect(commands.count).to(equal(expectedCommands.count))
-                    for (idx, cmd) in commands.enumerate() {
+                    for (idx, cmd) in commands.enumerated() {
                         let expectedCmd = expectedCommands[idx]
                         expect(cmd.input).to(equal(expectedCmd.input))
                         expect(cmd.modifierFlags).to(equal(expectedCmd.modifierFlags))
@@ -237,13 +237,13 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 beforeEach {
                     addButton = subject.navigationItem.rightBarButtonItems?.first
                     addButton.tap()
-                    buttons = subject.dropDownMenu.valueForKey("_buttons") as? [UIButton] ?? []
+                    buttons = subject.dropDownMenu.value(forKey: "_buttons") as? [UIButton] ?? []
                     expect(buttons).toNot(beEmpty())
                 }
 
                 afterEach {
-                    navigationController.popToRootViewControllerAnimated(false)
-                    subject.dropDownMenu.closeAnimated(false)
+                    navigationController.popToRootViewController(animated: false)
+                    subject.dropDownMenu.close(animated: false)
                 }
 
                 it("should bring up the dropDownMenu") {
@@ -251,15 +251,15 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 }
 
                 it("should have 2 options") {
-                    subject.dropDownMenu.closeAnimated(false)
+                    subject.dropDownMenu.close(animated: false)
 
                     addButton = subject.navigationItem.rightBarButtonItems?.first
                     addButton.tap()
-                    buttons = subject.dropDownMenu.valueForKey("_buttons") as? [UIButton] ?? []
+                    buttons = subject.dropDownMenu.value(forKey: "_buttons") as? [UIButton] ?? []
                     expect(buttons).toNot(beEmpty())
 
                     let expectedTitles = ["Add from Web", "Add from Local"]
-                    let titles: [String] = buttons.map { $0.titleForState(.Normal) ?? "" }
+                    let titles: [String] = buttons.map { $0.title(for: .normal) ?? "" }
                     expect(titles).to(equal(expectedTitles))
                 }
 
@@ -276,7 +276,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 context("tapping on add from web") {
                     beforeEach {
                         let button = buttons[0]
-                        button.sendActionsForControlEvents(UIControlEvents.TouchUpInside)
+                        button.sendActions(for: UIControlEvents.touchUpInside)
                         (subject.presentedViewController as? UINavigationController)?.topViewController?.view
                     }
 
@@ -295,7 +295,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 context("tapping on add from local") {
                     beforeEach {
                         let button = buttons[1]
-                        button.sendActionsForControlEvents(UIControlEvents.TouchUpInside)
+                        button.sendActions(for: UIControlEvents.touchUpInside)
                     }
 
                     it("should close the dropDownMenu") {
@@ -342,7 +342,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                 }
 
                                 it("should filter feeds down to only those with tags that match the search string") {
-                                    expect(subject.tableView.numberOfRowsInSection(0)) == 1
+                                    expect(subject.tableView.numberOfRows(inSection: 0)) == 1
 
                                     if let cell = subject.tableView.visibleCells.first as? FeedTableCell {
                                         expect(cell.feed) == feeds[0]
@@ -410,7 +410,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                             it("reloads the tableView when the promise returns") {
                                 dataUseCase.feedsPromises.last?.resolve(.success(feeds + [feed3]))
-                                expect(subject.tableView.numberOfRowsInSection(0)) == 2 // cause it was 1
+                                expect(subject.tableView.numberOfRows(inSection: 0)) == 2 // cause it was 1
                             }
                         }
 
@@ -435,7 +435,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             }
                             
                             it("should bring up an alert notifying the user") {
-                                expect(subject.notificationView.titleLabel.hidden) == false
+                                expect(subject.notificationView.titleLabel.isHidden) == false
                                 expect(subject.notificationView.titleLabel.text).to(equal("Unable to update feeds"))
                                 expect(subject.notificationView.messageLabel.text).to(equal("foo: The request timed out."))
                             }
@@ -444,7 +444,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                     describe("the tableView") {
                         it("should have a row for each feed") {
-                            expect(subject.tableView.numberOfRowsInSection(0)) == feeds.count
+                            expect(subject.tableView.numberOfRows(inSection: 0)) == feeds.count
                         }
 
                         describe("a cell") {
@@ -469,9 +469,9 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                                 describe("tapping on a cell") {
                                     beforeEach {
-                                        let indexPath = NSIndexPath(forRow: 0, inSection: 0)
+                                        let indexPath = IndexPath(row: 0, section: 0)
                                         if let _ = cell {
-                                            subject.tableView(subject.tableView, didSelectRowAtIndexPath: indexPath)
+                                            subject.tableView(subject.tableView, didSelectRowAt: indexPath)
                                         }
                                     }
 
@@ -488,9 +488,9 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                     var viewController: UIViewController? = nil
 
                                     beforeEach {
-                                        viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRectZero, delegate: subject)
+                                        viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
 
-                                        let rect = subject.tableView.rectForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0))
+                                        let rect = subject.tableView.rectForRow(at: IndexPath(row: 0, section: 0))
                                         let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
                                         viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
                                     }
@@ -504,7 +504,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                                     it("should push the view controller when commited") {
                                         if let vc = viewController {
-                                            subject.previewingContext(viewControllerPreviewing, commitViewController: vc)
+                                            subject.previewingContext(viewControllerPreviewing, commit: vc)
                                             expect(navigationController.topViewController) === viewController
                                         }
                                     }
@@ -513,11 +513,11 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                 describe("exposing edit actions") {
                                     var actions: [UITableViewRowAction] = []
                                     var action: UITableViewRowAction? = nil
-                                    let indexPath = NSIndexPath(forRow: 0, inSection: 0)
+                                    let indexPath = IndexPath(row: 0, section: 0)
                                     beforeEach {
                                         action = nil
                                         if let _ = cell {
-                                            actions = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath) ?? []
+                                            actions = subject.tableView(subject.tableView, editActionsForRowAt: indexPath) ?? []
                                         }
                                     }
 
@@ -546,7 +546,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                             it("presents an alert asking for confirmation that the user wants to do this") {
                                                 expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                                                 guard let alert = subject.presentedViewController as? UIAlertController else { return }
-                                                expect(alert.preferredStyle) == UIAlertControllerStyle.Alert
+                                                expect(alert.preferredStyle) == UIAlertControllerStyle.alert
                                                 expect(alert.title) == "Delete \(feed.displayTitle)?"
 
                                                 expect(alert.actions.count) == 2
@@ -697,7 +697,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
             xdescribe("when the feeds promise fails") { // TODO: Implement!
                 beforeEach {
                     UIView.pauseAnimations()
-                    dataUseCase.feedsPromises.first?.resolve(.failure(.Unknown))
+                    dataUseCase.feedsPromises.first?.resolve(.failure(.unknown))
                 }
 
                 afterEach {
@@ -713,7 +713,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                 }
 
                 it("brings up an alert notifying the user") {
-                    expect(subject.notificationView.titleLabel.hidden) == false
+                    expect(subject.notificationView.titleLabel.isHidden) == false
                     expect(subject.notificationView.titleLabel.text) == "Error"
                     expect(subject.notificationView.messageLabel.text) == "Unknown Error"
                 }

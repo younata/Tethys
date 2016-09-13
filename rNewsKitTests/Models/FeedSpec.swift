@@ -13,7 +13,7 @@ class FeedSpec: QuickSpec {
             let realmConf = Realm.Configuration(inMemoryIdentifier: "FeedSpec")
             realm = try! Realm(configuration: realmConf)
             try! realm.write {
-                realm.deleteAll()
+                realm.deleteAllObjects()
             }
 
             subject = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [],
@@ -76,8 +76,8 @@ class FeedSpec: QuickSpec {
         describe("Equatable") {
             it("should report two feeds created with a coredatafeed with the same feedID as equal") {
                 let ctx = managedObjectContext()
-                let a = createFeed(ctx)
-                let b = createFeed(ctx)
+                let a = createFeed(managedObjectContext: ctx)
+                let b = createFeed(managedObjectContext: ctx)
 
                 expect(Feed(coreDataFeed: a)).toNot(equal(Feed(coreDataFeed: b)))
                 expect(Feed(coreDataFeed: a)).to(equal(Feed(coreDataFeed: a)))
@@ -111,8 +111,8 @@ class FeedSpec: QuickSpec {
         describe("Hashable") {
             it("should report two feeds created with a coredatafeed with the same feedID as having the same hashValue") {
                 let ctx = managedObjectContext()
-                let a = createFeed(ctx)
-                let b = createFeed(ctx)
+                let a = createFeed(managedObjectContext: ctx)
+                let b = createFeed(managedObjectContext: ctx)
 
                 expect(Feed(coreDataFeed: a).hashValue).toNot(equal(Feed(coreDataFeed: b).hashValue))
                 expect(Feed(coreDataFeed: a).hashValue).to(equal(Feed(coreDataFeed: a).hashValue))

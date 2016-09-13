@@ -11,7 +11,7 @@ class FakeDatabaseUseCase: DatabaseUseCase {
 
     var performDatabaseUpdatesProgress: ((Double) -> Void)?
     var perfomDatabaseUpdatesCallback: ((Void) -> Void)?
-    func performDatabaseUpdates(_ progress: (Double) -> Void, callback: (Void) -> Void) {
+    func performDatabaseUpdates(_ progress: @escaping (Double) -> Void, callback: @escaping (Void) -> Void) {
         self.performDatabaseUpdatesProgress = progress
         self.perfomDatabaseUpdatesCallback = callback
     }
@@ -31,7 +31,7 @@ class FakeDatabaseUseCase: DatabaseUseCase {
     }
 
     var articlesOfFeedList = Array<Article>()
-    func articlesOfFeed(_ feed: Feed, matchingSearchQuery: String) -> DataStoreBackedArray<Article> {
+    func articles(feed: Feed, matchingSearchQuery: String) -> DataStoreBackedArray<Article> {
         return DataStoreBackedArray(articlesOfFeedList)
     }
 
@@ -44,18 +44,18 @@ class FakeDatabaseUseCase: DatabaseUseCase {
 
     // MARK: DataWriter
 
-    let subscribers = NSHashTable.weakObjects()
+    let subscribers = NSHashTable<AnyObject>.weakObjects()
     var subscribersArray: [DataSubscriber] {
         return self.subscribers.allObjects.flatMap { $0 as? DataSubscriber }
     }
     func addSubscriber(_ subscriber: DataSubscriber) {
-        self.subscribers.addObject(subscriber)
+        self.subscribers.add(subscriber)
     }
 
     var newFeedCallback: (Feed) -> (Void) = {_ in }
     var didCreateFeed = false
     var newFeedPromises: [Promise<Result<Void, RNewsError>>] = []
-    func newFeed(_ callback: (Feed) -> (Void)) -> Future<Result<Void, RNewsError>> {
+    func newFeed(_ callback: @escaping (Feed) -> (Void)) -> Future<Result<Void, RNewsError>> {
         didCreateFeed = true
         self.newFeedCallback = callback
         let promise = Promise<Result<Void, RNewsError>>()
@@ -118,14 +118,14 @@ class FakeDatabaseUseCase: DatabaseUseCase {
 
     var didUpdateFeeds = false
     var updateFeedsCompletion: ([Feed], [NSError]) -> (Void) = {_ in }
-    func updateFeeds(_ callback: ([Feed], [NSError]) -> (Void)) {
+    func updateFeeds(_ callback: @escaping ([Feed], [NSError]) -> (Void)) {
         didUpdateFeeds = true
         updateFeedsCompletion = callback
     }
 
     var didUpdateFeed: Feed? = nil
     var updateSingleFeedCallback: (Feed, NSError?) -> (Void) = {_ in }
-    func updateFeed(_ feed: Feed, callback: (Feed?, NSError?) -> (Void)) {
+    func updateFeed(_ feed: Feed, callback: @escaping (Feed?, NSError?) -> (Void)) {
         didUpdateFeed = feed
         updateSingleFeedCallback = callback
     }

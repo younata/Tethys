@@ -18,18 +18,18 @@ class BootstrapWorkFlowSpec: QuickSpec {
             migrationUseCase = FakeMigrationUseCase()
 
             let injector = Injector()
-            injector.bind(DatabaseUseCase.self, toInstance: feedRepository)
-            injector.bind(MigrationUseCase.self, toInstance: migrationUseCase)
-            injector.bind(kMainQueue, toInstance: FakeOperationQueue())
+            injector.bind(kind: DatabaseUseCase.self, toInstance: feedRepository)
+            injector.bind(kind: MigrationUseCase.self, toInstance: migrationUseCase)
+            injector.bind(string: kMainQueue, toInstance: FakeOperationQueue())
             let articleUseCase = FakeArticleUseCase()
             articleUseCase.readArticleReturns("")
             articleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.foo"))
-            injector.bind(ArticleUseCase.self, toInstance: articleUseCase)
+            injector.bind(kind: ArticleUseCase.self, toInstance: articleUseCase)
 
             subject = BootstrapWorkFlow(window: window, injector: injector)
         }
 
-        sharedExamples("showing the feeds list") { (sharedContext: SharedExampleContext) in
+        sharedExamples("showing the feeds list") { (sharedContext: @escaping SharedExampleContext) in
             var splitViewController: UISplitViewController?
 
             beforeEach {

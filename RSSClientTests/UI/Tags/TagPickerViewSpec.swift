@@ -23,9 +23,9 @@ class TagPickerViewSpec: QuickSpec {
         let pickerListsTags: ([String]) -> (Void) = {tagsList in
             if let dataSource = subject.picker.dataSource,
                 let delegate = subject.picker.delegate {
-                    expect(dataSource.numberOfComponentsInPickerView(subject.picker)).to(equal(1))
+                    expect(dataSource.numberOfComponents(in: subject.picker)).to(equal(1))
                     expect(dataSource.pickerView(subject.picker, numberOfRowsInComponent: 0)).to(equal(tagsList.count))
-                    for (idx, tag) in tagsList.enumerate() {
+                    for (idx, tag) in tagsList.enumerated() {
                         expect(delegate.pickerView!(subject.picker, attributedTitleForRow: idx, forComponent: 0)?.string).to(equal(tag))
                     }
             }
@@ -38,7 +38,7 @@ class TagPickerViewSpec: QuickSpec {
         describe("filtering results") {
             beforeEach {
                 if let delegate = subject.textField.delegate {
-                    delegate.textField?(subject.textField, shouldChangeCharactersInRange: NSMakeRange(0, 0), replacementString: "a")
+                    delegate.textField?(subject.textField, shouldChangeCharactersIn: NSMakeRange(0, 0), replacementString: "a")
                 }
             }
 

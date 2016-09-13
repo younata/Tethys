@@ -30,7 +30,7 @@ class FeedsListControllerSpec: QuickSpec {
             beforeEach {
                 expect(subject.view).toNot(beNil())
 
-                themeRepository.theme = .Dark
+                themeRepository.theme = .dark
             }
 
             it("should update the tableView") {
@@ -50,10 +50,10 @@ class FeedsListControllerSpec: QuickSpec {
         describe("a cell") {
             var cell: FeedTableCell? = nil
 
-            let indexPath = NSIndexPath(forRow: 0, inSection: 0)
+            let indexPath = IndexPath(row: 0, section: 0)
 
             beforeEach {
-                cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: indexPath) as? FeedTableCell
+                cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: indexPath) as? FeedTableCell
 
                 expect(cell).toNot(beNil())
             }
@@ -73,7 +73,7 @@ class FeedsListControllerSpec: QuickSpec {
                     tappedFeed = feed
                     tappedRow = row
                 }
-                subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
+                subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAt: indexPath)
 
                 expect(tappedFeed).to(equal(feeds[indexPath.row]))
                 expect(tappedRow).to(equal(indexPath.row))
@@ -81,13 +81,13 @@ class FeedsListControllerSpec: QuickSpec {
 
             it("should ask the callback for edit actions") {
                 var feedAskedFor: Feed? = nil
-                let rowAction = UITableViewRowAction(style: .Default, title: "hi", handler: { _ in })
+                let rowAction = UITableViewRowAction(style: .default, title: "hi", handler: { _ in })
                 subject.editActionsForFeed = {feed in
                     feedAskedFor = feed
                     return [rowAction]
                 }
 
-                let rowActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAtIndexPath: indexPath)
+                let rowActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAt: indexPath)
                 expect(rowActions).to(equal([rowAction]))
                 expect(feedAskedFor).to(equal(feeds[indexPath.row]))
             }

@@ -17,28 +17,28 @@ class FindFeedViewControllerSpec: QuickSpec {
         var webView: FakeWebView!
         var importUseCase: FakeImportUseCase!
         var opmlService: FakeOPMLService!
-        var themeRepository: FakeThemeRepository!
+        var themeRepository: ThemeRepository!
         var analytics: FakeAnalytics!
 
         beforeEach {
             injector = Ra.Injector()
 
             feedRepository = FakeDatabaseUseCase()
-            injector.bind(DatabaseUseCase.self, toInstance: feedRepository)
+            injector.bind(kind: DatabaseUseCase.self, toInstance: feedRepository)
 
             importUseCase = FakeImportUseCase()
-            injector.bind(ImportUseCase.self, toInstance: importUseCase)
+            injector.bind(kind: ImportUseCase.self, toInstance: importUseCase)
 
             opmlService = FakeOPMLService()
-            injector.bind(OPMLService.self, toInstance: opmlService)
+            injector.bind(kind: OPMLService.self, toInstance: opmlService)
 
             analytics = FakeAnalytics()
-            injector.bind(Analytics.self, toInstance: analytics)
+            injector.bind(kind: Analytics.self, toInstance: analytics)
 
-            themeRepository = FakeThemeRepository()
-            injector.bind(ThemeRepository.self, toInstance: themeRepository)
+            themeRepository = ThemeRepository(userDefaults: nil)
+            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
 
-            subject = injector.create(FindFeedViewController)!
+            subject = injector.create(kind: FindFeedViewController.self)!
             webView = FakeWebView()
             subject.webContent = webView
 
@@ -49,7 +49,7 @@ class FindFeedViewControllerSpec: QuickSpec {
 
         describe("changing the theme") {
             beforeEach {
-                themeRepository.theme = .Dark
+                themeRepository.theme = .dark
             }
 
             it("should update the navigation bar background") {
@@ -80,7 +80,7 @@ class FindFeedViewControllerSpec: QuickSpec {
         describe("Looking up feeds on the interwebs") {
             beforeEach {
                 subject.navField.text = "example.com"
-                subject.textFieldShouldReturn(subject.navField)
+                _ = subject.textFieldShouldReturn(subject.navField)
             }
 
             it("should auto-prepend 'https://' if it's not already there") {
@@ -88,27 +88,27 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             it("should navigate the webview that url") {
-                expect(webView.lastRequestLoaded?.URL) == URL(string: "https://example.com")
+                expect(webView.lastRequestLoaded?.url) == URL(string: "https://example.com")
             }
         }
 
         describe("Entering an invalid url") {
             it("searches duckduckgo for that text when given a string with a single word") {
                 subject.navField.text = "notaurl"
-                subject.textFieldShouldReturn(subject.navField)
-                expect(webView.lastRequestLoaded?.URL) == URL(string: "https://duckduckgo.com/?q=notaurl")
+                _ = subject.textFieldShouldReturn(subject.navField)
+                expect(webView.lastRequestLoaded?.url) == URL(string: "https://duckduckgo.com/?q=notaurl")
             }
 
             it("searches duckduckgo for that text when given a string with multiple words") {
                 subject.navField.text = "not a url"
-                subject.textFieldShouldReturn(subject.navField)
-                expect(webView.lastRequestLoaded?.URL) == URL(string: "https://duckduckgo.com/?q=not+a+url")
+                _ = subject.textFieldShouldReturn(subject.navField)
+                expect(webView.lastRequestLoaded?.url) == URL(string: "https://duckduckgo.com/?q=not+a+url")
             }
         }
 
         describe("key commands") {
             it("can become first responder") {
-                expect(subject.canBecomeFirstResponder()) == true
+                expect(subject.canBecomeFirstResponder) == true
             }
 
             it("has 2 key commands initially") {
@@ -151,7 +151,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     webView.fakeUrl = url
                     subject.webView(subject.webContent, didStartProvisionalNavigation: nil)
 
-                    importUseCase.scanForImportableArgsForCall(0).1(.WebPage(url, [feedURL]))
+                    importUseCase.scanForImportableArgsForCall(callIndex: 0).1(.webPage(url, [feedURL]))
                 }
 
                 it("adds a third command") {
@@ -181,11 +181,11 @@ class FindFeedViewControllerSpec: QuickSpec {
             let showRootController: (Void) -> (Void) = {
                 rootViewController = UIViewController()
 
-                rootViewController.presentViewController(navController, animated: false, completion: nil)
+                rootViewController.present(navController, animated: false, completion: nil)
                 expect(rootViewController.presentedViewController).toNot(beNil())
             }
 
-            sharedExamples("importing a feed") { (sharedContext: SharedExampleContext) in
+            sharedExamples("importing a feed") { (sharedContext: @escaping SharedExampleContext) in
                 var url: URL!
 
                 beforeEach {
@@ -193,24 +193,24 @@ class FindFeedViewControllerSpec: QuickSpec {
                 }
 
                 it("asks the import use case to import the feed at the url") {
-                    expect(importUseCase.importItemArgsForCall(0).0) == url
+                    expect(importUseCase.importItemArgsForCall(callIndex: 0).0) == url
                 }
 
                 it("should show an indicator that we're doing things") {
                     let indicator = subject.view.subviews.filter {
-                        return $0.isKindOfClass(ActivityIndicator.classForCoder())
+                        return $0.isKind(of: ActivityIndicator.classForCoder())
                         }.first as? ActivityIndicator
                     expect(indicator?.message) == "Loading feed at \(url.absoluteString)"
                 }
 
                 describe("when the use case is finished") {
                     beforeEach {
-                        importUseCase.importItemArgsForCall(0).1()
+                        importUseCase.importItemArgsForCall(callIndex: 0).1()
                     }
 
                     it("should remove the indicator") {
                         let indicator = navController.view.subviews.filter {
-                            return $0.isKindOfClass(ActivityIndicator.classForCoder())
+                            return $0.isKind(of: ActivityIndicator.classForCoder())
                             }.first
                         expect(indicator).to(beNil())
                     }
@@ -230,12 +230,12 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             it("should show the loadingBar") {
-                expect(subject.loadingBar.hidden) == false
+                expect(subject.loadingBar.isHidden) == false
                 expect(subject.loadingBar.progress).to(beCloseTo(0))
             }
 
             it("should disable the addFeedButton") {
-                expect(subject.addFeedButton.enabled) == false
+                expect(subject.addFeedButton.isEnabled) == false
             }
 
             describe("tapping the navField") {
@@ -255,14 +255,14 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             it("asks the import use case to check if the page at the url has a feed") {
-                expect(importUseCase.scanForImportableArgsForCall(0).0) == URL(string: "https://example.com/feed.xml")
+                expect(importUseCase.scanForImportableArgsForCall(callIndex: 0).0) == URL(string: "https://example.com/feed.xml")
             }
 
             context("when the use case finds a feed") {
                 let url = URL(string: "https://example.com/feed")!
                 beforeEach {
                     showRootController()
-                    importUseCase.scanForImportableArgsForCall(0).1(.Feed(url, 0))
+                    importUseCase.scanForImportableArgsForCall(callIndex: 0).1(.feed(url, 0))
                 }
 
                 it("should present an alert") {
@@ -314,7 +314,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                 let url = URL(string: "https://example.com/feed")!
                 beforeEach {
                     showRootController()
-                    importUseCase.scanForImportableArgsForCall(0).1(.OPML(url, 0))
+                    importUseCase.scanForImportableArgsForCall(callIndex: 0).1(.opml(url, 0))
                 }
 
                 it("should present an alert") {
@@ -360,23 +360,23 @@ class FindFeedViewControllerSpec: QuickSpec {
 
                     it("should show an indicator that we're doing things") {
                         let indicator = subject.view.subviews.filter {
-                            return $0.isKindOfClass(ActivityIndicator.classForCoder())
+                            return $0.isKind(of: ActivityIndicator.classForCoder())
                         }.first as? ActivityIndicator
                         expect(indicator?.message) == "Loading feed list at https://example.com/feed"
                     }
 
                     it("asks the import use case to import the feed at the url") {
-                        expect(importUseCase.importItemArgsForCall(0).0) == url
+                        expect(importUseCase.importItemArgsForCall(callIndex: 0).0) == url
                     }
 
                     describe("when the use case is finished") {
                         beforeEach {
-                            importUseCase.importItemArgsForCall(0).1()
+                            importUseCase.importItemArgsForCall(callIndex: 0).1()
                         }
 
                         it("should remove the indicator") {
                             let indicator = subject.view.subviews.filter {
-                                return $0.isKindOfClass(ActivityIndicator.classForCoder())
+                                return $0.isKind(of: ActivityIndicator.classForCoder())
                                 }.first
                             expect(indicator).to(beNil())
                         }
@@ -393,11 +393,11 @@ class FindFeedViewControllerSpec: QuickSpec {
                 let feedURL = URL(string: "https://example.com/feed1")!
 
                 beforeEach {
-                    importUseCase.scanForImportableArgsForCall(0).1(.WebPage(url, [feedURL]))
+                    importUseCase.scanForImportableArgsForCall(callIndex: 0).1(.webPage(url, [feedURL]))
                 }
 
                 it("should enable the addFeedButton") {
-                    expect(subject.addFeedButton.enabled) == true
+                    expect(subject.addFeedButton.isEnabled) == true
                 }
 
                 describe("tapping on the addFeedButton") {
@@ -418,11 +418,11 @@ class FindFeedViewControllerSpec: QuickSpec {
                 let feedURL2 = URL(string: "https://example.com/feed2")!
 
                 beforeEach {
-                    importUseCase.scanForImportableArgsForCall(0).1(.WebPage(url, [feedURL1, feedURL2]))
+                    importUseCase.scanForImportableArgsForCall(callIndex: 0).1(.webPage(url, [feedURL1, feedURL2]))
                 }
 
                 it("should enable the addFeedButton") {
-                    expect(subject.addFeedButton.enabled) == true
+                    expect(subject.addFeedButton.isEnabled) == true
                 }
 
                 describe("tapping on the addFeedButton") {
@@ -470,7 +470,7 @@ class FindFeedViewControllerSpec: QuickSpec {
             context("when the use case finds a web page with no feeds") {
                 let url = URL(string: "https://example.com/feed")!
                 beforeEach {
-                    importUseCase.scanForImportableArgsForCall(0).1(.WebPage(url, []))
+                    importUseCase.scanForImportableArgsForCall(callIndex: 0).1(.webPage(url, []))
                 }
 
                 it("should do nothing") {
@@ -481,7 +481,7 @@ class FindFeedViewControllerSpec: QuickSpec {
             context("when the use case finds nothing") {
                 let url = URL(string: "https://example.com/feed")!
                 beforeEach {
-                    importUseCase.scanForImportableArgsForCall(0).1(.None(url))
+                    importUseCase.scanForImportableArgsForCall(callIndex: 0).1(.none(url))
                 }
 
                 it("should do nothing") {
@@ -497,7 +497,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should hide the webview") {
-                        expect(subject.loadingBar.hidden) == true
+                        expect(subject.loadingBar.isHidden) == true
                     }
 
                     it("shows an alert box") {
@@ -517,11 +517,11 @@ class FindFeedViewControllerSpec: QuickSpec {
 
                 context("trying to load the content (html rendering error)") {
                     beforeEach {
-                        subject.webView(subject.webContent, didFailNavigation: nil, withError: err)
+                        subject.webView(subject.webContent, didFail: nil, withError: err)
                     }
 
                     it("should hide the webview") {
-                        expect(subject.loadingBar.hidden) == true
+                        expect(subject.loadingBar.isHidden) == true
                     }
 
                     it("shows an alert box") {
@@ -542,11 +542,11 @@ class FindFeedViewControllerSpec: QuickSpec {
 
             describe("successfully loading a page") {
                 beforeEach {
-                    subject.webView(subject.webContent, didFinishNavigation: nil)
+                    subject.webView(subject.webContent, didFinish: nil)
                 }
 
                 it("should hide the loadingBar") {
-                    expect(subject.loadingBar.hidden) == true
+                    expect(subject.loadingBar.isHidden) == true
                 }
 
                 it("should allow the user to reload the page") {

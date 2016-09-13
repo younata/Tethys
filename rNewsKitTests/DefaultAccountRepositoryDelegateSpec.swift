@@ -64,7 +64,7 @@ class DefaultAccountRepositoryDelegateSpec: QuickSpec {
 
                 describe("when the subscribe request fails") {
                     beforeEach {
-                        subscribePromise.resolve(.failure(.Unknown))
+                        subscribePromise.resolve(.failure(.unknown))
                     }
                     it("does not the databaseusecase to update its feeds") {
                         expect(databaseUseCase.didUpdateFeeds) == false
@@ -74,7 +74,7 @@ class DefaultAccountRepositoryDelegateSpec: QuickSpec {
 
             describe("when the request fails") {
                 beforeEach {
-                    databaseUseCase.feedsPromises.last?.resolve(.failure(.Unknown))
+                    databaseUseCase.feedsPromises.last?.resolve(.failure(.unknown))
                 }
 
                 it("does not tell the sinope repository to subscribe to feeds with urls") {

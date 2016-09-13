@@ -12,7 +12,7 @@ class FakeDatabaseMigrator : DatabaseMigratorType {
     func migrateArgsForCall(_ callIndex: Int) -> (DataService, DataService, (Double) -> Void, (Void) -> Void) {
         return self.migrateArgs[callIndex]
     }
-    func migrate(_ from: DataService, to: DataService, progress: (Double) -> Void, finish: (Void) -> Void) {
+    func migrate(_ from: DataService, to: DataService, progress: @escaping (Double) -> Void, finish: @escaping (Void) -> Void) {
         self.migrateCallCount += 1
         self.migrateArgs.append((from, to, progress, finish))
     }
@@ -22,7 +22,7 @@ class FakeDatabaseMigrator : DatabaseMigratorType {
     func deleteEverythingArgsForCall(_ callIndex: Int) -> (DataService, (Double) -> Void, (Void) -> Void) {
         return self.deleteEverythingArgs[callIndex]
     }
-    func deleteEverything(_ database: DataService, progress: (Double) -> Void, finish: (Void) -> Void) {
+    func deleteEverything(_ database: DataService, progress: @escaping (Double) -> Void, finish: @escaping (Void) -> Void) {
         self.deleteEverythingCallCount += 1
         self.deleteEverythingArgs.append((database, progress, finish))
     }

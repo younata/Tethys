@@ -11,7 +11,7 @@ protocol NetworkClientDelegate: class {
     func didFailToDownloadDataFromUrl(_ url: URL, error: Error?)
 }
 
-final class URLSessionDelegate: NSObject, URLSessionDownloadDelegate {
+final class RNewsKitURLSessionDelegate: NSObject, URLSessionDownloadDelegate {
     weak var delegate: NetworkClientDelegate?
 
     func urlSession(_ : URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo url: URL) {
@@ -62,7 +62,7 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
 
     init(dataServiceFactory: DataServiceFactoryType,
          urlSession: URLSession,
-         urlSessionDelegate: URLSessionDelegate,
+         urlSessionDelegate: RNewsKitURLSessionDelegate,
          workerQueue: OperationQueue,
          sinopeRepository: Sinope.Repository) {
         self.dataServiceFactory = dataServiceFactory

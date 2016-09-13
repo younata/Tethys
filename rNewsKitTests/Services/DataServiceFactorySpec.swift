@@ -6,7 +6,7 @@ import RealmSwift
 
 class DataServiceFactorySpec: QuickSpec {
     override func spec() {
-        let bundle = Bundle(forClass: KitModule.classForCoder())
+        let bundle = Bundle(for: KitModule.classForCoder())
         let fileManager = FileManager.default
         describe("currentDataService") {
             it("returns a CoreDataService if we haven't migrated yet") {
@@ -23,7 +23,7 @@ class DataServiceFactorySpec: QuickSpec {
                 let mainQueue = FakeOperationQueue()
                 let searchIndex = FakeSearchIndex()
 
-                try! Realm().write({})
+                try! Realm().write(block: {})
 
                 let subject = DataServiceFactory(mainQueue: mainQueue, realmQueue: OperationQueue(), searchIndex: searchIndex, bundle: bundle, fileManager: fileManager)
                 let dataService = subject.currentDataService

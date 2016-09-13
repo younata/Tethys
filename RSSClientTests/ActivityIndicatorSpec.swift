@@ -11,9 +11,9 @@ class ActivityIndicatorSpec: QuickSpec {
             subject = ActivityIndicator()
         }
 
-        describe("-configureWithMessage:") {
+        describe("-configure(message:)") {
             beforeEach {
-                subject.configureWithMessage("Hello World")
+                subject.configure(message: "Hello World")
             }
 
             it("should set the message text") {

@@ -14,9 +14,9 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
         beforeEach {
             injector = Injector()
             dataRepository = FakeDatabaseUseCase()
-            injector.bind(DatabaseUseCase.self, toInstance: dataRepository)
+            injector.bind(kind: DatabaseUseCase.self, toInstance: dataRepository)
 
-            subject = injector.create(DefaultBackgroundFetchHandler)!
+            subject = injector.create(kind: DefaultBackgroundFetchHandler.self)!
         }
 
         describe("updating feeds") {
@@ -70,7 +70,7 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
                 }
 
                 it("should call the completion handler and indicate that there was new data found") {
-                    expect(fetchResult).to(equal(UIBackgroundFetchResult.NewData))
+                    expect(fetchResult).to(equal(UIBackgroundFetchResult.newData))
                 }
             }
 
@@ -85,7 +85,7 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
                 }
 
                 it("should call the completion handler and indicate that there was no new data found") {
-                    expect(fetchResult).to(equal(UIBackgroundFetchResult.NoData))
+                    expect(fetchResult).to(equal(UIBackgroundFetchResult.noData))
                 }
             }
 
@@ -100,7 +100,7 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
                 }
 
                 it("should call the completion handler and indicate that there was an error") {
-                    expect(fetchResult).to(equal(UIBackgroundFetchResult.Failed))
+                    expect(fetchResult).to(equal(UIBackgroundFetchResult.failed))
                 }
             }
 

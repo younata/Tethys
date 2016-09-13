@@ -18,14 +18,14 @@ class DataStoreBackedArraySpec: QuickSpec {
             beforeEach {
                 realm = try! Realm(configuration: realmConf)
                 try! realm.write {
-                    realm.deleteAll()
+                    realm.deleteAllObjects()
                 }
 
                 articles = []
 
                 realm.beginWrite()
                 for i in 0..<totalObjectCount {
-                    let article = realm.create(RealmArticle)
+                    let article = realm.createObject(ofType: RealmArticle.self)
                     article.title = String(format: "%03d", i)
                     articles.append(article)
                     realm.add(article)
@@ -74,7 +74,7 @@ class DataStoreBackedArraySpec: QuickSpec {
             it("should be iterable") {
                 let expectedArticles = articles.map { Article(realmArticle: $0, feed: nil) }
 
-                for (idx, article) in subject.enumerate() {
+                for (idx, article) in subject.enumerated() {
                     expect(article) == expectedArticles[idx]
                 }
             }
@@ -185,7 +185,7 @@ class DataStoreBackedArraySpec: QuickSpec {
                 articles = []
 
                 for i in 0..<totalObjectCount {
-                    let article = createArticle(moc)
+                    let article = createArticle(managedObjectContext: moc)
                     article.title = String(format: "%03d", i)
                     articles.append(article)
                 }
@@ -238,7 +238,7 @@ class DataStoreBackedArraySpec: QuickSpec {
             it("should be iterable") {
                 let expectedArticles = articles.map { Article(coreDataArticle: $0, feed: nil) }
 
-                for (idx, article) in subject.enumerate() {
+                for (idx, article) in subject.enumerated() {
                     expect(article) == expectedArticles[idx]
                 }
             }

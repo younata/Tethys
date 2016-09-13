@@ -64,7 +64,7 @@ class ImportUseCaseSpec: QuickSpec {
                     }
 
                     it("calls the callback with .Feed and the URL") {
-                        expect(receivedItem) == ImportUseCaseItem.Feed(url, 100)
+                        expect(receivedItem) == ImportUseCaseItem.feed(url, 100)
                     }
 
                     context("later calling -importItem:callback: with that url") {
@@ -153,7 +153,7 @@ class ImportUseCaseSpec: QuickSpec {
 
                         describe("when the feed repository fails") {
                             beforeEach {
-                                feedRepository.feedsPromises.first?.resolve(.failure(.Unknown))
+                                feedRepository.feedsPromises.first?.resolve(.failure(.unknown))
                             }
                             // TODO: implement the sad path
                         }
@@ -169,7 +169,7 @@ class ImportUseCaseSpec: QuickSpec {
                     }
 
                     it("calls the callback with .OPML and the URL") {
-                        expect(receivedItem) == ImportUseCaseItem.OPML(url, 4)
+                        expect(receivedItem) == ImportUseCaseItem.opml(url, 4)
                     }
 
                     context("later calling -importItem:callback: with that url") {
@@ -211,7 +211,7 @@ class ImportUseCaseSpec: QuickSpec {
                     }
 
                     it("calls the callback with the url and the list of found feed urls") {
-                        expect(receivedItem) == ImportUseCaseItem.WebPage(url, [feed1Url, feed2Url])
+                        expect(receivedItem) == ImportUseCaseItem.webPage(url, [feed1Url, feed2Url])
                     }
 
                     context("later calling -importItem:callback: with one of the found feed urls") {
@@ -290,7 +290,7 @@ class ImportUseCaseSpec: QuickSpec {
 
                         describe("when the feed repository fails") {
                             beforeEach {
-                                feedRepository.feedsPromises.first?.resolve(.failure(.Unknown))
+                                feedRepository.feedsPromises.first?.resolve(.failure(.unknown))
                             }
                             // TODO: implement the sad path
                         }
@@ -304,7 +304,7 @@ class ImportUseCaseSpec: QuickSpec {
                     }
 
                     it("calls the callback with .None and the URL") {
-                        expect(receivedItem) == ImportUseCaseItem.None(url)
+                        expect(receivedItem) == ImportUseCaseItem.none(url)
                     }
                 }
             }
@@ -324,7 +324,7 @@ class ImportUseCaseSpec: QuickSpec {
                     }
 
                     it("calls the callback with .Feed and the URL") {
-                        expect(receivedItem) == ImportUseCaseItem.Feed(feedURL, 100)
+                        expect(receivedItem) == ImportUseCaseItem.feed(feedURL, 100)
                     }
 
                     context("later calling -importItem:callback: with that url") {
@@ -398,7 +398,7 @@ class ImportUseCaseSpec: QuickSpec {
 
                         describe("when the feed repository fails") {
                             beforeEach {
-                                feedRepository.feedsPromises.first?.resolve(.failure(.Unknown))
+                                feedRepository.feedsPromises.first?.resolve(.failure(.unknown))
                             }
                             // TODO: implement the sad path
                         }
@@ -419,7 +419,7 @@ class ImportUseCaseSpec: QuickSpec {
                     }
 
                     it("calls the callback with .OPML and the URL") {
-                        expect(receivedItem) == ImportUseCaseItem.OPML(opmlURL, 4)
+                        expect(receivedItem) == ImportUseCaseItem.opml(opmlURL, 4)
                     }
 
                     context("later calling -importItem:callback: with that url") {
@@ -456,7 +456,7 @@ class ImportUseCaseSpec: QuickSpec {
                     }
 
                     it("calls the callback with .None and the URL") {
-                        expect(receivedItem) == ImportUseCaseItem.None(url)
+                        expect(receivedItem) == ImportUseCaseItem.none(url)
                     }
                 }
             }
@@ -496,8 +496,8 @@ class ImportUseCaseSpec: QuickSpec {
                 guard let contents = receivedContents else { return }
 
                 expect(contents.count) == 2
-                expect(contents).to(contain(ImportUseCaseItem.Feed(feedURL, 100)))
-                expect(contents).to(contain(ImportUseCaseItem.OPML(opmlURL, 4)))
+                expect(contents).to(contain(ImportUseCaseItem.feed(feedURL, 100)))
+                expect(contents).to(contain(ImportUseCaseItem.opml(opmlURL, 4)))
             }
         }
     }

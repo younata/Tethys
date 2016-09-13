@@ -2,7 +2,7 @@ import Foundation
 
 class FakeUserDefaults: UserDefaults {
 
-    private var internalDictionary: [String: AnyObject] = [:]
+    private var internalDictionary: [String: Any] = [:]
 
     init() {
         super.init(suiteName: nil)!
@@ -29,11 +29,11 @@ class FakeUserDefaults: UserDefaults {
     }
 
     override func array(forKey defaultName: String) -> [Any]? {
-        return self.internalDictionary[defaultName] as? [AnyObject]
+        return self.internalDictionary[defaultName] as? [Any]
     }
 
     override func dictionary(forKey defaultName: String) -> [String: Any]? {
-        return self.internalDictionary[defaultName] as? [String: AnyObject]
+        return self.internalDictionary[defaultName] as? [String: Any]
     }
 
     override func data(forKey defaultName: String) -> Data? {

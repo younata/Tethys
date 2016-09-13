@@ -10,24 +10,24 @@ class TagEditorViewControllerSpec: QuickSpec {
         var dataRepository: FakeDatabaseUseCase! = nil
         var subject: TagEditorViewController! = nil
         var navigationController: UINavigationController! = nil
-        var themeRepository: FakeThemeRepository! = nil
+        var themeRepository: ThemeRepository! = nil
         let rootViewController = UIViewController()
 
-        var feed = Feed(title: "title", url: URL(string: "")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+        var feed = Feed(title: "title", url: URL(string: "https://example.com/")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
         beforeEach {
             injector = Injector()
             dataRepository = FakeDatabaseUseCase()
-            injector.bind(DatabaseUseCase.self, toInstance: dataRepository)
+            injector.bind(kind: DatabaseUseCase.self, toInstance: dataRepository)
 
-            themeRepository = FakeThemeRepository()
-            injector.bind(ThemeRepository.self, toInstance: themeRepository)
+            themeRepository = ThemeRepository(userDefaults: nil)
+            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
 
-            subject = injector.create(TagEditorViewController)!
+            subject = injector.create(kind: TagEditorViewController.self)!
             navigationController = UINavigationController(rootViewController: rootViewController)
             navigationController.pushViewController(subject, animated: false)
 
-            feed = Feed(title: "title", url: URL(string: "")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            feed = Feed(title: "title", url: URL(string: "https://example.com/")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
             subject.feed = feed
 
             expect(subject.view).toNot(beNil())
@@ -36,7 +36,7 @@ class TagEditorViewControllerSpec: QuickSpec {
 
         describe("changing the theme") {
             beforeEach {
-                themeRepository.theme = .Dark
+                themeRepository.theme = .dark
             }
 
             it("should change background color") {
@@ -71,7 +71,7 @@ class TagEditorViewControllerSpec: QuickSpec {
 
             context("when there is data to save") {
                 beforeEach {
-                    subject.tagPicker.textField(subject.tagPicker.textField, shouldChangeCharactersInRange: NSMakeRange(0, 0), replacementString: "a")
+                    subject.tagPicker.textField(subject.tagPicker.textField, shouldChangeCharactersIn: NSMakeRange(0, 0), replacementString: "a")
                     subject.navigationItem.rightBarButtonItem?.tap()
                 }
 
@@ -87,7 +87,7 @@ class TagEditorViewControllerSpec: QuickSpec {
 
             context("when there is not data to save") {
                 it("should not even be enabled") {
-                    expect(subject.navigationItem.rightBarButtonItem?.enabled) == false
+                    expect(subject.navigationItem.rightBarButtonItem?.isEnabled) == false
                 }
             }
         }
@@ -98,17 +98,17 @@ class TagEditorViewControllerSpec: QuickSpec {
             }
 
             it("disables the save button") {
-                expect(subject.navigationItem.rightBarButtonItem?.enabled) == false
+                expect(subject.navigationItem.rightBarButtonItem?.isEnabled) == false
             }
         }
 
         describe("when tha tags promise errors out") {
             beforeEach {
-                dataRepository.allTagsPromises.last?.resolve(.failure(.Unknown))
+                dataRepository.allTagsPromises.last?.resolve(.failure(.unknown))
             }
 
             it("disables the save button") {
-                expect(subject.navigationItem.rightBarButtonItem?.enabled) == false
+                expect(subject.navigationItem.rightBarButtonItem?.isEnabled) == false
             }
         }
     }

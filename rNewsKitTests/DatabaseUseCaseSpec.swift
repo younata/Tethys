@@ -24,7 +24,7 @@ class DatabaseUseCaseSpec: QuickSpec {
             context("without a tag") {
                 context("when a nil tag is given") {
                     beforeEach {
-                        feedsTagPromise = subject.feedsMatchingTag(nil)
+                        feedsTagPromise = subject.feeds(matchingTag: nil)
                     }
 
                     it("returns an in-progress promise") {
@@ -56,14 +56,14 @@ class DatabaseUseCaseSpec: QuickSpec {
                     it("forwards the error when the feeds promise errors") {
                         guard let feedsPromise = subject.feedsPromises.first else { return }
 
-                        feedsPromise.resolve(.failure(.Unknown))
+                        feedsPromise.resolve(.failure(.unknown))
 
                         if let calledResults = feedsTagPromise?.value {
                             switch calledResults {
                             case .success(_):
                                 expect(false) == true
                             case let .failure(error):
-                                expect(error) == RNewsError.Unknown
+                                expect(error) == RNewsError.unknown
                             }
                         } else {
                             expect(false) == true
@@ -73,7 +73,7 @@ class DatabaseUseCaseSpec: QuickSpec {
 
                 context("when an empty string is given") {
                     beforeEach {
-                        feedsTagPromise = subject.feedsMatchingTag("")
+                        feedsTagPromise = subject.feeds(matchingTag: "")
                     }
 
                     it("returns an in-progress promise") {
@@ -105,14 +105,14 @@ class DatabaseUseCaseSpec: QuickSpec {
                     it("forwards the error when the feeds promise errors") {
                         guard let feedsPromise = subject.feedsPromises.first else { return }
 
-                        feedsPromise.resolve(.failure(.Unknown))
+                        feedsPromise.resolve(.failure(.unknown))
 
                         if let calledResults = feedsTagPromise?.value {
                             switch calledResults {
                             case .success(_):
                                 expect(false) == true
                             case let .failure(error):
-                                expect(error) == RNewsError.Unknown
+                                expect(error) == RNewsError.unknown
                             }
                         } else {
                             expect(false) == true
@@ -123,7 +123,7 @@ class DatabaseUseCaseSpec: QuickSpec {
 
             context("with a tag") {
                 beforeEach {
-                    feedsTagPromise = subject.feedsMatchingTag("a")
+                    feedsTagPromise = subject.feeds(matchingTag: "a")
                 }
 
                 it("returns an in-progress promise") {
@@ -155,14 +155,14 @@ class DatabaseUseCaseSpec: QuickSpec {
                 it("forwards the error when the feeds promise errors") {
                     guard let feedsPromise = subject.feedsPromises.first else { return }
 
-                    feedsPromise.resolve(.failure(.Unknown))
+                    feedsPromise.resolve(.failure(.unknown))
 
                     if let calledResults = feedsTagPromise?.value {
                         switch calledResults {
                         case .success(_):
                             expect(false) == true
                         case let .failure(error):
-                            expect(error) == RNewsError.Unknown
+                            expect(error) == RNewsError.unknown
                         }
                     } else {
                         expect(false) == true

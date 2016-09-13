@@ -10,14 +10,13 @@ class UpdateServiceSpec: QuickSpec {
     override func spec() {
         var subject: UpdateService!
         var urlSession: FakeURLSession!
-        var urlSessionDelegate: URLSessionDelegate!
+        var urlSessionDelegate: RNewsKitURLSessionDelegate!
         var dataServiceFactory: FakeDataServiceFactory!
         var dataService: InMemoryDataService!
         var workerQueue: FakeOperationQueue!
         var sinopeRepository: FakeSinopeRepository!
 
         beforeEach {
-            urlSessionDelegate = URLSessionDelegate()
             let mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
 
@@ -25,7 +24,7 @@ class UpdateServiceSpec: QuickSpec {
             dataService = InMemoryDataService(mainQueue: mainQueue, searchIndex: FakeSearchIndex())
             dataServiceFactory.currentDataService = dataService
             urlSession = FakeURLSession()
-            urlSessionDelegate = URLSessionDelegate()
+            urlSessionDelegate = RNewsKitURLSessionDelegate()
 
             workerQueue = FakeOperationQueue()
             workerQueue.runSynchronously = true
@@ -163,12 +162,12 @@ class UpdateServiceSpec: QuickSpec {
 
             describe("when the request fails") {
                 beforeEach {
-                    fetchPromise.resolve(.failure(.Unknown))
+                    fetchPromise.resolve(.failure(.unknown))
                 }
 
                 it("wraps the error") {
                     expect(updateFeedsFuture.value).toNot(beNil())
-                    expect(updateFeedsFuture.value?.error) == RNewsError.Backend(.Unknown)
+                    expect(updateFeedsFuture.value?.error) == RNewsError.backend(.unknown)
                 }
             }
         }
@@ -193,7 +192,7 @@ class UpdateServiceSpec: QuickSpec {
 
                 it("should make a call to download the feed URL") {
                     expect(urlSession.lastURL) == feed.url
-                    expect(urlSession.lastDownloadTask?.originalRequest?.URL) == feed.url
+                    expect(urlSession.lastDownloadTask?.originalRequest?.url) == feed.url
                 }
 
                 context("when the download completes") {
@@ -201,7 +200,7 @@ class UpdateServiceSpec: QuickSpec {
                         beforeEach {
                             guard urlSession.lastDownloadTask != nil else { fail(); return }
                             let location = Bundle(for: self.classForCoder).url(forResource: "feed", withExtension: "rss")!
-                            urlSessionDelegate.URLSession(urlSession, downloadTask: urlSession.lastDownloadTask!, didFinishDownloadingToURL: location)
+                            urlSessionDelegate.urlSession(urlSession, downloadTask: urlSession.lastDownloadTask!, didFinishDownloadingTo: location)
                         }
 
                         it("should call the callback with the updated feed") {
@@ -221,7 +220,7 @@ class UpdateServiceSpec: QuickSpec {
                         beforeEach {
                             guard urlSession.lastDownloadTask != nil else { fail(); return }
                             let location = Bundle(for: self.classForCoder).url(forResource: "feed2", withExtension: "rss")!
-                            urlSessionDelegate.URLSession(urlSession, downloadTask: urlSession.lastDownloadTask!, didFinishDownloadingToURL: location)
+                            urlSessionDelegate.urlSession(urlSession, downloadTask: urlSession.lastDownloadTask!, didFinishDownloadingTo: location)
                         }
 
                         it("should not call the callback yet") {
@@ -237,7 +236,7 @@ class UpdateServiceSpec: QuickSpec {
                                 guard let task = urlSession.lastDownloadTask else { fail(); return }
                                 task._response = URLResponse(url: URL(string: "http://example.org/icon.png")!, mimeType: "image/jpg", expectedContentLength: 0, textEncodingName: nil)
                                 let location = Bundle(for: self.classForCoder).url(forResource: "test", withExtension: "jpg")!
-                                urlSessionDelegate.URLSession(urlSession, downloadTask: task, didFinishDownloadingToURL: location)
+                                urlSessionDelegate.urlSession(urlSession, downloadTask: task, didFinishDownloadingTo: location)
                             }
 
                             it("should call the callback with the updated feed") {
@@ -257,7 +256,7 @@ class UpdateServiceSpec: QuickSpec {
                             beforeEach {
                                 guard let task = urlSession.lastDownloadTask else { fail(); return }
                                 task._response = URLResponse(url: URL(string: "http://example.org/icon.png")!, mimeType: "image/jpg", expectedContentLength: 0, textEncodingName: nil)
-                                urlSessionDelegate.URLSession(urlSession, task: task, didCompleteWithError: error)
+                                urlSessionDelegate.urlSession(urlSession, task: task, didCompleteWithError: error)
                             }
 
                             it("should call the callback with an error and an updated feed") {
@@ -279,11 +278,11 @@ class UpdateServiceSpec: QuickSpec {
                             let bundle = Bundle(for: self.classForCoder)
 
                             let image = bundle.url(forResource: "test", withExtension: "jpg")!
-                            feed.image = Image(data: Data(contentsOfURL: image)!)
+                            feed.image = Image(data: try! Data(contentsOf: image))
                             expect(feed.image).toNot(beNil())
 
                             let location = bundle.url(forResource: "feed2", withExtension: "rss")!
-                            urlSessionDelegate.URLSession(urlSession, downloadTask: urlSession.lastDownloadTask!, didFinishDownloadingToURL: location)
+                            urlSessionDelegate.urlSession(urlSession, downloadTask: urlSession.lastDownloadTask!, didFinishDownloadingTo: location)
                         }
 
                         it("should call the callback yet") {
@@ -305,7 +304,7 @@ class UpdateServiceSpec: QuickSpec {
                     let error = NSError(domain: "com.example.error", code: 22, userInfo: nil)
                     beforeEach {
                         guard let task = urlSession.lastDownloadTask else { fail(); return }
-                        urlSessionDelegate.URLSession(urlSession, task: task, didCompleteWithError: error)
+                        urlSessionDelegate.urlSession(urlSession, task: task, didCompleteWithError: error)
                     }
 
                     it("should call the callback with the original feed") {

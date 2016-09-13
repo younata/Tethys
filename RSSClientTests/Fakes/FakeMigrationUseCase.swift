@@ -28,7 +28,7 @@ class FakeMigrationUseCase : MigrationUseCase {
     func beginWorkArgsForCall(_ callIndex: Int) -> (WorkFlowFinishCallback) {
         return self.beginWorkArgs[callIndex]
     }
-    func beginWork(_ finish: WorkFlowFinishCallback) {
+    func beginWork(_ finish: @escaping WorkFlowFinishCallback) {
         self.beginWorkCallCount += 1
         self.beginWorkArgs.append((finish))
     }

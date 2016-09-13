@@ -6,15 +6,15 @@ import rNewsKit
 class ArticleCellSpec: QuickSpec {
     override func spec() {
         var subject: ArticleCell! = nil
-        var themeRepository: FakeThemeRepository! = nil
+        var themeRepository: ThemeRepository! = nil
         var settingsRepository: SettingsRepository! = nil
 
         let unupdatedArticle = Article(title: "title", link: nil, summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: Date(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 10, feed: nil, flags: [])
         let readArticle = Article(title: "title", link: nil, summary: "summary", authors: [], published: Date(timeIntervalSinceReferenceDate: 0), updatedAt: Date(timeIntervalSinceReferenceDate: 100000), identifier: "", content: "content", read: true, estimatedReadingTime: 0, feed: nil, flags: [])
 
         beforeEach {
-            subject = ArticleCell(style: .Default, reuseIdentifier: nil)
-            themeRepository = FakeThemeRepository()
+            subject = ArticleCell(style: .default, reuseIdentifier: nil)
+            themeRepository = ThemeRepository(userDefaults: nil)
             settingsRepository = SettingsRepository(userDefaults: nil)
             subject.article = unupdatedArticle
             subject.themeRepository = themeRepository
@@ -23,7 +23,7 @@ class ArticleCellSpec: QuickSpec {
 
        describe("changing the theme") {
             beforeEach {
-                themeRepository.theme = .Dark
+                themeRepository.theme = .dark
             }
 
             it("updates each label") {
@@ -44,13 +44,13 @@ class ArticleCellSpec: QuickSpec {
             }
 
             it("removes the readingTime label from the view hierarchy") {
-                expect(subject.readingTime.hidden) == true
+                expect(subject.readingTime.isHidden) == true
 
             }
 
             it("re-adds the readingTime label to the view hierarchy when the user turns back on reading label") {
                 settingsRepository.showEstimatedReadingLabel = true
-                expect(subject.readingTime.hidden) == false
+                expect(subject.readingTime.isHidden) == false
             }
         }
 
@@ -61,11 +61,11 @@ class ArticleCellSpec: QuickSpec {
         it("should set the published/updated label") {
             let dateFormatter = DateFormatter()
 
-            dateFormatter.timeStyle = .NoStyle
-            dateFormatter.dateStyle = .ShortStyle
-            dateFormatter.timeZone = NSCalendar.currentCalendar().timeZone
+            dateFormatter.timeStyle = .none
+            dateFormatter.dateStyle = .short
+            dateFormatter.timeZone = NSCalendar.current.timeZone
 
-            expect(subject.published.text) == dateFormatter.stringFromDate(unupdatedArticle.published)
+            expect(subject.published.text) == dateFormatter.string(from: unupdatedArticle.published)
         }
 
         it("should show the author") {
@@ -92,7 +92,7 @@ class ArticleCellSpec: QuickSpec {
             }
 
             it("should show the estimated reading time") {
-                expect(subject.readingTime.hidden) == false
+                expect(subject.readingTime.isHidden) == false
                 expect(subject.readingTime.text) == "15 minutes to read"
             }
         }
@@ -105,11 +105,11 @@ class ArticleCellSpec: QuickSpec {
             it("should set the published/updated label") {
                 let dateFormatter = DateFormatter()
 
-                dateFormatter.timeStyle = .NoStyle
-                dateFormatter.dateStyle = .ShortStyle
-                dateFormatter.timeZone = NSCalendar.currentCalendar().timeZone
+                dateFormatter.timeStyle = .none
+                dateFormatter.dateStyle = .short
+                dateFormatter.timeZone = NSCalendar.current.timeZone
 
-                expect(subject.published.text) == dateFormatter.stringFromDate(readArticle.updatedAt!)
+                expect(subject.published.text) == dateFormatter.string(from: readArticle.updatedAt!)
             }
         }
     }

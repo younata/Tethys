@@ -15,7 +15,7 @@ class RealmServiceSpec: QuickSpec {
         let realmConf = Realm.Configuration(inMemoryIdentifier: "RealmServiceSpec")
         var realm = try! Realm(configuration: realmConf)
         try! realm.write {
-            realm.deleteAll()
+            realm.deleteAllObjects()
         }
 
         var mainQueue = FakeOperationQueue()
@@ -27,7 +27,7 @@ class RealmServiceSpec: QuickSpec {
         beforeEach {
             realm = try! Realm(configuration: realmConf)
             try! realm.write {
-                realm.deleteAll()
+                realm.deleteAllObjects()
             }
 
             mainQueue = FakeOperationQueue()
@@ -39,17 +39,14 @@ class RealmServiceSpec: QuickSpec {
 
         describe("create operations") {
             it("new feed creates a new feed object") {
-                let expectation = self.expectationWithDescription("Create Feed")
+                let expectation = self.expectation(description: "Create Feed")
 
-                subject.createFeed { feed in
+                _ = subject.createFeed { feed in
                     feed.title = "Hello"
                     feed.url = URL(string: "https://example.com/feed")!
-                    expectation.fulfill()
-                }
+                }.wait()
 
-                self.waitForExpectationsWithTimeout(1, handler: nil)
-
-                let feeds = realm.objects(RealmFeed)
+                let feeds = realm.allObjects(ofType: RealmFeed.self)
                 expect(feeds.count) == 1
                 guard let feed = feeds.first else { return }
                 expect(feed.title) == "Hello"
@@ -57,30 +54,26 @@ class RealmServiceSpec: QuickSpec {
             }
 
             it("new article creates a new article object") {
-                let expectation = self.expectationWithDescription("Create Article")
+                let expectation = self.expectation(description: "Create Article")
 
                 subject.createArticle(nil) { article in
                     article.title = "Hello"
                     expectation.fulfill()
                 }
 
-                self.waitForExpectationsWithTimeout(1, handler: nil)
+                self.waitForExpectations(timeout: 1, handler: nil)
 
-                let articles = realm.objects(RealmArticle)
+                let articles = realm.allObjects(ofType: RealmArticle.self)
                 expect(articles.count) == 1
                 guard let article = articles.first else { return }
                 expect(article.title) == "Hello"
             }
 
             it("can batch create things") {
-                let expectation = self.expectationWithDescription("Batch Create")
+                _ = subject.batchCreate(2, articleCount: 3).wait()
 
-                subject.batchCreate(2, articleCount: 3).then { _ in
-                    expectation.fulfill()
-                }
-
-                expect(realm.objects(RealmFeed).count) == 2
-                expect(realm.objects(RealmArticle).count) == 3
+                expect(realm.allObjects(ofType: RealmFeed.self).count) == 2
+                expect(realm.allObjects(ofType: RealmArticle.self).count) == 3
             }
         }
 
@@ -131,19 +124,14 @@ class RealmServiceSpec: QuickSpec {
 
             describe("read operations") {
                 it("reads the feeds based on the predicate") {
-                    let allExpectation = self.expectationWithDescription("Read all feeds")
-                    subject.allFeeds().then {
-                        guard case let Result.success(values) = $0 else { return }
-                        expect(Array(values)) == [feed1, feed2]
-                        allExpectation.fulfill()
-                    }
-
-                    self.waitForExpectationsWithTimeout(1, handler: nil)
+                    let res: Result<DataStoreBackedArray<Feed>, RNewsError> = subject.allFeeds().wait()!
+                    guard case let Result.success(values) = res else { fail(); return }
+                    expect(Array(values)) == [feed1, feed2]
                 }
 
                 it("reads the articles based on the predicate") {
-                    let allExpectation = self.expectationWithDescription("Read all articles")
-                    subject.articlesMatchingPredicate(NSPredicate(value: true)).then {
+                    let allExpectation = self.expectation(description: "Read all articles")
+                    _ = subject.articlesMatchingPredicate(NSPredicate(value: true)).then {
                         guard case let Result.success(articles) = $0 else { return }
                         expect(Array(articles)) == [article1, article2, article3]
 
@@ -153,14 +141,14 @@ class RealmServiceSpec: QuickSpec {
                         allExpectation.fulfill()
                     }
 
-                    let someExpectation = self.expectationWithDescription("Read some articles")
-                    subject.articlesMatchingPredicate(NSPredicate(format: "title == %@", "article1")).then {
+                    let someExpectation = self.expectation(description: "Read some articles")
+                    _ = subject.articlesMatchingPredicate(NSPredicate(format: "title == %@", "article1")).then {
                         guard case let Result.success(articles) = $0 else { return }
                         expect(Array(articles)) == [article1]
                         someExpectation.fulfill()
                     }
 
-                    self.waitForExpectationsWithTimeout(1, handler: nil)
+                    self.waitForExpectations(timeout: 1, handler: nil)
                 }
             }
 
@@ -168,51 +156,49 @@ class RealmServiceSpec: QuickSpec {
                 it("doesn't create multiple copies of the same RealmString when a feed is saved") {
                     feed1.addTag("hello")
                     feed1.addTag("goodbye")
-                    subject.batchSave([feed1], articles: []).wait()
+                    _ = subject.batchSave([feed1], articles: []).wait()
 
-                    expect(realm.objects(RealmString).count) == 2
+                    expect(realm.allObjects(ofType: RealmString.self).count) == 2
 
-                    subject.batchSave([feed1], articles: []).wait()
+                    _ = subject.batchSave([feed1], articles: []).wait()
 
-                    expect(realm.objects(RealmString).count) == 2
+                    expect(realm.allObjects(ofType: RealmString.self).count) == 2
                 }
 
                 it("doesn't create multiple copies of the same RealmAuthor when an article is saved again") {
                     article1.authors = [
                         Author(name: "hello", email: URL(string: "goodbye"))
                     ]
-                    subject.batchSave([], articles: [article1]).wait()
+                    _ = subject.batchSave([], articles: [article1]).wait()
 
-                    expect(realm.objects(RealmAuthor).count) == 1
+                    expect(realm.allObjects(ofType: RealmAuthor.self).count) == 1
 
-                    subject.batchSave([], articles: [article1]).wait()
-                    expect(realm.objects(RealmAuthor).count) == 1
+                    _ = subject.batchSave([], articles: [article1]).wait()
+                    expect(realm.allObjects(ofType: RealmAuthor.self).count) == 1
                 }
 
                 #if os(iOS)
                     it("on iOS, updates the search index when an article is updated") {
-                        let expectation = self.expectationWithDescription("update article")
+                        let expectation = self.expectation(description: "update article")
 
                         article1.summary = "Hello world!"
 
-                        subject.batchSave([], articles: [article1]).then { _ in
-                            expectation.fulfill()
-                        }
+                        _ = subject.batchSave([], articles: [article1]).wait()
 
-                        self.waitForExpectationsWithTimeout(1, handler: nil)
+                        self.waitForExpectations(timeout: 1, handler: nil)
 
                         expect(searchIndex.lastItemsAdded.count).to(equal(1))
                         if let item = searchIndex.lastItemsAdded.first as? CSSearchableItem {
                             let identifier = article1.identifier
                             expect(item.uniqueIdentifier).to(equal(identifier))
                             expect(item.domainIdentifier).to(beNil())
-                            expect(item.expirationDate).to(equal(Date.distantFuture()))
+                            expect(item.expirationDate).to(equal(Date.distantFuture))
                             let attributes = item.attributeSet
                             expect(attributes.contentType).to(equal(kUTTypeHTML as String))
                             expect(attributes.title).to(equal(article1.title))
-                            let keywords = ["article"] + article1.feed!.title.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                            let keywords = ["article"] + article1.feed!.title.components(separatedBy: NSCharacterSet.whitespacesAndNewlines)
                             expect(attributes.keywords).to(equal(keywords))
-                            expect(attributes.URL).to(equal(article1.link))
+                            expect(attributes.url).to(equal(article1.link))
                             expect(attributes.timestamp).to(equal(article1.updatedAt ?? article1.published))
                             let authorNames = article1.authors.map({ $0.description })
                             expect(attributes.authorNames) == authorNames
@@ -224,41 +210,41 @@ class RealmServiceSpec: QuickSpec {
 
             describe("delete operations") {
                 it("deletes feeds") {
-                    let expectation = self.expectationWithDescription("delete feed")
+                    let expectation = self.expectation(description: "delete feed")
 
                     let articleIdentifiers = feed1.articlesArray.map { $0.identifier }
 
-                    subject.deleteFeed(feed1).then {
+                    _ = subject.deleteFeed(feed1).then {
                         guard case Result.success() = $0 else { return }
                         expectation.fulfill()
                     }
 
-                    self.waitForExpectationsWithTimeout(1, handler: nil)
+                    self.waitForExpectations(timeout: 1, handler: nil)
 
                     #if os(iOS)
                         expect(searchIndex.lastItemsDeleted) == articleIdentifiers
                     #endif
 
-                    let feed = realm.objectForPrimaryKey(RealmFeed.self, key: feed1.feedID as! String)
+                    let feed = realm.object(ofType: RealmFeed.self, forPrimaryKey: feed1.feedID!)
                     expect(feed).to(beNil())
                 }
 
                 it("deletes articles") {
-                    let expectation = self.expectationWithDescription("delete article")
+                    let expectation = self.expectation(description: "delete article")
 
-                    subject.deleteArticle(article1).then {
+                    _ = subject.deleteArticle(article1).then {
                         guard case Result.success() = $0 else { return }
                         expectation.fulfill()
                     }
 
-                    self.waitForExpectationsWithTimeout(1, handler: nil)
+                    self.waitForExpectations(timeout: 1, handler: nil)
 
 
                     #if os(iOS)
                         expect(searchIndex.lastItemsDeleted).to(contain(article1.identifier))
                     #endif
 
-                    let article = realm.objectForPrimaryKey(RealmArticle.self, key: article1.articleID as! String)
+                    let article = realm.object(ofType: RealmArticle.self, forPrimaryKey: article1.articleID!)
                     expect(article).to(beNil())
                 }
             }

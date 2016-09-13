@@ -19,30 +19,30 @@ class FeedViewControllerSpec: QuickSpec {
         var urlSession: FakeURLSession! = nil
         var backgroundQueue: FakeOperationQueue! = nil
         var presentingController: UIViewController! = nil
-        var themeRepository: FakeThemeRepository! = nil
+        var themeRepository: ThemeRepository! = nil
 
         beforeEach {
             injector = Injector()
 
             urlSession = FakeURLSession()
-            injector.bind(URLSession.self, toInstance: urlSession)
+            injector.bind(kind: URLSession.self, toInstance: urlSession)
 
-            themeRepository = FakeThemeRepository()
-            injector.bind(ThemeRepository.self, toInstance: themeRepository)
+            themeRepository = ThemeRepository(userDefaults: nil)
+            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
 
             backgroundQueue = FakeOperationQueue()
             backgroundQueue.runSynchronously = true
-            injector.bind(kBackgroundQueue, toInstance: backgroundQueue)
+            injector.bind(string: kBackgroundQueue, toInstance: backgroundQueue)
 
             dataRepository = FakeDatabaseUseCase()
-            injector.bind(DatabaseUseCase.self, toInstance: dataRepository)
+            injector.bind(kind: DatabaseUseCase.self, toInstance: dataRepository)
 
-            subject = injector.create(FeedViewController)!
+            subject = injector.create(kind: FeedViewController.self)!
 
             navigationController = UINavigationController(rootViewController: subject)
 
             presentingController = UIViewController()
-            presentingController.presentViewController(navigationController, animated: false, completion: nil)
+            presentingController.present(navigationController, animated: false, completion: nil)
 
             feed = Feed(title: "title", url: URL(string: "http://example.com/feed")!, summary: "summary",
                 tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
@@ -88,7 +88,7 @@ class FeedViewControllerSpec: QuickSpec {
 
         describe("changing the theme") {
             beforeEach {
-                themeRepository.theme = .Dark
+                themeRepository.theme = .dark
             }
 
             it("should change the tableView") {
@@ -112,7 +112,7 @@ class FeedViewControllerSpec: QuickSpec {
 
             describe("the first section") {
                 it("should have 1 row") {
-                    expect(subject.tableView.numberOfRowsInSection(0)).to(equal(1))
+                    expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(1))
                 }
 
                 it("should be titled 'Title'") {
@@ -120,7 +120,7 @@ class FeedViewControllerSpec: QuickSpec {
                 }
 
                 it("should not be editable") {
-                    expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 0))) == false
+                    expect(subject.tableView(subject.tableView, canEditRowAt: IndexPath(row: 0, section: 0))) == false
                 }
 
                 describe("the cell") {
@@ -131,7 +131,7 @@ class FeedViewControllerSpec: QuickSpec {
                             subject.feed = Feed(title: "a title", url: URL(string: "")!, summary: "",
                                 tags: ["~custom title"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-                            cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 0)) as! TableViewCell
+                            cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 0, section: 0)) as! TableViewCell
                         }
 
                         it("should use that tag as the title, minus the leading '~'") {
@@ -145,7 +145,7 @@ class FeedViewControllerSpec: QuickSpec {
 
                     context("when the feed has a title preconfigured") {
                         beforeEach {
-                            cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 0)) as! TableViewCell
+                            cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 0, section: 0)) as! TableViewCell
                         }
 
                         it("should have a label title equal to the feed's") {
@@ -161,7 +161,7 @@ class FeedViewControllerSpec: QuickSpec {
 
             describe("the second section") {
                 it("should have 1 row") {
-                    expect(subject.tableView.numberOfRowsInSection(1)).to(equal(1))
+                    expect(subject.tableView.numberOfRows(inSection: 1)).to(equal(1))
                 }
 
                 it("should be titled 'URL'") {
@@ -169,13 +169,13 @@ class FeedViewControllerSpec: QuickSpec {
                 }
 
                 it("should not be editable") {
-                    expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 1))) == false
+                    expect(subject.tableView(subject.tableView, canEditRowAt: IndexPath(row: 0, section: 1))) == false
                 }
 
                 describe("the cell") {
                     var cell: TextFieldCell! = nil
                     beforeEach {
-                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 1)) as! TextFieldCell
+                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 0, section: 1)) as! TextFieldCell
                     }
 
                     it("should be preconfigured with the feed's url") {
@@ -189,7 +189,7 @@ class FeedViewControllerSpec: QuickSpec {
                     describe("on change") {
                         beforeEach {
                             let range = NSMakeRange(0, 23)
-                            cell.textField(cell.textField, shouldChangeCharactersInRange: range, replacementString: "http://example.com/feed")
+                            _ = cell.textField(cell.textField, shouldChangeCharactersIn: range, replacementString: "http://example.com/feed")
                         }
 
                         it("should make a request to the url") {
@@ -198,11 +198,11 @@ class FeedViewControllerSpec: QuickSpec {
                         }
 
                         context("when the request succeeds") {
-                            let urlResponse = NSHTTPURLResponse(URL: URL(string: "")!, statusCode: 200, HTTPVersion: nil, headerFields: nil)
+                            let urlResponse = HTTPURLResponse(url: URL(string: "https://example.com/feed")!, statusCode: 200, httpVersion: nil, headerFields: nil)
                             context("if the response (text) is a valid feed") {
                                 beforeEach {
-                                    let rss = NSBundle(forClass: self.classForCoder).pathForResource("feed2", ofType: "rss")!
-                                    let data = Data(contentsOfFile: rss)
+                                    let rss = Bundle(for: self.classForCoder).url(forResource: "feed2", withExtension: "rss")!
+                                    let data = try! Data(contentsOf: rss)
                                     urlSession.lastCompletionHandler(data, urlResponse, nil)
                                 }
                                 
@@ -213,7 +213,7 @@ class FeedViewControllerSpec: QuickSpec {
 
                             context("if the response is not a valid feed") {
                                 beforeEach {
-                                    let data = "Hello World".dataUsingEncoding(NSUTF8StringEncoding)
+                                    let data = "Hello World".data(using: String.Encoding.utf8)
                                     urlSession.lastCompletionHandler(data, urlResponse, nil)
                                 }
 
@@ -239,7 +239,7 @@ class FeedViewControllerSpec: QuickSpec {
             describe("the third section") {
                 var cell: TableViewCell! = nil
                 it("should have 1 row") {
-                    expect(subject.tableView.numberOfRowsInSection(2)).to(equal(1))
+                    expect(subject.tableView.numberOfRows(inSection: 2)).to(equal(1))
                 }
 
                 it("should be titled 'Summary'") {
@@ -247,14 +247,14 @@ class FeedViewControllerSpec: QuickSpec {
                 }
 
                 it("should not be editable") {
-                    expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 2))) == false
+                    expect(subject.tableView(subject.tableView, canEditRowAt: IndexPath(row: 0, section: 2))) == false
                 }
 
                 context("when the feed has no summary preconfigured") {
                     beforeEach {
                         subject.feed = otherFeed
 
-                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 2)) as! TableViewCell
+                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 0, section: 2)) as! TableViewCell
                     }
 
                     it("should set the cell's themeRepository") {
@@ -266,7 +266,7 @@ class FeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should re-color the text gray") {
-                        expect(cell.textLabel?.textColor).to(equal(UIColor.grayColor()))
+                        expect(cell.textLabel?.textColor).to(equal(UIColor.gray))
                     }
                 }
 
@@ -275,7 +275,7 @@ class FeedViewControllerSpec: QuickSpec {
                         subject.feed = Feed(title: "a title", url: URL(string: "")!, summary: "a summary",
                             tags: ["`custom summary"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 2)) as! TableViewCell
+                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 0, section: 2)) as! TableViewCell
                     }
 
                     it("should use that tag as the summary, minus the leading '`'") {
@@ -289,7 +289,7 @@ class FeedViewControllerSpec: QuickSpec {
 
                 context("when the feed has a summary preconfigured") {
                     beforeEach {
-                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 2)) as! TableViewCell
+                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 0, section: 2)) as! TableViewCell
                     }
 
                     it("should have a label title equal to the feed's") {
@@ -304,7 +304,7 @@ class FeedViewControllerSpec: QuickSpec {
 
             describe("the fourth section") {
                 it("should have n+1 rows") {
-                    expect(subject.tableView.numberOfRowsInSection(3)).to(equal(feed.tags.count + 1))
+                    expect(subject.tableView.numberOfRows(inSection: 3)).to(equal(feed.tags.count + 1))
                 }
 
                 it("should be titled 'Tags'") {
@@ -316,7 +316,7 @@ class FeedViewControllerSpec: QuickSpec {
                     let tagIndex: Int = 0
 
                     beforeEach {
-                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 3)) as! TableViewCell
+                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 0, section: 3)) as! TableViewCell
                     }
 
                     it("should be titled for the row") {
@@ -324,7 +324,7 @@ class FeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should be editable") {
-                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: NSIndexPath(forRow: tagIndex, inSection: 3))) == true
+                        expect(subject.tableView(subject.tableView, canEditRowAt: IndexPath(row: tagIndex, section: 3))) == true
                     }
 
                     it("should set the cell's themeRepository") {
@@ -335,7 +335,7 @@ class FeedViewControllerSpec: QuickSpec {
                         var editActions: [UITableViewRowAction] = []
                         beforeEach {
                             editActions = subject.tableView(subject.tableView,
-                                editActionsForRowAtIndexPath: NSIndexPath(forRow: tagIndex, inSection: 3)) ?? []
+                                editActionsForRowAt: IndexPath(row: tagIndex, section: 3)) ?? []
                         }
 
                         it("should have 2 edit actions") {
@@ -355,7 +355,7 @@ class FeedViewControllerSpec: QuickSpec {
 
                             it("should removes the tag when tapped") {
                                 let tag = feed.tags[tagIndex]
-                                action.handler(action, NSIndexPath(forRow: tagIndex, inSection: 3))
+                                action.handler(action, IndexPath(row: tagIndex, section: 3))
                                 expect(feed.tags).toNot(contain(tag))
                             }
                         }
@@ -372,7 +372,7 @@ class FeedViewControllerSpec: QuickSpec {
                             }
 
                             it("should removes the tag when tapped") {
-                                action.handler(action, NSIndexPath(forRow: tagIndex, inSection: 3))
+                                action.handler(action, IndexPath(row: tagIndex, section: 3))
                                 expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
                                 if let tagEditor = navigationController.topViewController as? TagEditorViewController {
                                     expect(tagEditor.tagIndex).to(equal(tagIndex))
@@ -385,11 +385,11 @@ class FeedViewControllerSpec: QuickSpec {
 
                 describe("the last row") {
                     var cell: TableViewCell! = nil
-                    var indexPath: NSIndexPath! = nil
+                    var indexPath: IndexPath! = nil
 
                     beforeEach {
-                        indexPath = NSIndexPath(forRow: feed.tags.count, inSection: 3)
-                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: indexPath) as! TableViewCell
+                        indexPath = IndexPath(row: feed.tags.count, section: 3)
+                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
                     }
 
                     it("should be titled 'Add Tag'") {
@@ -397,7 +397,7 @@ class FeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should not be editable") {
-                        expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)) == false
+                        expect(subject.tableView(subject.tableView, canEditRowAt: indexPath)) == false
                     }
 
                     it("should set the cell's themeRepository") {
@@ -406,7 +406,7 @@ class FeedViewControllerSpec: QuickSpec {
 
                     describe("when tapped") {
                         beforeEach {
-                            subject.tableView(subject.tableView, didSelectRowAtIndexPath: indexPath)
+                            subject.tableView(subject.tableView, didSelectRowAt: indexPath)
                         }
 
                         it("should bring up the tag editor screen") {

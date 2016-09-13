@@ -95,11 +95,11 @@ class UpdateUseCaseSpec: QuickSpec {
 
                 describe("when the update request fails") {
                     beforeEach {
-                        updateFeedsPromise.resolve(.failure(.Unknown))
+                        updateFeedsPromise.resolve(.failure(.unknown))
                     }
 
                     it("resolves the promise with the error") {
-                        expect(receivedFuture.value?.error) == .Unknown
+                        expect(receivedFuture.value?.error) == .unknown
                     }
                 }
             }
@@ -124,8 +124,8 @@ class UpdateUseCaseSpec: QuickSpec {
                     beforeEach {
                         mainQueue.runSynchronously = true
                         let updatingFeeds = [feed1, feed3]
-                        updateService.updateFeedCallbacks.enumerate().forEach {
-                            $1(updatingFeeds[$0], nil)
+                        updateService.updateFeedCallbacks.enumerated().forEach {
+                            $1(updatingFeeds[$0]!, nil)
                         }
                     }
 

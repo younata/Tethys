@@ -1,3 +1,4 @@
+
 import Quick
 import Nimble
 import Ra
@@ -12,17 +13,17 @@ private func createOPMLWithFeeds(feeds: [(url: String, title: String)], location
     }
     opml += "</body></opml>"
 
-    let path = documentsDirectory().stringByAppendingPathComponent(location)
+    let path = documentsDirectory() + "/" + location
     do {
-        try opml.writeToFile(path, atomically: true, encoding: NSUTF8StringEncoding)
+        try opml.write(toFile: path, atomically: true, encoding: String.Encoding.utf8)
     } catch _ {
     }
 }
 
 private func deleteAtLocation(location: String) {
-    let path = documentsDirectory().stringByAppendingPathComponent(location)
+    let path = documentsDirectory() + "/" + location
     do {
-        try NSFileManager.defaultManager().removeItemAtPath(path)
+        try FileManager.default.removeItem(atPath: path)
     } catch _ {
     }
 }
@@ -34,9 +35,9 @@ private func createFeed(feed: (url: String, title: String, articles: [String]), 
     }
     str += "</channel></rss>"
 
-    let path = documentsDirectory().stringByAppendingPathComponent(location)
+    let path = documentsDirectory() + "/" + location
     do {
-        try str.writeToFile(path, atomically: true, encoding: NSUTF8StringEncoding)
+        try str.write(toFile: path, atomically: true, encoding: String.Encoding.utf8)
     } catch _ {
     }
 }
@@ -52,23 +53,23 @@ class LocalImportViewControllerSpec: QuickSpec {
 
         var tableView: UITableView! = nil
 
-        var themeRepository: FakeThemeRepository!
+        var themeRepository: ThemeRepository!
         var importUseCase: FakeImportUseCase!
         var analytics: FakeAnalytics!
 
         beforeEach {
             injector = Ra.Injector()
 
-            themeRepository = FakeThemeRepository()
-            injector.bind(ThemeRepository.self, toInstance: themeRepository)
+            themeRepository = ThemeRepository(userDefaults: nil)
+            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
 
             analytics = FakeAnalytics()
-            injector.bind(Analytics.self, toInstance: analytics)
+            injector.bind(kind: Analytics.self, toInstance: analytics)
 
             importUseCase = FakeImportUseCase()
-            injector.bind(ImportUseCase.self, toInstance: importUseCase)
+            injector.bind(kind: ImportUseCase.self, toInstance: importUseCase)
 
-            subject = injector.create(LocalImportViewController)!
+            subject = injector.create(kind: LocalImportViewController.self)!
 
             navigationController = UINavigationController(rootViewController: subject)
 
@@ -78,7 +79,7 @@ class LocalImportViewControllerSpec: QuickSpec {
 
         describe("changing the theme") {
             beforeEach {
-                themeRepository.theme = .Dark
+                themeRepository.theme = .dark
             }
 
             it("should update the tableView") {
@@ -97,7 +98,7 @@ class LocalImportViewControllerSpec: QuickSpec {
 
         it("asks the use case to scan for any importable items in the documents directory") {
             expect(importUseCase.scanDirectoryForImportablesCallCount) == 1
-            expect(importUseCase.scanDirectoryForImportablesArgsForCall(0).0) == documentsUrl
+            expect(importUseCase.scanDirectoryForImportablesArgsForCall(callIndex: 0).0) == documentsUrl
         }
 
         it("tells analytics to log that the user viewed LocalImport") {
@@ -115,12 +116,12 @@ class LocalImportViewControllerSpec: QuickSpec {
                 context("when feeds are added") {
 
                     beforeEach {
-                        let opmlUrl = documentsUrl.URLByAppendingPathComponent("rnews.opml")
-                        let feedUrl = documentsUrl.URLByAppendingPathComponent("feed")
+                        let opmlUrl = documentsUrl.appendingPathComponent("rnews.opml")
+                        let feedUrl = documentsUrl.appendingPathComponent("feed")
 
                         subject.reloadItems()
 
-                        importUseCase.scanDirectoryForImportablesArgsForCall(1).1([.OPML(opmlUrl, 3), .Feed(feedUrl, 10)])
+                        importUseCase.scanDirectoryForImportablesArgsForCall(callIndex: 1).1([.opml(opmlUrl, 3), .feed(feedUrl, 10)])
                     }
 
                     it("removes the explanationLabel from the view hierarchy") {
@@ -131,7 +132,7 @@ class LocalImportViewControllerSpec: QuickSpec {
 
             context("when there are no files to list") {
                 beforeEach {
-                    importUseCase.scanDirectoryForImportablesArgsForCall(0).1([])
+                    importUseCase.scanDirectoryForImportablesArgsForCall(callIndex: 0).1([])
                 }
 
                 itShowsAnExplanationMessage()
@@ -139,8 +140,8 @@ class LocalImportViewControllerSpec: QuickSpec {
 
             context("when there is only the rnews.opml file to list") {
                 beforeEach {
-                    let opmlUrl = documentsUrl.URLByAppendingPathComponent("rnews.opml")
-                    importUseCase.scanDirectoryForImportablesArgsForCall(0).1([.OPML(opmlUrl, 3)])
+                    let opmlUrl = documentsUrl.appendingPathComponent("rnews.opml")
+                    importUseCase.scanDirectoryForImportablesArgsForCall(callIndex: 0).1([.opml(opmlUrl, 3)])
                 }
 
                 itShowsAnExplanationMessage()
@@ -148,10 +149,10 @@ class LocalImportViewControllerSpec: QuickSpec {
 
             context("when there are multiple files to list") {
                 beforeEach {
-                    let opmlUrl = documentsUrl.URLByAppendingPathComponent("rnews.opml")
-                    let feedUrl = documentsUrl.URLByAppendingPathComponent("feed")
+                    let opmlUrl = documentsUrl.appendingPathComponent("rnews.opml")
+                    let feedUrl = documentsUrl.appendingPathComponent("feed")
 
-                    importUseCase.scanDirectoryForImportablesArgsForCall(0).1([.OPML(opmlUrl, 3), .Feed(feedUrl, 10)])
+                    importUseCase.scanDirectoryForImportablesArgsForCall(callIndex: 0).1([.opml(opmlUrl, 3), .feed(feedUrl, 10)])
                 }
                 
                 it("does not show the explanationLabel") {
@@ -161,15 +162,15 @@ class LocalImportViewControllerSpec: QuickSpec {
         }
 
         describe("the tableView") {
-            let opmlUrl = documentsUrl.URLByAppendingPathComponent("rnews.opml")
-            let feedUrl = documentsUrl.URLByAppendingPathComponent("feed")
+            let opmlUrl = documentsUrl.appendingPathComponent("rnews.opml")
+            let feedUrl = documentsUrl.appendingPathComponent("feed")
 
             beforeEach {
-                importUseCase.scanDirectoryForImportablesArgsForCall(0).1([.OPML(opmlUrl, 3), .Feed(feedUrl, 10)])
+                importUseCase.scanDirectoryForImportablesArgsForCall(callIndex: 0).1([.opml(opmlUrl, 3), .feed(feedUrl, 10)])
             }
 
             it("should have 2 sections") {
-                expect(subject.numberOfSectionsInTableView(tableView)).to(equal(2))
+                expect(subject.numberOfSections(in: tableView)).to(equal(2))
             }
 
             it("should with 1 row in each section") {
@@ -186,13 +187,13 @@ class LocalImportViewControllerSpec: QuickSpec {
 
             describe("the cell in section 0") {
                 var cell : UITableViewCell? = nil
-                let indexPath = NSIndexPath(forRow: 0, inSection: 0)
+                let indexPath = IndexPath(row: 0, section: 0)
                 beforeEach {
-                    expect(subject.numberOfSectionsInTableView(tableView)).to(beGreaterThan(indexPath.section))
-                    if subject.numberOfSectionsInTableView(tableView) > indexPath.section {
+                    expect(subject.numberOfSections(in: tableView)).to(beGreaterThan(indexPath.section))
+                    if subject.numberOfSections(in: tableView) > indexPath.section {
                         expect(subject.tableView(tableView, numberOfRowsInSection: indexPath.section)).to(beGreaterThan(indexPath.row))
                         if subject.tableView(tableView, numberOfRowsInSection: indexPath.section) > indexPath.row {
-                            cell = subject.tableView(tableView, cellForRowAtIndexPath: indexPath)
+                            cell = subject.tableView(tableView, cellForRowAt: indexPath)
                         }
                     }
                 }
@@ -207,7 +208,7 @@ class LocalImportViewControllerSpec: QuickSpec {
 
                 describe("selecting it") {
                     beforeEach {
-                        subject.tableView(tableView, didSelectRowAtIndexPath: indexPath)
+                        subject.tableView(tableView, didSelectRowAt: indexPath)
                     }
 
                     it("should present an activity indicator") {
@@ -225,12 +226,12 @@ class LocalImportViewControllerSpec: QuickSpec {
                     }
 
                     it("tells the use case to import the opml") {
-                        expect(importUseCase.importItemArgsForCall(0).0) == opmlUrl
+                        expect(importUseCase.importItemArgsForCall(callIndex: 0).0) == opmlUrl
                     }
 
                     describe("when the import finishes") {
                         beforeEach {
-                            importUseCase.importItemArgsForCall(0).1()
+                            importUseCase.importItemArgsForCall(callIndex: 0).1()
                         }
                         it("tells analytics to log that the user used LocalImport") {
                             expect(analytics.logEventCallCount) == 2
@@ -239,7 +240,8 @@ class LocalImportViewControllerSpec: QuickSpec {
                         }
 
                         it("dismisses the activity indicator") {
-                            expect(subject.view.subviews).toNot(contain(ActivityIndicator.self))
+                            let subjectHasNoActivityIndicator = subject.view.subviews.filter { return $0.classForCoder != ActivityIndicator.classForCoder() }.count == 0
+                            expect(subjectHasNoActivityIndicator).to(beTruthy())
                         }
                     }
                 }
@@ -247,9 +249,9 @@ class LocalImportViewControllerSpec: QuickSpec {
 
             describe("the cell in section 1") {
                 var cell : UITableViewCell! = nil
-                let indexPath = NSIndexPath(forRow: 0, inSection: 1)
+                let indexPath = IndexPath(row: 0, section: 1)
                 beforeEach {
-                    cell = subject.tableView(tableView, cellForRowAtIndexPath: indexPath)
+                    cell = subject.tableView(tableView, cellForRowAt: indexPath)
                 }
 
                 it("should be named for the file name") {
@@ -262,7 +264,7 @@ class LocalImportViewControllerSpec: QuickSpec {
 
                 describe("selecting it") {
                     beforeEach {
-                        subject.tableView(tableView, didSelectRowAtIndexPath: indexPath)
+                        subject.tableView(tableView, didSelectRowAt: indexPath)
                     }
 
                     it("should present an activity indicator") {
@@ -280,12 +282,12 @@ class LocalImportViewControllerSpec: QuickSpec {
                     }
 
                     it("tells the use case to import the feed") {
-                        expect(importUseCase.importItemArgsForCall(0).0) == feedUrl
+                        expect(importUseCase.importItemArgsForCall(callIndex: 0).0) == feedUrl
                     }
 
                     describe("when the import finishes") {
                         beforeEach {
-                            importUseCase.importItemArgsForCall(0).1()
+                            importUseCase.importItemArgsForCall(callIndex: 0).1()
                         }
                         it("tells analytics to log that the user used LocalImport") {
                             expect(analytics.logEventCallCount) == 2
@@ -294,7 +296,8 @@ class LocalImportViewControllerSpec: QuickSpec {
                         }
 
                         it("dismisses the activity indicator") {
-                            expect(subject.view.subviews).toNot(contain(ActivityIndicator.self))
+                            let subjectHasNoActivityIndicator = subject.view.subviews.filter { return $0.classForCoder != ActivityIndicator.classForCoder() }.count == 0
+                            expect(subjectHasNoActivityIndicator).to(beTruthy())
                         }
                     }
                 }

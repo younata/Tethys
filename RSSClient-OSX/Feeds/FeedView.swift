@@ -88,7 +88,7 @@ public final class FeedView: NSView {
         self.nameLabel.autoPinEdge(.Right, toEdge: .Left, ofView: unreadCounter, withOffset: -8)
         self.nameLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         self.nameHeight = nameLabel.autoSetDimension(.Height, toSize: 22)
-        self.nameLabel.backgroundColor = NSColor.clearColor()
+        self.nameLabel.backgroundColor = NSColor.clear
 
         self.summaryLabel.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
         self.summaryLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
@@ -98,7 +98,7 @@ public final class FeedView: NSView {
             withOffset: 8,
             relation: .GreaterThanOrEqual)
         self.summaryLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-        self.summaryLabel.backgroundColor = NSColor.clearColor()
+        self.summaryLabel.backgroundColor = NSColor.clear
 
         self.imageView.autoPinEdgeToSuperviewEdge(.Trailing)
         self.imageView.autoPinEdgeToSuperviewEdge(.Top, withInset: 0, relation: .GreaterThanOrEqual)

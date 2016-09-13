@@ -187,7 +187,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                 beforeEach {
                     calledHandler = false
 
-                    subject.allTags().then {
+                    _ = subject.allTags().then {
                         calledHandler = true
                         calledResults = $0
                     }
@@ -213,7 +213,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                 beforeEach {
                     calledHandler = false
 
-                    subject.feeds().then {
+                    _ = subject.feeds().then {
                         calledHandler = true
                         calledResults = $0
                     }
@@ -225,7 +225,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                     switch calledResults! {
                     case let .success(receivedFeeds):
                         expect(receivedFeeds) == feeds
-                        for (idx, feed) in feeds.enumerate() {
+                        for (idx, feed) in feeds.enumerated() {
                             let receivedFeed = receivedFeeds[idx]
                             expect(receivedFeed.articlesArray == feed.articlesArray) == true
                         }
@@ -253,7 +253,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                     }
 
                     it("should call back with a created feed") {
-                        expect(dataService.feeds).to(contain(createdFeed))
+                        expect(dataService.feeds).to(contain(createdFeed!))
                         expect(dataService.feeds.count) == 3
                     }
 
@@ -281,7 +281,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                     }
 
                     it("should call back with a created feed") {
-                        expect(dataService.feeds).to(contain(createdFeed))
+                        expect(dataService.feeds).to(contain(createdFeed!))
                         expect(dataService.feeds.count) == 3
                     }
 
@@ -302,7 +302,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                     sinopeRepository.unsubscribeReturns(unsubscribePromise.future)
 
                     mainQueue.runSynchronously = true
-                    subject.deleteFeed(feed1)
+                    _ = subject.deleteFeed(feed1)
                 }
 
                 it("should remove the feed from the data service") {
@@ -375,7 +375,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                     article.feed?.image = image
 
                     article.title = "hello"
-                    subject.saveArticle(article)
+                    _ = subject.saveArticle(article)
                 }
 
                 it("should update the data service") {
@@ -392,7 +392,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                 beforeEach {
                     article = article1
 
-                    subject.deleteArticle(article)
+                    _ = subject.deleteArticle(article)
                 }
 
                 it("should remove the article from the data service") {
@@ -410,7 +410,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                 beforeEach {
                     article = article1
 
-                    subject.markArticle(article, asRead: true)
+                    _ = subject.markArticle(article, asRead: true)
                 }
 
                 it("should mark the article object as read") {
@@ -426,7 +426,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                     beforeEach {
                         dataSubscriber.markedArticles = nil
                         dataSubscriber.read = nil
-                        subject.markArticle(article, asRead: false)
+                        _ = subject.markArticle(article, asRead: false)
                     }
 
                     it("should inform any subscribers") {

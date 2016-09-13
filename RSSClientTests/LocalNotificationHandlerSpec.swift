@@ -19,13 +19,13 @@ class LocalNotificationHandlerSpec: QuickSpec {
             injector = Injector()
 
             dataRepository = FakeDatabaseUseCase()
-            injector.bind(DatabaseUseCase.self, toInstance: dataRepository)
+            injector.bind(kind: DatabaseUseCase.self, toInstance: dataRepository)
             let articleUseCase = FakeArticleUseCase()
             articleUseCase.readArticleReturns("")
             articleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
-            injector.bind(ArticleUseCase.self, toInstance: articleUseCase)
+            injector.bind(kind: ArticleUseCase.self, toInstance: articleUseCase)
 
-            subject = injector.create(LocalNotificationHandler)!
+            subject = injector.create(kind: LocalNotificationHandler.self)!
 
             notificationSource = FakeNotificationSource()
         }
@@ -36,23 +36,23 @@ class LocalNotificationHandlerSpec: QuickSpec {
             }
 
             it("should enable local notifications for marking something as read") {
-                expect(notificationSource.notificationSettings?.types).to(equal(UIUserNotificationType.Badge.union(.Alert).union(.Sound)))
+                expect(notificationSource.notificationSettings?.types).to(equal(UIUserNotificationType.badge.union(.alert).union(.sound)))
                 if let categories = notificationSource.notificationSettings?.categories {
                     expect(categories.count).to(equal(1))
                     if let category = categories.first {
                         expect(category.identifier).to(equal("default"))
-                        expect(category.actionsForContext(.Minimal)?.count).to(equal(1))
-                        if let action = category.actionsForContext(.Minimal)?.first {
+                        expect(category.actions(for: .minimal)?.count).to(equal(1))
+                        if let action = category.actions(for: .minimal)?.first {
                             expect(action.identifier).to(equal("read"))
                             expect(action.title).to(equal("Mark Read"))
-                            expect(action.activationMode).to(equal(UIUserNotificationActivationMode.Background))
+                            expect(action.activationMode).to(equal(UIUserNotificationActivationMode.background))
                         }
 
-                        expect(category.actionsForContext(.Default)?.count).to(equal(1))
-                        if let action = category.actionsForContext(.Default)?.first {
+                        expect(category.actions(for: .default)?.count).to(equal(1))
+                        if let action = category.actions(for: .default)?.first {
                             expect(action.identifier).to(equal("read"))
                             expect(action.title).to(equal("Mark Read"))
-                            expect(action.activationMode).to(equal(UIUserNotificationActivationMode.Background))
+                            expect(action.activationMode).to(equal(UIUserNotificationActivationMode.background))
                         }
                     }
                 }
@@ -72,8 +72,8 @@ class LocalNotificationHandlerSpec: QuickSpec {
                 note.userInfo = ["feed": "feedIdentifier", "article": "articleIdentifier"]
 
                 let splitVC = UISplitViewController()
-                injector.bind(SettingsRepository.self, toInstance: SettingsRepository())
-                navController = UINavigationController(rootViewController: injector.create(FeedsTableViewController)!)
+                injector.bind(kind: SettingsRepository.self, toInstance: SettingsRepository())
+                navController = UINavigationController(rootViewController: injector.create(kind: FeedsTableViewController.self)!)
                 splitVC.viewControllers = [navController]
 
 
@@ -84,7 +84,7 @@ class LocalNotificationHandlerSpec: QuickSpec {
             }
 
             afterEach {
-                window.hidden = true
+                window.isHidden = true
                 window = nil
             }
 
@@ -116,7 +116,7 @@ class LocalNotificationHandlerSpec: QuickSpec {
 
             context("when the feeds request fails") {
                 beforeEach {
-                    dataRepository.feedsPromises.last?.resolve(.failure(.Unknown))
+                    dataRepository.feedsPromises.last?.resolve(.failure(.unknown))
                 }
 
                 it("just shows the list of feeds") {
@@ -167,7 +167,7 @@ class LocalNotificationHandlerSpec: QuickSpec {
 
                 context("when the feeds request fails") {
                     beforeEach {
-                        dataRepository.feedsPromises.last?.resolve(.failure(.Unknown))
+                        dataRepository.feedsPromises.last?.resolve(.failure(.unknown))
                     }
 
                     it("does nothing") { // TODO: FOR NOW! (Should display a notification about the action erroring!)

@@ -18,26 +18,26 @@ class SettingsViewControllerSpec: QuickSpec {
         beforeEach {
             let injector = Injector()
 
-            themeRepository = FakeThemeRepository()
-            injector.bind(ThemeRepository.self, toInstance: themeRepository)
+            themeRepository = ThemeRepository(userDefaults: nil)
+            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
 
             settingsRepository = SettingsRepository(userDefaults: nil)
-            injector.bind(SettingsRepository.self, toInstance: settingsRepository)
+            injector.bind(kind: SettingsRepository.self, toInstance: settingsRepository)
 
             fakeQuickActionRepository = FakeQuickActionRepository()
-            injector.bind(QuickActionRepository.self, toInstance: fakeQuickActionRepository)
+            injector.bind(kind: QuickActionRepository.self, toInstance: fakeQuickActionRepository)
 
             feedRepository = FakeDatabaseUseCase()
-            injector.bind(DatabaseUseCase.self, toInstance: feedRepository)
+            injector.bind(kind: DatabaseUseCase.self, toInstance: feedRepository)
 
             accountRepository = FakeAccountRepository()
             accountRepository.loggedInReturns(nil)
-            injector.bind(AccountRepository.self, toInstance: accountRepository)
+            injector.bind(kind: AccountRepository.self, toInstance: accountRepository)
             let mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
-            injector.bind(kMainQueue, toInstance: mainQueue)
+            injector.bind(string: kMainQueue, toInstance: mainQueue)
 
-            subject = injector.create(SettingsViewController)!
+            subject = injector.create(kind: SettingsViewController.self)!
 
             navigationController = UINavigationController(rootViewController: subject)
 
@@ -46,7 +46,7 @@ class SettingsViewControllerSpec: QuickSpec {
 
         describe("changing the theme") {
             beforeEach {
-                themeRepository.theme = .Dark
+                themeRepository.theme = .dark
             }
 
             it("should restyle the navigation bar") {
@@ -54,7 +54,7 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             it("by changing the background color of the tableView") {
-                expect(subject.tableView.backgroundColor) == UIColor.blackColor()
+                expect(subject.tableView.backgroundColor) == UIColor.black
             }
 
             it("should change the background color of the view") {
@@ -67,14 +67,14 @@ class SettingsViewControllerSpec: QuickSpec {
         }
 
         it("has a disabled save button") {
-            expect(subject.navigationItem.rightBarButtonItem?.enabled) == false
+            expect(subject.navigationItem.rightBarButtonItem?.isEnabled) == false
         }
 
         describe("tapping the cancel button") {
             var rootViewController: UIViewController! = nil
             beforeEach {
                 rootViewController = UIViewController()
-                rootViewController.presentViewController(navigationController, animated: false, completion: nil)
+                rootViewController.present(navigationController, animated: false, completion: nil)
                 expect(rootViewController.presentedViewController).to(beIdenticalTo(navigationController))
 
                 subject.navigationItem.leftBarButtonItem?.tap()
@@ -85,16 +85,16 @@ class SettingsViewControllerSpec: QuickSpec {
             }
         }
 
-        sharedExamples("a changed setting") { (sharedContext: SharedExampleContext) in
+        sharedExamples("a changed setting") { (sharedContext: @escaping SharedExampleContext) in
             it("should enable the save button") {
-                expect(subject.navigationItem.rightBarButtonItem?.enabled) == true
+                expect(subject.navigationItem.rightBarButtonItem?.isEnabled) == true
             }
 
             describe("tapping the save button") {
                 var rootViewController: UIViewController! = nil
                 beforeEach {
                     rootViewController = UIViewController()
-                    rootViewController.presentViewController(navigationController, animated: false, completion: nil)
+                    rootViewController.present(navigationController, animated: false, completion: nil)
                     expect(rootViewController.presentedViewController).toNot(beNil())
 
                     subject.navigationItem.rightBarButtonItem?.tap()
@@ -105,7 +105,7 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
 
                 it("saves the change to the userDefaults") {
-                    let op = sharedContext()["saveToUserDefaults"] as? NSOperation
+                    let op = sharedContext()["saveToUserDefaults"] as? Operation
                     op?.main()
                 }
             }
@@ -113,7 +113,7 @@ class SettingsViewControllerSpec: QuickSpec {
 
         describe("key commands") {
             it("can become first responder") {
-                expect(subject.canBecomeFirstResponder()) == true
+                expect(subject.canBecomeFirstResponder) == true
             }
 
             it("has (number of themes - 1) + 2 commands") {
@@ -124,7 +124,7 @@ class SettingsViewControllerSpec: QuickSpec {
             describe("the first (number of themes - 1) commands") {
                 context("when .Default is the current theme") {
                     beforeEach {
-                        themeRepository.theme = .Default
+                        themeRepository.theme = .default
                     }
 
                     it("lists every other theme but .Default") {
@@ -135,13 +135,13 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
 
                         let expectedCommands = [
-                            UIKeyCommand(input: "2", modifierFlags: .Command, action: Selector()),
+                            UIKeyCommand(input: "2", modifierFlags: .command, action: Selector("")),
                         ]
                         let expectedDiscoverabilityTitles = [
                             "Change Theme to 'Dark'",
                         ]
 
-                        for (idx, expectedCmd) in expectedCommands.enumerate() {
+                        for (idx, expectedCmd) in expectedCommands.enumerated() {
                             let cmd = commands[idx]
                             expect(cmd.input) == expectedCmd.input
                             expect(cmd.modifierFlags) == expectedCmd.modifierFlags
@@ -154,7 +154,7 @@ class SettingsViewControllerSpec: QuickSpec {
 
                 context("when .Dark is the current theme") {
                     beforeEach {
-                        themeRepository.theme = .Dark
+                        themeRepository.theme = .dark
                     }
 
                     it("lists every other theme but .Dark") {
@@ -165,13 +165,13 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
 
                         let expectedCommands = [
-                            UIKeyCommand(input: "1", modifierFlags: .Command, action: Selector()),
+                            UIKeyCommand(input: "1", modifierFlags: .command, action: Selector("")),
                         ]
                         let expectedDiscoverabilityTitles = [
                             "Change Theme to 'Default'",
                         ]
 
-                        for (idx, expectedCmd) in expectedCommands.enumerate() {
+                        for (idx, expectedCmd) in expectedCommands.enumerated() {
                             let cmd = commands[idx]
                             expect(cmd.input) == expectedCmd.input
                             expect(cmd.modifierFlags) == expectedCmd.modifierFlags
@@ -194,8 +194,8 @@ class SettingsViewControllerSpec: QuickSpec {
                     let commands = allCommands[allCommands.count - 2..<allCommands.count]
 
                     let expectedCommands = [
-                        UIKeyCommand(input: "s", modifierFlags: .Command, action: Selector()),
-                        UIKeyCommand(input: "w", modifierFlags: .Command, action: Selector()),
+                        UIKeyCommand(input: "s", modifierFlags: .command, action: Selector("")),
+                        UIKeyCommand(input: "w", modifierFlags: .command, action: Selector("")),
                     ]
                     let expectedDiscoverabilityTitles = [
                         "Save and dismiss",
@@ -203,7 +203,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     ]
 
                     expect(commands.count) == expectedCommands.count
-                    for (idx, cmd) in commands.enumerate() {
+                    for (idx, cmd) in commands.enumerated() {
                         let expectedCmd = expectedCommands[idx]
                         expect(cmd.input) == expectedCmd.input
                         expect(cmd.modifierFlags) == expectedCmd.modifierFlags
@@ -225,13 +225,13 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             it("should have 5 sections if force touch is available") {
-                subject.traitCollection.forceTouchCapability = UIForceTouchCapability.Available
+                subject.traitCollection.forceTouchCapability = UIForceTouchCapability.available
                 subject.tableView.reloadData()
                 expect(subject.tableView.numberOfSections) == 5
             }
 
             it("should have 4 sections if force touch is not available") {
-                subject.traitCollection.forceTouchCapability = UIForceTouchCapability.Unavailable
+                subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
                 subject.tableView.reloadData()
                 expect(subject.tableView.numberOfSections) == 4
             }
@@ -245,15 +245,15 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
 
                 it("should have 2 cells") {
-                    expect(subject.tableView.numberOfRowsInSection(sectionNumber)) == 2
+                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == 2
                 }
 
                 describe("the first cell") {
                     var cell: TableViewCell! = nil
-                    let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
+                    let indexPath = IndexPath(row: 0, section: sectionNumber)
 
                     beforeEach {
-                        cell = dataSource.tableView(subject.tableView, cellForRowAtIndexPath: indexPath) as! TableViewCell
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
                     }
 
                     it("should be titled 'Default'") {
@@ -265,20 +265,20 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("should be selected") {
-                        expect(cell.selected) == true
+                        expect(cell.isSelected) == true
                     }
 
                     it("should have no edit actions") {
-                        expect(delegate.tableView?(subject.tableView, editActionsForRowAtIndexPath: indexPath)).to(beNil())
+                        expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
                     }
                 }
 
                 describe("the second cell") {
                     var cell: TableViewCell! = nil
-                    let indexPath = NSIndexPath(forRow: 1, inSection: sectionNumber)
+                    let indexPath = IndexPath(row: 1, section: sectionNumber)
 
                     beforeEach {
-                        cell = dataSource.tableView(subject.tableView, cellForRowAtIndexPath: indexPath) as! TableViewCell
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
                     }
 
                     it("should be titled 'Dark'") {
@@ -286,7 +286,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("should be selected if it's the current theme") { // which it is not
-                        expect(cell.selected) == false
+                        expect(cell.isSelected) == false
                     }
 
                     it("should have its theme repository set") {
@@ -294,31 +294,31 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("should have no edit actions") {
-                        expect(delegate.tableView?(subject.tableView, editActionsForRowAtIndexPath: indexPath)).to(beNil())
+                        expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
                     }
 
                     describe("when tapped") {
                         beforeEach {
-                            delegate.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
+                            delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
                         }
 
                         describe("it previews the change") {
                             it("by restyling the navigation bar") {
-                                expect(subject.navigationController?.navigationBar.barStyle) == UIBarStyle.Black
+                                expect(subject.navigationController?.navigationBar.barStyle) == UIBarStyle.black
                             }
 
                             it("by changing the background color of the tableView") {
-                                expect(subject.tableView.backgroundColor) == UIColor.blackColor()
+                                expect(subject.tableView.backgroundColor) == UIColor.black
                             }
 
                             it("by changing the background color of the view") {
-                                expect(subject.view.backgroundColor) == UIColor.blackColor()
+                                expect(subject.view.backgroundColor) == UIColor.black
                             }
                         }
                         
                         itBehavesLike("a changed setting") {
-                            let op = NSBlockOperation {
-                                expect(themeRepository.theme) == ThemeRepository.Theme.Dark
+                            let op = BlockOperation {
+                                expect(themeRepository.theme) == ThemeRepository.Theme.dark
                             }
                             return ["saveToUserDefaults": op]
                         }
@@ -330,7 +330,7 @@ class SettingsViewControllerSpec: QuickSpec {
                 let sectionNumber = 1
 
                 beforeEach {
-                    subject.traitCollection.forceTouchCapability = UIForceTouchCapability.Available
+                    subject.traitCollection.forceTouchCapability = UIForceTouchCapability.available
                 }
 
                 it("should be titled 'Quick Actions'") {
@@ -345,16 +345,16 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("should have a single cell, inviting the user to add a quick action") {
-                        expect(subject.tableView.numberOfRowsInSection(sectionNumber)) == 1
+                        expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == 1
 
-                        let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
-                        let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: indexPath)
+                        let indexPath = IndexPath(row: 0, section: sectionNumber)
+                        let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: indexPath)
 
                         expect(cell?.textLabel?.text) == "Add a Quick Action"
                     }
 
                     describe("tapping the add cell") {
-                        let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
+                        let indexPath = IndexPath(row: 0, section: sectionNumber)
 
                         let feeds = [
                             Feed(title: "a", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
@@ -362,7 +362,7 @@ class SettingsViewControllerSpec: QuickSpec {
                         ]
 
                         beforeEach {
-                            subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
+                            subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAt: indexPath)
                         }
 
                         it("makes a request to the data use case for feeds") {
@@ -402,9 +402,9 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("should not have any edit actions") {
-                        let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
+                        let indexPath = IndexPath(row: 0, section: sectionNumber)
 
-                        let editActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAtIndexPath: indexPath)
+                        let editActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAt: indexPath)
                         expect(editActions).to(beNil())
                     }
                 }
@@ -421,23 +421,23 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("should show the existing actions, plus an invitation to add one more") {
-                        expect(subject.tableView.numberOfRowsInSection(sectionNumber)) == 2
-                        let firstIndexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
-                        let firstCell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: firstIndexPath)
+                        expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == 2
+                        let firstIndexPath = IndexPath(row: 0, section: sectionNumber)
+                        let firstCell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: firstIndexPath)
 
                         expect(firstCell?.textLabel?.text) == "a"
 
-                        let secondIndexPath = NSIndexPath(forRow: 1, inSection: sectionNumber)
-                        let secondCell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: secondIndexPath)
+                        let secondIndexPath = IndexPath(row: 1, section: sectionNumber)
+                        let secondCell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: secondIndexPath)
 
                         expect(secondCell?.textLabel?.text) == "Add a new Quick Action"
                     }
 
                     describe("the cell for an existing quick action") {
-                        let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
+                        let indexPath = IndexPath(row: 0, section: sectionNumber)
 
                         beforeEach {
-                            subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
+                            subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAt: indexPath)
                         }
 
                         it("makes a request to the data use case for feeds") {
@@ -478,9 +478,9 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
 
                         it("should have one edit action, which deletes the quick action when selected") {
-                            let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
+                            let indexPath = IndexPath(row: 0, section: sectionNumber)
 
-                            let editActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAtIndexPath: indexPath)
+                            let editActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAt: indexPath)
                             expect(editActions?.count) == 1
 
                             if let action = editActions?.first {
@@ -494,10 +494,10 @@ class SettingsViewControllerSpec: QuickSpec {
 
 
                     describe("the cell to add a new quick action") {
-                        let indexPath = NSIndexPath(forRow: 1, inSection: sectionNumber)
+                        let indexPath = IndexPath(row: 1, section: sectionNumber)
 
                         beforeEach {
-                            subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
+                            subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAt: indexPath)
                         }
 
                         it("makes a request to the data use case for feeds") {
@@ -538,7 +538,7 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
 
                         it("should not have any edit actions") {
-                            let editActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAtIndexPath: indexPath)
+                            let editActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAt: indexPath)
                             expect(editActions).to(beNil())
                         }
                     }
@@ -564,26 +564,26 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("should only have cells for the existing feeds") {
-                        expect(subject.tableView.numberOfRowsInSection(sectionNumber)) == 3
+                        expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == 3
 
-                        let firstIndexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
-                        let firstCell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: firstIndexPath)
+                        let firstIndexPath = IndexPath(row: 0, section: sectionNumber)
+                        let firstCell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: firstIndexPath)
                         expect(firstCell?.textLabel?.text) == "a"
 
-                        let secondIndexPath = NSIndexPath(forRow: 1, inSection: sectionNumber)
-                        let secondCell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: secondIndexPath)
+                        let secondIndexPath = IndexPath(row: 1, section: sectionNumber)
+                        let secondCell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: secondIndexPath)
                         expect(secondCell?.textLabel?.text) == "b"
 
-                        let thirdIndexPath = NSIndexPath(forRow: 2, inSection: sectionNumber)
-                        let thirdCell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: thirdIndexPath)
+                        let thirdIndexPath = IndexPath(row: 2, section: sectionNumber)
+                        let thirdCell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: thirdIndexPath)
                         expect(thirdCell?.textLabel?.text) == "c"
                     }
 
                     describe("when one of the existing quick action cells is tapped") {
-                        let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
+                        let indexPath = IndexPath(row: 0, section: sectionNumber)
 
                         beforeEach {
-                            subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
+                            subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAt: indexPath)
                         }
 
                         it("displays a list of feeds to change to") {
@@ -627,9 +627,9 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("each should have one edit action, which deletes the quick action when selected") {
-                        let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
+                        let indexPath = IndexPath(row: 0, section: sectionNumber)
                         
-                        let editActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAtIndexPath: indexPath)
+                        let editActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAt: indexPath)
                         expect(editActions?.count) == 1
                         
                         if let action = editActions?.first {
@@ -646,7 +646,7 @@ class SettingsViewControllerSpec: QuickSpec {
                 let sectionNumber = 1
 
                 beforeEach {
-                    subject.traitCollection.forceTouchCapability = UIForceTouchCapability.Unavailable
+                    subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
                 }
 
                 it("is titled 'Accounts'") {
@@ -655,15 +655,15 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
 
                 it("has one cell") {
-                    expect(subject.tableView.numberOfRowsInSection(sectionNumber)) == 1
+                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == 1
                 }
 
                 describe("the first cell") {
                     var cell: TableViewCell! = nil
-                    let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
+                    let indexPath = IndexPath(row: 0, section: sectionNumber)
 
                     beforeEach {
-                        cell = dataSource.tableView(subject.tableView, cellForRowAtIndexPath: indexPath) as! TableViewCell
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
                     }
 
                     it("is configured with the theme repository") {
@@ -679,13 +679,13 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("has no edit actions") {
-                        expect(delegate.tableView?(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.count) == 0
+                        expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)?.count) == 0
                     }
 
                     describe("when logged in") {
                         beforeEach {
                             accountRepository.loggedInReturns("foo@example.com")
-                            cell = dataSource.tableView(subject.tableView, cellForRowAtIndexPath: indexPath) as! TableViewCell
+                            cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
                         }
 
                         it("shows the user's email in the detail label") {
@@ -693,12 +693,12 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
 
                         it("has 1 edit action") {
-                            expect(delegate.tableView?(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.count) == 1
+                            expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)?.count) == 1
                         }
 
                         describe("the edit action") {
                             it("logs the user out") {
-                                let editAction = delegate.tableView?(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.first
+                                let editAction = delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)?.first
                                 expect(editAction?.title) == "Log Out"
                                 editAction?.handler(editAction, indexPath)
                                 expect(accountRepository.logOutCallCount) == 1
@@ -708,13 +708,13 @@ class SettingsViewControllerSpec: QuickSpec {
 
                     describe("tapping the cell") {
                         beforeEach {
-                            delegate.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
+                            delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
                         }
 
                         it("navigates to a page telling the user to login to Pasiphae") {
                             expect(navigationController.topViewController).to(beAnInstanceOf(LoginViewController.self))
                             if let loginViewController = navigationController.topViewController as? LoginViewController {
-                                expect(loginViewController.accountType) == Account.Pasiphae
+                                expect(loginViewController.accountType) == Account.pasiphae
                             }
                         }
                     }
@@ -725,7 +725,7 @@ class SettingsViewControllerSpec: QuickSpec {
                 let sectionNumber = 2
 
                 beforeEach {
-                    subject.traitCollection.forceTouchCapability = UIForceTouchCapability.Unavailable
+                    subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
                 }
 
                 it("is titled 'Advanced'") {
@@ -734,15 +734,15 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
 
                 it("has one cell") {
-                    expect(subject.tableView.numberOfRowsInSection(sectionNumber)) == 1
+                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == 1
                 }
 
                 describe("the first cell") {
                     var cell: SwitchTableViewCell! = nil
-                    let indexPath = NSIndexPath(forRow: 0, inSection: sectionNumber)
+                    let indexPath = IndexPath(row: 0, section: sectionNumber)
 
                     beforeEach {
-                        cell = dataSource.tableView(subject.tableView, cellForRowAtIndexPath: indexPath) as! SwitchTableViewCell
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! SwitchTableViewCell
                     }
 
                     it("is configured with the theme repository") {
@@ -755,7 +755,7 @@ class SettingsViewControllerSpec: QuickSpec {
 
                     describe("tapping the switch on the cell") {
                         beforeEach {
-                            cell.theSwitch.on = false
+                            cell.theSwitch.isOn = false
                             cell.onTapSwitch?(cell.theSwitch)
                         }
 
@@ -764,7 +764,7 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
 
                         itBehavesLike("a changed setting") {
-                            let op = NSBlockOperation {
+                            let op = BlockOperation {
                                 expect(settingsRepository.showEstimatedReadingLabel) == false
                             }
                             return ["saveToUserDefaults": op]
@@ -777,7 +777,7 @@ class SettingsViewControllerSpec: QuickSpec {
                 let sectionNumber = 3
 
                 beforeEach {
-                    subject.traitCollection.forceTouchCapability = UIForceTouchCapability.Unavailable
+                    subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
                 }
 
                 it("should be titled 'Credits'") {
@@ -790,18 +790,18 @@ class SettingsViewControllerSpec: QuickSpec {
                 ]
 
                 it("should have \(values.count) cells") {
-                    expect(subject.tableView.numberOfRowsInSection(sectionNumber)) == values.count
+                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == values.count
                 }
 
-                sharedExamples("a credits cell") { (sharedContext: SharedExampleContext) in
+                sharedExamples("a credits cell") { (sharedContext: @escaping SharedExampleContext) in
                     var cell: TableViewCell!
-                    var indexPath: NSIndexPath!
+                    var indexPath: IndexPath!
                     var title: String!
                     var detail: String!
 
                     beforeEach {
                         cell = sharedContext()["cell"] as! TableViewCell
-                        indexPath = sharedContext()["indexPath"] as! NSIndexPath
+                        indexPath = sharedContext()["indexPath"] as! IndexPath
                         title = sharedContext()["title"] as! String
                         detail = sharedContext()["detail"] as! String
                     }
@@ -820,7 +820,7 @@ class SettingsViewControllerSpec: QuickSpec {
 
                     describe("tapping it") {
                         beforeEach {
-                            delegate.tableView?(subject.tableView, didSelectRowAtIndexPath: indexPath)
+                            delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
                         }
 
                         it("should show an SFSafariViewController pointing at that url") {
@@ -832,8 +832,8 @@ class SettingsViewControllerSpec: QuickSpec {
                 for index in 0..<values.count {
                     describe("the \(index)th cell") {
                         itBehavesLike("a credits cell") {
-                            let indexPath = NSIndexPath(forRow: index, inSection: sectionNumber)
-                            let cell = dataSource.tableView(subject.tableView, cellForRowAtIndexPath: indexPath)
+                            let indexPath = IndexPath(row: index, section: sectionNumber)
+                            let cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath)
                             let value = values[index]
                             return [
                                 "cell": cell,

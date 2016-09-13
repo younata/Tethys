@@ -17,17 +17,17 @@ class LoginViewControllerSpec: QuickSpec {
 
         beforeEach {
             let injector = Injector()
-            themeRepository = FakeThemeRepository()
-            injector.bind(ThemeRepository.self, toInstance: themeRepository)
+            themeRepository = ThemeRepository(userDefaults: nil)
+            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
 
             accountRepository = FakeAccountRepository()
-            injector.bind(AccountRepository.self, toInstance: accountRepository)
+            injector.bind(kind: AccountRepository.self, toInstance: accountRepository)
 
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
-            injector.bind(kMainQueue, toInstance: mainQueue)
+            injector.bind(string: kMainQueue, toInstance: mainQueue)
 
-            subject = injector.create(LoginViewController)!
+            subject = injector.create(kind: LoginViewController.self)!
 
             rootViewController = UIViewController()
             navigationController = UINavigationController(rootViewController: rootViewController)
@@ -36,16 +36,16 @@ class LoginViewControllerSpec: QuickSpec {
         }
 
         it("starts with the login button disabled") {
-            expect(subject.loginButton.enabled) == false
+            expect(subject.loginButton.isEnabled) == false
         }
 
         it("starts with the register button disabled") {
-            expect(subject.registerButton.enabled) == false
+            expect(subject.registerButton.isEnabled) == false
         }
 
         describe("changing the theme") {
             beforeEach {
-                themeRepository.theme = .Dark
+                themeRepository.theme = .dark
             }
 
             it("restyles the navigation bar") {
@@ -80,7 +80,7 @@ class LoginViewControllerSpec: QuickSpec {
         describe("setting an accountType") {
             describe("to .Pasiphae") {
                 beforeEach {
-                    subject.accountType = .Pasiphae
+                    subject.accountType = .pasiphae
                 }
 
                 it("sets the view title to 'rNews Backend'") {
@@ -100,15 +100,15 @@ class LoginViewControllerSpec: QuickSpec {
         describe("logging in") {
             let enterEmail = {
                 subject.emailField.text = "foo@example.com"
-                subject.emailField.delegate?.textField?(subject.emailField,
-                                                        shouldChangeCharactersInRange: NSRange(location: 0, length: 0),
+                _ = subject.emailField.delegate?.textField?(subject.emailField,
+                                                        shouldChangeCharactersIn: NSRange(location: 0, length: 0),
                                                         replacementString: "")
             }
 
             let enterPassword = {
                 subject.passwordField.text = "testere"
-                subject.passwordField.delegate?.textField?(subject.emailField,
-                                                        shouldChangeCharactersInRange: NSRange(location: 0, length: 0),
+                _ = subject.passwordField.delegate?.textField?(subject.emailField,
+                                                        shouldChangeCharactersIn: NSRange(location: 0, length: 0),
                                                         replacementString: "")
             }
 
@@ -118,11 +118,11 @@ class LoginViewControllerSpec: QuickSpec {
                 }
 
                 it("does not enable the login button") {
-                    expect(subject.loginButton.enabled) == false
+                    expect(subject.loginButton.isEnabled) == false
                 }
 
                 it("does not enable the register button") {
-                    expect(subject.registerButton.enabled) == false
+                    expect(subject.registerButton.isEnabled) == false
                 }
             }
 
@@ -132,11 +132,11 @@ class LoginViewControllerSpec: QuickSpec {
                 }
 
                 it("does not enable the login button") {
-                    expect(subject.loginButton.enabled) == false
+                    expect(subject.loginButton.isEnabled) == false
                 }
 
                 it("does not enable the register button") {
-                    expect(subject.registerButton.enabled) == false
+                    expect(subject.registerButton.isEnabled) == false
                 }
             }
 
@@ -147,11 +147,11 @@ class LoginViewControllerSpec: QuickSpec {
                 }
 
                 it("enables the login button") {
-                    expect(subject.loginButton.enabled) == true
+                    expect(subject.loginButton.isEnabled) == true
                 }
 
                 it("enables the register button") {
-                    expect(subject.registerButton.enabled) == true
+                    expect(subject.registerButton.isEnabled) == true
                 }
 
                 describe("tapping the login button") {
@@ -161,7 +161,7 @@ class LoginViewControllerSpec: QuickSpec {
                         loginPromise = Promise<Result<Void, RNewsError>>()
                         accountRepository.loginReturns(loginPromise.future)
 
-                        subject.loginButton.sendActionsForControlEvents(.TouchUpInside)
+                        subject.loginButton.sendActions(for: .touchUpInside)
                     }
 
                     it("asks the account repository to log in") {
@@ -192,7 +192,8 @@ class LoginViewControllerSpec: QuickSpec {
                         }
 
                         it("dismisses the activity indicator") {
-                            expect(subject.view.subviews).toNot(contain(ActivityIndicator.self))
+                            let subjectHasNoActivityIndicator = subject.view.subviews.filter { return $0.classForCoder != ActivityIndicator.classForCoder() }.count == 0
+                            expect(subjectHasNoActivityIndicator).to(beTruthy())
                         }
 
                         it("dismisses the view controller") {
@@ -202,11 +203,12 @@ class LoginViewControllerSpec: QuickSpec {
 
                     describe("when the user fails to log in") {
                         beforeEach {
-                            loginPromise.resolve(.failure(.Unknown))
+                            loginPromise.resolve(.failure(.unknown))
                         }
 
                         it("dismisses the activity indicator") {
-                            expect(subject.view.subviews).toNot(contain(ActivityIndicator.self))
+                            let subjectHasNoActivityIndicator = subject.view.subviews.filter { return $0.classForCoder != ActivityIndicator.classForCoder() }.count == 0
+                            expect(subjectHasNoActivityIndicator).to(beTruthy())
                         }
 
                         it("shows an error indicating what went wrong") {
@@ -222,7 +224,7 @@ class LoginViewControllerSpec: QuickSpec {
                         registerPromise = Promise<Result<Void, RNewsError>>()
                         accountRepository.registerReturns(registerPromise.future)
 
-                        subject.registerButton.sendActionsForControlEvents(.TouchUpInside)
+                        subject.registerButton.sendActions(for: .touchUpInside)
                     }
 
                     it("asks the account repository to register") {
@@ -253,7 +255,8 @@ class LoginViewControllerSpec: QuickSpec {
                         }
 
                         it("dismisses the activity indicator") {
-                            expect(subject.view.subviews).toNot(contain(ActivityIndicator.self))
+                            let subjectHasNoActivityIndicator = subject.view.subviews.filter { return $0.classForCoder != ActivityIndicator.classForCoder() }.count == 0
+                            expect(subjectHasNoActivityIndicator).to(beTruthy())
                         }
 
                         it("dismisses the view controller") {
@@ -263,11 +266,12 @@ class LoginViewControllerSpec: QuickSpec {
 
                     describe("when the user fails to register") {
                         beforeEach {
-                            registerPromise.resolve(.failure(.Unknown))
+                            registerPromise.resolve(.failure(.unknown))
                         }
 
                         it("dismisses the activity indicator") {
-                            expect(subject.view.subviews).toNot(contain(ActivityIndicator.self))
+                            let subjectHasNoActivityIndicator = subject.view.subviews.filter { return $0.classForCoder != ActivityIndicator.classForCoder() }.count == 0
+                            expect(subjectHasNoActivityIndicator).to(beTruthy())
                         }
 
                         it("shows an error indicating what went wrong") {

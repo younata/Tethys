@@ -49,10 +49,10 @@ func fakeArticle(feed: Feed, isUpdated: Bool = false, read: Bool = false) -> Art
     let publishDate: Date
     let updatedDate: Date?
     if isUpdated {
-        updatedDate = Date(timeIntervalSinceReferenceDate: NSTimeInterval(publishedOffset))
+        updatedDate = Date(timeIntervalSinceReferenceDate: TimeInterval(publishedOffset))
         publishDate = Date(timeIntervalSinceReferenceDate: 0)
     } else {
-        publishDate = Date(timeIntervalSinceReferenceDate: NSTimeInterval(publishedOffset))
+        publishDate = Date(timeIntervalSinceReferenceDate: TimeInterval(publishedOffset))
         updatedDate = nil
     }
     return Article(title: "article \(publishedOffset)", link: URL(string: "http://example.com"), summary: "", authors: [Author(name: "Rachel", email: nil)], published: publishDate, updatedAt: updatedDate, identifier: "\(publishedOffset)", content: "", read: read, estimatedReadingTime: 0, feed: feed, flags: [])
@@ -67,7 +67,7 @@ class ArticleListControllerSpec: QuickSpec {
         var navigationController: UINavigationController! = nil
         var articles: [Article] = []
         var dataRepository: FakeDatabaseUseCase! = nil
-        var themeRepository: FakeThemeRepository! = nil
+        var themeRepository: ThemeRepository! = nil
         var settingsRepository: SettingsRepository! = nil
 
         beforeEach {
@@ -75,36 +75,36 @@ class ArticleListControllerSpec: QuickSpec {
 
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
-            injector.bind(kMainQueue, toInstance: mainQueue)
+            injector.bind(string: kMainQueue, toInstance: mainQueue)
 
             settingsRepository = SettingsRepository(userDefaults: nil)
-            injector.bind(SettingsRepository.self, toInstance: settingsRepository)
+            injector.bind(kind: SettingsRepository.self, toInstance: settingsRepository)
 
             let useCase = FakeArticleUseCase()
             useCase.readArticleReturns("hello")
             useCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
-            injector.bind(ArticleUseCase.self, toInstance: useCase)
+            injector.bind(kind: ArticleUseCase.self, toInstance: useCase)
 
-            themeRepository = FakeThemeRepository()
-            injector.bind(ThemeRepository.self, toInstance: themeRepository)
+            themeRepository = ThemeRepository(userDefaults: nil)
+            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
 
             dataRepository = FakeDatabaseUseCase()
-            injector.bind(DatabaseUseCase.self, toInstance: dataRepository)
+            injector.bind(kind: DatabaseUseCase.self, toInstance: dataRepository)
 
             publishedOffset = 0
 
             feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-            let d = fakeArticle(feed)
-            let c = fakeArticle(feed, read: true)
-            let b = fakeArticle(feed, isUpdated: true)
-            let a = fakeArticle(feed)
+            let d = fakeArticle(feed: feed)
+            let c = fakeArticle(feed: feed, read: true)
+            let b = fakeArticle(feed: feed, isUpdated: true)
+            let a = fakeArticle(feed: feed)
             articles = [a, b, c, d]
 
             for article in articles {
                 feed.addArticle(article)
             }
 
-            subject = injector.create(ArticleListController)!
+            subject = injector.create(kind: ArticleListController.self)!
             subject.feed = feed
 
             navigationController = UINavigationController(rootViewController: subject)
@@ -112,8 +112,8 @@ class ArticleListControllerSpec: QuickSpec {
             subject.view.layoutIfNeeded()
         }
 
-        it("dismisses the keyboard upon drag") {
-            expect(subject.tableView.keyboardDismissMode).to(equal(UIScrollViewKeyboardDismissMode.OnDrag))
+        fit("dismisses the keyboard upon drag") {
+            expect(subject.tableView.keyboardDismissMode).to(equal(UIScrollViewKeyboardDismissMode.onDrag))
         }
 
         describe("when a feed is backing the list") {
@@ -123,10 +123,10 @@ class ArticleListControllerSpec: QuickSpec {
 
             it("displays a share sheet icon for sharing that feed") {
                 expect(subject.navigationItem.rightBarButtonItems?.count) == 2
-                expect(subject.navigationItem.rightBarButtonItems?.first) == subject.editButtonItem()
+                expect(subject.navigationItem.rightBarButtonItems?.first) == subject.editButtonItem
                 if let shareSheet = subject.navigationItem.rightBarButtonItems?.last {
                     shareSheet.tap()
-                    expect(subject.presentedViewController).to(beAnInstanceOf(UIActivityViewController))
+                    expect(subject.presentedViewController).to(beAnInstanceOf(UIActivityViewController.self))
                     if let activityVC = subject.presentedViewController as? UIActivityViewController {
                         expect(activityVC.activityItems as? [URL]) == [feed.url]
                     }
@@ -141,13 +141,13 @@ class ArticleListControllerSpec: QuickSpec {
 
             it("does not display a share sheet icon for sharing that feed") {
                 expect(subject.navigationItem.rightBarButtonItems?.count) == 1
-                expect(subject.navigationItem.rightBarButtonItems?.first) == subject.editButtonItem()
+                expect(subject.navigationItem.rightBarButtonItems?.first) == subject.editButtonItem
             }
         }
 
         describe("listening to theme repository updates") {
             beforeEach {
-                themeRepository.theme = .Dark
+                themeRepository.theme = .dark
             }
 
             it("should update the tableView") {
@@ -172,7 +172,7 @@ class ArticleListControllerSpec: QuickSpec {
         describe("as a DataSubscriber") {
             describe("markedArticle:asRead:") {
                 beforeEach {
-                    let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 3, inSection: 0)) as! ArticleCell
+                    let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 3, section: 0)) as! ArticleCell
 
                     expect(cell.unread.unread).to(equal(1))
 
@@ -183,7 +183,7 @@ class ArticleListControllerSpec: QuickSpec {
                 }
 
                 it("should reload the tableView") {
-                    let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 3, inSection: 0)) as! ArticleCell
+                    let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 3, section: 0)) as! ArticleCell
 
                     expect(cell.unread.unread).to(equal(0))
                 }
@@ -194,7 +194,7 @@ class ArticleListControllerSpec: QuickSpec {
             var viewControllerPreviewing: FakeUIViewControllerPreviewing! = nil
 
             beforeEach {
-                viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRectZero, delegate: subject)
+                viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
             }
 
             context("in preview mode") {
@@ -203,7 +203,7 @@ class ArticleListControllerSpec: QuickSpec {
                 }
 
                 it("should not return a view controller to present to the user") {
-                    let rect = subject.tableView.rectForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0))
+                    let rect = subject.tableView.rectForRow(at: IndexPath(row: 0, section: 0))
                     let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
                     let viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
                     expect(viewController).to(beNil())
@@ -216,7 +216,7 @@ class ArticleListControllerSpec: QuickSpec {
                 beforeEach {
                     subject.previewMode = false
 
-                    let rect = subject.tableView.rectForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0))
+                    let rect = subject.tableView.rectForRow(at: IndexPath(row: 0, section: 0))
                     let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
                     viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
                 }
@@ -235,7 +235,7 @@ class ArticleListControllerSpec: QuickSpec {
                 describe("committing that view controller") {
                     beforeEach {
                         if let vc = viewController {
-                            subject.previewingContext(viewControllerPreviewing, commitViewController: vc)
+                            subject.previewingContext(viewControllerPreviewing, commit: vc)
                         }
                     }
 
@@ -257,7 +257,7 @@ class ArticleListControllerSpec: QuickSpec {
             }
 
             it("should have a row for each article") {
-                expect(subject.tableView.numberOfRowsInSection(0)).to(equal(articles.count))
+                expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(articles.count))
             }
 
             describe("the cells") {
@@ -268,25 +268,25 @@ class ArticleListControllerSpec: QuickSpec {
 
                     it("should not be editable") {
                         for section in 0..<subject.tableView.numberOfSections {
-                            for row in 0..<subject.tableView.numberOfRowsInSection(section) {
-                                let indexPath = NSIndexPath(forRow: row, inSection: section)
-                                expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)) == false
+                            for row in 0..<subject.tableView.numberOfRows(inSection: section) {
+                                let indexPath = IndexPath(row: row, section: section)
+                                expect(subject.tableView(subject.tableView, canEditRowAt: indexPath)) == false
                             }
                         }
                     }
 
                     it("should have no edit actions") {
                         for section in 0..<subject.tableView.numberOfSections {
-                            for row in 0..<subject.tableView.numberOfRowsInSection(section) {
-                                let indexPath = NSIndexPath(forRow: row, inSection: section)
-                                expect(subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)).to(beNil())
+                            for row in 0..<subject.tableView.numberOfRows(inSection: section) {
+                                let indexPath = IndexPath(row: row, section: section)
+                                expect(subject.tableView(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
                             }
                         }
                     }
 
                     describe("when tapped") {
                         beforeEach {
-                            subject.tableView(subject.tableView, didSelectRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 0))
+                            subject.tableView(subject.tableView, didSelectRowAt: IndexPath(row: 0, section: 0))
                         }
 
                         it("nothing should happen") {
@@ -307,7 +307,7 @@ class ArticleListControllerSpec: QuickSpec {
                         it("should resign first responder when the tableView is scrolled") {
                             subject.tableView.delegate?.scrollViewDidScroll?(subject.tableView)
 
-                            expect(subject.searchBar.isFirstResponder()) == false
+                            expect(subject.searchBar.isFirstResponder) == false
                         }
 
                         it("should filter the articles down to those that match the query") {
@@ -328,9 +328,9 @@ class ArticleListControllerSpec: QuickSpec {
 
                     it("has a set settings repository") {
                         for section in 0..<subject.tableView.numberOfSections {
-                            for row in 0..<subject.tableView.numberOfRowsInSection(section) {
-                                let indexPath = NSIndexPath(forRow: row, inSection: section)
-                                let cell = subject.tableView(subject.tableView, cellForRowAtIndexPath: indexPath) as? ArticleCell
+                            for row in 0..<subject.tableView.numberOfRows(inSection: section) {
+                                let indexPath = IndexPath(row: row, section: section)
+                                let cell = subject.tableView(subject.tableView, cellForRowAt: indexPath) as? ArticleCell
                                 expect(cell).toNot(beNil())
                                 expect(cell?.settingsRepository) === settingsRepository
                             }
@@ -339,18 +339,18 @@ class ArticleListControllerSpec: QuickSpec {
 
                     it("should be editable") {
                         for section in 0..<subject.tableView.numberOfSections {
-                            for row in 0..<subject.tableView.numberOfRowsInSection(section) {
-                                let indexPath = NSIndexPath(forRow: row, inSection: section)
-                                expect(subject.tableView(subject.tableView, canEditRowAtIndexPath: indexPath)) == true
+                            for row in 0..<subject.tableView.numberOfRows(inSection: section) {
+                                let indexPath = IndexPath(row: row, section: section)
+                                expect(subject.tableView(subject.tableView, canEditRowAt: indexPath)) == true
                             }
                         }
                     }
 
                     it("should have 2 edit actions") {
                         for section in 0..<subject.tableView.numberOfSections {
-                            for row in 0..<subject.tableView.numberOfRowsInSection(section) {
-                                let indexPath = NSIndexPath(forRow: row, inSection: section)
-                                expect(subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.count).to(equal(2))
+                            for row in 0..<subject.tableView.numberOfRows(inSection: section) {
+                                let indexPath = IndexPath(row: row, section: section)
+                                expect(subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.count).to(equal(2))
                             }
                         }
                     }
@@ -358,10 +358,10 @@ class ArticleListControllerSpec: QuickSpec {
                     describe("the edit actions") {
                         describe("the first action") {
                             var action: UITableViewRowAction! = nil
-                            let indexPath = NSIndexPath(forRow: 0, inSection: 0)
+                            let indexPath = IndexPath(row: 0, section: 0)
 
                             beforeEach {
-                                action = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.first
+                                action = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.first
                             }
 
                             it("states that it deletes the article") {
@@ -380,7 +380,7 @@ class ArticleListControllerSpec: QuickSpec {
                                 it("presents an alert asking for confirmation that the user wants to do this") {
                                     expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                                     guard let alert = subject.presentedViewController as? UIAlertController else { return }
-                                    expect(alert.preferredStyle) == UIAlertControllerStyle.Alert
+                                    expect(alert.preferredStyle) == UIAlertControllerStyle.alert
                                     expect(alert.title) == "Delete \(articles.first!.title)?"
 
                                     expect(alert.actions.count) == 2
@@ -426,8 +426,8 @@ class ArticleListControllerSpec: QuickSpec {
 
                         describe("for an unread article") {
                             it("should mark the article as read with the second action item") {
-                                let indexPath = NSIndexPath(forRow: 0, inSection: 0)
-                                if let markRead = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.last {
+                                let indexPath = IndexPath(row: 0, section: 0)
+                                if let markRead = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.last {
                                     expect(markRead.title).to(equal("Mark\nRead"))
                                     markRead.handler(markRead, indexPath)
                                     expect(dataRepository.lastArticleMarkedRead).to(equal(articles.first))
@@ -438,8 +438,8 @@ class ArticleListControllerSpec: QuickSpec {
 
                         describe("for a read article") {
                             it("should mark the article as unread with the second action item") {
-                                let indexPath = NSIndexPath(forRow: 2, inSection: 0)
-                                if let markUnread = subject.tableView(subject.tableView, editActionsForRowAtIndexPath: indexPath)?.last {
+                                let indexPath = IndexPath(row: 2, section: 0)
+                                if let markUnread = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.last {
                                     expect(markUnread.title).to(equal("Mark\nUnread"))
                                     markUnread.handler(markUnread, indexPath)
                                     expect(dataRepository.lastArticleMarkedRead).to(equal(articles[2]))
@@ -451,7 +451,7 @@ class ArticleListControllerSpec: QuickSpec {
 
                     describe("when tapped") {
                         beforeEach {
-                            subject.tableView(subject.tableView, didSelectRowAtIndexPath: NSIndexPath(forRow: 1, inSection: 0))
+                            subject.tableView(subject.tableView, didSelectRowAt: IndexPath(row: 1, section: 0))
                         }
 
                         it("should navigate to an ArticleViewController") {

@@ -96,6 +96,10 @@ public final class DataStoreBackedArray<T: AnyObject>: Collection, CustomDebugSt
         if self.isEmpty { return nil }
         return self[0]
     }
+    public var last: T? {
+        if self.isEmpty { return nil }
+        return self[self.count - 1]
+    }
 
     public func filterWithPredicate(_ predicate: NSPredicate) -> DataStoreBackedArray<T> {
         let filterArray: (Void) -> DataStoreBackedArray = {

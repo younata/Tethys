@@ -12,8 +12,8 @@ class NotificationViewSpec: QuickSpec {
         }
 
         it("starts with hidden labels") {
-            expect(subject.titleLabel.hidden) == true
-            expect(subject.messageLabel.hidden) == true
+            expect(subject.titleLabel.isHidden) == true
+            expect(subject.messageLabel.isHidden) == true
         }
 
         describe("displaying") {
@@ -27,8 +27,8 @@ class NotificationViewSpec: QuickSpec {
             }
 
             it("unhides the labels") {
-                expect(subject.titleLabel.hidden) == false
-                expect(subject.messageLabel.hidden) == false
+                expect(subject.titleLabel.isHidden) == false
+                expect(subject.messageLabel.isHidden) == false
             }
 
             it("sets the title and message texts") {
@@ -42,8 +42,8 @@ class NotificationViewSpec: QuickSpec {
                 }
 
                 it("re-hides the labels") {
-                    expect(subject.titleLabel.hidden) == true
-                    expect(subject.messageLabel.hidden) == true
+                    expect(subject.titleLabel.isHidden) == true
+                    expect(subject.messageLabel.isHidden) == true
                 }
 
                 it("unsets the title and message texts") {
@@ -54,22 +54,22 @@ class NotificationViewSpec: QuickSpec {
         }
 
         describe("responding to themeRepository updates") {
-            var themeRepository = FakeThemeRepository()
+            var themeRepository = ThemeRepository(userDefaults: nil)
 
             beforeEach {
-                themeRepository = FakeThemeRepository()
-                themeRepository.theme = .Dark
+                themeRepository = ThemeRepository(userDefaults: nil)
+                themeRepository.theme = .dark
 
                 themeRepository.addSubscriber(subject)
             }
 
             it("updates the label's textColors") {
-                expect(subject.titleLabel.textColor).to(equalColor(themeRepository.backgroundColor))
-                expect(subject.messageLabel.textColor).to(equalColor(themeRepository.backgroundColor))
+                expect(subject.titleLabel.textColor).to(equalColor(expectedColor: themeRepository.backgroundColor))
+                expect(subject.messageLabel.textColor).to(equalColor(expectedColor: themeRepository.backgroundColor))
             }
 
             it("sets the background color to the tintcolor") {
-                expect(subject.backgroundColor).to(equalColor(themeRepository.errorColor))
+                expect(subject.backgroundColor).to(equalColor(expectedColor: themeRepository.errorColor))
             }
         }
     }

@@ -33,7 +33,7 @@ class FakeDownloadTask: URLSessionDownloadTask {
 class FakeURLSession: URLSession {
     var lastURL: URL? = nil
     var lastCompletionHandler: (Data?, URLResponse?, NSError?) -> (Void) = {_, _, _ in }
-    override func dataTask(with url: URL, completionHandler: (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
+    override func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
         lastURL = url
         lastCompletionHandler = completionHandler
         let task = FakeDataTask()
@@ -54,7 +54,7 @@ class FakeURLSession: URLSession {
     fileprivate var dataTasks = [URLSessionDataTask]()
     fileprivate var downloadTasks = [URLSessionDownloadTask]()
 
-    override func getTasksWithCompletionHandler(_ completionHandler: ([URLSessionDataTask], [URLSessionUploadTask], [URLSessionDownloadTask]) -> Void) {
+    override func getTasksWithCompletionHandler(_ completionHandler: @escaping  ([URLSessionDataTask], [URLSessionUploadTask], [URLSessionDownloadTask]) -> Void) {
         completionHandler(dataTasks, [], downloadTasks)
     }
 }

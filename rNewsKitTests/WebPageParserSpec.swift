@@ -9,7 +9,7 @@ class WebPageParserSpec: QuickSpec {
 
         let bundle = Bundle(for: self.classForCoder)
         let url = bundle.url(forResource: "webpage", withExtension: "html")!
-        let webPage = try! String(contentsOfURL: url, encoding: String.Encoding.utf8)
+        let webPage = try! String(contentsOf: url)
 
         var receivedUrls: [URL]? = nil
 
@@ -22,7 +22,7 @@ class WebPageParserSpec: QuickSpec {
 
         describe("specifying a search for feeds") {
             it("returns the found feeds when it completes") {
-                subject.searchType = .Feeds
+                subject.searchType = .feeds
                 subject.start()
 
                 expect(receivedUrls) == [URL(string: "/feed.xml")!, URL(string: "/feed2.xml")!]
@@ -31,7 +31,7 @@ class WebPageParserSpec: QuickSpec {
 
         describe("Specifying links") {
             it("returns all links of type <a href=...") {
-                subject.searchType = .Links
+                subject.searchType = .links
                 subject.start()
 
                 let urls = [

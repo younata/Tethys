@@ -7,12 +7,12 @@ class MigrationViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: MigrationViewController!
         var migrationUseCase: FakeMigrationUseCase!
-        var themeRepository: FakeThemeRepository!
+        var themeRepository: ThemeRepository!
         var mainQueue: FakeOperationQueue!
 
         beforeEach {
             migrationUseCase = FakeMigrationUseCase()
-            themeRepository = FakeThemeRepository()
+            themeRepository = ThemeRepository(userDefaults: nil)
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
 
@@ -27,7 +27,7 @@ class MigrationViewControllerSpec: QuickSpec {
 
         describe("changing the theme") {
             beforeEach {
-                themeRepository.theme = .Dark
+                themeRepository.theme = .dark
             }
 
             it("changes the background color") {

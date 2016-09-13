@@ -15,7 +15,7 @@ class FakeNotificationHandler : NotificationHandler {
     func enableNotificationsArgsForCall(callIndex: Int) -> (LocalNotificationSource) {
         return self.enableNotificationsArgs[callIndex]
     }
-    func enableNotifications(notificationSource: LocalNotificationSource) {
+    func enableNotifications(_ notificationSource: LocalNotificationSource) {
         self.enableNotificationsCallCount += 1
         self.enableNotificationsArgs.append((notificationSource))
     }
@@ -25,7 +25,7 @@ class FakeNotificationHandler : NotificationHandler {
     func handleLocalNotificationArgsForCall(callIndex: Int) -> (UILocalNotification, UIWindow) {
         return self.handleLocalNotificationArgs[callIndex]
     }
-    func handleLocalNotification(notification: UILocalNotification, window: UIWindow) {
+    func handleLocalNotification(_ notification: UILocalNotification, window: UIWindow) {
         self.handleLocalNotificationCallCount += 1
         self.handleLocalNotificationArgs.append((notification, window))
     }
@@ -35,7 +35,7 @@ class FakeNotificationHandler : NotificationHandler {
     func handleActionArgsForCall(callIndex: Int) -> (String?, UILocalNotification) {
         return self.handleActionArgs[callIndex]
     }
-    func handleAction(identifier: String?, notification: UILocalNotification) {
+    func handleAction(_ identifier: String?, notification: UILocalNotification) {
         self.handleActionCallCount += 1
         self.handleActionArgs.append((identifier, notification))
     }
@@ -45,7 +45,7 @@ class FakeNotificationHandler : NotificationHandler {
     func sendLocalNotificationArgsForCall(callIndex: Int) -> (LocalNotificationSource, Article) {
         return self.sendLocalNotificationArgs[callIndex]
     }
-    func sendLocalNotification(notificationSource: LocalNotificationSource, article: Article) {
+    func sendLocalNotification(_ notificationSource: LocalNotificationSource, article: Article) {
         self.sendLocalNotificationCallCount += 1
         self.sendLocalNotificationArgs.append((notificationSource, article))
     }

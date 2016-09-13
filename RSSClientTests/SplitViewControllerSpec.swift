@@ -7,7 +7,7 @@ import SafariServices
 class SplitViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: SplitViewController! = nil
-        var themeRepository: FakeThemeRepository! = nil
+        var themeRepository: ThemeRepository! = nil
 
         let master = UINavigationController(rootViewController: UIViewController())
         let detail = UINavigationController(rootViewController: UIViewController())
@@ -15,46 +15,46 @@ class SplitViewControllerSpec: QuickSpec {
         beforeEach {
             let injector = Injector()
 
-            themeRepository = FakeThemeRepository()
-            injector.bind(ThemeRepository.self, toInstance: themeRepository)
+            themeRepository = ThemeRepository(userDefaults: nil)
+            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
 
-            subject = injector.create(SplitViewController)!
+            subject = injector.create(kind: SplitViewController.self)!
             subject.view.layoutIfNeeded()
             subject.viewControllers = [master, detail]
         }
 
         describe("when the theme changes") {
             beforeEach {
-                themeRepository.theme = .Dark
+                themeRepository.theme = .dark
             }
 
             it("should change the preferred status bar styling") {
-                expect(subject.preferredStatusBarStyle()).to(equal(themeRepository.statusBarStyle))
+                expect(subject.preferredStatusBarStyle).to(equal(themeRepository.statusBarStyle))
             }
 
             context("when an SFSafariViewController is on the master view controller") {
                 beforeEach {
-                    master.topViewController?.presentViewController(SFSafariViewController(URL: URL(string: "https://example.com")!), animated: false, completion: nil)
+                    master.topViewController?.present(SFSafariViewController(url: URL(string: "https://example.com")!), animated: false, completion: nil)
                 }
 
                 it("changes the preferredStatusBarStyle to black") {
-                    expect(subject.preferredStatusBarStyle()) == UIStatusBarStyle.Default
+                    expect(subject.preferredStatusBarStyle) == UIStatusBarStyle.default
                 }
             }
 
             context("when an SFSafariViewController is on the detail view controller") {
                 beforeEach {
-                    detail.topViewController?.presentViewController(SFSafariViewController(URL: URL(string: "https://example.com")!), animated: false, completion: nil)
+                    detail.topViewController?.present(SFSafariViewController(url: URL(string: "https://example.com")!), animated: false, completion: nil)
                 }
 
                 it("changes the preferredStatusBarStyle to black") {
-                    expect(subject.preferredStatusBarStyle()) == UIStatusBarStyle.Default
+                    expect(subject.preferredStatusBarStyle) == UIStatusBarStyle.default
                 }
             }
         }
 
         it("should hide the detail on startup") {
-            expect(subject.delegate?.splitViewController!(subject, collapseSecondaryViewController: detail, ontoPrimaryViewController: master)) == true
+            expect(subject.delegate?.splitViewController!(subject, collapseSecondary: detail, onto: master)) == true
         }
         
         describe("Changing from collapsed to not collapsed") {
@@ -65,7 +65,7 @@ class SplitViewControllerSpec: QuickSpec {
             }
             
             it("should show the detail") {
-                expect(subject.delegate?.splitViewController!(subject, collapseSecondaryViewController: detail, ontoPrimaryViewController: master)) == false
+                expect(subject.delegate?.splitViewController!(subject, collapseSecondary: detail, onto: master)) == false
             }
         }
     }

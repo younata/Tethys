@@ -5,11 +5,11 @@ import rNews
 class SwitchTableViewCellSpec: QuickSpec {
     override func spec() {
         var subject: SwitchTableViewCell! = nil
-        var themeRepository: FakeThemeRepository! = nil
+        var themeRepository: ThemeRepository! = nil
 
         beforeEach {
-            subject = SwitchTableViewCell(style: .Default, reuseIdentifier: nil)
-            themeRepository = FakeThemeRepository()
+            subject = SwitchTableViewCell(style: .default, reuseIdentifier: nil)
+            themeRepository = ThemeRepository(userDefaults: nil)
             subject.themeRepository = themeRepository
         }
 
@@ -19,13 +19,13 @@ class SwitchTableViewCellSpec: QuickSpec {
                 called = true
                 expect(aSwitch).to(beIdenticalTo(subject.theSwitch))
             }
-            subject.theSwitch.sendActionsForControlEvents(.ValueChanged)
+            subject.theSwitch.sendActions(for: .valueChanged)
             expect(called) == true
         }
 
         describe("on theme changes") {
             beforeEach {
-                themeRepository.theme = .Dark
+                themeRepository.theme = .dark
             }
 
             it("should change the background") {

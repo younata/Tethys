@@ -16,11 +16,11 @@ class ValidatorViewSpec: QuickSpec {
             }
 
             it("should move to an in-progress validating state") {
-                expect(subject.state).to(equal(ValidatorView.ValidatorState.Validating))
+                expect(subject.state).to(equal(ValidatorView.ValidatorState.validating))
             }
 
             it("should start the progressIndicator") {
-                expect(subject.progressIndicator.isAnimating()) == true
+                expect(subject.progressIndicator.isAnimating) == true
             }
 
             context("upon successful validation") {
@@ -29,15 +29,15 @@ class ValidatorViewSpec: QuickSpec {
                 }
 
                 it("should move to a successful validating state") {
-                    expect(subject.state).to(equal(ValidatorView.ValidatorState.Valid))
+                    expect(subject.state).to(equal(ValidatorView.ValidatorState.valid))
                 }
 
                 it("should stop the progressIndicator") {
-                    expect(subject.progressIndicator.isAnimating()) == false
+                    expect(subject.progressIndicator.isAnimating) == false
                 }
 
                 it("should hide the progressIndicator") {
-                    expect(subject.progressIndicator.hidden) == true
+                    expect(subject.progressIndicator.isHidden) == true
                 }
             }
 
@@ -47,15 +47,15 @@ class ValidatorViewSpec: QuickSpec {
                 }
 
                 it("should move to an invalid validating state") {
-                    expect(subject.state).to(equal(ValidatorView.ValidatorState.Invalid))
+                    expect(subject.state).to(equal(ValidatorView.ValidatorState.invalid))
                 }
 
                 it("should stop the progressIndicator") {
-                    expect(subject.progressIndicator.isAnimating()) == false
+                    expect(subject.progressIndicator.isAnimating) == false
                 }
 
                 it("should hide the progressIndicator") {
-                    expect(subject.progressIndicator.hidden) == true
+                    expect(subject.progressIndicator.isHidden) == true
                 }
             }
         }

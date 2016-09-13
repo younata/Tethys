@@ -12,7 +12,7 @@ class FakeDefaultDatabaseUseCase : DefaultDatabaseUseCase {
 
     var performDatabaseUpdatesProgress: ((Double) -> Void)? = nil
     var performDatabaseUpdatesCallback: ((Void) -> Void)? = nil
-    override func performDatabaseUpdates(_ progress: (Double) -> Void, callback: (Void) -> Void) {
+    override func performDatabaseUpdates(_ progress: @escaping (Double) -> Void, callback: @escaping (Void) -> Void) {
         self.performDatabaseUpdatesProgress = progress
         self.performDatabaseUpdatesCallback = callback
     }
@@ -85,7 +85,7 @@ class FakeDefaultDatabaseUseCase : DefaultDatabaseUseCase {
 
     var didUpdateFeeds = false
     var updateFeedsCompletion: ([Feed], [NSError]) -> (Void) = {_ in }
-    override func updateFeeds(_ callback: ([Feed], [NSError]) -> (Void)) {
+    override func updateFeeds(_ callback: @escaping ([Feed], [NSError]) -> (Void)) {
         didUpdateFeeds = true
         updateFeedsCompletion = callback
     }

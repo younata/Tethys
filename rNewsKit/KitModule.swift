@@ -37,7 +37,7 @@ public final class KitModule: NSObject, Ra.InjectorModule {
             withIdentifier: "com.rachelbrindle.rnews"
         )
         urlSessionConfiguration.isDiscretionary = false
-        let urlSessionDelegate = URLSessionDelegate()
+        let urlSessionDelegate = RNewsKitURLSessionDelegate()
 
         RealmMigrator.beginMigration()
 

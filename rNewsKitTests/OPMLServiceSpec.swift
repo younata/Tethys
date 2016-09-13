@@ -41,9 +41,9 @@ class OPMLServiceSpec: QuickSpec {
             )
 
             let injector = Injector()
-            injector.bind(kMainQueue, toInstance: mainQueue)
-            injector.bind(kBackgroundQueue, toInstance: importQueue)
-            injector.bind(DefaultDatabaseUseCase.self, toInstance: dataRepository)
+            injector.bind(string: kMainQueue, toInstance: mainQueue)
+            injector.bind(string: kBackgroundQueue, toInstance: importQueue)
+            injector.bind(kind: DefaultDatabaseUseCase.self, toInstance: dataRepository)
 
             subject = OPMLService(injector: injector)
         }
@@ -51,7 +51,7 @@ class OPMLServiceSpec: QuickSpec {
         describe("Importing OPML Files") {
             var feeds: [Feed] = []
             beforeEach {
-                let opmlUrl = NSBundle(forClass: self.classForCoder).URLForResource("test", withExtension: "opml")!
+                let opmlUrl = Bundle(for: self.classForCoder).url(forResource: "test", withExtension: "opml")!
 
                 subject.importOPML(opmlUrl) {otherFeeds in
                     feeds = otherFeeds
@@ -84,7 +84,7 @@ class OPMLServiceSpec: QuickSpec {
                         guard feeds.count == 2 else {
                             return
                         }
-                        feeds.sortInPlace { $0.title < $1.title }
+                        feeds.sort { $0.title < $1.title }
                         let first = feeds[0]
                         expect(first.url).to(equal(URL(string: "http://example.com/feedWithTag")))
 
@@ -105,9 +105,9 @@ class OPMLServiceSpec: QuickSpec {
             }
 
             afterEach {
-                let fileManager = NSFileManager.defaultManager()
-                let file = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
-                let _ = try? fileManager.removeItemAtPath(file)
+                let fileManager = FileManager.default
+                let file = documentsDirectory() + "/rnews.opml"
+                let _ = try? fileManager.removeItem(atPath: file)
             }
 
             it("makes a request to the datarepository for the list of all feeds") {
@@ -124,17 +124,17 @@ class OPMLServiceSpec: QuickSpec {
                 }
 
                 it("should write an OPML file to ~/Documents/rnews.opml") {
-                    let fileManager = NSFileManager.defaultManager()
-                    let file = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
-                    expect(fileManager.fileExistsAtPath(file)) == true
+                    let fileManager = FileManager.default
+                    let file = documentsDirectory() + "/rnews.opml"
+                    expect(fileManager.fileExists(atPath: file)) == true
 
-                    let text = (try? String(contentsOfFile: file, encoding: NSUTF8StringEncoding)) ?? ""
+                    let text = (try? String(contentsOfFile: file, encoding: String.Encoding.utf8)) ?? ""
 
                     let parser = Lepton.Parser(text: text)
 
                     var testItems: [Lepton.Item] = []
 
-                    parser.success {items in
+                    _ = parser.success {items in
                         testItems = items
                         expect(items.count).to(equal(2))
                         if (items.count != 2) {
@@ -167,9 +167,9 @@ class OPMLServiceSpec: QuickSpec {
             }
 
             afterEach {
-                let fileManager = NSFileManager.defaultManager()
-                let file = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
-                let _ = try? fileManager.removeItemAtPath(file)
+                let fileManager = FileManager.default
+                let file = documentsDirectory() + "/rnews.opml"
+                let _ = try? fileManager.removeItem(atPath: file)
             }
 
             it("makes a request to the datarepository for the list of all feeds") {
@@ -187,17 +187,17 @@ class OPMLServiceSpec: QuickSpec {
                 }
 
                 it("should write an OPML file to ~/Documents/rnews.opml") {
-                    let fileManager = NSFileManager.defaultManager()
-                    let file = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
-                    expect(fileManager.fileExistsAtPath(file)) == true
+                    let fileManager = FileManager.default
+                    let file = documentsDirectory() + "/rnews.opml"
+                    expect(fileManager.fileExists(atPath: file)) == true
 
-                    guard let text = try? String(contentsOfFile: file, encoding: NSUTF8StringEncoding) else { return }
+                    guard let text = try? String(contentsOfFile: file, encoding: String.Encoding.utf8) else { return }
 
                     let parser = Lepton.Parser(text: text)
 
                     var testItems: [Lepton.Item] = []
 
-                    parser.success {items in
+                    _ = parser.success {items in
                         testItems = items
                         expect(items.count).to(equal(2))
                         if (items.count != 2) {
@@ -219,13 +219,13 @@ class OPMLServiceSpec: QuickSpec {
 
             context("when the feeds promise fails") {
                 beforeEach {
-                    dataRepository.feedsPromises.first?.resolve(.failure(.Unknown))
+                    dataRepository.feedsPromises.first?.resolve(.failure(.unknown))
                 }
 
                 it("doesn't write anything to disk") {
-                    let fileManager = NSFileManager.defaultManager()
-                    let file = documentsDirectory().stringByAppendingPathComponent("rnews.opml")
-                    expect(fileManager.fileExistsAtPath(file)) == false
+                    let fileManager = FileManager.default
+                    let file = documentsDirectory() + "/rnews.opml"
+                    expect(fileManager.fileExists(atPath: file)) == false
                 }
             }
         }

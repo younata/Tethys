@@ -3,7 +3,7 @@ import Ra
 import Lepton
 import Result
 
-public final class OPMLService: NSObject, Injectable {
+open class OPMLService: NSObject, Injectable {
     private let dataRepository: DefaultDatabaseUseCase?
     private let mainQueue: OperationQueue?
     private let importQueue: OperationQueue?
@@ -32,7 +32,7 @@ public final class OPMLService: NSObject, Injectable {
         }).isEmpty == false
     }
 
-    public func importOPML(_ opml: URL, completion: @escaping ([Feed]) -> Void) {
+    open func importOPML(_ opml: URL, completion: @escaping ([Feed]) -> Void) {
         guard let dataRepository = self.dataRepository else {
             completion([])
             return
@@ -120,7 +120,7 @@ public final class OPMLService: NSObject, Injectable {
         return ret
     }
 
-    public func writeOPML() {
+    open func writeOPML() {
         let opmlLocation = documentsDirectory() + "/rnews.opml"
         _ = self.dataRepository?.feeds().then {
             guard case let Result.success(feeds) = $0 else { return }
@@ -133,13 +133,13 @@ public final class OPMLService: NSObject, Injectable {
 }
 
 extension OPMLService: DataSubscriber {
-    public func markedArticles(_ articles: [Article], asRead read: Bool) {}
-    public func deletedArticle(_ article: Article) {}
-    public func willUpdateFeeds() {}
-    public func didUpdateFeedsProgress(_ finished: Int, total: Int) {}
-    public func deletedFeed(_ feed: Feed, feedsLeft: Int) {}
+    open func markedArticles(_ articles: [Article], asRead read: Bool) {}
+    open func deletedArticle(_ article: Article) {}
+    open func willUpdateFeeds() {}
+    open func didUpdateFeedsProgress(_ finished: Int, total: Int) {}
+    open func deletedFeed(_ feed: Feed, feedsLeft: Int) {}
 
-    public func didUpdateFeeds(_ feeds: [Feed]) {
+    open func didUpdateFeeds(_ feeds: [Feed]) {
         self.writeOPML()
     }
 }

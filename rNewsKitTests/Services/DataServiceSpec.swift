@@ -9,24 +9,24 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
         var feed: rNewsKit.Feed?
 
         beforeEach {
-            let createExpectation = spec.expectation(withDescription: "Create Feed")
-            dataService.createFeed {
+            let createExpectation = spec.expectation(description: "Create Feed")
+            _ = dataService.createFeed {
                 feed = $0
                 createExpectation.fulfill()
             }
-            spec.waitForExpectations(withTimeout: 1, handler: nil)
+            spec.waitForExpectations(timeout: 1, handler: nil)
             expect(feed).toNot(beNil())
         }
 
         afterEach {
             if let feed = feed {
-                let deleteFeedExpectation = spec.expectation(withDescription: "Delete Feed")
-                dataService.deleteFeed(feed).then {
+                let deleteFeedExpectation = spec.expectation(description: "Delete Feed")
+                _ = dataService.deleteFeed(feed).then {
                     if case Result.success() = $0 {
                         deleteFeedExpectation.fulfill()
                     }
                 }
-                spec.waitForExpectations(withTimeout: 1, handler: nil)
+                spec.waitForExpectations(timeout: 1, handler: nil)
             }
         }
 
@@ -35,13 +35,13 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             let itemUpdateDate = Date(timeIntervalSinceNow: -5)
             let item = FakeImportableArticle(title: "article", url: URL(string: "/foo/bar/baz")!, summary: "", content: "", published: Date(), updated: nil, authors: [])
             let info = FakeImportableFeed(title: "a &amp; title", link: URL(string: "https://example.com")!, description: "description", lastUpdated: itemUpdateDate, imageURL: nil, articles: [item])
-            let updateExpectation = spec.expectation(withDescription: "Update Feed")
-            dataService.updateFeed(feed, info: info).then {
+            let updateExpectation = spec.expectation(description: "Update Feed")
+            _ = dataService.updateFeed(feed, info: info).then {
                 if case Result.success() = $0 {
                     updateExpectation.fulfill()
                 }
             }
-            spec.waitForExpectations(withTimeout: 1, handler: nil)
+            spec.waitForExpectations(timeout: 1, handler: nil)
 
             expect(feed.title) == "a & title"
             expect(feed.summary) == "description"
@@ -57,13 +57,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             guard let feed = feed else { fail(); return }
             let item = FakeImportableArticle(title: "article", url: URL(string: "/foo/bar/baz")!, summary: "", content: "", published: Date(), updated: nil, authors: [])
             let info = FakeImportableFeed(title: "a &amp; title", link: URL(string: "https://example.com/qux")!, description: "description", lastUpdated: Date(), imageURL: nil, articles: [item])
-            let updateExpectation = spec.expectation(withDescription: "Update Feed")
-            dataService.updateFeed(feed, info: info).then {
-                if case Result.success() = $0 {
-                    updateExpectation.fulfill()
-                }
-            }
-            spec.waitForExpectations(withTimeout: 1, handler: nil)
+            _ = dataService.updateFeed(feed, info: info).wait()
 
             expect(feed.title) == "a & title"
             expect(feed.summary) == "description"
@@ -79,13 +73,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             guard let feed = feed else { fail(); return }
             let item = FakeImportableArticle(title: "", url: URL(string: "/foo/bar/baz")!, summary: "", content: "", published: Date(), updated: nil, authors: [])
             let info = FakeImportableFeed(title: "a title", link: URL(string: "https://example.com")!, description: "description", lastUpdated: Date(), imageURL: nil, articles: [item])
-            let updateExpectation = spec.expectation(withDescription: "Update Feed")
-            dataService.updateFeed(feed, info: info).then {
-                if case Result.success() = $0 {
-                    updateExpectation.fulfill()
-                }
-            }
-            spec.waitForExpectations(withTimeout: 1, handler: nil)
+            _ = dataService.updateFeed(feed, info: info).wait()
 
             expect(feed.title) == "a title"
             expect(feed.summary) == "description"
@@ -96,7 +84,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
         it("easily updates an existing feed that has articles with new articles") {
             guard let feed = feed else { fail(); return }
             var existingArticle: rNewsKit.Article! = nil
-            let addArticleExpectation = spec.expectation(withDescription: "existing article")
+            let addArticleExpectation = spec.expectation(description: "existing article")
 
             dataService.createArticle(feed) { article in
                 existingArticle = article
@@ -108,7 +96,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
                 expect(existingArticle.feed) == feed
                 addArticleExpectation.fulfill()
             }
-            spec.waitForExpectations(withTimeout: 1, handler: nil)
+            spec.waitForExpectations(timeout: 1, handler: nil)
 
             expect(feed.articlesArray).to(contain(existingArticle))
             expect(feed.articlesArray.count) == 1
@@ -116,8 +104,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             let existingItem = FakeImportableArticle(title: existingArticle.title, url: existingArticle.link!, summary: existingArticle.summary, content: existingArticle.content, published: existingArticle.published, updated: nil, authors: [])
             let item = FakeImportableArticle(title: "article", url: URL(string: "")!, summary: "", content: "", published: Date(), updated: nil, authors: [])
             let info = FakeImportableFeed(title: "a title", link: URL(string: "https://example.com")!, description: "description", lastUpdated: Date(), imageURL: nil, articles: [existingItem, item])
-            let updateExpectation = spec.expectation(withDescription: "Update Feed")
-            dataService.updateFeed(feed, info: info).then {
+            _ = dataService.updateFeed(feed, info: info).then {
                 guard case Result.success() = $0 else { return }
                 expect(feed.title) == "a title"
                 expect(feed.summary) == "description"
@@ -133,9 +120,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
                     expect(secondArticle.link) == URL(string: "https://example.com")
                     expect(secondArticle) != existingArticle
                 }
-                updateExpectation.fulfill()
-            }
-            spec.waitForExpectations(withTimeout: 1, handler: nil)
+            }.wait()
         }
     }
 
@@ -143,48 +128,38 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
         var article: rNewsKit.Article?
 
         beforeEach {
-            let createExpectation = spec.expectation(withDescription: "Create Article")
+            let createExpectation = spec.expectation(description: "Create Article")
             dataService.createArticle(nil) {
                 article = $0
                 createExpectation.fulfill()
             }
-            spec.waitForExpectations(withTimeout: 1, handler: nil)
+            spec.waitForExpectations(timeout: 1, handler: nil)
             expect(article).toNot(beNil())
         }
 
         afterEach {
             if let article = article {
-                let deleteExpectation = spec.expectation(withDescription: "Delete Article")
-                dataService.deleteArticle(article).then {
-                    guard case Result.success() = $0 else { return }
-
-                    deleteExpectation.fulfill()
-                }
-                spec.waitForExpectations(withTimeout: 1, handler: nil)
+                _ = dataService.deleteArticle(article).wait()
             }
         }
 
         it("searches an item's content for links matching current articles, and adds them to the related articles list") {
             var otherArticle: rNewsKit.Article?
-            let createExpectation = spec.expectation(withDescription: "Create Article")
+            let createExpectation = spec.expectation(description: "Create Article")
             dataService.createArticle(nil) {
                 otherArticle = $0
                 $0.link = URL(string: "https://example.com/foo/bar/")
                 createExpectation.fulfill()
             }
-            spec.waitForExpectations(withTimeout: 1, handler: nil)
+            spec.waitForExpectations(timeout: 1, handler: nil)
             expect(otherArticle).toNot(beNil())
 
             let content = "<html><body><a href=\"/foo/bar/\"></a></body></html>"
 
             let item = FakeImportableArticle(title: "a <p></p>&amp; title", url: URL(string: "https://example.com/foo/baz")!, summary: "description", content: content, published: Date(timeIntervalSince1970: 10), updated: Date(timeIntervalSince1970: 15), authors: [])
 
-            let updateExpectation = spec.expectation(withDescription: "Update Article")
-            dataService.updateArticle(article!, item: item, feedURL: URL(string: "https://example.com/")!).then { _ in
-                expect(article!.relatedArticles).to(contain(otherArticle!))
-                updateExpectation.fulfill()
-            }
-            spec.waitForExpectations(withTimeout: 1, handler: nil)
+            _ = dataService.updateArticle(article!, item: item, feedURL: URL(string: "https://example.com/")!).wait()
+            expect(article!.relatedArticles).to(contain(otherArticle!))
         }
 
         it("easily allows an article to be updated, filtering out title information") {
@@ -194,22 +169,18 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
 
             let item = FakeImportableArticle(title: "a <p></p>&amp; title", url: URL(string: "https://example.com")!, summary: "description", content: content, published: Date(timeIntervalSince1970: 10), updated: Date(timeIntervalSince1970: 15), authors: [author])
 
-            let updateExpectation = spec.expectation(withDescription: "Update Article")
             if let searchIndex = dataService.searchIndex as? FakeSearchIndex {
                 searchIndex.lastItemsAdded = []
             }
-            dataService.updateArticle(article, item: item, feedURL: URL(string: "https://example.com/foo/bar/baz")!).then { _ in
-                expect(article.title) == "a & title"
-                expect(article.link) == URL(string: "https://example.com")
-                expect(article.published) == Date(timeIntervalSince1970: 10)
-                expect(article.updatedAt) == Date(timeIntervalSince1970: 15)
-                expect(article.summary) == "description"
-                expect(article.content) == content
-                expect(article.authors) == [Author(name: "Rachel Brindle", email: URL(string: "mailto:rachel@example.com"))]
-                expect(article.estimatedReadingTime) == 3
-                updateExpectation.fulfill()
-            }
-            spec.waitForExpectations(withTimeout: 1, handler: nil)
+            _ = dataService.updateArticle(article, item: item, feedURL: URL(string: "https://example.com/foo/bar/baz")!).wait()
+            expect(article.title) == "a & title"
+            expect(article.link) == URL(string: "https://example.com")
+            expect(article.published) == Date(timeIntervalSince1970: 10)
+            expect(article.updatedAt) == Date(timeIntervalSince1970: 15)
+            expect(article.summary) == "description"
+            expect(article.content) == content
+            expect(article.authors) == [Author(name: "Rachel Brindle", email: URL(string: "mailto:rachel@example.com"))]
+            expect(article.estimatedReadingTime) == 3
         }
     }
 }

@@ -7,16 +7,16 @@ import rNewsKit
 class FeedTableCellSpec: QuickSpec {
     override func spec() {
         var subject: FeedTableCell! = nil
-        var themeRepository: FakeThemeRepository! = nil
+        var themeRepository: ThemeRepository! = nil
         beforeEach {
-            subject = FeedTableCell(style: .Default, reuseIdentifier: nil)
-            themeRepository = FakeThemeRepository()
+            subject = FeedTableCell(style: .default, reuseIdentifier: nil)
+            themeRepository = ThemeRepository(userDefaults: nil)
             subject.themeRepository = themeRepository
         }
 
         describe("changing the theme") {
             beforeEach {
-                themeRepository.theme = .Dark
+                themeRepository.theme = .dark
             }
 
             it("updates the labels") {
@@ -29,7 +29,7 @@ class FeedTableCellSpec: QuickSpec {
             }
         }
 
-        sharedExamples("a standard feed cell") {(ctx: SharedExampleContext) in
+        sharedExamples("a standard feed cell") {(ctx: @escaping SharedExampleContext) in
             var subject: FeedTableCell! = nil
             it("sets the title") {
                 subject = ctx()["subject"] as! FeedTableCell
@@ -58,7 +58,7 @@ class FeedTableCellSpec: QuickSpec {
                 }
 
                 it("should hide the unread counter") {
-                    expect(subject.unreadCounter.hidden) == true
+                    expect(subject.unreadCounter.isHidden) == true
                     expect(subject.unreadCounter.unread).to(equal(0))
                 }
             }
@@ -80,7 +80,7 @@ class FeedTableCellSpec: QuickSpec {
                 }
 
                 it("should hide the unread counter") {
-                    expect(subject.unreadCounter.hidden) == false
+                    expect(subject.unreadCounter.isHidden) == false
                     expect(subject.unreadCounter.unread).to(equal(1))
                 }
             }

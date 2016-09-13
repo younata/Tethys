@@ -11,19 +11,19 @@ class ArticleViewControllerSpec: QuickSpec {
         var subject: ArticleViewController!
         var injector: Injector!
         var navigationController: UINavigationController!
-        var themeRepository: FakeThemeRepository!
+        var themeRepository: ThemeRepository!
         var articleUseCase: FakeArticleUseCase!
 
         beforeEach {
             injector = Injector()
 
-            themeRepository = FakeThemeRepository()
-            injector.bind(ThemeRepository.self, toInstance: themeRepository)
+            themeRepository = ThemeRepository(userDefaults: nil)
+            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
 
             articleUseCase = FakeArticleUseCase()
-            injector.bind(ArticleUseCase.self, toInstance: articleUseCase)
+            injector.bind(kind: ArticleUseCase.self, toInstance: articleUseCase)
 
-            subject = injector.create(ArticleViewController)!
+            subject = injector.create(kind: ArticleViewController.self)!
 
             navigationController = UINavigationController(rootViewController: subject)
 
@@ -36,15 +36,15 @@ class ArticleViewControllerSpec: QuickSpec {
             }
 
             it("shows the background view on viewWillAppear and an article is not set") {
-                expect(subject.backgroundView.hidden) == false
+                expect(subject.backgroundView.isHidden) == false
 
-                subject.backgroundView.hidden = true
+                subject.backgroundView.isHidden = true
 
                 articleUseCase.readArticleReturns("hello")
                 articleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
                 subject.setArticle(Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: []))
 
-                expect(subject.backgroundView.hidden) == true
+                expect(subject.backgroundView.isHidden) == true
             }
 
             it("hides the nav and toolbars on swipe/tap") {
@@ -61,7 +61,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
         describe("changing the theme") {
             beforeEach {
-                themeRepository.theme = .Dark
+                themeRepository.theme = .dark
             }
 
             it("should update the navigation bar background") {
@@ -96,7 +96,7 @@ class ArticleViewControllerSpec: QuickSpec {
             }
 
             it("can become first responder") {
-                expect(subject.canBecomeFirstResponder()) == true
+                expect(subject.canBecomeFirstResponder) == true
             }
 
             func hasKindsOfKeyCommands(expectedCommands: [UIKeyCommand], discoveryTitles: [String]) {
@@ -107,7 +107,7 @@ class ArticleViewControllerSpec: QuickSpec {
                 }
 
                 expect(commands.count).to(equal(expectedCommands.count))
-                for (idx, cmd) in commands.enumerate() {
+                for (idx, cmd) in commands.enumerated() {
                     let expectedCmd = expectedCommands[idx]
                     expect(cmd.input).to(equal(expectedCmd.input))
                     expect(cmd.modifierFlags).to(equal(expectedCmd.modifierFlags))
@@ -127,9 +127,9 @@ class ArticleViewControllerSpec: QuickSpec {
 
                 it("should not list the next/previous article commands") {
                     let expectedCommands = [
-                        UIKeyCommand(input: "r", modifierFlags: .Shift, action: Selector()),
-                        UIKeyCommand(input: "l", modifierFlags: .Command, action: Selector()),
-                        UIKeyCommand(input: "s", modifierFlags: .Command, action: Selector()),
+                        UIKeyCommand(input: "r", modifierFlags: .shift, action: Selector("")),
+                        UIKeyCommand(input: "l", modifierFlags: .command, action: Selector("")),
+                        UIKeyCommand(input: "s", modifierFlags: .command, action: Selector("")),
                     ]
                     let expectedDiscoverabilityTitles = [
                         "Toggle Read",
@@ -137,7 +137,7 @@ class ArticleViewControllerSpec: QuickSpec {
                         "Open Share Sheet",
                     ]
 
-                    hasKindsOfKeyCommands(expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
+                    hasKindsOfKeyCommands(expectedCommands: expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
                 }
             }
             
@@ -148,15 +148,15 @@ class ArticleViewControllerSpec: QuickSpec {
 
                 it("should not list the next article command") {
                     let expectedCommands = [
-                        UIKeyCommand(input: "r", modifierFlags: .Shift, action: Selector()),
-                        UIKeyCommand(input: "s", modifierFlags: .Command, action: Selector()),
+                        UIKeyCommand(input: "r", modifierFlags: .shift, action: Selector("")),
+                        UIKeyCommand(input: "s", modifierFlags: .command, action: Selector("")),
                     ]
                     let expectedDiscoverabilityTitles = [
                         "Toggle Read",
                         "Open Share Sheet",
                     ]
 
-                    hasKindsOfKeyCommands(expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
+                    hasKindsOfKeyCommands(expectedCommands: expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
                 }
             }
         }
@@ -193,7 +193,7 @@ class ArticleViewControllerSpec: QuickSpec {
         }
 
         it("does not show the loading spinner") {
-            expect(subject.backgroundSpinnerView.hidden) == true
+            expect(subject.backgroundSpinnerView.isHidden) == true
         }
 
         describe("setting the article") {
@@ -214,7 +214,7 @@ class ArticleViewControllerSpec: QuickSpec {
             }
 
             it("shows the background spinner view") {
-                expect(subject.backgroundSpinnerView.hidden) == false
+                expect(subject.backgroundSpinnerView.isHidden) == false
             }
 
             it("asks the use case for the html to show") {
@@ -253,7 +253,7 @@ class ArticleViewControllerSpec: QuickSpec {
                 }
 
                 it("hides the backgroundView") {
-                    expect(subject.backgroundView.hidden) == true
+                    expect(subject.backgroundView.isHidden) == true
                 }
             }
 
@@ -284,7 +284,7 @@ class ArticleViewControllerSpec: QuickSpec {
                             return
                         }
 
-                        activityViewController.completionWithItemsHandler?("com.rachelbrindle.rnews.author", true, nil, nil)
+                        activityViewController.completionWithItemsHandler?(UIActivityType(rawValue: "com.rachelbrindle.rnews.author"), true, nil, nil)
                     }
 
                     it("asks the use case for all articles by that author") {
@@ -299,11 +299,11 @@ class ArticleViewControllerSpec: QuickSpec {
                         beforeEach {
                             articleListController = ArticleListController(
                                 feedRepository: FakeDatabaseUseCase(),
-                                themeRepository: FakeThemeRepository(),
+                                themeRepository: ThemeRepository(userDefaults: nil),
                                 settingsRepository: SettingsRepository(userDefaults: nil),
                                 articleViewController: { subject }
                             )
-                            injector.bind(ArticleListController.self, toInstance: articleListController)
+                            injector.bind(kind: ArticleListController.self, toInstance: articleListController)
 
                             articleUseCase.articlesByAuthorArgsForCall(0).1(DataStoreBackedArray([article, articleByAuthor]))
                         }
@@ -313,7 +313,7 @@ class ArticleViewControllerSpec: QuickSpec {
                         }
 
                         it("shows an article list with the returned articles") {
-                            expect(subject.shownViewController) === articleListController
+                            expect(subject.shown) === articleListController
                         }
                     }
                 }
@@ -327,7 +327,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
             context("tapping a link") {
                 it("navigates to that article if the link goes to a related article") {
-                    let shouldInteract = subject.content.delegate?.webView?(subject.content, shouldStartLoadWithRequest: URLRequest(URL: article2.link!), navigationType: .LinkClicked)
+                    let shouldInteract = subject.content.delegate?.webView?(subject.content, shouldStartLoadWith: URLRequest(url: article2.link!), navigationType: .linkClicked)
                     expect(shouldInteract) == false
 //                    expect(navigationController.topViewController) != subject
 //                    expect(navigationController.topViewController).to(beAnInstanceOf(ArticleViewController.self))
@@ -338,7 +338,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
                 it("opens in an SFSafariViewController") {
                     let url = URL(string: "https://example.com")!
-                    let shouldInteract = subject.content.delegate?.webView?(subject.content, shouldStartLoadWithRequest: URLRequest(URL: url), navigationType: .LinkClicked)
+                    let shouldInteract = subject.content.delegate?.webView?(subject.content, shouldStartLoadWith: URLRequest(url: url), navigationType: .linkClicked)
                     expect(shouldInteract) == false
                     expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
                 }

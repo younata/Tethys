@@ -6,14 +6,14 @@ public final class UnreadCounter: NSView {
 
     let countLabel = NSText(forAutoLayout: ())
 
-    var triangleColor: NSColor = NSColor.darkGreenColor()
+    var triangleColor: NSColor = NSColor.darkGreen
     var countColor: NSColor = NSColor.white {
         didSet {
             countLabel.textColor = countColor
         }
     }
 
-    private var color: NSColor = NSColor.darkGreenColor()
+    private var color: NSColor = NSColor.darkGreen
 
     public var hideUnreadText = false
     public var unread: UInt = 0 {

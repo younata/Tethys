@@ -12,7 +12,7 @@ class ArticleSpec: QuickSpec {
             let realmConf = Realm.Configuration(inMemoryIdentifier: "ArticleSpec")
             realm = try! Realm(configuration: realmConf)
             try! realm.write {
-                realm.deleteAll()
+                realm.deleteAllObjects()
             }
 
             subject = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
@@ -21,21 +21,21 @@ class ArticleSpec: QuickSpec {
         describe("creating from a CoreDataArticle") {
             it("sets estimatedReadingTime when it's nil in CoreData estimatedReadingTime is nil") {
                 let ctx = managedObjectContext()
-                let a = createArticle(ctx)
+                let a = createArticle(managedObjectContext: ctx)
 
-                a.content = (0..<100).map({_ in "<p>this was a content space</p>"}).reduce("", combine: +)
+                a.content = (0..<100).map({_ in "<p>this was a content space</p>"}).reduce("", +)
 
                 let article = Article(coreDataArticle: a, feed: nil)
                 expect(article.estimatedReadingTime).to(equal(3))
-                expect(a.estimatedReadingTime?.integerValue).to(equal(3))
+                expect(a.estimatedReadingTime?.intValue).to(equal(3))
             }
         }
 
         describe("Equatable") {
             it("should report two articles created with a coredataarticle with the same articleID as equal") {
                 let ctx = managedObjectContext()
-                let a = createArticle(ctx)
-                let b = createArticle(ctx)
+                let a = createArticle(managedObjectContext: ctx)
+                let b = createArticle(managedObjectContext: ctx)
 
                 expect(Article(coreDataArticle: a, feed: nil)).toNot(equal(Article(coreDataArticle: b, feed: nil)))
                 expect(Article(coreDataArticle: a, feed: nil)).to(equal(Article(coreDataArticle: a, feed: nil)))
@@ -43,10 +43,10 @@ class ArticleSpec: QuickSpec {
 
             it("should report two articles created with a realmarticle with the same url as equal") {
                 realm.beginWrite()
-                let a = realm.create(RealmArticle)
+                let a = realm.createObject(ofType: RealmArticle.self)
                 a.link = "https://example.com/article"
 
-                let b = realm.create(RealmArticle)
+                let b = realm.createObject(ofType: RealmArticle.self)
                 b.link = "https://example.com/article2"
 
                 _ = try? realm.commitWrite()
@@ -58,7 +58,7 @@ class ArticleSpec: QuickSpec {
             it("should report two articles not created with datastore objects with the same property equality as equal") {
                 let date = Date()
                 let a = Article(title: "", link: nil, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
-                let b = Article(title: "blah", link: URL(), summary: "hello", authors: [Author("anAuthor")], published: Date(timeIntervalSince1970: 0), updatedAt: nil, identifier: "hi", content: "hello there", read: true, estimatedReadingTime: 70, feed: nil, flags: ["flag"])
+                let b = Article(title: "blah", link: URL(string: "https://example.com"), summary: "hello", authors: [Author("anAuthor")], published: Date(timeIntervalSince1970: 0), updatedAt: nil, identifier: "hi", content: "hello there", read: true, estimatedReadingTime: 70, feed: nil, flags: ["flag"])
                 let c = Article(title: "", link: nil, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
 
                 expect(a).toNot(equal(b))
@@ -69,8 +69,8 @@ class ArticleSpec: QuickSpec {
         describe("Hashable") {
             it("should report two articles created with a coredataarticle with the same articleID as having the same hashValue") {
                 let ctx = managedObjectContext()
-                let a = createArticle(ctx)
-                let b = createArticle(ctx)
+                let a = createArticle(managedObjectContext: ctx)
+                let b = createArticle(managedObjectContext: ctx)
 
                 expect(Article(coreDataArticle: a, feed: nil).hashValue).toNot(equal(Article(coreDataArticle: b, feed: nil).hashValue))
                 expect(Article(coreDataArticle: a, feed: nil).hashValue).to(equal(Article(coreDataArticle: a, feed: nil).hashValue))
@@ -78,10 +78,10 @@ class ArticleSpec: QuickSpec {
 
             it("should report two articles created with a realmarticle with the same url as equal") {
                 realm.beginWrite()
-                let a = realm.create(RealmArticle)
+                let a = realm.createObject(ofType: RealmArticle.self)
                 a.link = "https://example.com/article"
 
-                let b = realm.create(RealmArticle)
+                let b = realm.createObject(ofType: RealmArticle.self)
                 b.link = "https://example.com/article2"
 
                 _ = try? realm.commitWrite()
@@ -93,7 +93,7 @@ class ArticleSpec: QuickSpec {
             it("should report two articles not created with coredataarticles with the same property equality as having the same hashValue") {
                 let date = Date()
                 let a = Article(title: "", link: nil, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
-                let b = Article(title: "blah", link: URL(), summary: "hello", authors: [Author("anAuthor")], published: Date(timeIntervalSince1970: 0), updatedAt: nil, identifier: "hi", content: "hello there", read: true, estimatedReadingTime: 60, feed: nil, flags: ["flag"])
+                let b = Article(title: "blah", link: URL(string: "https://example.com"), summary: "hello", authors: [Author("anAuthor")], published: Date(timeIntervalSince1970: 0), updatedAt: nil, identifier: "hi", content: "hello there", read: true, estimatedReadingTime: 60, feed: nil, flags: ["flag"])
                 let c = Article(title: "", link: nil, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
 
                 expect(a.hashValue).toNot(equal(b.hashValue))

@@ -93,12 +93,12 @@ class AccountRepositorySpec: QuickSpec {
 
             describe("when the call fails") {
                 beforeEach {
-                    loginRepositoryPromise.resolve(.failure(.Network))
+                    loginRepositoryPromise.resolve(.failure(.network))
                 }
 
                 it("resolves the future with an error") {
                     expect(loginFuture.value).toNot(beNil())
-                    expect(loginFuture.value?.error) == .Backend(.Network)
+                    expect(loginFuture.value?.error) == .backend(.network)
                 }
             }
         }
@@ -153,12 +153,12 @@ class AccountRepositorySpec: QuickSpec {
 
             describe("when the call fails") {
                 beforeEach {
-                    registerRepositoryPromise.resolve(.failure(.Network))
+                    registerRepositoryPromise.resolve(.failure(.network))
                 }
 
                 it("resolves the future with an error") {
                     expect(registerFuture.value).toNot(beNil())
-                    expect(registerFuture.value?.error) == .Backend(.Network)
+                    expect(registerFuture.value?.error) == .backend(.network)
                 }
             }
         }

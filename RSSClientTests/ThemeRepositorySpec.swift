@@ -4,9 +4,9 @@ import rNews
 import Ra
 import UIKit
 
-private class FakeThemeSubscriber: NSObject, ThemeRepositorySubscriber {
-    private var didCallChangeTheme = false
-    private func themeRepositoryDidChangeTheme(themeRepository: ThemeRepository) {
+fileprivate class FakeThemeSubscriber: NSObject, ThemeRepositorySubscriber {
+    fileprivate var didCallChangeTheme = false
+    fileprivate func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         didCallChangeTheme = true
     }
 }
@@ -22,9 +22,9 @@ class ThemeRepositorySpec: QuickSpec {
             injector = Injector()
 
             userDefaults = FakeUserDefaults()
-            injector.bind(NSUserDefaults.self, toInstance: userDefaults)
+            injector.bind(kind: UserDefaults.self, toInstance: userDefaults)
 
-            subject = injector.create(ThemeRepository)!
+            subject = injector.create(kind: ThemeRepository.self)!
 
             subscriber = FakeThemeSubscriber()
             subject.addSubscriber(subscriber)
@@ -39,15 +39,15 @@ class ThemeRepositorySpec: QuickSpec {
         }
 
         it("has a default theme of .Default") {
-            expect(subject.theme).to(equal(ThemeRepository.Theme.Default))
+            expect(subject.theme).to(equal(ThemeRepository.Theme.default))
         }
 
         it("has a default background color of white") {
-            expect(subject.backgroundColor).to(equalColor(UIColor.whiteColor()))
+            expect(subject.backgroundColor).to(equalColor(expectedColor: UIColor.white))
         }
 
         it("has a default text color of black") {
-            expect(subject.textColor).to(equalColor(UIColor.blackColor()))
+            expect(subject.textColor).to(equalColor(expectedColor: UIColor.black))
         }
 
         it("uses 'github2' as the default article css") {
@@ -55,7 +55,7 @@ class ThemeRepositorySpec: QuickSpec {
         }
 
         it("has a default tint color of white") {
-            expect(subject.tintColor).to(equalColor(UIColor.whiteColor()))
+            expect(subject.tintColor).to(equalColor(expectedColor: UIColor.white))
         }
 
         it("uses 'mac_classic' as the default syntax highlight file name") {
@@ -63,42 +63,42 @@ class ThemeRepositorySpec: QuickSpec {
         }
 
         it("uses UIBarStyleDefault as the default barstyle") {
-            expect(subject.barStyle).to(equal(UIBarStyle.Default))
+            expect(subject.barStyle).to(equal(UIBarStyle.default))
         }
 
         it("uses UIStatusBarStyleDefault as the default statusBarStyle") {
-            expect(subject.statusBarStyle).to(equal(UIStatusBarStyle.Default))
+            expect(subject.statusBarStyle).to(equal(UIStatusBarStyle.default))
         }
 
         it("uses UIScrollViewIndicatorStyleBlack as the default scrollIndicatorStyle") {
-            expect(subject.scrollIndicatorStyle).to(equal(UIScrollViewIndicatorStyle.Black))
+            expect(subject.scrollIndicatorStyle).to(equal(UIScrollViewIndicatorStyle.black))
         }
 
         it("uses UIActivityIndicatorViewStyleGray as the default spinnerStyle") {
-            expect(subject.spinnerStyle).to(equal(UIActivityIndicatorViewStyle.Gray))
+            expect(subject.spinnerStyle).to(equal(UIActivityIndicatorViewStyle.gray))
         }
 
         it("has a default error color of a red shade") {
-            expect(subject.errorColor).to(equalColor(UIColor(red: 1, green: 0, blue: 0.2, alpha: 1)))
+            expect(subject.errorColor).to(equalColor(expectedColor: UIColor(red: 1, green: 0, blue: 0.2, alpha: 1)))
         }
 
-        sharedExamples("a changed theme") {(sharedContext: SharedExampleContext) in
+        sharedExamples("a changed theme") {(sharedContext: @escaping SharedExampleContext) in
             it("changes the background color") {
                 let expectedColor = sharedContext()["background"] as? UIColor
                 expect(expectedColor).toNot(beNil())
-                expect(subject.backgroundColor).to(equalColor(expectedColor))
+                expect(subject.backgroundColor).to(equalColor(expectedColor: expectedColor))
             }
 
             it("changes the text color") {
                 let expectedColor = sharedContext()["text"] as? UIColor
                 expect(expectedColor).toNot(beNil())
-                expect(subject.textColor).to(equalColor(expectedColor))
+                expect(subject.textColor).to(equalColor(expectedColor: expectedColor))
             }
 
             it("changes the tint color") {
                 let expectedColor = sharedContext()["tint"] as? UIColor
                 expect(expectedColor).toNot(beNil())
-                expect(subject.tintColor).to(equalColor(expectedColor))
+                expect(subject.tintColor).to(equalColor(expectedColor: expectedColor))
             }
 
             it("changes the articleCss") {
@@ -140,7 +140,7 @@ class ThemeRepositorySpec: QuickSpec {
             it("changes the error color") {
                 let expectedColor = sharedContext()["error"] as? UIColor
                 expect(expectedColor).toNot(beNil())
-                expect(subject.errorColor).to(equalColor(expectedColor))
+                expect(subject.errorColor).to(equalColor(expectedColor: expectedColor))
             }
 
             it("informs subscribers") {
@@ -148,7 +148,7 @@ class ThemeRepositorySpec: QuickSpec {
             }
 
             it("persists the change if it is not ephemeral") {
-                let otherRepo = injector.create(ThemeRepository)!
+                let otherRepo = injector.create(kind: ThemeRepository.self)!
                 if (sharedContext()["ephemeral"] as? Bool != true) {
                     let expectedBackground = sharedContext()["background"] as? UIColor
                     expect(expectedBackground).toNot(beNil())
@@ -180,38 +180,38 @@ class ThemeRepositorySpec: QuickSpec {
                     let expectedError = sharedContext()["error"] as? UIColor
                     expect(expectedError).toNot(beNil())
 
-                    expect(otherRepo.backgroundColor).to(equalColor(expectedBackground))
-                    expect(otherRepo.textColor).to(equalColor(expectedText))
+                    expect(otherRepo.backgroundColor).to(equalColor(expectedColor: expectedBackground))
+                    expect(otherRepo.textColor).to(equalColor(expectedColor: expectedText))
                     expect(otherRepo.articleCSSFileName).to(equal(expectedCss))
-                    expect(otherRepo.tintColor).to(equalColor(expectedTint))
+                    expect(otherRepo.tintColor).to(equalColor(expectedColor: expectedTint))
                     expect(otherRepo.syntaxHighlightFile).to(equal(expectedSyntax))
                     expect(otherRepo.barStyle).to(equal(expectedBarStyle))
                     expect(otherRepo.statusBarStyle).to(equal(expectedStatusBarStyle))
                     expect(otherRepo.scrollIndicatorStyle).to(equal(expectedScrollIndicatorStyle))
                     expect(otherRepo.spinnerStyle).to(equal(expectedSpinnerStyle))
-                    expect(otherRepo.errorColor).to(equalColor(expectedError))
+                    expect(otherRepo.errorColor).to(equalColor(expectedColor: expectedError))
                 } else {
-                    let expectedBackground = UIColor.whiteColor()
-                    let expectedText = UIColor.blackColor()
+                    let expectedBackground = UIColor.white
+                    let expectedText = UIColor.black
                     let expectedCss = "github2"
-                    let expectedTint = UIColor.whiteColor()
+                    let expectedTint = UIColor.white
                     let expectedSyntax = "mac_classic"
-                    let expectedBarStyle = UIBarStyle.Default
-                    let expectedStatusBarStyle = UIStatusBarStyle.Default
-                    let expectedScrollIndicatorStyle = UIScrollViewIndicatorStyle.Black
-                    let expectedSpinnerStyle = UIActivityIndicatorViewStyle.Gray
+                    let expectedBarStyle = UIBarStyle.default
+                    let expectedStatusBarStyle = UIStatusBarStyle.default
+                    let expectedScrollIndicatorStyle = UIScrollViewIndicatorStyle.black
+                    let expectedSpinnerStyle = UIActivityIndicatorViewStyle.gray
                     let expectedError = UIColor(red: 1, green: 0, blue: 0.2, alpha: 1)
 
-                    expect(otherRepo.backgroundColor).to(equalColor(expectedBackground))
-                    expect(otherRepo.textColor).to(equalColor(expectedText))
+                    expect(otherRepo.backgroundColor).to(equalColor(expectedColor: expectedBackground))
+                    expect(otherRepo.textColor).to(equalColor(expectedColor: expectedText))
                     expect(otherRepo.articleCSSFileName).to(equal(expectedCss))
-                    expect(otherRepo.tintColor).to(equalColor(expectedTint))
+                    expect(otherRepo.tintColor).to(equalColor(expectedColor: expectedTint))
                     expect(otherRepo.syntaxHighlightFile).to(equal(expectedSyntax))
                     expect(otherRepo.barStyle).to(equal(expectedBarStyle))
                     expect(otherRepo.statusBarStyle).to(equal(expectedStatusBarStyle))
                     expect(otherRepo.scrollIndicatorStyle).to(equal(expectedScrollIndicatorStyle))
                     expect(otherRepo.spinnerStyle).to(equal(expectedSpinnerStyle))
-                    expect(otherRepo.errorColor).to(equalColor(expectedError))
+                    expect(otherRepo.errorColor).to(equalColor(expectedColor: expectedError))
                 }
             }
         }
@@ -220,20 +220,20 @@ class ThemeRepositorySpec: QuickSpec {
             context("of a persistant repository") {
                 context("to .Dark") {
                     beforeEach {
-                        subject.theme = .Dark
+                        subject.theme = .dark
                     }
 
                     itBehavesLike("a changed theme") {
                         return [
-                            "background": UIColor.blackColor(),
-                            "text": UIColor.whiteColor(),
+                            "background": UIColor.black,
+                            "text": UIColor.white,
                             "article": "darkhub2",
-                            "tint": UIColor.darkGrayColor(),
+                            "tint": UIColor.darkGray,
                             "syntax": "twilight",
-                            "barStyle": UIBarStyle.Black.rawValue,
-                            "statusBar": UIStatusBarStyle.LightContent.rawValue,
-                            "scrollIndicatorStyle": UIScrollViewIndicatorStyle.White.rawValue,
-                            "spinnerStyle": UIActivityIndicatorViewStyle.White.rawValue,
+                            "barStyle": UIBarStyle.black.rawValue,
+                            "statusBar": UIStatusBarStyle.lightContent.rawValue,
+                            "scrollIndicatorStyle": UIScrollViewIndicatorStyle.white.rawValue,
+                            "spinnerStyle": UIActivityIndicatorViewStyle.white.rawValue,
                             "error": UIColor(red: 0.75, green: 0, blue: 0.1, alpha: 1),
                         ]
                     }
@@ -241,20 +241,20 @@ class ThemeRepositorySpec: QuickSpec {
 
                 context("to .Default") {
                     beforeEach {
-                        subject.theme = .Default
+                        subject.theme = .default
                     }
 
                     itBehavesLike("a changed theme") {
                         return [
-                            "background": UIColor.whiteColor(),
-                            "text": UIColor.blackColor(),
+                            "background": UIColor.white,
+                            "text": UIColor.black,
                             "article": "github2",
-                            "tint": UIColor.whiteColor(),
+                            "tint": UIColor.white,
                             "syntax": "mac_classic",
-                            "barStyle": UIBarStyle.Default.rawValue,
-                            "statusBar": UIStatusBarStyle.Default.rawValue,
-                            "scrollIndicatorStyle": UIScrollViewIndicatorStyle.Black.rawValue,
-                            "spinnerStyle": UIActivityIndicatorViewStyle.Gray.rawValue,
+                            "barStyle": UIBarStyle.default.rawValue,
+                            "statusBar": UIStatusBarStyle.default.rawValue,
+                            "scrollIndicatorStyle": UIScrollViewIndicatorStyle.black.rawValue,
+                            "spinnerStyle": UIActivityIndicatorViewStyle.gray.rawValue,
                             "error": UIColor(red: 1, green: 0, blue: 0.2, alpha: 1),
                         ]
                     }
@@ -272,20 +272,20 @@ class ThemeRepositorySpec: QuickSpec {
                 
                 context("to .Dark") {
                     beforeEach {
-                        subject.theme = .Dark
+                        subject.theme = .dark
                     }
 
                     itBehavesLike("a changed theme") {
                         return [
-                            "background": UIColor.blackColor(),
-                            "text": UIColor.whiteColor(),
+                            "background": UIColor.black,
+                            "text": UIColor.white,
                             "article": "darkhub2",
-                            "tint": UIColor.darkGrayColor(),
+                            "tint": UIColor.darkGray,
                             "syntax": "twilight",
-                            "barStyle": UIBarStyle.Black.rawValue,
-                            "statusBar": UIStatusBarStyle.LightContent.rawValue,
-                            "scrollIndicatorStyle": UIScrollViewIndicatorStyle.White.rawValue,
-                            "spinnerStyle": UIActivityIndicatorViewStyle.White.rawValue,
+                            "barStyle": UIBarStyle.black.rawValue,
+                            "statusBar": UIStatusBarStyle.lightContent.rawValue,
+                            "scrollIndicatorStyle": UIScrollViewIndicatorStyle.white.rawValue,
+                            "spinnerStyle": UIActivityIndicatorViewStyle.white.rawValue,
                             "error": UIColor(red: 0.75, green: 0, blue: 0.1, alpha: 1),
                             "ephemeral": true,
                         ]
@@ -294,20 +294,20 @@ class ThemeRepositorySpec: QuickSpec {
 
                 context("to .Default") {
                     beforeEach {
-                        subject.theme = .Default
+                        subject.theme = .default
                     }
 
                     itBehavesLike("a changed theme") {
                         return [
-                            "background": UIColor.whiteColor(),
-                            "text": UIColor.blackColor(),
+                            "background": UIColor.white,
+                            "text": UIColor.black,
                             "article": "github2",
-                            "tint": UIColor.whiteColor(),
+                            "tint": UIColor.white,
                             "syntax": "mac_classic",
-                            "barStyle": UIBarStyle.Default.rawValue,
-                            "statusBar": UIStatusBarStyle.Default.rawValue,
-                            "scrollIndicatorStyle": UIScrollViewIndicatorStyle.Black.rawValue,
-                            "spinnerStyle": UIActivityIndicatorViewStyle.Gray.rawValue,
+                            "barStyle": UIBarStyle.default.rawValue,
+                            "statusBar": UIStatusBarStyle.default.rawValue,
+                            "scrollIndicatorStyle": UIScrollViewIndicatorStyle.black.rawValue,
+                            "spinnerStyle": UIActivityIndicatorViewStyle.gray.rawValue,
                             "error": UIColor(red: 1, green: 0, blue: 0.2, alpha: 1),
                             "ephemeral": true,
                         ]

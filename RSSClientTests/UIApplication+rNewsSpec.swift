@@ -9,7 +9,7 @@ class UIApplicationRNewsSpec: QuickSpec {
         var originalBadgeCount: Int = 0
 
         beforeEach {
-            subject = UIApplication.sharedApplication()
+            subject = UIApplication.shared
             originalBadgeCount = subject.applicationIconBadgeNumber
             subject.applicationIconBadgeNumber = 1
         }
@@ -54,7 +54,7 @@ class UIApplicationRNewsSpec: QuickSpec {
             }
 
             it("shows the network activity indicator") {
-                expect(subject.networkActivityIndicatorVisible) == true
+                expect(subject.isNetworkActivityIndicatorVisible) == true
             }
 
             describe("when we stop updating feeds") {
@@ -63,7 +63,7 @@ class UIApplicationRNewsSpec: QuickSpec {
                 }
 
                 it("stops showing the network activity indicator") {
-                    expect(subject.networkActivityIndicatorVisible) == false
+                    expect(subject.isNetworkActivityIndicatorVisible) == false
                 }
             }
         }

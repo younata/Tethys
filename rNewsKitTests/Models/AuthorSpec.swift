@@ -12,7 +12,7 @@ class AuthorSpec: QuickSpec {
             let realmConf = Realm.Configuration(inMemoryIdentifier: "AuthorSpec")
             realm = try! Realm(configuration: realmConf)
             try! realm.write {
-                realm.deleteAll()
+                realm.deleteAllObjects()
             }
 
             subject = Author(name: "test", email: URL(string: "foo@example.com"))

@@ -2,7 +2,7 @@ import RealmSwift
 
 struct RealmMigrator {
     static func beginMigration() {
-        let schemaVersion: UInt64 = 5
+        let schemaVersion: UInt64 = 6
         if UserDefaults.standard.bool(forKey: "FASTLANE_SNAPSHOT") {
             Realm.Configuration.defaultConfiguration = Realm.Configuration(
                 inMemoryIdentifier: "SnapShot",
@@ -23,7 +23,7 @@ struct RealmMigrator {
                 if let oldAuthor = oldObject?["author"] as? String {
                     let oldAuthors = oldAuthor.components(separatedBy: ", ")
                     let newAuthors: [MigrationObject] = oldAuthors.flatMap { oldAuthor in
-                        let newAuthor = migration.createObject(ofType: RealmAuthor.className())
+                        let newAuthor = migration.create(RealmAuthor.className())
                         let (name, email) = self.nameAndEmailFromAuthorString(oldAuthor)
                         newAuthor["name"] = name
                         newAuthor["email"] = email

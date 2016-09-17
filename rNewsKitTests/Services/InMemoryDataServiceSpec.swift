@@ -102,8 +102,8 @@ class InMemoryDataServiceSpec: QuickSpec {
                         guard case let Result.success(articles) = $0 else { return }
                         expect(Array(articles)) == [article1, article2, article3]
 
-                        expect(articles[1].relatedArticles).to(contain(article3))
-                        expect(articles[2].relatedArticles).to(contain(article2))
+                        expect(articles[1].relatedArticles.contains(article3)).to(beTruthy())
+                        expect(articles[2].relatedArticles.contains(article2)).to(beTruthy())
                     }.wait()
 
                     _ = subject.articlesMatchingPredicate(NSPredicate(format: "title == %@", "article1")).then {

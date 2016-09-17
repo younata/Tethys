@@ -71,7 +71,7 @@ class UpdateServiceSpec: QuickSpec {
                 expect(sinopeRepository.fetchCallCount) == 1
                 guard sinopeRepository.fetchCallCount == 1 else { return }
                 let args = sinopeRepository.fetchArgsForCall(0)
-                expect(args) == [feedToUpdate.url: feedToUpdate.lastUpdated]
+                expect(args) == [feedToUpdate.url!: feedToUpdate.lastUpdated]
             }
 
             describe("when the request succeeds") {

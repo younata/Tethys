@@ -12,7 +12,7 @@ class ArticleSpec: QuickSpec {
             let realmConf = Realm.Configuration(inMemoryIdentifier: "ArticleSpec")
             realm = try! Realm(configuration: realmConf)
             try! realm.write {
-                realm.deleteAllObjects()
+                realm.deleteAll()
             }
 
             subject = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
@@ -43,10 +43,10 @@ class ArticleSpec: QuickSpec {
 
             it("should report two articles created with a realmarticle with the same url as equal") {
                 realm.beginWrite()
-                let a = realm.createObject(ofType: RealmArticle.self)
+                let a = realm.create(RealmArticle.self)
                 a.link = "https://example.com/article"
 
-                let b = realm.createObject(ofType: RealmArticle.self)
+                let b = realm.create(RealmArticle.self)
                 b.link = "https://example.com/article2"
 
                 _ = try? realm.commitWrite()
@@ -78,10 +78,10 @@ class ArticleSpec: QuickSpec {
 
             it("should report two articles created with a realmarticle with the same url as equal") {
                 realm.beginWrite()
-                let a = realm.createObject(ofType: RealmArticle.self)
+                let a = realm.create(RealmArticle.self)
                 a.link = "https://example.com/article"
 
-                let b = realm.createObject(ofType: RealmArticle.self)
+                let b = realm.create(RealmArticle.self)
                 b.link = "https://example.com/article2"
 
                 _ = try? realm.commitWrite()
@@ -106,7 +106,7 @@ class ArticleSpec: QuickSpec {
             it("should add the flag") {
                 subject.addFlag("flag")
 
-                expect(subject.flags).to(contain("flag"))
+                expect(subject.flags.contains("flag")).to(beTruthy())
                 expect(subject.updated) == true
             }
 
@@ -155,13 +155,13 @@ class ArticleSpec: QuickSpec {
             }
 
             it("should add subject to the feed's articles list") {
-                expect(feed.articlesArray).to(contain(subject))
+                expect(feed.articlesArray.contains(subject)).to(beTruthy())
             }
 
             it("should remove subject from the feed's articls list when that gets unset") {
                 subject.feed = nil
 
-                expect(feed.articlesArray).toNot(contain(subject))
+                expect(feed.articlesArray.contains(subject)).toNot(beTruthy())
             }
 
             it("should remove from the old and add to the new when changing feeds") {
@@ -169,8 +169,8 @@ class ArticleSpec: QuickSpec {
 
                 subject.feed = newFeed
 
-                expect(feed.articlesArray).toNot(contain(subject))
-                expect(newFeed.articlesArray).to(contain(subject))
+                expect(feed.articlesArray.contains(subject)).toNot(beTruthy())
+                expect(newFeed.articlesArray.contains(subject)).to(beTruthy())
             }
         }
 
@@ -191,8 +191,8 @@ class ArticleSpec: QuickSpec {
 
             it("adding sets a bidirectional relationship for the two related articles") {
                 a.addRelatedArticle(b)
-                expect(a.relatedArticles).to(contain(b))
-                expect(b.relatedArticles).to(contain(a))
+                expect(a.relatedArticles.contains(b)).to(beTruthy())
+                expect(b.relatedArticles.contains(a)).to(beTruthy())
             }
 
             it("removing removes the relation from both articles") {
@@ -200,8 +200,8 @@ class ArticleSpec: QuickSpec {
 
                 b.removeRelatedArticle(a)
 
-                expect(a.relatedArticles).toNot(contain(b))
-                expect(b.relatedArticles).toNot(contain(a))
+                expect(a.relatedArticles.contains(b)).toNot(beTruthy())
+                expect(b.relatedArticles.contains(a)).toNot(beTruthy())
             }
         }
 

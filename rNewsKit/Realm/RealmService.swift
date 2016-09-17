@@ -44,7 +44,7 @@ final class RealmService: DataService {
     func createFeed(_ callback: @escaping (Feed) -> (Void)) -> Future<Result<Feed, RNewsError>> {
         let promise = Promise<Result<Feed, RNewsError>>()
         _ = self.realmTransaction {
-            let realmFeed = self.realm.createObject(ofType: RealmFeed.self)
+            let realmFeed = self.realm.create(RealmFeed.self)
             let feed = Feed(realmFeed: realmFeed)
 
             let operation = BlockOperation { callback(feed) }
@@ -59,7 +59,7 @@ final class RealmService: DataService {
 
     func createArticle(_ feed: Feed?, callback: @escaping (Article) -> (Void)) {
         _ = self.realmTransaction {
-            let realmArticle = self.realm.createObject(ofType: RealmArticle.self)
+            let realmArticle = self.realm.create(RealmArticle.self)
             let article = Article(realmArticle: realmArticle, feed: feed)
             feed?.addArticle(article)
 
@@ -141,8 +141,8 @@ final class RealmService: DataService {
         Future<Result<([Feed], [Article]), RNewsError>> {
             let promise = Promise<Result<([Feed], [Article]), RNewsError>>()
             _ = self.realmTransaction {
-                let realmFeeds = (0..<feedCount).map { _ in self.realm.createObject(ofType: RealmFeed.self) }
-                let realmArticles = (0..<articleCount).map { _ in self.realm.createObject(ofType: RealmArticle.self) }
+                let realmFeeds = (0..<feedCount).map { _ in self.realm.create(RealmFeed.self) }
+                let realmArticles = (0..<articleCount).map { _ in self.realm.create(RealmArticle.self) }
 
                 let feeds = realmFeeds.map(Feed.init)
                 let articles = realmArticles.map { Article(realmArticle: $0, feed: nil) }
@@ -171,7 +171,7 @@ final class RealmService: DataService {
     func deleteEverything() -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
         _ = self.realmTransaction {
-            self.realm.deleteAllObjects()
+            self.realm.deleteAll()
 
             self.mainQueue.addOperation {
                 promise.resolve(.success())
@@ -189,7 +189,7 @@ final class RealmService: DataService {
 
     private func realmStringForString(_ string: String) -> RealmString? {
         let predicate = NSPredicate(format: "string = %@", string)
-        return self.realm.allObjects(ofType: RealmString.self).filter(using: predicate).first
+        return self.realm.objects(RealmString.self).filter(predicate).first
     }
 
     private func realmArticleForArticle(_ article: Article) -> RealmArticle? {
@@ -199,7 +199,7 @@ final class RealmService: DataService {
 
     private func realmAuthorForAuthor(_ author: Author) -> RealmAuthor? {
         let predicate = NSPredicate(format: "name = %@ AND email = %@", author.name, author.email?.absoluteString ?? "")
-        return self.realm.allObjects(ofType: RealmAuthor.self).filter(using: predicate).first
+        return self.realm.objects(RealmAuthor.self).filter(predicate).first
     }
 
     // Synchronous update!
@@ -209,7 +209,7 @@ final class RealmService: DataService {
 
         if let rfeed = realmFeed ?? self.realmFeedForFeed(feed) {
             rfeed.title = feed.title
-            rfeed.url = feed.url.absoluteString
+            rfeed.url = feed.url?.absoluteString ?? ""
             rfeed.summary = feed.summary
             let tags: [RealmString] = feed.tags.map { str in
                 let realmString = self.realmStringForString(str) ?? RealmString()
@@ -245,7 +245,7 @@ final class RealmService: DataService {
                 author.email = $0.email?.absoluteString
                 return author
             }
-            rarticle.authors.removeAllObjects()
+            rarticle.authors.removeAll()
             rarticle.authors.append(objectsIn: authors)
             rarticle.published = article.published
             rarticle.updatedAt = article.updatedAt
@@ -256,9 +256,9 @@ final class RealmService: DataService {
                 realmString.string = str
                 return realmString
             }
-            rarticle.flags.removeAllObjects()
+            rarticle.flags.removeAll()
             rarticle.flags.append(objectsIn: flags)
-            rarticle.relatedArticles.removeAllObjects()
+            rarticle.relatedArticles.removeAll()
             let relatedArticles = article.relatedArticles.flatMap { self.realmArticleForArticle($0) }
             rarticle.relatedArticles.append(objectsIn: relatedArticles)
             rarticle.estimatedReadingTime = article.estimatedReadingTime

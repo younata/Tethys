@@ -73,8 +73,8 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
     }
 
     func updateFeed(_ feed: Feed, callback: @escaping (Feed, NSError?) -> Void) {
-        self.callbacksInProgress[feed.url as URL] = (feed, callback)
-        self.downloadURL(feed.url as URL)
+        self.callbacksInProgress[feed.url!] = (feed, callback)
+        self.downloadURL(feed.url!)
     }
 
     func updateFeeds(_ progress: @escaping (Int, Int) -> Void) ->
@@ -90,7 +90,7 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
             var urlsToDates: [URL: Date] = [:]
             for feed in feeds {
                 if feed.lastUpdated != Date(timeIntervalSinceReferenceDate: 0) {
-                    urlsToDates[feed.url] = feed.lastUpdated
+                    urlsToDates[feed.url!] = feed.lastUpdated
                 }
             }
             return self.sinopeRepository.fetch(urlsToDates).map {result -> Result<[rNewsKit.Feed], RNewsError> in

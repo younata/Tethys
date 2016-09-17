@@ -118,8 +118,8 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         let promise = Promise<Result<Void, RNewsError>>()
         _ = self.dataService.createFeed {
             callback($0)
-            if !$0.url.absoluteString.isEmpty, let sinopeRepository = self.accountRepository.backendRepository() {
-                _ = sinopeRepository.subscribe([$0.url]).then { res in
+            if !($0.url?.absoluteString ?? "").isEmpty, let sinopeRepository = self.accountRepository.backendRepository() {
+                _ = sinopeRepository.subscribe([$0.url!]).then { res in
                     switch res {
                     case .success(_):
                         promise.resolve(.success())
@@ -144,7 +144,8 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
             case .success:
                 let future: Future<Result<[URL], RNewsError>>
                 if let sinopeRepository = self.accountRepository.backendRepository() {
-                    future = sinopeRepository.unsubscribe([feed.url]).map { res in
+                    let urls: [URL] = feed.url != nil ? [feed.url!] : []
+                    future = sinopeRepository.unsubscribe(urls).map { res in
                         return res.mapError { return RNewsError.backend($0) }
                     }
                 } else {

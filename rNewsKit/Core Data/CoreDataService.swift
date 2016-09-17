@@ -233,7 +233,7 @@ class CoreDataService: DataService {
     private func updateFeed(_ feed: Feed) {
         if let cdfeed = self.coreDataFeedForFeed(feed) {
             cdfeed.title = feed.title
-            cdfeed.url = feed.url.absoluteString
+            cdfeed.url = feed.url?.absoluteString ?? ""
             cdfeed.summary = feed.summary
             cdfeed.tags = feed.tags
             cdfeed.waitPeriodInt = feed.waitPeriod

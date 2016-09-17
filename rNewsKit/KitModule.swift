@@ -15,7 +15,6 @@ public final class KitModule: NSObject, Ra.InjectorModule {
         // Operation Queues
         let mainQueue = OperationQueue.main
         injector.bind(string: kMainQueue, toInstance: mainQueue)
-
         injector.bind(kind: URLSession.self, toInstance: URLSession.shared)
         injector.bind(kind: Analytics.self, toInstance: MixPanelAnalytics())
 

@@ -105,7 +105,7 @@ open class OPMLService: NSObject, Injectable {
         ret += "<opml version=\"2.0\">\n    <body>\n"
         for feed in feeds {
             let title = "title=\"\(sanitize(feed.title))\""
-            let url = "xmlUrl=\"\(sanitize(feed.url.absoluteString))\""
+            let url = "xmlUrl=\"\(sanitize(feed.url?.absoluteString))\""
             let tags: String
             if feed.tags.count != 0 {
                 let tagsList: String = feed.tags.joined(separator: ",")
@@ -128,7 +128,7 @@ open class OPMLService: NSObject, Injectable {
                 try self.generateOPMLContents(feeds).write(toFile: opmlLocation, atomically: true,
                     encoding: String.Encoding.utf8)
             } catch _ {}
-        }.wait()
+        }
     }
 }
 

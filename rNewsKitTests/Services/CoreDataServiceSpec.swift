@@ -121,14 +121,11 @@ class CoreDataServiceSpec: QuickSpec {
 
             describe("read operations") {
                 it("reads the feeds based on the predicate") {
-                    let allExpectation = self.expectation(description: "Read all feeds")
-                    _ = subject.allFeeds().then {
-                        guard case let Result.success(feeds) = $0 else { return }
-                        expect(Array(feeds)) == [feed1, feed2]
-                        allExpectation.fulfill()
+                    guard case let Result.success(feeds) = subject.allFeeds().wait()! else {
+                        fail("blep")
+                        return
                     }
-
-                    self.waitForExpectations(timeout: 1, handler: nil)
+                    expect(Array(feeds)) == [feed1, feed2]
                 }
 
                 it("reads the articles based on the predicate") {

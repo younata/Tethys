@@ -14,6 +14,6 @@ github "younata/Sinope" "master"
 github "PureLayout/PureLayout"
 github "TimOliver/TOBrowserActivityKit" "master"
 github "younata/DropDownMenu" "master"
-github "realm/realm-cocoa" "master"
+github "realm/realm-cocoa"
 github "mixpanel/mixpanel-iphone"
 

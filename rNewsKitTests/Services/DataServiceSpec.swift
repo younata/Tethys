@@ -45,7 +45,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
 
             expect(feed.title) == "a & title"
             expect(feed.summary) == "description"
-            expect(feed.url) == URL(string: "")
+            expect(feed.url).to(beNil())
             expect(feed.lastUpdated) == itemUpdateDate
             expect(feed.articlesArray.count).to(equal(1))
             if let article = feed.articlesArray.first {
@@ -61,7 +61,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
 
             expect(feed.title) == "a & title"
             expect(feed.summary) == "description"
-            expect(feed.url) == URL(string: "")
+            expect(feed.url).to(beNil())
             expect(feed.articlesArray.count).to(equal(1))
             if let article = feed.articlesArray.first {
                 expect(article.title) == "article"
@@ -77,7 +77,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
 
             expect(feed.title) == "a title"
             expect(feed.summary) == "description"
-            expect(feed.url) == URL(string: "")
+            expect(feed.url).to(beNil())
             expect(feed.articlesArray.count).to(equal(0))
         }
 
@@ -98,17 +98,17 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             }
             spec.waitForExpectations(timeout: 1, handler: nil)
 
-            expect(feed.articlesArray).to(contain(existingArticle))
+            expect(feed.articlesArray.contains(existingArticle)).to(beTruthy())
             expect(feed.articlesArray.count) == 1
 
             let existingItem = FakeImportableArticle(title: existingArticle.title, url: existingArticle.link!, summary: existingArticle.summary, content: existingArticle.content, published: existingArticle.published, updated: nil, authors: [])
-            let item = FakeImportableArticle(title: "article", url: URL(string: "")!, summary: "", content: "", published: Date(), updated: nil, authors: [])
+            let item = FakeImportableArticle(title: "article", url: URL(string: "https://example.com/1")!, summary: "", content: "", published: Date(), updated: nil, authors: [])
             let info = FakeImportableFeed(title: "a title", link: URL(string: "https://example.com")!, description: "description", lastUpdated: Date(), imageURL: nil, articles: [existingItem, item])
             _ = dataService.updateFeed(feed, info: info).then {
                 guard case Result.success() = $0 else { return }
                 expect(feed.title) == "a title"
                 expect(feed.summary) == "description"
-                expect(feed.url) == URL(string: "")
+                expect(feed.url).to(beNil())
                 expect(feed.lastUpdated) == info.lastUpdated
                 expect(feed.articlesArray.count).to(equal(2))
                 let articles = feed.articlesArray
@@ -117,7 +117,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
                 }
                 if let secondArticle = articles.last {
                     expect(secondArticle.title) == item.title
-                    expect(secondArticle.link) == URL(string: "https://example.com")
+                    expect(secondArticle.link) == item.url
                     expect(secondArticle) != existingArticle
                 }
             }.wait()
@@ -159,7 +159,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             let item = FakeImportableArticle(title: "a <p></p>&amp; title", url: URL(string: "https://example.com/foo/baz")!, summary: "description", content: content, published: Date(timeIntervalSince1970: 10), updated: Date(timeIntervalSince1970: 15), authors: [])
 
             _ = dataService.updateArticle(article!, item: item, feedURL: URL(string: "https://example.com/")!).wait()
-            expect(article!.relatedArticles).to(contain(otherArticle!))
+            expect(article!.relatedArticles.contains(otherArticle!)).to(beTruthy())
         }
 
         it("easily allows an article to be updated, filtering out title information") {

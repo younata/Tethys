@@ -15,7 +15,7 @@ class RealmServiceSpec: QuickSpec {
         let realmConf = Realm.Configuration(inMemoryIdentifier: "RealmServiceSpec")
         var realm = try! Realm(configuration: realmConf)
         try! realm.write {
-            realm.deleteAllObjects()
+            realm.deleteAll()
         }
 
         var mainQueue = FakeOperationQueue()
@@ -27,7 +27,7 @@ class RealmServiceSpec: QuickSpec {
         beforeEach {
             realm = try! Realm(configuration: realmConf)
             try! realm.write {
-                realm.deleteAllObjects()
+                realm.deleteAll()
             }
 
             mainQueue = FakeOperationQueue()
@@ -46,7 +46,7 @@ class RealmServiceSpec: QuickSpec {
                     feed.url = URL(string: "https://example.com/feed")!
                 }.wait()
 
-                let feeds = realm.allObjects(ofType: RealmFeed.self)
+                let feeds = realm.objects(RealmFeed.self)
                 expect(feeds.count) == 1
                 guard let feed = feeds.first else { return }
                 expect(feed.title) == "Hello"
@@ -63,7 +63,7 @@ class RealmServiceSpec: QuickSpec {
 
                 self.waitForExpectations(timeout: 1, handler: nil)
 
-                let articles = realm.allObjects(ofType: RealmArticle.self)
+                let articles = realm.objects(RealmArticle.self)
                 expect(articles.count) == 1
                 guard let article = articles.first else { return }
                 expect(article.title) == "Hello"
@@ -72,8 +72,8 @@ class RealmServiceSpec: QuickSpec {
             it("can batch create things") {
                 _ = subject.batchCreate(2, articleCount: 3).wait()
 
-                expect(realm.allObjects(ofType: RealmFeed.self).count) == 2
-                expect(realm.allObjects(ofType: RealmArticle.self).count) == 3
+                expect(realm.objects(RealmFeed.self).count) == 2
+                expect(realm.objects(RealmArticle.self).count) == 3
             }
         }
 
@@ -135,8 +135,8 @@ class RealmServiceSpec: QuickSpec {
                         guard case let Result.success(articles) = $0 else { return }
                         expect(Array(articles)) == [article1, article2, article3]
 
-                        expect(articles[1].relatedArticles).to(contain(article3))
-                        expect(articles[2].relatedArticles).to(contain(article2))
+                        expect(articles[1].relatedArticles.contains(article3)).to(beTruthy())
+                        expect(articles[2].relatedArticles.contains(article2)).to(beTruthy())
 
                         allExpectation.fulfill()
                     }
@@ -158,11 +158,11 @@ class RealmServiceSpec: QuickSpec {
                     feed1.addTag("goodbye")
                     _ = subject.batchSave([feed1], articles: []).wait()
 
-                    expect(realm.allObjects(ofType: RealmString.self).count) == 2
+                    expect(realm.objects(RealmString.self).count) == 2
 
                     _ = subject.batchSave([feed1], articles: []).wait()
 
-                    expect(realm.allObjects(ofType: RealmString.self).count) == 2
+                    expect(realm.objects(RealmString.self).count) == 2
                 }
 
                 it("doesn't create multiple copies of the same RealmAuthor when an article is saved again") {
@@ -171,10 +171,10 @@ class RealmServiceSpec: QuickSpec {
                     ]
                     _ = subject.batchSave([], articles: [article1]).wait()
 
-                    expect(realm.allObjects(ofType: RealmAuthor.self).count) == 1
+                    expect(realm.objects(RealmAuthor.self).count) == 1
 
                     _ = subject.batchSave([], articles: [article1]).wait()
-                    expect(realm.allObjects(ofType: RealmAuthor.self).count) == 1
+                    expect(realm.objects(RealmAuthor.self).count) == 1
                 }
 
                 #if os(iOS)

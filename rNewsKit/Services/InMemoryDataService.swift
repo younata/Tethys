@@ -14,8 +14,8 @@ final class InMemoryDataService: DataService {
     var articles = [Article]()
 
     func createFeed(_ callback: @escaping (Feed) -> Void) -> Future<Result<Feed, RNewsError>> {
-        let feed = Feed(title: "", url: URL(string: "")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0,
-                        articles: [], image: nil)
+        let feed = Feed(title: "", url: nil, summary: "", tags: [], waitPeriod: 0,
+                        remainingWait: 0, articles: [], image: nil)
         callback(feed)
         self.feeds.append(feed)
         let promise = Promise<Result<Feed, RNewsError>>()

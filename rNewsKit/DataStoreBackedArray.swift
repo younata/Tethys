@@ -197,7 +197,7 @@ public final class DataStoreBackedArray<T: AnyObject>: Collection, CustomDebugSt
     }
 
     public func index(after i: Int) -> Int {
-        return (i + 1) % self.count
+        return (i + 1)
     }
 
 
@@ -346,7 +346,12 @@ public final class DataStoreBackedArray<T: AnyObject>: Collection, CustomDebugSt
             }
             return nil
         }
-        let results = realm.allObjects(ofType: dataType).filter(using: predicate).sorted(with: sortDescriptors)
+        let results: Results<Object>
+        if sortDescriptors.isEmpty {
+            results = realm.objects(dataType).filter(predicate)
+        } else {
+            results = realm.objects(dataType).filter(predicate).sorted(by: sortDescriptors)
+        }
         self._internalCount = results.count
         return results
     }

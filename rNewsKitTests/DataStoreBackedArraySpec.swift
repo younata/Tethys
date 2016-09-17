@@ -18,14 +18,14 @@ class DataStoreBackedArraySpec: QuickSpec {
             beforeEach {
                 realm = try! Realm(configuration: realmConf)
                 try! realm.write {
-                    realm.deleteAllObjects()
+                    realm.deleteAll()
                 }
 
                 articles = []
 
                 realm.beginWrite()
                 for i in 0..<totalObjectCount {
-                    let article = realm.createObject(ofType: RealmArticle.self)
+                    let article = realm.create(RealmArticle.self)
                     article.title = String(format: "%03d", i)
                     articles.append(article)
                     realm.add(article)
@@ -75,6 +75,10 @@ class DataStoreBackedArraySpec: QuickSpec {
                 let expectedArticles = articles.map { Article(realmArticle: $0, feed: nil) }
 
                 for (idx, article) in subject.enumerated() {
+                    if idx >= expectedArticles.count {
+                        expect(subject.count) == expectedArticles.count
+                        return
+                    }
                     expect(article) == expectedArticles[idx]
                 }
             }

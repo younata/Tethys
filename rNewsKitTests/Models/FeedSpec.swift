@@ -13,7 +13,7 @@ class FeedSpec: QuickSpec {
             let realmConf = Realm.Configuration(inMemoryIdentifier: "FeedSpec")
             realm = try! Realm(configuration: realmConf)
             try! realm.write {
-                realm.deleteAllObjects()
+                realm.deleteAll()
             }
 
             subject = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [],
@@ -157,7 +157,7 @@ class FeedSpec: QuickSpec {
                         expect(subject.updated) == true
                         expect(article.updated) == true
                         expect(article.feed).to(equal(subject))
-                        expect(subject.articlesArray).to(contain(article))
+                        expect(subject.articlesArray.contains(article)).to(beTruthy())
                     }
                 }
 
@@ -171,7 +171,7 @@ class FeedSpec: QuickSpec {
                         subject.addArticle(article)
                         expect(subject.updated) == false
                         expect(article.feed).to(equal(subject))
-                        expect(subject.articlesArray).to(contain(article))
+                        expect(subject.articlesArray.contains(article)).to(beTruthy())
                     }
                 }
 
@@ -189,8 +189,8 @@ class FeedSpec: QuickSpec {
                         expect(article.updated) == true
                         expect(otherFeed.updated) == true
                         expect(article.feed).to(equal(subject))
-                        expect(subject.articlesArray).to(contain(article))
-                        expect(otherFeed.articlesArray).toNot(contain(article))
+                        expect(subject.articlesArray.contains(article)).to(beTruthy())
+                        expect(otherFeed.articlesArray.contains(article)).toNot(beTruthy())
                     }
                 }
             }
@@ -220,7 +220,7 @@ class FeedSpec: QuickSpec {
                         subject.removeArticle(article)
                         expect(subject.updated) == true
                         expect(article.feed).to(beNil())
-                        expect(subject.articlesArray).toNot(contain(article))
+                        expect(subject.articlesArray.contains(article)).toNot(beTruthy())
                     }
                 }
 

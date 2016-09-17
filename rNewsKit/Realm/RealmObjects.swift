@@ -41,6 +41,10 @@ class RealmFeed: Object {
     override static func primaryKey() -> String? {
         return "id"
     }
+
+    override static func indexedProperties() -> [String] {
+        return ["url", "title"]
+    }
 }
 
 class RealmAuthor: Object {
@@ -50,6 +54,10 @@ class RealmAuthor: Object {
     dynamic var id: String = UUID().uuidString
     override static func primaryKey() -> String? {
         return "id"
+    }
+
+    override static func indexedProperties() -> [String] {
+        return ["name", "email"]
     }
 }
 
@@ -71,5 +79,9 @@ class RealmArticle: Object {
     dynamic var id: String = UUID().uuidString
     override static func primaryKey() -> String? {
         return "id"
+    }
+
+    override static func indexedProperties() -> [String] {
+        return ["link", "published", "updatedAt", "title", "read"]
     }
 }

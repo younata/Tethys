@@ -2,7 +2,8 @@ import Sinope
 
 struct PasiphaeFactory {
     func baseURL() -> URL {
-        let urlString = Bundle.main.object(forInfoDictionaryKey: "PasiphaeURL") as? String ?? ""
+        let urlString = Bundle.main.object(forInfoDictionaryKey: "PasiphaeURL") as? String ?? "https://example.com"
+        // Don't crash in test.
         return URL(string: urlString)!
     }
 

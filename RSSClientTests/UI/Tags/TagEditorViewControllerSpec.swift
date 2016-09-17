@@ -27,7 +27,7 @@ class TagEditorViewControllerSpec: QuickSpec {
             navigationController = UINavigationController(rootViewController: rootViewController)
             navigationController.pushViewController(subject, animated: false)
 
-            feed = Feed(title: "title", url: URL(string: "https://example.com/")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            feed = Feed(title: "title", url: nil, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
             subject.feed = feed
 
             expect(subject.view).toNot(beNil())
@@ -76,7 +76,7 @@ class TagEditorViewControllerSpec: QuickSpec {
                 }
 
                 it("should save the feed, with the added tag") {
-                    let newFeed = Feed(title: "title", url: URL(string: "")!, summary: "", tags: ["a"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let newFeed = Feed(title: "title", url: nil, summary: "", tags: ["a"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     expect(dataRepository.lastSavedFeed) == newFeed
                 }
 

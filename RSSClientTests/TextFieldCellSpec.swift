@@ -56,9 +56,9 @@ class TextFieldCellSpec: QuickSpec {
 
             context("when showValidator is false") {
                 beforeEach {
-//                    if let delegate = subject.textField.delegate { // FIXME
-//                        _ = delegate.textField?(subject.textField, shouldChangeCharactersInRange: NSMakeRange(0, 0), replacementString: "textChanged")
-//                    }
+                    if let delegate = subject.textField.delegate { // FIXME
+                        _ = delegate.textField?(subject.textField, shouldChangeCharactersIn: NSMakeRange(0, 0), replacementString: "textChanged")
+                    }
                 }
 
                 it("should still call onTextChange") {

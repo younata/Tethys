@@ -112,7 +112,7 @@ class ArticleListControllerSpec: QuickSpec {
             subject.view.layoutIfNeeded()
         }
 
-        fit("dismisses the keyboard upon drag") {
+        it("dismisses the keyboard upon drag") {
             expect(subject.tableView.keyboardDismissMode).to(equal(UIScrollViewKeyboardDismissMode.onDrag))
         }
 
@@ -128,7 +128,7 @@ class ArticleListControllerSpec: QuickSpec {
                     shareSheet.tap()
                     expect(subject.presentedViewController).to(beAnInstanceOf(UIActivityViewController.self))
                     if let activityVC = subject.presentedViewController as? UIActivityViewController {
-                        expect(activityVC.activityItems as? [URL]) == [feed.url]
+                        expect(activityVC.activityItems as? [URL]) == [feed.url!]
                     }
                 }
             }

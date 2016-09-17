@@ -666,9 +666,9 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                             }
 
                                             it("should bring up a share sheet") {
-                                                expect(navigationController.visibleViewController).to(beAnInstanceOf(UIActivityViewController))
+                                                expect(navigationController.visibleViewController).to(beAnInstanceOf(UIActivityViewController.self))
                                                 if let activityVC = navigationController.visibleViewController as? UIActivityViewController {
-                                                    expect(activityVC.activityItems as? [URL]) == [feed.url]
+                                                    expect(activityVC.activityItems as? [URL]) == [feed.url!]
                                                 }
                                             }
                                         }

@@ -72,8 +72,8 @@ public final class NotificationView: UIView {
     }
 
     private func requiredHeight(_ title: String, message: String) -> CGFloat {
-        let titleFont = self.titleLabel.font
-        let messageFont = self.messageLabel.font
+        let titleFont = self.titleLabel.font!
+        let messageFont = self.messageLabel.font!
 
         let marginHeight = self.layoutMargins.top + self.layoutMargins.bottom + 4
 
@@ -82,12 +82,12 @@ public final class NotificationView: UIView {
         let width = self.bounds.width - (self.layoutMargins.left + self.layoutMargins.right)
         let size = CGSize(width: width, height: CGFloat.infinity)
 
-        let titleHeight = NSString(string: title).boundingRect(with: size,
+        let titleHeight = title.boundingRect(with: size,
             options: sizeOptions,
             attributes: [NSFontAttributeName: titleFont],
             context: nil).size.height
 
-        let messageHeight = NSString(string: message).boundingRect(with: size,
+        let messageHeight = message.boundingRect(with: size,
             options: sizeOptions,
             attributes: [NSFontAttributeName: messageFont],
             context: nil).size.height

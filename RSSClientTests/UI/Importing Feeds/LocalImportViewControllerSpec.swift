@@ -240,7 +240,7 @@ class LocalImportViewControllerSpec: QuickSpec {
                         }
 
                         it("dismisses the activity indicator") {
-                            let subjectHasNoActivityIndicator = subject.view.subviews.filter { return $0.classForCoder != ActivityIndicator.classForCoder() }.count == 0
+                            let subjectHasNoActivityIndicator = subject.view.subviews.filter { return $0.classForCoder == ActivityIndicator.classForCoder() }.count == 0
                             expect(subjectHasNoActivityIndicator).to(beTruthy())
                         }
                     }
@@ -296,7 +296,7 @@ class LocalImportViewControllerSpec: QuickSpec {
                         }
 
                         it("dismisses the activity indicator") {
-                            let subjectHasNoActivityIndicator = subject.view.subviews.filter { return $0.classForCoder != ActivityIndicator.classForCoder() }.count == 0
+                            let subjectHasNoActivityIndicator = subject.view.subviews.filter { return $0.classForCoder == ActivityIndicator.classForCoder() }.count == 0
                             expect(subjectHasNoActivityIndicator).to(beTruthy())
                         }
                     }

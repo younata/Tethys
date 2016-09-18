@@ -243,6 +243,9 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
         tc.themeRepository = self.themeRepository
         tc.textField.text = self.feed?.url?.absoluteString
         tc.showValidator = true
+        if #available(iOS 10.0, *) {
+            tc.textField.textContentType = .URL
+        }
         tc.onTextChange = {(text) in
             if let txt = text, let url = URL(string: txt) {
                 self.urlSession.dataTask(with: url) {data, response, error in

@@ -90,6 +90,9 @@ public final class LoginViewController: UIViewController, Injectable {
         let field = UITextField(forAutoLayout: ())
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
+        if #available(iOS 10.0, *) {
+            field.textContentType = .emailAddress
+        }
         let placeholder = NSAttributedString(string: NSLocalizedString("LoginViewController_Fields_Email", comment: ""),
                                              attributes: [NSForegroundColorAttributeName: UIColor.gray])
         field.attributedPlaceholder = placeholder

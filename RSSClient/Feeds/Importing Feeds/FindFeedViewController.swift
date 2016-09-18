@@ -102,6 +102,9 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.navField.autocapitalizationType = .none
         self.navField.keyboardType = .URL
         self.navField.clearsOnBeginEditing = true
+        if #available(iOS 10.0, *) {
+            self.navField.textContentType = .URL
+        }
 
         self.loadingBar.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(self.loadingBar)

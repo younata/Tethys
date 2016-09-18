@@ -124,8 +124,8 @@ class UpdateUseCaseSpec: QuickSpec {
                     beforeEach {
                         mainQueue.runSynchronously = true
                         let updatingFeeds = [feed1, feed3]
-                        updateService.updateFeedCallbacks.enumerated().forEach {
-                            $1(updatingFeeds[$0]!, nil)
+                        updateService.updateFeedPromises.enumerated().forEach {
+                            $1.resolve(.success(updatingFeeds[$0]!))
                         }
                     }
 

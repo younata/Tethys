@@ -47,7 +47,7 @@ final class RNewsKitURLSessionDelegate: NSObject, URLSessionDownloadDelegate {
 }
 
 protocol UpdateServiceType: class {
-    func updateFeed(_ feed: rNewsKit.Feed, callback: @escaping (rNewsKit.Feed, NSError?) -> Void)
+    func updateFeed(_ feed: rNewsKit.Feed) -> Future<Result<rNewsKit.Feed, RNewsError>>
     func updateFeeds(_ progress: @escaping (Int, Int) -> Void) ->
         Future<Result<[rNewsKit.Feed], RNewsError>>
 }
@@ -58,7 +58,8 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
     private let workerQueue: OperationQueue
     private let sinopeRepository: Sinope.Repository
 
-    private var callbacksInProgress: [URL: (feed: rNewsKit.Feed, callback: ((rNewsKit.Feed, NSError?) -> Void))] = [:]
+    private var callbacksInProgress: [URL: (feed: rNewsKit.Feed,
+                                            promise: Promise<Result<rNewsKit.Feed, RNewsError>>)] = [:]
 
     init(dataServiceFactory: DataServiceFactoryType,
          urlSession: URLSession,
@@ -72,9 +73,11 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
         urlSessionDelegate.delegate = self
     }
 
-    func updateFeed(_ feed: Feed, callback: @escaping (Feed, NSError?) -> Void) {
-        self.callbacksInProgress[feed.url!] = (feed, callback)
+    func updateFeed(_ feed: Feed) -> Future<Result<rNewsKit.Feed, RNewsError>> {
+        let promise = Promise<Result<rNewsKit.Feed, RNewsError>>()
+        self.callbacksInProgress[feed.url!] = (feed, promise)
         self.downloadURL(feed.url!)
+        return promise.future
     }
 
     func updateFeeds(_ progress: @escaping (Int, Int) -> Void) ->
@@ -136,7 +139,7 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
                 case .failure(_):
                     break
                 }
-                }.wait()
+            }.wait()
         }
         return updatedFeeds
     }
@@ -147,16 +150,16 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
         guard let feedCallback = self.callbacksInProgress[url] else { return }
         self.callbacksInProgress.removeValue(forKey: url)
         let feed = feedCallback.feed
-        let callback = feedCallback.callback
+        let promise = feedCallback.promise
         self.workerQueue.addOperation {
             _ = self.dataServiceFactory.currentDataService.updateFeed(feed, info: singleFeed).then { _ in
                 if feed.image == nil, let imageUrl = singleFeed.imageURL, !imageUrl.absoluteString.isEmpty {
                     self.callbacksInProgress[imageUrl] = feedCallback
                     self.downloadURL(imageUrl)
                 } else {
-                    callback(feed, nil)
+                    promise.resolve(.success(feed))
                 }
-            }
+            }.wait()
         }
     }
 
@@ -164,11 +167,11 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
         guard let imageCallback = self.callbacksInProgress[url] else { return }
         self.callbacksInProgress.removeValue(forKey: url)
         let feed = imageCallback.feed
-        let callback = imageCallback.callback
+        let promise = imageCallback.promise
         feed.image = image
         self.workerQueue.addOperation {
             _ = self.dataServiceFactory.currentDataService.saveFeed(feed).then { _ in
-                callback(feed, nil)
+                promise.resolve(.success(feed))
             }
         }
     }
@@ -181,12 +184,16 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
     }
 
     func didFailToDownloadDataFromUrl(_ url: URL, error: Error?) {
-        guard error != nil, let callback = self.callbacksInProgress[url] else { return }
+        guard let _ = error, let callback = self.callbacksInProgress[url] else { return }
         self.callbacksInProgress.removeValue(forKey: url)
         let feed = callback.feed
-        let function = callback.callback
+        let promise = callback.promise
         self.workerQueue.addOperation {
-            function(feed, error as NSError?)
+            if url != feed.url {
+                promise.resolve(.success(feed))
+            } else {
+                promise.resolve(.failure(RNewsError.network(url, .unknown)))
+            }
         }
     }
 

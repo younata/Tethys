@@ -4,11 +4,13 @@ import Result
 
 class FakeUpdateService: UpdateServiceType {
     var updatedFeeds: [Feed] = []
-    var updateFeedCallbacks: [((Feed, NSError?) -> Void)] = []
+    var updateFeedPromises: [Promise<Result<Feed, RNewsError>>] = []
 
-    func updateFeed(_ feed: Feed, callback: @escaping (Feed, NSError?) -> Void) {
+    func updateFeed(_ feed: Feed) -> Future<Result<Feed, RNewsError>> {
         self.updatedFeeds.append(feed)
-        self.updateFeedCallbacks.append(callback)
+        let promise = Promise<Result<Feed, RNewsError>>()
+        self.updateFeedPromises.append(promise)
+        return promise.future
     }
 
     private(set) var updateFeedsCallCount : Int = 0

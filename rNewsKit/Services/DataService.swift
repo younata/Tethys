@@ -56,22 +56,9 @@ extension DataService {
 
         var articlesToSave: [Article] = []
 
-        var importTasks: [(Void) -> Void] = []
-
         let checkIfFinished: (Result<(Article), RNewsError>) -> Void = { result in
-            switch result {
-            case let .success(article):
+            if case let .success(article) = result {
                 articlesToSave.append(article)
-                if importTasks.isEmpty {
-                    _ = self.batchSave([feed], articles: articlesToSave).then { _ in
-                        promise.resolve(.success())
-                    }
-                } else {
-                    importTasks.popLast()?()
-                }
-            case let .failure(error):
-                promise.resolve(.failure(error))
-                return
             }
         }
 
@@ -80,12 +67,15 @@ extension DataService {
         let articlesPredicate = NSPredicate(format: "link IN %@ OR title IN %@", articleUrls, articleTitles)
         let feedArticles = Array(feed.articlesArray.filterWithPredicate(articlesPredicate))
 
+        let operationQueue = OperationQueue()
+        operationQueue.qualityOfService = .utility
+
         for item in articles {
             let filter: (rNewsKit.Article) -> Bool = { article in
                 return item.title == article.title || item.url == article.link
             }
             let article = feedArticles.objectPassingTest(filter)
-            importTasks.append {
+            operationQueue.addOperation {
                 if let article = article ?? articlesToSave.objectPassingTest(filter) {
                     _ = self.updateArticle(article, item: item, feedURL: info.url).then(callback: checkIfFinished)
                 } else {
@@ -96,12 +86,14 @@ extension DataService {
             }
         }
 
-        if let task = importTasks.popLast() {
-            task()
-        } else {
-            let result = Result<Void, RNewsError>(value: ())
-            promise.resolve(result)
+        let saveOperation = BlockOperation {
+            _ = self.batchSave([feed], articles: articlesToSave).then { _ in
+                promise.resolve(.success())
+            }
         }
+        operationQueue.operations.forEach { saveOperation.addDependency($0) }
+        operationQueue.addOperation(saveOperation)
+
         return promise.future
     }
 

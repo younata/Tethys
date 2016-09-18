@@ -67,8 +67,12 @@ final class DefaultUpdateUseCase: UpdateUseCase {
         var currentProgress = 0
 
         for feed in feeds {
-            self.updateService.updateFeed(feed) { feed, _ in
-                updatedFeeds.append(feed)
+            _ = self.updateService.updateFeed(feed).then {
+                if case let .success(updatedFeed) = $0 {
+                    updatedFeeds.append(updatedFeed)
+                } else {
+                    updatedFeeds.append(feed)
+                }
 
                 currentProgress += 1
                 self.mainQueue.addOperation {

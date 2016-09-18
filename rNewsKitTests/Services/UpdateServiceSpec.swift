@@ -175,8 +175,10 @@ class UpdateServiceSpec: QuickSpec {
         describe("updating a feed") {
             describe("updating a standard feed") {
                 var feed: rNewsKit.Feed! = nil
-                var updatedFeed: rNewsKit.Feed? = nil
-                var receivedError: NSError? = nil
+                var updatedFeed: rNewsKit.Feed?
+                var receivedError: RNewsError?
+
+                var updateFeedFuture: Future<Result<rNewsKit.Feed, RNewsError>>!
 
                 beforeEach {
                     feed = rNewsKit.Feed(title: "feed", url: URL(string: "https://example.com/feed")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
@@ -184,9 +186,12 @@ class UpdateServiceSpec: QuickSpec {
 
                     updatedFeed = nil
                     receivedError = nil
-                    subject.updateFeed(feed) {
-                        updatedFeed = $0
-                        receivedError = $1
+                    updateFeedFuture = subject.updateFeed(feed).then {
+                        if case let .success(feed) = $0 {
+                            updatedFeed = feed
+                        } else if case let .failure(error) = $0 {
+                            receivedError = error
+                        }
                     }
                 }
 
@@ -201,18 +206,16 @@ class UpdateServiceSpec: QuickSpec {
                             guard urlSession.lastDownloadTask != nil else { fail(); return }
                             let location = Bundle(for: self.classForCoder).url(forResource: "feed", withExtension: "rss")!
                             urlSessionDelegate.urlSession(urlSession, downloadTask: urlSession.lastDownloadTask!, didFinishDownloadingTo: location)
+
+                            _ = updateFeedFuture.wait()
                         }
 
-                        it("should call the callback with the updated feed") {
+                        it("resolves the promise with the updated feed") {
                             expect(updatedFeed).toNot(beNil())
                             guard let feed = updatedFeed else { return }
                             expect(feed.title) == "Iotlist"
                             expect(feed.summary) == "The list for the Internet of Things"
                             expect(feed.articlesArray).toNot(beEmpty())
-                        }
-
-                        it("should not have an error in the callback") {
-                            expect(receivedError).to(beNil())
                         }
                     }
 
@@ -223,11 +226,11 @@ class UpdateServiceSpec: QuickSpec {
                             urlSessionDelegate.urlSession(urlSession, downloadTask: urlSession.lastDownloadTask!, didFinishDownloadingTo: location)
                         }
 
-                        it("should not call the callback yet") {
-                            expect(updatedFeed).to(beNil())
+                        it("does not resolve the future yet") {
+                            expect(updateFeedFuture.value).to(beNil())
                         }
 
-                        it("should try to download the image") {
+                        it("tries to download the image") {
                             expect(urlSession.lastURL) == URL(string: "http://example.org/icon.png")
                         }
 
@@ -237,16 +240,18 @@ class UpdateServiceSpec: QuickSpec {
                                 task._response = URLResponse(url: URL(string: "http://example.org/icon.png")!, mimeType: "image/jpg", expectedContentLength: 0, textEncodingName: nil)
                                 let location = Bundle(for: self.classForCoder).url(forResource: "test", withExtension: "jpg")!
                                 urlSessionDelegate.urlSession(urlSession, downloadTask: task, didFinishDownloadingTo: location)
+
+                                _ = updateFeedFuture.wait()
                             }
 
-                            it("should call the callback with the updated feed") {
+                            it("should resolve the promise with the updated feed") {
                                 expect(updatedFeed?.title) == "objc.io"
                                 expect(updatedFeed?.summary) == "A periodical about best practices and advanced techniques for iOS and OS X development."
                                 expect(updatedFeed?.image).toNot(beNil())
                                 expect(updatedFeed?.articlesArray).toNot(beEmpty())
                             }
 
-                            it("should not have an error in the callback") {
+                            it("does not have an error in the resolved value") {
                                 expect(receivedError).to(beNil())
                             }
                         }
@@ -257,17 +262,19 @@ class UpdateServiceSpec: QuickSpec {
                                 guard let task = urlSession.lastDownloadTask else { fail(); return }
                                 task._response = URLResponse(url: URL(string: "http://example.org/icon.png")!, mimeType: "image/jpg", expectedContentLength: 0, textEncodingName: nil)
                                 urlSessionDelegate.urlSession(urlSession, task: task, didCompleteWithError: error)
+
+                                _ = updateFeedFuture.wait()
                             }
 
-                            it("should call the callback with an error and an updated feed") {
+                            it("should resolve the promise with the updated feed") {
                                 expect(updatedFeed?.title) == "objc.io"
                                 expect(updatedFeed?.summary) == "A periodical about best practices and advanced techniques for iOS and OS X development."
                                 expect(updatedFeed?.image).to(beNil())
                                 expect(updatedFeed?.articlesArray).toNot(beEmpty())
                             }
 
-                            it("should have an error in the callback") {
-                                expect(receivedError) == error
+                            it("should not have an error in the callback") {
+                                expect(receivedError).to(beNil())
                             }
                         }
                     }
@@ -283,9 +290,11 @@ class UpdateServiceSpec: QuickSpec {
 
                             let location = bundle.url(forResource: "feed2", withExtension: "rss")!
                             urlSessionDelegate.urlSession(urlSession, downloadTask: urlSession.lastDownloadTask!, didFinishDownloadingTo: location)
+
+                            _ = updateFeedFuture.wait()
                         }
 
-                        it("should call the callback yet") {
+                        it("resolves the promise") {
                             expect(updatedFeed).toNot(beNil())
                             guard updatedFeed != nil else { return }
                             expect(updatedFeed?.title) == "objc.io"
@@ -294,7 +303,7 @@ class UpdateServiceSpec: QuickSpec {
                             expect(updatedFeed?.articlesArray).toNot(beEmpty())
                         }
 
-                        it("should not try to download the image") {
+                        it("does not try to download the image") {
                             expect(urlSession.lastURL) == feed.url
                         }
                     }
@@ -305,14 +314,16 @@ class UpdateServiceSpec: QuickSpec {
                     beforeEach {
                         guard let task = urlSession.lastDownloadTask else { fail(); return }
                         urlSessionDelegate.urlSession(urlSession, task: task, didCompleteWithError: error)
+
+                        _ = updateFeedFuture.wait()
                     }
 
-                    it("should call the callback with the original feed") {
-                        expect(updatedFeed) === feed
+                    it("resolves the promise with the original feed") {
+                        expect(updatedFeed).to(beNil())
                     }
 
                     it("should have an error in the callback") {
-                        expect(receivedError) == error
+                        expect(receivedError) == RNewsError.network(URL(string: "https://example.com/feed")!, .unknown)
                     }
                 }
             }

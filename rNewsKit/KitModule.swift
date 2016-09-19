@@ -92,7 +92,7 @@ public final class KitModule: NSObject, Ra.InjectorModule {
         injector.bind(kind: DefaultDatabaseUseCase.self, toInstance: dataRepository)
         injector.bind(kind: AccountRepository.self, toInstance: accountRepository)
 
-        let opmlService = OPMLService(injector: injector)
+        let opmlService = DefaultOPMLService(injector: injector)
         injector.bind(kind: OPMLService.self, toInstance: opmlService)
 
         injector.bind(kind: MigrationUseCase.self, toInstance: DefaultMigrationUseCase(injector: injector))

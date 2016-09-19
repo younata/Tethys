@@ -1,21 +1,25 @@
 import Foundation
 import Ra
 import Lepton
+import CBGPromise
 import Result
 
-open class OPMLService: NSObject, Injectable {
-    private let dataRepository: DefaultDatabaseUseCase?
-    private let mainQueue: OperationQueue?
-    private let importQueue: OperationQueue?
+public protocol OPMLService {
+    func importOPML(_ opml: URL, completion: @escaping ([Feed]) -> Void)
+    func writeOPML() -> Future<Result<String, RNewsError>>
+}
+
+public final class DefaultOPMLService: NSObject, OPMLService, Injectable {
+    private let dataRepository: DefaultDatabaseUseCase
+    private let mainQueue: OperationQueue
+    private let importQueue: OperationQueue
 
     required public init(injector: Injector) {
-        self.dataRepository = injector.create(kind: DefaultDatabaseUseCase.self)
-        self.mainQueue = injector.create(string: kMainQueue) as? OperationQueue
-        self.importQueue = injector.create(string: kBackgroundQueue) as? OperationQueue
+        self.dataRepository = injector.create(kind: DefaultDatabaseUseCase.self)!
+        self.mainQueue = injector.create(string: kMainQueue) as! OperationQueue
+        self.importQueue = injector.create(string: kBackgroundQueue) as! OperationQueue
 
         super.init()
-
-        self.dataRepository?.addSubscriber(self)
     }
 
     private func feedAlreadyExists(_ existingFeeds: [Feed], item: Lepton.Item) -> Bool {
@@ -32,11 +36,7 @@ open class OPMLService: NSObject, Injectable {
         }).isEmpty == false
     }
 
-    open func importOPML(_ opml: URL, completion: @escaping ([Feed]) -> Void) {
-        guard let dataRepository = self.dataRepository else {
-            completion([])
-            return
-        }
+    public func importOPML(_ opml: URL, completion: @escaping ([Feed]) -> Void) {
         _ = dataRepository.feeds().then {
             guard case let Result.success(existingFeeds) = $0 else { return }
             do {
@@ -49,8 +49,8 @@ open class OPMLService: NSObject, Injectable {
 
                     let isComplete = {
                         if feeds.count == feedCount {
-                            dataRepository.updateFeeds { _ in
-                                self.mainQueue?.addOperation {
+                            self.dataRepository.updateFeeds { _ in
+                                self.mainQueue.addOperation {
                                     completion(feeds)
                                 }
                             }
@@ -63,7 +63,7 @@ open class OPMLService: NSObject, Injectable {
                         }
                         if let feedURLString = item.xmlURL, let feedURL = URL(string: feedURLString) {
                             feedCount += 1
-                            _ = dataRepository.newFeed { newFeed in
+                            _ = self.dataRepository.newFeed { newFeed in
                                 newFeed.url = feedURL
                                 for tag in item.tags {
                                     newFeed.addTag(tag)
@@ -75,12 +75,12 @@ open class OPMLService: NSObject, Injectable {
                     }
                 }
                 _ = parser.failure {error in
-                    self.mainQueue?.addOperation {
+                    self.mainQueue.addOperation {
                         completion([])
                     }
                 }
 
-                self.importQueue?.addOperation(parser)
+                self.importQueue.addOperation(parser)
             } catch _ {
                 completion([])
             }
@@ -120,26 +120,11 @@ open class OPMLService: NSObject, Injectable {
         return ret
     }
 
-    open func writeOPML() {
-        let opmlLocation = documentsDirectory() + "/rnews.opml"
-        _ = self.dataRepository?.feeds().then {
-            guard case let Result.success(feeds) = $0 else { return }
-            do {
-                try self.generateOPMLContents(feeds).write(toFile: opmlLocation, atomically: true,
-                    encoding: String.Encoding.utf8)
-            } catch _ {}
+    public func writeOPML() -> Future<Result<String, RNewsError>> {
+        return self.dataRepository.feeds().map {
+            return $0.map { feeds in
+                return self.generateOPMLContents(feeds)
+            }
         }
-    }
-}
-
-extension OPMLService: DataSubscriber {
-    open func markedArticles(_ articles: [Article], asRead read: Bool) {}
-    open func deletedArticle(_ article: Article) {}
-    open func willUpdateFeeds() {}
-    open func didUpdateFeedsProgress(_ finished: Int, total: Int) {}
-    open func deletedFeed(_ feed: Feed, feedsLeft: Int) {}
-
-    open func didUpdateFeeds(_ feeds: [Feed]) {
-        self.writeOPML()
     }
 }

@@ -1,25 +1,23 @@
 import Foundation
 @testable import rNewsKit
 import Ra
+import CBGPromise
+import Result
 
 class FakeOPMLService: OPMLService {
     var importOPMLURL : URL? = nil
     var importOPMLCompletion : ([Feed]) -> Void = {_ in }
-    override func importOPML(_ opml: URL, completion: @escaping ([Feed]) -> Void) {
+    func importOPML(_ opml: URL, completion: @escaping ([Feed]) -> Void) {
         importOPMLURL = opml
         importOPMLCompletion = completion
     }
 
     var didReceiveWriteOPML = false
-    override func writeOPML() {
+    var writeOMPLPromises: [Promise<Result<String, RNewsError>>] = []
+    func writeOPML() -> Future<Result<String, RNewsError>> {
         didReceiveWriteOPML = true
-    }
-
-    convenience init() {
-        self.init(injector: Injector())
-    }
-
-    required init(injector: Injector) {
-        super.init(injector: injector)
+        let promise = Promise<Result<String, RNewsError>>()
+        writeOMPLPromises.append(promise)
+        return promise.future
     }
 }

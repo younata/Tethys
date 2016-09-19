@@ -6,7 +6,7 @@ github "younata/BreakOutToRefresh" "swift-3.0"
 github "ashleymills/Reachability.swift" "feature/ios10"
 github "younata/WorkFlow" "swift-3.0"
 github "tid-kijyun/Kanna" "swift3.0"
-github "antitypical/Result" "3.0.0-alpha.4"
+github "antitypical/Result"
 github "younata/CBGPromise" "swift-3.0"
 github "younata/Sinope" "master"
 

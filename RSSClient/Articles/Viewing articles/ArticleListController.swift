@@ -3,7 +3,6 @@ import rNewsKit
 import Ra
 
 public final class ArticleListController: UITableViewController, DataSubscriber, Injectable {
-
     internal var articles = DataStoreBackedArray<Article>()
     public var feed: Feed? {
         didSet {

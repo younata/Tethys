@@ -22,6 +22,7 @@ public final class SettingsViewController: UIViewController, Injectable {
         case quickActions
         case accounts
         case advanced
+        case other
         case credits
 
         fileprivate init?(rawValue: Int, traits: UITraitCollection) {
@@ -44,6 +45,8 @@ public final class SettingsViewController: UIViewController, Injectable {
                 case 3:
                     self = .advanced
                 case 4:
+                    self = .other
+                case 5:
                     self = .credits
                 default:
                     return nil
@@ -53,9 +56,9 @@ public final class SettingsViewController: UIViewController, Injectable {
 
         static func numberOfSettings(_ traits: UITraitCollection) -> Int {
             if traits.forceTouchCapability == .available {
-                return 5
+                return 6
             }
-            return 4
+            return 5
         }
 
         fileprivate var rawValue: Int {
@@ -64,7 +67,8 @@ public final class SettingsViewController: UIViewController, Injectable {
             case .quickActions: return 1
             case .accounts: return 2
             case .advanced: return 3
-            case .credits: return 4
+            case .other: return 4
+            case .credits: return 5
             }
         }
 
@@ -78,6 +82,8 @@ public final class SettingsViewController: UIViewController, Injectable {
                 return NSLocalizedString("SettinsgViewController_Table_Header_Accounts", comment: "")
             case .advanced:
                 return NSLocalizedString("SettingsViewController_Table_Header_Advanced", comment: "")
+            case .other:
+                return NSLocalizedString("SettingsViewController_Table_Header_Other", comment: "")
             case .credits:
                 return NSLocalizedString("SettingsViewController_Table_Header_Credits", comment: "")
             }
@@ -104,6 +110,7 @@ public final class SettingsViewController: UIViewController, Injectable {
     fileprivate let quickActionRepository: QuickActionRepository
     fileprivate let databaseUseCase: DatabaseUseCase
     fileprivate let accountRepository: AccountRepository
+    fileprivate let opmlShareItem: (Void) -> OPMLShareItem
     fileprivate let loginViewController: (Void) -> LoginViewController
 
     fileprivate var oldTheme: ThemeRepository.Theme = .default
@@ -118,12 +125,14 @@ public final class SettingsViewController: UIViewController, Injectable {
                 quickActionRepository: QuickActionRepository,
                 databaseUseCase: DatabaseUseCase,
                 accountRepository: AccountRepository,
+                opmlShareItem: @escaping (Void) -> OPMLShareItem,
                 loginViewController: @escaping (Void) -> LoginViewController) {
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.quickActionRepository = quickActionRepository
         self.databaseUseCase = databaseUseCase
         self.accountRepository = accountRepository
+        self.opmlShareItem = opmlShareItem
         self.loginViewController = loginViewController
 
         super.init(nibName: nil, bundle: nil)
@@ -137,6 +146,7 @@ public final class SettingsViewController: UIViewController, Injectable {
             quickActionRepository: injector.create(kind: QuickActionRepository.self)!,
             databaseUseCase: injector.create(kind: DatabaseUseCase.self)!,
             accountRepository: injector.create(kind: AccountRepository.self)!,
+            opmlShareItem: { injector.create(kind: OPMLShareItem.self)! },
             loginViewController: { injector.create(kind: LoginViewController.self)! }
         )
     }
@@ -305,6 +315,8 @@ extension SettingsViewController: UITableViewDataSource {
             return 1
         case .advanced:
             return AdvancedSection.numberOfOptions
+        case .other:
+            return 1
         case .credits:
             return 1
         }
@@ -354,6 +366,11 @@ extension SettingsViewController: UITableViewDataSource {
                     self.navigationItem.rightBarButtonItem?.isEnabled = true
                 }
             }
+            return cell
+        case .other:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
+            cell.themeRepository = self.themeRepository
+            cell.textLabel?.text = NSLocalizedString("SettingsViewController_Other_ExportOPML", comment: "")
             return cell
         case .credits:
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
@@ -449,6 +466,10 @@ extension SettingsViewController: UITableViewDelegate {
             self.navigationController?.pushViewController(loginViewController, animated: true)
         case .advanced:
             tableView.deselectRow(at: indexPath, animated: false)
+        case .other:
+            tableView.deselectRow(at: indexPath, animated: false)
+            let shareSheet = UIActivityViewController(activityItems: [self.opmlShareItem()], applicationActivities: nil)
+            self.present(shareSheet, animated: true, completion: nil)
         case .credits:
             tableView.deselectRow(at: indexPath, animated: false)
             guard let url = URL(string: "https://twitter.com/younata") else { return }

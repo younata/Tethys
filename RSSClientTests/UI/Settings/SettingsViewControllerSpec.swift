@@ -14,6 +14,7 @@ class SettingsViewControllerSpec: QuickSpec {
         var settingsRepository: SettingsRepository! = nil
         var fakeQuickActionRepository: FakeQuickActionRepository! = nil
         var accountRepository: FakeAccountRepository! = nil
+        var opmlService: FakeOPMLService! = nil
 
         beforeEach {
             let injector = Injector()
@@ -36,6 +37,9 @@ class SettingsViewControllerSpec: QuickSpec {
             let mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
             injector.bind(string: kMainQueue, toInstance: mainQueue)
+
+            opmlService = FakeOPMLService()
+            injector.bind(kind: OPMLService.self, toInstance: opmlService)
 
             subject = injector.create(kind: SettingsViewController.self)!
 
@@ -227,13 +231,13 @@ class SettingsViewControllerSpec: QuickSpec {
             it("should have 5 sections if force touch is available") {
                 subject.traitCollection.forceTouchCapability = UIForceTouchCapability.available
                 subject.tableView.reloadData()
-                expect(subject.tableView.numberOfSections) == 5
+                expect(subject.tableView.numberOfSections) == 6
             }
 
             it("should have 4 sections if force touch is not available") {
                 subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
                 subject.tableView.reloadData()
-                expect(subject.tableView.numberOfSections) == 4
+                expect(subject.tableView.numberOfSections) == 5
             }
 
             describe("the theme section") {
@@ -773,8 +777,56 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
             }
 
-            describe("the credits section") {
+            describe("the other section") {
                 let sectionNumber = 3
+
+                beforeEach {
+                    subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
+                }
+
+                it("should be titled 'Other'") {
+                    let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
+                    expect(title) == "Other"
+                }
+
+                it("has one cell") {
+                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == 1
+                }
+
+                describe("the first cell") {
+                    var cell: TableViewCell! = nil
+                    let indexPath = IndexPath(row: 0, section: sectionNumber)
+
+                    beforeEach {
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
+                    }
+
+                    it("is configured with the theme repository") {
+                        expect(cell.themeRepository) == themeRepository
+                    }
+
+                    it("is titled 'Export OPML'") {
+                        expect(cell.textLabel?.text) == "Export OPML"
+                    }
+
+                    describe("tapping it") {
+                        beforeEach {
+                            delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
+                        }
+
+                        it("brings up a share sheet with the opml text as the content") {
+                            expect(navigationController.visibleViewController).to(beAnInstanceOf(UIActivityViewController.self))
+                            if let shareSheet = navigationController.visibleViewController as? UIActivityViewController {
+                                expect(shareSheet.activityItems.count) == 1
+                                expect(shareSheet.activityItems.first is OPMLShareItem) == true
+                            }
+                        }
+                    }
+                }
+            }
+
+            describe("the credits section") {
+                let sectionNumber = 4
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
@@ -806,15 +858,15 @@ class SettingsViewControllerSpec: QuickSpec {
                         detail = sharedContext()["detail"] as! String
                     }
 
-                    it("should be configured with the theme repository") {
+                    it("is configured with the theme repository") {
                         expect(cell.themeRepository) == themeRepository
                     }
 
-                    it("should have the proper text") {
+                    it("has the developer's or library's name as the text") {
                         expect(cell.textLabel?.text) == title
                     }
 
-                    it("should show the proper detail text") {
+                    it("has either 'developer' or 'library' title as the detail") {
                         expect(cell.detailTextLabel?.text) == detail
                     }
 
@@ -823,7 +875,7 @@ class SettingsViewControllerSpec: QuickSpec {
                             delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
                         }
 
-                        it("should show an SFSafariViewController pointing at that url") {
+                        it("should show an SFSafariViewController pointing at their url") {
                             expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
                         }
                     }

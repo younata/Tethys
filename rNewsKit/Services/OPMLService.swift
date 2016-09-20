@@ -9,12 +9,12 @@ public protocol OPMLService {
     func writeOPML() -> Future<Result<String, RNewsError>>
 }
 
-public final class DefaultOPMLService: NSObject, OPMLService, Injectable {
+final class DefaultOPMLService: NSObject, OPMLService, Injectable {
     private let dataRepository: DefaultDatabaseUseCase
     private let mainQueue: OperationQueue
     private let importQueue: OperationQueue
 
-    required public init(injector: Injector) {
+    required init(injector: Injector) {
         self.dataRepository = injector.create(kind: DefaultDatabaseUseCase.self)!
         self.mainQueue = injector.create(string: kMainQueue) as! OperationQueue
         self.importQueue = injector.create(string: kBackgroundQueue) as! OperationQueue
@@ -36,7 +36,7 @@ public final class DefaultOPMLService: NSObject, OPMLService, Injectable {
         }).isEmpty == false
     }
 
-    public func importOPML(_ opml: URL, completion: @escaping ([Feed]) -> Void) {
+    func importOPML(_ opml: URL, completion: @escaping ([Feed]) -> Void) {
         _ = dataRepository.feeds().then {
             guard case let Result.success(existingFeeds) = $0 else { return }
             do {
@@ -120,7 +120,7 @@ public final class DefaultOPMLService: NSObject, OPMLService, Injectable {
         return ret
     }
 
-    public func writeOPML() -> Future<Result<String, RNewsError>> {
+    func writeOPML() -> Future<Result<String, RNewsError>> {
         return self.dataRepository.feeds().map {
             return $0.map { feeds in
                 return self.generateOPMLContents(feeds)

@@ -13,11 +13,11 @@ class FakeOPMLService: OPMLService {
     }
 
     var didReceiveWriteOPML = false
-    var writeOMPLPromises: [Promise<Result<String, RNewsError>>] = []
+    var writeOPMLPromises: [Promise<Result<String, RNewsError>>] = []
     func writeOPML() -> Future<Result<String, RNewsError>> {
         didReceiveWriteOPML = true
         let promise = Promise<Result<String, RNewsError>>()
-        writeOMPLPromises.append(promise)
+        writeOPMLPromises.append(promise)
         return promise.future
     }
 }

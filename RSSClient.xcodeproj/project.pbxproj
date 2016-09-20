@@ -264,6 +264,8 @@
 		8992D43C1C37C9B0004A5A35 /* rNewsAcceptanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8992D43B1C37C9B0004A5A35 /* rNewsAcceptanceTests.swift */; };
 		8994F0EB1C8F53E600920E6D /* AuthorActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8994F0EA1C8F53E600920E6D /* AuthorActivity.swift */; };
 		8994F0F41C8F899600920E6D /* UIViewController+rNewsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8994F0F31C8F899600920E6D /* UIViewController+rNewsTests.m */; };
+		89960C731D90F2E6004EE33F /* OPMLShareItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89960C721D90F2E6004EE33F /* OPMLShareItem.swift */; };
+		89960C751D90F7B0004EE33F /* OPMLShareItemSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89960C741D90F7B0004EE33F /* OPMLShareItemSpec.swift */; };
 		899788811C508BB400B408C4 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899788801C508BB400B408C4 /* SnapshotHelper.swift */; };
 		8997C7F51B248D5A00972930 /* FakeWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C7F41B248D5A00972930 /* FakeWebView.swift */; };
 		8997C7F71B25074900972930 /* ValidatorViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C7F61B25074900972930 /* ValidatorViewSpec.swift */; };
@@ -703,6 +705,8 @@
 		8994F0EA1C8F53E600920E6D /* AuthorActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorActivity.swift; sourceTree = "<group>"; };
 		8994F0F21C8F899600920E6D /* UIViewController+rNewsTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+rNewsTests.h"; sourceTree = "<group>"; };
 		8994F0F31C8F899600920E6D /* UIViewController+rNewsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+rNewsTests.m"; sourceTree = "<group>"; };
+		89960C721D90F2E6004EE33F /* OPMLShareItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLShareItem.swift; sourceTree = "<group>"; };
+		89960C741D90F7B0004EE33F /* OPMLShareItemSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLShareItemSpec.swift; sourceTree = "<group>"; };
 		899788801C508BB400B408C4 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
 		8997C7F41B248D5A00972930 /* FakeWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeWebView.swift; sourceTree = "<group>"; };
 		8997C7F61B25074900972930 /* ValidatorViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidatorViewSpec.swift; sourceTree = "<group>"; };
@@ -1115,6 +1119,7 @@
 			isa = PBXGroup;
 			children = (
 				89E2A33E1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift */,
+				89960C741D90F7B0004EE33F /* OPMLShareItemSpec.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1138,6 +1143,7 @@
 			children = (
 				89735ABF1C06DAA70032E09C /* FeedsListController.swift */,
 				89E2A33C1B6A856900A40D4E /* SettingsViewController.swift */,
+				89960C721D90F2E6004EE33F /* OPMLShareItem.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -2368,6 +2374,7 @@
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
 				89F98BA41BA079EA005C3CA8 /* TableViewCell.swift in Sources */,
 				890B78C81C77FD200066E201 /* ArticleUseCase.swift in Sources */,
+				89960C731D90F2E6004EE33F /* OPMLShareItem.swift in Sources */,
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
 				89DA7D2C1A66111E0050685B /* TextFieldCell.swift in Sources */,
 				89C204BD1A73F72800C792D2 /* SplitViewController.swift in Sources */,
@@ -2417,6 +2424,7 @@
 				89AFFA001D4B97DC002255E8 /* FakeAccountRepository.swift in Sources */,
 				8903EAFD1C6F8A46001C0189 /* FakeNotificationHandler.swift in Sources */,
 				8997C8511B255A1900972930 /* TagPickerViewSpec.swift in Sources */,
+				89960C751D90F7B0004EE33F /* OPMLShareItemSpec.swift in Sources */,
 				899823B11B30BA7E00818755 /* NSUserActivity+rNewsTests.m in Sources */,
 				8903F5AB1D3EF9F800546099 /* LoginViewControllerSpec.swift in Sources */,
 				8953B1581B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift in Sources */,

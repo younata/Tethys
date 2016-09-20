@@ -5,6 +5,7 @@
 "SettingsViewController_Table_Header_QuickActions" = "Quick Actions";
 "SettinsgViewController_Table_Header_Accounts" = "Accounts";
 "SettingsViewController_Table_Header_Advanced" = "Advanced";
+"SettingsViewController_Table_Header_Other" = "Other";
 "SettingsViewController_Table_Header_Credits" = "Credits";
 "SettingsViewController_Title" = "Settings";
 "SettingsViewController_QuickActions_AddFirst" = "Add a Quick Action";
@@ -12,6 +13,7 @@
 "SettingsViewController_Accounts_Pasiphae" = "rNews Backend";
 "SettingsViewController_Accounts_Log_Out" = "Log Out";
 "SettingsViewController_Advanced_ShowReadingTimes" = "Show Estimated Reading Times";
+"SettingsViewController_Other_ExportOPML" = "Export OPML";
 "SettingsViewController_Credits_MainDeveloper_Name" = "Rachel Brindle"; // My name
 "SettingsViewController_Credits_MainDeveloper_Detail" = "Developer";
 "SettingsViewController_Commands_Theme" = "Change Theme to '%@'";
@@ -86,6 +88,8 @@
 "TagEditorViewController_Explanation" = "Prefixing a tag with '~' will set the title to that, minus the leading ~. Prefixing a tag with '`' will set the summary to that, minus the leading `. Tags cannot contain commas (,)";
 
 "TagPickerView_Placeholder" = "Tag";
+
+"OPMLShareItem_Name" = "OPML Export";
 
 "ArticleListController_Cell_EditAction_MarkRead" = "Mark\nRead";
 "ArticleListController_Cell_EditAction_MarkUnread" = "Mark\nUnread";

@@ -30,7 +30,7 @@
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>com.rachelbrindle.rssclient.opml</string>
+				<string>org.opml.opml</string>
 			</array>
 		</dict>
 	</array>
@@ -81,7 +81,7 @@
 		<string>fetch</string>
 	</array>
 	<key>UIFileSharingEnabled</key>
-	<true/>
+	<false/>
 	<key>UILaunchStoryboardName</key>
 	<string>Launch Screen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -149,7 +149,7 @@
 			<key>UTTypeDescription</key>
 			<string>OPML File</string>
 			<key>UTTypeIdentifier</key>
-			<string>com.rachelbrindle.rssclient.opml</string>
+			<string>org.opml.opml</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>

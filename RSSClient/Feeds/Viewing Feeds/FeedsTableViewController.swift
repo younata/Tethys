@@ -1,6 +1,5 @@
 import UIKit
 import BreakOutToRefresh
-import MAKDropDownMenu
 import Ra
 import CBGPromise
 import Result
@@ -25,16 +24,6 @@ public final class FeedsTableViewController: UIViewController, Injectable {
         // whether new feed loaded into it has unread articles or not.
 
         return tableView
-    }()
-
-    public lazy var dropDownMenu: MAKDropDownMenu = {
-        let dropDownMenu = MAKDropDownMenu(forAutoLayout: ())
-        dropDownMenu.delegate = self
-        dropDownMenu.separatorHeight = 1.0 / UIScreen.main.scale
-        dropDownMenu.buttonsInsets = UIEdgeInsets(top: dropDownMenu.separatorHeight, left: 0, bottom: 0, right: 0)
-        dropDownMenu.tintColor = UIColor.darkGreen()
-        dropDownMenu.backgroundColor = UIColor(white: 0.75, alpha: 0.5)
-        return dropDownMenu
     }()
 
     public lazy var searchBar: UISearchBar = {
@@ -86,7 +75,6 @@ public final class FeedsTableViewController: UIViewController, Injectable {
     fileprivate let settingsRepository: SettingsRepository
 
     fileprivate let findFeedViewController: (Void) -> FindFeedViewController
-    fileprivate let localImportViewController: (Void) -> LocalImportViewController
     fileprivate let feedViewController: (Void) -> FeedViewController
     fileprivate let settingsViewController: (Void) -> SettingsViewController
     fileprivate let articleListController: (Void) -> ArticleListController
@@ -98,7 +86,6 @@ public final class FeedsTableViewController: UIViewController, Injectable {
                 themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
                 findFeedViewController: @escaping (Void) -> FindFeedViewController,
-                localImportViewController: @escaping (Void) -> LocalImportViewController,
                 feedViewController: @escaping (Void) -> FeedViewController,
                 settingsViewController: @escaping (Void) -> SettingsViewController,
                 articleListController: @escaping (Void) -> ArticleListController
@@ -107,7 +94,6 @@ public final class FeedsTableViewController: UIViewController, Injectable {
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.findFeedViewController = findFeedViewController
-        self.localImportViewController = localImportViewController
         self.feedViewController = feedViewController
         self.settingsViewController = settingsViewController
         self.articleListController = articleListController
@@ -121,7 +107,6 @@ public final class FeedsTableViewController: UIViewController, Injectable {
             themeRepository: injector.create(kind: ThemeRepository.self)!,
             settingsRepository: injector.create(kind: SettingsRepository.self)!,
             findFeedViewController: {injector.create(kind: FindFeedViewController.self)!},
-            localImportViewController: {injector.create(kind: LocalImportViewController.self)!},
             feedViewController: {injector.create(kind: FeedViewController.self)!},
             settingsViewController: {injector.create(kind: SettingsViewController.self)!},
             articleListController: {injector.create(kind: ArticleListController.self)!}
@@ -148,10 +133,6 @@ public final class FeedsTableViewController: UIViewController, Injectable {
             self.updateBar.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .top)
             self.updateBar.autoSetDimension(.height, toSize: 3)
         }
-
-        self.view.addSubview(self.dropDownMenu)
-        self.dropDownMenu.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .top)
-        self.menuTopOffset = self.dropDownMenu.autoPinEdge(toSuperviewEdge: .top)
 
         self.themeRepository.addSubscriber(self.notificationView)
         self.navigationController?.navigationBar.addSubview(self.notificationView)
@@ -220,15 +201,12 @@ public final class FeedsTableViewController: UIViewController, Injectable {
             UIKeyCommand(input: "f", modifierFlags: .command, action: #selector(FeedsTableViewController.search)),
             UIKeyCommand(input: "i", modifierFlags: .command,
                 action: #selector(FeedsTableViewController.importFromWeb)),
-            UIKeyCommand(input: "i", modifierFlags: [.command, .shift],
-                action: #selector(FeedsTableViewController.importFromLocal)),
             UIKeyCommand(input: ",", modifierFlags: .command,
                 action: #selector(FeedsTableViewController.presentSettings)),
         ]
         let discoverabilityTitles = [
             NSLocalizedString("FeedsTableViewController_Command_Search", comment: ""),
             NSLocalizedString("FeedsTableViewController_Command_ImportWeb", comment: ""),
-            NSLocalizedString("FeedsTableViewController_Command_ImportLocal", comment: ""),
             NSLocalizedString("FeedsTableViewController_Command_Settings", comment: ""),
         ]
         for (idx, cmd) in commands.enumerated() {
@@ -240,8 +218,6 @@ public final class FeedsTableViewController: UIViewController, Injectable {
     // MARK - Private/Internal
 
     internal func importFromWeb() { self.presentController(self.findFeedViewController()) }
-
-    @objc fileprivate func importFromLocal() { self.presentController(self.localImportViewController()) }
 
     @objc fileprivate func search() { self.searchBar.becomeFirstResponder() }
 
@@ -314,19 +290,7 @@ public final class FeedsTableViewController: UIViewController, Injectable {
     @objc fileprivate func didTapAddFeed() {
         guard self.navigationController?.visibleViewController == self else { return }
 
-        if self.dropDownMenu.isOpen {
-            self.dropDownMenu.close(animated: true)
-        } else {
-            let buttonTitles = [
-                NSLocalizedString("FeedsTableViewController_Command_ImportWeb", comment: ""),
-                NSLocalizedString("FeedsTableViewController_Command_ImportLocal", comment: ""),
-            ]
-            self.dropDownMenu.titles = buttonTitles
-            let navBarHeight = self.navigationController!.navigationBar.frame.height
-            let statusBarHeight = UIApplication.shared.statusBarFrame.height
-            self.menuTopOffset.constant = navBarHeight + statusBarHeight
-            self.dropDownMenu.open(animated: true)
-        }
+        self.importFromWeb()
     }
 
     fileprivate func feedAtIndexPath(_ indexPath: IndexPath) -> Feed {
@@ -360,9 +324,6 @@ extension FeedsTableViewController: ThemeRepositorySubscriber {
 
         self.searchBar.barStyle = self.themeRepository.barStyle
         self.searchBar.backgroundColor = self.themeRepository.backgroundColor
-
-        self.dropDownMenu.buttonBackgroundColor = self.themeRepository.tintColor
-        self.dropDownMenu.backgroundColor = self.themeRepository.backgroundColor.withAlphaComponent(0.5)
 
         self.refreshView.scenebackgroundColor = self.themeRepository.backgroundColor
         self.refreshView.textColor = self.themeRepository.textColor
@@ -411,21 +372,6 @@ extension FeedsTableViewController: DataSubscriber {
         }
         self.refreshView.endRefreshing()
         self.reload(self.searchBar.text, feeds: feeds)
-    }
-}
-
-extension FeedsTableViewController: MAKDropDownMenuDelegate {
-    public func dropDownMenu(_ menu: MAKDropDownMenu!, itemDidSelect itemIndex: UInt) {
-        if itemIndex == 0 {
-            self.importFromWeb()
-        } else if itemIndex == 1 {
-            self.importFromLocal()
-        }
-        menu.close(animated: true)
-    }
-
-    public func dropDownMenuDidTapOutside(ofItem menu: MAKDropDownMenu!) {
-        menu.close(animated: true)
     }
 }
 

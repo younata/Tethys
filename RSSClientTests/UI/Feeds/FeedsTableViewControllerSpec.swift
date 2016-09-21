@@ -86,10 +86,6 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     expect(subject.searchBar.backgroundColor).to(equal(themeRepository.backgroundColor))
                 }
 
-                it("updates the drop down menu") {
-                    expect(subject.dropDownMenu.buttonBackgroundColor).to(equal(themeRepository.tintColor))
-                }
-
                 it("updates the refreshView colors") {
                     expect(subject.refreshView.scenebackgroundColor).to(equal(themeRepository.backgroundColor))
                     expect(subject.refreshView.textColor).to(equal(themeRepository.textColor))
@@ -199,13 +195,11 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     let expectedCommands = [
                         UIKeyCommand(input: "f", modifierFlags: .command, action: Selector("")),
                         UIKeyCommand(input: "i", modifierFlags: .command, action: Selector("")),
-                        UIKeyCommand(input: "i", modifierFlags: [.command, .shift], action: Selector("")),
                         UIKeyCommand(input: ",", modifierFlags: .command, action: Selector("")),
                         ]
                     let expectedDiscoverabilityTitles = [
                         "Filter by tags",
                         "Add from Web",
-                        "Add from Local",
                         "Open settings",
                         ]
 
@@ -235,81 +229,18 @@ class FeedsTableViewControllerSpec: QuickSpec {
             }
 
             describe("tapping the add feed button") {
-                var addButton: UIBarButtonItem! = nil
-                var buttons: [UIButton] = []
                 beforeEach {
-                    addButton = subject.navigationItem.rightBarButtonItems?.first
-                    addButton.tap()
-                    buttons = subject.dropDownMenu.value(forKey: "_buttons") as? [UIButton] ?? []
-                    expect(buttons).toNot(beEmpty())
+                    subject.navigationItem.rightBarButtonItems?.first?.tap()
                 }
 
                 afterEach {
                     navigationController.popToRootViewController(animated: false)
-                    subject.dropDownMenu.close(animated: false)
                 }
 
-                it("should bring up the dropDownMenu") {
-                    expect(subject.dropDownMenu.isOpen) == true
-                }
-
-                it("should have 2 options") {
-                    subject.dropDownMenu.close(animated: false)
-
-                    addButton = subject.navigationItem.rightBarButtonItems?.first
-                    addButton.tap()
-                    buttons = subject.dropDownMenu.value(forKey: "_buttons") as? [UIButton] ?? []
-                    expect(buttons).toNot(beEmpty())
-
-                    let expectedTitles = ["Add from Web", "Add from Local"]
-                    let titles: [String] = buttons.map { $0.title(for: .normal) ?? "" }
-                    expect(titles).to(equal(expectedTitles))
-                }
-
-                context("tapping on the add feed button again") {
-                    beforeEach {
-                        addButton.tap()
-                    }
-
-                    it("should close the dropDownMenu") {
-                        expect(subject.dropDownMenu.isOpen) == false
-                    }
-                }
-
-                context("tapping on add from web") {
-                    beforeEach {
-                        let button = buttons[0]
-                        button.sendActions(for: UIControlEvents.touchUpInside)
-                        (subject.presentedViewController as? UINavigationController)?.topViewController?.view
-                    }
-
-                    it("should close the dropDownMenu") {
-                        expect(subject.dropDownMenu.isOpen) == false
-                    }
-
-                    it("should present a FindFeedViewController") {
-                        expect(subject.presentedViewController).to(beAnInstanceOf(UINavigationController.self))
-                        if let nc = subject.presentedViewController as? UINavigationController {
-                            expect(nc.topViewController).to(beAnInstanceOf(FindFeedViewController.self))
-                        }
-                    }
-                }
-
-                context("tapping on add from local") {
-                    beforeEach {
-                        let button = buttons[1]
-                        button.sendActions(for: UIControlEvents.touchUpInside)
-                    }
-
-                    it("should close the dropDownMenu") {
-                        expect(subject.dropDownMenu.isOpen) == false
-                    }
-
-                    it("should present a LocalImportViewController") {
-                        expect(subject.presentedViewController).to(beAnInstanceOf(UINavigationController.self))
-                        if let nc = subject.presentedViewController as? UINavigationController {
-                            expect(nc.topViewController).to(beAnInstanceOf(LocalImportViewController.self))
-                        }
+                it("should present a FindFeedViewController") {
+                    expect(subject.presentedViewController).to(beAnInstanceOf(UINavigationController.self))
+                    if let nc = subject.presentedViewController as? UINavigationController {
+                        expect(nc.topViewController).to(beAnInstanceOf(FindFeedViewController.self))
                     }
                 }
             }

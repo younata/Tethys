@@ -31,7 +31,6 @@
 "FeedsTableViewController_Loading_Marking_Feed" = "Marking Articles as Read";
 "FeedsTableViewController_Command_Search" = "Filter by tags";
 "FeedsTableViewController_Command_ImportWeb" = "Add from Web";
-"FeedsTableViewController_Command_ImportLocal" = "Add from Local";
 "FeedsTableViewController_Command_Settings" = "Open settings";
 "FeedsTableViewController_UpdateFeeds_Error_Title" = "Unable to update feeds";
 "FeedsTableViewController_UpdateFeeds_Error_Accept" = "OK";
@@ -55,13 +54,6 @@
 "FindFeedViewController_ImportFeeds_SelectFeed" = "Select a feed to import";
 "FindFeedViewController_Error_Navigation_title" = "Unable to load page";
 "FindFeedViewController_Error_Navigation_message" = "The page at %@ failed to load";
-
-"LocalImportViewController_Title" = "Local Import";
-"LocalImportViewController_Onboarding_Detail" = "To use Local Import, go into iTunes, select your phone, select apps, scroll down to installed apps, select rNews, and then click '+' to add an opml or rss feed to this app, refresh this page, and it'll automatically show up here so that you can import it.";
-"LocalImportViewController_Cell_FeedList_FeedCount" = "%ld feeds";
-"LocalImportViewController_Cell_Feed_ArticleCount" = "%ld articles";
-"LocalImportViewController_TableHeader_OPMLs" = "Feed Lists";
-"LocalImportViewController_TableHeader_Feeds" = "Individual Feeds";
 
 "LoginViewController_Pasiphae_Title" = "Log in to rNews";
 "LoginViewController_Title_Accessibility_Label" = "Account Type";

@@ -501,7 +501,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("shows an alert box") {
-                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController))
+                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                         if let alert = subject.presentedViewController as? UIAlertController {
                             expect(alert.title) == "Unable to load page"
                             expect(alert.message) == "The page at https://example.com failed to load"
@@ -525,7 +525,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("shows an alert box") {
-                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController))
+                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                         if let alert = subject.presentedViewController as? UIAlertController {
                             expect(alert.title) == "Unable to load page"
                             expect(alert.message) == "The page at https://example.com failed to load"

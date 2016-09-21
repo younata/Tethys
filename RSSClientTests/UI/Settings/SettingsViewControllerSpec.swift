@@ -814,11 +814,43 @@ class SettingsViewControllerSpec: QuickSpec {
                             delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
                         }
 
-                        it("brings up a share sheet with the opml text as the content") {
-                            expect(navigationController.visibleViewController).to(beAnInstanceOf(UIActivityViewController.self))
-                            if let shareSheet = navigationController.visibleViewController as? UIActivityViewController {
-                                expect(shareSheet.activityItems.count) == 1
-                                expect(shareSheet.activityItems.first is OPMLShareItem) == true
+                        it("asks for the latest opml to be written to disk") {
+                            expect(opmlService.didReceiveWriteOPML) == true
+                        }
+
+                        describe("if the opml service succeeds") {
+                            let url = URL(fileURLWithPath: "")
+                            beforeEach {
+                                opmlService.writeOPMLPromises.last?.resolve(.success(url))
+                            }
+
+                            it("brings up a share sheet with the opml text as the content") {
+                                expect(navigationController.visibleViewController).to(beAnInstanceOf(UIActivityViewController.self))
+                                if let shareSheet = navigationController.visibleViewController as? UIActivityViewController {
+                                    expect(shareSheet.activityItems as? [URL]) == [url]
+                                }
+                            }
+                        }
+
+                        describe("if the opml service fails") {
+                            beforeEach {
+                                opmlService.writeOPMLPromises.last?.resolve(.failure(.unknown))
+                            }
+
+                            it("notifies the user of the failure") {
+                                expect(navigationController.visibleViewController).to(beAnInstanceOf(UIAlertController.self))
+                                if let alert = navigationController.visibleViewController as? UIAlertController {
+                                    expect(alert.title) == "Error Exporting OPML"
+                                    expect(alert.message) == "Please Try Again"
+                                    expect(alert.actions.count) == 1
+                                    if let action = alert.actions.first {
+                                        expect(action.title) == "Ok"
+                                        expect(action.style) == UIAlertActionStyle.default
+
+                                        action.handler(action)
+                                        expect(navigationController.visibleViewController) == subject
+                                    }
+                                }
                             }
                         }
                     }

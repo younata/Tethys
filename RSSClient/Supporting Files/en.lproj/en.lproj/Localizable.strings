@@ -14,6 +14,8 @@
 "SettingsViewController_Accounts_Log_Out" = "Log Out";
 "SettingsViewController_Advanced_ShowReadingTimes" = "Show Estimated Reading Times";
 "SettingsViewController_Other_ExportOPML" = "Export OPML";
+"SettingsViewController_Other_ExportOPML_Error_Title" = "Error Exporting OPML";
+"SettingsViewController_Other_ExportOPML_Error_Message" = "Please Try Again";
 "SettingsViewController_Credits_MainDeveloper_Name" = "Rachel Brindle"; // My name
 "SettingsViewController_Credits_MainDeveloper_Detail" = "Developer";
 "SettingsViewController_Commands_Theme" = "Change Theme to '%@'";

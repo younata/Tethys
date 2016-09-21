@@ -110,7 +110,8 @@ public final class SettingsViewController: UIViewController, Injectable {
     fileprivate let quickActionRepository: QuickActionRepository
     fileprivate let databaseUseCase: DatabaseUseCase
     fileprivate let accountRepository: AccountRepository
-    fileprivate let opmlShareItem: (Void) -> OPMLShareItem
+    fileprivate let opmlService: OPMLService
+    fileprivate let mainQueue: OperationQueue
     fileprivate let loginViewController: (Void) -> LoginViewController
 
     fileprivate var oldTheme: ThemeRepository.Theme = .default
@@ -125,14 +126,16 @@ public final class SettingsViewController: UIViewController, Injectable {
                 quickActionRepository: QuickActionRepository,
                 databaseUseCase: DatabaseUseCase,
                 accountRepository: AccountRepository,
-                opmlShareItem: @escaping (Void) -> OPMLShareItem,
+                opmlService: OPMLService,
+                mainQueue: OperationQueue,
                 loginViewController: @escaping (Void) -> LoginViewController) {
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.quickActionRepository = quickActionRepository
         self.databaseUseCase = databaseUseCase
         self.accountRepository = accountRepository
-        self.opmlShareItem = opmlShareItem
+        self.opmlService = opmlService
+        self.mainQueue = mainQueue
         self.loginViewController = loginViewController
 
         super.init(nibName: nil, bundle: nil)
@@ -146,7 +149,8 @@ public final class SettingsViewController: UIViewController, Injectable {
             quickActionRepository: injector.create(kind: QuickActionRepository.self)!,
             databaseUseCase: injector.create(kind: DatabaseUseCase.self)!,
             accountRepository: injector.create(kind: AccountRepository.self)!,
-            opmlShareItem: { injector.create(kind: OPMLShareItem.self)! },
+            opmlService: injector.create(kind: OPMLService.self)!,
+            mainQueue: injector.create(string: kMainQueue) as! OperationQueue,
             loginViewController: { injector.create(kind: LoginViewController.self)! }
         )
     }
@@ -468,8 +472,31 @@ extension SettingsViewController: UITableViewDelegate {
             tableView.deselectRow(at: indexPath, animated: false)
         case .other:
             tableView.deselectRow(at: indexPath, animated: false)
-            let shareSheet = UIActivityViewController(activityItems: [self.opmlShareItem()], applicationActivities: nil)
-            self.present(shareSheet, animated: true, completion: nil)
+
+            _ = self.opmlService.writeOPML().then {
+                switch $0 {
+                case let .success(url):
+                    self.mainQueue.addOperation {
+                        let shareSheet = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+                        self.present(shareSheet, animated: true, completion: nil)
+                    }
+                case .failure(_):
+                    self.mainQueue.addOperation {
+                        let alertTitle = NSLocalizedString("SettingsViewController_Other_ExportOPML_Error_Title",
+                                                           comment: "")
+                        let alertMessage = NSLocalizedString("SettingsViewController_Other_ExportOPML_Error_Message",
+                                                             comment: "")
+                        let alert = UIAlertController(title: alertTitle,
+                                                      message: alertMessage,
+                                                      preferredStyle: .alert)
+                        let dismissTitle = NSLocalizedString("Generic_Ok", comment: "")
+                        alert.addAction(UIAlertAction(title: dismissTitle, style: .default) { _ in
+                            self.dismiss(animated: true, completion: nil)
+                        })
+                        self.present(alert, animated: true, completion: nil)
+                    }
+                }
+            }
         case .credits:
             tableView.deselectRow(at: indexPath, animated: false)
             guard let url = URL(string: "https://twitter.com/younata") else { return }

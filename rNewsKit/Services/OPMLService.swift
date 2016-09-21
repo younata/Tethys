@@ -6,7 +6,7 @@ import Result
 
 public protocol OPMLService {
     func importOPML(_ opml: URL, completion: @escaping ([Feed]) -> Void)
-    func writeOPML() -> Future<Result<String, RNewsError>>
+    func writeOPML() -> Future<Result<URL, RNewsError>>
 }
 
 final class DefaultOPMLService: NSObject, OPMLService, Injectable {
@@ -120,10 +120,26 @@ final class DefaultOPMLService: NSObject, OPMLService, Injectable {
         return ret
     }
 
-    func writeOPML() -> Future<Result<String, RNewsError>> {
-        return self.dataRepository.feeds().map {
-            return $0.map { feeds in
-                return self.generateOPMLContents(feeds)
+    func writeOPML() -> Future<Result<URL, RNewsError>> {
+        return self.dataRepository.feeds().map { result -> Result<URL, RNewsError> in
+            switch result {
+            case let .success(feeds):
+                let opmlString = self.generateOPMLContents(feeds)
+                let url: URL
+                if #available(iOS 10.0, *) {
+                    url = FileManager.default.temporaryDirectory.appendingPathComponent("Export OPML.opml")
+                } else {
+                    url = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+                        .appendingPathComponent("Export OPML.opml")
+                }
+                do {
+                    try opmlString.write(to: url, atomically: true, encoding: String.Encoding.utf8)
+                    return Result<URL, RNewsError>.success(url)
+                } catch {
+                    return Result<URL, RNewsError>.failure(.unknown)
+                }
+            case let .failure(error):
+                return Result<URL, RNewsError>.failure(error)
             }
         }
     }

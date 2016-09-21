@@ -102,7 +102,7 @@ class DefaultOPMLServiceSpec: QuickSpec {
         }
 
         describe("Writing OPML files") {
-            var writeOPMLFuture: Future<Result<String, RNewsError>>!
+            var writeOPMLFuture: Future<Result<URL, RNewsError>>!
 
             beforeEach {
                 writeOPMLFuture = subject.writeOPML()
@@ -128,13 +128,9 @@ class DefaultOPMLServiceSpec: QuickSpec {
                 }
 
                 it("resolves the promise with a valid opml file") {
-                    let fileManager = FileManager.default
-                    let file = documentsDirectory() + "/rnews.opml"
-                    expect(fileManager.fileExists(atPath: file)) == false
-
                     expect(writeOPMLFuture.value?.value).toNot(beNil())
 
-                    guard let text = writeOPMLFuture.value?.value else { return }
+                    guard let url = writeOPMLFuture.value?.value, let text = try? String(contentsOf: url) else { return }
 
                     let parser = Lepton.Parser(text: text)
 

@@ -1,7 +1,5 @@
 import Foundation
 import Ra
-import CoreData
-import JavaScriptCore
 import CBGPromise
 import Result
 #if os(iOS)
@@ -42,27 +40,11 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     }
 
     func databaseUpdateAvailable() -> Bool {
-        return self.dataServiceFactory.currentDataService is CoreDataService
+        return false
     }
 
     func performDatabaseUpdates(_ progress: @escaping (Double) -> Void, callback: @escaping (Void) -> Void) {
         guard self.databaseUpdateAvailable() else { return callback() }
-        let currentDataService = self.dataServiceFactory.currentDataService
-        if currentDataService is CoreDataService {
-            let replacementDataService = self.dataServiceFactory.newDataService()
-            self.databaseMigrator.migrate(currentDataService, to: replacementDataService, progress: { value in
-                let reportedProgressValue = value / 2.0
-                progress(reportedProgressValue)
-            }) {
-                self.dataServiceFactory.currentDataService = replacementDataService
-
-                self.databaseMigrator.deleteEverything(currentDataService, progress: { value in
-                    progress(0.5 + (value / 2.0))
-                    }) {
-                        callback()
-                }
-            }
-        }
     }
 
     //MARK: - DataRetriever

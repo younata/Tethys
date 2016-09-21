@@ -1,6 +1,5 @@
 import Quick
 import Nimble
-import CoreData
 import RealmSwift
 @testable import rNewsKit
 
@@ -74,15 +73,6 @@ class FeedSpec: QuickSpec {
         }
 
         describe("Equatable") {
-            it("should report two feeds created with a coredatafeed with the same feedID as equal") {
-                let ctx = managedObjectContext()
-                let a = createFeed(managedObjectContext: ctx)
-                let b = createFeed(managedObjectContext: ctx)
-
-                expect(Feed(coreDataFeed: a)).toNot(equal(Feed(coreDataFeed: b)))
-                expect(Feed(coreDataFeed: a)).to(equal(Feed(coreDataFeed: a)))
-            }
-
             it("should report two feeds created with a realmfeed with the same url as equal") {
                 let a = RealmFeed()
                 a.url = "https://example.com/feed"
@@ -98,7 +88,7 @@ class FeedSpec: QuickSpec {
                 expect(Feed(realmFeed: a)).to(equal(Feed(realmFeed: a)))
             }
 
-            it("should report two feeds not created with coredatafeeds with the same property equality as equal") {
+            it("should report two feeds not created from datastores with the same property equality as equal") {
                 let a = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                 let b = Feed(title: "blah", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                 let c = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
@@ -109,15 +99,6 @@ class FeedSpec: QuickSpec {
         }
 
         describe("Hashable") {
-            it("should report two feeds created with a coredatafeed with the same feedID as having the same hashValue") {
-                let ctx = managedObjectContext()
-                let a = createFeed(managedObjectContext: ctx)
-                let b = createFeed(managedObjectContext: ctx)
-
-                expect(Feed(coreDataFeed: a).hashValue).toNot(equal(Feed(coreDataFeed: b).hashValue))
-                expect(Feed(coreDataFeed: a).hashValue).to(equal(Feed(coreDataFeed: a).hashValue))
-            }
-
             it("should report two feeds created with a realmfeed with the same url as having the same hashValue") {
                 let a = RealmFeed()
                 a.url = "https://example.com/feed"
@@ -133,7 +114,7 @@ class FeedSpec: QuickSpec {
                 expect(Feed(realmFeed: a).hashValue).to(equal(Feed(realmFeed: a).hashValue))
             }
 
-            it("should report two feeds not created with coredatafeeds with the same property equality as having the same hashValue") {
+            it("should report two feeds not created from datastores with the same property equality as having the same hashValue") {
                 let a = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                 let b = Feed(title: "blah", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                 let c = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)

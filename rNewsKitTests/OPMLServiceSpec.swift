@@ -1,6 +1,5 @@
 import Quick
 import Nimble
-import CoreData
 import Ra
 import Lepton
 import CBGPromise

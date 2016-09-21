@@ -1,6 +1,4 @@
 import Foundation
-import CoreData
-import JavaScriptCore
 import RealmSwift
 
 #if os(iOS)
@@ -92,9 +90,7 @@ public final class Feed: Hashable, CustomStringConvertible {
     public private(set) var identifier: String
 
     public var hashValue: Int {
-        if let id = feedID as? NSManagedObjectID {
-            return id.uriRepresentation().hashValue
-        } else if let id = feedID as? String {
+        if let id = feedID as? String {
             return id.hash
         }
         let nonNilHashValues = title.hashValue ^ summary.hashValue ^
@@ -117,9 +113,7 @@ public final class Feed: Hashable, CustomStringConvertible {
         guard let b = object as? Feed else {
             return false
         }
-        if let aID = self.feedID as? NSManagedObjectID, let bID = b.feedID as? NSManagedObjectID {
-            return aID.uriRepresentation() == bID.uriRepresentation()
-        } else if let aID = self.feedID as? URL, let bID = b.feedID as? URL {
+        if let aID = self.feedID as? URL, let bID = b.feedID as? URL {
             return aID == bID
         }
         return self.title == b.title && self.url == b.url && self.summary == b.summary && self.tags == b.tags &&
@@ -204,33 +198,6 @@ public final class Feed: Hashable, CustomStringConvertible {
     // swiftlint:enable function_parameter_count
 
     public private(set) var feedID: AnyObject? = nil
-
-    internal init(coreDataFeed feed: CoreDataFeed) {
-        self.title = feed.title ?? ""
-        self.url = URL(string: feed.url)
-        self.summary = feed.summary ?? ""
-        self.tags = feed.tags
-        self.waitPeriod = feed.waitPeriodInt
-        self.remainingWait = feed.remainingWaitInt
-        self.lastUpdated = feed.lastUpdated
-
-        self.image = feed.image as? Image
-        self.feedID = feed.objectID
-        self.identifier = feedID?.uriRepresentation().absoluteString ?? ""
-        self.articlesArray = DataStoreBackedArray<Article>()
-
-        let sortByUpdated = NSSortDescriptor(key: "updatedAt", ascending: false)
-        let sortByPublished = NSSortDescriptor(key: "published", ascending: false)
-        self.articlesArray = DataStoreBackedArray(entityName: "Article",
-                                                  predicate: NSPredicate(format: "feed == %@", feed),
-                                                  managedObjectContext: feed.managedObjectContext!,
-                                                  conversionFunction: {
-                                                    return Article(coreDataArticle: $0 as! CoreDataArticle, feed: self)
-            },
-                                                  sortDescriptors: [sortByUpdated, sortByPublished])
-
-        self.updated = false
-    }
 
     internal init(realmFeed feed: RealmFeed) {
         self.title = feed.title ?? ""

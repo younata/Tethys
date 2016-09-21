@@ -2,7 +2,6 @@ import Quick
 import Nimble
 @testable import rNewsKit
 import Ra
-import CoreData
 import CBGPromise
 import Result
 import Sinope
@@ -97,85 +96,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
         describe("databaseUpdateAvailable") {
             it("returns false by default") {
                 expect(subject.databaseUpdateAvailable()) == false
-            }
-
-            context("when the user is using a CoreDataDataService") {
-                it("returns true") {
-                    let objectContext = managedObjectContext()
-                    let mainQueue = FakeOperationQueue()
-                    let searchIndex = FakeSearchIndex()
-                    let coreDataService = CoreDataService(managedObjectContext: objectContext, mainQueue: mainQueue, searchIndex: searchIndex)
-                    dataServiceFactory.currentDataService = coreDataService
-
-                    expect(subject.databaseUpdateAvailable()) == true
-                }
-            }
-        }
-
-        describe("performing database migrations") {
-            context("from Core Data to Realm") {
-                var objectContext: NSManagedObjectContext!
-                var mainQueue: FakeOperationQueue!
-                var searchIndex: FakeSearchIndex!
-                var coreDataService: CoreDataService!
-
-                var migrationFinished = false
-
-                var newDataService: InMemoryDataService!
-
-                var progressUpdates: [Double] = []
-
-                beforeEach {
-                    objectContext = managedObjectContext()
-                    mainQueue = FakeOperationQueue()
-                    searchIndex = FakeSearchIndex()
-                    coreDataService = CoreDataService(managedObjectContext: objectContext, mainQueue: mainQueue, searchIndex: searchIndex)
-                    dataServiceFactory.currentDataService = coreDataService
-
-                    newDataService = InMemoryDataService(mainQueue: mainQueue, searchIndex: searchIndex)
-                    dataServiceFactory.newDataServiceReturns(newDataService)
-
-                    progressUpdates = []
-                    migrationFinished = false
-
-                    subject.performDatabaseUpdates({ progressUpdates.append($0) }) {
-                        migrationFinished = true
-                    }
-                }
-
-                it("asks the dataServiceFactory for a new data service") {
-                    expect(dataServiceFactory.newDataServiceCallCount) == 1
-                }
-
-                it("asks the migrator to migrate") {
-                    expect(databaseMigrator.migrateCallCount) == 1
-
-                    expect(databaseMigrator.migrateArgsForCall(0).0 as? CoreDataService) === coreDataService
-                    expect(databaseMigrator.migrateArgsForCall(0).1 as? InMemoryDataService) === newDataService
-                }
-
-                context("when the migration finishes") {
-                    beforeEach {
-                        databaseMigrator.migrateArgsForCall(0).3()
-                    }
-
-                    it("sets the new data service as the current data service") {
-                        expect(try! dataServiceFactory.setCurrentDataServiceArgsForCall(2) as? InMemoryDataService) === newDataService
-                    }
-
-                    it("deletes everything in the old dataService") {
-                        expect(databaseMigrator.deleteEverythingCallCount) == 1
-                        expect(databaseMigrator.deleteEverythingArgsForCall(0).0 as? CoreDataService) === coreDataService
-                    }
-
-                    context("when the deletion finishes") {
-                        it("calls the callback") {
-                            databaseMigrator.deleteEverythingArgsForCall(0).2()
-
-                            expect(migrationFinished) == true
-                        }
-                    }
-                }
             }
         }
 

@@ -21,7 +21,6 @@ class ImportUseCaseSpec: QuickSpec {
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
 
-
             subject = DefaultImportUseCase(
                 urlSession: urlSession,
                 feedRepository: feedRepository,

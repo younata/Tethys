@@ -1,10 +1,8 @@
-import CoreData
 import RealmSwift
 import Result
 import CBGPromise
 
 fileprivate enum BackingStore {
-    case coreData
     case realm
     case array
 }
@@ -12,11 +10,6 @@ fileprivate enum BackingStore {
 public final class DataStoreBackedArray<T: AnyObject>: Collection, CustomDebugStringConvertible {
     let predicate: NSPredicate?
     let sortDescriptors: [NSSortDescriptor]
-
-    let entityName: String
-    let managedObjectContext: NSManagedObjectContext?
-    let coreDataConversionFunction: ((NSManagedObject) -> T)?
-    fileprivate var managedArray = [NSManagedObject]()
 
     let realmDataType: Object.Type?
     let realmConfiguration: Realm.Configuration?
@@ -85,7 +78,6 @@ public final class DataStoreBackedArray<T: AnyObject>: Collection, CustomDebugSt
     }
 
     fileprivate var backingStore: BackingStore {
-        if self.managedObjectContext != nil { return .coreData }
         if self.realmConfiguration != nil { return .realm }
         return .array
     }
@@ -115,16 +107,6 @@ public final class DataStoreBackedArray<T: AnyObject>: Collection, CustomDebugSt
         switch self.backingStore {
         case .array:
             return filterArray()
-        case .coreData:
-            guard let managedObjectContext = self.managedObjectContext,
-                let conversionFunction = self.coreDataConversionFunction else {
-                    return filterArray()
-            }
-            return DataStoreBackedArray(entityName: self.entityName,
-                predicate: compoundPredicate,
-                managedObjectContext: managedObjectContext,
-                conversionFunction: conversionFunction,
-                sortDescriptors: self.sortDescriptors)
         case .realm:
             guard let realmDataType = self.realmDataType,
                 let realmConfiguration = self.realmConfiguration,
@@ -153,19 +135,6 @@ public final class DataStoreBackedArray<T: AnyObject>: Collection, CustomDebugSt
         switch self.backingStore {
         case .array:
             return combineArray()
-        case .coreData:
-            guard let managedObjectContext = self.managedObjectContext,
-                let conversionFunction = self.coreDataConversionFunction, other.entityName == self.entityName &&
-                    other.managedObjectContext == self.managedObjectContext &&
-                    other.sortDescriptors == self.sortDescriptors else {
-                        return combineArray()
-            }
-
-            return DataStoreBackedArray(entityName: self.entityName,
-                predicate: compoundPredicate,
-                managedObjectContext: managedObjectContext,
-                conversionFunction: conversionFunction,
-                sortDescriptors: self.sortDescriptors)
         case .realm:
             guard let realmConfiguration = self.realmConfiguration, let dataType = self.realmDataType,
                 let conversionFunction = self.realmConversionFunction, self.realmDataType == other.realmDataType &&
@@ -203,7 +172,7 @@ public final class DataStoreBackedArray<T: AnyObject>: Collection, CustomDebugSt
 
     public func append(_ object: T) {
         switch self.backingStore {
-        case .coreData, .realm:
+        case .realm:
             self.appendedObjects.append(object)
         case .array:
             self.internalObjects.append(object)
@@ -224,10 +193,6 @@ public final class DataStoreBackedArray<T: AnyObject>: Collection, CustomDebugSt
         self.realmConfiguration = nil
         self.realmConversionFunction = nil
 
-        self.entityName = ""
-        self.managedObjectContext = nil
-        self.coreDataConversionFunction = nil
-
         self._internalCount = array.count
     }
 
@@ -242,34 +207,11 @@ public final class DataStoreBackedArray<T: AnyObject>: Collection, CustomDebugSt
             self.realmDataType = realmDataType
             self.realmConfiguration = realmConfiguration
             self.realmConversionFunction = conversionFunction
-
-            self.entityName = ""
-            self.managedObjectContext = nil
-            self.coreDataConversionFunction = nil
-    }
-
-    public init(entityName: String,
-        predicate: NSPredicate,
-        managedObjectContext: NSManagedObjectContext,
-        conversionFunction: @escaping (NSManagedObject) -> T,
-        sortDescriptors: [NSSortDescriptor] = []) {
-            self.predicate = predicate
-            self.sortDescriptors = sortDescriptors
-
-            self.realmDataType = nil
-            self.realmConfiguration = nil
-            self.realmConversionFunction = nil
-
-            self.entityName = entityName
-            self.managedObjectContext = managedObjectContext
-            self.coreDataConversionFunction = conversionFunction
-            _ = self.calculateCount().then { self._internalCount = $0 }
     }
 
     deinit {
         self.internalObjects = []
         self.appendedObjects = []
-        self.managedArray = []
     }
 
     fileprivate func fetchUpToPosition(_ position: Int) {
@@ -278,31 +220,7 @@ public final class DataStoreBackedArray<T: AnyObject>: Collection, CustomDebugSt
             return y
         }
         autoreleasepool {
-            if self.backingStore == .coreData {
-                if self.internalObjects.isEmpty {
-                    let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: self.entityName)
-                    fetchRequest.predicate = self.predicate
-                    fetchRequest.sortDescriptors = self.sortDescriptors
-                    fetchRequest.fetchBatchSize = self.batchSize
-                    self.managedObjectContext?.performAndWait {
-                        let result = try? self.managedObjectContext?.fetch(fetchRequest)
-                        guard let array = result else { return }
-                        self.managedArray = array ?? []
-                    }
-                }
-                let start = self.internalObjects.count
-                _ = self.internalCount.wait()
-                let internalCount = self.internalCount.value!
-                let end = wtfswift3min(internalCount,
-                               start + ((Int((position - start) / self.batchSize) + 1) * self.batchSize))
-
-                self.managedObjectContext?.performAndWait {
-                    for i in start..<end {
-                        self.internalObjects.insert(self.coreDataConversionFunction!(self.managedArray[i]), at: i)
-                    }
-                    _ = try? self.managedObjectContext?.save()
-                }
-            } else if let objects = self.realmObjectList() {
+            if let objects = self.realmObjectList() {
                 let start = self.internalObjects.count
                 let end = wtfswift3min(objects.count,
                               start + ((Int((position - start) / self.batchSize) + 1) * self.batchSize))
@@ -321,16 +239,7 @@ public final class DataStoreBackedArray<T: AnyObject>: Collection, CustomDebugSt
             promise.resolve(loadedObjects)
         }
         autoreleasepool {
-            if self.backingStore == .coreData {
-                var count = 0
-                self.managedObjectContext?.performAndWait {
-                    let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: self.entityName)
-                    fetchRequest.predicate = self.predicate
-                    count = (try? self.managedObjectContext!.count(for: fetchRequest)) ?? 0
-                }
-                self.internalObjects.reserveCapacity(count)
-                promise.resolve(count)
-            } else if let list = self.realmObjectList() {
+            if let list = self.realmObjectList() {
                 promise.resolve(list.count)
             }
         }
@@ -382,12 +291,7 @@ extension DataStoreBackedArray where T: Equatable {
                 return false
             }
             autoreleasepool {
-                if self.backingStore == .coreData {
-                    self.managedObjectContext?.performAndWait {
-                        let managedObject = self.managedArray[idx]
-                        self.managedObjectContext?.delete(managedObject)
-                    }
-                } else if let objects = self.realmObjectList() {
+                if let objects = self.realmObjectList() {
                     self.realm?.beginWrite()
                     self.realm?.delete(objects[idx])
                     _ = try? self.realm?.commitWrite()
@@ -402,9 +306,8 @@ extension DataStoreBackedArray where T: Equatable {
 
 public func ==<T: Equatable>(left: DataStoreBackedArray<T>, right: DataStoreBackedArray<T>) -> Bool {
     if left.backingStore == right.backingStore {
-        return left.count == right.count && left.entityName == right.entityName &&
-            left.realmDataType == right.realmDataType && left.predicate == right.predicate &&
-            left.managedObjectContext == right.managedObjectContext && left.realm == right.realm &&
+        return left.count == right.count && left.realmDataType == right.realmDataType &&
+            left.predicate == right.predicate && left.realm == right.realm &&
             left.sortDescriptors == right.sortDescriptors
     } else {
         return Array(left) == Array(right)

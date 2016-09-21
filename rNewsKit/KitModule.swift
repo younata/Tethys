@@ -1,6 +1,5 @@
 import Foundation
 import Ra
-import CoreData
 #if os(iOS)
     import CoreSpotlight
     import Reachability
@@ -94,9 +93,7 @@ public final class KitModule: NSObject, Ra.InjectorModule {
 
         let opmlService = DefaultOPMLService(injector: injector)
         injector.bind(kind: OPMLService.self, toInstance: opmlService)
-
         injector.bind(kind: MigrationUseCase.self, toInstance: DefaultMigrationUseCase(injector: injector))
         injector.bind(kind: ImportUseCase.self, to: DefaultImportUseCase.init)
-
     }
 }

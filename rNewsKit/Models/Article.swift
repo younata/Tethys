@@ -1,6 +1,4 @@
 import Foundation
-import CoreData
-import JavaScriptCore
 
 public final class Article: NSObject {
     public internal(set) var title: String {
@@ -94,9 +92,7 @@ public final class Article: NSObject {
     internal private(set) var updated: Bool = false
 
     public override var hashValue: Int {
-        if let id = articleID as? NSManagedObjectID {
-            return id.uriRepresentation().hashValue
-        } else if let id = articleID as? String {
+        if let id = articleID as? String {
             return id.hash
         }
         let authorsHashValue = authors.reduce(0) { $0 ^ $1.hashValue }
@@ -118,9 +114,7 @@ public final class Article: NSObject {
         guard let b = object as? Article else {
             return false
         }
-        if let aID = self.articleID as? NSManagedObjectID, let bID = b.articleID as? NSManagedObjectID {
-            return aID.uriRepresentation() == bID.uriRepresentation()
-        } else if let aID = self.articleID as? String, let bID = b.articleID as? String {
+        if let aID = self.articleID as? String, let bID = b.articleID as? String {
             return aID == bID
         }
         return self.title == b.title && self.link == b.link && self.summary == b.summary &&
@@ -157,48 +151,6 @@ public final class Article: NSObject {
     // swiftlint:enable function_parameter_count
 
     internal private(set) var articleID: AnyObject? = nil
-
-    internal init(coreDataArticle article: CoreDataArticle, feed: Feed?) {
-        title = article.title ?? ""
-        if let articleLink = article.link {
-            link = URL(string: articleLink)
-        } else {
-            link = nil
-        }
-
-        summary = article.summary ?? ""
-        authors = [Author(article.author ?? "")]
-        published = article.published ?? Date()
-        updatedAt = article.updatedAt
-        identifier = article.objectID.uriRepresentation().absoluteString
-        content = article.content ?? ""
-        read = article.read
-        if let readingTime = article.estimatedReadingTime?.intValue {
-            estimatedReadingTime = readingTime
-        } else {
-            let readingTime = estimateReadingTime(article.content ?? article.summary ?? "")
-            article.estimatedReadingTime = NSNumber(value: readingTime)
-            estimatedReadingTime = readingTime
-        }
-        self.feed = feed
-        self.flags = article.flags
-        super.init()
-        self.relatedArticles = DataStoreBackedArray(entityName: "Article",
-            predicate: NSPredicate(format: "self in %@", article.relatedArticles),
-            managedObjectContext: article.managedObjectContext!,
-            conversionFunction: {
-                let article = $0 as! CoreDataArticle
-                let feed: Feed?
-                if let coreDataFeed = article.feed {
-                    feed = Feed(coreDataFeed: coreDataFeed)
-                } else { feed = nil }
-                return Article(coreDataArticle: article, feed: feed)
-        })
-
-        self.articleID = article.objectID
-
-        self.updated = false
-    }
 
     internal init(realmArticle article: RealmArticle, feed: Feed?) {
         title = article.title ?? ""

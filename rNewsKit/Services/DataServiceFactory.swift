@@ -1,5 +1,4 @@
 import RealmSwift
-import CoreData
 
 protocol DataServiceFactoryType: class {
     var currentDataService: DataService { get set }
@@ -33,12 +32,7 @@ final class DataServiceFactory: DataServiceFactoryType {
             if let dataService = self.existingDataService {
                 return dataService
             }
-            let dataService: DataService
-            if self.useCoreData() {
-                dataService = self.coreDataService()
-            } else {
-                dataService = self.newDataService()
-            }
+            let dataService = self.newDataService()
             self.existingDataService = dataService
             return dataService
         }
@@ -52,36 +46,5 @@ final class DataServiceFactory: DataServiceFactoryType {
             mainQueue: self.mainQueue,
             workQueue: self.realmQueue,
             searchIndex: self.searchIndex)
-    }
-
-    private func useCoreData() -> Bool {
-        guard let url = Realm.Configuration.defaultConfiguration.fileURL else { return true }
-        return !self.fileManager.fileExists(atPath: url.path )
-    }
-
-    private func coreDataService() -> CoreDataService {
-        let modelURL = self.bundle.url(forResource: "RSSClient", withExtension: "momd")!
-        let managedObjectModel = NSManagedObjectModel(contentsOf: modelURL)!
-
-        let storeURL = URL(fileURLWithPath: documentsDirectory() + "/RSSClient.sqlite")
-        let persistentStore = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
-        let options: [String: AnyObject] = [NSMigratePersistentStoresAutomaticallyOption: true as AnyObject,
-            NSInferMappingModelAutomaticallyOption: true as AnyObject]
-        do {
-            try persistentStore.addPersistentStore(ofType: NSSQLiteStoreType,
-                configurationName: managedObjectModel.configurations.last,
-                at: storeURL, options: options)
-        } catch {
-            fatalError()
-        }
-        let managedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        managedObjectContext.persistentStoreCoordinator = persistentStore
-        managedObjectContext.undoManager = nil
-
-        return CoreDataService(
-            managedObjectContext: managedObjectContext,
-            mainQueue: mainQueue,
-            searchIndex: searchIndex
-        )
     }
 }

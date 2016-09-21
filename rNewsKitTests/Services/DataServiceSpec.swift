@@ -1,6 +1,5 @@
 import Quick
 import Nimble
-import CoreData
 import Result
 @testable import rNewsKit
 

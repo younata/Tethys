@@ -1,5 +1,4 @@
 import Foundation
-import CoreData
 import CBGPromise
 import Result
 @testable import rNewsKit

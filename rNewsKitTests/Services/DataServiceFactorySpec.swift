@@ -1,6 +1,5 @@
 import Quick
 import Nimble
-import CoreData
 import RealmSwift
 @testable import rNewsKit
 
@@ -9,16 +8,6 @@ class DataServiceFactorySpec: QuickSpec {
         let bundle = Bundle(for: KitModule.classForCoder())
         let fileManager = FileManager.default
         describe("currentDataService") {
-            it("returns a CoreDataService if we haven't migrated yet") {
-                _ = try? fileManager.removeItem(at: Realm.Configuration.defaultConfiguration.fileURL!)
-
-                let mainQueue = FakeOperationQueue()
-                let searchIndex = FakeSearchIndex()
-                let subject = DataServiceFactory(mainQueue: mainQueue, realmQueue: OperationQueue(), searchIndex: searchIndex, bundle: bundle, fileManager: fileManager)
-
-                expect(subject.currentDataService is CoreDataService) == true
-            }
-
             it("returns a new realm service if we have migrated") {
                 let mainQueue = FakeOperationQueue()
                 let searchIndex = FakeSearchIndex()

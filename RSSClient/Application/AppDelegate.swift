@@ -30,6 +30,10 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
         self.anInjector.create(kind: Analytics.self)!
     }()
 
+    private lazy var importUseCase: ImportUseCase = {
+        self.anInjector.create(kind: ImportUseCase.self)!
+    }()
+
     internal lazy var splitView: SplitViewController = {
         let splitView = self.anInjector.create(kind: SplitViewController.self)!
         self.anInjector.bind(kind: SplitViewController.self, toInstance: splitView)
@@ -62,9 +66,10 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
                 _ = try? FileManager.default.removeItem(at: url)
             }
 
-            if NSClassFromString("XCTestCase") != nil && launchOptions?[UIApplicationLaunchOptionsKey("test")] as? Bool != true {
-                self.getWindow().rootViewController = UIViewController()
-                return true
+            if NSClassFromString("XCTestCase") != nil &&
+                launchOptions?[UIApplicationLaunchOptionsKey("test")] as? Bool != true {
+                    self.getWindow().rootViewController = UIViewController()
+                    return true
             }
 
             self.createControllerHierarchy()
@@ -80,6 +85,17 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
             application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
 
             return true
+    }
+
+    public func application(_ app: UIApplication,
+                            open url: URL,
+                            options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        _ = self.importUseCase.scanForImportable(url).then { item in
+            if case let .opml(url, _) = item {
+                _ = self.importUseCase.importItem(url)
+            }
+        }
+        return true
     }
 
     // MARK: Quick Actions

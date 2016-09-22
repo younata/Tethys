@@ -27,6 +27,7 @@ class AppDelegateSpec: QuickSpec {
         var notificationHandler: FakeNotificationHandler! = nil
         var backgroundFetchHandler: FakeBackgroundFetchHandler! = nil
         var analytics: FakeAnalytics! = nil
+        var importUseCase: FakeImportUseCase! = nil
         
         beforeEach {
             subject = AppDelegate()
@@ -53,19 +54,22 @@ class AppDelegateSpec: QuickSpec {
             backgroundFetchHandler = FakeBackgroundFetchHandler()
             injector.bind(kind: BackgroundFetchHandler.self, toInstance: backgroundFetchHandler)
 
+            importUseCase = FakeImportUseCase()
+            injector.bind(kind: ImportUseCase.self, toInstance: importUseCase)
+
             subject.anInjector = injector
             subject.window = UIWindow(frame: CGRect(x: 0, y: 0, width: 320, height: 480))
         }
         
         describe("-application:didFinishLaunchingWithOptions:") {
             it("should enable notifications") {
-                subject.application(application, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsKey(rawValue: "test"): true])
+                _ = subject.application(application, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsKey(rawValue: "test"): true])
 
                 expect(notificationHandler.enableNotificationsCallCount) == 1
             }
 
             it("tells analytics that the app was launched") {
-                subject.application(application, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsKey(rawValue: "test"): true])
+                _ = subject.application(application, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsKey(rawValue: "test"): true])
                 expect(analytics.logEventCallCount) == 1
                 if (analytics.logEventCallCount > 0) {
                     expect(analytics.logEventArgsForCall(0).0) == "SessionBegan"
@@ -74,7 +78,7 @@ class AppDelegateSpec: QuickSpec {
             }
 
             it("should add the UIApplication object to the dataWriter's subscribers") {
-                subject.application(application, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsKey(rawValue: "test"): true])
+                _ = subject.application(application, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsKey(rawValue: "test"): true])
 
                 var applicationInSubscribers = false
                 for subscriber in dataUseCase.subscribers.allObjects {
@@ -90,7 +94,7 @@ class AppDelegateSpec: QuickSpec {
                 var splitViewController: UISplitViewController! = nil
                 
                 beforeEach {
-                    subject.application(application, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsKey(rawValue: "test"): true])
+                    _ = subject.application(application, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsKey(rawValue: "test"): true])
 
                     splitViewController = subject.window!.rootViewController as! UISplitViewController
                 }
@@ -117,6 +121,44 @@ class AppDelegateSpec: QuickSpec {
                         let nc = vc as! UINavigationController
                         expect(nc.viewControllers.first).to(beAnInstanceOf(FeedsTableViewController.self))
                     }
+                }
+            }
+        }
+
+        describe("being told to open a url") {
+            let url = URL(fileURLWithPath: "/ooga/booga")
+            var receivedValue: Bool? = nil
+            beforeEach {
+                receivedValue = subject.application(application, open: url, options: [:])
+            }
+
+            it("returns true") {
+                expect(receivedValue) == true
+            }
+
+            it("tells the system to import the url") {
+                expect(importUseCase.scanForImportableCallCount) == 1
+                expect(importUseCase.scanForImportableArgsForCall(callIndex: 0)) == url
+            }
+
+            describe("if an opml is found at that url") {
+                beforeEach {
+                    importUseCase.scanForImportablePromises[0].resolve(.opml(url, 1))
+                }
+
+                it("tries to import the url") {
+                    expect(importUseCase.importItemCallCount) == 1
+                    expect(importUseCase.importItemArgsForCall(callIndex: 0)) == url
+                }
+            }
+
+            describe("otherwise") {
+                beforeEach {
+                    importUseCase.scanForImportablePromises[0].resolve(.none(url))
+                }
+
+                it("does not try to import the url") {
+                    expect(importUseCase.importItemCallCount) == 0
                 }
             }
         }

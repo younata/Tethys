@@ -151,7 +151,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     webView.fakeUrl = url
                     subject.webView(subject.webContent, didStartProvisionalNavigation: nil)
 
-                    importUseCase.scanForImportableArgsForCall(callIndex: 0).1(.webPage(url, [feedURL]))
+                    importUseCase.scanForImportablePromises[0].resolve(.webPage(url, [feedURL]))
                 }
 
                 it("adds a third command") {
@@ -193,7 +193,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                 }
 
                 it("asks the import use case to import the feed at the url") {
-                    expect(importUseCase.importItemArgsForCall(callIndex: 0).0) == url
+                    expect(importUseCase.importItemArgsForCall(callIndex: 0)) == url
                 }
 
                 it("should show an indicator that we're doing things") {
@@ -205,7 +205,7 @@ class FindFeedViewControllerSpec: QuickSpec {
 
                 describe("when the use case is finished") {
                     beforeEach {
-                        importUseCase.importItemArgsForCall(callIndex: 0).1()
+                        importUseCase.importItemPromises[0].resolve(.success())
                     }
 
                     it("should remove the indicator") {
@@ -255,14 +255,14 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             it("asks the import use case to check if the page at the url has a feed") {
-                expect(importUseCase.scanForImportableArgsForCall(callIndex: 0).0) == URL(string: "https://example.com/feed.xml")
+                expect(importUseCase.scanForImportableArgsForCall(callIndex: 0)) == URL(string: "https://example.com/feed.xml")
             }
 
             context("when the use case finds a feed") {
                 let url = URL(string: "https://example.com/feed")!
                 beforeEach {
                     showRootController()
-                    importUseCase.scanForImportableArgsForCall(callIndex: 0).1(.feed(url, 0))
+                    importUseCase.scanForImportablePromises[0].resolve(.feed(url, 0))
                 }
 
                 it("should present an alert") {
@@ -314,7 +314,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                 let url = URL(string: "https://example.com/feed")!
                 beforeEach {
                     showRootController()
-                    importUseCase.scanForImportableArgsForCall(callIndex: 0).1(.opml(url, 0))
+                    importUseCase.scanForImportablePromises[0].resolve(.opml(url, 0))
                 }
 
                 it("should present an alert") {
@@ -366,12 +366,12 @@ class FindFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("asks the import use case to import the feed at the url") {
-                        expect(importUseCase.importItemArgsForCall(callIndex: 0).0) == url
+                        expect(importUseCase.importItemArgsForCall(callIndex: 0)) == url
                     }
 
                     describe("when the use case is finished") {
                         beforeEach {
-                            importUseCase.importItemArgsForCall(callIndex: 0).1()
+                            importUseCase.importItemPromises[0].resolve(.success())
                         }
 
                         it("should remove the indicator") {
@@ -393,7 +393,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                 let feedURL = URL(string: "https://example.com/feed1")!
 
                 beforeEach {
-                    importUseCase.scanForImportableArgsForCall(callIndex: 0).1(.webPage(url, [feedURL]))
+                    importUseCase.scanForImportablePromises[0].resolve(.webPage(url, [feedURL]))
                 }
 
                 it("should enable the addFeedButton") {
@@ -418,7 +418,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                 let feedURL2 = URL(string: "https://example.com/feed2")!
 
                 beforeEach {
-                    importUseCase.scanForImportableArgsForCall(callIndex: 0).1(.webPage(url, [feedURL1, feedURL2]))
+                    importUseCase.scanForImportablePromises[0].resolve(.webPage(url, [feedURL1, feedURL2]))
                 }
 
                 it("should enable the addFeedButton") {
@@ -470,7 +470,7 @@ class FindFeedViewControllerSpec: QuickSpec {
             context("when the use case finds a web page with no feeds") {
                 let url = URL(string: "https://example.com/feed")!
                 beforeEach {
-                    importUseCase.scanForImportableArgsForCall(callIndex: 0).1(.webPage(url, []))
+                    importUseCase.scanForImportablePromises[0].resolve(.webPage(url, []))
                 }
 
                 it("should do nothing") {
@@ -481,7 +481,7 @@ class FindFeedViewControllerSpec: QuickSpec {
             context("when the use case finds nothing") {
                 let url = URL(string: "https://example.com/feed")!
                 beforeEach {
-                    importUseCase.scanForImportableArgsForCall(callIndex: 0).1(.none(url))
+                    importUseCase.scanForImportablePromises[0].resolve(.none(url))
                 }
 
                 it("should do nothing") {

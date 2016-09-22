@@ -42,7 +42,7 @@ class ImportUseCaseSpec: QuickSpec {
 
 
                 beforeEach {
-                    subject.scanForImportable(url) {
+                    _ = subject.scanForImportable(url).then {
                         receivedItem = $0
                     }
                 }
@@ -67,7 +67,7 @@ class ImportUseCaseSpec: QuickSpec {
                         var didImport = false
                         beforeEach {
                             urlSession.lastURL = nil
-                            subject.importItem(url) {
+                            _ = subject.importItem(url).then { _ in
                                 didImport = true
                             }
                         }
@@ -172,7 +172,7 @@ class ImportUseCaseSpec: QuickSpec {
                         var didImport = false
                         beforeEach {
                             urlSession.lastURL = nil
-                            subject.importItem(url) {
+                            _ = subject.importItem(url).then { _ in
                                 didImport = true
                             }
                         }
@@ -214,7 +214,7 @@ class ImportUseCaseSpec: QuickSpec {
                         var didImport = false
                         beforeEach {
                             urlSession.lastURL = nil
-                            subject.importItem(feed1Url) {
+                            _ = subject.importItem(feed1Url).then { _ in
                                 didImport = true
                             }
                         }
@@ -310,7 +310,7 @@ class ImportUseCaseSpec: QuickSpec {
                     let feedURL = Bundle(for: self.classForCoder).url(forResource: "feed", withExtension: "rss")!
 
                     beforeEach {
-                        subject.scanForImportable(feedURL) {
+                        _ = subject.scanForImportable(feedURL).then {
                             receivedItem = $0
                         }
                     }
@@ -326,7 +326,7 @@ class ImportUseCaseSpec: QuickSpec {
                     context("later calling -importItem:callback: with that url") {
                         var didImport = false
                         beforeEach {
-                            subject.importItem(feedURL) {
+                            _ = subject.importItem(feedURL).then { _ in
                                 didImport = true
                             }
                         }
@@ -405,7 +405,7 @@ class ImportUseCaseSpec: QuickSpec {
                     let opmlURL = Bundle(for: self.classForCoder).url(forResource: "test", withExtension: "opml")!
 
                     beforeEach {
-                        subject.scanForImportable(opmlURL) {
+                        _ = subject.scanForImportable(opmlURL).then {
                             receivedItem = $0
                         }
                     }
@@ -421,7 +421,7 @@ class ImportUseCaseSpec: QuickSpec {
                     context("later calling -importItem:callback: with that url") {
                         var didImport = false
                         beforeEach {
-                            subject.importItem(opmlURL) {
+                            _ = subject.importItem(opmlURL).then { _ in
                                 didImport = true
                             }
                         }
@@ -442,7 +442,7 @@ class ImportUseCaseSpec: QuickSpec {
                     let url = Bundle(for: self.classForCoder).url(forResource: "test", withExtension: "jpg")!
 
                     beforeEach {
-                        subject.scanForImportable(url) {
+                        _ = subject.scanForImportable(url).then {
                             receivedItem = $0
                         }
                     }
@@ -463,38 +463,13 @@ class ImportUseCaseSpec: QuickSpec {
 
             it("informs the user that we don't have data for this url") {
                 var didImport = false
-                subject.importItem(url) {
+                _ = subject.importItem(url).then { _ in
                     didImport = true
                 }
                 expect(didImport) == true
             }
 
             // other cases are covered up above
-        }
-
-        describe("-scanDirectoryForImportables:callback:") {
-            let feedURL = Bundle(for: self.classForCoder).url(forResource: "feed", withExtension: "rss")!
-            let opmlURL = Bundle(for: self.classForCoder).url(forResource: "test", withExtension: "opml")!
-
-            it("it scans the directory for all urls in that directory") {
-                let bundle = Bundle(for: self.classForCoder)
-
-                fileManager.contentsOfDirectories[bundle.resourcePath!] = ["feed.rss", "test.opml"]
-
-                var receivedContents: [ImportUseCaseItem]? = nil
-
-                subject.scanDirectoryForImportables(bundle.resourceURL!) { contents in
-                    receivedContents = contents
-                }
-
-                expect(receivedContents).toNot(beNil())
-
-                guard let contents = receivedContents else { return }
-
-                expect(contents.count) == 2
-                expect(contents).to(contain(ImportUseCaseItem.feed(feedURL, 100)))
-                expect(contents).to(contain(ImportUseCaseItem.opml(opmlURL, 4)))
-            }
         }
     }
 }

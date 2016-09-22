@@ -1,6 +1,7 @@
 import Ra
 import Muon
 import Lepton
+import CBGPromise
 import Result
 
 public enum ImportUseCaseItem {
@@ -27,14 +28,9 @@ public func == (lhs: ImportUseCaseItem, rhs: ImportUseCaseItem) -> Bool {
     }
 }
 
-public typealias ImportUseCaseScanCompletion = (ImportUseCaseItem) -> Void
-public typealias ImportUseCaseScanDirectoryCompletion = ([ImportUseCaseItem]) -> Void
-public typealias ImportUseCaseImport = (Void) -> Void
-
 public protocol ImportUseCase {
-    func scanDirectoryForImportables(_ url: URL, callback: @escaping ImportUseCaseScanDirectoryCompletion)
-    func scanForImportable(_ url: URL, callback: @escaping ImportUseCaseScanCompletion)
-    func importItem(_ url: URL, callback: @escaping ImportUseCaseImport)
+    func scanForImportable(_ url: URL) -> Future<ImportUseCaseItem>
+    func importItem(_ url: URL) -> Future<Result<Void, RNewsError>>
 }
 
 public final class DefaultImportUseCase: ImportUseCase, Injectable {
@@ -72,73 +68,64 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
         )
     }
 
-    public func scanDirectoryForImportables(_ url: URL, callback: @escaping ImportUseCaseScanDirectoryCompletion) {
-        let path = url.path
-
-        let contents = ((try? self.fileManager.contentsOfDirectory(atPath: path)) ?? []).flatMap {
-            return URL(string: $0, relativeTo: url)?.absoluteURL
-        }
-
-        var ret: [ImportUseCaseItem] = []
-
-        var scanCount = 0
-
-        for url in contents {
-            self.scanForImportable(url) {
-                switch $0 {
-                case .opml(_): ret.append($0)
-                case .feed(_): ret.append($0)
-                default: break
-                }
-                scanCount += 1
-                if scanCount == contents.count {
-                    callback(ret)
-                }
-            }
-        }
-    }
-
-    public func scanForImportable(_ url: URL, callback: @escaping ImportUseCaseScanCompletion) {
+    public func scanForImportable(_ url: URL) -> Future<ImportUseCaseItem> {
+        let promise = Promise<ImportUseCaseItem>()
         if url.isFileURL {
             guard !url.absoluteString.contains("default.realm"), let data = try? Data(contentsOf: url) else {
-                callback(.none(url))
-                return
+                promise.resolve(.none(url))
+                return promise.future
             }
-            callback(self.scanDataForItem(data, url: url))
+            promise.resolve(self.scanDataForItem(data, url: url))
         } else {
             self.urlSession.dataTask(with: url) { data, _, error in
                 guard error == nil, let data = data else {
-                    callback(.none(url))
+                    promise.resolve(.none(url))
                     return
                 }
                 self.mainQueue.addOperation {
-                    callback(self.scanDataForItem(data, url: url))
+                    promise.resolve(self.scanDataForItem(data, url: url))
                 }
             }.resume()
         }
+        return promise.future
     }
 
-    public func importItem(_ url: URL, callback: @escaping ImportUseCaseImport) {
-        guard let importType = self.knownUrls[url] else { callback(); return }
+    public func importItem(_ url: URL) -> Future<Result<Void, RNewsError>> {
+        guard let importType = self.knownUrls[url] else {
+            let promise = Promise<Result<Void, RNewsError>>()
+            promise.resolve(.failure(.unknown))
+            return promise.future
+        }
         switch importType {
         case .feed:
             let url = self.canonicalURLForFeedAtURL(url)
-            _ = self.feedRepository.feeds().then {
-                guard case let Result.success(feeds) = $0 else { return }
-                let existingFeed = feeds.objectPassingTest({ $0.url == url })
-                guard existingFeed == nil else {
-                    return callback()
+            return self.feedRepository.feeds().map { result -> Future<Result<Void, RNewsError>> in
+                let promise = Promise<Result<Void, RNewsError>>()
+                switch result {
+                case let .success(feeds):
+                    let existingFeed = feeds.objectPassingTest({ $0.url == url })
+                    guard existingFeed == nil else {
+                        promise.resolve(.failure(.unknown))
+                        return promise.future
+                    }
+                    var feed: Feed?
+                    _ = self.feedRepository.newFeed {
+                        $0.url = url
+                        feed = $0
+                    }.then { _ in
+                        self.feedRepository.updateFeed(feed!) { _ in
+                            promise.resolve(.success())
+                        }
+                    }
+                case let .failure(error):
+                    promise.resolve(.failure(error))
                 }
-                var feed: Feed?
-                _ = self.feedRepository.newFeed {
-                    $0.url = url
-                    feed = $0
-                }.then { _ in
-                    self.feedRepository.updateFeed(feed!) { _ in callback() }
-                }
+                return promise.future
             }
         case .opml:
-            self.opmlService.importOPML(url) { _ in callback() }
+            let promise = Promise<Result<Void, RNewsError>>()
+            self.opmlService.importOPML(url) { _ in promise.resolve(.success()) }
+            return promise.future
         }
     }
 }

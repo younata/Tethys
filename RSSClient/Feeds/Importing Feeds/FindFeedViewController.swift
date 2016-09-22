@@ -245,7 +245,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
             attributes: self.placeholderAttributes)
         self.addFeedButton.isEnabled = false
         if let url = webView.url, lookForFeeds {
-            self.importUseCase.scanForImportable(url) { item in
+            _ = self.importUseCase.scanForImportable(url).then { item in
                 switch item {
                 case .feed(let url, _):
                     self.askToImportFeed(url)
@@ -322,7 +322,7 @@ extension FindFeedViewController {
         let messageTemplate = opml ? opmlMessageTemplate : feedMessageTemplate
         let message = NSString.localizedStringWithFormat(messageTemplate as NSString, link as CVarArg) as String
         indicator.configure(message: message)
-        self.importUseCase.importItem(link) {
+        _ = self.importUseCase.importItem(link).then { _ in
             indicator.removeFromSuperview()
             self.analytics.logEvent("DidUseWebImport", data: nil)
             self.dismissFromNavigation()

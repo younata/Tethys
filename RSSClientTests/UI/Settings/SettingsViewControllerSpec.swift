@@ -231,13 +231,13 @@ class SettingsViewControllerSpec: QuickSpec {
             it("should have 5 sections if force touch is available") {
                 subject.traitCollection.forceTouchCapability = UIForceTouchCapability.available
                 subject.tableView.reloadData()
-                expect(subject.tableView.numberOfSections) == 6
+                expect(subject.tableView.numberOfSections) == 5
             }
 
             it("should have 4 sections if force touch is not available") {
                 subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
                 subject.tableView.reloadData()
-                expect(subject.tableView.numberOfSections) == 5
+                expect(subject.tableView.numberOfSections) == 4
             }
 
             describe("the theme section") {
@@ -646,7 +646,7 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
             }
 
-            describe("the accounts section") {
+            xdescribe("the accounts section") {
                 let sectionNumber = 1
 
                 beforeEach {
@@ -726,7 +726,7 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the advanced section") {
-                let sectionNumber = 2
+                let sectionNumber = 1
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
@@ -778,7 +778,7 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the other section") {
-                let sectionNumber = 3
+                let sectionNumber = 2
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
@@ -858,7 +858,7 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the credits section") {
-                let sectionNumber = 4
+                let sectionNumber = 3
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable

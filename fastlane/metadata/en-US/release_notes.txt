@@ -1,29 +1,25 @@
-Bunch of features, bug fixes, and performance improvements.
+OS updates, bug fixes, performance improvements, new import/export infrastructure.
 
-Note that this will be the last version to support iOS 8.
+Drops iOS 8. Next update will drop iOS 9.
+DROP DATABASE CoreData; (Uses Realm entirely - this conversion happened back in 1.3, now we're just deleting code that abstracted core data as our database).
 
-Adds analytics, so I can divine how to better improve features. Analytics will only report usage data, not actual data (e.g. will report that you used the web import feature, but not which specific feed).
+Add ability to import from a ShareSheet (export OPML from another app)
+Add share sheet item in Settings to export all opml items
+Remove Local Import (import from itunes - use the new sharesheet import)
 
-Load content over https unless user overrides. Display message on navigation error
+Deleting an article or feed presents an 'Are you sure?' dialog before proceeding
 
-Show a spinner while an article is loading
+App and dependencies now use Swift 3
 
-Queries duckduckgo if an invalid url is entered on web import screen (e.g. type "what is this", andit'll search duckduckgo for "what is this", instead of showing an error)
+iOS 10 improvements:
+ - Adapt to true tone display
+ - better handle 3d touch settings on devices with/without 3d touch
 
-Sharing features: 
- - Add a tableview action to share a feed from the feeds list
- - Add activity item shown in ArticleViewController to show articles by the same author
- - Send a link to a feed's rss from the article list controller
+Bunch of "focusing" improvements
+ - Remove Query Feeds
+ - Remove enclosure support. Use Overcast for your podcasts.
 
-Hide navigation bars on swipe in article screen
+Make using this on an iPad be an actually good experience
+ - Fix how the split screen thing works
+ - Breakout to refresh now adapts to different screen sizes
 
-Showing the estimated reading time for an article is an option configurable in settings.
-
-Remove 'swipe to view next article' feature. It was annoying and I triggered it accidentally more often than intentionally.
-Fix bug searching in articles list causing crashes.
-Fix possible stack overflow when deleting an article
-Better caching of datastorebackedarray count (i.e. realm can sometimes take forever to come back. Report count as 0 until it comes back)
-marking a feed as read should always update the feeds screen
-App should not crash when trying to add/modify tags
-load up 50 objects at a time from realm
-Don't double import two articles

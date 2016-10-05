@@ -1827,7 +1827,9 @@
 					};
 					8992D4381C37C9B0004A5A35 = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = 9D456YCUH2;
 						LastSwiftMigration = 0800;
+						ProvisioningStyle = Automatic;
 						TestTargetID = 89C8307219D730E9009924DA;
 					};
 					89C8307219D730E9009924DA = {
@@ -2738,12 +2740,16 @@
 		8992D4401C37C9B0004A5A35 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 9D456YCUH2;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = rNewsAcceptanceTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.rNewsAcceptanceTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 3.0;
 				TEST_TARGET_NAME = RSSClient;
 				USES_XCTRUNNER = YES;
@@ -2753,8 +2759,10 @@
 		8992D4411C37C9B0004A5A35 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 9D456YCUH2;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = rNewsAcceptanceTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";

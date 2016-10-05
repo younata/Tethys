@@ -237,7 +237,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         }
     }
 
-    //MARK: Private (DataWriter)
+    // MARK: Private (DataWriter)
 
     private func privateMarkArticles(_ articles: [Article], asRead read: Bool) -> Future<Result<Int, RNewsError>> {
         guard articles.count > 0 else {

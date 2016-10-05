@@ -114,6 +114,7 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
                         feed = $0
                     }.then { _ in
                         self.feedRepository.updateFeed(feed!) { _ in
+                            guard promise.future.value == nil else { return }
                             promise.resolve(.success())
                         }
                     }

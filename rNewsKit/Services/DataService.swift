@@ -69,10 +69,11 @@ extension DataService {
 
         let operationQueue = OperationQueue()
         operationQueue.qualityOfService = .utility
+        operationQueue.maxConcurrentOperationCount = 1
 
         for item in articles {
             let filter: (rNewsKit.Article) -> Bool = { article in
-                return item.title == article.title || item.url == article.link
+                return item.url == article.link
             }
             let article = feedArticles.objectPassingTest(filter)
             operationQueue.addOperation {

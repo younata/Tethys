@@ -29,7 +29,6 @@ class rNewsAcceptanceTests: XCTestCase {
 
         self.waitForThingToExist(app.navigationBars["Feeds"])
         app.navigationBars["Feeds"].buttons["Add"].tap()
-        app.buttons["Add from Web"].tap()
 
         let enterUrlTextField = app.textFields["Enter URL"]
         enterUrlTextField.tap()

@@ -52,9 +52,7 @@ public final class BootstrapWorkFlow: Bootstrapper {
     private var feedAndArticle: (feed: Feed, article: Article)?
     public func begin(_ feedAndArticle: (feed: Feed, article: Article)? = nil) {
         self.feedAndArticle = feedAndArticle
-        if self.initialLaunch {
-
-        } else {
+        if !self.initialLaunch {
             if self.feedRepository.databaseUpdateAvailable() {
                 self.workflow = LinearWorkFlow(
                     components: [self.migrationUseCase],

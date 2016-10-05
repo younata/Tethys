@@ -61,11 +61,6 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
             UIBarButtonItem.appearance().tintColor = UIColor.darkGreen()
             UITabBar.appearance().tintColor = UIColor.darkGreen()
 
-            if ProcessInfo.processInfo.environment["deleteDocuments"] == "1" {
-                let url = URL(string: "file://\(NSHomeDirectory())")!.appendingPathComponent("Documents")
-                _ = try? FileManager.default.removeItem(at: url)
-            }
-
             if NSClassFromString("XCTestCase") != nil &&
                 launchOptions?[UIApplicationLaunchOptionsKey("test")] as? Bool != true {
                     self.getWindow().rootViewController = UIViewController()

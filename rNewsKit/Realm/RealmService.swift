@@ -205,6 +205,7 @@ final class RealmService: DataService {
     // Synchronous update!
 
     private func synchronousUpdateFeed(_ feed: Feed, realmFeed: RealmFeed? = nil) {
+        guard feed.updated else { return }
         self.startRealmTransaction()
 
         if let rfeed = realmFeed ?? self.realmFeedForFeed(feed) {
@@ -233,6 +234,7 @@ final class RealmService: DataService {
     }
 
     private func synchronousUpdateArticle(_ article: Article, realmArticle: RealmArticle? = nil) {
+        guard article.updated else { return }
         self.startRealmTransaction()
 
         if let rarticle = realmArticle ?? self.realmArticleForArticle(article) {

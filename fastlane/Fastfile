@@ -29,6 +29,12 @@ platform :ios do
     carthage(platform: 'iOS')
   end
 
+  desc 'Bumps version'
+  lane :bump_version do
+    increment_build_number(xcodeproj: 'RSSClient.xcodeproj')
+    commit_version_bump(xcodeproj: 'RSSClient.xcodeproj', force: true)
+  end
+
   desc 'Pushes'
   lane :push do
     increment_build_number(xcodeproj: 'RSSClient.xcodeproj')

@@ -73,7 +73,10 @@ extension DataService {
 
         for item in articles {
             let filter: (rNewsKit.Article) -> Bool = { article in
-                return item.url == article.link
+                let characterSet = CharacterSet(charactersIn: "/")
+                let item_trimmed = item.url.absoluteString.trimmingCharacters(in: characterSet)
+                let article_trimmed = article.link?.absoluteString.trimmingCharacters(in: characterSet)
+                return item_trimmed == article_trimmed || item.title == article.title
             }
             let article = feedArticles.objectPassingTest(filter)
             operationQueue.addOperation {

@@ -76,9 +76,7 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
                 self.navigationItem.title = feed.displayTitle
             }
 
-            if self.traitCollection.forceTouchCapability == .available {
-                self.registerForPreviewing(with: self, sourceView: self.tableView)
-            }
+            self.registerForPreviewing(with: self, sourceView: self.tableView)
             self.resetBarItems()
         }
     }

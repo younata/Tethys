@@ -159,9 +159,7 @@ public final class FeedsTableViewController: UIViewController, Injectable {
                                                          name: NSNotification.Name(rawValue: "UpdatedFeed"),
                                                          object: nil)
 
-        if self.traitCollection.forceTouchCapability == .available {
-            self.registerForPreviewing(with: self, sourceView: self.tableView)
-        }
+        self.registerForPreviewing(with: self, sourceView: self.tableView)
 
         self.feedRepository.addSubscriber(self)
         self.themeRepository.addSubscriber(self)

@@ -2911,6 +2911,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Rachel Brindle (9D456YCUH2)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Rachel Brindle (9D456YCUH2)";
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 9D456YCUH2;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -2923,6 +2924,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.RSSClient;
 				PRODUCT_NAME = rNews;
 				PROVISIONING_PROFILE = "102ff7ac-9378-49de-8e9e-fa6cf25e9870";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.rachelbrindle.RSSClient";
 				SWIFT_OBJC_BRIDGING_HEADER = "RSSClient/RSSClient-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "";

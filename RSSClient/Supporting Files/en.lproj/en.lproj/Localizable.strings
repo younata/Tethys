@@ -37,6 +37,7 @@
 "FeedsTableViewController_Table_EditAction_Delete" = "Delete";
 "FeedsTableViewController_Table_EditAction_MarkRead" = "Mark\nRead";
 "FeedsTableViewController_Table_EditAction_Edit" = "Edit";
+"FeedsTableViewController_PreviewItem_MarkRead" = "Mark Read";
 
 "FindFeedViewController_AddFeed" = "Add Feed";
 "FindFeedViewController_Commands_OpenURL" = "Open URL";

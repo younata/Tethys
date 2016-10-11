@@ -310,6 +310,48 @@ public final class FeedsTableViewController: UIViewController, Injectable {
         self.showArticleList(al, animated: animated)
         return al
     }
+
+    fileprivate func attemptDeleteFeed(of feed: Feed) -> Future<Bool> {
+        let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
+        let confirmDelete = NSLocalizedString("Generic_ConfirmDelete", comment: "")
+        let deleteAlertTitle = NSString.localizedStringWithFormat(confirmDelete as NSString,
+                                                                  feed.displayTitle) as String
+        let alert = UIAlertController(title: deleteAlertTitle, message: "", preferredStyle: .alert)
+        let promise = Promise<Bool>()
+        alert.addAction(UIAlertAction(title: deleteTitle, style: .destructive) { _ in
+            self.feeds = self.feeds.filter { $0 != feed }
+            _ = self.feedRepository.deleteFeed(feed)
+            self.dismiss(animated: true, completion: nil)
+            promise.resolve(true)
+        })
+        let cancelTitle = NSLocalizedString("Generic_Cancel", comment: "")
+        alert.addAction(UIAlertAction(title: cancelTitle, style: .cancel) { _ in
+            self.dismiss(animated: true, completion: nil)
+            promise.resolve(false)
+        })
+        self.present(alert, animated: true, completion: nil)
+        return promise.future
+    }
+
+    fileprivate func markRead(feed: Feed) -> Future<Void> {
+        self.markReadFuture = self.feedRepository.markFeedAsRead(feed)
+        return self.markReadFuture!.map { _ -> Void in
+            self.reload(self.searchBar.text)
+            self.markReadFuture = nil
+        }
+    }
+
+    fileprivate func editFeed(feed: Feed) {
+        let feedViewController = self.feedViewController()
+        feedViewController.feed = feed
+        self.present(UINavigationController(rootViewController: feedViewController),
+                     animated: true, completion: nil)
+    }
+
+    fileprivate func shareFeed(feed: Feed) {
+        let shareSheet = UIActivityViewController(activityItems: [feed.url], applicationActivities: nil)
+        self.present(shareSheet, animated: true, completion: nil)
+    }
 }
 
 extension FeedsTableViewController: ThemeRepositorySubscriber {
@@ -413,9 +455,31 @@ extension FeedsTableViewController: UIViewControllerPreviewingDelegate {
         viewControllerForLocation location: CGPoint) -> UIViewController? {
             if let indexPath = self.tableView.indexPathForRow(at: location) {
                 let feed = self.feedAtIndexPath(indexPath)
-                return configuredArticleListWithFeeds(feed)
+                let articleListController = configuredArticleListWithFeeds(feed)
+                articleListController._previewActionItems = self.articleListPreviewItems(feed: feed)
+                return articleListController
             }
             return nil
+    }
+
+    private func articleListPreviewItems(feed: Feed) -> [UIPreviewAction] {
+        let readTitle = NSLocalizedString("FeedsTableViewController_PreviewItem_MarkRead", comment: "")
+        let markRead = UIPreviewAction(title: readTitle, style: .default) { _ in
+            _ = self.markRead(feed: feed)
+        }
+        let editTitle = NSLocalizedString("Generic_Edit", comment: "")
+        let edit = UIPreviewAction(title: editTitle, style: .default) { _ in
+            self.editFeed(feed: feed)
+        }
+        let shareTitle = NSLocalizedString("Generic_Share", comment: "")
+        let share = UIPreviewAction(title: shareTitle, style: .default) { _ in
+            self.shareFeed(feed: feed)
+        }
+        let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
+        let delete = UIPreviewAction(title: deleteTitle, style: .destructive) { _ in
+            _ = self.attemptDeleteFeed(of: feed)
+        }
+        return [markRead, edit, share, delete]
     }
 
     public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
@@ -466,50 +530,30 @@ extension FeedsTableViewController: UITableViewDelegate {
         editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
             let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
             let delete = UITableViewRowAction(style: .default, title: deleteTitle) {(_, indexPath: IndexPath!) in
-                let feed = self.feedAtIndexPath(indexPath)
-                let confirmDelete = NSLocalizedString("Generic_ConfirmDelete", comment: "")
-                let deleteAlertTitle = NSString.localizedStringWithFormat(confirmDelete as NSString,
-                                                                          feed.displayTitle) as String
-                let alert = UIAlertController(title: deleteAlertTitle, message: "", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: deleteTitle, style: .destructive) { _ in
-                    self.feeds = self.feeds.filter { $0 != feed }
-                    _ = self.feedRepository.deleteFeed(feed)
-                    tableView.deleteRows(at: [indexPath], with: .automatic)
-                    self.dismiss(animated: true, completion: nil)
-                })
-                let cancelTitle = NSLocalizedString("Generic_Cancel", comment: "")
-                alert.addAction(UIAlertAction(title: cancelTitle, style: .cancel) { _ in
-                    self.dismiss(animated: true, completion: nil)
-                    tableView.reloadRows(at: [indexPath], with: .right)
-                })
-                self.present(alert, animated: true, completion: nil)
+                _ = self.attemptDeleteFeed(of: self.feedAtIndexPath(indexPath)).then {
+                    if $0 {
+                        tableView.deleteRows(at: [indexPath], with: .automatic)
+                    } else {
+                        tableView.reloadRows(at: [indexPath], with: .right)
+                    }
+                }
             }
 
             let readTitle = NSLocalizedString("FeedsTableViewController_Table_EditAction_MarkRead", comment: "")
             let markRead = UITableViewRowAction(style: .normal, title: readTitle) {_, indexPath in
-                let feed = self.feedAtIndexPath(indexPath)
-                self.markReadFuture = self.feedRepository.markFeedAsRead(feed)
-                _ = self.markReadFuture!.then { _ in
-                    self.reload(self.searchBar.text)
+                _ = self.markRead(feed: self.feedAtIndexPath(indexPath)).then {
                     tableView.reloadRows(at: [indexPath], with: .automatic)
-                    self.markReadFuture = nil
                 }
             }
 
             let editTitle = NSLocalizedString("Generic_Edit", comment: "")
             let edit = UITableViewRowAction(style: .normal, title: editTitle) {_, indexPath in
-                let feed = self.feedAtIndexPath(indexPath)
-                let feedViewController = self.feedViewController()
-                feedViewController.feed = feed
-                self.present(UINavigationController(rootViewController: feedViewController),
-                    animated: true, completion: nil)
+                self.editFeed(feed: self.feedAtIndexPath(indexPath))
             }
             edit.backgroundColor = UIColor.blue
-            let feed = self.feedAtIndexPath(indexPath)
             let shareTitle = NSLocalizedString("Generic_Share", comment: "")
             let share = UITableViewRowAction(style: .normal, title: shareTitle) {_ in
-                let shareSheet = UIActivityViewController(activityItems: [feed.url], applicationActivities: nil)
-                self.present(shareSheet, animated: true, completion: nil)
+                self.shareFeed(feed: self.feedAtIndexPath(indexPath))
             }
             share.backgroundColor = UIColor.darkGreen()
             return [delete, markRead, edit, share]

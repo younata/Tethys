@@ -429,14 +429,177 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                         viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
                                     }
 
-                                    it("should return an ArticleListController configured with the feed's articles to present to the user") {
+                                    it("returns an ArticleListController configured with the feed's articles to present to the user") {
                                         expect(viewController).to(beAKindOf(ArticleListController.self))
                                         if let articleVC = viewController as? ArticleListController {
                                             expect(articleVC.feed) == feed
                                         }
                                     }
 
-                                    it("should push the view controller when commited") {
+                                    describe("preview actions") {
+                                        var previewActions: [UIPreviewActionItem]?
+                                        var action: UIPreviewAction?
+                                        beforeEach {
+                                            expect(viewController).to(beAKindOf(ArticleListController.self))
+                                            previewActions = viewController?.previewActionItems
+                                            expect(previewActions).toNot(beNil())
+                                        }
+
+                                        it("has 4 preview actions") {
+                                            expect(previewActions?.count) == 4
+                                        }
+
+                                        describe("the first action") {
+                                            beforeEach {
+                                                action = previewActions?.first as? UIPreviewAction
+                                            }
+
+                                            it("should state it marks all items in the feed as read") {
+                                                expect(action?.title).to(equal("Mark Read"))
+                                            }
+
+                                            describe("tapping it") {
+                                                beforeEach {
+                                                    action?.handler(action!, viewController!)
+                                                }
+
+                                                it("marks all articles of that feed as read") {
+                                                    expect(dataUseCase.lastFeedMarkedRead).to(equal(feed))
+                                                }
+
+                                                it("when the subscriber gets a marked articles notice it does not refresh it's feed cache") {
+                                                    let article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                                                    dataUseCase.subscribersArray.first?.markedArticles([article], asRead: true)
+                                                    expect(dataUseCase.feedsPromises.count) == 1
+                                                }
+
+                                                it("causes a refresh of the feeds") {
+                                                    dataUseCase.lastFeedMarkedReadPromise?.resolve(.success(0))
+                                                    expect(dataUseCase.feedsPromises.count) == 2
+                                                }
+                                            }
+                                        }
+
+                                        describe("the second action") {
+                                            beforeEach {
+                                                if previewActions!.count > 1 {
+                                                    action = previewActions?[1] as? UIPreviewAction
+                                                }
+                                            }
+
+                                            it("should state it edits the feed") {
+                                                expect(action?.title).to(equal("Edit"))
+                                            }
+
+                                            describe("tapping it") {
+                                                beforeEach {
+                                                    action?.handler(action!, viewController!)
+                                                }
+
+                                                it("should bring up a feed edit screen") {
+                                                    expect(navigationController.visibleViewController).to(beAnInstanceOf(UINavigationController.self))
+                                                    if let nc = navigationController.visibleViewController as? UINavigationController {
+                                                        expect(nc.viewControllers.count).to(equal(1))
+                                                        expect(nc.topViewController).to(beAnInstanceOf(FeedViewController.self))
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        describe("the third action") {
+                                            beforeEach {
+                                                if previewActions!.count > 2 {
+                                                    action = previewActions?[2] as? UIPreviewAction
+                                                }
+                                            }
+
+                                            it("should state it opens a share sheet") {
+                                                expect(action?.title).to(equal("Share"))
+                                            }
+
+                                            describe("tapping it") {
+                                                beforeEach {
+                                                    action?.handler(action!, viewController!)
+                                                }
+
+                                                it("should bring up a share sheet") {
+                                                    expect(navigationController.visibleViewController).to(beAnInstanceOf(UIActivityViewController.self))
+                                                    if let activityVC = navigationController.visibleViewController as? UIActivityViewController {
+                                                        expect(activityVC.activityItems as? [URL]) == [feed.url!]
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        describe("the fourth action") {
+                                            beforeEach {
+                                                if previewActions!.count > 3 {
+                                                    action = previewActions?[3] as? UIPreviewAction
+                                                }
+                                            }
+
+                                            it("should state it deletes the feed") {
+                                                expect(action?.title).to(equal("Delete"))
+                                            }
+
+                                            describe("tapping it") {
+                                                beforeEach {
+                                                    action?.handler(action!, viewController!)
+                                                }
+
+                                                it("does not yet delete the feed from the data store") {
+                                                    expect(dataUseCase.lastDeletedFeed).to(beNil())
+                                                }
+
+                                                it("presents an alert asking for confirmation that the user wants to do this") {
+                                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                                    guard let alert = subject.presentedViewController as? UIAlertController else { return }
+                                                    expect(alert.preferredStyle) == UIAlertControllerStyle.alert
+                                                    expect(alert.title) == "Delete \(feed.displayTitle)?"
+
+                                                    expect(alert.actions.count) == 2
+                                                    expect(alert.actions.first?.title) == "Delete"
+                                                    expect(alert.actions.last?.title) == "Cancel"
+                                                }
+
+                                                describe("tapping 'Delete'") {
+                                                    beforeEach {
+                                                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                                        guard let alert = subject.presentedViewController as? UIAlertController else { return }
+
+                                                        alert.actions.first?.handler(alert.actions.first!)
+                                                    }
+
+                                                    it("deletes the feed from the data store") {
+                                                        expect(dataUseCase.lastDeletedFeed) == feed
+                                                    }
+
+                                                    it("dismisses the alert") {
+                                                        expect(subject.presentedViewController).to(beNil())
+                                                    }
+                                                }
+
+                                                describe("tapping 'Cancel'") {
+                                                    beforeEach {
+                                                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                                        guard let alert = subject.presentedViewController as? UIAlertController else { return }
+
+                                                        alert.actions.last?.handler(alert.actions.last!)
+                                                    }
+
+                                                    it("does not delete the feed from the data store") {
+                                                        expect(dataUseCase.lastDeletedFeed).to(beNil())
+                                                    }
+                                                    
+                                                    it("dismisses the alert") {
+                                                        expect(subject.presentedViewController).to(beNil())
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    it("pushes the view controller when commited") {
                                         if let vc = viewController {
                                             subject.previewingContext(viewControllerPreviewing, commit: vc)
                                             expect(navigationController.topViewController) === viewController

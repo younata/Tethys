@@ -81,6 +81,11 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
         }
     }
 
+    var _previewActionItems: [UIPreviewAction] = []
+    public override var previewActionItems: [UIPreviewActionItem] {
+        return self._previewActionItems
+    }
+
     public func deletedArticle(_ article: Article) {}
     public func willUpdateFeeds() {}
     public func didUpdateFeedsProgress(_ finished: Int, total: Int) {}

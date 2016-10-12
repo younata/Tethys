@@ -2817,7 +2817,7 @@
 					"$(SDKROOT)/usr/include/libxml2",
 					"$(SRCROOT)/Library",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -2862,7 +2862,7 @@
 					"$(SDKROOT)/usr/include/libxml2",
 					"$(SRCROOT)/Library",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";

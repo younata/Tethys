@@ -3,6 +3,7 @@ import Nimble
 import Ra
 import rNews
 import rNewsKit
+import SafariServices
 
 private var navController: UINavigationController! = nil
 private var feedRepository: FakeDatabaseUseCase! = nil
@@ -236,6 +237,32 @@ class FindFeedViewControllerSpec: QuickSpec {
 
             it("should disable the addFeedButton") {
                 expect(subject.addFeedButton.isEnabled) == false
+            }
+
+            describe("3d touch events") {
+                describe("when the user tries to peek on a link") {
+                    var viewController: UIViewController?
+                    let element = FakeWKPreviewItem(link: URL(string: "https://example.com/foo"))
+
+                    beforeEach {
+                        viewController = subject.webContent.uiDelegate?.webView?(subject.webContent,
+                                                                                 previewingViewControllerForElement: element,
+                                                                                 defaultActions: [])
+                    }
+
+                    it("presents an SFSafariViewController configured with that link") {
+                        expect(viewController).to(beAnInstanceOf(SFSafariViewController.self))
+                    }
+
+                    it("navigates the WKWebView to the url when the user commits the view") {
+                        subject.webContent.uiDelegate?.webView?(subject.webContent,
+                                                                commitPreviewingViewController: viewController!)
+
+                        expect(navController.visibleViewController).to(equal(subject))
+                        expect(subject.webContent.currentURL).to(equal(element.linkURL))
+
+                    }
+                }
             }
 
             describe("tapping the navField") {

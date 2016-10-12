@@ -182,6 +182,11 @@ public final class ArticleViewController: UIViewController, Injectable {
         return commands
     }
 
+    var _previewActionItems: [UIPreviewAction] = []
+    public override var previewActionItems: [UIPreviewActionItem] {
+        return self._previewActionItems
+    }
+
     @objc fileprivate func toggleArticleRead() {
         guard let article = self.article else { return }
         self.articleUseCase.toggleArticleRead(article)

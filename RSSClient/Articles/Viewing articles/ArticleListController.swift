@@ -1,6 +1,7 @@
 import UIKit
 import rNewsKit
 import Ra
+import CBGPromise
 
 public final class ArticleListController: UITableViewController, DataSubscriber, Injectable {
     internal var articles = DataStoreBackedArray<Article>()
@@ -128,6 +129,33 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
         }
     }
 
+    fileprivate func attemptDelete(article: Article) -> Future<Bool> {
+        let confirmDelete = NSLocalizedString("Generic_ConfirmDelete", comment: "")
+        let deleteAlertTitle = NSString.localizedStringWithFormat(confirmDelete as NSString,
+                                                                  article.title) as String
+        let alert = UIAlertController(title: deleteAlertTitle, message: "", preferredStyle: .alert)
+        let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
+        let promise = Promise<Bool>()
+        alert.addAction(UIAlertAction(title: deleteTitle, style: .destructive) { _ in
+            _ = self.articles.remove(article)
+            _ = self.feedRepository.deleteArticle(article)
+            promise.resolve(true)
+            self.dismiss(animated: true, completion: nil)
+        })
+        let cancelTitle = NSLocalizedString("Generic_Cancel", comment: "")
+        alert.addAction(UIAlertAction(title: cancelTitle, style: .cancel) { _ in
+            promise.resolve(false)
+            self.dismiss(animated: true, completion: nil)
+        })
+        self.present(alert, animated: true, completion: nil)
+        return promise.future
+    }
+
+    fileprivate func toggleRead(article: Article) {
+        article.read = !article.read
+        _ = self.feedRepository.markArticle(article, asRead: article.read)
+    }
+
     // MARK: - Table view data source
 
     public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -174,31 +202,20 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
             let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
             let delete = UITableViewRowAction(style: .default, title: deleteTitle,
                 handler: {(action: UITableViewRowAction!, indexPath: IndexPath!) in
-
-                    let confirmDelete = NSLocalizedString("Generic_ConfirmDelete", comment: "")
-                    let deleteAlertTitle = NSString.localizedStringWithFormat(confirmDelete as NSString,
-                                                                              article.title) as String
-                    let alert = UIAlertController(title: deleteAlertTitle, message: "", preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: deleteTitle, style: .destructive) { _ in
-                        _ = self.articles.remove(article)
-                        _ = self.feedRepository.deleteArticle(article)
-                        tableView.deleteRows(at: [indexPath], with: .automatic)
-                        self.dismiss(animated: true, completion: nil)
-                    })
-                    let cancelTitle = NSLocalizedString("Generic_Cancel", comment: "")
-                    alert.addAction(UIAlertAction(title: cancelTitle, style: .cancel) { _ in
-                        tableView.reloadRows(at: [indexPath], with: .right)
-                        self.dismiss(animated: true, completion: nil)
-                    })
-                    self.present(alert, animated: true, completion: nil)
+                    _ = self.attemptDelete(article: article).then {
+                        if $0 {
+                            tableView.deleteRows(at: [indexPath], with: .automatic)
+                        } else {
+                            tableView.reloadRows(at: [indexPath], with: .right)
+                        }
+                    }
             })
             let unread = NSLocalizedString("ArticleListController_Cell_EditAction_MarkUnread", comment: "")
             let read = NSLocalizedString("ArticleListController_Cell_EditAction_MarkRead", comment: "")
             let toggleText = article.read ? unread : read
             let toggle = UITableViewRowAction(style: .normal, title: toggleText,
                 handler: {(action: UITableViewRowAction!, indexPath: IndexPath!) in
-                    article.read = !article.read
-                    _ = self.feedRepository.markArticle(article, asRead: article.read)
+                    self.toggleRead(article: article)
             })
             return [delete, toggle]
     }
@@ -252,9 +269,28 @@ extension ArticleListController: UIViewControllerPreviewingDelegate {
         viewControllerForLocation location: CGPoint) -> UIViewController? {
             if let indexPath = self.tableView.indexPathForRow(at: location), !self.previewMode {
                 let article = self.articleForIndexPath(indexPath)
-                return self.configuredArticleController(article, read: false)
+                let articleController = self.configuredArticleController(article, read: false)
+                articleController._previewActionItems = self.previewItems(article: article)
+                return articleController
             }
             return nil
+    }
+
+    private func previewItems(article: Article) -> [UIPreviewAction] {
+        let toggleReadTitle: String
+        if article.read {
+            toggleReadTitle = NSLocalizedString("ArticleListController_PreviewItem_MarkUnread", comment: "")
+        } else {
+            toggleReadTitle = NSLocalizedString("ArticleListController_PreviewItem_MarkRead", comment: "")
+        }
+        let toggleRead = UIPreviewAction(title: toggleReadTitle, style: .default) { _ in
+            self.toggleRead(article: article)
+        }
+        let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
+        let delete = UIPreviewAction(title: deleteTitle, style: .destructive) { _ in
+            _ = self.attemptDelete(article: article)
+        }
+        return [toggleRead, delete]
     }
 
     public func previewingContext(_ previewingContext: UIViewControllerPreviewing,

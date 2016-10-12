@@ -232,6 +232,115 @@ class ArticleListControllerSpec: QuickSpec {
                     expect(dataRepository.lastArticleMarkedRead).to(beNil())
                 }
 
+                describe("the preview actions") {
+                    var previewActions: [UIPreviewActionItem]?
+                    var action: UIPreviewAction?
+
+                    beforeEach {
+                        previewActions = viewController?.previewActionItems
+                        expect(previewActions).toNot(beNil())
+                    }
+
+                    it("has 2 preview actions") {
+                        expect(previewActions?.count) == 2
+                    }
+
+                    describe("the first action") {
+                        describe("for an unread article") {
+                            it("should mark the article as read") {
+                                action = previewActions?.first as? UIPreviewAction
+
+                                expect(action?.title).to(equal("Mark Read"))
+                                action?.handler(action!, viewController!)
+
+                                expect(dataRepository.lastArticleMarkedRead).to(equal(articles.first))
+                                expect(articles.first?.read) == true
+                            }
+                        }
+
+                        describe("for a read article") {
+                            it("should mark the article as unread") {
+                                let rect = subject.tableView.rectForRow(at: IndexPath(row: 2, section: 0))
+                                let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
+                                viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                                previewActions = viewController?.previewActionItems
+                                action = previewActions?.first as? UIPreviewAction
+
+                                expect(action?.title).to(equal("Mark Unread"))
+                                action?.handler(action!, viewController!)
+
+                                expect(dataRepository.lastArticleMarkedRead).to(equal(articles[2]))
+                                expect(articles.first?.read) == false
+                            }
+                        }
+                    }
+
+                    describe("the last action") {
+                        beforeEach {
+                            action = previewActions?.last as? UIPreviewAction
+                        }
+
+                        it("states that it deletes the article") {
+                            expect(action?.title) == "Delete"
+                        }
+
+                        describe("tapping it") {
+                            beforeEach {
+                                action?.handler(action!, viewController!)
+                            }
+
+                            it("does not yet delete the article") {
+                                expect(dataRepository.lastDeletedArticle).to(beNil())
+                            }
+
+                            it("presents an alert asking for confirmation that the user wants to do this") {
+                                expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                guard let alert = subject.presentedViewController as? UIAlertController else { return }
+                                expect(alert.preferredStyle) == UIAlertControllerStyle.alert
+                                expect(alert.title) == "Delete \(articles.first!.title)?"
+
+                                expect(alert.actions.count) == 2
+                                expect(alert.actions.first?.title) == "Delete"
+                                expect(alert.actions.last?.title) == "Cancel"
+                            }
+
+                            describe("tapping 'Delete'") {
+                                beforeEach {
+                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                    guard let alert = subject.presentedViewController as? UIAlertController else { return }
+
+                                    alert.actions.first?.handler(alert.actions.first!)
+                                }
+
+                                it("deletes the article") {
+                                    expect(dataRepository.lastDeletedArticle) == articles.first
+                                }
+
+                                it("dismisses the alert") {
+                                    expect(subject.presentedViewController).to(beNil())
+                                }
+                            }
+
+                            describe("tapping 'Cancel'") {
+                                beforeEach {
+                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                    guard let alert = subject.presentedViewController as? UIAlertController else { return }
+
+                                    alert.actions.last?.handler(alert.actions.last!)
+                                }
+
+                                it("does not delete the article") {
+                                    expect(dataRepository.lastDeletedArticle).to(beNil())
+                                }
+
+                                it("dismisses the alert") {
+                                    expect(subject.presentedViewController).to(beNil())
+                                }
+                            }
+                        }
+                    }
+                }
+
                 describe("committing that view controller") {
                     beforeEach {
                         if let vc = viewController {

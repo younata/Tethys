@@ -240,7 +240,7 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             describe("3d touch events") {
-                xdescribe("when the user tries to peek on a link") {
+                describe("when the user tries to peek on a link") {
                     var viewController: UIViewController?
                     let element = FakeWKPreviewItem(link: URL(string: "https://example.com/foo"))
 
@@ -250,17 +250,16 @@ class FindFeedViewControllerSpec: QuickSpec {
                                                                                  defaultActions: [])
                     }
 
-                    it("presents an SFSafariViewController configured with that link") {
-                        expect(viewController).to(beAnInstanceOf(SFSafariViewController.self))
+                    it("presents another FindFeedViewController configured with that link") {
+                        expect(viewController).to(beAnInstanceOf(FindFeedViewController.self))
+                        expect(viewController).toNot(equal(subject))
                     }
 
-                    it("navigates the WKWebView to the url when the user commits the view") {
+                    it("replaces the navigation controller's view controller stack with just that view controller") {
                         subject.webContent.uiDelegate?.webView?(subject.webContent,
                                                                 commitPreviewingViewController: viewController!)
 
-                        expect(navController.visibleViewController).to(equal(subject))
-                        expect(subject.webContent.currentURL).to(equal(element.linkURL))
-
+                        expect(navController.viewControllers).to(equal([viewController]))
                     }
                 }
             }

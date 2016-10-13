@@ -1,5 +1,6 @@
 import UIKit
 import WebKit
+import SafariServices
 import Muon
 import Lepton
 import Ra
@@ -53,6 +54,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.edgesForExtendedLayout = UIRectEdge()
 
         self.webContent.navigationDelegate = self
+        self.webContent.uiDelegate = self
         self.view.addSubview(self.webContent)
         self.webContent.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
 
@@ -260,6 +262,24 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
                 }
             }
         }
+    }
+}
+
+extension FindFeedViewController: WKUIDelegate {
+    public func webView(_ webView: WKWebView, previewingViewControllerForElement elementInfo: WKPreviewElementInfo, defaultActions previewActions: [WKPreviewActionItem]) -> UIViewController? {
+        if let url = elementInfo.linkURL {
+            let controller = FindFeedViewController(importUseCase: self.importUseCase,
+                                                    themeRepository: self.themeRepository,
+                                                    analytics: self.analytics)
+            _ = controller.view
+            controller.webContent.load(URLRequest(url: url))
+            return controller
+        }
+        return nil
+    }
+
+    public func webView(_ webView: WKWebView, commitPreviewingViewController previewingViewController: UIViewController) {
+        self.navigationController?.setViewControllers([previewingViewController], animated: true)
     }
 }
 

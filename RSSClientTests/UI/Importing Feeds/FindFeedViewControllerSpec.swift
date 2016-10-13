@@ -240,7 +240,7 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             describe("3d touch events") {
-                describe("when the user tries to peek on a link") {
+                xdescribe("when the user tries to peek on a link") {
                     var viewController: UIViewController?
                     let element = FakeWKPreviewItem(link: URL(string: "https://example.com/foo"))
 

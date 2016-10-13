@@ -63,7 +63,8 @@ platform :ios do
 
   desc 'Deploy a new version to TestFlight'
   lane :deploy_testflight do
-    increment_build_number(xcodeproj: 'RSSClient.xcodeproj', build_number: `git rev-parse --short HEAD`)
+    build_number = `git rev-list $(git rev-parse --abbrev-ref HEAD) | wc -l | awk '{ print $1 }'`
+    increment_build_number(xcodeproj: 'RSSClient.xcodeproj', build_number: build_number)
     gym(project: 'RSSClient.xcodeproj', scheme: "RSSClient")
     pilot(distribute_external: false, changelog: `git log -1 --format='%B'`)
   end

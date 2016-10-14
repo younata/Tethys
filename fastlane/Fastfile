@@ -61,6 +61,13 @@ platform :ios do
     scan(scheme: 'rNewsAcceptanceTests')
   end
 
+  desc 'set up CI to deploy'
+  lane :deploy_setup do
+    sh 'echo "$MIXPANEL_TOKEN" > .mixpanel'
+    sh 'echo "$PASIPHAE_TOKEN" > .pasiphae'
+    sh 'echo "$PASIPHAE_URL" > .pasiphaeURL'
+  end
+
   desc 'Deploy a new version to TestFlight'
   lane :deploy_testflight do
     build_number = `git rev-list $(git rev-parse --abbrev-ref HEAD) | wc -l | awk '{ print $1 }'`

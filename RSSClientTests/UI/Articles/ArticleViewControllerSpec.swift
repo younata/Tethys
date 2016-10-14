@@ -188,7 +188,7 @@ class ArticleViewControllerSpec: QuickSpec {
             }
 
             it("should show the content") {
-                expect(subject.content.loadedHTMLString).to(contain(article.content))
+                expect(subject.content.lastHTMLStringLoaded).to(contain(article.content))
             }
         }
 
@@ -249,7 +249,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
             describe("when the article loads") {
                 beforeEach {
-                    subject.content.delegate?.webViewDidFinishLoad?(subject.content)
+                    subject.content.navigationDelegate?.webView?(subject.content, didFinish: nil)
                 }
 
                 it("hides the backgroundView") {
@@ -326,8 +326,16 @@ class ArticleViewControllerSpec: QuickSpec {
             }
 
             context("tapping a link") {
+                var shouldInteract: Bool?
+                beforeEach {
+                    shouldInteract = false
+                }
+
                 it("navigates to that article if the link goes to a related article") {
-                    let shouldInteract = subject.content.delegate?.webView?(subject.content, shouldStartLoadWith: URLRequest(url: article2.link!), navigationType: .linkClicked)
+                    let navAction = FakeWKNavigationAction(url: article2.link!, navigationType: .linkActivated)
+                    subject.content.navigationDelegate?.webView?(subject.content, decidePolicyFor: navAction) { (actionPolicy: WKNavigationActionPolicy) -> Void in
+                        shouldInteract = (actionPolicy == WKNavigationActionPolicy.allow)
+                    }
                     expect(shouldInteract) == false
 //                    expect(navigationController.topViewController) != subject
 //                    expect(navigationController.topViewController).to(beAnInstanceOf(ArticleViewController.self))
@@ -338,9 +346,36 @@ class ArticleViewControllerSpec: QuickSpec {
 
                 it("opens in an SFSafariViewController") {
                     let url = URL(string: "https://example.com")!
-                    let shouldInteract = subject.content.delegate?.webView?(subject.content, shouldStartLoadWith: URLRequest(url: url), navigationType: .linkClicked)
+                    let navAction = FakeWKNavigationAction(url: URL(string: "https://example.com")!, navigationType: .linkActivated)
+                    subject.content.navigationDelegate?.webView?(subject.content, decidePolicyFor: navAction) { (actionPolicy: WKNavigationActionPolicy) -> Void in
+                        shouldInteract = (actionPolicy == WKNavigationActionPolicy.allow)
+                    }
                     expect(shouldInteract) == false
                     expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
+                }
+            }
+
+            context("3d touching a link") {
+                describe("3d touching a standard link") {
+                    var viewController: UIViewController?
+                    let element = FakeWKPreviewItem(link: URL(string: "https://example.com/foo"))
+
+                    beforeEach {
+                        viewController = subject.content.uiDelegate?.webView?(subject.content,
+                                                                              previewingViewControllerForElement: element,
+                                                                              defaultActions: [])
+                    }
+
+                    it("presents another FindFeedViewController configured with that link") {
+                        expect(viewController).to(beAnInstanceOf(SFSafariViewController.self))
+                    }
+
+                    it("replaces the navigation controller's view controller stack with just that view controller") {
+                        subject.content.uiDelegate?.webView?(subject.content,
+                                                             commitPreviewingViewController: viewController!)
+
+                        expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
+                    }
                 }
             }
         }

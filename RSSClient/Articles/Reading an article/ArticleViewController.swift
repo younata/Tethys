@@ -4,6 +4,7 @@ import PureLayout
 import TOBrowserActivityKit
 import Ra
 import rNewsKit
+import WebKit
 import SafariServices
 
 public final class ArticleViewController: UIViewController, Injectable {
@@ -31,7 +32,7 @@ public final class ArticleViewController: UIViewController, Injectable {
         self.title = article.title
     }
 
-    public var content = UIWebView(forAutoLayout: ())
+    public var content = WKWebView(forAutoLayout: ())
 
     public private(set) lazy var shareButton: UIBarButtonItem = {
         return UIBarButtonItem(barButtonSystemItem: .action, target: self,
@@ -68,7 +69,7 @@ public final class ArticleViewController: UIViewController, Injectable {
 
     public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
-    fileprivate func showArticle(_ article: Article, onWebView webView: UIWebView) {
+    fileprivate func showArticle(_ article: Article, onWebView webView: WKWebView) {
         webView.loadHTMLString(self.articleUseCase.readArticle(article), baseURL: article.link)
 
         self.view.layoutIfNeeded()
@@ -193,14 +194,22 @@ public final class ArticleViewController: UIViewController, Injectable {
     }
 
     private func configureContent() {
-        self.content.delegate = self
-        self.content.scalesPageToFit = true
+        self.content.navigationDelegate = self
+        self.content.uiDelegate = self
+        self.content.uiDelegate = self
         self.content.isOpaque = false
         self.setThemeForWebView(self.content)
         self.content.allowsLinkPreview = true
+
+        var scriptContent = "var meta = document.createElement('meta');"
+        scriptContent += "meta.name='viewport';"
+        scriptContent += "meta.content='width=device-width';"
+        scriptContent += "document.getElementsByTagName('head')[0].appendChild(meta);"
+
+        self.content.evaluateJavaScript(scriptContent, completionHandler: nil)
     }
 
-    fileprivate func setThemeForWebView(_ webView: UIWebView) {
+    fileprivate func setThemeForWebView(_ webView: WKWebView) {
         webView.backgroundColor = themeRepository.backgroundColor
         webView.scrollView.backgroundColor = themeRepository.backgroundColor
         webView.scrollView.indicatorStyle = themeRepository.scrollIndicatorStyle
@@ -249,23 +258,54 @@ public final class ArticleViewController: UIViewController, Injectable {
     }
 }
 
-extension ArticleViewController: UIWebViewDelegate {
-    public func webView(_ webView: UIWebView,
-        shouldStartLoadWith request: URLRequest,
-        navigationType: UIWebViewNavigationType) -> Bool {
-            guard let url = request.url, navigationType == .linkClicked else { return true }
-            let predicate = NSPredicate(format: "link = %@", url.absoluteString)
-            if let article = self.article?.relatedArticles.filterWithPredicate(predicate).first {
-                let articleController = ArticleViewController(themeRepository: self.themeRepository,
-                                                              articleUseCase: self.articleUseCase,
-                                                              articleListController: self.articleListController)
-                articleController.setArticle(article, read: true, show: true)
-                self.navigationController?.pushViewController(articleController, animated: true)
-            } else { self.openURL(url) }
-            return false
+extension ArticleViewController: WKNavigationDelegate, WKUIDelegate {
+    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
+                        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        let request = navigationAction.request
+        let navigationType = navigationAction.navigationType
+        guard let url = request.url, navigationType == .linkActivated else {
+            decisionHandler(.allow)
+            return
+        }
+        let predicate = NSPredicate(format: "link = %@", url.absoluteString)
+        if let article = self.article?.relatedArticles.filterWithPredicate(predicate).first {
+            let articleController = ArticleViewController(themeRepository: self.themeRepository,
+                                                          articleUseCase: self.articleUseCase,
+                                                          articleListController: self.articleListController)
+            articleController.setArticle(article, read: true, show: true)
+            self.navigationController?.pushViewController(articleController, animated: true)
+        } else { self.openURL(url) }
+        decisionHandler(.cancel)
     }
 
-    public func webViewDidFinishLoad(_ webView: UIWebView) { self.backgroundView.isHidden = self.article != nil }
+    public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        self.backgroundView.isHidden = self.article != nil
+    }
+
+    public func webView(_ webView: WKWebView,
+                        previewingViewControllerForElement elementInfo: WKPreviewElementInfo,
+                        defaultActions previewActions: [WKPreviewActionItem]) -> UIViewController? {
+        guard let url = elementInfo.linkURL else { return nil }
+        let predicate = NSPredicate(format: "link = %@", url.absoluteString)
+        if let article = self.article?.relatedArticles.filterWithPredicate(predicate).first {
+            let articleController = ArticleViewController(themeRepository: self.themeRepository,
+                                                          articleUseCase: self.articleUseCase,
+                                                          articleListController: self.articleListController)
+            articleController.setArticle(article, read: true, show: true)
+            return articleController
+        } else {
+            return SFSafariViewController(url: url)
+        }
+    }
+
+    public func webView(_ webView: WKWebView,
+                        commitPreviewingViewController previewingViewController: UIViewController) {
+        if let _ = previewingViewController as? SFSafariViewController {
+            self.present(previewingViewController, animated: true, completion: nil)
+        } else {
+            self.navigationController?.pushViewController(previewingViewController, animated: true)
+        }
+    }
 }
 
 extension ArticleViewController: NSUserActivityDelegate {

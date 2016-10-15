@@ -15,12 +15,6 @@ public final class FeedsTableViewController: UIViewController, Injectable {
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 80
         tableView.translatesAutoresizingMaskIntoConstraints = false
-
-        tableView.register(FeedTableCell.self, forCellReuseIdentifier: "read")
-        tableView.register(FeedTableCell.self, forCellReuseIdentifier: "unread")
-        // Prevents a green triangle which'll (dis)appear depending on
-        // whether new feed loaded into it has unread articles or not.
-
         return tableView
     }()
 
@@ -61,11 +55,9 @@ public final class FeedsTableViewController: UIViewController, Injectable {
     }()
 
     public let loadingView = ActivityIndicator(forAutoLayout: ())
-
     public fileprivate(set) var feeds: [Feed] = []
     private let tableViewController = UITableViewController(style: .plain)
     private var menuTopOffset: NSLayoutConstraint!
-
     public let notificationView = NotificationView(forAutoLayout: ())
 
     fileprivate let feedRepository: DatabaseUseCase
@@ -121,9 +113,7 @@ public final class FeedsTableViewController: UIViewController, Injectable {
         )
     }
 
-    public required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -173,6 +163,7 @@ public final class FeedsTableViewController: UIViewController, Injectable {
     }
 
     public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         self.updateRefreshViewSize(self.view.bounds.size)
     }
 
@@ -195,7 +186,6 @@ public final class FeedsTableViewController: UIViewController, Injectable {
     }
 
     public override var canBecomeFirstResponder: Bool { return true }
-
     public override var keyCommands: [UIKeyCommand]? {
         let commands = [
             UIKeyCommand(input: "f", modifierFlags: .command, action: #selector(FeedsTableViewController.search)),
@@ -290,7 +280,6 @@ public final class FeedsTableViewController: UIViewController, Injectable {
 
     @objc fileprivate func didTapAddFeed() {
         guard self.navigationController?.visibleViewController == self else { return }
-
         self.importFromWeb()
     }
 

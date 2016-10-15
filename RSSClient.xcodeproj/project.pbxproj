@@ -123,6 +123,9 @@
 		8949698D1C72FAEB00A91986 /* Kanna.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8903EB141C72F8A7001C0189 /* Kanna.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		894CEAA21DAE7C7500E8BDEB /* FakeWKPreviewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894CEAA11DAE7C7500E8BDEB /* FakeWKPreviewItem.swift */; };
 		894D1AEB1DB0971E00E70B1A /* FakeWKNavigationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894D1AEA1DB0971E00E70B1A /* FakeWKNavigationAction.swift */; };
+		894D1AED1DB19A4E00E70B1A /* FeedsDeleSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894D1AEC1DB19A4E00E70B1A /* FeedsDeleSource.swift */; };
+		894D1AEF1DB1A9E700E70B1A /* FeedsDeleSourceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894D1AEE1DB1A9E700E70B1A /* FeedsDeleSourceSpec.swift */; };
+		894D1AF11DB1AAC400E70B1A /* FakeFeedsSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894D1AF01DB1AAC400E70B1A /* FakeFeedsSource.swift */; };
 		89500B231CDEA26E004548C3 /* InMemoryDataServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89500B221CDEA26E004548C3 /* InMemoryDataServiceSpec.swift */; };
 		89500B241CDEA288004548C3 /* InMemoryDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E67D631C33CB8000819646 /* InMemoryDataService.swift */; };
 		89500B251CDEA289004548C3 /* InMemoryDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E67D631C33CB8000819646 /* InMemoryDataService.swift */; };
@@ -600,6 +603,9 @@
 		894942401C84BEC20095FFD4 /* FakeQuickActionRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeQuickActionRepository.swift; sourceTree = "<group>"; };
 		894CEAA11DAE7C7500E8BDEB /* FakeWKPreviewItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeWKPreviewItem.swift; sourceTree = "<group>"; };
 		894D1AEA1DB0971E00E70B1A /* FakeWKNavigationAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeWKNavigationAction.swift; sourceTree = "<group>"; };
+		894D1AEC1DB19A4E00E70B1A /* FeedsDeleSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsDeleSource.swift; sourceTree = "<group>"; };
+		894D1AEE1DB1A9E700E70B1A /* FeedsDeleSourceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsDeleSourceSpec.swift; sourceTree = "<group>"; };
+		894D1AF01DB1AAC400E70B1A /* FakeFeedsSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeFeedsSource.swift; sourceTree = "<group>"; };
 		89500B221CDEA26E004548C3 /* InMemoryDataServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InMemoryDataServiceSpec.swift; sourceTree = "<group>"; };
 		8953B1571B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIApplication+rNewsSpec.swift"; sourceTree = "<group>"; };
 		8957799D19E62C7100548418 /* RSSClientTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSSClientTests-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -1069,6 +1075,7 @@
 				89F517011B1C070C0005AB04 /* FeedViewControllerSpec.swift */,
 				89735AC11C0771590032E09C /* FeedsListControllerSpec.swift */,
 				898ECDE01B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift */,
+				894D1AEE1DB1A9E700E70B1A /* FeedsDeleSourceSpec.swift */,
 			);
 			path = Feeds;
 			sourceTree = "<group>";
@@ -1501,6 +1508,7 @@
 			children = (
 				89C830C919DA37FB009924DA /* FeedTableCell.swift */,
 				89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */,
+				894D1AEC1DB19A4E00E70B1A /* FeedsDeleSource.swift */,
 			);
 			path = "Viewing Feeds";
 			sourceTree = "<group>";
@@ -1568,6 +1576,7 @@
 				892CBDE91C7A27FE0062E578 /* FakeArticleUseCase.swift */,
 				89EA6C351B4B2D8400456892 /* FakeDefaultDatabaseUseCase.swift */,
 				89348F2E1C60730D007D366B /* FakeDatabaseUseCase.swift */,
+				894D1AF01DB1AAC400E70B1A /* FakeFeedsSource.swift */,
 				89C676551BA28FE60037A224 /* FakeFileManager.swift */,
 				8903EB0E1C703570001C0189 /* FakeImportUseCase.swift */,
 				89CBDC081C7D431D006B70F5 /* FakeMigrationUseCase.swift */,
@@ -2305,6 +2314,7 @@
 				89E2A33D1B6A856900A40D4E /* SettingsViewController.swift in Sources */,
 				89C509F41A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */,
 				8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */,
+				894D1AED1DB19A4E00E70B1A /* FeedsDeleSource.swift in Sources */,
 				8903A6251C4AB17C00E896BF /* NotificationView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2328,6 +2338,7 @@
 				894CEAA21DAE7C7500E8BDEB /* FakeWKPreviewItem.swift in Sources */,
 				89F98BAA1BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift in Sources */,
 				89D970C11B392AD400ED84B8 /* FakeNotificationSource.swift in Sources */,
+				894D1AEF1DB1A9E700E70B1A /* FeedsDeleSourceSpec.swift in Sources */,
 				899823A91B2C76B800818755 /* TagEditorViewControllerSpec.swift in Sources */,
 				89F517021B1C070C0005AB04 /* FeedViewControllerSpec.swift in Sources */,
 				898ECDE11B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift in Sources */,
@@ -2357,6 +2368,7 @@
 				89D970BF1B3929D600ED84B8 /* DefaultBackgroundFetchHandlerSpec.swift in Sources */,
 				899823AC1B2C883B00818755 /* ArticleListControllerSpec.swift in Sources */,
 				899823AE1B30B64000818755 /* ArticleViewControllerSpec.swift in Sources */,
+				894D1AF11DB1AAC400E70B1A /* FakeFeedsSource.swift in Sources */,
 				8994F0F41C8F899600920E6D /* UIViewController+rNewsTests.m in Sources */,
 				89C676561BA28FE60037A224 /* FakeFileManager.swift in Sources */,
 				89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */,
@@ -2452,10 +2464,10 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				CURRENT_PROJECT_VERSION = 825;
+				CURRENT_PROJECT_VERSION = 828;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 825;
+				DYLIB_CURRENT_VERSION = 828;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2481,10 +2493,10 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				CURRENT_PROJECT_VERSION = 825;
+				CURRENT_PROJECT_VERSION = 828;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 825;
+				DYLIB_CURRENT_VERSION = 828;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2595,11 +2607,11 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 825;
+				CURRENT_PROJECT_VERSION = 828;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 825;
+				DYLIB_CURRENT_VERSION = 828;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2628,11 +2640,11 @@
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 825;
+				CURRENT_PROJECT_VERSION = 828;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 825;
+				DYLIB_CURRENT_VERSION = 828;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

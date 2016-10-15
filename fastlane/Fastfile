@@ -78,12 +78,59 @@ platform :ios do
 
   desc 'Deploy a new version to the App Store'
   lane :deploy_app_store do
+    tracker_release = next_tracker_release
+
+    update_release_notes tracker_release[:release_notes]
+    bump_release_version tracker_release[:title]
+
+    add_git_tag(tag: tracker_release[:title])
+    push_to_git_remote
+
     sh 'SNAPSHOT_FORCE_DELETE=1 bundle exec snapshot reset_simulators'
     snapshot
+
     gym(scheme: "RSSClient")
     deliver
+
+    upload_github_release tracker_release[:title] tracker_release[:release_notes]
+  end
+
+  def next_tracker_release
+    require 'pivotal-tracker'
+    TRACKER_TOKEN = ENV['TRACKER_TOKEN']
+    TRACKER_PROJECT_ID = '1423142'
+
+    PivotalTracker::Client.token = TRACKER_TOKEN
+    PivotalTracker::Client.use_ssl = true
+    project = PivotalTracker::Project.find(TRACKER_PROJECT_ID)
+    next_release = project.stories.all(story_type: ['release']).first
+
+    {title: next_release.name, release_notes: next_release.description, story: next_release}
+  end
+
+  def update_release_notes(release_notes)
+    IO.write('fastlane/metadata/en-US/release_notes.txt', release_notes)
+    sh 'git add fastlane/metadata/en-US/release_notes.txt'
+  end
+
+  def bump_release_version(tag_name)
+    release_version = tag_name.sub(/^v/, '')
+
+    increment_version_number(xcodeproj: 'RSSClient.xcodeproj', version_number: release_version)
+    commit_version_bump(xcodeproj: 'RSSClient.xcodeproj', force: true)
+  end
+
+  def upload_github_release(tag_name, release_notes)
+    set_github_release(
+      repository_name: "younata/rssclient",
+      api_token: ENV["GITHUB_TOKEN"],
+      name: tag_name,
+      tag_name: tag_name,
+      description: release_notes,
+    )
   end
 end
+
 
 
 

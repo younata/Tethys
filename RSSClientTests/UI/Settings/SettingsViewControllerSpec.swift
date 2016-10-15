@@ -228,16 +228,16 @@ class SettingsViewControllerSpec: QuickSpec {
                 dataSource = subject.tableView.dataSource
             }
 
-            it("should have 5 sections if force touch is available") {
+            it("should have 6 sections if force touch is available") {
                 subject.traitCollection.forceTouchCapability = UIForceTouchCapability.available
                 subject.tableView.reloadData()
-                expect(subject.tableView.numberOfSections) == 5
+                expect(subject.tableView.numberOfSections) == 6
             }
 
-            it("should have 4 sections if force touch is not available") {
+            it("should have 5 sections if force touch is not available") {
                 subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
                 subject.tableView.reloadData()
-                expect(subject.tableView.numberOfSections) == 4
+                expect(subject.tableView.numberOfSections) == 5
             }
 
             describe("the theme section") {
@@ -646,7 +646,7 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
             }
 
-            xdescribe("the accounts section") {
+            describe("the accounts section") {
                 let sectionNumber = 1
 
                 beforeEach {
@@ -726,7 +726,7 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the advanced section") {
-                let sectionNumber = 1
+                let sectionNumber = 2
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
@@ -778,7 +778,7 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the other section") {
-                let sectionNumber = 2
+                let sectionNumber = 3
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
@@ -858,7 +858,7 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the credits section") {
-                let sectionNumber = 3
+                let sectionNumber = 4
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable

@@ -40,13 +40,13 @@ public final class SettingsViewController: UIViewController, Injectable {
                 switch rawValue + offset {
                 case 1:
                     self = .quickActions
-//                case 2:
-//                    self = .accounts
                 case 2:
-                    self = .advanced
+                    self = .accounts
                 case 3:
-                    self = .other
+                    self = .advanced
                 case 4:
+                    self = .other
+                case 5:
                     self = .credits
                 default:
                     return nil
@@ -56,9 +56,9 @@ public final class SettingsViewController: UIViewController, Injectable {
 
         static func numberOfSettings(_ traits: UITraitCollection) -> Int {
             if traits.forceTouchCapability == .available {
-                return 5
+                return 6
             }
-            return 4
+            return 5
         }
 
         fileprivate var rawValue: Int {
@@ -66,9 +66,9 @@ public final class SettingsViewController: UIViewController, Injectable {
             case .theme: return 0
             case .quickActions: return 1
             case .accounts: return 2
-            case .advanced: return 2
-            case .other: return 3
-            case .credits: return 4
+            case .advanced: return 3
+            case .other: return 4
+            case .credits: return 5
             }
         }
 

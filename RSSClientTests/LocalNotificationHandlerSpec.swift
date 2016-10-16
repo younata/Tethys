@@ -73,6 +73,7 @@ class LocalNotificationHandlerSpec: QuickSpec {
 
                 let splitVC = UISplitViewController()
                 injector.bind(kind: SettingsRepository.self, toInstance: SettingsRepository())
+                injector.bind(string: kMainQueue, toInstance: FakeOperationQueue())
                 navController = UINavigationController(rootViewController: injector.create(kind: FeedsTableViewController.self)!)
                 splitVC.viewControllers = [navController]
 

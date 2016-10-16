@@ -15,6 +15,7 @@ extension ProcessInfo: LowPowerDiviner {}
 public final class RefreshControl: NSObject {
     private let notificationCenter: NotificationCenter
     private let scrollView: UIScrollView
+    private let mainQueue: OperationQueue
     fileprivate let refresher: Refresher
     fileprivate let lowPowerDiviner: LowPowerDiviner
 
@@ -39,11 +40,13 @@ public final class RefreshControl: NSObject {
 
     public init(notificationCenter: NotificationCenter,
                 scrollView: UIScrollView,
+                mainQueue: OperationQueue,
                 themeRepository: ThemeRepository,
                 refresher: Refresher,
                 lowPowerDiviner: LowPowerDiviner) {
         self.notificationCenter = notificationCenter
         self.scrollView = scrollView
+        self.mainQueue = mainQueue
         self.refresher = refresher
         self.lowPowerDiviner = lowPowerDiviner
         super.init()
@@ -62,20 +65,25 @@ public final class RefreshControl: NSObject {
         self.notificationCenter.removeObserver(self)
     }
 
-    public func beginRefreshing() {
-        if !self.breakoutView.isRefreshing {
+    public func beginRefreshing(force: Bool = false) {
+        guard !self.isRefreshing || force else { return }
+        switch self.refreshControlUsed {
+        case .breakout:
             self.breakoutView.beginRefreshing()
+        case .spinner:
+            self.spinner.beginRefreshing()
         }
     }
 
     public func endRefreshing(force: Bool = false) {
-        if self.breakoutView.isRefreshing || force {
-            self.breakoutView.endRefreshing()
-        }
+        guard self.isRefreshing || force else { return }
+
+        self.breakoutView.endRefreshing()
+        self.spinner.endRefreshing()
     }
 
     public var isRefreshing: Bool {
-        return self.breakoutView.isRefreshing
+        return self.breakoutView.isRefreshing || self.spinner.isRefreshing
     }
 
     public func updateSize(_ size: CGSize) {
@@ -85,10 +93,12 @@ public final class RefreshControl: NSObject {
     }
 
     @objc private func powerStateDidChange() {
-        if self.lowPowerDiviner.isLowPowerModeEnabled {
-            self.switchInSpinner()
-        } else {
-            self.switchInBreakoutToRefresh()
+        self.mainQueue.addOperation {
+            if self.lowPowerDiviner.isLowPowerModeEnabled {
+                self.switchInSpinner()
+            } else {
+                self.switchInBreakoutToRefresh()
+            }
         }
     }
 
@@ -96,12 +106,22 @@ public final class RefreshControl: NSObject {
         self.scrollView.addSubview(self.breakoutView)
         self.scrollView.refreshControl = nil
 
+        if self.isRefreshing {
+            self.endRefreshing()
+            self.breakoutView.beginRefreshing()
+        }
+
         self.refreshControlUsed = .breakout
     }
 
     private func switchInSpinner() {
         self.breakoutView.removeFromSuperview()
         self.scrollView.refreshControl = self.spinner
+
+        if self.isRefreshing {
+            self.endRefreshing()
+            self.spinner.beginRefreshing()
+        }
 
         self.refreshControlUsed = .spinner
     }
@@ -115,6 +135,8 @@ extension RefreshControl: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.breakoutView.scenebackgroundColor = themeRepository.backgroundColor
         self.breakoutView.textColor = themeRepository.textColor
+
+        self.spinner.tintColor = themeRepository.textColor
     }
 }
 

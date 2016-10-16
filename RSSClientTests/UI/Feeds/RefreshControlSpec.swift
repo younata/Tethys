@@ -19,6 +19,7 @@ class RefreshControlSpec: QuickSpec {
 
         var notificationCenter: NotificationCenter!
         var scrollView: UIScrollView!
+        var mainQueue: FakeOperationQueue!
         var themeRepository: ThemeRepository!
         var refresher: FakeRefresher!
         var lowPowerDiviner: FakeLowPowerDiviner!
@@ -26,6 +27,8 @@ class RefreshControlSpec: QuickSpec {
         beforeEach {
             notificationCenter = NotificationCenter()
             scrollView = UIScrollView()
+            mainQueue = FakeOperationQueue()
+            mainQueue.runSynchronously = true
             themeRepository = ThemeRepository(userDefaults: nil)
             refresher = FakeRefresher()
             lowPowerDiviner = FakeLowPowerDiviner()
@@ -33,6 +36,7 @@ class RefreshControlSpec: QuickSpec {
             subject = RefreshControl(
                 notificationCenter: notificationCenter,
                 scrollView: scrollView,
+                mainQueue: mainQueue,
                 themeRepository: themeRepository,
                 refresher: refresher,
                 lowPowerDiviner: lowPowerDiviner
@@ -48,6 +52,10 @@ class RefreshControlSpec: QuickSpec {
                 expect(subject.breakoutView.scenebackgroundColor) == themeRepository.backgroundColor
                 expect(subject.breakoutView.textColor) == themeRepository.textColor
             }
+
+            it("updates the spinner's colors") {
+                expect(subject.spinner.tintColor) == themeRepository.textColor
+            }
         }
 
         describe("when in low power mode") {
@@ -57,6 +65,7 @@ class RefreshControlSpec: QuickSpec {
                 subject = RefreshControl(
                     notificationCenter: notificationCenter,
                     scrollView: scrollView,
+                    mainQueue: mainQueue,
                     themeRepository: themeRepository,
                     refresher: refresher,
                     lowPowerDiviner: lowPowerDiviner

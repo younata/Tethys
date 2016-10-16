@@ -1,5 +1,4 @@
 import UIKit
-import BreakOutToRefresh
 import Ra
 import CBGPromise
 import Result
@@ -46,6 +45,7 @@ public final class FeedsTableViewController: UIViewController, Injectable {
         return RefreshControl(
             notificationCenter: NotificationCenter.default,
             scrollView: self.tableView,
+            mainQueue: self.mainQueue,
             themeRepository: self.themeRepository,
             refresher: self,
             lowPowerDiviner: ProcessInfo.processInfo
@@ -71,6 +71,7 @@ public final class FeedsTableViewController: UIViewController, Injectable {
     fileprivate let feedRepository: DatabaseUseCase
     fileprivate let themeRepository: ThemeRepository
     fileprivate let settingsRepository: SettingsRepository
+    fileprivate let mainQueue: OperationQueue
 
     fileprivate let findFeedViewController: (Void) -> FindFeedViewController
     fileprivate let feedViewController: (Void) -> FeedViewController
@@ -83,6 +84,7 @@ public final class FeedsTableViewController: UIViewController, Injectable {
     public init(feedRepository: DatabaseUseCase,
                 themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
+                mainQueue: OperationQueue,
                 findFeedViewController: @escaping (Void) -> FindFeedViewController,
                 feedViewController: @escaping (Void) -> FeedViewController,
                 settingsViewController: @escaping (Void) -> SettingsViewController,
@@ -91,6 +93,7 @@ public final class FeedsTableViewController: UIViewController, Injectable {
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
+        self.mainQueue = mainQueue
         self.findFeedViewController = findFeedViewController
         self.feedViewController = feedViewController
         self.settingsViewController = settingsViewController
@@ -104,6 +107,7 @@ public final class FeedsTableViewController: UIViewController, Injectable {
             feedRepository: injector.create(kind: DatabaseUseCase.self)!,
             themeRepository: injector.create(kind: ThemeRepository.self)!,
             settingsRepository: injector.create(kind: SettingsRepository.self)!,
+            mainQueue: injector.create(string: kMainQueue) as! OperationQueue,
             findFeedViewController: {injector.create(kind: FindFeedViewController.self)!},
             feedViewController: {injector.create(kind: FeedViewController.self)!},
             settingsViewController: {injector.create(kind: SettingsViewController.self)!},

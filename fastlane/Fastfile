@@ -92,17 +92,14 @@ platform :ios do
     gym(scheme: "RSSClient")
     deliver
 
-    upload_github_release tracker_release[:title] tracker_release[:release_notes]
+    upload_github_release(tracker_release[:title], tracker_release[:release_notes])
   end
 
   def next_tracker_release
     require 'pivotal-tracker'
-    TRACKER_TOKEN = ENV['TRACKER_TOKEN']
-    TRACKER_PROJECT_ID = '1423142'
-
-    PivotalTracker::Client.token = TRACKER_TOKEN
+    PivotalTracker::Client.token = ENV['TRACKER_TOKEN']
     PivotalTracker::Client.use_ssl = true
-    project = PivotalTracker::Project.find(TRACKER_PROJECT_ID)
+    project = PivotalTracker::Project.find('1423142')
     next_release = project.stories.all(story_type: ['release']).first
 
     {title: next_release.name, release_notes: next_release.description, story: next_release}

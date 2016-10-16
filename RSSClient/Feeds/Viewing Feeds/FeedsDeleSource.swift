@@ -11,7 +11,7 @@ public protocol FeedsSource {
     func deleteFeed(feed: Feed) -> Future<Bool>
 }
 
-public class FeedsDeleSource: NSObject {
+public final class FeedsDeleSource: NSObject {
     fileprivate let tableView: UITableView
     fileprivate let feedsSource: FeedsSource
     fileprivate let themeRepository: ThemeRepository

@@ -86,11 +86,6 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     expect(subject.searchBar.barStyle).to(equal(themeRepository.barStyle))
                     expect(subject.searchBar.backgroundColor).to(equal(themeRepository.backgroundColor))
                 }
-
-                it("updates the refreshView colors") {
-                    expect(subject.refreshView.scenebackgroundColor).to(equal(themeRepository.backgroundColor))
-                    expect(subject.refreshView.textColor).to(equal(themeRepository.textColor))
-                }
             }
 
 
@@ -123,7 +118,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     }
 
                     it("should start the pull to refresh") {
-                        expect(subject.refreshView.isRefreshing) == true
+                        expect(subject.refreshControl.isRefreshing) == true
                     }
 
                     context("as progress continues") {
@@ -145,7 +140,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             }
 
                             it("should stop the pull to refresh") {
-                                expect(subject.refreshView.isRefreshing) == false
+                                expect(subject.refreshControl.isRefreshing) == false
                             }
 
                             it("should reload the tableView") {
@@ -310,8 +305,8 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     describe("pull to refresh") {
                         beforeEach {
                             expect(dataUseCase.didUpdateFeeds) == false
-                            subject.refreshView.beginRefreshing()
-                            subject.refreshViewDidRefresh(subject.refreshView)
+                            subject.refreshControl.beginRefreshing()
+                            subject.refreshControl.refreshViewDidRefresh(subject.refreshControl.breakoutView)
                         }
 
                         it("should tell the dataManager to updateFeeds") {
@@ -319,7 +314,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                         }
 
                         it("should be refreshing") {
-                            expect(subject.refreshView.isRefreshing) == true
+                            expect(subject.refreshControl.isRefreshing) == true
                         }
 
                         context("when the call succeeds") {
@@ -336,7 +331,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             }
 
                             it("stops refreshing") {
-                                expect(subject.refreshView.isRefreshing) == false
+                                expect(subject.refreshControl.isRefreshing) == false
                             }
 
                             it("makes another request for the feeds") {
@@ -366,7 +361,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                         subscriber.didUpdateFeeds([])
                                     }
                                 }
-                                expect(subject.refreshView.isRefreshing) == false
+                                expect(subject.refreshControl.isRefreshing) == false
                             }
                             
                             it("should bring up an alert notifying the user") {

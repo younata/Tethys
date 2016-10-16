@@ -126,6 +126,8 @@
 		894D1AED1DB19A4E00E70B1A /* FeedsDeleSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894D1AEC1DB19A4E00E70B1A /* FeedsDeleSource.swift */; };
 		894D1AEF1DB1A9E700E70B1A /* FeedsDeleSourceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894D1AEE1DB1A9E700E70B1A /* FeedsDeleSourceSpec.swift */; };
 		894D1AF11DB1AAC400E70B1A /* FakeFeedsSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894D1AF01DB1AAC400E70B1A /* FakeFeedsSource.swift */; };
+		894D1AF31DB1EF2500E70B1A /* RefreshControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894D1AF21DB1EF2500E70B1A /* RefreshControl.swift */; };
+		894D1AF51DB28B8E00E70B1A /* RefreshControlSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894D1AF41DB28B8E00E70B1A /* RefreshControlSpec.swift */; };
 		89500B231CDEA26E004548C3 /* InMemoryDataServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89500B221CDEA26E004548C3 /* InMemoryDataServiceSpec.swift */; };
 		89500B241CDEA288004548C3 /* InMemoryDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E67D631C33CB8000819646 /* InMemoryDataService.swift */; };
 		89500B251CDEA289004548C3 /* InMemoryDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E67D631C33CB8000819646 /* InMemoryDataService.swift */; };
@@ -606,6 +608,8 @@
 		894D1AEC1DB19A4E00E70B1A /* FeedsDeleSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsDeleSource.swift; sourceTree = "<group>"; };
 		894D1AEE1DB1A9E700E70B1A /* FeedsDeleSourceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsDeleSourceSpec.swift; sourceTree = "<group>"; };
 		894D1AF01DB1AAC400E70B1A /* FakeFeedsSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeFeedsSource.swift; sourceTree = "<group>"; };
+		894D1AF21DB1EF2500E70B1A /* RefreshControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefreshControl.swift; sourceTree = "<group>"; };
+		894D1AF41DB28B8E00E70B1A /* RefreshControlSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefreshControlSpec.swift; sourceTree = "<group>"; };
 		89500B221CDEA26E004548C3 /* InMemoryDataServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InMemoryDataServiceSpec.swift; sourceTree = "<group>"; };
 		8953B1571B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIApplication+rNewsSpec.swift"; sourceTree = "<group>"; };
 		8957799D19E62C7100548418 /* RSSClientTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSSClientTests-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -1076,6 +1080,7 @@
 				89735AC11C0771590032E09C /* FeedsListControllerSpec.swift */,
 				898ECDE01B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift */,
 				894D1AEE1DB1A9E700E70B1A /* FeedsDeleSourceSpec.swift */,
+				894D1AF41DB28B8E00E70B1A /* RefreshControlSpec.swift */,
 			);
 			path = Feeds;
 			sourceTree = "<group>";
@@ -1509,6 +1514,7 @@
 				89C830C919DA37FB009924DA /* FeedTableCell.swift */,
 				89C830C719DA2FEE009924DA /* FeedsTableViewController.swift */,
 				894D1AEC1DB19A4E00E70B1A /* FeedsDeleSource.swift */,
+				894D1AF21DB1EF2500E70B1A /* RefreshControl.swift */,
 			);
 			path = "Viewing Feeds";
 			sourceTree = "<group>";
@@ -2307,6 +2313,7 @@
 				890B78C81C77FD200066E201 /* ArticleUseCase.swift in Sources */,
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
 				89DA7D2C1A66111E0050685B /* TextFieldCell.swift in Sources */,
+				894D1AF31DB1EF2500E70B1A /* RefreshControl.swift in Sources */,
 				89C204BD1A73F72800C792D2 /* SplitViewController.swift in Sources */,
 				8903F5A01D3BE5AB00546099 /* LoginViewController.swift in Sources */,
 				89CBDC151C7D7D96006B70F5 /* UIApplication+DataSubscriber.swift in Sources */,
@@ -2329,6 +2336,7 @@
 				892CBDEA1C7A27FE0062E578 /* FakeArticleUseCase.swift in Sources */,
 				8997C7F51B248D5A00972930 /* FakeWebView.swift in Sources */,
 				89F98BA81BA07E50005C3CA8 /* SettingsRepositorySpec.swift in Sources */,
+				894D1AF51DB28B8E00E70B1A /* RefreshControlSpec.swift in Sources */,
 				89CB98BF1B13947800C87160 /* FeedTableCellSpec.swift in Sources */,
 				8997C7F71B25074900972930 /* ValidatorViewSpec.swift in Sources */,
 				893F93E41B237EBC00B52194 /* UnreadCounterSpec.swift in Sources */,

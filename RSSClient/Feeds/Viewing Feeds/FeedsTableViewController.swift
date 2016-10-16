@@ -5,8 +5,6 @@ import CBGPromise
 import Result
 import rNewsKit
 
-// swiftlint:disable file_length
-
 public final class FeedsTableViewController: UIViewController, Injectable {
     public lazy var tableView: UITableView = {
         let tableView = self.tableViewController.tableView!
@@ -36,22 +34,32 @@ public final class FeedsTableViewController: UIViewController, Injectable {
         return updateBar
     }()
 
-    public lazy var refreshView: BreakOutToRefreshView = {
-        let refreshView = BreakOutToRefreshView(scrollView: self.tableView)
-        refreshView.breakoutDelegate = self
-        refreshView.scenebackgroundColor = UIColor.white
-        refreshView.paddleColor = UIColor.blue
-        refreshView.ballColor = UIColor.darkGreen()
-        refreshView.blockColors = [UIColor.darkGray, UIColor.gray, UIColor.lightGray]
-        return refreshView
-    }()
-
     public lazy var onboardingView: ExplanationView = {
         let view = ExplanationView(forAutoLayout: ())
         view.title = NSLocalizedString("FeedsTableViewController_Onboarding_Title", comment: "")
         view.detail = NSLocalizedString("FeedsTableViewController_Onboarding_Detail", comment: "")
         view.themeRepository = self.themeRepository
         return view
+    }()
+
+    public private(set) lazy var refreshControl: RefreshControl = {
+        return RefreshControl(
+            notificationCenter: NotificationCenter.default,
+            scrollView: self.tableView,
+            themeRepository: self.themeRepository,
+            refresher: self,
+            lowPowerDiviner: ProcessInfo.processInfo
+        )
+    }()
+
+    fileprivate lazy var feedsDeleSource: FeedsDeleSource = {
+        return FeedsDeleSource(
+            tableView: self.tableView,
+            feedsSource: self,
+            themeRepository: self.themeRepository,
+            navigationController: self.navigationController!,
+            articleListController: self.articleListController
+        )
     }()
 
     public let loadingView = ActivityIndicator(forAutoLayout: ())
@@ -70,16 +78,6 @@ public final class FeedsTableViewController: UIViewController, Injectable {
     fileprivate let articleListController: (Void) -> ArticleListController
 
     fileprivate var markReadFuture: Future<Result<Int, RNewsError>>? = nil
-
-    fileprivate lazy var feedsDeleSource: FeedsDeleSource = {
-        return FeedsDeleSource(
-            tableView: self.tableView,
-            feedsSource: self,
-            themeRepository: self.themeRepository,
-            navigationController: self.navigationController!,
-            articleListController: self.articleListController
-        )
-    }()
 
     // swiftlint:disable function_parameter_count
     public init(feedRepository: DatabaseUseCase,
@@ -122,11 +120,10 @@ public final class FeedsTableViewController: UIViewController, Injectable {
         self.tableView.keyboardDismissMode = .onDrag
         self.view.addSubview(self.tableView)
         self.tableView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
-        self.tableView.addSubview(self.refreshView)
-        self.updateRefreshViewSize(self.view.bounds.size)
         self.tableView.delegate = self.feedsDeleSource
         self.tableView.dataSource = self.feedsDeleSource
-        self.feedsDeleSource.scrollViewDelegate = self.refreshView
+        self.feedsDeleSource.scrollViewDelegate = self.refreshControl
+        self.refreshControl.updateSize(self.view.bounds.size)
 
         self.navigationController?.navigationBar.addSubview(self.updateBar)
         if let _ = self.updateBar.superview {
@@ -164,25 +161,19 @@ public final class FeedsTableViewController: UIViewController, Injectable {
 
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.updateRefreshViewSize(self.view.bounds.size)
-    }
-
-    private func updateRefreshViewSize(_ size: CGSize) {
-        let height: CGFloat = 100
-        self.refreshView.frame = CGRect(x: 0, y: -height, width: size.width, height: height)
-        self.refreshView.layoutSubviews()
+        self.refreshControl.updateSize(self.view.bounds.size)
     }
 
     public override func viewWillTransition(to size: CGSize,
         with coordinator: UIViewControllerTransitionCoordinator) {
             super.viewWillTransition(to: size, with: coordinator)
 
-            self.updateRefreshViewSize(size)
+            self.refreshControl.updateSize(size)
     }
 
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.refreshView.endRefreshing()
+        self.refreshControl.endRefreshing()
     }
 
     public override var canBecomeFirstResponder: Bool { return true }
@@ -243,7 +234,7 @@ public final class FeedsTableViewController: UIViewController, Injectable {
                 return f1.displayTitle.lowercased() < f2.displayTitle.lowercased()
             }
 
-            if self.refreshView.isRefreshing { self.refreshView.endRefreshing() }
+            self.refreshControl.endRefreshing()
 
             self.loadingView.removeFromSuperview()
             self.onboardingView.removeFromSuperview()
@@ -335,6 +326,25 @@ extension FeedsTableViewController: FeedsSource {
     }
 }
 
+extension FeedsTableViewController: Refresher {
+    public func refresh() {
+        self.feedRepository.updateFeeds({feeds, errors in
+            if !errors.isEmpty {
+                let alertTitle = NSLocalizedString("FeedsTableViewController_UpdateFeeds_Error_Title", comment: "")
+
+                let messageString = errors.filter({$0.userInfo["feedTitle"] != nil}).map({(error) -> (String) in
+                    let title = error.userInfo["feedTitle"]!
+                    let failureReason = error.localizedFailureReason ?? error.localizedDescription
+                    return "\(title): \(failureReason)"
+                }).joined(separator: "\n")
+
+                let alertMessage = messageString
+                self.notificationView.display(alertTitle, message: alertMessage)
+            }
+        })
+    }
+}
+
 extension FeedsTableViewController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.navigationController?.navigationBar.barStyle = self.themeRepository.barStyle
@@ -345,9 +355,6 @@ extension FeedsTableViewController: ThemeRepositorySubscriber {
 
         self.searchBar.barStyle = self.themeRepository.barStyle
         self.searchBar.backgroundColor = self.themeRepository.backgroundColor
-
-        self.refreshView.scenebackgroundColor = self.themeRepository.backgroundColor
-        self.refreshView.textColor = self.themeRepository.textColor
 
         self.setNeedsStatusBarAppearanceUpdate()
     }
@@ -371,9 +378,7 @@ extension FeedsTableViewController: DataSubscriber {
     public func willUpdateFeeds() {
         self.updateBar.isHidden = false
         self.updateBar.progress = 0
-        if !self.refreshView.isRefreshing {
-            self.refreshView.beginRefreshing()
-        }
+        self.refreshControl.beginRefreshing()
     }
 
     public func didUpdateFeedsProgress(_ finished: Int, total: Int) {
@@ -382,29 +387,7 @@ extension FeedsTableViewController: DataSubscriber {
 
     public func didUpdateFeeds(_ feeds: [Feed]) {
         self.updateBar.isHidden = true
-        if self.refreshView.isRefreshing {
-            self.refreshView.endRefreshing()
-        }
-        self.refreshView.endRefreshing()
+        self.refreshControl.endRefreshing(force: true)
         self.reload(self.searchBar.text, feeds: feeds)
-    }
-}
-
-extension FeedsTableViewController: BreakOutToRefreshDelegate {
-    public func refreshViewDidRefresh(_ refreshView: BreakOutToRefreshView) {
-        self.feedRepository.updateFeeds({feeds, errors in
-            if !errors.isEmpty {
-                let alertTitle = NSLocalizedString("FeedsTableViewController_UpdateFeeds_Error_Title", comment: "")
-
-                let messageString = errors.filter({$0.userInfo["feedTitle"] != nil}).map({(error) -> (String) in
-                    let title = error.userInfo["feedTitle"]!
-                    let failureReason = error.localizedFailureReason ?? error.localizedDescription
-                    return "\(title): \(failureReason)"
-                }).joined(separator: "\n")
-
-                let alertMessage = messageString
-                self.notificationView.display(alertTitle, message: alertMessage)
-            }
-        })
     }
 }

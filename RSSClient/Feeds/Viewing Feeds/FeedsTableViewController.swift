@@ -47,6 +47,7 @@ public final class FeedsTableViewController: UIViewController, Injectable {
             scrollView: self.tableView,
             mainQueue: self.mainQueue,
             themeRepository: self.themeRepository,
+            settingsRepository: self.settingsRepository,
             refresher: self,
             lowPowerDiviner: ProcessInfo.processInfo
         )

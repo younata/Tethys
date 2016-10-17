@@ -29,10 +29,11 @@ public final class RefreshControl: NSObject {
     private let notificationCenter: NotificationCenter
     private let scrollView: UIScrollView
     private let mainQueue: OperationQueue
+    private let settingsRepository: SettingsRepository
     fileprivate let refresher: Refresher
     fileprivate let lowPowerDiviner: LowPowerDiviner
 
-    fileprivate var refreshControlUsed: RefreshControlStyle = .breakout
+    fileprivate var refreshControlStyle: RefreshControlStyle
 
     public private(set) lazy var breakoutView: BreakOutToRefreshView = {
         let refreshView = BreakOutToRefreshView(scrollView: self.scrollView)
@@ -50,13 +51,16 @@ public final class RefreshControl: NSObject {
                 scrollView: UIScrollView,
                 mainQueue: OperationQueue,
                 themeRepository: ThemeRepository,
+                settingsRepository: SettingsRepository,
                 refresher: Refresher,
                 lowPowerDiviner: LowPowerDiviner) {
         self.notificationCenter = notificationCenter
         self.scrollView = scrollView
         self.mainQueue = mainQueue
+        self.settingsRepository = settingsRepository
         self.refresher = refresher
         self.lowPowerDiviner = lowPowerDiviner
+        self.refreshControlStyle = settingsRepository.refreshControl
         super.init()
         notificationCenter.addObserver(
             self,
@@ -64,9 +68,10 @@ public final class RefreshControl: NSObject {
             name: NSNotification.Name.NSProcessInfoPowerStateDidChange,
             object: nil
         )
-        self.powerStateDidChange()
         self.spinner.addTarget(self, action: #selector(RefreshControl.beginRefresh), for: .valueChanged)
         themeRepository.addSubscriber(self)
+        settingsRepository.addSubscriber(self)
+        self.powerStateDidChange()
     }
 
     deinit {
@@ -75,7 +80,7 @@ public final class RefreshControl: NSObject {
 
     public func beginRefreshing(force: Bool = false) {
         guard !self.isRefreshing || force else { return }
-        switch self.refreshControlUsed {
+        switch self.refreshControlStyle {
         case .breakout:
             self.breakoutView.beginRefreshing()
         case .spinner:
@@ -102,9 +107,24 @@ public final class RefreshControl: NSObject {
 
     @objc private func powerStateDidChange() {
         self.mainQueue.addOperation {
+            let forcedStyle: RefreshControlStyle?
             if self.lowPowerDiviner.isLowPowerModeEnabled {
-                self.switchInSpinner()
+                forcedStyle = .breakout
             } else {
+                forcedStyle = nil
+            }
+            self.changeRefreshStyle(forcedStyle: forcedStyle)
+        }
+    }
+
+    fileprivate func changeRefreshStyle(forcedStyle: RefreshControlStyle? = nil) {
+        if let style = forcedStyle {
+            self.switchInSpinner()
+        } else {
+            switch self.settingsRepository.refreshControl {
+            case .spinner:
+                self.switchInSpinner()
+            case .breakout:
                 self.switchInBreakoutToRefresh()
             }
         }
@@ -119,7 +139,7 @@ public final class RefreshControl: NSObject {
             self.breakoutView.beginRefreshing()
         }
 
-        self.refreshControlUsed = .breakout
+        self.refreshControlStyle = .breakout
     }
 
     private func switchInSpinner() {
@@ -131,7 +151,7 @@ public final class RefreshControl: NSObject {
             self.spinner.beginRefreshing()
         }
 
-        self.refreshControlUsed = .spinner
+        self.refreshControlStyle = .spinner
     }
 
     @objc private func beginRefresh() {
@@ -148,23 +168,30 @@ extension RefreshControl: ThemeRepositorySubscriber {
     }
 }
 
+extension RefreshControl: SettingsRepositorySubscriber {
+    public func didChangeSetting(_ settingsRepository: SettingsRepository) {
+        self.refreshControlStyle = settingsRepository.refreshControl
+        self.changeRefreshStyle()
+    }
+}
+
 extension RefreshControl: UIScrollViewDelegate {
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        guard self.refreshControlUsed == .breakout else { return }
+        guard self.refreshControlStyle == .breakout else { return }
         self.breakoutView.scrollViewWillBeginDragging(scrollView)
     }
 
     public func scrollViewWillEndDragging(_ scrollView: UIScrollView,
                                           withVelocity velocity: CGPoint,
                                           targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        guard self.refreshControlUsed == .breakout else { return }
+        guard self.refreshControlStyle == .breakout else { return }
         self.breakoutView.scrollViewWillEndDragging(scrollView,
                                                     withVelocity: velocity,
                                                     targetContentOffset: targetContentOffset)
     }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard self.refreshControlUsed == .breakout else { return }
+        guard self.refreshControlStyle == .breakout else { return }
         self.breakoutView.scrollViewDidScroll(scrollView)
     }
 }

@@ -21,6 +21,7 @@ class RefreshControlSpec: QuickSpec {
         var scrollView: UIScrollView!
         var mainQueue: FakeOperationQueue!
         var themeRepository: ThemeRepository!
+        var settingsRepository: SettingsRepository!
         var refresher: FakeRefresher!
         var lowPowerDiviner: FakeLowPowerDiviner!
 
@@ -30,6 +31,7 @@ class RefreshControlSpec: QuickSpec {
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
             themeRepository = ThemeRepository(userDefaults: nil)
+            settingsRepository = SettingsRepository(userDefaults: nil)
             refresher = FakeRefresher()
             lowPowerDiviner = FakeLowPowerDiviner()
 
@@ -38,6 +40,7 @@ class RefreshControlSpec: QuickSpec {
                 scrollView: scrollView,
                 mainQueue: mainQueue,
                 themeRepository: themeRepository,
+                settingsRepository: settingsRepository,
                 refresher: refresher,
                 lowPowerDiviner: lowPowerDiviner
             )
@@ -58,6 +61,17 @@ class RefreshControlSpec: QuickSpec {
             }
         }
 
+        describe("when the user changes refresh styles") {
+            beforeEach {
+                settingsRepository.refreshControl = .spinner
+            }
+
+            it("switches to that refresh style") {
+                expect(scrollView.refreshControl) == subject.spinner
+                expect(subject.breakoutView.superview).to(beNil())
+            }
+        }
+
         describe("when in low power mode") {
             beforeEach {
                 lowPowerDiviner.isLowPowerModeEnabled = true
@@ -67,6 +81,7 @@ class RefreshControlSpec: QuickSpec {
                     scrollView: scrollView,
                     mainQueue: mainQueue,
                     themeRepository: themeRepository,
+                    settingsRepository: settingsRepository,
                     refresher: refresher,
                     lowPowerDiviner: lowPowerDiviner
                 )
@@ -83,17 +98,22 @@ class RefreshControlSpec: QuickSpec {
             describe("when switching out of low power mode") {
                 beforeEach {
                     lowPowerDiviner.isLowPowerModeEnabled = false
-                    notificationCenter.post(name: NSNotification.Name.NSProcessInfoPowerStateDidChange,
-                                            object: nil,
-                                            userInfo: nil)
                 }
 
-                it("unsets the scrollview's refreshControl") {
-                    expect(scrollView.refreshControl).to(beNil())
-                }
+                context("and the user had preferred breakout") {
+                    beforeEach {
+                        notificationCenter.post(name: NSNotification.Name.NSProcessInfoPowerStateDidChange,
+                                                object: nil,
+                                                userInfo: nil)
+                    }
 
-                it("installs the breakout view") {
-                    expect(subject.breakoutView.superview) == scrollView
+                    it("unsets the scrollview's refreshControl") {
+                        expect(scrollView.refreshControl).to(beNil())
+                    }
+
+                    it("installs the breakout view") {
+                        expect(subject.breakoutView.superview) == scrollView
+                    }
                 }
             }
         }

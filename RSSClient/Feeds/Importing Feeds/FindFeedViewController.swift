@@ -266,7 +266,9 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
 }
 
 extension FindFeedViewController: WKUIDelegate {
-    public func webView(_ webView: WKWebView, previewingViewControllerForElement elementInfo: WKPreviewElementInfo, defaultActions previewActions: [WKPreviewActionItem]) -> UIViewController? {
+    public func webView(_ webView: WKWebView,
+                        previewingViewControllerForElement elementInfo: WKPreviewElementInfo,
+                        defaultActions previewActions: [WKPreviewActionItem]) -> UIViewController? {
         if let url = elementInfo.linkURL {
             let controller = FindFeedViewController(importUseCase: self.importUseCase,
                                                     themeRepository: self.themeRepository,
@@ -278,7 +280,8 @@ extension FindFeedViewController: WKUIDelegate {
         return nil
     }
 
-    public func webView(_ webView: WKWebView, commitPreviewingViewController previewingViewController: UIViewController) {
+    public func webView(_ webView: WKWebView,
+                        commitPreviewingViewController previewingViewController: UIViewController) {
         self.navigationController?.setViewControllers([previewingViewController], animated: true)
     }
 }

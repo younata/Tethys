@@ -1,19 +1,24 @@
 import Sinope
 
-public enum NetworkError: Error, CustomStringConvertible {
+public enum NetworkError: Error {
     case internetDown
     case dns
     case serverNotFound
     case http(HTTPError)
     case unknown
 
-    public var description: String {
+    public var localizedDescription: String {
         switch self {
-        case .internetDown: return "Internet Down"
-        case .dns: return "DNS Error"
-        case .serverNotFound: return "Server Not Found"
-        case let .http(status): return status.description
-        case .unknown: return "Unknown Error"
+        case .internetDown:
+            return NSLocalizedString("Error_Network_InternetDown", comment: "")
+        case .dns:
+            return NSLocalizedString("Error_Network_DNS", comment: "")
+        case .serverNotFound:
+            return NSLocalizedString("Error_Network_ServerNotFound", comment: "")
+        case let .http(status):
+            return status.description
+        case .unknown:
+            return NSLocalizedString("Error_Network_Unknown", comment: "")
         }
     }
 }
@@ -37,35 +42,45 @@ public func == (lhs: NetworkError, rhs: NetworkError) -> Bool {
     }
 }
 
-public enum DatabaseError: Error, CustomStringConvertible {
+public enum DatabaseError: Error {
     case notFound
-    case unknown
     case entryNotFound
+    case unknown
 
-    public var description: String {
+    public var localizedDescription: String {
+        switch self {
+        case .notFound:
+            return NSLocalizedString("Error_Database_DatabaseNotFound", comment: "")
+        case .entryNotFound:
+            return NSLocalizedString("Error_Database_EntryNotFound", comment: "")
+        case .unknown:
+            return NSLocalizedString("Error_Database_Unknown", comment: "")
+        }
         return ""
     }
 }
 
-public enum RNewsError: Error, CustomStringConvertible {
+public enum RNewsError: Error {
     case network(URL, NetworkError)
     case http(Int)
     case database(DatabaseError)
     case backend(SinopeError)
     case unknown
 
-    public var description: String {
+    public var localizedDescription: String {
         switch self {
         case let .network(url, error):
-            return "Unable to load \(url) - \(error)"
+            return String.localizedStringWithFormat("Error_Standard_Network",
+                                                    url.absoluteString,
+                                                    error.localizedDescription)
         case let .http(status):
-            return "Error loading resource, received \(status)"
+            return String.localizedStringWithFormat("Error_Standard_HTTP", status)
         case let .database(error):
-            return "Error reading from database - \(error)"
+            return error.localizedDescription
         case let .backend(error):
-            return "Backend Error - \(error)"
+            return error.localizedDescription
         case .unknown:
-            return "Unknown Error - please try again"
+            return NSLocalizedString("Error_Standard_Unknown", comment: "")
         }
     }
 }

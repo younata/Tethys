@@ -39,8 +39,6 @@ class RealmServiceSpec: QuickSpec {
 
         describe("create operations") {
             it("new feed creates a new feed object") {
-                let expectation = self.expectation(description: "Create Feed")
-
                 _ = subject.createFeed { feed in
                     feed.title = "Hello"
                     feed.url = URL(string: "https://example.com/feed")!

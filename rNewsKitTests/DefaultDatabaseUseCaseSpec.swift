@@ -433,6 +433,35 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                             }
                         }
                     }
+
+                    context("when the network request fails") {
+                        beforeEach {
+                            updateFeedsPromise.resolve(.failure(.unknown))
+                        }
+
+                        it("adds an operation to the main queue") {
+                            expect(mainQueue.operationCount) > 1
+                        }
+
+                        describe("when the last operation completes") {
+                            beforeEach {
+                                while mainQueue.operationCount > 0 {
+                                    mainQueue.runNextOperation()
+                                }
+                            }
+
+                            it("should inform subscribers that we updated our datastore for that feed") {
+                                expect(dataSubscriber.updatedFeeds) == []
+                            }
+
+                            it("should call the completion handler without an error") {
+                                expect(didCallCallback) == true
+                                expect(callbackError) == NSError(domain: "RNewsError",
+                                                                 code: 0,
+                                                                 userInfo: [NSLocalizedDescriptionKey: RNewsError.unknown.localizedDescription])
+                            }
+                        }
+                    }
                 }
             }
 
@@ -556,6 +585,24 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
 
                         it("should inform any subscribers") {
                             expect(dataSubscriber.updatedFeeds).toNot(beNil())
+                        }
+                    }
+
+                    context("when the update request fails") {
+                        beforeEach {
+                            mainQueue.runSynchronously = true
+                            updateFeedsPromise.resolve(.failure(.unknown))
+                        }
+
+                        it("should inform subscribers that we updated our datastore for that feed") {
+                            expect(dataSubscriber.updatedFeeds) == []
+                        }
+
+                        it("should call the completion handler without an error") {
+                            expect(didCallCallback) == true
+                            expect(callbackErrors) == [NSError(domain: "RNewsError",
+                                                               code: 0,
+                                                               userInfo: [NSLocalizedDescriptionKey: RNewsError.unknown.localizedDescription])]
                         }
                     }
                 }

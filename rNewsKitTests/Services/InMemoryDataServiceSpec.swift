@@ -125,7 +125,7 @@ class InMemoryDataServiceSpec: QuickSpec {
                 it("deletes articles") {
                     let expectation = self.expectation(description: "delete article")
 
-                    subject.deleteArticle(article1).then {
+                    _ = subject.deleteArticle(article1).then {
                         guard case Result.success() = $0 else { return }
                         expectation.fulfill()
                     }

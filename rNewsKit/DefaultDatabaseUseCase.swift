@@ -264,13 +264,20 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
 
     private func privateUpdateFeeds(_ feeds: [Feed], callback: @escaping ([Feed], [NSError]) -> (Void)) {
         _ = self.updateUseCase.updateFeeds(feeds, subscribers: self.allSubscribers).then { res in
-            _ = self.allFeeds().then { result in
-                switch result {
-                case let .success(feeds):
-                    callback(feeds, [])
-                case .failure(_):
-                    callback([], [NSError(domain: "RNewsError", code: 0, userInfo: [:])])
+            switch res {
+            case .success(_):
+                _ = self.allFeeds().then { result in
+                    switch result {
+                    case let .success(feeds):
+                        callback(feeds, [])
+                    case .failure(_):
+                        callback([], [NSError(domain: "RNewsError", code: 0, userInfo: [:])])
+                    }
                 }
+            case let .failure(error):
+                callback([], [NSError(domain: "RNewsError",
+                                      code: 0,
+                                      userInfo: [NSLocalizedDescriptionKey: error.localizedDescription])])
             }
         }
     }

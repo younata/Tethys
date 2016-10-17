@@ -231,7 +231,7 @@ public final class LoginViewController: UIViewController, Injectable {
                 case .success():
                     _ = self.navigationController?.popViewController(animated: false)
                 case let .failure(error):
-                    self.errorLabel.text = error.description
+                    self.errorLabel.text = error.localizedDescription
                 }
             }
         }

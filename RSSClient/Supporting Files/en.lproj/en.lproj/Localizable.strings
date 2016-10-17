@@ -110,6 +110,22 @@
 "RefreshControlStyle_Spinner" = "Spinner";
 "RefreshControlStyle_Breakout" = "Breakout";
 
+// Errors
+
+"Error_Network_InternetDown" = "Internet Down";
+"Error_Network_DNS" = "DNS Error";
+"Error_Network_ServerNotFound" = "Server Not Found";
+"Error_Network_Unknown" = "Unknown Network Error";
+
+"Error_Database_DatabaseNotFound" = "Database not found";
+"Error_Database_EntryNotFound" = "Entry not found";
+"Error_Database_Unknown" = "Unknown Database Error";
+
+"Error_Standard_Network" = "Unable to load %@ - %@";
+"Error_Standard_HTTP" = "Error loading resource, received %d";
+"Error_Standard_Unknown" = "Unknown Error - please try again";
+
+// Generic
 
 "Generic_Dismiss" = "Dismiss";
 "Generic_Ok" = "Ok";

@@ -7,14 +7,23 @@ public protocol SettingsRepositorySubscriber: NSObjectProtocol {
 
 public final class SettingsRepository: Injectable {
     private enum SettingsKeys: String {
-        case ShowEstimatedReadingLabel = "showEstimatedReadingLabel"
+        case showEstimatedReadingLabel = "showEstimatedReadingLabel"
+        case refreshControlLabel = "refreshControlLabel"
     }
 
     public var showEstimatedReadingLabel: Bool = true {
         didSet {
             self.informSubscribers()
             self.userDefaults?.set(showEstimatedReadingLabel,
-                                       forKey: SettingsKeys.ShowEstimatedReadingLabel.rawValue)
+                                       forKey: SettingsKeys.showEstimatedReadingLabel.rawValue)
+        }
+    }
+
+    public var refreshControl: RefreshControlStyle = .breakout {
+        didSet {
+            self.informSubscribers()
+            self.userDefaults?.set(refreshControl.rawValue,
+                                   forKey: SettingsKeys.refreshControlLabel.rawValue)
         }
     }
 
@@ -37,9 +46,13 @@ public final class SettingsRepository: Injectable {
     public init(userDefaults: UserDefaults? = nil) {
         self.userDefaults = userDefaults
 
-        if self.userDefaults?.object(forKey: SettingsKeys.ShowEstimatedReadingLabel.rawValue) != nil {
+        if self.userDefaults?.object(forKey: SettingsKeys.showEstimatedReadingLabel.rawValue) != nil {
             self.showEstimatedReadingLabel =
-                self.userDefaults?.bool(forKey: SettingsKeys.ShowEstimatedReadingLabel.rawValue) ?? true
+                self.userDefaults?.bool(forKey: SettingsKeys.showEstimatedReadingLabel.rawValue) ?? true
+        }
+        if self.userDefaults?.object(forKey: SettingsKeys.refreshControlLabel.rawValue) != nil,
+            let refreshControlInt = self.userDefaults?.integer(forKey: SettingsKeys.refreshControlLabel.rawValue) {
+            self.refreshControl = RefreshControlStyle(rawValue: refreshControlInt) ?? RefreshControlStyle.breakout
         }
     }
 

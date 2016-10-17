@@ -9,8 +9,21 @@ public protocol Refresher {
 public protocol LowPowerDiviner {
     var isLowPowerModeEnabled: Bool { get }
 }
-
 extension ProcessInfo: LowPowerDiviner {}
+
+public enum RefreshControlStyle: Int, CustomStringConvertible {
+    case spinner = 0
+    case breakout = 1
+
+    public var description: String {
+        switch self {
+        case .spinner:
+            return NSLocalizedString("RefreshControlStyle_Spinner", comment: "")
+        case .breakout:
+            return NSLocalizedString("RefreshControlStyle_Breakout", comment: "")
+        }
+    }
+}
 
 public final class RefreshControl: NSObject {
     private let notificationCenter: NotificationCenter
@@ -19,12 +32,7 @@ public final class RefreshControl: NSObject {
     fileprivate let refresher: Refresher
     fileprivate let lowPowerDiviner: LowPowerDiviner
 
-    fileprivate enum RefreshControlType {
-        case breakout
-        case spinner
-    }
-
-    fileprivate var refreshControlUsed: RefreshControlType = .breakout
+    fileprivate var refreshControlUsed: RefreshControlStyle = .breakout
 
     public private(set) lazy var breakoutView: BreakOutToRefreshView = {
         let refreshView = BreakOutToRefreshView(scrollView: self.scrollView)

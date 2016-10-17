@@ -22,6 +22,7 @@ public final class SettingsViewController: UIViewController, Injectable {
         case quickActions
         case accounts
         case advanced
+        case refresh
         case other
         case credits
 
@@ -45,8 +46,10 @@ public final class SettingsViewController: UIViewController, Injectable {
                 case 3:
                     self = .advanced
                 case 4:
-                    self = .other
+                    self = .refresh
                 case 5:
+                    self = .other
+                case 6:
                     self = .credits
                 default:
                     return nil
@@ -56,9 +59,9 @@ public final class SettingsViewController: UIViewController, Injectable {
 
         static func numberOfSettings(_ traits: UITraitCollection) -> Int {
             if traits.forceTouchCapability == .available {
-                return 6
+                return 7
             }
-            return 5
+            return 6
         }
 
         fileprivate var rawValue: Int {
@@ -67,8 +70,9 @@ public final class SettingsViewController: UIViewController, Injectable {
             case .quickActions: return 1
             case .accounts: return 2
             case .advanced: return 3
-            case .other: return 4
-            case .credits: return 5
+            case .refresh: return 4
+            case .other: return 5
+            case .credits: return 6
             }
         }
 
@@ -82,6 +86,8 @@ public final class SettingsViewController: UIViewController, Injectable {
                 return NSLocalizedString("SettinsgViewController_Table_Header_Accounts", comment: "")
             case .advanced:
                 return NSLocalizedString("SettingsViewController_Table_Header_Advanced", comment: "")
+            case .refresh:
+                return NSLocalizedString("SettingsViewController_Table_Header_Refresh", comment: "")
             case .other:
                 return NSLocalizedString("SettingsViewController_Table_Header_Other", comment: "")
             case .credits:
@@ -118,6 +124,9 @@ public final class SettingsViewController: UIViewController, Injectable {
 
     fileprivate lazy var showReadingTimes: Bool = {
         return self.settingsRepository.showEstimatedReadingLabel
+    }()
+    fileprivate lazy var refreshControlStyle: RefreshControlStyle = {
+        return self.settingsRepository.refreshControl
     }()
 
     // swiftlint:disable function_parameter_count
@@ -245,14 +254,19 @@ public final class SettingsViewController: UIViewController, Injectable {
     @objc fileprivate func didTapSave() {
         self.oldTheme = self.themeRepository.theme
         self.settingsRepository.showEstimatedReadingLabel = self.showReadingTimes
+        self.settingsRepository.refreshControl = self.refreshControlStyle
         self.didTapDismiss()
     }
 
     fileprivate func reloadTable() {
         self.tableView.reloadData()
-        let selectedIndexPath = IndexPath(row: self.themeRepository.theme.rawValue,
-                                            section: SettingsSection.theme.rawValue)
-        self.tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: .none)
+        let currentThemeIndexPath = IndexPath(row: self.themeRepository.theme.rawValue,
+                                              section: SettingsSection.theme.rawValue)
+        let currentRefreshStyleIndexPath = IndexPath(row: self.refreshControlStyle.rawValue,
+                                                     section: SettingsSection.refresh.rawValue)
+        self.tableView.selectRow(at: currentThemeIndexPath, animated: false, scrollPosition: .none)
+        self.tableView.selectRow(at: currentRefreshStyleIndexPath, animated: false, scrollPosition: .none)
+
     }
 
     fileprivate func titleForQuickAction(_ row: Int) -> String {
@@ -319,6 +333,8 @@ extension SettingsViewController: UITableViewDataSource {
             return 1
         case .advanced:
             return AdvancedSection.numberOfOptions
+        case .refresh:
+            return 2
         case .other:
             return 1
         case .credits:
@@ -371,6 +387,12 @@ extension SettingsViewController: UITableViewDataSource {
                 }
             }
             return cell
+        case .refresh:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
+            guard let refreshStyle = RefreshControlStyle(rawValue: indexPath.row) else { return cell }
+            cell.themeRepository = self.themeRepository
+            cell.textLabel?.text = refreshStyle.description
+            return cell
         case .other:
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
             cell.themeRepository = self.themeRepository
@@ -396,12 +418,18 @@ extension SettingsViewController: UITableViewDataSource {
 
 extension SettingsViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        print("deselecting row at \(indexPath)")
         guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection) else {
             return
         }
 
-        if section == .theme {
+        switch section {
+        case .theme:
             tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+        case .refresh:
+            tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+        default:
+            break
         }
     }
 
@@ -458,8 +486,7 @@ extension SettingsViewController: UITableViewDelegate {
             guard let theme = ThemeRepository.Theme(rawValue: indexPath.row) else { return }
             self.themeRepository.theme = theme
             self.navigationItem.rightBarButtonItem?.isEnabled = true
-            self.tableView.reloadData()
-            self.tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+            self.reloadTable()
         case .quickActions:
             tableView.deselectRow(at: indexPath, animated: false)
             self.didTapQuickActionCell(indexPath)
@@ -470,6 +497,11 @@ extension SettingsViewController: UITableViewDelegate {
             self.navigationController?.pushViewController(loginViewController, animated: true)
         case .advanced:
             tableView.deselectRow(at: indexPath, animated: false)
+        case .refresh:
+            guard let refreshControlStyle = RefreshControlStyle(rawValue: indexPath.row) else { return }
+            self.refreshControlStyle = refreshControlStyle
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
+            self.reloadTable()
         case .other:
             tableView.deselectRow(at: indexPath, animated: false)
 

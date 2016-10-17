@@ -228,27 +228,27 @@ class SettingsViewControllerSpec: QuickSpec {
                 dataSource = subject.tableView.dataSource
             }
 
-            it("should have 6 sections if force touch is available") {
+            it("has 7 sections if force touch is available") {
                 subject.traitCollection.forceTouchCapability = UIForceTouchCapability.available
                 subject.tableView.reloadData()
-                expect(subject.tableView.numberOfSections) == 6
+                expect(subject.tableView.numberOfSections) == 7
             }
 
-            it("should have 5 sections if force touch is not available") {
+            it("has 6 sections if force touch is not available") {
                 subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
                 subject.tableView.reloadData()
-                expect(subject.tableView.numberOfSections) == 5
+                expect(subject.tableView.numberOfSections) == 6
             }
 
             describe("the theme section") {
                 let sectionNumber = 0
 
-                it("should be titled 'Theme'") {
+                it("is titled 'Theme'") {
                     let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
                     expect(title) == "Theme"
                 }
 
-                it("should have 2 cells") {
+                it("has 2 cells") {
                     expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == 2
                 }
 
@@ -260,19 +260,19 @@ class SettingsViewControllerSpec: QuickSpec {
                         cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
                     }
 
-                    it("should be titled 'Default'") {
+                    it("is titled 'Default'") {
                         expect(cell.textLabel?.text) == "Default"
                     }
 
-                    it("should have its theme repository set") {
+                    it("has its theme repository set") {
                         expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
                     }
 
-                    it("should be selected") {
+                    it("is selected") {
                         expect(cell.isSelected) == true
                     }
 
-                    it("should have no edit actions") {
+                    it("has no edit actions") {
                         expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
                     }
                 }
@@ -285,19 +285,19 @@ class SettingsViewControllerSpec: QuickSpec {
                         cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
                     }
 
-                    it("should be titled 'Dark'") {
+                    it("is titled 'Dark'") {
                         expect(cell.textLabel?.text) == "Dark"
                     }
 
-                    it("should be selected if it's the current theme") { // which it is not
+                    it("is selected if it's the current theme") { // which it is not
                         expect(cell.isSelected) == false
                     }
 
-                    it("should have its theme repository set") {
+                    it("has its theme repository set") {
                         expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
                     }
 
-                    it("should have no edit actions") {
+                    it("has no edit actions") {
                         expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
                     }
 
@@ -337,7 +337,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.available
                 }
 
-                it("should be titled 'Quick Actions'") {
+                it("is titled 'Quick Actions'") {
                     let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
                     expect(title) == "Quick Actions"
                 }
@@ -348,7 +348,7 @@ class SettingsViewControllerSpec: QuickSpec {
                         subject.tableView.reloadData()
                     }
 
-                    it("should have a single cell, inviting the user to add a quick action") {
+                    it("has a single cell, inviting the user to add a quick action") {
                         expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == 1
 
                         let indexPath = IndexPath(row: 0, section: sectionNumber)
@@ -481,7 +481,7 @@ class SettingsViewControllerSpec: QuickSpec {
 
                         }
 
-                        it("should have one edit action, which deletes the quick action when selected") {
+                        it("has one edit action, which deletes the quick action when selected") {
                             let indexPath = IndexPath(row: 0, section: sectionNumber)
 
                             let editActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAt: indexPath)
@@ -630,7 +630,7 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
                     }
 
-                    it("each should have one edit action, which deletes the quick action when selected") {
+                    it("each has one edit action, which deletes the quick action when selected") {
                         let indexPath = IndexPath(row: 0, section: sectionNumber)
                         
                         let editActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAt: indexPath)
@@ -777,14 +777,89 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
             }
 
-            describe("the other section") {
+            describe("the refresh style section") {
                 let sectionNumber = 3
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
                 }
 
-                it("should be titled 'Other'") {
+                it("is titled 'Refresh Style'") {
+                    let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
+                    expect(title) == "Refresh Style"
+                }
+
+                it("has two cells") {
+                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == 2
+                }
+
+                describe("the first cell") {
+                    var cell: TableViewCell! = nil
+                    let indexPath = IndexPath(row: 0, section: sectionNumber)
+
+                    beforeEach {
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
+                    }
+
+                    it("is titled 'Spinner'") {
+                        expect(cell.textLabel?.text) == "Spinner"
+                    }
+
+                    it("is selected if it's the current refresh control style") { // which it is not
+                        expect(cell.isSelected) == false
+                    }
+
+                    it("has its theme repository set") {
+                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
+                    }
+
+                    it("has no edit actions") {
+                        expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
+                    }
+
+                    describe("when tapped") {
+                        beforeEach {
+                            delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
+                        }
+                        itBehavesLike("a changed setting") {
+                            let op = BlockOperation {
+                                expect(settingsRepository.refreshControl) == RefreshControlStyle.spinner
+                            }
+                            return ["saveToUserDefaults": op]
+                        }
+                    }
+                }
+
+                describe("the second cell") {
+                    var cell: TableViewCell! = nil
+                    let indexPath = IndexPath(row: 1, section: sectionNumber)
+
+                    beforeEach {
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
+                    }
+
+                    it("is titled 'Breakout'") {
+                        expect(cell.textLabel?.text) == "Breakout"
+                    }
+
+                    it("has its theme repository set") {
+                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
+                    }
+
+                    it("has no edit actions") {
+                        expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
+                    }
+                }
+            }
+
+            describe("the other section") {
+                let sectionNumber = 4
+
+                beforeEach {
+                    subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
+                }
+
+                it("is titled 'Other'") {
                     let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
                     expect(title) == "Other"
                 }
@@ -858,13 +933,13 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the credits section") {
-                let sectionNumber = 4
+                let sectionNumber = 5
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
                 }
 
-                it("should be titled 'Credits'") {
+                it("is titled 'Credits'") {
                     let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
                     expect(title) == "Credits"
                 }
@@ -873,7 +948,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     ("Rachel Brindle", "Developer", URL(string: "https://twitter.com/younata")!),
                 ]
 
-                it("should have \(values.count) cells") {
+                it("has \(values.count) cells") {
                     expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == values.count
                 }
 

@@ -5,6 +5,7 @@
 "SettingsViewController_Table_Header_QuickActions" = "Quick Actions";
 "SettinsgViewController_Table_Header_Accounts" = "Accounts";
 "SettingsViewController_Table_Header_Advanced" = "Advanced";
+"SettingsViewController_Table_Header_Refresh" = "Refresh Style";
 "SettingsViewController_Table_Header_Other" = "Other";
 "SettingsViewController_Table_Header_Credits" = "Credits";
 "SettingsViewController_Title" = "Settings";
@@ -105,6 +106,9 @@
 
 "AppDelegate_UnreadFeed_Title" = "All Unread";
 "AppDelegate_UnreadFeed_Summary" = "All unread articles";
+
+"RefreshControlStyle_Spinner" = "Spinner";
+"RefreshControlStyle_Breakout" = "Breakout";
 
 
 "Generic_Dismiss" = "Dismiss";

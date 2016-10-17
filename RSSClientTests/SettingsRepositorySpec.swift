@@ -55,5 +55,30 @@ class SettingsRepositorySpec: QuickSpec {
                 }
             }
         }
+
+        describe("refreshControl") {
+            it("is initially .breakout") {
+                expect(subject.refreshControl) == RefreshControlStyle.breakout
+            }
+
+            describe("when set") {
+                beforeEach {
+                    subject.refreshControl = .spinner
+                }
+
+                it("records the result") {
+                    expect(subject.refreshControl) == RefreshControlStyle.spinner
+                }
+
+                it("notifies subscribers") {
+                    expect(subscriber.didCallChangeSetting) == true
+                }
+
+                it("persists if userDefaults is not nil") {
+                    let newRepository = SettingsRepository(userDefaults: userDefaults)
+                    expect(newRepository.refreshControl) == RefreshControlStyle.spinner
+                }
+            }
+        }
     }
 }

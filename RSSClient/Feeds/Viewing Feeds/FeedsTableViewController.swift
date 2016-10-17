@@ -337,11 +337,16 @@ extension FeedsTableViewController: Refresher {
             if !errors.isEmpty {
                 let alertTitle = NSLocalizedString("FeedsTableViewController_UpdateFeeds_Error_Title", comment: "")
 
-                let messageString = errors.filter({$0.userInfo["feedTitle"] != nil}).map({(error) -> (String) in
-                    let title = error.userInfo["feedTitle"]!
-                    let failureReason = error.localizedFailureReason ?? error.localizedDescription
-                    return "\(title): \(failureReason)"
-                }).joined(separator: "\n")
+                let messageString: String
+                if errors.count == 1, let error = errors.first, error.userInfo["feedTitle"] == nil {
+                    messageString = error.localizedDescription
+                } else {
+                    messageString = errors.filter({$0.userInfo["feedTitle"] != nil}).map({(error) -> (String) in
+                        let title = error.userInfo["feedTitle"]!
+                        let failureReason = error.localizedFailureReason ?? error.localizedDescription
+                        return "\(title): \(failureReason)"
+                    }).joined(separator: "\n")
+                }
 
                 let alertMessage = messageString
                 self.notificationView.display(alertTitle, message: alertMessage)

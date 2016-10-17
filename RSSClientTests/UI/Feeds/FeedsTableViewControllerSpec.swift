@@ -370,6 +370,33 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                 expect(subject.notificationView.messageLabel.text).to(equal("foo: The request timed out."))
                             }
                         }
+
+                        context("when the call fails without a feedTitle") {
+                            beforeEach {
+                                let error = NSError(domain: "RNewsError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Hello"])
+                                UIView.pauseAnimations()
+                                dataUseCase.updateFeedsCompletion([], [error])
+                            }
+
+                            afterEach {
+                                UIView.resetAnimations()
+                            }
+
+                            it("should end refreshing") {
+                                for object in dataUseCase.subscribers.allObjects {
+                                    if let subscriber = object as? DataSubscriber {
+                                        subscriber.didUpdateFeeds([])
+                                    }
+                                }
+                                expect(subject.refreshControl.isRefreshing) == false
+                            }
+
+                            it("should bring up an alert notifying the user") {
+                                expect(subject.notificationView.titleLabel.isHidden) == false
+                                expect(subject.notificationView.titleLabel.text).to(equal("Unable to update feeds"))
+                                expect(subject.notificationView.messageLabel.text).to(equal("Hello"))
+                            }
+                        }
                     }
 
                     describe("as a FeedsSource") {

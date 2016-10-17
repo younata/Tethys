@@ -1,0 +1,8 @@
+---
+platform: darwin
+
+inputs:
+- name: rssclient
+
+run:
+  path: rssclient/ci/tests.sh

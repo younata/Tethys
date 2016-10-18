@@ -83,9 +83,6 @@ platform :ios do
     update_release_notes tracker_release[:release_notes]
     bump_release_version tracker_release[:title]
 
-    add_git_tag(tag: tracker_release[:title])
-    push_to_git_remote
-
     sh 'SNAPSHOT_FORCE_DELETE=1 bundle exec snapshot reset_simulators'
     snapshot
 

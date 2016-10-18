@@ -162,17 +162,12 @@ class ArticleListControllerSpec: QuickSpec {
             it("should update the navigation bar background") {
                 expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
             }
-
-            it("should update the searchbar") {
-                expect(subject.searchBar.barStyle).to(equal(themeRepository.barStyle))
-                expect(subject.searchBar.backgroundColor).to(equal(themeRepository.backgroundColor))
-            }
         }
 
         describe("as a DataSubscriber") {
             describe("markedArticle:asRead:") {
                 beforeEach {
-                    let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 3, section: 0)) as! ArticleCell
+                    let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 3, section: 1)) as! ArticleCell
 
                     expect(cell.unread.unread).to(equal(1))
 
@@ -183,15 +178,16 @@ class ArticleListControllerSpec: QuickSpec {
                 }
 
                 it("should reload the tableView") {
-                    let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 3, section: 0)) as! ArticleCell
+                    let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 3, section: 1)) as! ArticleCell
 
                     expect(cell.unread.unread).to(equal(0))
                 }
             }
         }
 
-        describe("force pressing a cell") {
+        describe("force pressing an article cell") {
             var viewControllerPreviewing: FakeUIViewControllerPreviewing! = nil
+            let indexPath = IndexPath(row: 0, section: 1)
 
             beforeEach {
                 viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
@@ -202,8 +198,8 @@ class ArticleListControllerSpec: QuickSpec {
                     subject.previewMode = true
                 }
 
-                it("should not return a view controller to present to the user") {
-                    let rect = subject.tableView.rectForRow(at: IndexPath(row: 0, section: 0))
+                it("does not return a view controller to present to the user") {
+                    let rect = subject.tableView.rectForRow(at: indexPath)
                     let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
                     let viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
                     expect(viewController).to(beNil())
@@ -216,18 +212,18 @@ class ArticleListControllerSpec: QuickSpec {
                 beforeEach {
                     subject.previewMode = false
 
-                    let rect = subject.tableView.rectForRow(at: IndexPath(row: 0, section: 0))
+                    let rect = subject.tableView.rectForRow(at: indexPath)
                     let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
                     viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
                 }
 
-                it("should return an ArticleViewController configured with the article to present to the user") {
+                it("returns an ArticleViewController configured with the article to present to the user") {
                     expect(viewController).to(beAKindOf(ArticleViewController.self))
                     if let articleVC = viewController as? ArticleViewController {
                         expect(articleVC.article).to(equal(articles[0]))                    }
                 }
 
-                it("should not mark the article as read") {
+                it("does not mark the article as read") {
                     expect(articles[0].read) == false
                     expect(dataRepository.lastArticleMarkedRead).to(beNil())
                 }
@@ -247,7 +243,7 @@ class ArticleListControllerSpec: QuickSpec {
 
                     describe("the first action") {
                         describe("for an unread article") {
-                            it("should mark the article as read") {
+                            it("marks the article as read") {
                                 action = previewActions?.first as? UIPreviewAction
 
                                 expect(action?.title).to(equal("Mark Read"))
@@ -259,8 +255,8 @@ class ArticleListControllerSpec: QuickSpec {
                         }
 
                         describe("for a read article") {
-                            it("should mark the article as unread") {
-                                let rect = subject.tableView.rectForRow(at: IndexPath(row: 2, section: 0))
+                            it("marks the article as unread") {
+                                let rect = subject.tableView.rectForRow(at: IndexPath(row: 2, section: 1))
                                 let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
                                 viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
                                 previewActions = viewController?.previewActionItems
@@ -361,82 +357,104 @@ class ArticleListControllerSpec: QuickSpec {
         }
 
         describe("the table") {
-            it("should have 1 secton") {
-                expect(subject.tableView.numberOfSections).to(equal(1))
+            it("has 2 sections") {
+                expect(subject.tableView.numberOfSections) == 2
             }
 
-            it("should have a row for each article") {
-                expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(articles.count))
-            }
-
-            describe("the cells") {
-                context("in preview mode") {
+            describe("the first section") {
+                context("when a feed is backing the list") {
                     beforeEach {
-                        subject.previewMode = true
+                        subject.feed = feed
+                        subject.tableView.reloadData()
                     }
 
-                    it("should not be editable") {
-                        for section in 0..<subject.tableView.numberOfSections {
-                            for row in 0..<subject.tableView.numberOfRows(inSection: section) {
-                                let indexPath = IndexPath(row: row, section: section)
-                                expect(subject.tableView(subject.tableView, canEditRowAt: indexPath)) == false
-                            }
-                        }
+                    it("has 1 cell in the first section of the tableView") {
+                        expect(subject.tableView.numberOfRows(inSection: 0)) == 1
                     }
 
-                    it("should have no edit actions") {
-                        for section in 0..<subject.tableView.numberOfSections {
-                            for row in 0..<subject.tableView.numberOfRows(inSection: section) {
-                                let indexPath = IndexPath(row: row, section: section)
-                                expect(subject.tableView(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
-                            }
-                        }
-                    }
+                    describe("that cell") {
+                        var cell: ArticleListHeaderCell?
 
-                    describe("when tapped") {
                         beforeEach {
-                            subject.tableView(subject.tableView, didSelectRowAt: IndexPath(row: 0, section: 0))
+                            feed.summary = "summary"
+                            cell = subject.tableView.visibleCells.first as? ArticleListHeaderCell
+                            expect(cell).toNot(beNil())
                         }
 
-                        it("nothing should happen") {
+                        it("is configured with the theme repository") {
+                            expect(cell?.themeRepository).to(beIdenticalTo(themeRepository))
+                        }
+
+                        it("is configured with the feed") {
+                            expect(cell?.summary.text) == feed.displaySummary
+                        }
+
+                        it("has no edit actions") {
+                            expect(subject.tableView(subject.tableView, editActionsForRowAt: IndexPath(row: 0, section: 0))).to(beNil())
+                        }
+
+                        it("does nothing when tapped") {
+                            subject.tableView(subject.tableView, didSelectRowAt: IndexPath(row: 0, section: 0))
                             expect(navigationController.topViewController).to(beIdenticalTo(subject))
                         }
                     }
                 }
 
-                context("out of preview mode") {
-                    describe("typing in the search bar") {
+                context("when a feed is not backing the list") {
+                    beforeEach {
+                        subject.feed = nil
+                        subject.tableView.reloadData()
+                    }
+                    
+                    it("has 0 cells in the first section of the tableView") {
+                        expect(subject.tableView.numberOfRows(inSection: 0)) == 0
+                    }
+                }
+            }
+
+            describe("the articles section") {
+                it("has a row for each article") {
+                    expect(subject.tableView.numberOfRows(inSection: 1)).to(equal(articles.count))
+                }
+
+                describe("the cells") {
+                    context("in preview mode") {
                         beforeEach {
-                            subject.searchBar.becomeFirstResponder()
-                            subject.searchBar.text = "\(publishedOffset)"
-                            dataRepository.articlesOfFeedList = [articles.last!]
-                            subject.searchBar.delegate?.searchBar?(subject.searchBar, textDidChange: "\(publishedOffset)")
+                            subject.previewMode = true
                         }
 
-                        it("should resign first responder when the tableView is scrolled") {
-                            subject.tableView.delegate?.scrollViewDidScroll?(subject.tableView)
-
-                            expect(subject.searchBar.isFirstResponder) == false
+                        it("should not be editable") {
+                            for section in 0..<subject.tableView.numberOfSections {
+                                for row in 0..<subject.tableView.numberOfRows(inSection: section) {
+                                    let indexPath = IndexPath(row: row, section: section)
+                                    expect(subject.tableView(subject.tableView, canEditRowAt: indexPath)) == false
+                                }
+                            }
                         }
 
-                        it("should filter the articles down to those that match the query") {
-                            expect(subject.tableView(subject.tableView, numberOfRowsInSection: 0)).to(equal(1))
+                        it("should have no edit actions") {
+                            for section in 0..<subject.tableView.numberOfSections {
+                                for row in 0..<subject.tableView.numberOfRows(inSection: section) {
+                                    let indexPath = IndexPath(row: row, section: section)
+                                    expect(subject.tableView(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
+                                }
+                            }
                         }
 
-                        describe("clearing the searchbar") {
+                        describe("when tapped") {
                             beforeEach {
-                                subject.searchBar.text = ""
-                                subject.searchBar.delegate?.searchBar?(subject.searchBar, textDidChange: "")
+                                subject.tableView(subject.tableView, didSelectRowAt: IndexPath(row: 0, section: 1))
                             }
 
-                            it("should reset the articles") {
-                                expect(subject.tableView(subject.tableView, numberOfRowsInSection: 0)).to(equal(articles.count))
+                            it("nothing should happen") {
+                                expect(navigationController.topViewController).to(beIdenticalTo(subject))
                             }
                         }
                     }
 
-                    it("has a set settings repository") {
-                        for section in 0..<subject.tableView.numberOfSections {
+                    context("out of preview mode") {
+                        it("has a settings repository") {
+                            let section = 1
                             for row in 0..<subject.tableView.numberOfRows(inSection: section) {
                                 let indexPath = IndexPath(row: row, section: section)
                                 let cell = subject.tableView(subject.tableView, cellForRowAt: indexPath) as? ArticleCell
@@ -444,129 +462,127 @@ class ArticleListControllerSpec: QuickSpec {
                                 expect(cell?.settingsRepository) === settingsRepository
                             }
                         }
-                    }
 
-                    it("should be editable") {
-                        for section in 0..<subject.tableView.numberOfSections {
+                        it("is editable") {
+                            let section = 1
                             for row in 0..<subject.tableView.numberOfRows(inSection: section) {
                                 let indexPath = IndexPath(row: row, section: section)
                                 expect(subject.tableView(subject.tableView, canEditRowAt: indexPath)) == true
                             }
                         }
-                    }
 
-                    it("should have 2 edit actions") {
-                        for section in 0..<subject.tableView.numberOfSections {
+                        it("has 2 edit actions") {
+                            let section = 1
                             for row in 0..<subject.tableView.numberOfRows(inSection: section) {
                                 let indexPath = IndexPath(row: row, section: section)
                                 expect(subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.count).to(equal(2))
                             }
                         }
-                    }
 
-                    describe("the edit actions") {
-                        describe("the first action") {
-                            var action: UITableViewRowAction! = nil
-                            let indexPath = IndexPath(row: 0, section: 0)
+                        describe("the edit actions") {
+                            describe("the first action") {
+                                var action: UITableViewRowAction! = nil
+                                let indexPath = IndexPath(row: 0, section: 1)
 
-                            beforeEach {
-                                action = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.first
-                            }
-
-                            it("states that it deletes the article") {
-                                expect(action?.title) == "Delete"
-                            }
-
-                            describe("tapping it") {
                                 beforeEach {
-                                    action.handler(action, indexPath)
+                                    action = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.first
                                 }
 
-                                it("does not yet delete the article") {
-                                    expect(dataRepository.lastDeletedArticle).to(beNil())
+                                it("states that it deletes the article") {
+                                    expect(action?.title) == "Delete"
                                 }
 
-                                it("presents an alert asking for confirmation that the user wants to do this") {
-                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                    guard let alert = subject.presentedViewController as? UIAlertController else { return }
-                                    expect(alert.preferredStyle) == UIAlertControllerStyle.alert
-                                    expect(alert.title) == "Delete \(articles.first!.title)?"
-
-                                    expect(alert.actions.count) == 2
-                                    expect(alert.actions.first?.title) == "Delete"
-                                    expect(alert.actions.last?.title) == "Cancel"
-                                }
-
-                                describe("tapping 'Delete'") {
+                                describe("tapping it") {
                                     beforeEach {
-                                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                        guard let alert = subject.presentedViewController as? UIAlertController else { return }
-
-                                        alert.actions.first?.handler(alert.actions.first!)
+                                        action.handler(action, indexPath)
                                     }
 
-                                    it("deletes the article") {
-                                        expect(dataRepository.lastDeletedArticle) == articles.first
-                                    }
-
-                                    it("dismisses the alert") {
-                                        expect(subject.presentedViewController).to(beNil())
-                                    }
-                                }
-
-                                describe("tapping 'Cancel'") {
-                                    beforeEach {
-                                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                        guard let alert = subject.presentedViewController as? UIAlertController else { return }
-
-                                        alert.actions.last?.handler(alert.actions.last!)
-                                    }
-
-                                    it("does not delete the article") {
+                                    it("does not yet delete the article") {
                                         expect(dataRepository.lastDeletedArticle).to(beNil())
                                     }
 
-                                    it("dismisses the alert") {
-                                        expect(subject.presentedViewController).to(beNil())
+                                    it("presents an alert asking for confirmation that the user wants to do this") {
+                                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                        guard let alert = subject.presentedViewController as? UIAlertController else { return }
+                                        expect(alert.preferredStyle) == UIAlertControllerStyle.alert
+                                        expect(alert.title) == "Delete \(articles.first!.title)?"
+
+                                        expect(alert.actions.count) == 2
+                                        expect(alert.actions.first?.title) == "Delete"
+                                        expect(alert.actions.last?.title) == "Cancel"
+                                    }
+
+                                    describe("tapping 'Delete'") {
+                                        beforeEach {
+                                            expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                            guard let alert = subject.presentedViewController as? UIAlertController else { return }
+
+                                            alert.actions.first?.handler(alert.actions.first!)
+                                        }
+
+                                        it("deletes the article") {
+                                            expect(dataRepository.lastDeletedArticle) == articles.first
+                                        }
+
+                                        it("dismisses the alert") {
+                                            expect(subject.presentedViewController).to(beNil())
+                                        }
+                                    }
+
+                                    describe("tapping 'Cancel'") {
+                                        beforeEach {
+                                            expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                            guard let alert = subject.presentedViewController as? UIAlertController else { return }
+
+                                            alert.actions.last?.handler(alert.actions.last!)
+                                        }
+
+                                        it("does not delete the article") {
+                                            expect(dataRepository.lastDeletedArticle).to(beNil())
+                                        }
+
+                                        it("dismisses the alert") {
+                                            expect(subject.presentedViewController).to(beNil())
+                                        }
+                                    }
+                                }
+                            }
+
+                            describe("for an unread article") {
+                                it("should mark the article as read with the second action item") {
+                                    let indexPath = IndexPath(row: 0, section: 1)
+                                    if let markRead = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.last {
+                                        expect(markRead.title).to(equal("Mark\nRead"))
+                                        markRead.handler(markRead, indexPath)
+                                        expect(dataRepository.lastArticleMarkedRead).to(equal(articles.first))
+                                        expect(articles.first?.read) == true
+                                    }
+                                }
+                            }
+
+                            describe("for a read article") {
+                                it("should mark the article as unread with the second action item") {
+                                    let indexPath = IndexPath(row: 2, section: 1)
+                                    if let markUnread = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.last {
+                                        expect(markUnread.title).to(equal("Mark\nUnread"))
+                                        markUnread.handler(markUnread, indexPath)
+                                        expect(dataRepository.lastArticleMarkedRead).to(equal(articles[2]))
+                                        expect(articles[2].read) == false
                                     }
                                 }
                             }
                         }
-
-                        describe("for an unread article") {
-                            it("should mark the article as read with the second action item") {
-                                let indexPath = IndexPath(row: 0, section: 0)
-                                if let markRead = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.last {
-                                    expect(markRead.title).to(equal("Mark\nRead"))
-                                    markRead.handler(markRead, indexPath)
-                                    expect(dataRepository.lastArticleMarkedRead).to(equal(articles.first))
-                                    expect(articles.first?.read) == true
-                                }
+                        
+                        describe("when tapped") {
+                            beforeEach {
+                                subject.tableView(subject.tableView, didSelectRowAt: IndexPath(row: 1, section: 1))
                             }
-                        }
-
-                        describe("for a read article") {
-                            it("should mark the article as unread with the second action item") {
-                                let indexPath = IndexPath(row: 2, section: 0)
-                                if let markUnread = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.last {
-                                    expect(markUnread.title).to(equal("Mark\nUnread"))
-                                    markUnread.handler(markUnread, indexPath)
-                                    expect(dataRepository.lastArticleMarkedRead).to(equal(articles[2]))
-                                    expect(articles[2].read) == false
+                            
+                            it("should navigate to an ArticleViewController") {
+                                expect(navigationController.topViewController).to(beAnInstanceOf(ArticleViewController.self))
+                                if let articleController = navigationController.topViewController as? ArticleViewController {
+                                    expect(articleController.article).to(equal(articles[1]))
                                 }
-                            }
-                        }
-                    }
-
-                    describe("when tapped") {
-                        beforeEach {
-                            subject.tableView(subject.tableView, didSelectRowAt: IndexPath(row: 1, section: 0))
-                        }
-
-                        it("should navigate to an ArticleViewController") {
-                            expect(navigationController.topViewController).to(beAnInstanceOf(ArticleViewController.self))
-                            if let articleController = navigationController.topViewController as? ArticleViewController {
-                                expect(articleController.article).to(equal(articles[1]))
                             }
                         }
                     }

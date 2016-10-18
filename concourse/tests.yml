@@ -5,4 +5,4 @@ inputs:
 - name: rssclient
 
 run:
-  path: rssclient/ci/tests.sh
+  path: rssclient/concourse/tests.sh

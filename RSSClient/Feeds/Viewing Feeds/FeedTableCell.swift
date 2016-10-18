@@ -39,7 +39,6 @@ public final class FeedTableCell: UITableViewCell {
     public let iconView = UIImageView(forAutoLayout: ())
 
     public private(set) var iconWidth: NSLayoutConstraint!
-
     public private(set) var iconHeight: NSLayoutConstraint!
 
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {

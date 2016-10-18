@@ -1,5 +1,4 @@
 import UIKit
-import WebKit
 import rNewsKit
 
 public final class ArticleCell: UITableViewCell {

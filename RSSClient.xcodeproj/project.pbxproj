@@ -169,6 +169,8 @@
 		898046D51A1C385A00EB29F0 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898046D41A1C385A00EB29F0 /* MainController.swift */; };
 		898047641A206CB100EB29F0 /* FeedsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898047631A206CB100EB29F0 /* FeedsViewController.swift */; };
 		898131681AF880400090FA7F /* Muon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; };
+		89831FEA1DB5C2FC00E32412 /* ArticleListHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89831FE91DB5C2FC00E32412 /* ArticleListHeaderCell.swift */; };
+		89831FEC1DB5C5FC00E32412 /* ArticleListHeaderCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89831FEB1DB5C5FC00E32412 /* ArticleListHeaderCellSpec.swift */; };
 		8984FE891CB984A40096F4B3 /* Author.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984FE881CB984A40096F4B3 /* Author.swift */; };
 		8984FE8A1CB984A40096F4B3 /* Author.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984FE881CB984A40096F4B3 /* Author.swift */; };
 		8984FE8C1CBA1A180096F4B3 /* AuthorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984FE8B1CBA1A180096F4B3 /* AuthorSpec.swift */; };
@@ -647,6 +649,8 @@
 		898046D41A1C385A00EB29F0 /* MainController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		898047631A206CB100EB29F0 /* FeedsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsViewController.swift; sourceTree = "<group>"; };
 		898131671AF880400090FA7F /* Muon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Muon.framework; path = ../Carthage/Build/iOS/Muon.framework; sourceTree = "<group>"; };
+		89831FE91DB5C2FC00E32412 /* ArticleListHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListHeaderCell.swift; sourceTree = "<group>"; };
+		89831FEB1DB5C5FC00E32412 /* ArticleListHeaderCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListHeaderCellSpec.swift; sourceTree = "<group>"; };
 		8984FE881CB984A40096F4B3 /* Author.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Author.swift; sourceTree = "<group>"; };
 		8984FE8B1CBA1A180096F4B3 /* AuthorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorSpec.swift; sourceTree = "<group>"; };
 		8984FE8E1CBAAFED0096F4B3 /* RealmMigratorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmMigratorSpec.swift; sourceTree = "<group>"; };
@@ -1065,6 +1069,7 @@
 			isa = PBXGroup;
 			children = (
 				8997C8521B2566A600972930 /* ArticleCellSpec.swift */,
+				89831FEB1DB5C5FC00E32412 /* ArticleListHeaderCellSpec.swift */,
 				899823AB1B2C883B00818755 /* ArticleListControllerSpec.swift */,
 				899823AD1B30B64000818755 /* ArticleViewControllerSpec.swift */,
 				890B78C91C78E8650066E201 /* ReadArticleUseCaseSpec.swift */,
@@ -1537,6 +1542,7 @@
 			isa = PBXGroup;
 			children = (
 				89C830B219D7D2CB009924DA /* ArticleCell.swift */,
+				89831FE91DB5C2FC00E32412 /* ArticleListHeaderCell.swift */,
 				89C830AD19D7CB8E009924DA /* ArticleListController.swift */,
 			);
 			path = "Viewing articles";
@@ -2319,6 +2325,7 @@
 				89CBDC151C7D7D96006B70F5 /* UIApplication+DataSubscriber.swift in Sources */,
 				89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */,
 				89E2A33D1B6A856900A40D4E /* SettingsViewController.swift in Sources */,
+				89831FEA1DB5C2FC00E32412 /* ArticleListHeaderCell.swift in Sources */,
 				89C509F41A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */,
 				8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */,
 				894D1AED1DB19A4E00E70B1A /* FeedsDeleSource.swift in Sources */,
@@ -2385,6 +2392,7 @@
 				894D1AEB1DB0971E00E70B1A /* FakeWKNavigationAction.swift in Sources */,
 				8997C8531B2566A600972930 /* ArticleCellSpec.swift in Sources */,
 				8935F5E01B462B7A000FFD5D /* FakeURLSession.swift in Sources */,
+				89831FEC1DB5C5FC00E32412 /* ArticleListHeaderCellSpec.swift in Sources */,
 				89735AC21C0771590032E09C /* FeedsListControllerSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -55,6 +55,7 @@ class SettingsViewControllerSpec: QuickSpec {
 
             it("should restyle the navigation bar") {
                 expect(subject.navigationController?.navigationBar.barStyle) == themeRepository.barStyle
+                expect(subject.navigationController?.navigationBar.titleTextAttributes as? [String: UIColor]) == [NSForegroundColorAttributeName: themeRepository.textColor]
             }
 
             it("by changing the background color of the tableView") {

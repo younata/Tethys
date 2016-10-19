@@ -6,117 +6,15 @@ public protocol ThemeRepositorySubscriber: NSObjectProtocol {
 }
 
 public final class ThemeRepository: NSObject, Injectable {
-    public private(set) var backgroundColor: UIColor {
-        get {
-            let color = self.colorForKey("backgroundColor")
-            return color ?? UIColor.white
-        }
-        set {
-            self.setColor(newValue, forKey: "backgroundColor")
-        }
-    }
-
-    public private(set) var textColor: UIColor {
-        get {
-            let color = self.colorForKey("textColor")
-            return color ?? UIColor.black
-        }
-        set {
-            self.setColor(newValue, forKey: "textColor")
-        }
-    }
-
-    public private(set) var articleCSSFileName: String {
-        get {
-            let fname = self.privateValueForKey("articleCss") as? String
-            return fname ?? "github2"
-        }
-        set {
-            self.privateSetValue(newValue as AnyObject, forKey: "articleCss")
-        }
-    }
-
-    public private(set) var syntaxHighlightFile: String {
-        get {
-            let fname = self.privateValueForKey("syntax") as? String
-            return fname ?? "mac_classic"
-        }
-        set {
-            self.privateSetValue(newValue as AnyObject, forKey: "syntax")
-        }
-    }
-
-    public private(set) var barStyle: UIBarStyle {
-        get {
-            if let rawValue = self.privateValueForKey("barStyle") as? Int,
-                let barStyle = UIBarStyle(rawValue: rawValue) {
-                    return barStyle
-            }
-            return UIBarStyle.default
-        }
-        set {
-            self.privateSetValue(newValue.rawValue as AnyObject, forKey: "barStyle")
-        }
-    }
-
-    public private(set) var statusBarStyle: UIStatusBarStyle {
-        get {
-            if let rawValue = self.privateValueForKey("statusBarStyle") as? Int,
-                let barStyle = UIStatusBarStyle(rawValue: rawValue) {
-                    return barStyle
-            }
-            return UIStatusBarStyle.default
-        }
-        set {
-            self.privateSetValue(newValue.rawValue as AnyObject, forKey: "statusBarStyle")
-        }
-    }
-
-    public private(set) var tintColor: UIColor {
-        get {
-            let color = self.colorForKey("tintColor")
-            return color ?? UIColor.white
-        }
-        set {
-            self.setColor(newValue, forKey: "tintColor")
-        }
-    }
-
-    public private(set) var scrollIndicatorStyle: UIScrollViewIndicatorStyle {
-        get {
-            if let rawValue = self.privateValueForKey("scrollIndicatorStyle") as? Int,
-                let scrollIndicatorStyle = UIScrollViewIndicatorStyle(rawValue: rawValue) {
-                    return scrollIndicatorStyle
-            }
-            return .black
-        }
-        set {
-            self.privateSetValue(newValue.rawValue as AnyObject, forKey: "scrollIndicatorStyle")
-        }
-    }
-
-    public private(set) var spinnerStyle: UIActivityIndicatorViewStyle {
-        get {
-            if let rawValue = self.privateValueForKey("spinnerStyle") as? Int,
-                let spinnerStyle = UIActivityIndicatorViewStyle(rawValue: rawValue) {
-                return spinnerStyle
-            }
-            return .gray
-        }
-        set {
-            self.privateSetValue(newValue.rawValue as AnyObject, forKey: "spinnerStyle")
-        }
-    }
-
-    public private(set) var errorColor: UIColor {
-        get {
-            let color = self.colorForKey("errorColor")
-            return color ?? UIColor(red: 1, green: 0, blue: 0.2, alpha: 1)
-        }
-        set {
-            self.setColor(newValue, forKey: "errorColor")
-        }
-    }
+    public var backgroundColor: UIColor { return self.theme.backgroundColor }
+    public var textColor: UIColor { return self.theme.textColor }
+    public var articleCSSFileName: String { return self.theme.articleCSSFileName }
+    public var barStyle: UIBarStyle { return self.theme.barStyle }
+    public var statusBarStyle: UIStatusBarStyle { return self.theme.statusBarStyle }
+    public var tintColor: UIColor { return self.theme.tintColor }
+    public var scrollIndicatorStyle: UIScrollViewIndicatorStyle { return self.theme.scrollIndicatorStyle }
+    public var spinnerStyle: UIActivityIndicatorViewStyle { return self.theme.spinnerStyle }
+    public var errorColor: UIColor { return self.theme.errorColor }
 
     public enum Theme: Int, CustomStringConvertible {
         case `default` = 0
@@ -125,15 +23,97 @@ public final class ThemeRepository: NSObject, Injectable {
         public var description: String {
             switch self {
             case .default:
-                return NSLocalizedString("Default", comment: "")
+                return NSLocalizedString("Theme_Default", comment: "")
             case .dark:
-                return NSLocalizedString("Dark", comment: "")
+                return NSLocalizedString("Theme_Dark", comment: "")
             }
         }
 
         public static func array() -> [Theme] {
             return [.default, .dark]
         }
+
+        public var backgroundColor: UIColor {
+            switch self {
+            case .default:
+                return UIColor.white
+            case .dark:
+                return UIColor.black
+            }
+        }
+
+        public var textColor: UIColor {
+            switch self {
+            case .default:
+                return UIColor.black
+            case .dark:
+                return UIColor(white: 0.85, alpha: 1)
+            }
+        }
+
+        public var articleCSSFileName: String {
+            switch self {
+            case .default:
+                return "github2"
+            case .dark:
+                return "darkhub2"
+            }
+        }
+
+        public var tintColor: UIColor {
+            switch self {
+            case .default:
+                return UIColor.white
+            case .dark:
+                return UIColor.darkGray
+            }
+        }
+
+        public var barStyle: UIBarStyle {
+            switch self {
+            case .default:
+                return .default
+            case .dark:
+                return .black
+            }
+        }
+
+        public var statusBarStyle: UIStatusBarStyle {
+            switch self {
+            case .default:
+                return .default
+            case .dark:
+                return .lightContent
+            }
+        }
+
+        public var scrollIndicatorStyle: UIScrollViewIndicatorStyle {
+            switch self {
+            case .default:
+                return .black
+            case .dark:
+                return .white
+            }
+        }
+
+        public var spinnerStyle: UIActivityIndicatorViewStyle {
+            switch self {
+            case .default:
+                return .gray
+            case .dark:
+                return .white
+            }
+        }
+
+        public var errorColor: UIColor {
+            switch self {
+            case .default:
+                return UIColor(red: 1, green: 0, blue: 0.2, alpha: 1)
+            case .dark:
+                return UIColor(red: 0.75, green: 0, blue: 0.1, alpha: 1)
+            }
+        }
+
     }
 
     public var theme: Theme {
@@ -146,32 +126,6 @@ public final class ThemeRepository: NSObject, Injectable {
         }
         set {
             self.privateSetValue(newValue.rawValue as AnyObject, forKey: "theme")
-
-            switch newValue {
-            case .default:
-                self.backgroundColor = UIColor.white
-                self.textColor = UIColor.black
-                self.articleCSSFileName = "github2"
-                self.tintColor = UIColor.white
-                self.syntaxHighlightFile = "mac_classic"
-                self.barStyle = .default
-                self.statusBarStyle = .default
-                self.scrollIndicatorStyle = .black
-                self.spinnerStyle = .gray
-                self.errorColor = UIColor(red: 1, green: 0, blue: 0.2, alpha: 1)
-            case .dark:
-                self.backgroundColor = UIColor.black
-                self.textColor = UIColor.white
-                self.articleCSSFileName = "darkhub2"
-                self.tintColor = UIColor.darkGray
-                self.syntaxHighlightFile = "twilight"
-                self.barStyle = .black
-                self.statusBarStyle = .lightContent
-                self.scrollIndicatorStyle = .white
-                self.spinnerStyle = .white
-                self.errorColor = UIColor(red: 0.75, green: 0, blue: 0.1, alpha: 1)
-            }
-
 
             for case let subscriber in self.subscribers.allObjects {
                 if let themeSubscriber = subscriber as? ThemeRepositorySubscriber {
@@ -204,26 +158,6 @@ public final class ThemeRepository: NSObject, Injectable {
             self.userDefaults?.set(value, forKey: key)
         } else {
             self.values[key] = value
-        }
-    }
-
-    private func colorForKey(_ key: String) -> UIColor? {
-        if let _ = self.userDefaults {
-            guard let data = self.userDefaults?.object(forKey: key) as? Data else {
-                return nil
-            }
-            return NSKeyedUnarchiver.unarchiveObject(with: data) as? UIColor
-        } else {
-            return self.privateValueForKey(key) as? UIColor
-        }
-    }
-
-    private func setColor(_ color: UIColor, forKey key: String) {
-        if let _ = self.userDefaults {
-            let data = NSKeyedArchiver.archivedData(withRootObject: color)
-            self.userDefaults?.set(data, forKey: key)
-        } else {
-            self.values[key] = color
         }
     }
 

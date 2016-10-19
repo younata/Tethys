@@ -298,6 +298,9 @@ public final class SettingsViewController: UIViewController, Injectable {
 extension SettingsViewController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.navigationController?.navigationBar.barStyle = self.themeRepository.barStyle
+        self.navigationController?.navigationBar.titleTextAttributes = [
+            NSForegroundColorAttributeName: self.themeRepository.textColor
+        ]
         self.view.backgroundColor = self.themeRepository.backgroundColor
 
         func colorWithDefault(_ color: UIColor) -> UIColor? {

@@ -125,6 +125,11 @@
 "Error_Standard_HTTP" = "Error loading resource, received %d";
 "Error_Standard_Unknown" = "Unknown Error - please try again";
 
+// Themes
+
+"Theme_Default" = "Default";
+"Theme_Dark" = "Dark";
+
 // Generic
 
 "Generic_Dismiss" = "Dismiss";

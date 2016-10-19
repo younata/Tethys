@@ -391,6 +391,9 @@ extension FindFeedViewController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
         self.navigationController?.toolbar.barStyle = themeRepository.barStyle
+        self.navigationController?.navigationBar.titleTextAttributes = [
+            NSForegroundColorAttributeName: themeRepository.textColor
+        ]
 
         self.webContent.scrollView.indicatorStyle = themeRepository.scrollIndicatorStyle
         self.webContent.backgroundColor = themeRepository.backgroundColor

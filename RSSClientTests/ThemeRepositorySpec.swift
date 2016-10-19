@@ -58,10 +58,6 @@ class ThemeRepositorySpec: QuickSpec {
             expect(subject.tintColor).to(equalColor(expectedColor: UIColor.white))
         }
 
-        it("uses 'mac_classic' as the default syntax highlight file name") {
-            expect(subject.syntaxHighlightFile).to(equal("mac_classic"))
-        }
-
         it("uses UIBarStyleDefault as the default barstyle") {
             expect(subject.barStyle).to(equal(UIBarStyle.default))
         }
@@ -105,12 +101,6 @@ class ThemeRepositorySpec: QuickSpec {
                 let expectedCss = sharedContext()["article"] as? String
                 expect(expectedCss).toNot(beNil())
                 expect(subject.articleCSSFileName).to(equal(expectedCss))
-            }
-
-            it("changes the syntax highlight file name") {
-                let expectedSyntax = sharedContext()["syntax"] as? String
-                expect(expectedSyntax).toNot(beNil())
-                expect(subject.syntaxHighlightFile).to(equal(expectedSyntax))
             }
 
             it("changes the barstyle") {
@@ -162,9 +152,6 @@ class ThemeRepositorySpec: QuickSpec {
                     let expectedTint = sharedContext()["tint"] as? UIColor
                     expect(expectedTint).toNot(beNil())
 
-                    let expectedSyntax = sharedContext()["syntax"] as? String
-                    expect(expectedSyntax).toNot(beNil())
-
                     let expectedBarStyle = UIBarStyle(rawValue: sharedContext()["barStyle"] as! Int)
                     expect(expectedBarStyle).toNot(beNil())
 
@@ -184,7 +171,6 @@ class ThemeRepositorySpec: QuickSpec {
                     expect(otherRepo.textColor).to(equalColor(expectedColor: expectedText))
                     expect(otherRepo.articleCSSFileName).to(equal(expectedCss))
                     expect(otherRepo.tintColor).to(equalColor(expectedColor: expectedTint))
-                    expect(otherRepo.syntaxHighlightFile).to(equal(expectedSyntax))
                     expect(otherRepo.barStyle).to(equal(expectedBarStyle))
                     expect(otherRepo.statusBarStyle).to(equal(expectedStatusBarStyle))
                     expect(otherRepo.scrollIndicatorStyle).to(equal(expectedScrollIndicatorStyle))
@@ -195,7 +181,6 @@ class ThemeRepositorySpec: QuickSpec {
                     let expectedText = UIColor.black
                     let expectedCss = "github2"
                     let expectedTint = UIColor.white
-                    let expectedSyntax = "mac_classic"
                     let expectedBarStyle = UIBarStyle.default
                     let expectedStatusBarStyle = UIStatusBarStyle.default
                     let expectedScrollIndicatorStyle = UIScrollViewIndicatorStyle.black
@@ -206,7 +191,6 @@ class ThemeRepositorySpec: QuickSpec {
                     expect(otherRepo.textColor).to(equalColor(expectedColor: expectedText))
                     expect(otherRepo.articleCSSFileName).to(equal(expectedCss))
                     expect(otherRepo.tintColor).to(equalColor(expectedColor: expectedTint))
-                    expect(otherRepo.syntaxHighlightFile).to(equal(expectedSyntax))
                     expect(otherRepo.barStyle).to(equal(expectedBarStyle))
                     expect(otherRepo.statusBarStyle).to(equal(expectedStatusBarStyle))
                     expect(otherRepo.scrollIndicatorStyle).to(equal(expectedScrollIndicatorStyle))
@@ -226,10 +210,9 @@ class ThemeRepositorySpec: QuickSpec {
                     itBehavesLike("a changed theme") {
                         return [
                             "background": UIColor.black,
-                            "text": UIColor.white,
+                            "text": UIColor(white: 0.85, alpha: 1),
                             "article": "darkhub2",
                             "tint": UIColor.darkGray,
-                            "syntax": "twilight",
                             "barStyle": UIBarStyle.black.rawValue,
                             "statusBar": UIStatusBarStyle.lightContent.rawValue,
                             "scrollIndicatorStyle": UIScrollViewIndicatorStyle.white.rawValue,
@@ -250,7 +233,6 @@ class ThemeRepositorySpec: QuickSpec {
                             "text": UIColor.black,
                             "article": "github2",
                             "tint": UIColor.white,
-                            "syntax": "mac_classic",
                             "barStyle": UIBarStyle.default.rawValue,
                             "statusBar": UIStatusBarStyle.default.rawValue,
                             "scrollIndicatorStyle": UIScrollViewIndicatorStyle.black.rawValue,
@@ -278,10 +260,9 @@ class ThemeRepositorySpec: QuickSpec {
                     itBehavesLike("a changed theme") {
                         return [
                             "background": UIColor.black,
-                            "text": UIColor.white,
+                            "text": UIColor(white: 0.85, alpha: 1),
                             "article": "darkhub2",
                             "tint": UIColor.darkGray,
-                            "syntax": "twilight",
                             "barStyle": UIBarStyle.black.rawValue,
                             "statusBar": UIStatusBarStyle.lightContent.rawValue,
                             "scrollIndicatorStyle": UIScrollViewIndicatorStyle.white.rawValue,
@@ -303,7 +284,6 @@ class ThemeRepositorySpec: QuickSpec {
                             "text": UIColor.black,
                             "article": "github2",
                             "tint": UIColor.white,
-                            "syntax": "mac_classic",
                             "barStyle": UIBarStyle.default.rawValue,
                             "statusBar": UIStatusBarStyle.default.rawValue,
                             "scrollIndicatorStyle": UIScrollViewIndicatorStyle.black.rawValue,

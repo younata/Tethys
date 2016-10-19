@@ -98,6 +98,7 @@ class FeedViewControllerSpec: QuickSpec {
 
             it("should update the navigation bar styling") {
                 expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
+                expect(subject.navigationController?.navigationBar.titleTextAttributes as? [String: UIColor]) == [NSForegroundColorAttributeName: themeRepository.textColor]
             }
 
             it("should update the tableView scroll indicator style") {

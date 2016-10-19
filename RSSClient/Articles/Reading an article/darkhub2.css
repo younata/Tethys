@@ -1,7 +1,7 @@
 body {
     font: -apple-system-body;
     font-family: Helvetica, arial, sans-serif;
-    color: white;
+    color: #D9D9D9;
     line-height: 1.6;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -60,12 +60,12 @@ h6 tt, h6 code {
 
 h1 {
     font-size: 2em;
-    color: white; }
+    color: #D9D9D9; }
 
 h2 {
     font-size: 1.8em;
     border-bottom: 1px solid #cccccc;
-    color: white; }
+    color: #D9D9D9; }
 
 h3 {
     font-size: 1.3em; }
@@ -309,7 +309,7 @@ sup {
 
 code[class*="language-"],
 pre[class*="language-"] {
-    color: white;
+    color: #D9D9D9;
     text-shadow: 0 1px black;
     font-family: Consolas, Monaco, 'Andale Mono', monospace;
     direction: ltr;

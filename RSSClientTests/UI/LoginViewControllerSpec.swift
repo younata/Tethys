@@ -50,6 +50,7 @@ class LoginViewControllerSpec: QuickSpec {
 
             it("restyles the navigation bar") {
                 expect(navigationController.navigationBar.barStyle) == themeRepository.barStyle
+                expect(subject.navigationController?.navigationBar.titleTextAttributes as? [String: UIColor]) == [NSForegroundColorAttributeName: themeRepository.textColor]
             }
 
             it("changes the background color of the view") {

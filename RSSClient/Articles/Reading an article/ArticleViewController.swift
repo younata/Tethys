@@ -328,5 +328,8 @@ extension ArticleViewController: ThemeRepositorySubscriber {
         self.navigationController?.toolbar.barStyle = themeRepository.barStyle
         self.backgroundView.backgroundColor = themeRepository.backgroundColor
         self.backgroundSpinnerView.activityIndicatorViewStyle = themeRepository.spinnerStyle
+        self.navigationController?.navigationBar.titleTextAttributes = [
+            NSForegroundColorAttributeName: themeRepository.textColor
+        ]
     }
 }

@@ -78,8 +78,9 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     expect(subject.tableView.indicatorStyle).to(equal(themeRepository.scrollIndicatorStyle))
                 }
 
-                it("updates the navigation bar background") {
+                it("updates the navigation bar") {
                     expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
+                    expect(subject.navigationController?.navigationBar.titleTextAttributes as? [String: UIColor]) == [NSForegroundColorAttributeName: themeRepository.textColor]
                 }
 
                 it("updates the searchbar bar style") {

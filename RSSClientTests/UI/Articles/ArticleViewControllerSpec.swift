@@ -64,8 +64,9 @@ class ArticleViewControllerSpec: QuickSpec {
                 themeRepository.theme = .dark
             }
 
-            it("should update the navigation bar background") {
+            it("should update the navigation bar") {
                 expect(subject.navigationController?.navigationBar.barStyle) == themeRepository.barStyle
+                expect(subject.navigationController?.navigationBar.titleTextAttributes as? [String: UIColor]) == [NSForegroundColorAttributeName: themeRepository.textColor]
             }
 
             it("should update the content's background color") {

@@ -358,6 +358,9 @@ extension FeedsTableViewController: Refresher {
 extension FeedsTableViewController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.navigationController?.navigationBar.barStyle = self.themeRepository.barStyle
+        self.navigationController?.navigationBar.titleTextAttributes = [
+            NSForegroundColorAttributeName: themeRepository.textColor
+        ]
 
         self.tableView.backgroundColor = self.themeRepository.backgroundColor
         self.tableView.separatorColor = self.themeRepository.textColor

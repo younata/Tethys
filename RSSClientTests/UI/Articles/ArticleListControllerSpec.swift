@@ -159,8 +159,9 @@ class ArticleListControllerSpec: QuickSpec {
                 expect(subject.tableView.indicatorStyle).to(equal(themeRepository.scrollIndicatorStyle))
             }
 
-            it("should update the navigation bar background") {
+            it("should update the navigation bar") {
                 expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
+                expect(subject.navigationController?.navigationBar.titleTextAttributes as? [String: UIColor]) == [NSForegroundColorAttributeName: themeRepository.textColor]
             }
         }
 

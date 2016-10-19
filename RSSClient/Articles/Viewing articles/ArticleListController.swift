@@ -321,5 +321,8 @@ extension ArticleListController: ThemeRepositorySubscriber {
         self.tableView.indicatorStyle = themeRepository.scrollIndicatorStyle
 
         self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
+        self.navigationController?.navigationBar.titleTextAttributes = [
+            NSForegroundColorAttributeName: themeRepository.textColor
+        ]
     }
 }

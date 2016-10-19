@@ -207,8 +207,6 @@ public final class LoginViewController: UIViewController, Injectable {
         self.registerButton.addTarget(self,
                                       action: #selector(LoginViewController.register),
                                       for: .touchUpInside)
-
-        self.view.backgroundColor = UIColor.white
     }
 
     @objc private func login() {
@@ -256,6 +254,9 @@ public final class LoginViewController: UIViewController, Injectable {
 extension LoginViewController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
+        self.navigationController?.navigationBar.titleTextAttributes = [
+            NSForegroundColorAttributeName: themeRepository.textColor
+        ]
         self.view.backgroundColor = themeRepository.backgroundColor
         self.titleLabel.textColor = themeRepository.textColor
         self.detailLabel.textColor = themeRepository.textColor

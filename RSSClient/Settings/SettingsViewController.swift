@@ -19,10 +19,9 @@ extension Account: CustomStringConvertible {
 public final class SettingsViewController: UIViewController, Injectable {
     fileprivate enum SettingsSection: CustomStringConvertible {
         case theme
+        case refresh
         case quickActions
         case accounts
-        case advanced
-        case refresh
         case other
         case credits
 
@@ -47,10 +46,8 @@ public final class SettingsViewController: UIViewController, Injectable {
                 case 3:
                     self = .accounts
                 case 4:
-                    self = .advanced
-                case 5:
                     self = .other
-                case 6:
+                case 5:
                     self = .credits
                 default:
                     return nil
@@ -60,9 +57,9 @@ public final class SettingsViewController: UIViewController, Injectable {
 
         static func numberOfSettings(_ traits: UITraitCollection) -> Int {
             if traits.forceTouchCapability == .available {
-                return 7
+                return 6
             }
-            return 6
+            return 5
         }
 
         fileprivate var rawValue: Int {
@@ -71,9 +68,8 @@ public final class SettingsViewController: UIViewController, Injectable {
             case .refresh: return 1
             case .quickActions: return 2
             case .accounts: return 3
-            case .advanced: return 4
-            case .other: return 5
-            case .credits: return 6
+            case .other: return 4
+            case .credits: return 5
             }
         }
 
@@ -87,8 +83,6 @@ public final class SettingsViewController: UIViewController, Injectable {
                 return NSLocalizedString("SettingsViewController_Table_Header_QuickActions", comment: "")
             case .accounts:
                 return NSLocalizedString("SettinsgViewController_Table_Header_Accounts", comment: "")
-            case .advanced:
-                return NSLocalizedString("SettingsViewController_Table_Header_Advanced", comment: "")
             case .other:
                 return NSLocalizedString("SettingsViewController_Table_Header_Other", comment: "")
             case .credits:
@@ -97,17 +91,20 @@ public final class SettingsViewController: UIViewController, Injectable {
         }
     }
 
-    fileprivate enum AdvancedSection: Int, CustomStringConvertible {
+    fileprivate enum OtherSection: Int, CustomStringConvertible {
         case showReadingTimes = 0
+        case exportOPML = 1
 
         fileprivate var description: String {
             switch self {
             case .showReadingTimes:
-                return NSLocalizedString("SettingsViewController_Advanced_ShowReadingTimes", comment: "")
+                return NSLocalizedString("SettingsViewController_Other_ShowReadingTimes", comment: "")
+            case .exportOPML:
+                return NSLocalizedString("SettingsViewController_Other_ExportOPML", comment: "")
             }
         }
 
-        fileprivate static let numberOfOptions = 1
+        fileprivate static let numberOfOptions = 2
     }
 
     public let tableView = UITableView(frame: CGRect.zero, style: .grouped)
@@ -328,6 +325,8 @@ extension SettingsViewController: UITableViewDataSource {
         switch section {
         case .theme:
             return 2
+        case .refresh:
+            return 2
         case .quickActions:
             if self.quickActionRepository.quickActions.count == 3 {
                 return 3
@@ -335,12 +334,8 @@ extension SettingsViewController: UITableViewDataSource {
             return self.quickActionRepository.quickActions.count + 1
         case .accounts:
             return 1
-        case .advanced:
-            return AdvancedSection.numberOfOptions
-        case .refresh:
-            return 2
         case .other:
-            return 1
+            return OtherSection.numberOfOptions
         case .credits:
             return 1
         }
@@ -381,27 +376,28 @@ extension SettingsViewController: UITableViewDataSource {
             cell.detailTextLabel?.text = self.accountRepository.loggedIn()
 
             return cell
-        case .advanced:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "switch",
-                for: indexPath) as! SwitchTableViewCell
-            let row = AdvancedSection(rawValue: indexPath.row)!
-            cell.textLabel?.text = row.description
-            cell.themeRepository = self.themeRepository
-            cell.onTapSwitch = {_ in }
+        case .other:
+            let row = OtherSection(rawValue: indexPath.row)!
+            var tableCell: UITableViewCell
             switch row {
             case .showReadingTimes:
+                let cell = tableView.dequeueReusableCell(withIdentifier: "switch",
+                                                         for: indexPath) as! SwitchTableViewCell
+                cell.themeRepository = self.themeRepository
+                cell.onTapSwitch = {_ in }
                 cell.theSwitch.isOn = self.showReadingTimes
                 cell.onTapSwitch = {aSwitch in
                     self.showReadingTimes = aSwitch.isOn
                     self.navigationItem.rightBarButtonItem?.isEnabled = true
                 }
+                tableCell = cell
+            case .exportOPML:
+                let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
+                cell.themeRepository = self.themeRepository
+                tableCell = cell
             }
-            return cell
-        case .other:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
-            cell.themeRepository = self.themeRepository
-            cell.textLabel?.text = NSLocalizedString("SettingsViewController_Other_ExportOPML", comment: "")
-            return cell
+            tableCell.textLabel?.text = row.description
+            return tableCell
         case .credits:
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
             cell.themeRepository = self.themeRepository
@@ -504,34 +500,39 @@ extension SettingsViewController: UITableViewDelegate {
             let loginViewController = self.loginViewController()
             loginViewController.accountType = Account(rawValue: indexPath.row)
             self.navigationController?.pushViewController(loginViewController, animated: true)
-        case .advanced:
-            tableView.deselectRow(at: indexPath, animated: false)
         case .other:
             tableView.deselectRow(at: indexPath, animated: false)
 
-            _ = self.opmlService.writeOPML().then {
-                switch $0 {
-                case let .success(url):
-                    self.mainQueue.addOperation {
-                        let shareSheet = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-                        self.present(shareSheet, animated: true, completion: nil)
-                    }
-                case .failure(_):
-                    self.mainQueue.addOperation {
-                        let alertTitle = NSLocalizedString("SettingsViewController_Other_ExportOPML_Error_Title",
-                                                           comment: "")
-                        let alertMessage = NSLocalizedString("SettingsViewController_Other_ExportOPML_Error_Message",
-                                                             comment: "")
-                        let alert = UIAlertController(title: alertTitle,
-                                                      message: alertMessage,
-                                                      preferredStyle: .alert)
-                        let dismissTitle = NSLocalizedString("Generic_Ok", comment: "")
-                        alert.addAction(UIAlertAction(title: dismissTitle, style: .default) { _ in
-                            self.dismiss(animated: true, completion: nil)
-                        })
-                        self.present(alert, animated: true, completion: nil)
+            guard let otherSection = OtherSection(rawValue: indexPath.row) else { return }
+
+            switch otherSection {
+            case .exportOPML:
+                _ = self.opmlService.writeOPML().then {
+                    switch $0 {
+                    case let .success(url):
+                        self.mainQueue.addOperation {
+                            let shareSheet = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+                            self.present(shareSheet, animated: true, completion: nil)
+                        }
+                    case .failure(_):
+                        self.mainQueue.addOperation {
+                            let alertTitle = NSLocalizedString("SettingsViewController_Other_ExportOPML_Error_Title",
+                                                               comment: "")
+                            let alertMsg = NSLocalizedString("SettingsViewController_Other_ExportOPML_Error_Message",
+                                                                 comment: "")
+                            let alert = UIAlertController(title: alertTitle,
+                                                          message: alertMsg,
+                                                          preferredStyle: .alert)
+                            let dismissTitle = NSLocalizedString("Generic_Ok", comment: "")
+                            alert.addAction(UIAlertAction(title: dismissTitle, style: .default) { _ in
+                                self.dismiss(animated: true, completion: nil)
+                            })
+                            self.present(alert, animated: true, completion: nil)
+                        }
                     }
                 }
+            default:
+                break
             }
         case .credits:
             tableView.deselectRow(at: indexPath, animated: false)

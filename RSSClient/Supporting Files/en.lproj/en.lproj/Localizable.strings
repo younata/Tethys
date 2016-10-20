@@ -4,7 +4,6 @@
 "SettingsViewController_Table_Header_Theme" = "Theme";
 "SettingsViewController_Table_Header_QuickActions" = "Quick Actions";
 "SettinsgViewController_Table_Header_Accounts" = "Accounts";
-"SettingsViewController_Table_Header_Advanced" = "Advanced";
 "SettingsViewController_Table_Header_Refresh" = "Refresh Style";
 "SettingsViewController_Table_Header_Other" = "Other";
 "SettingsViewController_Table_Header_Credits" = "Credits";
@@ -13,7 +12,7 @@
 "SettingsViewController_QuickActions_AddAdditional" = "Add a new Quick Action";
 "SettingsViewController_Accounts_Pasiphae" = "rNews Backend";
 "SettingsViewController_Accounts_Log_Out" = "Log Out";
-"SettingsViewController_Advanced_ShowReadingTimes" = "Show Estimated Reading Times";
+"SettingsViewController_Other_ShowReadingTimes" = "Show Estimated Reading Times";
 "SettingsViewController_Other_ExportOPML" = "Export OPML";
 "SettingsViewController_Other_ExportOPML_Error_Title" = "Error Exporting OPML";
 "SettingsViewController_Other_ExportOPML_Error_Message" = "Please Try Again";

@@ -229,16 +229,16 @@ class SettingsViewControllerSpec: QuickSpec {
                 dataSource = subject.tableView.dataSource
             }
 
-            it("has 7 sections if force touch is available") {
+            it("has 6 sections if force touch is available") {
                 subject.traitCollection.forceTouchCapability = UIForceTouchCapability.available
                 subject.tableView.reloadData()
-                expect(subject.tableView.numberOfSections) == 7
+                expect(subject.tableView.numberOfSections) == 6
             }
 
-            it("has 6 sections if force touch is not available") {
+            it("has 5 sections if force touch is not available") {
                 subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
                 subject.tableView.reloadData()
-                expect(subject.tableView.numberOfSections) == 6
+                expect(subject.tableView.numberOfSections) == 5
             }
 
             describe("the theme section") {
@@ -801,20 +801,20 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
             }
 
-            describe("the advanced section") {
+            describe("the other section") {
                 let sectionNumber = 3
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
                 }
 
-                it("is titled 'Advanced'") {
+                it("is titled 'Other'") {
                     let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
-                    expect(title) == "Advanced"
+                    expect(title) == "Other"
                 }
 
-                it("has one cell") {
-                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == 1
+                it("has two cell") {
+                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == 2
                 }
 
                 describe("the first cell") {
@@ -851,27 +851,10 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
                     }
                 }
-            }
 
-            describe("the other section") {
-                let sectionNumber = 4
-
-                beforeEach {
-                    subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
-                }
-
-                it("is titled 'Other'") {
-                    let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
-                    expect(title) == "Other"
-                }
-
-                it("has one cell") {
-                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == 1
-                }
-
-                describe("the first cell") {
+                describe("the second cell") {
                     var cell: TableViewCell! = nil
-                    let indexPath = IndexPath(row: 0, section: sectionNumber)
+                    let indexPath = IndexPath(row: 1, section: sectionNumber)
 
                     beforeEach {
                         cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
@@ -934,7 +917,7 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the credits section") {
-                let sectionNumber = 5
+                let sectionNumber = 4
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable

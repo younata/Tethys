@@ -56,7 +56,6 @@ public enum DatabaseError: Error {
         case .unknown:
             return NSLocalizedString("Error_Database_Unknown", comment: "")
         }
-        return ""
     }
 }
 

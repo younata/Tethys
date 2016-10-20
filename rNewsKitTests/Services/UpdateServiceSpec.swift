@@ -181,7 +181,7 @@ class UpdateServiceSpec: QuickSpec {
                 var updateFeedFuture: Future<Result<rNewsKit.Feed, RNewsError>>!
 
                 beforeEach {
-                    feed = rNewsKit.Feed(title: "feed", url: URL(string: "https://example.com/feed")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    feed = rNewsKit.Feed(title: "feed", url: URL(string: "http://www.objc.io")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
                     dataService.feeds = [feed]
 
                     updatedFeed = nil
@@ -323,7 +323,7 @@ class UpdateServiceSpec: QuickSpec {
                     }
 
                     it("should have an error in the callback") {
-                        expect(receivedError) == RNewsError.network(URL(string: "https://example.com/feed")!, .unknown)
+                        expect(receivedError) == RNewsError.network(URL(string: "http://www.objc.io")!, .unknown)
                     }
                 }
             }

@@ -331,8 +331,83 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
             }
 
-            describe("the quick actions section") {
+            describe("the refresh style section") {
                 let sectionNumber = 1
+
+                beforeEach {
+                    subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
+                }
+
+                it("is titled 'Refresh Style'") {
+                    let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
+                    expect(title) == "Refresh Style"
+                }
+
+                it("has two cells") {
+                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == 2
+                }
+
+                describe("the first cell") {
+                    var cell: TableViewCell! = nil
+                    let indexPath = IndexPath(row: 0, section: sectionNumber)
+
+                    beforeEach {
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
+                    }
+
+                    it("is titled 'Spinner'") {
+                        expect(cell.textLabel?.text) == "Spinner"
+                    }
+
+                    it("is selected if it's the current refresh control style") { // which it is not
+                        expect(cell.isSelected) == false
+                    }
+
+                    it("has its theme repository set") {
+                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
+                    }
+
+                    it("has no edit actions") {
+                        expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
+                    }
+
+                    describe("when tapped") {
+                        beforeEach {
+                            delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
+                        }
+                        itBehavesLike("a changed setting") {
+                            let op = BlockOperation {
+                                expect(settingsRepository.refreshControl) == RefreshControlStyle.spinner
+                            }
+                            return ["saveToUserDefaults": op]
+                        }
+                    }
+                }
+
+                describe("the second cell") {
+                    var cell: TableViewCell! = nil
+                    let indexPath = IndexPath(row: 1, section: sectionNumber)
+
+                    beforeEach {
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
+                    }
+
+                    it("is titled 'Breakout'") {
+                        expect(cell.textLabel?.text) == "Breakout"
+                    }
+
+                    it("has its theme repository set") {
+                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
+                    }
+                    
+                    it("has no edit actions") {
+                        expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
+                    }
+                }
+            }
+
+            describe("the quick actions section") {
+                let sectionNumber = 2
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.available
@@ -648,7 +723,7 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the accounts section") {
-                let sectionNumber = 1
+                let sectionNumber = 2
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
@@ -727,7 +802,7 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the advanced section") {
-                let sectionNumber = 2
+                let sectionNumber = 3
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
@@ -774,81 +849,6 @@ class SettingsViewControllerSpec: QuickSpec {
                             }
                             return ["saveToUserDefaults": op]
                         }
-                    }
-                }
-            }
-
-            describe("the refresh style section") {
-                let sectionNumber = 3
-
-                beforeEach {
-                    subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
-                }
-
-                it("is titled 'Refresh Style'") {
-                    let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
-                    expect(title) == "Refresh Style"
-                }
-
-                it("has two cells") {
-                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == 2
-                }
-
-                describe("the first cell") {
-                    var cell: TableViewCell! = nil
-                    let indexPath = IndexPath(row: 0, section: sectionNumber)
-
-                    beforeEach {
-                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
-                    }
-
-                    it("is titled 'Spinner'") {
-                        expect(cell.textLabel?.text) == "Spinner"
-                    }
-
-                    it("is selected if it's the current refresh control style") { // which it is not
-                        expect(cell.isSelected) == false
-                    }
-
-                    it("has its theme repository set") {
-                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
-                    }
-
-                    it("has no edit actions") {
-                        expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
-                    }
-
-                    describe("when tapped") {
-                        beforeEach {
-                            delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
-                        }
-                        itBehavesLike("a changed setting") {
-                            let op = BlockOperation {
-                                expect(settingsRepository.refreshControl) == RefreshControlStyle.spinner
-                            }
-                            return ["saveToUserDefaults": op]
-                        }
-                    }
-                }
-
-                describe("the second cell") {
-                    var cell: TableViewCell! = nil
-                    let indexPath = IndexPath(row: 1, section: sectionNumber)
-
-                    beforeEach {
-                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
-                    }
-
-                    it("is titled 'Breakout'") {
-                        expect(cell.textLabel?.text) == "Breakout"
-                    }
-
-                    it("has its theme repository set") {
-                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
-                    }
-
-                    it("has no edit actions") {
-                        expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
                     }
                 }
             }

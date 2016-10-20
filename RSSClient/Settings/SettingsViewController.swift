@@ -30,6 +30,9 @@ public final class SettingsViewController: UIViewController, Injectable {
             if rawValue == 0 {
                 self = .theme
                 return
+            } else if rawValue == 1 {
+                self = .refresh
+                return
             } else {
                 let offset: Int
                 switch traits.forceTouchCapability {
@@ -39,14 +42,12 @@ public final class SettingsViewController: UIViewController, Injectable {
                     offset = 1
                 }
                 switch rawValue + offset {
-                case 1:
-                    self = .quickActions
                 case 2:
-                    self = .accounts
+                    self = .quickActions
                 case 3:
-                    self = .advanced
+                    self = .accounts
                 case 4:
-                    self = .refresh
+                    self = .advanced
                 case 5:
                     self = .other
                 case 6:
@@ -67,10 +68,10 @@ public final class SettingsViewController: UIViewController, Injectable {
         fileprivate var rawValue: Int {
             switch self {
             case .theme: return 0
-            case .quickActions: return 1
-            case .accounts: return 2
-            case .advanced: return 3
-            case .refresh: return 4
+            case .refresh: return 1
+            case .quickActions: return 2
+            case .accounts: return 3
+            case .advanced: return 4
             case .other: return 5
             case .credits: return 6
             }
@@ -80,14 +81,14 @@ public final class SettingsViewController: UIViewController, Injectable {
             switch self {
             case .theme:
                 return NSLocalizedString("SettingsViewController_Table_Header_Theme", comment: "")
+            case .refresh:
+                return NSLocalizedString("SettingsViewController_Table_Header_Refresh", comment: "")
             case .quickActions:
                 return NSLocalizedString("SettingsViewController_Table_Header_QuickActions", comment: "")
             case .accounts:
                 return NSLocalizedString("SettinsgViewController_Table_Header_Accounts", comment: "")
             case .advanced:
                 return NSLocalizedString("SettingsViewController_Table_Header_Advanced", comment: "")
-            case .refresh:
-                return NSLocalizedString("SettingsViewController_Table_Header_Refresh", comment: "")
             case .other:
                 return NSLocalizedString("SettingsViewController_Table_Header_Other", comment: "")
             case .credits:
@@ -358,6 +359,12 @@ extension SettingsViewController: UITableViewDataSource {
             cell.themeRepository = self.themeRepository
             cell.textLabel?.text = theme.description
             return cell
+        case .refresh:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
+            guard let refreshStyle = RefreshControlStyle(rawValue: indexPath.row) else { return cell }
+            cell.themeRepository = self.themeRepository
+            cell.textLabel?.text = refreshStyle.description
+            return cell
         case .quickActions:
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
             cell.themeRepository = self.themeRepository
@@ -389,12 +396,6 @@ extension SettingsViewController: UITableViewDataSource {
                     self.navigationItem.rightBarButtonItem?.isEnabled = true
                 }
             }
-            return cell
-        case .refresh:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
-            guard let refreshStyle = RefreshControlStyle(rawValue: indexPath.row) else { return cell }
-            cell.themeRepository = self.themeRepository
-            cell.textLabel?.text = refreshStyle.description
             return cell
         case .other:
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
@@ -490,6 +491,11 @@ extension SettingsViewController: UITableViewDelegate {
             self.themeRepository.theme = theme
             self.navigationItem.rightBarButtonItem?.isEnabled = true
             self.reloadTable()
+        case .refresh:
+            guard let refreshControlStyle = RefreshControlStyle(rawValue: indexPath.row) else { return }
+            self.refreshControlStyle = refreshControlStyle
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
+            self.reloadTable()
         case .quickActions:
             tableView.deselectRow(at: indexPath, animated: false)
             self.didTapQuickActionCell(indexPath)
@@ -500,11 +506,6 @@ extension SettingsViewController: UITableViewDelegate {
             self.navigationController?.pushViewController(loginViewController, animated: true)
         case .advanced:
             tableView.deselectRow(at: indexPath, animated: false)
-        case .refresh:
-            guard let refreshControlStyle = RefreshControlStyle(rawValue: indexPath.row) else { return }
-            self.refreshControlStyle = refreshControlStyle
-            self.navigationItem.rightBarButtonItem?.isEnabled = true
-            self.reloadTable()
         case .other:
             tableView.deselectRow(at: indexPath, animated: false)
 

@@ -1,5 +1,5 @@
 import Cocoa
-import PureLayout_Mac
+import PureLayout
 import rNewsKit
 
 public final class UnreadCounter: NSView {
@@ -41,10 +41,10 @@ public final class UnreadCounter: NSView {
         super.init(frame: NSMakeRect(0, 0, 0, 0))
 
         self.addSubview(countLabel)
-        countLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 4)
-        countLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
-        countLabel.editable = false
-        countLabel.alignment = .Right
+        countLabel.autoPinEdge(toSuperviewEdge: .right, withInset: 4)
+        countLabel.autoPinEdge(toSuperviewEdge: .top, withInset: 4)
+        countLabel.isEditable = false
+        countLabel.alignment = .right
         countLabel.textColor = countColor
     }
 
@@ -59,10 +59,10 @@ public final class UnreadCounter: NSView {
         let path = CGMutablePath()
         let height = self.bounds.height
         let width = self.bounds.width
-        CGPathMoveToPoint(path, nil, 0, height)
-        CGPathAddLineToPoint(path, nil, width, height)
-        CGPathAddLineToPoint(path, nil, width, 0)
-        CGPathAddLineToPoint(path, nil, 0, height)
+        path.move(to: CGPoint(x: 0, y: height))
+        path.addLine(to: CGPoint(x: width, y: height))
+        path.addLine(to: CGPoint(x: width, y: 0))
+        path.addLine(to: CGPoint(x: 0, y: height))
         ctx?.cgContext.addPath(path)
         ctx?.cgContext.setFillColor(self.color.cgColor)
         (ctx?.cgContext)?.fillPath()

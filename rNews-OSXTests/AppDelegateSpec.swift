@@ -19,7 +19,7 @@ class AppDelegateSpec: QuickSpec {
 
         describe("applicationDidFinishLaunching:") {
             beforeEach {
-                let note = NSNotification(name: "", object: nil)
+                let note = Notification(name: Notification.Name(rawValue: ""), object: nil)
                 subject.applicationDidFinishLaunching(note)
             }
 
@@ -27,8 +27,8 @@ class AppDelegateSpec: QuickSpec {
                 expect(mainController.raInjector).toNot(beNil())
 
                 if let injector = mainController.raInjector {
-                    expect(injector.create(DataWriter)).toNot(beNil())
-                    expect(injector.create(kMainMenu) as? NSMenu).toNot(beNil())
+                    expect(injector.create(kind: DatabaseUseCase.self)).toNot(beNil())
+                    expect(injector.create(string: kMainMenu) as? NSMenu).toNot(beNil())
                 }
             }
         }

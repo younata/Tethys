@@ -22,12 +22,12 @@ final class ArticlesList: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     func reload() {
         let feeds = self.feeds
         DispatchQueue.main.async {
-            let articles = feeds.reduce([] as [Article]) { return $0 + $1.articles }
+            let articles = feeds.reduce([] as [Article]) { return $0 + $1.articlesArray }
             let newArticles = NSSet(array: articles)
             let oldArticles = NSSet(array: self.articles)
             self.articles = (articles as [Article])
             if newArticles != oldArticles {
-                self.articles.sortInPlace {a, b in
+                self.articles.sort {a, b in
                     let da = a.updatedAt ?? a.published
                     let db = b.updatedAt ?? b.published
                     return da.timeIntervalSince1970 > db.timeIntervalSince1970
@@ -44,13 +44,13 @@ final class ArticlesList: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         let titleAttributes = [NSFontAttributeName: NSFont.systemFont(ofSize: 14)]
         let authorAttributes = [NSFontAttributeName: NSFont.systemFont(ofSize: 12)]
 
-        let title = NSAttributedString(string: article.title ?? "", attributes: titleAttributes)
-        let author = NSAttributedString(string: article.author ?? "", attributes: authorAttributes)
+        let title = NSAttributedString(string: article.title, attributes: titleAttributes)
+        let author = NSAttributedString(string: article.authorsString, attributes: authorAttributes)
 
-        let titleBounds = title.boundingRectWithSize(NSMakeSize(width, CGFloat.max),
-            options: NSStringDrawingOptions.UsesFontLeading)
-        let authorBounds = author.boundingRectWithSize(NSMakeSize(width, CGFloat.max),
-            options: NSStringDrawingOptions.UsesFontLeading)
+        let titleBounds = title.boundingRect(with: NSMakeSize(width, CGFloat.greatestFiniteMagnitude),
+            options: NSStringDrawingOptions.usesFontLeading)
+        let authorBounds = author.boundingRect(with: NSMakeSize(width, CGFloat.greatestFiniteMagnitude),
+            options: NSStringDrawingOptions.usesFontLeading)
 
         let titleHeight = ceil(titleBounds.width / width) * ceil(titleBounds.height)
         let authorHeight = ceil(authorBounds.width / width) * ceil(authorBounds.height)

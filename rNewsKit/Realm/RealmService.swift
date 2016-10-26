@@ -227,7 +227,7 @@ final class RealmService: DataService {
                 }
             #else
                 if let image = feed.image {
-                    rfeed.imageData = image.TIFFRepresentation
+                    rfeed.imageData = image.tiffRepresentation
                 }
             #endif
         }

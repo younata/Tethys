@@ -13,11 +13,11 @@ class AppModuleSpec: QuickSpec {
 
             subject = AppModule()
 
-            subject.configureInjector(injector)
+            subject.configureInjector(injector: injector)
         }
 
         it("should configure the mainMenu correctly") {
-            expect(injector.create(kMainMenu) as? NSMenu).to(beIdenticalTo(NSApp.mainMenu))
+            expect(injector.create(string: kMainMenu) as? NSMenu).to(beIdenticalTo(NSApp.mainMenu))
         }
     }
 }

@@ -1,7 +1,6 @@
 import Quick
 import Nimble
 import WorkFlow
-import rNews
 import rNewsKit
 
 class MigrationUseCaseSpec: QuickSpec {

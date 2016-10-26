@@ -51,7 +51,7 @@ class FeedViewSpec: QuickSpec {
 
             describe("a single click") {
                 beforeEach {
-                    subject.mouseUp(NSEvent())
+                    subject.mouseUp(with: NSEvent())
                 }
 
                 it("should tell its delegate") {
@@ -66,7 +66,7 @@ class FeedViewSpec: QuickSpec {
 
                 beforeEach {
                     delegate.menuOptions = menuOptions
-                    menu = subject.menuForEvent(NSEvent())
+                    menu = subject.menu(for: NSEvent())
                 }
 
                 it("should ask for menu options") {
@@ -78,20 +78,20 @@ class FeedViewSpec: QuickSpec {
                     guard let menu = menu else {
                         return
                     }
-                    expect(menu.itemArray.count).to(equal(menuOptions.count))
+                    expect(menu.items.count).to(equal(menuOptions.count))
 
-                    for (idx, menuItem) in menu.itemArray.enumerate() {
+                    for (idx, menuItem) in menu.items.enumerated() {
                         expect(menuItem.title).to(equal(menuOptions[idx]))
                     }
                 }
 
                 describe("selecting a menu item") {
                     beforeEach {
-                        guard let item = menu?.itemAtIndex(1) else {
+                        guard let item = menu?.item(at: 1) else {
                             return
                         }
                         if let target = item.target as? NSObject {
-                            target.performSelector(item.action, withObject: item)
+                            target.performSelector(inBackground: item.action!, with: item)
                         }
                     }
 
@@ -103,7 +103,7 @@ class FeedViewSpec: QuickSpec {
             }
         }
 
-        sharedExamples("a configured feedView") {(sharedContext: SharedExampleContext) in
+        sharedExamples("a configured feedView") {(sharedContext: @escaping SharedExampleContext) in
             it("title") {
                 let expectedTitle = sharedContext()["title"] as? String
                 expect(expectedTitle).toNot(beNil())
@@ -154,10 +154,10 @@ class FeedViewSpec: QuickSpec {
         context("when configured with a feed with unread articles") {
             let article1 = Article(title: "a", link: nil, summary: "", authors: [],
                 published: Date(), updatedAt: nil, identifier: "", content: "",
-                read: true, feed: nil, flags: [])
+                read: true, estimatedReadingTime: 0, feed: nil, flags: [])
             let article2 = Article(title: "b", link: nil, summary: "", authors: [],
                 published: Date(), updatedAt: nil, identifier: "", content: "",
-                read: false, feed: nil, flags: [])
+                read: false, estimatedReadingTime: 0, feed: nil, flags: [])
             let feed = Feed(title: "Hello", url: URL(string: "https://example.com")!, summary: "World", tags: [],
                 waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
 
@@ -178,7 +178,7 @@ class FeedViewSpec: QuickSpec {
             var feed: Feed! = nil
 
             beforeEach {
-                let data = Data(contentsOfURL: URL(string: "https://avatars3.githubusercontent.com/u/285321?v=3&s=40")!)!
+                let data = try! Data(contentsOf: URL(string: "https://avatars3.githubusercontent.com/u/285321?v=3&s=40")!)
                 let image = NSImage(data: data)
                 feed = Feed(title: "feed", url: URL(string: "https://example.com")!, summary: "feedSummary", tags: [],
                     waitPeriod: 0, remainingWait: 0, articles: [], image: image)

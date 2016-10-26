@@ -84,9 +84,11 @@ class FakeDatabaseUseCase: DatabaseUseCase {
     }
 
     var lastFeedMarkedRead: Feed? = nil
+    var markedReadFeeds: [Feed] = []
     var lastFeedMarkedReadPromise: Promise<Result<Int, RNewsError>>? = nil
     func markFeedAsRead(_ feed: Feed) -> Future<Result<Int, RNewsError>> {
         lastFeedMarkedRead = feed
+        markedReadFeeds.append(feed)
         self.lastFeedMarkedReadPromise = Promise<Result<Int, RNewsError>>()
         return self.lastFeedMarkedReadPromise!.future
     }

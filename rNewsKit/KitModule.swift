@@ -2,8 +2,8 @@ import Foundation
 import Ra
 #if os(iOS)
     import CoreSpotlight
-    import Reachability
 #endif
+import Reachability
 import Sinope
 
 public let kMainQueue = "kMainQueue"
@@ -15,15 +15,16 @@ public final class KitModule: NSObject, Ra.InjectorModule {
         let mainQueue = OperationQueue.main
         injector.bind(string: kMainQueue, toInstance: mainQueue)
         injector.bind(kind: URLSession.self, toInstance: URLSession.shared)
-        injector.bind(kind: Analytics.self, toInstance: MixPanelAnalytics())
+        #if os(iOS)
+            injector.bind(kind: Analytics.self, toInstance: MixPanelAnalytics())
+        #endif
 
         var searchIndex: SearchIndex? = nil
-        var reachable: Reachable? = nil
+        let reachable: Reachable? = Reachability()
 
         #if os(iOS)
             searchIndex = CSSearchableIndex.default()
             injector.bind(kind: SearchIndex.self, toInstance: CSSearchableIndex.default())
-            reachable = Reachability()
         #endif
 
         let backgroundQueue = OperationQueue()

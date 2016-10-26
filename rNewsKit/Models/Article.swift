@@ -91,6 +91,10 @@ public final class Article: NSObject {
 
     internal private(set) var updated: Bool = false
 
+    public var authorsString: String {
+        return self.authors.map({$0.description}).joined(separator: ", ")
+    }
+
     public override var hashValue: Int {
         if let id = articleID as? String {
             return id.hash

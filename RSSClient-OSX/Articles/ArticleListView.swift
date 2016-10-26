@@ -5,10 +5,10 @@ final class ArticleListView: NSTableRowView {
     var article: Article? = nil {
         didSet {
             if let a = article {
-                title.string = a.title ?? ""
+                title.string = a.title
                 let date = a.updatedAt ?? a.published
-                published.string = dateFormatter.stringFromDate(date)
-                author.string = a.author ?? ""
+                published.string = dateFormatter.string(from: date)
+                author.string = a.authorsString
 
                 let hasNotRead = a.read != true
                 unread.unread = (hasNotRead ? 1 : 0)
@@ -49,29 +49,28 @@ final class ArticleListView: NSTableRowView {
         self.addSubview(published)
         self.addSubview(unread)
 
-        title.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-        title.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
-        titleHeight = title.autoSetDimension(.Height, toSize: 18)
-        title.font = NSFont.systemFontOfSize(14)
+        title.autoPinEdge(toSuperviewEdge: .left, withInset: 8)
+        title.autoPinEdge(toSuperviewEdge: .top, withInset: 4)
+        titleHeight = title.autoSetDimension(.height, toSize: 18)
+        title.font = NSFont.systemFont(ofSize: 14)
 
-        author.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-        author.autoPinEdge(.Top, toEdge: .Bottom, ofView: title, withOffset: 8)
-        author.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
-        //authorHeight = author.autoSetDimension(.Height, toSize: 16)
-        author.font = NSFont.systemFontOfSize(12)
+        author.autoPinEdge(toSuperviewEdge: .left, withInset: 8)
+        author.autoPinEdge(.top, to: .bottom, of: title, withOffset: 8)
+        author.autoPinEdge(toSuperviewEdge: .bottom, withInset: 4)
+        author.font = NSFont.systemFont(ofSize: 12)
 
-        unread.autoPinEdgeToSuperviewEdge(.Top)
-        unread.autoPinEdgeToSuperviewEdge(.Right)
-        unread.autoSetDimension(.Height, toSize: 20)
-        unreadWidth = unread.autoSetDimension(.Width, toSize: 20)
-        unread.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0, relation: .GreaterThanOrEqual)
+        unread.autoPinEdge(toSuperviewEdge: .top)
+        unread.autoPinEdge(toSuperviewEdge: .right)
+        unread.autoSetDimension(.height, toSize: 20)
+        unreadWidth = unread.autoSetDimension(.width, toSize: 20)
+        unread.autoPinEdge(toSuperviewEdge: .bottom, withInset: 0, relation: .greaterThanOrEqual)
 
         unread.hideUnreadText = true
 
-        published.autoPinEdge(.Right, toEdge: .Left, ofView: unread, withOffset: -8)
-        published.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
-        published.autoPinEdge(.Left, toEdge: .Right, ofView: title, withOffset: 8)
-        published.autoMatchDimension(.Width, toDimension: .Width, ofView: published.superview, withMultiplier: 0.25)
+        published.autoPinEdge(.right, to: .left, of: unread, withOffset: -8)
+        published.autoPinEdge(toSuperviewEdge: .top, withInset: 4)
+        published.autoPinEdge(.left, to: .right, of: title, withOffset: 8)
+        published.autoMatch(.width, to: .width, of: published.superview!, withMultiplier: 0.25)
 
         dateFormatter.timeStyle = .none
         dateFormatter.dateStyle = .short
@@ -79,10 +78,10 @@ final class ArticleListView: NSTableRowView {
 
         for tv in [title, author, published] {
             tv.textContainerInset = NSMakeSize(0, 0)
-            tv.editable = false
+            tv.isEditable = false
         }
-        published.font = NSFont.systemFontOfSize(12)
-        published.alignment = .Right
+        published.font = NSFont.systemFont(ofSize: 12)
+        published.alignment = .right
     }
 
     required init?(coder: NSCoder) {

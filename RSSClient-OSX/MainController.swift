@@ -28,12 +28,8 @@ public final class MainController: NSViewController {
 
     public private(set) var raInjector: Injector? = nil
 
-    private lazy var opmlManager: OPMLManager? = {
-        return self.raInjector?.create(OPMLManager)
-    }()
-
-    private lazy var dataWriter: DataWriter? = {
-        return self.raInjector?.create(DataWriter)
+    private lazy var importUseCase: ImportUseCase? = {
+        return self.raInjector?.create(kind: ImportUseCase.self)
     }()
 
     public func configure(_ injector: Injector) {
@@ -50,9 +46,9 @@ public final class MainController: NSViewController {
 
         self.splitViewController.splitView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(self.splitViewController.view)
-        self.splitViewController.view.autoPinEdgesToSuperviewEdgesWithInsets(NSEdgeInsetsZero)
+        self.splitViewController.view.autoPinEdgesToSuperviewEdges(with: NSEdgeInsetsZero)
 
-        self.feedsList.view.autoPinEdgesToSuperviewEdgesWithInsets(NSEdgeInsetsZero)
+        self.feedsList.view.autoPinEdgesToSuperviewEdges(with: NSEdgeInsetsZero)
 
         self.feedsList.reload()
         self.feedsList.onFeedSelection = showArticles
@@ -62,20 +58,25 @@ public final class MainController: NSViewController {
 
     @IBAction public func openDocument(_ sender: AnyObject) {
         guard let injector = self.raInjector,
-              let panel = injector.create(NSOpenPanel) else {
+            let panel = injector.create(kind: NSOpenPanel.self) else {
                 return
         }
         panel.canChooseDirectories = false
         panel.allowsMultipleSelection = true
         panel.allowedFileTypes = ["opml", "xml"]
-        panel.beginSheetModalForWindow(self.window!) {result in
+        panel.beginSheetModal(for: self.window!) {result in
             guard result == NSFileHandlingPanelOKButton else {
                 return
             }
-            for url in panel.URLs as [URL] {
-                self.opmlManager?.importOPML(url) {feeds in
-                    if !feeds.isEmpty {
-                        self.dataWriter?.updateFeeds {_ in }
+            for url in panel.urls as [URL] {
+                _ = self.importUseCase?.scanForImportable(url).then { importable in
+                    switch importable {
+                    case let .feed(url, _):
+                        _ = self.importUseCase?.importItem(url)
+                    case let .opml(url, _):
+                        _ = self.importUseCase?.importItem(url)
+                    default:
+                        break
                     }
                 }
             }
@@ -84,7 +85,7 @@ public final class MainController: NSViewController {
 
     func showArticles(_ feed: Feed) {
         let articlesList = ArticleListViewController()
-        articlesList.configure(feed.articles)
+        articlesList.configure(articles: feed.articlesArray)
         let articlesSplitViewItem = NSSplitViewItem(viewController: articlesList)
         self.splitViewController.addSplitViewItem(articlesSplitViewItem)
         self.splitViewController.addChildViewController(articlesList)

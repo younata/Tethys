@@ -9,7 +9,7 @@ class FeedsViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: FeedsViewController! = nil
         var injector: Injector! = nil
-        var dataReadWriter: FakeDataReadWriter! = nil
+        var databaseUseCase: FakeDatabaseUseCase! = nil
 
         let feed1 = Feed(title: "feed1", url: URL(string: "https://example.com")!, summary: "feed1Summary", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
         let feed2 = Feed(title: "feed2", url: URL(string: "https://example.com")!, summary: "feed2Summary", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
@@ -23,33 +23,32 @@ class FeedsViewControllerSpec: QuickSpec {
 
             injector = Injector()
 
-            dataReadWriter = FakeDataReadWriter()
-            injector.bind(DataWriter.self, to: dataReadWriter)
-            injector.bind(DataRetriever.self, to: dataReadWriter)
+            databaseUseCase = FakeDatabaseUseCase()
+            injector.bind(kind: DatabaseUseCase.self, toInstance: databaseUseCase)
 
             mainMenu = NSMenu(title: "")
-            mainMenu?.addItemWithTitle("a", action: "", keyEquivalent: "")
-            mainMenu?.addItemWithTitle("b", action: "", keyEquivalent: "")
-            mainMenu?.addItemWithTitle("c", action: "", keyEquivalent: "")
-            injector.bind(kMainMenu, to: mainMenu!)
-
-            dataReadWriter.feedsList = feeds
+            mainMenu?.addItem(withTitle: "a", action: Selector(""), keyEquivalent: "")
+            mainMenu?.addItem(withTitle: "b", action: Selector(""), keyEquivalent: "")
+            mainMenu?.addItem(withTitle: "c", action: Selector(""), keyEquivalent: "")
+            injector.bind(string: kMainMenu, toInstance: mainMenu!)
 
             subject.configure(injector)
+
+            databaseUseCase.feedsPromises.last?.resolve(.success(feeds))
         }
 
         it("should ask for the list of feeds") {
-            expect(dataReadWriter.didAskForFeeds) == true
+            expect(databaseUseCase.feedsPromises.count) == 1
         }
 
         it("should add a subscriber to the dataWriter") {
-            expect(dataReadWriter.subscribers.allObjects.isEmpty) == false
+            expect(databaseUseCase.subscribers.allObjects.isEmpty) == false
         }
 
         describe("the main menu") {
             var feedsMenuItem: NSMenuItem? = nil
             beforeEach {
-                feedsMenuItem = mainMenu?.itemWithTitle("Feeds")
+                feedsMenuItem = mainMenu?.item(withTitle: "Feeds")
             }
 
             it("should add 'feeds' menu item to the main menu") {
@@ -57,7 +56,7 @@ class FeedsViewControllerSpec: QuickSpec {
                 expect(feedsMenuItem?.target as? NSObject).toNot(beNil())
                 if let target = feedsMenuItem?.target as? NSObject,
                    let action = feedsMenuItem?.action {
-                    expect(target.respondsToSelector(action)) == true
+                    expect(target.responds(to: action)) == true
                 }
             }
 
@@ -72,62 +71,64 @@ class FeedsViewControllerSpec: QuickSpec {
                 }
 
                 it("has an option for deleting all feeds") {
-                    let deleteAllItem = feedsSubMenu?.itemWithTitle("Delete all feeds")
+                    let deleteAllItem = feedsSubMenu?.item(withTitle: "Delete all feeds")
                     expect(deleteAllItem).toNot(beNil())
                     guard let deleteItem = deleteAllItem else {
                         return
                     }
 
                     expect(deleteItem.keyEquivalent).to(equal("D"))
-                    expect(deleteItem.enabled) == true
+                    expect(deleteItem.isEnabled) == true
                     expect(deleteItem.target as? NSObject).toNot(beNil())
 
                     if let target = deleteItem.target as? NSObject {
-                        dataReadWriter.feedsList = []
-                        target.performSelector(deleteItem.action)
+                        target.perform(deleteItem.action)
 
-                        expect(dataReadWriter.deletedFeeds).to(equal(feeds))
+                        expect(databaseUseCase.deletedFeeds).to(equal(feeds))
 
-                        expect(subject.tableView.dataSource()?.numberOfRowsInTableView?(subject.tableView)).to(equal(0))
+                        databaseUseCase.feedsPromises.last?.resolve(.success([]))
+
+                        expect(subject.tableView.dataSource?.numberOfRows?(in: subject.tableView)).to(equal(0))
                     }
                 }
 
                 it("has an option for reloading feeds") {
-                    let reloadAllItem = feedsSubMenu?.itemWithTitle("Refresh feeds")
+                    let reloadAllItem = feedsSubMenu?.item(withTitle: "Refresh feeds")
                     expect(reloadAllItem).toNot(beNil())
                     guard let reloadItem = reloadAllItem else {
                         return
                     }
 
                     expect(reloadItem.keyEquivalent).to(equal("r"))
-                    expect(reloadItem.enabled) == true
+                    expect(reloadItem.isEnabled) == true
                     expect(reloadItem.target as? NSObject).toNot(beNil())
 
                     if let target = reloadItem.target as? NSObject {
-                        target.performSelector(reloadItem.action)
+                        target.perform(reloadItem.action)
 
-                        expect(dataReadWriter.didUpdateFeeds) == true
+                        expect(databaseUseCase.didUpdateFeeds) == true
                     }
                 }
 
                 it("has an option for marking all feeds as read") {
-                    let markAllReadItem = feedsSubMenu?.itemWithTitle("Mark all feeds as read")
+                    let markAllReadItem = feedsSubMenu?.item(withTitle: "Mark all feeds as read")
                     expect(markAllReadItem).toNot(beNil())
                     guard let markReadItem = markAllReadItem else {
                         return
                     }
 
                     expect(markReadItem.keyEquivalent).to(equal("R"))
-                    expect(markReadItem.enabled) == true
+                    expect(markReadItem.isEnabled) == true
                     expect(markReadItem.target as? NSObject).toNot(beNil())
 
                     if let target = markReadItem.target as? NSObject {
-                        dataReadWriter.feedsList = [] // tests that it reloads data
-                        target.performSelector(markReadItem.action)
+                        target.perform(markReadItem.action)
 
-                        expect(dataReadWriter.markedReadFeeds).to(equal(feeds))
+                        expect(databaseUseCase.markedReadFeeds).to(equal(feeds))
 
-                        expect(subject.tableView.dataSource()?.numberOfRowsInTableView?(subject.tableView)).to(equal(0))
+                        databaseUseCase.feedsPromises.last?.resolve(.success(feeds))
+
+                        expect(subject.tableView.dataSource?.numberOfRows?(in: subject.tableView)).to(equal(0))
                     }
                 }
             }
@@ -137,19 +138,19 @@ class FeedsViewControllerSpec: QuickSpec {
             var delegate: NSTableViewDelegate! = nil
             var dataSource: NSTableViewDataSource! = nil
             beforeEach {
-                delegate = subject.tableView.delegate()
-                dataSource = subject.tableView.dataSource()
+                delegate = subject.tableView.delegate
+                dataSource = subject.tableView.dataSource
             }
 
             it("should have a row for each feed") {
-                expect(dataSource.numberOfRowsInTableView?(subject.tableView)).to(equal(feeds.count))
+                expect(dataSource.numberOfRows?(in: subject.tableView)).to(equal(feeds.count))
             }
 
             describe("a row") {
                 var row: FeedView? = nil
 
                 beforeEach {
-                    row = delegate.tableView?(subject.tableView, viewForTableColumn: nil, row: 0) as? FeedView
+                    row = delegate.tableView?(subject.tableView, viewFor: nil, row: 0) as? FeedView
                     expect(row).toNot(beNil())
                 }
 
@@ -186,23 +187,23 @@ class FeedsViewControllerSpec: QuickSpec {
                             }
 
                             it("should mark the contents of the feed as read") {
-                                expect(dataReadWriter.lastFeedMarkedRead).to(equal(feed1))
+                                expect(databaseUseCase.lastFeedMarkedRead).to(equal(feed1))
                             }
                         }
 
                         describe("selecting 'Delete' as the menu option") {
                             let updatedFeeds = [feed2]
                             beforeEach {
-                                dataReadWriter.feedsList = updatedFeeds
                                 delegate?.didSelectMenuOption("Delete", forFeed: feed1)
+                                databaseUseCase.feedsPromises.last?.resolve(.success(updatedFeeds))
                             }
 
                             it("should delete the feed when the 'delete' option is selected") {
-                                expect(dataReadWriter.lastDeletedFeed).to(equal(feed1))
+                                expect(databaseUseCase.lastDeletedFeed).to(equal(feed1))
                             }
 
                             it("should update the feeds") {
-                                expect(dataSource.numberOfRowsInTableView?(subject.tableView)).to(equal(updatedFeeds.count))
+                                expect(dataSource.numberOfRows?(in: subject.tableView)).to(equal(updatedFeeds.count))
                             }
                         }
                     }
@@ -218,18 +219,17 @@ class FeedsViewControllerSpec: QuickSpec {
             var dataSource: NSTableViewDataSource! = nil
 
             beforeEach {
-                dataReadWriter.feedsList = updatedFeeds
-                for object in dataReadWriter.subscribers.allObjects {
+                for object in databaseUseCase.subscribers.allObjects {
                     if let subscriber = object as? DataSubscriber {
                         subscriber.didUpdateFeeds([])
                     }
                 }
 
-                dataSource = subject.tableView.dataSource()
+                dataSource = subject.tableView.dataSource
             }
 
             it("should update the feeds") {
-                expect(dataSource.numberOfRowsInTableView?(subject.tableView)).to(equal(updatedFeeds.count))
+                expect(dataSource.numberOfRows?(in: subject.tableView)).to(equal(updatedFeeds.count))
             }
         }
     }

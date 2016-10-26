@@ -1,9 +1,6 @@
 import CBGPromise
 import Result
-#if os(iOS)
-    import Reachability
-#elseif os(OSX)
-#endif
+import Reachability
 
 public protocol DatabaseUseCase {
     func databaseUpdateAvailable() -> Bool
@@ -44,13 +41,11 @@ protocol Reachable {
     var hasNetworkConnectivity: Bool { get }
 }
 
-#if os(iOS)
-    extension Reachability: Reachable {
-        var hasNetworkConnectivity: Bool {
-            return self.currentReachabilityStatus != .notReachable
-        }
+extension Reachability: Reachable {
+    var hasNetworkConnectivity: Bool {
+        return self.currentReachabilityStatus != .notReachable
     }
-#endif
+}
 
 extension DatabaseUseCase {
     public func feeds(matchingTag tag: String?) -> Future<Result<[Feed], RNewsError>> {

@@ -1,5 +1,5 @@
 import Cocoa
-import PureLayout_Mac
+import PureLayout
 import rNewsKit
 import Ra
 
@@ -28,23 +28,19 @@ public final class FeedsViewController: NSViewController {
 
     public var onFeedSelection: (Feed) -> Void = {(_) in }
 
-    fileprivate var dataReader: DataRetriever? {
-        return self.raInjector?.create(DataRetriever)
-    }
-
-    fileprivate var dataWriter: DataWriter? {
-        return self.raInjector?.create(DataWriter)
+    fileprivate var databaseUseCase: DatabaseUseCase? {
+        return self.raInjector?.create(kind: DatabaseUseCase.self)
     }
 
     private var mainMenu: NSMenu? {
-        return self.raInjector?.create(kMainMenu) as? NSMenu
+        return self.raInjector?.create(string: kMainMenu) as? NSMenu
     }
 
     public func configure(_ injector: Injector?) {
         self.raInjector = injector
         self.view = self.scrollView
 
-        self.dataWriter?.addSubscriber(self)
+        self.databaseUseCase?.addSubscriber(self)
         self.reload()
 
         if self.mainMenu?.item(withTitle: "Feeds") == nil {
@@ -85,26 +81,28 @@ public final class FeedsViewController: NSViewController {
 
     internal func didSelectDeleteAllFeeds() {
         for feed in self.feeds {
-            self.dataWriter?.deleteFeed(feed)
+            _ = self.databaseUseCase?.deleteFeed(feed).wait()
         }
         self.reload()
     }
 
     internal func didSelectMarkAllAsRead() {
         for feed in self.feeds {
-            self.dataWriter?.markFeedAsRead(feed)
+            _ = self.databaseUseCase?.markFeedAsRead(feed).wait()
         }
         self.reload()
     }
 
     internal func didSelectRefreshAllFeeds() {
-        self.dataWriter?.updateFeeds {_ in }
+        self.databaseUseCase?.updateFeeds {_ in }
     }
 
     internal func reload() {
-        self.dataReader?.feeds {feeds in
-            self.feeds = feeds
-            self.tableView.reloadData()
+        self.databaseUseCase?.feeds().then {res in
+            res.map { feeds in
+                self.feeds = feeds
+                self.tableView.reloadData()
+            }
         }
     }
 
@@ -114,10 +112,10 @@ public final class FeedsViewController: NSViewController {
         let title = NSAttributedString(string: feed.displayTitle, attributes: attributes)
         let summary = NSAttributedString(string: feed.displaySummary, attributes: attributes)
 
-        let titleBounds = title.boundingRectWithSize(NSMakeSize(width, CGFloat.max),
-            options: NSStringDrawingOptions.UsesFontLeading)
-        let summaryBounds = summary.boundingRectWithSize(NSMakeSize(width, CGFloat.max),
-            options: NSStringDrawingOptions.UsesFontLeading)
+        let titleBounds = title.boundingRect(with: NSMakeSize(width, CGFloat.greatestFiniteMagnitude),
+            options: NSStringDrawingOptions.usesFontLeading)
+        let summaryBounds = summary.boundingRect(with: NSMakeSize(width, CGFloat.greatestFiniteMagnitude),
+            options: NSStringDrawingOptions.usesFontLeading)
 
         let titleHeight = ceil(titleBounds.width / width) * ceil(titleBounds.height)
         let summaryHeight = ceil(summaryBounds.width / width) * ceil(summaryBounds.height)
@@ -130,7 +128,7 @@ public final class FeedsViewController: NSViewController {
 }
 
 extension FeedsViewController: DataSubscriber {
-    public func markedArticle(_ article: Article, asRead read: Bool) {}
+    public func markedArticles(_ articles: [Article], asRead read: Bool) {}
 
     public func deletedArticle(_ article: Article) {}
 
@@ -189,9 +187,9 @@ extension FeedsViewController: FeedViewDelegate {
         }
         switch feedsMenuOption {
         case .MarkRead:
-            self.dataWriter?.markFeedAsRead(feed)
+            _ = self.databaseUseCase?.markFeedAsRead(feed).wait()
         case .Delete:
-            self.dataWriter?.deleteFeed(feed)
+            _ = self.databaseUseCase?.deleteFeed(feed).wait()
         }
         self.reload()
     }

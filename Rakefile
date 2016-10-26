@@ -46,6 +46,30 @@ namespace "test" do
   task :osx => ["osx:app", "osx:kit"]
 end
 
+namespace "libraries" do
+  desc "Generate library information"
+  task :generate do |t|
+    cartfile = IO.read('Cartfile')
+    output_string = "rNews utilizes the following third party libraries:\n\n"
+
+    dependencies = cartfile.each_line do |line|
+      line = line[/[^#]+/]
+      source, full_name = line.split(' ')[0, 2].map { |f| f.gsub('"', '') }
+      unless source.nil? or full_name.nil?
+        name = full_name.split('/').last.gsub('.git', '')
+        if source == 'github'
+          url = "https://github.com/#{full_name}"
+        else
+          url = full_name
+        end
+        output_string += "- [#{name}](#{url})\n"
+      end
+    end
+
+    IO.write("documentation/libraries.md", output_string)
+  end
+end
+
 namespace "release" do
   def last_git_tag
     `git tag | tail -1`.strip

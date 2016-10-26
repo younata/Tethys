@@ -77,7 +77,7 @@ public enum RNewsError: Error {
         case let .database(error):
             return error.localizedDescription
         case let .backend(error):
-            return error.localizedDescription
+            return error.description
         case .unknown:
             return NSLocalizedString("Error_Standard_Unknown", comment: "")
         }

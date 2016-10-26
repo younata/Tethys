@@ -81,14 +81,14 @@ public final class FeedsViewController: NSViewController {
 
     internal func didSelectDeleteAllFeeds() {
         for feed in self.feeds {
-            _ = self.databaseUseCase?.deleteFeed(feed).wait()
+            _ = self.databaseUseCase?.deleteFeed(feed)
         }
         self.reload()
     }
 
     internal func didSelectMarkAllAsRead() {
         for feed in self.feeds {
-            _ = self.databaseUseCase?.markFeedAsRead(feed).wait()
+            _ = self.databaseUseCase?.markFeedAsRead(feed)
         }
         self.reload()
     }
@@ -187,9 +187,9 @@ extension FeedsViewController: FeedViewDelegate {
         }
         switch feedsMenuOption {
         case .MarkRead:
-            _ = self.databaseUseCase?.markFeedAsRead(feed).wait()
+            _ = self.databaseUseCase?.markFeedAsRead(feed)
         case .Delete:
-            _ = self.databaseUseCase?.deleteFeed(feed).wait()
+            _ = self.databaseUseCase?.deleteFeed(feed)
         }
         self.reload()
     }

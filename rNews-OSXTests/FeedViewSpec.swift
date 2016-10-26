@@ -88,16 +88,17 @@ class FeedViewSpec: QuickSpec {
                 describe("selecting a menu item") {
                     beforeEach {
                         guard let item = menu?.item(at: 1) else {
+                            fail("unknown menu item")
                             return
                         }
                         if let target = item.target as? NSObject {
-                            target.performSelector(inBackground: item.action!, with: item)
+                            target.perform(item.action!, with: item)
                         }
                     }
 
                     it("should notify its delegate") {
-                        expect(delegate.selectedMenuOption).to(equal("second"))
-                        expect(delegate.selectedFeed).to(equal(feed))
+                        expect(delegate.selectedMenuOption) == "second"
+                        expect(delegate.selectedFeed) == feed
                     }
                 }
             }
@@ -178,8 +179,7 @@ class FeedViewSpec: QuickSpec {
             var feed: Feed! = nil
 
             beforeEach {
-                let data = try! Data(contentsOf: URL(string: "https://avatars3.githubusercontent.com/u/285321?v=3&s=40")!)
-                let image = NSImage(data: data)
+                let image = NSImage(named: "GrayIcon")
                 feed = Feed(title: "feed", url: URL(string: "https://example.com")!, summary: "feedSummary", tags: [],
                     waitPeriod: 0, remainingWait: 0, articles: [], image: image)
                 subject.configure(feed, delegate: FakeFeedViewDelegate())

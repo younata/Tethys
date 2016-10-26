@@ -150,6 +150,7 @@
 		8967DA081A409433000424F4 /* ArticleListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8967DA071A409433000424F4 /* ArticleListView.swift */; };
 		8969947D1DC1655000A97C66 /* FakeDatabaseUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89348F2E1C60730D007D366B /* FakeDatabaseUseCase.swift */; };
 		8969947E1DC1687500A97C66 /* FakeImportUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB0E1C703570001C0189 /* FakeImportUseCase.swift */; };
+		8969947F1DC1732D00A97C66 /* Reachability.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898320A41DC13F1E00E32412 /* Reachability.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89718F2A1AE0C942004C3CB4 /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F271AE0C942004C3CB4 /* Ra.framework */; };
 		89718F301AE0C9B4004C3CB4 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; };
 		89718F311AE0C9B4004C3CB4 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2F1AE0C9B4004C3CB4 /* Quick.framework */; };
@@ -542,6 +543,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				8969947F1DC1732D00A97C66 /* Reachability.framework in Embed Frameworks */,
 				898320B21DC1411D00E32412 /* PureLayout.framework in Embed Frameworks */,
 				8989793A1B707FAE00218498 /* rNewsKit.framework in Embed Frameworks */,
 				898320C31DC14D3D00E32412 /* CBGPromise.framework in Embed Frameworks */,
@@ -1950,7 +1952,10 @@
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.Sandbox = {
-								enabled = 1;
+								enabled = 0;
+							};
+							com.apple.iCloud = {
+								enabled = 0;
 							};
 						};
 					};
@@ -2720,8 +2725,6 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "-";
-				CODE_SIGN_ENTITLEMENTS = RSSClient/rNews.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2747,8 +2750,6 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = RSSClient/rNews.entitlements;
-				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (

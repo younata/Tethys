@@ -126,7 +126,7 @@ class FeedsViewControllerSpec: QuickSpec {
 
                         expect(databaseUseCase.markedReadFeeds).to(equal(feeds))
 
-                        databaseUseCase.feedsPromises.last?.resolve(.success(feeds))
+                        databaseUseCase.feedsPromises.last?.resolve(.success([]))
 
                         expect(subject.tableView.dataSource?.numberOfRows?(in: subject.tableView)).to(equal(0))
                     }
@@ -224,6 +224,8 @@ class FeedsViewControllerSpec: QuickSpec {
                         subscriber.didUpdateFeeds([])
                     }
                 }
+
+                databaseUseCase.feedsPromises.last?.resolve(.success(updatedFeeds))
 
                 dataSource = subject.tableView.dataSource
             }

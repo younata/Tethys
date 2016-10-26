@@ -2,6 +2,7 @@ public protocol Analytics {
     func logEvent(_ event: String, data: [String: String]?)
 }
 
+#if os(iOS)
 import Mixpanel
 
 func MixPanelToken() -> String {
@@ -17,3 +18,4 @@ struct MixPanelAnalytics: Analytics {
         }
     }
 }
+#endif

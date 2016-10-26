@@ -3,9 +3,7 @@
 cd rssclient
 carthage bootstrap --platform ios
 bundle
-echo "$MIXPANEL_TOKEN" > .mixpanel
-echo "$PASIPHAE_TOKEN" > .pasiphae
-echo "$PASIPHAE_URL" > .pasiphaeURL
+bundle exec fastlane deploy_setup
 
 if [[ `git name-rev --name-only --tags HEAD` = 'undefined' ]]
 then

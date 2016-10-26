@@ -21,7 +21,6 @@
 		8903EB061C702689001C0189 /* webpage.html in Resources */ = {isa = PBXBuildFile; fileRef = 8903EB041C702580001C0189 /* webpage.html */; };
 		8903EB071C70268B001C0189 /* webpage.html in Resources */ = {isa = PBXBuildFile; fileRef = 8903EB041C702580001C0189 /* webpage.html */; };
 		8903EB091C702843001C0189 /* WebPageParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB081C702843001C0189 /* WebPageParser.swift */; };
-		8903EB0A1C702843001C0189 /* WebPageParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB081C702843001C0189 /* WebPageParser.swift */; };
 		8903EB0C1C702FA3001C0189 /* WebPageParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB0B1C702FA3001C0189 /* WebPageParserSpec.swift */; };
 		8903EB0D1C702FA3001C0189 /* WebPageParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB0B1C702FA3001C0189 /* WebPageParserSpec.swift */; };
 		8903EB0F1C703570001C0189 /* FakeImportUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB0E1C703570001C0189 /* FakeImportUseCase.swift */; };
@@ -171,6 +170,38 @@
 		898131681AF880400090FA7F /* Muon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; };
 		89831FEA1DB5C2FC00E32412 /* ArticleListHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89831FE91DB5C2FC00E32412 /* ArticleListHeaderCell.swift */; };
 		89831FEC1DB5C5FC00E32412 /* ArticleListHeaderCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89831FEB1DB5C5FC00E32412 /* ArticleListHeaderCellSpec.swift */; };
+		898320411DC1216B00E32412 /* DefaultDatabaseUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48CA1B425F8C0097045A /* DefaultDatabaseUseCase.swift */; };
+		898320421DC1216B00E32412 /* DatabaseUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89628BDE1CE1742600B4C624 /* DatabaseUseCase.swift */; };
+		898320431DC1216B00E32412 /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978438C1CE1AB3000C74605 /* Repository.swift */; };
+		898320441DC1216B00E32412 /* DataStoreBackedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */; };
+		898320451DC1216B00E32412 /* Future+when.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E30F61CF4011F00E327A0 /* Future+when.swift */; };
+		898320461DC1216B00E32412 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82031B461A2B00648367 /* Helpers.swift */; };
+		898320471DC1216B00E32412 /* KitModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82051B461A5500648367 /* KitModule.swift */; };
+		898320481DC1216B00E32412 /* SearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C61B40D2AC0097045A /* SearchIndex.swift */; };
+		898320491DC1216B00E32412 /* WebPageParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB081C702843001C0189 /* WebPageParser.swift */; };
+		8983204A1DC1216B00E32412 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E1868A1D13629D005C5880 /* Analytics.swift */; };
+		8983204B1DC1216B00E32412 /* PasiphaeFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5C21D414E5000546099 /* PasiphaeFactory.swift */; };
+		8983204C1DC1216B00E32412 /* AccountRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5AC1D4002FD00546099 /* AccountRepository.swift */; };
+		8983204D1DC1216B00E32412 /* DefaultAccountRepositoryDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFFA031D4BF234002255E8 /* DefaultAccountRepositoryDelegate.swift */; };
+		8983204E1DC1216B00E32412 /* Array+rNewsKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924FE2D1D6D51DC0060D26D /* Array+rNewsKit.swift */; };
+		8983204F1DC1217B00E32412 /* rNewsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D427DD1CF53D520093D186 /* rNewsError.swift */; };
+		898320501DC1217B00E32412 /* HTTPError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D427E11CF556A90093D186 /* HTTPError.swift */; };
+		898320511DC1217B00E32412 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5A81D3EF0C700546099 /* Account.swift */; };
+		898320521DC1217B00E32412 /* Importable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5CE1D4177DE00546099 /* Importable.swift */; };
+		898320531DC1217B00E32412 /* UpdateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5B71D403FEF00546099 /* UpdateUseCase.swift */; };
+		898320541DC121AE00E32412 /* FeedRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E30E71CF218F600E327A0 /* FeedRepositorySpec.swift */; };
+		898320551DC121AE00E32412 /* AccountRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5AE1D40225D00546099 /* AccountRepositorySpec.swift */; };
+		898320561DC121B400E32412 /* FakeReachable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8908949A1BFED7B8002848A4 /* FakeReachable.swift */; };
+		898320571DC121B400E32412 /* FakeDataSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89628BE01CE175F100B4C624 /* FakeDataSubscriber.swift */; };
+		898320581DC121B400E32412 /* FakeSinopeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5B31D40245E00546099 /* FakeSinopeRepository.swift */; };
+		898320591DC121B400E32412 /* FakeUpdateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5BB1D404EA800546099 /* FakeUpdateUseCase.swift */; };
+		8983205A1DC121B400E32412 /* FakeAccountRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5CA1D416B6700546099 /* FakeAccountRepository.swift */; };
+		8983205B1DC121B400E32412 /* FakeImportables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */; };
+		8983205C1DC121B900E32412 /* rNewsErrorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D427DF1CF540560093D186 /* rNewsErrorSpec.swift */; };
+		8983205D1DC121BF00E32412 /* InMemoryDataServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89500B221CDEA26E004548C3 /* InMemoryDataServiceSpec.swift */; };
+		8983205E1DC121D000E32412 /* MigrationUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC101C7D781E006B70F5 /* MigrationUseCaseSpec.swift */; };
+		8983205F1DC121D600E32412 /* DatabaseUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89628BE21CE1805E00B4C624 /* DatabaseUseCaseSpec.swift */; };
+		898320601DC121EA00E32412 /* DefaultAccountRepositoryDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFFA051D4C32A7002255E8 /* DefaultAccountRepositoryDelegateSpec.swift */; };
 		8984FE891CB984A40096F4B3 /* Author.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984FE881CB984A40096F4B3 /* Author.swift */; };
 		8984FE8A1CB984A40096F4B3 /* Author.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984FE881CB984A40096F4B3 /* Author.swift */; };
 		8984FE8C1CBA1A180096F4B3 /* AuthorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984FE8B1CBA1A180096F4B3 /* AuthorSpec.swift */; };
@@ -201,11 +232,7 @@
 		898979391B707FAE00218498 /* rNewsKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898979241B707FAD00218498 /* rNewsKit.framework */; };
 		8989793A1B707FAE00218498 /* rNewsKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898979241B707FAD00218498 /* rNewsKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		898979411B70805D00218498 /* rNewsKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 894304231B45089A000078DC /* rNewsKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8989794E1B70808300218498 /* SearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C61B40D2AC0097045A /* SearchIndex.swift */; };
-		8989794F1B70808300218498 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82031B461A2B00648367 /* Helpers.swift */; };
-		898979501B70808300218498 /* KitModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82051B461A5500648367 /* KitModule.swift */; };
 		898979521B70808300218498 /* OPMLService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A3417E1B150D1B0000C60B /* OPMLService.swift */; };
-		898979531B70808300218498 /* DefaultDatabaseUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48CA1B425F8C0097045A /* DefaultDatabaseUseCase.swift */; };
 		898979581B70808300218498 /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4DB1B0533B600EDD6D0 /* Feed.swift */; };
 		898979591B70808300218498 /* Article.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4DE1B0535EB00EDD6D0 /* Article.swift */; };
 		898979601B70845A00218498 /* Ra.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8989795D1B70845A00218498 /* Ra.framework */; };
@@ -324,7 +351,6 @@
 		89CBDC011C7D41C9006B70F5 /* MigrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC001C7D41C9006B70F5 /* MigrationViewController.swift */; };
 		89CBDC051C7D42D7006B70F5 /* MigrationViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC041C7D42D7006B70F5 /* MigrationViewControllerSpec.swift */; };
 		89CBDC091C7D431D006B70F5 /* FakeMigrationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC081C7D431D006B70F5 /* FakeMigrationUseCase.swift */; };
-		89CBDC111C7D781E006B70F5 /* MigrationUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC101C7D781E006B70F5 /* MigrationUseCaseSpec.swift */; };
 		89CBDC151C7D7D96006B70F5 /* UIApplication+DataSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC141C7D7D96006B70F5 /* UIApplication+DataSubscriber.swift */; };
 		89CBDC171C7D8501006B70F5 /* BootstrapWorkFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC161C7D8501006B70F5 /* BootstrapWorkFlow.swift */; };
 		89CBDC2C1C7E60B7006B70F5 /* BootstrapWorkFlowSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC2B1C7E60B7006B70F5 /* BootstrapWorkFlowSpec.swift */; };
@@ -367,7 +393,6 @@
 		89F98BA81BA07E50005C3CA8 /* SettingsRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA71BA07E50005C3CA8 /* SettingsRepositorySpec.swift */; };
 		89F98BAA1BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA91BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift */; };
 		89FF979E1BF058FB000080F7 /* DataStoreBackedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */; };
-		89FF979F1BF058FB000080F7 /* DataStoreBackedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */; };
 		89FF97A11BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF97A01BF05CDC000080F7 /* DataStoreBackedArraySpec.swift */; };
 		89FF97A21BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF97A01BF05CDC000080F7 /* DataStoreBackedArraySpec.swift */; };
 		AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4356301A7AE4FE00A961B9 /* InjectorModule.swift */; };
@@ -2154,6 +2179,7 @@
 				8992D4331C3665B7004A5A35 /* FakeUpdateService.swift in Sources */,
 				8935F5E11B462B8C000FFD5D /* FakeOPMLService.swift in Sources */,
 				89E186931D136C48005C5880 /* FakeAnalytics.swift in Sources */,
+				8983205E1DC121D000E32412 /* MigrationUseCaseSpec.swift in Sources */,
 				89146E441C88C73200EC8F10 /* ImportUseCaseSpec.swift in Sources */,
 				89D427E01CF540560093D186 /* rNewsErrorSpec.swift in Sources */,
 				895AC5201C80227B00A5F6A1 /* FakeDefaultDatabaseUseCase.swift in Sources */,
@@ -2208,25 +2234,40 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8989794E1B70808300218498 /* SearchIndex.swift in Sources */,
+				8983204E1DC1216B00E32412 /* Array+rNewsKit.swift in Sources */,
+				898320411DC1216B00E32412 /* DefaultDatabaseUseCase.swift in Sources */,
 				89146E431C88C70700EC8F10 /* ImportUseCase.swift in Sources */,
+				8983204A1DC1216B00E32412 /* Analytics.swift in Sources */,
 				898979521B70808300218498 /* OPMLService.swift in Sources */,
+				8983204B1DC1216B00E32412 /* PasiphaeFactory.swift in Sources */,
+				898320461DC1216B00E32412 /* Helpers.swift in Sources */,
+				898320481DC1216B00E32412 /* SearchIndex.swift in Sources */,
 				895AC51C1C7FF27300A5F6A1 /* RealmMigrator.swift in Sources */,
+				8983204F1DC1217B00E32412 /* rNewsError.swift in Sources */,
+				898320491DC1216B00E32412 /* WebPageParser.swift in Sources */,
+				898320551DC121AE00E32412 /* AccountRepositorySpec.swift in Sources */,
 				898979581B70808300218498 /* Feed.swift in Sources */,
 				89CBDBF21C7D1206006B70F5 /* DataServiceFactory.swift in Sources */,
 				89146E411C88C6A800EC8F10 /* MigrationUseCase.swift in Sources */,
+				898320511DC1217B00E32412 /* Account.swift in Sources */,
+				898320471DC1216B00E32412 /* KitModule.swift in Sources */,
+				898320531DC1217B00E32412 /* UpdateUseCase.swift in Sources */,
 				8984FE8A1CB984A40096F4B3 /* Author.swift in Sources */,
-				8903EB0A1C702843001C0189 /* WebPageParser.swift in Sources */,
-				898979531B70808300218498 /* DefaultDatabaseUseCase.swift in Sources */,
-				8989794F1B70808300218498 /* Helpers.swift in Sources */,
 				898911C71C3267E3009A44E9 /* DataService.swift in Sources */,
-				898979501B70808300218498 /* KitModule.swift in Sources */,
+				8983204C1DC1216B00E32412 /* AccountRepository.swift in Sources */,
+				898320441DC1216B00E32412 /* DataStoreBackedArray.swift in Sources */,
+				8983204D1DC1216B00E32412 /* DefaultAccountRepositoryDelegate.swift in Sources */,
 				891754711C5B449E0036D96D /* RealmObjects.swift in Sources */,
-				89FF979F1BF058FB000080F7 /* DataStoreBackedArray.swift in Sources */,
 				898911C61C3267E3009A44E9 /* UpdateService.swift in Sources */,
 				89500B251CDEA289004548C3 /* InMemoryDataService.swift in Sources */,
+				898320431DC1216B00E32412 /* Repository.swift in Sources */,
+				898320451DC1216B00E32412 /* Future+when.swift in Sources */,
+				898320521DC1217B00E32412 /* Importable.swift in Sources */,
 				891754741C5B485B0036D96D /* RealmService.swift in Sources */,
 				898979591B70808300218498 /* Article.swift in Sources */,
+				898320421DC1216B00E32412 /* DatabaseUseCase.swift in Sources */,
+				898320501DC1217B00E32412 /* HTTPError.swift in Sources */,
+				898320541DC121AE00E32412 /* FeedRepositorySpec.swift in Sources */,
 				89122E621C5D725D00004B1F /* DatabaseMigrator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2238,17 +2279,21 @@
 				8992D4341C3665B7004A5A35 /* FakeUpdateService.swift in Sources */,
 				89146E3F1C88C6A200EC8F10 /* MigrationUseCaseSpec.swift in Sources */,
 				8937F6C11B79D0800044A442 /* KitModuleSpec.swift in Sources */,
+				898320591DC121B400E32412 /* FakeUpdateUseCase.swift in Sources */,
 				89FF97A21BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */,
+				898320581DC121B400E32412 /* FakeSinopeRepository.swift in Sources */,
 				89CBDBF51C7D1436006B70F5 /* DataServiceFactorySpec.swift in Sources */,
 				895AC5211C80227D00A5F6A1 /* FakeDefaultDatabaseUseCase.swift in Sources */,
 				89CBDBFA1C7D32EE006B70F5 /* FakeDataServiceFactory.swift in Sources */,
 				89146E451C88C73400EC8F10 /* ImportUseCaseSpec.swift in Sources */,
 				898979AA1B708E7800218498 /* FeedSpec.swift in Sources */,
 				8984FE901CBAAFED0096F4B3 /* RealmMigratorSpec.swift in Sources */,
+				898320571DC121B400E32412 /* FakeDataSubscriber.swift in Sources */,
 				898979B61B708F0000218498 /* FakeOPMLService.swift in Sources */,
 				8917547A1C5B48D40036D96D /* RealmServiceSpec.swift in Sources */,
 				89122E651C5D762000004B1F /* DatabaseMigratorSpec.swift in Sources */,
 				898979B81B708F0C00218498 /* FakeURLSession.swift in Sources */,
+				898320601DC121EA00E32412 /* DefaultAccountRepositoryDelegateSpec.swift in Sources */,
 				898911C31C3267D6009A44E9 /* UpdateServiceSpec.swift in Sources */,
 				898911C41C3267D6009A44E9 /* DataServiceSpec.swift in Sources */,
 				898979A81B708E7800218498 /* DefaultDatabaseUseCaseSpec.swift in Sources */,
@@ -2256,12 +2301,18 @@
 				89146E4F1C88F02000EC8F10 /* FakeFileManager.swift in Sources */,
 				898979B71B708F0700218498 /* FakeOperationQueue.swift in Sources */,
 				8984FE8D1CBA1A180096F4B3 /* AuthorSpec.swift in Sources */,
+				8983205D1DC121BF00E32412 /* InMemoryDataServiceSpec.swift in Sources */,
+				8983205F1DC121D600E32412 /* DatabaseUseCaseSpec.swift in Sources */,
 				898979AB1B708E7800218498 /* ArticleSpec.swift in Sources */,
 				8903EB0D1C702FA3001C0189 /* WebPageParserSpec.swift in Sources */,
+				8983205A1DC121B400E32412 /* FakeAccountRepository.swift in Sources */,
 				898979A41B708E7800218498 /* FakeSearchIndex.swift in Sources */,
+				8983205B1DC121B400E32412 /* FakeImportables.swift in Sources */,
+				898320561DC121B400E32412 /* FakeReachable.swift in Sources */,
 				898979A71B708E7800218498 /* OPMLServiceSpec.swift in Sources */,
 				8903F5C11D412EF500546099 /* UpdateUseCaseSpec.swift in Sources */,
 				89146E4D1C88F01800EC8F10 /* FakeDatabaseUseCase.swift in Sources */,
+				8983205C1DC121B900E32412 /* rNewsErrorSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2378,7 +2429,6 @@
 				89BFAC101C4C66AE007B3415 /* CustomMatchers.swift in Sources */,
 				89CBDC051C7D42D7006B70F5 /* MigrationViewControllerSpec.swift in Sources */,
 				89CB984A1B12C50000C87160 /* ActivityIndicatorSpec.swift in Sources */,
-				89CBDC111C7D781E006B70F5 /* MigrationUseCaseSpec.swift in Sources */,
 				8918D4DD1B859D3B00DCDE0E /* ThemeRepositorySpec.swift in Sources */,
 				89D970BF1B3929D600ED84B8 /* DefaultBackgroundFetchHandlerSpec.swift in Sources */,
 				899823AC1B2C883B00818755 /* ArticleListControllerSpec.swift in Sources */,

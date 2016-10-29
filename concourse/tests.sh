@@ -3,7 +3,7 @@
 cd rssclient
 bundle
 bundle exec carthage_cache -b $AWS_CACHE_BUCKET install
-if [[ $? != 0 ]]; then
+if [ $? != 0 ]; then
     carthage bootstrap
     bundle exec carthage_cache -b $AWS_CACHE_BUCKET publish
 fi

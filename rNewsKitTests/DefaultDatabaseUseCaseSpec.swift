@@ -234,6 +234,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
             describe("markFeedAsRead") {
                 var markedReadFuture: Future<Result<Int, RNewsError>>?
                 beforeEach {
+                    mainQueue.runSynchronously = true
                     markedReadFuture = subject.markFeedAsRead(feed1)
                 }
 
@@ -307,6 +308,8 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
 
                 beforeEach {
                     article = article1
+
+                    mainQueue.runSynchronously = true
 
                     _ = subject.markArticle(article, asRead: true)
                 }

@@ -255,8 +255,8 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         }
         return self.dataService.batchSave([], articles: articles).map { result in
             return result.map {
-                for object in self.subscribers.allObjects {
-                    if let subscriber = object as? DataSubscriber {
+                for subscriber in self.allSubscribers {
+                    self.mainQueue.addOperation {
                         subscriber.markedArticles(articles, asRead: read)
                     }
                 }

@@ -48,10 +48,15 @@ struct RealmMigrator {
         }
         if oldSchemaVersion < 10 {
             migration.enumerateObjects(ofType: RealmFeed.className()) { oldObject, newObject in
-                if let newObject = newObject {
-                    guard let urlString = newObject["url"] as? String, let _ = URL(string: urlString) else {
+                if let newObject = newObject, let oldObject = oldObject {
+                    guard let oldURLString = oldObject["url"] as? String? else {
                         migration.delete(newObject)
                         return
+                    }
+                    if let urlString = oldURLString {
+                        newObject["url"] = urlString
+                    } else {
+                        migration.delete(newObject)
                     }
                 }
             }

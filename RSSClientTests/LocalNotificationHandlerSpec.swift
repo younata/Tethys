@@ -64,7 +64,7 @@ class LocalNotificationHandlerSpec: QuickSpec {
             var navController: UINavigationController! = nil
 
             let feed = Feed(title: "feedTitle", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")
-            let article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
+            let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
             feed.addArticle(article)
             beforeEach {
                 let note = UILocalNotification()
@@ -128,7 +128,7 @@ class LocalNotificationHandlerSpec: QuickSpec {
 
         describe("handling actions") {
             let feed = Feed(title: "feedTitle", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")
-            let article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
+            let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
             feed.addArticle(article)
 
             describe("read") {
@@ -181,7 +181,7 @@ class LocalNotificationHandlerSpec: QuickSpec {
         
         describe("sending notifications") {
             let feed = Feed(title: "feedTitle", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feedIdentifier")
-            let article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
+            let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "articleIdentifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
             feed.addArticle(article)
 
             beforeEach {

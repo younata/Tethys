@@ -20,8 +20,11 @@ protocol DataService: class {
     var searchIndex: SearchIndex? { get }
     var mainQueue: OperationQueue { get }
 
-    func createFeed(_ callback: @escaping (Feed) -> Void) -> Future<Result<Feed, RNewsError>>
-    func createArticle(_ feed: Feed?, callback: @escaping (Article) -> Void)
+    func createFeed(url: URL, callback: @escaping (Feed) -> Void) -> Future<Result<Feed, RNewsError>>
+    func createArticle(url: URL, feed: Feed?, callback: @escaping (Article) -> Void)
+
+    func findOrCreateFeed(url: URL) -> Future<Feed>
+    func findOrCreateArticle(feed: Feed, url: URL) -> Future<Article>
 
     func allFeeds() -> Future<Result<DataStoreBackedArray<Feed>, RNewsError>>
     func articlesMatchingPredicate(_ predicate: NSPredicate) ->
@@ -30,7 +33,7 @@ protocol DataService: class {
     func deleteFeed(_ feed: Feed) -> Future<Result<Void, RNewsError>>
     func deleteArticle(_ article: Article) -> Future<Result<Void, RNewsError>>
 
-    func batchCreate(_ feedCount: Int, articleCount: Int) ->
+    func batchCreate(feedURLs: [URL], articleURLs: [URL]) ->
         Future<Result<([Feed], [Article]), RNewsError>>
     func batchSave(_ feeds: [Feed], articles: [Article]) -> Future<Result<Void, RNewsError>>
 
@@ -55,48 +58,23 @@ extension DataService {
             return self.saveFeed(feed)
         }
 
-        var articlesToSave: [Article] = []
-
-        let checkIfFinished: (Result<(Article), RNewsError>) -> Void = { result in
-            if case let .success(article) = result {
-                articlesToSave.append(article)
-            }
-        }
-
-        let articleUrls = articles.flatMap { $0.url.absoluteString }
-        let articleTitles = articles.map { $0.title }
-        let articlesPredicate = NSPredicate(format: "link IN %@ OR title IN %@", articleUrls, articleTitles)
-        let feedArticles = Array(feed.articlesArray.filterWithPredicate(articlesPredicate))
-
         let operationQueue = OperationQueue()
         operationQueue.qualityOfService = .utility
         operationQueue.maxConcurrentOperationCount = 1
 
         for item in articles {
-            let filter: (rNewsKit.Article) -> Bool = { article in
-                let characterSet = CharacterSet(charactersIn: "/")
-                let item_trimmed = item.url.absoluteString.trimmingCharacters(in: characterSet)
-                let article_trimmed = article.link?.absoluteString.trimmingCharacters(in: characterSet)
-                return item_trimmed == article_trimmed || item.title == article.title
-            }
-            let article = feedArticles.objectPassingTest(filter)
             operationQueue.addOperation {
-                if let article = article ?? articlesToSave.objectPassingTest(filter) {
-                    _ = self.updateArticle(article, item: item, feedURL: info.url).then(callback: checkIfFinished)
-                } else {
-                    self.createArticle(feed) { article in
-                        _ = self.updateArticle(article, item: item, feedURL: info.url).then(callback: checkIfFinished)
+                _ = self.findOrCreateArticle(feed: feed, url: item.url).map { article in
+                    return self.updateArticle(article, item: item, feedURL: info.url).map { _ in
+                        return self.batchSave([feed], articles: [article])
                     }
-                }
+                }.wait()
             }
         }
 
         let saveOperation = BlockOperation {
-            _ = self.batchSave([feed], articles: articlesToSave).then { _ in
-                promise.resolve(.success())
-            }
+            promise.resolve(.success())
         }
-        operationQueue.operations.forEach { saveOperation.addDependency($0) }
         operationQueue.addOperation(saveOperation)
 
         return promise.future
@@ -121,7 +99,7 @@ extension DataService {
             }
             let title = (itemTitle).trimmingCharacters(in: characterSet)
             article.title = title.stringByUnescapingHTML().stringByStrippingHTML()
-            article.link = URL(string: item.url.absoluteString, relativeTo: feedURL)?.absoluteURL
+            article.link = URL(string: item.url.absoluteString, relativeTo: feedURL)!.absoluteURL
             article.published = item.published
             article.updatedAt = item.updated
             article.summary = item.summary

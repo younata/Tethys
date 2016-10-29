@@ -12,6 +12,8 @@ class DataServiceFactorySpec: QuickSpec {
                 let mainQueue = FakeOperationQueue()
                 let searchIndex = FakeSearchIndex()
 
+                RealmMigrator.beginMigration()
+
                 try! Realm().write({})
 
                 let subject = DataServiceFactory(mainQueue: mainQueue, realmQueue: OperationQueue(), searchIndex: searchIndex, bundle: bundle, fileManager: fileManager)

@@ -26,11 +26,11 @@ class UpdateUseCaseSpec: QuickSpec {
             feed1 = Feed(title: "a", url: URL(string: "https://example.com/feed1.feed")!, summary: "",
                 tags: ["a", "b", "c", "d"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-            article1 = Article(title: "b", link: URL(string: "https://example.com/article1.html"),
+            article1 = Article(title: "b", link: URL(string: "https://example.com/article1.html")!,
                 summary: "<p>Hello world!</p>", authors: [], published: Date(), updatedAt: nil, identifier: "article1",
                 content: "", read: false, estimatedReadingTime: 0, feed: feed1, flags: [])
 
-            article2 = Article(title: "c", link: URL(string: "https://example.com/article2.html"),
+            article2 = Article(title: "c", link: URL(string: "https://example.com/article2.html")!,
                 summary: "<p>Hello world!</p>", authors: [], published: Date(), updatedAt: nil, identifier: "article2",
                 content: "", read: true, estimatedReadingTime: 0, feed: feed1, flags: [])
 

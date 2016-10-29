@@ -55,7 +55,7 @@ func fakeArticle(feed: Feed, isUpdated: Bool = false, read: Bool = false) -> Art
         publishDate = Date(timeIntervalSinceReferenceDate: TimeInterval(publishedOffset))
         updatedDate = nil
     }
-    return Article(title: "article \(publishedOffset)", link: URL(string: "http://example.com"), summary: "", authors: [Author(name: "Rachel", email: nil)], published: publishDate, updatedAt: updatedDate, identifier: "\(publishedOffset)", content: "", read: read, estimatedReadingTime: 0, feed: feed, flags: [])
+    return Article(title: "article \(publishedOffset)", link: URL(string: "http://example.com")!, summary: "", authors: [Author(name: "Rachel", email: nil)], published: publishDate, updatedAt: updatedDate, identifier: "\(publishedOffset)", content: "", read: read, estimatedReadingTime: 0, feed: feed, flags: [])
 }
 
 class ArticleListControllerSpec: QuickSpec {
@@ -128,7 +128,7 @@ class ArticleListControllerSpec: QuickSpec {
                     shareSheet.tap()
                     expect(subject.presentedViewController).to(beAnInstanceOf(UIActivityViewController.self))
                     if let activityVC = subject.presentedViewController as? UIActivityViewController {
-                        expect(activityVC.activityItems as? [URL]) == [feed.url!]
+                        expect(activityVC.activityItems as? [URL]) == [feed.url]
                     }
                 }
             }

@@ -23,12 +23,9 @@ public final class ArticleViewController: UIViewController, Injectable {
 
         self.userActivity = self.articleUseCase.userActivityForArticle(article)
 
-        self.toolbarItems = [self.spacer(), self.shareButton, self.spacer()]
-        if let _ = article.link {
-            self.toolbarItems = [
-                self.spacer(), self.shareButton, self.spacer(), self.openInSafariButton, self.spacer()
-            ]
-        }
+        self.toolbarItems = [
+            self.spacer(), self.shareButton, self.spacer(), self.openInSafariButton, self.spacer()
+        ]
         self.title = article.title
     }
 
@@ -216,7 +213,7 @@ public final class ArticleViewController: UIViewController, Injectable {
     }
 
     @objc fileprivate func share() {
-        guard let article = self.article, let link = article.link else { return }
+        guard let article = self.article else { return }
         let safari = TOActivitySafari()
         let chrome = TOActivityChrome()
 
@@ -228,7 +225,7 @@ public final class ArticleViewController: UIViewController, Injectable {
         var activities: [UIActivity] = [safari, chrome]
         if let activity = authorActivity { activities.append(activity) }
 
-        let activity = UIActivityViewController(activityItems: [link],
+        let activity = UIActivityViewController(activityItems: [article.link],
             applicationActivities: activities)
         activity.completionWithItemsHandler = { activityType, completed, _, _ in
             guard completed, let authorActivity = authorActivity else { return }

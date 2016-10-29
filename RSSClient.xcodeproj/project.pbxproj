@@ -82,7 +82,6 @@
 		8924D8E91A094CF5003B7529 /* github2.css in Resources */ = {isa = PBXBuildFile; fileRef = 8924D8E81A094CF5003B7529 /* github2.css */; };
 		8924FE2E1D6D51DC0060D26D /* Array+rNewsKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924FE2D1D6D51DC0060D26D /* Array+rNewsKit.swift */; };
 		892CBDEA1C7A27FE0062E578 /* FakeArticleUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892CBDE91C7A27FE0062E578 /* FakeArticleUseCase.swift */; };
-		892E30E81CF218F600E327A0 /* FeedRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E30E71CF218F600E327A0 /* FeedRepositorySpec.swift */; };
 		892E30F71CF4011F00E327A0 /* Future+when.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E30F61CF4011F00E327A0 /* Future+when.swift */; };
 		8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */; };
 		89348F2F1C60730D007D366B /* FakeDatabaseUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89348F2E1C60730D007D366B /* FakeDatabaseUseCase.swift */; };
@@ -161,7 +160,6 @@
 		89735ABE1C0698370032E09C /* QuickActionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89735ABD1C0698370032E09C /* QuickActionRepository.swift */; };
 		89735AC01C06DAA70032E09C /* FeedsListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89735ABF1C06DAA70032E09C /* FeedsListController.swift */; };
 		89735AC21C0771590032E09C /* FeedsListControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89735AC11C0771590032E09C /* FeedsListControllerSpec.swift */; };
-		8978438D1CE1AB3000C74605 /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978438C1CE1AB3000C74605 /* Repository.swift */; };
 		897CD85C1A213F0900C97ECC /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89635F911A13C2E30052C248 /* MainMenu.xib */; };
 		897CD85E1A21C49000C97ECC /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897CD85D1A21C49000C97ECC /* FeedView.swift */; };
 		897F70FD1A3A4E7700ECE1A1 /* UnreadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897F70FC1A3A4E7700ECE1A1 /* UnreadCounter.swift */; };
@@ -172,7 +170,6 @@
 		89831FEC1DB5C5FC00E32412 /* ArticleListHeaderCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89831FEB1DB5C5FC00E32412 /* ArticleListHeaderCellSpec.swift */; };
 		898320411DC1216B00E32412 /* DefaultDatabaseUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48CA1B425F8C0097045A /* DefaultDatabaseUseCase.swift */; };
 		898320421DC1216B00E32412 /* DatabaseUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89628BDE1CE1742600B4C624 /* DatabaseUseCase.swift */; };
-		898320431DC1216B00E32412 /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978438C1CE1AB3000C74605 /* Repository.swift */; };
 		898320441DC1216B00E32412 /* DataStoreBackedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */; };
 		898320451DC1216B00E32412 /* Future+when.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E30F61CF4011F00E327A0 /* Future+when.swift */; };
 		898320461DC1216B00E32412 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82031B461A2B00648367 /* Helpers.swift */; };
@@ -222,7 +219,6 @@
 		898320AD1DC13F1E00E32412 /* Sinope.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898320A61DC13F1E00E32412 /* Sinope.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		898320AE1DC13F1E00E32412 /* WorkFlow.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898320A71DC13F1E00E32412 /* WorkFlow.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		898320AF1DC13F9200E32412 /* AccountRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5AE1D40225D00546099 /* AccountRepositorySpec.swift */; };
-		898320B01DC1404000E32412 /* FeedRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E30E71CF218F600E327A0 /* FeedRepositorySpec.swift */; };
 		898320B21DC1411D00E32412 /* PureLayout.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898320B11DC1411D00E32412 /* PureLayout.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		898320B31DC1413200E32412 /* PureLayout.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898320B11DC1411D00E32412 /* PureLayout.framework */; };
 		898320C01DC1442E00E32412 /* FakeMigrationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC081C7D431D006B70F5 /* FakeMigrationUseCase.swift */; };
@@ -643,7 +639,6 @@
 		8924D8E81A094CF5003B7529 /* github2.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = github2.css; sourceTree = "<group>"; };
 		8924FE2D1D6D51DC0060D26D /* Array+rNewsKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+rNewsKit.swift"; sourceTree = "<group>"; };
 		892CBDE91C7A27FE0062E578 /* FakeArticleUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeArticleUseCase.swift; sourceTree = "<group>"; };
-		892E30E71CF218F600E327A0 /* FeedRepositorySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedRepositorySpec.swift; sourceTree = "<group>"; };
 		892E30F61CF4011F00E327A0 /* Future+when.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Future+when.swift"; sourceTree = "<group>"; };
 		8933E93219EE33F700ECFF3F /* UIColor+RSSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+RSSClient.h"; sourceTree = "<group>"; };
 		8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+RSSClient.m"; sourceTree = "<group>"; };
@@ -693,7 +688,6 @@
 		89735ABD1C0698370032E09C /* QuickActionRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuickActionRepository.swift; sourceTree = "<group>"; };
 		89735ABF1C06DAA70032E09C /* FeedsListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsListController.swift; sourceTree = "<group>"; };
 		89735AC11C0771590032E09C /* FeedsListControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsListControllerSpec.swift; sourceTree = "<group>"; };
-		8978438C1CE1AB3000C74605 /* Repository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
 		8978D4DB1B0533B600EDD6D0 /* Feed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
 		8978D4DE1B0535EB00EDD6D0 /* Article.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Article.swift; sourceTree = "<group>"; };
 		8978D4E41B05AB2800EDD6D0 /* FeedSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedSpec.swift; sourceTree = "<group>"; };
@@ -1066,7 +1060,6 @@
 		892E30E61CF2188A00E327A0 /* Repositories */ = {
 			isa = PBXGroup;
 			children = (
-				892E30E71CF218F600E327A0 /* FeedRepositorySpec.swift */,
 				8903F5AE1D40225D00546099 /* AccountRepositorySpec.swift */,
 			);
 			path = Repositories;
@@ -1091,7 +1084,6 @@
 				89146E3D1C88C59C00EC8F10 /* Use Cases */,
 				898C48CA1B425F8C0097045A /* DefaultDatabaseUseCase.swift */,
 				89628BDE1CE1742600B4C624 /* DatabaseUseCase.swift */,
-				8978438C1CE1AB3000C74605 /* Repository.swift */,
 				89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */,
 				892E30F61CF4011F00E327A0 /* Future+when.swift */,
 				89CC82031B461A2B00648367 /* Helpers.swift */,
@@ -2232,7 +2224,6 @@
 				89146E421C88C70600EC8F10 /* ImportUseCase.swift in Sources */,
 				89CC82061B461A5500648367 /* KitModule.swift in Sources */,
 				895AC51B1C7FF27300A5F6A1 /* RealmMigrator.swift in Sources */,
-				8978438D1CE1AB3000C74605 /* Repository.swift in Sources */,
 				8903F5A91D3EF0C700546099 /* Account.swift in Sources */,
 				8903F5B81D403FEF00546099 /* UpdateUseCase.swift in Sources */,
 				89CBDBF11C7D1206006B70F5 /* DataServiceFactory.swift in Sources */,
@@ -2294,7 +2285,6 @@
 				89500B231CDEA26E004548C3 /* InMemoryDataServiceSpec.swift in Sources */,
 				89CBDBF41C7D1436006B70F5 /* DataServiceFactorySpec.swift in Sources */,
 				8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */,
-				892E30E81CF218F600E327A0 /* FeedRepositorySpec.swift in Sources */,
 				89628BE31CE1805E00B4C624 /* DatabaseUseCaseSpec.swift in Sources */,
 				8935F5D91B4628B3000FFD5D /* FeedSpec.swift in Sources */,
 				89146E4E1C88F01F00EC8F10 /* FakeFileManager.swift in Sources */,
@@ -2356,7 +2346,6 @@
 				891754711C5B449E0036D96D /* RealmObjects.swift in Sources */,
 				898911C61C3267E3009A44E9 /* UpdateService.swift in Sources */,
 				89500B251CDEA289004548C3 /* InMemoryDataService.swift in Sources */,
-				898320431DC1216B00E32412 /* Repository.swift in Sources */,
 				898320451DC1216B00E32412 /* Future+when.swift in Sources */,
 				898320521DC1217B00E32412 /* Importable.swift in Sources */,
 				891754741C5B485B0036D96D /* RealmService.swift in Sources */,
@@ -2394,7 +2383,6 @@
 				898911C31C3267D6009A44E9 /* UpdateServiceSpec.swift in Sources */,
 				898911C41C3267D6009A44E9 /* DataServiceSpec.swift in Sources */,
 				898320C21DC1447A00E32412 /* FakeUserDefaults.swift in Sources */,
-				898320B01DC1404000E32412 /* FeedRepositorySpec.swift in Sources */,
 				898979A81B708E7800218498 /* DefaultDatabaseUseCaseSpec.swift in Sources */,
 				89CBDBFF1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift in Sources */,
 				89146E4F1C88F02000EC8F10 /* FakeFileManager.swift in Sources */,

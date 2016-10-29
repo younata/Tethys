@@ -63,8 +63,7 @@ final class DefaultOPMLService: NSObject, OPMLService, Injectable {
                         }
                         if let feedURLString = item.xmlURL, let feedURL = URL(string: feedURLString) {
                             feedCount += 1
-                            _ = self.dataRepository.newFeed { newFeed in
-                                newFeed.url = feedURL
+                            _ = self.dataRepository.newFeed(url: feedURL) { newFeed in
                                 for tag in item.tags {
                                     newFeed.addTag(tag)
                                 }
@@ -105,7 +104,7 @@ final class DefaultOPMLService: NSObject, OPMLService, Injectable {
         ret += "<opml version=\"2.0\">\n    <body>\n"
         for feed in feeds {
             let title = "title=\"\(sanitize(feed.title))\""
-            let url = "xmlUrl=\"\(sanitize(feed.url?.absoluteString))\""
+            let url = "xmlUrl=\"\(sanitize(feed.url.absoluteString))\""
             let tags: String
             if feed.tags.count != 0 {
                 let tagsList: String = feed.tags.joined(separator: ",")

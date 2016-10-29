@@ -56,7 +56,7 @@ class FeedSpec: QuickSpec {
 
         it("unreadArticles() should return articles with read->false") {
             func article(_ name: String, read: Bool) -> Article {
-                return Article(title: name, link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: read, estimatedReadingTime: 0, feed: nil, flags: [])
+                return Article(title: name, link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: read, estimatedReadingTime: 0, feed: nil, flags: [])
             }
 
             let a = article("a", read: true)
@@ -127,52 +127,50 @@ class FeedSpec: QuickSpec {
         describe("adding an article") {
             var article: Article! = nil
             beforeEach {
-                article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                article = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
             }
 
-            context("to a regular feed") {
-                context("when the article is not associated with any article") {
-                    it("should add the article and set the article's feed if it's not set already") {
-                        subject.addArticle(article)
+            context("when the article is not associated with any article") {
+                it("should add the article and set the article's feed if it's not set already") {
+                    subject.addArticle(article)
 
-                        expect(subject.updated) == true
-                        expect(article.updated) == true
-                        expect(article.feed).to(equal(subject))
-                        expect(subject.articlesArray.contains(article)).to(beTruthy())
-                    }
+                    expect(subject.updated) == true
+                    expect(article.updated) == true
+                    expect(article.feed).to(equal(subject))
+                    expect(subject.articlesArray.contains(article)).to(beTruthy())
+                }
+            }
+
+            context("when the article is already associated with this feed") {
+                beforeEach {
+                    subject = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [],
+                                   waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
                 }
 
-                context("when the article is already associated with this feed") {
-                    beforeEach {
-                        subject = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [],
-                            waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
-                    }
+                it("essentially no-ops") {
+                    subject.addArticle(article)
+                    expect(subject.updated) == false
+                    expect(article.feed).to(equal(subject))
+                    expect(subject.articlesArray.contains(article)).to(beTruthy())
+                }
+            }
 
-                    it("essentially no-ops") {
-                        subject.addArticle(article)
-                        expect(subject.updated) == false
-                        expect(article.feed).to(equal(subject))
-                        expect(subject.articlesArray.contains(article)).to(beTruthy())
-                    }
+            context("when the article is associated with a different feed") {
+                var otherFeed: Feed! = nil
+                beforeEach {
+                    otherFeed = Feed(title: "blah", url: URL(string: "https://example.com")!, summary: "", tags: [],
+                                     waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
                 }
 
-                context("when the article is associated with a different feed") {
-                    var otherFeed: Feed! = nil
-                    beforeEach {
-                        otherFeed = Feed(title: "blah", url: URL(string: "https://example.com")!, summary: "", tags: [],
-                            waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
-                    }
+                it("should remove the article from the other feed and add it to this feed") {
+                    subject.addArticle(article)
 
-                    it("should remove the article from the other feed and add it to this feed") {
-                        subject.addArticle(article)
-
-                        expect(subject.updated) == true
-                        expect(article.updated) == true
-                        expect(otherFeed.updated) == true
-                        expect(article.feed).to(equal(subject))
-                        expect(subject.articlesArray.contains(article)).to(beTruthy())
-                        expect(otherFeed.articlesArray.contains(article)).toNot(beTruthy())
-                    }
+                    expect(subject.updated) == true
+                    expect(article.updated) == true
+                    expect(otherFeed.updated) == true
+                    expect(article.feed).to(equal(subject))
+                    expect(subject.articlesArray.contains(article)).to(beTruthy())
+                    expect(otherFeed.articlesArray.contains(article)).toNot(beTruthy())
                 }
             }
         }
@@ -180,43 +178,41 @@ class FeedSpec: QuickSpec {
         describe("removing an article") {
             var article: Article! = nil
             beforeEach {
-                article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                article = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
             }
 
-            context("from a regular feed") {
-                context("when the article is not associated with any article") {
-                    it("essentially no-ops") {
-                        subject.removeArticle(article)
-                        expect(subject.updated) == false
-                    }
+            context("when the article is not associated with any article") {
+                it("essentially no-ops") {
+                    subject.removeArticle(article)
+                    expect(subject.updated) == false
+                }
+            }
+
+            context("when the article is associated with this feed") {
+                beforeEach {
+                    subject = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [],
+                                   waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
                 }
 
-                context("when the article is associated with this feed") {
-                    beforeEach {
-                        subject = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [],
-                            waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
-                    }
+                it("removes the article and unsets the article's feed") {
+                    subject.removeArticle(article)
+                    expect(subject.updated) == true
+                    expect(article.feed).to(beNil())
+                    expect(subject.articlesArray.contains(article)).toNot(beTruthy())
+                }
+            }
 
-                    it("removes the article and unsets the article's feed") {
-                        subject.removeArticle(article)
-                        expect(subject.updated) == true
-                        expect(article.feed).to(beNil())
-                        expect(subject.articlesArray.contains(article)).toNot(beTruthy())
-                    }
+            context("when the article is associated with a different feed") {
+                var otherFeed: Feed! = nil
+                beforeEach {
+                    otherFeed = Feed(title: "blah", url: URL(string: "https://example.com")!, summary: "", tags: [],
+                                     waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
                 }
 
-                context("when the article is associated with a different feed") {
-                    var otherFeed: Feed! = nil
-                    beforeEach {
-                        otherFeed = Feed(title: "blah", url: URL(string: "https://example.com")!, summary: "", tags: [],
-                            waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
-                    }
-
-                    it("essentially no-ops") {
-                        subject.removeArticle(article)
-                        expect(subject.updated) == false
-                        expect(otherFeed.updated) == false
-                    }
+                it("essentially no-ops") {
+                    subject.removeArticle(article)
+                    expect(subject.updated) == false
+                    expect(otherFeed.updated) == false
                 }
             }
         }
@@ -334,7 +330,7 @@ class FeedSpec: QuickSpec {
                 }
 
                 it("articles") {
-                    let article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                    let article = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
                     subject.addArticle(article)
                     expect(subject.updated) == true
                 }

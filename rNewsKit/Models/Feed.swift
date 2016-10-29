@@ -23,12 +23,12 @@ public final class Feed: Hashable, CustomStringConvertible {
             return tagTitle.substring(from: tagTitle.characters.index(after: tagTitle.startIndex))
         }
         if self.title.isEmpty {
-            return self.url?.absoluteString ?? ""
+            return self.url.absoluteString
         }
         return self.title
     }
 
-    public var url: URL? {
+    public var url: URL {
         willSet {
             if newValue != url {
                 self.updated = true
@@ -93,11 +93,11 @@ public final class Feed: Hashable, CustomStringConvertible {
         if let id = feedID as? String {
             return id.hash
         }
-        let nonNilHashValues = title.hashValue ^ summary.hashValue ^
+        let nonNilHashValues = title.hashValue ^ url.hashValue ^ summary.hashValue ^
             waitPeriod.hashValue ^ remainingWait.hashValue
         let possiblyNilHashValues: Int
-        if let image = image, let url = url {
-                possiblyNilHashValues = image.hash ^ url.hashValue
+        if let image = image {
+                possiblyNilHashValues = image.hash
         } else {
             possiblyNilHashValues = 0
         }
@@ -176,7 +176,7 @@ public final class Feed: Hashable, CustomStringConvertible {
     }
 
     // swiftlint:disable function_parameter_count
-    public init(title: String, url: URL?, summary: String, tags: [String],
+    public init(title: String, url: URL, summary: String, tags: [String],
         waitPeriod: Int, remainingWait: Int, articles: [Article], image: Image?,
         lastUpdated: Date = Date(), identifier: String = "") {
             self.title = title
@@ -201,7 +201,7 @@ public final class Feed: Hashable, CustomStringConvertible {
 
     internal init(realmFeed feed: RealmFeed) {
         self.title = feed.title ?? ""
-        self.url = URL(string: feed.url ?? "")
+        self.url = URL(string: feed.url)!
         self.summary = feed.summary ?? ""
         self.tags = feed.tags.map { $0.string }
         self.waitPeriod = feed.waitPeriod

@@ -42,7 +42,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
                 articleUseCase.readArticleReturns("hello")
                 articleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
-                subject.setArticle(Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: []))
+                subject.setArticle(Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: []))
 
                 expect(subject.backgroundView.isHidden) == true
             }
@@ -118,8 +118,7 @@ class ArticleViewControllerSpec: QuickSpec {
                 }
             }
 
-            let article = Article(title: "article", link: URL(string: "https://example.com/article"), summary: "summary", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
-            let article1 = Article(title: "article1", link: nil, summary: "summary", authors: [], published: Date(), updatedAt: nil, identifier: "identifier1", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+            let article = Article(title: "article", link: URL(string: "https://example.com/article")!, summary: "summary", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
 
             context("when viewing an article that has a link") {
                 beforeEach {
@@ -141,29 +140,10 @@ class ArticleViewControllerSpec: QuickSpec {
                     hasKindsOfKeyCommands(expectedCommands: expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
                 }
             }
-            
-            context("when viewing an article that does not have a link") {
-                beforeEach {
-                    subject.setArticle(article1, read: false, show: false)
-                }
-
-                it("should not list the next article command") {
-                    let expectedCommands = [
-                        UIKeyCommand(input: "r", modifierFlags: .shift, action: Selector("")),
-                        UIKeyCommand(input: "s", modifierFlags: .command, action: Selector("")),
-                    ]
-                    let expectedDiscoverabilityTitles = [
-                        "Toggle Read",
-                        "Open Share Sheet",
-                    ]
-
-                    hasKindsOfKeyCommands(expectedCommands: expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
-                }
-            }
         }
 
         describe("continuing from user activity") {
-            let article = Article(title: "article", link: URL(string: "https://example.com/article"), summary: "summary", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+            let article = Article(title: "article", link: URL(string: "https://example.com/article")!, summary: "summary", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
 
             beforeEach {
                 articleUseCase.readArticleStub = {
@@ -198,8 +178,8 @@ class ArticleViewControllerSpec: QuickSpec {
         }
 
         describe("setting the article") {
-            let article = Article(title: "article", link: URL(string: "https://example.com/"), summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: Date(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
-            let article2 = Article(title: "article2", link: URL(string: "https://example.com/2"), summary: "summary2", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
+            let article = Article(title: "article", link: URL(string: "https://example.com/")!, summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: Date(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
+            let article2 = Article(title: "article2", link: URL(string: "https://example.com/2")!, summary: "summary2", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
             article.addRelatedArticle(article2)
             let feed = Feed(title: "feed", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
 
@@ -234,18 +214,6 @@ class ArticleViewControllerSpec: QuickSpec {
             it("should include the share button in the toolbar, and the open in safari button") {
                 expect(subject.toolbarItems?.contains(subject.shareButton)) == true
                 expect(subject.toolbarItems?.contains(subject.openInSafariButton)) == true
-            }
-
-            it("should exclude the open in safari button if the article has no associated link") {
-                let article2 = Article(title: "article2", link: nil, summary: "summary", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "<h1>Hello World</h1>", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
-                let feed2 = Feed(title: "feed2", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
-                article2.feed = feed2
-                feed2.addArticle(article2)
-
-                subject.setArticle(article2)
-
-                expect(subject.toolbarItems?.contains(subject.shareButton)) == true
-                expect(subject.toolbarItems?.contains(subject.openInSafariButton)).to(equal(false))
             }
 
             describe("when the article loads") {
@@ -295,7 +263,7 @@ class ArticleViewControllerSpec: QuickSpec {
                     describe("when the use case returns") {
                         var articleListController: ArticleListController!
 
-                        let articleByAuthor = Article(title: "article23", link: URL(string: "https://example.com/"), summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: Date(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
+                        let articleByAuthor = Article(title: "article23", link: URL(string: "https://example.com/")!, summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: Date(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
 
                         beforeEach {
                             articleListController = ArticleListController(
@@ -333,7 +301,7 @@ class ArticleViewControllerSpec: QuickSpec {
                 }
 
                 it("navigates to that article if the link goes to a related article") {
-                    let navAction = FakeWKNavigationAction(url: article2.link!, navigationType: .linkActivated)
+                    let navAction = FakeWKNavigationAction(url: article2.link, navigationType: .linkActivated)
                     subject.content.navigationDelegate?.webView?(subject.content, decidePolicyFor: navAction) { (actionPolicy: WKNavigationActionPolicy) -> Void in
                         shouldInteract = (actionPolicy == WKNavigationActionPolicy.allow)
                     }

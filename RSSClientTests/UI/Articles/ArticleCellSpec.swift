@@ -9,8 +9,8 @@ class ArticleCellSpec: QuickSpec {
         var themeRepository: ThemeRepository! = nil
         var settingsRepository: SettingsRepository! = nil
 
-        let unupdatedArticle = Article(title: "title", link: nil, summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: Date(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 10, feed: nil, flags: [])
-        let readArticle = Article(title: "title", link: nil, summary: "summary", authors: [], published: Date(timeIntervalSinceReferenceDate: 0), updatedAt: Date(timeIntervalSinceReferenceDate: 100000), identifier: "", content: "content", read: true, estimatedReadingTime: 0, feed: nil, flags: [])
+        let unupdatedArticle = Article(title: "title", link: URL(string: "https://exapmle.com/1")!, summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: Date(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 10, feed: nil, flags: [])
+        let readArticle = Article(title: "title", link: URL(string: "https://exapmle.com/1")!, summary: "summary", authors: [], published: Date(timeIntervalSinceReferenceDate: 0), updatedAt: Date(timeIntervalSinceReferenceDate: 100000), identifier: "", content: "content", read: true, estimatedReadingTime: 0, feed: nil, flags: [])
 
         beforeEach {
             subject = ArticleCell(style: .default, reuseIdentifier: nil)
@@ -88,7 +88,7 @@ class ArticleCellSpec: QuickSpec {
 
         context("setting a decently long article") {
             beforeEach {
-                subject.article = Article(title: "title", link: nil, summary: "summary", authors: [], published: Date(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 15, feed: nil, flags: [])
+                subject.article = Article(title: "title", link: URL(string: "https://exapmle.com/1")!, summary: "summary", authors: [], published: Date(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 15, feed: nil, flags: [])
             }
 
             it("should show the estimated reading time") {

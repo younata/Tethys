@@ -13,8 +13,8 @@ final class InMemoryDataService: DataService {
     var feeds = [Feed]()
     var articles = [Article]()
 
-    func createFeed(_ callback: @escaping (Feed) -> Void) -> Future<Result<Feed, RNewsError>> {
-        let feed = Feed(title: "", url: nil, summary: "", tags: [], waitPeriod: 0,
+    func createFeed(url: URL, callback: @escaping (Feed) -> Void) -> Future<Result<Feed, RNewsError>> {
+        let feed = Feed(title: "", url: url, summary: "", tags: [], waitPeriod: 0,
                         remainingWait: 0, articles: [], image: nil)
         callback(feed)
         self.feeds.append(feed)
@@ -23,12 +23,43 @@ final class InMemoryDataService: DataService {
         return promise.future
     }
 
-    func createArticle(_ feed: Feed?, callback: @escaping (Article) -> Void) {
-        let article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil,
+    func createArticle(url: URL, feed: Feed?, callback: @escaping (Article) -> Void) {
+        let article = Article(title: "", link: url, summary: "", authors: [], published: Date(), updatedAt: nil,
                               identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
         feed?.addArticle(article)
         callback(article)
         self.articles.append(article)
+    }
+
+    func findOrCreateFeed(url: URL) -> Future<Feed> {
+        let promise = Promise<Feed>()
+        if let feed = self.feeds.first(where: { $0.url == url }) {
+            promise.resolve(feed)
+        } else {
+            let feed = Feed(title: "", url: url, summary: "", tags: [], waitPeriod: 0,
+                            remainingWait: 0, articles: [], image: nil)
+            self.feeds.append(feed)
+            promise.resolve(feed)
+        }
+        return promise.future
+    }
+
+    func findOrCreateArticle(feed: Feed, url: URL) -> Future<Article> {
+        let promise = Promise<Article>()
+        if let article = Array(feed.articlesArray).objectPassingTest({ $0.link == url }) {
+            promise.resolve(article)
+        } else {
+            let article = Article(title: "", link: url, summary: "", authors: [], published: Date(), updatedAt: nil,
+                                  identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: feed,
+                                  flags: [])
+            feed.addArticle(article)
+            self.articles.append(article)
+            if !self.feeds.contains(feed) {
+                self.feeds.append(feed)
+            }
+            promise.resolve(article)
+        }
+        return promise.future
     }
 
     func allFeeds() -> Future<Result<DataStoreBackedArray<Feed>, RNewsError>> {
@@ -69,16 +100,16 @@ final class InMemoryDataService: DataService {
         return promise.future
     }
 
-    func batchCreate(_ feedCount: Int, articleCount: Int) ->
+    func batchCreate(feedURLs: [URL], articleURLs: [URL]) ->
         Future<Result<([Feed], [Article]), RNewsError>> {
             let promise = Promise<Result<([Feed], [Article]), RNewsError>>()
             var feeds: [Feed] = []
             var articles: [Article] = []
-            for _ in 0..<feedCount {
-                _ = self.createFeed { feeds.append($0) }.wait()
+            feedURLs.forEach {
+                _ = self.createFeed(url: $0) { f in feeds.append(f) }.wait()
             }
-            for _ in 0..<articleCount {
-                self.createArticle(nil) { articles.append($0) }
+            articleURLs.forEach {
+                self.createArticle(url: $0, feed: nil) { articles.append($0) }
             }
 
             let success = Result<([Feed], [Article]), RNewsError>(value: (feeds, articles))

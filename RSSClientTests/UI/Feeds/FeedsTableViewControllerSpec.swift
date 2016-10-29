@@ -155,7 +155,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     beforeEach {
                         subject.present(UIViewController(), animated: false, completion: nil)
 
-                        let article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                        let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
                         subscriber?.markedArticles([article], asRead: true)
                     }
 
@@ -166,7 +166,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                 context("deleting an article") {
                     beforeEach {
-                        let article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                        let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
                         subscriber?.deletedArticle(article)
                     }
                     
@@ -483,7 +483,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             }
 
                             it("when the subscriber gets a marked articles notice it does not refresh it's feed cache") {
-                                let article = Article(title: "", link: nil, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                                let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
                                 dataUseCase.subscribersArray.first?.markedArticles([article], asRead: true)
                                 expect(dataUseCase.feedsPromises.count) == 1
                             }
@@ -511,7 +511,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                 subject.shareFeed(feed: feed1)
                                 expect(navigationController.visibleViewController).to(beAnInstanceOf(UIActivityViewController.self))
                                 if let activityVC = navigationController.visibleViewController as? UIActivityViewController {
-                                    expect(activityVC.activityItems as? [URL]) == [feed1.url!]
+                                    expect(activityVC.activityItems as? [URL]) == [feed1.url]
                                 }
                             }
                         }

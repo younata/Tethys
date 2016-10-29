@@ -54,9 +54,11 @@ class FakeDatabaseUseCase: DatabaseUseCase {
 
     var newFeedCallback: (Feed) -> (Void) = {_ in }
     var didCreateFeed = false
+    var lastCreateFeedURL: URL? = nil
     var newFeedPromises: [Promise<Result<Void, RNewsError>>] = []
-    func newFeed(_ callback: @escaping (Feed) -> (Void)) -> Future<Result<Void, RNewsError>> {
+    func newFeed(url: URL, callback: @escaping (Feed) -> (Void)) -> Future<Result<Void, RNewsError>> {
         didCreateFeed = true
+        lastCreateFeedURL = url
         self.newFeedCallback = callback
         let promise = Promise<Result<Void, RNewsError>>()
         newFeedPromises.append(promise)

@@ -39,9 +39,8 @@ class RealmServiceSpec: QuickSpec {
 
         describe("create operations") {
             it("new feed creates a new feed object") {
-                _ = subject.createFeed { feed in
+                _ = subject.createFeed(url: URL(string: "https://example.com/feed")!) { feed in
                     feed.title = "Hello"
-                    feed.url = URL(string: "https://example.com/feed")!
                 }.wait()
 
                 let feeds = realm.objects(RealmFeed.self)
@@ -54,7 +53,7 @@ class RealmServiceSpec: QuickSpec {
             it("new article creates a new article object") {
                 let expectation = self.expectation(description: "Create Article")
 
-                subject.createArticle(nil) { article in
+                subject.createArticle(url: URL(string: "https://example.com/article")!, feed: nil) { article in
                     article.title = "Hello"
                     expectation.fulfill()
                 }
@@ -68,10 +67,101 @@ class RealmServiceSpec: QuickSpec {
             }
 
             it("can batch create things") {
-                _ = subject.batchCreate(2, articleCount: 3).wait()
+                _ = subject.batchCreate(feedURLs: [URL(string: "https://example.com/1")!, URL(string: "https://example.com/2")!],
+                                        articleURLs: [URL(string: "https://example.com/1")!, URL(string: "https://example.com/2")!,  URL(string: "https://example.com/3")!]).wait()
 
                 expect(realm.objects(RealmFeed.self).count) == 2
                 expect(realm.objects(RealmArticle.self).count) == 3
+            }
+        }
+
+        describe("findOrCreateFeed") {
+            beforeEach {
+                realm.beginWrite()
+                let realmFeed1 = RealmFeed()
+                realmFeed1.title = "feed1"
+                realmFeed1.url = "https://example.com/feed/feed1"
+
+                for object in [realmFeed1] {
+                    realm.add(object)
+                }
+                _ = try? realm.commitWrite()
+            }
+
+            it("finds an existing feed if that url exists") {
+                let future = subject.findOrCreateFeed(url: URL(string: "https://example.com/feed/feed1")!)
+                expect(future.value).toNot(beNil())
+                let feed = future.value
+                expect(feed?.url) == URL(string: "https://example.com/feed/feed1")
+
+                let feeds = realm.objects(RealmFeed.self)
+                expect(feeds.count) == 1
+            }
+
+            it("creates a new feed if that url does not exist") {
+                let future = subject.findOrCreateFeed(url: URL(string: "https://example.com/feed/feed2")!)
+                expect(future.value).toNot(beNil())
+                let feed = future.value
+                expect(feed?.url) == URL(string: "https://example.com/feed/feed2")
+
+                let feeds = realm.objects(RealmFeed.self)
+                expect(feeds.count) == 2
+            }
+        }
+
+        describe("findOrCreateArticle") {
+            var feed1: Feed! = nil
+            beforeEach {
+                realm.beginWrite()
+                let realmFeed1 = RealmFeed()
+                realmFeed1.title = "Feed1"
+                realmFeed1.url = "https://example.com/feed/feed1"
+
+                let realmArticle1 = RealmArticle()
+                realmArticle1.title = "article"
+                realmArticle1.link = "https://example.com/article/article1"
+                realmArticle1.feed = realmFeed1
+
+                for object in [realmFeed1, realmArticle1] {
+                    realm.add(object)
+                }
+                _ = try? realm.commitWrite()
+
+                feed1 = Feed(realmFeed: realmFeed1)
+            }
+
+            it("finds an existing article if an article of that feed for that url exists") {
+                let future = subject.findOrCreateArticle(feed: feed1, url: URL(string: "https://example.com/article/article1")!)
+                expect(future.value).toNot(beNil())
+                let article = future.value
+                expect(article?.link) == URL(string: "https://example.com/article/article1")
+                expect(article?.feed) == feed1
+
+                expect(realm.objects(RealmFeed.self).count) == 1
+                expect(realm.objects(RealmArticle.self).count) == 1
+            }
+
+            it("creates a new article if that url does not exist") {
+                let future = subject.findOrCreateArticle(feed: feed1, url: URL(string: "https://example.com/article/article2")!)
+                expect(future.value).toNot(beNil())
+                let article = future.value
+                expect(article?.link) == URL(string: "https://example.com/article/article2")
+                expect(article?.feed) == feed1
+
+                expect(realm.objects(RealmFeed.self).count) == 1
+                expect(realm.objects(RealmArticle.self).count) == 2
+            }
+
+            it("creates a new feed and article if the feed does not exist") {
+                let feed2 = Feed(title: "feed2", url: URL(string: "https://example.com/feed/feed2")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let future = subject.findOrCreateArticle(feed: feed2, url: URL(string: "https://example.com/article/article2")!)
+                expect(future.value).toNot(beNil())
+                let article = future.value
+                expect(article?.link) == URL(string: "https://example.com/article/article2")
+                expect(article?.feed) == feed2
+
+                expect(realm.objects(RealmFeed.self).count) == 2
+                expect(realm.objects(RealmArticle.self).count) == 2
             }
         }
 
@@ -87,7 +177,9 @@ class RealmServiceSpec: QuickSpec {
                 let realmFeed1 = RealmFeed()
                 let realmFeed2 = RealmFeed()
                 realmFeed1.title = "feed1"
+                realmFeed1.url = "https://example.com/feed/feed1"
                 realmFeed2.title = "feed2"
+                realmFeed2.url = "https://example.com/feed/feed2"
 
                 let realmArticle1 = RealmArticle()
                 let realmArticle2 = RealmArticle()
@@ -96,10 +188,15 @@ class RealmServiceSpec: QuickSpec {
                 realmArticle1.title = "article1"
                 realmArticle1.link = "https://example.com/article1"
                 realmArticle1.published = Date(timeIntervalSince1970: 15)
+
                 realmArticle2.title = "article2"
+                realmArticle2.link = "https://example.com/article2"
                 realmArticle2.published = Date(timeIntervalSince1970: 10)
+
                 realmArticle3.title = "article3"
+                realmArticle3.link = "https://example.com/article3"
                 realmArticle3.published = Date(timeIntervalSince1970: 5)
+
                 realmArticle1.feed = realmFeed1
                 realmArticle2.feed = realmFeed1
                 realmArticle3.feed = realmFeed2

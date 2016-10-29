@@ -12,7 +12,7 @@ class RealmString: Object {
 
 class RealmFeed: Object {
     dynamic var title: String?
-    dynamic var url: String?
+    dynamic var url = ""
     dynamic var summary: String?
     let tags = List<RealmString>()
     dynamic var waitPeriod: Int = 0

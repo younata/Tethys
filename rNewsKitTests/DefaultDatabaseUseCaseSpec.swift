@@ -40,11 +40,11 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
             feed1 = rNewsKit.Feed(title: "a", url: URL(string: "https://example.com/feed1.feed")!, summary: "",
                 tags: ["a", "b", "c", "d"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
-            article1 = rNewsKit.Article(title: "b", link: URL(string: "https://example.com/article1.html"),
+            article1 = rNewsKit.Article(title: "b", link: URL(string: "https://example.com/article1.html")!,
                 summary: "<p>Hello world!</p>", authors: [], published: Date(), updatedAt: nil, identifier: "article1",
                 content: "", read: false, estimatedReadingTime: 0, feed: feed1, flags: [])
 
-            article2 = rNewsKit.Article(title: "c", link: URL(string: "https://example.com/article2.html"),
+            article2 = rNewsKit.Article(title: "c", link: URL(string: "https://example.com/article2.html")!,
                 summary: "<p>Hello world!</p>", authors: [], published: Date(), updatedAt: nil, identifier: "article2",
                 content: "", read: true, estimatedReadingTime: 0, feed: feed1, flags: [])
 
@@ -166,8 +166,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                     beforeEach {
                         subscribePromise = Promise<Result<[URL], SinopeError>>()
                         sinopeRepository.subscribeReturns(subscribePromise.future)
-                        newFeedFuture = subject.newFeed {feed in
-                            feed.url = URL(string: "https://example.com/feed")!
+                        newFeedFuture = subject.newFeed(url: URL(string: "https://example.com/feed")!) {feed in
                             createdFeed = feed
                         }
                     }
@@ -189,27 +188,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
 
                         subscribePromise.resolve(.success([]))
 
-                        expect(newFeedFuture.value?.value).toNot(beNil())
-                    }
-                }
-
-                describe("and the user does not assign a url to the created feed") {
-                    beforeEach {
-                        newFeedFuture = subject.newFeed {feed in
-                            createdFeed = feed
-                        }
-                    }
-
-                    it("should call back with a created feed") {
-                        expect(dataService.feeds).to(contain(createdFeed!))
-                        expect(dataService.feeds.count) == 3
-                    }
-
-                    it("does not tell the pasiphae repository to subscribe to this feed") {
-                        expect(sinopeRepository.subscribeCallCount) == 0
-                    }
-
-                    it("resolves the future") {
                         expect(newFeedFuture.value?.value).toNot(beNil())
                     }
                 }

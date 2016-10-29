@@ -241,7 +241,7 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
         let tc = tableView.dequeueReusableCell(withIdentifier: "text", for: indexPath) as! TextFieldCell
         tc.onTextChange = {(_) in } // remove any previous onTextChange for setting stuff here.
         tc.themeRepository = self.themeRepository
-        tc.textField.text = self.feed?.url?.absoluteString
+        tc.textField.text = self.feed?.url.absoluteString
         tc.showValidator = true
         if #available(iOS 10.0, *) {
             tc.textField.textContentType = .URL

@@ -41,10 +41,10 @@ final class RealmService: DataService {
         return realm
     }
 
-    func createFeed(_ callback: @escaping (Feed) -> (Void)) -> Future<Result<Feed, RNewsError>> {
+    func createFeed(url: URL, callback: @escaping (Feed) -> (Void)) -> Future<Result<Feed, RNewsError>> {
         let promise = Promise<Result<Feed, RNewsError>>()
         _ = self.realmTransaction {
-            let realmFeed = self.realm.create(RealmFeed.self)
+            let realmFeed = self.realm.create(RealmFeed.self, value: ["url": url.absoluteString])
             let feed = Feed(realmFeed: realmFeed)
 
             let operation = BlockOperation { callback(feed) }
@@ -57,9 +57,9 @@ final class RealmService: DataService {
         return promise.future
     }
 
-    func createArticle(_ feed: Feed?, callback: @escaping (Article) -> (Void)) {
+    func createArticle(url: URL, feed: Feed?, callback: @escaping (Article) -> (Void)) {
         _ = self.realmTransaction {
-            let realmArticle = self.realm.create(RealmArticle.self)
+            let realmArticle = self.realm.create(RealmArticle.self, value: ["link": url.absoluteString])
             let article = Article(realmArticle: realmArticle, feed: feed)
             feed?.addArticle(article)
 
@@ -68,6 +68,53 @@ final class RealmService: DataService {
 
             self.synchronousUpdateArticle(article, realmArticle: realmArticle)
         }
+    }
+
+    // must be called from within a realmTransaction!
+    private func privateFindOrCreateRealmFeed(url: URL) -> RealmFeed {
+        let feed: RealmFeed
+        if let realmFeed = self.realm.objects(RealmFeed.self).filter("url = %@", url.absoluteString).first {
+            feed = realmFeed
+        } else {
+            feed = self.realm.create(RealmFeed.self, value: ["url": url.absoluteString])
+        }
+        return feed
+    }
+
+    func findOrCreateFeed(url: URL) -> Future<Feed> {
+        let promise = Promise<Feed>()
+        _ = self.realmTransaction {
+            promise.resolve(Feed(realmFeed: self.privateFindOrCreateRealmFeed(url: url)))
+        }
+        return promise.future
+    }
+
+    func findOrCreateArticle(feed: Feed, url: URL) -> Future<Article> {
+        let promise = Promise<Article>()
+        _ = self.realmTransaction {
+            if let realmFeed = self.realmFeedForFeed(feed) {
+                let article: Article
+                if let realmArticle = self.realm.objects(RealmArticle.self)
+                    .filter("feed.id = %@ AND link = %@", realmFeed.id, url.absoluteString).first {
+                    article = Article(realmArticle: realmArticle, feed: feed)
+                } else {
+                    let realmArticle = self.realm.create(RealmArticle.self, value: ["link": url.absoluteString])
+                    article = Article(realmArticle: realmArticle, feed: feed)
+                    feed.addArticle(article)
+                    self.synchronousUpdateArticle(article, realmArticle: realmArticle)
+                }
+                promise.resolve(article)
+            } else {
+                let realmFeed = self.privateFindOrCreateRealmFeed(url: feed.url)
+                let realmArticle = self.realm.create(RealmArticle.self, value: ["link": url.absoluteString])
+                self.synchronousUpdateFeed(feed, realmFeed: realmFeed)
+                let article = Article(realmArticle: realmArticle, feed: feed)
+                feed.addArticle(article)
+                self.synchronousUpdateArticle(article, realmArticle: realmArticle)
+                promise.resolve(article)
+            }
+        }
+        return promise.future
     }
 
     // Mark: - Read
@@ -137,12 +184,16 @@ final class RealmService: DataService {
 
     // Mark: - Batch
 
-    func batchCreate(_ feedCount: Int, articleCount: Int) ->
+    func batchCreate(feedURLs: [URL], articleURLs: [URL]) ->
         Future<Result<([Feed], [Article]), RNewsError>> {
             let promise = Promise<Result<([Feed], [Article]), RNewsError>>()
             _ = self.realmTransaction {
-                let realmFeeds = (0..<feedCount).map { _ in self.realm.create(RealmFeed.self) }
-                let realmArticles = (0..<articleCount).map { _ in self.realm.create(RealmArticle.self) }
+                let realmFeeds = feedURLs.map {
+                    return self.realm.create(RealmFeed.self, value: ["url": $0.absoluteString])
+                }
+                let realmArticles = articleURLs.map {
+                    return self.realm.create(RealmArticle.self, value: ["link": $0.absoluteString])
+                }
 
                 let feeds = realmFeeds.map(Feed.init)
                 let articles = realmArticles.map { Article(realmArticle: $0, feed: nil) }
@@ -155,17 +206,12 @@ final class RealmService: DataService {
     }
 
     func batchSave(_ feeds: [Feed], articles: [Article]) -> Future<Result<Void, RNewsError>> {
-        let promise = Promise<Result<Void, RNewsError>>()
-        _ = self.realmTransaction {
+        return self.realmTransaction {
             articles.forEach { self.synchronousUpdateArticle($0) }
             feeds.forEach { self.synchronousUpdateFeed($0) }
-
-        }.then {
-            self.mainQueue.addOperation {
-                promise.resolve(.success())
-            }
+        }.map {
+            return .success()
         }
-        return promise.future
     }
 
     func deleteEverything() -> Future<Result<Void, RNewsError>> {
@@ -210,7 +256,7 @@ final class RealmService: DataService {
 
         if let rfeed = realmFeed ?? self.realmFeedForFeed(feed) {
             rfeed.title = feed.title
-            rfeed.url = feed.url?.absoluteString ?? ""
+            rfeed.url = feed.url.absoluteString
             rfeed.summary = feed.summary
             let tags: [RealmString] = feed.tags.map { str in
                 let realmString = self.realmStringForString(str) ?? RealmString()
@@ -230,6 +276,7 @@ final class RealmService: DataService {
                     rfeed.imageData = image.tiffRepresentation
                 }
             #endif
+            _ = try? self.realm.commitWrite()
         }
     }
 
@@ -239,7 +286,7 @@ final class RealmService: DataService {
 
         if let rarticle = realmArticle ?? self.realmArticleForArticle(article) {
             rarticle.title = article.title
-            rarticle.link = article.link?.absoluteString ?? ""
+            rarticle.link = article.link.absoluteString
             rarticle.summary = article.summary
             let authors: [RealmAuthor] = article.authors.map {
                 let author = self.realmAuthorForAuthor($0) ?? RealmAuthor()
@@ -270,6 +317,7 @@ final class RealmService: DataService {
             }
 
             self.updateSearchIndexForArticle(article)
+            _ = try? self.realm.commitWrite()
         }
     }
 

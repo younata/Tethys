@@ -8,7 +8,7 @@ public final class Article: NSObject {
             }
         }
     }
-    public internal(set) var link: URL? {
+    public internal(set) var link: URL {
         willSet {
             if newValue != link {
                 self.updated = true
@@ -102,12 +102,9 @@ public final class Article: NSObject {
         let authorsHashValue = authors.reduce(0) { $0 ^ $1.hashValue }
         let nonNilHashValues = title.hashValue ^ summary.hashValue ^ authorsHashValue ^
             published.hashValue ^ identifier.hashValue ^ content.hashValue & read.hashValue &
-            estimatedReadingTime.hashValue
+            estimatedReadingTime.hashValue ^ link.hashValue
         let flagsHashValues = flags.reduce(0) { $0 ^ $1.hashValue }
         var possiblyNilHashValues = 0
-        if let link = link {
-            possiblyNilHashValues ^= link.hashValue
-        }
         if let updatedAt = updatedAt {
             possiblyNilHashValues ^= updatedAt.hashValue
         }
@@ -134,7 +131,7 @@ public final class Article: NSObject {
     }
 
     // swiftlint:disable function_parameter_count
-    public init(title: String, link: URL?, summary: String, authors: [Author], published: Date,
+    public init(title: String, link: URL, summary: String, authors: [Author], published: Date,
         updatedAt: Date?, identifier: String, content: String, read: Bool, estimatedReadingTime: Int,
         feed: Feed?, flags: [String]) {
             self.title = title
@@ -158,7 +155,7 @@ public final class Article: NSObject {
 
     internal init(realmArticle article: RealmArticle, feed: Feed?) {
         title = article.title ?? ""
-        link = URL(string: article.link)
+        link = URL(string: article.link)!
         summary = article.summary ?? ""
 
         self.authors = article.authors.map(Author.init)

@@ -129,7 +129,7 @@ class FeedViewControllerSpec: QuickSpec {
 
                     context("when the feed has a tag that starts with '~'") {
                         beforeEach {
-                            subject.feed = Feed(title: "a title", url: URL(string: ""), summary: "",
+                            subject.feed = Feed(title: "a title", url: URL(string: "https://example.com/")!, summary: "",
                                 tags: ["~custom title"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                             cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 0, section: 0)) as! TableViewCell
@@ -180,7 +180,7 @@ class FeedViewControllerSpec: QuickSpec {
                     }
 
                     it("should be preconfigured with the feed's url") {
-                        expect(cell.textField.text).to(equal(feed.url!.absoluteString))
+                        expect(cell.textField.text).to(equal(feed.url.absoluteString))
                     }
 
                     it("should set the cell's themeRepository") {
@@ -273,7 +273,7 @@ class FeedViewControllerSpec: QuickSpec {
 
                 context("when the feed has a tag that starts with '`'") {
                     beforeEach {
-                        subject.feed = Feed(title: "a title", url: URL(string: ""), summary: "a summary",
+                        subject.feed = Feed(title: "a title", url: URL(string: "https://example.com/")!, summary: "a summary",
                             tags: ["`custom summary"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
                         cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 0, section: 2)) as! TableViewCell

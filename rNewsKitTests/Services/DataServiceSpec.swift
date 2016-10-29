@@ -9,7 +9,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
 
         beforeEach {
             let createExpectation = spec.expectation(description: "Create Feed")
-            _ = dataService.createFeed {
+            _ = dataService.createFeed(url: URL(string: "https://example.com/")!) {
                 feed = $0
                 createExpectation.fulfill()
             }
@@ -85,10 +85,9 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             var existingArticle: rNewsKit.Article! = nil
             let addArticleExpectation = spec.expectation(description: "existing article")
 
-            dataService.createArticle(feed) { article in
+            dataService.createArticle(url: URL(string: "https://example.com/article")!, feed: feed) { article in
                 existingArticle = article
                 existingArticle.title = "blah"
-                existingArticle.link = URL(string: "https://example.com/article")
                 existingArticle.summary = "summary"
                 existingArticle.content = "content"
                 existingArticle.published = Date(timeIntervalSince1970: 10)
@@ -100,7 +99,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             expect(feed.articlesArray.contains(existingArticle)).to(beTruthy())
             expect(feed.articlesArray.count) == 1
 
-            let existingItem = FakeImportableArticle(title: existingArticle.title, url: existingArticle.link!, summary: existingArticle.summary, content: existingArticle.content, published: existingArticle.published, updated: nil, authors: [])
+            let existingItem = FakeImportableArticle(title: existingArticle.title, url: existingArticle.link, summary: existingArticle.summary, content: existingArticle.content, published: existingArticle.published, updated: nil, authors: [])
             let item = FakeImportableArticle(title: "article", url: URL(string: "https://example.com/1")!, summary: "", content: "", published: Date(), updated: nil, authors: [])
             let info = FakeImportableFeed(title: "a title", link: URL(string: "https://example.com")!, description: "description", lastUpdated: Date(), imageURL: nil, articles: [existingItem, item])
             _ = dataService.updateFeed(feed, info: info).then {
@@ -128,7 +127,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
 
         beforeEach {
             let createExpectation = spec.expectation(description: "Create Article")
-            dataService.createArticle(nil) {
+            dataService.createArticle(url: URL(string: "https://example.com/article")!, feed: nil) {
                 article = $0
                 createExpectation.fulfill()
             }
@@ -145,9 +144,8 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
         it("searches an item's content for links matching current articles, and adds them to the related articles list") {
             var otherArticle: rNewsKit.Article?
             let createExpectation = spec.expectation(description: "Create Article")
-            dataService.createArticle(nil) {
+            dataService.createArticle(url: URL(string: "https://example.com/foo/bar/")!, feed: nil) {
                 otherArticle = $0
-                $0.link = URL(string: "https://example.com/foo/bar/")
                 createExpectation.fulfill()
             }
             spec.waitForExpectations(timeout: 1, handler: nil)

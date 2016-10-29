@@ -12,7 +12,7 @@ public protocol DatabaseUseCase {
 
     func addSubscriber(_ subscriber: DataSubscriber)
 
-    func newFeed(_ callback: @escaping (Feed) -> Void) -> Future<Result<Void, RNewsError>>
+    func newFeed(url: URL, callback: @escaping (Feed) -> Void) -> Future<Result<Void, RNewsError>>
     func saveFeed(_ feed: Feed) -> Future<Result<Void, RNewsError>>
     func deleteFeed(_ feed: Feed) -> Future<Result<Void, RNewsError>>
     func markFeedAsRead(_ feed: Feed) -> Future<Result<Int, RNewsError>>

@@ -75,8 +75,8 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
 
     func updateFeed(_ feed: Feed) -> Future<Result<rNewsKit.Feed, RNewsError>> {
         let promise = Promise<Result<rNewsKit.Feed, RNewsError>>()
-        self.callbacksInProgress[feed.url!] = (feed, promise)
-        self.downloadURL(feed.url!)
+        self.callbacksInProgress[feed.url] = (feed, promise)
+        self.downloadURL(feed.url)
         return promise.future
     }
 
@@ -93,7 +93,7 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
             var urlsToDates: [URL: Date] = [:]
             for feed in feeds {
                 if feed.lastUpdated != Date(timeIntervalSinceReferenceDate: 0) {
-                    urlsToDates[feed.url!] = feed.lastUpdated
+                    urlsToDates[feed.url] = feed.lastUpdated
                 }
             }
             return self.sinopeRepository.fetch(urlsToDates).map {result -> Result<[rNewsKit.Feed], RNewsError> in
@@ -111,25 +111,12 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
                                             progressCallback: @escaping (Int, Int) -> Void) -> [rNewsKit.Feed] {
         var current = sinopeFeeds.count
         let total = current * 2
-        let dataService = self.dataServiceFactory.currentDataService
-        guard let feedsArray = dataService.allFeeds().wait()?.value else { return [] }
-        let feeds = Array(feedsArray)
         var updatedFeeds: [rNewsKit.Feed] = []
         for importableFeed in sinopeFeeds {
             current += 1
             progressCallback(current, total)
             let dataService = self.dataServiceFactory.currentDataService
-            let feed: rNewsKit.Feed
-            let test: (Feed) -> (Bool) = { $0.url == importableFeed.url || $0.title == importableFeed.title }
-            if let existingFeed = feeds.objectPassingTest(test) {
-                feed = existingFeed
-            } else {
-                let promise = dataService.createFeed { $0.url = importableFeed.url }
-
-                if let createdFeed = promise.wait()?.value {
-                    feed = createdFeed
-                } else { return [] }
-            }
+            let feed = dataService.findOrCreateFeed(url: importableFeed.url).wait()!
 
             self.dataServiceFactory.currentDataService.updateFeed(feed, info: importableFeed).map { res -> Void in
                 switch res {

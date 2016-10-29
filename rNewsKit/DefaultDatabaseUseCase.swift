@@ -96,13 +96,13 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         subscribers.add(subscriber)
     }
 
-    func newFeed(_ callback: @escaping (Feed) -> (Void)) -> Future<Result<Void, RNewsError>> {
+    func newFeed(url: URL, callback: @escaping (Feed) -> (Void)) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
-        _ = self.dataService.createFeed {
+        _ = self.dataService.createFeed(url: url) {
             callback($0)
-            if !($0.url?.absoluteString ?? "").isEmpty,
+            if !($0.url.absoluteString).isEmpty,
                 let sinopeRepository = self.accountRepository.backendRepository() {
-                    _ = sinopeRepository.subscribe([$0.url!]).then { res in
+                    _ = sinopeRepository.subscribe([$0.url]).then { res in
                         switch res {
                         case .success(_):
                             promise.resolve(.success())
@@ -127,7 +127,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
             case .success:
                 let future: Future<Result<[URL], RNewsError>>
                 if let sinopeRepository = self.accountRepository.backendRepository() {
-                    let urls: [URL] = feed.url != nil ? [feed.url!] : []
+                    let urls = [feed.url]
                     future = sinopeRepository.unsubscribe(urls).map { res in
                         return res.mapError { return RNewsError.backend($0) }
                     }
@@ -200,6 +200,11 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
                 guard feeds.isEmpty == false && self.reachable?.hasNetworkConnectivity == true else {
                     self.updatingFeedsCallbacks.forEach { $0([], []) }
                     self.updatingFeedsCallbacks = []
+                    for subscriber in self.allSubscribers {
+                        self.mainQueue.addOperation {
+                            subscriber.didUpdateFeeds([])
+                        }
+                    }
                     return
                 }
 
@@ -207,11 +212,9 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
                     for updateCallback in self.updatingFeedsCallbacks {
                         self.mainQueue.addOperation { updateCallback(updatedFeeds, errors) }
                     }
-                    for object in self.subscribers.allObjects {
-                        if let subscriber = object as? DataSubscriber {
-                            self.mainQueue.addOperation {
-                                subscriber.didUpdateFeeds(updatedFeeds)
-                            }
+                    for subscriber in self.allSubscribers {
+                        self.mainQueue.addOperation {
+                            subscriber.didUpdateFeeds(updatedFeeds)
                         }
                     }
                     self.updatingFeedsCallbacks = []

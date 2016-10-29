@@ -39,7 +39,10 @@ struct DatabaseMigrator: DatabaseMigratorType {
                 var feedsDictionary: [Feed: Feed] = [:]
                 var articlesDictionary: [Article: Article] = [:]
 
-                _ = to.batchCreate(feedsToMigrate.count, articleCount: articlesToMigrate.count).then { createResult in
+                let feedsUrls = feedsToMigrate.map { $0.url }
+                let articleUrls = articlesToMigrate.map { $0.link }
+
+                _ = to.batchCreate(feedURLs: feedsUrls, articleURLs: articleUrls).then { createResult in
                     guard case let .success(newFeeds, newArticles) = createResult else {
                         return
                     }
@@ -85,7 +88,6 @@ struct DatabaseMigrator: DatabaseMigratorType {
 
     private func migrateFeed(from oldFeed: Feed, to newFeed: Feed) {
         newFeed.title = oldFeed.title
-        newFeed.url = oldFeed.url
         newFeed.summary = oldFeed.summary
         for tag in newFeed.tags {
             newFeed.removeTag(tag)

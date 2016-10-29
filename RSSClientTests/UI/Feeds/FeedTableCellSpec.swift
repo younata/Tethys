@@ -65,10 +65,10 @@ class FeedTableCellSpec: QuickSpec {
 
             context("with a feed that has some unread articles") {
                 beforeEach {
-                    let article1 = Article(title: "a", link: nil, summary: "", authors: [],
+                    let article1 = Article(title: "a", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [],
                         published: Date(), updatedAt: nil, identifier: "", content: "",
                         read: true, estimatedReadingTime: 0, feed: nil, flags: [])
-                    let article2 = Article(title: "b", link: nil, summary: "", authors: [],
+                    let article2 = Article(title: "b", link: URL(string: "https://exapmle.com/2")!, summary: "", authors: [],
                         published: Date(), updatedAt: nil, identifier: "", content: "",
                         read: false, estimatedReadingTime: 0, feed: nil, flags: [])
                     feed = Feed(title: "Hello", url: URL(string: "https://example.com")!, summary: "World", tags: [],

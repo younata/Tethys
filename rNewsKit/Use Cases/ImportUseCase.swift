@@ -109,8 +109,7 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
                         return promise.future
                     }
                     var feed: Feed?
-                    _ = self.feedRepository.newFeed {
-                        $0.url = url
+                    _ = self.feedRepository.newFeed(url: url) {
                         feed = $0
                     }.then { _ in
                         self.feedRepository.updateFeed(feed!) { _ in

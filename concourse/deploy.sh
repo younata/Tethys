@@ -1,8 +1,8 @@
 #!/bin/bash
 
 cd rssclient
-carthage bootstrap --platform ios
 bundle
+bundle exec carthage_cache -b $AWS_CACHE_BUCKET install || carthage bootstrap --platform ios
 bundle exec fastlane deploy_setup
 
 if [[ `git name-rev --name-only --tags HEAD` = 'undefined' ]]

@@ -44,7 +44,6 @@ platform :ios do
 
   desc 'Runs all the tests'
   lane :test do
-    #scan(project: 'RSSClient.xcodeproj', scheme: 'RSSClient')
     sh("bundle exec rake test:ios:app")
     sh("bundle exec rake test:ios:kit")
   end
@@ -59,13 +58,6 @@ platform :ios do
 
   lane :test_acceptance do
     scan(scheme: 'rNewsAcceptanceTests')
-  end
-
-  desc 'set up CI to deploy'
-  lane :deploy_setup do
-    sh 'echo "$MIXPANEL_TOKEN" > .mixpanel'
-    sh 'echo "$PASIPHAE_TOKEN" > .pasiphae'
-    sh 'echo "$PASIPHAE_URL" > .pasiphaeURL'
   end
 
   desc 'Deploy a new version to TestFlight'

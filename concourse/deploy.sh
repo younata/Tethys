@@ -3,7 +3,9 @@
 cd rssclient
 bundle
 bundle exec carthage_cache -b $AWS_CACHE_BUCKET install || carthage bootstrap --platform ios
-bundle exec fastlane deploy_setup
+echo "$MIXPANEL_TOKEN" > .mixpanel
+echo "$PASIPHAE_TOKEN" > .pasiphae
+echo "$PASIPHAE_URL" > .pasiphaeURL
 
 if [[ `git name-rev --name-only --tags HEAD` = 'undefined' ]]
 then

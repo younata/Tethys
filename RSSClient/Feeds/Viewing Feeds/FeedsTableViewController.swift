@@ -313,8 +313,10 @@ extension FeedsTableViewController: FeedsSource {
     public func markRead(feed: Feed) -> Future<Void> {
         self.markReadFuture = self.feedRepository.markFeedAsRead(feed)
         return self.markReadFuture!.map { _ -> Void in
-            self.reload(self.searchBar.text)
-            self.markReadFuture = nil
+            self.mainQueue.addOperation {
+                self.reload(self.searchBar.text)
+                self.markReadFuture = nil
+            }
         }
     }
 

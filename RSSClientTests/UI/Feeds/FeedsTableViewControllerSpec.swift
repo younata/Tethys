@@ -16,6 +16,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
         var themeRepository: ThemeRepository! = nil
         var settingsRepository: SettingsRepository! = nil
         var analytics: FakeAnalytics! = nil
+        var mainQueue: FakeOperationQueue!
 
         var feed1: Feed! = nil
 
@@ -28,7 +29,9 @@ class FeedsTableViewControllerSpec: QuickSpec {
             injector.bind(kind: DatabaseUseCase.self, toInstance: dataUseCase)
 
             injector.bind(kind: OPMLService.self, toInstance: FakeOPMLService())
-            injector.bind(string: kMainQueue, toInstance: FakeOperationQueue())
+
+            mainQueue = FakeOperationQueue()
+            injector.bind(string: kMainQueue, toInstance: mainQueue)
 
             settingsRepository = SettingsRepository(userDefaults: nil)
             injector.bind(kind: SettingsRepository.self, toInstance: settingsRepository)
@@ -489,6 +492,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             }
 
                             it("causes a refresh of the feeds") {
+                                mainQueue.runSynchronously = true
                                 dataUseCase.lastFeedMarkedReadPromise?.resolve(.success(0))
                                 expect(dataUseCase.feedsPromises.count) == 2
                             }

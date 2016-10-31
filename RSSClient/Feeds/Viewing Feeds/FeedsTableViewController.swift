@@ -203,20 +203,23 @@ public final class FeedsTableViewController: UIViewController, Injectable {
 
     // MARK - Private/Internal
 
-    internal func importFromWeb() { self.presentController(self.findFeedViewController()) }
+    internal func importFromWeb() {
+        self.presentController(self.findFeedViewController(), from: self.navigationItem.rightBarButtonItem)
+    }
 
     @objc fileprivate func search() { self.searchBar.becomeFirstResponder() }
 
-    @objc fileprivate func presentSettings() { self.presentController(self.settingsViewController()) }
+    @objc fileprivate func presentSettings() {
+        self.presentController(self.settingsViewController(), from: self.navigationItem.leftBarButtonItem)
+    }
 
-    private func presentController(_ viewController: UIViewController) {
+    private func presentController(_ viewController: UIViewController, from: UIBarButtonItem?) {
         let nc = UINavigationController(rootViewController: viewController)
         if UIDevice.current.userInterfaceIdiom == .pad {
             nc.modalPresentationStyle = .popover
             nc.preferredContentSize = CGSize(width: 600, height: 800)
-            self.present(nc, animated: true) {
-                nc.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
-            }
+            nc.popoverPresentationController?.barButtonItem = from
+            self.present(nc, animated: true, completion: nil)
         } else {
             self.present(nc, animated: true, completion: nil)
         }

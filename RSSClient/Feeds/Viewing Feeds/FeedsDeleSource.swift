@@ -16,6 +16,7 @@ public final class FeedsDeleSource: NSObject {
     fileprivate let feedsSource: FeedsSource
     fileprivate let themeRepository: ThemeRepository
     fileprivate let navigationController: UINavigationController
+    fileprivate let mainQueue: OperationQueue
     fileprivate let articleListController: (Void) -> (ArticleListController)
 
     fileprivate var feeds: [Feed] {
@@ -24,15 +25,18 @@ public final class FeedsDeleSource: NSObject {
 
     public var scrollViewDelegate: UIScrollViewDelegate?
 
+    // swiftlint disable:function_parameter_count
     public init(tableView: UITableView,
                 feedsSource: FeedsSource,
                 themeRepository: ThemeRepository,
                 navigationController: UINavigationController,
+                mainQueue: OperationQueue,
                 articleListController: @escaping (Void) -> (ArticleListController)) {
         self.tableView = tableView
         self.feedsSource = feedsSource
         self.themeRepository = themeRepository
         self.navigationController = navigationController
+        self.mainQueue = mainQueue
         self.articleListController = articleListController
 
         super.init()
@@ -42,6 +46,7 @@ public final class FeedsDeleSource: NSObject {
         // Prevents a green triangle which'll (dis)appear depending on
         // whether new feed loaded into it has unread articles or not.
     }
+    // swiftlint enable:function_parameter_count
 
     fileprivate func feedAtIndexPath(_ indexPath: IndexPath) -> Feed {
         return self.feedsSource.feeds[indexPath.row]
@@ -127,6 +132,7 @@ extension FeedsDeleSource: UITableViewDelegate {
         self.showArticleList(al, animated: true)
     }
 
+    // swiftlint disable:line_length
     @objc(tableView:canEditRowAtIndexPath:) public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
@@ -134,6 +140,7 @@ extension FeedsDeleSource: UITableViewDelegate {
     @objc(tableView:commitEditingStyle:forRowAtIndexPath:) public func tableView(_ tableView: UITableView,
                                                                                  commit editingStyle: UITableViewCellEditingStyle,
                                                                                  forRowAt indexPath: IndexPath) {}
+    // swiftlint enable:line_length
 
     public func tableView(_ tableView: UITableView,
                           editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
@@ -151,7 +158,9 @@ extension FeedsDeleSource: UITableViewDelegate {
         let readTitle = NSLocalizedString("FeedsTableViewController_Table_EditAction_MarkRead", comment: "")
         let markRead = UITableViewRowAction(style: .normal, title: readTitle) {_, indexPath in
             _ = self.feedsSource.markRead(feed: self.feedAtIndexPath(indexPath)).then {
-                tableView.reloadRows(at: [indexPath], with: .automatic)
+                self.mainQueue.addOperation {
+                    tableView.reloadRows(at: [indexPath], with: .automatic)
+                }
             }
         }
 

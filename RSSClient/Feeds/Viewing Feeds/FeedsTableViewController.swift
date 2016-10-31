@@ -59,6 +59,7 @@ public final class FeedsTableViewController: UIViewController, Injectable {
             feedsSource: self,
             themeRepository: self.themeRepository,
             navigationController: self.navigationController!,
+            mainQueue: self.mainQueue,
             articleListController: self.articleListController
         )
     }()

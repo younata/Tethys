@@ -12,6 +12,7 @@ class FeedsDeleSourceSpec: QuickSpec {
         var feedsSource: FakeFeedsSource!
         var themeRepository: ThemeRepository!
         var navigationController: UINavigationController!
+        var mainQueue: FakeOperationQueue!
         var articleListFactory: ((Void) -> (ArticleListController))!
         var articleListFactoryCallCount = 0
 
@@ -41,11 +42,14 @@ class FeedsDeleSourceSpec: QuickSpec {
                 )
             }
 
+            mainQueue = FakeOperationQueue()
+
             subject = FeedsDeleSource(
                 tableView: tableView,
                 feedsSource: feedsSource,
                 themeRepository: themeRepository,
                 navigationController: navigationController,
+                mainQueue: mainQueue,
                 articleListController: articleListFactory
             )
 
@@ -276,6 +280,11 @@ class FeedsDeleSourceSpec: QuickSpec {
 
                             it("calls markRead on the feedsSource") {
                                 expect(feedsSource.markReadCallCount) == 1
+                            }
+
+                            it("adds an operation to the mainQueue when the markRead promise resolves") {
+                                feedsSource.markReadPromises.last?.resolve(Void())
+                                expect(mainQueue.operationCount) == 1
                             }
                         }
                     }

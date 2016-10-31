@@ -54,7 +54,9 @@ public final class FeedView: NSView {
         let menu = NSMenu(title: "")
         if let menuOptions = self.delegate?.menuOptionsForFeed(feed) {
             for option in menuOptions {
-                let menuItem = NSMenuItem(title: option, action: #selector(FeedView.didSelectMenuItem(_:)), keyEquivalent: "")
+                let menuItem = NSMenuItem(title: option,
+                                          action: #selector(FeedView.didSelectMenuItem(_:)),
+                                          keyEquivalent: "")
                 menuItem.target = self
                 menu.addItem(menuItem)
             }
@@ -106,7 +108,7 @@ public final class FeedView: NSView {
         self.imageView.autoAlignAxis(toSuperviewAxis: .horizontal)
 
         for textView in [self.nameLabel, self.summaryLabel] {
-            textView.textContainerInset = NSMakeSize(0, 0)
+            textView.textContainerInset = NSSize.zero
             textView.isEditable = false
             textView.isSelectable = false
             textView.font = NSFont.systemFont(ofSize: 12)

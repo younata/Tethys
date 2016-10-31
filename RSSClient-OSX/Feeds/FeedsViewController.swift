@@ -112,9 +112,9 @@ public final class FeedsViewController: NSViewController {
         let title = NSAttributedString(string: feed.displayTitle, attributes: attributes)
         let summary = NSAttributedString(string: feed.displaySummary, attributes: attributes)
 
-        let titleBounds = title.boundingRect(with: NSMakeSize(width, CGFloat.greatestFiniteMagnitude),
+        let titleBounds = title.boundingRect(with: NSSize(width: width, height: CGFloat.greatestFiniteMagnitude),
             options: NSStringDrawingOptions.usesFontLeading)
-        let summaryBounds = summary.boundingRect(with: NSMakeSize(width, CGFloat.greatestFiniteMagnitude),
+        let summaryBounds = summary.boundingRect(with: NSSize(width: width, height: CGFloat.greatestFiniteMagnitude),
             options: NSStringDrawingOptions.usesFontLeading)
 
         let titleHeight = ceil(titleBounds.width / width) * ceil(titleBounds.height)
@@ -151,7 +151,7 @@ extension FeedsViewController: NSTableViewDelegate {
     public func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         var feedView = tableView.make(withIdentifier: "feed", owner: self) as? FeedView
         if feedView == nil {
-            feedView = FeedView(frame: NSZeroRect)
+            feedView = FeedView(frame: NSRect.zero)
             feedView?.identifier = "feed"
         }
         feedView?.configure(self.feeds[row], delegate: self)

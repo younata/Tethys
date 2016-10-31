@@ -77,7 +77,7 @@ final class ArticleListView: NSTableRowView {
         dateFormatter.timeZone = NSCalendar.current.timeZone
 
         for tv in [title, author, published] {
-            tv.textContainerInset = NSMakeSize(0, 0)
+            tv.textContainerInset = NSSize.zero
             tv.isEditable = false
         }
         published.font = NSFont.systemFont(ofSize: 12)

@@ -38,7 +38,7 @@ public final class UnreadCounter: NSView {
     }
 
     public override init(frame: NSRect) {
-        super.init(frame: NSMakeRect(0, 0, 0, 0))
+        super.init(frame: NSRect.zero)
 
         self.addSubview(countLabel)
         countLabel.autoPinEdge(toSuperviewEdge: .right, withInset: 4)

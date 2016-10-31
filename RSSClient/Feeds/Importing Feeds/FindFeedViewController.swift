@@ -290,7 +290,6 @@ extension FindFeedViewController: WKUIDelegate {
 extension FindFeedViewController {
     @objc fileprivate func focusNavField() {
         self.navField.becomeFirstResponder()
-
         self.navField.selectAll(nil)
     }
 
@@ -300,7 +299,6 @@ extension FindFeedViewController {
 
     @objc fileprivate func dismissNavFieldKeyboard() {
         self.navField.resignFirstResponder()
-
         self.navField.text = nil
     }
 

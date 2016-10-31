@@ -25,6 +25,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         return self.dataServiceFactory.currentDataService
     }
 
+    // swiftlint:disable function_parameter_count
     init(mainQueue: OperationQueue,
         reachable: Reachable?,
         dataServiceFactory: DataServiceFactoryType,
@@ -38,6 +39,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
             self.databaseMigrator = databaseMigrator
             self.accountRepository = accountRepository
     }
+    // swiftlint:enable function_parameter_count
 
     func databaseUpdateAvailable() -> Bool {
         return false

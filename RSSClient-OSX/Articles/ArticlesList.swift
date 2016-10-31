@@ -47,9 +47,9 @@ final class ArticlesList: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         let title = NSAttributedString(string: article.title, attributes: titleAttributes)
         let author = NSAttributedString(string: article.authorsString, attributes: authorAttributes)
 
-        let titleBounds = title.boundingRect(with: NSMakeSize(width, CGFloat.greatestFiniteMagnitude),
+        let titleBounds = title.boundingRect(with: NSSize(width: width, height: CGFloat.greatestFiniteMagnitude),
             options: NSStringDrawingOptions.usesFontLeading)
-        let authorBounds = author.boundingRect(with: NSMakeSize(width, CGFloat.greatestFiniteMagnitude),
+        let authorBounds = author.boundingRect(with: NSSize(width: width, height: CGFloat.greatestFiniteMagnitude),
             options: NSStringDrawingOptions.usesFontLeading)
 
         let titleHeight = ceil(titleBounds.width / width) * ceil(titleBounds.height)
@@ -61,7 +61,8 @@ final class ArticlesList: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     func rowViewForRow(_ row: Int) -> ArticleListView {
         let article = articles[row]
         let width = tableView!.bounds.width
-        let articleView = ArticleListView(frame: NSMakeRect(0, 0, width, heightForArticle(article, width: width - 16)))
+        let articleView = ArticleListView(frame: NSRect(x: 0, y: 0, width: width,
+                                                        height: heightForArticle(article, width: width - 16)))
         articleView.article = article
         return articleView
     }

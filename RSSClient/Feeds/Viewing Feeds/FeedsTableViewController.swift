@@ -187,18 +187,16 @@ public final class FeedsTableViewController: UIViewController, Injectable {
         let commands = [
             UIKeyCommand(input: "f", modifierFlags: .command, action: #selector(FeedsTableViewController.search)),
             UIKeyCommand(input: "i", modifierFlags: .command,
-                action: #selector(FeedsTableViewController.importFromWeb)),
+                         action: #selector(FeedsTableViewController.importFromWeb)),
             UIKeyCommand(input: ",", modifierFlags: .command,
-                action: #selector(FeedsTableViewController.presentSettings)),
-        ]
+                         action: #selector(FeedsTableViewController.presentSettings)),
+            ]
         let discoverabilityTitles = [
             NSLocalizedString("FeedsTableViewController_Command_Search", comment: ""),
             NSLocalizedString("FeedsTableViewController_Command_ImportWeb", comment: ""),
             NSLocalizedString("FeedsTableViewController_Command_Settings", comment: ""),
         ]
-        for (idx, cmd) in commands.enumerated() {
-            cmd.discoverabilityTitle = discoverabilityTitles[idx]
-        }
+        commands.enumerated().forEach { idx, cmd in cmd.discoverabilityTitle = discoverabilityTitles[idx] }
         return commands
     }
 
@@ -237,9 +235,7 @@ public final class FeedsTableViewController: UIViewController, Injectable {
             let sortedFeeds = feeds.sorted {(f1: Feed, f2: Feed) in
                 let f1Unread = f1.unreadArticles.count
                 let f2Unread = f2.unreadArticles.count
-                if f1Unread != f2Unread {
-                    return f1Unread > f2Unread
-                }
+                if f1Unread != f2Unread { return f1Unread > f2Unread }
                 return f1.displayTitle.lowercased() < f2.displayTitle.lowercased()
             }
 
@@ -268,9 +264,7 @@ public final class FeedsTableViewController: UIViewController, Injectable {
             }
         }
 
-        if let feeds = feeds, (tag == nil || tag?.isEmpty == true) {
-            reloadWithFeeds(feeds)
-        }
+        if let feeds = feeds, (tag == nil || tag?.isEmpty == true) { reloadWithFeeds(feeds) }
         _ = self.feedRepository.feeds(matchingTag: tag).then {
             if case let Result.success(feeds) = $0 {
                 reloadWithFeeds(feeds)
@@ -385,25 +379,18 @@ extension FeedsTableViewController: UISearchBarDelegate {
 
 extension FeedsTableViewController: DataSubscriber {
     public func markedArticles(_ articles: [Article], asRead read: Bool) {
-        if self.markReadFuture == nil {
-            self.reload(self.searchBar.text)
-        }
+        if self.markReadFuture == nil { self.reload(self.searchBar.text) }
     }
-
     public func deletedArticle(_ article: Article) { self.reload(self.searchBar.text) }
-
     public func deletedFeed(_ feed: Feed, feedsLeft: Int) { self.reload(self.searchBar.text) }
-
     public func willUpdateFeeds() {
         self.updateBar.isHidden = false
         self.updateBar.progress = 0
         self.refreshControl.beginRefreshing()
     }
-
     public func didUpdateFeedsProgress(_ finished: Int, total: Int) {
         self.updateBar.setProgress(Float(finished) / Float(total), animated: true)
     }
-
     public func didUpdateFeeds(_ feeds: [Feed]) {
         self.updateBar.isHidden = true
         self.refreshControl.endRefreshing(force: true)

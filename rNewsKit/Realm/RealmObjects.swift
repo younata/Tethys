@@ -18,23 +18,7 @@ class RealmFeed: Object {
     dynamic var waitPeriod: Int = 0
     dynamic var remainingWait: Int = 0
     dynamic var lastUpdated = Date(timeIntervalSinceReferenceDate: 0)
-    var articles: [RealmArticle] {
-        return LinkingObjects(fromType: RealmArticle.self, property: "feed").sorted {
-            let aDate: Date
-            let bDate: Date
-            if let date = $0.updatedAt {
-                aDate = date
-            } else {
-                aDate = $0.published
-            }
-            if let date = $1.updatedAt {
-                bDate = date
-            } else {
-                bDate = $0.published
-            }
-            return aDate.timeIntervalSince1970 > bDate.timeIntervalSince1970
-        }
-    }
+    var articles = LinkingObjects(fromType: RealmArticle.self, property: "feed")
     dynamic var imageData: Data?
 
     dynamic var id: String = UUID().uuidString

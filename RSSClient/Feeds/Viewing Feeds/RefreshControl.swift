@@ -47,6 +47,7 @@ public final class RefreshControl: NSObject {
 
     public let spinner = UIRefreshControl()
 
+    // swiftlint:disable function_parameter_count
     public init(notificationCenter: NotificationCenter,
                 scrollView: UIScrollView,
                 mainQueue: OperationQueue,
@@ -73,6 +74,7 @@ public final class RefreshControl: NSObject {
         settingsRepository.addSubscriber(self)
         self.powerStateDidChange()
     }
+    // swiftlint:enable function_parameter_count
 
     deinit {
         self.notificationCenter.removeObserver(self)

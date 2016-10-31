@@ -10,6 +10,7 @@ public let kMainQueue = "kMainQueue"
 public let kBackgroundQueue = "kBackgroundQueue"
 
 public final class KitModule: NSObject, Ra.InjectorModule {
+    // swiftlint:disable function_body_length
     public func configureInjector(injector: Injector) {
         // Operation Queues
         let mainQueue = OperationQueue.main
@@ -97,4 +98,5 @@ public final class KitModule: NSObject, Ra.InjectorModule {
         injector.bind(kind: MigrationUseCase.self, toInstance: DefaultMigrationUseCase(injector: injector))
         injector.bind(kind: ImportUseCase.self, to: DefaultImportUseCase.init)
     }
+    // swiftlint:enable function_body_length
 }

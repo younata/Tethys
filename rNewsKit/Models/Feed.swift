@@ -229,7 +229,7 @@ public final class Feed: Hashable, CustomStringConvertible {
                 sortDescriptors: [sortByUpdated, sortByPublished])
         } else {
             let articles = feed.articles.map { Article(realmArticle: $0, feed: self) }
-            self.articlesArray = DataStoreBackedArray(articles)
+            self.articlesArray = DataStoreBackedArray(Array(articles))
         }
 
         self.updated = false

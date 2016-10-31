@@ -347,64 +347,17 @@ extension SettingsViewController: UITableViewDataSource {
         }
         switch section {
         case .theme:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
-            guard let theme = ThemeRepository.Theme(rawValue: indexPath.row) else {
-                return cell
-            }
-            cell.themeRepository = self.themeRepository
-            cell.textLabel?.text = theme.description
-            return cell
+            return self.themeCell(indexPath: indexPath)
         case .refresh:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
-            guard let refreshStyle = RefreshControlStyle(rawValue: indexPath.row) else { return cell }
-            cell.themeRepository = self.themeRepository
-            cell.textLabel?.text = refreshStyle.description
-            return cell
+            return self.refreshCell(indexPath: indexPath)
         case .quickActions:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
-            cell.themeRepository = self.themeRepository
-
-            cell.textLabel?.text = self.titleForQuickAction(indexPath.row)
-
-            return cell
+            return self.quickActionCell(indexPath: indexPath)
         case .accounts:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
-            cell.themeRepository = self.themeRepository
-
-            let row = Account(rawValue: indexPath.row)!
-            cell.textLabel?.text = row.description
-            cell.detailTextLabel?.text = self.accountRepository.loggedIn()
-
-            return cell
+            return self.accountCell(indexPath: indexPath)
         case .other:
-            let row = OtherSection(rawValue: indexPath.row)!
-            var tableCell: UITableViewCell
-            switch row {
-            case .showReadingTimes:
-                let cell = tableView.dequeueReusableCell(withIdentifier: "switch",
-                                                         for: indexPath) as! SwitchTableViewCell
-                cell.themeRepository = self.themeRepository
-                cell.onTapSwitch = {_ in }
-                cell.theSwitch.isOn = self.showReadingTimes
-                cell.onTapSwitch = {aSwitch in
-                    self.showReadingTimes = aSwitch.isOn
-                    self.navigationItem.rightBarButtonItem?.isEnabled = true
-                }
-                tableCell = cell
-            case .exportOPML:
-                let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
-                cell.themeRepository = self.themeRepository
-                tableCell = cell
-            }
-            tableCell.textLabel?.text = row.description
-            return tableCell
+            return self.otherCell(indexPath: indexPath)
         case .credits:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
-            cell.themeRepository = self.themeRepository
-            cell.textLabel?.text = NSLocalizedString("SettingsViewController_Credits_MainDeveloper_Name", comment: "")
-            cell.detailTextLabel?.text =
-                NSLocalizedString("SettingsViewController_Credits_MainDeveloper_Detail", comment: "")
-            return cell
+            return self.creditCell(indexPath: indexPath)
         }
     }
 
@@ -413,6 +366,77 @@ extension SettingsViewController: UITableViewDataSource {
             return nil
         }
         return section.description
+    }
+
+    private func themeCell(indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
+        guard let theme = ThemeRepository.Theme(rawValue: indexPath.row) else {
+            return cell
+        }
+        cell.themeRepository = self.themeRepository
+        cell.textLabel?.text = theme.description
+        return cell
+    }
+
+    private func refreshCell(indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
+        guard let refreshStyle = RefreshControlStyle(rawValue: indexPath.row) else { return cell }
+        cell.themeRepository = self.themeRepository
+        cell.textLabel?.text = refreshStyle.description
+        return cell
+    }
+
+    private func quickActionCell(indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
+        cell.themeRepository = self.themeRepository
+
+        cell.textLabel?.text = self.titleForQuickAction(indexPath.row)
+
+        return cell
+    }
+
+    private func accountCell(indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
+        cell.themeRepository = self.themeRepository
+
+        let row = Account(rawValue: indexPath.row)!
+        cell.textLabel?.text = row.description
+        cell.detailTextLabel?.text = self.accountRepository.loggedIn()
+
+        return cell
+    }
+
+    private func otherCell(indexPath: IndexPath) -> UITableViewCell {
+        let row = OtherSection(rawValue: indexPath.row)!
+        var tableCell: UITableViewCell
+        switch row {
+        case .showReadingTimes:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "switch",
+                                                     for: indexPath) as! SwitchTableViewCell
+            cell.themeRepository = self.themeRepository
+            cell.onTapSwitch = {_ in }
+            cell.theSwitch.isOn = self.showReadingTimes
+            cell.onTapSwitch = {aSwitch in
+                self.showReadingTimes = aSwitch.isOn
+                self.navigationItem.rightBarButtonItem?.isEnabled = true
+            }
+            tableCell = cell
+        case .exportOPML:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
+            cell.themeRepository = self.themeRepository
+            tableCell = cell
+        }
+        tableCell.textLabel?.text = row.description
+        return tableCell
+    }
+
+    private func creditCell(indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
+        cell.themeRepository = self.themeRepository
+        cell.textLabel?.text = NSLocalizedString("SettingsViewController_Credits_MainDeveloper_Name", comment: "")
+        cell.detailTextLabel?.text =
+            NSLocalizedString("SettingsViewController_Credits_MainDeveloper_Detail", comment: "")
+        return cell
     }
 }
 
@@ -483,66 +507,36 @@ extension SettingsViewController: UITableViewDelegate {
         guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection) else { return }
         switch section {
         case .theme:
-            guard let theme = ThemeRepository.Theme(rawValue: indexPath.row) else { return }
-            self.themeRepository.theme = theme
-            self.navigationItem.rightBarButtonItem?.isEnabled = true
-            self.reloadTable()
+            self.didTapThemeCell(indexPath: indexPath)
         case .refresh:
-            guard let refreshControlStyle = RefreshControlStyle(rawValue: indexPath.row) else { return }
-            self.refreshControlStyle = refreshControlStyle
-            self.navigationItem.rightBarButtonItem?.isEnabled = true
-            self.reloadTable()
+            self.didTapRefreshCell(indexPath: indexPath)
         case .quickActions:
-            tableView.deselectRow(at: indexPath, animated: false)
-            self.didTapQuickActionCell(indexPath)
+            self.didTapQuickActionCell(tableView: tableView, indexPath: indexPath)
         case .accounts:
-            tableView.deselectRow(at: indexPath, animated: false)
-            let loginViewController = self.loginViewController()
-            loginViewController.accountType = Account(rawValue: indexPath.row)
-            self.navigationController?.pushViewController(loginViewController, animated: true)
+            self.didTapAccountCell(tableView: tableView, indexPath: indexPath)
         case .other:
-            tableView.deselectRow(at: indexPath, animated: false)
-
-            guard let otherSection = OtherSection(rawValue: indexPath.row) else { return }
-
-            switch otherSection {
-            case .exportOPML:
-                _ = self.opmlService.writeOPML().then {
-                    switch $0 {
-                    case let .success(url):
-                        self.mainQueue.addOperation {
-                            let shareSheet = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-                            self.present(shareSheet, animated: true, completion: nil)
-                        }
-                    case .failure(_):
-                        self.mainQueue.addOperation {
-                            let alertTitle = NSLocalizedString("SettingsViewController_Other_ExportOPML_Error_Title",
-                                                               comment: "")
-                            let alertMsg = NSLocalizedString("SettingsViewController_Other_ExportOPML_Error_Message",
-                                                                 comment: "")
-                            let alert = UIAlertController(title: alertTitle,
-                                                          message: alertMsg,
-                                                          preferredStyle: .alert)
-                            let dismissTitle = NSLocalizedString("Generic_Ok", comment: "")
-                            alert.addAction(UIAlertAction(title: dismissTitle, style: .default) { _ in
-                                self.dismiss(animated: true, completion: nil)
-                            })
-                            self.present(alert, animated: true, completion: nil)
-                        }
-                    }
-                }
-            default:
-                break
-            }
+            self.didTapOtherCell(tableView: tableView, indexPath: indexPath)
         case .credits:
-            tableView.deselectRow(at: indexPath, animated: false)
-            guard let url = URL(string: "https://twitter.com/younata") else { return }
-            let viewController = SFSafariViewController(url: url)
-            self.present(viewController, animated: true, completion: nil)
+            self.didTapCreditCell(tableView: tableView, indexPath: indexPath)
         }
     }
 
-    fileprivate func didTapQuickActionCell(_ indexPath: IndexPath) {
+    private func didTapThemeCell(indexPath: IndexPath) {
+        guard let theme = ThemeRepository.Theme(rawValue: indexPath.row) else { return }
+        self.themeRepository.theme = theme
+        self.navigationItem.rightBarButtonItem?.isEnabled = true
+        self.reloadTable()
+    }
+
+    private func didTapRefreshCell(indexPath: IndexPath) {
+        guard let refreshControlStyle = RefreshControlStyle(rawValue: indexPath.row) else { return }
+        self.refreshControlStyle = refreshControlStyle
+        self.navigationItem.rightBarButtonItem?.isEnabled = true
+        self.reloadTable()
+    }
+
+    private func didTapQuickActionCell(tableView: UITableView, indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
         let feedsListController = FeedsListController()
         feedsListController.themeRepository = self.themeRepository
         feedsListController.navigationItem.title = self.titleForQuickAction(indexPath.row)
@@ -578,5 +572,54 @@ extension SettingsViewController: UITableViewDelegate {
             _ = self.navigationController?.popViewController(animated: true)
         }
         self.navigationController?.pushViewController(feedsListController, animated: true)
+    }
+
+    private func didTapAccountCell(tableView: UITableView, indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
+        let loginViewController = self.loginViewController()
+        loginViewController.accountType = Account(rawValue: indexPath.row)
+        self.navigationController?.pushViewController(loginViewController, animated: true)
+    }
+
+    private func didTapOtherCell(tableView: UITableView, indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
+        guard let otherSection = OtherSection(rawValue: indexPath.row) else { return }
+
+        switch otherSection {
+        case .exportOPML:
+            _ = self.opmlService.writeOPML().then {
+                switch $0 {
+                case let .success(url):
+                    self.mainQueue.addOperation {
+                        let shareSheet = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+                        self.present(shareSheet, animated: true, completion: nil)
+                    }
+                case .failure(_):
+                    self.mainQueue.addOperation {
+                        let alertTitle = NSLocalizedString("SettingsViewController_Other_ExportOPML_Error_Title",
+                                                           comment: "")
+                        let alertMsg = NSLocalizedString("SettingsViewController_Other_ExportOPML_Error_Message",
+                                                         comment: "")
+                        let alert = UIAlertController(title: alertTitle,
+                                                      message: alertMsg,
+                                                      preferredStyle: .alert)
+                        let dismissTitle = NSLocalizedString("Generic_Ok", comment: "")
+                        alert.addAction(UIAlertAction(title: dismissTitle, style: .default) { _ in
+                            self.dismiss(animated: true, completion: nil)
+                        })
+                        self.present(alert, animated: true, completion: nil)
+                    }
+                }
+            }
+        default:
+            break
+        }
+    }
+
+    private func didTapCreditCell(tableView: UITableView, indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
+        guard let url = URL(string: "https://twitter.com/younata") else { return }
+        let viewController = SFSafariViewController(url: url)
+        self.present(viewController, animated: true, completion: nil)
     }
 }

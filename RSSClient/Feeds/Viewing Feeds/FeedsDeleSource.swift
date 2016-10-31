@@ -25,7 +25,7 @@ public final class FeedsDeleSource: NSObject {
 
     public var scrollViewDelegate: UIScrollViewDelegate?
 
-    // swiftlint disable:function_parameter_count
+    // swiftlint:disable function_parameter_count
     public init(tableView: UITableView,
                 feedsSource: FeedsSource,
                 themeRepository: ThemeRepository,
@@ -46,7 +46,7 @@ public final class FeedsDeleSource: NSObject {
         // Prevents a green triangle which'll (dis)appear depending on
         // whether new feed loaded into it has unread articles or not.
     }
-    // swiftlint enable:function_parameter_count
+    // swiftlint:enable function_parameter_count
 
     fileprivate func feedAtIndexPath(_ indexPath: IndexPath) -> Feed {
         return self.feedsSource.feeds[indexPath.row]
@@ -132,7 +132,7 @@ extension FeedsDeleSource: UITableViewDelegate {
         self.showArticleList(al, animated: true)
     }
 
-    // swiftlint disable:line_length
+    // swiftlint:disable line_length
     @objc(tableView:canEditRowAtIndexPath:) public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
@@ -140,7 +140,7 @@ extension FeedsDeleSource: UITableViewDelegate {
     @objc(tableView:commitEditingStyle:forRowAtIndexPath:) public func tableView(_ tableView: UITableView,
                                                                                  commit editingStyle: UITableViewCellEditingStyle,
                                                                                  forRowAt indexPath: IndexPath) {}
-    // swiftlint enable:line_length
+    // swiftlint:enable line_length
 
     public func tableView(_ tableView: UITableView,
                           editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
@@ -190,7 +190,7 @@ extension FeedsDeleSource: UIScrollViewDelegate {
                                               withVelocity: velocity,
                                               targetContentOffset: targetContentOffset)
     }
-    
+
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         self.scrollViewDelegate?.scrollViewDidScroll?(scrollView)
     }

@@ -215,7 +215,7 @@ public final class DataStoreBackedArray<T: AnyObject>: Collection, CustomDebugSt
     }
 
     fileprivate func fetchUpToPosition(_ position: Int) {
-        func wtfswift3min<T: Comparable>(_ x: T, _ y: T) -> T { // FIXME: wtf swift 3 min.
+        func wtfswift3min<T: Comparable>(_ x: T, _ y: T) -> T {
             if x < y { return x }
             return y
         }

@@ -29,35 +29,9 @@ platform :ios do
     carthage(platform: 'iOS')
   end
 
-  desc 'Bumps version'
-  lane :bump_version do
-    increment_build_number(xcodeproj: 'RSSClient.xcodeproj', build_number: `git rev-parse --short HEAD`)
-    commit_version_bump(xcodeproj: 'RSSClient.xcodeproj', force: true)
-  end
-
-  desc 'Pushes'
-  lane :push do
-    increment_build_number(xcodeproj: 'RSSClient.xcodeproj')
-    commit_version_bump(xcodeproj: 'RSSClient.xcodeproj', force: true)
-    push_to_git_remote
-  end
-
   desc 'Runs all the tests'
   lane :test do
-    sh("bundle exec rake test:ios:app")
-    sh("bundle exec rake test:ios:kit")
-  end
-
-  lane :test_app do
-    scan(scheme: 'RSSClientTests')
-  end
-
-  lane :test_kit do
-    scan(scheme: 'rNewsKitTests')
-  end
-
-  lane :test_acceptance do
-    scan(scheme: 'rNewsAcceptanceTests')
+    scan(project: 'RSSClient.xcodeproj', scheme: 'RSSClient')
   end
 
   desc 'Deploy a new version to TestFlight'

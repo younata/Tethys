@@ -1,45 +1,38 @@
 import Cocoa
 import rNewsKit
+import Ra
 
-final class ArticlesList: NSObject, NSTableViewDataSource, NSTableViewDelegate {
-    var feeds: [Feed] = [] {
-        didSet {
-            reload()
-        }
-    }
-    var articles: [Article] = []
+public final class ArticlesList: NSObject {
+    fileprivate var articles: DataStoreBackedArray<Article>?
+    fileprivate var onSelection: (Article) -> Void = {(_) in }
 
-    weak var tableView: NSTableView? = nil {
-        didSet {
-            tableView?.delegate = self
-            tableView?.dataSource = self
-            tableView?.headerView = nil
-        }
+    fileprivate let tableView: NSTableView
+
+    func configure(articles: DataStoreBackedArray<Article>, onSelection: @escaping (Article) -> Void) {
+        self.articles = articles
+        self.onSelection = onSelection
+        self.tableView.reloadData()
     }
 
-    var onSelection: (Article) -> Void = {(_) in }
+    public init(tableView: NSTableView) {
+        self.tableView = tableView
 
-    func reload() {
-        let feeds = self.feeds
-        DispatchQueue.main.async {
-            let articles = feeds.reduce([] as [Article]) { return $0 + $1.articlesArray }
-            let newArticles = NSSet(array: articles)
-            let oldArticles = NSSet(array: self.articles)
-            self.articles = (articles as [Article])
-            if newArticles != oldArticles {
-                self.articles.sort {a, b in
-                    let da = a.updatedAt ?? a.published
-                    let db = b.updatedAt ?? b.published
-                    return da.timeIntervalSince1970 > db.timeIntervalSince1970
-                }
-            }
-            if newArticles != oldArticles {
-                self.tableView?.reloadData()
-            }
-        }
+        super.init()
+
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
+        self.tableView.headerView = nil
     }
+}
 
-    func heightForArticle(_ article: Article, width: CGFloat) -> CGFloat {
+extension ArticlesList: NSTableViewDataSource {
+    public func numberOfRows(in tableView: NSTableView) -> Int {
+        return self.articles?.count ?? 0
+    }
+}
+
+extension ArticlesList: NSTableViewDelegate {
+    private func heightForArticle(_ article: Article, width: CGFloat) -> CGFloat {
         let height: CGFloat = 16.0
         let titleAttributes = [NSFontAttributeName: NSFont.systemFont(ofSize: 14)]
         let authorAttributes = [NSFontAttributeName: NSFont.systemFont(ofSize: 12)]
@@ -59,33 +52,29 @@ final class ArticlesList: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     }
 
     func rowViewForRow(_ row: Int) -> ArticleListView {
-        let article = articles[row]
-        let width = tableView!.bounds.width
+        let article = self.articles![row]
+        let width = self.tableView.bounds.width
         let articleView = ArticleListView(frame: NSRect(x: 0, y: 0, width: width,
-                                                        height: heightForArticle(article, width: width - 16)))
+                                                        height: self.heightForArticle(article, width: width - 16)))
         articleView.article = article
         return articleView
     }
 
     // MARK: NSTableViewDelegate
-    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+    public func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         return NSView(forAutoLayout: ())
     }
 
-    func tableView(_ tableView: NSTableView, rowViewForRow row: Int) -> NSTableRowView? {
+    public func tableView(_ tableView: NSTableView, rowViewForRow row: Int) -> NSTableRowView? {
         return rowViewForRow(row)
     }
 
-    func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
-        return heightForArticle(articles[row], width: tableView.bounds.width - 16)
+    public func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
+        return heightForArticle(articles![row], width: tableView.bounds.width - 16)
     }
 
-    func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
-        onSelection(articles[row])
+    public func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
+        onSelection(articles![row])
         return false
-    }
-
-    func numberOfRows(in tableView: NSTableView) -> Int {
-        return articles.count
     }
 }

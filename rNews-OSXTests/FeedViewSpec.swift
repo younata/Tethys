@@ -153,10 +153,10 @@ class FeedViewSpec: QuickSpec {
         }
 
         context("when configured with a feed with unread articles") {
-            let article1 = Article(title: "a", link: nil, summary: "", authors: [],
+            let article1 = Article(title: "a", link: URL(string: "https://example.com/1")!, summary: "", authors: [],
                 published: Date(), updatedAt: nil, identifier: "", content: "",
                 read: true, estimatedReadingTime: 0, feed: nil, flags: [])
-            let article2 = Article(title: "b", link: nil, summary: "", authors: [],
+            let article2 = Article(title: "b", link: URL(string: "https://example.com/2")!, summary: "", authors: [],
                 published: Date(), updatedAt: nil, identifier: "", content: "",
                 read: false, estimatedReadingTime: 0, feed: nil, flags: [])
             let feed = Feed(title: "Hello", url: URL(string: "https://example.com")!, summary: "World", tags: [],

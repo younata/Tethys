@@ -11,6 +11,7 @@ public final class FeedsViewController: NSViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.headerView = nil
+        tableView.gridStyleMask = .solidHorizontalGridLineMask
         tableView.addTableColumn(NSTableColumn())
         return tableView
     }()
@@ -98,8 +99,8 @@ public final class FeedsViewController: NSViewController {
     }
 
     internal func reload() {
-        self.databaseUseCase?.feeds().then {res in
-            res.map { feeds in
+        _ = self.databaseUseCase?.feeds().then {res in
+            _ = res.map { feeds in
                 self.feeds = feeds
                 self.tableView.reloadData()
             }

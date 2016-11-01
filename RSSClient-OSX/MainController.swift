@@ -91,5 +91,6 @@ public final class MainController: NSViewController {
         self.splitViewController.addChildViewController(articlesList)
 
         self.articlesList = articlesList
+        self.splitViewController.splitView.adjustSubviews()
     }
 }

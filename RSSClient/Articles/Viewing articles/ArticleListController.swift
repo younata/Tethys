@@ -163,7 +163,7 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
         guard let section = ArticleListSection(rawValue: section) else { return 0 }
         switch section {
         case .overview:
-            if let _ = self.feed {
+            if let feed = self.feed, feed.image != nil || !feed.displaySummary.isEmpty {
                 return 1
             }
             return 0
@@ -249,7 +249,7 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
     fileprivate func resetArticles() {
         guard let articles = self.feed?.articlesArray else { return }
         self.articles = articles
-        self.tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
+        self.tableView.reloadSections(IndexSet(integersIn: 0...1), with: .automatic)
     }
 
     fileprivate func resetBarItems() {

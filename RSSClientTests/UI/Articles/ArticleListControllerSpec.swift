@@ -93,7 +93,7 @@ class ArticleListControllerSpec: QuickSpec {
 
             publishedOffset = 0
 
-            feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "hello world", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
             let d = fakeArticle(feed: feed)
             let c = fakeArticle(feed: feed, read: true)
             let b = fakeArticle(feed: feed, isUpdated: true)
@@ -398,6 +398,18 @@ class ArticleListControllerSpec: QuickSpec {
                             subject.tableView(subject.tableView, didSelectRowAt: IndexPath(row: 0, section: 0))
                             expect(navigationController.topViewController).to(beIdenticalTo(subject))
                         }
+                    }
+                }
+
+                context("when a feed without a description or image is backing the list") {
+                    beforeEach {
+                        subject.feed = Feed(title: "Title", url: URL(string: "https://example.com")!, summary: "",
+                                            tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                        subject.tableView.reloadData()
+                    }
+
+                    it("has 0 cells in the first section of the tableView") {
+                        expect(subject.tableView.numberOfRows(inSection: 0)) == 0
                     }
                 }
 

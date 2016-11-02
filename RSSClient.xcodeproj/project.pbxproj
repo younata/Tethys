@@ -108,6 +108,8 @@
 		8937F6C01B79D0800044A442 /* KitModuleSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8937F6BF1B79D0800044A442 /* KitModuleSpec.swift */; };
 		8937F6C11B79D0800044A442 /* KitModuleSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8937F6BF1B79D0800044A442 /* KitModuleSpec.swift */; };
 		893F93E41B237EBC00B52194 /* UnreadCounterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893F93E31B237EBC00B52194 /* UnreadCounterSpec.swift */; };
+		8941AB7B1DC9207200A2CE5F /* HTMLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8941AB7A1DC9207200A2CE5F /* HTMLViewController.swift */; };
+		8941AB7D1DC9385A00A2CE5F /* HTMLViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8941AB7C1DC9385A00A2CE5F /* HTMLViewControllerSpec.swift */; };
 		894304241B45089A000078DC /* rNewsKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 894304231B45089A000078DC /* rNewsKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8943042B1B45089A000078DC /* rNewsKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 894304211B45089A000078DC /* rNewsKit.framework */; };
 		894304361B45089B000078DC /* rNewsKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 894304211B45089A000078DC /* rNewsKit.framework */; };
@@ -649,6 +651,8 @@
 		8937F6BD1B7996F50044A442 /* prism.js.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = prism.js.html; sourceTree = "<group>"; };
 		8937F6BF1B79D0800044A442 /* KitModuleSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KitModuleSpec.swift; sourceTree = "<group>"; };
 		893F93E31B237EBC00B52194 /* UnreadCounterSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounterSpec.swift; sourceTree = "<group>"; };
+		8941AB7A1DC9207200A2CE5F /* HTMLViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTMLViewController.swift; path = Documentation/HTMLViewController.swift; sourceTree = "<group>"; };
+		8941AB7C1DC9385A00A2CE5F /* HTMLViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLViewControllerSpec.swift; sourceTree = "<group>"; };
 		894304211B45089A000078DC /* rNewsKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = rNewsKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		894304231B45089A000078DC /* rNewsKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rNewsKit.h; sourceTree = "<group>"; };
 		894304251B45089A000078DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1415,6 +1419,7 @@
 				89C8309B19D73334009924DA /* RSSClient-Bridging-Header.h */,
 				89C830CC19DC67B9009924DA /* UnreadCounter.swift */,
 				898046D11A1BC8FD00EB29F0 /* rNews.entitlements */,
+				8941AB7A1DC9207200A2CE5F /* HTMLViewController.swift */,
 			);
 			path = RSSClient;
 			sourceTree = "<group>";
@@ -1451,6 +1456,7 @@
 				8953B1571B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift */,
 				893F93E31B237EBC00B52194 /* UnreadCounterSpec.swift */,
 				8997C7F61B25074900972930 /* ValidatorViewSpec.swift */,
+				8941AB7C1DC9385A00A2CE5F /* HTMLViewControllerSpec.swift */,
 			);
 			path = RSSClientTests;
 			sourceTree = "<group>";
@@ -2441,6 +2447,7 @@
 				89CBDC171C7D8501006B70F5 /* BootstrapWorkFlow.swift in Sources */,
 				89DA7D2E1A6613100050685B /* ValidatorView.swift in Sources */,
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
+				8941AB7B1DC9207200A2CE5F /* HTMLViewController.swift in Sources */,
 				89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */,
 				8918D4A41B8115F800DCDE0E /* ExplanationView.swift in Sources */,
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
@@ -2532,6 +2539,7 @@
 				8997C8531B2566A600972930 /* ArticleCellSpec.swift in Sources */,
 				8935F5E01B462B7A000FFD5D /* FakeURLSession.swift in Sources */,
 				89831FEC1DB5C5FC00E32412 /* ArticleListHeaderCellSpec.swift in Sources */,
+				8941AB7D1DC9385A00A2CE5F /* HTMLViewControllerSpec.swift in Sources */,
 				89735AC21C0771590032E09C /* FeedsListControllerSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

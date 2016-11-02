@@ -1,5 +1,4 @@
 import UIKit
-import AVFoundation
 import PureLayout
 import TOBrowserActivityKit
 import Ra
@@ -12,14 +11,8 @@ public final class ArticleViewController: UIViewController, Injectable {
     public func setArticle(_ article: Article?, read: Bool = true, show: Bool = true) {
         self.article = article
 
-        if let _ = article {
-            self.backgroundSpinnerView.startAnimating()
-        } else {
-            self.backgroundSpinnerView.stopAnimating()
-        }
-
         guard let article = article else { return }
-        if show { self.showArticle(article, onWebView: self.content) }
+        if show { self.showArticle(article, read: read) }
 
         self.userActivity = self.articleUseCase.userActivityForArticle(article)
 
@@ -28,8 +21,6 @@ public final class ArticleViewController: UIViewController, Injectable {
         ]
         self.title = article.title
     }
-
-    public var content = WKWebView(forAutoLayout: ())
 
     public private(set) lazy var shareButton: UIBarButtonItem = {
         return UIBarButtonItem(barButtonSystemItem: .action, target: self,
@@ -44,79 +35,56 @@ public final class ArticleViewController: UIViewController, Injectable {
 
     public let themeRepository: ThemeRepository
     fileprivate let articleUseCase: ArticleUseCase
+    fileprivate let htmlViewController: HTMLViewController
+    fileprivate let htmlViewControllerFactory: (Void) -> HTMLViewController
     fileprivate let articleListController: (Void) -> ArticleListController
 
     public init(themeRepository: ThemeRepository,
                 articleUseCase: ArticleUseCase,
+                htmlViewController: @escaping (Void) -> HTMLViewController,
                 articleListController: @escaping (Void) -> ArticleListController) {
         self.themeRepository = themeRepository
         self.articleUseCase = articleUseCase
+        self.htmlViewController = htmlViewController()
+        self.htmlViewControllerFactory = htmlViewController
         self.articleListController = articleListController
 
         super.init(nibName: nil, bundle: nil)
+
+        self.htmlViewController.delegate = self
+        self.addChildViewController(self.htmlViewController)
     }
 
     public required convenience init(injector: Injector) {
         self.init(
             themeRepository: injector.create(kind: ThemeRepository.self)!,
             articleUseCase: injector.create(kind: ArticleUseCase.self)!,
+            htmlViewController: { injector.create(kind: HTMLViewController.self)! },
             articleListController: { injector.create(kind: ArticleListController.self)! }
         )
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
-    fileprivate func showArticle(_ article: Article, onWebView webView: WKWebView) {
-        webView.loadHTMLString(self.articleUseCase.readArticle(article), baseURL: article.link)
-
-        self.view.layoutIfNeeded()
-
-        webView.scrollView.scrollIndicatorInsets.bottom = 0
+    fileprivate func showArticle(_ article: Article, read: Bool = true) {
+        self.htmlViewController.configure(html: self.articleUseCase.readArticle(article))
     }
 
     private func spacer() -> UIBarButtonItem {
         return UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
     }
 
-    public private(set) lazy var backgroundSpinnerView: UIActivityIndicatorView = {
-        let spinner = UIActivityIndicatorView(activityIndicatorStyle: self.themeRepository.spinnerStyle)
-        spinner.translatesAutoresizingMaskIntoConstraints = false
-        return spinner
-    }()
-
-    public private(set) lazy var backgroundView: UIView = {
-        let view = UIView(forAutoLayout: ())
-
-        view.addSubview(self.backgroundSpinnerView)
-        self.backgroundSpinnerView.autoCenterInSuperview()
-
-        return view
-    }()
-
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.view.backgroundColor = self.themeRepository.backgroundColor
         self.navigationController?.setToolbarHidden(false, animated: false)
 
-        self.view.addSubview(self.content)
-        self.view.addSubview(self.backgroundView)
-        if let _ = self.article {
-            self.backgroundSpinnerView.startAnimating()
-        } else {
-            self.backgroundSpinnerView.stopAnimating()
-        }
-
-        self.content.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .bottom)
-        self.view.addConstraint(NSLayoutConstraint(item: self.content, attribute: .bottom, relatedBy: .equal,
-            toItem: self.bottomLayoutGuide, attribute: .top, multiplier: 1, constant: 0))
+        self.view.addSubview(self.htmlViewController.view)
+        self.htmlViewController.view.autoPinEdgesToSuperviewEdges()
 
         self.updateLeftBarButtonItem(self.traitCollection)
 
-        self.backgroundView.autoPinEdgesToSuperviewEdges()
-
         self.themeRepository.addSubscriber(self)
-        self.configureContent()
     }
 
     public override func viewDidAppear(_ animated: Bool) {
@@ -125,8 +93,6 @@ public final class ArticleViewController: UIViewController, Injectable {
         self.navigationController?.hidesBarsOnSwipe = true
         self.navigationController?.hidesBarsOnTap = true
         self.splitViewController?.setNeedsStatusBarAppearanceUpdate()
-        self.themeRepositoryDidChangeTheme(themeRepository)
-        if self.article != nil { self.backgroundView.isHidden = false }
     }
 
     public override func viewWillDisappear(_ animated: Bool) {
@@ -190,28 +156,6 @@ public final class ArticleViewController: UIViewController, Injectable {
         self.articleUseCase.toggleArticleRead(article)
     }
 
-    private func configureContent() {
-        self.content.navigationDelegate = self
-        self.content.uiDelegate = self
-        self.content.uiDelegate = self
-        self.content.isOpaque = false
-        self.setThemeForWebView(self.content)
-        self.content.allowsLinkPreview = true
-
-        var scriptContent = "var meta = document.createElement('meta');"
-        scriptContent += "meta.name='viewport';"
-        scriptContent += "meta.content='width=device-width';"
-        scriptContent += "document.getElementsByTagName('head')[0].appendChild(meta);"
-
-        self.content.evaluateJavaScript(scriptContent, completionHandler: nil)
-    }
-
-    fileprivate func setThemeForWebView(_ webView: WKWebView) {
-        webView.backgroundColor = themeRepository.backgroundColor
-        webView.scrollView.backgroundColor = themeRepository.backgroundColor
-        webView.scrollView.indicatorStyle = themeRepository.scrollIndicatorStyle
-    }
-
     @objc fileprivate func share() {
         guard let article = self.article else { return }
         let safari = TOActivitySafari()
@@ -255,38 +199,26 @@ public final class ArticleViewController: UIViewController, Injectable {
     }
 }
 
-extension ArticleViewController: WKNavigationDelegate, WKUIDelegate {
-    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
-                        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        let request = navigationAction.request
-        let navigationType = navigationAction.navigationType
-        guard let url = request.url, navigationType == .linkActivated else {
-            decisionHandler(.allow)
-            return
-        }
+extension ArticleViewController: HTMLViewControllerDelegate {
+    public func openURL(url: URL) -> Bool {
         let predicate = NSPredicate(format: "link = %@", url.absoluteString)
         if let article = self.article?.relatedArticles.filterWithPredicate(predicate).first {
             let articleController = ArticleViewController(themeRepository: self.themeRepository,
                                                           articleUseCase: self.articleUseCase,
+                                                          htmlViewController: self.htmlViewControllerFactory,
                                                           articleListController: self.articleListController)
             articleController.setArticle(article, read: true, show: true)
             self.navigationController?.pushViewController(articleController, animated: true)
         } else { self.openURL(url) }
-        decisionHandler(.cancel)
+        return true
     }
 
-    public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        self.backgroundView.isHidden = self.article != nil
-    }
-
-    public func webView(_ webView: WKWebView,
-                        previewingViewControllerForElement elementInfo: WKPreviewElementInfo,
-                        defaultActions previewActions: [WKPreviewActionItem]) -> UIViewController? {
-        guard let url = elementInfo.linkURL else { return nil }
+    public func peekURL(url: URL) -> UIViewController? {
         let predicate = NSPredicate(format: "link = %@", url.absoluteString)
         if let article = self.article?.relatedArticles.filterWithPredicate(predicate).first {
             let articleController = ArticleViewController(themeRepository: self.themeRepository,
                                                           articleUseCase: self.articleUseCase,
+                                                          htmlViewController: self.htmlViewControllerFactory,
                                                           articleListController: self.articleListController)
             articleController.setArticle(article, read: true, show: true)
             return articleController
@@ -295,16 +227,14 @@ extension ArticleViewController: WKNavigationDelegate, WKUIDelegate {
         }
     }
 
-    public func webView(_ webView: WKWebView,
-                        commitPreviewingViewController previewingViewController: UIViewController) {
-        if let _ = previewingViewController as? SFSafariViewController {
-            self.present(previewingViewController, animated: true, completion: nil)
+    public func commitViewController(viewController: UIViewController) {
+        if let _ = viewController as? SFSafariViewController {
+            self.present(viewController, animated: true, completion: nil)
         } else {
-            self.navigationController?.pushViewController(previewingViewController, animated: true)
+            self.navigationController?.pushViewController(viewController, animated: true)
         }
     }
 }
-
 extension ArticleViewController: NSUserActivityDelegate {
     public func userActivityWillSave(_ userActivity: NSUserActivity) {
         guard let article = self.article else { return }
@@ -315,16 +245,12 @@ extension ArticleViewController: NSUserActivityDelegate {
 extension ArticleViewController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         if let article = self.article {
-            self.showArticle(article, onWebView: self.content)
+            self.showArticle(article)
         }
-
-        self.setThemeForWebView(self.content)
 
         self.view.backgroundColor = themeRepository.backgroundColor
         self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
         self.navigationController?.toolbar.barStyle = themeRepository.barStyle
-        self.backgroundView.backgroundColor = themeRepository.backgroundColor
-        self.backgroundSpinnerView.activityIndicatorViewStyle = themeRepository.spinnerStyle
         self.navigationController?.navigationBar.titleTextAttributes = [
             NSForegroundColorAttributeName: themeRepository.textColor
         ]

@@ -12,6 +12,7 @@ class ArticleViewControllerSpec: QuickSpec {
         var injector: Injector!
         var navigationController: UINavigationController!
         var themeRepository: ThemeRepository!
+        var htmlViewController: HTMLViewController!
         var articleUseCase: FakeArticleUseCase!
 
         beforeEach {
@@ -19,6 +20,9 @@ class ArticleViewControllerSpec: QuickSpec {
 
             themeRepository = ThemeRepository(userDefaults: nil)
             injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
+
+            htmlViewController = HTMLViewController(themeRepository: themeRepository)
+            injector.bind(kind: HTMLViewController.self, toInstance: htmlViewController)
 
             articleUseCase = FakeArticleUseCase()
             injector.bind(kind: ArticleUseCase.self, toInstance: articleUseCase)
@@ -33,18 +37,6 @@ class ArticleViewControllerSpec: QuickSpec {
         describe("when the view appears") {
             beforeEach {
                 subject.viewDidAppear(false)
-            }
-
-            it("shows the background view on viewWillAppear and an article is not set") {
-                expect(subject.backgroundView.isHidden) == false
-
-                subject.backgroundView.isHidden = true
-
-                articleUseCase.readArticleReturns("hello")
-                articleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
-                subject.setArticle(Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: []))
-
-                expect(subject.backgroundView.isHidden) == true
             }
 
             it("hides the nav and toolbars on swipe/tap") {
@@ -68,25 +60,8 @@ class ArticleViewControllerSpec: QuickSpec {
                 expect(subject.navigationController?.navigationBar.barStyle) == themeRepository.barStyle
                 expect(subject.navigationController?.navigationBar.titleTextAttributes as? [String: UIColor]) == [NSForegroundColorAttributeName: themeRepository.textColor]
             }
-
-            it("should update the content's background color") {
-                expect(subject.content.backgroundColor) == themeRepository.backgroundColor
-            }
-
-            it("should update the scroll indicator style") {
-                expect(subject.content.scrollView.indicatorStyle) == themeRepository.scrollIndicatorStyle
-            }
-
             it("should update the toolbar") {
                 expect(subject.navigationController?.toolbar.barStyle) == themeRepository.barStyle
-            }
-
-            it("updates the background view's backgroundColor") {
-                expect(subject.backgroundView.backgroundColor) == themeRepository.backgroundColor
-            }
-
-            it("updates the background spinner's style") {
-                expect(subject.backgroundSpinnerView.activityIndicatorViewStyle) == themeRepository.spinnerStyle
             }
         }
 
@@ -168,13 +143,9 @@ class ArticleViewControllerSpec: QuickSpec {
                 subject.restoreUserActivityState(userActivity)
             }
 
-            it("should show the content") {
-                expect(subject.content.lastHTMLStringLoaded).to(contain(article.content))
+            it("shows the content") {
+                expect(htmlViewController.htmlString).to(contain(article.content))
             }
-        }
-
-        it("does not show the loading spinner") {
-            expect(subject.backgroundSpinnerView.isHidden) == true
         }
 
         describe("setting the article") {
@@ -194,10 +165,6 @@ class ArticleViewControllerSpec: QuickSpec {
                 subject.setArticle(article)
             }
 
-            it("shows the background spinner view") {
-                expect(subject.backgroundSpinnerView.isHidden) == false
-            }
-
             it("asks the use case for the html to show") {
                 expect(articleUseCase.readArticleCallCount) == 1
                 expect(articleUseCase.readArticleArgsForCall(0)) == article
@@ -207,23 +174,13 @@ class ArticleViewControllerSpec: QuickSpec {
                 expect(subject.userActivity) === userActivity
             }
 
-            it("should enable link preview with 3d touch") {
-                expect(subject.content.allowsLinkPreview) == true
-            }
-
             it("should include the share button in the toolbar, and the open in safari button") {
                 expect(subject.toolbarItems?.contains(subject.shareButton)) == true
                 expect(subject.toolbarItems?.contains(subject.openInSafariButton)) == true
             }
 
-            describe("when the article loads") {
-                beforeEach {
-                    subject.content.navigationDelegate?.webView?(subject.content, didFinish: nil)
-                }
-
-                it("hides the backgroundView") {
-                    expect(subject.backgroundView.isHidden) == true
-                }
+            it("shows the content") {
+                expect(htmlViewController.htmlString).to(contain("example"))
             }
 
             describe("tapping the share button") {
@@ -295,17 +252,9 @@ class ArticleViewControllerSpec: QuickSpec {
             }
 
             context("tapping a link") {
-                var shouldInteract: Bool?
-                beforeEach {
-                    shouldInteract = false
-                }
-
                 it("navigates to that article if the link goes to a related article") {
-                    let navAction = FakeWKNavigationAction(url: article2.link, navigationType: .linkActivated)
-                    subject.content.navigationDelegate?.webView?(subject.content, decidePolicyFor: navAction) { (actionPolicy: WKNavigationActionPolicy) -> Void in
-                        shouldInteract = (actionPolicy == WKNavigationActionPolicy.allow)
-                    }
-                    expect(shouldInteract) == false
+                    let shouldOpen = htmlViewController.delegate?.openURL(url: article2.link)
+                    expect(shouldOpen) == true
 //                    expect(navigationController.topViewController) != subject
 //                    expect(navigationController.topViewController).to(beAnInstanceOf(ArticleViewController.self))
 //                    guard let articleViewController = navigationController.topViewController as? ArticleViewController else { return }
@@ -315,11 +264,9 @@ class ArticleViewControllerSpec: QuickSpec {
 
                 it("opens in an SFSafariViewController") {
                     let url = URL(string: "https://example.com")!
-                    let navAction = FakeWKNavigationAction(url: URL(string: "https://example.com")!, navigationType: .linkActivated)
-                    subject.content.navigationDelegate?.webView?(subject.content, decidePolicyFor: navAction) { (actionPolicy: WKNavigationActionPolicy) -> Void in
-                        shouldInteract = (actionPolicy == WKNavigationActionPolicy.allow)
-                    }
-                    expect(shouldInteract) == false
+                    let shouldOpen = htmlViewController.delegate?.openURL(url: url)
+                    expect(shouldOpen) == true
+                    expect(shouldOpen) == true
                     expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
                 }
             }
@@ -327,12 +274,9 @@ class ArticleViewControllerSpec: QuickSpec {
             context("3d touching a link") {
                 describe("3d touching a standard link") {
                     var viewController: UIViewController?
-                    let element = FakeWKPreviewItem(link: URL(string: "https://example.com/foo"))
 
                     beforeEach {
-                        viewController = subject.content.uiDelegate?.webView?(subject.content,
-                                                                              previewingViewControllerForElement: element,
-                                                                              defaultActions: [])
+                        viewController = htmlViewController.delegate?.peekURL(url: URL(string: "https://example.com/foo")!)
                     }
 
                     it("presents another FindFeedViewController configured with that link") {
@@ -340,8 +284,7 @@ class ArticleViewControllerSpec: QuickSpec {
                     }
 
                     it("replaces the navigation controller's view controller stack with just that view controller") {
-                        subject.content.uiDelegate?.webView?(subject.content,
-                                                             commitPreviewingViewController: viewController!)
+                        htmlViewController.delegate?.commitViewController(viewController: viewController!)
 
                         expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
                     }

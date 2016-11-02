@@ -46,11 +46,11 @@ namespace "test" do
   task :osx => ["osx:app", "osx:kit"]
 end
 
-namespace "libraries" do
+namespace "documentation" do
   desc "Generate library information"
-  task :generate do |t|
+  task :libraries do |t|
     cartfile = IO.read('Cartfile')
-    output_string = "rNews utilizes the following third party libraries:\n\n"
+    markdown_string = "rNews utilizes the following third party libraries:\n\n"
 
     dependencies = cartfile.each_line do |line|
       line = line[/[^#]+/]
@@ -62,11 +62,17 @@ namespace "libraries" do
         else
           url = full_name
         end
-        output_string += "- [#{name}](#{url})\n"
+        markdown_string += "- [#{name}](#{url})\n"
       end
     end
 
-    IO.write("documentation/libraries.md", output_string)
+    require 'kramdown'
+
+    html_string = Kramdown::Document.new(markdown_string).to_html
+
+    IO.write("documentation/libraries.html", html_string)
+
+    puts 'Wrote library information to documentation/libraries.html'
   end
 end
 

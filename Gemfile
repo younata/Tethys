@@ -9,4 +9,5 @@ group :development, :test do
   gem "octokit"
   gem "pivotal-tracker"
   gem "carthage_cache"
+  gem "kramdown"
 end

@@ -196,8 +196,8 @@ public final class SettingsViewController: UIViewController, Injectable {
     }
 
     fileprivate func quickActionController(indexPath: IndexPath) -> FeedsListController {
-        let feedsListController = FeedsListController()
-        feedsListController.themeRepository = self.themeRepository
+        let feedsListController = FeedsListController(mainQueue: self.mainQueue,
+                                                      themeRepository: self.themeRepository)
         feedsListController.navigationItem.title = self.titleForQuickAction(indexPath.row)
 
         let quickActions = self.quickActionRepository.quickActions
@@ -229,7 +229,7 @@ public final class SettingsViewController: UIViewController, Injectable {
                 }
             ]
         }
-        feedsListController.tapFeed = {feed, _ in
+        feedsListController.tapFeed = {feed in
             let newQuickAction = UIApplicationShortcutItem(type: "com.rachelbrindle.rssclient.viewfeed",
                                                            localizedTitle: feed.title)
             if indexPath.row < quickActions.count {

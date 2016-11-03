@@ -98,6 +98,11 @@ class FeedsDeleSourceSpec: QuickSpec {
                             expect(articleList.feed) == feed
                         }
                     }
+
+                    it("calls selectFeed on the feedsSource") {
+                        expect(feedsSource.selectFeedCallCount) == 1
+                        expect(feedsSource.selectFeedArgsForCall(callIndex: 0)) == feed
+                    }
                 }
 
                 describe("force pressing a cell") {
@@ -228,107 +233,125 @@ class FeedsDeleSourceSpec: QuickSpec {
                 }
 
                 describe("exposing edit actions") {
-                    var actions: [UITableViewRowAction] = []
+                    var actions: [UITableViewRowAction]? = []
                     var action: UITableViewRowAction? = nil
                     let indexPath = IndexPath(row: 0, section: 0)
-                    beforeEach {
-                        action = nil
-                        if let _ = cell {
-                            actions = subject.tableView(tableView, editActionsForRowAt: indexPath) ?? []
-                        }
-                    }
 
-                    it("should have 4 actions") {
-                        expect(actions.count).to(equal(4))
-                    }
-
-                    describe("the first action") {
+                    context("in preview mode") {
                         beforeEach {
-                            action = actions.first
+                            subject.previewMode = true
+
+                            action = nil
+                            if let _ = cell {
+                                actions = subject.tableView(tableView, editActionsForRowAt: indexPath)
+                            }
                         }
 
-                        it("states it deletes the feed") {
-                            expect(action?.title).to(equal("Delete"))
-                        }
-
-                        describe("tapping it") {
-                            beforeEach {
-                                action?.handler(action, indexPath)
-                            }
-
-                            it("calls deleteFeed on the feedsSource") {
-                                expect(feedsSource.deleteFeedCallCount) == 1
-                            }
+                        it("has no edit actions") {
+                            expect(actions).to(beNil())
                         }
                     }
 
-                    describe("the second action") {
+                    context("not in preview mode") { // the default
                         beforeEach {
-                            if actions.count > 1 {
-                                action = actions[1]
+                            action = nil
+                            if let _ = cell {
+                                actions = subject.tableView(tableView, editActionsForRowAt: indexPath) ?? []
                             }
                         }
 
-                        it("states it marks all items in the feed as read") {
-                            expect(action?.title).to(equal("Mark\nRead"))
+                        it("should have 4 actions") {
+                            expect(actions?.count) == 4
                         }
 
-                        describe("tapping it") {
+                        describe("the first action") {
                             beforeEach {
-                                action?.handler(action, indexPath)
+                                action = actions?.first
                             }
 
-                            it("calls markRead on the feedsSource") {
-                                expect(feedsSource.markReadCallCount) == 1
+                            it("states it deletes the feed") {
+                                expect(action?.title).to(equal("Delete"))
                             }
 
-                            it("adds an operation to the mainQueue when the markRead promise resolves") {
-                                feedsSource.markReadPromises.last?.resolve(Void())
-                                expect(mainQueue.operationCount) == 1
-                            }
-                        }
-                    }
+                            describe("tapping it") {
+                                beforeEach {
+                                    action?.handler(action, indexPath)
+                                }
 
-                    describe("the third action") {
-                        beforeEach {
-                            if actions.count > 2 {
-                                action = actions[2]
+                                it("calls deleteFeed on the feedsSource") {
+                                    expect(feedsSource.deleteFeedCallCount) == 1
+                                }
                             }
                         }
 
-                        it("states it edits the feed") {
-                            expect(action?.title).to(equal("Edit"))
-                        }
-
-                        describe("tapping it") {
+                        describe("the second action") {
                             beforeEach {
-                                action?.handler(action, indexPath)
+                                if actions!.count > 1 {
+                                    action = actions![1]
+                                }
                             }
 
-                            it("calls editFeed on the feedsSource") {
-                                expect(feedsSource.editFeedCallCount) == 1
+                            it("states it marks all items in the feed as read") {
+                                expect(action?.title).to(equal("Mark\nRead"))
+                            }
+
+                            describe("tapping it") {
+                                beforeEach {
+                                    action?.handler(action, indexPath)
+                                }
+
+                                it("calls markRead on the feedsSource") {
+                                    expect(feedsSource.markReadCallCount) == 1
+                                }
+
+                                it("adds an operation to the mainQueue when the markRead promise resolves") {
+                                    feedsSource.markReadPromises.last?.resolve(Void())
+                                    expect(mainQueue.operationCount) == 1
+                                }
                             }
                         }
-                    }
 
-                    describe("the fourth action") {
-                        beforeEach {
-                            if actions.count > 3 {
-                                action = actions[3]
-                            }
-                        }
-
-                        it("states it opens a share sheet") {
-                            expect(action?.title).to(equal("Share"))
-                        }
-
-                        describe("tapping it") {
+                        describe("the third action") {
                             beforeEach {
-                                action?.handler(action, indexPath)
+                                if actions!.count > 2 {
+                                    action = actions![2]
+                                }
                             }
 
-                            it("calls shareFeed on the feedsSource") {
-                                expect(feedsSource.shareFeedCallCount) == 1
+                            it("states it edits the feed") {
+                                expect(action?.title).to(equal("Edit"))
+                            }
+
+                            describe("tapping it") {
+                                beforeEach {
+                                    action?.handler(action, indexPath)
+                                }
+
+                                it("calls editFeed on the feedsSource") {
+                                    expect(feedsSource.editFeedCallCount) == 1
+                                }
+                            }
+                        }
+
+                        describe("the fourth action") {
+                            beforeEach {
+                                if actions!.count > 3 {
+                                    action = actions![3]
+                                }
+                            }
+                            
+                            it("states it opens a share sheet") {
+                                expect(action?.title).to(equal("Share"))
+                            }
+                            
+                            describe("tapping it") {
+                                beforeEach {
+                                    action?.handler(action, indexPath)
+                                }
+                                
+                                it("calls shareFeed on the feedsSource") {
+                                    expect(feedsSource.shareFeedCallCount) == 1
+                                }
                             }
                         }
                     }

@@ -5,7 +5,7 @@ import Result
 import rNewsKit
 
 public final class FeedsTableViewController: UIViewController, Injectable {
-    public lazy var tableView: UITableView = {
+    public private(set) lazy var tableView: UITableView = {
         let tableView = self.tableViewController.tableView!
         tableView.tableHeaderView = self.searchBar
         tableView.tableFooterView = UIView()
@@ -266,9 +266,7 @@ public final class FeedsTableViewController: UIViewController, Injectable {
 
         if let feeds = feeds, (tag == nil || tag?.isEmpty == true) { reloadWithFeeds(feeds) }
         _ = self.feedRepository.feeds(matchingTag: tag).then {
-            if case let Result.success(feeds) = $0 {
-                reloadWithFeeds(feeds)
-            }
+            if case let Result.success(feeds) = $0 { reloadWithFeeds(feeds) }
         }
     }
 
@@ -329,6 +327,8 @@ extension FeedsTableViewController: FeedsSource {
         let shareSheet = UIActivityViewController(activityItems: [feed.url], applicationActivities: nil)
         self.present(shareSheet, animated: true, completion: nil)
     }
+
+    public func selectFeed(feed: Feed) {}
 }
 
 extension FeedsTableViewController: Refresher {
@@ -336,7 +336,6 @@ extension FeedsTableViewController: Refresher {
         self.feedRepository.updateFeeds({feeds, errors in
             if !errors.isEmpty {
                 let alertTitle = NSLocalizedString("FeedsTableViewController_UpdateFeeds_Error_Title", comment: "")
-
                 let messageString: String
                 if errors.count == 1, let error = errors.first, error.userInfo["feedTitle"] == nil {
                     messageString = error.localizedDescription

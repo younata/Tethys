@@ -1,6 +1,7 @@
 import UIKit
 import rNewsKit
 import PureLayout
+import CBGPromise
 
 public final class FeedsListController: UIViewController {
     public var feeds = [Feed]() {
@@ -9,24 +10,49 @@ public final class FeedsListController: UIViewController {
         }
     }
 
-    public var themeRepository: ThemeRepository? = nil {
-        didSet {
-            self.themeRepository?.addSubscriber(self)
-        }
+    fileprivate let themeRepository: ThemeRepository
+    fileprivate let mainQueue: OperationQueue
+
+    public var tapFeed: ((Feed) -> Void)? = nil
+
+    public private(set) lazy var tableView: UITableView = {
+        let tableView = UITableView(forAutoLayout: ())
+        tableView.tableFooterView = UIView()
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 80
+        return tableView
+    }()
+
+    fileprivate lazy var feedsDeleSource: FeedsDeleSource = {
+        return FeedsDeleSource(
+            tableView: self.tableView,
+            feedsSource: self,
+            themeRepository: self.themeRepository,
+            navigationController: nil,
+            mainQueue: self.mainQueue,
+            articleListController: nil
+        )
+    }()
+
+    public init(mainQueue: OperationQueue,
+                themeRepository: ThemeRepository) {
+        self.mainQueue = mainQueue
+        self.themeRepository = themeRepository
+
+        super.init(nibName: nil, bundle: nil)
+
+        themeRepository.addSubscriber(self)
     }
 
-    public var tapFeed: ((Feed, Int) -> Void)? = nil
-    public var editActionsForFeed: ((Feed) -> [UITableViewRowAction]?)? = nil
-
-    public let tableView = UITableView()
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.tableView.dataSource = self
-        self.tableView.delegate = self
-        self.tableView.register(FeedTableCell.self, forCellReuseIdentifier: "unread")
-        self.tableView.register(FeedTableCell.self, forCellReuseIdentifier: "read")
+        self.tableView.dataSource = self.feedsDeleSource
+        self.tableView.delegate = self.feedsDeleSource
         self.view.addSubview(self.tableView)
         self.tableView.autoPinEdgesToSuperviewEdges()
     }
@@ -37,48 +63,30 @@ public final class FeedsListController: UIViewController {
     }
 }
 
+extension FeedsListController: FeedsSource {
+    public func editFeed(feed: Feed) {}
+    public func shareFeed(feed: Feed) {}
+    public func markRead(feed: Feed) -> Future<Void> {
+        let promise = Promise<Void>()
+        promise.resolve()
+        return promise.future
+    }
+
+    public func deleteFeed(feed: Feed) -> Future<Bool> {
+        let promise = Promise<Bool>()
+        promise.resolve(false)
+        return promise.future
+    }
+
+    public func selectFeed(feed: Feed) {
+        self.tapFeed?(feed)
+    }
+}
+
 extension FeedsListController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        self.tableView.backgroundColor = self.themeRepository?.backgroundColor
-        self.tableView.separatorColor = self.themeRepository?.textColor
-        if let themeRepo = self.themeRepository {
-            self.tableView.indicatorStyle = themeRepo.scrollIndicatorStyle
-        }
+        self.tableView.backgroundColor = themeRepository.backgroundColor
+        self.tableView.separatorColor = themeRepository.textColor
+        self.tableView.indicatorStyle = themeRepository.scrollIndicatorStyle
     }
-}
-
-extension FeedsListController: UITableViewDataSource {
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.feeds.count
-    }
-
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let feed = self.feeds[indexPath.row]
-        let identifier = feed.unreadArticles.isEmpty ? "unread" : "read"
-
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: identifier,
-                                                       for: indexPath) as? FeedTableCell else {
-                return UITableViewCell()
-        }
-        cell.feed = feed
-        cell.themeRepository = self.themeRepository
-        return cell
-    }
-}
-
-extension FeedsListController: UITableViewDelegate {
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: false)
-
-        self.tapFeed?(self.feeds[indexPath.row], indexPath.row)
-    }
-
-    public func tableView(_ tableView: UITableView,
-        editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-            return self.editActionsForFeed?(self.feeds[indexPath.row])
-    }
-
-    @objc(tableView:commitEditingStyle:forRowAtIndexPath:) public func tableView(_ tableView: UITableView,
-        commit editingStyle: UITableViewCellEditingStyle,
-        forRowAt indexPath: IndexPath) {}
 }

@@ -504,7 +504,7 @@ class SettingsViewControllerSpec: QuickSpec {
                                 if let feedsList = navigationController.visibleViewController as? FeedsListController {
                                     expect(feedsList.feeds.count) == feeds.count
                                     let feed = feeds[0]
-                                    feedsList.tapFeed?(feed, 0)
+                                    feedsList.tapFeed?(feed)
                                     expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
                                     expect(fakeQuickActionRepository.quickActions.count) == 1
                                     if let quickAction = fakeQuickActionRepository.quickActions.first {
@@ -576,7 +576,7 @@ class SettingsViewControllerSpec: QuickSpec {
                                 if let feedsList = navigationController.visibleViewController as? FeedsListController {
                                     expect(feedsList.feeds.count) == feeds.count
                                     let feed = feeds[0]
-                                    feedsList.tapFeed?(feed, 0)
+                                    feedsList.tapFeed?(feed)
                                     expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
                                     expect(fakeQuickActionRepository.quickActions.count) == 1
                                     if let quickAction = fakeQuickActionRepository.quickActions.first {
@@ -643,7 +643,7 @@ class SettingsViewControllerSpec: QuickSpec {
                                     if let feedsList = navigationController.visibleViewController as? FeedsListController {
                                         expect(feedsList.feeds) == [feedB]
                                         let feed = feeds[1]
-                                        feedsList.tapFeed?(feed, 0)
+                                        feedsList.tapFeed?(feed)
                                         expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
                                         expect(fakeQuickActionRepository.quickActions.count) == 1
                                         if let quickAction = fakeQuickActionRepository.quickActions.first {
@@ -737,7 +737,7 @@ class SettingsViewControllerSpec: QuickSpec {
                                     if let feedsList = navigationController.visibleViewController as? FeedsListController {
                                         expect(feedsList.feeds.count) == feeds.count
                                         let feed = feeds[0]
-                                        feedsList.tapFeed?(feed, 0)
+                                        feedsList.tapFeed?(feed)
                                         expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
                                         expect(fakeQuickActionRepository.quickActions.count) == 1
                                         if let quickAction = fakeQuickActionRepository.quickActions.first {
@@ -794,7 +794,7 @@ class SettingsViewControllerSpec: QuickSpec {
                                 if let feedsList = navigationController.visibleViewController as? FeedsListController {
                                     expect(feedsList.feeds) == [feedB]
                                     let feed = feeds[1]
-                                    feedsList.tapFeed?(feed, 0)
+                                    feedsList.tapFeed?(feed)
                                     expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
                                     expect(fakeQuickActionRepository.quickActions.count) == 2
                                     if let quickAction = fakeQuickActionRepository.quickActions.last {
@@ -882,7 +882,7 @@ class SettingsViewControllerSpec: QuickSpec {
                                     expect(feedsList.navigationItem.title) == feedA.title
                                     expect(feedsList.feeds) == [feedD]
                                     let feed = feeds[3]
-                                    feedsList.tapFeed?(feed, 0)
+                                    feedsList.tapFeed?(feed)
                                     expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
                                     expect(fakeQuickActionRepository.quickActions.count) == 3
                                     if let quickAction = fakeQuickActionRepository.quickActions.first {

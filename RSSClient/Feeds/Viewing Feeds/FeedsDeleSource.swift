@@ -9,19 +9,23 @@ public protocol FeedsSource {
     func shareFeed(feed: Feed)
     func markRead(feed: Feed) -> Future<Void>
     func deleteFeed(feed: Feed) -> Future<Bool>
+
+    func selectFeed(feed: Feed)
 }
 
 public final class FeedsDeleSource: NSObject {
     fileprivate let tableView: UITableView
     fileprivate let feedsSource: FeedsSource
     fileprivate let themeRepository: ThemeRepository
-    fileprivate let navigationController: UINavigationController
+    fileprivate let navigationController: UINavigationController?
     fileprivate let mainQueue: OperationQueue
-    fileprivate let articleListController: (Void) -> (ArticleListController)
+    fileprivate let articleListController: ((Void) -> (ArticleListController))?
 
     fileprivate var feeds: [Feed] {
         return self.feedsSource.feeds
     }
+
+    public var previewMode = false
 
     public var scrollViewDelegate: UIScrollViewDelegate?
 
@@ -29,9 +33,9 @@ public final class FeedsDeleSource: NSObject {
     public init(tableView: UITableView,
                 feedsSource: FeedsSource,
                 themeRepository: ThemeRepository,
-                navigationController: UINavigationController,
+                navigationController: UINavigationController?,
                 mainQueue: OperationQueue,
-                articleListController: @escaping (Void) -> (ArticleListController)) {
+                articleListController: ((Void) -> (ArticleListController))?) {
         self.tableView = tableView
         self.feedsSource = feedsSource
         self.themeRepository = themeRepository
@@ -52,14 +56,14 @@ public final class FeedsDeleSource: NSObject {
         return self.feedsSource.feeds[indexPath.row]
     }
 
-    fileprivate func configuredArticleListWithFeeds(_ feed: Feed) -> ArticleListController {
-        let articleListController = self.articleListController()
-        articleListController.feed = feed
+    fileprivate func configuredArticleListWithFeeds(_ feed: Feed) -> ArticleListController? {
+        let articleListController = self.articleListController?()
+        articleListController?.feed = feed
         return articleListController
     }
 
     fileprivate func showArticleList(_ articleListController: ArticleListController, animated: Bool) {
-        self.navigationController.pushViewController(articleListController, animated: animated)
+        self.navigationController?.pushViewController(articleListController, animated: animated)
     }
 }
 
@@ -69,7 +73,7 @@ extension FeedsDeleSource: UIViewControllerPreviewingDelegate {
         if let indexPath = self.tableView.indexPathForRow(at: location) {
             let feed = self.feedAtIndexPath(indexPath)
             let articleListController = configuredArticleListWithFeeds(feed)
-            articleListController._previewActionItems = self.articleListPreviewItems(feed: feed)
+            articleListController?._previewActionItems = self.articleListPreviewItems(feed: feed)
             return articleListController
         }
         return nil
@@ -128,12 +132,15 @@ extension FeedsDeleSource: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
 
-        let al = self.configuredArticleListWithFeeds(self.feedAtIndexPath(indexPath))
-        self.showArticleList(al, animated: true)
+        let feed = self.feedAtIndexPath(indexPath)
+        if let al = self.configuredArticleListWithFeeds(feed) {
+            self.showArticleList(al, animated: true)
+        }
+        self.feedsSource.selectFeed(feed: feed)
     }
 
     public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return true
+        return !self.previewMode
     }
 
     public func tableView(_ tableView: UITableView,
@@ -142,6 +149,7 @@ extension FeedsDeleSource: UITableViewDelegate {
 
     public func tableView(_ tableView: UITableView,
                           editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        guard !self.previewMode else { return nil }
         let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
         let delete = UITableViewRowAction(style: .default, title: deleteTitle) {(_, indexPath: IndexPath!) in
             _ = self.feedsSource.deleteFeed(feed: self.feedAtIndexPath(indexPath)).then {

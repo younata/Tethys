@@ -13,15 +13,14 @@ class FeedsListControllerSpec: QuickSpec {
         var feeds = [Feed]()
 
         beforeEach {
-            subject = FeedsListController()
+            themeRepository = ThemeRepository(userDefaults: nil)
+
+            subject = FeedsListController(mainQueue: FakeOperationQueue(), themeRepository: themeRepository)
             feeds = [
                 Feed(title: "a", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
                 Feed(title: "b", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
             ]
             subject.feeds = feeds
-
-            themeRepository = ThemeRepository(userDefaults: nil)
-            subject.themeRepository = themeRepository
 
             subject.view.layoutIfNeeded()
         }
@@ -40,6 +39,31 @@ class FeedsListControllerSpec: QuickSpec {
 
             it("should update the scroll indicator style") {
                 expect(subject.tableView.indicatorStyle).to(equal(themeRepository.scrollIndicatorStyle))
+            }
+        }
+
+        describe("as a FeedsSource") {
+            describe("deleteFeed") {
+                it("returns a completed future") {
+                    expect(subject.deleteFeed(feed: feeds[0]).value) == false
+                }
+            }
+
+            describe("markRead") {
+                it("returns a completed future") {
+                    expect(subject.markRead(feed: feeds[0]).value).toNot(beNil())
+                }
+            }
+
+            describe("selectFeed") {
+                it("calls the callback with the feed") {
+                    var tappedFeed: Feed? = nil
+                    subject.tapFeed = { feed in
+                        tappedFeed = feed
+                    }
+                    subject.selectFeed(feed: feeds[0])
+                    expect(tappedFeed) == feeds[0]
+                }
             }
         }
 
@@ -68,28 +92,12 @@ class FeedsListControllerSpec: QuickSpec {
 
             it("should call the callback when tapped") {
                 var tappedFeed: Feed? = nil
-                var tappedRow: Int? = nil
-                subject.tapFeed = { feed, row in
+                subject.tapFeed = { feed in
                     tappedFeed = feed
-                    tappedRow = row
                 }
                 subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAt: indexPath)
 
                 expect(tappedFeed).to(equal(feeds[indexPath.row]))
-                expect(tappedRow).to(equal(indexPath.row))
-            }
-
-            it("should ask the callback for edit actions") {
-                var feedAskedFor: Feed? = nil
-                let rowAction = UITableViewRowAction(style: .default, title: "hi", handler: { _ in })
-                subject.editActionsForFeed = {feed in
-                    feedAskedFor = feed
-                    return [rowAction]
-                }
-
-                let rowActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAt: indexPath)
-                expect(rowActions).to(equal([rowAction]))
-                expect(feedAskedFor).to(equal(feeds[indexPath.row]))
             }
         }
     }

@@ -33,6 +33,8 @@ public final class InjectorModule: Ra.InjectorModule {
         injector.bind(kind: ArticleUseCase.self, to: DefaultArticleUseCase.init)
 
         injector.bind(kind: FileManager.self, toInstance: FileManager.default)
+
+        injector.bind(kind: DocumentationUseCase.self, to: DefaultDocumentationUseCase.init)
     }
 
     public init() {}

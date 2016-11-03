@@ -41,6 +41,8 @@ class SettingsViewControllerSpec: QuickSpec {
             opmlService = FakeOPMLService()
             injector.bind(kind: OPMLService.self, toInstance: opmlService)
 
+            injector.bind(kind: DocumentationUseCase.self, toInstance: FakeDocumentationUseCase())
+
             subject = injector.create(kind: SettingsViewController.self)!
 
             navigationController = UINavigationController(rootViewController: subject)
@@ -932,8 +934,8 @@ class SettingsViewControllerSpec: QuickSpec {
                     ("Rachel Brindle", "Developer", URL(string: "https://twitter.com/younata")!),
                 ]
 
-                it("has \(values.count) cells") {
-                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == values.count
+                it("has \(values.count + 1) cells") {
+                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == (values.count + 1)
                 }
 
                 sharedExamples("a credits cell") { (sharedContext: @escaping SharedExampleContext) in
@@ -957,7 +959,7 @@ class SettingsViewControllerSpec: QuickSpec {
                         expect(cell.textLabel?.text) == title
                     }
 
-                    it("has either 'developer' or 'library' title as the detail") {
+                    it("has either 'developer' as the detail") {
                         expect(cell.detailTextLabel?.text) == detail
                     }
 
@@ -985,6 +987,42 @@ class SettingsViewControllerSpec: QuickSpec {
                                 "detail": value.1,
                                 "url": value.2
                             ]
+                        }
+                    }
+                }
+
+                describe("the libraries cell") {
+                    var cell: TableViewCell!
+                    let indexPath = IndexPath(row: values.count, section: sectionNumber)
+
+                    beforeEach {
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
+                    }
+
+                    it("is configured with the theme repository") {
+                        expect(cell.themeRepository) == themeRepository
+                    }
+
+                    it("has the developer's or library's name as the text") {
+                        expect(cell.textLabel?.text) == "Libraries"
+                    }
+
+                    it("has no detail") {
+                        expect(cell.detailTextLabel?.text) == ""
+                    }
+
+                    describe("tapping it") {
+                        beforeEach {
+                            delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
+                        }
+
+                        it("should show a DocumentationViewController with the .libraries documentation") {
+                            expect(navigationController.visibleViewController).to(beAnInstanceOf(DocumentationViewController.self))
+
+                            if let documentationViewController = navigationController.visibleViewController as? DocumentationViewController {
+                                expect(documentationViewController.documentation) == Documentation.libraries
+                            }
+
                         }
                     }
                 }

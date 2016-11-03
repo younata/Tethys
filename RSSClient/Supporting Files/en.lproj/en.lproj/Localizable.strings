@@ -18,6 +18,7 @@
 "SettingsViewController_Other_ExportOPML_Error_Message" = "Please Try Again";
 "SettingsViewController_Credits_MainDeveloper_Name" = "Rachel Brindle"; // My name
 "SettingsViewController_Credits_MainDeveloper_Detail" = "Developer";
+"SettingsViewController_Credits_Libraries" = "Libraries";
 "SettingsViewController_Commands_Theme" = "Change Theme to '%@'";
 "SettingsViewController_Commands_Save" = "Save and dismiss";
 "SettingsViewController_Commands_Dismiss" = "Dismiss without saving";

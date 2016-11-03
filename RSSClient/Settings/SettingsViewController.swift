@@ -117,6 +117,7 @@ public final class SettingsViewController: UIViewController, Injectable {
     fileprivate let opmlService: OPMLService
     fileprivate let mainQueue: OperationQueue
     fileprivate let loginViewController: (Void) -> LoginViewController
+    fileprivate let documentationViewController: (Void) -> DocumentationViewController
 
     fileprivate var oldTheme: ThemeRepository.Theme = .default
 
@@ -135,7 +136,8 @@ public final class SettingsViewController: UIViewController, Injectable {
                 accountRepository: AccountRepository,
                 opmlService: OPMLService,
                 mainQueue: OperationQueue,
-                loginViewController: @escaping (Void) -> LoginViewController) {
+                loginViewController: @escaping (Void) -> LoginViewController,
+                documentationViewController: @escaping (Void) -> DocumentationViewController) {
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.quickActionRepository = quickActionRepository
@@ -144,6 +146,7 @@ public final class SettingsViewController: UIViewController, Injectable {
         self.opmlService = opmlService
         self.mainQueue = mainQueue
         self.loginViewController = loginViewController
+        self.documentationViewController = documentationViewController
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -158,7 +161,8 @@ public final class SettingsViewController: UIViewController, Injectable {
             accountRepository: injector.create(kind: AccountRepository.self)!,
             opmlService: injector.create(kind: OPMLService.self)!,
             mainQueue: injector.create(string: kMainQueue) as! OperationQueue,
-            loginViewController: { injector.create(kind: LoginViewController.self)! }
+            loginViewController: { injector.create(kind: LoginViewController.self)! },
+            documentationViewController: { injector.create(kind: DocumentationViewController.self)! }
         )
     }
 
@@ -337,7 +341,7 @@ extension SettingsViewController: UITableViewDataSource {
         case .other:
             return OtherSection.numberOfOptions
         case .credits:
-            return 1
+            return 2
         }
     }
 
@@ -433,9 +437,14 @@ extension SettingsViewController: UITableViewDataSource {
     private func creditCell(indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
         cell.themeRepository = self.themeRepository
+        if indexPath.row == 0 {
         cell.textLabel?.text = NSLocalizedString("SettingsViewController_Credits_MainDeveloper_Name", comment: "")
         cell.detailTextLabel?.text =
             NSLocalizedString("SettingsViewController_Credits_MainDeveloper_Detail", comment: "")
+        } else if indexPath.row == 1 {
+            cell.textLabel?.text = NSLocalizedString("SettingsViewController_Credits_Libraries", comment: "")
+            cell.detailTextLabel?.text = ""
+        }
         return cell
     }
 }
@@ -618,8 +627,14 @@ extension SettingsViewController: UITableViewDelegate {
 
     private func didTapCreditCell(tableView: UITableView, indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
-        guard let url = URL(string: "https://twitter.com/younata") else { return }
-        let viewController = SFSafariViewController(url: url)
-        self.present(viewController, animated: true, completion: nil)
+        if indexPath.row == 0 {
+            guard let url = URL(string: "https://twitter.com/younata") else { return }
+            let viewController = SFSafariViewController(url: url)
+            self.present(viewController, animated: true, completion: nil)
+        } else if indexPath.row == 1 {
+            let viewController = self.documentationViewController()
+            viewController.configure(documentation: .libraries)
+            self.navigationController?.pushViewController(viewController, animated: true)
+        }
     }
 }

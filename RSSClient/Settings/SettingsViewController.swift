@@ -194,6 +194,59 @@ public final class SettingsViewController: UIViewController, Injectable {
 
         return feeds.objectPassingTest({$0.title == quickAction.localizedTitle})
     }
+
+    fileprivate func quickActionController(indexPath: IndexPath) -> FeedsListController {
+        let feedsListController = FeedsListController()
+        feedsListController.themeRepository = self.themeRepository
+        feedsListController.navigationItem.title = self.titleForQuickAction(indexPath.row)
+
+        let quickActions = self.quickActionRepository.quickActions
+        _ = self.databaseUseCase.feeds().then {
+            if case let Result.success(feeds) = $0 {
+                if !quickActions.isEmpty {
+                    let quickActionFeeds = quickActions.indices.reduce([Feed]()) {
+                        guard let feed = self.feedForQuickAction($1, feeds: feeds) else { return $0 }
+                        return $0 + [feed]
+                    }
+                    feedsListController.feeds = feeds.filter { !quickActionFeeds.contains($0) }
+                } else {
+                    feedsListController.feeds = feeds
+                }
+            }
+        }
+        if indexPath.row < self.quickActionRepository.quickActions.count {
+            let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
+            feedsListController._previewActionItems = [
+                UIPreviewAction(title: deleteTitle, style: .destructive) { _ in
+                    self.quickActionRepository.quickActions.remove(at: indexPath.row)
+                    if self.quickActionRepository.quickActions.count != 2 {
+                        self.tableView.deleteRows(at: [indexPath], with: .automatic)
+                    } else {
+                        self.tableView.reloadRows(at: [
+                            indexPath, IndexPath(row: 2, section: indexPath.section)
+                            ], with: .automatic)
+                    }
+                }
+            ]
+        }
+        feedsListController.tapFeed = {feed, _ in
+            let newQuickAction = UIApplicationShortcutItem(type: "com.rachelbrindle.rssclient.viewfeed",
+                                                           localizedTitle: feed.title)
+            if indexPath.row < quickActions.count {
+                self.quickActionRepository.quickActions[indexPath.row] = newQuickAction
+            } else {
+                self.quickActionRepository.quickActions.append(newQuickAction)
+                if self.quickActionRepository.quickActions.count <= 3 {
+                    let quickActionsCount = self.quickActionRepository.quickActions.count
+                    let insertedIndexPath = IndexPath(row: quickActionsCount, section: indexPath.section)
+                    self.tableView.insertRows(at: [insertedIndexPath], with: .automatic)
+                }
+            }
+            self.tableView.reloadRows(at: [indexPath], with: .automatic)
+            _ = self.navigationController?.popViewController(animated: true)
+        }
+        return feedsListController
+    }
 }
 
 extension SettingsViewController: ThemeRepositorySubscriber {
@@ -225,57 +278,22 @@ extension SettingsViewController: UIViewControllerPreviewingDelegate {
         }
         switch section {
         case .quickActions:
-            let feedsListController = FeedsListController()
-            feedsListController.themeRepository = self.themeRepository
-            feedsListController.navigationItem.title = self.titleForQuickAction(indexPath.row)
-
-            let quickActions = self.quickActionRepository.quickActions
-            _ = self.databaseUseCase.feeds().then {
-                if case let Result.success(feeds) = $0 {
-                    if !quickActions.isEmpty {
-                        let quickActionFeeds = quickActions.indices.reduce([Feed]()) {
-                            guard let feed = self.feedForQuickAction($1, feeds: feeds) else { return $0 }
-                            return $0 + [feed]
-                        }
-                        feedsListController.feeds = feeds.filter { !quickActionFeeds.contains($0) }
-                    } else {
-                        feedsListController.feeds = feeds
-                    }
-                }
+            return self.quickActionController(indexPath: indexPath)
+        case .accounts:
+            let loginViewController = self.loginViewController()
+            loginViewController.accountType = Account(rawValue: indexPath.row)
+            return loginViewController
+        case .credits:
+            if indexPath.row == 0 {
+                guard let url = URL(string: "https://twitter.com/younata") else { return nil }
+                return SFSafariViewController(url: url)
+            } else if indexPath.row == 1 {
+                let viewController = self.documentationViewController()
+                viewController.configure(documentation: .libraries)
+                return viewController
+            } else {
+                return nil
             }
-            if indexPath.row < self.quickActionRepository.quickActions.count {
-                let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
-                feedsListController._previewActionItems = [
-                    UIPreviewAction(title: deleteTitle, style: .destructive) { _ in
-                        self.quickActionRepository.quickActions.remove(at: indexPath.row)
-                        if self.quickActionRepository.quickActions.count != 2 {
-                            self.tableView.deleteRows(at: [indexPath], with: .automatic)
-                        } else {
-                            self.tableView.reloadRows(at: [
-                                indexPath, IndexPath(row: 2, section: indexPath.section)
-                                ], with: .automatic)
-                        }
-                    }
-                ]
-            }
-            feedsListController.tapFeed = {feed, _ in
-                let newQuickAction = UIApplicationShortcutItem(type: "com.rachelbrindle.rssclient.viewfeed",
-                                                               localizedTitle: feed.title)
-                if indexPath.row < quickActions.count {
-                    self.quickActionRepository.quickActions[indexPath.row] = newQuickAction
-                } else {
-                    self.quickActionRepository.quickActions.append(newQuickAction)
-                    if self.quickActionRepository.quickActions.count <= 3 {
-                        let quickActionsCount = self.quickActionRepository.quickActions.count
-                        let insertedIndexPath = IndexPath(row: quickActionsCount, section: indexPath.section)
-                        self.tableView.insertRows(at: [insertedIndexPath], with: .automatic)
-                    }
-                }
-                self.tableView.reloadRows(at: [indexPath], with: .automatic)
-                _ = self.navigationController?.popViewController(animated: true)
-            }
-            return feedsListController
-            //self.navigationController?.pushViewController(feedsListController, animated: true)
         default:
             return nil
         }
@@ -505,41 +523,7 @@ extension SettingsViewController: UITableViewDelegate {
 
     private func didTapQuickActionCell(tableView: UITableView, indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
-        let feedsListController = FeedsListController()
-        feedsListController.themeRepository = self.themeRepository
-        feedsListController.navigationItem.title = self.titleForQuickAction(indexPath.row)
-
-        let quickActions = self.quickActionRepository.quickActions
-        _ = self.databaseUseCase.feeds().then {
-            if case let Result.success(feeds) = $0 {
-                if !quickActions.isEmpty {
-                    let quickActionFeeds = quickActions.indices.reduce([Feed]()) {
-                        guard let feed = self.feedForQuickAction($1, feeds: feeds) else { return $0 }
-                        return $0 + [feed]
-                    }
-                    feedsListController.feeds = feeds.filter { !quickActionFeeds.contains($0) }
-                } else {
-                    feedsListController.feeds = feeds
-                }
-            }
-        }
-        feedsListController.tapFeed = {feed, _ in
-            let newQuickAction = UIApplicationShortcutItem(type: "com.rachelbrindle.rssclient.viewfeed",
-                localizedTitle: feed.title)
-            if indexPath.row < quickActions.count {
-                self.quickActionRepository.quickActions[indexPath.row] = newQuickAction
-            } else {
-                self.quickActionRepository.quickActions.append(newQuickAction)
-                if self.quickActionRepository.quickActions.count <= 3 {
-                    let quickActionsCount = self.quickActionRepository.quickActions.count
-                    let insertedIndexPath = IndexPath(row: quickActionsCount, section: indexPath.section)
-                    self.tableView.insertRows(at: [insertedIndexPath], with: .automatic)
-                }
-            }
-            self.tableView.reloadRows(at: [indexPath], with: .automatic)
-            _ = self.navigationController?.popViewController(animated: true)
-        }
-        self.navigationController?.pushViewController(feedsListController, animated: true)
+        self.navigationController?.pushViewController(self.quickActionController(indexPath: indexPath), animated: true)
     }
 
     private func didTapAccountCell(tableView: UITableView, indexPath: IndexPath) {

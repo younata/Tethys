@@ -989,6 +989,37 @@ class SettingsViewControllerSpec: QuickSpec {
                             }
                         }
                     }
+
+                    describe("3d touching the cell") {
+                        var viewControllerPreviewing: FakeUIViewControllerPreviewing! = nil
+                        var viewController: UIViewController? = nil
+
+                        beforeEach {
+                            subject.tableView.frame = CGRect(x: 0, y: 0, width: 320, height: 480)
+                            viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
+
+                            let rect = subject.tableView.rectForRow(at: indexPath)
+                            let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
+                            viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                        }
+
+                        it("returns a LoginViewController") {
+                            expect(viewController).to(beAnInstanceOf(LoginViewController.self))
+                            if let loginViewController = viewController as? LoginViewController {
+                                expect(loginViewController.accountType) == Account.pasiphae
+                            }
+                        }
+
+                        it("has no preview actions") {
+                            expect(viewController?.previewActionItems.count) == 0
+                        }
+
+                        it("pushes the login controller if the user commits the touch") {
+                            guard let vc = viewController else { fail(); return }
+                            subject.previewingContext(viewControllerPreviewing, commit: vc)
+                            expect(navigationController.visibleViewController) == vc
+                        }
+                    }
                 }
             }
 
@@ -1179,6 +1210,34 @@ class SettingsViewControllerSpec: QuickSpec {
                             expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
                         }
                     }
+
+                    describe("3d touching the cell") {
+                        var viewControllerPreviewing: FakeUIViewControllerPreviewing! = nil
+                        var viewController: UIViewController? = nil
+
+                        beforeEach {
+                            subject.tableView.frame = CGRect(x: 0, y: 0, width: 320, height: 480)
+                            viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
+
+                            let rect = subject.tableView.rectForRow(at: indexPath)
+                            let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
+                            viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                        }
+
+                        it("returns an SFSafariViewController") {
+                            expect(viewController).to(beAnInstanceOf(SFSafariViewController.self))
+                        }
+
+                        it("has no preview actions") {
+                            expect(viewController?.previewActionItems.count) == 0
+                        }
+
+                        it("pushes the login controller if the user commits the touch") {
+                            guard let vc = viewController else { fail(); return }
+                            subject.previewingContext(viewControllerPreviewing, commit: vc)
+                            expect(navigationController.visibleViewController) == vc
+                        }
+                    }
                 }
 
                 for index in 0..<values.count {
@@ -1229,7 +1288,37 @@ class SettingsViewControllerSpec: QuickSpec {
                             if let documentationViewController = navigationController.visibleViewController as? DocumentationViewController {
                                 expect(documentationViewController.documentation) == Documentation.libraries
                             }
+                        }
+                    }
 
+                    describe("3d touching the cell") {
+                        var viewControllerPreviewing: FakeUIViewControllerPreviewing! = nil
+                        var viewController: UIViewController? = nil
+
+                        beforeEach {
+                            subject.tableView.frame = CGRect(x: 0, y: 0, width: 320, height: 480)
+                            viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
+
+                            let rect = subject.tableView.rectForRow(at: indexPath)
+                            let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
+                            viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                        }
+
+                        it("returns a DocumentationViewController") {
+                            expect(viewController).to(beAnInstanceOf(DocumentationViewController.self))
+                            if let documentationViewController = viewController as? DocumentationViewController {
+                                expect(documentationViewController.documentation) == Documentation.libraries
+                            }
+                        }
+
+                        it("has no preview actions") {
+                            expect(viewController?.previewActionItems.count) == 0
+                        }
+
+                        it("pushes the login controller if the user commits the touch") {
+                            guard let vc = viewController else { fail(); return }
+                            subject.previewingContext(viewControllerPreviewing, commit: vc)
+                            expect(navigationController.visibleViewController) == vc
                         }
                     }
                 }

@@ -39,20 +39,19 @@ public final class ArticleListHeaderCell: UITableViewCell {
         self.summary.numberOfLines = 0
         self.summary.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.subheadline)
 
+        self.iconView.contentMode = .scaleAspectFit
+
         self.summary.autoPinEdge(toSuperviewEdge: .leading, withInset: 8)
         self.summary.autoPinEdge(toSuperviewEdge: .top, withInset: 8)
         self.summary.autoPinEdge(.bottom, to: .top, of: self.footer, withOffset: -8)
         self.summary.autoPinEdge(.trailing, to: .leading, of: self.iconView, withOffset: -8)
 
-        self.iconView.autoPinEdge(.top, to: .top, of: self.contentView,
-                                  withOffset: 0, relation: .greaterThanOrEqual)
-        self.iconView.autoPinEdge(.bottom, to: .top, of: self.footer,
-                                  withOffset: 0, relation: .lessThanOrEqual)
-        self.iconView.autoAlignAxis(toSuperviewAxis: .horizontal)
+        self.iconView.autoPinEdge(toSuperviewEdge: .top, withInset: 0, relation: .greaterThanOrEqual)
         self.iconView.autoPinEdge(toSuperviewEdge: .trailing)
-
-        self.iconWidth = self.iconView.autoSetDimension(.width, toSize: 0)
-        self.iconHeight = self.iconView.autoSetDimension(.height, toSize: 0)
+        self.iconView.autoPinEdge(.bottom, to: .top, of: self.footer, withOffset: 0, relation: .lessThanOrEqual)
+        self.iconView.autoAlignAxis(toSuperviewAxis: .horizontal)
+        self.iconWidth = self.iconView.autoSetDimension(.width, toSize: 0, relation: .lessThanOrEqual)
+        self.iconHeight = self.iconView.autoSetDimension(.height, toSize: 0, relation: .lessThanOrEqual)
 
         self.footer.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 0, left: 0, bottom: -1, right: 0),
                                                  excludingEdge: .top)

@@ -137,7 +137,7 @@ class FeedsDeleSourceSpec: QuickSpec {
                                 action = previewActions?.first as? UIPreviewAction
                             }
 
-                            it("should state it marks all items in the feed as read") {
+                            it("states it marks all items in the feed as read") {
                                 expect(action?.title).to(equal("Mark Read"))
                             }
 
@@ -159,7 +159,7 @@ class FeedsDeleSourceSpec: QuickSpec {
                                 }
                             }
 
-                            it("should state it edits the feed") {
+                            it("states it edits the feed") {
                                 expect(action?.title).to(equal("Edit"))
                             }
 
@@ -181,7 +181,7 @@ class FeedsDeleSourceSpec: QuickSpec {
                                 }
                             }
 
-                            it("should state it opens a share sheet") {
+                            it("states it opens a share sheet") {
                                 expect(action?.title).to(equal("Share"))
                             }
 
@@ -203,7 +203,7 @@ class FeedsDeleSourceSpec: QuickSpec {
                                 }
                             }
 
-                            it("should state it deletes the feed") {
+                            it("states it deletes the feed") {
                                 expect(action?.title).to(equal("Delete"))
                             }
 
@@ -247,7 +247,7 @@ class FeedsDeleSourceSpec: QuickSpec {
                             action = actions.first
                         }
 
-                        it("should state it deletes the feed") {
+                        it("states it deletes the feed") {
                             expect(action?.title).to(equal("Delete"))
                         }
 
@@ -269,7 +269,7 @@ class FeedsDeleSourceSpec: QuickSpec {
                             }
                         }
 
-                        it("should state it marks all items in the feed as read") {
+                        it("states it marks all items in the feed as read") {
                             expect(action?.title).to(equal("Mark\nRead"))
                         }
 
@@ -296,7 +296,7 @@ class FeedsDeleSourceSpec: QuickSpec {
                             }
                         }
 
-                        it("should state it edits the feed") {
+                        it("states it edits the feed") {
                             expect(action?.title).to(equal("Edit"))
                         }
 
@@ -318,7 +318,7 @@ class FeedsDeleSourceSpec: QuickSpec {
                             }
                         }
 
-                        it("should state it opens a share sheet") {
+                        it("states it opens a share sheet") {
                             expect(action?.title).to(equal("Share"))
                         }
 

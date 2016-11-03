@@ -133,6 +133,7 @@
 		8953B1581B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8953B1571B7F9B7A00B10156 /* UIApplication+rNewsSpec.swift */; };
 		8958EC3A1DCABDA60000159B /* DocumentationViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8958EC391DCABDA60000159B /* DocumentationViewControllerSpec.swift */; };
 		8958EC3C1DCB03250000159B /* FakeDocumentationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8958EC3B1DCB03250000159B /* FakeDocumentationUseCase.swift */; };
+		8958EC3F1DCBB2B20000159B /* SettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8958EC3E1DCBB2B20000159B /* SettingsSection.swift */; };
 		895901B31A32B61A002E2C62 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 895901AF1A32B61A002E2C62 /* Localizable.strings */; };
 		895901B41A32B61A002E2C62 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 895901AF1A32B61A002E2C62 /* Localizable.strings */; };
 		895A9CC91D3A7C09008B2B25 /* Sinope.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 895A9CC81D3A7C09008B2B25 /* Sinope.framework */; };
@@ -680,6 +681,7 @@
 		8957799D19E62C7100548418 /* RSSClientTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSSClientTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		8958EC391DCABDA60000159B /* DocumentationViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationViewControllerSpec.swift; sourceTree = "<group>"; };
 		8958EC3B1DCB03250000159B /* FakeDocumentationUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDocumentationUseCase.swift; sourceTree = "<group>"; };
+		8958EC3E1DCBB2B20000159B /* SettingsSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsSection.swift; sourceTree = "<group>"; };
 		895901B01A32B61A002E2C62 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		895A9CC81D3A7C09008B2B25 /* Sinope.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sinope.framework; path = Carthage/Build/iOS/Sinope.framework; sourceTree = SOURCE_ROOT; };
 		895AC51A1C7FF27300A5F6A1 /* RealmMigrator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmMigrator.swift; sourceTree = "<group>"; };
@@ -1224,6 +1226,7 @@
 			children = (
 				89735ABF1C06DAA70032E09C /* FeedsListController.swift */,
 				89E2A33C1B6A856900A40D4E /* SettingsViewController.swift */,
+				8958EC3E1DCBB2B20000159B /* SettingsSection.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -2475,6 +2478,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8958EC3F1DCBB2B20000159B /* SettingsSection.swift in Sources */,
 				8994F0EB1C8F53E600920E6D /* AuthorActivity.swift in Sources */,
 				8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */,
 				89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */,

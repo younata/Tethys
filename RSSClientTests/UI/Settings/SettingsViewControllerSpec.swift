@@ -278,6 +278,15 @@ class SettingsViewControllerSpec: QuickSpec {
                     it("has no edit actions") {
                         expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
                     }
+
+                    it("does not respond to 3d touch") {
+                        let viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
+
+                        let rect = subject.tableView.rectForRow(at: indexPath)
+                        let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
+                        let viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                        expect(viewController).to(beNil())
+                    }
                 }
 
                 describe("the second cell") {
@@ -329,6 +338,15 @@ class SettingsViewControllerSpec: QuickSpec {
                             }
                             return ["saveToUserDefaults": op]
                         }
+                    }
+
+                    it("does not respond to 3d touch") {
+                        let viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
+
+                        let rect = subject.tableView.rectForRow(at: indexPath)
+                        let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
+                        let viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                        expect(viewController).to(beNil())
                     }
                 }
             }
@@ -384,6 +402,15 @@ class SettingsViewControllerSpec: QuickSpec {
                             return ["saveToUserDefaults": op]
                         }
                     }
+
+                    it("does not respond to 3d touch") {
+                        let viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
+
+                        let rect = subject.tableView.rectForRow(at: indexPath)
+                        let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
+                        let viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                        expect(viewController).to(beNil())
+                    }
                 }
 
                 describe("the second cell") {
@@ -404,6 +431,15 @@ class SettingsViewControllerSpec: QuickSpec {
                     
                     it("has no edit actions") {
                         expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
+                    }
+
+                    it("does not respond to 3d touch") {
+                        let viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
+
+                        let rect = subject.tableView.rectForRow(at: indexPath)
+                        let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
+                        let viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                        expect(viewController).to(beNil())
                     }
                 }
             }
@@ -489,6 +525,67 @@ class SettingsViewControllerSpec: QuickSpec {
                         let editActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAt: indexPath)
                         expect(editActions).to(beNil())
                     }
+
+                    describe("3d touching the add feed cell") {
+                        var viewControllerPreviewing: FakeUIViewControllerPreviewing! = nil
+                        var viewController: UIViewController? = nil
+                        let indexPath = IndexPath(row: 0, section: sectionNumber)
+
+                        beforeEach {
+                            subject.tableView.frame = CGRect(x: 0, y: 0, width: 320, height: 480)
+                            viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
+
+                            let rect = subject.tableView.rectForRow(at: indexPath)
+                            let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
+                            viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                        }
+
+                        it("makes a request to the data use case for feeds") {
+                            expect(feedRepository.feedsPromises.count) == 1
+                        }
+
+                        it("returns a FeedsListController") {
+                            expect(viewController).to(beAnInstanceOf(FeedsListController.self))
+                            if let feedsList = viewController as? FeedsListController {
+                                expect(feedsList.navigationItem.title) == "Add a Quick Action"
+                                expect(feedsList.feeds.count) == 0
+                            }
+                        }
+
+                        it("has no preview actions") {
+                            expect(viewController?.previewActionItems.count) == 0
+                        }
+
+                        it("pushes the feeds list controller if the user commits the touch") {
+                            guard let vc = viewController else { fail(); return }
+                            subject.previewingContext(viewControllerPreviewing, commit: vc)
+                            expect(navigationController.visibleViewController) == vc
+                        }
+
+                        context("when the feeds promise succeeds") {
+                            let feeds = [
+                                Feed(title: "a", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
+                                Feed(title: "b", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                            ]
+
+                            beforeEach {
+                                feedRepository.feedsPromises.last?.resolve(.success(feeds))
+                            }
+
+                            it("sets the list of feeds") {
+                                if let feedsList = navigationController.visibleViewController as? FeedsListController {
+                                    expect(feedsList.feeds.count) == feeds.count
+                                    let feed = feeds[0]
+                                    feedsList.tapFeed?(feed, 0)
+                                    expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
+                                    expect(fakeQuickActionRepository.quickActions.count) == 1
+                                    if let quickAction = fakeQuickActionRepository.quickActions.first {
+                                        expect(quickAction.localizedTitle) == feed.title
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
                 context("when there are one or two existing quick actions") {
@@ -518,45 +615,137 @@ class SettingsViewControllerSpec: QuickSpec {
                     describe("the cell for an existing quick action") {
                         let indexPath = IndexPath(row: 0, section: sectionNumber)
 
-                        beforeEach {
-                            subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAt: indexPath)
-                        }
-
-                        it("makes a request to the data use case for feeds") {
-                            expect(feedRepository.feedsPromises.count) == 1
-                        }
-
-                        it("displays a list of feeds cell") {
-                            expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
-
-                            if let feedsList = navigationController.visibleViewController as? FeedsListController {
-                                expect(feedsList.navigationItem.title) == feedA.title
-                            }
-                        }
-
-                        context("when the feeds promise succeeds") {
+                        describe("tapping it") {
                             beforeEach {
-                                feedRepository.feedsPromises.last?.resolve(.success(feeds))
+                                subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAt: indexPath)
                             }
 
-                            it("should bring up a dialog to change the feed when one of the existing quick action cells is tapped") {
+                            it("makes a request to the data use case for feeds") {
+                                expect(feedRepository.feedsPromises.count) == 1
+                            }
+
+                            it("displays a list of feeds cell") {
                                 expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
 
                                 if let feedsList = navigationController.visibleViewController as? FeedsListController {
-                                    expect(feedsList.feeds) == [feedB]
-                                    let feed = feeds[1]
-                                    feedsList.tapFeed?(feed, 0)
-                                    expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
-                                    expect(fakeQuickActionRepository.quickActions.count) == 1
-                                    if let quickAction = fakeQuickActionRepository.quickActions.first {
-                                        expect(quickAction.localizedTitle) == feed.title
+                                    expect(feedsList.navigationItem.title) == feedA.title
+                                }
+                            }
+
+                            context("when the feeds promise succeeds") {
+                                beforeEach {
+                                    feedRepository.feedsPromises.last?.resolve(.success(feeds))
+                                }
+
+                                it("should bring up a dialog to change the feed when one of the existing quick action cells is tapped") {
+                                    expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedsListController.self))
+
+                                    if let feedsList = navigationController.visibleViewController as? FeedsListController {
+                                        expect(feedsList.feeds) == [feedB]
+                                        let feed = feeds[1]
+                                        feedsList.tapFeed?(feed, 0)
+                                        expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
+                                        expect(fakeQuickActionRepository.quickActions.count) == 1
+                                        if let quickAction = fakeQuickActionRepository.quickActions.first {
+                                            expect(quickAction.localizedTitle) == feed.title
+                                        }
                                     }
                                 }
                             }
+
+                            context("when the feeds promise fails") { // TODO: implement!
+
+                            }
                         }
 
-                        context("when the feeds promise fails") { // TODO: implement!
+                        describe("3d touching it") {
+                            var viewControllerPreviewing: FakeUIViewControllerPreviewing! = nil
+                            var viewController: UIViewController? = nil
+                            let indexPath = IndexPath(row: 0, section: sectionNumber)
 
+                            beforeEach {
+                                subject.tableView.frame = CGRect(x: 0, y: 0, width: 320, height: 480)
+                                viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
+
+                                let rect = subject.tableView.rectForRow(at: indexPath)
+                                let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
+                                viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                            }
+
+                            it("makes a request to the data use case for feeds") {
+                                expect(feedRepository.feedsPromises.count) == 1
+                            }
+
+                            it("returns a FeedsListController") {
+                                expect(viewController).to(beAnInstanceOf(FeedsListController.self))
+                                if let feedsList = viewController as? FeedsListController {
+                                    expect(feedsList.navigationItem.title) == feedA.title
+                                    expect(feedsList.feeds.count) == 0
+                                }
+                            }
+
+                            describe("the preview actions") {
+                                var previewActions: [UIPreviewActionItem]?
+                                var action: UIPreviewAction?
+
+                                beforeEach {
+                                    previewActions = viewController?.previewActionItems
+                                }
+
+                                it("has 1 preview action") {
+                                    expect(previewActions?.count) == 1
+                                }
+
+                                describe("the first action") {
+                                    beforeEach {
+                                        action = previewActions?.first as? UIPreviewAction
+                                    }
+
+                                    it("states that it deletes the quick action") {
+                                        expect(action?.title) == "Delete"
+                                    }
+
+                                    describe("tapping it") {
+                                        beforeEach {
+                                            action?.handler(action!, viewController!)
+                                        }
+
+                                        it("deletes the quick action") {
+                                            expect(fakeQuickActionRepository.quickActions).to(beEmpty())
+                                        }
+                                    }
+                                }
+                            }
+
+                            it("pushes the feeds list controller if the user commits the touch") {
+                                guard let vc = viewController else { fail(); return }
+                                subject.previewingContext(viewControllerPreviewing, commit: vc)
+                                expect(navigationController.visibleViewController) == vc
+                            }
+
+                            context("when the feeds promise succeeds") {
+                                let feeds = [
+                                    Feed(title: "a", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
+                                    Feed(title: "b", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                ]
+
+                                beforeEach {
+                                    feedRepository.feedsPromises.last?.resolve(.success(feeds))
+                                }
+
+                                it("sets the list of feeds") {
+                                    if let feedsList = navigationController.visibleViewController as? FeedsListController {
+                                        expect(feedsList.feeds.count) == feeds.count
+                                        let feed = feeds[0]
+                                        feedsList.tapFeed?(feed, 0)
+                                        expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
+                                        expect(fakeQuickActionRepository.quickActions.count) == 1
+                                        if let quickAction = fakeQuickActionRepository.quickActions.first {
+                                            expect(quickAction.localizedTitle) == feed.title
+                                        }
+                                    }
+                                }
+                            }
                         }
 
                         it("has one edit action, which deletes the quick action when selected") {
@@ -852,6 +1041,15 @@ class SettingsViewControllerSpec: QuickSpec {
                             return ["saveToUserDefaults": op]
                         }
                     }
+
+                    it("does not respond to 3d touch") {
+                        let viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
+
+                        let rect = subject.tableView.rectForRow(at: indexPath)
+                        let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
+                        let viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                        expect(viewController).to(beNil())
+                    }
                 }
 
                 describe("the second cell") {
@@ -914,6 +1112,15 @@ class SettingsViewControllerSpec: QuickSpec {
                                 }
                             }
                         }
+                    }
+
+                    it("does not respond to 3d touch") {
+                        let viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
+
+                        let rect = subject.tableView.rectForRow(at: indexPath)
+                        let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
+                        let viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                        expect(viewController).to(beNil())
                     }
                 }
             }

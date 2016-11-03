@@ -30,6 +30,11 @@ public final class FeedsListController: UIViewController {
         self.view.addSubview(self.tableView)
         self.tableView.autoPinEdgesToSuperviewEdges()
     }
+
+    var _previewActionItems: [UIPreviewAction] = []
+    public override var previewActionItems: [UIPreviewActionItem] {
+        return self._previewActionItems
+    }
 }
 
 extension FeedsListController: ThemeRepositorySubscriber {

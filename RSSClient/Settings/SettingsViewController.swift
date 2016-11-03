@@ -445,8 +445,7 @@ extension SettingsViewController: UITableViewDelegate {
         }
     }
 
-    @objc(tableView:canEditRowAtIndexPath:) public func tableView(_ tableView: UITableView,
-                                                                  canEditRowAt indexPath: IndexPath) -> Bool {
+    public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection),
             section == .quickActions || section == .accounts else { return false }
         if section == .quickActions { return indexPath.row < self.quickActionRepository.quickActions.count }

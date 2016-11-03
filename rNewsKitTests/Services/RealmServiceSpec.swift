@@ -122,7 +122,12 @@ class RealmServiceSpec: QuickSpec {
                 realmArticle1.link = "https://example.com/article/article1"
                 realmArticle1.feed = realmFeed1
 
-                for object in [realmFeed1, realmArticle1] {
+                let realmArticle2 = RealmArticle()
+                realmArticle2.title = "http article"
+                realmArticle2.link = "http://example.com/article/article10"
+                realmArticle2.feed = realmFeed1
+
+                for object in [realmFeed1, realmArticle1, realmArticle2] {
                     realm.add(object)
                 }
                 _ = try? realm.commitWrite()
@@ -138,7 +143,29 @@ class RealmServiceSpec: QuickSpec {
                 expect(article?.feed) == feed1
 
                 expect(realm.objects(RealmFeed.self).count) == 1
-                expect(realm.objects(RealmArticle.self).count) == 1
+                expect(realm.objects(RealmArticle.self).count) == 2
+            }
+
+            it("returns the existing article if an article of that feed for the https version of the url exists") {
+                let future = subject.findOrCreateArticle(feed: feed1, url: URL(string: "http://example.com/article/article1")!)
+                expect(future.value).toNot(beNil())
+                let article = future.value
+                expect(article?.link) == URL(string: "https://example.com/article/article1")
+                expect(article?.feed) == feed1
+
+                expect(realm.objects(RealmFeed.self).count) == 1
+                expect(realm.objects(RealmArticle.self).count) == 2
+            }
+
+            it("returns the existing article if an article of that feed for the https version of the url exists") {
+                let future = subject.findOrCreateArticle(feed: feed1, url: URL(string: "https://example.com/article/article10")!)
+                expect(future.value).toNot(beNil())
+                let article = future.value
+                expect(article?.link) == URL(string: "http://example.com/article/article10")
+                expect(article?.feed) == feed1
+
+                expect(realm.objects(RealmFeed.self).count) == 1
+                expect(realm.objects(RealmArticle.self).count) == 2
             }
 
             it("creates a new article if that url does not exist") {
@@ -149,7 +176,7 @@ class RealmServiceSpec: QuickSpec {
                 expect(article?.feed) == feed1
 
                 expect(realm.objects(RealmFeed.self).count) == 1
-                expect(realm.objects(RealmArticle.self).count) == 2
+                expect(realm.objects(RealmArticle.self).count) == 3
             }
 
             it("creates a new feed and article if the feed does not exist") {
@@ -161,7 +188,7 @@ class RealmServiceSpec: QuickSpec {
                 expect(article?.feed) == feed2
 
                 expect(realm.objects(RealmFeed.self).count) == 2
-                expect(realm.objects(RealmArticle.self).count) == 2
+                expect(realm.objects(RealmArticle.self).count) == 3
             }
         }
 

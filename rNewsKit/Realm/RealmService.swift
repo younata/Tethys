@@ -94,8 +94,27 @@ final class RealmService: DataService {
         _ = self.realmTransaction {
             if let realmFeed = self.realmFeedForFeed(feed) {
                 let article: Article
+
+                let httpsURLString: String
+                let httpURLString: String
+
+                var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
+                if urlComponents?.scheme == "http" {
+                    httpURLString = url.absoluteString
+                    urlComponents?.scheme = "https"
+                    httpsURLString = urlComponents?.url?.absoluteString ?? url.absoluteString
+                } else if urlComponents?.scheme == "https" {
+                    httpsURLString = url.absoluteString
+                    urlComponents?.scheme = "http"
+                    httpURLString = urlComponents?.url?.absoluteString ?? url.absoluteString
+                } else {
+                    httpURLString = url.absoluteString
+                    httpsURLString = url.absoluteString
+                }
+
                 if let realmArticle = self.realm.objects(RealmArticle.self)
-                    .filter("feed.id = %@ AND link = %@", realmFeed.id, url.absoluteString).first {
+                    .filter("feed.id = %@ AND (link = %@ OR link = %@)",
+                            realmFeed.id, httpsURLString, httpURLString).first {
                     article = Article(realmArticle: realmArticle, feed: feed)
                 } else {
                     let realmArticle = self.realm.create(RealmArticle.self, value: ["link": url.absoluteString])

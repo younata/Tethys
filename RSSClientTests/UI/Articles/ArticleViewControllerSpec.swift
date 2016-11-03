@@ -102,9 +102,9 @@ class ArticleViewControllerSpec: QuickSpec {
 
                 it("should not list the next/previous article commands") {
                     let expectedCommands = [
-                        UIKeyCommand(input: "r", modifierFlags: .shift, action: Selector("")),
-                        UIKeyCommand(input: "l", modifierFlags: .command, action: Selector("")),
-                        UIKeyCommand(input: "s", modifierFlags: .command, action: Selector("")),
+                        UIKeyCommand(input: "r", modifierFlags: .shift, action: #selector(BlankTarget.blank)),
+                        UIKeyCommand(input: "l", modifierFlags: .command, action: #selector(BlankTarget.blank)),
+                        UIKeyCommand(input: "s", modifierFlags: .command, action: #selector(BlankTarget.blank)),
                     ]
                     let expectedDiscoverabilityTitles = [
                         "Toggle Read",

@@ -27,9 +27,9 @@ class FeedsViewControllerSpec: QuickSpec {
             injector.bind(kind: DatabaseUseCase.self, toInstance: databaseUseCase)
 
             mainMenu = NSMenu(title: "")
-            mainMenu?.addItem(withTitle: "a", action: Selector(""), keyEquivalent: "")
-            mainMenu?.addItem(withTitle: "b", action: Selector(""), keyEquivalent: "")
-            mainMenu?.addItem(withTitle: "c", action: Selector(""), keyEquivalent: "")
+            mainMenu?.addItem(withTitle: "a", action: #selector(BlankTarget.blank), keyEquivalent: "")
+            mainMenu?.addItem(withTitle: "b", action: #selector(BlankTarget.blank), keyEquivalent: "")
+            mainMenu?.addItem(withTitle: "c", action: #selector(BlankTarget.blank), keyEquivalent: "")
             injector.bind(string: kMainMenu, toInstance: mainMenu!)
 
             subject.configure(injector)

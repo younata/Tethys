@@ -193,9 +193,9 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                     // cmd+f, cmd+i, cmd+shift+i, cmd+opt+i
                     let expectedCommands = [
-                        UIKeyCommand(input: "f", modifierFlags: .command, action: Selector("")),
-                        UIKeyCommand(input: "i", modifierFlags: .command, action: Selector("")),
-                        UIKeyCommand(input: ",", modifierFlags: .command, action: Selector("")),
+                        UIKeyCommand(input: "f", modifierFlags: .command, action: #selector(BlankTarget.blank)),
+                        UIKeyCommand(input: "i", modifierFlags: .command, action: #selector(BlankTarget.blank)),
+                        UIKeyCommand(input: ",", modifierFlags: .command, action: #selector(BlankTarget.blank)),
                         ]
                     let expectedDiscoverabilityTitles = [
                         "Filter by tags",

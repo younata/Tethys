@@ -120,7 +120,7 @@ public final class RefreshControl: NSObject {
     }
 
     fileprivate func changeRefreshStyle(forcedStyle: RefreshControlStyle? = nil) {
-        if let style = forcedStyle {
+        if let _ = forcedStyle {
             self.switchInSpinner()
         } else {
             switch self.settingsRepository.refreshControl {

@@ -134,6 +134,8 @@
 		8958EC3A1DCABDA60000159B /* DocumentationViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8958EC391DCABDA60000159B /* DocumentationViewControllerSpec.swift */; };
 		8958EC3C1DCB03250000159B /* FakeDocumentationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8958EC3B1DCB03250000159B /* FakeDocumentationUseCase.swift */; };
 		8958EC3F1DCBB2B20000159B /* SettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8958EC3E1DCBB2B20000159B /* SettingsSection.swift */; };
+		8958EC411DCBF58D0000159B /* BlankTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8958EC401DCBF58D0000159B /* BlankTarget.swift */; };
+		8958EC421DCBF5F80000159B /* BlankTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8958EC401DCBF58D0000159B /* BlankTarget.swift */; };
 		895901B31A32B61A002E2C62 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 895901AF1A32B61A002E2C62 /* Localizable.strings */; };
 		895901B41A32B61A002E2C62 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 895901AF1A32B61A002E2C62 /* Localizable.strings */; };
 		895A9CC91D3A7C09008B2B25 /* Sinope.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 895A9CC81D3A7C09008B2B25 /* Sinope.framework */; };
@@ -682,6 +684,7 @@
 		8958EC391DCABDA60000159B /* DocumentationViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationViewControllerSpec.swift; sourceTree = "<group>"; };
 		8958EC3B1DCB03250000159B /* FakeDocumentationUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDocumentationUseCase.swift; sourceTree = "<group>"; };
 		8958EC3E1DCBB2B20000159B /* SettingsSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsSection.swift; sourceTree = "<group>"; };
+		8958EC401DCBF58D0000159B /* BlankTarget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlankTarget.swift; sourceTree = "<group>"; };
 		895901B01A32B61A002E2C62 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		895A9CC81D3A7C09008B2B25 /* Sinope.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sinope.framework; path = Carthage/Build/iOS/Sinope.framework; sourceTree = SOURCE_ROOT; };
 		895AC51A1C7FF27300A5F6A1 /* RealmMigrator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmMigrator.swift; sourceTree = "<group>"; };
@@ -1733,6 +1736,7 @@
 		AE4356071A7ABAD500A961B9 /* Fakes */ = {
 			isa = PBXGroup;
 			children = (
+				8958EC401DCBF58D0000159B /* BlankTarget.swift */,
 				89E186911D136C38005C5880 /* FakeAnalytics.swift */,
 				892CBDE91C7A27FE0062E578 /* FakeArticleUseCase.swift */,
 				89EA6C351B4B2D8400456892 /* FakeDefaultDatabaseUseCase.swift */,
@@ -2458,6 +2462,7 @@
 				8969947E1DC1687500A97C66 /* FakeImportUseCase.swift in Sources */,
 				898979E11B72A63100218498 /* FeedsViewControllerSpec.swift in Sources */,
 				898979D51B71CE3A00218498 /* MainControllerSpec.swift in Sources */,
+				8958EC421DCBF5F80000159B /* BlankTarget.swift in Sources */,
 				89DFAA601B7684A0004CD9CA /* FeedViewSpec.swift in Sources */,
 				8937F6B71B77AE5F0044A442 /* AppModuleSpec.swift in Sources */,
 				898979E31B72FF9A00218498 /* AppDelegateSpec.swift in Sources */,
@@ -2582,6 +2587,7 @@
 				89C204C71A740D8900C792D2 /* LocalNotificationHandlerSpec.swift in Sources */,
 				894942411C84BEC20095FFD4 /* FakeQuickActionRepository.swift in Sources */,
 				894D1AEB1DB0971E00E70B1A /* FakeWKNavigationAction.swift in Sources */,
+				8958EC411DCBF58D0000159B /* BlankTarget.swift in Sources */,
 				8997C8531B2566A600972930 /* ArticleCellSpec.swift in Sources */,
 				8935F5E01B462B7A000FFD5D /* FakeURLSession.swift in Sources */,
 				89831FEC1DB5C5FC00E32412 /* ArticleListHeaderCellSpec.swift in Sources */,

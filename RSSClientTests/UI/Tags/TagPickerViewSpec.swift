@@ -38,7 +38,7 @@ class TagPickerViewSpec: QuickSpec {
         describe("filtering results") {
             beforeEach {
                 if let delegate = subject.textField.delegate {
-                    delegate.textField?(subject.textField, shouldChangeCharactersIn: NSMakeRange(0, 0), replacementString: "a")
+                    _ = delegate.textField?(subject.textField, shouldChangeCharactersIn: NSMakeRange(0, 0), replacementString: "a")
                 }
             }
 

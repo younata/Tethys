@@ -142,7 +142,7 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
 
                         let expectedCommands = [
-                            UIKeyCommand(input: "2", modifierFlags: .command, action: Selector("")),
+                            UIKeyCommand(input: "2", modifierFlags: .command, action: #selector(BlankTarget.blank)),
                         ]
                         let expectedDiscoverabilityTitles = [
                             "Change Theme to 'Dark'",
@@ -172,7 +172,7 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
 
                         let expectedCommands = [
-                            UIKeyCommand(input: "1", modifierFlags: .command, action: Selector("")),
+                            UIKeyCommand(input: "1", modifierFlags: .command, action: #selector(BlankTarget.blank)),
                         ]
                         let expectedDiscoverabilityTitles = [
                             "Change Theme to 'Default'",
@@ -201,8 +201,8 @@ class SettingsViewControllerSpec: QuickSpec {
                     let commands = allCommands[allCommands.count - 2..<allCommands.count]
 
                     let expectedCommands = [
-                        UIKeyCommand(input: "s", modifierFlags: .command, action: Selector("")),
-                        UIKeyCommand(input: "w", modifierFlags: .command, action: Selector("")),
+                        UIKeyCommand(input: "s", modifierFlags: .command, action: #selector(BlankTarget.blank)),
+                        UIKeyCommand(input: "w", modifierFlags: .command, action: #selector(BlankTarget.blank)),
                     ]
                     let expectedDiscoverabilityTitles = [
                         "Save and dismiss",

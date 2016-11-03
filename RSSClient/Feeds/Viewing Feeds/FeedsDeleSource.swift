@@ -132,15 +132,13 @@ extension FeedsDeleSource: UITableViewDelegate {
         self.showArticleList(al, animated: true)
     }
 
-    // swiftlint:disable line_length
-    @objc(tableView:canEditRowAtIndexPath:) public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+    public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
 
-    @objc(tableView:commitEditingStyle:forRowAtIndexPath:) public func tableView(_ tableView: UITableView,
-                                                                                 commit editingStyle: UITableViewCellEditingStyle,
-                                                                                 forRowAt indexPath: IndexPath) {}
-    // swiftlint:enable line_length
+    public func tableView(_ tableView: UITableView,
+                          commit editingStyle: UITableViewCellEditingStyle,
+                          forRowAt indexPath: IndexPath) {}
 
     public func tableView(_ tableView: UITableView,
                           editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {

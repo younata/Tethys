@@ -40,7 +40,7 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
     private let fileManager: FileManager
     private let mainQueue: OperationQueue
 
-    private enum ImportType {
+    fileprivate enum ImportType {
         case feed
         case opml
     }

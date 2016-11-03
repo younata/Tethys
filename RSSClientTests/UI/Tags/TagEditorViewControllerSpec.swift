@@ -71,7 +71,7 @@ class TagEditorViewControllerSpec: QuickSpec {
 
             context("when there is data to save") {
                 beforeEach {
-                    subject.tagPicker.textField(subject.tagPicker.textField, shouldChangeCharactersIn: NSMakeRange(0, 0), replacementString: "a")
+                    _ = subject.tagPicker.textField(subject.tagPicker.textField, shouldChangeCharactersIn: NSMakeRange(0, 0), replacementString: "a")
                     subject.navigationItem.rightBarButtonItem?.tap()
                 }
 

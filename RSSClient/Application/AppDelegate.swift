@@ -111,12 +111,12 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
                 return
             }
 
-            if shortcutItem.type == "com.rachelbrindle.RSSClient.newfeed" {
+            if shortcutItem.type == "com.rachelbrindle.rssclient.newfeed" {
                 feedsViewController.importFromWeb()
                 self.analytics.logEvent("QuickActionUsed", data: ["kind": "Add New Feed"])
                 completionHandler(true)
-            } else if let feedTitle = shortcutItem.userInfo?["feed"] as? String,
-                shortcutItem.type == "com.rachelbrindle.RSSClient.viewfeed" {
+            } else if shortcutItem.type == "com.rachelbrindle.rssclient.viewfeed" {
+                let feedTitle = shortcutItem.userInfo?["feed"] as? String ?? shortcutItem.localizedTitle
                 // swiftlint:disable conditional_binding_cascade
                     _ = self.feedRepository.feeds().then {
                         if case let Result.success(feeds) = $0,

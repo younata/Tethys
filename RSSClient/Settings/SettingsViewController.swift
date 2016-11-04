@@ -231,7 +231,10 @@ public final class SettingsViewController: UIViewController, Injectable {
         }
         feedsListController.tapFeed = {feed in
             let newQuickAction = UIApplicationShortcutItem(type: "com.rachelbrindle.rssclient.viewfeed",
-                                                           localizedTitle: feed.title)
+                                                           localizedTitle: feed.displayTitle,
+                                                           localizedSubtitle: nil,
+                                                           icon: nil,
+                                                           userInfo: ["feed": feed.title])
             if indexPath.row < quickActions.count {
                 self.quickActionRepository.quickActions[indexPath.row] = newQuickAction
             } else {

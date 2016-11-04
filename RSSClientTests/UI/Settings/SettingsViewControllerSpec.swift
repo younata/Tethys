@@ -508,7 +508,9 @@ class SettingsViewControllerSpec: QuickSpec {
                                     expect(navigationController.visibleViewController).to(beIdenticalTo(subject))
                                     expect(fakeQuickActionRepository.quickActions.count) == 1
                                     if let quickAction = fakeQuickActionRepository.quickActions.first {
-                                        expect(quickAction.localizedTitle) == feed.title
+                                        expect(quickAction.localizedTitle) == feed.displayTitle
+                                        expect(quickAction.type) == "com.rachelbrindle.rssclient.viewfeed"
+                                        expect(quickAction.userInfo?["feed"] as? String) == feed.title
                                     }
                                 }
                             }
@@ -581,6 +583,8 @@ class SettingsViewControllerSpec: QuickSpec {
                                     expect(fakeQuickActionRepository.quickActions.count) == 1
                                     if let quickAction = fakeQuickActionRepository.quickActions.first {
                                         expect(quickAction.localizedTitle) == feed.title
+                                        expect(quickAction.type) == "com.rachelbrindle.rssclient.viewfeed"
+                                        expect(quickAction.userInfo?["feed"] as? String) == feed.title
                                     }
                                 }
                             }
@@ -648,6 +652,8 @@ class SettingsViewControllerSpec: QuickSpec {
                                         expect(fakeQuickActionRepository.quickActions.count) == 1
                                         if let quickAction = fakeQuickActionRepository.quickActions.first {
                                             expect(quickAction.localizedTitle) == feed.title
+                                            expect(quickAction.type) == "com.rachelbrindle.rssclient.viewfeed"
+                                            expect(quickAction.userInfo?["feed"] as? String) == feed.title
                                         }
                                     }
                                 }
@@ -742,6 +748,8 @@ class SettingsViewControllerSpec: QuickSpec {
                                         expect(fakeQuickActionRepository.quickActions.count) == 1
                                         if let quickAction = fakeQuickActionRepository.quickActions.first {
                                             expect(quickAction.localizedTitle) == feed.title
+                                            expect(quickAction.type) == "com.rachelbrindle.rssclient.viewfeed"
+                                            expect(quickAction.userInfo?["feed"] as? String) == feed.title
                                         }
                                     }
                                 }
@@ -799,6 +807,8 @@ class SettingsViewControllerSpec: QuickSpec {
                                     expect(fakeQuickActionRepository.quickActions.count) == 2
                                     if let quickAction = fakeQuickActionRepository.quickActions.last {
                                         expect(quickAction.localizedTitle) == feed.title
+                                        expect(quickAction.type) == "com.rachelbrindle.rssclient.viewfeed"
+                                        expect(quickAction.userInfo?["feed"] as? String) == feed.title
                                     }
                                 }
                             }
@@ -887,6 +897,8 @@ class SettingsViewControllerSpec: QuickSpec {
                                     expect(fakeQuickActionRepository.quickActions.count) == 3
                                     if let quickAction = fakeQuickActionRepository.quickActions.first {
                                         expect(quickAction.localizedTitle) == feed.title
+                                        expect(quickAction.type) == "com.rachelbrindle.rssclient.viewfeed"
+                                        expect(quickAction.userInfo?["feed"] as? String) == feed.title
                                     }
                                 }
                             }

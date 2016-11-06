@@ -36,11 +36,11 @@ enum SettingsSection: CustomStringConvertible {
             switch rawValue + offset {
             case 2:
                 self = .quickActions
+//            case 3:
+//                self = .accounts
             case 3:
-                self = .accounts
-            case 4:
                 self = .other
-            case 5:
+            case 4:
                 self = .credits
             default:
                 return nil
@@ -50,9 +50,9 @@ enum SettingsSection: CustomStringConvertible {
 
     static func numberOfSettings(_ traits: UITraitCollection) -> Int {
         if traits.forceTouchCapability == .available {
-            return 6
+            return 5
         }
-        return 5
+        return 4
     }
 
     var rawValue: Int {
@@ -61,8 +61,8 @@ enum SettingsSection: CustomStringConvertible {
         case .refresh: return 1
         case .quickActions: return 2
         case .accounts: return 3
-        case .other: return 4
-        case .credits: return 5
+        case .other: return 3
+        case .credits: return 4
         }
     }
 

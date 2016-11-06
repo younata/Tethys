@@ -145,17 +145,17 @@ final class FakeSinopeRepository : Sinope.Repository, Equatable {
     }
 
     private(set) var checkCallCount : Int = 0
-    var checkStub : ((URL) -> (Future<Result<[URL: Bool], SinopeError>>))?
+    var checkStub : ((URL) -> (Future<Result<CheckResult, SinopeError>>))?
     private var checkArgs : Array<(URL)> = []
-    func checkReturns(_ stubbedValues: (Future<Result<[URL: Bool], SinopeError>>)) {
-        self.checkStub = {(url: URL) -> (Future<Result<[URL: Bool], SinopeError>>) in
+    func checkReturns(_ stubbedValues: (Future<Result<CheckResult, SinopeError>>)) {
+        self.checkStub = {(url: URL) -> (Future<Result<CheckResult, SinopeError>>) in
             return stubbedValues
         }
     }
     func checkArgsForCall(_ callIndex: Int) -> (URL) {
         return self.checkArgs[callIndex]
     }
-    func check(_ url: URL) -> Future<Result<[URL : Bool], SinopeError>> {
+    func check(_ url: URL) -> Future<Result<CheckResult, SinopeError>> {
         self.checkCallCount += 1
         self.checkArgs.append((url) as (URL))
         return self.checkStub!(url as URL)

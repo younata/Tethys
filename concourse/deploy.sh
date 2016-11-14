@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd rssclient
+cd tethys_github
 bundle
 bundle exec carthage_cache -b $AWS_CACHE_BUCKET install || carthage bootstrap --no-use-binaries --platform ios
 bundle exec rake documentation:libraries

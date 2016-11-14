@@ -2,10 +2,10 @@
 platform: darwin
 
 inputs:
-- name: rssclient
+- name: tethys_github
 
 run:
-  path: rssclient/concourse/deploy.sh
+  path: tethys_github/concourse/deploy.sh
 
 params:
   FASTLANE_PASSWORD:

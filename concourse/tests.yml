@@ -2,7 +2,7 @@
 platform: darwin
 
 inputs:
-- name: rssclient
+- name: tethys_github
 
 run:
-  path: rssclient/concourse/tests.sh
+  path: tethys_github/concourse/tests.sh

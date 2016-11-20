@@ -76,6 +76,17 @@ class ArticleCellSpec: QuickSpec {
             expect(subject.unread.unread) != 0
         }
 
+        it("doesn't show the unread indicator when 'hideUnread' is set") {
+            subject.hideUnread = true
+            expect(subject.unread.unread) == 0
+        }
+
+        it("still doesn't show the unread indicator when an unread article is set after 'hideUnread' is set") {
+            subject.hideUnread = true
+            subject.article = unupdatedArticle
+            expect(subject.unread.unread) == 0
+        }
+
         context("setting an read article") {
             beforeEach {
                 subject.article = readArticle

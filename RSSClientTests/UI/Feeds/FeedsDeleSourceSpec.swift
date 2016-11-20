@@ -32,13 +32,16 @@ class FeedsDeleSourceSpec: QuickSpec {
 
             feedsSource.feeds = feeds
 
+            let injector = Injector()
+
             articleListFactory = {
                 articleListFactoryCallCount += 1
                 return ArticleListController(
                     feedRepository: FakeDatabaseUseCase(),
                     themeRepository: themeRepository,
                     settingsRepository: SettingsRepository(userDefaults: nil),
-                    articleViewController: { return ArticleViewController(coder: NSKeyedUnarchiver())! }
+                    articleViewController: { return ArticleViewController(coder: NSKeyedUnarchiver())! },
+                    generateBookViewController: { return injector.create(kind: GenerateBookViewController.self)! }
                 )
             }
 

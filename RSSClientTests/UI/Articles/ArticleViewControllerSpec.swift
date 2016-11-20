@@ -225,9 +225,10 @@ class ArticleViewControllerSpec: QuickSpec {
                         beforeEach {
                             articleListController = ArticleListController(
                                 feedRepository: FakeDatabaseUseCase(),
-                                themeRepository: ThemeRepository(userDefaults: nil),
+                                themeRepository: themeRepository,
                                 settingsRepository: SettingsRepository(userDefaults: nil),
-                                articleViewController: { subject }
+                                articleViewController: { subject },
+                                generateBookViewController: { injector.create(kind: GenerateBookViewController.self)! }
                             )
                             injector.bind(kind: ArticleListController.self, toInstance: articleListController)
 

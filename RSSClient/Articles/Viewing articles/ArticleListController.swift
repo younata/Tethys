@@ -3,6 +3,17 @@ import rNewsKit
 import Ra
 import CBGPromise
 
+public protocol ArticleListControllerDelegate: class {
+    func articleListControllerCanSelectMultipleArticles(_: ArticleListController) -> Bool
+    func articleListControllerShouldShowToolbar(_: ArticleListController) -> Bool
+    func articleListControllerRightBarButtonItems(_: ArticleListController) -> [UIBarButtonItem]
+    func articleListController(_: ArticleListController, canEditArticle article: Article) -> Bool
+    func articleListController(_: ArticleListController, shouldShowArticleView article: Article) -> Bool
+    func articleListController(_: ArticleListController, didSelectArticles articles: [Article])
+
+    func articleListController(_: ArticleListController, shouldPreviewArticle article: Article) -> Bool
+}
+
 public final class ArticleListController: UITableViewController, DataSubscriber, Injectable {
     fileprivate enum ArticleListSection: Int {
         case overview = 0
@@ -11,7 +22,7 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
         static var numberOfSections = 2
     }
 
-    internal var articles = DataStoreBackedArray<Article>()
+    public internal(set) var articles = DataStoreBackedArray<Article>()
     public var feed: Feed? {
         didSet {
             self.resetArticles()
@@ -19,21 +30,24 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
         }
     }
 
-    public var previewMode: Bool = false
+    public weak var delegate: ArticleListControllerDelegate?
 
     fileprivate let feedRepository: DatabaseUseCase
     fileprivate let themeRepository: ThemeRepository
     fileprivate let settingsRepository: SettingsRepository
     fileprivate let articleViewController: (Void) -> ArticleViewController
+    fileprivate let generateBookViewController: (Void) -> GenerateBookViewController
 
     public init(feedRepository: DatabaseUseCase,
                 themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
-                articleViewController: @escaping (Void) -> ArticleViewController) {
+                articleViewController: @escaping (Void) -> ArticleViewController,
+                generateBookViewController: @escaping (Void) -> GenerateBookViewController) {
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.articleViewController = articleViewController
+        self.generateBookViewController = generateBookViewController
 
         super.init(style: .plain)
     }
@@ -43,7 +57,8 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
             feedRepository: injector.create(kind: DatabaseUseCase.self)!,
             themeRepository: injector.create(kind: ThemeRepository.self)!,
             settingsRepository: injector.create(kind: SettingsRepository.self)!,
-            articleViewController: { injector.create(kind: ArticleViewController.self)! }
+            articleViewController: { injector.create(kind: ArticleViewController.self)! },
+            generateBookViewController: { injector.create(kind: GenerateBookViewController.self)! }
         )
     }
 
@@ -67,16 +82,31 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
 
         self.feedRepository.addSubscriber(self)
 
-        self.themeRepository.addSubscriber(self)
 
-        if !self.previewMode {
-            if let feed = self.feed {
-                self.navigationItem.title = feed.displayTitle
-            }
-
-            self.registerForPreviewing(with: self, sourceView: self.tableView)
-            self.resetBarItems()
+        if let feed = self.feed {
+            self.navigationItem.title = feed.displayTitle
         }
+
+        self.tableView.allowsMultipleSelection = self.delegate?.articleListControllerCanSelectMultipleArticles(self)
+            ?? false
+
+        self.registerForPreviewing(with: self, sourceView: self.tableView)
+        self.resetBarItems()
+        self.setupToolbar()
+    }
+
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if !(self.delegate?.articleListControllerShouldShowToolbar(self) == false) {
+            self.navigationController?.setToolbarHidden(false, animated: true)
+        }
+        self.themeRepository.addSubscriber(self)
+    }
+
+    public override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        self.navigationController?.setToolbarHidden(true, animated: true)
     }
 
     var _previewActionItems: [UIPreviewAction] = []
@@ -99,6 +129,11 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
 
     fileprivate func articleForIndexPath(_ indexPath: IndexPath) -> Article {
         return self.articles[indexPath.row]
+    }
+
+    public func selectArticles() {
+        let articles = self.tableView.indexPathsForSelectedRows?.map { self.articleForIndexPath($0) }
+        self.delegate?.articleListController(self, didSelectArticles: articles ?? [])
     }
 
     public func showArticle(_ article: Article, animated: Bool = true) -> ArticleViewController {
@@ -203,15 +238,26 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
     }
 
     public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: false)
-
-        if !self.previewMode && ArticleListSection(rawValue: indexPath.section) == ArticleListSection.articles {
-            _ = self.showArticle(self.articleForIndexPath(indexPath))
+        if ArticleListSection(rawValue: indexPath.section) == ArticleListSection.articles {
+            let article = self.articleForIndexPath(indexPath)
+            if self.delegate?.articleListController(self, shouldShowArticleView: article) != false {
+                tableView.deselectRow(at: indexPath, animated: false)
+                _ = self.showArticle(article)
+            } else {
+                return
+            }
+        } else {
+            tableView.deselectRow(at: indexPath, animated: false)
         }
     }
 
     public override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return !self.previewMode && ArticleListSection(rawValue: indexPath.section) == ArticleListSection.articles
+        if ArticleListSection(rawValue: indexPath.section) == ArticleListSection.articles {
+            return self.delegate?.articleListController(self,
+                                                        canEditArticle: self.articleForIndexPath(indexPath)) != false
+        } else {
+            return false
+        }
     }
 
     public override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle,
@@ -219,7 +265,7 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
 
     public override func tableView(_ tableView: UITableView,
         editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-            if self.previewMode || ArticleListSection(rawValue: indexPath.section) != ArticleListSection.articles {
+            if ArticleListSection(rawValue: indexPath.section) != ArticleListSection.articles {
                 return nil
             }
             let article = self.articleForIndexPath(indexPath)
@@ -253,18 +299,29 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
     }
 
     fileprivate func resetBarItems() {
-        guard !self.previewMode else { return }
+        if let barItems = self.delegate?.articleListControllerRightBarButtonItems(self) {
+            self.navigationItem.rightBarButtonItems = barItems
+        } else {
+            var barItems = [self.editButtonItem]
 
-        var barItems = [self.editButtonItem]
+            if let _ = self.feed {
+                let shareSheet = UIBarButtonItem(barButtonSystemItem: .action,
+                                                 target: self,
+                                                 action: #selector(ArticleListController.shareFeed))
+                barItems.append(shareSheet)
+            }
 
-        if let _ = self.feed {
-            let shareSheet = UIBarButtonItem(barButtonSystemItem: .action,
-                                             target: self,
-                                             action: #selector(ArticleListController.shareFeed))
-            barItems.append(shareSheet)
+            self.navigationItem.rightBarButtonItems = barItems
         }
+    }
 
-        self.navigationItem.rightBarButtonItems = barItems
+    private func setupToolbar() {
+        self.toolbarItems = [
+            UIBarButtonItem(image: UIImage(named: "Book"),
+                            style: .plain,
+                            target: self,
+                            action: #selector(ArticleListController.displayGenerateBookController))
+        ]
     }
 
     @objc fileprivate func shareFeed() {
@@ -272,18 +329,31 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
         let shareSheet = UIActivityViewController(activityItems: [url], applicationActivities: nil)
         self.present(shareSheet, animated: true, completion: nil)
     }
+
+    @objc private func displayGenerateBookController() {
+        let generateBookController = self.generateBookViewController()
+        generateBookController.articles = self.articles
+        self.present(
+            UINavigationController(rootViewController: generateBookController),
+            animated: true,
+            completion: nil
+        )
+    }
 }
 
 extension ArticleListController: UIViewControllerPreviewingDelegate {
     public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
                                   viewControllerForLocation location: CGPoint) -> UIViewController? {
-        if let indexPath = self.tableView.indexPathForRow(at: location), !self.previewMode &&
+        // swiftlint:disable line_length
+        if let indexPath = self.tableView.indexPathForRow(at: location),
+            self.delegate?.articleListController(self, shouldPreviewArticle: self.articleForIndexPath(indexPath)) != false &&
             ArticleListSection(rawValue: indexPath.section) == ArticleListSection.articles {
                 let article = self.articleForIndexPath(indexPath)
                 let articleController = self.configuredArticleController(article, read: false)
                 articleController._previewActionItems = self.previewItems(article: article)
                 return articleController
         }
+        // swiftlint:enable line_length
         return nil
     }
 
@@ -307,7 +377,7 @@ extension ArticleListController: UIViewControllerPreviewingDelegate {
     public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
         commit viewControllerToCommit: UIViewController) {
             if let articleController = viewControllerToCommit as? ArticleViewController,
-                let article = articleController.article, !self.previewMode {
+                let article = articleController.article {
                     _ = self.feedRepository.markArticle(article, asRead: true)
                     self.showArticleController(articleController, animated: true)
             }
@@ -324,5 +394,6 @@ extension ArticleListController: ThemeRepositorySubscriber {
         self.navigationController?.navigationBar.titleTextAttributes = [
             NSForegroundColorAttributeName: themeRepository.textColor
         ]
+        self.navigationController?.toolbar.barStyle = themeRepository.barStyle
     }
 }

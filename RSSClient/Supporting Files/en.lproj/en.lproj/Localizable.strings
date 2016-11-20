@@ -72,6 +72,20 @@
 "LoginViewController_Login_Message" = "Logging In";
 "LoginViewController_Register_Message" = "Registering";
 
+"GenerateBookViewController_Title" = "Create eBook";
+"GenerateBookViewController_Formats_ePub" = "ePub";
+"GenerateBookViewController_Formats_Kindle" = "Kindle";
+"GenerateBookViewController_Formats_Accessibility_Hint" = "Book Format (ePub or Kindle)";
+"GenerateBookViewController_titlefield_placeholder" = "Title";
+"GenerateBookViewController_titlefield_Accessibility_Hint" = "Book Title";
+"GenerateBookViewController_authorfield_placeholder" = "Author";
+"GenerateBookViewController_authorfield_Accessibility_Hint" = "Book Author";
+"GenerateBookViewController_formatlabel_title" = "Select Format";
+"GenerateBookViewController_Create" = "Create";
+"GenerateBookViewController_AddChapters" = "Add";
+
+"ChapterOrganizerController_AddChapter_Title" = "Add Chapter";
+
 "MigrationViewController_Message" = "Optimizing your database, hang tight";
 
 "FeedViewController_Table_Header_Title" = "Title";

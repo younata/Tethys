@@ -313,6 +313,10 @@
 		898979E11B72A63100218498 /* FeedsViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898979E01B72A63100218498 /* FeedsViewControllerSpec.swift */; };
 		898979E31B72FF9A00218498 /* AppDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898979E21B72FF9A00218498 /* AppDelegateSpec.swift */; };
 		898C48C51B3D98F60097045A /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 898C48C41B3D98F60097045A /* test.jpg */; };
+		898DA4941DDE902F0029CBD3 /* GenerateBookViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898DA4931DDE902F0029CBD3 /* GenerateBookViewController.swift */; };
+		898DA4971DDEC3720029CBD3 /* GenerateBookViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898DA4961DDEC3720029CBD3 /* GenerateBookViewControllerSpec.swift */; };
+		898DA49B1DDF99580029CBD3 /* ChapterOrganizerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898DA49A1DDF99580029CBD3 /* ChapterOrganizerController.swift */; };
+		898DA49D1DDFB7EF0029CBD3 /* ChapterOrganizerControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898DA49C1DDFB7EF0029CBD3 /* ChapterOrganizerControllerSpec.swift */; };
 		898ECDE11B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898ECDE01B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift */; };
 		898F670C1B000451004A7BE3 /* FakeOperationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */; };
 		898F6E121B129AB6000D343D /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F6E111B129AB6000D343D /* ActivityIndicator.swift */; };
@@ -770,6 +774,10 @@
 		898C48C81B40FBE00097045A /* FakeSearchIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeSearchIndex.swift; sourceTree = "<group>"; };
 		898C48CA1B425F8C0097045A /* DefaultDatabaseUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultDatabaseUseCase.swift; sourceTree = "<group>"; };
 		898C48CC1B42605A0097045A /* DefaultDatabaseUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultDatabaseUseCaseSpec.swift; sourceTree = "<group>"; };
+		898DA4931DDE902F0029CBD3 /* GenerateBookViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenerateBookViewController.swift; sourceTree = "<group>"; };
+		898DA4961DDEC3720029CBD3 /* GenerateBookViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenerateBookViewControllerSpec.swift; sourceTree = "<group>"; };
+		898DA49A1DDF99580029CBD3 /* ChapterOrganizerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChapterOrganizerController.swift; sourceTree = "<group>"; };
+		898DA49C1DDFB7EF0029CBD3 /* ChapterOrganizerControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChapterOrganizerControllerSpec.swift; sourceTree = "<group>"; };
 		898ECDE01B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsTableViewControllerSpec.swift; sourceTree = "<group>"; };
 		898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeOperationQueue.swift; sourceTree = "<group>"; };
 		898F6E111B129AB6000D343D /* ActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
@@ -1360,6 +1368,24 @@
 			path = "rNews-OSXTests";
 			sourceTree = "<group>";
 		};
+		898DA4921DDE90060029CBD3 /* Book */ = {
+			isa = PBXGroup;
+			children = (
+				898DA4931DDE902F0029CBD3 /* GenerateBookViewController.swift */,
+				898DA49A1DDF99580029CBD3 /* ChapterOrganizerController.swift */,
+			);
+			path = Book;
+			sourceTree = "<group>";
+		};
+		898DA4951DDEC2930029CBD3 /* Book */ = {
+			isa = PBXGroup;
+			children = (
+				898DA4961DDEC3720029CBD3 /* GenerateBookViewControllerSpec.swift */,
+				898DA49C1DDFB7EF0029CBD3 /* ChapterOrganizerControllerSpec.swift */,
+			);
+			path = Book;
+			sourceTree = "<group>";
+		};
 		8992D43A1C37C9B0004A5A35 /* rNewsAcceptanceTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -1382,6 +1408,7 @@
 		899C48181A9AC0F000F57B96 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				898DA4951DDEC2930029CBD3 /* Book */,
 				899C6A9B1DCAA3EF00E0A61C /* Documentation */,
 				8903F5A11D3C15C300546099 /* Pasiphae */,
 				895AC5231C80BBD700A5F6A1 /* Articles */,
@@ -1439,6 +1466,7 @@
 		89C8307519D730E9009924DA /* RSSClient */ = {
 			isa = PBXGroup;
 			children = (
+				898DA4921DDE90060029CBD3 /* Book */,
 				8941AB7E1DC9AEAF00A2CE5F /* Documentation */,
 				8903F59E1D3BE57900546099 /* Pasiphae */,
 				89EF4FE31A97DAD70052A82F /* Application */,
@@ -2501,6 +2529,7 @@
 				8941AB841DC9B00100A2CE5F /* DocumentationUseCase.swift in Sources */,
 				898F6E121B129AB6000D343D /* ActivityIndicator.swift in Sources */,
 				89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */,
+				898DA49B1DDF99580029CBD3 /* ChapterOrganizerController.swift in Sources */,
 				89735ABE1C0698370032E09C /* QuickActionRepository.swift in Sources */,
 				89D970C31B392B0300ED84B8 /* LocalNotificationSource.swift in Sources */,
 				8918D4DB1B8598D100DCDE0E /* ThemeRepository.swift in Sources */,
@@ -2521,6 +2550,7 @@
 				89E2A33D1B6A856900A40D4E /* SettingsViewController.swift in Sources */,
 				89831FEA1DB5C2FC00E32412 /* ArticleListHeaderCell.swift in Sources */,
 				89C509F41A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */,
+				898DA4941DDE902F0029CBD3 /* GenerateBookViewController.swift in Sources */,
 				8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */,
 				894D1AED1DB19A4E00E70B1A /* FeedsDeleSource.swift in Sources */,
 				8903A6251C4AB17C00E896BF /* NotificationView.swift in Sources */,
@@ -2559,12 +2589,14 @@
 				890B78CA1C78E8650066E201 /* ArticleUseCaseSpec.swift in Sources */,
 				89CBDC091C7D431D006B70F5 /* FakeMigrationUseCase.swift in Sources */,
 				89CBDC2C1C7E60B7006B70F5 /* BootstrapWorkFlowSpec.swift in Sources */,
+				898DA49D1DDFB7EF0029CBD3 /* ChapterOrganizerControllerSpec.swift in Sources */,
 				899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */,
 				89D970BB1B35BF6500ED84B8 /* WKWebView+rNewsTests.m in Sources */,
 				89C204C21A73FEDA00C792D2 /* SplitViewControllerSpec.swift in Sources */,
 				89E2A33F1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift in Sources */,
 				89E186921D136C38005C5880 /* FakeAnalytics.swift in Sources */,
 				8903EB0F1C703570001C0189 /* FakeImportUseCase.swift in Sources */,
+				898DA4971DDEC3720029CBD3 /* GenerateBookViewControllerSpec.swift in Sources */,
 				89F516571B1ACD0B0005AB04 /* UIBarButtonItem+rNewsTests.m in Sources */,
 				89AFFA001D4B97DC002255E8 /* FakeAccountRepository.swift in Sources */,
 				8903EAFD1C6F8A46001C0189 /* FakeNotificationHandler.swift in Sources */,

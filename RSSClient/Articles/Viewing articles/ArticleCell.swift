@@ -9,7 +9,11 @@ public final class ArticleCell: UITableViewCell {
             self.published.text = self.dateFormatter.string(from: publishedDate)
             self.author.text = self.article?.authorsString ?? ""
             let hasNotRead = self.article?.read != true
-            self.unread.unread = hasNotRead ? 1 : 0
+            if self.hideUnread {
+                self.unread.unread = 0
+            } else {
+                self.unread.unread = hasNotRead ? 1 : 0
+            }
             self.unreadWidth.constant = hasNotRead ? 30 : 0
             if let readingTime = self.article?.estimatedReadingTime, readingTime > 0 {
                 self.managedReadingTimeHidden()
@@ -29,6 +33,14 @@ public final class ArticleCell: UITableViewCell {
     public let author = UILabel(forAutoLayout: ())
     public let unread = UnreadCounter(forAutoLayout: ())
     public let readingTime = UILabel(forAutoLayout: ())
+
+    public var hideUnread: Bool = false {
+        didSet {
+            if self.hideUnread {
+                self.unread.unread = 0
+            }
+        }
+    }
 
     public var themeRepository: ThemeRepository? = nil {
         didSet {

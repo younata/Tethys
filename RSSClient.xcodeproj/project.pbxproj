@@ -48,6 +48,14 @@
 		8908949C1BFED826002848A4 /* Reachability.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		890B78C81C77FD200066E201 /* ArticleUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890B78C71C77FD200066E201 /* ArticleUseCase.swift */; };
 		890B78CA1C78E8650066E201 /* ArticleUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890B78C91C78E8650066E201 /* ArticleUseCaseSpec.swift */; };
+		890C8D381DE371E700A037D7 /* GenerateBookUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890C8D371DE371E700A037D7 /* GenerateBookUseCase.swift */; };
+		890C8D3A1DE3729B00A037D7 /* GenerateBookUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890C8D391DE3729B00A037D7 /* GenerateBookUseCaseSpec.swift */; };
+		890C8D3C1DE376D100A037D7 /* FakeSpondeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890C8D3B1DE376D100A037D7 /* FakeSpondeService.swift */; };
+		890C8D3E1DE3771E00A037D7 /* Sponde.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890C8D3D1DE3771E00A037D7 /* Sponde.framework */; };
+		890C8D3F1DE3773E00A037D7 /* Sponde.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 890C8D3D1DE3771E00A037D7 /* Sponde.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		890C8D401DE3774600A037D7 /* Sponde.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890C8D3D1DE3771E00A037D7 /* Sponde.framework */; };
+		890C8D431DE38B3400A037D7 /* Sponde.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890C8D3D1DE3771E00A037D7 /* Sponde.framework */; };
+		890C8D451DE3A52100A037D7 /* FakeGenerateBookUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890C8D441DE3A52100A037D7 /* FakeGenerateBookUseCase.swift */; };
 		89122E611C5D725D00004B1F /* DatabaseMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89122E601C5D725D00004B1F /* DatabaseMigrator.swift */; };
 		89122E621C5D725D00004B1F /* DatabaseMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89122E601C5D725D00004B1F /* DatabaseMigrator.swift */; };
 		89122E641C5D762000004B1F /* DatabaseMigratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89122E631C5D762000004B1F /* DatabaseMigratorSpec.swift */; };
@@ -532,6 +540,7 @@
 				8935F5D31B46273D000FFD5D /* Quick.framework in Embed Frameworks */,
 				8949698D1C72FAEB00A91986 /* Kanna.framework in Embed Frameworks */,
 				89DB074F1CBF2AE1006D672D /* CBGPromise.framework in Embed Frameworks */,
+				890C8D3F1DE3773E00A037D7 /* Sponde.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -641,6 +650,11 @@
 		8908949A1BFED7B8002848A4 /* FakeReachable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeReachable.swift; sourceTree = "<group>"; };
 		890B78C71C77FD200066E201 /* ArticleUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleUseCase.swift; sourceTree = "<group>"; };
 		890B78C91C78E8650066E201 /* ArticleUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleUseCaseSpec.swift; sourceTree = "<group>"; };
+		890C8D371DE371E700A037D7 /* GenerateBookUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenerateBookUseCase.swift; sourceTree = "<group>"; };
+		890C8D391DE3729B00A037D7 /* GenerateBookUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenerateBookUseCaseSpec.swift; sourceTree = "<group>"; };
+		890C8D3B1DE376D100A037D7 /* FakeSpondeService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeSpondeService.swift; sourceTree = "<group>"; };
+		890C8D3D1DE3771E00A037D7 /* Sponde.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sponde.framework; path = Carthage/Build/iOS/Sponde.framework; sourceTree = "<group>"; };
+		890C8D441DE3A52100A037D7 /* FakeGenerateBookUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeGenerateBookUseCase.swift; sourceTree = "<group>"; };
 		89122E601C5D725D00004B1F /* DatabaseMigrator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseMigrator.swift; sourceTree = "<group>"; };
 		89122E631C5D762000004B1F /* DatabaseMigratorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseMigratorSpec.swift; sourceTree = "<group>"; };
 		8917546F1C5B449E0036D96D /* RealmObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmObjects.swift; sourceTree = "<group>"; };
@@ -901,6 +915,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				890C8D401DE3774600A037D7 /* Sponde.framework in Frameworks */,
 				895A9CCA1D3A7C38008B2B25 /* Sinope.framework in Frameworks */,
 				89E1868D1D1363A1005C5880 /* Mixpanel.framework in Frameworks */,
 				8903EB151C72F8A7001C0189 /* Kanna.framework in Frameworks */,
@@ -933,6 +948,7 @@
 				898911951C2FC8A6009A44E9 /* Realm.framework in Frameworks */,
 				898911961C2FC8A6009A44E9 /* RealmSwift.framework in Frameworks */,
 				89146E511C88F0B800EC8F10 /* WorkFlow.framework in Frameworks */,
+				890C8D3E1DE3771E00A037D7 /* Sponde.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1020,6 +1036,7 @@
 				89BA95391C4C8E7C001FD453 /* WorkFlow.framework in Frameworks */,
 				895A9CC91D3A7C09008B2B25 /* Sinope.framework in Frameworks */,
 				8902D5461BB07389003D7C22 /* Lepton.framework in Frameworks */,
+				890C8D431DE38B3400A037D7 /* Sponde.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1063,6 +1080,7 @@
 				8903EB001C6F9DFB001C0189 /* ImportUseCase.swift */,
 				89CBDC0A1C7D432F006B70F5 /* MigrationUseCase.swift */,
 				8903F5B71D403FEF00546099 /* UpdateUseCase.swift */,
+				890C8D371DE371E700A037D7 /* GenerateBookUseCase.swift */,
 			);
 			path = "Use Cases";
 			sourceTree = "<group>";
@@ -1073,6 +1091,7 @@
 				8903EB021C6FA022001C0189 /* ImportUseCaseSpec.swift */,
 				89CBDC101C7D781E006B70F5 /* MigrationUseCaseSpec.swift */,
 				8903F5BF1D412EF500546099 /* UpdateUseCaseSpec.swift */,
+				890C8D391DE3729B00A037D7 /* GenerateBookUseCaseSpec.swift */,
 			);
 			path = "Use Cases";
 			sourceTree = "<group>";
@@ -1308,6 +1327,7 @@
 		8983208B1DC13B9A00E32412 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				890C8D3D1DE3771E00A037D7 /* Sponde.framework */,
 				8983208E1DC13BC000E32412 /* CBGPromise.framework */,
 				8983208F1DC13BC000E32412 /* Freddy.framework */,
 				898320901DC13BC000E32412 /* Kanna.framework */,
@@ -1632,6 +1652,7 @@
 				8903F5BB1D404EA800546099 /* FakeUpdateUseCase.swift */,
 				8903F5CA1D416B6700546099 /* FakeAccountRepository.swift */,
 				89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */,
+				890C8D3B1DE376D100A037D7 /* FakeSpondeService.swift */,
 			);
 			path = Fakes;
 			sourceTree = "<group>";
@@ -1796,6 +1817,7 @@
 				89D970B91B35BF6400ED84B8 /* WKWebView+rNewsTests.h */,
 				89D970BA1B35BF6500ED84B8 /* WKWebView+rNewsTests.m */,
 				8958EC3B1DCB03250000159B /* FakeDocumentationUseCase.swift */,
+				890C8D441DE3A52100A037D7 /* FakeGenerateBookUseCase.swift */,
 			);
 			path = Fakes;
 			sourceTree = "<group>";
@@ -2235,6 +2257,7 @@
 				"$(SRCROOT)/Carthage/Build/iOS/Mixpanel.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Sinope.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Freddy.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Sponde.framework",
 			);
 			name = "Embed Carthage Libraries";
 			outputPaths = (
@@ -2300,6 +2323,7 @@
 				89CC82041B461A2B00648367 /* Helpers.swift in Sources */,
 				8903F5CF1D4177DE00546099 /* Importable.swift in Sources */,
 				89146E421C88C70600EC8F10 /* ImportUseCase.swift in Sources */,
+				890C8D381DE371E700A037D7 /* GenerateBookUseCase.swift in Sources */,
 				89CC82061B461A5500648367 /* KitModule.swift in Sources */,
 				895AC51B1C7FF27300A5F6A1 /* RealmMigrator.swift in Sources */,
 				8903F5A91D3EF0C700546099 /* Account.swift in Sources */,
@@ -2353,6 +2377,7 @@
 				8903F5CB1D416B6700546099 /* FakeAccountRepository.swift in Sources */,
 				8935F5D71B4628B3000FFD5D /* DefaultDatabaseUseCaseSpec.swift in Sources */,
 				89AFF9FF1D4870F7002255E8 /* FakeImportables.swift in Sources */,
+				890C8D3C1DE376D100A037D7 /* FakeSpondeService.swift in Sources */,
 				8903F5AF1D40225D00546099 /* AccountRepositorySpec.swift in Sources */,
 				8903F5B01D4022AD00546099 /* FakeUserDefaults.swift in Sources */,
 				8903F5BC1D404EA800546099 /* FakeUpdateUseCase.swift in Sources */,
@@ -2364,6 +2389,7 @@
 				89CBDBF41C7D1436006B70F5 /* DataServiceFactorySpec.swift in Sources */,
 				8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */,
 				89628BE31CE1805E00B4C624 /* DatabaseUseCaseSpec.swift in Sources */,
+				890C8D3A1DE3729B00A037D7 /* GenerateBookUseCaseSpec.swift in Sources */,
 				8935F5D91B4628B3000FFD5D /* FeedSpec.swift in Sources */,
 				89146E4E1C88F01F00EC8F10 /* FakeFileManager.swift in Sources */,
 				8935F5DF1B462AD2000FFD5D /* FakeURLSession.swift in Sources */,
@@ -2576,6 +2602,7 @@
 				8903A6271C4ABA7800E896BF /* NotificationViewSpec.swift in Sources */,
 				89348F2F1C60730D007D366B /* FakeDatabaseUseCase.swift in Sources */,
 				898F670C1B000451004A7BE3 /* FakeOperationQueue.swift in Sources */,
+				890C8D451DE3A52100A037D7 /* FakeGenerateBookUseCase.swift in Sources */,
 				894CEAA21DAE7C7500E8BDEB /* FakeWKPreviewItem.swift in Sources */,
 				89F98BAA1BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift in Sources */,
 				89D970C11B392AD400ED84B8 /* FakeNotificationSource.swift in Sources */,

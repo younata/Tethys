@@ -1,9 +1,16 @@
 import UIKit
 import Ra
 import rNewsKit
+import CBGPromise
+import Result
+import Sponde
 
 public class GenerateBookViewController: UIViewController, Injectable {
-    public weak var articles: DataStoreBackedArray<Article>?
+    public weak var articles: DataStoreBackedArray<Article>? {
+        didSet {
+            self.chapterOrganizer.articles = articles
+        }
+    }
 
     public let titleField: UITextField = {
         let field = UITextField(forAutoLayout: ())
@@ -51,23 +58,30 @@ public class GenerateBookViewController: UIViewController, Injectable {
         button.setTitleColor(UIColor.gray, for: .disabled)
         button.setTitle(NSLocalizedString("GenerateBookViewController_Create", comment: ""), for: UIControlState())
         button.titleLabel?.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.subheadline)
-//        button.accessibilityLabel = NSLocalizedString("LoginViewController_Fields_Login", comment: "")
-//        button.accessibilityHint = NSLocalizedString("LoginViewController_Fields_Login_Accessibility_Hint", comment: "")
         return button
     }()
 
+    fileprivate var bookTitle: String = "" { didSet { self.validateBook() } }
+    fileprivate var bookAuthor: String = "" { didSet { self.validateBook() } }
+    fileprivate var bookChapters: [Article] = [] { didSet { self.validateBook() } }
+
     private let themeRepository: ThemeRepository
+    private let generateBookUseCase: GenerateBookUseCase
     public let chapterOrganizer: ChapterOrganizerController
 
-    public init(themeRepository: ThemeRepository, chapterOrganizer: ChapterOrganizerController) {
+    public init(themeRepository: ThemeRepository,
+                generateBookUseCase: GenerateBookUseCase,
+                chapterOrganizer: ChapterOrganizerController) {
         self.themeRepository = themeRepository
         self.chapterOrganizer = chapterOrganizer
+        self.generateBookUseCase = generateBookUseCase
         super.init(nibName: nil, bundle: nil)
     }
 
     public required convenience init(injector: Injector) {
         self.init(
             themeRepository: injector.create(kind: ThemeRepository.self)!,
+            generateBookUseCase: injector.create(kind: GenerateBookUseCase.self)!,
             chapterOrganizer: injector.create(kind: ChapterOrganizerController.self)!
         )
     }
@@ -98,6 +112,13 @@ public class GenerateBookViewController: UIViewController, Injectable {
         mainStackView.distribution = .equalSpacing
         mainStackView.alignment = .center
 
+        self.titleField.delegate = self
+        self.authorField.delegate = self
+        self.chapterOrganizer.delegate = self
+        self.generateButton.addTarget(self,
+                                      action: #selector(GenerateBookViewController.generateBook),
+            for: .touchUpInside)
+
         mainStackView.addArrangedSubview(self.titleField)
         mainStackView.addArrangedSubview(self.authorField)
         mainStackView.addArrangedSubview(self.formatSelector)
@@ -122,6 +143,77 @@ public class GenerateBookViewController: UIViewController, Injectable {
 
     @objc private func dismissController() {
         self.navigationController?.presentingViewController?.dismiss(animated: true, completion: nil)
+    }
+
+    @objc private func generateBook() {
+        let indicator = ActivityIndicator(forAutoLayout: ())
+        self.view.addSubview(indicator)
+        indicator.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
+
+        indicator.configure(message: NSLocalizedString("GenerateBookViewController_Generating_Message", comment: ""))
+
+        let format: Book.Format
+
+        switch self.formatSelector.selectedSegmentIndex {
+        case 0:
+            format = .epub
+        case 1:
+            format = .mobi
+        default:
+            fatalError("Unknown Format")
+        }
+
+        let future = self.generateBookUseCase.generateBook(title: self.bookTitle,
+                                                           author: self.bookAuthor,
+                                                           chapters: self.bookChapters,
+                                                           format: format)
+        _ = future.then { result in
+            indicator.removeFromSuperview()
+            let viewController: UIViewController
+            switch result {
+            case let .success(url):
+                viewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+            case let .failure(error):
+                let alertTitle = NSLocalizedString("GenerateBookViewController_Generating_Error_Title", comment: "")
+                let alert = UIAlertController(title: alertTitle,
+                                              message: error.localizedDescription,
+                                              preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: NSLocalizedString("Generic_Ok", comment: ""),
+                                              style: .default) { _ in
+                                                self.dismiss(animated: true, completion: nil)
+                })
+                viewController = alert
+            }
+            self.present(viewController, animated: true, completion: nil)
+        }
+    }
+
+    private func validateBook() {
+        if self.bookTitle.isEmpty || self.bookAuthor.isEmpty || self.bookChapters.isEmpty {
+            self.generateButton.isEnabled = false
+        } else {
+            self.generateButton.isEnabled = true
+        }
+    }
+}
+
+extension GenerateBookViewController: UITextFieldDelegate {
+    public func textField(_ textField: UITextField,
+                          shouldChangeCharactersIn range: NSRange,
+                          replacementString string: String) -> Bool {
+        let text = NSString(string: textField.text ?? "").replacingCharacters(in: range, with: string)
+        if textField == self.authorField {
+            self.bookAuthor = text
+        } else if textField == self.titleField {
+            self.bookTitle = text
+        }
+        return true
+    }
+}
+
+extension GenerateBookViewController: ChapterOrganizerControllerDelegate {
+    public func chapterOrganizerControllerDidChangeChapters(_ chapterOrganizer: ChapterOrganizerController) {
+        self.bookChapters = chapterOrganizer.chapters
     }
 }
 

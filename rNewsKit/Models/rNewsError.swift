@@ -1,4 +1,5 @@
 import Sinope
+import Sponde
 
 public enum NetworkError: Error {
     case internetDown
@@ -64,6 +65,7 @@ public enum RNewsError: Error {
     case http(Int)
     case database(DatabaseError)
     case backend(SinopeError)
+    case book(SpondeError)
     case unknown
 
     public var localizedDescription: String {
@@ -77,6 +79,8 @@ public enum RNewsError: Error {
         case let .database(error):
             return error.localizedDescription
         case let .backend(error):
+            return error.description
+        case let .book(error):
             return error.description
         case .unknown:
             return NSLocalizedString("Error_Standard_Unknown", comment: "")
@@ -95,6 +99,8 @@ public func == (lhs: RNewsError, rhs: RNewsError) -> Bool {
     case (let .database(lhsError), let .database(rhsError)):
         return lhsError == rhsError
     case (let .backend(lhsError), let .backend(rhsError)):
+        return lhsError == rhsError
+    case (let .book(lhsError), let .book(rhsError)):
         return lhsError == rhsError
     case (.unknown, .unknown):
         return true

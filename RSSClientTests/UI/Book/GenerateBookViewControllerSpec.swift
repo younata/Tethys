@@ -1,13 +1,18 @@
 import Quick
 import Nimble
 import rNews
+import rNewsKit
 import Ra
+import CBGPromise
+import Result
+import Sponde
 
 class GenerateBookViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: GenerateBookViewController!
         var injector: Injector!
         var themeRepository: ThemeRepository!
+        var generateBookUseCase: FakeGenerateBookUseCase!
         var navController: UINavigationController!
         var presentingController: UIViewController!
 
@@ -16,6 +21,9 @@ class GenerateBookViewControllerSpec: QuickSpec {
 
             themeRepository = ThemeRepository(userDefaults: nil)
             injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
+
+            generateBookUseCase = FakeGenerateBookUseCase()
+            injector.bind(kind: GenerateBookUseCase.self, toInstance: generateBookUseCase)
 
             subject = injector.create(kind: GenerateBookViewController.self)!
 
@@ -58,6 +66,30 @@ class GenerateBookViewControllerSpec: QuickSpec {
 
         it("sets a title") {
             expect(subject.title) == "Create eBook"
+        }
+
+        describe("setting the articles") {
+            let articles: [Article] = [
+                Article(title: "Article 1", link: URL(string: "https://example.com/1")!, summary: "", authors: [],
+                        published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
+                        estimatedReadingTime: 0, feed: nil, flags: []),
+                Article(title: "Article 2", link: URL(string: "https://example.com/2")!, summary: "", authors: [],
+                        published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
+                        estimatedReadingTime: 0, feed: nil, flags: []),
+                Article(title: "Article 3", link: URL(string: "https://example.com/3")!, summary: "", authors: [],
+                        published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
+                        estimatedReadingTime: 0, feed: nil, flags: []),
+            ]
+            let articlesArray = DataStoreBackedArray(articles)
+
+            it("also sets the articles on the chapterorganizer") {
+                subject.articles = articlesArray
+                if let chapterOrganizerArticles = subject.chapterOrganizer.articles {
+                    expect(Array(chapterOrganizerArticles)) == articles
+                } else {
+                    fail("chapter organizer doesn't have articles")
+                }
+            }
         }
 
         describe("the leftBarButtonItem") {
@@ -115,18 +147,36 @@ class GenerateBookViewControllerSpec: QuickSpec {
         }
 
         describe("the generate button") {
+            let chapters: [Article] = [
+                Article(title: "Article 1", link: URL(string: "https://example.com/1")!, summary: "", authors: [],
+                        published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
+                        estimatedReadingTime: 0, feed: nil, flags: []),
+                Article(title: "Article 2", link: URL(string: "https://example.com/2")!, summary: "", authors: [],
+                        published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
+                        estimatedReadingTime: 0, feed: nil, flags: []),
+                Article(title: "Article 3", link: URL(string: "https://example.com/3")!, summary: "", authors: [],
+                        published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
+                        estimatedReadingTime: 0, feed: nil, flags: []),
+            ]
+
             let enterTitle = {
                 subject.titleField.text = "title"
-                _ = subject.titleField.delegate?.textField?(subject.titleField,
-                                                            shouldChangeCharactersIn: NSRange(location: 0, length: 0),
-                                                            replacementString: "")
+                let shouldChange = subject.titleField.delegate?.textField?(subject.titleField,
+                                                                           shouldChangeCharactersIn: NSRange(location: 0, length: 0),
+                                                                           replacementString: "")
+                expect(shouldChange) == true
             }
 
             let enterAuthor = {
-                subject.authorField.text = "title"
-                _ = subject.authorField.delegate?.textField?(subject.authorField,
-                                                             shouldChangeCharactersIn: NSRange(location: 0, length: 0),
-                                                             replacementString: "")
+                subject.authorField.text = "author"
+                let shouldChange = subject.authorField.delegate?.textField?(subject.authorField,
+                                                                            shouldChangeCharactersIn: NSRange(location: 0, length: 0),
+                                                                            replacementString: "")
+                expect(shouldChange) == true
+            }
+
+            let enterChapters = {
+                subject.chapterOrganizer.chapters = chapters
             }
 
             it("is initially disabled") {
@@ -154,6 +204,151 @@ class GenerateBookViewControllerSpec: QuickSpec {
                 enterAuthor()
 
                 expect(subject.generateButton.isEnabled) == false
+            }
+
+            it("is still disabled when articles are set, but not title or author") {
+                enterChapters()
+
+                expect(subject.generateButton.isEnabled) == false
+            }
+
+            it("is still disabled when title and chapters are set, but not author") {
+                enterTitle()
+                enterChapters()
+
+                expect(subject.generateButton.isEnabled) == false
+            }
+
+            it("is still disabled when author and chapters are set, but not title") {
+                enterAuthor()
+                enterChapters()
+
+                expect(subject.generateButton.isEnabled) == false
+            }
+
+            it("only becomes enabled when the title, author, and chapters are set") {
+                enterTitle()
+                enterAuthor()
+                enterChapters()
+
+                expect(subject.generateButton.isEnabled) == true
+            }
+
+            describe("tapping the generateButton") {
+                var generateBookPromise: Promise<Result<URL, RNewsError>>!
+
+                beforeEach {
+                    generateBookPromise = Promise<Result<URL, RNewsError>>()
+                    generateBookUseCase.generateBookReturns(generateBookPromise.future)
+                }
+
+                sharedExamples("generating an ebook") { (sharedContext: @escaping SharedExampleContext) in
+                    var format: Book.Format!
+
+                    beforeEach {
+                        format = sharedContext()["format"] as! Book.Format
+                    }
+
+                    it("shows an indicator that we're doing things") {
+                        let indicator = subject.view.subviews.filter {
+                            return $0.isKind(of: ActivityIndicator.classForCoder())
+                            }.first as? ActivityIndicator
+                        expect(indicator?.message) == "Generating eBook"
+                    }
+
+                    it("makes a request to the generate book use case") {
+                        expect(generateBookUseCase.generateBookCallCount) == 1
+
+                        guard generateBookUseCase.generateBookCallCount == 1 else { return }
+
+                        let args = generateBookUseCase.generateBookArgsForCall(0)
+                        expect(args.0) == "title"
+                        expect(args.1) == "author"
+                        expect(args.2) == chapters
+                        expect(args.3) == format
+                    }
+
+                    describe("when the generate book call succeeds") {
+                        let url = URL(fileURLWithPath: "/test/path")
+
+                        beforeEach {
+                            generateBookPromise.resolve(.success(url))
+                        }
+
+                        it("removes the indicator") {
+                            let indicator = navController.view.subviews.filter {
+                                return $0.isKind(of: ActivityIndicator.classForCoder())
+                                }.first
+                            expect(indicator).to(beNil())
+                        }
+
+                        it("presents a share sheet") {
+                            expect(subject.presentedViewController).to(beAnInstanceOf(UIActivityViewController.self))
+                            if let activityVC = subject.presentedViewController as? UIActivityViewController {
+                                expect(activityVC.activityItems as? [URL]) == [url]
+                            }
+                        }
+                    }
+
+                    describe("when the generate book call fails") {
+                        beforeEach {
+                            generateBookPromise.resolve(.failure(.book(.unknown)))
+                        }
+
+                        it("removes the indicator") {
+                            let indicator = navController.view.subviews.filter {
+                                return $0.isKind(of: ActivityIndicator.classForCoder())
+                                }.first
+                            expect(indicator).to(beNil())
+                        }
+
+                        it("shows an alert box") {
+                            expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                            if let alert = subject.presentedViewController as? UIAlertController {
+                                expect(alert.title) == "Unable to Generate eBook"
+                                expect(alert.message) == "Unknown Error"
+                                expect(alert.actions.count) == 1
+                                if let action = alert.actions.first {
+                                    expect(action.title) == "Ok"
+                                    action.handler(action)
+                                    expect(subject.presentedViewController).to(beNil())
+                                }
+                            }
+                        }
+                    }
+                }
+
+                context("with epub selected") {
+                    beforeEach {
+                        enterTitle()
+                        enterAuthor()
+                        enterChapters()
+
+                        subject.formatSelector.selectedSegmentIndex = 0
+
+                        subject.generateButton.sendActions(for: .touchUpInside)
+                    }
+
+                    itBehavesLike("generating an ebook") { () -> (NSDictionary) in
+                        return ["format": Book.Format.epub]
+                    }
+                }
+
+                context("with kindle selected") {
+                    beforeEach {
+                        enterTitle()
+                        enterAuthor()
+                        enterChapters()
+
+                        subject.formatSelector.selectedSegmentIndex = 1
+
+                        subject.generateButton.sendActions(for: .touchUpInside)
+                    }
+
+                    itBehavesLike("generating an ebook") { () -> (NSDictionary) in
+                        return ["format": Book.Format.mobi]
+                    }
+                }
             }
         }
     }

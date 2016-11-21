@@ -5,6 +5,7 @@ import Ra
 #endif
 import Reachability
 import Sinope
+import Sponde
 
 public let kMainQueue = "kMainQueue"
 public let kBackgroundQueue = "kBackgroundQueue"
@@ -97,6 +98,11 @@ public final class KitModule: NSObject, Ra.InjectorModule {
         injector.bind(kind: OPMLService.self, toInstance: opmlService)
         injector.bind(kind: MigrationUseCase.self, toInstance: DefaultMigrationUseCase(injector: injector))
         injector.bind(kind: ImportUseCase.self, to: DefaultImportUseCase.init)
+
+        let spondeService = Sponde.DefaultService(baseURL: URL(string: "https://autonoe.cfapps.io")!,
+                                                  networkClient: URLSession.shared)
+        let generateBookUseCase = DefaultGenerateBookUseCase(service: spondeService, mainQueue: mainQueue)
+        injector.bind(kind: GenerateBookUseCase.self, toInstance: generateBookUseCase)
     }
     // swiftlint:enable function_body_length
 }

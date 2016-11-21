@@ -73,6 +73,15 @@ class rNewsErrorSpec: QuickSpec {
                     expect(a) != c
                 }
 
+                it("reports two Book errors of the same kind as equal") {
+                    let a = RNewsError.book(.unknown)
+                    let b = RNewsError.book(.unknown)
+                    let c = RNewsError.book(.invalidRequest("hello"))
+
+                    expect(a) == b
+                    expect(a) != c
+                }
+
                 it("reports two Unknown errors as equal") {
                     let a = RNewsError.unknown
                     let b = RNewsError.unknown

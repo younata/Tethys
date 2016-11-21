@@ -28,7 +28,7 @@ public class ChapterOrganizerController: UIViewController, Injectable {
     public weak var delegate: ChapterOrganizerControllerDelegate?
     public weak var articles: DataStoreBackedArray<Article>?
 
-    public fileprivate(set) var chapters: [Article] = [] {
+    public var chapters: [Article] = [] {
         didSet {
             self.tableHeight?.constant = CGFloat(min(300, self.chapters.count * 80))
             self.delegate?.chapterOrganizerControllerDidChangeChapters(self)

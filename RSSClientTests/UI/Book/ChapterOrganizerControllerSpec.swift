@@ -55,6 +55,7 @@ class ChapterOrganizerControllerSpec: QuickSpec {
 
             injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
             injector.bind(kind: DatabaseUseCase.self, toInstance: FakeDatabaseUseCase())
+            injector.bind(string: kMainQueue, toInstance: FakeOperationQueue())
 
             settingsRepository = SettingsRepository(userDefaults: nil)
             injector.bind(kind: SettingsRepository.self, toInstance: settingsRepository)

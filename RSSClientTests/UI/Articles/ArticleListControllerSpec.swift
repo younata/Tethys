@@ -147,22 +147,20 @@ func fakeArticle(feed: Feed, isUpdated: Bool = false, read: Bool = false) -> Art
 
 class ArticleListControllerSpec: QuickSpec {
     override func spec() {
-        var injector: Injector! = nil
-        var mainQueue: FakeOperationQueue! = nil
-        var feed: Feed! = nil
-        var subject: ArticleListController! = nil
-        var navigationController: UINavigationController! = nil
+        var injector: Injector!
+        var mainQueue: FakeOperationQueue!
+        var feed: Feed!
+        var subject: ArticleListController!
+        var navigationController: UINavigationController!
         var articles: [Article] = []
-        var dataRepository: FakeDatabaseUseCase! = nil
-        var themeRepository: ThemeRepository! = nil
-        var settingsRepository: SettingsRepository! = nil
-
+        var dataRepository: FakeDatabaseUseCase!
+        var themeRepository: ThemeRepository!
+        var settingsRepository: SettingsRepository!
 
         beforeEach {
             injector = Injector()
 
             mainQueue = FakeOperationQueue()
-            mainQueue.runSynchronously = true
             injector.bind(string: kMainQueue, toInstance: mainQueue)
 
             settingsRepository = SettingsRepository(userDefaults: nil)
@@ -336,39 +334,208 @@ class ArticleListControllerSpec: QuickSpec {
         }
 
         describe("the toolbar items") {
-            beforeEach {
-                subject.view.layoutIfNeeded()
-            }
-
-            it("it has a single item") {
-                expect(subject.toolbarItems?.count) == 1
-            }
-
-            describe("the first toolBarItem") {
-                var item: UIBarButtonItem?
-
+            describe("when a feed is backing the list") {
                 beforeEach {
-                    item = subject.toolbarItems?.first
+                    subject.view.layoutIfNeeded()
+
+                    subject.feed = feed
                 }
 
-                it("Uses a book image") {
-                    expect(item?.image) == UIImage(named: "Book")
+                it("has 5 items") {
+                    expect(subject.toolbarItems?.count) == 5
                 }
 
-                it("presents a generate book controller when tapped") {
-                    injector.bind(kind: GenerateBookUseCase.self, toInstance: FakeGenerateBookUseCase())
-                    item?.tap()
+                describe("the second toolBarItem") {
+                    var item: UIBarButtonItem?
 
-                    expect(subject.presentedViewController).to(beAKindOf(UINavigationController.self))
-                    if let navController = subject.navigationController?.visibleViewController as? UINavigationController {
-                        expect(navController.visibleViewController).to(beAKindOf(GenerateBookViewController.self))
-                        if let dataStoreArticles = (navController.visibleViewController as? GenerateBookViewController)?.articles {
-                            expect(Array(dataStoreArticles)) == Array(subject.articles)
+                    beforeEach {
+                        item = subject.toolbarItems?[1]
+                    }
+
+                    it("Uses a book image") {
+                        expect(item?.image) == UIImage(named: "Book")
+                    }
+
+                    it("presents a generate book controller when tapped") {
+                        injector.bind(kind: GenerateBookUseCase.self, toInstance: FakeGenerateBookUseCase())
+                        item?.tap()
+
+                        expect(subject.presentedViewController).to(beAKindOf(UINavigationController.self))
+                        if let navController = subject.navigationController?.visibleViewController as? UINavigationController {
+                            expect(navController.visibleViewController).to(beAKindOf(GenerateBookViewController.self))
+                            if let dataStoreArticles = (navController.visibleViewController as? GenerateBookViewController)?.articles {
+                                expect(Array(dataStoreArticles)) == Array(subject.articles)
+                            } else {
+                                fail("setting generatebookcontroller articles")
+                            }
                         } else {
-                            fail("setting generatebookcontroller articles")
+                            fail("showing generatebookcontroller")
                         }
-                    } else {
-                        fail("showing generatebookcontroller")
+                    }
+                }
+
+                describe("the fourth toolBarItem") {
+                    var item: UIBarButtonItem?
+
+                    beforeEach {
+                        item = subject.toolbarItems?[3]
+                    }
+
+                    it("is titled 'Mark Read'") {
+                        expect(item?.title) == "Mark Read"
+                    }
+
+                    describe("tapping it") {
+                        beforeEach {
+                            item?.tap()
+                        }
+
+                        it("shows an indicator that we're doing things") {
+                            let indicator = subject.view.subviews.filter {
+                                return $0.isKind(of: ActivityIndicator.classForCoder())
+                                }.first as? ActivityIndicator
+                            expect(indicator?.message) == "Marking Articles as Read"
+                        }
+
+                        it("marks all articles of that feed as read") {
+                            expect(dataRepository.lastFeedMarkedRead) == feed
+                        }
+
+                        describe("when the mark read promise succeeds") {
+                            beforeEach {
+                                dataRepository.lastFeedMarkedReadPromise?.resolve(.success(1))
+                            }
+
+                            it("still shows the indicator message") {
+                                let indicator = subject.view.subviews.filter {
+                                    return $0.isKind(of: ActivityIndicator.classForCoder())
+                                    }.first as? ActivityIndicator
+                                expect(indicator?.message) == "Marking Articles as Read"
+                            }
+
+                            it("asks the dataRepository to refresh its feeds list") {
+                                expect(dataRepository.feedsPromises.count) == 1
+                            }
+
+                            describe("when the feeds promise succeeds") {
+                                let newFeed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "hello world", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                beforeEach {
+                                    dataRepository.feedsPromises.last?.resolve(.success([newFeed]))
+                                    mainQueue.runNextOperation()
+                                }
+
+                                it("removes the indicator") {
+                                    let indicator = subject.view.subviews.filter {
+                                        return $0.isKind(of: ActivityIndicator.classForCoder())
+                                        }.first
+                                    expect(indicator).to(beNil())
+                                }
+
+                                it("replaces the feed with the new one") {
+                                    expect(subject.feed) == newFeed
+                                }
+
+                                it("reloads the articles") {
+                                    expect(subject.tableView.numberOfRows(inSection: 1)) == 0
+                                }
+                            }
+
+                            describe("when the feeds promise fails") {
+                                beforeEach {
+                                    dataRepository.feedsPromises.last?.resolve(.failure(.database(.unknown)))
+                                    mainQueue.runNextOperation()
+                                }
+
+                                it("removes the indicator") {
+                                    let indicator = subject.view.subviews.filter {
+                                        return $0.isKind(of: ActivityIndicator.classForCoder())
+                                        }.first
+                                    expect(indicator).to(beNil())
+                                }
+
+                                it("shows an alert box") {
+                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                    if let alert = subject.presentedViewController as? UIAlertController {
+                                        expect(alert.title) == "Unable to Mark Articles as Read"
+                                        expect(alert.message) == "Unknown Database Error"
+                                        expect(alert.actions.count) == 1
+                                        if let action = alert.actions.first {
+                                            expect(action.title) == "Ok"
+                                            action.handler(action)
+                                            expect(subject.presentedViewController).to(beNil())
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        describe("when the mark read promise fails") {
+                            beforeEach {
+                                dataRepository.lastFeedMarkedReadPromise?.resolve(.failure(.database(.unknown)))
+                                mainQueue.runNextOperation()
+                            }
+
+                            it("removes the indicator") {
+                                let indicator = subject.view.subviews.filter {
+                                    return $0.isKind(of: ActivityIndicator.classForCoder())
+                                    }.first
+                                expect(indicator).to(beNil())
+                            }
+
+                            it("shows an alert box") {
+                                expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                if let alert = subject.presentedViewController as? UIAlertController {
+                                    expect(alert.title) == "Unable to Mark Articles as Read"
+                                    expect(alert.message) == "Unknown Database Error"
+                                    expect(alert.actions.count) == 1
+                                    if let action = alert.actions.first {
+                                        expect(action.title) == "Ok"
+                                        action.handler(action)
+                                        expect(subject.presentedViewController).to(beNil())
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            describe("when a feed is not backing the list") {
+                beforeEach {
+                    subject.view.layoutIfNeeded()
+                    subject.feed = nil
+                }
+
+                it("it has a 3 items") {
+                    expect(subject.toolbarItems?.count) == 3
+                }
+
+                describe("the second toolBarItem") {
+                    var item: UIBarButtonItem?
+
+                    beforeEach {
+                        item = subject.toolbarItems?[1]
+                    }
+
+                    it("Uses a book image") {
+                        expect(item?.image) == UIImage(named: "Book")
+                    }
+
+                    it("presents a generate book controller when tapped") {
+                        injector.bind(kind: GenerateBookUseCase.self, toInstance: FakeGenerateBookUseCase())
+                        item?.tap()
+
+                        expect(subject.presentedViewController).to(beAKindOf(UINavigationController.self))
+                        if let navController = subject.navigationController?.visibleViewController as? UINavigationController {
+                            expect(navController.visibleViewController).to(beAKindOf(GenerateBookViewController.self))
+                            if let dataStoreArticles = (navController.visibleViewController as? GenerateBookViewController)?.articles {
+                                expect(Array(dataStoreArticles)) == Array(subject.articles)
+                            } else {
+                                fail("setting generatebookcontroller articles")
+                            }
+                        } else {
+                            fail("showing generatebookcontroller")
+                        }
                     }
                 }
             }

@@ -224,6 +224,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
                         beforeEach {
                             articleListController = ArticleListController(
+                                mainQueue: FakeOperationQueue(),
                                 feedRepository: FakeDatabaseUseCase(),
                                 themeRepository: themeRepository,
                                 settingsRepository: SettingsRepository(userDefaults: nil),

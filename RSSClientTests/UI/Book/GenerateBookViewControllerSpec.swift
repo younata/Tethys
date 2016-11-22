@@ -276,7 +276,7 @@ class GenerateBookViewControllerSpec: QuickSpec {
                         }
 
                         it("removes the indicator") {
-                            let indicator = navController.view.subviews.filter {
+                            let indicator = subject.view.subviews.filter {
                                 return $0.isKind(of: ActivityIndicator.classForCoder())
                                 }.first
                             expect(indicator).to(beNil())
@@ -296,7 +296,7 @@ class GenerateBookViewControllerSpec: QuickSpec {
                         }
 
                         it("removes the indicator") {
-                            let indicator = navController.view.subviews.filter {
+                            let indicator = subject.view.subviews.filter {
                                 return $0.isKind(of: ActivityIndicator.classForCoder())
                                 }.first
                             expect(indicator).to(beNil())

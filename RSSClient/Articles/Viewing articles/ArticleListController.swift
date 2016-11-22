@@ -10,7 +10,6 @@ public protocol ArticleListControllerDelegate: class {
     func articleListController(_: ArticleListController, canEditArticle article: Article) -> Bool
     func articleListController(_: ArticleListController, shouldShowArticleView article: Article) -> Bool
     func articleListController(_: ArticleListController, didSelectArticles articles: [Article])
-
     func articleListController(_: ArticleListController, shouldPreviewArticle article: Article) -> Bool
 }
 
@@ -30,19 +29,32 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
         }
     }
 
+    public private(set) lazy var generateBookButton: UIBarButtonItem = {
+        return UIBarButtonItem(image: UIImage(named: "Book"), style: .plain,
+                               target: self, action: #selector(ArticleListController.displayGenerateBookController))
+    }()
+
+    public private(set) lazy var markReadButton: UIBarButtonItem = {
+        return UIBarButtonItem(title: NSLocalizedString("ArticleListController_Action_MarkRead", comment: ""),
+                               style: .plain, target: self, action: #selector(ArticleListController.markFeedRead))
+    }()
+
     public weak var delegate: ArticleListControllerDelegate?
 
+    fileprivate let mainQueue: OperationQueue
     fileprivate let feedRepository: DatabaseUseCase
     fileprivate let themeRepository: ThemeRepository
     fileprivate let settingsRepository: SettingsRepository
     fileprivate let articleViewController: (Void) -> ArticleViewController
     fileprivate let generateBookViewController: (Void) -> GenerateBookViewController
 
-    public init(feedRepository: DatabaseUseCase,
+    public init(mainQueue: OperationQueue,
+                feedRepository: DatabaseUseCase,
                 themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
                 articleViewController: @escaping (Void) -> ArticleViewController,
                 generateBookViewController: @escaping (Void) -> GenerateBookViewController) {
+        self.mainQueue = mainQueue
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
@@ -54,6 +66,7 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
 
     public required convenience init(injector: Injector) {
         self.init(
+            mainQueue: injector.create(string: kMainQueue) as! OperationQueue,
             feedRepository: injector.create(kind: DatabaseUseCase.self)!,
             themeRepository: injector.create(kind: ThemeRepository.self)!,
             settingsRepository: injector.create(kind: SettingsRepository.self)!,
@@ -62,9 +75,7 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
         )
     }
 
-    public required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,7 +93,6 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
 
         self.feedRepository.addSubscriber(self)
 
-
         if let feed = self.feed {
             self.navigationItem.title = feed.displayTitle
         }
@@ -92,7 +102,6 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
 
         self.registerForPreviewing(with: self, sourceView: self.tableView)
         self.resetBarItems()
-        self.setupToolbar()
     }
 
     public override func viewWillAppear(_ animated: Bool) {
@@ -307,15 +316,29 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
 
             self.navigationItem.rightBarButtonItems = barItems
         }
+        self.setupToolbar()
+    }
+
+    private func spacer() -> UIBarButtonItem {
+        return UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
     }
 
     private func setupToolbar() {
-        self.toolbarItems = [
-            UIBarButtonItem(image: UIImage(named: "Book"),
-                            style: .plain,
-                            target: self,
-                            action: #selector(ArticleListController.displayGenerateBookController))
-        ]
+        if let _ = self.feed {
+            self.toolbarItems = [
+                self.spacer(),
+                self.generateBookButton,
+                self.spacer(),
+                self.markReadButton,
+                self.spacer(),
+            ]
+        } else {
+            self.toolbarItems = [
+                self.spacer(),
+                self.generateBookButton,
+                self.spacer(),
+            ]
+        }
     }
 
     @objc fileprivate func shareFeed() {
@@ -332,6 +355,53 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
             animated: true,
             completion: nil
         )
+    }
+
+    @objc private func markFeedRead() {
+        guard let feed = self.feed else { return }
+
+        let indicator = ActivityIndicator(forAutoLayout: ())
+        self.view.addSubview(indicator)
+        indicator.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
+
+        indicator.configure(message: NSLocalizedString("ArticleListController_Action_MarkRead_Indicator", comment: ""))
+
+        _ = self.feedRepository.markFeedAsRead(feed).then { markReadResult in
+            switch markReadResult {
+            case .success(_):
+                _ = self.feedRepository.feeds().then { feedsResult in
+                    self.mainQueue.addOperation {
+                        indicator.removeFromSuperview()
+
+                        switch feedsResult {
+                        case let .success(feeds):
+                            let feed = feeds.first { $0.url == feed.url }
+                            self.feed = feed
+                        case let .failure(error):
+                            self.showAlert(error: error)
+                        }
+                    }
+                }
+                break
+            case let .failure(error):
+                self.mainQueue.addOperation {
+                    indicator.removeFromSuperview()
+                    self.showAlert(error: error)
+                }
+            }
+        }
+    }
+
+    private func showAlert(error: RNewsError) {
+        let alertTitle = NSLocalizedString("ArticleListController_Action_MarkRead_Error_Title", comment: "")
+        let alert = UIAlertController(title: alertTitle,
+                                      message: error.localizedDescription,
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Generic_Ok", comment: ""),
+                                      style: .default) { _ in
+                                        self.dismiss(animated: true, completion: nil)
+        })
+        self.present(alert, animated: true, completion: nil)
     }
 }
 
@@ -354,9 +424,9 @@ extension ArticleListController: UIViewControllerPreviewingDelegate {
     private func previewItems(article: Article) -> [UIPreviewAction] {
         let toggleReadTitle: String
         if article.read {
-            toggleReadTitle = NSLocalizedString("ArticleListController_PreviewItem_MarkUnread", comment: "")
+            toggleReadTitle = NSLocalizedString("ArticleListController_Action_MarkUnread", comment: "")
         } else {
-            toggleReadTitle = NSLocalizedString("ArticleListController_PreviewItem_MarkRead", comment: "")
+            toggleReadTitle = NSLocalizedString("ArticleListController_Action_MarkRead", comment: "")
         }
         let toggleRead = UIPreviewAction(title: toggleReadTitle, style: .default) { _ in
             self.toggleRead(article: article)

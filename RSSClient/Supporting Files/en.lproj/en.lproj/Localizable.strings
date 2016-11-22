@@ -109,8 +109,10 @@
 "ArticleListController_Cell_EditAction_MarkRead" = "Mark\nRead";
 "ArticleListController_Cell_EditAction_MarkUnread" = "Mark\nUnread";
 "ArticleListController_Search" = "Search Articles";
-"ArticleListController_PreviewItem_MarkRead" = "Mark Read";
-"ArticleListController_PreviewItem_MarkUnread" = "Mark Unread";
+"ArticleListController_Action_MarkRead" = "Mark Read";
+"ArticleListController_Action_MarkUnread" = "Mark Unread";
+"ArticleListController_Action_MarkRead_Indicator" = "Marking Articles as Read";
+"ArticleListController_Action_MarkRead_Error_Title" = "Unable to Mark Articles as Read";
 
 "ArticleCell_EstimatedReadingTime" = "%@ to read";
 

@@ -37,6 +37,7 @@ class FeedsDeleSourceSpec: QuickSpec {
             articleListFactory = {
                 articleListFactoryCallCount += 1
                 return ArticleListController(
+                    mainQueue: mainQueue,
                     feedRepository: FakeDatabaseUseCase(),
                     themeRepository: themeRepository,
                     settingsRepository: SettingsRepository(userDefaults: nil),

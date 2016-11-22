@@ -7,6 +7,7 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
     public var feed: rNewsKit.Feed? = nil {
         didSet {
             self.navigationItem.title = self.feed?.displayTitle ?? ""
+            self.feedURL = feed?.url
             self.tableView.reloadData()
         }
     }
@@ -40,6 +41,8 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
         tableView.delegate = self
         return tableView
     }()
+
+    private var feedURL: URL? = nil
 
     private let feedRepository: DatabaseUseCase
     private let urlSession: URLSession
@@ -109,6 +112,9 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
 
     @objc fileprivate func save() {
         if let theFeed = self.feed {
+            if let theFeedURL = self.feedURL, theFeedURL != theFeed.url {
+                theFeed.url = theFeedURL
+            }
             _ = self.feedRepository.saveFeed(theFeed)
         }
         self.dismissFromNavigation()
@@ -246,6 +252,7 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
         if #available(iOS 10.0, *) {
             tc.textField.textContentType = .URL
         }
+        tc.textField.returnKeyType = .done
         tc.onTextChange = {(text) in
             if let txt = text, let url = URL(string: txt) {
                 self.urlSession.dataTask(with: url) {data, response, error in
@@ -256,11 +263,14 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
                                 let string = String(nstext)
                                 let fp = Muon.FeedParser(string: string)
                                 _ = fp.failure {_ in tc.setValid(false) }
-                                _ = fp.success {_ in tc.setValid(true) }
+                                _ = fp.success {_ in
+                                    tc.setValid(true)
+                                    self.feedURL = url
+                                }
                                 fp.start()
                         } else { tc.setValid(false) }
                     } else { tc.setValid(false) }
-                    }.resume()
+                }.resume()
             }
             return
         }

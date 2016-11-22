@@ -38,10 +38,10 @@ public final class ValidatorView: UIView {
 
         if state == .valid {
             checkMark.path = checkmarkPath(self.frame, checkmarkWidth: 10)
-            checkMark.fillColor = UIColor.red.cgColor
+            checkMark.fillColor = UIColor.darkGreen().cgColor
         } else if state == .invalid {
             checkMark.path = xPath(self.frame, xWidth: 10)
-            checkMark.fillColor = UIColor.darkGreen().cgColor
+            checkMark.fillColor = UIColor.red.cgColor
         }
 
         UIView.animate(withDuration: 0.2, animations: {

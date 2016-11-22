@@ -189,17 +189,17 @@ class FeedViewControllerSpec: QuickSpec {
 
                     describe("on change") {
                         beforeEach {
-                            let range = NSMakeRange(0, 23)
-                            _ = cell.textField(cell.textField, shouldChangeCharactersIn: range, replacementString: "http://example.com/feed")
+                            cell.textField.text = "http://example.com/new_feed"
+                            _ = cell.textFieldShouldReturn(cell.textField)
                         }
 
                         it("should make a request to the url") {
                             let urlString = urlSession.lastURL?.absoluteString
-                            expect(urlString).to(equal("http://example.com/feed"))
+                            expect(urlString).to(equal("http://example.com/new_feed"))
                         }
 
                         context("when the request succeeds") {
-                            let urlResponse = HTTPURLResponse(url: URL(string: "https://example.com/feed")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+                            let urlResponse = HTTPURLResponse(url: URL(string: "https://example.com/new_feed")!, statusCode: 200, httpVersion: nil, headerFields: nil)
                             context("if the response (text) is a valid feed") {
                                 beforeEach {
                                     let rss = Bundle(for: self.classForCoder).url(forResource: "feed2", withExtension: "rss")!
@@ -209,6 +209,29 @@ class FeedViewControllerSpec: QuickSpec {
                                 
                                 it("should mark the field as valid") {
                                     expect(cell.isValid) == true
+                                }
+
+                                it("does not yet set the feed url to the new feed") {
+                                    expect(feed.url) == URL(string: "http://example.com/feed")
+                                }
+
+                                describe("tapping 'save'") {
+                                    beforeEach {
+                                        let saveButton = subject.navigationItem.rightBarButtonItem
+                                        saveButton?.tap()
+                                    }
+
+                                    it("sets the feed url to the new feed") {
+                                        expect(feed.url) == URL(string: "http://example.com/new_feed")
+                                    }
+
+                                    it("should save the changes to the dataManager") {
+                                        expect(dataRepository.lastSavedFeed).to(equal(feed))
+                                    }
+                                    
+                                    it("should dismiss itself") {
+                                        expect(presentingController.presentedViewController).to(beNil())
+                                    }
                                 }
                             }
 

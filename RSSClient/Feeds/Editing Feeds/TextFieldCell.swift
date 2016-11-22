@@ -60,16 +60,15 @@ extension TextFieldCell: ThemeRepositorySubscriber {
 }
 
 extension TextFieldCell: UITextFieldDelegate {
-    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
-        replacementString string: String) -> Bool {
-            guard let text = textField.text else { return true }
-            let changedText = (text as NSString).replacingCharacters(in: range, with: string)
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+            guard let text = textField.text else { return false }
 
             if self.showValidator {
                 self.validView.beginValidating()
             }
-            self.onTextChange?(changedText)
+            self.onTextChange?(text)
+            textField.resignFirstResponder()
 
-            return true
+            return false
     }
 }

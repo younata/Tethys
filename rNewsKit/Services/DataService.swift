@@ -48,7 +48,6 @@ extension DataService {
     func updateFeed(_ feed: Feed, info: ImportableFeed) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
         feed.title = info.title.stringByUnescapingHTML().stringByStrippingHTML()
-        feed.url = info.url
         feed.summary = info.description
         feed.lastUpdated = info.lastUpdated
 

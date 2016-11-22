@@ -34,10 +34,7 @@ public final class KitModule: NSObject, Ra.InjectorModule {
         backgroundQueue.maxConcurrentOperationCount = 1
         injector.bind(string: kBackgroundQueue, toInstance: backgroundQueue)
 
-        let urlSessionConfiguration = URLSessionConfiguration.background(
-            withIdentifier: "com.rachelbrindle.rnews"
-        )
-        urlSessionConfiguration.isDiscretionary = false
+        let urlSessionConfiguration = URLSessionConfiguration.default
         let urlSessionDelegate = RNewsKitURLSessionDelegate()
 
         RealmMigrator.beginMigration()

@@ -117,7 +117,7 @@ public class GenerateBookViewController: UIViewController, Injectable {
         self.chapterOrganizer.delegate = self
         self.generateButton.addTarget(self,
                                       action: #selector(GenerateBookViewController.generateBook),
-            for: .touchUpInside)
+                                      for: .touchUpInside)
 
         mainStackView.addArrangedSubview(self.titleField)
         mainStackView.addArrangedSubview(self.authorField)
@@ -126,9 +126,11 @@ public class GenerateBookViewController: UIViewController, Injectable {
         mainStackView.addArrangedSubview(self.generateButton)
 
         self.view.addSubview(mainStackView)
-        mainStackView.autoAlignAxis(toSuperviewAxis: .horizontal)
+        mainStackView.autoAlignAxis(.horizontal, toSameAxisOf: self.view, withOffset: 54)
         mainStackView.autoPinEdge(toSuperviewEdge: .leading)
         mainStackView.autoPinEdge(toSuperviewEdge: .trailing)
+        mainStackView.autoPinEdge(toSuperviewEdge: .top, withInset: 84, relation: .greaterThanOrEqual)
+        mainStackView.autoPinEdge(toSuperviewEdge: .bottom, withInset: 20, relation: .greaterThanOrEqual)
 
         self.titleField.autoPinEdge(toSuperviewEdge: .leading, withInset: 40)
         self.authorField.autoPinEdge(toSuperviewEdge: .leading, withInset: 40)
@@ -137,8 +139,20 @@ public class GenerateBookViewController: UIViewController, Injectable {
         self.authorField.autoPinEdge(toSuperviewEdge: .trailing, withInset: 40)
         self.formatSelector.autoPinEdge(toSuperviewEdge: .trailing, withInset: 40)
 
-        self.chapterOrganizer.view.autoPinEdge(toSuperviewEdge: .leading, withInset: 40)
-        self.chapterOrganizer.view.autoPinEdge(toSuperviewEdge: .trailing, withInset: 40)
+        self.chapterOrganizer.view.autoPinEdge(toSuperviewEdge: .leading)
+        self.chapterOrganizer.view.autoPinEdge(toSuperviewEdge: .trailing)
+
+        self.setChapterMaxHeight(height: self.view.bounds.size.height)
+    }
+
+    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+
+        self.setChapterMaxHeight(height: size.height)
+    }
+
+    private func setChapterMaxHeight(height: CGFloat) {
+        self.chapterOrganizer.maxHeight = Int(height - 300)
     }
 
     @objc private func dismissController() {

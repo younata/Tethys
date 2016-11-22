@@ -38,6 +38,8 @@ public final class FeedTableCell: UITableViewCell {
     public let unreadCounter = UnreadCounter(frame: CGRect.zero)
     public let iconView = UIImageView(forAutoLayout: ())
 
+    fileprivate let backgroundColorView = UIView()
+
     public private(set) var iconWidth: NSLayoutConstraint!
     public private(set) var iconHeight: NSLayoutConstraint!
 
@@ -82,6 +84,8 @@ public final class FeedTableCell: UITableViewCell {
         self.unreadCounter.autoSetDimension(.height, toSize: 45)
         self.unreadCounter.autoMatch(.width, to: .height, of: self.unreadCounter)
         self.unreadCounter.autoPinEdge(toSuperviewEdge: .bottom, withInset: 0, relation: .greaterThanOrEqual)
+
+        self.selectedBackgroundView = self.backgroundColorView
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError() }
@@ -91,6 +95,8 @@ extension FeedTableCell: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.nameLabel.textColor = self.themeRepository?.textColor
         self.summaryLabel.textColor = self.themeRepository?.textColor
+
+        self.backgroundColorView.backgroundColor = themeRepository.textColor.withAlphaComponent(0.3)
 
         self.backgroundColor = self.themeRepository?.backgroundColor
     }

@@ -322,16 +322,6 @@ class ArticleListControllerSpec: QuickSpec {
                 it("shows the toolbar") {
                     expect(navigationController.isToolbarHidden) == false
                 }
-
-                describe("when the view disappears again") {
-                    beforeEach {
-                        subject.viewDidDisappear(false)
-                    }
-
-                    it("hides the toolbar") {
-                        expect(navigationController.isToolbarHidden) == true
-                    }
-                }
             }
 
             describe("when there is no delegate") {
@@ -341,16 +331,6 @@ class ArticleListControllerSpec: QuickSpec {
 
                 it("shows the toolbar") {
                     expect(navigationController.isToolbarHidden) == false
-                }
-
-                describe("when the view disappears again") {
-                    beforeEach {
-                        subject.viewDidDisappear(false)
-                    }
-
-                    it("hides the toolbar") {
-                        expect(navigationController.isToolbarHidden) == true
-                    }
                 }
             }
         }
@@ -487,7 +467,8 @@ class ArticleListControllerSpec: QuickSpec {
                 it("returns an ArticleViewController configured with the article to present to the user") {
                     expect(viewController).to(beAKindOf(ArticleViewController.self))
                     if let articleVC = viewController as? ArticleViewController {
-                        expect(articleVC.article).to(equal(articles[0]))                    }
+                        expect(articleVC.article).to(equal(articles[0]))
+                    }
                 }
 
                 it("does not mark the article as read") {

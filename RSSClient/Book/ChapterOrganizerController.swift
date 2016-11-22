@@ -11,7 +11,7 @@ public class ChapterOrganizerController: UIViewController, Injectable {
         let tableView = UITableView(forAutoLayout: ())
         tableView.tableFooterView = UIView()
         tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 80
+        tableView.estimatedRowHeight = 100
         return tableView
     }()
 
@@ -23,15 +23,32 @@ public class ChapterOrganizerController: UIViewController, Injectable {
         return button
     }()
 
+    public let reorderButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle(NSLocalizedString("ChapterOrganizerController_ReorderButton_Reorder", comment: ""),
+                        for: .normal)
+        button.setTitleColor(UIColor.darkGreen(), for: .normal)
+        button.setTitleColor(UIColor.gray, for: .disabled)
+        button.isEnabled = false
+        return button
+    }()
+
     private var tableHeight: NSLayoutConstraint?
 
     public weak var delegate: ChapterOrganizerControllerDelegate?
     public weak var articles: DataStoreBackedArray<Article>?
 
+    public var maxHeight: Int = 300 {
+        didSet {
+            self.tableHeight?.constant = CGFloat(min(self.maxHeight, self.chapters.count * 100))
+        }
+    }
+
     public var chapters: [Article] = [] {
         didSet {
-            self.tableHeight?.constant = CGFloat(min(300, self.chapters.count * 80))
+            self.tableHeight?.constant = CGFloat(min(self.maxHeight, self.chapters.count * 100))
             self.delegate?.chapterOrganizerControllerDidChangeChapters(self)
+            self.reorderButton.isEnabled = !self.chapters.isEmpty
         }
     }
 
@@ -77,15 +94,19 @@ public class ChapterOrganizerController: UIViewController, Injectable {
         topStackView.alignment = .center
 
         self.view.addSubview(topStackView)
-        topStackView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20),
+        topStackView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 0, left: 40, bottom: 0, right: 40),
                                                   excludingEdge: .bottom)
         self.tableView.autoPinEdge(.top, to: .bottom, of: topStackView)
 
+        topStackView.addArrangedSubview(self.reorderButton)
         topStackView.addArrangedSubview(self.addChapterButton)
 
         self.addChapterButton.addTarget(self,
                                         action: #selector(ChapterOrganizerController.addChapter),
                                         for: .touchUpInside)
+        self.reorderButton.addTarget(self,
+                                     action: #selector(ChapterOrganizerController.toggleEditMode),
+                                     for: .touchUpInside)
     }
 
     public override func viewWillAppear(_ animated: Bool) {
@@ -98,6 +119,17 @@ public class ChapterOrganizerController: UIViewController, Injectable {
         articleList.delegate = self
         articleList.articles = self.articles ?? DataStoreBackedArray()
         self.navigationController?.pushViewController(articleList, animated: true)
+    }
+
+    @objc private func toggleEditMode() {
+        if self.tableView.isEditing {
+            self.reorderButton.setTitle(NSLocalizedString("ChapterOrganizerController_ReorderButton_Reorder",
+                                                          comment: ""), for: .normal)
+        } else {
+            self.reorderButton.setTitle(NSLocalizedString("ChapterOrganizerController_ReorderButton_End", comment: ""),
+                                        for: .normal)
+        }
+        self.tableView.setEditing(!self.tableView.isEditing, animated: true)
     }
 }
 
@@ -132,6 +164,19 @@ extension ChapterOrganizerController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
+
+    public func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+        return false
+    }
+
+    public func tableView(_ tableView: UITableView,
+                          editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+        if tableView.isEditing {
+            return .none
+        } else {
+            return .delete
+        }
+    }
 }
 
 extension ChapterOrganizerController: UITableViewDelegate {
@@ -140,6 +185,7 @@ extension ChapterOrganizerController: UITableViewDelegate {
         let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
         let delete = UITableViewRowAction(style: .destructive, title: deleteTitle) { _, indexPath in
             self.chapters.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
         }
         return [delete]
     }
@@ -181,7 +227,7 @@ extension ChapterOrganizerController: ArticleListControllerDelegate {
     }
 
     public func articleListController(_: ArticleListController, didSelectArticles articles: [Article]) {
-        self.chapters = articles
+        self.chapters += (articles.filter { !self.chapters.contains($0) })
         self.tableView.reloadData()
         _ = self.navigationController?.popViewController(animated: true)
     }

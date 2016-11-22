@@ -66,8 +66,9 @@ class ChapterOrganizerControllerSpec: QuickSpec {
             navController = UINavigationController(rootViewController: subject)
 
             subject.view.layoutIfNeeded()
-            subject.delegate = delegate
             subject.articles = dataStoreArticles
+
+            subject.delegate = delegate
         }
 
         describe("listening to theme repository updates") {
@@ -90,8 +91,22 @@ class ChapterOrganizerControllerSpec: QuickSpec {
             expect(subject.addChapterButton.title(for: .normal)) == "Add Chapter"
         }
 
+        describe("the reorder button") {
+            it("is initially disabled") {
+                expect(subject.reorderButton.isEnabled) == false
+            }
+
+            it("is titled 'Reorder'") {
+                expect(subject.reorderButton.title(for: .normal)) == "Reorder"
+            }
+        }
+
         describe("tapping the add chapter button") {
             beforeEach {
+                subject.delegate = nil
+                subject.chapters = [allArticles.first!, allArticles.last!]
+                subject.delegate = delegate
+
                 subject.addChapterButton.sendActions(for: .touchUpInside)
             }
 
@@ -116,15 +131,9 @@ class ChapterOrganizerControllerSpec: QuickSpec {
 
             describe("when the user is finished selecting articles") {
                 let articles: [Article] = [
-                    Article(title: "Article 1", link: URL(string: "https://example.com/1")!, summary: "", authors: [],
-                            published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
-                            estimatedReadingTime: 0, feed: nil, flags: []),
-                    Article(title: "Article 2", link: URL(string: "https://example.com/2")!, summary: "", authors: [],
-                            published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
-                            estimatedReadingTime: 0, feed: nil, flags: []),
-                    Article(title: "Article 3", link: URL(string: "https://example.com/3")!, summary: "", authors: [],
-                            published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
-                            estimatedReadingTime: 0, feed: nil, flags: []),
+                    allArticles[0],
+                    allArticles[1],
+                    allArticles[2],
                 ]
 
                 beforeEach {
@@ -137,11 +146,15 @@ class ChapterOrganizerControllerSpec: QuickSpec {
                 }
 
                 it("sets the chapters") {
-                    expect(subject.chapters) == articles
+                    expect(subject.chapters) == [allArticles[0], allArticles[5], allArticles[1], allArticles[2]]
                 }
 
                 it("updates the tableView") {
-                    expect(subject.tableView.numberOfRows(inSection: 0)) == articles.count
+                    expect(subject.tableView.numberOfRows(inSection: 0)) == articles.count + 1
+                }
+
+                it("enables the reorder button") {
+                    expect(subject.reorderButton.isEnabled) == true
                 }
 
                 describe("the chapter cells") {
@@ -173,6 +186,42 @@ class ChapterOrganizerControllerSpec: QuickSpec {
                     expect(delegate.didChangeChaptersCallCount) == 1
                 }
 
+                describe("tapping the reorder button") {
+                    beforeEach {
+                        subject.reorderButton.sendActions(for: .touchUpInside)
+                    }
+
+                    it("changes the text to 'Done'") {
+                        expect(subject.reorderButton.title(for: .normal)) == "Done"
+                    }
+
+                    it("enables edit mode on the tableView") {
+                        expect(subject.tableView.isEditing) == true
+                    }
+
+                    it("doesn't show the delete icon on the cell") {
+                        expect(subject.tableView.delegate?.tableView?(subject.tableView, editingStyleForRowAt: IndexPath(row: 0, section: 0))) == UITableViewCellEditingStyle.none
+                    }
+
+                    describe("tapping the reorder button again") {
+                        beforeEach {
+                            subject.reorderButton.sendActions(for: .touchUpInside)
+                        }
+
+                        it("resets the text") {
+                            expect(subject.reorderButton.title(for: .normal)) == "Reorder"
+                        }
+
+                        it("disables edit mode on the tableView") {
+                            expect(subject.tableView.isEditing) == false
+                        }
+
+                        it("shows the delete message on the cell") {
+                            expect(subject.tableView.delegate?.tableView?(subject.tableView, editingStyleForRowAt: IndexPath(row: 0, section: 0))) == UITableViewCellEditingStyle.delete
+                        }
+                    }
+                }
+
                 describe("moving a chapter") {
                     it("can move chapters") {
                         for i in 0..<articles.count {
@@ -184,9 +233,10 @@ class ChapterOrganizerControllerSpec: QuickSpec {
                         subject.tableView.dataSource?.tableView?(subject.tableView, moveRowAt: IndexPath(row: 0, section: 0), to: IndexPath(row: 2, section: 0))
 
                         expect(subject.chapters) == [
+                            allArticles.last!,
                             articles[1],
+                            articles[0],
                             articles[2],
-                            articles[0]
                         ]
                     }
 
@@ -214,6 +264,7 @@ class ChapterOrganizerControllerSpec: QuickSpec {
 
                         it("deletes the chapter from the list") {
                             expect(subject.chapters) == [
+                                allArticles[5],
                                 articles[1],
                                 articles[2]
                             ]

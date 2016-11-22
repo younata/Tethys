@@ -103,12 +103,6 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
         self.themeRepository.addSubscriber(self)
     }
 
-    public override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-
-        self.navigationController?.setToolbarHidden(true, animated: true)
-    }
-
     var _previewActionItems: [UIPreviewAction] = []
     public override var previewActionItems: [UIPreviewActionItem] {
         return self._previewActionItems

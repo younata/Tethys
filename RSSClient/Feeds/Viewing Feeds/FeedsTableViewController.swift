@@ -168,6 +168,7 @@ public final class FeedsTableViewController: UIViewController, Injectable {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.refreshControl.updateSize(self.view.bounds.size)
+        self.navigationController?.setToolbarHidden(true, animated: true)
     }
 
     public override func viewWillTransition(to size: CGSize,

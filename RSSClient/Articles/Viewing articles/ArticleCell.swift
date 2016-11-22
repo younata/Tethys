@@ -73,6 +73,8 @@ public final class ArticleCell: UITableViewCell {
         return formatter
     }()
 
+    fileprivate let backgroundColorView = UIView()
+
     fileprivate func managedReadingTimeHidden() {
         guard let article = self.article else { return }
         let articleWantsToShow = article.estimatedReadingTime > 0
@@ -125,6 +127,9 @@ public final class ArticleCell: UITableViewCell {
         self.published.autoPinEdge(.left, to: .right, of: title, withOffset: 8)
         self.published.autoMatch(.width, to: .width,
             of: self.contentView, withMultiplier: 0.25)
+
+        self.multipleSelectionBackgroundView  = self.backgroundColorView
+        self.selectedBackgroundView = self.backgroundColorView
     }
 
     public required init(coder aDecoder: NSCoder) { fatalError() }
@@ -136,6 +141,7 @@ extension ArticleCell: ThemeRepositorySubscriber {
         self.published.textColor = themeRepository.textColor
         self.author.textColor = themeRepository.textColor
         self.readingTime.textColor = themeRepository.textColor
+        self.backgroundColorView.backgroundColor = themeRepository.textColor.withAlphaComponent(0.3)
 
         self.backgroundColor = themeRepository.backgroundColor
     }

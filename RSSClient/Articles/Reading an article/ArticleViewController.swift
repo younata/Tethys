@@ -77,8 +77,6 @@ public final class ArticleViewController: UIViewController, Injectable {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.navigationController?.setToolbarHidden(false, animated: false)
-
         self.view.addSubview(self.htmlViewController.view)
         self.htmlViewController.view.autoPinEdgesToSuperviewEdges()
 

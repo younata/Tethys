@@ -87,6 +87,8 @@
 "GenerateBookViewController_Generating_Error_Title" = "Unable to Generate eBook";
 
 "ChapterOrganizerController_AddChapter_Title" = "Add Chapter";
+"ChapterOrganizerController_ReorderButton_Reorder" = "Reorder";
+"ChapterOrganizerController_ReorderButton_End" = "Done";
 
 "MigrationViewController_Message" = "Optimizing your database, hang tight";
 

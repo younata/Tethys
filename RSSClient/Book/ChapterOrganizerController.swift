@@ -107,6 +107,8 @@ public class ChapterOrganizerController: UIViewController, Injectable {
         self.reorderButton.addTarget(self,
                                      action: #selector(ChapterOrganizerController.toggleEditMode),
                                      for: .touchUpInside)
+
+        self.tableView.keyboardDismissMode = .onDrag
     }
 
     public override func viewWillAppear(_ animated: Bool) {

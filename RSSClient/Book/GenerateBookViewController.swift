@@ -97,6 +97,12 @@ public class GenerateBookViewController: UIViewController, Injectable {
 
         self.themeRepository.addSubscriber(self)
 
+        let dismissKeyboardRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(GenerateBookViewController.dismissKeyboard)
+        )
+        self.view.addGestureRecognizer(dismissKeyboardRecognizer)
+
         self.title = NSLocalizedString("GenerateBookViewController_Title", comment: "")
 
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(
@@ -153,6 +159,11 @@ public class GenerateBookViewController: UIViewController, Injectable {
 
     private func setChapterMaxHeight(height: CGFloat) {
         self.chapterOrganizer.maxHeight = Int(height - 300)
+    }
+
+    @objc private func dismissKeyboard() {
+        self.titleField.resignFirstResponder()
+        self.authorField.resignFirstResponder()
     }
 
     @objc private func dismissController() {

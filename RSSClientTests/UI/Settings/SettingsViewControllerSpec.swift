@@ -1184,8 +1184,8 @@ class SettingsViewControllerSpec: QuickSpec {
                     ("Rachel Brindle", "Developer", URL(string: "https://twitter.com/younata")!),
                 ]
 
-                it("has \(values.count + 1) cells") {
-                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == (values.count + 1)
+                it("has \(values.count + 2) cells") {
+                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == (values.count + 2)
                 }
 
                 sharedExamples("a credits cell") { (sharedContext: @escaping SharedExampleContext) in
@@ -1320,6 +1320,72 @@ class SettingsViewControllerSpec: QuickSpec {
                             expect(viewController).to(beAnInstanceOf(DocumentationViewController.self))
                             if let documentationViewController = viewController as? DocumentationViewController {
                                 expect(documentationViewController.documentation) == Documentation.libraries
+                            }
+                        }
+
+                        it("has no preview actions") {
+                            expect(viewController?.previewActionItems.count) == 0
+                        }
+
+                        it("pushes the login controller if the user commits the touch") {
+                            guard let vc = viewController else { fail(); return }
+                            subject.previewingContext(viewControllerPreviewing, commit: vc)
+                            expect(navigationController.visibleViewController) == vc
+                        }
+                    }
+                }
+
+                describe("the icons cell") {
+                    var cell: TableViewCell!
+                    let indexPath = IndexPath(row: values.count + 1, section: sectionNumber)
+
+                    beforeEach {
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
+                    }
+
+                    it("is configured with the theme repository") {
+                        expect(cell.themeRepository) == themeRepository
+                    }
+
+                    it("has Icons name as the text") {
+                        expect(cell.textLabel?.text) == "Icons"
+                    }
+
+                    it("has no detail") {
+                        expect(cell.detailTextLabel?.text) == ""
+                    }
+
+                    describe("tapping it") {
+                        beforeEach {
+                            delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
+                        }
+
+                        it("should show a DocumentationViewController with the .icons documentation") {
+                            expect(navigationController.visibleViewController).to(beAnInstanceOf(DocumentationViewController.self))
+
+                            if let documentationViewController = navigationController.visibleViewController as? DocumentationViewController {
+                                expect(documentationViewController.documentation) == Documentation.icons
+                            }
+                        }
+                    }
+
+                    describe("3d touching the cell") {
+                        var viewControllerPreviewing: FakeUIViewControllerPreviewing! = nil
+                        var viewController: UIViewController? = nil
+
+                        beforeEach {
+                            subject.tableView.frame = CGRect(x: 0, y: 0, width: 320, height: 480)
+                            viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
+
+                            let rect = subject.tableView.rectForRow(at: indexPath)
+                            let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
+                            viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                        }
+
+                        it("returns a DocumentationViewController") {
+                            expect(viewController).to(beAnInstanceOf(DocumentationViewController.self))
+                            if let documentationViewController = viewController as? DocumentationViewController {
+                                expect(documentationViewController.documentation) == Documentation.icons
                             }
                         }
 

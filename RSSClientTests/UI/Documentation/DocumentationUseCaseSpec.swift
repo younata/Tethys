@@ -34,11 +34,34 @@ class DocumentationUseCaseSpec: QuickSpec {
 
                 expect(subject.html(documentation: .libraries)) == expectedHTML
             }
+
+            it("returns the contents of the icons.html file with css when given Documentation.icons") {
+                let cssURL = bundle.url(forResource: themeRepository.articleCSSFileName, withExtension: "css")!
+                let css = try! String(contentsOf: cssURL)
+
+                let expectedPrefix = "<html><head>" +
+                    "<style type=\"text/css\">\(css)</style>" +
+                    "<meta name=\"viewport\" content=\"initial-scale=1.0,maximum-scale=10.0\"/>" +
+                "</head><body>"
+
+                let expectedPostfix = "</body></html>"
+
+                let librariesURL = bundle.url(forResource: "icons", withExtension: "html")!
+                let librariesContents = try! String(contentsOf: librariesURL)
+
+                let expectedHTML = expectedPrefix + librariesContents + expectedPostfix
+
+                expect(subject.html(documentation: .icons)) == expectedHTML
+            }
         }
 
         describe("title(documentation: )") {
             it("returns 'Libraries' when given Documentation.libraries") {
                 expect(subject.title(documentation: .libraries)) == "Libraries"
+            }
+
+            it("returns 'Icons' when given Documentation.icons") {
+                expect(subject.title(documentation: .icons)) == "Icons"
             }
         }
     }

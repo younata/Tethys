@@ -3,6 +3,7 @@ import Ra
 
 public enum Documentation {
     case libraries
+    case icons
 }
 
 public protocol DocumentationUseCase {
@@ -12,14 +13,23 @@ public protocol DocumentationUseCase {
 
 public struct DefaultDocumentationUseCase: DocumentationUseCase, Injectable {
     public func html(documentation: Documentation) -> String {
-        guard let url = Bundle.main.url(forResource: "libraries", withExtension: "html") else {
-            return ""
+        let url: URL
+        switch documentation {
+        case .libraries:
+            url = Bundle.main.url(forResource: "libraries", withExtension: "html")!
+        case .icons:
+            url = Bundle.main.url(forResource: "icons", withExtension: "html")!
         }
         return self.htmlFixes(content: (try? String(contentsOf: url)) ?? "")
     }
 
     public func title(documentation: Documentation) -> String {
-        return NSLocalizedString("SettingsViewController_Credits_Libraries", comment: "")
+        switch documentation {
+        case .libraries:
+            return NSLocalizedString("SettingsViewController_Credits_Libraries", comment: "")
+        case .icons:
+            return NSLocalizedString("SettingsViewController_Credits_Icons", comment: "")
+        }
     }
 
     private let themeRepository: ThemeRepository

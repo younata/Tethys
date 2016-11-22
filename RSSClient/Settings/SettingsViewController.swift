@@ -294,6 +294,10 @@ extension SettingsViewController: UIViewControllerPreviewingDelegate {
                 let viewController = self.documentationViewController()
                 viewController.configure(documentation: .libraries)
                 return viewController
+            } else if indexPath.row == 2 {
+                let viewController = self.documentationViewController()
+                viewController.configure(documentation: .icons)
+                return viewController
             } else {
                 return nil
             }
@@ -332,7 +336,7 @@ extension SettingsViewController: UITableViewDataSource {
         case .other:
             return OtherSection.numberOfOptions
         case .credits:
-            return 2
+            return 3
         }
     }
 
@@ -428,6 +432,9 @@ extension SettingsViewController: UITableViewDataSource {
                                                            comment: "")
         } else if indexPath.row == 1 {
             cell.textLabel?.text = NSLocalizedString("SettingsViewController_Credits_Libraries", comment: "")
+            cell.detailTextLabel?.text = ""
+        } else if indexPath.row == 2 {
+            cell.textLabel?.text = NSLocalizedString("SettingsViewController_Credits_Icons", comment: "")
             cell.detailTextLabel?.text = ""
         }
         return cell
@@ -579,6 +586,10 @@ extension SettingsViewController: UITableViewDelegate {
         } else if indexPath.row == 1 {
             let viewController = self.documentationViewController()
             viewController.configure(documentation: .libraries)
+            self.navigationController?.pushViewController(viewController, animated: true)
+        } else if indexPath.row == 2 {
+            let viewController = self.documentationViewController()
+            viewController.configure(documentation: .icons)
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }

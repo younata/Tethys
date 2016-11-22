@@ -56,6 +56,7 @@
 		890C8D401DE3774600A037D7 /* Sponde.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890C8D3D1DE3771E00A037D7 /* Sponde.framework */; };
 		890C8D431DE38B3400A037D7 /* Sponde.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890C8D3D1DE3771E00A037D7 /* Sponde.framework */; };
 		890C8D451DE3A52100A037D7 /* FakeGenerateBookUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890C8D441DE3A52100A037D7 /* FakeGenerateBookUseCase.swift */; };
+		890C8D4F1DE4096C00A037D7 /* icons.html in Resources */ = {isa = PBXBuildFile; fileRef = 890C8D4E1DE4096C00A037D7 /* icons.html */; };
 		89122E611C5D725D00004B1F /* DatabaseMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89122E601C5D725D00004B1F /* DatabaseMigrator.swift */; };
 		89122E621C5D725D00004B1F /* DatabaseMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89122E601C5D725D00004B1F /* DatabaseMigrator.swift */; };
 		89122E641C5D762000004B1F /* DatabaseMigratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89122E631C5D762000004B1F /* DatabaseMigratorSpec.swift */; };
@@ -655,6 +656,7 @@
 		890C8D3B1DE376D100A037D7 /* FakeSpondeService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeSpondeService.swift; sourceTree = "<group>"; };
 		890C8D3D1DE3771E00A037D7 /* Sponde.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sponde.framework; path = Carthage/Build/iOS/Sponde.framework; sourceTree = "<group>"; };
 		890C8D441DE3A52100A037D7 /* FakeGenerateBookUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeGenerateBookUseCase.swift; sourceTree = "<group>"; };
+		890C8D4E1DE4096C00A037D7 /* icons.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = icons.html; sourceTree = "<group>"; };
 		89122E601C5D725D00004B1F /* DatabaseMigrator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseMigrator.swift; sourceTree = "<group>"; };
 		89122E631C5D762000004B1F /* DatabaseMigratorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseMigratorSpec.swift; sourceTree = "<group>"; };
 		8917546F1C5B449E0036D96D /* RealmObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmObjects.swift; sourceTree = "<group>"; };
@@ -1517,6 +1519,7 @@
 				895901AE1A32B61A002E2C62 /* en.lproj */,
 				89C8307719D730E9009924DA /* Info.plist */,
 				899C6A9E1DCAACF800E0A61C /* libraries.html */,
+				890C8D4E1DE4096C00A037D7 /* icons.html */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -2186,6 +2189,7 @@
 				895901B31A32B61A002E2C62 /* Localizable.strings in Resources */,
 				8918D4D41B84593100DCDE0E /* ClearnessDark.css in Resources */,
 				8937F6BE1B7996F50044A442 /* prism.js.html in Resources */,
+				890C8D4F1DE4096C00A037D7 /* icons.html in Resources */,
 				899C6A9F1DCAACF800E0A61C /* libraries.html in Resources */,
 				8918D4D91B85887E00DCDE0E /* darkhub2.css in Resources */,
 			);

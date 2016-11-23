@@ -20,7 +20,7 @@ public final class SettingsViewController: UIViewController, Injectable {
     fileprivate let loginViewController: (Void) -> LoginViewController
     fileprivate let documentationViewController: (Void) -> DocumentationViewController
 
-    fileprivate var oldTheme: ThemeRepository.Theme = .default
+    fileprivate var oldTheme: ThemeRepository.Theme = .light
 
     fileprivate lazy var showReadingTimes: Bool = { return self.settingsRepository.showEstimatedReadingLabel }()
     fileprivate lazy var refreshControlStyle: RefreshControlStyle = { return self.settingsRepository.refreshControl }()
@@ -261,7 +261,7 @@ extension SettingsViewController: ThemeRepositorySubscriber {
         self.view.backgroundColor = self.themeRepository.backgroundColor
 
         func colorWithDefault(_ color: UIColor) -> UIColor? {
-            return self.themeRepository.theme == .default ? nil : color
+            return self.themeRepository.theme == .light ? nil : color
         }
 
         self.tableView.backgroundColor = colorWithDefault(self.themeRepository.backgroundColor)

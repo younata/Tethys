@@ -17,25 +17,25 @@ public final class ThemeRepository: NSObject, Injectable {
     public var errorColor: UIColor { return self.theme.errorColor }
 
     public enum Theme: Int, CustomStringConvertible {
-        case `default` = 0
+        case light = 0
         case dark = 1
 
         public var description: String {
             switch self {
-            case .default:
-                return NSLocalizedString("Theme_Default", comment: "")
+            case .light:
+                return NSLocalizedString("Theme_Light", comment: "")
             case .dark:
                 return NSLocalizedString("Theme_Dark", comment: "")
             }
         }
 
         public static func array() -> [Theme] {
-            return [.default, .dark]
+            return [.light, .dark]
         }
 
         public var backgroundColor: UIColor {
             switch self {
-            case .default:
+            case .light:
                 return UIColor.white
             case .dark:
                 return UIColor.black
@@ -44,7 +44,7 @@ public final class ThemeRepository: NSObject, Injectable {
 
         public var textColor: UIColor {
             switch self {
-            case .default:
+            case .light:
                 return UIColor.black
             case .dark:
                 return UIColor(white: 0.85, alpha: 1)
@@ -53,7 +53,7 @@ public final class ThemeRepository: NSObject, Injectable {
 
         public var articleCSSFileName: String {
             switch self {
-            case .default:
+            case .light:
                 return "github2"
             case .dark:
                 return "darkhub2"
@@ -62,7 +62,7 @@ public final class ThemeRepository: NSObject, Injectable {
 
         public var tintColor: UIColor {
             switch self {
-            case .default:
+            case .light:
                 return UIColor.white
             case .dark:
                 return UIColor.darkGray
@@ -71,7 +71,7 @@ public final class ThemeRepository: NSObject, Injectable {
 
         public var barStyle: UIBarStyle {
             switch self {
-            case .default:
+            case .light:
                 return .default
             case .dark:
                 return .black
@@ -80,7 +80,7 @@ public final class ThemeRepository: NSObject, Injectable {
 
         public var statusBarStyle: UIStatusBarStyle {
             switch self {
-            case .default:
+            case .light:
                 return .default
             case .dark:
                 return .lightContent
@@ -89,7 +89,7 @@ public final class ThemeRepository: NSObject, Injectable {
 
         public var scrollIndicatorStyle: UIScrollViewIndicatorStyle {
             switch self {
-            case .default:
+            case .light:
                 return .black
             case .dark:
                 return .white
@@ -98,7 +98,7 @@ public final class ThemeRepository: NSObject, Injectable {
 
         public var spinnerStyle: UIActivityIndicatorViewStyle {
             switch self {
-            case .default:
+            case .light:
                 return .gray
             case .dark:
                 return .white
@@ -107,7 +107,7 @@ public final class ThemeRepository: NSObject, Injectable {
 
         public var errorColor: UIColor {
             switch self {
-            case .default:
+            case .light:
                 return UIColor(red: 1, green: 0, blue: 0.2, alpha: 1)
             case .dark:
                 return UIColor(red: 0.75, green: 0, blue: 0.1, alpha: 1)
@@ -122,7 +122,7 @@ public final class ThemeRepository: NSObject, Injectable {
                 let theme = Theme(rawValue: themeRawValue) {
                     return theme
             }
-            return Theme.default
+            return Theme.dark
         }
         set {
             self.privateSetValue(newValue.rawValue as AnyObject, forKey: "theme")

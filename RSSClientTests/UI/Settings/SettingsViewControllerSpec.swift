@@ -129,12 +129,12 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the first (number of themes - 1) commands") {
-                context("when .Default is the current theme") {
+                context("when .light is the current theme") {
                     beforeEach {
-                        themeRepository.theme = .default
+                        themeRepository.theme = .light
                     }
 
-                    it("lists every other theme but .Default") {
+                    it("lists every other theme but .light") {
                         let keyCommands = subject.keyCommands
                         expect(keyCommands).toNot(beNil())
                         guard let commands = keyCommands else {
@@ -159,12 +159,12 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
                 }
 
-                context("when .Dark is the current theme") {
+                context("when .dark is the current theme") {
                     beforeEach {
                         themeRepository.theme = .dark
                     }
 
-                    it("lists every other theme but .Dark") {
+                    it("lists every other theme but .dark") {
                         let keyCommands = subject.keyCommands
                         expect(keyCommands).toNot(beNil())
                         guard let commands = keyCommands else {
@@ -175,7 +175,7 @@ class SettingsViewControllerSpec: QuickSpec {
                             UIKeyCommand(input: "1", modifierFlags: .command, action: #selector(BlankTarget.blank)),
                         ]
                         let expectedDiscoverabilityTitles = [
-                            "Change Theme to 'Default'",
+                            "Change Theme to 'Light'",
                         ]
 
                         for (idx, expectedCmd) in expectedCommands.enumerated() {
@@ -263,20 +263,47 @@ class SettingsViewControllerSpec: QuickSpec {
                         cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
                     }
 
-                    it("is titled 'Default'") {
-                        expect(cell.textLabel?.text) == "Default"
+                    it("is titled 'Light'") {
+                        expect(cell.textLabel?.text) == "Light"
                     }
 
                     it("has its theme repository set") {
                         expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
                     }
 
-                    it("is selected") {
-                        expect(cell.isSelected) == true
+                    it("is not selected") { // because it's not the current theme
+                        expect(cell.isSelected) == false
                     }
 
                     it("has no edit actions") {
                         expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
+                    }
+
+                    describe("when tapped") {
+                        beforeEach {
+                            delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
+                        }
+
+                        describe("it previews the change") {
+                            it("by restyling the navigation bar") {
+                                expect(subject.navigationController?.navigationBar.barStyle) == UIBarStyle.default
+                            }
+
+                            it("by changing the background color of the tableView") {
+                                expect(subject.tableView.backgroundColor).to(beNil())
+                            }
+
+                            it("by changing the background color of the view") {
+                                expect(subject.view.backgroundColor) == UIColor.white
+                            }
+                        }
+
+                        itBehavesLike("a changed setting") {
+                            let op = BlockOperation {
+                                expect(themeRepository.theme) == ThemeRepository.Theme.light
+                            }
+                            return ["saveToUserDefaults": op]
+                        }
                     }
 
                     it("does not respond to 3d touch") {
@@ -297,12 +324,12 @@ class SettingsViewControllerSpec: QuickSpec {
                         cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
                     }
 
-                    it("is titled 'Dark'") {
+                    it("is titled 'Dark (Default)'") {
                         expect(cell.textLabel?.text) == "Dark"
                     }
 
-                    it("is selected if it's the current theme") { // which it is not
-                        expect(cell.isSelected) == false
+                    it("is selected if it's the current theme") { // which it is
+                        expect(cell.isSelected) == true
                     }
 
                     it("has its theme repository set") {
@@ -311,33 +338,6 @@ class SettingsViewControllerSpec: QuickSpec {
 
                     it("has no edit actions") {
                         expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
-                    }
-
-                    describe("when tapped") {
-                        beforeEach {
-                            delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
-                        }
-
-                        describe("it previews the change") {
-                            it("by restyling the navigation bar") {
-                                expect(subject.navigationController?.navigationBar.barStyle) == UIBarStyle.black
-                            }
-
-                            it("by changing the background color of the tableView") {
-                                expect(subject.tableView.backgroundColor) == UIColor.black
-                            }
-
-                            it("by changing the background color of the view") {
-                                expect(subject.view.backgroundColor) == UIColor.black
-                            }
-                        }
-                        
-                        itBehavesLike("a changed setting") {
-                            let op = BlockOperation {
-                                expect(themeRepository.theme) == ThemeRepository.Theme.dark
-                            }
-                            return ["saveToUserDefaults": op]
-                        }
                     }
 
                     it("does not respond to 3d touch") {

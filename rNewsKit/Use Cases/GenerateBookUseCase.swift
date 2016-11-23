@@ -18,8 +18,10 @@ struct DefaultGenerateBookUseCase: GenerateBookUseCase {
 
     func generateBook(title: String, author: String,
                       chapters: [Article], format: Book.Format) -> Future<Result<URL, RNewsError>> {
-        let bookChapters = chapters.map {
-            return Chapter(title: $0.title, html: $0.content)
+        let bookChapters = chapters.map { article -> Chapter in
+            let articleContent = article.content.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+            let content = articleContent.isEmpty ? article.summary : articleContent
+            return Chapter(title: article.title, html: content)
         }
         let future = self.service.generateBook(title: title, imageURL: nil, author: author,
                                                chapters: bookChapters, format: format)

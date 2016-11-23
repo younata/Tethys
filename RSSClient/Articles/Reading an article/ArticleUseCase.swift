@@ -117,7 +117,8 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
             prefix = "<html><body>"
         }
 
-        let content = article.content.isEmpty ? article.summary : article.content
+        let articleContent = article.content.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        let content = articleContent.isEmpty ? article.summary : articleContent
 
         let postfix = self.prismJS + "</body></html>"
 

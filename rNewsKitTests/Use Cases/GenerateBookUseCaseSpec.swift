@@ -23,11 +23,11 @@ class GenerateBookUseCaseSpec: QuickSpec {
                 Article(title: "Article 1", link: URL(string: "https://example.com/1")!, summary: "", authors: [],
                         published: Date(), updatedAt: nil, identifier: "", content: "contents of chapter 1", read: false,
                         estimatedReadingTime: 0, feed: nil, flags: []),
-                Article(title: "Article 2", link: URL(string: "https://example.com/2")!, summary: "", authors: [],
-                        published: Date(), updatedAt: nil, identifier: "", content: "contents of chapter 2", read: false,
+                Article(title: "Article 2", link: URL(string: "https://example.com/2")!, summary: "contents of chapter 2", authors: [],
+                        published: Date(), updatedAt: nil, identifier: "", content: "   \n\t   ", read: false,
                         estimatedReadingTime: 0, feed: nil, flags: []),
-                Article(title: "Article 3", link: URL(string: "https://example.com/3")!, summary: "", authors: [],
-                        published: Date(), updatedAt: nil, identifier: "", content: "chapter 3 contents", read: false,
+                Article(title: "Article 3", link: URL(string: "https://example.com/3")!, summary: "chapter 3 contents", authors: [],
+                        published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
                         estimatedReadingTime: 0, feed: nil, flags: []),
                 ]
 
@@ -63,10 +63,16 @@ class GenerateBookUseCaseSpec: QuickSpec {
                 guard spondeService.generateBookCallCount == 1 else { fail("call spondeservice"); return }
                 let chapters = spondeService.generateBookArgsForCall(0).3
 
-                expect(chapters.count) == articles.count
+                let expected: [(title: String, content: String)] = [
+                    (title: "Article 1", content: "contents of chapter 1"),
+                    (title: "Article 2", content: "contents of chapter 2"),
+                    (title: "Article 3", content: "chapter 3 contents"),
+                ]
+
+                expect(chapters.count) == expected.count
                 for i in 0..<chapters.count {
                     let chapter = chapters[i]
-                    let article = articles[i]
+                    let article = expected[i]
 
                     expect(chapter.title) == article.title
                     expect(chapter.html) == article.content

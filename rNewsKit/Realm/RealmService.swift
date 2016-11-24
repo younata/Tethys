@@ -51,6 +51,7 @@ final class RealmService: DataService {
             self.mainQueue.addOperations([operation], waitUntilFinished: true)
 
             self.synchronousUpdateFeed(feed, realmFeed: realmFeed)
+            _ = try? self.realm.commitWrite()
 
             promise.resolve(.success(feed))
         }
@@ -67,6 +68,7 @@ final class RealmService: DataService {
             self.mainQueue.addOperations([operation], waitUntilFinished: true)
 
             self.synchronousUpdateArticle(article, realmArticle: realmArticle)
+            _ = try? self.realm.commitWrite()
         }
     }
 
@@ -90,7 +92,7 @@ final class RealmService: DataService {
     }
 
     func findOrCreateArticle(feed: Feed, url: URL) -> Future<Article> {
-        let promise = Promise<Article>()
+        let promise = Promise<String>()
         _ = self.realmTransaction {
             if let realmFeed = self.realmFeedForFeed(feed) {
                 let article: Article
@@ -115,14 +117,15 @@ final class RealmService: DataService {
                 if let realmArticle = self.realm.objects(RealmArticle.self)
                     .filter("feed.id = %@ AND (link = %@ OR link = %@)",
                             realmFeed.id, httpsURLString, httpURLString).first {
-                    article = Article(realmArticle: realmArticle, feed: feed)
+                    promise.resolve(realmArticle.id)
                 } else {
                     let realmArticle = self.realm.create(RealmArticle.self, value: ["link": url.absoluteString])
                     article = Article(realmArticle: realmArticle, feed: feed)
                     feed.addArticle(article)
                     self.synchronousUpdateArticle(article, realmArticle: realmArticle)
+                    _ = try? self.realm.commitWrite()
+                    promise.resolve(realmArticle.id)
                 }
-                promise.resolve(article)
             } else {
                 let realmFeed = self.privateFindOrCreateRealmFeed(url: feed.url)
                 let realmArticle = self.realm.create(RealmArticle.self, value: ["link": url.absoluteString])
@@ -130,10 +133,14 @@ final class RealmService: DataService {
                 let article = Article(realmArticle: realmArticle, feed: feed)
                 feed.addArticle(article)
                 self.synchronousUpdateArticle(article, realmArticle: realmArticle)
-                promise.resolve(article)
+                _ = try? self.realm.commitWrite()
+                promise.resolve(realmArticle.id)
             }
         }
-        return promise.future
+        return promise.future.map { id -> Article in
+            let realmArticle = self.realm.object(ofType: RealmArticle.self, forPrimaryKey: id)!
+            return Article(realmArticle: realmArticle, feed: feed)
+        }
     }
 
     // Mark: - Read
@@ -228,6 +235,7 @@ final class RealmService: DataService {
         return self.realmTransaction {
             articles.forEach { self.synchronousUpdateArticle($0) }
             feeds.forEach { self.synchronousUpdateFeed($0) }
+            _ = try? self.realm.commitWrite()
         }.map {
             return .success()
         }
@@ -295,8 +303,8 @@ final class RealmService: DataService {
                     rfeed.imageData = image.tiffRepresentation
                 }
             #endif
-            _ = try? self.realm.commitWrite()
         }
+        feed.resetArticles(realm: self.realm)
     }
 
     private func synchronousUpdateArticle(_ article: Article, realmArticle: RealmArticle? = nil) {
@@ -336,7 +344,6 @@ final class RealmService: DataService {
             }
 
             self.updateSearchIndexForArticle(article)
-            _ = try? self.realm.commitWrite()
         }
     }
 

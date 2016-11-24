@@ -175,6 +175,19 @@ public final class Feed: Hashable, CustomStringConvertible {
                                                                                  false as CVarArg))
     }
 
+    internal func resetArticles(realm: Realm) {
+        let sortByUpdated = NSSortDescriptor(key: "updatedAt", ascending: false)
+        let sortByPublished = NSSortDescriptor(key: "published", ascending: false)
+
+        self.articlesArray = DataStoreBackedArray<Article>(
+            realmDataType: RealmArticle.self,
+            predicate: NSPredicate(format: "feed.id == %@", self.identifier),
+            realmConfiguration: realm.configuration,
+            conversionFunction: { return Article(realmArticle: $0 as! RealmArticle, feed: self) },
+            sortDescriptors: [sortByUpdated, sortByPublished]
+        )
+    }
+
     // swiftlint:disable function_parameter_count
     public init(title: String, url: URL, summary: String, tags: [String],
         waitPeriod: Int, remainingWait: Int, articles: [Article], image: Image?,
@@ -220,13 +233,13 @@ public final class Feed: Hashable, CustomStringConvertible {
             let sortByUpdated = NSSortDescriptor(key: "updatedAt", ascending: false)
             let sortByPublished = NSSortDescriptor(key: "published", ascending: false)
 
-            self.articlesArray = DataStoreBackedArray<Article>(realmDataType: RealmArticle.self,
+            self.articlesArray = DataStoreBackedArray<Article>(
+                realmDataType: RealmArticle.self,
                 predicate: NSPredicate(format: "feed.id == %@", feed.id),
                 realmConfiguration: realm.configuration,
-                conversionFunction: {
-                    return Article(realmArticle: $0 as! RealmArticle, feed: self)
-                },
-                sortDescriptors: [sortByUpdated, sortByPublished])
+                conversionFunction: { return Article(realmArticle: $0 as! RealmArticle, feed: self) },
+                sortDescriptors: [sortByUpdated, sortByPublished]
+            )
         } else {
             let articles = feed.articles.map { Article(realmArticle: $0, feed: self) }
             self.articlesArray = DataStoreBackedArray(Array(articles))

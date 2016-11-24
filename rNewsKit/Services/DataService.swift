@@ -46,7 +46,6 @@ extension DataService {
     }
 
     func updateFeed(_ feed: Feed, info: ImportableFeed) -> Future<Result<Void, RNewsError>> {
-        let promise = Promise<Result<Void, RNewsError>>()
         feed.title = info.title.stringByUnescapingHTML().stringByStrippingHTML()
         feed.summary = info.description
         feed.lastUpdated = info.lastUpdated
@@ -57,30 +56,18 @@ extension DataService {
             return self.saveFeed(feed)
         }
 
-        let operationQueue = OperationQueue()
-        operationQueue.qualityOfService = .utility
-        operationQueue.maxConcurrentOperationCount = 1
-
-        for item in articles {
-            operationQueue.addOperation {
-                _ = self.findOrCreateArticle(feed: feed, url: item.url).map { article in
-                    return self.updateArticle(article, item: item, feedURL: info.url).map { _ in
-                        return self.batchSave([feed], articles: [article])
-                    }
-                }.wait()
+        let futures: [Future<Article>] = articles.map { item in
+            return self.findOrCreateArticle(feed: feed, url: item.url).then { article in
+                self.updateArticle(article, item: item, feedURL: info.url)
             }
         }
 
-        let saveOperation = BlockOperation {
-            promise.resolve(.success())
+        return Promise<Article>.rnews_when(futures).map { (articles: [Article]) -> Future<Result<Void, RNewsError>> in
+            return self.batchSave([feed], articles: articles)
         }
-        operationQueue.addOperation(saveOperation)
-
-        return promise.future
     }
 
-    func updateArticle(_ article: Article, item: ImportableArticle, feedURL: URL) ->
-        Future<Result<Article, RNewsError>> {
+    func updateArticle(_ article: Article, item: ImportableArticle, feedURL: URL) {
             let characterSet = CharacterSet.whitespacesAndNewlines
             let authors = item.importableAuthors.map {
                 return rNewsKit.Author(name: $0.name, email: $0.email)
@@ -109,7 +96,7 @@ extension DataService {
 
             article.authors = authors
 
-            let promise = Promise<Result<Article, RNewsError>>()
+            let promise = Promise<Void>()
 
             let parser = WebPageParser(string: content) { urls in
                 let links = urls.flatMap { URL(string: $0.absoluteString, relativeTo: feedURL)?.absoluteString }
@@ -117,15 +104,15 @@ extension DataService {
                     switch result {
                     case let .success(related):
                         related.forEach(article.addRelatedArticle)
-                        promise.resolve(.success(article))
-                    case let .failure(error):
-                        promise.resolve(.failure(error))
+                        promise.resolve()
+                    case .failure(_):
+                        promise.resolve()
                     }
                 }
             }
             parser.searchType = .links
             parser.start()
-            return promise.future
+            _ = promise.future.wait()
     }
 
     func updateSearchIndexForArticle(_ article: Article) {

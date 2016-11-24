@@ -105,7 +105,7 @@ class UpdateServiceSpec: QuickSpec {
                     expect(progressCallbackArgs[1].1) == 2
                 }
 
-                it("should resolve the promise with all updated feeds") {
+                it("resolves the promise with all updated feeds") {
                     expect(updateFeedsFuture.value).toNot(beNil())
                     guard let feed = updateFeedsFuture.value?.value?.first else { return }
                     expect(feed.title) == "feed title"

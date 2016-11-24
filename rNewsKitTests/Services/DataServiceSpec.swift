@@ -110,10 +110,10 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
                 expect(feed.lastUpdated) == info.lastUpdated
                 expect(feed.articlesArray.count).to(equal(2))
                 let articles = feed.articlesArray
-                if let firstArticle = articles.first {
+                if let firstArticle = articles.last {
                     expect(firstArticle) == existingArticle
                 }
-                if let secondArticle = articles.last {
+                if let secondArticle = articles.first {
                     expect(secondArticle.title) == item.title
                     expect(secondArticle.link) == item.url
                     expect(secondArticle) != existingArticle
@@ -155,7 +155,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
 
             let item = FakeImportableArticle(title: "a <p></p>&amp; title", url: URL(string: "https://example.com/foo/baz")!, summary: "description", content: content, published: Date(timeIntervalSince1970: 10), updated: Date(timeIntervalSince1970: 15), authors: [])
 
-            _ = dataService.updateArticle(article!, item: item, feedURL: URL(string: "https://example.com/")!).wait()
+            dataService.updateArticle(article!, item: item, feedURL: URL(string: "https://example.com/")!)
             expect(article!.relatedArticles.contains(otherArticle!)).to(beTruthy())
         }
 
@@ -169,7 +169,7 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             if let searchIndex = dataService.searchIndex as? FakeSearchIndex {
                 searchIndex.lastItemsAdded = []
             }
-            _ = dataService.updateArticle(article, item: item, feedURL: URL(string: "https://example.com/foo/bar/baz")!).wait()
+            dataService.updateArticle(article, item: item, feedURL: URL(string: "https://example.com/foo/bar/baz")!)
             expect(article.title) == "a & title"
             expect(article.link) == URL(string: "https://example.com")
             expect(article.published) == Date(timeIntervalSince1970: 10)

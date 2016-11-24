@@ -52,6 +52,31 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             }
         }
 
+        it("dedupes articles with the same url") {
+            guard let feed = feed else { fail(); return }
+            let itemUpdateDate = Date(timeIntervalSinceNow: -5)
+            let item = FakeImportableArticle(title: "article", url: URL(string: "/foo/bar/baz")!, summary: "", content: "", published: Date(), updated: nil, authors: [])
+            let item2 = FakeImportableArticle(title: "article", url: URL(string: "/foo/bar/baz")!, summary: "", content: "", published: Date(), updated: nil, authors: [])
+            let item3 = FakeImportableArticle(title: "article", url: URL(string: "https://example.com/foo/bar/baz")!, summary: "", content: "", published: Date(), updated: nil, authors: [])
+            let info = FakeImportableFeed(title: "a &amp; title", link: URL(string: "https://example.com")!, description: "description", lastUpdated: itemUpdateDate, imageURL: nil, articles: [item, item2, item3])
+            let updateExpectation = spec.expectation(description: "Update Feed")
+            _ = dataService.updateFeed(feed, info: info).then {
+                if case Result.success() = $0 {
+                    updateExpectation.fulfill()
+                }
+            }
+            spec.waitForExpectations(timeout: 1, handler: nil)
+
+            expect(feed.title) == "a & title"
+            expect(feed.summary) == "description"
+            expect(feed.url) == URL(string: "https://example.com/")
+            expect(feed.lastUpdated) == itemUpdateDate
+            expect(feed.articlesArray.count).to(equal(1))
+            if let article = feed.articlesArray.first {
+                expect(article.title) == "article"
+            }
+        }
+
         it("makes the item link relative to the feed link in the event the item link has a nil scheme") {
             guard let feed = feed else { fail(); return }
             let item = FakeImportableArticle(title: "article", url: URL(string: "/foo/bar/baz")!, summary: "", content: "", published: Date(), updated: nil, authors: [])

@@ -45,12 +45,25 @@ extension DataService {
         return self.batchSave([feed], articles: [])
     }
 
+    private func absoluteURLForArticle(article: ImportableArticle, feedURL: URL) -> URL {
+        return URL(string: article.url.absoluteString, relativeTo: feedURL)!.absoluteURL
+    }
+
     func updateFeed(_ feed: Feed, info: ImportableFeed) -> Future<Result<Void, RNewsError>> {
         feed.title = info.title.stringByUnescapingHTML().stringByStrippingHTML()
         feed.summary = info.description
         feed.lastUpdated = info.lastUpdated
 
-        let articles: [ImportableArticle] = info.importableArticles.filter { $0.title.isEmpty == false }
+        let articles: [ImportableArticle] = info.importableArticles.filter {
+            return $0.title.isEmpty == false
+        }.reduce([]) { articles, article in
+            let articleURLs = articles.map { self.absoluteURLForArticle(article: $0, feedURL: info.url) }
+            let articleURL = self.absoluteURLForArticle(article: article, feedURL: info.url)
+            if articleURLs.contains(articleURL) {
+                return articles
+            }
+            return articles + [article]
+        }
 
         if articles.isEmpty {
             return self.saveFeed(feed)
@@ -85,7 +98,7 @@ extension DataService {
             }
             let title = (itemTitle).trimmingCharacters(in: characterSet)
             article.title = title.stringByUnescapingHTML().stringByStrippingHTML()
-            article.link = URL(string: item.url.absoluteString, relativeTo: feedURL)!.absoluteURL
+            article.link = self.absoluteURLForArticle(article: item, feedURL: feedURL)
             article.published = item.published
             article.updatedAt = item.updated
             article.summary = item.summary

@@ -608,6 +608,7 @@ class ArticleListControllerSpec: QuickSpec {
                     subject.delegate = delegate
                     delegate.articleListControllerShouldPreviewArticleReturns(false)
                     delegate.articleListControllecCanEditArticleReturns(false)
+                    delegate.articleListControllerCanSelectMultipleArticlesReturns(false)
                     subject.view.layoutIfNeeded()
                     subject.feed = feed
                 }

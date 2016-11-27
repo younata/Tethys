@@ -13,7 +13,8 @@ public protocol ArticleListControllerDelegate: class {
     func articleListController(_: ArticleListController, shouldPreviewArticle article: Article) -> Bool
 }
 
-public final class ArticleListController: UITableViewController, DataSubscriber, Injectable {
+public final class ArticleListController: UIViewController, DataSubscriber, Injectable,
+                                          UITableViewDelegate, UITableViewDataSource {
     fileprivate enum ArticleListSection: Int {
         case overview = 0
         case articles = 1
@@ -39,6 +40,8 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
                                style: .plain, target: self, action: #selector(ArticleListController.markFeedRead))
     }()
 
+    public let tableView = UITableView(forAutoLayout: ())
+
     public weak var delegate: ArticleListControllerDelegate?
 
     fileprivate let mainQueue: OperationQueue
@@ -61,7 +64,7 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
         self.articleViewController = articleViewController
         self.generateBookViewController = generateBookViewController
 
-        super.init(style: .plain)
+        super.init(nibName: nil, bundle: nil)
     }
 
     public required convenience init(injector: Injector) {
@@ -80,6 +83,8 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
     public override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
         self.tableView.estimatedRowHeight = 40
         self.tableView.keyboardDismissMode = .onDrag
         self.tableView.register(ArticleCell.self, forCellReuseIdentifier: "read")
@@ -90,6 +95,9 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
 
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.tableFooterView = UIView()
+
+        self.view.addSubview(self.tableView)
+        self.tableView.autoPinEdgesToSuperviewEdges()
 
         self.feedRepository.addSubscriber(self)
 
@@ -193,11 +201,11 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
 
     // MARK: - Table view data source
 
-    public override func numberOfSections(in tableView: UITableView) -> Int {
+    public func numberOfSections(in tableView: UITableView) -> Int {
         return ArticleListSection.numberOfSections
     }
 
-    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let section = ArticleListSection(rawValue: section) else { return 0 }
         switch section {
         case .overview:
@@ -210,7 +218,7 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
         }
     }
 
-    public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let section = ArticleListSection(rawValue: indexPath.section) else {
             return UITableViewCell()
         }
@@ -240,7 +248,7 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
         }
     }
 
-    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if ArticleListSection(rawValue: indexPath.section) == ArticleListSection.articles {
             let article = self.articleForIndexPath(indexPath)
             if self.delegate?.articleListController(self, shouldShowArticleView: article) != false {
@@ -254,7 +262,7 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
         }
     }
 
-    public override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+    public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         if ArticleListSection(rawValue: indexPath.section) == ArticleListSection.articles {
             return self.delegate?.articleListController(self,
                                                         canEditArticle: self.articleForIndexPath(indexPath)) != false
@@ -263,10 +271,10 @@ public final class ArticleListController: UITableViewController, DataSubscriber,
         }
     }
 
-    public override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle,
+    public func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle,
         forRowAt indexPath: IndexPath) {}
 
-    public override func tableView(_ tableView: UITableView,
+    public func tableView(_ tableView: UITableView,
         editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
             if ArticleListSection(rawValue: indexPath.section) != ArticleListSection.articles {
                 return nil

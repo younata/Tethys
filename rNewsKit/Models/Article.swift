@@ -169,8 +169,9 @@ public final class Article: NSObject {
         self.flags = article.flags.map { $0.string }
         super.init()
         if let realm = article.realm {
+            let relatedArticleIds = article.relatedArticles.map { $0.id }
             self.relatedArticles = DataStoreBackedArray(realmDataType: RealmArticle.self,
-                predicate: NSPredicate(format: "%@ IN relatedArticles", article),
+                predicate: NSPredicate(format: "id IN %@", Array(relatedArticleIds)),
                 realmConfiguration: realm.configuration,
                 conversionFunction: { object in
                     let article = object as! RealmArticle

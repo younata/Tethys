@@ -76,56 +76,56 @@ extension DataService {
         }
 
         return Promise<Article>.rnews_when(futures).map { (articles: [Article]) -> Future<Result<Void, RNewsError>> in
-            return self.batchSave([feed], articles: articles)
+            self.batchSave([feed], articles: articles)
         }
     }
 
     func updateArticle(_ article: Article, item: ImportableArticle, feedURL: URL) {
-            let characterSet = CharacterSet.whitespacesAndNewlines
-            let authors = item.importableAuthors.map {
-                return rNewsKit.Author(name: $0.name, email: $0.email)
-            }
+        let characterSet = CharacterSet.whitespacesAndNewlines
+        let authors = item.importableAuthors.map {
+            return rNewsKit.Author(name: $0.name, email: $0.email)
+        }
 
-            let itemTitle: String
-            if item.title.isEmpty {
-                if article.title.isEmpty {
-                    itemTitle = "unknown"
-                } else {
-                    itemTitle = article.title
-                }
+        let itemTitle: String
+        if item.title.isEmpty {
+            if article.title.isEmpty {
+                itemTitle = "unknown"
             } else {
-                itemTitle = item.title
+                itemTitle = article.title
             }
-            let title = (itemTitle).trimmingCharacters(in: characterSet)
-            article.title = title.stringByUnescapingHTML().stringByStrippingHTML()
-            article.link = self.absoluteURLForArticle(article: item, feedURL: feedURL)
-            article.published = item.published
-            article.updatedAt = item.updated
-            article.summary = item.summary
-            article.content = item.content
+        } else {
+            itemTitle = item.title
+        }
+        let title = (itemTitle).trimmingCharacters(in: characterSet)
+        article.title = title.stringByUnescapingHTML().stringByStrippingHTML()
+        article.link = self.absoluteURLForArticle(article: item, feedURL: feedURL)
+        article.published = item.published
+        article.updatedAt = item.updated
+        article.summary = item.summary
+        article.content = item.content
 
-            let content = item.content.isEmpty ? item.summary : item.content
-            article.estimatedReadingTime = estimateReadingTime(content)
+        let content = item.content.isEmpty ? item.summary : item.content
+        article.estimatedReadingTime = estimateReadingTime(content)
 
-            article.authors = authors
+        article.authors = authors
 
-            let promise = Promise<Void>()
+        let promise = Promise<Void>()
 
-            let parser = WebPageParser(string: content) { urls in
-                let links = urls.flatMap { URL(string: $0.absoluteString, relativeTo: feedURL)?.absoluteString }
-                _ = self.articlesMatchingPredicate(NSPredicate(format: "link IN %@", links)).then { result in
-                    switch result {
-                    case let .success(related):
-                        related.forEach(article.addRelatedArticle)
-                        promise.resolve()
-                    case .failure(_):
-                        promise.resolve()
-                    }
+        let parser = WebPageParser(string: content) { urls in
+            let links = urls.flatMap { URL(string: $0.absoluteString, relativeTo: feedURL)?.absoluteString }
+            _ = self.articlesMatchingPredicate(NSPredicate(format: "link IN %@", links)).then { result in
+                switch result {
+                case let .success(related):
+                    related.forEach(article.addRelatedArticle)
+                    promise.resolve()
+                case .failure(_):
+                    promise.resolve()
                 }
             }
-            parser.searchType = .links
-            parser.start()
-            _ = promise.future.wait()
+        }
+        parser.searchType = .links
+        parser.start()
+        _ = promise.future.wait()
     }
 
     func updateSearchIndexForArticle(_ article: Article) {

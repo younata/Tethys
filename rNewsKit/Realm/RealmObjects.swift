@@ -6,11 +6,11 @@ import Foundation
     import Cocoa
 #endif
 
-class RealmString: Object {
+final class RealmString: Object {
     dynamic var string = ""
 }
 
-class RealmFeed: Object {
+final class RealmFeed: Object {
     dynamic var title: String?
     dynamic var url = ""
     dynamic var summary: String?
@@ -31,7 +31,7 @@ class RealmFeed: Object {
     }
 }
 
-class RealmAuthor: Object {
+final class RealmAuthor: Object {
     dynamic var name = ""
     dynamic var email: String?
 
@@ -45,7 +45,7 @@ class RealmAuthor: Object {
     }
 }
 
-class RealmArticle: Object {
+final class RealmArticle: Object {
     dynamic var title: String?
     dynamic var link = ""
     dynamic var summary: String?

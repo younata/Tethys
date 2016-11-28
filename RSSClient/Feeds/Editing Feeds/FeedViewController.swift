@@ -86,7 +86,6 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
 
         let saveTitle = NSLocalizedString("Generic_Save", comment: "")
         let saveButton = UIBarButtonItem(title: saveTitle, style: .plain, target: self, action:
-
             #selector(FeedViewController.save))
         self.navigationItem.rightBarButtonItem = saveButton
         self.navigationItem.title = self.feed?.displayTitle ?? ""
@@ -185,7 +184,7 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
             cell.themeRepository = self.themeRepository
             if let tags = feed?.tags {
                 if indexPath.row == tags.count {
-                    cell.textLabel?.text = NSLocalizedString("FeedViewController_Cell_AddTag", comment: "")
+                    cell.textLabel?.text = NSLocalizedString("FeedViewController_Actions_AddTag", comment: "")
                     cell.textLabel?.textColor = UIColor.darkGreen()
                 } else {
                     cell.textLabel?.text = tags[indexPath.row]

@@ -98,7 +98,7 @@
 "FeedViewController_Table_Header_Summary" = "Summary";
 "FeedViewController_Table_Header_Tags" = "Tags";
 "FeedViewController_Cell_Summary_Placeholder" = "No Summary Available";
-"FeedViewController_Cell_AddTag" = "Add Tag";
+"FeedViewController_Actions_AddTag" = "Add Tag";
 
 "TagEditorViewController_Explanation" = "Prefixing a tag with '~' will set the title to that, minus the leading ~. Prefixing a tag with '`' will set the summary to that, minus the leading `. Tags cannot contain commas (,)";
 

@@ -21,7 +21,11 @@ struct DefaultGenerateBookUseCase: GenerateBookUseCase {
         let bookChapters = chapters.map { article -> Chapter in
             let articleContent = article.content.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
             let content = articleContent.isEmpty ? article.summary : articleContent
-            return Chapter(title: article.title, html: content)
+            if content.isEmpty {
+                return Chapter(title: article.title, url: article.link)
+            } else {
+                return Chapter(title: article.title, html: content)
+            }
         }
         let future = self.service.generateBook(title: title, imageURL: nil, author: author,
                                                chapters: bookChapters, format: format)

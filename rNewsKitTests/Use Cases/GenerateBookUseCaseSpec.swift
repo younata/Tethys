@@ -29,6 +29,9 @@ class GenerateBookUseCaseSpec: QuickSpec {
                 Article(title: "Article 3", link: URL(string: "https://example.com/3")!, summary: "chapter 3 contents", authors: [],
                         published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
                         estimatedReadingTime: 0, feed: nil, flags: []),
+                Article(title: "Article 4", link: URL(string: "https://example.com/4")!, summary: "", authors: [],
+                        published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
+                        estimatedReadingTime: 0, feed: nil, flags: []),
                 ]
 
             var generateBookPromise: Promise<Result<Book, SpondeError>>!
@@ -63,10 +66,11 @@ class GenerateBookUseCaseSpec: QuickSpec {
                 guard spondeService.generateBookCallCount == 1 else { fail("call spondeservice"); return }
                 let chapters = spondeService.generateBookArgsForCall(0).3
 
-                let expected: [(title: String, content: String)] = [
-                    (title: "Article 1", content: "contents of chapter 1"),
-                    (title: "Article 2", content: "contents of chapter 2"),
-                    (title: "Article 3", content: "chapter 3 contents"),
+                let expected: [(title: String, content: String?, url: URL?)] = [
+                    (title: "Article 1", content: "contents of chapter 1", url: nil),
+                    (title: "Article 2", content: "contents of chapter 2", url: nil),
+                    (title: "Article 3", content: "chapter 3 contents", url: nil),
+                    (title: "Article 4", content: nil, url: URL(string: "https://example.com/4")!)
                 ]
 
                 expect(chapters.count) == expected.count
@@ -75,7 +79,16 @@ class GenerateBookUseCaseSpec: QuickSpec {
                     let article = expected[i]
 
                     expect(chapter.title) == article.title
-                    expect(chapter.html) == article.content
+                    if let _ = article.content {
+                        expect(chapter.html) == article.content
+                    } else {
+                        expect(chapter.html).to(beNil())
+                    }
+                    if let _ = article.url {
+                        expect(chapter.url) == article.url
+                    } else {
+                        expect(chapter.url).to(beNil())
+                    }
                 }
             }
 

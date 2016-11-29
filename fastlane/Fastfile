@@ -77,8 +77,8 @@ platform :ios do
   end
 
   def update_release_notes(release_notes)
-    IO.write('fastlane/metadata/en-US/release_notes.txt', release_notes)
-    sh 'git add fastlane/metadata/en-US/release_notes.txt'
+    IO.write('metadata/en-US/release_notes.txt', release_notes)
+    sh 'git add metadata/en-US/release_notes.txt'
   end
 
   def bump_release_version(tag_name)

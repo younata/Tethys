@@ -47,10 +47,10 @@ public final class FeedTableCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         self.nameLabel.numberOfLines = 0
-        self.nameLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
+        self.nameLabel.font = UIFont.preferredFont(forTextStyle: .headline)
 
         self.summaryLabel.numberOfLines = 0
-        self.summaryLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.subheadline)
+        self.summaryLabel.font = UIFont.preferredFont(forTextStyle: .subheadline)
 
         self.iconView.contentMode = .scaleAspectFit
 

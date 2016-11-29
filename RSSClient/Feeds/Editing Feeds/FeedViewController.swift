@@ -3,60 +3,26 @@ import Muon
 import Ra
 import rNewsKit
 
-public final class FeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Injectable {
+public final class FeedViewController: UIViewController, Injectable {
     public var feed: rNewsKit.Feed? = nil {
         didSet {
             self.navigationItem.title = self.feed?.displayTitle ?? ""
-            self.feedURL = feed?.url
-            self.tableView.reloadData()
+            self.resetFeedView()
         }
     }
 
-    private enum FeedSections: Int {
-        case title = 0
-        case url = 1
-        case summary = 2
-        case tags = 3
-
-        var titleForSection: String {
-            switch self {
-            case .title:
-                return NSLocalizedString("FeedViewController_Table_Header_Title", comment: "")
-            case .url:
-                return NSLocalizedString("FeedViewController_Table_Header_URL", comment: "")
-            case .summary:
-                return NSLocalizedString("FeedViewController_Table_Header_Summary", comment: "")
-            case .tags:
-                return NSLocalizedString("FeedViewController_Table_Header_Tags", comment: "")
-            }
-        }
-    }
-
-    public lazy var tableView: UITableView = {
-        let tableView = UITableView(forAutoLayout: ())
-        tableView.register(TableViewCell.self, forCellReuseIdentifier: "cell")
-        tableView.register(TextFieldCell.self, forCellReuseIdentifier: "text")
-        tableView.tableFooterView = UIView()
-        tableView.dataSource = self
-        tableView.delegate = self
-        return tableView
-    }()
-
-    private var feedURL: URL? = nil
+    public let feedEditView = FeedEditView(forAutoLayout: ())
+    fileprivate var feedURL: URL? = nil
+    fileprivate var feedTags: [String]? = nil
 
     private let feedRepository: DatabaseUseCase
-    private let urlSession: URLSession
     private let themeRepository: ThemeRepository
-    private let tagEditorViewController: (Void) -> TagEditorViewController
-
-    private let intervalFormatter = DateIntervalFormatter()
+    fileprivate let tagEditorViewController: (Void) -> TagEditorViewController
 
     public init(feedRepository: DatabaseUseCase,
-                urlSession: URLSession,
                 themeRepository: ThemeRepository,
                 tagEditorViewController: @escaping (Void) -> TagEditorViewController) {
         self.feedRepository = feedRepository
-        self.urlSession = urlSession
         self.themeRepository = themeRepository
         self.tagEditorViewController = tagEditorViewController
 
@@ -66,7 +32,6 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
     public required convenience init(injector: Injector) {
         self.init(
             feedRepository: injector.create(kind: DatabaseUseCase.self)!,
-            urlSession: injector.create(kind: URLSession.self)!,
             themeRepository: injector.create(kind: ThemeRepository.self)!,
             tagEditorViewController: {injector.create(kind: TagEditorViewController.self)!}
         )
@@ -90,19 +55,31 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
         self.navigationItem.rightBarButtonItem = saveButton
         self.navigationItem.title = self.feed?.displayTitle ?? ""
 
-        self.view.addSubview(self.tableView)
-        self.tableView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
-
-        self.intervalFormatter.calendar = NSCalendar.current
-        self.intervalFormatter.dateStyle = .medium
-        self.intervalFormatter.timeStyle = .short
+        self.view.addSubview(self.feedEditView)
+        self.feedEditView.autoPinEdgesToSuperviewEdges()
 
         self.themeRepository.addSubscriber(self)
+        self.feedEditView.themeRepository = self.themeRepository
+
+        self.feedEditView.delegate = self
+
+        self.setTagMaxHeight(height: self.view.bounds.size.height)
     }
 
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.tableView.reloadData()
+    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+
+        self.setTagMaxHeight(height: size.height)
+    }
+
+    private func setTagMaxHeight(height: CGFloat) {
+        self.feedEditView.maxHeight = Int(height - 400)
+    }
+
+    fileprivate func resetFeedView() {
+        guard let feed = self.feed else { return }
+        self.feedEditView.configure(title: feed.displayTitle, url: feed.url,
+                                    summary: feed.displaySummary, tags: feed.tags)
     }
 
     @objc fileprivate func dismissFromNavigation() {
@@ -114,175 +91,40 @@ public final class FeedViewController: UIViewController, UITableViewDelegate, UI
             if let theFeedURL = self.feedURL, theFeedURL != theFeed.url {
                 theFeed.url = theFeedURL
             }
+            if let theFeedTags = self.feedTags, theFeedTags != theFeed.tags {
+                let existingTags = theFeed.tags
+                existingTags.forEach { theFeed.removeTag($0) }
+                theFeedTags.forEach { theFeed.addTag($0) }
+            }
             _ = self.feedRepository.saveFeed(theFeed)
         }
         self.dismissFromNavigation()
     }
+}
 
-    private func showTagEditor(_ tagIndex: Int) -> TagEditorViewController {
+extension FeedViewController: FeedEditViewDelegate {
+    public func feedEditView(_ feedEditView: FeedEditView, urlDidChange url: URL) {
+        self.feedURL = url
+    }
+
+    public func feedEditView(_ feedEditView: FeedEditView, tagsDidChange tags: [String]) {
+        self.feedTags = tags
+    }
+
+    public func feedEditView(_ feedEditView: FeedEditView,
+                             editTag tag: String?,
+                             completion: @escaping (String) -> (Void)) {
         let tagEditorViewController = self.tagEditorViewController()
-        tagEditorViewController.feed = self.feed
-        if tagIndex < (self.feed?.tags.count ?? 0) {
-            tagEditorViewController.tagIndex = tagIndex
-            tagEditorViewController.tagPicker.textField.text = self.feed?.tags[tagIndex]
+        if let tag = tag {
+            tagEditorViewController.configure(tag: tag)
         }
+        tagEditorViewController.onSave = completion
         self.navigationController?.pushViewController(tagEditorViewController, animated: true)
-        return tagEditorViewController
-    }
-
-    // MARK: - Table view data source
-
-    public func numberOfSections(in tableView: UITableView) -> Int {
-        let numSection = 4
-        return (feed == nil ? 0 : numSection)
-    }
-
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection sectionNum: Int) -> Int {
-        if feed == nil {
-            return 0
-        }
-        if let section = FeedSections(rawValue: sectionNum), section == .tags {
-            return feed!.tags.count + 1
-        }
-        return 1
-    }
-
-    public func tableView(_ tableView: UITableView, titleForHeaderInSection sectionNum: Int) -> String? {
-        if let section = FeedSections(rawValue: sectionNum) {
-            return section.titleForSection
-        }
-        return nil
-    }
-
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let section = FeedSections(rawValue: (indexPath as NSIndexPath).section) ?? .title
-        switch section {
-        case .title:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
-            cell.textLabel?.text = ""
-            cell.themeRepository = self.themeRepository
-            if let title = feed?.displayTitle, !title.isEmpty {
-                cell.textLabel?.text = title
-            }
-            return cell
-        case .url:
-            return self.textFieldCell(indexPath)
-        case .summary:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
-            cell.textLabel?.text = ""
-            cell.themeRepository = self.themeRepository
-            if let summary = feed?.displaySummary, !summary.isEmpty {
-                cell.textLabel?.text = summary
-            } else {
-                cell.textLabel?.text = NSLocalizedString("FeedViewController_Cell_Summary_Placeholder", comment: "")
-                cell.textLabel?.textColor = UIColor.gray
-            }
-            return cell
-        case .tags:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
-            cell.textLabel?.text = ""
-            cell.themeRepository = self.themeRepository
-            if let tags = feed?.tags {
-                if indexPath.row == tags.count {
-                    cell.textLabel?.text = NSLocalizedString("FeedViewController_Actions_AddTag", comment: "")
-                    cell.textLabel?.textColor = UIColor.darkGreen()
-                } else {
-                    cell.textLabel?.text = tags[indexPath.row]
-                }
-            }
-            return cell
-        }
-    }
-
-    public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        let isTagsSection = FeedSections(rawValue: (indexPath as NSIndexPath).section) == .tags
-        let isEditableTag = indexPath.row != (tableView.numberOfRows(inSection: FeedSections.tags.rawValue) - 1)
-
-        return isTagsSection && isEditableTag
-    }
-
-    public func tableView(_ tableView: UITableView,
-        editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-            if feed == nil || FeedSections(rawValue: indexPath.section) != .tags {
-                return nil
-            }
-            let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
-            let delete = UITableViewRowAction(style: .default, title: deleteTitle, handler: {(_, indexPath) in
-                if let feed = self.feed {
-                    let tag = feed.tags[indexPath.row]
-                    feed.removeTag(tag)
-                    tableView.deleteRows(at: [indexPath], with: .automatic)
-                    if tag.hasPrefix("~") {
-                        let indexPath = IndexPath(row: 0, section: 0)
-                        tableView.reloadRows(at: [indexPath], with: .none)
-                    } else if tag.hasPrefix("`") {
-                        let indexPath = IndexPath(row: 0, section: 1)
-                        tableView.reloadRows(at: [indexPath], with: .none)
-                    }
-                }
-            })
-            let editTitle = NSLocalizedString("Generic_Edit", comment: "")
-            let edit = UITableViewRowAction(style: .normal, title: editTitle, handler: {(_, indexPath) in
-                _ = self.showTagEditor(indexPath.row)
-            })
-            return [delete, edit]
-    }
-
-    public func tableView(_ tableView: UITableView,
-        commit _: UITableViewCellEditingStyle,
-        forRowAt _: IndexPath) {}
-
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: false)
-
-        if FeedSections(rawValue: indexPath.section) == .tags,
-            let count = feed?.tags.count,
-            indexPath.row == count {
-                _ = showTagEditor(indexPath.row)
-        }
-    }
-
-    private func textFieldCell(_ indexPath: IndexPath) -> TextFieldCell {
-        let tc = tableView.dequeueReusableCell(withIdentifier: "text", for: indexPath) as! TextFieldCell
-        tc.onTextChange = {(_) in } // remove any previous onTextChange for setting stuff here.
-        tc.themeRepository = self.themeRepository
-        tc.textField.text = self.feed?.url.absoluteString
-        tc.showValidator = true
-        if #available(iOS 10.0, *) {
-            tc.textField.textContentType = .URL
-        }
-        tc.textField.returnKeyType = .done
-        tc.onTextChange = {(text) in
-            if let txt = text, let url = URL(string: txt) {
-                self.urlSession.dataTask(with: url) {data, response, error in
-                    if let response = response as? HTTPURLResponse {
-                        if let data = data,
-                            let nstext = NSString(data: data, encoding: String.Encoding.utf8.rawValue),
-                            response.statusCode == 200 {
-                                let string = String(nstext)
-                                let fp = Muon.FeedParser(string: string)
-                                _ = fp.failure {_ in tc.setValid(false) }
-                                _ = fp.success {_ in
-                                    tc.setValid(true)
-                                    self.feedURL = url
-                                }
-                                fp.start()
-                        } else { tc.setValid(false) }
-                    } else { tc.setValid(false) }
-                }.resume()
-            }
-            return
-        }
-        return tc
     }
 }
 
 extension FeedViewController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        self.tableView.backgroundColor = themeRepository.backgroundColor
-        self.tableView.separatorColor = themeRepository.textColor
-        self.tableView.indicatorStyle = themeRepository.scrollIndicatorStyle
-
         self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
         self.navigationController?.navigationBar.titleTextAttributes = [
             NSForegroundColorAttributeName: themeRepository.textColor

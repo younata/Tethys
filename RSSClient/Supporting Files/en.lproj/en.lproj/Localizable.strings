@@ -89,7 +89,6 @@
 
 "ChapterOrganizerController_AddChapter_Title" = "Add Chapter";
 "ChapterOrganizerController_ReorderButton_Reorder" = "Reorder";
-"ChapterOrganizerController_ReorderButton_End" = "Done";
 
 "MigrationViewController_Message" = "Optimizing your database, hang tight";
 
@@ -100,6 +99,7 @@
 "FeedViewController_Cell_Summary_Placeholder" = "No Summary Available";
 "FeedViewController_Actions_AddTag" = "Add Tag";
 
+"TagEditorViewController_Title" = "Tags";
 "TagEditorViewController_Explanation" = "Prefixing a tag with '~' will set the title to that, minus the leading ~. Prefixing a tag with '`' will set the summary to that, minus the leading `. Tags cannot contain commas (,)";
 
 "TagPickerView_Placeholder" = "Tag";
@@ -161,3 +161,4 @@
 "Generic_Share" = "Share";
 "Generic_Cancel" = "Cancel";
 "Generic_ConfirmDelete" = "Delete %@?";
+"Generic_Done" = "Done";

@@ -1,6 +1,6 @@
 import Quick
 import Nimble
-@testable import rNews
+import rNews
 
 class FakeFeedEditViewDelegate: FeedEditViewDelegate {
     var urlDidChangeCallCount = 0
@@ -68,10 +68,6 @@ class FeedEditViewSpec: QuickSpec {
 
             it("changes the titleLabel text color") {
                 expect(subject.titleLabel.textColor) == themeRepository.textColor
-            }
-
-            it("changes the urlField text color") {
-                expect(subject.urlField.textColor) == themeRepository.textColor
             }
 
             it("changes the summaryLabel's text color") {
@@ -144,6 +140,12 @@ class FeedEditViewSpec: QuickSpec {
 
             describe("a cell") {
                 let indexPath = IndexPath(row: 0, section: 0)
+
+                it("sets the cell's themeRepository") {
+                    let cell = subject.tagsList.dataSource?.tableView(subject.tagsList, cellForRowAt: indexPath) as! TableViewCell
+
+                    expect(cell.themeRepository) === themeRepository
+                }
 
                 describe("the edit actions") {
                     var editActions: [UITableViewRowAction]?

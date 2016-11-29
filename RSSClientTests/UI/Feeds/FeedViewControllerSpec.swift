@@ -12,20 +12,16 @@ class FeedViewControllerSpec: QuickSpec {
             tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
 
         var navigationController: UINavigationController!
-        var subject: FeedViewController! = nil
-        var injector: Injector! = nil
-        var dataRepository: FakeDatabaseUseCase! = nil
+        var subject: FeedViewController!
+        var injector: Injector!
+        var dataRepository: FakeDatabaseUseCase!
 
-        var urlSession: FakeURLSession! = nil
-        var backgroundQueue: FakeOperationQueue! = nil
-        var presentingController: UIViewController! = nil
-        var themeRepository: ThemeRepository! = nil
+        var backgroundQueue: FakeOperationQueue!
+        var presentingController: UIViewController!
+        var themeRepository: ThemeRepository!
 
         beforeEach {
             injector = Injector()
-
-            urlSession = FakeURLSession()
-            injector.bind(kind: URLSession.self, toInstance: urlSession)
 
             themeRepository = ThemeRepository(userDefaults: nil)
             injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
@@ -52,8 +48,8 @@ class FeedViewControllerSpec: QuickSpec {
             expect(subject.view).toNot(beNil())
         }
 
-        it("should have a save button") {
-            expect(subject.navigationItem.rightBarButtonItem?.title).to(equal("Save"))
+        it("has a save button") {
+            expect(subject.navigationItem.rightBarButtonItem?.title) == "Save"
         }
 
         describe("tapping 'save'") {
@@ -62,17 +58,17 @@ class FeedViewControllerSpec: QuickSpec {
                 saveButton?.tap()
             }
 
-            it("should save the changes to the dataManager") {
-                expect(dataRepository.lastSavedFeed).to(equal(feed))
+            it("saves the changes to the dataManager") {
+                expect(dataRepository.lastSavedFeed) == feed
             }
 
-            it("should dismiss itself") {
+            it("dismisses itself") {
                 expect(presentingController.presentedViewController).to(beNil())
             }
         }
 
-        it("should have a dismiss button") {
-            expect(subject.navigationItem.leftBarButtonItem?.title).to(equal("Dismiss"))
+        it("has a dismiss button") {
+            expect(subject.navigationItem.leftBarButtonItem?.title) == "Dismiss"
         }
 
         describe("tapping 'dismiss'") {
@@ -81,7 +77,7 @@ class FeedViewControllerSpec: QuickSpec {
                 dismissButton?.tap()
             }
 
-            it("should dismiss itself") {
+            it("dismisses itself") {
                 expect(presentingController.presentedViewController).to(beNil())
             }
         }
@@ -91,354 +87,163 @@ class FeedViewControllerSpec: QuickSpec {
                 themeRepository.theme = .dark
             }
 
-            it("should change the tableView") {
-                expect(subject.tableView.backgroundColor).to(equal(themeRepository.backgroundColor))
-                expect(subject.tableView.separatorColor).to(equal(themeRepository.textColor))
-            }
-
-            it("should update the navigation bar styling") {
+            it("updates the navigation bar styling") {
                 expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
                 expect(subject.navigationController?.navigationBar.titleTextAttributes as? [String: UIColor]) == [NSForegroundColorAttributeName: themeRepository.textColor]
             }
+        }
 
-            it("should update the tableView scroll indicator style") {
-                expect(subject.tableView.indicatorStyle).to(equal(themeRepository.scrollIndicatorStyle))
+        describe("the feedEditView") {
+            it("is configured with the feed's title, url, summary, and tags") {
+                expect(subject.feedEditView.title) == "title"
+                expect(subject.feedEditView.url) == URL(string: "http://example.com/feed")
+                expect(subject.feedEditView.summary) == "summary"
+                expect(subject.feedEditView.tags) == ["a", "b", "c"]
+            }
+
+            describe("when the feed has a tag that starts with '~'") {
+                beforeEach {
+                    feed.addTag("~custom title")
+                    subject.feed = feed
+                }
+
+                it("uses that tag as the title, minus the leading '~'") {
+                    expect(subject.feedEditView.title) == "custom title"
+                }
+            }
+
+            describe("when the feed has a tag that starts with '`'") {
+                beforeEach {
+                    feed.addTag("`custom summary")
+                    subject.feed = feed
+                }
+
+                it("uses that tag as the summary, minus the leading '`'") {
+                    expect(subject.feedEditView.summary) == "custom summary"
+                }
             }
         }
 
-        describe("the tableView") {
-            it("should should have 4 sections") {
-                expect(subject.tableView.numberOfSections).to(equal(4))
-            }
+        describe("the feedEditViewDelegate") {
+            describe("feedEditView(urlDidChange:)") {
+                let url = URL(string: "https://example.com/new_feed")!
 
-            describe("the first section") {
-                it("should have 1 row") {
-                    expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(1))
+                beforeEach {
+                    subject.feedEditView.delegate?.feedEditView(subject.feedEditView, urlDidChange: url)
                 }
 
-                it("should be titled 'Title'") {
-                    expect(subject.tableView(subject.tableView, titleForHeaderInSection: 0)).to(equal("Title"))
+                it("does not yet set the feed url to the new url") {
+                    expect(feed.url) == URL(string: "http://example.com/feed")
                 }
 
-                it("should not be editable") {
-                    expect(subject.tableView(subject.tableView, canEditRowAt: IndexPath(row: 0, section: 0))) == false
-                }
-
-                describe("the cell") {
-                    var cell: TableViewCell! = nil
-
-                    context("when the feed has a tag that starts with '~'") {
-                        beforeEach {
-                            subject.feed = Feed(title: "a title", url: URL(string: "https://example.com/")!, summary: "",
-                                tags: ["~custom title"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-
-                            cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 0, section: 0)) as! TableViewCell
-                        }
-
-                        it("should use that tag as the title, minus the leading '~'") {
-                            expect(cell.textLabel?.text).to(equal("custom title"))
-                        }
-
-                        it("should set the cell's themeRepository") {
-                            expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
-                        }
+                describe("tapping 'save'") {
+                    beforeEach {
+                        let saveButton = subject.navigationItem.rightBarButtonItem
+                        saveButton?.tap()
                     }
 
-                    context("when the feed has a title preconfigured") {
-                        beforeEach {
-                            cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 0, section: 0)) as! TableViewCell
-                        }
+                    it("sets the feed url to the new feed") {
+                        expect(feed.url) == url
+                    }
 
-                        it("should have a label title equal to the feed's") {
-                            expect(cell.textLabel?.text).to(equal(feed.displayTitle))
-                        }
+                    it("saves the changes to the dataManager") {
+                        expect(dataRepository.lastSavedFeed) == feed
+                    }
 
-                        it("should set the cell's themeRepository") {
-                            expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
-                        }
+                    it("dismisses itself") {
+                        expect(presentingController.presentedViewController).to(beNil())
                     }
                 }
             }
 
-            describe("the second section") {
-                it("should have 1 row") {
-                    expect(subject.tableView.numberOfRows(inSection: 1)).to(equal(1))
+            describe("feedEditView(tagsDidChange:)") {
+                let tags = ["d", "e", "f"]
+
+                beforeEach {
+                    subject.feedEditView.delegate?.feedEditView(subject.feedEditView, tagsDidChange: tags)
                 }
 
-                it("should be titled 'URL'") {
-                    expect(subject.tableView(subject.tableView, titleForHeaderInSection: 1)).to(equal("URL"))
+                it("does not yet set the feed tags to the new tags") {
+                    expect(feed.tags) == ["a", "b", "c"]
                 }
 
-                it("should not be editable") {
-                    expect(subject.tableView(subject.tableView, canEditRowAt: IndexPath(row: 0, section: 1))) == false
-                }
-
-                describe("the cell") {
-                    var cell: TextFieldCell! = nil
+                describe("tapping 'save'") {
                     beforeEach {
-                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 0, section: 1)) as! TextFieldCell
+                        let saveButton = subject.navigationItem.rightBarButtonItem
+                        saveButton?.tap()
                     }
 
-                    it("should be preconfigured with the feed's url") {
-                        expect(cell.textField.text).to(equal(feed.url.absoluteString))
+                    it("sets the feed url to the new feed") {
+                        expect(feed.tags) == tags
                     }
 
-                    it("should set the cell's themeRepository") {
-                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
+                    it("saves the changes to the dataManager") {
+                        expect(dataRepository.lastSavedFeed) == feed
                     }
 
-                    describe("on change") {
-                        beforeEach {
-                            cell.textField.text = "http://example.com/new_feed"
-                            _ = cell.textFieldShouldReturn(cell.textField)
-                        }
-
-                        it("should make a request to the url") {
-                            let urlString = urlSession.lastURL?.absoluteString
-                            expect(urlString).to(equal("http://example.com/new_feed"))
-                        }
-
-                        context("when the request succeeds") {
-                            let urlResponse = HTTPURLResponse(url: URL(string: "https://example.com/new_feed")!, statusCode: 200, httpVersion: nil, headerFields: nil)
-                            context("if the response (text) is a valid feed") {
-                                beforeEach {
-                                    let rss = Bundle(for: self.classForCoder).url(forResource: "feed2", withExtension: "rss")!
-                                    let data = try! Data(contentsOf: rss)
-                                    urlSession.lastCompletionHandler(data, urlResponse, nil)
-                                }
-                                
-                                it("should mark the field as valid") {
-                                    expect(cell.isValid) == true
-                                }
-
-                                it("does not yet set the feed url to the new feed") {
-                                    expect(feed.url) == URL(string: "http://example.com/feed")
-                                }
-
-                                describe("tapping 'save'") {
-                                    beforeEach {
-                                        let saveButton = subject.navigationItem.rightBarButtonItem
-                                        saveButton?.tap()
-                                    }
-
-                                    it("sets the feed url to the new feed") {
-                                        expect(feed.url) == URL(string: "http://example.com/new_feed")
-                                    }
-
-                                    it("should save the changes to the dataManager") {
-                                        expect(dataRepository.lastSavedFeed).to(equal(feed))
-                                    }
-                                    
-                                    it("should dismiss itself") {
-                                        expect(presentingController.presentedViewController).to(beNil())
-                                    }
-                                }
-                            }
-
-                            context("if the response is not a valid feed") {
-                                beforeEach {
-                                    let data = "Hello World".data(using: String.Encoding.utf8)
-                                    urlSession.lastCompletionHandler(data, urlResponse, nil)
-                                }
-
-                                it("should mark the field as invalid") {
-                                    expect(cell.isValid) == false
-                                }
-                            }
-                        }
-
-                        context("when the request fails") {
-                            beforeEach {
-                                urlSession.lastCompletionHandler(nil, nil, NSError(domain: "", code: 0, userInfo: [:]))
-                            }
-
-                            it("should mark the field as invalid") {
-                                expect(cell.isValid) == false
-                            }
-                        }
+                    it("dismisses itself") {
+                        expect(presentingController.presentedViewController).to(beNil())
                     }
                 }
             }
 
-            describe("the third section") {
-                var cell: TableViewCell! = nil
-                it("should have 1 row") {
-                    expect(subject.tableView.numberOfRows(inSection: 2)).to(equal(1))
-                }
+            describe("feedEditView(editTag:completion:)") {
+                var newTag: String?
+                var tagCompletionCallCount = 0
 
-                it("should be titled 'Summary'") {
-                    expect(subject.tableView(subject.tableView, titleForHeaderInSection: 2)).to(equal("Summary"))
-                }
-
-                it("should not be editable") {
-                    expect(subject.tableView(subject.tableView, canEditRowAt: IndexPath(row: 0, section: 2))) == false
-                }
-
-                context("when the feed has no summary preconfigured") {
+                context("with a nil tag") {
                     beforeEach {
-                        subject.feed = otherFeed
-
-                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 0, section: 2)) as! TableViewCell
-                    }
-
-                    it("should set the cell's themeRepository") {
-                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
-                    }
-
-                    it("should have a label title 'No Summary Available'") {
-                        expect(cell.textLabel?.text).to(equal("No Summary Available"))
-                    }
-
-                    it("should re-color the text gray") {
-                        expect(cell.textLabel?.textColor).to(equal(UIColor.gray))
-                    }
-                }
-
-                context("when the feed has a tag that starts with '`'") {
-                    beforeEach {
-                        subject.feed = Feed(title: "a title", url: URL(string: "https://example.com/")!, summary: "a summary",
-                            tags: ["`custom summary"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-
-                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 0, section: 2)) as! TableViewCell
-                    }
-
-                    it("should use that tag as the summary, minus the leading '`'") {
-                        expect(cell.textLabel?.text).to(equal("custom summary"))
-                    }
-
-                    it("should set the cell's themeRepository") {
-                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
-                    }
-                }
-
-                context("when the feed has a summary preconfigured") {
-                    beforeEach {
-                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 0, section: 2)) as! TableViewCell
-                    }
-
-                    it("should have a label title equal to the feed's") {
-                        expect(cell.textLabel?.text).to(equal(feed.displaySummary))
-                    }
-
-                    it("should set the cell's themeRepository") {
-                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
-                    }
-                }
-            }
-
-            describe("the fourth section") {
-                it("should have n+1 rows") {
-                    expect(subject.tableView.numberOfRows(inSection: 3)).to(equal(feed.tags.count + 1))
-                }
-
-                it("should be titled 'Tags'") {
-                    expect(subject.tableView(subject.tableView, titleForHeaderInSection: 3)).to(equal("Tags"))
-                }
-
-                describe("the first row") {
-                    var cell: TableViewCell! = nil
-                    let tagIndex: Int = 0
-
-                    beforeEach {
-                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 0, section: 3)) as! TableViewCell
-                    }
-
-                    it("should be titled for the row") {
-                        expect(cell.textLabel?.text).to(equal(feed.tags[tagIndex]))
-                    }
-
-                    it("should be editable") {
-                        expect(subject.tableView(subject.tableView, canEditRowAt: IndexPath(row: tagIndex, section: 3))) == true
-                    }
-
-                    it("should set the cell's themeRepository") {
-                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
-                    }
-
-                    describe("edit actions") {
-                        var editActions: [UITableViewRowAction] = []
-                        beforeEach {
-                            editActions = subject.tableView(subject.tableView,
-                                editActionsForRowAt: IndexPath(row: tagIndex, section: 3)) ?? []
+                        newTag = nil
+                        tagCompletionCallCount = 0
+                        subject.feedEditView.delegate?.feedEditView(subject.feedEditView, editTag: nil) {
+                            newTag = $0
+                            tagCompletionCallCount += 1
                         }
+                    }
 
-                        it("should have 2 edit actions") {
-                            expect(editActions.count).to(equal(2))
+                    it("shows a tag editor controller to add the tag") {
+                        expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
+                        if let tagEditor = navigationController.topViewController as? TagEditorViewController {
+                            expect(tagEditor.tag).to(beNil())
                         }
+                    }
 
-                        describe("the first action") {
-                            var action: UITableViewRowAction! = nil
+                    it("calls the callback when the tagEditor is done") {
+                        expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
+                        if let tagEditor = navigationController.topViewController as? TagEditorViewController {
+                            tagEditor.onSave?("newTag")
 
-                            beforeEach {
-                                action = editActions.first
-                            }
-
-                            it("should is titled 'Delete'") {
-                                expect(action.title).to(equal("Delete"))
-                            }
-
-                            it("should removes the tag when tapped") {
-                                let tag = feed.tags[tagIndex]
-                                action.handler(action, IndexPath(row: tagIndex, section: 3))
-                                expect(feed.tags).toNot(contain(tag))
-                            }
-                        }
-
-                        describe("the second action") {
-                            var action: UITableViewRowAction! = nil
-
-                            beforeEach {
-                                action = editActions.last
-                            }
-
-                            it("should is titled 'Edit'") {
-                                expect(action.title).to(equal("Edit"))
-                            }
-
-                            it("should removes the tag when tapped") {
-                                action.handler(action, IndexPath(row: tagIndex, section: 3))
-                                expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
-                                if let tagEditor = navigationController.topViewController as? TagEditorViewController {
-                                    expect(tagEditor.tagIndex).to(equal(tagIndex))
-                                    expect(tagEditor.feed).to(equal(feed))
-                                }
-                            }
+                            expect(tagCompletionCallCount) == 1
+                            expect(newTag) == "newTag"
                         }
                     }
                 }
 
-                describe("the last row") {
-                    var cell: TableViewCell! = nil
-                    var indexPath: IndexPath! = nil
-
+                context("with a tag") {
+                    let existingTag = "hello"
                     beforeEach {
-                        indexPath = IndexPath(row: feed.tags.count, section: 3)
-                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
-                    }
-
-                    it("should be titled 'Add Tag'") {
-                        expect(cell.textLabel?.text).to(equal("Add Tag"))
-                    }
-
-                    it("should not be editable") {
-                        expect(subject.tableView(subject.tableView, canEditRowAt: indexPath)) == false
-                    }
-
-                    it("should set the cell's themeRepository") {
-                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
-                    }
-
-                    describe("when tapped") {
-                        beforeEach {
-                            subject.tableView(subject.tableView, didSelectRowAt: indexPath)
+                        newTag = nil
+                        tagCompletionCallCount = 0
+                        subject.feedEditView.delegate?.feedEditView(subject.feedEditView, editTag: existingTag) {
+                            newTag = $0
+                            tagCompletionCallCount += 1
                         }
+                    }
 
-                        it("should bring up the tag editor screen") {
-                            expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
-                            if let tagEditor = navigationController.topViewController as? TagEditorViewController {
-                                expect(tagEditor.tagIndex).to(beNil())
-                                expect(tagEditor.feed).to(equal(feed))
-                            }
+                    it("shows a tag editor controller to add the tag") {
+                        expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
+                        if let tagEditor = navigationController.topViewController as? TagEditorViewController {
+                            expect(tagEditor.tag) == "hello"
+                        }
+                    }
+
+                    it("calls the callback when the tagEditor is done") {
+                        expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
+                        if let tagEditor = navigationController.topViewController as? TagEditorViewController {
+                            tagEditor.onSave?("newTag")
+
+                            expect(tagCompletionCallCount) == 1
+                            expect(newTag) == "newTag"
                         }
                     }
                 }

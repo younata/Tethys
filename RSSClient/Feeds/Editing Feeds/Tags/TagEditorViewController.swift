@@ -4,17 +4,16 @@ import Result
 import rNewsKit
 
 public final class TagEditorViewController: UIViewController, Injectable {
-
-    public var feed: Feed? = nil
-    public var tagIndex: Int? = nil
     public let tagPicker = TagPickerView(frame: CGRect.zero)
 
     fileprivate let tagLabel = UILabel(forAutoLayout: ())
-    private var tag: String? = nil {
+    public var tag: String? = nil {
         didSet {
-            self.navigationItem.rightBarButtonItem?.isEnabled = self.feed != nil && self.tag != nil
+            self.navigationItem.rightBarButtonItem?.isEnabled = self.tag != nil
         }
     }
+    public var onSave: ((String) -> (Void))?
+
     private let feedRepository: DatabaseUseCase
     private let themeRepository: ThemeRepository
 
@@ -31,6 +30,7 @@ public final class TagEditorViewController: UIViewController, Injectable {
         )
     }
 
+
     public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -40,12 +40,12 @@ public final class TagEditorViewController: UIViewController, Injectable {
 
         self.edgesForExtendedLayout = UIRectEdge()
 
-        let saveTitle = NSLocalizedString("Generic_Save", comment: "")
+        let saveTitle = NSLocalizedString("Generic_Done", comment: "")
         let saveButton = UIBarButtonItem(title: saveTitle, style: .plain, target: self,
                                          action: #selector(TagEditorViewController.save))
         self.navigationItem.rightBarButtonItem = saveButton
         self.navigationItem.rightBarButtonItem?.isEnabled = false
-        self.navigationItem.title = self.feed?.displayTitle ?? ""
+        self.navigationItem.title = NSLocalizedString("TagEditorViewController_Title", comment: "")
 
         self.tagPicker.translatesAutoresizingMaskIntoConstraints = false
         self.tagPicker.themeRepository = self.themeRepository
@@ -71,15 +71,18 @@ public final class TagEditorViewController: UIViewController, Injectable {
         self.themeRepository.addSubscriber(self)
     }
 
+    public func configure(tag: String) {
+        self.tag = tag
+        self.tagPicker.textField.text = tag
+    }
+
     @objc private func dismiss() {
         _ = self.navigationController?.popViewController(animated: true)
     }
 
     @objc private func save() {
-        if let feed = self.feed, let tag = tag {
-            feed.addTag(tag)
-            _ = self.feedRepository.saveFeed(feed)
-            self.feed = feed
+        if let tag = self.tag {
+            self.onSave?(tag)
         }
 
         self.dismiss()

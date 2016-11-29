@@ -13,7 +13,8 @@ class TagEditorViewControllerSpec: QuickSpec {
         var themeRepository: ThemeRepository! = nil
         let rootViewController = UIViewController()
 
-        var feed = Feed(title: "title", url: URL(string: "https://example.com/")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+        var callbackCallCount = 0
+        var callbackTag: String?
 
         beforeEach {
             injector = Injector()
@@ -27,11 +28,16 @@ class TagEditorViewControllerSpec: QuickSpec {
             navigationController = UINavigationController(rootViewController: rootViewController)
             navigationController.pushViewController(subject, animated: false)
 
-            feed = Feed(title: "title", url: URL(string: "https://example.com/")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-            subject.feed = feed
+            callbackCallCount = 0
+            callbackTag = nil
+
+            subject.onSave = { tag in
+                callbackCallCount += 1
+                callbackTag = tag
+            }
 
             expect(subject.view).toNot(beNil())
-            expect(navigationController.topViewController).to(equal(subject))
+            expect(navigationController.topViewController) == subject
         }
 
         describe("changing the theme") {
@@ -40,24 +46,24 @@ class TagEditorViewControllerSpec: QuickSpec {
             }
 
             it("should change background color") {
-                expect(subject.view.backgroundColor).to(equal(themeRepository.backgroundColor))
+                expect(subject.view.backgroundColor) == themeRepository.backgroundColor
             }
 
             it("should change the navigation bar style") {
-                expect(subject.navigationController?.navigationBar.barTintColor).to(equal(themeRepository.backgroundColor))
+                expect(subject.navigationController?.navigationBar.barTintColor) == themeRepository.backgroundColor
             }
 
             it("should change the tagPicker's textColors") {
-                expect(subject.tagPicker.textField.textColor).to(equal(themeRepository.textColor))
+                expect(subject.tagPicker.textField.textColor) == themeRepository.textColor
             }
         }
 
-        it("should should set the title to the feed's title") {
-            expect(subject.navigationItem.title).to(equal("title"))
+        it("sets the title to 'Tags'") {
+            expect(subject.navigationItem.title) == "Tags"
         }
 
-        it("should have a save button") {
-            expect(subject.navigationItem.rightBarButtonItem?.title).to(equal("Save"))
+        it("has a done button") {
+            expect(subject.navigationItem.rightBarButtonItem?.title) == "Done"
         }
 
         it("asks for the list of all tags") {
@@ -75,18 +81,18 @@ class TagEditorViewControllerSpec: QuickSpec {
                     subject.navigationItem.rightBarButtonItem?.tap()
                 }
 
-                it("should save the feed, with the added tag") {
-                    let newFeed = Feed(title: "title", url: URL(string: "https://example.com/")!, summary: "", tags: ["a"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    expect(dataRepository.lastSavedFeed) == newFeed
+                it("calls the callback with the tag") {
+                    expect(callbackCallCount) == 1
+                    expect(callbackTag) == "a"
                 }
 
                 it("should pop the navigation controller") {
-                    expect(navigationController.topViewController).to(equal(rootViewController))
+                    expect(navigationController.topViewController) == rootViewController
                 }
             }
 
-            context("when there is not data to save") {
-                it("should not even be enabled") {
+            context("when there is not data to add a new tag") {
+                it("is not even be enabled") {
                     expect(subject.navigationItem.rightBarButtonItem?.isEnabled) == false
                 }
             }
@@ -97,7 +103,7 @@ class TagEditorViewControllerSpec: QuickSpec {
                 dataRepository.allTagsPromises.last?.resolve(.success([]))
             }
 
-            it("disables the save button") {
+            it("disables the done button") {
                 expect(subject.navigationItem.rightBarButtonItem?.isEnabled) == false
             }
         }
@@ -107,7 +113,7 @@ class TagEditorViewControllerSpec: QuickSpec {
                 dataRepository.allTagsPromises.last?.resolve(.failure(.unknown))
             }
 
-            it("disables the save button") {
+            it("disables the done button") {
                 expect(subject.navigationItem.rightBarButtonItem?.isEnabled) == false
             }
         }

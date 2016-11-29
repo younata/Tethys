@@ -132,10 +132,9 @@ public class GenerateBookViewController: UIViewController, Injectable {
         mainStackView.addArrangedSubview(self.generateButton)
 
         self.view.addSubview(mainStackView)
-        mainStackView.autoAlignAxis(.horizontal, toSameAxisOf: self.view, withOffset: 54)
         mainStackView.autoPinEdge(toSuperviewEdge: .leading)
         mainStackView.autoPinEdge(toSuperviewEdge: .trailing)
-        mainStackView.autoPinEdge(toSuperviewEdge: .top, withInset: 84, relation: .greaterThanOrEqual)
+        mainStackView.autoPinEdge(toSuperviewEdge: .top, withInset: 84)
         mainStackView.autoPinEdge(toSuperviewEdge: .bottom, withInset: 20, relation: .greaterThanOrEqual)
 
         self.titleField.autoPinEdge(toSuperviewEdge: .leading, withInset: 40)

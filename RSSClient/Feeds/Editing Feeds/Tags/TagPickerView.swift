@@ -5,9 +5,9 @@ public final class TagPickerView: UIView {
     public lazy var textField: UITextField = {
         let textField = UITextField(forAutoLayout: ())
         textField.delegate = self
-        textField.placeholder = NSLocalizedString("TagPickerView_Placeholder", comment: "")
-        textField.backgroundColor = UIColor(white: 0.8, alpha: 0.75)
-        textField.layer.cornerRadius = 5
+        let placeholder = NSAttributedString(string: NSLocalizedString("TagPickerView_Placeholder", comment: ""),
+                                             attributes: [NSForegroundColorAttributeName: UIColor.gray])
+        textField.attributedPlaceholder = placeholder
 
         self.addSubview(textField)
         textField.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .bottom)

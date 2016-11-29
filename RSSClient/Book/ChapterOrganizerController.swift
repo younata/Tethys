@@ -84,7 +84,10 @@ public class ChapterOrganizerController: UIViewController, Injectable {
         self.tableView.delegate = self
         self.view.addSubview(self.tableView)
         self.tableView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .top)
-        self.tableHeight = self.tableView.autoSetDimension(.height, toSize: CGFloat(min(300, self.chapters.count * 80)))
+        self.tableHeight = self.tableView.autoSetDimension(
+            .height,
+            toSize: CGFloat(min(300, self.chapters.count * 100))
+        )
 
         self.tableView.register(ArticleCell.self, forCellReuseIdentifier: "cell")
 
@@ -128,7 +131,7 @@ public class ChapterOrganizerController: UIViewController, Injectable {
             self.reorderButton.setTitle(NSLocalizedString("ChapterOrganizerController_ReorderButton_Reorder",
                                                           comment: ""), for: .normal)
         } else {
-            self.reorderButton.setTitle(NSLocalizedString("ChapterOrganizerController_ReorderButton_End", comment: ""),
+            self.reorderButton.setTitle(NSLocalizedString("Generic_Done", comment: ""),
                                         for: .normal)
         }
         self.tableView.setEditing(!self.tableView.isEditing, animated: true)

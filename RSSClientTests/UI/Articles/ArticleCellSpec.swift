@@ -7,18 +7,11 @@ class ArticleCellSpec: QuickSpec {
     override func spec() {
         var subject: ArticleCell! = nil
         var themeRepository: ThemeRepository! = nil
-        var settingsRepository: SettingsRepository! = nil
-
-        let unupdatedArticle = Article(title: "title", link: URL(string: "https://exapmle.com/1")!, summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: Date(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 10, feed: nil, flags: [])
-        let readArticle = Article(title: "title", link: URL(string: "https://exapmle.com/1")!, summary: "summary", authors: [], published: Date(timeIntervalSinceReferenceDate: 0), updatedAt: Date(timeIntervalSinceReferenceDate: 100000), identifier: "", content: "content", read: true, estimatedReadingTime: 0, feed: nil, flags: [])
 
         beforeEach {
             subject = ArticleCell(style: .default, reuseIdentifier: nil)
             themeRepository = ThemeRepository(userDefaults: nil)
-            settingsRepository = SettingsRepository(userDefaults: nil)
-            subject.article = unupdatedArticle
             subject.themeRepository = themeRepository
-            subject.settingsRepository = settingsRepository
         }
 
        describe("changing the theme") {
@@ -38,89 +31,83 @@ class ArticleCellSpec: QuickSpec {
             }
         }
 
-        describe("turning off SettingsRepository.showEstimatedReadingLabel") {
+        describe("configure(title:publishedDate:author:read:readingTime:)") {
             beforeEach {
-                settingsRepository.showEstimatedReadingLabel = false
+                subject.configure(
+                    title: "title",
+                    publishedDate: Date(timeIntervalSinceReferenceDate: 0),
+                    author: "Rachel",
+                    read: false,
+                    readingTime: nil
+                )
             }
 
-            it("removes the readingTime label from the view hierarchy") {
-                expect(subject.readingTime.isHidden) == true
-
+            it("sets the title label") {
+                expect(subject.title.text) == "title"
             }
 
-            it("re-adds the readingTime label to the view hierarchy when the user turns back on reading label") {
-                settingsRepository.showEstimatedReadingLabel = true
-                expect(subject.readingTime.isHidden) == false
-            }
-        }
-
-        it("should set the title label") {
-            expect(subject.title.text) == "title"
-        }
-
-        it("should set the published/updated label") {
-            let dateFormatter = DateFormatter()
-
-            dateFormatter.timeStyle = .none
-            dateFormatter.dateStyle = .short
-            dateFormatter.timeZone = NSCalendar.current.timeZone
-
-            expect(subject.published.text) == dateFormatter.string(from: unupdatedArticle.published)
-        }
-
-        it("should show the author") {
-            expect(subject.author.text) == "Rachel"
-        }
-
-        it("should indicate that it's unread") {
-            expect(subject.unread.unread) != 0
-        }
-
-        it("doesn't show the unread indicator when 'hideUnread' is set") {
-            subject.hideUnread = true
-            expect(subject.unread.unread) == 0
-        }
-
-        it("still doesn't show the unread indicator when an unread article is set after 'hideUnread' is set") {
-            subject.hideUnread = true
-            subject.article = unupdatedArticle
-            expect(subject.unread.unread) == 0
-        }
-
-        context("setting an read article") {
-            beforeEach {
-                subject.article = readArticle
-            }
-
-            it("should indicate that it's read") {
-                expect(subject.unread.unread) == 0
-            }
-        }
-
-        context("setting a decently long article") {
-            beforeEach {
-                subject.article = Article(title: "title", link: URL(string: "https://exapmle.com/1")!, summary: "summary", authors: [], published: Date(timeIntervalSinceReferenceDate: 0), updatedAt: nil, identifier: "", content: "content", read: false, estimatedReadingTime: 15, feed: nil, flags: [])
-            }
-
-            it("should show the estimated reading time") {
-                expect(subject.readingTime.isHidden) == false
-                expect(subject.readingTime.text) == "15 minutes to read"
-            }
-        }
-
-        context("setting an updated article") {
-            beforeEach {
-                subject.article = readArticle
-            }
-
-            it("should set the published/updated label") {
+            it("sets the published label") {
                 let dateFormatter = DateFormatter()
 
                 dateFormatter.timeStyle = .none
                 dateFormatter.dateStyle = .short
                 dateFormatter.timeZone = NSCalendar.current.timeZone
 
-                expect(subject.published.text) == dateFormatter.string(from: readArticle.updatedAt!)
+                expect(subject.published.text) == dateFormatter.string(from: Date(timeIntervalSinceReferenceDate: 0))
+            }
+
+            it("sets the author label") {
+                expect(subject.author.text) == "Rachel"
+            }
+
+            it("indicates that it's unread") {
+                expect(subject.unread.unread) == 1
+            }
+
+            it("doesn't show the unread indicator when 'hideUnread' is set") {
+                subject.hideUnread = true
+                expect(subject.unread.unread) == 0
+            }
+
+            it("still doesn't show the unread indicator when read is set to true") {
+                subject.hideUnread = false
+                subject.configure(
+                    title: "title",
+                    publishedDate: Date(timeIntervalSinceReferenceDate: 0),
+                    author: "Rachel",
+                    read: true,
+                    readingTime: nil
+                )
+                expect(subject.unread.unread) == 0
+            }
+
+            it("doesn't show the reading time label when readingTime is nil") {
+                expect(subject.readingTime.isHidden) == true
+                expect(subject.readingTime.text).to(beNil())
+            }
+
+            it("doesn't show the reading time label when the readingTime is zero") {
+                subject.configure(
+                    title: "title",
+                    publishedDate: Date(timeIntervalSinceReferenceDate: 0),
+                    author: "Rachel",
+                    read: true,
+                    readingTime: 0
+                )
+                expect(subject.readingTime.isHidden) == true
+                expect(subject.readingTime.text).to(beNil())
+            }
+
+            it("shows the reading time label when the readingTime is greater than 0") {
+                subject.configure(
+                    title: "title",
+                    publishedDate: Date(timeIntervalSinceReferenceDate: 0),
+                    author: "Rachel",
+                    read: true,
+                    readingTime: 15
+                )
+                expect(subject.readingTime.isHidden) == false
+                expect(subject.readingTime.text) == "15 minutes to read"
             }
         }
     }

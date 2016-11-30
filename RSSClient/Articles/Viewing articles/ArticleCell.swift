@@ -2,37 +2,16 @@ import UIKit
 import rNewsKit
 
 public final class ArticleCell: UITableViewCell {
-    public var article: Article? {
-        didSet {
-            self.title.text = self.article?.title ?? ""
-            let publishedDate = self.article?.updatedAt ?? self.article?.published ?? Date()
-            self.published.text = self.dateFormatter.string(from: publishedDate)
-            self.author.text = self.article?.authorsString ?? ""
-            let hasNotRead = self.article?.read != true
-            if self.hideUnread {
-                self.unread.unread = 0
-            } else {
-                self.unread.unread = hasNotRead ? 1 : 0
-            }
-            self.unreadWidth.constant = hasNotRead ? 30 : 0
-            if let readingTime = self.article?.estimatedReadingTime, readingTime > 0 {
-                self.managedReadingTimeHidden()
-                let localizedFormat = NSLocalizedString("ArticleCell_EstimatedReadingTime", comment: "")
-                let formattedTime = self.timeFormatter.string(from: TimeInterval(readingTime * 60)) ?? ""
-                self.readingTime.text = NSString.localizedStringWithFormat(localizedFormat as NSString,
-                                                                           formattedTime) as String
-            } else {
-                self.managedReadingTimeHidden()
-                self.readingTime.text = nil
-            }
-        }
-    }
-
     public let title = UILabel(forAutoLayout: ())
     public let published = UILabel(forAutoLayout: ())
     public let author = UILabel(forAutoLayout: ())
     public let unread = UnreadCounter(forAutoLayout: ())
     public let readingTime = UILabel(forAutoLayout: ())
+
+    public var titleText: String? { return self.title.text }
+    public var authorText: String? { return self.author.text }
+    public private(set) var publishedDate: Date?
+    public private(set) var readingTimeInMinutes: Int?
 
     public var hideUnread: Bool = false {
         didSet {
@@ -45,12 +24,6 @@ public final class ArticleCell: UITableViewCell {
     public var themeRepository: ThemeRepository? = nil {
         didSet {
             self.themeRepository?.addSubscriber(self)
-        }
-    }
-
-    public var settingsRepository: SettingsRepository? = nil {
-        didSet {
-            self.settingsRepository?.addSubscriber(self)
         }
     }
 
@@ -75,12 +48,29 @@ public final class ArticleCell: UITableViewCell {
 
     fileprivate let backgroundColorView = UIView()
 
-    fileprivate func managedReadingTimeHidden() {
-        guard let article = self.article else { return }
-        let articleWantsToShow = article.estimatedReadingTime > 0
-        let userWantsToShow = self.settingsRepository?.showEstimatedReadingLabel ?? true
+    public func configure(title: String, publishedDate: Date, author: String, read: Bool, readingTime: Int?) {
+        self.publishedDate = publishedDate
+        self.readingTimeInMinutes = readingTime
 
-        self.readingTime.isHidden = !(articleWantsToShow && userWantsToShow)
+        self.title.text = title
+        self.published.text = self.dateFormatter.string(from: publishedDate)
+        self.author.text = author
+        if self.hideUnread {
+            self.unread.unread = 0
+            self.unreadWidth.constant = 0
+        } else {
+            self.unread.unread = read ? 0 : 1
+            self.unreadWidth.constant = read ? 0 : 30
+        }
+        if let readingTime = readingTime, readingTime > 0 {
+            self.readingTime.isHidden = false
+            let localizedFormat = NSLocalizedString("ArticleCell_EstimatedReadingTime", comment: "")
+            let formattedTime = self.timeFormatter.string(from: TimeInterval(readingTime * 60)) ?? ""
+            self.readingTime.text = String.localizedStringWithFormat(localizedFormat, formattedTime)
+        } else {
+            self.readingTime.isHidden = true
+            self.readingTime.text = nil
+        }
     }
 
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -144,11 +134,5 @@ extension ArticleCell: ThemeRepositorySubscriber {
         self.backgroundColorView.backgroundColor = themeRepository.textColor.withAlphaComponent(0.3)
 
         self.backgroundColor = themeRepository.backgroundColor
-    }
-}
-
-extension ArticleCell: SettingsRepositorySubscriber {
-    public func didChangeSetting(_ settingsRepository: SettingsRepository) {
-        self.managedReadingTimeHidden()
     }
 }

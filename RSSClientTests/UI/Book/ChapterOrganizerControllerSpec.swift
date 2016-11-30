@@ -170,16 +170,16 @@ class ChapterOrganizerControllerSpec: QuickSpec {
                         expect(cell?.themeRepository) == themeRepository
                     }
 
-                    it("is configured with the settings repository") {
-                        expect(cell?.settingsRepository) === settingsRepository
-                    }
-
                     it("hides the unread indicator") {
                         expect(cell?.hideUnread) == true
                     }
 
                     it("shows the associated article") {
-                        expect(cell?.article) == articles[0]
+                        let article = articles[0]
+                        expect(cell?.titleText) == "Article 1"
+                        expect(cell?.authorText) == ""
+                        expect(cell?.publishedDate) == article.published
+                        expect(cell?.readingTimeInMinutes).to(beNil())
                     }
                 }
 

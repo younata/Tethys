@@ -146,9 +146,16 @@ extension ChapterOrganizerController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! ArticleCell
         cell.themeRepository = self.themeRepository
-        cell.settingsRepository = self.settingsRepository
         cell.hideUnread = true
-        cell.article = self.chapters[indexPath.row]
+        let chapter = self.chapters[indexPath.row]
+
+        cell.configure(
+            title: chapter.title,
+            publishedDate: chapter.updatedAt ?? chapter.published,
+            author: chapter.authorsString,
+            read: true,
+            readingTime: nil
+        )
         return cell
     }
 

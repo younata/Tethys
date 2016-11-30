@@ -241,8 +241,15 @@ public final class ArticleListController: UIViewController, DataSubscriber, Inje
                                                      for: indexPath) as! ArticleCell
 
             cell.themeRepository = self.themeRepository
-            cell.settingsRepository = self.settingsRepository
-            cell.article = article
+
+            let readingTime = self.settingsRepository.showEstimatedReadingLabel ? article.estimatedReadingTime : nil
+            cell.configure(
+                title: article.title,
+                publishedDate: article.updatedAt ?? article.published,
+                author: article.authorsString,
+                read: article.read,
+                readingTime: readingTime
+            )
 
             return cell
         }
@@ -454,6 +461,10 @@ extension ArticleListController: UIViewControllerPreviewingDelegate {
                     self.showArticleController(articleController, animated: true)
             }
     }
+}
+
+extension ArticleListController: SettingsRepositorySubscriber {
+    public func didChangeSetting(_: SettingsRepository) { self.tableView.reloadData() }
 }
 
 extension ArticleListController: ThemeRepositorySubscriber {

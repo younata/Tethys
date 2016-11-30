@@ -577,7 +577,7 @@ class ArticleListControllerSpec: QuickSpec {
                 beforeEach {
                     let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 3, section: 1)) as! ArticleCell
 
-                    expect(cell.unread.unread).to(equal(1))
+                    expect(cell.unread.unread) == 1
 
                     articles[3].read = true
                     for subscriber in dataRepository.subscribersArray {
@@ -585,10 +585,10 @@ class ArticleListControllerSpec: QuickSpec {
                     }
                 }
 
-                it("should reload the tableView") {
+                it("reloads the tableView") {
                     let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 3, section: 1)) as! ArticleCell
 
-                    expect(cell.unread.unread).to(equal(0))
+                    expect(cell.unread.unread) == 0
                 }
             }
         }
@@ -929,16 +929,6 @@ class ArticleListControllerSpec: QuickSpec {
                     }
 
                     context("without a delegate") {
-                        it("has a settings repository") {
-                            let section = 1
-                            for row in 0..<subject.tableView.numberOfRows(inSection: section) {
-                                let indexPath = IndexPath(row: row, section: section)
-                                let cell = subject.tableView(subject.tableView, cellForRowAt: indexPath) as? ArticleCell
-                                expect(cell).toNot(beNil())
-                                expect(cell?.settingsRepository) === settingsRepository
-                            }
-                        }
-
                         it("is editable") {
                             let section = 1
                             for row in 0..<subject.tableView.numberOfRows(inSection: section) {

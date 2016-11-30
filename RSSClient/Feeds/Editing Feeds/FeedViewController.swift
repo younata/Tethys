@@ -11,7 +11,7 @@ public final class FeedViewController: UIViewController, Injectable {
         }
     }
 
-    public let feedEditView = FeedEditView(forAutoLayout: ())
+    public let feedDetailView = FeedDetailView(forAutoLayout: ())
     fileprivate var feedURL: URL? = nil
     fileprivate var feedTags: [String]? = nil
 
@@ -55,13 +55,13 @@ public final class FeedViewController: UIViewController, Injectable {
         self.navigationItem.rightBarButtonItem = saveButton
         self.navigationItem.title = self.feed?.displayTitle ?? ""
 
-        self.view.addSubview(self.feedEditView)
-        self.feedEditView.autoPinEdgesToSuperviewEdges()
+        self.view.addSubview(self.feedDetailView)
+        self.feedDetailView.autoPinEdgesToSuperviewEdges()
 
         self.themeRepository.addSubscriber(self)
-        self.feedEditView.themeRepository = self.themeRepository
+        self.feedDetailView.themeRepository = self.themeRepository
 
-        self.feedEditView.delegate = self
+        self.feedDetailView.delegate = self
 
         self.setTagMaxHeight(height: self.view.bounds.size.height)
     }
@@ -73,12 +73,12 @@ public final class FeedViewController: UIViewController, Injectable {
     }
 
     private func setTagMaxHeight(height: CGFloat) {
-        self.feedEditView.maxHeight = Int(height - 400)
+        self.feedDetailView.maxHeight = Int(height - 400)
     }
 
     fileprivate func resetFeedView() {
         guard let feed = self.feed else { return }
-        self.feedEditView.configure(title: feed.displayTitle, url: feed.url,
+        self.feedDetailView.configure(title: feed.displayTitle, url: feed.url,
                                     summary: feed.displaySummary, tags: feed.tags)
     }
 
@@ -102,16 +102,16 @@ public final class FeedViewController: UIViewController, Injectable {
     }
 }
 
-extension FeedViewController: FeedEditViewDelegate {
-    public func feedEditView(_ feedEditView: FeedEditView, urlDidChange url: URL) {
+extension FeedViewController: FeedDetailViewDelegate {
+    public func feedDetailView(_ feedDetailView: FeedDetailView, urlDidChange url: URL) {
         self.feedURL = url
     }
 
-    public func feedEditView(_ feedEditView: FeedEditView, tagsDidChange tags: [String]) {
+    public func feedDetailView(_ feedDetailView: FeedDetailView, tagsDidChange tags: [String]) {
         self.feedTags = tags
     }
 
-    public func feedEditView(_ feedEditView: FeedEditView,
+    public func feedDetailView(_ feedDetailView: FeedDetailView,
                              editTag tag: String?,
                              completion: @escaping (String) -> (Void)) {
         let tagEditorViewController = self.tagEditorViewController()

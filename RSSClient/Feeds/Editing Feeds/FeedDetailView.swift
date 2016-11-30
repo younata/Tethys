@@ -1,12 +1,12 @@
 import UIKit
 
-public protocol FeedEditViewDelegate: class {
-    func feedEditView(_ feedEditView: FeedEditView, urlDidChange url: URL)
-    func feedEditView(_ feedEditView: FeedEditView, tagsDidChange tags: [String])
-    func feedEditView(_ feedEditView: FeedEditView, editTag tag: String?, completion: @escaping (String) -> (Void))
+public protocol FeedDetailViewDelegate: class {
+    func feedDetailView(_ feedDetailView: FeedDetailView, urlDidChange url: URL)
+    func feedDetailView(_ feedDetailView: FeedDetailView, tagsDidChange tags: [String])
+    func feedDetailView(_ feedDetailView: FeedDetailView, editTag tag: String?, completion: @escaping (String) -> (Void))
 }
 
-public final class FeedEditView: UIView {
+public final class FeedDetailView: UIView {
     private let mainStackView = UIStackView(forAutoLayout: ())
 
     public let titleLabel = UILabel(forAutoLayout: ())
@@ -36,7 +36,7 @@ public final class FeedEditView: UIView {
         self.tagHeight!.constant = CGFloat(max(0, min(self.maxHeight, self.tags.count * 80)))
     }
 
-    public weak var delegate: FeedEditViewDelegate?
+    public weak var delegate: FeedDetailViewDelegate?
     public weak var themeRepository: ThemeRepository? {
         didSet {
             themeRepository?.addSubscriber(self)
@@ -112,7 +112,7 @@ public final class FeedEditView: UIView {
 
 
         self.addTagButton.setTitle(NSLocalizedString("FeedViewController_Actions_AddTag", comment: ""), for: .normal)
-        self.addTagButton.addTarget(self, action: #selector(FeedEditView.didTapAddTarget), for: .touchUpInside)
+        self.addTagButton.addTarget(self, action: #selector(FeedDetailView.didTapAddTarget), for: .touchUpInside)
         self.addTagButton.setTitleColor(UIColor.darkGreen(), for: .normal)
         self.urlField.textColor = UIColor.gray
     }
@@ -130,16 +130,16 @@ public final class FeedEditView: UIView {
     }
 
     @objc private func didTapAddTarget() {
-        self.delegate?.feedEditView(self, editTag: nil) { newTag in
+        self.delegate?.feedDetailView(self, editTag: nil) { newTag in
             self.tags.append(newTag)
             let indexPath = IndexPath(row: self.tags.count - 1, section: 0)
             self.tagsList.insertRows(at: [indexPath], with: .automatic)
-            self.delegate?.feedEditView(self, tagsDidChange: self.tags)
+            self.delegate?.feedDetailView(self, tagsDidChange: self.tags)
         }
     }
 }
 
-extension FeedEditView: ThemeRepositorySubscriber {
+extension FeedDetailView: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.backgroundColor = themeRepository.backgroundColor
 
@@ -152,19 +152,19 @@ extension FeedEditView: ThemeRepositorySubscriber {
     }
 }
 
-extension FeedEditView: UITextFieldDelegate {
+extension FeedDetailView: UITextFieldDelegate {
     public func textField(_ textField: UITextField,
                           shouldChangeCharactersIn range: NSRange,
                           replacementString string: String) -> Bool {
         let text = NSString(string: textField.text ?? "").replacingCharacters(in: range, with: string)
         if let url = URL(string: text), let _ = url.scheme {
-            self.delegate?.feedEditView(self, urlDidChange: url)
+            self.delegate?.feedDetailView(self, urlDidChange: url)
         }
         return true
     }
 }
 
-extension FeedEditView: UITableViewDataSource {
+extension FeedDetailView: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.tags.count
     }
@@ -184,23 +184,23 @@ extension FeedEditView: UITableViewDataSource {
                           forRowAt indexPath: IndexPath) {}
 }
 
-extension FeedEditView: UITableViewDelegate {
+extension FeedDetailView: UITableViewDelegate {
     public func tableView(_ tableView: UITableView,
                           editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
         let delete = UITableViewRowAction(style: .default, title: deleteTitle, handler: {(_, indexPath) in
             self.tags.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .automatic)
-            self.delegate?.feedEditView(self, tagsDidChange: self.tags)
+            self.delegate?.feedDetailView(self, tagsDidChange: self.tags)
         })
         let editTitle = NSLocalizedString("Generic_Edit", comment: "")
         let edit = UITableViewRowAction(style: .normal, title: editTitle, handler: {(_, indexPath) in
             let tag = self.tags[indexPath.row]
 
-            self.delegate?.feedEditView(self, editTag: tag) { newTag in
+            self.delegate?.feedDetailView(self, editTag: tag) { newTag in
                 self.tags[indexPath.row] = newTag
                 tableView.reloadRows(at: [indexPath], with: .automatic)
-                self.delegate?.feedEditView(self, tagsDidChange: self.tags)
+                self.delegate?.feedDetailView(self, tagsDidChange: self.tags)
             }
         })
         return [delete, edit]
@@ -211,10 +211,10 @@ extension FeedEditView: UITableViewDelegate {
 
         let tag = self.tags[indexPath.row]
 
-        self.delegate?.feedEditView(self, editTag: tag) { newTag in
+        self.delegate?.feedDetailView(self, editTag: tag) { newTag in
             self.tags[indexPath.row] = newTag
             tableView.reloadRows(at: [indexPath], with: .automatic)
-            self.delegate?.feedEditView(self, tagsDidChange: self.tags)
+            self.delegate?.feedDetailView(self, tagsDidChange: self.tags)
         }
     }
 }

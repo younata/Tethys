@@ -93,12 +93,12 @@ class FeedViewControllerSpec: QuickSpec {
             }
         }
 
-        describe("the feedEditView") {
+        describe("the feedDetailView") {
             it("is configured with the feed's title, url, summary, and tags") {
-                expect(subject.feedEditView.title) == "title"
-                expect(subject.feedEditView.url) == URL(string: "http://example.com/feed")
-                expect(subject.feedEditView.summary) == "summary"
-                expect(subject.feedEditView.tags) == ["a", "b", "c"]
+                expect(subject.feedDetailView.title) == "title"
+                expect(subject.feedDetailView.url) == URL(string: "http://example.com/feed")
+                expect(subject.feedDetailView.summary) == "summary"
+                expect(subject.feedDetailView.tags) == ["a", "b", "c"]
             }
 
             describe("when the feed has a tag that starts with '~'") {
@@ -108,7 +108,7 @@ class FeedViewControllerSpec: QuickSpec {
                 }
 
                 it("uses that tag as the title, minus the leading '~'") {
-                    expect(subject.feedEditView.title) == "custom title"
+                    expect(subject.feedDetailView.title) == "custom title"
                 }
             }
 
@@ -119,17 +119,17 @@ class FeedViewControllerSpec: QuickSpec {
                 }
 
                 it("uses that tag as the summary, minus the leading '`'") {
-                    expect(subject.feedEditView.summary) == "custom summary"
+                    expect(subject.feedDetailView.summary) == "custom summary"
                 }
             }
         }
 
-        describe("the feedEditViewDelegate") {
-            describe("feedEditView(urlDidChange:)") {
+        describe("the feedDetailViewDelegate") {
+            describe("feedDetailView(urlDidChange:)") {
                 let url = URL(string: "https://example.com/new_feed")!
 
                 beforeEach {
-                    subject.feedEditView.delegate?.feedEditView(subject.feedEditView, urlDidChange: url)
+                    subject.feedDetailView.delegate?.feedDetailView(subject.feedDetailView, urlDidChange: url)
                 }
 
                 it("does not yet set the feed url to the new url") {
@@ -156,11 +156,11 @@ class FeedViewControllerSpec: QuickSpec {
                 }
             }
 
-            describe("feedEditView(tagsDidChange:)") {
+            describe("feedDetailView(tagsDidChange:)") {
                 let tags = ["d", "e", "f"]
 
                 beforeEach {
-                    subject.feedEditView.delegate?.feedEditView(subject.feedEditView, tagsDidChange: tags)
+                    subject.feedDetailView.delegate?.feedDetailView(subject.feedDetailView, tagsDidChange: tags)
                 }
 
                 it("does not yet set the feed tags to the new tags") {
@@ -187,7 +187,7 @@ class FeedViewControllerSpec: QuickSpec {
                 }
             }
 
-            describe("feedEditView(editTag:completion:)") {
+            describe("feedDetailView(editTag:completion:)") {
                 var newTag: String?
                 var tagCompletionCallCount = 0
 
@@ -195,7 +195,7 @@ class FeedViewControllerSpec: QuickSpec {
                     beforeEach {
                         newTag = nil
                         tagCompletionCallCount = 0
-                        subject.feedEditView.delegate?.feedEditView(subject.feedEditView, editTag: nil) {
+                        subject.feedDetailView.delegate?.feedDetailView(subject.feedDetailView, editTag: nil) {
                             newTag = $0
                             tagCompletionCallCount += 1
                         }
@@ -224,7 +224,7 @@ class FeedViewControllerSpec: QuickSpec {
                     beforeEach {
                         newTag = nil
                         tagCompletionCallCount = 0
-                        subject.feedEditView.delegate?.feedEditView(subject.feedEditView, editTag: existingTag) {
+                        subject.feedDetailView.delegate?.feedDetailView(subject.feedDetailView, editTag: existingTag) {
                             newTag = $0
                             tagCompletionCallCount += 1
                         }

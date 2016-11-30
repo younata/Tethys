@@ -2,48 +2,48 @@ import Quick
 import Nimble
 import rNews
 
-class FakeFeedEditViewDelegate: FeedEditViewDelegate {
+class FakeFeedDetailViewDelegate: FeedDetailViewDelegate {
     var urlDidChangeCallCount = 0
-    private var urlDidChangeArgs: [(FeedEditView, URL)] = []
-    func urlDidChangeArgsForCall(_ callIndex: Int) -> (FeedEditView, URL) {
+    private var urlDidChangeArgs: [(FeedDetailView, URL)] = []
+    func urlDidChangeArgsForCall(_ callIndex: Int) -> (FeedDetailView, URL) {
         return self.urlDidChangeArgs[callIndex]
     }
-    func feedEditView(_ feedEditView: FeedEditView, urlDidChange url: URL) {
-        self.urlDidChangeArgs.append((feedEditView, url))
+    func feedDetailView(_ feedDetailView: FeedDetailView, urlDidChange url: URL) {
+        self.urlDidChangeArgs.append((feedDetailView, url))
         self.urlDidChangeCallCount += 1
     }
 
     var tagsDidChangeCallCount = 0
-    private var tagsDidChangeArgs: [(FeedEditView, [String])] = []
-    func tagsDidChangeArgsForCall(_ callIndex: Int) -> (FeedEditView, [String]) {
+    private var tagsDidChangeArgs: [(FeedDetailView, [String])] = []
+    func tagsDidChangeArgsForCall(_ callIndex: Int) -> (FeedDetailView, [String]) {
         return self.tagsDidChangeArgs[callIndex]
     }
-    func feedEditView(_ feedEditView: FeedEditView, tagsDidChange tags: [String]) {
+    func feedDetailView(_ feedDetailView: FeedDetailView, tagsDidChange tags: [String]) {
         self.tagsDidChangeCallCount += 1
-        self.tagsDidChangeArgs.append((feedEditView, tags))
+        self.tagsDidChangeArgs.append((feedDetailView, tags))
     }
 
     var editTagCallCount = 0
-    private var editTagArgs: [(FeedEditView, String?, (String) -> (Void))] = []
-    func editTagArgsForCall(_ callIndex: Int) -> (FeedEditView, String?, (String) -> (Void)) {
+    private var editTagArgs: [(FeedDetailView, String?, (String) -> (Void))] = []
+    func editTagArgsForCall(_ callIndex: Int) -> (FeedDetailView, String?, (String) -> (Void)) {
         return self.editTagArgs[callIndex]
     }
-    func feedEditView(_ feedEditView: FeedEditView, editTag tag: String?, completion: @escaping (String) -> (Void)) {
+    func feedDetailView(_ feedDetailView: FeedDetailView, editTag tag: String?, completion: @escaping (String) -> (Void)) {
         self.editTagCallCount += 1
-        self.editTagArgs.append((feedEditView, tag, completion))
+        self.editTagArgs.append((feedDetailView, tag, completion))
     }
 }
 
-class FeedEditViewSpec: QuickSpec {
+class FeedDetailViewSpec: QuickSpec {
     override func spec() {
-        var subject: FeedEditView!
-        var delegate: FakeFeedEditViewDelegate!
+        var subject: FeedDetailView!
+        var delegate: FakeFeedDetailViewDelegate!
 
         var themeRepository: ThemeRepository!
 
         beforeEach {
-            delegate = FakeFeedEditViewDelegate()
-            subject = FeedEditView(forAutoLayout: ())
+            delegate = FakeFeedDetailViewDelegate()
+            subject = FeedDetailView(forAutoLayout: ())
 
             themeRepository = ThemeRepository(userDefaults: nil)
 

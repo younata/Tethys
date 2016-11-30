@@ -1,9 +1,9 @@
 # A list of devices you want to take the screenshots from
 devices([
-  #"iPhone 6s",
-  #"iPhone 6s Plus",
-  #"iPhone 5s",
-  #"iPad Retina",
+  "iPhone 7",
+  "iPhone 7 Plus",
+  "iPhone 5s",
+  "iPad Retina",
   "iPad Pro (12.9-inch)"
 ])
 
@@ -16,8 +16,6 @@ scheme "rNewsAcceptanceTests"
 
 # Where should the resulting screenshots be stored?
 output_directory "./fastlane/screenshots"
-
-clear_previous_screenshots true # remove the '#' to clear all previously generated screenshots before creating new ones
 
 reinstall_app true
 clean true

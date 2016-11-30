@@ -5,7 +5,7 @@ inputs:
 - name: tethys_github
 
 run:
-  path: tethys_github/concourse/deploy.sh
+  path: tethys_github/concourse/external_beta.sh
 
 params:
   FASTLANE_PASSWORD:

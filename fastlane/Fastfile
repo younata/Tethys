@@ -36,7 +36,6 @@ platform :ios do
 
   desc 'Deploy a new version to TestFlight'
   lane :deploy_testflight do
-    build_number = `git rev-list $(git rev-parse --abbrev-ref HEAD) | wc -l | awk '{ print $1 }'`
     increment_build_number(xcodeproj: 'RSSClient.xcodeproj', build_number: build_number)
     gym(project: 'RSSClient.xcodeproj', scheme: "RSSClient")
     pilot(distribute_external: false, changelog: `git log -1 --format='%B'`)
@@ -44,7 +43,6 @@ platform :ios do
 
   desc 'Deploy a new version to TestFlight External'
   lane :deploy_testflight_external do
-    build_number = `git rev-list $(git rev-parse --abbrev-ref HEAD) | wc -l | awk '{ print $1 }'`
     increment_build_number(xcodeproj: 'RSSClient.xcodeproj', build_number: build_number)
     gym(project: 'RSSClient.xcodeproj', scheme: "RSSClient")
     pilot(distribute_external: true, changelog: changelog_from_git_commits)
@@ -54,6 +52,7 @@ platform :ios do
   lane :deploy_app_store do
     tracker_release = next_tracker_release
 
+    increment_build_number(xcodeproj: 'RSSClient.xcodeproj', build_number: build_number)
     update_release_notes tracker_release[:release_notes]
     bump_release_version tracker_release[:title]
 
@@ -64,6 +63,10 @@ platform :ios do
     deliver
 
     upload_github_release(tracker_release[:title], tracker_release[:release_notes])
+  end
+
+  def build_number
+    latest_testflight_build_number + 1
   end
 
   def next_tracker_release

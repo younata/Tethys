@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "89635F881A13C2E30052C248"
-               BuildableName = "rNews.app"
-               BlueprintName = "RSSClient-OSX"
+               BuildableName = "Tethys.app"
+               BlueprintName = "Tethys_Mac"
                ReferencedContainer = "container:RSSClient.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -33,8 +33,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "89635F881A13C2E30052C248"
-            BuildableName = "rNews.app"
-            BlueprintName = "RSSClient-OSX"
+            BuildableName = "Tethys.app"
+            BlueprintName = "Tethys_Mac"
             ReferencedContainer = "container:RSSClient.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -56,8 +56,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "89635F881A13C2E30052C248"
-            BuildableName = "rNews.app"
-            BlueprintName = "RSSClient-OSX"
+            BuildableName = "Tethys.app"
+            BlueprintName = "Tethys_Mac"
             ReferencedContainer = "container:RSSClient.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -75,8 +75,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "89635F881A13C2E30052C248"
-            BuildableName = "rNews.app"
-            BlueprintName = "RSSClient-OSX"
+            BuildableName = "Tethys.app"
+            BlueprintName = "Tethys_Mac"
             ReferencedContainer = "container:RSSClient.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

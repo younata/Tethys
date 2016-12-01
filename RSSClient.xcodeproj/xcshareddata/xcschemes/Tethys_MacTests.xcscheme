@@ -17,8 +17,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "898979C51B7155D700218498"
-               BuildableName = "rNews-OSXTests.xctest"
-               BlueprintName = "rNews-OSXTests"
+               BuildableName = "Tethys_MacTests.xctest"
+               BlueprintName = "Tethys_MacTests"
                ReferencedContainer = "container:RSSClient.xcodeproj">
             </BuildableReference>
          </TestableReference>

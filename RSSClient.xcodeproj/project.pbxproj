@@ -712,7 +712,7 @@
 		89628BDE1CE1742600B4C624 /* DatabaseUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseUseCase.swift; sourceTree = "<group>"; };
 		89628BE01CE175F100B4C624 /* FakeDataSubscriber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDataSubscriber.swift; sourceTree = "<group>"; };
 		89628BE21CE1805E00B4C624 /* DatabaseUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseUseCaseSpec.swift; sourceTree = "<group>"; };
-		89635F891A13C2E30052C248 /* rNews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rNews.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		89635F891A13C2E30052C248 /* Tethys.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tethys.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89635F8C1A13C2E30052C248 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89635F8D1A13C2E30052C248 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		89635F8F1A13C2E30052C248 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -778,7 +778,7 @@
 		8989799E1B70882D00218498 /* Muon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Muon.framework; path = ../Carthage/Build/Mac/Muon.framework; sourceTree = "<group>"; };
 		898979AD1B708E8F00218498 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = ../Carthage/Build/Mac/Nimble.framework; sourceTree = "<group>"; };
 		898979AE1B708E8F00218498 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = ../Carthage/Build/Mac/Quick.framework; sourceTree = "<group>"; };
-		898979C61B7155D700218498 /* rNews-OSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "rNews-OSXTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		898979C61B7155D700218498 /* Tethys_MacTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tethys_MacTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		898979CA1B7155D700218498 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		898979D21B71CC5200218498 /* NSColor+RSSClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSColor+RSSClient.swift"; sourceTree = "<group>"; };
 		898979D41B71CE3A00218498 /* MainControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainControllerSpec.swift; sourceTree = "<group>"; };
@@ -821,6 +821,7 @@
 		89A3417E1B150D1B0000C60B /* OPMLService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLService.swift; sourceTree = "<group>"; };
 		89A341811B150DA90000C60B /* OPMLServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLServiceSpec.swift; sourceTree = "<group>"; };
 		89A3A8C81DEF942F002AF9B5 /* ActionableTableViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionableTableViewSpec.swift; sourceTree = "<group>"; };
+		89A3A8CA1DEFAD13002AF9B5 /* Tethys.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = Tethys.entitlements; sourceTree = "<group>"; };
 		89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeImportables.swift; sourceTree = "<group>"; };
 		89AFFA031D4BF234002255E8 /* DefaultAccountRepositoryDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultAccountRepositoryDelegate.swift; sourceTree = "<group>"; };
 		89AFFA051D4C32A7002255E8 /* DefaultAccountRepositoryDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultAccountRepositoryDelegateSpec.swift; sourceTree = "<group>"; };
@@ -1282,7 +1283,7 @@
 			path = UIApplicationProtocols;
 			sourceTree = "<group>";
 		};
-		89635F8A1A13C2E30052C248 /* RSSClient-OSX */ = {
+		89635F8A1A13C2E30052C248 /* Tethys_Mac */ = {
 			isa = PBXGroup;
 			children = (
 				8967DA091A40979D000424F4 /* Articles */,
@@ -1296,8 +1297,9 @@
 				89635F911A13C2E30052C248 /* MainMenu.xib */,
 				898979D21B71CC5200218498 /* NSColor+RSSClient.swift */,
 				897F70FC1A3A4E7700ECE1A1 /* UnreadCounter.swift */,
+				89A3A8CA1DEFAD13002AF9B5 /* Tethys.entitlements */,
 			);
-			path = "RSSClient-OSX";
+			path = Tethys_Mac;
 			sourceTree = "<group>";
 		};
 		89635F8B1A13C2E30052C248 /* Supporting Files */ = {
@@ -1467,7 +1469,7 @@
 			children = (
 				89C8307419D730E9009924DA /* Products */,
 				89C8307519D730E9009924DA /* RSSClient */,
-				89635F8A1A13C2E30052C248 /* RSSClient-OSX */,
+				89635F8A1A13C2E30052C248 /* Tethys_Mac */,
 				89C8308E19D730E9009924DA /* RSSClientTests */,
 				898979C71B7155D700218498 /* rNews-OSXTests */,
 				8992D43A1C37C9B0004A5A35 /* rNewsAcceptanceTests */,
@@ -1484,12 +1486,12 @@
 			children = (
 				89C8307319D730E9009924DA /* rNews.app */,
 				89C8308B19D730E9009924DA /* RSSClientTests.xctest */,
-				89635F891A13C2E30052C248 /* rNews.app */,
+				89635F891A13C2E30052C248 /* Tethys.app */,
 				894304211B45089A000078DC /* rNewsKit.framework */,
 				8943042A1B45089A000078DC /* rNewsKitTests.xctest */,
 				898979241B707FAD00218498 /* rNewsKit.framework */,
 				8989792D1B707FAE00218498 /* rNewsKitTests.xctest */,
-				898979C61B7155D700218498 /* rNews-OSXTests.xctest */,
+				898979C61B7155D700218498 /* Tethys_MacTests.xctest */,
 				8992D4391C37C9B0004A5A35 /* rNewsAcceptanceTests.xctest */,
 			);
 			name = Products;
@@ -1893,9 +1895,9 @@
 			productReference = 8943042A1B45089A000078DC /* rNewsKitTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		89635F881A13C2E30052C248 /* RSSClient-OSX */ = {
+		89635F881A13C2E30052C248 /* Tethys_Mac */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 89635FA01A13C2E30052C248 /* Build configuration list for PBXNativeTarget "RSSClient-OSX" */;
+			buildConfigurationList = 89635FA01A13C2E30052C248 /* Build configuration list for PBXNativeTarget "Tethys_Mac" */;
 			buildPhases = (
 				89635F851A13C2E30052C248 /* Sources */,
 				89635F861A13C2E30052C248 /* Frameworks */,
@@ -1907,9 +1909,9 @@
 			dependencies = (
 				898979381B707FAE00218498 /* PBXTargetDependency */,
 			);
-			name = "RSSClient-OSX";
+			name = Tethys_Mac;
 			productName = "RSSClient-OSX";
-			productReference = 89635F891A13C2E30052C248 /* rNews.app */;
+			productReference = 89635F891A13C2E30052C248 /* Tethys.app */;
 			productType = "com.apple.product-type.application";
 		};
 		898979231B707FAD00218498 /* rNewsKit-OSX */ = {
@@ -1949,9 +1951,9 @@
 			productReference = 8989792D1B707FAE00218498 /* rNewsKitTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		898979C51B7155D700218498 /* rNews-OSXTests */ = {
+		898979C51B7155D700218498 /* Tethys_MacTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 898979CD1B7155D700218498 /* Build configuration list for PBXNativeTarget "rNews-OSXTests" */;
+			buildConfigurationList = 898979CD1B7155D700218498 /* Build configuration list for PBXNativeTarget "Tethys_MacTests" */;
 			buildPhases = (
 				898979C21B7155D700218498 /* Sources */,
 				898979C31B7155D700218498 /* Frameworks */,
@@ -1963,9 +1965,9 @@
 			dependencies = (
 				898979CC1B7155D700218498 /* PBXTargetDependency */,
 			);
-			name = "rNews-OSXTests";
+			name = Tethys_MacTests;
 			productName = "rNews-OSXTests";
-			productReference = 898979C61B7155D700218498 /* rNews-OSXTests.xctest */;
+			productReference = 898979C61B7155D700218498 /* Tethys_MacTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		8992D4381C37C9B0004A5A35 /* rNewsAcceptanceTests */ = {
@@ -2053,7 +2055,7 @@
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.Sandbox = {
-								enabled = 0;
+								enabled = 1;
 							};
 							com.apple.iCloud = {
 								enabled = 0;
@@ -2121,8 +2123,8 @@
 				89C8308A19D730E9009924DA /* RSSClientTests */,
 				894304201B45089A000078DC /* rNewsKit */,
 				894304291B45089A000078DC /* rNewsKitTests */,
-				89635F881A13C2E30052C248 /* RSSClient-OSX */,
-				898979C51B7155D700218498 /* rNews-OSXTests */,
+				89635F881A13C2E30052C248 /* Tethys_Mac */,
+				898979C51B7155D700218498 /* Tethys_MacTests */,
 				898979231B707FAD00218498 /* rNewsKit-OSX */,
 				8989792C1B707FAE00218498 /* rNewsKit-OSXTests */,
 				8992D4381C37C9B0004A5A35 /* rNewsAcceptanceTests */,
@@ -2692,7 +2694,7 @@
 		};
 		898979CC1B7155D700218498 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 89635F881A13C2E30052C248 /* RSSClient-OSX */;
+			target = 89635F881A13C2E30052C248 /* Tethys_Mac */;
 			targetProxy = 898979CB1B7155D700218498 /* PBXContainerItemProxy */;
 		};
 		8992D43F1C37C9B0004A5A35 /* PBXTargetDependency */ = {
@@ -2844,6 +2846,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "RSSClient-OSX/Tethys.entitlements";
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2857,8 +2860,8 @@
 				INFOPLIST_FILE = "RSSClient-OSX/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.rachelbrindle.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = rNews;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.RSSClient;
+				PRODUCT_NAME = Tethys;
 				SDKROOT = macosx;
 				SWIFT_VERSION = 3.0;
 			};
@@ -2869,6 +2872,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "RSSClient-OSX/Tethys.entitlements";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2879,8 +2883,8 @@
 				INFOPLIST_FILE = "RSSClient-OSX/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.rachelbrindle.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = rNews;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.RSSClient;
+				PRODUCT_NAME = Tethys;
 				SDKROOT = macosx;
 				SWIFT_VERSION = 3.0;
 			};
@@ -3311,7 +3315,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		89635FA01A13C2E30052C248 /* Build configuration list for PBXNativeTarget "RSSClient-OSX" */ = {
+		89635FA01A13C2E30052C248 /* Build configuration list for PBXNativeTarget "Tethys_Mac" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				89635FA11A13C2E30052C248 /* Debug */,
@@ -3338,7 +3342,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		898979CD1B7155D700218498 /* Build configuration list for PBXNativeTarget "rNews-OSXTests" */ = {
+		898979CD1B7155D700218498 /* Build configuration list for PBXNativeTarget "Tethys_MacTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				898979CE1B7155D700218498 /* Debug */,

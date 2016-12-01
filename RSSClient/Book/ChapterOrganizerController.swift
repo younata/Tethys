@@ -7,14 +7,6 @@ public protocol ChapterOrganizerControllerDelegate: class {
 }
 
 public class ChapterOrganizerController: UIViewController, Injectable {
-    public let tableView: UITableView = {
-        let tableView = UITableView(forAutoLayout: ())
-        tableView.tableFooterView = UIView()
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 100
-        return tableView
-    }()
-
     public let addChapterButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle(NSLocalizedString("ChapterOrganizerController_AddChapter_Title", comment: ""), for: .normal)
@@ -33,22 +25,25 @@ public class ChapterOrganizerController: UIViewController, Injectable {
         return button
     }()
 
-    private var tableHeight: NSLayoutConstraint?
+    public let actionableTableView: ActionableTableView = {
+        let atv = ActionableTableView(forAutoLayout: ())
+        atv.tableView.estimatedRowHeight = 100
+        return atv
+    }()
 
     public weak var delegate: ChapterOrganizerControllerDelegate?
     public weak var articles: DataStoreBackedArray<Article>?
 
-    public var maxHeight: Int = 300 {
-        didSet {
-            self.tableHeight?.constant = CGFloat(min(self.maxHeight, self.chapters.count * 100))
-        }
+    public var maxHeight: Int {
+        get { return self.actionableTableView.maxHeight }
+        set { self.actionableTableView.maxHeight = newValue }
     }
 
     public var chapters: [Article] = [] {
         didSet {
-            self.tableHeight?.constant = CGFloat(min(self.maxHeight, self.chapters.count * 100))
             self.delegate?.chapterOrganizerControllerDidChangeChapters(self)
             self.reorderButton.isEnabled = !self.chapters.isEmpty
+            self.actionableTableView.recalculateHeightConstraint()
         }
     }
 
@@ -62,6 +57,7 @@ public class ChapterOrganizerController: UIViewController, Injectable {
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.articleListController = articleListController
+        self.actionableTableView.themeRepository = themeRepository
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -73,37 +69,18 @@ public class ChapterOrganizerController: UIViewController, Injectable {
         )
     }
 
-    public required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.tableView.dataSource = self
-        self.tableView.delegate = self
-        self.view.addSubview(self.tableView)
-        self.tableView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .top)
-        self.tableHeight = self.tableView.autoSetDimension(
-            .height,
-            toSize: CGFloat(min(300, self.chapters.count * 100))
-        )
+        self.actionableTableView.tableView.dataSource = self
+        self.actionableTableView.tableView.delegate = self
+        self.view.addSubview(self.actionableTableView)
+        self.actionableTableView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
+        self.actionableTableView.tableView.register(ArticleCell.self, forCellReuseIdentifier: "cell")
 
-        self.tableView.register(ArticleCell.self, forCellReuseIdentifier: "cell")
-
-        let topStackView = UIStackView(forAutoLayout: ())
-        topStackView.axis = .horizontal
-        topStackView.distribution = UIStackViewDistribution.equalSpacing
-        topStackView.alignment = .center
-
-        self.view.addSubview(topStackView)
-        topStackView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 0, left: 40, bottom: 0, right: 40),
-                                                  excludingEdge: .bottom)
-        self.tableView.autoPinEdge(.top, to: .bottom, of: topStackView)
-
-        topStackView.addArrangedSubview(self.reorderButton)
-        topStackView.addArrangedSubview(self.addChapterButton)
-
+        self.actionableTableView.setActions([self.reorderButton, self.addChapterButton])
         self.addChapterButton.addTarget(self,
                                         action: #selector(ChapterOrganizerController.addChapter),
                                         for: .touchUpInside)
@@ -111,12 +88,7 @@ public class ChapterOrganizerController: UIViewController, Injectable {
                                      action: #selector(ChapterOrganizerController.toggleEditMode),
                                      for: .touchUpInside)
 
-        self.tableView.keyboardDismissMode = .onDrag
-    }
-
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
-        self.themeRepository.addSubscriber(self)
+        self.actionableTableView.tableView.keyboardDismissMode = .onDrag
     }
 
     @objc private func addChapter() {
@@ -127,14 +99,14 @@ public class ChapterOrganizerController: UIViewController, Injectable {
     }
 
     @objc private func toggleEditMode() {
-        if self.tableView.isEditing {
+        if self.actionableTableView.tableView.isEditing {
             self.reorderButton.setTitle(NSLocalizedString("ChapterOrganizerController_ReorderButton_Reorder",
                                                           comment: ""), for: .normal)
         } else {
             self.reorderButton.setTitle(NSLocalizedString("Generic_Done", comment: ""),
                                         for: .normal)
         }
-        self.tableView.setEditing(!self.tableView.isEditing, animated: true)
+        self.actionableTableView.tableView.setEditing(!self.actionableTableView.tableView.isEditing, animated: true)
     }
 }
 
@@ -159,9 +131,7 @@ extension ChapterOrganizerController: UITableViewDataSource {
         return cell
     }
 
-    public func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        return true
-    }
+    public func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool { return true }
 
     public func tableView(_ tableView: UITableView,
                           moveRowAt sourceIndexPath: IndexPath,
@@ -173,9 +143,7 @@ extension ChapterOrganizerController: UITableViewDataSource {
         self.chapters = chapters
     }
 
-    public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return true
-    }
+    public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool { return true }
 
     public func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
         return false
@@ -203,23 +171,10 @@ extension ChapterOrganizerController: UITableViewDelegate {
     }
 }
 
-extension ChapterOrganizerController: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        self.tableView.backgroundColor = themeRepository.backgroundColor
-        self.tableView.separatorColor = themeRepository.textColor
-
-        self.tableView.indicatorStyle = themeRepository.scrollIndicatorStyle
-    }
-}
-
 extension ChapterOrganizerController: ArticleListControllerDelegate {
-    public func articleListControllerCanSelectMultipleArticles(_: ArticleListController) -> Bool {
-        return true
-    }
+    public func articleListControllerCanSelectMultipleArticles(_: ArticleListController) -> Bool { return true }
 
-    public func articleListControllerShouldShowToolbar(_: ArticleListController) -> Bool {
-        return false
-    }
+    public func articleListControllerShouldShowToolbar(_: ArticleListController) -> Bool { return false }
 
     public func articleListControllerRightBarButtonItems(_ articleList: ArticleListController) -> [UIBarButtonItem] {
         return [
@@ -240,7 +195,8 @@ extension ChapterOrganizerController: ArticleListControllerDelegate {
 
     public func articleListController(_: ArticleListController, didSelectArticles articles: [Article]) {
         self.chapters += (articles.filter { !self.chapters.contains($0) })
-        self.tableView.reloadData()
+        self.actionableTableView.tableView.reloadData()
+        self.actionableTableView.recalculateHeightConstraint()
         _ = self.navigationController?.popViewController(animated: true)
     }
 

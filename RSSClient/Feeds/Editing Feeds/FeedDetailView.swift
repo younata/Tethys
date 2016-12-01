@@ -3,7 +3,8 @@ import UIKit
 public protocol FeedDetailViewDelegate: class {
     func feedDetailView(_ feedDetailView: FeedDetailView, urlDidChange url: URL)
     func feedDetailView(_ feedDetailView: FeedDetailView, tagsDidChange tags: [String])
-    func feedDetailView(_ feedDetailView: FeedDetailView, editTag tag: String?, completion: @escaping (String) -> (Void))
+    func feedDetailView(_ feedDetailView: FeedDetailView,
+                        editTag tag: String?, completion: @escaping (String) -> (Void))
 }
 
 public final class FeedDetailView: UIView {
@@ -12,34 +13,26 @@ public final class FeedDetailView: UIView {
     public let titleLabel = UILabel(forAutoLayout: ())
     public let urlField = UITextField(forAutoLayout: ())
     public let summaryLabel = UILabel(forAutoLayout: ())
-    public let tagsList = UITableView(forAutoLayout: ())
+
     public let addTagButton = UIButton(type: .system)
+    public let tagsList = ActionableTableView(forAutoLayout: ())
 
     public var title: String { return self.titleLabel.text ?? "" }
     public var url: URL? { return URL(string: self.urlField.text ?? "") }
     public var summary: String { return self.summaryLabel.text ?? "" }
     public fileprivate(set) var tags: [String] = [] {
-        didSet {
-            self.recalculateHeightConstraint()
-        }
+        didSet { self.tagsList.recalculateHeightConstraint() }
     }
 
-    private var tagHeight: NSLayoutConstraint?
-
-    public var maxHeight: Int = 300 {
-        didSet {
-            self.recalculateHeightConstraint()
-        }
+    public var maxHeight: Int {
+        get { return self.tagsList.maxHeight }
+        set { self.tagsList.maxHeight = newValue }
     }
-
-    private func recalculateHeightConstraint() {
-        self.tagHeight!.constant = CGFloat(max(0, min(self.maxHeight, self.tags.count * 80)))
-    }
-
     public weak var delegate: FeedDetailViewDelegate?
     public weak var themeRepository: ThemeRepository? {
         didSet {
             themeRepository?.addSubscriber(self)
+            self.tagsList.themeRepository = themeRepository
         }
     }
 
@@ -73,31 +66,19 @@ public final class FeedDetailView: UIView {
 
         self.mainStackView.addArrangedSubview(self.titleLabel)
         self.mainStackView.addArrangedSubview(self.urlField)
-        self.mainStackView.addArrangedSubview(UIView())
+        self.mainStackView.addArrangedSubview(UIView()) // to give a little extra space between url and summary
         self.mainStackView.addArrangedSubview(self.summaryLabel)
-
-        // tags
-        let tagsContainerView = UIView(forAutoLayout: ())
+        self.mainStackView.addArrangedSubview(self.tagsList)
 
         self.addTagButton.translatesAutoresizingMaskIntoConstraints = false
-        tagsContainerView.addSubview(self.addTagButton)
-        tagsContainerView.addSubview(self.tagsList)
-        self.tagsList.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .top)
-        self.addTagButton.autoPinEdge(toSuperviewEdge: .trailing, withInset: 40)
-        self.addTagButton.autoPinEdge(toSuperviewEdge: .top)
-        self.tagsList.autoPinEdge(.top, to: .bottom, of: self.addTagButton)
-        self.tagHeight = self.tagsList.autoSetDimension(.height, toSize: CGFloat(min(300, self.tags.count * 80)))
-
-        self.mainStackView.addArrangedSubview(tagsContainerView)
+        self.tagsList.setActions([UIView(), self.addTagButton])
 
         self.urlField.delegate = self
 
-        self.tagsList.register(TableViewCell.self, forCellReuseIdentifier: "cell")
-        self.tagsList.delegate = self
-        self.tagsList.dataSource = self
-        self.tagsList.tableFooterView = UIView()
-        self.tagsList.rowHeight = UITableViewAutomaticDimension
-        self.tagsList.estimatedRowHeight = 80
+        self.tagsList.tableView.register(TableViewCell.self, forCellReuseIdentifier: "cell")
+        self.tagsList.tableView.delegate = self
+        self.tagsList.tableView.dataSource = self
+        self.tagsList.tableView.estimatedRowHeight = 80
 
         self.summaryLabel.numberOfLines = 0
         self.titleLabel.numberOfLines = 0
@@ -107,9 +88,8 @@ public final class FeedDetailView: UIView {
             view.autoPinEdge(toSuperviewEdge: .trailing, withInset: 40)
         }
 
-        tagsContainerView.autoPinEdge(toSuperviewEdge: .leading)
-        tagsContainerView.autoPinEdge(toSuperviewEdge: .trailing)
-
+        self.tagsList.autoPinEdge(toSuperviewEdge: .leading)
+        self.tagsList.autoPinEdge(toSuperviewEdge: .trailing)
 
         self.addTagButton.setTitle(NSLocalizedString("FeedViewController_Actions_AddTag", comment: ""), for: .normal)
         self.addTagButton.addTarget(self, action: #selector(FeedDetailView.didTapAddTarget), for: .touchUpInside)
@@ -117,9 +97,7 @@ public final class FeedDetailView: UIView {
         self.urlField.textColor = UIColor.gray
     }
 
-    public required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     public override func layoutSubviews() {
         self.titleLabel.font = UIFont.preferredFont(forTextStyle: .headline)
@@ -133,7 +111,8 @@ public final class FeedDetailView: UIView {
         self.delegate?.feedDetailView(self, editTag: nil) { newTag in
             self.tags.append(newTag)
             let indexPath = IndexPath(row: self.tags.count - 1, section: 0)
-            self.tagsList.insertRows(at: [indexPath], with: .automatic)
+            self.tagsList.tableView.insertRows(at: [indexPath], with: .automatic)
+            self.tagsList.recalculateHeightConstraint()
             self.delegate?.feedDetailView(self, tagsDidChange: self.tags)
         }
     }
@@ -143,9 +122,9 @@ extension FeedDetailView: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.backgroundColor = themeRepository.backgroundColor
 
-        self.tagsList.backgroundColor = themeRepository.backgroundColor
-        self.tagsList.separatorColor = themeRepository.textColor
-        self.tagsList.indicatorStyle = themeRepository.scrollIndicatorStyle
+        self.tagsList.tableView.backgroundColor = themeRepository.backgroundColor
+        self.tagsList.tableView.separatorColor = themeRepository.textColor
+        self.tagsList.tableView.indicatorStyle = themeRepository.scrollIndicatorStyle
 
         self.titleLabel.textColor = themeRepository.textColor
         self.summaryLabel.textColor = themeRepository.textColor
@@ -176,9 +155,7 @@ extension FeedDetailView: UITableViewDataSource {
         return cell
     }
 
-    public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return true
-    }
+    public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool { return true }
 
     public func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle,
                           forRowAt indexPath: IndexPath) {}

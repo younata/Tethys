@@ -24,6 +24,7 @@ class ChapterOrganizerControllerSpec: QuickSpec {
         var delegate: FakeChapterOrganizerControllerDelegate!
         var settingsRepository: SettingsRepository!
         var navController: UINavigationController!
+        var tableView: UITableView!
 
         let allArticles: [Article] = [
             Article(title: "Article 1", link: URL(string: "https://example.com/1")!, summary: "", authors: [],
@@ -70,6 +71,8 @@ class ChapterOrganizerControllerSpec: QuickSpec {
             subject.articles = dataStoreArticles
 
             subject.delegate = delegate
+
+            tableView = subject.actionableTableView.tableView
         }
 
         describe("listening to theme repository updates") {
@@ -79,13 +82,17 @@ class ChapterOrganizerControllerSpec: QuickSpec {
             }
 
             it("should update the tableView") {
-                expect(subject.tableView.backgroundColor) == themeRepository.backgroundColor
-                expect(subject.tableView.separatorColor) == themeRepository.textColor
+                expect(tableView.backgroundColor) == themeRepository.backgroundColor
+                expect(tableView.separatorColor) == themeRepository.textColor
             }
 
             it("should update the tableView scroll indicator style") {
-                expect(subject.tableView.indicatorStyle) == themeRepository.scrollIndicatorStyle
+                expect(tableView.indicatorStyle) == themeRepository.scrollIndicatorStyle
             }
+        }
+
+        it("sets the actionableTableView's themeRepository") {
+            expect(subject.actionableTableView.themeRepository) === themeRepository
         }
 
         it("sets the addChapterButton title") {
@@ -151,7 +158,7 @@ class ChapterOrganizerControllerSpec: QuickSpec {
                 }
 
                 it("updates the tableView") {
-                    expect(subject.tableView.numberOfRows(inSection: 0)) == articles.count + 1
+                    expect(tableView.numberOfRows(inSection: 0)) == articles.count + 1
                 }
 
                 it("enables the reorder button") {
@@ -162,7 +169,7 @@ class ChapterOrganizerControllerSpec: QuickSpec {
                     var cell: ArticleCell?
 
                     beforeEach {
-                        cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 0, section: 0)) as? ArticleCell
+                        cell = tableView.dataSource?.tableView(tableView, cellForRowAt: IndexPath(row: 0, section: 0)) as? ArticleCell
                         expect(cell).toNot(beNil())
                     }
 
@@ -197,11 +204,11 @@ class ChapterOrganizerControllerSpec: QuickSpec {
                     }
 
                     it("enables edit mode on the tableView") {
-                        expect(subject.tableView.isEditing) == true
+                        expect(tableView.isEditing) == true
                     }
 
                     it("doesn't show the delete icon on the cell") {
-                        expect(subject.tableView.delegate?.tableView?(subject.tableView, editingStyleForRowAt: IndexPath(row: 0, section: 0))) == UITableViewCellEditingStyle.none
+                        expect(tableView.delegate?.tableView?(tableView, editingStyleForRowAt: IndexPath(row: 0, section: 0))) == UITableViewCellEditingStyle.none
                     }
 
                     describe("tapping the reorder button again") {
@@ -214,11 +221,11 @@ class ChapterOrganizerControllerSpec: QuickSpec {
                         }
 
                         it("disables edit mode on the tableView") {
-                            expect(subject.tableView.isEditing) == false
+                            expect(tableView.isEditing) == false
                         }
 
                         it("shows the delete message on the cell") {
-                            expect(subject.tableView.delegate?.tableView?(subject.tableView, editingStyleForRowAt: IndexPath(row: 0, section: 0))) == UITableViewCellEditingStyle.delete
+                            expect(tableView.delegate?.tableView?(tableView, editingStyleForRowAt: IndexPath(row: 0, section: 0))) == UITableViewCellEditingStyle.delete
                         }
                     }
                 }
@@ -226,12 +233,12 @@ class ChapterOrganizerControllerSpec: QuickSpec {
                 describe("moving a chapter") {
                     it("can move chapters") {
                         for i in 0..<articles.count {
-                            expect(subject.tableView.dataSource?.tableView?(subject.tableView, canMoveRowAt: IndexPath(row: i, section: 0))) == true
+                            expect(tableView.dataSource?.tableView?(tableView, canMoveRowAt: IndexPath(row: i, section: 0))) == true
                         }
                     }
 
                     it("rearranges the internal chapter order when the user moves the cells") {
-                        subject.tableView.dataSource?.tableView?(subject.tableView, moveRowAt: IndexPath(row: 0, section: 0), to: IndexPath(row: 2, section: 0))
+                        tableView.dataSource?.tableView?(tableView, moveRowAt: IndexPath(row: 0, section: 0), to: IndexPath(row: 2, section: 0))
 
                         expect(subject.chapters) == [
                             allArticles.last!,
@@ -242,7 +249,7 @@ class ChapterOrganizerControllerSpec: QuickSpec {
                     }
 
                     it("informs the delegate that chapters change when moving") {
-                        subject.tableView.dataSource?.tableView?(subject.tableView, moveRowAt: IndexPath(row: 0, section: 0), to: IndexPath(row: 2, section: 0))
+                        tableView.dataSource?.tableView?(tableView, moveRowAt: IndexPath(row: 0, section: 0), to: IndexPath(row: 2, section: 0))
 
                         expect(delegate.didChangeChaptersCallCount) == 2
                     }
@@ -251,7 +258,7 @@ class ChapterOrganizerControllerSpec: QuickSpec {
                 describe("edit actions of the tableView") {
                     it("each cell has one edit action") {
                         for i in 0..<articles.count {
-                            let editActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAt: IndexPath(row: i, section: 0))
+                            let editActions = tableView.delegate?.tableView?(tableView, editActionsForRowAt: IndexPath(row: i, section: 0))
                             expect(editActions?.count) == 1
                             expect(editActions?.first?.title) == "Delete"
                         }
@@ -259,7 +266,7 @@ class ChapterOrganizerControllerSpec: QuickSpec {
 
                     describe("tapping the edit action") {
                         beforeEach {
-                            let editAction = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAt: IndexPath(row: 0, section: 0))?.first
+                            let editAction = tableView.delegate?.tableView?(tableView, editActionsForRowAt: IndexPath(row: 0, section: 0))?.first
                             editAction?.handler(editAction!, IndexPath(row: 0, section: 0))
                         }
 

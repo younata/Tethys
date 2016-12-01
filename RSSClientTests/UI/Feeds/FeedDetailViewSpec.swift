@@ -41,6 +41,8 @@ class FeedDetailViewSpec: QuickSpec {
 
         var themeRepository: ThemeRepository!
 
+        var tableView: UITableView!
+
         beforeEach {
             delegate = FakeFeedDetailViewDelegate()
             subject = FeedDetailView(forAutoLayout: ())
@@ -49,6 +51,12 @@ class FeedDetailViewSpec: QuickSpec {
 
             subject.delegate = delegate
             subject.themeRepository = themeRepository
+
+            tableView = subject.tagsList.tableView
+        }
+
+        it("sets the tagsList's themeRepository") {
+            expect(subject.tagsList.themeRepository) === themeRepository
         }
 
         describe("changing the theme") {
@@ -58,12 +66,6 @@ class FeedDetailViewSpec: QuickSpec {
 
             it("updates the background color") {
                 expect(subject.backgroundColor) == themeRepository.backgroundColor
-            }
-
-            it("changes the tableView") {
-                expect(subject.tagsList.backgroundColor) == themeRepository.backgroundColor
-                expect(subject.tagsList.separatorColor) == themeRepository.textColor
-                expect(subject.tagsList.indicatorStyle) == themeRepository.scrollIndicatorStyle
             }
 
             it("changes the titleLabel text color") {
@@ -94,11 +96,11 @@ class FeedDetailViewSpec: QuickSpec {
             }
 
             it("sets the tagsList's cells") {
-                expect(subject.tagsList.numberOfRows(inSection: 0)) == tags.count
+                expect(tableView.numberOfRows(inSection: 0)) == tags.count
 
                 for (idx, tag) in tags.enumerated() {
                     let indexPath = IndexPath(row: idx, section: 0)
-                    let cell = subject.tagsList.dataSource?.tableView(subject.tagsList, cellForRowAt: indexPath)
+                    let cell = tableView.dataSource?.tableView(tableView, cellForRowAt: indexPath)
                     expect(cell?.textLabel?.text) == tag
                 }
             }
@@ -135,14 +137,14 @@ class FeedDetailViewSpec: QuickSpec {
             }
 
             it("has a cell for each tag") {
-                expect(subject.tagsList.numberOfRows(inSection: 0)) == tags.count
+                expect(tableView.numberOfRows(inSection: 0)) == tags.count
             }
 
             describe("a cell") {
                 let indexPath = IndexPath(row: 0, section: 0)
 
                 it("sets the cell's themeRepository") {
-                    let cell = subject.tagsList.dataSource?.tableView(subject.tagsList, cellForRowAt: indexPath) as! TableViewCell
+                    let cell = tableView.dataSource?.tableView(tableView, cellForRowAt: indexPath) as! TableViewCell
 
                     expect(cell.themeRepository) === themeRepository
                 }
@@ -151,7 +153,7 @@ class FeedDetailViewSpec: QuickSpec {
                     var editActions: [UITableViewRowAction]?
 
                     beforeEach {
-                        editActions = subject.tagsList.delegate?.tableView?(subject.tagsList, editActionsForRowAt: indexPath)
+                        editActions = tableView.delegate?.tableView?(tableView, editActionsForRowAt: indexPath)
                     }
 
                     it("has two edit actions") {
@@ -172,8 +174,8 @@ class FeedDetailViewSpec: QuickSpec {
                         it("deletes the cell from the tags list when tapped") {
                             editAction?.handler(editAction!, indexPath)
 
-                            expect(subject.tagsList.numberOfRows(inSection: 0)) == (tags.count - 1)
-                            let newCell = subject.tagsList.dataSource?.tableView(subject.tagsList, cellForRowAt: indexPath)
+                            expect(tableView.numberOfRows(inSection: 0)) == (tags.count - 1)
+                            let newCell = tableView.dataSource?.tableView(tableView, cellForRowAt: indexPath)
                             expect(newCell?.textLabel?.text) == tags[1]
                         }
 
@@ -227,12 +229,12 @@ class FeedDetailViewSpec: QuickSpec {
                                 }
 
                                 it("replaces the text of the cell with the text the user gave") {
-                                    expect(subject.tagsList.numberOfRows(inSection: 0)) == 2
+                                    expect(tableView.numberOfRows(inSection: 0)) == 2
 
-                                    let newCell = subject.tagsList.dataSource?.tableView(subject.tagsList, cellForRowAt: IndexPath(row: 0, section: 0))
+                                    let newCell = tableView.dataSource?.tableView(tableView, cellForRowAt: IndexPath(row: 0, section: 0))
                                     expect(newCell?.textLabel?.text) == "callback string"
 
-                                    let oldCell = subject.tagsList.dataSource?.tableView(subject.tagsList, cellForRowAt: IndexPath(row: 1, section: 0))
+                                    let oldCell = tableView.dataSource?.tableView(tableView, cellForRowAt: IndexPath(row: 1, section: 0))
                                     expect(oldCell?.textLabel?.text) == "goodbye"
                                 }
 
@@ -251,7 +253,7 @@ class FeedDetailViewSpec: QuickSpec {
 
                 describe("tapping the cell") {
                     beforeEach {
-                        subject.tagsList.delegate?.tableView?(subject.tagsList, didSelectRowAt: indexPath)
+                        tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath)
                     }
 
                     it("informs the delegate that the user wants to edit a tag") {
@@ -276,12 +278,12 @@ class FeedDetailViewSpec: QuickSpec {
                         }
 
                         it("replaces the text of the cell with the text the user gave") {
-                            expect(subject.tagsList.numberOfRows(inSection: 0)) == 2
+                            expect(tableView.numberOfRows(inSection: 0)) == 2
 
-                            let newCell = subject.tagsList.dataSource?.tableView(subject.tagsList, cellForRowAt: IndexPath(row: 0, section: 0))
+                            let newCell = tableView.dataSource?.tableView(tableView, cellForRowAt: IndexPath(row: 0, section: 0))
                             expect(newCell?.textLabel?.text) == "callback string"
 
-                            let oldCell = subject.tagsList.dataSource?.tableView(subject.tagsList, cellForRowAt: IndexPath(row: 1, section: 0))
+                            let oldCell = tableView.dataSource?.tableView(tableView, cellForRowAt: IndexPath(row: 1, section: 0))
                             expect(oldCell?.textLabel?.text) == "goodbye"
                         }
 
@@ -335,10 +337,10 @@ class FeedDetailViewSpec: QuickSpec {
                     }
 
                     it("adds another cell to the tags list") {
-                        expect(subject.tagsList.numberOfRows(inSection: 0)) == 3
+                        expect(tableView.numberOfRows(inSection: 0)) == 3
 
-                        guard subject.tagsList.numberOfRows(inSection: 0) == 3 else { return }
-                        let newCell = subject.tagsList.dataSource?.tableView(subject.tagsList, cellForRowAt: IndexPath(row: 2, section: 0))
+                        guard tableView.numberOfRows(inSection: 0) == 3 else { return }
+                        let newCell = tableView.dataSource?.tableView(tableView, cellForRowAt: IndexPath(row: 2, section: 0))
                         expect(newCell?.textLabel?.text) == "callback string"
                     }
 

@@ -301,13 +301,9 @@ class RealmServiceSpec: QuickSpec {
 
                 #if os(iOS)
                     it("on iOS, updates the search index when an article is updated") {
-                        let expectation = self.expectation(description: "update article")
-
                         article1.summary = "Hello world!"
 
                         _ = subject.batchSave([], articles: [article1]).wait()
-
-                        self.waitForExpectations(timeout: 1, handler: nil)
 
                         expect(searchIndex.lastItemsAdded.count).to(equal(1))
                         if let item = searchIndex.lastItemsAdded.first as? CSSearchableItem {

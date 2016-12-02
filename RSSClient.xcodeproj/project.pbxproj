@@ -355,6 +355,10 @@
 		899C6A9F1DCAACF800E0A61C /* libraries.html in Resources */ = {isa = PBXBuildFile; fileRef = 899C6A9E1DCAACF800E0A61C /* libraries.html */; };
 		899C6AA01DCAAD0E00E0A61C /* libraries.html in Resources */ = {isa = PBXBuildFile; fileRef = 899C6A9E1DCAACF800E0A61C /* libraries.html */; };
 		89A3A8C91DEF942F002AF9B5 /* ActionableTableViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A3A8C81DEF942F002AF9B5 /* ActionableTableViewSpec.swift */; };
+		89A3A9011DF09107002AF9B5 /* GenerateBookUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890C8D371DE371E700A037D7 /* GenerateBookUseCase.swift */; };
+		89A3A9021DF0910B002AF9B5 /* GenerateBookUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890C8D391DE3729B00A037D7 /* GenerateBookUseCaseSpec.swift */; };
+		89A3A9041DF09161002AF9B5 /* Sponde.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89A3A9031DF09161002AF9B5 /* Sponde.framework */; };
+		89A3A9061DF09175002AF9B5 /* Sponde.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89A3A9051DF09175002AF9B5 /* Sponde.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89AFF9FF1D4870F7002255E8 /* FakeImportables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */; };
 		89AFFA001D4B97DC002255E8 /* FakeAccountRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5CA1D416B6700546099 /* FakeAccountRepository.swift */; };
 		89AFFA041D4BF234002255E8 /* DefaultAccountRepositoryDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFFA031D4BF234002255E8 /* DefaultAccountRepositoryDelegate.swift */; };
@@ -565,6 +569,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				89A3A9061DF09175002AF9B5 /* Sponde.framework in Embed Frameworks */,
 				8969947F1DC1732D00A97C66 /* Reachability.framework in Embed Frameworks */,
 				898320B21DC1411D00E32412 /* PureLayout.framework in Embed Frameworks */,
 				8989793A1B707FAE00218498 /* rNewsKit.framework in Embed Frameworks */,
@@ -822,6 +827,8 @@
 		89A341811B150DA90000C60B /* OPMLServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLServiceSpec.swift; sourceTree = "<group>"; };
 		89A3A8C81DEF942F002AF9B5 /* ActionableTableViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionableTableViewSpec.swift; sourceTree = "<group>"; };
 		89A3A8CA1DEFAD13002AF9B5 /* Tethys.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = Tethys.entitlements; sourceTree = "<group>"; };
+		89A3A9031DF09161002AF9B5 /* Sponde.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sponde.framework; path = Carthage/Build/Mac/Sponde.framework; sourceTree = "<group>"; };
+		89A3A9051DF09175002AF9B5 /* Sponde.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sponde.framework; path = ../Carthage/Build/Mac/Sponde.framework; sourceTree = "<group>"; };
 		89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeImportables.swift; sourceTree = "<group>"; };
 		89AFFA031D4BF234002255E8 /* DefaultAccountRepositoryDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultAccountRepositoryDelegate.swift; sourceTree = "<group>"; };
 		89AFFA051D4C32A7002255E8 /* DefaultAccountRepositoryDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultAccountRepositoryDelegateSpec.swift; sourceTree = "<group>"; };
@@ -971,6 +978,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89A3A9041DF09161002AF9B5 /* Sponde.framework in Frameworks */,
 				898320991DC13BC000E32412 /* Sinope.framework in Frameworks */,
 				898320961DC13BC000E32412 /* Kanna.framework in Frameworks */,
 				898320941DC13BC000E32412 /* CBGPromise.framework in Frameworks */,
@@ -1202,6 +1210,7 @@
 		895AC5221C8023A100A5F6A1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				89A3A9051DF09175002AF9B5 /* Sponde.framework */,
 				898320B11DC1411D00E32412 /* PureLayout.framework */,
 			);
 			name = Frameworks;
@@ -1332,6 +1341,7 @@
 		8983208B1DC13B9A00E32412 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				89A3A9031DF09161002AF9B5 /* Sponde.framework */,
 				890C8D3D1DE3771E00A037D7 /* Sponde.framework */,
 				8983208E1DC13BC000E32412 /* CBGPromise.framework */,
 				8983208F1DC13BC000E32412 /* Freddy.framework */,
@@ -2444,6 +2454,7 @@
 				89146E431C88C70700EC8F10 /* ImportUseCase.swift in Sources */,
 				8983204A1DC1216B00E32412 /* Analytics.swift in Sources */,
 				898979521B70808300218498 /* OPMLService.swift in Sources */,
+				89A3A9011DF09107002AF9B5 /* GenerateBookUseCase.swift in Sources */,
 				8983204B1DC1216B00E32412 /* PasiphaeFactory.swift in Sources */,
 				898320461DC1216B00E32412 /* Helpers.swift in Sources */,
 				898320481DC1216B00E32412 /* SearchIndex.swift in Sources */,
@@ -2492,6 +2503,7 @@
 				898979AA1B708E7800218498 /* FeedSpec.swift in Sources */,
 				8984FE901CBAAFED0096F4B3 /* RealmMigratorSpec.swift in Sources */,
 				898320571DC121B400E32412 /* FakeDataSubscriber.swift in Sources */,
+				89A3A9021DF0910B002AF9B5 /* GenerateBookUseCaseSpec.swift in Sources */,
 				898979B61B708F0000218498 /* FakeOPMLService.swift in Sources */,
 				8917547A1C5B48D40036D96D /* RealmServiceSpec.swift in Sources */,
 				89122E651C5D762000004B1F /* DatabaseMigratorSpec.swift in Sources */,
@@ -2857,7 +2869,7 @@
 					"$(inherited)",
 				);
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				INFOPLIST_FILE = "RSSClient-OSX/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "Tethys_Mac/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.RSSClient;
@@ -2880,7 +2892,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
 				);
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				INFOPLIST_FILE = "RSSClient-OSX/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "Tethys_Mac/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.RSSClient;

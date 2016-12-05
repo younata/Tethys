@@ -16,8 +16,8 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <navigationBar contentMode="scaleToFill" misplaced="YES" barStyle="black" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D7s-5m-aRS">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                <navigationBar contentMode="scaleToFill" barStyle="black" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D7s-5m-aRS">
+                    <rect key="frame" x="0.0" y="20" width="480" height="44"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="44" id="tIR-8m-fli"/>
                     </constraints>
@@ -42,8 +42,8 @@
                         </mask>
                     </variation>
                 </navigationBar>
-                <searchBar contentMode="redraw" misplaced="YES" barStyle="black" placeholder="Filter By Tag" translatesAutoresizingMaskIntoConstraints="NO" id="dMM-uC-3uu">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                <searchBar contentMode="redraw" barStyle="black" placeholder="Filter By Tag" translatesAutoresizingMaskIntoConstraints="NO" id="dMM-uC-3uu">
+                    <rect key="frame" x="0.0" y="64" width="480" height="44"/>
                     <textInputTraits key="textInputTraits"/>
                 </searchBar>
             </subviews>

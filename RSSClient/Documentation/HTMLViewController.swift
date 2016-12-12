@@ -34,7 +34,6 @@ public final class HTMLViewController: UIViewController, Injectable {
     public init(themeRepository: ThemeRepository) {
         self.themeRepository = themeRepository
         super.init(nibName: nil, bundle: nil)
-        self.themeRepository.addSubscriber(self)
     }
 
     public required convenience init(injector: Injector) {
@@ -84,6 +83,8 @@ public final class HTMLViewController: UIViewController, Injectable {
         self.content.isOpaque = false
         self.content.scrollView.scrollIndicatorInsets.bottom = 0
         self.backgroundView.autoPinEdgesToSuperviewEdges()
+
+        self.themeRepository.addSubscriber(self)
     }
 }
 

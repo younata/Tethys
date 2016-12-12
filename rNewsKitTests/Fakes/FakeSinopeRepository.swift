@@ -11,8 +11,6 @@ final class FakeSinopeRepository : Sinope.Repository, Equatable {
     }
 
     var _authToken : String?
-
-
     var authToken : String? {
         get {
             return _authToken!
@@ -127,6 +125,18 @@ final class FakeSinopeRepository : Sinope.Repository, Equatable {
         return self.unsubscribeStub!(feeds as [URL])
     }
 
+    private(set) var subscribedFeedsCallCount : Int = 0
+    var subscribedFeedsStub : (() -> (Future<Result<[URL], SinopeError>>))?
+    func subscribedFeedsReturns(_ stubbedValues: (Future<Result<[URL], SinopeError>>)) {
+        self.subscribedFeedsStub  = {
+            return stubbedValues
+        }
+    }
+    func subscribedFeeds() -> Future<Result<[URL], SinopeError>> {
+        self.subscribedFeedsCallCount += 1
+        return self.subscribedFeedsStub!()
+    }
+
     private(set) var fetchCallCount : Int = 0
     var fetchStub : (([URL: Date]) -> (Future<Result<([Feed]), SinopeError>>))?
     private var fetchArgs : Array<([URL: Date])> = []
@@ -161,7 +171,21 @@ final class FakeSinopeRepository : Sinope.Repository, Equatable {
         return self.checkStub!(url as URL)
     }
 
-    static func reset() {
+    private(set) var markReadCallCount : Int = 0
+    var markReadStub : (([URL: Bool]) -> (Future<Result<Void, SinopeError>>))?
+    private var markReadArgs : Array<([URL: Bool])> = []
+    func markReadReturns(_ stubbedValues: (Future<Result<Void, SinopeError>>)) {
+        self.markReadStub = {(articles: [URL: Bool]) -> (Future<Result<Void, SinopeError>>) in
+            return stubbedValues
+        }
+    }
+    func markReadArgsForCall(_ callIndex: Int) -> ([URL : Bool]) {
+        return self.markReadArgs[callIndex]
+    }
+    func markRead(articles: [URL : Bool]) -> Future<Result<Void, SinopeError>> {
+        self.markReadCallCount += 1
+        self.markReadArgs.append(articles)
+        return self.markReadStub!(articles)
     }
 }
 

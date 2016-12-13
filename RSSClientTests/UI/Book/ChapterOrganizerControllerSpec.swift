@@ -29,22 +29,22 @@ class ChapterOrganizerControllerSpec: QuickSpec {
         let allArticles: [Article] = [
             Article(title: "Article 1", link: URL(string: "https://example.com/1")!, summary: "", authors: [],
                     published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
-                    estimatedReadingTime: 0, feed: nil, flags: []),
+                    synced: false, estimatedReadingTime: 0, feed: nil, flags: []),
             Article(title: "Article 2", link: URL(string: "https://example.com/2")!, summary: "", authors: [],
                     published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
-                    estimatedReadingTime: 0, feed: nil, flags: []),
+                    synced: false, estimatedReadingTime: 0, feed: nil, flags: []),
             Article(title: "Article 3", link: URL(string: "https://example.com/3")!, summary: "", authors: [],
                     published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
-                    estimatedReadingTime: 0, feed: nil, flags: []),
+                    synced: false, estimatedReadingTime: 0, feed: nil, flags: []),
             Article(title: "Article 4", link: URL(string: "https://example.com/4")!, summary: "", authors: [],
                     published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
-                    estimatedReadingTime: 0, feed: nil, flags: []),
+                    synced: false, estimatedReadingTime: 0, feed: nil, flags: []),
             Article(title: "Article 5", link: URL(string: "https://example.com/5")!, summary: "", authors: [],
                     published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
-                    estimatedReadingTime: 0, feed: nil, flags: []),
+                    synced: false, estimatedReadingTime: 0, feed: nil, flags: []),
             Article(title: "Article 6", link: URL(string: "https://example.com/6")!, summary: "", authors: [],
                     published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
-                    estimatedReadingTime: 0, feed: nil, flags: []),
+                    synced: false, estimatedReadingTime: 0, feed: nil, flags: []),
         ]
 
         let dataStoreArticles = DataStoreBackedArray(allArticles)

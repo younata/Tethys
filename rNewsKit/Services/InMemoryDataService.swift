@@ -25,7 +25,8 @@ final class InMemoryDataService: DataService {
 
     func createArticle(url: URL, feed: Feed?, callback: @escaping (Article) -> Void) {
         let article = Article(title: "", link: url, summary: "", authors: [], published: Date(), updatedAt: nil,
-                              identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
+                              identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0,
+                              feed: feed, flags: [])
         feed?.addArticle(article)
         callback(article)
         self.articles.append(article)
@@ -50,8 +51,8 @@ final class InMemoryDataService: DataService {
             promise.resolve(article)
         } else {
             let article = Article(title: "", link: url, summary: "", authors: [], published: Date(), updatedAt: nil,
-                                  identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: feed,
-                                  flags: [])
+                                  identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0,
+                                  feed: feed, flags: [])
             feed.addArticle(article)
             self.articles.append(article)
             if !self.feeds.contains(feed) {

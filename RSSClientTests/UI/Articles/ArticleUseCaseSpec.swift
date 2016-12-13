@@ -31,10 +31,10 @@ class ArticleUseCaseSpec: QuickSpec {
             }
 
             context("when the feeds promise resolves successfully") {
-                let article1 = Article(title: "a", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [Author(name: "author", email: nil)], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
-                let article2 = Article(title: "b", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [Author(name: "foo", email: nil)], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
-                let article3 = Article(title: "c", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [Author(name: "author", email: nil)], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
-                let article4 = Article(title: "d", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [Author(name: "bar", email: nil)], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                let article1 = Article(title: "a", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [Author(name: "author", email: nil)], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                let article2 = Article(title: "b", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [Author(name: "foo", email: nil)], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                let article3 = Article(title: "c", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [Author(name: "author", email: nil)], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                let article4 = Article(title: "d", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [Author(name: "bar", email: nil)], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
 
                 let feed1 = Feed(title: "ab", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
                 let feed2 = Feed(title: "cd", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article3, article4], image: nil)
@@ -71,7 +71,7 @@ class ArticleUseCaseSpec: QuickSpec {
 
             beforeEach {
                 feed = Feed(title: "feedTitle", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                article = Article(title: "articleTitle", link: URL(string: "https://example.com")!, summary: "articleSummary", authors: [Author(name: "articleAuthor", email: nil)], published: Date(), updatedAt: Date(), identifier: "identifier", content: "", read: true, estimatedReadingTime: 4, feed: feed, flags: ["flag"])
+                article = Article(title: "articleTitle", link: URL(string: "https://example.com")!, summary: "articleSummary", authors: [Author(name: "articleAuthor", email: nil)], published: Date(), updatedAt: Date(), identifier: "identifier", content: "", read: true, synced: false, estimatedReadingTime: 4, feed: feed, flags: ["flag"])
 
                 userActivity = subject.userActivityForArticle(article)
             }
@@ -126,7 +126,7 @@ class ArticleUseCaseSpec: QuickSpec {
 
         describe("-readArticle:") {
             it("marks the article as read if it wasn't already") {
-                let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: false, estimatedReadingTime: 3, feed: nil, flags: [])
+                let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 3, feed: nil, flags: [])
 
                 _ = subject.readArticle(article)
 
@@ -135,7 +135,7 @@ class ArticleUseCaseSpec: QuickSpec {
             }
 
             it("doesn't mark the article as read if it already was") {
-                let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: true, estimatedReadingTime: 4, feed: nil, flags: [])
+                let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: true, synced: false, estimatedReadingTime: 4, feed: nil, flags: [])
 
                 _ = subject.readArticle(article)
 
@@ -146,7 +146,7 @@ class ArticleUseCaseSpec: QuickSpec {
                 var html: String!
 
                 beforeEach {
-                    let article = Article(title: "articleTitle", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "Example Content", read: true, estimatedReadingTime: 4, feed: nil, flags: [])
+                    let article = Article(title: "articleTitle", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "Example Content", read: true, synced: false, estimatedReadingTime: 4, feed: nil, flags: [])
 
                     html = subject.readArticle(article)
                 }
@@ -200,7 +200,7 @@ class ArticleUseCaseSpec: QuickSpec {
 
         describe("-toggleArticleRead:") {
             it("marks the article as read if it wasn't already") {
-                let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: false, estimatedReadingTime: 3, feed: nil, flags: [])
+                let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 3, feed: nil, flags: [])
 
                 subject.toggleArticleRead(article)
 
@@ -209,7 +209,7 @@ class ArticleUseCaseSpec: QuickSpec {
             }
 
             it("marks the article as unread if it already was") {
-                let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: true, estimatedReadingTime: 4, feed: nil, flags: [])
+                let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: true, synced: false, estimatedReadingTime: 4, feed: nil, flags: [])
 
                 subject.toggleArticleRead(article)
 

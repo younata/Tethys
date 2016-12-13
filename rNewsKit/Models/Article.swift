@@ -71,6 +71,13 @@ public final class Article: NSObject {
             }
         }
     }
+    public var synced: Bool {
+        willSet {
+            if newValue != synced {
+                self.updated = true
+            }
+        }
+    }
     weak public internal(set) var feed: Feed? {
         didSet {
             if oldValue != feed {
@@ -132,22 +139,23 @@ public final class Article: NSObject {
 
     // swiftlint:disable function_parameter_count
     public init(title: String, link: URL, summary: String, authors: [Author], published: Date,
-        updatedAt: Date?, identifier: String, content: String, read: Bool, estimatedReadingTime: Int,
-        feed: Feed?, flags: [String]) {
-            self.title = title
-            self.link = link
-            self.summary = summary
-            self.authors = authors
-            self.published = published
-            self.updatedAt = updatedAt
-            self.identifier = identifier
-            self.content = content
-            self.read = read
-            self.feed = feed
-            self.flags = flags
-            self.estimatedReadingTime = estimatedReadingTime
-            super.init()
-            self.updated = false
+                updatedAt: Date?, identifier: String, content: String, read: Bool, synced: Bool,
+                estimatedReadingTime: Int, feed: Feed?, flags: [String]) {
+        self.title = title
+        self.link = link
+        self.summary = summary
+        self.authors = authors
+        self.published = published
+        self.updatedAt = updatedAt
+        self.identifier = identifier
+        self.content = content
+        self.read = read
+        self.synced = synced
+        self.feed = feed
+        self.flags = flags
+        self.estimatedReadingTime = estimatedReadingTime
+        super.init()
+        self.updated = false
     }
     // swiftlint:enable function_parameter_count
 
@@ -165,6 +173,7 @@ public final class Article: NSObject {
         content = article.content ?? ""
         read = article.read
         estimatedReadingTime = article.estimatedReadingTime
+        synced = article.synced
         self.feed = feed
         self.flags = article.flags.map { $0.string }
         super.init()

@@ -2,7 +2,7 @@ import RealmSwift
 
 struct RealmMigrator {
     static func beginMigration() {
-        let schemaVersion: UInt64 = 10
+        let schemaVersion: UInt64 = 11
         if UserDefaults.standard.bool(forKey: "FASTLANE_SNAPSHOT") {
             Realm.Configuration.defaultConfiguration = Realm.Configuration(
                 inMemoryIdentifier: "SnapShot",

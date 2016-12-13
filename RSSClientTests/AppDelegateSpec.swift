@@ -199,7 +199,7 @@ class AppDelegateSpec: QuickSpec {
 
             describe("selecting a 'View Feed' action") {
                 let feed = Feed(title: "title", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
-                let article = Article(title: "title", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
+                let article = Article(title: "title", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: feed, flags: [])
                 feed.addArticle(article)
 
                 context("when the userInfo is properly set") {
@@ -371,7 +371,7 @@ class AppDelegateSpec: QuickSpec {
 
             beforeEach {
                 let feed = Feed(title: "title", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
-                article = Article(title: "title", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "", read: false, estimatedReadingTime: 0, feed: feed, flags: [])
+                article = Article(title: "title", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: feed, flags: [])
                 feed.addArticle(article)
                 _ = subject.application(UIApplication.shared, didFinishLaunchingWithOptions: nil)
             }

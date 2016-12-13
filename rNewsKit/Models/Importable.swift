@@ -17,6 +17,7 @@ protocol ImportableArticle {
     var content: String { get }
     var published: Date { get }
     var updated: Date? { get }
+    var read: Bool { get }
     var importableAuthors: [ImportableAuthor] { get }
 }
 
@@ -47,6 +48,10 @@ extension Muon.Article: ImportableArticle {
         return self.description
     }
 
+    var read: Bool {
+        return false
+    }
+
     var importableAuthors: [ImportableAuthor] {
         return self.authors.map { $0 as ImportableAuthor }
     }
@@ -66,6 +71,10 @@ extension Sinope.Feed: ImportableFeed {
 extension Sinope.Article: ImportableArticle {
     var importableAuthors: [ImportableAuthor] {
         return self.authors.map { $0 as ImportableAuthor }
+    }
+
+    var read: Bool {
+        return false
     }
 }
 

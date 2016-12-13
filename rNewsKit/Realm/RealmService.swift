@@ -327,6 +327,7 @@ final class RealmService: DataService {
             rarticle.updatedAt = article.updatedAt
             rarticle.content = article.content
             rarticle.read = article.read
+            rarticle.synced = article.synced
             let flags: [RealmString] = article.flags.map { str in
                 let realmString = RealmString()
                 realmString.string = str

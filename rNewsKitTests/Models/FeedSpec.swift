@@ -56,7 +56,7 @@ class FeedSpec: QuickSpec {
 
         it("unreadArticles() should return articles with read->false") {
             func article(_ name: String, read: Bool) -> Article {
-                return Article(title: name, link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: read, estimatedReadingTime: 0, feed: nil, flags: [])
+                return Article(title: name, link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: read, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
             }
 
             let a = article("a", read: true)
@@ -127,7 +127,7 @@ class FeedSpec: QuickSpec {
         describe("adding an article") {
             var article: Article! = nil
             beforeEach {
-                article = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                article = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
             }
 
             context("when the article is not associated with any article") {
@@ -178,7 +178,7 @@ class FeedSpec: QuickSpec {
         describe("removing an article") {
             var article: Article! = nil
             beforeEach {
-                article = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                article = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
             }
 
             context("when the article is not associated with any article") {
@@ -330,7 +330,7 @@ class FeedSpec: QuickSpec {
                 }
 
                 it("articles") {
-                    let article = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                    let article = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
                     subject.addArticle(article)
                     expect(subject.updated) == true
                 }

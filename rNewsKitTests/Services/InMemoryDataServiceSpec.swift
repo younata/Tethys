@@ -84,7 +84,7 @@ class InMemoryDataServiceSpec: QuickSpec {
         describe("findOrCreateArticle") {
             let feed1 = Feed(title: "feed1", url: URL(string: "https://example.com/feed/feed1")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
             let article1 = Article(title: "article", link: URL(string: "https://example.com/article/article1")!, summary: "", authors: [],
-                                   published: Date(), updatedAt: nil, identifier: "", content: "", read: false, estimatedReadingTime: 0,
+                                   published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0,
                                    feed: feed1, flags: [])
             feed1.addArticle(article1)
             beforeEach {
@@ -136,17 +136,17 @@ class InMemoryDataServiceSpec: QuickSpec {
 
                 article1 = Article(title: "article1", link: URL(string: "https://example.com/article1")!, summary: "",
                     authors: [], published: Date(timeIntervalSince1970: 15), updatedAt: nil, identifier: "",
-                    content: "", read: false, estimatedReadingTime: 0, feed: feed1, flags: [])
+                    content: "", read: false, synced: false, estimatedReadingTime: 0, feed: feed1, flags: [])
                 feed1.addArticle(article1)
 
                 article2 = Article(title: "article2", link: URL(string: "https://example.com/article2")!, summary: "", authors: [],
                     published: Date(timeIntervalSince1970: 10), updatedAt: nil, identifier: "", content: "",
-                    read: false, estimatedReadingTime: 0, feed: feed1, flags: [])
+                    read: false, synced: false, estimatedReadingTime: 0, feed: feed1, flags: [])
                 feed1.addArticle(article2)
 
                 article3 = Article(title: "article3", link: URL(string: "https://example.com/article3")!, summary: "", authors: [],
                     published: Date(timeIntervalSince1970: 5), updatedAt: nil, identifier: "", content: "",
-                    read: false, estimatedReadingTime: 0, feed: feed2, flags: [])
+                    read: false, synced: false, estimatedReadingTime: 0, feed: feed2, flags: [])
                 feed2.addArticle(article3)
 
                 article3.relatedArticles.append(article2)

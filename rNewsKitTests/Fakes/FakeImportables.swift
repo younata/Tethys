@@ -30,6 +30,7 @@ struct FakeImportableArticle: ImportableArticle {
     let content: String
     let published: Date
     let updated: Date?
+    let read: Bool
 
     var authors: [FakeImportableAuthor]
 
@@ -37,13 +38,14 @@ struct FakeImportableArticle: ImportableArticle {
         return self.authors.map { $0 as ImportableAuthor }
     }
 
-    init(title: String, url: URL, summary: String, content: String, published: Date, updated: Date?, authors: [FakeImportableAuthor] = []) {
+    init(title: String, url: URL, summary: String, content: String, published: Date, updated: Date?, read: Bool, authors: [FakeImportableAuthor] = []) {
         self.title = title
         self.url = url
         self.summary = summary
         self.content = content
         self.published = published
         self.updated = updated
+        self.read = read
         self.authors = authors
     }
 }

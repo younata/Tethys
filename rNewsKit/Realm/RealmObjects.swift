@@ -55,6 +55,7 @@ final class RealmArticle: Object {
     dynamic var content: String?
     dynamic var read = false
     dynamic var estimatedReadingTime = 0
+    dynamic var synced = false
     let flags = List<RealmString>()
     dynamic var feed: RealmFeed?
     let authors = List<RealmAuthor>()

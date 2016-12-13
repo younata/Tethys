@@ -17,7 +17,6 @@ public protocol DatabaseUseCase {
     func deleteFeed(_ feed: Feed) -> Future<Result<Void, RNewsError>>
     func markFeedAsRead(_ feed: Feed) -> Future<Result<Int, RNewsError>>
 
-    func saveArticle(_ article: Article) -> Future<Result<Void, RNewsError>>
     func deleteArticle(_ article: Article) -> Future<Result<Void, RNewsError>>
     func markArticle(_ article: Article, asRead: Bool) -> Future<Result<Void, RNewsError>>
 

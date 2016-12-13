@@ -95,10 +95,6 @@ class FakeDatabaseUseCase: DatabaseUseCase {
         return self.lastFeedMarkedReadPromise!.future
     }
 
-    func saveArticle(_ article: Article) -> Future<Result<Void, RNewsError>>{
-        fatalError("should not have called saveArticle?")
-    }
-
     var lastDeletedArticle: Article? = nil
     var deleteArticlePromises: [Promise<Result<Void, RNewsError>>] = []
     func deleteArticle(_ article: Article) -> Future<Result<Void, RNewsError>> {

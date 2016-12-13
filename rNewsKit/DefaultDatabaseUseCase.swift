@@ -167,10 +167,6 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         }
     }
 
-    func saveArticle(_ article: Article) -> Future<Result<Void, RNewsError>> {
-        return self.dataService.batchSave([], articles: [article])
-    }
-
     func deleteArticle(_ article: Article) -> Future<Result<Void, RNewsError>> {
         return self.dataService.deleteArticle(article).then { _ in
             for object in self.subscribers.allObjects {

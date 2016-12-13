@@ -261,30 +261,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                 }
             }
 
-            describe("saveArticle") {
-                var article: rNewsKit.Article! = nil
-                var image: Image! = nil
-
-                beforeEach {
-                    let bundle = Bundle(for: self.classForCoder)
-                    let imageData = try? Data(contentsOf: bundle.url(forResource: "test", withExtension: "jpg")!)
-                    image = Image(data: imageData!)
-
-                    article = article1
-                    article.feed?.image = image
-
-                    article.title = "hello"
-                    _ = subject.saveArticle(article)
-                }
-
-                it("should update the data service") {
-                    let updatedArticle = dataService.articles.filter { $0.title == "hello" }.first
-                    expect(updatedArticle).toNot(beNil())
-                    expect(article).to(equal(updatedArticle))
-                    expect(article1).to(equal(updatedArticle))
-                }
-            }
-
             describe("deleteArticle") {
                 var article: rNewsKit.Article! = nil
 

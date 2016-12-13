@@ -236,6 +236,22 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             expect(article.estimatedReadingTime) == 3
             expect(article.synced) == true
         }
+
+        it("doesn't mark an already read article as unread again") {
+            guard let article = article else { fail(); return }
+            article.read = true
+            let author = FakeImportableAuthor(name: "Rachel Brindle", email: URL(string: "mailto:rachel@example.com"))
+            let content = (0..<100).map({_ in "<p>this was a content space</p>"}).reduce("", +)
+
+            let item = FakeImportableArticle(title: "a <p></p>&amp; title", url: URL(string: "https://example.com")!, summary: "description", content: content, published: Date(timeIntervalSince1970: 10), updated: Date(timeIntervalSince1970: 15), read: false, authors: [author])
+
+            if let searchIndex = dataService.searchIndex as? FakeSearchIndex {
+                searchIndex.lastItemsAdded = []
+            }
+            dataService.updateArticle(article, item: item, feedURL: URL(string: "https://example.com/foo/bar/baz")!)
+            expect(article.read) == true
+            expect(article.synced) == false
+        }
     }
 }
 

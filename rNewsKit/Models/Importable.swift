@@ -72,10 +72,6 @@ extension Sinope.Article: ImportableArticle {
     var importableAuthors: [ImportableAuthor] {
         return self.authors.map { $0 as ImportableAuthor }
     }
-
-    var read: Bool {
-        return false
-    }
 }
 
 extension Sinope.Author: ImportableAuthor {}

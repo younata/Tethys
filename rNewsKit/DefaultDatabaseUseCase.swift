@@ -2,6 +2,7 @@ import Foundation
 import Ra
 import CBGPromise
 import Result
+import Sinope
 #if os(iOS)
     import CoreSpotlight
     import MobileCoreServices
@@ -251,14 +252,35 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         for article in articles {
             article.read = read
         }
-        return self.dataService.batchSave([], articles: articles).map { result in
-            return result.map {
-                for subscriber in self.allSubscribers {
-                    self.mainQueue.addOperation {
-                        subscriber.markedArticles(articles, asRead: read)
-                    }
+        let backendMarkReadFuture: Future<Result<Void, SinopeError>>
+        if let backendRepository = accountRepository.backendRepository() {
+            let articlesToMarkRead: [URL: Bool] = articles.reduce([:]) { dict, article in
+                var dict = dict
+                dict[article.link] = read
+                return dict
+            }
+            backendMarkReadFuture = backendRepository.markRead(articles: articlesToMarkRead)
+        } else {
+            let promise = Promise<Result<Void, SinopeError>>()
+            promise.resolve(.success())
+            backendMarkReadFuture = promise.future
+        }
+        return backendMarkReadFuture.map { backendResult in
+            if let _ = backendResult.error {
+                for article in articles {
+                    article.synced = false
                 }
-                return amountToChange
+            }
+
+            return self.dataService.batchSave([], articles: articles).map { result in
+                return result.map {
+                    for subscriber in self.allSubscribers {
+                        self.mainQueue.addOperation {
+                            subscriber.markedArticles(articles, asRead: read)
+                        }
+                    }
+                    return amountToChange
+                }
             }
         }
     }

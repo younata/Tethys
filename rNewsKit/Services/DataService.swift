@@ -130,7 +130,7 @@ extension DataService {
             }
         }
         parser.searchType = .links
-        parser.start()
+        parser.main()
         _ = promise.future.wait()
     }
 

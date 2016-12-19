@@ -35,9 +35,7 @@ public final class WebPageParser: Operation {
         super.init()
     }
 
-    public override func start() {
-        super.start()
-
+    public override func main() {
         if let doc = Kanna.HTML(html: self.webPage, encoding: String.Encoding.utf8) {
             switch self.searchType {
             case .feeds:

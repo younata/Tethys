@@ -9,6 +9,9 @@ final class UpdateArticleOperation: Operation {
 
     private var updateFuture: Future<Result<Void, SinopeError>>?
 
+    private let isExecutingKey = "isExecuting"
+    private let isFinishedKey = "isFinished"
+
     init(article: Article, backendRepository: Sinope.Repository) {
         self.article = article
         self.backendRepository = backendRepository
@@ -30,7 +33,7 @@ final class UpdateArticleOperation: Operation {
     }
 
     override func start() {
-        self.willChangeValue(forKey: "isExecuting")
+        self.willChangeValue(forKey: self.isExecutingKey)
 
         self.article.synced = false
         self.updateFuture = self.backendRepository.markRead(articles: [self.article.link: self.article.read]).then {
@@ -45,16 +48,16 @@ final class UpdateArticleOperation: Operation {
 
         self._isExecuting = true
 
-        self.didChangeValue(forKey: "isExecuting")
+        self.didChangeValue(forKey: self.isExecutingKey)
     }
 
     private func finishOperation() {
-        self.willChangeValue(forKey: "isExecuting")
+        self.willChangeValue(forKey: self.isExecutingKey)
         self._isExecuting = false
-        self.didChangeValue(forKey: "isExecuting")
+        self.didChangeValue(forKey: self.isExecutingKey)
 
-        self.willChangeValue(forKey: "isFinished")
+        self.willChangeValue(forKey: self.isFinishedKey)
         self._isFinished = true
-        self.didChangeValue(forKey: "isFinished")
+        self.didChangeValue(forKey: self.isFinishedKey)
     }
 }

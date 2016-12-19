@@ -7,7 +7,7 @@ public protocol BackgroundStateReceiver: class {
     func didEnterForeground()
 }
 
-public class BackgroundStateMonitor: NSObject, Injectable {
+public final class BackgroundStateMonitor: NSObject, Injectable {
     private let notificationCenter: NotificationCenter
 
     private let receivers = NSHashTable<AnyObject>.weakObjects()

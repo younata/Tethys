@@ -118,9 +118,13 @@ final class InMemoryDataService: DataService {
             return promise.future
     }
 
+    var saveCallCount = 0
+    var saveCallArgs: [([Feed], [Article])] = []
     func batchSave(_ feeds: [Feed], articles: [Article]) -> Future<Result<Void, RNewsError>> {
         let promise = Promise<Result<Void, RNewsError>>()
         promise.resolve(.success())
+        self.saveCallCount += 1
+        self.saveCallArgs.append((feeds, articles))
         return promise.future
     }
 

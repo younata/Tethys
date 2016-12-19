@@ -2,29 +2,47 @@ import Foundation
 import Ra
 
 public final class SyncManager: Injectable {
-    let workQueue: OperationQueue
-    let mainQueue: OperationQueue
-    let backgroundStateMonitor: BackgroundStateMonitor
+    private let workQueue: OperationQueue
+    private let mainQueue: OperationQueue
+    private let dataServiceFactory: DataServiceFactoryType
+    private let accountRepository: InternalAccountRepository
 
-    init(workQueue: OperationQueue, mainQueue: OperationQueue, backgroundStateMonitor: BackgroundStateMonitor) {
+    private var dataService: DataService {
+        return self.dataServiceFactory.currentDataService
+    }
+
+    init(workQueue: OperationQueue,
+         mainQueue: OperationQueue,
+         dataServiceFactory: DataServiceFactoryType,
+         accountRepository: InternalAccountRepository) {
         self.workQueue = workQueue
         self.mainQueue = mainQueue
-        self.backgroundStateMonitor = backgroundStateMonitor
+        self.dataServiceFactory = dataServiceFactory
+        self.accountRepository = accountRepository
     }
 
     public required convenience init(injector: Injector) {
         self.init(
             workQueue: injector.create(kind: OperationQueue.self)!,
             mainQueue: injector.create(string: kMainQueue) as! OperationQueue,
-            backgroundStateMonitor: injector.create(kind: BackgroundStateMonitor.self)!
+            dataServiceFactory: injector.create(kind: DataServiceFactoryType.self)!,
+            accountRepository: injector.create(kind: InternalAccountRepository.self)!
         )
     }
 
-    public func refresh(userRequested: Bool = false) {
-//        let priority: QualityOfService = userRequested ? .userInitiated : .background
-    }
-
     public func update(article: Article) {
-        // always background work
+        if let repository = self.accountRepository.backendRepository() {
+            let updateOperation = UpdateArticleOperation(article: article, backendRepository: repository)
+            updateOperation.qualityOfService = .utility
+
+            let saveOperation = FutureOperation {
+                return self.dataService.batchSave([], articles: [article]).map { _ in return }
+            }
+
+            saveOperation.addDependency(updateOperation)
+            saveOperation.qualityOfService = .utility
+
+            self.workQueue.addOperations([updateOperation, saveOperation], waitUntilFinished: false)
+        }
     }
 }

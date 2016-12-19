@@ -99,6 +99,9 @@
 		892E77021E08432400866336 /* UpdateArticleOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E77011E08432400866336 /* UpdateArticleOperation.swift */; };
 		892E77041E08446900866336 /* UpdateArticleOperationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E77031E08446900866336 /* UpdateArticleOperationSpec.swift */; };
 		892E77071E08459300866336 /* KVOMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E77061E08459300866336 /* KVOMonitor.swift */; };
+		892E77091E0894A500866336 /* SyncManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E77081E0894A500866336 /* SyncManagerSpec.swift */; };
+		892E770D1E08A02E00866336 /* FutureOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E770C1E08A02E00866336 /* FutureOperation.swift */; };
+		892E770F1E08A0D600866336 /* FutureOperationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E770E1E08A0D600866336 /* FutureOperationSpec.swift */; };
 		8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */; };
 		89348F2F1C60730D007D366B /* FakeDatabaseUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89348F2E1C60730D007D366B /* FakeDatabaseUseCase.swift */; };
 		8935F5CD1B462702000FFD5D /* Muon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; };
@@ -691,6 +694,9 @@
 		892E77011E08432400866336 /* UpdateArticleOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateArticleOperation.swift; sourceTree = "<group>"; };
 		892E77031E08446900866336 /* UpdateArticleOperationSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateArticleOperationSpec.swift; sourceTree = "<group>"; };
 		892E77061E08459300866336 /* KVOMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KVOMonitor.swift; sourceTree = "<group>"; };
+		892E77081E0894A500866336 /* SyncManagerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncManagerSpec.swift; sourceTree = "<group>"; };
+		892E770C1E08A02E00866336 /* FutureOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureOperation.swift; sourceTree = "<group>"; };
+		892E770E1E08A0D600866336 /* FutureOperationSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureOperationSpec.swift; sourceTree = "<group>"; };
 		8933E93219EE33F700ECFF3F /* UIColor+RSSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+RSSClient.h"; sourceTree = "<group>"; };
 		8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+RSSClient.m"; sourceTree = "<group>"; };
 		89348F2E1C60730D007D366B /* FakeDatabaseUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDatabaseUseCase.swift; sourceTree = "<group>"; };
@@ -1181,6 +1187,8 @@
 			isa = PBXGroup;
 			children = (
 				892E77031E08446900866336 /* UpdateArticleOperationSpec.swift */,
+				892E77081E0894A500866336 /* SyncManagerSpec.swift */,
+				892E770E1E08A0D600866336 /* FutureOperationSpec.swift */,
 			);
 			path = Sync;
 			sourceTree = "<group>";
@@ -1190,6 +1198,7 @@
 			children = (
 				892E76FD1E083AA300866336 /* SyncManager.swift */,
 				892E77011E08432400866336 /* UpdateArticleOperation.swift */,
+				892E770C1E08A02E00866336 /* FutureOperation.swift */,
 			);
 			path = Sync;
 			sourceTree = "<group>";
@@ -2424,6 +2433,7 @@
 				8943044A1B450A5E000078DC /* Feed.swift in Sources */,
 				89CC82041B461A2B00648367 /* Helpers.swift in Sources */,
 				8903F5CF1D4177DE00546099 /* Importable.swift in Sources */,
+				892E770D1E08A02E00866336 /* FutureOperation.swift in Sources */,
 				89146E421C88C70600EC8F10 /* ImportUseCase.swift in Sources */,
 				890C8D381DE371E700A037D7 /* GenerateBookUseCase.swift in Sources */,
 				89CC82061B461A5500648367 /* KitModule.swift in Sources */,
@@ -2474,6 +2484,7 @@
 				8992D4331C3665B7004A5A35 /* FakeUpdateService.swift in Sources */,
 				8935F5E11B462B8C000FFD5D /* FakeOPMLService.swift in Sources */,
 				892E76F41E079A3500866336 /* BackgroundStateMonitorSpec.swift in Sources */,
+				892E770F1E08A0D600866336 /* FutureOperationSpec.swift in Sources */,
 				892E77071E08459300866336 /* KVOMonitor.swift in Sources */,
 				89E186931D136C48005C5880 /* FakeAnalytics.swift in Sources */,
 				8983205E1DC121D000E32412 /* MigrationUseCaseSpec.swift in Sources */,
@@ -2495,6 +2506,7 @@
 				89500B231CDEA26E004548C3 /* InMemoryDataServiceSpec.swift in Sources */,
 				89CBDBF41C7D1436006B70F5 /* DataServiceFactorySpec.swift in Sources */,
 				8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */,
+				892E77091E0894A500866336 /* SyncManagerSpec.swift in Sources */,
 				89628BE31CE1805E00B4C624 /* DatabaseUseCaseSpec.swift in Sources */,
 				890C8D3A1DE3729B00A037D7 /* GenerateBookUseCaseSpec.swift in Sources */,
 				8935F5D91B4628B3000FFD5D /* FeedSpec.swift in Sources */,

@@ -4,7 +4,7 @@ import CBGPromise
 import Result
 
 final class UpdateArticleOperation: Operation {
-    private let article: Article
+    let articles: [Article]
     private let backendRepository: Sinope.Repository
 
     private var updateFuture: Future<Result<Void, SinopeError>>?
@@ -12,8 +12,8 @@ final class UpdateArticleOperation: Operation {
     private let isExecutingKey = "isExecuting"
     private let isFinishedKey = "isFinished"
 
-    init(article: Article, backendRepository: Sinope.Repository) {
-        self.article = article
+    init(articles: [Article], backendRepository: Sinope.Repository) {
+        self.articles = articles
         self.backendRepository = backendRepository
         super.init()
     }
@@ -35,11 +35,17 @@ final class UpdateArticleOperation: Operation {
     override func start() {
         self.willChangeValue(forKey: self.isExecutingKey)
 
-        self.article.synced = false
-        self.updateFuture = self.backendRepository.markRead(articles: [self.article.link: self.article.read]).then {
+        self.articles.forEach { $0.synced = false }
+
+        let markReadDictionary: [URL: Bool] = self.articles.reduce([:]) {
+            var dict = $0
+            dict[$1.link] = $1.read
+            return dict
+        }
+        self.updateFuture = self.backendRepository.markRead(articles: markReadDictionary).then {
             switch $0 {
             case .success():
-                self.article.synced = true
+                self.articles.forEach { $0.synced = true }
                 self.finishOperation()
             case .failure(_):
                 self.finishOperation()

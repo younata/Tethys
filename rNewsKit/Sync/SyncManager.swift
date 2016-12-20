@@ -1,5 +1,6 @@
 import Foundation
 import Ra
+import Sinope
 
 public final class SyncManager: Injectable {
     private let workQueue: OperationQueue
@@ -30,19 +31,45 @@ public final class SyncManager: Injectable {
         )
     }
 
-    public func update(article: Article) {
+    public func updateAllUnsyncedArticles() {
         if let repository = self.accountRepository.backendRepository() {
-            let updateOperation = UpdateArticleOperation(article: article, backendRepository: repository)
-            updateOperation.qualityOfService = .utility
-
-            let saveOperation = FutureOperation {
-                return self.dataService.batchSave([], articles: [article]).map { _ in return }
+            let retrieveArticlesOperation = FutureOperation {
+                return self.dataService.articlesMatchingPredicate(NSPredicate(format: "synced = %@",
+                                                                              false as CVarArg)).map { result -> Void in
+                    switch result {
+                    case let .success(articles):
+                        if articles.count > 0 {
+                            self.update(articles: Array(articles), repository: repository)
+                        }
+                    case .failure(_):
+                        break
+                    }
+                }
             }
 
-            saveOperation.addDependency(updateOperation)
-            saveOperation.qualityOfService = .utility
+            retrieveArticlesOperation.qualityOfService = .utility
 
-            self.workQueue.addOperations([updateOperation, saveOperation], waitUntilFinished: false)
+            self.workQueue.addOperation(retrieveArticlesOperation)
         }
+    }
+
+    public func update(article: Article) {
+        if let repository = self.accountRepository.backendRepository() {
+            self.update(articles: [article], repository: repository)
+        }
+    }
+
+    private func update(articles: [Article], repository: Repository) {
+        let updateOperation = UpdateArticleOperation(articles: articles, backendRepository: repository)
+        updateOperation.qualityOfService = .utility
+
+        let saveOperation = FutureOperation {
+            return self.dataService.batchSave([], articles: articles).map { _ in return }
+        }
+
+        saveOperation.addDependency(updateOperation)
+        saveOperation.qualityOfService = .utility
+
+        self.workQueue.addOperations([updateOperation, saveOperation], waitUntilFinished: false)
     }
 }

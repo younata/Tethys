@@ -19,7 +19,7 @@ class UpdateArticleOperationSpec: QuickSpec {
                               synced: true, estimatedReadingTime: 0, feed: nil, flags: [])
             backendRepository = FakeSinopeRepository()
 
-            subject = UpdateArticleOperation(article: article, backendRepository: backendRepository)
+            subject = UpdateArticleOperation(articles: [article], backendRepository: backendRepository)
 
             kvoMonitor = KVOMonitor()
 

@@ -74,12 +74,19 @@ public final class KitModule: NSObject, Ra.InjectorModule {
             userDefaults: userDefaults
         )
 
+        let syncManager = SyncEngineManager(workQueue: OperationQueue(),
+                                            mainQueue: mainQueue,
+                                            dataServiceFactory: dataServiceFactory,
+                                            accountRepository: accountRepository,
+                                            timerFactory: DefaultTimerFactory())
+
         let dataRepository = DefaultDatabaseUseCase(mainQueue: mainQueue,
             reachable: reachable,
             dataServiceFactory: dataServiceFactory,
             updateUseCase: updateUseCase,
             databaseMigrator: DatabaseMigrator(),
-            accountRepository: accountRepository
+            accountRepository: accountRepository,
+            syncManager: syncManager
         )
 
         accountRepository.delegate = DefaultAccountRepositoryDelegate(

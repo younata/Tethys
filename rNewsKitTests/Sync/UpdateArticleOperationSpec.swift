@@ -40,6 +40,15 @@ class UpdateArticleOperationSpec: QuickSpec {
             expect(subject.isAsynchronous) == true
         }
 
+        it("does nothing when onCompletion is set") {
+            var onCompletionCallCount = 0
+            subject.onCompletion = { _ in
+                onCompletionCallCount += 1
+            }
+
+            expect(onCompletionCallCount) == 0
+        }
+
         describe("starting it") {
             var markReadPromise: Promise<Result<Void, SinopeError>>!
 
@@ -57,6 +66,16 @@ class UpdateArticleOperationSpec: QuickSpec {
             it("still has an isFinished value of false") {
                 expect(subject.isFinished) == false
             }
+
+            it("still does nothing when onCompletion is set") {
+                var onCompletionCallCount = 0
+                subject.onCompletion = { _ in
+                    onCompletionCallCount += 1
+                }
+
+                expect(onCompletionCallCount) == 0
+            }
+
 
             it("sends a KVO message for isExecuting") {
                 let isExecutingMessages = kvoMonitor.receivedNotifications.filter { $0.sender as AnyObject === subject && $0.keyPath == "isExecuting" }
@@ -79,8 +98,27 @@ class UpdateArticleOperationSpec: QuickSpec {
             }
 
             context("when the call succeeds") {
+                var onCompletionCallCount = 0
                 beforeEach {
+                    onCompletionCallCount = 0
+
+                    subject.onCompletion = { _ in
+                        onCompletionCallCount += 1
+                    }
+
                     markReadPromise.resolve(.success())
+                }
+
+                it("calls the onCompletion handler") {
+                    expect(onCompletionCallCount) == 1
+                }
+
+                it("re-calls when onCompletion is set") {
+                    var resetCompletionCallCount = 0
+                    subject.onCompletion = { _ in
+                        resetCompletionCallCount += 1
+                    }
+                    expect(resetCompletionCallCount) == 1
                 }
 
                 it("marks the article as synced") {
@@ -111,8 +149,27 @@ class UpdateArticleOperationSpec: QuickSpec {
             }
 
             context("when the call fails") {
+                var onCompletionCallCount = 0
                 beforeEach {
+                    onCompletionCallCount = 0
+
+                    subject.onCompletion = { _ in
+                        onCompletionCallCount += 1
+                    }
+
                     markReadPromise.resolve(.failure(.unknown))
+                }
+
+                it("calls the onCompletion handler") {
+                    expect(onCompletionCallCount) == 1
+                }
+
+                it("re-calls when onCompletion is set") {
+                    var resetCompletionCallCount = 0
+                    subject.onCompletion = { _ in
+                        resetCompletionCallCount += 1
+                    }
+                    expect(resetCompletionCallCount) == 1
                 }
 
                 it("marks the article as not synced") {

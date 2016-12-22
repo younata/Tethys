@@ -9,6 +9,12 @@ final class UpdateArticleOperation: Operation {
 
     private var updateFuture: Future<Result<Void, SinopeError>>?
 
+    var onCompletion: ((Result<Void, SinopeError>) -> (Void))? {
+        didSet {
+            self.runCompletionIfAvailable()
+        }
+    }
+
     private let isExecutingKey = "isExecuting"
     private let isFinishedKey = "isFinished"
 
@@ -16,6 +22,12 @@ final class UpdateArticleOperation: Operation {
         self.articles = articles
         self.backendRepository = backendRepository
         super.init()
+    }
+
+    private func runCompletionIfAvailable() {
+        if let completion = self.onCompletion, let result = self.updateFuture?.value {
+            completion(result)
+        }
     }
 
     private var _isExecuting = false
@@ -42,7 +54,9 @@ final class UpdateArticleOperation: Operation {
             dict[$1.link] = $1.read
             return dict
         }
-        self.updateFuture = self.backendRepository.markRead(articles: markReadDictionary).then {
+        self.updateFuture = self.backendRepository.markRead(articles: markReadDictionary)
+
+        _ = self.updateFuture?.then {
             switch $0 {
             case .success():
                 self.articles.forEach { $0.synced = true }
@@ -61,6 +75,8 @@ final class UpdateArticleOperation: Operation {
         self.willChangeValue(forKey: self.isExecutingKey)
         self._isExecuting = false
         self.didChangeValue(forKey: self.isExecutingKey)
+
+        self.runCompletionIfAvailable()
 
         self.willChangeValue(forKey: self.isFinishedKey)
         self._isFinished = true

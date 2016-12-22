@@ -7,7 +7,7 @@ import Sinope
 
 class SyncManagerSpec: QuickSpec {
     override func spec() {
-        var subject: SyncManager!
+        var subject: SyncEngineManager!
 
         var workQueue: FakeOperationQueue!
         var mainQueue: FakeOperationQueue!
@@ -15,6 +15,8 @@ class SyncManagerSpec: QuickSpec {
         var dataService: InMemoryDataService!
         var repository: FakeSinopeRepository!
         var accountRepository: FakeAccountRepository!
+
+        var timerFactory: FakeTimerFactory!
 
         beforeEach {
             workQueue = FakeOperationQueue()
@@ -28,7 +30,9 @@ class SyncManagerSpec: QuickSpec {
 
             accountRepository = FakeAccountRepository()
 
-            subject = SyncManager(workQueue: workQueue, mainQueue: mainQueue, dataServiceFactory: dataServiceFactory, accountRepository: accountRepository)
+            timerFactory = FakeTimerFactory()
+
+            subject = SyncEngineManager(workQueue: workQueue, mainQueue: mainQueue, dataServiceFactory: dataServiceFactory, accountRepository: accountRepository, timerFactory: timerFactory)
         }
 
         describe("updateAllUnsyncedArticles()") {
@@ -130,7 +134,7 @@ class SyncManagerSpec: QuickSpec {
                             expect(workQueue.internalOperations.last?.dependencies.first) === workQueue.internalOperations.first
                         }
 
-                        describe("after the next operation runs") {
+                        describe("after the next operation runs successfully") {
                             beforeEach {
                                 let markReadPromise = Promise<Result<Void, SinopeError>>()
                                 repository.markReadReturns(markReadPromise.future)
@@ -172,6 +176,83 @@ class SyncManagerSpec: QuickSpec {
                                 }
                             }
                         }
+
+                        describe("after the next operation runs, but fails") {
+                            beforeEach {
+                                let markReadPromise = Promise<Result<Void, SinopeError>>()
+                                repository.markReadReturns(markReadPromise.future)
+
+                                markReadPromise.resolve(.failure(.unknown))
+
+                                workQueue.runNextOperation()
+                            }
+
+                            it("adds a timer to run this again") {
+                                expect(timerFactory.nonrepeatingTimerCallCount) == 1
+
+                                guard timerFactory.nonrepeatingTimerCallCount == 1 else { return }
+
+                                let args = timerFactory.nonrepeatingTimerArgsForCall(0)
+
+                                expect(args.0.timeIntervalSinceNow) ≈ 30 ± 1e-2
+                                expect(args.1) ≈ 60
+                            }
+
+                            it("does not add any further operations") {
+                                expect(workQueue.operationCount) == 1
+                                expect(mainQueue.operationCount) == 0
+                            }
+
+                            it("now would run a FutureOperation at utility priority") {
+                                expect(workQueue.internalOperations.first).to(beAKindOf(FutureOperation.self))
+
+                                expect(workQueue.internalOperations.first?.qualityOfService) == .utility
+                            }
+
+                            describe("when the final operation runs") {
+                                beforeEach {
+                                    workQueue.runNextOperation()
+                                }
+
+                                it("does not add any further operations") {
+                                    expect(workQueue.operationCount) == 0
+                                    expect(mainQueue.operationCount) == 0
+                                }
+
+                                it("saves the articles") {
+                                    expect(dataService.saveCallCount) == 1
+                                    let args = dataService.saveCallArgs.first
+
+                                    expect(args?.0.count) == 0
+                                    expect(args?.1.count) == 2
+                                    
+                                    expect(args?.1) == [article2, article3]
+                                }
+
+                                describe("when the timer fires") {
+                                    beforeEach {
+                                        expect(timerFactory.nonrepeatingTimerCallCount) == 1
+
+                                        guard timerFactory.nonrepeatingTimerCallCount == 1 else { return }
+
+                                        let args = timerFactory.nonrepeatingTimerArgsForCall(0)
+
+                                        args.2(Timer())
+                                    }
+
+                                    it("behaves as if we called -updateAllUnsyncedArticles() again") {
+                                        expect(workQueue.operationCount) == 1
+                                        expect(mainQueue.operationCount) == 0
+
+                                        expect(workQueue.internalOperations.first).to(beAKindOf(FutureOperation.self))
+
+                                        expect(workQueue.internalOperations.first?.dependencies.count) == 0
+                                        
+                                        expect(workQueue.internalOperations.first?.qualityOfService) == .utility
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -190,7 +271,7 @@ class SyncManagerSpec: QuickSpec {
                 beforeEach {
                     accountRepository.backendRepositoryReturns(nil)
 
-                    subject.update(article: article)
+                    subject.update(articles: [article])
                 }
 
                 it("does nothing") {
@@ -203,7 +284,7 @@ class SyncManagerSpec: QuickSpec {
                 beforeEach {
                     accountRepository.backendRepositoryReturns(repository)
 
-                    subject.update(article: article)
+                    subject.update(articles: [article])
                 }
 
                 it("adds two operations to the work queue") {
@@ -232,7 +313,7 @@ class SyncManagerSpec: QuickSpec {
                     expect(workQueue.internalOperations.last?.dependencies.first) === workQueue.internalOperations.first
                 }
 
-                describe("after the first operation runs") {
+                describe("after the first operation runs successfully") {
                     beforeEach {
                         let markReadPromise = Promise<Result<Void, SinopeError>>()
                         repository.markReadReturns(markReadPromise.future)
@@ -271,6 +352,83 @@ class SyncManagerSpec: QuickSpec {
                             expect(args?.1.count) == 1
 
                             expect(args?.1.first) == article
+                        }
+                    }
+                }
+
+                describe("when the first operation runs, but fails") {
+                    beforeEach {
+                        let markReadPromise = Promise<Result<Void, SinopeError>>()
+                        repository.markReadReturns(markReadPromise.future)
+
+                        markReadPromise.resolve(.failure(.unknown))
+
+                        workQueue.runNextOperation()
+                    }
+
+                    it("does not add any further operations") {
+                        expect(workQueue.operationCount) == 1
+                        expect(mainQueue.operationCount) == 0
+                    }
+
+                    it("adds a timer to try again") {
+                        expect(timerFactory.nonrepeatingTimerCallCount) == 1
+
+                        guard timerFactory.nonrepeatingTimerCallCount == 1 else { return }
+
+                        let args = timerFactory.nonrepeatingTimerArgsForCall(0)
+
+                        expect(args.0.timeIntervalSinceNow) ≈ 30 ± 1e-2
+                        expect(args.1) ≈ 60
+                    }
+
+                    it("now would run a FutureOperation at utility priority") {
+                        expect(workQueue.internalOperations.first).to(beAKindOf(FutureOperation.self))
+
+                        expect(workQueue.internalOperations.first?.qualityOfService) == .utility
+                    }
+
+                    describe("when the second operation runs") {
+                        beforeEach {
+                            workQueue.runNextOperation()
+                        }
+
+                        it("does not add any further operations") {
+                            expect(workQueue.operationCount) == 0
+                            expect(mainQueue.operationCount) == 0
+                        }
+
+                        it("saves the article") {
+                            expect(dataService.saveCallCount) == 1
+                            let args = dataService.saveCallArgs.first
+
+                            expect(args?.0.count) == 0
+                            expect(args?.1.count) == 1
+                            
+                            expect(args?.1.first) == article
+                        }
+
+                        describe("when the timer fires") {
+                            beforeEach {
+                                expect(timerFactory.nonrepeatingTimerCallCount) == 1
+
+                                guard timerFactory.nonrepeatingTimerCallCount == 1 else { return }
+
+                                let args = timerFactory.nonrepeatingTimerArgsForCall(0)
+
+                                args.2(Timer())
+                            }
+
+                            it("behaves as if we called -updateAllUnsyncedArticles()") {
+                                expect(workQueue.operationCount) == 1
+                                expect(mainQueue.operationCount) == 0
+
+                                expect(workQueue.internalOperations.first).to(beAKindOf(FutureOperation.self))
+
+                                expect(workQueue.internalOperations.first?.dependencies.count) == 0
+
+                                expect(workQueue.internalOperations.first?.qualityOfService) == .utility
+                            }
                         }
                     }
                 }

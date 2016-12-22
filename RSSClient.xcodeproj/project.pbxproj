@@ -102,6 +102,9 @@
 		892E77091E0894A500866336 /* SyncManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E77081E0894A500866336 /* SyncManagerSpec.swift */; };
 		892E770D1E08A02E00866336 /* FutureOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E770C1E08A02E00866336 /* FutureOperation.swift */; };
 		892E770F1E08A0D600866336 /* FutureOperationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E770E1E08A0D600866336 /* FutureOperationSpec.swift */; };
+		892E77131E09A2E300866336 /* TimerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E77121E09A2E300866336 /* TimerFactory.swift */; };
+		892E77151E09A49900866336 /* FakeTimerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E77141E09A49900866336 /* FakeTimerFactory.swift */; };
+		892E77171E0C3FEB00866336 /* FakeSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E77161E0C3FEB00866336 /* FakeSyncManager.swift */; };
 		8933E93419EE33F700ECFF3F /* UIColor+RSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */; };
 		89348F2F1C60730D007D366B /* FakeDatabaseUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89348F2E1C60730D007D366B /* FakeDatabaseUseCase.swift */; };
 		8935F5CD1B462702000FFD5D /* Muon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; };
@@ -697,6 +700,9 @@
 		892E77081E0894A500866336 /* SyncManagerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncManagerSpec.swift; sourceTree = "<group>"; };
 		892E770C1E08A02E00866336 /* FutureOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureOperation.swift; sourceTree = "<group>"; };
 		892E770E1E08A0D600866336 /* FutureOperationSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureOperationSpec.swift; sourceTree = "<group>"; };
+		892E77121E09A2E300866336 /* TimerFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerFactory.swift; sourceTree = "<group>"; };
+		892E77141E09A49900866336 /* FakeTimerFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeTimerFactory.swift; sourceTree = "<group>"; };
+		892E77161E0C3FEB00866336 /* FakeSyncManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeSyncManager.swift; sourceTree = "<group>"; };
 		8933E93219EE33F700ECFF3F /* UIColor+RSSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+RSSClient.h"; sourceTree = "<group>"; };
 		8933E93319EE33F700ECFF3F /* UIColor+RSSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+RSSClient.m"; sourceTree = "<group>"; };
 		89348F2E1C60730D007D366B /* FakeDatabaseUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDatabaseUseCase.swift; sourceTree = "<group>"; };
@@ -1179,6 +1185,7 @@
 				89E1868A1D13629D005C5880 /* Analytics.swift */,
 				8903F5C21D414E5000546099 /* PasiphaeFactory.swift */,
 				89CBDBF01C7D1206006B70F5 /* DataServiceFactory.swift */,
+				892E77121E09A2E300866336 /* TimerFactory.swift */,
 			);
 			path = Factories;
 			sourceTree = "<group>";
@@ -1764,6 +1771,8 @@
 				8903F5CA1D416B6700546099 /* FakeAccountRepository.swift */,
 				89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */,
 				890C8D3B1DE376D100A037D7 /* FakeSpondeService.swift */,
+				892E77141E09A49900866336 /* FakeTimerFactory.swift */,
+				892E77161E0C3FEB00866336 /* FakeSyncManager.swift */,
 			);
 			path = Fakes;
 			sourceTree = "<group>";
@@ -2429,6 +2438,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				892E77131E09A2E300866336 /* TimerFactory.swift in Sources */,
 				89628BDF1CE1742600B4C624 /* DatabaseUseCase.swift in Sources */,
 				8943044A1B450A5E000078DC /* Feed.swift in Sources */,
 				89CC82041B461A2B00648367 /* Helpers.swift in Sources */,
@@ -2502,6 +2512,7 @@
 				8935F5DE1B462AD2000FFD5D /* FakeOperationQueue.swift in Sources */,
 				89CBDBFE1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift in Sources */,
 				898911C21C3267C6009A44E9 /* UpdateServiceSpec.swift in Sources */,
+				892E77171E0C3FEB00866336 /* FakeSyncManager.swift in Sources */,
 				891754791C5B48D40036D96D /* RealmServiceSpec.swift in Sources */,
 				89500B231CDEA26E004548C3 /* InMemoryDataServiceSpec.swift in Sources */,
 				89CBDBF41C7D1436006B70F5 /* DataServiceFactorySpec.swift in Sources */,
@@ -2512,6 +2523,7 @@
 				8935F5D91B4628B3000FFD5D /* FeedSpec.swift in Sources */,
 				89146E4E1C88F01F00EC8F10 /* FakeFileManager.swift in Sources */,
 				8935F5DF1B462AD2000FFD5D /* FakeURLSession.swift in Sources */,
+				892E77151E09A49900866336 /* FakeTimerFactory.swift in Sources */,
 				8935F5D51B4628B3000FFD5D /* OPMLServiceSpec.swift in Sources */,
 				8935F5DA1B4628B3000FFD5D /* ArticleSpec.swift in Sources */,
 				8984FE8C1CBA1A180096F4B3 /* AuthorSpec.swift in Sources */,

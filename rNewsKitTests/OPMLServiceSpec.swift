@@ -38,7 +38,8 @@ class DefaultOPMLServiceSpec: QuickSpec {
                 dataServiceFactory: dataServiceFactory,
                 updateUseCase: FakeUpdateUseCase(),
                 databaseMigrator: FakeDatabaseMigrator(),
-                accountRepository: accountRepository
+                accountRepository: accountRepository,
+                syncManager: FakeSyncManager()
             )
 
             let injector = Injector()

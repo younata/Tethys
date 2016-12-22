@@ -36,6 +36,8 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
         var accountRepository: FakeAccountRepository!
         var sinopeRepository: FakeSinopeRepository!
 
+        var syncManager: FakeSyncManager!
+
         beforeEach {
             feed1 = rNewsKit.Feed(title: "a", url: URL(string: "https://example.com/feed1.feed")!, summary: "",
                 tags: ["a", "b", "c", "d"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
@@ -77,12 +79,15 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
             accountRepository.loggedInReturns("foo@example.com")
             accountRepository.backendRepositoryReturns(sinopeRepository)
 
+            syncManager = FakeSyncManager()
+
             subject = DefaultDatabaseUseCase(mainQueue: mainQueue,
                 reachable: reachable,
                 dataServiceFactory: dataServiceFactory,
                 updateUseCase: updateUseCase,
                 databaseMigrator: databaseMigrator,
-                accountRepository: accountRepository
+                accountRepository: accountRepository,
+                syncManager: syncManager
             )
 
             dataSubscriber = FakeDataSubscriber()
@@ -235,120 +240,38 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                 var markedReadFuture: Future<Result<Int, RNewsError>>?
                 beforeEach {
                     mainQueue.runSynchronously = true
+                    markedReadFuture = subject.markFeedAsRead(feed1)
                 }
 
-                context("when the user does have a backend account") {
-                    var markReadPromise: Promise<Result<Void, SinopeError>>!
-
-                    beforeEach {
-                        markReadPromise = Promise<Result<Void, SinopeError>>()
-                        sinopeRepository.markReadReturns(markReadPromise.future)
-
-                        markedReadFuture = subject.markFeedAsRead(feed1)
-                    }
-
-                    it("marks every article in the feed as read") {
-                        for article in feed1.articlesArray {
-                            expect(article.read) == true
-                        }
-                    }
-
-                    it("does not yet inform any subscribers") {
-                        expect(dataSubscriber.markedArticles).to(beNil())
-                    }
-
-                    it("makes a request to the backend server marking the specified article as read") {
-                        expect(sinopeRepository.markReadCallCount) == 1
-
-                        guard sinopeRepository.markReadCallCount == 1 else { return }
-
-                        let args = sinopeRepository.markReadArgsForCall(0)
-                        expect(args) == [
-                            URL(string: "https://example.com/article1.html")!: true
-                        ]
-                    }
-
-                    context("when the call succeeds") {
-                        beforeEach {
-                            markReadPromise.resolve(.success())
-                        }
-
-                        it("informs any subscribers") {
-                            expect(dataSubscriber.markedArticles).toNot(beNil())
-                            expect(dataSubscriber.read) == true
-                        }
-
-                        it("marks the articles as synced") {
-                            expect(article1.synced) == true
-                        }
-
-                        it("resolves the promise with the number of articles marked read") {
-                            expect(markedReadFuture?.value).toNot(beNil())
-                            let calledResults = markedReadFuture!.value!
-                            switch calledResults {
-                            case let .success(value):
-                                expect(value) == 1
-                            case .failure(_):
-                                expect(false) == true
-                            }
-                        }
-                    }
-
-                    context("when the call fails") {
-                        beforeEach {
-                            markReadPromise.resolve(.failure(.unknown))
-                        }
-
-                        it("informs any subscribers") {
-                            expect(dataSubscriber.markedArticles).toNot(beNil())
-                            expect(dataSubscriber.read) == true
-                        }
-                        
-                        it("marks the article as not synced") {
-                            expect(article1.synced) == false
-                            expect(article2.synced) == true
-                        }
-
-                        it("resolves the promise with the number of articles marked read") {
-                            expect(markedReadFuture?.value).toNot(beNil())
-                            let calledResults = markedReadFuture!.value!
-                            switch calledResults {
-                            case let .success(value):
-                                expect(value) == 1
-                            case .failure(_):
-                                expect(false) == true
-                            }
-                        }
+                it("marks every article in the feed as read") {
+                    for article in feed1.articlesArray {
+                        expect(article.read) == true
                     }
                 }
 
-                context("when the user does not have a backend account") {
-                    beforeEach {
-                        accountRepository.backendRepositoryReturns(nil)
+                it("tells the sync manager to update all those articles") {
+                    expect(syncManager.updateArticlesCallCount) == 1
 
-                        markedReadFuture = subject.markFeedAsRead(feed1)
-                    }
+                    guard syncManager.updateArticlesCallCount == 1 else { return }
 
-                    it("marks every article in the feed as read") {
-                        for article in feed1.articlesArray {
-                            expect(article.read) == true
-                        }
-                    }
+                    let args = syncManager.updateArticlesArgsForCall(0)
 
-                    it("informs any subscribers") {
-                        expect(dataSubscriber.markedArticles).toNot(beNil())
-                        expect(dataSubscriber.read) == true
-                    }
+                    expect(args) == [article1]
+                }
 
-                    it("resolves the promise with the number of articles marked read") {
-                        expect(markedReadFuture?.value).toNot(beNil())
-                        let calledResults = markedReadFuture!.value!
-                        switch calledResults {
-                        case let .success(value):
-                            expect(value) == 1
-                        case .failure(_):
-                            expect(false) == true
-                        }
+                it("informs any subscribers") {
+                    expect(dataSubscriber.markedArticles).toNot(beNil())
+                    expect(dataSubscriber.read) == true
+                }
+
+                it("resolves the promise with the number of articles marked read") {
+                    expect(markedReadFuture?.value).toNot(beNil())
+                    let calledResults = markedReadFuture!.value!
+                    switch calledResults {
+                    case let .success(value):
+                        expect(value) == 1
+                    case .failure(_):
+                        expect(false) == true
                     }
                 }
             }
@@ -380,92 +303,27 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                     mainQueue.runSynchronously = true
                 }
 
-                context("when the user does have a backend account") {
-                    var markReadPromise: Promise<Result<Void, SinopeError>>!
-
-                    beforeEach {
-                        markReadPromise = Promise<Result<Void, SinopeError>>()
-                        sinopeRepository.markReadReturns(markReadPromise.future)
-
-                        _ = subject.markArticle(article, asRead: true)
-                    }
-
-                    it("marks the article object as read") {
-                        expect(article.read) == true
-                    }
-
-                    it("does not yet inform any subscribers") {
-                        expect(dataSubscriber.markedArticles).to(beNil())
-                    }
-
-                    it("makes a request to the backend server marking the specified article as read") {
-                        expect(sinopeRepository.markReadCallCount) == 1
-
-                        guard sinopeRepository.markReadCallCount == 1 else { return }
-
-                        let args = sinopeRepository.markReadArgsForCall(0)
-                        expect(args) == [URL(string: "https://example.com/article1.html")!: true]
-                    }
-
-                    context("when the call succeeds") {
-                        beforeEach {
-                            markReadPromise.resolve(.success())
-                        }
-
-                        it("informs any subscribers") {
-                            expect(dataSubscriber.markedArticles).to(equal([article]))
-                            expect(dataSubscriber.read) == true
-                        }
-
-                        it("marks the article as synced") {
-                            expect(article.synced) == true
-                        }
-                    }
-
-                    context("when the call fails") {
-                        beforeEach {
-                            markReadPromise.resolve(.failure(.unknown))
-                        }
-
-                        it("informs any subscribers") {
-                            expect(dataSubscriber.markedArticles).to(equal([article]))
-                            expect(dataSubscriber.read) == true
-                        }
-
-                        it("marks the article as not synced") {
-                            expect(article.synced) == false
-                        }
-                    }
+                beforeEach {
+                    _ = subject.markArticle(article, asRead: true)
                 }
 
-                context("when the user does not have a backend account") {
-                    beforeEach {
-                        accountRepository.backendRepositoryReturns(nil)
+                it("marks the article object as read") {
+                    expect(article.read) == true
+                }
 
-                        _ = subject.markArticle(article, asRead: true)
-                    }
+                it("tells the sync manager to update all those articles") {
+                    expect(syncManager.updateArticlesCallCount) == 1
 
-                    it("marks the article object as read") {
-                        expect(article.read) == true
-                    }
+                    guard syncManager.updateArticlesCallCount == 1 else { return }
 
-                    it("informs any subscribers") {
-                        expect(dataSubscriber.markedArticles).to(equal([article]))
-                        expect(dataSubscriber.read) == true
-                    }
+                    let args = syncManager.updateArticlesArgsForCall(0)
 
-                    describe("and marking it as unread again") {
-                        beforeEach {
-                            dataSubscriber.markedArticles = nil
-                            dataSubscriber.read = nil
-                            _ = subject.markArticle(article, asRead: false)
-                        }
+                    expect(args) == [article1]
+                }
 
-                        it("informs any subscribers") {
-                            expect(dataSubscriber.markedArticles).to(equal([article]))
-                            expect(dataSubscriber.read) == false
-                        }
-                    }
+                it("informs any subscribers") {
+                    expect(dataSubscriber.markedArticles).to(equal([article]))
+                    expect(dataSubscriber.read) == true
                 }
             }
 

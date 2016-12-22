@@ -21,6 +21,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     private let updateUseCase: UpdateUseCase
     private let databaseMigrator: DatabaseMigratorType
     private let accountRepository: InternalAccountRepository
+    private let syncManager: SyncManager
 
     private var dataService: DataService {
         return self.dataServiceFactory.currentDataService
@@ -32,13 +33,15 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         dataServiceFactory: DataServiceFactoryType,
         updateUseCase: UpdateUseCase,
         databaseMigrator: DatabaseMigratorType,
-        accountRepository: InternalAccountRepository) {
+        accountRepository: InternalAccountRepository,
+        syncManager: SyncManager) {
             self.mainQueue = mainQueue
             self.reachable = reachable
             self.dataServiceFactory = dataServiceFactory
             self.updateUseCase = updateUseCase
             self.databaseMigrator = databaseMigrator
             self.accountRepository = accountRepository
+            self.syncManager = syncManager
     }
     // swiftlint:enable function_parameter_count
 
@@ -252,35 +255,15 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         for article in articles {
             article.read = read
         }
-        let backendMarkReadFuture: Future<Result<Void, SinopeError>>
-        if let backendRepository = accountRepository.backendRepository() {
-            let articlesToMarkRead: [URL: Bool] = articles.reduce([:]) { dict, article in
-                var dict = dict
-                dict[article.link] = read
-                return dict
-            }
-            backendMarkReadFuture = backendRepository.markRead(articles: articlesToMarkRead)
-        } else {
-            let promise = Promise<Result<Void, SinopeError>>()
-            promise.resolve(.success())
-            backendMarkReadFuture = promise.future
-        }
-        return backendMarkReadFuture.map { backendResult in
-            if let _ = backendResult.error {
-                for article in articles {
-                    article.synced = false
-                }
-            }
-
-            return self.dataService.batchSave([], articles: articles).map { result in
-                return result.map {
-                    for subscriber in self.allSubscribers {
-                        self.mainQueue.addOperation {
-                            subscriber.markedArticles(articles, asRead: read)
-                        }
+        self.syncManager.update(articles: articles)
+        return self.dataService.batchSave([], articles: articles).map { result in
+            return result.map {
+                for subscriber in self.allSubscribers {
+                    self.mainQueue.addOperation {
+                        subscriber.markedArticles(articles, asRead: read)
                     }
-                    return amountToChange
                 }
+                return amountToChange
             }
         }
     }

@@ -2,11 +2,17 @@ import Foundation
 import Ra
 import Sinope
 
-public final class SyncManager: Injectable {
+public protocol SyncManager: class {
+    func updateAllUnsyncedArticles()
+    func update(articles: [Article])
+}
+
+public final class SyncEngineManager: SyncManager, Injectable {
     private let workQueue: OperationQueue
     private let mainQueue: OperationQueue
     private let dataServiceFactory: DataServiceFactoryType
     private let accountRepository: InternalAccountRepository
+    private let timerFactory: TimerFactory
 
     private var dataService: DataService {
         return self.dataServiceFactory.currentDataService
@@ -15,11 +21,13 @@ public final class SyncManager: Injectable {
     init(workQueue: OperationQueue,
          mainQueue: OperationQueue,
          dataServiceFactory: DataServiceFactoryType,
-         accountRepository: InternalAccountRepository) {
+         accountRepository: InternalAccountRepository,
+         timerFactory: TimerFactory) {
         self.workQueue = workQueue
         self.mainQueue = mainQueue
         self.dataServiceFactory = dataServiceFactory
         self.accountRepository = accountRepository
+        self.timerFactory = timerFactory
     }
 
     public required convenience init(injector: Injector) {
@@ -27,7 +35,8 @@ public final class SyncManager: Injectable {
             workQueue: injector.create(kind: OperationQueue.self)!,
             mainQueue: injector.create(string: kMainQueue) as! OperationQueue,
             dataServiceFactory: injector.create(kind: DataServiceFactoryType.self)!,
-            accountRepository: injector.create(kind: InternalAccountRepository.self)!
+            accountRepository: injector.create(kind: InternalAccountRepository.self)!,
+            timerFactory: injector.create(kind: TimerFactory.self)!
         )
     }
 
@@ -53,15 +62,25 @@ public final class SyncManager: Injectable {
         }
     }
 
-    public func update(article: Article) {
+    public func update(articles: [Article]) {
         if let repository = self.accountRepository.backendRepository() {
-            self.update(articles: [article], repository: repository)
+            self.update(articles: articles, repository: repository)
         }
     }
 
     private func update(articles: [Article], repository: Repository) {
         let updateOperation = UpdateArticleOperation(articles: articles, backendRepository: repository)
         updateOperation.qualityOfService = .utility
+        updateOperation.onCompletion = {
+            switch $0 {
+            case .success(_):
+                break
+            case .failure(_):
+                self.timerFactory.nonrepeatingTimer(fireDate: Date(timeIntervalSinceNow: 30), tolerance: 60) { _ in
+                    self.updateAllUnsyncedArticles()
+                }
+            }
+        }
 
         let saveOperation = FutureOperation {
             return self.dataService.batchSave([], articles: articles).map { _ in return }

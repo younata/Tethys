@@ -3242,7 +3242,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(SDKROOT)/usr/include/libxml2",
+					"\"$(SDKROOT)/usr/include/libxml2\"",
 					"$(SRCROOT)/Library",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -3287,7 +3287,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(SDKROOT)/usr/include/libxml2",
+					"\"$(SDKROOT)/usr/include/libxml2\"",
 					"$(SRCROOT)/Library",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -3316,6 +3316,10 @@
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SDKROOT)/usr/include/libxml2\"",
+					"$(SRCROOT)/Library",
+				);
 				INFOPLIST_FILE = "RSSClient/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.RSSClient;
@@ -3345,6 +3349,10 @@
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SDKROOT)/usr/include/libxml2\"",
+					"$(SRCROOT)/Library",
+				);
 				INFOPLIST_FILE = "RSSClient/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.RSSClient;

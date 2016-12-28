@@ -1,25 +1,12 @@
-OS updates, bug fixes, performance improvements, new import/export infrastructure.
+Add ability to create and export eBooks from the app. Article lists now have a new book icon that, when tapped, brings up an interface to generate either an epub (for use with iBooks and most other e-readers) or a mobi (for use with Amazon Kindle) file. This can then be shared out once generated.
 
-Drops iOS 8. Next update will drop iOS 9.
-DROP DATABASE CoreData; (Uses Realm entirely - this conversion happened back in 1.3, now we're just deleting code that abstracted core data as our database).
+Improve 3d touch behavior. Add peek/pop preview actions to viewing articles and article lists.
+3d links in the article view now behaves as if you'd simply tapped the link, instead of taking you out of the app.
+The update breakout game is now disabled when in low-power mode, and is otherwise user-configurable to be disabled.
+You can mark all articles in an article list as read, instead of having to go back out to the feed list and mark them all read from there.
+Reduce whiteness of text in dark mode, makes for a much more pleasurable reading experience at night.
+Default to dark mode
 
-Add ability to import from a ShareSheet (export OPML from another app)
-Add share sheet item in Settings to export all opml items
-Remove Local Import (import from itunes - use the new sharesheet import)
+Improve performance when updating feeds when you already have a large database (no longer looks at all imported articles, just the more recent articles).
 
-Deleting an article or feed presents an 'Are you sure?' dialog before proceeding
-
-App and dependencies now use Swift 3
-
-iOS 10 improvements:
- - Adapt to true tone display
- - better handle 3d touch settings on devices with/without 3d touch
-
-Bunch of "focusing" improvements
- - Remove Query Feeds
- - Remove enclosure support. Use Overcast for your podcasts.
-
-Make using this on an iPad be an actually good experience
- - Fix how the split screen thing works
- - Breakout to refresh now adapts to different screen sizes
-
+Fix bugs and in general improve performance

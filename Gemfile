@@ -10,4 +10,5 @@ group :development, :test do
   gem "pivotal-tracker"
   gem "carthage_cache"
   gem "kramdown"
+  gem "snapshot"
 end

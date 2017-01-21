@@ -1,5 +1,5 @@
 import Cocoa
-import rNewsKit
+import TethysKit
 import Ra
 
 @NSApplicationMain

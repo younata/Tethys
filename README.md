@@ -1,7 +1,5 @@
 RSS Client for iOS 10.
 
-Pretty much the newsbeuter for mobile, or the mutt of visual feed readers.
-
 [![App Store](assets/appstore.png)](http://appsto.re/us/wJqT3.i)
 
 This project requires Swift 3.0/Xcode 8.0 to build.

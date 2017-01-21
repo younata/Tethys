@@ -3,15 +3,15 @@ disabled_rules: # rule identifiers to exclude from running
   - variable_name
   - closing_brace
 included: # paths to include during linting. `--path` is ignored if present. takes precendence over `excluded`.
-  - RSSClient
-  - rNewsKit
-  - RSSClient-OSX
-  - rNewsKit-OSX
+  - Tethys
+  - TethysKit
+  - Tethys_Mac
+  - TethysKit_Mac
 excluded: # paths to ignore during linting. overridden by `included`.
   - Carthage
-  - RSSClientTests
-  - rNewsKitTests
-  - rNewsKit-OSXTests
+  - TethysSpecs
+  - TethysKitSpecs
+  - TethysKit_MacSpecs
 # parameterized rules can be customized from this configuration file
 line_length:
   - 120

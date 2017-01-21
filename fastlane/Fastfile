@@ -31,40 +31,40 @@ platform :ios do
 
   desc 'Runs all the tests'
   lane :test do
-    scan(project: 'RSSClient.xcodeproj', scheme: 'RSSClient')
+    scan(project: 'Tethys.xcodeproj', scheme: 'Tethys')
   end
 
   desc 'Deploy a new version to TestFlight'
   lane :deploy_testflight do
-    increment_build_number(xcodeproj: 'RSSClient.xcodeproj', build_number: build_number)
-    gym(project: 'RSSClient.xcodeproj', scheme: "RSSClient")
+    increment_build_number(xcodeproj: 'Tethys.xcodeproj', build_number: build_number)
+    gym(project: 'Tethys.xcodeproj', scheme: "Tethys")
     pilot(distribute_external: false, changelog: `git log -1 --format='%B'`)
   end
 
   desc 'Deploy a new version to TestFlight External'
   lane :deploy_testflight_external do
-    increment_build_number(xcodeproj: 'RSSClient.xcodeproj', build_number: build_number)
-    gym(project: 'RSSClient.xcodeproj', scheme: "RSSClient")
+    increment_build_number(xcodeproj: 'Tethys.xcodeproj', build_number: build_number)
+    gym(project: 'Tethys.xcodeproj', scheme: "Tethys")
     pilot(distribute_external: true, changelog: `git log -10 --format='%B'`)
   end
 
   desc 'Bump Version number'
   lane :bump_version_number do
-    increment_version_number(xcodeproj: 'RSSClient.xcodeproj')
+    increment_version_number(xcodeproj: 'Tethys.xcodeproj')
   end
 
   desc 'Deploy a new version to the App Store'
   lane :deploy_app_store do
     tracker_release = next_tracker_release
 
-    increment_build_number(xcodeproj: 'RSSClient.xcodeproj', build_number: build_number)
+    increment_build_number(xcodeproj: 'Tethys.xcodeproj', build_number: build_number)
     update_release_notes tracker_release[:release_notes]
     bump_release_version tracker_release[:title]
 
     sh 'SNAPSHOT_FORCE_DELETE=1 bundle exec snapshot reset_simulators'
     snapshot
 
-    gym(scheme: "RSSClient")
+    gym(scheme: "Tethys")
     deliver
 
     upload_github_release(tracker_release[:title], tracker_release[:release_notes])
@@ -92,8 +92,8 @@ platform :ios do
   def bump_release_version(tag_name)
     release_version = tag_name.sub(/^v/, '')
 
-    increment_version_number(xcodeproj: 'RSSClient.xcodeproj', version_number: release_version)
-    commit_version_bump(xcodeproj: 'RSSClient.xcodeproj', force: true)
+    increment_version_number(xcodeproj: 'Tethys.xcodeproj', version_number: release_version)
+    commit_version_bump(xcodeproj: 'Tethys.xcodeproj', force: true)
   end
 
   def upload_github_release(tag_name, release_notes)

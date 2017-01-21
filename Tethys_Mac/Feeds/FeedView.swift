@@ -1,5 +1,5 @@
 import Cocoa
-import rNewsKit
+import TethysKit
 
 public protocol FeedViewDelegate {
     func didClickFeed(_ feed: Feed)
@@ -27,7 +27,9 @@ public final class FeedView: NSView {
         }
     }
 
+    // swiftlint:disable weak_delegate
     public private(set) var delegate: FeedViewDelegate? = nil
+    // swiftlint:enable weak_delegate
 
     public func configure(_ feed: Feed, delegate: FeedViewDelegate) {
         self.feed = feed

@@ -1,5 +1,5 @@
 import Cocoa
-import rNewsKit
+import TethysKit
 
 public final class ArticleListViewController: NSViewController {
     public lazy var tableView: NSTableView = {

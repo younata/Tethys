@@ -1,6 +1,6 @@
 import Cocoa
 import PureLayout
-import rNewsKit
+import TethysKit
 import Ra
 
 public final class FeedsViewController: NSViewController {

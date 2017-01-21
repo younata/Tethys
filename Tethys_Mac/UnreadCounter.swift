@@ -1,6 +1,6 @@
 import Cocoa
 import PureLayout
-import rNewsKit
+import TethysKit
 
 public final class UnreadCounter: NSView {
 

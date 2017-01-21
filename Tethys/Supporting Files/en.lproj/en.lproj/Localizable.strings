@@ -1,0 +1,164 @@
+﻿"NotificationHandler_LocalNotification_MarkRead_Action" = "Mark Read";
+"NotificationHandler_LocalNotification_MarkRead_Title" = "New article in %@: %@";
+
+"SettingsViewController_Table_Header_Theme" = "Theme";
+"SettingsViewController_Table_Header_QuickActions" = "Quick Actions";
+"SettinsgViewController_Table_Header_Accounts" = "Accounts";
+"SettingsViewController_Table_Header_Refresh" = "Refresh Style";
+"SettingsViewController_Table_Header_Other" = "Other";
+"SettingsViewController_Table_Header_Credits" = "Credits";
+"SettingsViewController_Title" = "Settings";
+"SettingsViewController_QuickActions_AddFirst" = "Add a Quick Action";
+"SettingsViewController_QuickActions_AddAdditional" = "Add a new Quick Action";
+"SettingsViewController_Accounts_Pasiphae" = "Tethys Backend";
+"SettingsViewController_Accounts_Log_Out" = "Log Out";
+"SettingsViewController_Other_ShowReadingTimes" = "Show Estimated Reading Times";
+"SettingsViewController_Other_ExportOPML" = "Export OPML";
+"SettingsViewController_Other_ExportOPML_Error_Title" = "Error Exporting OPML";
+"SettingsViewController_Other_ExportOPML_Error_Message" = "Please Try Again";
+"SettingsViewController_Credits_MainDeveloper_Name" = "Rachel Brindle"; // My name
+"SettingsViewController_Credits_MainDeveloper_Detail" = "Developer";
+"SettingsViewController_Credits_Libraries" = "Libraries";
+"SettingsViewController_Credits_Icons" = "Icons";
+"SettingsViewController_Commands_Theme" = "Change Theme to '%@'";
+"SettingsViewController_Commands_Save" = "Save and dismiss";
+"SettingsViewController_Commands_Dismiss" = "Dismiss without saving";
+
+"FeedsTableViewController_SearchBar_Placeholder" = "Filter by Tag";
+"FeedsTableViewController_Onboarding_Title" = "Welcome to Tethys!";
+"FeedsTableViewController_Onboarding_Detail" = "Tap the '+' button to find feeds to follow.";
+"FeedsTableViewController_Title" = "Feeds";
+"FeedsTableViewController_Loading_Feeds" = "Loading Feeds";
+"FeedsTableViewController_Loading_Deleting_Feed" = "Deleting Feed";
+"FeedsTableViewController_Loading_Marking_Feed" = "Marking Articles as Read";
+"FeedsTableViewController_Command_Search" = "Filter by tags";
+"FeedsTableViewController_Command_ImportWeb" = "Add from Web";
+"FeedsTableViewController_Command_Settings" = "Open settings";
+"FeedsTableViewController_UpdateFeeds_Error_Title" = "Unable to update feeds";
+"FeedsTableViewController_UpdateFeeds_Error_Accept" = "OK";
+"FeedsTableViewController_Table_EditAction_Delete" = "Delete";
+"FeedsTableViewController_Table_EditAction_MarkRead" = "Mark\nRead";
+"FeedsTableViewController_Table_EditAction_Edit" = "Edit";
+"FeedsTableViewController_PreviewItem_MarkRead" = "Mark Read";
+
+"FindFeedViewController_AddFeed" = "Add Feed";
+"FindFeedViewController_Commands_OpenURL" = "Open URL";
+"FindFeedViewController_Commands_Reload" = "Reload";
+"FindFeedViewController_URLBar_Placeholder" = "Enter URL";
+"FindFeedViewController_Save_Feed" = "Loading feed at %@";
+"FindFeedViewController_Save_Feed_List" = "Loading feed list at %@";
+"FindFeedViewController_URLBar_Loading" = "Loading";
+"FindFeedViewController_FoundFeed_Import" = "Import";
+"FindFeedViewController_FoundFeed_Decline" = "Don't Import";
+"FindFeedViewController_FoundFeed_Title" = "Feed Detected";
+"FindFeedViewController_FoundFeed_Subtitle" = "Import %@?";
+"FindFeedViewController_FoundFeed_List_Title" = "Feed List Detected";
+"FindFeedViewController_FoundFeed_List_Subtitle" = "Import?";
+"FindFeedViewController_ImportFeeds_SelectFeed" = "Select a feed to import";
+"FindFeedViewController_Error_Navigation_title" = "Unable to load page";
+"FindFeedViewController_Error_Navigation_message" = "The page at %@ failed to load";
+
+"LoginViewController_Pasiphae_Title" = "Log in to Tethys";
+"LoginViewController_Title_Accessibility_Label" = "Account Type";
+"LoginViewController_Detail_Accessibility_Label" = "Account Detail";
+"LoginViewController_Error_Accessibility_Label" = "Login Error";
+"LoginViewController_Fields_Email" = "Email";
+"LoginViewController_Fields_Email_Accessibility_Hint" = "Enter email";
+"LoginViewController_Fields_Password" = "Password";
+"LoginViewController_Fields_Password_Accessibility_Hint" = "Enter password";
+"LoginViewController_Fields_Login" = "Login";
+"LoginViewController_Fields_Login_Accessibility_Hint" = "Log in to existing account";
+"LoginViewController_Fields_Register" = "Register";
+"LoginViewController_Fields_Register_Accessibility_Hint" = "Register for a new account";
+"LoginViewController_Login_Message" = "Logging In";
+"LoginViewController_Register_Message" = "Registering";
+
+"GenerateBookViewController_Title" = "Create eBook";
+"GenerateBookViewController_Formats_ePub" = "ePub";
+"GenerateBookViewController_Formats_Kindle" = "Kindle";
+"GenerateBookViewController_Formats_Accessibility_Hint" = "Book Format (ePub or Kindle)";
+"GenerateBookViewController_titlefield_placeholder" = "Title";
+"GenerateBookViewController_titlefield_Accessibility_Hint" = "Book Title";
+"GenerateBookViewController_authorfield_placeholder" = "Author";
+"GenerateBookViewController_authorfield_Accessibility_Hint" = "Book Author";
+"GenerateBookViewController_formatlabel_title" = "Select Format";
+"GenerateBookViewController_Create" = "Create";
+"GenerateBookViewController_AddChapters" = "Add";
+"GenerateBookViewController_Generating_Message" = "Generating eBook";
+"GenerateBookViewController_Generating_Error_Title" = "Unable to Generate eBook";
+
+"ChapterOrganizerController_AddChapter_Title" = "Add Chapter";
+"ChapterOrganizerController_ReorderButton_Reorder" = "Reorder";
+
+"MigrationViewController_Message" = "Optimizing your database, hang tight";
+
+"FeedViewController_Table_Header_Title" = "Title";
+"FeedViewController_Table_Header_URL" = "URL";
+"FeedViewController_Table_Header_Summary" = "Summary";
+"FeedViewController_Table_Header_Tags" = "Tags";
+"FeedViewController_Cell_Summary_Placeholder" = "No Summary Available";
+"FeedViewController_Actions_AddTag" = "Add Tag";
+
+"TagEditorViewController_Title" = "Tags";
+"TagEditorViewController_Explanation" = "Prefixing a tag with '~' will set the title to that, minus the leading ~. Prefixing a tag with '`' will set the summary to that, minus the leading `. Tags cannot contain commas (,)";
+
+"TagPickerView_Placeholder" = "Tag";
+
+"OPMLShareItem_Name" = "OPML Export";
+
+"ArticleListController_Cell_EditAction_MarkRead" = "Mark\nRead";
+"ArticleListController_Cell_EditAction_MarkUnread" = "Mark\nUnread";
+"ArticleListController_Search" = "Search Articles";
+"ArticleListController_Action_MarkRead" = "Mark Read";
+"ArticleListController_Action_MarkUnread" = "Mark Unread";
+"ArticleListController_Action_MarkRead_Indicator" = "Marking Articles as Read";
+"ArticleListController_Action_MarkRead_Error_Title" = "Unable to Mark Articles as Read";
+
+"ArticleCell_EstimatedReadingTime" = "%@ to read";
+
+"ArticleViewController_TabBar_ViewLink" = "Open Link";
+"ArticleViewController_Command_ViewPreviousArticle" = "Previous Article";
+"ArticleViewController_Command_ViewNextArticle" = "Next Article";
+"ArticleViewController_Command_ToggleRead" = "Toggle Read";
+"ArticleViewController_Command_OpenInWebView" = "Open Article in WebView";
+"ArticleViewController_Command_OpenShareSheet" = "Open Share Sheet";
+
+"AuthorActivity_Title" = "Articles by %@";
+
+"AppDelegate_UnreadFeed_Title" = "All Unread";
+"AppDelegate_UnreadFeed_Summary" = "All unread articles";
+
+"RefreshControlStyle_Spinner" = "Spinner";
+"RefreshControlStyle_Breakout" = "Breakout";
+
+// Errors
+
+"Error_Network_InternetDown" = "Internet Down";
+"Error_Network_DNS" = "DNS Error";
+"Error_Network_ServerNotFound" = "Server Not Found";
+"Error_Network_Unknown" = "Unknown Network Error";
+
+"Error_Database_DatabaseNotFound" = "Database not found";
+"Error_Database_EntryNotFound" = "Entry not found";
+"Error_Database_Unknown" = "Unknown Database Error";
+
+"Error_Standard_Network" = "Unable to load %@ - %@";
+"Error_Standard_HTTP" = "Error loading resource, received %d";
+"Error_Standard_Unknown" = "Unknown Error - please try again";
+
+// Themes
+
+"Theme_Light" = "Light";
+"Theme_Dark" = "Dark";
+
+// Generic
+
+"Generic_Dismiss" = "Dismiss";
+"Generic_Ok" = "Ok";
+"Generic_Save" = "Save";
+"Generic_Delete" = "Delete";
+"Generic_Edit" = "Edit";
+"Generic_Share" = "Share";
+"Generic_Cancel" = "Cancel";
+"Generic_ConfirmDelete" = "Delete %@?";
+"Generic_Done" = "Done";

@@ -1,5 +1,5 @@
 import Cocoa
-import rNewsKit
+import TethysKit
 
 final class ArticleListView: NSTableRowView {
     var article: Article? = nil {

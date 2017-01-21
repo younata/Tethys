@@ -1,8 +1,8 @@
 /.idea
 /Images
-/RSSClient.xcodeproj/project.xcworkspace/
-/RSSClient.xcodeproj/project.xcworkspace/
-/RSSClient.xcodeproj/xcuserdata/
+/Tethys.xcodeproj/project.xcworkspace/
+/Tethys.xcodeproj/project.xcworkspace/
+/Tethys.xcodeproj/xcuserdata/
 foo
 *swp
 *bcsymbolmap
@@ -12,6 +12,8 @@ foo
 /fastlane/
 /rNews.app*
 /rNews.ipa
+/Tethys.app*
+/Tethys.ipa
 /.mixpanel
 /.pasiphae
 /.pasiphaeURL

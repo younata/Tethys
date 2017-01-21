@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "(dataServiceSharedSpec(DataService, spec : QuickSpec) -&gt; ()).(closure #2).(closure #4).(closure #2):DataServiceSpec.swift">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

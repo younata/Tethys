@@ -196,22 +196,27 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             }
         }
 
-        it("searches an item's content for links matching current articles, and adds them to the related articles list") {
+        it("finds all other articles that this article might link to") {
+            article?.content = "<a href=\"https://example.com/other_article/\"></a>"
+
             var otherArticle: rNewsKit.Article?
+
             let createExpectation = spec.expectation(description: "Create Article")
-            dataService.createArticle(url: URL(string: "https://example.com/foo/bar/")!, feed: nil) {
+            dataService.createArticle(url: URL(string: "https://example.com/other_article/")!, feed: nil) {
                 otherArticle = $0
+                otherArticle?.synced = false
                 createExpectation.fulfill()
             }
             spec.waitForExpectations(timeout: 1, handler: nil)
-            expect(otherArticle).toNot(beNil())
 
-            let content = "<html><body><a href=\"/foo/bar/\"></a></body></html>"
+            let value = dataService.findRelatedArticles(to: article!).wait()
 
-            let item = FakeImportableArticle(title: "a <p></p>&amp; title", url: URL(string: "https://example.com/foo/baz")!, summary: "description", content: content, published: Date(timeIntervalSince1970: 10), updated: Date(timeIntervalSince1970: 15), read: false, authors: [])
+            expect(value).toNot(beNil())
+            expect(value?.value).to(equal([otherArticle!]))
 
-            dataService.updateArticle(article!, item: item, feedURL: URL(string: "https://example.com/")!)
-            expect(article!.relatedArticles.contains(otherArticle!)).to(beTruthy())
+            if let otherArticle = otherArticle {
+                _ = dataService.deleteArticle(otherArticle).wait()
+            }
         }
 
         it("easily allows an article to be updated, filtering out title information") {

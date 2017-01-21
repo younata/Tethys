@@ -3,6 +3,8 @@ import Nimble
 
 @testable import rNewsKit
 import rNews
+import Result
+import CBGPromise
 
 class ArticleUseCaseSpec: QuickSpec {
     override func spec() {
@@ -142,6 +144,15 @@ class ArticleUseCaseSpec: QuickSpec {
                 expect(feedRepository.lastArticleMarkedRead).to(beNil())
             }
 
+            it("tries to find articles related to this one") {
+                let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: true, synced: false, estimatedReadingTime: 4, feed: nil, flags: [])
+
+                _ = subject.readArticle(article)
+
+                expect(feedRepository.relatedArticlesPromises.count).to(equal(1))
+                expect(feedRepository.relatedArticles).to(equal([article]))
+            }
+
             describe("the returned html string") {
                 var html: String!
 
@@ -215,6 +226,143 @@ class ArticleUseCaseSpec: QuickSpec {
 
                 expect(feedRepository.lastArticleMarkedRead) == article
                 expect(article.read) == false
+            }
+        }
+
+        describe("-relatedArticles(to:)") {
+            var article: Article!
+            var relatedArticles: [Article]?
+
+            beforeEach {
+                article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: true, synced: false, estimatedReadingTime: 4, feed: nil, flags: [])
+            }
+
+            context("after a -readArticle() call has triggered asking for these relatedArticles") {
+                beforeEach {
+                    _ = subject.readArticle(article)
+                }
+
+                context("before the feedRepository has returned") {
+                    beforeEach {
+                        relatedArticles = subject.relatedArticles(to: article)
+                    }
+
+                    it("does not make another call to the data repository") {
+                        expect(feedRepository.relatedArticlesPromises.count).to(equal(1))
+                        expect(feedRepository.relatedArticles).to(equal([article]))
+                    }
+
+                    it("returns the article's related articles") {
+                        expect(relatedArticles).to(beEmpty())
+                    }
+
+                    it("doesn't make another call to the data repository when asked again") {
+                        _ = subject.relatedArticles(to: article)
+
+                        expect(feedRepository.relatedArticlesPromises.count).to(equal(1))
+                        expect(feedRepository.relatedArticles).to(equal([article]))
+                    }
+
+                    it("returns the related articles when asked again, after the data repository finishes") {
+                        let otherArticle = Article(title: "", link: URL(string: "https://exapmle.com/2")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: true, synced: false, estimatedReadingTime: 4, feed: nil, flags: [])
+
+                        feedRepository.relatedArticlesPromises.last?.resolve(.success([otherArticle]))
+
+                        relatedArticles = subject.relatedArticles(to: article)
+
+                        expect(relatedArticles).to(equal([otherArticle]))
+                    }
+                }
+
+                context("after the feed repository call finishes") {
+                    let otherArticle = Article(title: "", link: URL(string: "https://exapmle.com/2")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: true, synced: false, estimatedReadingTime: 4, feed: nil, flags: [])
+                    beforeEach {
+                        feedRepository.relatedArticlesPromises.last?.resolve(.success([otherArticle]))
+
+                        relatedArticles = subject.relatedArticles(to: article)
+                    }
+
+                    it("does not make another call to the data repository") {
+                        expect(feedRepository.relatedArticlesPromises.count).to(equal(1))
+                        expect(feedRepository.relatedArticles).to(equal([article]))
+                    }
+
+                    it("returns the related articles") {
+                        expect(relatedArticles).to(equal([otherArticle]))
+                    }
+                }
+            }
+
+            context("before a -readArticle() call") {
+                context("and the article doesn't already have related articles") {
+                    beforeEach {
+                        relatedArticles = subject.relatedArticles(to: article)
+                    }
+
+                    it("makes a call to the data repository") {
+                        expect(feedRepository.relatedArticlesPromises.count).to(equal(1))
+                        expect(feedRepository.relatedArticles).to(equal([article]))
+                    }
+
+                    it("returns an empty array") {
+                        expect(relatedArticles).to(beEmpty())
+                    }
+
+                    it("doesn't make another call to the data repository when asked again") {
+                        _ = subject.relatedArticles(to: article)
+
+                        expect(feedRepository.relatedArticlesPromises.count).to(equal(1))
+                        expect(feedRepository.relatedArticles).to(equal([article]))
+                    }
+
+                    it("returns the related articles when asked again, after the data repository finishes") {
+                        let otherArticle = Article(title: "", link: URL(string: "https://exapmle.com/2")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: true, synced: false, estimatedReadingTime: 4, feed: nil, flags: [])
+
+                        feedRepository.relatedArticlesPromises.last?.resolve(.success([otherArticle]))
+
+                        relatedArticles = subject.relatedArticles(to: article)
+
+                        expect(relatedArticles).to(equal([otherArticle]))
+                    }
+                }
+
+                context("and the article does have saved related articles") {
+                    var otherArticle: Article? = Article(title: "", link: URL(string: "https://exapmle.com/2")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: true, synced: false, estimatedReadingTime: 4, feed: nil, flags: [])
+
+                    beforeEach {
+                        otherArticle = Article(title: "", link: URL(string: "https://exapmle.com/2")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: true, synced: false, estimatedReadingTime: 4, feed: nil, flags: [])
+
+                        article.addRelatedArticle(otherArticle!)
+
+                        relatedArticles = subject.relatedArticles(to: article)
+                    }
+
+                    it("makes a call to the data repository") {
+                        expect(feedRepository.relatedArticlesPromises.count).to(equal(1))
+                        expect(feedRepository.relatedArticles).to(equal([article]))
+                    }
+
+                    it("returns the related articles") {
+                        expect(relatedArticles).to(equal([otherArticle!]))
+                    }
+
+                    it("doesn't make another call to the data repository when asked again") {
+                        _ = subject.relatedArticles(to: article)
+
+                        expect(feedRepository.relatedArticlesPromises.count).to(equal(1))
+                        expect(feedRepository.relatedArticles).to(equal([article]))
+                    }
+
+                    it("returns the related articles when asked again, after the data repository finishes") {
+                        let thirdArticle = Article(title: "", link: URL(string: "https://exapmle.com/3")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: true, synced: false, estimatedReadingTime: 4, feed: nil, flags: [])
+
+                        feedRepository.relatedArticlesPromises.last?.resolve(.success([thirdArticle]))
+
+                        relatedArticles = subject.relatedArticles(to: article)
+
+                        expect(relatedArticles).to(equal([thirdArticle]))
+                    }
+                }
             }
         }
     }

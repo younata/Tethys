@@ -199,21 +199,23 @@ public final class ArticleViewController: UIViewController, Injectable {
 
 extension ArticleViewController: HTMLViewControllerDelegate {
     public func openURL(url: URL) -> Bool {
-        let predicate = NSPredicate(format: "link = %@", url.absoluteString)
-        if let article = self.article?.relatedArticles.filterWithPredicate(predicate).first {
+        if let openArticle = self.article,
+            let article = self.articleUseCase.relatedArticles(to: openArticle).first(where: { return $0.link == url }) {
             let articleController = ArticleViewController(themeRepository: self.themeRepository,
                                                           articleUseCase: self.articleUseCase,
                                                           htmlViewController: self.htmlViewControllerFactory,
                                                           articleListController: self.articleListController)
             articleController.setArticle(article, read: true, show: true)
             self.navigationController?.pushViewController(articleController, animated: true)
-        } else { self.openURL(url) }
+        } else {
+            self.openURL(url)
+        }
         return true
     }
 
     public func peekURL(url: URL) -> UIViewController? {
-        let predicate = NSPredicate(format: "link = %@", url.absoluteString)
-        if let article = self.article?.relatedArticles.filterWithPredicate(predicate).first {
+        if let openArticle = self.article,
+            let article = self.articleUseCase.relatedArticles(to: openArticle).first(where: { return $0.link == url }) {
             let articleController = ArticleViewController(themeRepository: self.themeRepository,
                                                           articleUseCase: self.articleUseCase,
                                                           htmlViewController: self.htmlViewControllerFactory,

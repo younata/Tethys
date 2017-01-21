@@ -19,6 +19,7 @@ public protocol DatabaseUseCase {
 
     func deleteArticle(_ article: Article) -> Future<Result<Void, RNewsError>>
     func markArticle(_ article: Article, asRead: Bool) -> Future<Result<Void, RNewsError>>
+    func findRelatedArticles(to article: Article) -> Future<Result<[Article], RNewsError>>
 
     func updateFeeds(_ callback: @escaping ([Feed], [NSError]) -> Void)
     func updateFeed(_ feed: Feed, callback: @escaping (Feed?, NSError?) -> Void)

@@ -255,16 +255,17 @@ class ArticleViewControllerSpec: QuickSpec {
 
             context("tapping a link") {
                 it("navigates to that article if the link goes to a related article") {
+                    articleUseCase.relatedArticlesReturns([article2])
                     let shouldOpen = htmlViewController.delegate?.openURL(url: article2.link)
                     expect(shouldOpen) == true
-//                    expect(navigationController.topViewController) != subject
-//                    expect(navigationController.topViewController).to(beAnInstanceOf(ArticleViewController.self))
-//                    guard let articleViewController = navigationController.topViewController as? ArticleViewController else { return }
-//                    expect(articleViewController.article) != article
-                    // This test fails because of a type mismatch between what Realm/Core Data store (String), and what the Article model stores (URL).
+                    expect(navigationController.topViewController) != subject
+                    expect(navigationController.topViewController).to(beAnInstanceOf(ArticleViewController.self))
+                    guard let articleViewController = navigationController.topViewController as? ArticleViewController else { return }
+                    expect(articleViewController.article) === article2
                 }
 
                 it("opens in an SFSafariViewController") {
+                    articleUseCase.relatedArticlesReturns([])
                     let url = URL(string: "https://example.com")!
                     let shouldOpen = htmlViewController.delegate?.openURL(url: url)
                     expect(shouldOpen) == true
@@ -278,6 +279,8 @@ class ArticleViewControllerSpec: QuickSpec {
                     var viewController: UIViewController?
 
                     beforeEach {
+                        articleUseCase.relatedArticlesReturns([])
+
                         viewController = htmlViewController.delegate?.peekURL(url: URL(string: "https://example.com/foo")!)
                     }
 

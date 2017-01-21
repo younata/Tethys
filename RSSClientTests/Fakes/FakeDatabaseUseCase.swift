@@ -42,6 +42,16 @@ class FakeDatabaseUseCase: DatabaseUseCase {
         return promise.future
     }
 
+    var relatedArticlesPromises: [Promise<Result<[Article], RNewsError>>] = []
+    var relatedArticles: [Article] = []
+    public func findRelatedArticles(to article: Article) -> Future<Result<[Article], RNewsError>> {
+        self.relatedArticles.append(article)
+
+        let promise = Promise<Result<[Article], RNewsError>>()
+        self.relatedArticlesPromises.append(promise)
+        return promise.future
+    }
+
     // MARK: DataWriter
 
     let subscribers = NSHashTable<AnyObject>.weakObjects()

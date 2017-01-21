@@ -48,6 +48,11 @@ platform :ios do
     pilot(distribute_external: true, changelog: `git log -10 --format='%B'`)
   end
 
+  desc 'Bump Version number'
+  lane :bump_version_number do
+    increment_version_number(xcodeproj: 'RSSClient.xcodeproj')
+  end
+
   desc 'Deploy a new version to the App Store'
   lane :deploy_app_store do
     tracker_release = next_tracker_release

@@ -114,24 +114,29 @@ extension DataService {
         article.estimatedReadingTime = estimateReadingTime(content)
 
         article.authors = authors
+    }
 
-        let promise = Promise<Void>()
+    func findRelatedArticles(to article: Article) -> Future<Result<[Article], RNewsError>> {
+        let promise = Promise<Result<[Article], RNewsError>>()
+
+        let content = article.content.isEmpty ? article.summary : article.content
 
         let parser = WebPageParser(string: content) { urls in
-            let links = urls.flatMap { URL(string: $0.absoluteString, relativeTo: feedURL)?.absoluteString }
+            let links = urls.flatMap { URL(string: $0.absoluteString, relativeTo: article.feed?.url)?.absoluteString }
             _ = self.articlesMatchingPredicate(NSPredicate(format: "link IN %@", links)).then { result in
                 switch result {
                 case let .success(related):
                     related.forEach(article.addRelatedArticle)
-                    promise.resolve()
-                case .failure(_):
-                    promise.resolve()
+                    _ = self.batchSave([], articles: [article] + related).wait()
+                    promise.resolve(.success(Array(related)))
+                case let .failure(error):
+                    promise.resolve(.failure(error))
                 }
             }
         }
         parser.searchType = .links
         parser.main()
-        _ = promise.future.wait()
+        return promise.future
     }
 
     func updateSearchIndexForArticle(_ article: Article) {

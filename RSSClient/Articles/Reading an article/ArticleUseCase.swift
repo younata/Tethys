@@ -2,6 +2,7 @@ import UIKit
 import Ra
 import rNewsKit
 import Result
+import CBGPromise
 
 public protocol ArticleUseCase {
     func articlesByAuthor(_ author: Author, callback: @escaping (DataStoreBackedArray<Article>) -> Void)
@@ -9,12 +10,16 @@ public protocol ArticleUseCase {
     func readArticle(_ article: Article) -> String
     func userActivityForArticle(_ article: Article) -> NSUserActivity
     func toggleArticleRead(_ article: Article)
+
+    func relatedArticles(to article: Article) -> [Article]
 }
 
 public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
     private let feedRepository: DatabaseUseCase
     private let themeRepository: ThemeRepository
     private let bundle: Bundle
+
+    private var relatedArticles: [Article: Future<Result<[Article], RNewsError>>] = [:]
 
     public init(feedRepository: DatabaseUseCase,
                 themeRepository: ThemeRepository,
@@ -60,8 +65,18 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
         }
     }
 
+    public func relatedArticles(to article: Article) -> [Article] {
+        if self.relatedArticles[article] == nil {
+            self.relatedArticles[article] = self.feedRepository.findRelatedArticles(to: article)
+        }
+        return self.relatedArticles[article]?.value?.value ?? Array(article.relatedArticles)
+    }
+
     public func readArticle(_ article: Article) -> String {
         if !article.read { _ = self.feedRepository.markArticle(article, asRead: true) }
+        if self.relatedArticles[article] == nil {
+            self.relatedArticles[article] = self.feedRepository.findRelatedArticles(to: article)
+        }
         return self.htmlForArticle(article)
     }
 

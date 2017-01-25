@@ -2,7 +2,7 @@ import RealmSwift
 
 struct RealmMigrator {
     static func beginMigration() {
-        let schemaVersion: UInt64 = 11
+        let schemaVersion: UInt64 = 13
         if UserDefaults.standard.bool(forKey: "FASTLANE_SNAPSHOT") {
             Realm.Configuration.defaultConfiguration = Realm.Configuration(
                 inMemoryIdentifier: "SnapShot",
@@ -60,6 +60,52 @@ struct RealmMigrator {
                     }
                 }
             }
+        }
+        if oldSchemaVersion < 13 {
+            var seenAuthors: [(name: String, email: String?)] = []
+            var deletedAuthors = 0
+            migration.enumerateObjects(ofType: RealmAuthor.className()) { oldObject, newObject in
+                if let newObject = newObject, let oldObject = oldObject {
+                    guard let name = oldObject["name"] as? String else {
+                        migration.delete(newObject)
+                        return
+                    }
+                    let email: String?
+                    if let emailObj = oldObject["email"] as? String {
+                        email = emailObj
+                    } else {
+                        email = nil
+                    }
+
+                    if seenAuthors.contains(where: { (storedName: String, storedEmail: String?) -> Bool in
+                        return name == storedName && email == storedEmail
+                    }) {
+                        migration.delete(newObject)
+                        deletedAuthors += 1
+                    } else {
+                        seenAuthors.append((name: name, email: email))
+                    }
+                }
+            }
+            seenAuthors = []
+
+            var seenStrings = Set<String>()
+            var deletedStrings = 0
+            migration.enumerateObjects(ofType: RealmString.className()) { oldObject, newObject in
+                if let newObject = newObject, let oldObject = oldObject {
+                    guard let str = oldObject["string"] as? String else {
+                        migration.delete(newObject)
+                        return
+                    }
+                    if seenStrings.contains(str) {
+                        migration.delete(newObject)
+                        deletedStrings += 1
+                    } else {
+                        seenStrings.insert(str)
+                    }
+                }
+            }
+            seenStrings = []
         }
     }
 

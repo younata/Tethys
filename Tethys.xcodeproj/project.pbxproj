@@ -2154,10 +2154,12 @@
 					};
 					894304291B45089A000078DC = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = 9D456YCUH2;
 						LastSwiftMigration = 0800;
 					};
 					89635F881A13C2E30052C248 = {
 						CreatedOnToolsVersion = 6.1;
+						DevelopmentTeam = 9D456YCUH2;
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.Sandbox = {
@@ -2170,15 +2172,18 @@
 					};
 					898979231B707FAD00218498 = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = 9D456YCUH2;
 						LastSwiftMigration = 0800;
 					};
 					8989792C1B707FAE00218498 = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = 9D456YCUH2;
 						LastSwiftMigration = 0800;
 						TestTargetID = 89635F881A13C2E30052C248;
 					};
 					898979C51B7155D700218498 = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = 9D456YCUH2;
 						LastSwiftMigration = 0800;
 						TestTargetID = 89635F881A13C2E30052C248;
 					};
@@ -2207,12 +2212,13 @@
 					};
 					89C8308A19D730E9009924DA = {
 						CreatedOnToolsVersion = 6.0.1;
+						DevelopmentTeam = 9D456YCUH2;
 						LastSwiftMigration = 0800;
 						TestTargetID = 89C8307219D730E9009924DA;
 					};
 				};
 			};
-			buildConfigurationList = 89C8306E19D730E9009924DA /* Build configuration list for PBXProject "RSSClient" */;
+			buildConfigurationList = 89C8306E19D730E9009924DA /* Build configuration list for PBXProject "Tethys" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -2871,7 +2877,6 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				CURRENT_PROJECT_VERSION = 2;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -2900,7 +2905,6 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				CURRENT_PROJECT_VERSION = 2;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -3223,6 +3227,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = 9D456YCUH2;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -3274,8 +3279,9 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
+				DEVELOPMENT_TEAM = 9D456YCUH2;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -3488,7 +3494,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		89C8306E19D730E9009924DA /* Build configuration list for PBXProject "RSSClient" */ = {
+		89C8306E19D730E9009924DA /* Build configuration list for PBXProject "Tethys" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				89C8309319D730E9009924DA /* Debug */,

@@ -8,6 +8,10 @@ import Foundation
 
 final class RealmString: Object {
     dynamic var string = ""
+
+    override static func indexedProperties() -> [String] {
+        return ["string"]
+    }
 }
 
 final class RealmFeed: Object {

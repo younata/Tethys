@@ -271,7 +271,12 @@ final class RealmService: DataService {
     }
 
     private func realmAuthorForAuthor(_ author: Author) -> RealmAuthor? {
-        let predicate = NSPredicate(format: "name = %@ AND email = %@", author.name, author.email?.absoluteString ?? "")
+        let predicate: NSPredicate
+        if let email = author.email {
+            predicate = NSPredicate(format: "name = %@ AND email = %@", author.name, email.absoluteString)
+        } else {
+            predicate = NSPredicate(format: "name = %@ AND email = NULL", author.name)
+        }
         return self.realm.objects(RealmAuthor.self).filter(predicate).first
     }
 
@@ -329,7 +334,7 @@ final class RealmService: DataService {
             rarticle.read = article.read
             rarticle.synced = article.synced
             let flags: [RealmString] = article.flags.map { str in
-                let realmString = RealmString()
+                let realmString = self.realmStringForString(str) ?? RealmString()
                 realmString.string = str
                 return realmString
             }

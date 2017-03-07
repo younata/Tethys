@@ -54,21 +54,17 @@ class HTMLViewControllerSpec: QuickSpec {
                 expect(subject.content.scrollView.indicatorStyle) == themeRepository.scrollIndicatorStyle
             }
 
-            it("updates the background view's backgroundColor") {
-                expect(subject.backgroundView.backgroundColor) == themeRepository.backgroundColor
+            it("updates the progress view's trackTintColor") {
+                expect(subject.progressIndicator.trackTintColor) == themeRepository.backgroundColor
             }
-
-            it("updates the background spinner's style") {
-                expect(subject.backgroundSpinnerView.activityIndicatorViewStyle) == themeRepository.spinnerStyle
-            }
-        }
-
-        it("does not show the loading spinner") {
-            expect(subject.backgroundSpinnerView.isHidden) == true
         }
 
         it("has link preview with 3d touch enabled") {
             expect(subject.content.allowsLinkPreview) == true
+        }
+
+        it("does not show the progress indicator") {
+            expect(subject.progressIndicator.isHidden) == true
         }
 
         describe("setting the html text") {
@@ -76,8 +72,8 @@ class HTMLViewControllerSpec: QuickSpec {
                 subject.configure(html: "<html><body></body></html>")
             }
 
-            it("shows the background spinner view") {
-                expect(subject.backgroundSpinnerView.isHidden) == false
+            it("shows the progress indicator") {
+                expect(subject.progressIndicator.isHidden) == false
             }
 
             describe("when the article loads") {
@@ -85,8 +81,8 @@ class HTMLViewControllerSpec: QuickSpec {
                     subject.content.navigationDelegate?.webView?(subject.content, didFinish: nil)
                 }
 
-                it("hides the backgroundView") {
-                    expect(subject.backgroundView.isHidden) == true
+                it("hides the progressIndicator") {
+                    expect(subject.progressIndicator.isHidden) == true
                 }
             }
 

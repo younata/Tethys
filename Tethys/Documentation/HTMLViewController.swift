@@ -4,7 +4,7 @@ import Ra
 import WebKit
 import SafariServices
 
-public protocol HTMLViewControllerDelegate {
+public protocol HTMLViewControllerDelegate: class {
     func openURL(url: URL) -> Bool
     func peekURL(url: URL) -> UIViewController?
     func commitViewController(viewController: UIViewController)
@@ -12,13 +12,10 @@ public protocol HTMLViewControllerDelegate {
 
 public final class HTMLViewController: UIViewController, Injectable {
     public private(set) var htmlString: String?
-    // swiftlint:disable weak_delegate
-    public var delegate: HTMLViewControllerDelegate?
-    // swiftlint:enable weak_delegate
+    public weak var delegate: HTMLViewControllerDelegate?
 
     public func configure(html: String) {
         self.htmlString = html
-        self.backgroundSpinnerView.startAnimating()
         self.content.loadHTMLString(html, baseURL: nil)
 
         var scriptContent = "var meta = document.createElement('meta');"
@@ -27,15 +24,23 @@ public final class HTMLViewController: UIViewController, Injectable {
         scriptContent += "document.getElementsByTagName('head')[0].appendChild(meta);"
 
         self.content.evaluateJavaScript(scriptContent, completionHandler: nil)
+        self.progressIndicator.isHidden = false
     }
 
     public let content = WKWebView(forAutoLayout: ())
+
+    public let progressIndicator = UIProgressView(forAutoLayout: ())
 
     public let themeRepository: ThemeRepository
 
     public init(themeRepository: ThemeRepository) {
         self.themeRepository = themeRepository
         super.init(nibName: nil, bundle: nil)
+
+        self.content.isOpaque = false
+        self.content.addObserver(
+            self, forKeyPath: "estimatedProgress", options: [NSKeyValueObservingOptions.new], context: nil
+        )
     }
 
     public required convenience init(injector: Injector) {
@@ -48,43 +53,51 @@ public final class HTMLViewController: UIViewController, Injectable {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public private(set) lazy var backgroundSpinnerView: UIActivityIndicatorView = {
-        let spinner = UIActivityIndicatorView(activityIndicatorStyle: self.themeRepository.spinnerStyle)
-        spinner.translatesAutoresizingMaskIntoConstraints = false
-        return spinner
-    }()
+    public override func observeValue(forKeyPath keyPath: String?,
+                                      of object: Any?,
+                                      change: [NSKeyValueChangeKey : Any]?,
+                                      context: UnsafeMutableRawPointer?) {
+        guard let _ = object as? WKWebView else { return }
+        guard let keyPath = keyPath else { return }
+        guard let change = change else { return }
+        switch keyPath {
+        case "estimatedProgress":
+            if let val = change[NSKeyValueChangeKey.newKey] as? Double {
+                self.progressIndicator.progress = Float(val)
+            }
+        default:
+            break
+        }
+    }
 
-    public private(set) lazy var backgroundView: UIView = {
-        let view = UIView(forAutoLayout: ())
-
-        view.addSubview(self.backgroundSpinnerView)
-        self.backgroundSpinnerView.autoCenterInSuperview()
-
-        return view
-    }()
+    deinit {
+        self.content.removeObserver(self, forKeyPath: "estimatedProgress")
+    }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
 
         self.view.addSubview(self.content)
-        self.view.addSubview(self.backgroundView)
-        if let _ = self.htmlString {
-            self.backgroundSpinnerView.startAnimating()
-        } else {
-            self.backgroundSpinnerView.stopAnimating()
-        }
+        self.view.addSubview(self.progressIndicator)
 
         self.content.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .bottom)
         self.view.addConstraint(NSLayoutConstraint(item: self.content, attribute: .bottom, relatedBy: .equal,
                                                    toItem: self.bottomLayoutGuide, attribute: .top,
                                                    multiplier: 1, constant: 0))
 
+        self.view.addConstraint(NSLayoutConstraint(item: self.progressIndicator, attribute: .top, relatedBy: .equal,
+                                                   toItem: self.topLayoutGuide, attribute: .bottom, multiplier: 1,
+                                                   constant: 0))
+        self.progressIndicator.autoPinEdge(toSuperviewEdge: .leading)
+        self.progressIndicator.autoPinEdge(toSuperviewEdge: .trailing)
+        self.progressIndicator.progressTintColor = UIColor.darkGreen()
+        self.progressIndicator.isHidden = true
+
         self.content.allowsLinkPreview = true
         self.content.navigationDelegate = self
         self.content.uiDelegate = self
         self.content.isOpaque = false
         self.content.scrollView.scrollIndicatorInsets.bottom = 0
-        self.backgroundView.autoPinEdgesToSuperviewEdges()
 
         self.themeRepository.addSubscriber(self)
     }
@@ -107,7 +120,7 @@ extension HTMLViewController: WKNavigationDelegate, WKUIDelegate {
     }
 
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        self.backgroundView.isHidden = self.htmlString != nil
+        self.progressIndicator.isHidden = self.htmlString != nil
     }
 
     public func webView(_ webView: WKWebView,
@@ -134,7 +147,6 @@ extension HTMLViewController: ThemeRepositorySubscriber {
         self.content.scrollView.indicatorStyle = themeRepository.scrollIndicatorStyle
 
         self.view.backgroundColor = themeRepository.backgroundColor
-        self.backgroundView.backgroundColor = themeRepository.backgroundColor
-        self.backgroundSpinnerView.activityIndicatorViewStyle = themeRepository.spinnerStyle
+        self.progressIndicator.trackTintColor = themeRepository.backgroundColor
     }
 }

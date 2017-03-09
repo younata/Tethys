@@ -45,7 +45,7 @@ public final class HTMLViewController: UIViewController, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            themeRepository: injector.create(kind: ThemeRepository.self)!
+            themeRepository: injector.create(ThemeRepository.self)!
         )
     }
 

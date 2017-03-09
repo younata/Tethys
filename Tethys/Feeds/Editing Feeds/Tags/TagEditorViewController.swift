@@ -25,8 +25,8 @@ public final class TagEditorViewController: UIViewController, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            feedRepository: injector.create(kind: DatabaseUseCase.self)!,
-            themeRepository: injector.create(kind: ThemeRepository.self)!
+            feedRepository: injector.create(DatabaseUseCase.self)!,
+            themeRepository: injector.create(ThemeRepository.self)!
         )
     }
 

@@ -38,9 +38,9 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
 
     public required convenience init(injector: Injector) {
         self.init(
-            importUseCase: injector.create(kind: ImportUseCase.self)!,
-            themeRepository: injector.create(kind: ThemeRepository.self)!,
-            analytics: injector.create(kind: Analytics.self)!
+            importUseCase: injector.create(ImportUseCase.self)!,
+            themeRepository: injector.create(ThemeRepository.self)!,
+            analytics: injector.create(Analytics.self)!
         )
     }
 

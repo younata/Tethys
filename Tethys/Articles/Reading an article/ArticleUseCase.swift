@@ -32,9 +32,9 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            feedRepository: injector.create(kind: DatabaseUseCase.self)!,
-            themeRepository: injector.create(kind: ThemeRepository.self)!,
-            bundle: injector.create(kind: Bundle.self)!
+            feedRepository: injector.create(DatabaseUseCase.self)!,
+            themeRepository: injector.create(ThemeRepository.self)!,
+            bundle: injector.create(Bundle.self)!
         )
     }
 

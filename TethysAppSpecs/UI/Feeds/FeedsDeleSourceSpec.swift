@@ -42,7 +42,7 @@ class FeedsDeleSourceSpec: QuickSpec {
                     themeRepository: themeRepository,
                     settingsRepository: SettingsRepository(userDefaults: nil),
                     articleViewController: { return ArticleViewController(coder: NSKeyedUnarchiver())! },
-                    generateBookViewController: { return injector.create(kind: GenerateBookViewController.self)! }
+                    generateBookViewController: { return injector.create(GenerateBookViewController.self)! }
                 )
             }
 

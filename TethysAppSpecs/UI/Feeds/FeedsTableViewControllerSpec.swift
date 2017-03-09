@@ -26,27 +26,27 @@ class FeedsTableViewControllerSpec: QuickSpec {
             let injector = Injector()
 
             dataUseCase = FakeDatabaseUseCase()
-            injector.bind(kind: DatabaseUseCase.self, toInstance: dataUseCase)
+            injector.bind(DatabaseUseCase.self, to: dataUseCase)
 
-            injector.bind(kind: OPMLService.self, toInstance: FakeOPMLService())
+            injector.bind(OPMLService.self, to: FakeOPMLService())
 
             mainQueue = FakeOperationQueue()
-            injector.bind(string: kMainQueue, toInstance: mainQueue)
+            injector.bind(kMainQueue, to: mainQueue)
 
             settingsRepository = SettingsRepository(userDefaults: nil)
-            injector.bind(kind: SettingsRepository.self, toInstance: settingsRepository)
+            injector.bind(SettingsRepository.self, to: settingsRepository)
 
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
+            injector.bind(ThemeRepository.self, to: themeRepository)
 
-            injector.bind(kind: QuickActionRepository.self, toInstance: FakeQuickActionRepository())
-            injector.bind(kind: ImportUseCase.self, toInstance: FakeImportUseCase())
+            injector.bind(QuickActionRepository.self, to: FakeQuickActionRepository())
+            injector.bind(ImportUseCase.self, to: FakeImportUseCase())
             analytics = FakeAnalytics()
-            injector.bind(kind: Analytics.self, toInstance: analytics)
+            injector.bind(Analytics.self, to: analytics)
 
-            injector.bind(kind: AccountRepository.self, toInstance: FakeAccountRepository())
+            injector.bind(AccountRepository.self, to: FakeAccountRepository())
 
-            subject = injector.create(kind: FeedsTableViewController.self)
+            subject = injector.create(FeedsTableViewController.self)
 
             navigationController = UINavigationController(rootViewController: subject)
 

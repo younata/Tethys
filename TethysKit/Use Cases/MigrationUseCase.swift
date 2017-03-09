@@ -20,7 +20,7 @@ public final class DefaultMigrationUseCase: MigrationUseCase, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            feedRepository: injector.create(kind: DatabaseUseCase.self)!
+            feedRepository: injector.create(DatabaseUseCase.self)!
         )
     }
 

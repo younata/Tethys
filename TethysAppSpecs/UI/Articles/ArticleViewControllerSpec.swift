@@ -19,15 +19,15 @@ class ArticleViewControllerSpec: QuickSpec {
             injector = Injector()
 
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
+            injector.bind(ThemeRepository.self, to: themeRepository)
 
             htmlViewController = HTMLViewController(themeRepository: themeRepository)
-            injector.bind(kind: HTMLViewController.self, toInstance: htmlViewController)
+            injector.bind(HTMLViewController.self, to: htmlViewController)
 
             articleUseCase = FakeArticleUseCase()
-            injector.bind(kind: ArticleUseCase.self, toInstance: articleUseCase)
+            injector.bind(ArticleUseCase.self, to: articleUseCase)
 
-            subject = injector.create(kind: ArticleViewController.self)!
+            subject = injector.create(ArticleViewController.self)!
 
             navigationController = UINavigationController(rootViewController: subject)
 
@@ -229,9 +229,9 @@ class ArticleViewControllerSpec: QuickSpec {
                                 themeRepository: themeRepository,
                                 settingsRepository: SettingsRepository(userDefaults: nil),
                                 articleViewController: { subject },
-                                generateBookViewController: { injector.create(kind: GenerateBookViewController.self)! }
+                                generateBookViewController: { injector.create(GenerateBookViewController.self)! }
                             )
-                            injector.bind(kind: ArticleListController.self, toInstance: articleListController)
+                            injector.bind(ArticleListController.self, to: articleListController)
 
                             articleUseCase.articlesByAuthorArgsForCall(0).1(DataStoreBackedArray([article, articleByAuthor]))
                         }

@@ -106,14 +106,14 @@ public final class FeedsTableViewController: UIViewController, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            feedRepository: injector.create(kind: DatabaseUseCase.self)!,
-            themeRepository: injector.create(kind: ThemeRepository.self)!,
-            settingsRepository: injector.create(kind: SettingsRepository.self)!,
-            mainQueue: injector.create(string: kMainQueue) as! OperationQueue,
-            findFeedViewController: {injector.create(kind: FindFeedViewController.self)!},
-            feedViewController: {injector.create(kind: FeedViewController.self)!},
-            settingsViewController: {injector.create(kind: SettingsViewController.self)!},
-            articleListController: {injector.create(kind: ArticleListController.self)!}
+            feedRepository: injector.create(DatabaseUseCase.self)!,
+            themeRepository: injector.create(ThemeRepository.self)!,
+            settingsRepository: injector.create(SettingsRepository.self)!,
+            mainQueue: injector.create(kMainQueue, type: OperationQueue.self)!,
+            findFeedViewController: {injector.create(FindFeedViewController.self)!},
+            feedViewController: {injector.create(FeedViewController.self)!},
+            settingsViewController: {injector.create(SettingsViewController.self)!},
+            articleListController: {injector.create(ArticleListController.self)!}
         )
     }
 

@@ -24,16 +24,16 @@ class FeedViewControllerSpec: QuickSpec {
             injector = Injector()
 
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
+            injector.bind(ThemeRepository.self, to: themeRepository)
 
             backgroundQueue = FakeOperationQueue()
             backgroundQueue.runSynchronously = true
-            injector.bind(string: kBackgroundQueue, toInstance: backgroundQueue)
+            injector.bind(kBackgroundQueue, to: backgroundQueue)
 
             dataRepository = FakeDatabaseUseCase()
-            injector.bind(kind: DatabaseUseCase.self, toInstance: dataRepository)
+            injector.bind(DatabaseUseCase.self, to: dataRepository)
 
-            subject = injector.create(kind: FeedViewController.self)!
+            subject = injector.create(FeedViewController.self)!
 
             navigationController = UINavigationController(rootViewController: subject)
 

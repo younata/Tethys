@@ -25,21 +25,21 @@ class FindFeedViewControllerSpec: QuickSpec {
             injector = Ra.Injector()
 
             feedRepository = FakeDatabaseUseCase()
-            injector.bind(kind: DatabaseUseCase.self, toInstance: feedRepository)
+            injector.bind(DatabaseUseCase.self, to: feedRepository)
 
             importUseCase = FakeImportUseCase()
-            injector.bind(kind: ImportUseCase.self, toInstance: importUseCase)
+            injector.bind(ImportUseCase.self, to: importUseCase)
 
             opmlService = FakeOPMLService()
-            injector.bind(kind: OPMLService.self, toInstance: opmlService)
+            injector.bind(OPMLService.self, to: opmlService)
 
             analytics = FakeAnalytics()
-            injector.bind(kind: Analytics.self, toInstance: analytics)
+            injector.bind(Analytics.self, to: analytics)
 
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
+            injector.bind(ThemeRepository.self, to: themeRepository)
 
-            subject = injector.create(kind: FindFeedViewController.self)!
+            subject = injector.create(FindFeedViewController.self)!
             webView = FakeWebView()
             subject.webContent = webView
 

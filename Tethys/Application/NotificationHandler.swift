@@ -19,7 +19,7 @@ public struct LocalNotificationHandler: NotificationHandler, Injectable {
     }
 
     public init(injector: Injector) {
-        self.init(feedRepository: injector.create(kind: DatabaseUseCase.self)!)
+        self.init(feedRepository: injector.create(DatabaseUseCase.self)!)
     }
 
     public func enableNotifications(_ notificationSource: LocalNotificationSource) {

@@ -34,9 +34,9 @@ class HTMLViewControllerSpec: QuickSpec {
             injector = Injector()
 
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
+            injector.bind(ThemeRepository.self, to: themeRepository)
 
-            subject = injector.create(kind: HTMLViewController.self)!
+            subject = injector.create(HTMLViewController.self)!
 
             expect(subject.view).toNot(beNil())
         }

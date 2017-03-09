@@ -34,28 +34,28 @@ class AppDelegateSpec: QuickSpec {
 
             injector = Ra.Injector()
 
-            injector.bind(string: kMainQueue, toInstance: FakeOperationQueue())
-            injector.bind(string: kBackgroundQueue, toInstance: FakeOperationQueue())
+            injector.bind(kMainQueue, to: FakeOperationQueue())
+            injector.bind(kBackgroundQueue, to: FakeOperationQueue())
 
             dataUseCase = FakeDatabaseUseCase()
-            injector.bind(kind: DatabaseUseCase.self, toInstance: dataUseCase)
+            injector.bind(DatabaseUseCase.self, to: dataUseCase)
 
-            injector.bind(kind: MigrationUseCase.self, toInstance: FakeMigrationUseCase())
-            injector.bind(kind: ImportUseCase.self, toInstance: FakeImportUseCase())
+            injector.bind(MigrationUseCase.self, to: FakeMigrationUseCase())
+            injector.bind(ImportUseCase.self, to: FakeImportUseCase())
 
             analytics = FakeAnalytics()
-            injector.bind(kind: Analytics.self, toInstance: analytics)
+            injector.bind(Analytics.self, to: analytics)
 
             InjectorModule().configureInjector(injector: injector)
 
             notificationHandler = FakeNotificationHandler()
-            injector.bind(kind: NotificationHandler.self, toInstance: notificationHandler)
+            injector.bind(NotificationHandler.self, to: notificationHandler)
 
             backgroundFetchHandler = FakeBackgroundFetchHandler()
-            injector.bind(kind: BackgroundFetchHandler.self, toInstance: backgroundFetchHandler)
+            injector.bind(BackgroundFetchHandler.self, to: backgroundFetchHandler)
 
             importUseCase = FakeImportUseCase()
-            injector.bind(kind: ImportUseCase.self, toInstance: importUseCase)
+            injector.bind(ImportUseCase.self, to: importUseCase)
 
             subject.anInjector = injector
             subject.window = UIWindow(frame: CGRect(x: 0, y: 0, width: 320, height: 480))

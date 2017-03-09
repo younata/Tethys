@@ -60,11 +60,11 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            urlSession: injector.create(kind: URLSession.self)!,
-            feedRepository: injector.create(kind: DatabaseUseCase.self)!,
-            opmlService: injector.create(kind: OPMLService.self)!,
-            fileManager: injector.create(kind: FileManager.self)!,
-            mainQueue: injector.create(string: kMainQueue) as! OperationQueue
+            urlSession: injector.create(URLSession.self)!,
+            feedRepository: injector.create(DatabaseUseCase.self)!,
+            opmlService: injector.create(OPMLService.self)!,
+            fileManager: injector.create(FileManager.self)!,
+            mainQueue: injector.create(kMainQueue, type: OperationQueue.self)!
         )
     }
 

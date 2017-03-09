@@ -21,7 +21,7 @@ public final class SplitViewController: UISplitViewController, Injectable {
     }
 
     public required convenience init(injector: Injector) {
-        self.init(themeRepository: injector.create(kind: ThemeRepository.self)!)
+        self.init(themeRepository: injector.create(ThemeRepository.self)!)
     }
 
     public required init?(coder aDecoder: NSCoder) {

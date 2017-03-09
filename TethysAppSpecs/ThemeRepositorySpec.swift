@@ -22,9 +22,9 @@ class ThemeRepositorySpec: QuickSpec {
             injector = Injector()
 
             userDefaults = FakeUserDefaults()
-            injector.bind(kind: UserDefaults.self, toInstance: userDefaults)
+            injector.bind(UserDefaults.self, to: userDefaults)
 
-            subject = injector.create(kind: ThemeRepository.self)!
+            subject = injector.create(ThemeRepository.self)!
 
             subscriber = FakeThemeSubscriber()
             subject.addSubscriber(subscriber)
@@ -138,7 +138,7 @@ class ThemeRepositorySpec: QuickSpec {
             }
 
             it("persists the change if it is not ephemeral") {
-                let otherRepo = injector.create(kind: ThemeRepository.self)!
+                let otherRepo = injector.create(ThemeRepository.self)!
                 if (sharedContext()["ephemeral"] as? Bool != true) {
                     let expectedBackground = sharedContext()["background"] as? UIColor
                     expect(expectedBackground).toNot(beNil())

@@ -18,16 +18,16 @@ class LoginViewControllerSpec: QuickSpec {
         beforeEach {
             let injector = Injector()
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
+            injector.bind(ThemeRepository.self, to: themeRepository)
 
             accountRepository = FakeAccountRepository()
-            injector.bind(kind: AccountRepository.self, toInstance: accountRepository)
+            injector.bind(AccountRepository.self, to: accountRepository)
 
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
-            injector.bind(string: kMainQueue, toInstance: mainQueue)
+            injector.bind(kMainQueue, to: mainQueue)
 
-            subject = injector.create(kind: LoginViewController.self)!
+            subject = injector.create(LoginViewController.self)!
 
             rootViewController = UIViewController()
             navigationController = UINavigationController(rootViewController: rootViewController)

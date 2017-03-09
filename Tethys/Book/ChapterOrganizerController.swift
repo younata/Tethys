@@ -63,9 +63,9 @@ public class ChapterOrganizerController: UIViewController, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            themeRepository: injector.create(kind: ThemeRepository.self)!,
-            settingsRepository: injector.create(kind: SettingsRepository.self)!,
-            articleListController: { injector.create(kind: ArticleListController.self)! }
+            themeRepository: injector.create(ThemeRepository.self)!,
+            settingsRepository: injector.create(SettingsRepository.self)!,
+            articleListController: { injector.create(ArticleListController.self)! }
         )
     }
 

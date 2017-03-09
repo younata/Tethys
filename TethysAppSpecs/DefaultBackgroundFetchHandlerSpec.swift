@@ -14,9 +14,9 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
         beforeEach {
             injector = Injector()
             dataRepository = FakeDatabaseUseCase()
-            injector.bind(kind: DatabaseUseCase.self, toInstance: dataRepository)
+            injector.bind(DatabaseUseCase.self, to: dataRepository)
 
-            subject = injector.create(kind: DefaultBackgroundFetchHandler.self)!
+            subject = injector.create(DefaultBackgroundFetchHandler.self)!
         }
 
         describe("updating feeds") {

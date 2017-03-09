@@ -54,16 +54,16 @@ class ChapterOrganizerControllerSpec: QuickSpec {
 
             themeRepository = ThemeRepository(userDefaults: nil)
 
-            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
-            injector.bind(kind: DatabaseUseCase.self, toInstance: FakeDatabaseUseCase())
-            injector.bind(string: kMainQueue, toInstance: FakeOperationQueue())
+            injector.bind(ThemeRepository.self, to: themeRepository)
+            injector.bind(DatabaseUseCase.self, to: FakeDatabaseUseCase())
+            injector.bind(kMainQueue, to: FakeOperationQueue())
 
             settingsRepository = SettingsRepository(userDefaults: nil)
-            injector.bind(kind: SettingsRepository.self, toInstance: settingsRepository)
+            injector.bind(SettingsRepository.self, to: settingsRepository)
 
             delegate = FakeChapterOrganizerControllerDelegate()
 
-            subject = injector.create(kind: ChapterOrganizerController.self)!
+            subject = injector.create(ChapterOrganizerController.self)!
 
             navController = UINavigationController(rootViewController: subject)
 

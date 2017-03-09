@@ -16,9 +16,9 @@ class SplitViewControllerSpec: QuickSpec {
             let injector = Injector()
 
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
+            injector.bind(ThemeRepository.self, to: themeRepository)
 
-            subject = injector.create(kind: SplitViewController.self)!
+            subject = injector.create(SplitViewController.self)!
             subject.view.layoutIfNeeded()
             subject.viewControllers = [master, detail]
         }

@@ -161,21 +161,21 @@ class ArticleListControllerSpec: QuickSpec {
             injector = Injector()
 
             mainQueue = FakeOperationQueue()
-            injector.bind(string: kMainQueue, toInstance: mainQueue)
+            injector.bind(kMainQueue, to: mainQueue)
 
             settingsRepository = SettingsRepository(userDefaults: nil)
-            injector.bind(kind: SettingsRepository.self, toInstance: settingsRepository)
+            injector.bind(SettingsRepository.self, to: settingsRepository)
 
             let useCase = FakeArticleUseCase()
             useCase.readArticleReturns("hello")
             useCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
-            injector.bind(kind: ArticleUseCase.self, toInstance: useCase)
+            injector.bind(ArticleUseCase.self, to: useCase)
 
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
+            injector.bind(ThemeRepository.self, to: themeRepository)
 
             dataRepository = FakeDatabaseUseCase()
-            injector.bind(kind: DatabaseUseCase.self, toInstance: dataRepository)
+            injector.bind(DatabaseUseCase.self, to: dataRepository)
 
             publishedOffset = 0
 
@@ -190,7 +190,7 @@ class ArticleListControllerSpec: QuickSpec {
                 feed.addArticle(article)
             }
 
-            subject = injector.create(kind: ArticleListController.self)!
+            subject = injector.create(ArticleListController.self)!
 
             navigationController = UINavigationController(rootViewController: subject)
         }
@@ -357,7 +357,7 @@ class ArticleListControllerSpec: QuickSpec {
                     }
 
                     it("presents a generate book controller when tapped") {
-                        injector.bind(kind: GenerateBookUseCase.self, toInstance: FakeGenerateBookUseCase())
+                        injector.bind(GenerateBookUseCase.self, to: FakeGenerateBookUseCase())
                         item?.tap()
 
                         expect(subject.presentedViewController).to(beAKindOf(UINavigationController.self))
@@ -522,7 +522,7 @@ class ArticleListControllerSpec: QuickSpec {
                     }
 
                     it("presents a generate book controller when tapped") {
-                        injector.bind(kind: GenerateBookUseCase.self, toInstance: FakeGenerateBookUseCase())
+                        injector.bind(GenerateBookUseCase.self, to: FakeGenerateBookUseCase())
                         item?.tap()
 
                         expect(subject.presentedViewController).to(beAKindOf(UINavigationController.self))

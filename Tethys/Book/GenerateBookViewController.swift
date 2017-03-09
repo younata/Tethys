@@ -79,9 +79,9 @@ public class GenerateBookViewController: UIViewController, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            themeRepository: injector.create(kind: ThemeRepository.self)!,
-            generateBookUseCase: injector.create(kind: GenerateBookUseCase.self)!,
-            chapterOrganizer: injector.create(kind: ChapterOrganizerController.self)!
+            themeRepository: injector.create(ThemeRepository.self)!,
+            generateBookUseCase: injector.create(GenerateBookUseCase.self)!,
+            chapterOrganizer: injector.create(ChapterOrganizerController.self)!
         )
     }
 

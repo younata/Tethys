@@ -43,9 +43,9 @@ class DefaultOPMLServiceSpec: QuickSpec {
             )
 
             let injector = Injector()
-            injector.bind(string: kMainQueue, toInstance: mainQueue)
-            injector.bind(string: kBackgroundQueue, toInstance: importQueue)
-            injector.bind(kind: DefaultDatabaseUseCase.self, toInstance: dataRepository)
+            injector.bind(kMainQueue, to: mainQueue)
+            injector.bind(kBackgroundQueue, to: importQueue)
+            injector.bind(DefaultDatabaseUseCase.self, to: dataRepository)
 
             subject = DefaultOPMLService(injector: injector)
         }

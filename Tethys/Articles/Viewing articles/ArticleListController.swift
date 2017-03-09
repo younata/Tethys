@@ -69,12 +69,12 @@ public final class ArticleListController: UIViewController, DataSubscriber, Inje
 
     public required convenience init(injector: Injector) {
         self.init(
-            mainQueue: injector.create(string: kMainQueue) as! OperationQueue,
-            feedRepository: injector.create(kind: DatabaseUseCase.self)!,
-            themeRepository: injector.create(kind: ThemeRepository.self)!,
-            settingsRepository: injector.create(kind: SettingsRepository.self)!,
-            articleViewController: { injector.create(kind: ArticleViewController.self)! },
-            generateBookViewController: { injector.create(kind: GenerateBookViewController.self)! }
+            mainQueue: injector.create(kMainQueue, type: OperationQueue.self)!,
+            feedRepository: injector.create(DatabaseUseCase.self)!,
+            themeRepository: injector.create(ThemeRepository.self)!,
+            settingsRepository: injector.create(SettingsRepository.self)!,
+            articleViewController: { injector.create(ArticleViewController.self)! },
+            generateBookViewController: { injector.create(GenerateBookViewController.self)! }
         )
     }
 

@@ -31,9 +31,9 @@ public final class FeedViewController: UIViewController, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            feedRepository: injector.create(kind: DatabaseUseCase.self)!,
-            themeRepository: injector.create(kind: ThemeRepository.self)!,
-            tagEditorViewController: {injector.create(kind: TagEditorViewController.self)!}
+            feedRepository: injector.create(DatabaseUseCase.self)!,
+            themeRepository: injector.create(ThemeRepository.self)!,
+            tagEditorViewController: {injector.create(TagEditorViewController.self)!}
         )
     }
 

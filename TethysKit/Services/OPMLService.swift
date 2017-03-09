@@ -15,9 +15,9 @@ final class DefaultOPMLService: NSObject, OPMLService, Injectable {
     private let importQueue: OperationQueue
 
     required init(injector: Injector) {
-        self.dataRepository = injector.create(kind: DefaultDatabaseUseCase.self)!
-        self.mainQueue = injector.create(string: kMainQueue) as! OperationQueue
-        self.importQueue = injector.create(string: kBackgroundQueue) as! OperationQueue
+        self.dataRepository = injector.create(DefaultDatabaseUseCase.self)!
+        self.mainQueue = injector.create(kMainQueue, type: OperationQueue.self)!
+        self.importQueue = injector.create(kBackgroundQueue, type: OperationQueue.self)!
 
         super.init()
     }

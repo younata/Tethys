@@ -30,7 +30,7 @@ public final class BackgroundStateMonitor: NSObject, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            notificationCenter: injector.create(kind: NotificationCenter.self)!
+            notificationCenter: injector.create(NotificationCenter.self)!
         )
     }
 

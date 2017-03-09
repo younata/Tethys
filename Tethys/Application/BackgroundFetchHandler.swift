@@ -17,7 +17,7 @@ public struct DefaultBackgroundFetchHandler: BackgroundFetchHandler, Injectable 
     }
 
     public init(injector: Injector) {
-        self.feedRepository = injector.create(kind: DatabaseUseCase.self)!
+        self.feedRepository = injector.create(DatabaseUseCase.self)!
     }
 
     public func performFetch(_ notificationHandler: NotificationHandler,

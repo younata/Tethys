@@ -19,12 +19,12 @@ class TagEditorViewControllerSpec: QuickSpec {
         beforeEach {
             injector = Injector()
             dataRepository = FakeDatabaseUseCase()
-            injector.bind(kind: DatabaseUseCase.self, toInstance: dataRepository)
+            injector.bind(DatabaseUseCase.self, to: dataRepository)
 
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
+            injector.bind(ThemeRepository.self, to: themeRepository)
 
-            subject = injector.create(kind: TagEditorViewController.self)!
+            subject = injector.create(TagEditorViewController.self)!
             navigationController = UINavigationController(rootViewController: rootViewController)
             navigationController.pushViewController(subject, animated: false)
 

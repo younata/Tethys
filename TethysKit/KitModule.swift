@@ -15,10 +15,10 @@ public final class KitModule: NSObject, Ra.InjectorModule {
     public func configureInjector(injector: Injector) {
         // Operation Queues
         let mainQueue = OperationQueue.main
-        injector.bind(string: kMainQueue, toInstance: mainQueue)
-        injector.bind(kind: URLSession.self, toInstance: URLSession.shared)
+        injector.bind(kMainQueue, to: mainQueue)
+        injector.bind(URLSession.self, to: URLSession.shared)
         #if os(iOS)
-            injector.bind(kind: Analytics.self, toInstance: MixPanelAnalytics())
+            injector.bind(Analytics.self, to: MixPanelAnalytics())
         #endif
 
         var searchIndex: SearchIndex? = nil
@@ -26,13 +26,13 @@ public final class KitModule: NSObject, Ra.InjectorModule {
 
         #if os(iOS)
             searchIndex = CSSearchableIndex.default()
-            injector.bind(kind: SearchIndex.self, toInstance: CSSearchableIndex.default())
+            injector.bind(SearchIndex.self, to: CSSearchableIndex.default())
         #endif
 
         let backgroundQueue = OperationQueue()
         backgroundQueue.qualityOfService = QualityOfService.utility
         backgroundQueue.maxConcurrentOperationCount = 1
-        injector.bind(string: kBackgroundQueue, toInstance: backgroundQueue)
+        injector.bind(kBackgroundQueue, to: backgroundQueue)
 
         let urlSessionConfiguration = URLSessionConfiguration.default
         let urlSessionDelegate = TethysKitURLSessionDelegate()
@@ -94,19 +94,19 @@ public final class KitModule: NSObject, Ra.InjectorModule {
             mainQueue: mainQueue
         )
 
-        injector.bind(kind: DatabaseUseCase.self, toInstance: dataRepository)
-        injector.bind(kind: DefaultDatabaseUseCase.self, toInstance: dataRepository)
-        injector.bind(kind: AccountRepository.self, toInstance: accountRepository)
+        injector.bind(DatabaseUseCase.self, to: dataRepository)
+        injector.bind(DefaultDatabaseUseCase.self, to: dataRepository)
+        injector.bind(AccountRepository.self, to: accountRepository)
 
         let opmlService = DefaultOPMLService(injector: injector)
-        injector.bind(kind: OPMLService.self, toInstance: opmlService)
-        injector.bind(kind: MigrationUseCase.self, toInstance: DefaultMigrationUseCase(injector: injector))
-        injector.bind(kind: ImportUseCase.self, to: DefaultImportUseCase.init)
+        injector.bind(OPMLService.self, to: opmlService)
+        injector.bind(MigrationUseCase.self, to: DefaultMigrationUseCase(injector: injector))
+        injector.bind(ImportUseCase.self, toBlock: DefaultImportUseCase.init)
 
         let spondeService = Sponde.DefaultService(baseURL: URL(string: "https://autonoe.cfapps.io")!,
                                                   networkClient: URLSession.shared)
         let generateBookUseCase = DefaultGenerateBookUseCase(service: spondeService, mainQueue: mainQueue)
-        injector.bind(kind: GenerateBookUseCase.self, toInstance: generateBookUseCase)
+        injector.bind(GenerateBookUseCase.self, to: generateBookUseCase)
     }
     // swiftlint:enable function_body_length
 }

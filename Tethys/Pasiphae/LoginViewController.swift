@@ -157,9 +157,9 @@ public final class LoginViewController: UIViewController, Injectable {
 
     public convenience required init(injector: Injector) {
         self.init(
-            themeRepository: injector.create(kind: ThemeRepository.self)!,
-            accountRepository: injector.create(kind: AccountRepository.self)!,
-            mainQueue: injector.create(string: kMainQueue) as! OperationQueue
+            themeRepository: injector.create(ThemeRepository.self)!,
+            accountRepository: injector.create(AccountRepository.self)!,
+            mainQueue: injector.create(kMainQueue, type: OperationQueue.self)!
         )
     }
 

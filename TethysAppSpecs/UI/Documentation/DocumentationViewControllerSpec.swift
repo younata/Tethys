@@ -17,15 +17,15 @@ class DocumentationViewControllerSpec: QuickSpec {
             let injector = Injector()
 
             fakeDocumentationUseCase = FakeDocumentationUseCase()
-            injector.bind(kind: DocumentationUseCase.self, toInstance: fakeDocumentationUseCase)
+            injector.bind(DocumentationUseCase.self, to: fakeDocumentationUseCase)
 
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
+            injector.bind(ThemeRepository.self, to: themeRepository)
 
             htmlViewController = HTMLViewController(themeRepository: themeRepository)
-            injector.bind(kind: HTMLViewController.self, toInstance: htmlViewController)
+            injector.bind(HTMLViewController.self, to: htmlViewController)
 
-            subject = injector.create(kind: DocumentationViewController.self)
+            subject = injector.create(DocumentationViewController.self)
 
             navigationController = UINavigationController(rootViewController: subject)
 

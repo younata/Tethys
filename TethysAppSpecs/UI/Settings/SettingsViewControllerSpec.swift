@@ -20,30 +20,30 @@ class SettingsViewControllerSpec: QuickSpec {
             let injector = Injector()
 
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
+            injector.bind(ThemeRepository.self, to: themeRepository)
 
             settingsRepository = SettingsRepository(userDefaults: nil)
-            injector.bind(kind: SettingsRepository.self, toInstance: settingsRepository)
+            injector.bind(SettingsRepository.self, to: settingsRepository)
 
             fakeQuickActionRepository = FakeQuickActionRepository()
-            injector.bind(kind: QuickActionRepository.self, toInstance: fakeQuickActionRepository)
+            injector.bind(QuickActionRepository.self, to: fakeQuickActionRepository)
 
             feedRepository = FakeDatabaseUseCase()
-            injector.bind(kind: DatabaseUseCase.self, toInstance: feedRepository)
+            injector.bind(DatabaseUseCase.self, to: feedRepository)
 
             accountRepository = FakeAccountRepository()
             accountRepository.loggedInReturns(nil)
-            injector.bind(kind: AccountRepository.self, toInstance: accountRepository)
+            injector.bind(AccountRepository.self, to: accountRepository)
             let mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
-            injector.bind(string: kMainQueue, toInstance: mainQueue)
+            injector.bind(kMainQueue, to: mainQueue)
 
             opmlService = FakeOPMLService()
-            injector.bind(kind: OPMLService.self, toInstance: opmlService)
+            injector.bind(OPMLService.self, to: opmlService)
 
-            injector.bind(kind: DocumentationUseCase.self, toInstance: FakeDocumentationUseCase())
+            injector.bind(DocumentationUseCase.self, to: FakeDocumentationUseCase())
 
-            subject = injector.create(kind: SettingsViewController.self)!
+            subject = injector.create(SettingsViewController.self)!
 
             navigationController = UINavigationController(rootViewController: subject)
 

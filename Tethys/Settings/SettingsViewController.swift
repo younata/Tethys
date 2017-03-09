@@ -51,15 +51,15 @@ public final class SettingsViewController: UIViewController, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            themeRepository: injector.create(kind: ThemeRepository.self)!,
-            settingsRepository: injector.create(kind: SettingsRepository.self)!,
-            quickActionRepository: injector.create(kind: QuickActionRepository.self)!,
-            databaseUseCase: injector.create(kind: DatabaseUseCase.self)!,
-            accountRepository: injector.create(kind: AccountRepository.self)!,
-            opmlService: injector.create(kind: OPMLService.self)!,
-            mainQueue: injector.create(string: kMainQueue) as! OperationQueue,
-            loginViewController: { injector.create(kind: LoginViewController.self)! },
-            documentationViewController: { injector.create(kind: DocumentationViewController.self)! }
+            themeRepository: injector.create(ThemeRepository.self)!,
+            settingsRepository: injector.create(SettingsRepository.self)!,
+            quickActionRepository: injector.create(QuickActionRepository.self)!,
+            databaseUseCase: injector.create(DatabaseUseCase.self)!,
+            accountRepository: injector.create(AccountRepository.self)!,
+            opmlService: injector.create(OPMLService.self)!,
+            mainQueue: injector.create(kMainQueue, type: OperationQueue.self)!,
+            loginViewController: { injector.create(LoginViewController.self)! },
+            documentationViewController: { injector.create(DocumentationViewController.self)! }
         )
     }
 

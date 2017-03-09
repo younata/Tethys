@@ -23,9 +23,9 @@ public final class DocumentationViewController: UIViewController, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            documentationUseCase: injector.create(kind: DocumentationUseCase.self)!,
-            themeRepository: injector.create(kind: ThemeRepository.self)!,
-            htmlViewController: injector.create(kind: HTMLViewController.self)!
+            documentationUseCase: injector.create(DocumentationUseCase.self)!,
+            themeRepository: injector.create(ThemeRepository.self)!,
+            htmlViewController: injector.create(HTMLViewController.self)!
         )
     }
 

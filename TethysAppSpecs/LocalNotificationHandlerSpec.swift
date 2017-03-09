@@ -19,13 +19,13 @@ class LocalNotificationHandlerSpec: QuickSpec {
             injector = Injector()
 
             dataRepository = FakeDatabaseUseCase()
-            injector.bind(kind: DatabaseUseCase.self, toInstance: dataRepository)
+            injector.bind(DatabaseUseCase.self, to: dataRepository)
             let articleUseCase = FakeArticleUseCase()
             articleUseCase.readArticleReturns("")
             articleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
-            injector.bind(kind: ArticleUseCase.self, toInstance: articleUseCase)
+            injector.bind(ArticleUseCase.self, to: articleUseCase)
 
-            subject = injector.create(kind: LocalNotificationHandler.self)!
+            subject = injector.create(LocalNotificationHandler.self)!
 
             notificationSource = FakeNotificationSource()
         }
@@ -72,9 +72,9 @@ class LocalNotificationHandlerSpec: QuickSpec {
                 note.userInfo = ["feed": "feedIdentifier", "article": "articleIdentifier"]
 
                 let splitVC = UISplitViewController()
-                injector.bind(kind: SettingsRepository.self, toInstance: SettingsRepository())
-                injector.bind(string: kMainQueue, toInstance: FakeOperationQueue())
-                navController = UINavigationController(rootViewController: injector.create(kind: FeedsTableViewController.self)!)
+                injector.bind(SettingsRepository.self, to: SettingsRepository())
+                injector.bind(kMainQueue, to: FakeOperationQueue())
+                navController = UINavigationController(rootViewController: injector.create(FeedsTableViewController.self)!)
                 splitVC.viewControllers = [navController]
 
 

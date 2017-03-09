@@ -21,12 +21,12 @@ public final class BootstrapWorkFlow: Bootstrapper {
 
     // swiftlint:disable function_parameter_count
     public init(window: UIWindow,
-        feedRepository: DatabaseUseCase,
-        migrationUseCase: MigrationUseCase,
-        splitViewController: SplitViewController,
-        migrationViewController: @escaping (Void) -> MigrationViewController,
-        feedsTableViewController: @escaping (Void) -> FeedsTableViewController,
-        articleViewController: @escaping (Void) -> ArticleViewController) {
+                feedRepository: DatabaseUseCase,
+                migrationUseCase: MigrationUseCase,
+                splitViewController: SplitViewController,
+                migrationViewController: @escaping (Void) -> MigrationViewController,
+                feedsTableViewController: @escaping (Void) -> FeedsTableViewController,
+                articleViewController: @escaping (Void) -> ArticleViewController) {
         self.window = window
         self.feedRepository = feedRepository
         self.migrationUseCase = migrationUseCase
@@ -40,12 +40,12 @@ public final class BootstrapWorkFlow: Bootstrapper {
     public convenience init(window: UIWindow, injector: Injector) {
         self.init(
             window: window,
-            feedRepository: injector.create(kind: DatabaseUseCase.self)!,
-            migrationUseCase: injector.create(kind: MigrationUseCase.self)!,
-            splitViewController: injector.create(kind: SplitViewController.self)!,
-            migrationViewController: { injector.create(kind: MigrationViewController.self)! },
-            feedsTableViewController: { injector.create(kind: FeedsTableViewController.self)! },
-            articleViewController: { injector.create(kind: ArticleViewController.self)! }
+            feedRepository: injector.create(DatabaseUseCase.self)!,
+            migrationUseCase: injector.create(MigrationUseCase.self)!,
+            splitViewController: injector.create(SplitViewController.self)!,
+            migrationViewController: { injector.create(MigrationViewController.self)! },
+            feedsTableViewController: { injector.create(FeedsTableViewController.self)! },
+            articleViewController: { injector.create(ArticleViewController.self)! }
         )
     }
 

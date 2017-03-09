@@ -32,11 +32,11 @@ public final class SyncEngineManager: SyncManager, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            workQueue: injector.create(kind: OperationQueue.self)!,
-            mainQueue: injector.create(string: kMainQueue) as! OperationQueue,
-            dataServiceFactory: injector.create(kind: DataServiceFactoryType.self)!,
-            accountRepository: injector.create(kind: InternalAccountRepository.self)!,
-            timerFactory: injector.create(kind: TimerFactory.self)!
+            workQueue: injector.create(OperationQueue.self)!,
+            mainQueue: injector.create(kMainQueue, type: OperationQueue.self)!,
+            dataServiceFactory: injector.create(DataServiceFactoryType.self)!,
+            accountRepository: injector.create(InternalAccountRepository.self)!,
+            timerFactory: injector.create(TimerFactory.self)!
         )
     }
 

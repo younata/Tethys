@@ -20,12 +20,12 @@ class GenerateBookViewControllerSpec: QuickSpec {
             injector = Injector()
 
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(kind: ThemeRepository.self, toInstance: themeRepository)
+            injector.bind(ThemeRepository.self, to: themeRepository)
 
             generateBookUseCase = FakeGenerateBookUseCase()
-            injector.bind(kind: GenerateBookUseCase.self, toInstance: generateBookUseCase)
+            injector.bind(GenerateBookUseCase.self, to: generateBookUseCase)
 
-            subject = injector.create(kind: GenerateBookViewController.self)!
+            subject = injector.create(GenerateBookViewController.self)!
 
             presentingController = UIViewController()
             navController = UINavigationController(rootViewController: subject)
@@ -329,7 +329,7 @@ class GenerateBookViewControllerSpec: QuickSpec {
                         subject.generateButton.sendActions(for: .touchUpInside)
                     }
 
-                    itBehavesLike("generating an ebook") { () -> (NSDictionary) in
+                    itBehavesLike("generating an ebook") { () -> [String : Any] in
                         return ["format": Book.Format.epub]
                     }
                 }
@@ -345,7 +345,7 @@ class GenerateBookViewControllerSpec: QuickSpec {
                         subject.generateButton.sendActions(for: .touchUpInside)
                     }
 
-                    itBehavesLike("generating an ebook") { () -> (NSDictionary) in
+                    itBehavesLike("generating an ebook") { () -> [String : Any] in
                         return ["format": Book.Format.mobi]
                     }
                 }

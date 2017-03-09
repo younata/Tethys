@@ -42,8 +42,8 @@ public struct DefaultDocumentationUseCase: DocumentationUseCase, Injectable {
 
     public init(injector: Injector) {
         self.init(
-            themeRepository: injector.create(kind: ThemeRepository.self)!,
-            bundle: injector.create(kind: Bundle.self)!
+            themeRepository: injector.create(ThemeRepository.self)!,
+            bundle: injector.create(Bundle.self)!
         )
     }
 

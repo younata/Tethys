@@ -57,7 +57,7 @@ public final class SettingsRepository: Injectable {
     }
 
     public required convenience init(injector: Injector) {
-        self.init(userDefaults: injector.create(kind: UserDefaults.self))
+        self.init(userDefaults: injector.create(UserDefaults.self))
     }
 
     deinit {

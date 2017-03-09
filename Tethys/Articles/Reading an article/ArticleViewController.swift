@@ -7,7 +7,7 @@ import WebKit
 import SafariServices
 
 public final class ArticleViewController: UIViewController, Injectable {
-    public private(set) var article: Article? = nil
+    public private(set) var article: Article?
     public func setArticle(_ article: Article?, read: Bool = true, show: Bool = true) {
         self.article = article
 
@@ -57,10 +57,10 @@ public final class ArticleViewController: UIViewController, Injectable {
 
     public required convenience init(injector: Injector) {
         self.init(
-            themeRepository: injector.create(kind: ThemeRepository.self)!,
-            articleUseCase: injector.create(kind: ArticleUseCase.self)!,
-            htmlViewController: { injector.create(kind: HTMLViewController.self)! },
-            articleListController: { injector.create(kind: ArticleListController.self)! }
+            themeRepository: injector.create(ThemeRepository.self)!,
+            articleUseCase: injector.create(ArticleUseCase.self)!,
+            htmlViewController: { injector.create(HTMLViewController.self)! },
+            articleListController: { injector.create(ArticleListController.self)! }
         )
     }
 

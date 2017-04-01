@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -el
 
 cd tethys_github
 bundle

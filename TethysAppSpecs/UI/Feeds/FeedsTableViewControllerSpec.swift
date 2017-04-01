@@ -513,9 +513,11 @@ class FeedsTableViewControllerSpec: QuickSpec {
                         describe("shareFeed") {
                             it("brings up a share sheet") {
                                 subject.shareFeed(feed: feed1)
-                                expect(navigationController.visibleViewController).to(beAnInstanceOf(UIActivityViewController.self))
-                                if let activityVC = navigationController.visibleViewController as? UIActivityViewController {
-                                    expect(activityVC.activityItems as? [URL]) == [feed1.url]
+                                expect(navigationController.visibleViewController).to(beAnInstanceOf(URLShareSheet.self))
+                                if let shareSheet = navigationController.visibleViewController as? URLShareSheet {
+                                    expect(shareSheet.url) == feed1.url
+                                    expect(shareSheet.themeRepository) == themeRepository
+                                    expect(shareSheet.activityItems as? [URL]) == [feed1.url]
                                 }
                             }
                         }

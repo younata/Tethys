@@ -1,7 +1,7 @@
 import Quick
 import Nimble
 import Ra
-import Tethys
+@testable import Tethys
 import TethysKit
 import UIKit
 
@@ -267,9 +267,11 @@ class ArticleListControllerSpec: QuickSpec {
                         expect(subject.navigationItem.rightBarButtonItems?.first) == subject.editButtonItem
                         if let shareSheet = subject.navigationItem.rightBarButtonItems?.last {
                             shareSheet.tap()
-                            expect(subject.presentedViewController).to(beAnInstanceOf(UIActivityViewController.self))
-                            if let activityVC = subject.presentedViewController as? UIActivityViewController {
-                                expect(activityVC.activityItems as? [URL]) == [feed.url]
+                            expect(subject.presentedViewController).to(beAnInstanceOf(URLShareSheet.self))
+                            if let shareSheet = subject.presentedViewController as? URLShareSheet {
+                                expect(shareSheet.url) == feed.url
+                                expect(shareSheet.themeRepository) == themeRepository
+                                expect(shareSheet.activityItems as? [URL]) == [feed.url]
                             }
                         }
                     }

@@ -325,7 +325,12 @@ extension FeedsTableViewController: FeedsSource {
     }
 
     public func shareFeed(feed: Feed) {
-        let shareSheet = UIActivityViewController(activityItems: [feed.url], applicationActivities: nil)
+        let shareSheet = URLShareSheet(
+            url: feed.url,
+            themeRepository: self.themeRepository,
+            activityItems: [feed.url],
+            applicationActivities: nil
+        )
         self.present(shareSheet, animated: true, completion: nil)
     }
 

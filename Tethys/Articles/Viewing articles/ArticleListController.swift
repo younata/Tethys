@@ -359,7 +359,12 @@ public final class ArticleListController: UIViewController, DataSubscriber, Inje
 
     @objc fileprivate func shareFeed() {
         guard let url = self.feed?.url else { return }
-        let shareSheet = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        let shareSheet = URLShareSheet(
+            url: url,
+            themeRepository: self.themeRepository,
+            activityItems: [url],
+            applicationActivities: nil
+        )
         self.present(shareSheet, animated: true, completion: nil)
     }
 

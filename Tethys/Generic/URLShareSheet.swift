@@ -1,18 +1,18 @@
-class URLShareSheet: UIActivityViewController {
-    let url: URL
-    let themeRepository: ThemeRepository
+public class URLShareSheet: UIActivityViewController {
+    public let url: URL
+    public let themeRepository: ThemeRepository
 
     private let labelWrapper = UIView(forAutoLayout: ())
     private let label = UILabel(forAutoLayout: ())
 
-    init(url: URL, themeRepository: ThemeRepository, activityItems: [Any], applicationActivities: [UIActivity]?) {
+    public init(url: URL, themeRepository: ThemeRepository, activityItems: [Any], applicationActivities: [UIActivity]?) {
         self.url = url
         self.themeRepository = themeRepository
 
         super.init(activityItems: activityItems, applicationActivities: applicationActivities)
     }
 
-    override func viewDidLayoutSubviews() {
+    public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         self.view.addSubview(self.labelWrapper)
@@ -33,7 +33,7 @@ class URLShareSheet: UIActivityViewController {
         self.view.clipsToBounds = false
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
+    public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
         UIView.animate(withDuration: 0.25) {

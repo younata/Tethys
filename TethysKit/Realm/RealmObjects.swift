@@ -24,6 +24,7 @@ final class RealmFeed: Object {
     dynamic var lastUpdated = Date(timeIntervalSinceReferenceDate: 0)
     var articles = LinkingObjects(fromType: RealmArticle.self, property: "feed")
     dynamic var imageData: Data?
+    dynamic var settings: RealmSettings?
 
     dynamic var id: String = UUID().uuidString
     override static func primaryKey() -> String? {
@@ -73,4 +74,8 @@ final class RealmArticle: Object {
     override static func indexedProperties() -> [String] {
         return ["link", "published", "updatedAt", "title", "read"]
     }
+}
+
+final class RealmSettings: Object {
+    dynamic var maxNumberOfArticles = 0
 }

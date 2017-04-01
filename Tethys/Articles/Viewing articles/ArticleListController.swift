@@ -282,30 +282,31 @@ public final class ArticleListController: UIViewController, DataSubscriber, Inje
         forRowAt indexPath: IndexPath) {}
 
     public func tableView(_ tableView: UITableView,
-        editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-            if ArticleListSection(rawValue: indexPath.section) != ArticleListSection.articles {
-                return nil
-            }
-            let article = self.articleForIndexPath(indexPath)
-            let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
-            let delete = UITableViewRowAction(style: .default, title: deleteTitle,
-                handler: {(action: UITableViewRowAction!, _) in
-                    _ = self.attemptDelete(article: article).then {
-                        if $0 {
-                            tableView.deleteRows(at: [indexPath], with: .automatic)
-                        } else {
-                            tableView.reloadRows(at: [indexPath], with: .right)
-                        }
-                    }
-            })
-            let unread = NSLocalizedString("ArticleListController_Cell_EditAction_MarkUnread", comment: "")
-            let read = NSLocalizedString("ArticleListController_Cell_EditAction_MarkRead", comment: "")
-            let toggleText = article.read ? unread : read
-            let toggle = UITableViewRowAction(style: .normal, title: toggleText,
-                handler: {(action: UITableViewRowAction!, _) in
-                    self.toggleRead(article: article)
-            })
-            return [delete, toggle]
+                          editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        if ArticleListSection(rawValue: indexPath.section) != ArticleListSection.articles {
+            return nil
+        }
+        let article = self.articleForIndexPath(indexPath)
+        let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
+        let delete = UITableViewRowAction(style: .default, title: deleteTitle,
+                                          handler: {(action: UITableViewRowAction!, _) in
+                                            _ = self.attemptDelete(article: article).then {
+                                                if $0 {
+                                                    tableView.deleteRows(at: [indexPath], with: .automatic)
+                                                } else {
+                                                    tableView.reloadRows(at: [indexPath], with: .right)
+                                                }
+                                            }
+        })
+        let unread = NSLocalizedString("ArticleListController_Cell_EditAction_MarkUnread", comment: "")
+        let read = NSLocalizedString("ArticleListController_Cell_EditAction_MarkRead", comment: "")
+        let toggleText = article.read ? unread : read
+        let toggle = UITableViewRowAction(style: .normal, title: toggleText,
+                                          handler: {(action: UITableViewRowAction!, _) in
+                                            self.toggleRead(article: article)
+        })
+
+        return [delete, toggle]
     }
 
     // Mark: Private

@@ -167,8 +167,12 @@ public final class ArticleViewController: UIViewController, Injectable {
         var activities: [UIActivity] = [safari, chrome]
         if let activity = authorActivity { activities.append(activity) }
 
-        let activity = UIActivityViewController(activityItems: [article.link],
-            applicationActivities: activities)
+        let activity = URLShareSheet(
+            url: article.link,
+            themeRepository: self.themeRepository,
+            activityItems: [article.link],
+            applicationActivities: activities
+        )
         activity.completionWithItemsHandler = { activityType, completed, _, _ in
             guard completed, let authorActivity = authorActivity else { return }
             if activityType == authorActivity.activityType, let author = article.authors.first {
@@ -180,6 +184,7 @@ public final class ArticleViewController: UIViewController, Injectable {
                 }
             }
         }
+
         self.present(activity, animated: true, completion: nil)
     }
 

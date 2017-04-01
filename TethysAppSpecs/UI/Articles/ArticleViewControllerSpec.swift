@@ -1,9 +1,9 @@
 import Quick
 import Nimble
 import Ra
-import Tethys
 import TOBrowserActivityKit
 import SafariServices
+@testable import Tethys
 @testable import TethysKit
 
 class ArticleViewControllerSpec: QuickSpec {
@@ -189,8 +189,8 @@ class ArticleViewControllerSpec: QuickSpec {
                 }
 
                 it("should bring up an activity view controller") {
-                    expect(subject.presentedViewController).to(beAnInstanceOf(UIActivityViewController.self))
-                    if let activityViewController = subject.presentedViewController as? UIActivityViewController {
+                    expect(subject.presentedViewController).to(beAnInstanceOf(URLShareSheet.self))
+                    if let activityViewController = subject.presentedViewController as? URLShareSheet {
                         expect(activityViewController.activityItems.count).to(equal(1))
                         expect(activityViewController.activityItems.first as? URL).to(equal(article.link))
 
@@ -205,7 +205,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
                 describe("tapping view articles by author") {
                     beforeEach {
-                        guard let activityViewController = subject.presentedViewController as? UIActivityViewController else {
+                        guard let activityViewController = subject.presentedViewController as? URLShareSheet else {
                             fail("")
                             return
                         }

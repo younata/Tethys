@@ -59,7 +59,8 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             let item = FakeImportableArticle(title: "article", url: URL(string: "/foo/bar/baz")!, summary: "", content: "", published: Date(), updated: nil, read: false, authors: [])
             let item2 = FakeImportableArticle(title: "article", url: URL(string: "/foo/bar/baz")!, summary: "", content: "", published: Date(), updated: nil, read: false, authors: [])
             let item3 = FakeImportableArticle(title: "article", url: URL(string: "https://example.com/foo/bar/baz")!, summary: "", content: "", published: Date(), updated: nil, read: false, authors: [])
-            let info = FakeImportableFeed(title: "a &amp; title", link: URL(string: "https://example.com")!, description: "description", lastUpdated: itemUpdateDate, imageURL: nil, articles: [item, item2, item3])
+            let item4 = FakeImportableArticle(title: "article", url: URL(string: "http://example.com/foo/bar/baz")!, summary: "", content: "", published: Date(), updated: nil, read: false, authors: [])
+            let info = FakeImportableFeed(title: "a &amp; title", link: URL(string: "https://example.com")!, description: "description", lastUpdated: itemUpdateDate, imageURL: nil, articles: [item, item2, item3, item4])
             let updateExpectation = spec.expectation(description: "Update Feed")
             _ = dataService.updateFeed(feed, info: info).then {
                 if case Result.success() = $0 {

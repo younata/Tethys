@@ -45,8 +45,13 @@ extension DataService {
         return self.batchSave([feed], articles: [])
     }
 
-    private func absoluteURLForArticle(article: ImportableArticle, feedURL: URL) -> URL {
-        return URL(string: article.url.absoluteString, relativeTo: feedURL)!.absoluteURL
+    private func absoluteURLForArticle(article: ImportableArticle, feedURL: URL) -> String {
+        var urlComponents = URLComponents(url: URL(string: article.url.absoluteString, relativeTo: feedURL)!,
+                                          resolvingAgainstBaseURL: true)!
+        if urlComponents.scheme == "http" {
+            urlComponents.scheme = "https"
+        }
+        return urlComponents.url!.absoluteString
     }
 
     func updateFeed(_ feed: Feed, info: ImportableFeed) -> Future<Result<Void, TethysError>> {
@@ -98,7 +103,7 @@ extension DataService {
         }
         let title = (itemTitle).trimmingCharacters(in: characterSet)
         article.title = title.stringByUnescapingHTML().stringByStrippingHTML()
-        article.link = self.absoluteURLForArticle(article: item, feedURL: feedURL)
+        article.link = URL(string: item.url.absoluteString, relativeTo: feedURL)!.absoluteURL
         article.published = item.published
         article.updatedAt = item.updated
         article.summary = item.summary

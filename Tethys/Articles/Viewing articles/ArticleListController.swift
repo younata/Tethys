@@ -89,9 +89,9 @@ public final class ArticleListController: UIViewController, DataSubscriber, Inje
         self.tableView.keyboardDismissMode = .onDrag
         self.tableView.register(ArticleCell.self, forCellReuseIdentifier: "read")
         self.tableView.register(ArticleCell.self, forCellReuseIdentifier: "unread")
-        self.tableView.register(ArticleListHeaderCell.self, forCellReuseIdentifier: "headerCell")
         // Prevents a green triangle which'll (dis)appear depending on whether
         // article loaded into it is read or not.
+        self.tableView.register(ArticleListHeaderCell.self, forCellReuseIdentifier: "headerCell")
 
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.tableFooterView = UIView()
@@ -101,9 +101,7 @@ public final class ArticleListController: UIViewController, DataSubscriber, Inje
 
         self.feedRepository.addSubscriber(self)
 
-        if let feed = self.feed {
-            self.navigationItem.title = feed.displayTitle
-        }
+        self.navigationItem.title = self.feed?.displayTitle
 
         self.tableView.allowsMultipleSelection = self.delegate?.articleListControllerCanSelectMultipleArticles(self)
             ?? false
@@ -121,9 +119,7 @@ public final class ArticleListController: UIViewController, DataSubscriber, Inje
     }
 
     var _previewActionItems: [UIPreviewAction] = []
-    public override var previewActionItems: [UIPreviewActionItem] {
-        return self._previewActionItems
-    }
+    public override var previewActionItems: [UIPreviewActionItem] { return self._previewActionItems }
 
     public func deletedArticle(_ article: Article) {}
     public func willUpdateFeeds() {}
@@ -133,14 +129,13 @@ public final class ArticleListController: UIViewController, DataSubscriber, Inje
 
     public func markedArticles(_ articles: [Article], asRead read: Bool) {
         let indices = articles.flatMap { self.articles.index(of: $0) }
+        indices.forEach { self.articles[$0].read = read }
 
         let indexPaths = indices.map { IndexPath(row: $0, section: ArticleListSection.articles.rawValue) }
         self.tableView.reloadRows(at: indexPaths, with: .right)
     }
 
-    fileprivate func articleForIndexPath(_ indexPath: IndexPath) -> Article {
-        return self.articles[indexPath.row]
-    }
+    fileprivate func articleForIndexPath(_ indexPath: IndexPath) -> Article { return self.articles[indexPath.row] }
 
     public func selectArticles() {
         let articles = self.tableView.indexPathsForSelectedRows?.map { self.articleForIndexPath($0) }
@@ -195,15 +190,12 @@ public final class ArticleListController: UIViewController, DataSubscriber, Inje
     }
 
     fileprivate func toggleRead(article: Article) {
-        article.read = !article.read
-        _ = self.feedRepository.markArticle(article, asRead: article.read)
+        _ = self.feedRepository.markArticle(article, asRead: !article.read)
     }
 
     // MARK: - Table view data source
 
-    public func numberOfSections(in tableView: UITableView) -> Int {
-        return ArticleListSection.numberOfSections
-    }
+    public func numberOfSections(in tableView: UITableView) -> Int { return ArticleListSection.numberOfSections }
 
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let section = ArticleListSection(rawValue: section) else { return 0 }
@@ -278,8 +270,9 @@ public final class ArticleListController: UIViewController, DataSubscriber, Inje
         }
     }
 
-    public func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle,
-        forRowAt indexPath: IndexPath) {}
+    public func tableView(_ tableView: UITableView,
+                          commit editingStyle: UITableViewCellEditingStyle,
+                          forRowAt indexPath: IndexPath) {}
 
     public func tableView(_ tableView: UITableView,
                           editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
@@ -288,22 +281,20 @@ public final class ArticleListController: UIViewController, DataSubscriber, Inje
         }
         let article = self.articleForIndexPath(indexPath)
         let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
-        let delete = UITableViewRowAction(style: .default, title: deleteTitle,
-                                          handler: {(action: UITableViewRowAction!, _) in
-                                            _ = self.attemptDelete(article: article).then {
-                                                if $0 {
-                                                    tableView.deleteRows(at: [indexPath], with: .automatic)
-                                                } else {
-                                                    tableView.reloadRows(at: [indexPath], with: .right)
-                                                }
-                                            }
+        let delete = UITableViewRowAction(style: .default, title: deleteTitle, handler: { _ in
+            _ = self.attemptDelete(article: article).then {
+                if $0 {
+                    tableView.deleteRows(at: [indexPath], with: .automatic)
+                } else {
+                    tableView.reloadRows(at: [indexPath], with: .right)
+                }
+            }
         })
         let unread = NSLocalizedString("ArticleListController_Cell_EditAction_MarkUnread", comment: "")
         let read = NSLocalizedString("ArticleListController_Cell_EditAction_MarkRead", comment: "")
         let toggleText = article.read ? unread : read
-        let toggle = UITableViewRowAction(style: .normal, title: toggleText,
-                                          handler: {(action: UITableViewRowAction!, _) in
-                                            self.toggleRead(article: article)
+        let toggle = UITableViewRowAction(style: .normal, title: toggleText, handler: { _ in
+            self.toggleRead(article: article)
         })
 
         return [delete, toggle]
@@ -340,21 +331,11 @@ public final class ArticleListController: UIViewController, DataSubscriber, Inje
     }
 
     private func setupToolbar() {
+        var items = [self.spacer(), self.generateBookButton, self.spacer()]
         if let _ = self.feed {
-            self.toolbarItems = [
-                self.spacer(),
-                self.generateBookButton,
-                self.spacer(),
-                self.markReadButton,
-                self.spacer()
-            ]
-        } else {
-            self.toolbarItems = [
-                self.spacer(),
-                self.generateBookButton,
-                self.spacer()
-            ]
+            items += [self.markReadButton, self.spacer()]
         }
+        self.toolbarItems = items
     }
 
     @objc fileprivate func shareFeed() {
@@ -387,23 +368,13 @@ public final class ArticleListController: UIViewController, DataSubscriber, Inje
 
         indicator.configure(message: NSLocalizedString("ArticleListController_Action_MarkRead_Indicator", comment: ""))
 
-        _ = self.feedRepository.markFeedAsRead(feed).then { markReadResult in
+        self.feedRepository.markFeedAsRead(feed).then { markReadResult in
             switch markReadResult {
             case .success(_):
-                _ = self.feedRepository.feeds().then { feedsResult in
                     self.mainQueue.addOperation {
                         indicator.removeFromSuperview()
 
-                        switch feedsResult {
-                        case let .success(feeds):
-                            let feed = feeds.first { $0.url == feed.url }
-                            self.feed = feed
-                        case let .failure(error):
-                            self.showAlert(error: error)
-                        }
-                    }
                 }
-                break
             case let .failure(error):
                 self.mainQueue.addOperation {
                     indicator.removeFromSuperview()
@@ -460,12 +431,12 @@ extension ArticleListController: UIViewControllerPreviewingDelegate {
     }
 
     public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
-        commit viewControllerToCommit: UIViewController) {
-            if let articleController = viewControllerToCommit as? ArticleViewController,
-                let article = articleController.article {
-                    _ = self.feedRepository.markArticle(article, asRead: true)
-                    self.showArticleController(articleController, animated: true)
-            }
+                                  commit viewControllerToCommit: UIViewController) {
+        if let articleController = viewControllerToCommit as? ArticleViewController,
+            let article = articleController.article {
+            _ = self.feedRepository.markArticle(article, asRead: true)
+            self.showArticleController(articleController, animated: true)
+        }
     }
 }
 

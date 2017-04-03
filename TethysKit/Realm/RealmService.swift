@@ -17,13 +17,13 @@ final class RealmService: DataService {
     let searchIndex: SearchIndex?
 
     init(realmConfiguration: Realm.Configuration,
-        mainQueue: OperationQueue,
-        workQueue: OperationQueue,
-        searchIndex: SearchIndex?) {
-            self.realmConfiguration = realmConfiguration
-            self.mainQueue = mainQueue
-            self.workQueue = workQueue
-            self.searchIndex = searchIndex
+         mainQueue: OperationQueue,
+         workQueue: OperationQueue,
+         searchIndex: SearchIndex?) {
+        self.realmConfiguration = realmConfiguration
+        self.mainQueue = mainQueue
+        self.workQueue = workQueue
+        self.searchIndex = searchIndex
     }
 
     private var realmsForThreads: [Thread: Realm] = [:]

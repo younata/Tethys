@@ -159,7 +159,7 @@ public final class Article: NSObject {
     }
     // swiftlint:enable function_parameter_count
 
-    internal private(set) var articleID: AnyObject? = nil
+    internal private(set) var articleID: AnyObject?
 
     internal init(realmArticle article: RealmArticle, feed: Feed?) {
         title = article.title ?? ""

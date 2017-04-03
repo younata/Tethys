@@ -29,19 +29,19 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
 
     // swiftlint:disable function_parameter_count
     init(mainQueue: OperationQueue,
-        reachable: Reachable?,
-        dataServiceFactory: DataServiceFactoryType,
-        updateUseCase: UpdateUseCase,
-        databaseMigrator: DatabaseMigratorType,
-        accountRepository: InternalAccountRepository,
-        syncManager: SyncManager) {
-            self.mainQueue = mainQueue
-            self.reachable = reachable
-            self.dataServiceFactory = dataServiceFactory
-            self.updateUseCase = updateUseCase
-            self.databaseMigrator = databaseMigrator
-            self.accountRepository = accountRepository
-            self.syncManager = syncManager
+         reachable: Reachable?,
+         dataServiceFactory: DataServiceFactoryType,
+         updateUseCase: UpdateUseCase,
+         databaseMigrator: DatabaseMigratorType,
+         accountRepository: InternalAccountRepository,
+         syncManager: SyncManager) {
+        self.mainQueue = mainQueue
+        self.reachable = reachable
+        self.dataServiceFactory = dataServiceFactory
+        self.updateUseCase = updateUseCase
+        self.databaseMigrator = databaseMigrator
+        self.accountRepository = accountRepository
+        self.syncManager = syncManager
     }
     // swiftlint:enable function_parameter_count
 

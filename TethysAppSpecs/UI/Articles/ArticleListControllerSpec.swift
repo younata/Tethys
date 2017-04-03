@@ -406,68 +406,15 @@ class ArticleListControllerSpec: QuickSpec {
                         describe("when the mark read promise succeeds") {
                             beforeEach {
                                 dataRepository.lastFeedMarkedReadPromise?.resolve(.success(1))
-                            }
 
-                            it("still shows the indicator message") {
+                                mainQueue.runNextOperation()
+
+                            }
+                            it("removes the indicator") {
                                 let indicator = subject.view.subviews.filter {
                                     return $0.isKind(of: ActivityIndicator.classForCoder())
-                                    }.first as? ActivityIndicator
-                                expect(indicator?.message) == "Marking Articles as Read"
-                            }
-
-                            it("asks the dataRepository to refresh its feeds list") {
-                                expect(dataRepository.feedsPromises.count) == 1
-                            }
-
-                            describe("when the feeds promise succeeds") {
-                                let newFeed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "hello world", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                                beforeEach {
-                                    dataRepository.feedsPromises.last?.resolve(.success([newFeed]))
-                                    mainQueue.runNextOperation()
-                                }
-
-                                it("removes the indicator") {
-                                    let indicator = subject.view.subviews.filter {
-                                        return $0.isKind(of: ActivityIndicator.classForCoder())
-                                        }.first
-                                    expect(indicator).to(beNil())
-                                }
-
-                                it("replaces the feed with the new one") {
-                                    expect(subject.feed) == newFeed
-                                }
-
-                                it("reloads the articles") {
-                                    expect(subject.tableView.numberOfRows(inSection: 1)) == 0
-                                }
-                            }
-
-                            describe("when the feeds promise fails") {
-                                beforeEach {
-                                    dataRepository.feedsPromises.last?.resolve(.failure(.database(.unknown)))
-                                    mainQueue.runNextOperation()
-                                }
-
-                                it("removes the indicator") {
-                                    let indicator = subject.view.subviews.filter {
-                                        return $0.isKind(of: ActivityIndicator.classForCoder())
-                                        }.first
-                                    expect(indicator).to(beNil())
-                                }
-
-                                it("shows an alert box") {
-                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                    if let alert = subject.presentedViewController as? UIAlertController {
-                                        expect(alert.title) == "Unable to Mark Articles as Read"
-                                        expect(alert.message) == "Unknown Database Error"
-                                        expect(alert.actions.count) == 1
-                                        if let action = alert.actions.first {
-                                            expect(action.title) == "Ok"
-                                            action.handler(action)
-                                            expect(subject.presentedViewController).to(beNil())
-                                        }
-                                    }
-                                }
+                                    }.first
+                                expect(indicator).to(beNil())
                             }
                         }
 
@@ -575,13 +522,13 @@ class ArticleListControllerSpec: QuickSpec {
                 subject.view.layoutIfNeeded()
             }
 
-            describe("markedArticle:asRead:") {
+            describe("markedArticle(_:asRead:)") {
                 beforeEach {
                     let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 3, section: 1)) as! ArticleCell
 
                     expect(cell.unread.unread) == 1
 
-                    articles[3].read = true
+                    articles[3].read = false
                     for subscriber in dataRepository.subscribersArray {
                         subscriber.markedArticles([articles[3]], asRead: true)
                     }

@@ -27,9 +27,9 @@ final class ArticleListView: NSTableRowView {
     let author = NSTextView(forAutoLayout: ())
     let unread = UnreadCounter()
 
-    var unreadWidth: NSLayoutConstraint? = nil
-    var titleHeight: NSLayoutConstraint? = nil
-    var authorHeight: NSLayoutConstraint? = nil
+    var unreadWidth: NSLayoutConstraint?
+    var titleHeight: NSLayoutConstraint?
+    var authorHeight: NSLayoutConstraint?
 
     let dateFormatter = DateFormatter()
 

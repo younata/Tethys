@@ -59,7 +59,7 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
     private let sinopeRepository: Sinope.Repository
 
     private var callbacksInProgress: [URL: (feed: TethysKit.Feed,
-                                            promise: Promise<Result<TethysKit.Feed, TethysError>>)] = [:]
+        promise: Promise<Result<TethysKit.Feed, TethysError>>)] = [:]
 
     init(dataServiceFactory: DataServiceFactoryType,
          urlSession: URLSession,

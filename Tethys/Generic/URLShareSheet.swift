@@ -5,7 +5,10 @@ public class URLShareSheet: UIActivityViewController {
     private let labelWrapper = UIView(forAutoLayout: ())
     private let label = UILabel(forAutoLayout: ())
 
-    public init(url: URL, themeRepository: ThemeRepository, activityItems: [Any], applicationActivities: [UIActivity]?) {
+    public init(url: URL,
+                themeRepository: ThemeRepository,
+                activityItems: [Any],
+                applicationActivities: [UIActivity]?) {
         self.url = url
         self.themeRepository = themeRepository
 

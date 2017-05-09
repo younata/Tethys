@@ -179,7 +179,7 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
             let uniqueID = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
             _ = self.feedRepository.feeds().then {
                 guard case let Result.success(feeds) = $0 else { return }
-                guard let article = feeds.reduce(Array<Article>(), {articles, feed in
+                guard let article = feeds.reduce([Article](), {articles, feed in
                     return articles + Array(feed.articlesArray)
                 }).objectPassingTest({ article in
                     return article.identifier == uniqueID

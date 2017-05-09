@@ -35,7 +35,7 @@ public final class DataStoreBackedArray<T: AnyObject>: Collection, CustomDebugSt
     public var startIndex: Index { return 0 }
     public var endIndex: Index { return self.count }
 
-    fileprivate var _internalCount: Int? = nil
+    fileprivate var _internalCount: Int?
     fileprivate let internalCountPromise = Promise<Int>()
     fileprivate var internalCount: Future<Int> {
         if let count = self._internalCount {
@@ -167,7 +167,6 @@ public final class DataStoreBackedArray<T: AnyObject>: Collection, CustomDebugSt
         return (i + 1)
     }
 
-
     public func append(_ object: T) {
         switch self.backingStore {
         case .realm:
@@ -195,16 +194,16 @@ public final class DataStoreBackedArray<T: AnyObject>: Collection, CustomDebugSt
     }
 
     public init(realmDataType: Object.Type,
-        predicate: NSPredicate,
-        realmConfiguration: Realm.Configuration,
-        conversionFunction: @escaping (Object) -> T,
-        sortDescriptors: [NSSortDescriptor] = []) {
-            self.predicate = predicate
-            self.sortDescriptors = sortDescriptors
+                predicate: NSPredicate,
+                realmConfiguration: Realm.Configuration,
+                conversionFunction: @escaping (Object) -> T,
+                sortDescriptors: [NSSortDescriptor] = []) {
+        self.predicate = predicate
+        self.sortDescriptors = sortDescriptors
 
-            self.realmDataType = realmDataType
-            self.realmConfiguration = realmConfiguration
-            self.realmConversionFunction = conversionFunction
+        self.realmDataType = realmDataType
+        self.realmConfiguration = realmConfiguration
+        self.realmConversionFunction = conversionFunction
     }
 
     deinit {

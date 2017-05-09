@@ -13,7 +13,7 @@ public final class FeedsListController: UIViewController {
     fileprivate let themeRepository: ThemeRepository
     fileprivate let mainQueue: OperationQueue
 
-    public var tapFeed: ((Feed) -> Void)? = nil
+    public var tapFeed: ((Feed) -> Void)?
 
     public private(set) lazy var tableView: UITableView = {
         let tableView = UITableView(forAutoLayout: ())

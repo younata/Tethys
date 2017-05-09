@@ -5,8 +5,8 @@ import Result
 
 public protocol BackgroundFetchHandler {
     func performFetch(_ notificationHandler: NotificationHandler,
-        notificationSource: LocalNotificationSource,
-        completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
+                      notificationSource: LocalNotificationSource,
+                      completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
 }
 
 public struct DefaultBackgroundFetchHandler: BackgroundFetchHandler, Injectable {
@@ -21,42 +21,42 @@ public struct DefaultBackgroundFetchHandler: BackgroundFetchHandler, Injectable 
     }
 
     public func performFetch(_ notificationHandler: NotificationHandler,
-        notificationSource: LocalNotificationSource,
-        completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-            let articlesIdentifierPromise = self.feedRepository.feeds().map { result -> [String] in
-                if case let Result.success(feeds) = result {
-                    return feeds.reduce([]) {
-                        return $0 + $1.articlesArray
+                             notificationSource: LocalNotificationSource,
+                             completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        let articlesIdentifierPromise = self.feedRepository.feeds().map { result -> [String] in
+            if case let Result.success(feeds) = result {
+                return feeds.reduce([]) {
+                    return $0 + $1.articlesArray
                     }.map {
                         return $0.identifier
-                    }
-                } else {
-                    return []
                 }
+            } else {
+                return []
             }
+        }
 
-            feedRepository.updateFeeds {newFeeds, errors in
-                guard errors.isEmpty else {
-                    completionHandler(.failed)
+        feedRepository.updateFeeds {newFeeds, errors in
+            guard errors.isEmpty else {
+                completionHandler(.failed)
+                return
+            }
+            _ = articlesIdentifierPromise.then { originalArticlesList in
+                let currentArticleList: [Article] = newFeeds.reduce([]) { return $0 + Array($1.articlesArray) }
+                guard currentArticleList.count != originalArticlesList.count else {
+                    completionHandler(.noData)
                     return
                 }
-                _ = articlesIdentifierPromise.then { originalArticlesList in
-                    let currentArticleList: [Article] = newFeeds.reduce([]) { return $0 + Array($1.articlesArray) }
-                    guard currentArticleList.count != originalArticlesList.count else {
-                        completionHandler(.noData)
-                        return
-                    }
-                    let filteredArticleList: [Article] = currentArticleList.filter {
-                        return !originalArticlesList.contains($0.identifier)
-                    }
-
-                    if filteredArticleList.count > 0 {
-                        for article in filteredArticleList {
-                            notificationHandler.sendLocalNotification(notificationSource, article: article)
-                        }
-                        completionHandler(.newData)
-                    } else { completionHandler(.noData) }
+                let filteredArticleList: [Article] = currentArticleList.filter {
+                    return !originalArticlesList.contains($0.identifier)
                 }
+
+                if filteredArticleList.count > 0 {
+                    for article in filteredArticleList {
+                        notificationHandler.sendLocalNotification(notificationSource, article: article)
+                    }
+                    completionHandler(.newData)
+                } else { completionHandler(.noData) }
             }
+        }
     }
 }

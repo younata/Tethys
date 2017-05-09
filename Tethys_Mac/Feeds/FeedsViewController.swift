@@ -16,7 +16,7 @@ public final class FeedsViewController: NSViewController {
         return tableView
     }()
 
-    private lazy var tableHeightConstraint: NSLayoutConstraint? = nil
+    private lazy var tableHeightConstraint: NSLayoutConstraint?
 
     private lazy var scrollView: NSScrollView = {
         let scrollView = NSScrollView(forAutoLayout: ())
@@ -25,7 +25,7 @@ public final class FeedsViewController: NSViewController {
         return scrollView
     }()
 
-    public private(set) var raInjector: Injector? = nil
+    public private(set) var raInjector: Injector?
 
     public var onFeedSelection: (Feed) -> Void = {(_) in }
 

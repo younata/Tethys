@@ -196,7 +196,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         }
     }
 
-    private var updatingFeedsCallbacks = Array<([Feed], [NSError]) -> (Void)>()
+    private var updatingFeedsCallbacks = [([Feed], [NSError]) -> (Void)]()
     func updateFeeds(_ callback: @escaping ([Feed], [NSError]) -> (Void)) {
         self.updatingFeedsCallbacks.append(callback)
         guard self.updatingFeedsCallbacks.count == 1 else { return }

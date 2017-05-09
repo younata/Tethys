@@ -11,9 +11,9 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    @IBOutlet public var mainController: MainController? = nil
+    @IBOutlet public var mainController: MainController?
 
-    var windowController: NSWindowController? = nil
+    var windowController: NSWindowController?
 
     public func applicationDidFinishLaunching(_ aNotification: Notification) {
         let injector = Injector(module: KitModule(), AppModule())

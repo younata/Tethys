@@ -1,11 +1,10 @@
 import Cocoa
 import TethysKit
 
-public protocol FeedViewDelegate {
+public protocol FeedViewDelegate: class {
     func didClickFeed(_ feed: Feed)
     func menuOptionsForFeed(_ feed: Feed) -> [String]
     func didSelectMenuOption(_ menuOption: String, forFeed: Feed)
-
 }
 
 public final class FeedView: NSView {
@@ -41,7 +40,7 @@ public final class FeedView: NSView {
     public let unreadCounter = UnreadCounter()
     public let imageView = NSImageView(forAutoLayout: ())
 
-    var nameHeight: NSLayoutConstraint? = nil
+    var nameHeight: NSLayoutConstraint?
 
     public override func mouseUp(with theEvent: NSEvent) {
         if let feed = self.feed {

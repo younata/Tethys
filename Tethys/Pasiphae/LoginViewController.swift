@@ -31,10 +31,10 @@ extension Account {
     }
 
     @objc fileprivate func textField(_ textField: UITextField,
-                                 shouldChangeCharactersIn range: NSRange,
-                                                               replacementString string: String) -> Bool {
+                                     shouldChangeCharactersIn range: NSRange,
+                                     replacementString string: String) -> Bool {
         let string = NSString(string: textField.text ?? "").replacingCharacters(in: range,
-                                                                                               with: string)
+                                                                                with: string)
         let textFieldStrings: [String] = self.textFields.filter({ $0 != textField }).map({$0.text ?? ""}) + [string]
 
         let valid = textFieldStrings.reduce(true) { $0 && !$1.isEmpty }

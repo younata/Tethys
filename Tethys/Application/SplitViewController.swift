@@ -58,8 +58,8 @@ extension SplitViewController: ThemeRepositorySubscriber {
 
 extension SplitViewController: UISplitViewControllerDelegate {
     public func splitViewController(_ splitViewController: UISplitViewController,
-        collapseSecondary secondaryViewController: UIViewController,
-        onto primaryViewController: UIViewController) -> Bool {
-            return self.collapseDetailViewController
+                                    collapseSecondary secondaryViewController: UIViewController,
+                                    onto primaryViewController: UIViewController) -> Bool {
+        return self.collapseDetailViewController
     }
 }

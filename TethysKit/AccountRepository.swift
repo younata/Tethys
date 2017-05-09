@@ -9,7 +9,7 @@ public protocol AccountRepository: class {
     func logOut()
 }
 
-protocol AccountRepositoryDelegate {
+protocol AccountRepositoryDelegate: class {
     func accountRepositoryDidLogIn(_ accountRepository: InternalAccountRepository)
 }
 

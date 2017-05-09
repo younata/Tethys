@@ -18,7 +18,7 @@ import Foundation
     }
 
     internal private(set) var updated: Bool = false
-    internal private(set) var authorID: String? = nil
+    internal private(set) var authorID: String?
 
     public var identifier: String {
         return self.authorID ?? self.name

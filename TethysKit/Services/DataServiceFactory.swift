@@ -14,15 +14,15 @@ final class DataServiceFactory: DataServiceFactoryType {
     private let fileManager: FileManager
 
     init(mainQueue: OperationQueue,
-        realmQueue: OperationQueue,
-        searchIndex: SearchIndex?,
-        bundle: Bundle,
-        fileManager: FileManager) {
-            self.mainQueue = mainQueue
-            self.realmQueue = realmQueue
-            self.searchIndex = searchIndex
-            self.bundle = bundle
-            self.fileManager = fileManager
+         realmQueue: OperationQueue,
+         searchIndex: SearchIndex?,
+         bundle: Bundle,
+         fileManager: FileManager) {
+        self.mainQueue = mainQueue
+        self.realmQueue = realmQueue
+        self.searchIndex = searchIndex
+        self.bundle = bundle
+        self.fileManager = fileManager
     }
 
     private var existingDataService: DataService?

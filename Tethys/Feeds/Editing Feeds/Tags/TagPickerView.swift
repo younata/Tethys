@@ -74,11 +74,11 @@ extension TagPickerView: UIPickerViewDataSource, UIPickerViewDelegate {
     }
 
     public func pickerView(_ pickerView: UIPickerView,
-        attributedTitleForRow row: Int,
-        forComponent component: Int) -> NSAttributedString? {
-            let textColor = self.themeRepository?.textColor ?? UIColor.black
-            return NSAttributedString(string: self.existingSolutions[row],
-                attributes: [NSForegroundColorAttributeName: textColor])
+                           attributedTitleForRow row: Int,
+                           forComponent component: Int) -> NSAttributedString? {
+        let textColor = self.themeRepository?.textColor ?? UIColor.black
+        return NSAttributedString(string: self.existingSolutions[row],
+                                  attributes: [NSForegroundColorAttributeName: textColor])
     }
 
     public func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
@@ -92,12 +92,12 @@ extension TagPickerView: UIPickerViewDataSource, UIPickerViewDelegate {
 
 extension TagPickerView: UITextFieldDelegate {
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
-        replacementString string: String) -> Bool {
-            guard let text = textField.text else {
-                return false
-            }
-            let replacedText = (text as NSString).replacingCharacters(in: range, with: string)
-            return textFieldDidChange(replacedText)
+                          replacementString string: String) -> Bool {
+        guard let text = textField.text else {
+            return false
+        }
+        let replacedText = (text as NSString).replacingCharacters(in: range, with: string)
+        return textFieldDidChange(replacedText)
     }
 }
 

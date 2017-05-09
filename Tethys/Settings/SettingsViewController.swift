@@ -463,7 +463,7 @@ extension SettingsViewController: UITableViewDelegate {
     }
 
     public func tableView(_ tableView: UITableView,
-        editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+                          editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         guard self.tableView(tableView, canEditRowAt: indexPath) else { return nil }
 
         guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection) else {return nil}
@@ -494,9 +494,10 @@ extension SettingsViewController: UITableViewDelegate {
         }
     }
 
-    @objc(tableView:commitEditingStyle:forRowAtIndexPath:) public func tableView(_ tableView: UITableView,
-        commit editingStyle: UITableViewCellEditingStyle,
-        forRowAt indexPath: IndexPath) {}
+    @objc(tableView:commitEditingStyle:forRowAtIndexPath:)
+    public func tableView(_ tableView: UITableView,
+                          commit editingStyle: UITableViewCellEditingStyle,
+                          forRowAt indexPath: IndexPath) {}
 
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection) else { return }

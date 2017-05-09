@@ -190,27 +190,27 @@ public final class Feed: Hashable, CustomStringConvertible {
 
     // swiftlint:disable function_parameter_count
     public init(title: String, url: URL, summary: String, tags: [String],
-        waitPeriod: Int, remainingWait: Int, articles: [Article], image: Image?,
-        lastUpdated: Date = Date(), identifier: String = "") {
-            self.title = title
-            self.url = url
-            self.summary = summary
-            self.tags = tags
-            self.waitPeriod = waitPeriod
-            self.remainingWait = remainingWait
-            self.image = image
-            self.articlesArray = DataStoreBackedArray(articles)
-            self.lastUpdated = lastUpdated
-            self.identifier = identifier
+                waitPeriod: Int, remainingWait: Int, articles: [Article], image: Image?,
+                lastUpdated: Date = Date(), identifier: String = "") {
+        self.title = title
+        self.url = url
+        self.summary = summary
+        self.tags = tags
+        self.waitPeriod = waitPeriod
+        self.remainingWait = remainingWait
+        self.image = image
+        self.articlesArray = DataStoreBackedArray(articles)
+        self.lastUpdated = lastUpdated
+        self.identifier = identifier
 
-            for article in articles {
-                article.feed = self
-            }
-            self.updated = false
+        for article in articles {
+            article.feed = self
+        }
+        self.updated = false
     }
     // swiftlint:enable function_parameter_count
 
-    public private(set) var feedID: AnyObject? = nil
+    public private(set) var feedID: AnyObject?
 
     internal init(realmFeed feed: RealmFeed) {
         self.title = feed.title ?? ""

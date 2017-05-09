@@ -80,7 +80,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
 
         let cancelTitle = NSLocalizedString("Generic_Cancel", comment: "")
         self.cancelTextEntry = UIBarButtonItem(title: cancelTitle, style: .plain,
-            target: self, action: #selector(FindFeedViewController.dismissNavFieldKeyboard))
+                                               target: self, action: #selector(FindFeedViewController.dismissNavFieldKeyboard))
 
         self.navigationController?.isToolbarHidden = false
         func spacer() -> UIBarButtonItem {
@@ -97,7 +97,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.navField.delegate = self
         let urlPlaceholder = NSLocalizedString("FindFeedViewController_URLBar_Placeholder", comment: "")
         self.navField.attributedPlaceholder = NSAttributedString(string: urlPlaceholder,
-            attributes: self.placeholderAttributes)
+                                                                 attributes: self.placeholderAttributes)
         self.navField.backgroundColor = UIColor(white: 0.8, alpha: 0.75)
         self.navField.layer.cornerRadius = 5
         self.navField.autocorrectionType = .no
@@ -126,14 +126,14 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
     }
 
     public override func viewWillTransition(to size: CGSize,
-        with coordinator: UIViewControllerTransitionCoordinator) {
-            super.viewWillTransition(to: size, with: coordinator)
+                                            with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
 
-            self.navField.frame = CGRect(x: 0, y: 0, width: size.width * 0.8, height: 32)
+        self.navField.frame = CGRect(x: 0, y: 0, width: size.width * 0.8, height: 32)
     }
 
     public override func observeValue(forKeyPath keyPath: String?, of object: Any?,
-        change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+                                      change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == "estimatedProgress" && object as? NSObject == self.webContent {
             self.loadingBar.progress = Float(self.webContent.estimatedProgress)
         }
@@ -191,12 +191,12 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         if let text = textField.text, let url = URL(string: text), text.contains(".") {
             self.webContent.load(URLRequest(url: url))
         } else if let url = URL(string: "https://duckduckgo.com/?q=" +
-                originalText.replacingOccurrences(of: " ", with: "+")) {
+            originalText.replacingOccurrences(of: " ", with: "+")) {
             self.webContent.load(URLRequest(url: url))
         }
         let urlLoading = NSLocalizedString("FindFeedViewController_URLBar_Loading", comment: "")
         textField.attributedPlaceholder = NSAttributedString(string: urlLoading,
-            attributes: self.placeholderAttributes)
+                                                             attributes: self.placeholderAttributes)
         textField.resignFirstResponder()
 
         return true
@@ -207,7 +207,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
     public func webView(_ webView: WKWebView, didFinish _: WKNavigation!) {
         self.loadingBar.isHidden = true
         self.navField.attributedPlaceholder = NSAttributedString(string: webView.title ?? "",
-            attributes: self.placeholderAttributes)
+                                                                 attributes: self.placeholderAttributes)
         self.forward.isEnabled = webView.canGoForward
         self.back.isEnabled = webView.canGoBack
         self.navigationItem.rightBarButtonItem = self.reload
@@ -244,7 +244,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.navField.text = ""
         let urlLoading = NSLocalizedString("FindFeedViewController_URLBar_Loading", comment: "")
         self.navField.attributedPlaceholder = NSAttributedString(string: urlLoading,
-            attributes: self.placeholderAttributes)
+                                                                 attributes: self.placeholderAttributes)
         self.addFeedButton.isEnabled = false
         if let url = webView.url, lookForFeeds {
             _ = self.importUseCase.scanForImportable(url).then { item in

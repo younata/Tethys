@@ -12,8 +12,8 @@ public final class FeedViewController: UIViewController, Injectable {
     }
 
     public let feedDetailView = FeedDetailView(forAutoLayout: ())
-    fileprivate var feedURL: URL? = nil
-    fileprivate var feedTags: [String]? = nil
+    fileprivate var feedURL: URL?
+    fileprivate var feedTags: [String]?
 
     private let feedRepository: DatabaseUseCase
     private let themeRepository: ThemeRepository
@@ -37,9 +37,7 @@ public final class FeedViewController: UIViewController, Injectable {
         )
     }
 
-    public required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,7 +77,7 @@ public final class FeedViewController: UIViewController, Injectable {
     fileprivate func resetFeedView() {
         guard let feed = self.feed else { return }
         self.feedDetailView.configure(title: feed.displayTitle, url: feed.url,
-                                    summary: feed.displaySummary, tags: feed.tags)
+                                      summary: feed.displaySummary, tags: feed.tags)
     }
 
     @objc fileprivate func dismissFromNavigation() {
@@ -112,8 +110,8 @@ extension FeedViewController: FeedDetailViewDelegate {
     }
 
     public func feedDetailView(_ feedDetailView: FeedDetailView,
-                             editTag tag: String?,
-                             completion: @escaping (String) -> (Void)) {
+                               editTag tag: String?,
+                               completion: @escaping (String) -> (Void)) {
         let tagEditorViewController = self.tagEditorViewController()
         if let tag = tag {
             tagEditorViewController.configure(tag: tag)

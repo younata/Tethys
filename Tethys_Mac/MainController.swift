@@ -3,7 +3,7 @@ import TethysKit
 import Ra
 
 public final class MainController: NSViewController {
-    @IBOutlet public var window: NSWindow? = nil
+    @IBOutlet public var window: NSWindow?
 
     public lazy var feedsList: FeedsViewController = {
         let feedsList = FeedsViewController()
@@ -11,7 +11,7 @@ public final class MainController: NSViewController {
         return feedsList
     }()
 
-    public private(set) var articlesList: ArticleListViewController? = nil
+    public private(set) var articlesList: ArticleListViewController?
 
     public lazy var splitViewController: NSSplitViewController = {
         let controller = NSSplitViewController()
@@ -21,12 +21,10 @@ public final class MainController: NSViewController {
     }()
 
     public override var acceptsFirstResponder: Bool {
-        get {
-            return true
-        }
+        return true
     }
 
-    public private(set) var raInjector: Injector? = nil
+    public private(set) var raInjector: Injector?
 
     private lazy var importUseCase: ImportUseCase? = {
         return self.raInjector?.create(kind: ImportUseCase.self)

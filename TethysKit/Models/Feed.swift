@@ -74,6 +74,14 @@ public final class Feed: Hashable, CustomStringConvertible {
         }
     }
 
+    public var settings: Settings? {
+        willSet {
+            if newValue != settings {
+                self.updated = true
+            }
+        }
+    }
+
     @available(*, deprecated: 1.0, renamed: "articlesArray")
     public var articles: [Article] { return Array(self.articlesArray) }
 
@@ -243,6 +251,10 @@ public final class Feed: Hashable, CustomStringConvertible {
         } else {
             let articles = feed.articles.map { Article(realmArticle: $0, feed: self) }
             self.articlesArray = DataStoreBackedArray(Array(articles))
+        }
+
+        if let settings = feed.settings {
+            self.settings = Settings(realmSettings: settings)
         }
 
         self.updated = false

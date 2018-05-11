@@ -77,7 +77,7 @@ public final class FeedViewController: UIViewController, Injectable {
     fileprivate func resetFeedView() {
         guard let feed = self.feed else { return }
         self.feedDetailView.configure(title: feed.displayTitle, url: feed.url,
-                                      summary: feed.displaySummary, tags: feed.tags)
+                                      summary: feed.displaySummary, maxNumberOfArticles: Int.max, tags: feed.tags)
     }
 
     @objc fileprivate func dismissFromNavigation() {

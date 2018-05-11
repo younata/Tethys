@@ -248,12 +248,12 @@ class FeedSpec: QuickSpec {
                 }
             }
 
-            xdescribe("Adding a tag that starts with '_'") {
+            describe("Adding a tag that starts with '`'") {
                 beforeEach {
-                    subject.addTag("_newTag")
+                    subject.addTag("`newTag")
                 }
 
-                it("should now report the summary as the new tag minus the prefix'd '_'") {
+                it("should now report the summary as the new tag minus the prefix'd '`'") {
                     expect(subject.displaySummary).to(equal("newTag"))
                 }
             }
@@ -339,6 +339,13 @@ class FeedSpec: QuickSpec {
                     subject.image = nil
                     expect(subject.updated) == false
                     subject.image = Image()
+                    expect(subject.updated) == true
+                }
+
+                it("settings") {
+                    subject.settings = nil
+                    expect(subject.updated) == false
+                    subject.settings = Settings(maxNumberOfArticles: 0)
                     expect(subject.updated) == true
                 }
             }

@@ -91,6 +91,16 @@ public final class DataStoreBackedArray<T: AnyObject>: Collection, CustomDebugSt
         return self[self.count - 1]
     }
 
+    public func array() -> Future<[T]> {
+        return self.internalCount.map { count -> [T] in
+            var objects = [T]()
+            for i in 0..<count {
+                objects.append(self[i])
+            }
+            return objects + self.appendedObjects
+        }
+    }
+
     public func filterWithPredicate(_ predicate: NSPredicate) -> DataStoreBackedArray<T> {
         let filterArray: (Void) -> DataStoreBackedArray = {
             let array = self.internalObjects.filter {

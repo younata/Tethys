@@ -87,10 +87,17 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     // MARK: Private (DataRetriever)
 
     private func allFeeds() -> Future<Result<[Feed], TethysError>> {
-        return self.dataService.allFeeds().map { result in
-            return result.map { unsorted_feeds in
-                let unsorted = Array(unsorted_feeds)
-                return unsorted.sorted { return $0.displayTitle < $1.displayTitle }
+        return self.dataService.allFeeds().map { result -> Future<Result<[Feed], TethysError>> in
+            switch result {
+            case .success(let unsorted_feeds):
+                return unsorted_feeds.array().map { unsorted -> Result<[Feed], TethysError> in
+                    return .success(unsorted.sorted { return $0.displayTitle < $1.displayTitle })
+                }
+                //Array(unsorted_feeds)
+            case .failure(let error):
+                let promise = Promise<Result<[Feed], TethysError>>()
+                promise.resolve(.failure(error))
+                return promise.future
             }
         }
     }

@@ -280,6 +280,16 @@ final class RealmService: DataService {
         return self.realm.objects(RealmAuthor.self).filter(predicate).first
     }
 
+    private func deleteArticlesIfNeeded(feed: Feed) {
+        guard let maxArticles = feed.settings?.maxNumberOfArticles, feed.articlesArray.count > maxArticles else {
+            return
+        }
+
+        let articlesToDelete = feed.articlesArray.reversed()[0..<(feed.articlesArray.count - maxArticles)]
+
+        articlesToDelete.forEach(self.synchronousDeleteArticle(_:))
+    }
+
     // Synchronous update!
 
     private func synchronousUpdateFeed(_ feed: Feed, realmFeed: RealmFeed? = nil) {
@@ -308,6 +318,16 @@ final class RealmService: DataService {
                     rfeed.imageData = image.tiffRepresentation
                 }
             #endif
+
+            if let settings = feed.settings {
+                if let rsettings = rfeed.settings, settings.maxNumberOfArticles != rsettings.maxNumberOfArticles {
+                    rsettings.maxNumberOfArticles = settings.maxNumberOfArticles
+                } else {
+                    rfeed.settings = self.realm.create(RealmSettings.self)
+                    rfeed.settings?.maxNumberOfArticles = settings.maxNumberOfArticles
+                }
+                self.deleteArticlesIfNeeded(feed: feed)
+            }
         }
         feed.resetArticles(realm: self.realm)
     }

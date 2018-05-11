@@ -299,6 +299,51 @@ class RealmServiceSpec: QuickSpec {
                     expect(realm.objects(RealmAuthor.self).count) == 1
                 }
 
+                it("inserts a RealmSettings if a Settings object is added to the feed") {
+                    feed1.settings = Settings(maxNumberOfArticles: 30)
+                    _ = subject.batchSave([feed1], articles: []).wait()
+
+                    expect(realm.objects(RealmSettings.self).count) == 1
+
+                    let recreatedFeed = subject.findOrCreateFeed(url: feed1.url).wait()
+
+                    expect(recreatedFeed?.settings?.maxNumberOfArticles) == 30
+
+                    _ = subject.batchSave([recreatedFeed!], articles: []).wait()
+
+                    expect(realm.objects(RealmSettings.self).count) == 1
+                }
+
+                it("removes old articles if they exceed a settings max article count when that is changed") {
+                    feed1.settings = Settings(maxNumberOfArticles: 1)
+                    _ = subject.batchSave([feed1], articles: []).wait()
+
+                    expect(realm.objects(RealmArticle.self).count) == 2
+
+                    let recreatedFeed = subject.findOrCreateFeed(url: feed1.url).wait()!
+
+                    expect(Array(recreatedFeed.articlesArray)) == [article1]
+                }
+
+                it("removes old articles when new articles are added and the max article count is exceeded") {
+                    feed1.settings = Settings(maxNumberOfArticles: 2)
+                    _ = subject.batchSave([feed1], articles: []).wait()
+
+                    expect(realm.objects(RealmArticle.self).count) == 3
+
+                    let recreatedFeed1 = subject.findOrCreateFeed(url: feed1.url).wait()!
+
+                    expect(Array(recreatedFeed1.articlesArray)) == [article1, article2]
+
+                    let _ = subject.findOrCreateArticle(feed: feed1, url: URL(string: "https://example.com/article5")!).wait()!
+
+                    subject.batchSave([feed1], articles: [])
+
+                    expect(realm.objects(RealmArticle.self).count) == 3
+
+                    expect(Array(recreatedFeed1.articlesArray)) == [article1, article2]
+                }
+
                 #if os(iOS)
                     it("on iOS, updates the search index when an article is updated") {
                         article1.summary = "Hello world!"

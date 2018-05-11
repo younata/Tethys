@@ -3330,6 +3330,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Tethys/Tethys.entitlements;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 9D456YCUH2;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3345,6 +3346,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.RSSClient;
 				PRODUCT_NAME = Tethys;
+				PROVISIONING_PROFILE = "184da801-b6b9-47e3-a560-e3d9c54e5ac0";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development com.rachelbrindle.RSSClient";
 				SWIFT_OBJC_BRIDGING_HEADER = "Tethys/Tethys-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;

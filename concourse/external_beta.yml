@@ -2,10 +2,13 @@
 platform: darwin
 
 inputs:
-- name: tethys_github
+- name: code
+
+caches:
+- path: code/Carthage
 
 run:
-  path: tethys_github/concourse/external_beta.sh
+  path: code/concourse/external_beta.sh
 
 params:
   FASTLANE_PASSWORD:

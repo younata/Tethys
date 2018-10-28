@@ -1,6 +1,6 @@
 #!/bin/bash -el
 
-cd tethys_github
+cd code
 bundle
 carthage bootstrap --platform ios,mac --no-use-binaries
 bundle exec rake documentation:libraries

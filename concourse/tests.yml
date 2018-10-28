@@ -2,7 +2,10 @@
 platform: darwin
 
 inputs:
-- name: tethys_github
+- name: code
+
+caches:
+- path: code/Carthage
 
 run:
-  path: tethys_github/concourse/tests.sh
+  path: code/concourse/tests.sh

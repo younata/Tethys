@@ -43,7 +43,7 @@ final class DefaultAccountRepository: InternalAccountRepository {
     func login(_ email: String, password: String) -> Future<Result<Void, TethysError>> {
         return self.repository.login(email, password: password).map { res -> Result<Void, TethysError> in
             switch res {
-            case .success():
+            case .success:
                 self.userDefaults.setValue(self.repository.authToken ?? "", forKey: pasiphae_token)
                 self.userDefaults.setValue(email, forKey: pasiphae_login)
                 self.delegate?.accountRepositoryDidLogIn(self)
@@ -57,7 +57,7 @@ final class DefaultAccountRepository: InternalAccountRepository {
     func register(_ email: String, password: String) -> Future<Result<Void, TethysError>> {
         return self.repository.createAccount(email, password: password).map { res -> Result<Void, TethysError> in
             switch res {
-            case .success():
+            case .success:
                 self.userDefaults.setValue(self.repository.authToken ?? "", forKey: pasiphae_token)
                 self.userDefaults.setValue(email, forKey: pasiphae_login)
                 self.delegate?.accountRepositoryDidLogIn(self)

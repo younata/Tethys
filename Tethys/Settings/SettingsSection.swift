@@ -1,20 +1,10 @@
 import Foundation
 import TethysKit
 
-extension Account: CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case .pasiphae:
-            return NSLocalizedString("SettingsViewController_Accounts_Pasiphae", comment: "")
-        }
-    }
-}
-
 enum SettingsSection: CustomStringConvertible {
     case theme
     case refresh
     case quickActions
-    case accounts
     case other
     case credits
 
@@ -36,8 +26,6 @@ enum SettingsSection: CustomStringConvertible {
             switch rawValue + offset {
             case 2:
                 self = .quickActions
-//            case 3:
-//                self = .accounts
             case 3:
                 self = .other
             case 4:
@@ -60,7 +48,6 @@ enum SettingsSection: CustomStringConvertible {
         case .theme: return 0
         case .refresh: return 1
         case .quickActions: return 2
-        case .accounts: return 3
         case .other: return 3
         case .credits: return 4
         }
@@ -74,8 +61,6 @@ enum SettingsSection: CustomStringConvertible {
             return NSLocalizedString("SettingsViewController_Table_Header_Refresh", comment: "")
         case .quickActions:
             return NSLocalizedString("SettingsViewController_Table_Header_QuickActions", comment: "")
-        case .accounts:
-            return NSLocalizedString("SettinsgViewController_Table_Header_Accounts", comment: "")
         case .other:
             return NSLocalizedString("SettingsViewController_Table_Header_Other", comment: "")
         case .credits:

@@ -17,7 +17,7 @@ final class DefaultAccountRepositoryDelegate: AccountRepositoryDelegate {
                 if let sinopeRepository = accountRepository.backendRepository() {
                     self.subscribe(urls: urls, sinopeRepository: sinopeRepository)
                 }
-            case .failure(_):
+            case .failure:
                 break
             }
         }
@@ -26,11 +26,11 @@ final class DefaultAccountRepositoryDelegate: AccountRepositoryDelegate {
     private func subscribe(urls: [URL], sinopeRepository: Sinope.Repository) {
         _ = sinopeRepository.subscribe(urls).then { subscribeResult in
             switch subscribeResult {
-            case .success(_):
+            case .success:
                 self.mainQueue.addOperation {
                     self.databaseUseCase.updateFeeds { _ in }
                 }
-            case .failure(_):
+            case .failure:
                 break
             }
         }

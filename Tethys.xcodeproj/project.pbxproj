@@ -24,13 +24,11 @@
 		8903EB0D1C702FA3001C0189 /* WebPageParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB0B1C702FA3001C0189 /* WebPageParserSpec.swift */; };
 		8903EB0F1C703570001C0189 /* FakeImportUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB0E1C703570001C0189 /* FakeImportUseCase.swift */; };
 		8903EB151C72F8A7001C0189 /* Kanna.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8903EB141C72F8A7001C0189 /* Kanna.framework */; };
-		8903F5A01D3BE5AB00546099 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F59F1D3BE5AB00546099 /* LoginViewController.swift */; };
 		8903F5A31D3C8C1400546099 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8903F5A21D3C8C1400546099 /* Freddy.framework */; };
 		8903F5A51D3C8C2000546099 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8903F5A21D3C8C1400546099 /* Freddy.framework */; };
 		8903F5A61D3C8C2000546099 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8903F5A21D3C8C1400546099 /* Freddy.framework */; };
 		8903F5A71D3C8C3100546099 /* Freddy.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8903F5A21D3C8C1400546099 /* Freddy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8903F5A91D3EF0C700546099 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5A81D3EF0C700546099 /* Account.swift */; };
-		8903F5AB1D3EF9F800546099 /* LoginViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5AA1D3EF9F800546099 /* LoginViewControllerSpec.swift */; };
 		8903F5AD1D4002FD00546099 /* AccountRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5AC1D4002FD00546099 /* AccountRepository.swift */; };
 		8903F5AF1D40225D00546099 /* AccountRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5AE1D40225D00546099 /* AccountRepositorySpec.swift */; };
 		8903F5B01D4022AD00546099 /* FakeUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C676531BA264F40037A224 /* FakeUserDefaults.swift */; };
@@ -645,10 +643,8 @@
 		8903EB0B1C702FA3001C0189 /* WebPageParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebPageParserSpec.swift; sourceTree = "<group>"; };
 		8903EB0E1C703570001C0189 /* FakeImportUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeImportUseCase.swift; sourceTree = "<group>"; };
 		8903EB141C72F8A7001C0189 /* Kanna.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Kanna.framework; path = ../Carthage/Build/iOS/Kanna.framework; sourceTree = "<group>"; };
-		8903F59F1D3BE5AB00546099 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		8903F5A21D3C8C1400546099 /* Freddy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Freddy.framework; path = Carthage/Build/iOS/Freddy.framework; sourceTree = SOURCE_ROOT; };
 		8903F5A81D3EF0C700546099 /* Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
-		8903F5AA1D3EF9F800546099 /* LoginViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewControllerSpec.swift; sourceTree = "<group>"; };
 		8903F5AC1D4002FD00546099 /* AccountRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountRepository.swift; sourceTree = "<group>"; };
 		8903F5AE1D40225D00546099 /* AccountRepositorySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountRepositorySpec.swift; sourceTree = "<group>"; };
 		8903F5B31D40245E00546099 /* FakeSinopeRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeSinopeRepository.swift; sourceTree = "<group>"; };
@@ -1083,22 +1079,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		8903F59E1D3BE57900546099 /* Pasiphae */ = {
-			isa = PBXGroup;
-			children = (
-				8903F59F1D3BE5AB00546099 /* LoginViewController.swift */,
-			);
-			path = Pasiphae;
-			sourceTree = "<group>";
-		};
-		8903F5A11D3C15C300546099 /* Pasiphae */ = {
-			isa = PBXGroup;
-			children = (
-				8903F5AA1D3EF9F800546099 /* LoginViewControllerSpec.swift */,
-			);
-			name = Pasiphae;
-			sourceTree = "<group>";
-		};
 		89146E3D1C88C59C00EC8F10 /* Use Cases */ = {
 			isa = PBXGroup;
 			children = (
@@ -1511,7 +1491,6 @@
 				89A3A8C71DEF9404002AF9B5 /* Generic */,
 				89CB98BD1B13945500C87160 /* Importing Feeds */,
 				89CBDC031C7D42C2006B70F5 /* Migration */,
-				8903F5A11D3C15C300546099 /* Pasiphae */,
 				895AC5261C80BC1500A5F6A1 /* Settings */,
 				899823AA1B2C837400818755 /* Tags */,
 			);
@@ -1581,7 +1560,6 @@
 				89CB98BB1B13921200C87160 /* Frameworks */,
 				89F98BA21BA079DE005C3CA8 /* Generic */,
 				89CBDC021C7D428E006B70F5 /* Migration */,
-				8903F59E1D3BE57900546099 /* Pasiphae */,
 				896320931C1779F900B7C980 /* Repositories */,
 				896320921C1779DE00B7C980 /* Settings */,
 				89C8307619D730E9009924DA /* Supporting Files */,
@@ -2647,7 +2625,6 @@
 				8941AB7B1DC9207200A2CE5F /* HTMLViewController.swift in Sources */,
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
 				89D970C31B392B0300ED84B8 /* LocalNotificationSource.swift in Sources */,
-				8903F5A01D3BE5AB00546099 /* LoginViewController.swift in Sources */,
 				89CBDC011C7D41C9006B70F5 /* MigrationViewController.swift in Sources */,
 				89C204C41A7400D100C792D2 /* NotificationHandler.swift in Sources */,
 				8903A6251C4AB17C00E896BF /* NotificationView.swift in Sources */,
@@ -2719,7 +2696,6 @@
 				898DA4971DDEC3720029CBD3 /* GenerateBookViewControllerSpec.swift in Sources */,
 				8941AB7D1DC9385A00A2CE5F /* HTMLViewControllerSpec.swift in Sources */,
 				89C204C71A740D8900C792D2 /* LocalNotificationHandlerSpec.swift in Sources */,
-				8903F5AB1D3EF9F800546099 /* LoginViewControllerSpec.swift in Sources */,
 				89CBDC051C7D42D7006B70F5 /* MigrationViewControllerSpec.swift in Sources */,
 				8903A6271C4ABA7800E896BF /* NotificationViewSpec.swift in Sources */,
 				899823B11B30BA7E00818755 /* NSUserActivity+TethysTests.m in Sources */,

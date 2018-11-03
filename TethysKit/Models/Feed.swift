@@ -130,15 +130,6 @@ public final class Feed: Hashable, CustomStringConvertible {
 
     public private(set) var updated = false
 
-    public func waitPeriodInRefreshes() -> Int {
-        var ret = 0, next = 1
-        let wait = max(0, waitPeriod - 2)
-        for _ in 0..<wait {
-            (ret, next) = (next, ret+next)
-        }
-        return ret
-    }
-
     public private(set) lazy var unreadArticles: DataStoreBackedArray<Article> = {
         return self.articlesArray.filterWithPredicate(NSPredicate(format: "read == %@", false as CVarArg))
     }()
@@ -196,7 +187,6 @@ public final class Feed: Hashable, CustomStringConvertible {
         )
     }
 
-    // swiftlint:disable function_parameter_count
     public init(title: String, url: URL, summary: String, tags: [String],
                 waitPeriod: Int, remainingWait: Int, articles: [Article], image: Image?,
                 lastUpdated: Date = Date(), identifier: String = "") {
@@ -216,7 +206,6 @@ public final class Feed: Hashable, CustomStringConvertible {
         }
         self.updated = false
     }
-    // swiftlint:enable function_parameter_count
 
     public private(set) var feedID: AnyObject?
 

@@ -17,15 +17,13 @@ public final class SettingsViewController: UIViewController, Injectable {
     fileprivate let accountRepository: AccountRepository
     fileprivate let opmlService: OPMLService
     fileprivate let mainQueue: OperationQueue
-    fileprivate let loginViewController: (Void) -> LoginViewController
-    fileprivate let documentationViewController: (Void) -> DocumentationViewController
+    fileprivate let documentationViewController: () -> DocumentationViewController
 
     fileprivate var oldTheme: ThemeRepository.Theme = .light
 
     fileprivate lazy var showReadingTimes: Bool = { return self.settingsRepository.showEstimatedReadingLabel }()
     fileprivate lazy var refreshControlStyle: RefreshControlStyle = { return self.settingsRepository.refreshControl }()
 
-    // swiftlint:disable function_parameter_count
     public init(themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
                 quickActionRepository: QuickActionRepository,
@@ -33,8 +31,7 @@ public final class SettingsViewController: UIViewController, Injectable {
                 accountRepository: AccountRepository,
                 opmlService: OPMLService,
                 mainQueue: OperationQueue,
-                loginViewController: @escaping (Void) -> LoginViewController,
-                documentationViewController: @escaping (Void) -> DocumentationViewController) {
+                documentationViewController: @escaping () -> DocumentationViewController) {
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.quickActionRepository = quickActionRepository
@@ -42,12 +39,10 @@ public final class SettingsViewController: UIViewController, Injectable {
         self.accountRepository = accountRepository
         self.opmlService = opmlService
         self.mainQueue = mainQueue
-        self.loginViewController = loginViewController
         self.documentationViewController = documentationViewController
 
         super.init(nibName: nil, bundle: nil)
     }
-    // swiftlint:enable function_parameter_count
 
     public required convenience init(injector: Injector) {
         self.init(
@@ -58,7 +53,6 @@ public final class SettingsViewController: UIViewController, Injectable {
             accountRepository: injector.create(AccountRepository.self)!,
             opmlService: injector.create(OPMLService.self)!,
             mainQueue: injector.create(kMainQueue, type: OperationQueue.self)!,
-            loginViewController: { injector.create(LoginViewController.self)! },
             documentationViewController: { injector.create(DocumentationViewController.self)! }
         )
     }
@@ -282,10 +276,6 @@ extension SettingsViewController: UIViewControllerPreviewingDelegate {
         switch section {
         case .quickActions:
             return self.quickActionController(indexPath: indexPath)
-        case .accounts:
-            let loginViewController = self.loginViewController()
-            loginViewController.accountType = Account(rawValue: indexPath.row)
-            return loginViewController
         case .credits:
             if indexPath.row == 0 {
                 guard let url = URL(string: "https://twitter.com/younata") else { return nil }
@@ -331,8 +321,6 @@ extension SettingsViewController: UITableViewDataSource {
                 return 3
             }
             return self.quickActionRepository.quickActions.count + 1
-        case .accounts:
-            return 1
         case .other:
             return OtherSection.numberOfOptions
         case .credits:
@@ -351,8 +339,6 @@ extension SettingsViewController: UITableViewDataSource {
             return self.refreshCell(indexPath: indexPath)
         case .quickActions:
             return self.quickActionCell(indexPath: indexPath)
-        case .accounts:
-            return self.accountCell(indexPath: indexPath)
         case .other:
             return self.otherCell(indexPath: indexPath)
         case .credits:
@@ -385,17 +371,6 @@ extension SettingsViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
         cell.themeRepository = self.themeRepository
         cell.textLabel?.text = self.titleForQuickAction(indexPath.row)
-        return cell
-    }
-
-    private func accountCell(indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
-        cell.themeRepository = self.themeRepository
-
-        let row = Account(rawValue: indexPath.row)!
-        cell.textLabel?.text = row.description
-        cell.detailTextLabel?.text = self.accountRepository.loggedIn()
-
         return cell
     }
 
@@ -457,7 +432,7 @@ extension SettingsViewController: UITableViewDelegate {
 
     public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection),
-            section == .quickActions || section == .accounts else { return false }
+            section == .quickActions else { return false }
         if section == .quickActions { return indexPath.row < self.quickActionRepository.quickActions.count }
         return true
     }
@@ -481,14 +456,6 @@ extension SettingsViewController: UITableViewDelegate {
                 }
             }
             return [deleteAction]
-        case .accounts:
-            guard self.accountRepository.loggedIn() != nil else { return [] }
-            let logOutTitle = NSLocalizedString("SettingsViewController_Accounts_Log_Out", comment: "")
-            let logOutAction = UITableViewRowAction(style: .default, title: logOutTitle) {_ in
-                self.accountRepository.logOut()
-                tableView.reloadRows(at: [indexPath], with: .left)
-            }
-            return [logOutAction]
         default:
             return nil
         }
@@ -508,8 +475,6 @@ extension SettingsViewController: UITableViewDelegate {
             self.didTapRefreshCell(indexPath: indexPath)
         case .quickActions:
             self.didTapQuickActionCell(tableView: tableView, indexPath: indexPath)
-        case .accounts:
-            self.didTapAccountCell(tableView: tableView, indexPath: indexPath)
         case .other:
             self.didTapOtherCell(tableView: tableView, indexPath: indexPath)
         case .credits:
@@ -536,13 +501,6 @@ extension SettingsViewController: UITableViewDelegate {
         self.navigationController?.pushViewController(self.quickActionController(indexPath: indexPath), animated: true)
     }
 
-    private func didTapAccountCell(tableView: UITableView, indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: false)
-        let loginViewController = self.loginViewController()
-        loginViewController.accountType = Account(rawValue: indexPath.row)
-        self.navigationController?.pushViewController(loginViewController, animated: true)
-    }
-
     private func didTapOtherCell(tableView: UITableView, indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
         guard let otherSection = OtherSection(rawValue: indexPath.row) else { return }
@@ -556,7 +514,7 @@ extension SettingsViewController: UITableViewDelegate {
                         let shareSheet = UIActivityViewController(activityItems: [url], applicationActivities: nil)
                         self.present(shareSheet, animated: true, completion: nil)
                     }
-                case .failure(_):
+                case .failure:
                     self.mainQueue.addOperation {
                         let alertTitle = NSLocalizedString("SettingsViewController_Other_ExportOPML_Error_Title",
                                                            comment: "")

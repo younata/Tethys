@@ -17,11 +17,9 @@ public final class KitModule: NSObject, Ra.InjectorModule {
         let mainQueue = OperationQueue.main
         injector.bind(kMainQueue, to: mainQueue)
         injector.bind(URLSession.self, to: URLSession.shared)
-        #if os(iOS)
-            injector.bind(Analytics.self, to: MixPanelAnalytics())
-        #endif
+        injector.bind(Analytics.self, to: BadAnalytics())
 
-        var searchIndex: SearchIndex? = nil
+        var searchIndex: SearchIndex?
         let reachable: Reachable? = Reachability()
 
         #if os(iOS)
@@ -74,19 +72,12 @@ public final class KitModule: NSObject, Ra.InjectorModule {
             userDefaults: userDefaults
         )
 
-        let syncManager = SyncEngineManager(workQueue: OperationQueue(),
-                                            mainQueue: mainQueue,
-                                            dataServiceFactory: dataServiceFactory,
-                                            accountRepository: accountRepository,
-                                            timerFactory: DefaultTimerFactory())
-
         let dataRepository = DefaultDatabaseUseCase(mainQueue: mainQueue,
             reachable: reachable,
             dataServiceFactory: dataServiceFactory,
             updateUseCase: updateUseCase,
             databaseMigrator: DatabaseMigrator(),
-            accountRepository: accountRepository,
-            syncManager: syncManager
+            accountRepository: accountRepository
         )
 
         accountRepository.delegate = DefaultAccountRepositoryDelegate(

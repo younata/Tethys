@@ -172,7 +172,7 @@ class FeedDetailViewSpec: QuickSpec {
                         }
 
                         it("deletes the cell from the tags list when tapped") {
-                            editAction?.handler(editAction!, indexPath)
+                            editAction?.handler?(editAction!, indexPath)
 
                             expect(tableView.numberOfRows(inSection: 0)) == (tags.count - 1)
                             let newCell = tableView.dataSource?.tableView(tableView, cellForRowAt: indexPath)
@@ -180,7 +180,7 @@ class FeedDetailViewSpec: QuickSpec {
                         }
 
                         it("informs the delegate that the tags changed when tapped") {
-                            editAction?.handler(editAction!, indexPath)
+                            editAction?.handler?(editAction!, indexPath)
 
                             expect(delegate.tagsDidChangeCallCount) == 1
                             guard delegate.tagsDidChangeCallCount == 1 else { return }
@@ -204,7 +204,7 @@ class FeedDetailViewSpec: QuickSpec {
 
                         describe("when tapped") {
                             beforeEach {
-                                editAction?.handler(editAction!, indexPath)
+                                editAction?.handler?(editAction!, indexPath)
                             }
 
                             it("informs its delegate when tapped") {

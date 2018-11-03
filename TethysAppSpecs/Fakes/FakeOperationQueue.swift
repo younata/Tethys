@@ -8,7 +8,7 @@ class FakeOperationQueue: OperationQueue {
     }
 
     func runNextOperation() {
-        assert(internalOperations.count != 0, "Can't run an operation that doesn't exist")
+        guard internalOperations.count > 0 else { return }
         if let op = internalOperations.first {
             performOperationAndWait(op)
             internalOperations.remove(at: 0)

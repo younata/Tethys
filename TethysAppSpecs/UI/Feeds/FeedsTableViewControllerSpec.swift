@@ -438,7 +438,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                     expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                                     guard let alert = subject.presentedViewController as? UIAlertController else { return }
 
-                                    alert.actions.first?.handler(alert.actions.first!)
+                                    alert.actions.first?.handler?(alert.actions.first!)
                                 }
 
                                 it("deletes the feed from the data store") {
@@ -459,7 +459,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                     expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                                     guard let alert = subject.presentedViewController as? UIAlertController else { return }
 
-                                    alert.actions.last?.handler(alert.actions.last!)
+                                    alert.actions.last?.handler?(alert.actions.last!)
                                 }
 
                                 it("does not delete the feed from the data store") {

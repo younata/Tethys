@@ -36,7 +36,7 @@ public final class WebPageParser: Operation {
     }
 
     public override func main() {
-        if let doc = Kanna.HTML(html: self.webPage, encoding: String.Encoding.utf8) {
+        if let doc = try? Kanna.HTML(html: self.webPage, encoding: String.Encoding.utf8) {
             switch self.searchType {
             case .feeds:
                 for link in doc.xpath("//link") where link["rel"] == "alternate" &&

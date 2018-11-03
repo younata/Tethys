@@ -260,7 +260,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     let indexPath = IndexPath(row: 0, section: sectionNumber)
 
                     beforeEach {
-                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
                     }
 
                     it("is titled 'Light'") {
@@ -321,7 +321,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     let indexPath = IndexPath(row: 1, section: sectionNumber)
 
                     beforeEach {
-                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
                     }
 
                     it("is titled 'Dark (Default)'") {
@@ -372,7 +372,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     let indexPath = IndexPath(row: 0, section: sectionNumber)
 
                     beforeEach {
-                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
                     }
 
                     it("is titled 'Spinner'") {
@@ -418,7 +418,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     let indexPath = IndexPath(row: 1, section: sectionNumber)
 
                     beforeEach {
-                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
                     }
 
                     it("is titled 'Breakout'") {
@@ -946,7 +946,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     let indexPath = IndexPath(row: 0, section: sectionNumber)
 
                     beforeEach {
-                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
                     }
 
                     it("is configured with the theme repository") {
@@ -968,7 +968,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     describe("when logged in") {
                         beforeEach {
                             accountRepository.loggedInReturns("foo@example.com")
-                            cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
+                            cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
                         }
 
                         it("shows the user's email in the detail label") {
@@ -983,7 +983,7 @@ class SettingsViewControllerSpec: QuickSpec {
                             it("logs the user out") {
                                 let editAction = delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)?.first
                                 expect(editAction?.title) == "Log Out"
-                                editAction?.handler(editAction, indexPath)
+                                editAction?.handler?(editAction!, indexPath)
                                 expect(accountRepository.logOutCallCount) == 1
                             }
                         }
@@ -1056,7 +1056,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     let indexPath = IndexPath(row: 0, section: sectionNumber)
 
                     beforeEach {
-                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! SwitchTableViewCell
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? SwitchTableViewCell
                     }
 
                     it("is configured with the theme repository") {
@@ -1100,7 +1100,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     let indexPath = IndexPath(row: 1, section: sectionNumber)
 
                     beforeEach {
-                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
                     }
 
                     it("is configured with the theme repository") {
@@ -1149,7 +1149,7 @@ class SettingsViewControllerSpec: QuickSpec {
                                         expect(action.title) == "Ok"
                                         expect(action.style) == UIAlertActionStyle.default
 
-                                        action.handler(action)
+                                        action.handler?(action)
                                         expect(navigationController.visibleViewController) == subject
                                     }
                                 }
@@ -1195,10 +1195,10 @@ class SettingsViewControllerSpec: QuickSpec {
                     var detail: String!
 
                     beforeEach {
-                        cell = sharedContext()["cell"] as! TableViewCell
-                        indexPath = sharedContext()["indexPath"] as! IndexPath
-                        title = sharedContext()["title"] as! String
-                        detail = sharedContext()["detail"] as! String
+                        cell = sharedContext()["cell"] as? TableViewCell
+                        indexPath = sharedContext()["indexPath"] as? IndexPath
+                        title = sharedContext()["title"] as? String
+                        detail = sharedContext()["detail"] as? String
                     }
 
                     it("is configured with the theme repository") {
@@ -1274,7 +1274,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     let indexPath = IndexPath(row: values.count, section: sectionNumber)
 
                     beforeEach {
-                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
                     }
 
                     it("is configured with the theme repository") {
@@ -1340,7 +1340,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     let indexPath = IndexPath(row: values.count + 1, section: sectionNumber)
 
                     beforeEach {
-                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as! TableViewCell
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
                     }
 
                     it("is configured with the theme repository") {

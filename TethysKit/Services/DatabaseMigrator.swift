@@ -1,16 +1,16 @@
 protocol DatabaseMigratorType {
     func migrate(_ from: DataService, to: DataService,
                  progress: @escaping (Double) -> Void,
-                 finish: @escaping (Void) -> Void)
+                 finish: @escaping () -> Void)
     func deleteEverything(_ database: DataService,
                           progress: @escaping (Double) -> Void,
-                          finish: @escaping (Void) -> Void)
+                          finish: @escaping () -> Void)
 }
 
 struct DatabaseMigrator: DatabaseMigratorType {
     func migrate(_ from: DataService, to: DataService,
                  progress: @escaping (Double) -> Void,
-                 finish: @escaping (Void) -> Void) {
+                 finish: @escaping () -> Void) {
         var progressCalls: Double = 0
         let expectedProgressCalls: Double = 4
 
@@ -79,7 +79,7 @@ struct DatabaseMigrator: DatabaseMigratorType {
 
     func deleteEverything(_ database: DataService,
                           progress: @escaping (Double) -> Void,
-                          finish: @escaping (Void) -> Void) {
+                          finish: @escaping () -> Void) {
         _ = database.deleteEverything().then { _ in
             progress(1.0)
             finish()

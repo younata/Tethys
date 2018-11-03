@@ -310,7 +310,7 @@ class GenerateBookViewControllerSpec: QuickSpec {
                                 expect(alert.actions.count) == 1
                                 if let action = alert.actions.first {
                                     expect(action.title) == "Ok"
-                                    action.handler(action)
+                                    action.handler?(action)
                                     expect(subject.presentedViewController).to(beNil())
                                 }
                             }

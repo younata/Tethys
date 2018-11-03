@@ -13,4 +13,3 @@ rNews utilizes the following third party libraries:
 - [PureLayout](https://github.com/PureLayout/PureLayout)
 - [TOBrowserActivityKit](https://github.com/TimOliver/TOBrowserActivityKit)
 - [realm-cocoa](https://github.com/realm/realm-cocoa)
-- [mixpanel-iphone](https://github.com/mixpanel/mixpanel-iphone)

@@ -4,7 +4,7 @@ public protocol FeedDetailViewDelegate: class {
     func feedDetailView(_ feedDetailView: FeedDetailView, urlDidChange url: URL)
     func feedDetailView(_ feedDetailView: FeedDetailView, tagsDidChange tags: [String])
     func feedDetailView(_ feedDetailView: FeedDetailView,
-                        editTag tag: String?, completion: @escaping (String) -> (Void))
+                        editTag tag: String?, completion: @escaping (String) -> Void)
 }
 
 public final class FeedDetailView: UIView {
@@ -36,7 +36,7 @@ public final class FeedDetailView: UIView {
         }
     }
 
-    public func configure(title: String, url: URL, summary: String, maxNumberOfArticles: Int, tags: [String]) {
+    public func configure(title: String, url: URL, summary: String, tags: [String]) {
         self.titleLabel.text = title
         self.summaryLabel.text = summary
 

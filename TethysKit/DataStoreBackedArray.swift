@@ -258,7 +258,7 @@ public final class DataStoreBackedArray<T: AnyObject>: Collection, CustomDebugSt
         let predicate = self.predicate ?? NSPredicate(value: true)
         let sortDescriptors: [SortDescriptor] = self.sortDescriptors.flatMap {
             if let key = $0.key {
-                return SortDescriptor(property: key, ascending: $0.ascending)
+                return SortDescriptor(keyPath: key, ascending: $0.ascending)
             }
             return nil
         }

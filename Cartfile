@@ -15,5 +15,4 @@ github "younata/Sponde" "master"
 github "PureLayout/PureLayout"
 github "TimOliver/TOBrowserActivityKit" "master"
 github "realm/realm-cocoa"
-github "mixpanel/mixpanel-iphone"
 

@@ -312,7 +312,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     beforeEach {
                         if let alert = subject.presentedViewController as? UIAlertController,
                             let action = alert.actions.first {
-                                action.handler(action)
+                                action.handler?(action)
                         }
                     }
 
@@ -325,7 +325,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     beforeEach {
                         if let alert = subject.presentedViewController as? UIAlertController,
                             let action = alert.actions.last {
-                                action.handler(action)
+                                action.handler?(action)
                         }
                     }
 
@@ -364,7 +364,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     beforeEach {
                         if let alert = subject.presentedViewController as? UIAlertController,
                             let action = alert.actions.first {
-                                action.handler(action)
+                                action.handler?(action)
                         }
                     }
 
@@ -377,7 +377,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     beforeEach {
                         if let alert = subject.presentedViewController as? UIAlertController,
                             let action = alert.actions.last {
-                                action.handler(action)
+                                action.handler?(action)
                         }
                     }
 
@@ -481,7 +481,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                             let actions = (subject.presentedViewController as? UIAlertController)?.actions ?? []
                             if actions.count == 3 {
                                 let action = actions[1]
-                                action.handler(action)
+                                action.handler?(action)
                             } else {
                                 fail("precondition failed")
                             }
@@ -535,7 +535,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                             expect(alert.actions.count) == 1
                             if let action = alert.actions.first {
                                 expect(action.title) == "Ok"
-                                action.handler(action)
+                                action.handler?(action)
                                 expect(subject.presentedViewController).to(beNil())
                             }
                         }
@@ -559,7 +559,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                             expect(alert.actions.count) == 1
                             if let action = alert.actions.first {
                                 expect(action.title) == "Ok"
-                                action.handler(action)
+                                action.handler?(action)
                                 expect(subject.presentedViewController).to(beNil())
                             }
                         }

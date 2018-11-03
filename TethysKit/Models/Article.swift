@@ -102,7 +102,7 @@ public final class Article: NSObject {
         return self.authors.map({$0.description}).joined(separator: ", ")
     }
 
-    public override var hashValue: Int {
+    public override var hash: Int {
         if let id = articleID as? String {
             return id.hash
         }
@@ -133,11 +133,10 @@ public final class Article: NSObject {
 
     public override var description: String {
         // swiftlint:disable line_length
-        return "(Article: title: \(title), link: \(link), summary: \(summary), author: \(authors), published: \(published), updated: \(updatedAt), identifier: \(identifier), content: \(content), read: \(read), estimatedReadingTime: \(estimatedReadingTime))\n"
+        return "(Article: title: \(title), link: \(link), summary: \(summary), author: \(authors), published: \(published), updated: \(String(describing: updatedAt)), identifier: \(identifier), content: \(content), read: \(read), estimatedReadingTime: \(estimatedReadingTime))\n"
         // swiftlint:enable line_length
     }
 
-    // swiftlint:disable function_parameter_count
     public init(title: String, link: URL, summary: String, authors: [Author], published: Date,
                 updatedAt: Date?, identifier: String, content: String, read: Bool, synced: Bool,
                 estimatedReadingTime: Int, feed: Feed?, flags: [String]) {
@@ -157,7 +156,6 @@ public final class Article: NSObject {
         super.init()
         self.updated = false
     }
-    // swiftlint:enable function_parameter_count
 
     internal private(set) var articleID: AnyObject?
 

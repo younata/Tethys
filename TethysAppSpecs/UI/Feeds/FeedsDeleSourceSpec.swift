@@ -279,7 +279,7 @@ class FeedsDeleSourceSpec: QuickSpec {
 
                             describe("tapping it") {
                                 beforeEach {
-                                    action?.handler(action, indexPath)
+                                    action?.handler?(action!, indexPath)
                                 }
 
                                 it("calls deleteFeed on the feedsSource") {
@@ -301,7 +301,7 @@ class FeedsDeleSourceSpec: QuickSpec {
 
                             describe("tapping it") {
                                 beforeEach {
-                                    action?.handler(action, indexPath)
+                                    action?.handler?(action!, indexPath)
                                 }
 
                                 it("calls markRead on the feedsSource") {
@@ -328,7 +328,7 @@ class FeedsDeleSourceSpec: QuickSpec {
 
                             describe("tapping it") {
                                 beforeEach {
-                                    action?.handler(action, indexPath)
+                                    action?.handler?(action!, indexPath)
                                 }
 
                                 it("calls editFeed on the feedsSource") {
@@ -350,7 +350,7 @@ class FeedsDeleSourceSpec: QuickSpec {
                             
                             describe("tapping it") {
                                 beforeEach {
-                                    action?.handler(action, indexPath)
+                                    action?.handler?(action!, indexPath)
                                 }
                                 
                                 it("calls shareFeed on the feedsSource") {

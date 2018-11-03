@@ -17,7 +17,6 @@ test:
 #  beta_distribution:
 #    branch: master
 #    commands:
-#      - echo "$MIXPANEL_TOKEN" > .mixpanel
 #      - echo "$PASIPHAE_TOKEN" > .pasiphae
 #      - echo "$PASIPHAE_URL" > .pasiphaeURL
 #      - bundle exec fastlane deploy_testflight

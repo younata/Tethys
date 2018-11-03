@@ -21,35 +21,30 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     private let updateUseCase: UpdateUseCase
     private let databaseMigrator: DatabaseMigratorType
     private let accountRepository: InternalAccountRepository
-    private let syncManager: SyncManager
 
     private var dataService: DataService {
         return self.dataServiceFactory.currentDataService
     }
 
-    // swiftlint:disable function_parameter_count
     init(mainQueue: OperationQueue,
          reachable: Reachable?,
          dataServiceFactory: DataServiceFactoryType,
          updateUseCase: UpdateUseCase,
          databaseMigrator: DatabaseMigratorType,
-         accountRepository: InternalAccountRepository,
-         syncManager: SyncManager) {
+         accountRepository: InternalAccountRepository) {
         self.mainQueue = mainQueue
         self.reachable = reachable
         self.dataServiceFactory = dataServiceFactory
         self.updateUseCase = updateUseCase
         self.databaseMigrator = databaseMigrator
         self.accountRepository = accountRepository
-        self.syncManager = syncManager
     }
-    // swiftlint:enable function_parameter_count
 
     func databaseUpdateAvailable() -> Bool {
         return false
     }
 
-    func performDatabaseUpdates(_ progress: @escaping (Double) -> Void, callback: @escaping (Void) -> Void) {
+    func performDatabaseUpdates(_ progress: @escaping (Double) -> Void, callback: @escaping () -> Void) {
         guard self.databaseUpdateAvailable() else { return callback() }
     }
 
@@ -113,7 +108,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         subscribers.add(subscriber)
     }
 
-    func newFeed(url: URL, callback: @escaping (Feed) -> (Void)) -> Future<Result<Void, TethysError>> {
+    func newFeed(url: URL, callback: @escaping (Feed) -> Void) -> Future<Result<Void, TethysError>> {
         let promise = Promise<Result<Void, TethysError>>()
         _ = self.dataService.createFeed(url: url) {
             callback($0)
@@ -121,7 +116,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
                 let sinopeRepository = self.accountRepository.backendRepository() {
                     _ = sinopeRepository.subscribe([$0.url]).then { res in
                         switch res {
-                        case .success(_):
+                        case .success:
                             promise.resolve(.success())
                         case let .failure(error):
                             promise.resolve(.failure(.backend(error)))
@@ -266,7 +261,6 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         for article in articles {
             article.read = read
         }
-        self.syncManager.update(articles: articles)
         return self.dataService.batchSave([], articles: articles).map { result in
             return result.map {
                 for subscriber in self.allSubscribers {
@@ -279,15 +273,15 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         }
     }
 
-    private func privateUpdateFeeds(_ feeds: [Feed], callback: @escaping ([Feed], [NSError]) -> (Void)) {
+    private func privateUpdateFeeds(_ feeds: [Feed], callback: @escaping ([Feed], [NSError]) -> Void) {
         _ = self.updateUseCase.updateFeeds(feeds, subscribers: self.allSubscribers).then { res in
             switch res {
-            case .success(_):
+            case .success:
                 _ = self.allFeeds().then { result in
                     switch result {
                     case let .success(feeds):
                         callback(feeds, [])
-                    case .failure(_):
+                    case .failure:
                         callback([], [NSError(domain: "TethysError", code: 0, userInfo: [:])])
                     }
                 }

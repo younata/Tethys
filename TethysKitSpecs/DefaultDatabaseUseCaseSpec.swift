@@ -36,8 +36,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
         var accountRepository: FakeAccountRepository!
         var sinopeRepository: FakeSinopeRepository!
 
-        var syncManager: FakeSyncManager!
-
         beforeEach {
             feed1 = TethysKit.Feed(title: "a", url: URL(string: "https://example.com/feed1.feed")!, summary: "",
                 tags: ["a", "b", "c", "d"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
@@ -79,15 +77,12 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
             accountRepository.loggedInReturns("foo@example.com")
             accountRepository.backendRepositoryReturns(sinopeRepository)
 
-            syncManager = FakeSyncManager()
-
             subject = DefaultDatabaseUseCase(mainQueue: mainQueue,
                 reachable: reachable,
                 dataServiceFactory: dataServiceFactory,
                 updateUseCase: updateUseCase,
                 databaseMigrator: databaseMigrator,
-                accountRepository: accountRepository,
-                syncManager: syncManager
+                accountRepository: accountRepository
             )
 
             dataSubscriber = FakeDataSubscriber()
@@ -249,16 +244,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                     }
                 }
 
-                it("tells the sync manager to update all those articles") {
-                    expect(syncManager.updateArticlesCallCount) == 1
-
-                    guard syncManager.updateArticlesCallCount == 1 else { return }
-
-                    let args = syncManager.updateArticlesArgsForCall(0)
-
-                    expect(args) == [article1]
-                }
-
                 it("informs any subscribers") {
                     expect(dataSubscriber.markedArticles).toNot(beNil())
                     expect(dataSubscriber.read) == true
@@ -309,16 +294,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
 
                 it("marks the article object as read") {
                     expect(article.read) == true
-                }
-
-                it("tells the sync manager to update all those articles") {
-                    expect(syncManager.updateArticlesCallCount) == 1
-
-                    guard syncManager.updateArticlesCallCount == 1 else { return }
-
-                    let args = syncManager.updateArticlesArgsForCall(0)
-
-                    expect(args) == [article1]
                 }
 
                 it("informs any subscribers") {

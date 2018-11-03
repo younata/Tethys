@@ -267,7 +267,7 @@ class ChapterOrganizerControllerSpec: QuickSpec {
                     describe("tapping the edit action") {
                         beforeEach {
                             let editAction = tableView.delegate?.tableView?(tableView, editActionsForRowAt: IndexPath(row: 0, section: 0))?.first
-                            editAction?.handler(editAction!, IndexPath(row: 0, section: 0))
+                            editAction?.handler?(editAction!, IndexPath(row: 0, section: 0))
                         }
 
                         it("deletes the chapter from the list") {

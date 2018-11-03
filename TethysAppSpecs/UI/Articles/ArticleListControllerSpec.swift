@@ -439,7 +439,7 @@ class ArticleListControllerSpec: QuickSpec {
                                     expect(alert.actions.count) == 1
                                     if let action = alert.actions.first {
                                         expect(action.title) == "Ok"
-                                        action.handler(action)
+                                        action.handler?(action)
                                         expect(subject.presentedViewController).to(beNil())
                                     }
                                 }
@@ -670,7 +670,7 @@ class ArticleListControllerSpec: QuickSpec {
                                     expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                                     guard let alert = subject.presentedViewController as? UIAlertController else { return }
 
-                                    alert.actions.first?.handler(alert.actions.first!)
+                                    alert.actions.first?.handler?(alert.actions.first!)
                                 }
 
                                 it("deletes the article") {
@@ -687,7 +687,7 @@ class ArticleListControllerSpec: QuickSpec {
                                     expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                                     guard let alert = subject.presentedViewController as? UIAlertController else { return }
 
-                                    alert.actions.last?.handler(alert.actions.last!)
+                                    alert.actions.last?.handler?(alert.actions.last!)
                                 }
 
                                 it("does not delete the article") {
@@ -909,7 +909,7 @@ class ArticleListControllerSpec: QuickSpec {
 
                                 describe("tapping it") {
                                     beforeEach {
-                                        action.handler(action, indexPath)
+                                        action.handler?(action, indexPath)
                                     }
 
                                     it("does not yet delete the article") {
@@ -932,7 +932,7 @@ class ArticleListControllerSpec: QuickSpec {
                                             expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                                             guard let alert = subject.presentedViewController as? UIAlertController else { return }
 
-                                            alert.actions.first?.handler(alert.actions.first!)
+                                            alert.actions.first?.handler?(alert.actions.first!)
                                         }
 
                                         it("deletes the article") {
@@ -949,7 +949,7 @@ class ArticleListControllerSpec: QuickSpec {
                                             expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                                             guard let alert = subject.presentedViewController as? UIAlertController else { return }
 
-                                            alert.actions.last?.handler(alert.actions.last!)
+                                            alert.actions.last?.handler?(alert.actions.last!)
                                         }
 
                                         it("does not delete the article") {
@@ -968,7 +968,7 @@ class ArticleListControllerSpec: QuickSpec {
                                     let indexPath = IndexPath(row: 0, section: 1)
                                     if let markRead = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.last {
                                         expect(markRead.title).to(equal("Mark\nRead"))
-                                        markRead.handler(markRead, indexPath)
+                                        markRead.handler?(markRead, indexPath)
                                         expect(dataRepository.lastArticleMarkedRead).to(equal(articles.first))
                                         expect(articles.first?.read) == true
                                     }
@@ -980,7 +980,7 @@ class ArticleListControllerSpec: QuickSpec {
                                     let indexPath = IndexPath(row: 2, section: 1)
                                     if let markUnread = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.last {
                                         expect(markUnread.title).to(equal("Mark\nUnread"))
-                                        markUnread.handler(markUnread, indexPath)
+                                        markUnread.handler?(markUnread, indexPath)
                                         expect(dataRepository.lastArticleMarkedRead).to(equal(articles[2]))
                                         expect(articles[2].read) == false
                                     }

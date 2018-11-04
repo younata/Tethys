@@ -24,7 +24,6 @@
 		8903EB0D1C702FA3001C0189 /* WebPageParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB0B1C702FA3001C0189 /* WebPageParserSpec.swift */; };
 		8903EB0F1C703570001C0189 /* FakeImportUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB0E1C703570001C0189 /* FakeImportUseCase.swift */; };
 		8903EB151C72F8A7001C0189 /* Kanna.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8903EB141C72F8A7001C0189 /* Kanna.framework */; };
-		8903F5A91D3EF0C700546099 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5A81D3EF0C700546099 /* Account.swift */; };
 		8903F5B01D4022AD00546099 /* FakeUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C676531BA264F40037A224 /* FakeUserDefaults.swift */; };
 		8903F5B81D403FEF00546099 /* UpdateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5B71D403FEF00546099 /* UpdateUseCase.swift */; };
 		8903F5BC1D404EA800546099 /* FakeUpdateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5BB1D404EA800546099 /* FakeUpdateUseCase.swift */; };
@@ -190,7 +189,6 @@
 		8983204E1DC1216B00E32412 /* Array+TethysKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924FE2D1D6D51DC0060D26D /* Array+TethysKit.swift */; };
 		8983204F1DC1217B00E32412 /* TethysError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D427DD1CF53D520093D186 /* TethysError.swift */; };
 		898320501DC1217B00E32412 /* HTTPError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D427E11CF556A90093D186 /* HTTPError.swift */; };
-		898320511DC1217B00E32412 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5A81D3EF0C700546099 /* Account.swift */; };
 		898320521DC1217B00E32412 /* Importable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5CE1D4177DE00546099 /* Importable.swift */; };
 		898320531DC1217B00E32412 /* UpdateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5B71D403FEF00546099 /* UpdateUseCase.swift */; };
 		898320561DC121B400E32412 /* FakeReachable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8908949A1BFED7B8002848A4 /* FakeReachable.swift */; };
@@ -606,7 +604,6 @@
 		8903EB0B1C702FA3001C0189 /* WebPageParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebPageParserSpec.swift; sourceTree = "<group>"; };
 		8903EB0E1C703570001C0189 /* FakeImportUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeImportUseCase.swift; sourceTree = "<group>"; };
 		8903EB141C72F8A7001C0189 /* Kanna.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Kanna.framework; path = ../Carthage/Build/iOS/Kanna.framework; sourceTree = "<group>"; };
-		8903F5A81D3EF0C700546099 /* Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		8903F5B71D403FEF00546099 /* UpdateUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateUseCase.swift; sourceTree = "<group>"; };
 		8903F5BB1D404EA800546099 /* FakeUpdateUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeUpdateUseCase.swift; sourceTree = "<group>"; };
 		8903F5BF1D412EF500546099 /* UpdateUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateUseCaseSpec.swift; sourceTree = "<group>"; };
@@ -1216,7 +1213,6 @@
 		895AC5271C83816600A5F6A1 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				8903F5A81D3EF0C700546099 /* Account.swift */,
 				8978D4DE1B0535EB00EDD6D0 /* Article.swift */,
 				8984FE881CB984A40096F4B3 /* Author.swift */,
 				89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */,
@@ -2285,7 +2281,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8903F5A91D3EF0C700546099 /* Account.swift in Sources */,
 				89E1868B1D13629D005C5880 /* Analytics.swift in Sources */,
 				8924FE2E1D6D51DC0060D26D /* Array+TethysKit.swift in Sources */,
 				8943044B1B450A5E000078DC /* Article.swift in Sources */,
@@ -2391,7 +2386,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				898320511DC1217B00E32412 /* Account.swift in Sources */,
 				8983204A1DC1216B00E32412 /* Analytics.swift in Sources */,
 				8983204E1DC1216B00E32412 /* Array+TethysKit.swift in Sources */,
 				898979591B70808300218498 /* Article.swift in Sources */,

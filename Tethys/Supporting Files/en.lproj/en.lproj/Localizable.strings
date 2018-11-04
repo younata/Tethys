@@ -9,8 +9,6 @@
 "SettingsViewController_Title" = "Settings";
 "SettingsViewController_QuickActions_AddFirst" = "Add a Quick Action";
 "SettingsViewController_QuickActions_AddAdditional" = "Add a new Quick Action";
-"SettingsViewController_Accounts_Pasiphae" = "Tethys Backend";
-"SettingsViewController_Accounts_Log_Out" = "Log Out";
 "SettingsViewController_Other_ShowReadingTimes" = "Show Estimated Reading Times";
 "SettingsViewController_Other_ExportOPML" = "Export OPML";
 "SettingsViewController_Other_ExportOPML_Error_Title" = "Error Exporting OPML";

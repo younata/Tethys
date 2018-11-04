@@ -20,7 +20,7 @@ public final class Feed: Hashable, CustomStringConvertible {
 
     public var displayTitle: String {
         if let tagTitle = self.tags.objectPassingTest({$0.hasPrefix("~")}) {
-            return tagTitle.substring(from: tagTitle.characters.index(after: tagTitle.startIndex))
+            return tagTitle.substring(from: tagTitle.index(after: tagTitle.startIndex))
         }
         if self.title.isEmpty {
             return self.url.absoluteString
@@ -45,7 +45,7 @@ public final class Feed: Hashable, CustomStringConvertible {
 
     public var displaySummary: String {
         if let tagSummary = self.tags.objectPassingTest({$0.hasPrefix("`")}) {
-            return tagSummary.substring(from: tagSummary.characters.index(after: tagSummary.startIndex))
+            return tagSummary.substring(from: tagSummary.index(after: tagSummary.startIndex))
         }
         return self.summary
     }

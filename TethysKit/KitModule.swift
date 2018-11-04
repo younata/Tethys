@@ -4,7 +4,6 @@ import Ra
     import CoreSpotlight
 #endif
 import Reachability
-import Sinope
 import Sponde
 
 public let kMainQueue = "kMainQueue"
@@ -51,24 +50,18 @@ public final class KitModule: NSObject, Ra.InjectorModule {
             bundle: Bundle(for: self.classForCoder),
             fileManager: FileManager.default)
 
-        let sinopeRepository = PasiphaeFactory().repository(URLSession.shared)
-
         let updateService = UpdateService(
             dataServiceFactory: dataServiceFactory,
             urlSession: urlSession,
             urlSessionDelegate: urlSessionDelegate,
-            workerQueue: backgroundQueue,
-            sinopeRepository: sinopeRepository
+            workerQueue: backgroundQueue
         )
 
         let userDefaults = UserDefaults.standard
-        let accountRepository = DefaultAccountRepository(repository: sinopeRepository,
-                                                         userDefaults: userDefaults)
 
         let updateUseCase = DefaultUpdateUseCase(
             updateService: updateService,
             mainQueue: mainQueue,
-            accountRepository: accountRepository,
             userDefaults: userDefaults
         )
 
@@ -76,18 +69,11 @@ public final class KitModule: NSObject, Ra.InjectorModule {
             reachable: reachable,
             dataServiceFactory: dataServiceFactory,
             updateUseCase: updateUseCase,
-            databaseMigrator: DatabaseMigrator(),
-            accountRepository: accountRepository
-        )
-
-        accountRepository.delegate = DefaultAccountRepositoryDelegate(
-            databaseUseCase: dataRepository,
-            mainQueue: mainQueue
+            databaseMigrator: DatabaseMigrator()
         )
 
         injector.bind(DatabaseUseCase.self, to: dataRepository)
         injector.bind(DefaultDatabaseUseCase.self, to: dataRepository)
-        injector.bind(AccountRepository.self, to: accountRepository)
 
         let opmlService = DefaultOPMLService(injector: injector)
         injector.bind(OPMLService.self, to: opmlService)

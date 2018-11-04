@@ -14,7 +14,6 @@ public final class SettingsViewController: UIViewController, Injectable {
     fileprivate let settingsRepository: SettingsRepository
     fileprivate let quickActionRepository: QuickActionRepository
     fileprivate let databaseUseCase: DatabaseUseCase
-    fileprivate let accountRepository: AccountRepository
     fileprivate let opmlService: OPMLService
     fileprivate let mainQueue: OperationQueue
     fileprivate let documentationViewController: () -> DocumentationViewController
@@ -28,7 +27,6 @@ public final class SettingsViewController: UIViewController, Injectable {
                 settingsRepository: SettingsRepository,
                 quickActionRepository: QuickActionRepository,
                 databaseUseCase: DatabaseUseCase,
-                accountRepository: AccountRepository,
                 opmlService: OPMLService,
                 mainQueue: OperationQueue,
                 documentationViewController: @escaping () -> DocumentationViewController) {
@@ -36,7 +34,6 @@ public final class SettingsViewController: UIViewController, Injectable {
         self.settingsRepository = settingsRepository
         self.quickActionRepository = quickActionRepository
         self.databaseUseCase = databaseUseCase
-        self.accountRepository = accountRepository
         self.opmlService = opmlService
         self.mainQueue = mainQueue
         self.documentationViewController = documentationViewController
@@ -50,7 +47,6 @@ public final class SettingsViewController: UIViewController, Injectable {
             settingsRepository: injector.create(SettingsRepository.self)!,
             quickActionRepository: injector.create(QuickActionRepository.self)!,
             databaseUseCase: injector.create(DatabaseUseCase.self)!,
-            accountRepository: injector.create(AccountRepository.self)!,
             opmlService: injector.create(OPMLService.self)!,
             mainQueue: injector.create(kMainQueue, type: OperationQueue.self)!,
             documentationViewController: { injector.create(DocumentationViewController.self)! }

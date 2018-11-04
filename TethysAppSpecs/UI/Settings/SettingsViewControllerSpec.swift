@@ -13,7 +13,6 @@ class SettingsViewControllerSpec: QuickSpec {
         var feedRepository: FakeDatabaseUseCase! = nil
         var settingsRepository: SettingsRepository! = nil
         var fakeQuickActionRepository: FakeQuickActionRepository! = nil
-        var accountRepository: FakeAccountRepository! = nil
         var opmlService: FakeOPMLService! = nil
 
         beforeEach {
@@ -31,9 +30,6 @@ class SettingsViewControllerSpec: QuickSpec {
             feedRepository = FakeDatabaseUseCase()
             injector.bind(DatabaseUseCase.self, to: feedRepository)
 
-            accountRepository = FakeAccountRepository()
-            accountRepository.loggedInReturns(nil)
-            injector.bind(AccountRepository.self, to: accountRepository)
             let mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
             injector.bind(kMainQueue, to: mainQueue)

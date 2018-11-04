@@ -20,7 +20,6 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     private let dataServiceFactory: DataServiceFactoryType
     private let updateUseCase: UpdateUseCase
     private let databaseMigrator: DatabaseMigratorType
-    private let accountRepository: InternalAccountRepository
 
     private var dataService: DataService {
         return self.dataServiceFactory.currentDataService
@@ -30,14 +29,12 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
          reachable: Reachable?,
          dataServiceFactory: DataServiceFactoryType,
          updateUseCase: UpdateUseCase,
-         databaseMigrator: DatabaseMigratorType,
-         accountRepository: InternalAccountRepository) {
+         databaseMigrator: DatabaseMigratorType) {
         self.mainQueue = mainQueue
         self.reachable = reachable
         self.dataServiceFactory = dataServiceFactory
         self.updateUseCase = updateUseCase
         self.databaseMigrator = databaseMigrator
-        self.accountRepository = accountRepository
     }
 
     func databaseUpdateAvailable() -> Bool {
@@ -112,19 +109,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         let promise = Promise<Result<Void, TethysError>>()
         _ = self.dataService.createFeed(url: url) {
             callback($0)
-            if !($0.url.absoluteString).isEmpty,
-                let sinopeRepository = self.accountRepository.backendRepository() {
-                    _ = sinopeRepository.subscribe([$0.url]).then { res in
-                        switch res {
-                        case .success:
-                            promise.resolve(.success())
-                        case let .failure(error):
-                            promise.resolve(.failure(.backend(error)))
-                        }
-                    }
-            } else {
-                promise.resolve(.success())
-            }
+            promise.resolve(.success())
         }
         return promise.future
     }
@@ -137,28 +122,15 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         return self.dataService.deleteFeed(feed).map { result -> Future<Result<Void, TethysError>> in
             switch result {
             case .success:
-                let future: Future<Result<[URL], TethysError>>
-                if let sinopeRepository = self.accountRepository.backendRepository() {
-                    let urls = [feed.url]
-                    future = sinopeRepository.unsubscribe(urls).map { res in
-                        return res.mapError { return TethysError.backend($0) }
-                    }
-                } else {
-                    let promise = Promise<Result<[URL], TethysError>>()
-                    promise.resolve(.success([]))
-                    future = promise.future
-                }
-                return future.map { _ in
-                    return self.feeds().map { feedsResult -> Result<Void, TethysError> in
-                        _ = feedsResult.map { (feeds: [Feed]) -> Void in
-                            self.mainQueue.addOperation {
-                                for subscriber in self.allSubscribers {
-                                    subscriber.deletedFeed(feed, feedsLeft: feeds.count)
-                                }
+                return self.feeds().map { feedsResult -> Result<Void, TethysError> in
+                    _ = feedsResult.map { (feeds: [Feed]) -> Void in
+                        self.mainQueue.addOperation {
+                            for subscriber in self.allSubscribers {
+                                subscriber.deletedFeed(feed, feedsLeft: feeds.count)
                             }
                         }
-                        return .success()
                     }
+                    return .success()
                 }
             case let .failure(error):
                 let promise = Promise<Result<Void, TethysError>>()
@@ -190,7 +162,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     func markArticle(_ article: Article, asRead: Bool) -> Future<Result<Void, TethysError>> {
         return self.privateMarkArticles([article], asRead: asRead).map { result -> Result<Void, TethysError> in
             switch result {
-            case .success(_):
+            case .success:
                 return .success()
             case let .failure(error):
                 return .failure(error)
@@ -198,8 +170,8 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         }
     }
 
-    private var updatingFeedsCallbacks = [([Feed], [NSError]) -> (Void)]()
-    func updateFeeds(_ callback: @escaping ([Feed], [NSError]) -> (Void)) {
+    private var updatingFeedsCallbacks = [([Feed], [NSError]) -> Void]()
+    func updateFeeds(_ callback: @escaping ([Feed], [NSError]) -> Void) {
         self.updatingFeedsCallbacks.append(callback)
         guard self.updatingFeedsCallbacks.count == 1 else { return }
 
@@ -231,7 +203,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         }
     }
 
-    func updateFeed(_ feed: Feed, callback: @escaping (Feed?, NSError?) -> (Void)) {
+    func updateFeed(_ feed: Feed, callback: @escaping (Feed?, NSError?) -> Void) {
         guard self.reachable?.hasNetworkConnectivity == true else {
             callback(feed, nil)
             return

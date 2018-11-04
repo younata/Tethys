@@ -4,7 +4,6 @@ import Nimble
 import Ra
 import CBGPromise
 import Result
-import Sinope
 #if os(iOS)
     import CoreSpotlight
     import MobileCoreServices
@@ -33,8 +32,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
         var updateUseCase: FakeUpdateUseCase!
 
         var databaseMigrator: FakeDatabaseMigrator!
-        var accountRepository: FakeAccountRepository!
-        var sinopeRepository: FakeSinopeRepository!
 
         beforeEach {
             feed1 = TethysKit.Feed(title: "a", url: URL(string: "https://example.com/feed1.feed")!, summary: "",
@@ -71,18 +68,11 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
 
             databaseMigrator = FakeDatabaseMigrator()
 
-            accountRepository = FakeAccountRepository()
-            sinopeRepository = FakeSinopeRepository()
-
-            accountRepository.loggedInReturns("foo@example.com")
-            accountRepository.backendRepositoryReturns(sinopeRepository)
-
             subject = DefaultDatabaseUseCase(mainQueue: mainQueue,
                 reachable: reachable,
                 dataServiceFactory: dataServiceFactory,
                 updateUseCase: updateUseCase,
-                databaseMigrator: databaseMigrator,
-                accountRepository: accountRepository
+                databaseMigrator: databaseMigrator
             )
 
             dataSubscriber = FakeDataSubscriber()
@@ -159,13 +149,10 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
         describe("as a DataWriter") {
             describe("newFeed") {
                 var createdFeed: TethysKit.Feed? = nil
-                var subscribePromise: Promise<Result<[URL], SinopeError>>!
                 var newFeedFuture: Future<Result<Void, TethysError>>!
 
                 describe("and the user makes a standard feed") {
                     beforeEach {
-                        subscribePromise = Promise<Result<[URL], SinopeError>>()
-                        sinopeRepository.subscribeReturns(subscribePromise.future)
                         newFeedFuture = subject.newFeed(url: URL(string: "https://example.com/feed")!) {feed in
                             createdFeed = feed
                         }
@@ -176,29 +163,14 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                         expect(dataService.feeds.count) == 3
                     }
 
-                    it("tells the sinope repository to subscribe to this feed") {
-                        expect(sinopeRepository.subscribeCallCount) == 1
-                        guard sinopeRepository.subscribeCallCount == 1 else { return }
-                        let urls = sinopeRepository.subscribeArgsForCall(0)
-                        expect(urls) == [URL(string: "https://example.com/feed")!]
-                    }
-
-                    it("resolves the future when the sinope repository finishes") {
-                        expect(newFeedFuture.value).to(beNil())
-
-                        subscribePromise.resolve(.success([]))
-
+                    it("resolves the future") {
                         expect(newFeedFuture.value?.value).toNot(beNil())
                     }
                 }
             }
 
             describe("deleteFeed") {
-                var unsubscribePromise: Promise<Result<[URL], SinopeError>>!
                 beforeEach {
-                    unsubscribePromise = Promise<Result<[URL], SinopeError>>()
-                    sinopeRepository.unsubscribeReturns(unsubscribePromise.future)
-
                     mainQueue.runSynchronously = true
                     _ = subject.deleteFeed(feed1)
                 }
@@ -207,27 +179,9 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                     expect(dataService.feeds).toNot(contain(feed1))
                 }
 
-                it("tells the pasiphae repository to unsubscribe from the feed") {
-                    expect(sinopeRepository.unsubscribeCallCount) == 1
-                    guard sinopeRepository.unsubscribeCallCount == 1 else { return }
-                    let urls = sinopeRepository.unsubscribeArgsForCall(0)
-                    expect(urls) == [URL(string: "https://example.com/feed1.feed")!]
-                }
-
-                it("does not inform any subscribers") {
-                    expect(dataSubscriber.deletedFeed).to(beNil())
-                    expect(dataSubscriber.deletedFeedsLeft).to(beNil())
-                }
-
-                describe("when the unsubscribe promise resolves") {
-                    beforeEach {
-                        unsubscribePromise.resolve(.success([]))
-                    }
-
-                    it("should inform any subscribers") {
-                        expect(dataSubscriber.deletedFeed).to(equal(feed1))
-                        expect(dataSubscriber.deletedFeedsLeft).to(equal(1))
-                    }
+                it("should inform any subscribers") {
+                    expect(dataSubscriber.deletedFeed).to(equal(feed1))
+                    expect(dataSubscriber.deletedFeedsLeft).to(equal(1))
                 }
             }
 

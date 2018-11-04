@@ -29,8 +29,6 @@
 		8903F5A61D3C8C2000546099 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8903F5A21D3C8C1400546099 /* Freddy.framework */; };
 		8903F5A71D3C8C3100546099 /* Freddy.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8903F5A21D3C8C1400546099 /* Freddy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8903F5A91D3EF0C700546099 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5A81D3EF0C700546099 /* Account.swift */; };
-		8903F5AD1D4002FD00546099 /* AccountRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5AC1D4002FD00546099 /* AccountRepository.swift */; };
-		8903F5AF1D40225D00546099 /* AccountRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5AE1D40225D00546099 /* AccountRepositorySpec.swift */; };
 		8903F5B01D4022AD00546099 /* FakeUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C676531BA264F40037A224 /* FakeUserDefaults.swift */; };
 		8903F5B41D40245E00546099 /* FakeSinopeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5B31D40245E00546099 /* FakeSinopeRepository.swift */; };
 		8903F5B81D403FEF00546099 /* UpdateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5B71D403FEF00546099 /* UpdateUseCase.swift */; };
@@ -38,7 +36,6 @@
 		8903F5C01D412EF500546099 /* UpdateUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5BF1D412EF500546099 /* UpdateUseCaseSpec.swift */; };
 		8903F5C11D412EF500546099 /* UpdateUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5BF1D412EF500546099 /* UpdateUseCaseSpec.swift */; };
 		8903F5C31D414E5000546099 /* PasiphaeFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5C21D414E5000546099 /* PasiphaeFactory.swift */; };
-		8903F5CB1D416B6700546099 /* FakeAccountRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5CA1D416B6700546099 /* FakeAccountRepository.swift */; };
 		8903F5CF1D4177DE00546099 /* Importable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5CE1D4177DE00546099 /* Importable.swift */; };
 		890894981BFEC670002848A4 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; };
 		890894991BFEC698002848A4 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890894971BFEC670002848A4 /* Reachability.framework */; };
@@ -201,8 +198,6 @@
 		898320491DC1216B00E32412 /* WebPageParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB081C702843001C0189 /* WebPageParser.swift */; };
 		8983204A1DC1216B00E32412 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E1868A1D13629D005C5880 /* Analytics.swift */; };
 		8983204B1DC1216B00E32412 /* PasiphaeFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5C21D414E5000546099 /* PasiphaeFactory.swift */; };
-		8983204C1DC1216B00E32412 /* AccountRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5AC1D4002FD00546099 /* AccountRepository.swift */; };
-		8983204D1DC1216B00E32412 /* DefaultAccountRepositoryDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFFA031D4BF234002255E8 /* DefaultAccountRepositoryDelegate.swift */; };
 		8983204E1DC1216B00E32412 /* Array+TethysKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924FE2D1D6D51DC0060D26D /* Array+TethysKit.swift */; };
 		8983204F1DC1217B00E32412 /* TethysError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D427DD1CF53D520093D186 /* TethysError.swift */; };
 		898320501DC1217B00E32412 /* HTTPError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D427E11CF556A90093D186 /* HTTPError.swift */; };
@@ -213,13 +208,11 @@
 		898320571DC121B400E32412 /* FakeDataSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89628BE01CE175F100B4C624 /* FakeDataSubscriber.swift */; };
 		898320581DC121B400E32412 /* FakeSinopeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5B31D40245E00546099 /* FakeSinopeRepository.swift */; };
 		898320591DC121B400E32412 /* FakeUpdateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5BB1D404EA800546099 /* FakeUpdateUseCase.swift */; };
-		8983205A1DC121B400E32412 /* FakeAccountRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5CA1D416B6700546099 /* FakeAccountRepository.swift */; };
 		8983205B1DC121B400E32412 /* FakeImportables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */; };
 		8983205C1DC121B900E32412 /* TethysErrorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D427DF1CF540560093D186 /* TethysErrorSpec.swift */; };
 		8983205D1DC121BF00E32412 /* InMemoryDataServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89500B221CDEA26E004548C3 /* InMemoryDataServiceSpec.swift */; };
 		8983205E1DC121D000E32412 /* MigrationUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC101C7D781E006B70F5 /* MigrationUseCaseSpec.swift */; };
 		8983205F1DC121D600E32412 /* DatabaseUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89628BE21CE1805E00B4C624 /* DatabaseUseCaseSpec.swift */; };
-		898320601DC121EA00E32412 /* DefaultAccountRepositoryDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFFA051D4C32A7002255E8 /* DefaultAccountRepositoryDelegateSpec.swift */; };
 		8983208D1DC13B9B00E32412 /* WorkFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8983208C1DC13B9B00E32412 /* WorkFlow.framework */; };
 		898320941DC13BC000E32412 /* CBGPromise.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8983208E1DC13BC000E32412 /* CBGPromise.framework */; };
 		898320951DC13BC000E32412 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8983208F1DC13BC000E32412 /* Freddy.framework */; };
@@ -241,7 +234,6 @@
 		898320AC1DC13F1E00E32412 /* Result.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898320A51DC13F1E00E32412 /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		898320AD1DC13F1E00E32412 /* Sinope.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898320A61DC13F1E00E32412 /* Sinope.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		898320AE1DC13F1E00E32412 /* WorkFlow.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898320A71DC13F1E00E32412 /* WorkFlow.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		898320AF1DC13F9200E32412 /* AccountRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5AE1D40225D00546099 /* AccountRepositorySpec.swift */; };
 		898320B21DC1411D00E32412 /* PureLayout.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898320B11DC1411D00E32412 /* PureLayout.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		898320B31DC1413200E32412 /* PureLayout.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898320B11DC1411D00E32412 /* PureLayout.framework */; };
 		898320C01DC1442E00E32412 /* FakeMigrationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC081C7D431D006B70F5 /* FakeMigrationUseCase.swift */; };
@@ -367,9 +359,6 @@
 		89A3A9041DF09161002AF9B5 /* Sponde.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89A3A9031DF09161002AF9B5 /* Sponde.framework */; };
 		89A3A9061DF09175002AF9B5 /* Sponde.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89A3A9051DF09175002AF9B5 /* Sponde.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89AFF9FF1D4870F7002255E8 /* FakeImportables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */; };
-		89AFFA001D4B97DC002255E8 /* FakeAccountRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903F5CA1D416B6700546099 /* FakeAccountRepository.swift */; };
-		89AFFA041D4BF234002255E8 /* DefaultAccountRepositoryDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFFA031D4BF234002255E8 /* DefaultAccountRepositoryDelegate.swift */; };
-		89AFFA061D4C32A7002255E8 /* DefaultAccountRepositoryDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFFA051D4C32A7002255E8 /* DefaultAccountRepositoryDelegateSpec.swift */; };
 		89B8BBDD1B9C5B1000B2C112 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89B8BBDF1B9C5B1000B2C112 /* Launch Screen.xib */; };
 		89BA95391C4C8E7C001FD453 /* WorkFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89BA95381C4C8E7C001FD453 /* WorkFlow.framework */; };
 		89BA953A1C4C8E7C001FD453 /* WorkFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89BA95381C4C8E7C001FD453 /* WorkFlow.framework */; };
@@ -645,14 +634,11 @@
 		8903EB141C72F8A7001C0189 /* Kanna.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Kanna.framework; path = ../Carthage/Build/iOS/Kanna.framework; sourceTree = "<group>"; };
 		8903F5A21D3C8C1400546099 /* Freddy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Freddy.framework; path = Carthage/Build/iOS/Freddy.framework; sourceTree = SOURCE_ROOT; };
 		8903F5A81D3EF0C700546099 /* Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
-		8903F5AC1D4002FD00546099 /* AccountRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountRepository.swift; sourceTree = "<group>"; };
-		8903F5AE1D40225D00546099 /* AccountRepositorySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountRepositorySpec.swift; sourceTree = "<group>"; };
 		8903F5B31D40245E00546099 /* FakeSinopeRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeSinopeRepository.swift; sourceTree = "<group>"; };
 		8903F5B71D403FEF00546099 /* UpdateUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateUseCase.swift; sourceTree = "<group>"; };
 		8903F5BB1D404EA800546099 /* FakeUpdateUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeUpdateUseCase.swift; sourceTree = "<group>"; };
 		8903F5BF1D412EF500546099 /* UpdateUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateUseCaseSpec.swift; sourceTree = "<group>"; };
 		8903F5C21D414E5000546099 /* PasiphaeFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PasiphaeFactory.swift; path = ../PasiphaeFactory.swift; sourceTree = "<group>"; };
-		8903F5CA1D416B6700546099 /* FakeAccountRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeAccountRepository.swift; sourceTree = "<group>"; };
 		8903F5CE1D4177DE00546099 /* Importable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Importable.swift; sourceTree = "<group>"; };
 		890894971BFEC670002848A4 /* Reachability.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reachability.framework; path = ../Carthage/Build/iOS/Reachability.framework; sourceTree = "<group>"; };
 		8908949A1BFED7B8002848A4 /* FakeReachable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeReachable.swift; sourceTree = "<group>"; };
@@ -841,8 +827,6 @@
 		89A3A9031DF09161002AF9B5 /* Sponde.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sponde.framework; path = Carthage/Build/Mac/Sponde.framework; sourceTree = "<group>"; };
 		89A3A9051DF09175002AF9B5 /* Sponde.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sponde.framework; path = ../Carthage/Build/Mac/Sponde.framework; sourceTree = "<group>"; };
 		89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeImportables.swift; sourceTree = "<group>"; };
-		89AFFA031D4BF234002255E8 /* DefaultAccountRepositoryDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultAccountRepositoryDelegate.swift; sourceTree = "<group>"; };
-		89AFFA051D4C32A7002255E8 /* DefaultAccountRepositoryDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultAccountRepositoryDelegateSpec.swift; sourceTree = "<group>"; };
 		89B8BBDE1B9C5B1000B2C112 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = "Base.lproj/Launch Screen.xib"; sourceTree = "<group>"; };
 		89B8BBE11B9C5B1500B2C112 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = "en.lproj/Launch Screen.xib"; sourceTree = "<group>"; };
 		89BA95381C4C8E7C001FD453 /* WorkFlow.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WorkFlow.framework; path = Carthage/Build/iOS/WorkFlow.framework; sourceTree = SOURCE_ROOT; };
@@ -1113,14 +1097,6 @@
 			path = Realm;
 			sourceTree = "<group>";
 		};
-		892E30E61CF2188A00E327A0 /* Repositories */ = {
-			isa = PBXGroup;
-			children = (
-				8903F5AE1D40225D00546099 /* AccountRepositorySpec.swift */,
-			);
-			path = Repositories;
-			sourceTree = "<group>";
-		};
 		892E76EF1E0794A900866336 /* Monitors */ = {
 			isa = PBXGroup;
 			children = (
@@ -1195,8 +1171,6 @@
 				89D256731C3CC22A004066B9 /* Services */,
 				8943044D1B450A96000078DC /* Supporting files */,
 				89146E3D1C88C59C00EC8F10 /* Use Cases */,
-				8903F5AC1D4002FD00546099 /* AccountRepository.swift */,
-				89AFFA031D4BF234002255E8 /* DefaultAccountRepositoryDelegate.swift */,
 				89CC82031B461A2B00648367 /* Helpers.swift */,
 				89CC82051B461A5500648367 /* KitModule.swift */,
 				898C48C61B40D2AC0097045A /* SearchIndex.swift */,
@@ -1211,14 +1185,12 @@
 				89D2566F1C3CC011004066B9 /* Fakes */,
 				89D256721C3CC038004066B9 /* Models */,
 				892E76F21E079A0500866336 /* Monitors */,
-				892E30E61CF2188A00E327A0 /* Repositories */,
 				89D256711C3CC02B004066B9 /* Services */,
 				892E77051E08457100866336 /* Support */,
 				89146E3E1C88C63800EC8F10 /* Use Cases */,
 				8937F6BA1B793CA40044A442 /* AppIcon.png */,
 				89628BE21CE1805E00B4C624 /* DatabaseUseCaseSpec.swift */,
 				89FF97A01BF05CDC000080F7 /* DataStoreBackedArraySpec.swift */,
-				89AFFA051D4C32A7002255E8 /* DefaultAccountRepositoryDelegateSpec.swift */,
 				898C48CC1B42605A0097045A /* DefaultDatabaseUseCaseSpec.swift */,
 				894304331B45089B000078DC /* Info.plist */,
 				8937F6BF1B79D0800044A442 /* KitModuleSpec.swift */,
@@ -1704,7 +1676,6 @@
 		89D2566F1C3CC011004066B9 /* Fakes */ = {
 			isa = PBXGroup;
 			children = (
-				8903F5CA1D416B6700546099 /* FakeAccountRepository.swift */,
 				89CBDBFD1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift */,
 				89CBDBF81C7D32EE006B70F5 /* FakeDataServiceFactory.swift */,
 				89628BE01CE175F100B4C624 /* FakeDataSubscriber.swift */,
@@ -2373,7 +2344,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8903F5A91D3EF0C700546099 /* Account.swift in Sources */,
-				8903F5AD1D4002FD00546099 /* AccountRepository.swift in Sources */,
 				89E1868B1D13629D005C5880 /* Analytics.swift in Sources */,
 				8924FE2E1D6D51DC0060D26D /* Array+TethysKit.swift in Sources */,
 				8943044B1B450A5E000078DC /* Article.swift in Sources */,
@@ -2384,7 +2354,6 @@
 				8999CC0D1C2E710F00B81F5F /* DataService.swift in Sources */,
 				89CBDBF11C7D1206006B70F5 /* DataServiceFactory.swift in Sources */,
 				89FF979E1BF058FB000080F7 /* DataStoreBackedArray.swift in Sources */,
-				89AFFA041D4BF234002255E8 /* DefaultAccountRepositoryDelegate.swift in Sources */,
 				898979661B70849000218498 /* DefaultDatabaseUseCase.swift in Sources */,
 				8943044A1B450A5E000078DC /* Feed.swift in Sources */,
 				892E30F71CF4011F00E327A0 /* Future+when.swift in Sources */,
@@ -2415,7 +2384,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8903F5AF1D40225D00546099 /* AccountRepositorySpec.swift in Sources */,
 				8935F5DA1B4628B3000FFD5D /* ArticleSpec.swift in Sources */,
 				8984FE8C1CBA1A180096F4B3 /* AuthorSpec.swift in Sources */,
 				892E76F41E079A3500866336 /* BackgroundStateMonitorSpec.swift in Sources */,
@@ -2424,9 +2392,7 @@
 				89CBDBF41C7D1436006B70F5 /* DataServiceFactorySpec.swift in Sources */,
 				8999CC0F1C2E796100B81F5F /* DataServiceSpec.swift in Sources */,
 				89FF97A11BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */,
-				89AFFA061D4C32A7002255E8 /* DefaultAccountRepositoryDelegateSpec.swift in Sources */,
 				8935F5D71B4628B3000FFD5D /* DefaultDatabaseUseCaseSpec.swift in Sources */,
-				8903F5CB1D416B6700546099 /* FakeAccountRepository.swift in Sources */,
 				89E186931D136C48005C5880 /* FakeAnalytics.swift in Sources */,
 				89CBDBFE1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift in Sources */,
 				89146E4C1C88F01700EC8F10 /* FakeDatabaseUseCase.swift in Sources */,
@@ -2486,7 +2452,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				898320511DC1217B00E32412 /* Account.swift in Sources */,
-				8983204C1DC1216B00E32412 /* AccountRepository.swift in Sources */,
 				8983204A1DC1216B00E32412 /* Analytics.swift in Sources */,
 				8983204E1DC1216B00E32412 /* Array+TethysKit.swift in Sources */,
 				898979591B70808300218498 /* Article.swift in Sources */,
@@ -2496,7 +2461,6 @@
 				898911C71C3267E3009A44E9 /* DataService.swift in Sources */,
 				89CBDBF21C7D1206006B70F5 /* DataServiceFactory.swift in Sources */,
 				898320441DC1216B00E32412 /* DataStoreBackedArray.swift in Sources */,
-				8983204D1DC1216B00E32412 /* DefaultAccountRepositoryDelegate.swift in Sources */,
 				898320411DC1216B00E32412 /* DefaultDatabaseUseCase.swift in Sources */,
 				898979581B70808300218498 /* Feed.swift in Sources */,
 				898320451DC1216B00E32412 /* Future+when.swift in Sources */,
@@ -2525,7 +2489,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				898320AF1DC13F9200E32412 /* AccountRepositorySpec.swift in Sources */,
 				898979AB1B708E7800218498 /* ArticleSpec.swift in Sources */,
 				8984FE8D1CBA1A180096F4B3 /* AuthorSpec.swift in Sources */,
 				89122E651C5D762000004B1F /* DatabaseMigratorSpec.swift in Sources */,
@@ -2533,9 +2496,7 @@
 				89CBDBF51C7D1436006B70F5 /* DataServiceFactorySpec.swift in Sources */,
 				898911C41C3267D6009A44E9 /* DataServiceSpec.swift in Sources */,
 				89FF97A21BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */,
-				898320601DC121EA00E32412 /* DefaultAccountRepositoryDelegateSpec.swift in Sources */,
 				898979A81B708E7800218498 /* DefaultDatabaseUseCaseSpec.swift in Sources */,
-				8983205A1DC121B400E32412 /* FakeAccountRepository.swift in Sources */,
 				89CBDBFF1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift in Sources */,
 				89146E4D1C88F01800EC8F10 /* FakeDatabaseUseCase.swift in Sources */,
 				89CBDBFA1C7D32EE006B70F5 /* FakeDataServiceFactory.swift in Sources */,
@@ -2665,7 +2626,6 @@
 				89D970BF1B3929D600ED84B8 /* DefaultBackgroundFetchHandlerSpec.swift in Sources */,
 				899C6A9D1DCAA42200E0A61C /* DocumentationUseCaseSpec.swift in Sources */,
 				8958EC3A1DCABDA60000159B /* DocumentationViewControllerSpec.swift in Sources */,
-				89AFFA001D4B97DC002255E8 /* FakeAccountRepository.swift in Sources */,
 				89E186921D136C38005C5880 /* FakeAnalytics.swift in Sources */,
 				892CBDEA1C7A27FE0062E578 /* FakeArticleUseCase.swift in Sources */,
 				89348F2F1C60730D007D366B /* FakeDatabaseUseCase.swift in Sources */,

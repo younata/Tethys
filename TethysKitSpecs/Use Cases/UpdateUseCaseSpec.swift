@@ -18,7 +18,6 @@ class UpdateUseCaseSpec: QuickSpec {
         var article2: Article!
 
         var dataSubscriber: FakeDataSubscriber!
-        var accountRepository: FakeAccountRepository!
 
         var userDefaults: FakeUserDefaults!
 
@@ -47,96 +46,44 @@ class UpdateUseCaseSpec: QuickSpec {
             updateService = FakeUpdateService()
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
-            accountRepository = FakeAccountRepository()
             userDefaults = FakeUserDefaults()
-            subject = DefaultUpdateUseCase(updateService: updateService, mainQueue: mainQueue, accountRepository: accountRepository, userDefaults: userDefaults)
+            subject = DefaultUpdateUseCase(
+                updateService: updateService,
+                mainQueue: mainQueue,
+                userDefaults: userDefaults
+            )
         }
-
+        
         describe("-updateFeeds") {
-            describe("with a Pasiphae account") {
-                var receivedFuture: Future<Result<Void, TethysError>>!
-                var updateFeedsPromise: Promise<Result<[TethysKit.Feed], TethysError>>!
-
-                beforeEach {
-                    accountRepository.loggedInReturns("foo@example.com")
-                    updateFeedsPromise = Promise<Result<[TethysKit.Feed], TethysError>>()
-                    updateService.updateFeedsReturns(updateFeedsPromise.future)
-
-                    receivedFuture = subject.updateFeeds(feeds, subscribers: [dataSubscriber])
-                }
-
-                it("informs any subscribers") {
-                    expect(dataSubscriber.didStartUpdatingFeeds) == true
-                }
-
-                it("makes an update request to pasiphae") {
-                    expect(updateService.updateFeedsCallCount) == 1
-                }
-
-                it("informs the data subscribers whenever there's stuff to update") {
-                    guard updateService.updateFeedsCallCount == 1 else { fail(); return }
-                    let args = updateService.updateFeedsArgsForCall(0)
-                    args(1, 2)
-
-                    expect(dataSubscriber.didUpdateFeedsArgs.count) == 1
-                    expect(dataSubscriber.didUpdateFeedsArgs[0].0) == 1
-                    expect(dataSubscriber.didUpdateFeedsArgs[0].1) == 2
-                }
-
-                describe("when the update request succeeds") {
-                    beforeEach {
-                        updateFeedsPromise.resolve(.success([]))
-                    }
-
-                    it("resolves the promise successfully") {
-                        expect(receivedFuture.value?.value).toNot(beNil())
-                    }
-                }
-
-                describe("when the update request fails") {
-                    beforeEach {
-                        updateFeedsPromise.resolve(.failure(.unknown))
-                    }
-
-                    it("resolves the promise with the error") {
-                        expect(receivedFuture.value?.error) == .unknown
-                    }
-                }
+            var receivedFuture: Future<Result<Void, TethysError>>!
+            beforeEach {
+                receivedFuture = subject.updateFeeds(feeds, subscribers: [dataSubscriber])
             }
 
-            describe("without a Pasiphae account") {
-                var receivedFuture: Future<Result<Void, TethysError>>!
+            it("informs any subscribers") {
+                expect(dataSubscriber.didStartUpdatingFeeds) == true
+            }
+
+            it("makes a network request for every feed in the data store w/ a url") {
+                expect(updateService.updatedFeeds) == [feed1, feed3]
+            }
+
+            context("when the update request succeeds") {
                 beforeEach {
-                    accountRepository.loggedInReturns(nil)
-
-                    receivedFuture = subject.updateFeeds(feeds, subscribers: [dataSubscriber])
+                    mainQueue.runSynchronously = true
+                    let updatingFeeds = [feed1, feed3]
+                    updateService.updateFeedPromises.enumerated().forEach {
+                        $1.resolve(.success(updatingFeeds[$0]!))
+                    }
                 }
 
-                it("informs any subscribers") {
-                    expect(dataSubscriber.didStartUpdatingFeeds) == true
+                it("should inform subscribers that we downloaded a thing and are about to process it") {
+                    expect(dataSubscriber.updateFeedsProgressFinished).to(equal(2))
+                    expect(dataSubscriber.updateFeedsProgressTotal).to(equal(2))
                 }
 
-                it("makes a network request for every feed in the data store w/ a url") {
-                    expect(updateService.updatedFeeds) == [feed1, feed3]
-                }
-
-                context("when the update request succeeds") {
-                    beforeEach {
-                        mainQueue.runSynchronously = true
-                        let updatingFeeds = [feed1, feed3]
-                        updateService.updateFeedPromises.enumerated().forEach {
-                            $1.resolve(.success(updatingFeeds[$0]!))
-                        }
-                    }
-
-                    it("should inform subscribers that we downloaded a thing and are about to process it") {
-                        expect(dataSubscriber.updateFeedsProgressFinished).to(equal(2))
-                        expect(dataSubscriber.updateFeedsProgressTotal).to(equal(2))
-                    }
-                    
-                    it("should call the completion handler without an error") {
-                        expect(receivedFuture.value?.value).toNot(beNil())
-                    }
+                it("should call the completion handler without an error") {
+                    expect(receivedFuture.value?.value).toNot(beNil())
                 }
             }
         }

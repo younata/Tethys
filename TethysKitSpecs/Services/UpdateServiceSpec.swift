@@ -2,8 +2,6 @@ import Quick
 import Nimble
 import CBGPromise
 import Result
-import Sinope
-import Freddy
 @testable import TethysKit
 
 class UpdateServiceSpec: QuickSpec {
@@ -14,7 +12,6 @@ class UpdateServiceSpec: QuickSpec {
         var dataServiceFactory: FakeDataServiceFactory!
         var dataService: InMemoryDataService!
         var workerQueue: FakeOperationQueue!
-        var sinopeRepository: FakeSinopeRepository!
 
         beforeEach {
             let mainQueue = FakeOperationQueue()
@@ -29,147 +26,12 @@ class UpdateServiceSpec: QuickSpec {
             workerQueue = FakeOperationQueue()
             workerQueue.runSynchronously = true
 
-            sinopeRepository = FakeSinopeRepository()
-
             subject = UpdateService(
                 dataServiceFactory: dataServiceFactory,
                 urlSession: urlSession,
                 urlSessionDelegate: urlSessionDelegate,
-                workerQueue: workerQueue,
-                sinopeRepository: sinopeRepository
+                workerQueue: workerQueue
             )
-        }
-
-        describe("updating multiple feeds") {
-            var updateFeedsFuture: Future<Result<[TethysKit.Feed], TethysError>>!
-            var fetchPromise: Promise<Result<[Sinope.Feed], SinopeError>>!
-            let date = Date()
-            let feedToUpdate = TethysKit.Feed(title: "feed", url: URL(string: "https://example.com/feed")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, lastUpdated: date)
-
-            var progressCallbackCallCount = 0
-            var progressCallbackArgs: [(Int, Int)] = []
-
-            beforeEach {
-                dataService.feeds = [feedToUpdate]
-
-                progressCallbackCallCount = 0
-                progressCallbackArgs = []
-
-                fetchPromise = Promise<Result<[Sinope.Feed], SinopeError>>()
-                sinopeRepository.fetchReturns(fetchPromise.future)
-                updateFeedsFuture = subject.updateFeeds { currentProgress, estimatedProgress in
-                    progressCallbackArgs.append((currentProgress, estimatedProgress))
-                    progressCallbackCallCount += 1
-                }
-            }
-
-            it("returns an in-progress promise") {
-                expect(updateFeedsFuture.value).to(beNil())
-            }
-
-            it("makes a request to the sinopeRepository") {
-                expect(sinopeRepository.fetchCallCount) == 1
-                guard sinopeRepository.fetchCallCount == 1 else { return }
-                let args = sinopeRepository.fetchArgsForCall(0)
-                expect(args) == [feedToUpdate.url: feedToUpdate.lastUpdated]
-            }
-
-            describe("when the request succeeds") {
-                var feed: TethysKit.Feed! = nil
-
-                beforeEach {
-                    feed = TethysKit.Feed(title: "feed", url: URL(string: "https://example.com/feed")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                    dataService.feeds = [feed]
-                    // hm.
-
-                    let data: Data = ("{\"title\": \"feed title\"," +
-                        "\"url\": \"https://example.com/feed\"," +
-                        "\"summary\": \"test\"," +
-                        "\"image_url\": \"https://example.com/image.png\"," +
-                        "\"last_updated\": \"2015-12-23T00:00:00.000Z\"," +
-                        "\"articles\": [" +
-                        "{\"title\": \"Example 1\", \"url\": \"https://example.com/1/\", \"summary\": \"test\", \"published\": \"2015-12-23T00:00:00.000Z\", \"updated\": null, \"content\": null, \"authors\": []}" +
-                        "]}").data(using: String.Encoding.utf8)!
-
-                    let json = try! JSON(data: data)
-                    let sinopeFeed = try! Feed(json: json)
-
-                    fetchPromise.resolve(.success([sinopeFeed]))
-                }
-
-                it("calls the callback as the feeds are processed") {
-                    expect(progressCallbackCallCount) == 2
-                    expect(progressCallbackArgs[0].0) == 1
-                    expect(progressCallbackArgs[0].1) == 2
-                    expect(progressCallbackArgs[1].0) == 2
-                    expect(progressCallbackArgs[1].1) == 2
-                }
-
-                it("resolves the promise with all updated feeds") {
-                    expect(updateFeedsFuture.value).toNot(beNil())
-                    guard let feed = updateFeedsFuture.value?.value?.first else { return }
-                    expect(feed.title) == "feed title"
-                    expect(feed.summary) == "test"
-                    expect(feed.articlesArray.count) == 1
-                }
-            }
-
-
-            describe("and the request succeeds with feeds that don't exist locally yet") {
-                beforeEach {
-                    dataService.feeds = []
-
-                    let data: Data = ("{\"title\": \"feed title\"," +
-                        "\"url\": \"https://example.com/feed\"," +
-                        "\"summary\": \"test\"," +
-                        "\"image_url\": \"https://example.com/image.png\"," +
-                        "\"last_updated\": \"2015-12-23T00:00:00.000Z\"," +
-                        "\"articles\": [" +
-                        "{\"title\": \"Example 1\", \"url\": \"https://example.com/1/\", \"summary\": \"test\", \"published\": \"2015-12-23T00:00:00.000Z\", \"updated\": null, \"content\": null, \"authors\": []}" +
-                        "]}").data(using: String.Encoding.utf8)!
-
-                    let json = try! JSON(data: data)
-                    let sinopeFeed = try! Feed(json: json)
-
-                    fetchPromise.resolve(.success([sinopeFeed]))
-                }
-
-                it("creates a new feed with that data") {
-                    expect(dataService.feeds.count) == 1
-                    guard let feed = dataService.feeds.first else { return }
-                    expect(feed.title) == "feed title"
-                    expect(feed.summary) == "test"
-                    expect(feed.url) == URL(string: "https://example.com/feed")
-                    expect(feed.articlesArray.count) == 1
-                }
-
-                it("calls the callback as the feeds are processed") {
-                    expect(progressCallbackCallCount) == 2
-                    expect(progressCallbackArgs[0].0) == 1
-                    expect(progressCallbackArgs[0].1) == 2
-                    expect(progressCallbackArgs[1].0) == 2
-                    expect(progressCallbackArgs[1].1) == 2
-                }
-
-                it("should resolve the promise with all updated feeds") {
-                    expect(updateFeedsFuture.value).toNot(beNil())
-                    guard let feed = updateFeedsFuture.value?.value?.first else { return }
-                    expect(feed.title) == "feed title"
-                    expect(feed.summary) == "test"
-                    expect(feed.articlesArray.count) == 1
-                }
-            }
-
-            describe("when the request fails") {
-                beforeEach {
-                    fetchPromise.resolve(.failure(.unknown))
-                }
-
-                it("wraps the error") {
-                    expect(updateFeedsFuture.value).toNot(beNil())
-                    expect(updateFeedsFuture.value?.error) == TethysError.backend(.unknown)
-                }
-            }
         }
 
         describe("updating a feed") {

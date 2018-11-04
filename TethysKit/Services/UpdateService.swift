@@ -1,6 +1,5 @@
 import Foundation
 import Muon
-import Sinope
 import CBGPromise
 import Result
 
@@ -48,15 +47,12 @@ final class TethysKitURLSessionDelegate: NSObject, URLSessionDownloadDelegate {
 
 protocol UpdateServiceType: class {
     func updateFeed(_ feed: TethysKit.Feed) -> Future<Result<TethysKit.Feed, TethysError>>
-    func updateFeeds(_ progress: @escaping (Int, Int) -> Void) ->
-        Future<Result<[TethysKit.Feed], TethysError>>
 }
 
 final class UpdateService: UpdateServiceType, NetworkClientDelegate {
     private let dataServiceFactory: DataServiceFactoryType
     private let urlSession: URLSession
     private let workerQueue: OperationQueue
-    private let sinopeRepository: Sinope.Repository
 
     private var callbacksInProgress: [URL: (feed: TethysKit.Feed,
         promise: Promise<Result<TethysKit.Feed, TethysError>>)] = [:]
@@ -64,12 +60,10 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
     init(dataServiceFactory: DataServiceFactoryType,
          urlSession: URLSession,
          urlSessionDelegate: TethysKitURLSessionDelegate,
-         workerQueue: OperationQueue,
-         sinopeRepository: Sinope.Repository) {
+         workerQueue: OperationQueue) {
         self.dataServiceFactory = dataServiceFactory
         self.urlSession = urlSession
         self.workerQueue = workerQueue
-        self.sinopeRepository = sinopeRepository
         urlSessionDelegate.delegate = self
     }
 
@@ -78,57 +72,6 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
         self.callbacksInProgress[feed.url] = (feed, promise)
         self.downloadURL(feed.url)
         return promise.future
-    }
-
-    func updateFeeds(_ progress: @escaping (Int, Int) -> Void) ->
-        Future<Result<[TethysKit.Feed], TethysError>> {
-            let dataService = self.dataServiceFactory.currentDataService
-            guard let feedsArray = dataService.allFeeds().wait()?.value else {
-                let promise = Promise<Result<[TethysKit.Feed], TethysError>>()
-                promise.resolve(.failure(TethysError.unknown))
-                return promise.future
-            }
-            let feeds = Array(feedsArray)
-
-            var urlsToDates: [URL: Date] = [:]
-            for feed in feeds {
-                if feed.lastUpdated != Date(timeIntervalSinceReferenceDate: 0) {
-                    urlsToDates[feed.url] = feed.lastUpdated
-                }
-            }
-            return self.sinopeRepository.fetch(urlsToDates).map {result -> Result<[TethysKit.Feed], TethysError> in
-                switch result {
-                case let .success(sinopeFeeds):
-                    progress(sinopeFeeds.count, 2 * sinopeFeeds.count)
-                    return .success(self.updateFeedsFromSinopeFeeds(sinopeFeeds, progressCallback: progress))
-                case let .failure(error):
-                    return .failure(TethysError.backend(error))
-                }
-            }
-    }
-
-    private func updateFeedsFromSinopeFeeds(_ sinopeFeeds: [Sinope.Feed],
-                                            progressCallback: @escaping (Int, Int) -> Void) -> [TethysKit.Feed] {
-        var current = sinopeFeeds.count
-        let total = current * 2
-        var updatedFeeds: [TethysKit.Feed] = []
-        for importableFeed in sinopeFeeds {
-            current += 1
-            progressCallback(current, total)
-            let dataService = self.dataServiceFactory.currentDataService
-            let feed = dataService.findOrCreateFeed(url: importableFeed.url).wait()!
-
-            self.dataServiceFactory.currentDataService.updateFeed(feed, info: importableFeed).map { res -> Void in
-                switch res {
-                case .success():
-                    updatedFeeds.append(feed)
-                    break
-                case .failure(_):
-                    break
-                }
-            }.wait()
-        }
-        return updatedFeeds
     }
 
     // MARK: NetworkClientDelegate

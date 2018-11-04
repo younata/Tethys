@@ -29,16 +29,12 @@ class DefaultOPMLServiceSpec: QuickSpec {
             dataServiceFactory = FakeDataServiceFactory()
             dataServiceFactory.currentDataService = dataService
 
-            let accountRepository = FakeAccountRepository()
-            accountRepository.backendRepositoryReturns(nil)
-
             dataRepository = FakeDefaultDatabaseUseCase(
                 mainQueue: mainQueue,
                 reachable: nil,
                 dataServiceFactory: dataServiceFactory,
                 updateUseCase: FakeUpdateUseCase(),
-                databaseMigrator: FakeDatabaseMigrator(),
-                accountRepository: accountRepository
+                databaseMigrator: FakeDatabaseMigrator()
             )
 
             let injector = Injector()

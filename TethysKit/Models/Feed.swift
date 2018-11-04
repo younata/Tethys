@@ -82,9 +82,7 @@ public final class Feed: Hashable, CustomStringConvertible {
         }
     }
 
-    @available(*, deprecated: 1.0, renamed: "articlesArray")
-    public var articles: [Article] { return Array(self.articlesArray) }
-
+    @available(*, deprecated, message: "Query a service for the articles")
     public internal(set) var articlesArray: DataStoreBackedArray<Article>
 
     public internal(set) var image: Image? {
@@ -130,10 +128,12 @@ public final class Feed: Hashable, CustomStringConvertible {
 
     public private(set) var updated = false
 
+    @available(*, deprecated, message: "Query a service for the unread articles")
     public private(set) lazy var unreadArticles: DataStoreBackedArray<Article> = {
         return self.articlesArray.filterWithPredicate(NSPredicate(format: "read == %@", false as CVarArg))
     }()
 
+    @available(*, deprecated, message: "Don't use the feed object to add articles")
     public func addArticle(_ article: Article) {
         if !self.articlesArray.contains(article) {
             self.articlesArray.append(article)
@@ -145,6 +145,7 @@ public final class Feed: Hashable, CustomStringConvertible {
         }
     }
 
+    @available(*, deprecated, message: "Don't use the feed object to remove articles")
     public func removeArticle(_ article: Article) {
         if self.articlesArray.contains(article) {
             _ = self.articlesArray.remove(article)

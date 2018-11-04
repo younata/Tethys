@@ -102,7 +102,7 @@ public final class DataStoreBackedArray<T: AnyObject>: Collection, CustomDebugSt
     }
 
     public func filterWithPredicate(_ predicate: NSPredicate) -> DataStoreBackedArray<T> {
-        let filterArray: (Void) -> DataStoreBackedArray = {
+        let filterArray: () -> DataStoreBackedArray = {
             let array = self.internalObjects.filter {
                 return predicate.evaluate(with: $0)
             }
@@ -130,7 +130,7 @@ public final class DataStoreBackedArray<T: AnyObject>: Collection, CustomDebugSt
     }
 
     public func combine(_ other: DataStoreBackedArray<T>) -> DataStoreBackedArray<T> {
-        let combineArray: (Void) -> DataStoreBackedArray<T> = {
+        let combineArray: () -> DataStoreBackedArray<T> = {
             return DataStoreBackedArray(self.internalObjects + Array(other))
         }
 

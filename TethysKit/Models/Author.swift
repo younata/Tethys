@@ -37,7 +37,7 @@ import Foundation
         super.init()
     }
 
-    public override var hashValue: Int {
+    public override var hash: Int {
         return self.name.hash ^ (self.email?.hashValue ?? 0)
     }
 

@@ -4,7 +4,7 @@ import Reachability
 
 public protocol DatabaseUseCase {
     func databaseUpdateAvailable() -> Bool
-    func performDatabaseUpdates(_ progress: @escaping (Double) -> Void, callback: @escaping (Void) -> Void)
+    func performDatabaseUpdates(_ progress: @escaping (Double) -> Void, callback: @escaping () -> Void)
 
     func allTags() -> Future<Result<[String], TethysError>>
     func feeds() -> Future<Result<[Feed], TethysError>>

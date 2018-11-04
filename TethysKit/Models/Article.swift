@@ -22,6 +22,7 @@ public final class Article: NSObject {
             }
         }
     }
+
     public internal(set) var authors: [Author] {
         willSet {
             if newValue != authors {
@@ -78,6 +79,8 @@ public final class Article: NSObject {
             }
         }
     }
+
+    @available(*, deprecated, message: "Query a service for the feed")
     weak public internal(set) var feed: Feed? {
         didSet {
             if oldValue != feed {
@@ -93,11 +96,14 @@ public final class Article: NSObject {
     }
     public private(set) var flags: [String] = []
 
+    @available(*, deprecated, renamed: "relatedArticlesArray")
     public private(set) var relatedArticles = DataStoreBackedArray<Article>()
+    @available(*, deprecated, message: "Query a service for the related articles")
     public var relatedArticlesArray: [Article] { return Array(self.relatedArticles) }
 
     internal private(set) var updated: Bool = false
 
+    @available(*, deprecated, message: "Query a service for the author string")
     public var authorsString: String {
         return self.authors.map({$0.description}).joined(separator: ", ")
     }
@@ -207,6 +213,7 @@ public final class Article: NSObject {
         }
     }
 
+    @available(*, deprecated, message: "Don't use the article object to add related articles")
     public func addRelatedArticle(_ article: Article) {
         guard article != self else { return }
         if !self.relatedArticles.contains(article) {
@@ -216,6 +223,7 @@ public final class Article: NSObject {
         }
     }
 
+    @available(*, deprecated, message: "Don't use the article object to remove related articles")
     public func removeRelatedArticle(_ article: Article) {
         if self.relatedArticles.contains(article) {
             _ = self.relatedArticles.remove(article)

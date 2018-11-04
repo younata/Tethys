@@ -64,15 +64,6 @@ class TethysErrorSpec: QuickSpec {
                     expect(a) != c
                 }
 
-                it("reports two Backend errors of the same kind as equal") {
-                    let a = TethysError.backend(.unknown)
-                    let b = TethysError.backend(.unknown)
-                    let c = TethysError.backend(.network)
-
-                    expect(a) == b
-                    expect(a) != c
-                }
-
                 it("reports two Book errors of the same kind as equal") {
                     let a = TethysError.book(.unknown)
                     let b = TethysError.book(.unknown)

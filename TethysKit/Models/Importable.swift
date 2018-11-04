@@ -1,5 +1,4 @@
 import Muon
-import Sinope
 
 protocol ImportableFeed {
     var title: String { get }
@@ -57,21 +56,3 @@ extension Muon.Article: ImportableArticle {
     }
 }
 extension Muon.Author: ImportableAuthor {}
-
-// MARK: Sinope conformance
-extension Sinope.Feed: ImportableFeed {
-    var description: String { return self.summary }
-    var imageURL: URL? { return self.imageUrl }
-
-    var importableArticles: [ImportableArticle] {
-        return self.articles.map { $0 as ImportableArticle }
-    }
-}
-
-extension Sinope.Article: ImportableArticle {
-    var importableAuthors: [ImportableAuthor] {
-        return self.authors.map { $0 as ImportableAuthor }
-    }
-}
-
-extension Sinope.Author: ImportableAuthor {}

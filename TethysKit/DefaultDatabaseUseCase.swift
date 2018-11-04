@@ -2,7 +2,6 @@ import Foundation
 import Ra
 import CBGPromise
 import Result
-import Sinope
 #if os(iOS)
     import CoreSpotlight
     import MobileCoreServices

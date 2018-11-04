@@ -8,7 +8,6 @@ github "younata/WorkFlow" "master"
 github "tid-kijyun/Kanna"
 github "antitypical/Result"
 github "cbguder/CBGPromise" "master"
-github "younata/Sinope" "master"
 github "younata/Sponde" "master"
 
 # objc

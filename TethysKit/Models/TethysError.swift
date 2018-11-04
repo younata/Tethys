@@ -1,4 +1,3 @@
-import Sinope
 import Sponde
 
 public enum NetworkError: Error {
@@ -64,7 +63,6 @@ public enum TethysError: Error {
     case network(URL, NetworkError)
     case http(Int)
     case database(DatabaseError)
-    case backend(SinopeError)
     case book(SpondeError)
     case unknown
 
@@ -78,8 +76,6 @@ public enum TethysError: Error {
             return String.localizedStringWithFormat("Error_Standard_HTTP", status)
         case let .database(error):
             return error.localizedDescription
-        case let .backend(error):
-            return error.description
         case let .book(error):
             return error.description
         case .unknown:
@@ -97,8 +93,6 @@ public func == (lhs: TethysError, rhs: TethysError) -> Bool {
     case (let .http(lhsError), let .http(rhsError)):
         return lhsError == rhsError
     case (let .database(lhsError), let .database(rhsError)):
-        return lhsError == rhsError
-    case (let .backend(lhsError), let .backend(rhsError)):
         return lhsError == rhsError
     case (let .book(lhsError), let .book(rhsError)):
         return lhsError == rhsError

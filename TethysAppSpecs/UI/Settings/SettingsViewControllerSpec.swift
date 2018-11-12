@@ -2,7 +2,6 @@ import Quick
 import Nimble
 import Tethys
 import TethysKit
-import Ra
 import SafariServices
 
 class SettingsViewControllerSpec: QuickSpec {
@@ -16,30 +15,28 @@ class SettingsViewControllerSpec: QuickSpec {
         var opmlService: FakeOPMLService! = nil
 
         beforeEach {
-            let injector = Injector()
-
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(ThemeRepository.self, to: themeRepository)
 
             settingsRepository = SettingsRepository(userDefaults: nil)
-            injector.bind(SettingsRepository.self, to: settingsRepository)
 
             fakeQuickActionRepository = FakeQuickActionRepository()
-            injector.bind(QuickActionRepository.self, to: fakeQuickActionRepository)
 
             feedRepository = FakeDatabaseUseCase()
-            injector.bind(DatabaseUseCase.self, to: feedRepository)
 
             let mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
-            injector.bind(kMainQueue, to: mainQueue)
 
             opmlService = FakeOPMLService()
-            injector.bind(OPMLService.self, to: opmlService)
 
-            injector.bind(DocumentationUseCase.self, to: FakeDocumentationUseCase())
-
-            subject = injector.create(SettingsViewController.self)!
+            subject = SettingsViewController(
+                themeRepository: themeRepository,
+                settingsRepository: settingsRepository,
+                quickActionRepository: fakeQuickActionRepository,
+                databaseUseCase: feedRepository,
+                opmlService: opmlService,
+                mainQueue: mainQueue,
+                documentationViewController: { documentationViewControllerFactory() }
+            )
 
             navigationController = UINavigationController(rootViewController: subject)
 

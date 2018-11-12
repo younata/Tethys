@@ -1,5 +1,4 @@
 import UIKit
-import Ra
 import TethysKit
 import CBGPromise
 import Result
@@ -11,15 +10,11 @@ public protocol NotificationHandler {
     func sendLocalNotification(_ notificationSource: LocalNotificationSource, article: Article)
 }
 
-public struct LocalNotificationHandler: NotificationHandler, Injectable {
+public struct LocalNotificationHandler: NotificationHandler {
     private let feedRepository: DatabaseUseCase
 
     public init(feedRepository: DatabaseUseCase) {
         self.feedRepository = feedRepository
-    }
-
-    public init(injector: Injector) {
-        self.init(feedRepository: injector.create(DatabaseUseCase.self)!)
     }
 
     public func enableNotifications(_ notificationSource: LocalNotificationSource) {

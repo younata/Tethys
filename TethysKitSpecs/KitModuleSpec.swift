@@ -1,6 +1,6 @@
 import Quick
 import Nimble
-import Ra
+import Swinject
 #if os(iOS)
     import CoreSpotlight
 #endif
@@ -8,39 +8,83 @@ import Ra
 
 class KitModuleSpec: QuickSpec {
     override func spec() {
-        var injector: Injector! = nil
+        var subject: Container! = nil
 
         beforeEach {
-            injector = Injector(module: KitModule())
+            subject = Container()
+            TethysKit.configure(container: subject)
         }
 
         it("binds the main operation queue to kMainQueue") {
-            expect(injector.create(kMainQueue) as? OperationQueue).to(beIdenticalTo(OperationQueue.main))
+            expect(subject.resolve(OperationQueue.self, name: kMainQueue)).to(beIdenticalTo(OperationQueue.main))
         }
 
         it("binds a single background queue") {
-            expect(injector.create(kBackgroundQueue) as? NSObject).to(beIdenticalTo(injector.create(kBackgroundQueue) as? NSObject))
+            expect(subject.resolve(OperationQueue.self, name: kBackgroundQueue)).to(beIdenticalTo(subject.resolve(OperationQueue.self, name: kBackgroundQueue)))
         }
 
-        #if os(iOS)
-            it("binds a searchIndex") {
-                expect(injector.create(SearchIndex.self)! === CSSearchableIndex.default()) == true
+        describe("Services") {
+            exists(Bundle.self)
+            exists(UserDefaults.self)
+            exists(FileManager.self)
+
+            alwaysIs(URLSession.self, a: URLSession.shared)
+            #if os(iOS)
+                exists(SearchIndex.self)
+            #endif
+            isA(DatabaseUseCase.self, kindOf: DefaultDatabaseUseCase.self, singleton: true)
+            singleton(OPMLService.self)
+            exists(BackgroundStateMonitor.self)
+        }
+
+        func exists<T>(_ type: T.Type) {
+            describe(Mirror(reflecting: type).description) {
+                it("exists") {
+                    expect(subject.resolve(type)).toNot(beNil())
+                }
             }
-        #endif
-
-        it("binds a URLSession to the shared session") {
-            let urlSession = injector.create(URLSession.self)
-            expect(urlSession).toNot(beNil())
-
-            expect(urlSession) === URLSession.shared
         }
 
-        it("binds a DatabaseUseCase") {
-            expect(injector.create(DatabaseUseCase.self) is DefaultDatabaseUseCase) == true
+        func singleton<T>(_ type: T.Type) {
+            describe(Mirror(reflecting: type).description) {
+                it("exists") {
+                    expect(subject.resolve(type)).toNot(beNil())
+                }
+
+                it("is a singleton") {
+                    expect(subject.resolve(type)).to(beIdenticalTo(subject.resolve(type)))
+                }
+            }
         }
 
-        it("binds an opml manager with a singleton scope") {
-            expect(injector.create(OPMLService.self)).to(beIdenticalTo(injector.create(OPMLService.self)))
+        func isA<T, U>(_ type: T.Type, kindOf otherType: U.Type, singleton: Bool = false) {
+            describe(Mirror(reflecting: type).description) {
+                it("exists") {
+                    expect(subject.resolve(type)).toNot(beNil())
+                }
+
+                it("is a \(Mirror(reflecting: otherType).description)") {
+                    expect(subject.resolve(type)).to(beAKindOf(otherType))
+                }
+
+                if singleton {
+                    it("is a singleton") {
+                        expect(subject.resolve(type)).to(beIdenticalTo(subject.resolve(type)))
+                    }
+                }
+            }
+        }
+
+        func alwaysIs<T: Equatable>(_ type: T.Type, a obj: T) {
+            describe(Mirror(reflecting: type).description) {
+                it("exists") {
+                    expect(subject.resolve(type)).toNot(beNil())
+                }
+
+                it("is always \(Mirror(reflecting: obj).description)") {
+                    expect(subject.resolve(type)).to(equal(obj))
+                }
+            }
         }
     }
 }

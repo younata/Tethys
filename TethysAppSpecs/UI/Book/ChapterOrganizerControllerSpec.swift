@@ -2,7 +2,6 @@ import Quick
 import Nimble
 import Tethys
 import TethysKit
-import Ra
 
 class FakeChapterOrganizerControllerDelegate: ChapterOrganizerControllerDelegate {
     var didChangeChaptersCallCount: Int = 0
@@ -19,7 +18,6 @@ class FakeChapterOrganizerControllerDelegate: ChapterOrganizerControllerDelegate
 class ChapterOrganizerControllerSpec: QuickSpec {
     override func spec() {
         var subject: ChapterOrganizerController!
-        var injector: Injector!
         var themeRepository: ThemeRepository!
         var delegate: FakeChapterOrganizerControllerDelegate!
         var settingsRepository: SettingsRepository!
@@ -50,20 +48,24 @@ class ChapterOrganizerControllerSpec: QuickSpec {
         let dataStoreArticles = DataStoreBackedArray(allArticles)
 
         beforeEach {
-            injector = Injector()
-
             themeRepository = ThemeRepository(userDefaults: nil)
-
-            injector.bind(ThemeRepository.self, to: themeRepository)
-            injector.bind(DatabaseUseCase.self, to: FakeDatabaseUseCase())
-            injector.bind(kMainQueue, to: FakeOperationQueue())
-
             settingsRepository = SettingsRepository(userDefaults: nil)
-            injector.bind(SettingsRepository.self, to: settingsRepository)
-
             delegate = FakeChapterOrganizerControllerDelegate()
 
-            subject = injector.create(ChapterOrganizerController.self)!
+            subject = ChapterOrganizerController(
+                themeRepository: themeRepository,
+                settingsRepository: settingsRepository,
+                articleListController: {
+                    ArticleListController(
+                        mainQueue: FakeOperationQueue(),
+                        feedRepository: FakeDatabaseUseCase(),
+                        themeRepository: themeRepository,
+                        settingsRepository: settingsRepository,
+                        articleViewController: { fatalError() },
+                        generateBookViewController: { fatalError() }
+                    )
+                }
+            )
 
             navController = UINavigationController(rootViewController: subject)
 

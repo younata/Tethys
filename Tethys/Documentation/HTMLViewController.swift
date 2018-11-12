@@ -1,6 +1,5 @@
 import UIKit
 import PureLayout
-import Ra
 import WebKit
 import SafariServices
 
@@ -10,7 +9,7 @@ public protocol HTMLViewControllerDelegate: class {
     func commitViewController(viewController: UIViewController)
 }
 
-public final class HTMLViewController: UIViewController, Injectable {
+public final class HTMLViewController: UIViewController {
     public private(set) var htmlString: String?
     public weak var delegate: HTMLViewControllerDelegate?
 
@@ -40,12 +39,6 @@ public final class HTMLViewController: UIViewController, Injectable {
         self.content.isOpaque = false
         self.content.addObserver(
             self, forKeyPath: "estimatedProgress", options: [NSKeyValueObservingOptions.new], context: nil
-        )
-    }
-
-    public required convenience init(injector: Injector) {
-        self.init(
-            themeRepository: injector.create(ThemeRepository.self)!
         )
     }
 

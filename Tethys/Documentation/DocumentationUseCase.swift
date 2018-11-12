@@ -1,5 +1,4 @@
 import Foundation
-import Ra
 
 public enum Documentation {
     case libraries
@@ -11,7 +10,7 @@ public protocol DocumentationUseCase {
     func title(documentation: Documentation) -> String
 }
 
-public struct DefaultDocumentationUseCase: DocumentationUseCase, Injectable {
+public struct DefaultDocumentationUseCase: DocumentationUseCase {
     public func html(documentation: Documentation) -> String {
         let url: URL
         switch documentation {
@@ -33,24 +32,15 @@ public struct DefaultDocumentationUseCase: DocumentationUseCase, Injectable {
     }
 
     private let themeRepository: ThemeRepository
-    private let bundle: Bundle
 
-    public init(themeRepository: ThemeRepository, bundle: Bundle) {
+    public init(themeRepository: ThemeRepository) {
         self.themeRepository = themeRepository
-        self.bundle = bundle
-    }
-
-    public init(injector: Injector) {
-        self.init(
-            themeRepository: injector.create(ThemeRepository.self)!,
-            bundle: injector.create(Bundle.self)!
-        )
     }
 
     private func htmlFixes(content: String) -> String {
         let prefix: String
         let cssFileName = self.themeRepository.articleCSSFileName
-        if let cssURL = self.bundle.url(forResource: cssFileName, withExtension: "css"),
+        if let cssURL = Bundle.main.url(forResource: cssFileName, withExtension: "css"),
             let css = try? String(contentsOf: cssURL) {
             prefix = "<html><head>" +
                 "<style type=\"text/css\">\(css)</style>" +

@@ -1,10 +1,10 @@
 import Quick
 import Nimble
-import Ra
 import Tethys
 import TethysKit
 import CoreSpotlight
 import Result
+import Swinject
 
 fileprivate class FakeBackgroundFetchHandler: BackgroundFetchHandler {
     fileprivate var performFetchCalled = false
@@ -20,7 +20,7 @@ class AppDelegateSpec: QuickSpec {
         var subject: AppDelegate! = nil
 
         let application = UIApplication.shared
-        var injector: Ra.Injector! = nil
+        var container: Container! = nil
 
         var dataUseCase: FakeDatabaseUseCase! = nil
 
@@ -32,40 +32,43 @@ class AppDelegateSpec: QuickSpec {
         beforeEach {
             subject = AppDelegate()
 
-            injector = Ra.Injector()
+            container = Container()
 
-            injector.bind(kMainQueue, to: FakeOperationQueue())
-            injector.bind(kBackgroundQueue, to: FakeOperationQueue())
+            container.register(OperationQueue.self, name: kMainQueue) { _ in FakeOperationQueue() }
+            container.register(OperationQueue.self, name: kBackgroundQueue) { _ in FakeOperationQueue() }
 
             dataUseCase = FakeDatabaseUseCase()
-            injector.bind(DatabaseUseCase.self, to: dataUseCase)
+            container.register(DatabaseUseCase.self) { _ in dataUseCase }
 
-            injector.bind(MigrationUseCase.self, to: FakeMigrationUseCase())
-            injector.bind(ImportUseCase.self, to: FakeImportUseCase())
+            container.register(MigrationUseCase.self) { _ in FakeMigrationUseCase() }
 
             analytics = FakeAnalytics()
-            injector.bind(Analytics.self, to: analytics)
-
-            InjectorModule().configureInjector(injector: injector)
+            container.register(Analytics.self) { _ in analytics }
 
             notificationHandler = FakeNotificationHandler()
-            injector.bind(NotificationHandler.self, to: notificationHandler)
+            container.register(NotificationHandler.self) { _ in notificationHandler }
 
             backgroundFetchHandler = FakeBackgroundFetchHandler()
-            injector.bind(BackgroundFetchHandler.self, to: backgroundFetchHandler)
+            container.register(BackgroundFetchHandler.self) { _ in backgroundFetchHandler }
 
             importUseCase = FakeImportUseCase()
-            injector.bind(ImportUseCase.self, to: importUseCase)
+            container.register(ImportUseCase.self) { _ in FakeImportUseCase() }
 
-            subject.anInjector = injector
+            container.register(SplitViewController.self) { _ in splitViewControllerFactory() }
+            container.register(Bootstrapper.self) { _, window, splitView in
+                bootstrapWorkFlowFactory(window: window, splitViewController: splitView)
+            }
+
             subject.window = UIWindow(frame: CGRect(x: 0, y: 0, width: 320, height: 480))
+
+            subject.container = container
         }
 
         describe("-application:didFinishLaunchingWithOptions:") {
             it("should enable notifications") {
                 _ = subject.application(application, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsKey(rawValue: "test"): true])
 
-                expect(notificationHandler.enableNotificationsCallCount) == 1
+                expect(notificationHandler.enableNotificationsCalls).to(haveCount(1))
             }
 
             it("tells analytics that the app was launched") {
@@ -137,28 +140,28 @@ class AppDelegateSpec: QuickSpec {
             }
 
             it("tells the system to import the url") {
-                expect(importUseCase.scanForImportableCallCount) == 1
-                expect(importUseCase.scanForImportableArgsForCall(callIndex: 0)) == url
+                expect(importUseCase.scanForImportableCalls).to(haveCount(1))
+                expect(importUseCase.scanForImportableCalls.last) == url
             }
 
             describe("if an opml is found at that url") {
                 beforeEach {
-                    importUseCase.scanForImportablePromises[0].resolve(.opml(url, 1))
+                    importUseCase.scanForImportablePromises.last?.resolve(.opml(url, 1))
                 }
 
                 it("tries to import the url") {
-                    expect(importUseCase.importItemCallCount) == 1
-                    expect(importUseCase.importItemArgsForCall(callIndex: 0)) == url
+                    expect(importUseCase.importItemCalls).to(haveCount(1))
+                    expect(importUseCase.importItemCalls.last) == url
                 }
             }
 
             describe("otherwise") {
                 beforeEach {
-                    importUseCase.scanForImportablePromises[0].resolve(.none(url))
+                    importUseCase.scanForImportablePromises.last?.resolve(.none(url))
                 }
 
                 it("does not try to import the url") {
-                    expect(importUseCase.importItemCallCount) == 0
+                    expect(importUseCase.importItemCalls).to(beEmpty())
                 }
             }
         }
@@ -333,8 +336,9 @@ class AppDelegateSpec: QuickSpec {
                     subject.application(UIApplication.shared, didReceive: UILocalNotification())
                 }
                 it("should forward to the notification handler") {
-                    expect(notificationHandler.handleLocalNotificationCallCount) == 1
-                    expect(notificationHandler.handleActionCallCount) == 0
+
+                    expect(notificationHandler.handleLocalNotificationCalls).to(haveCount(1))
+                    expect(notificationHandler.handleActionCalls).to(beEmpty())
                 }
             }
             describe("handling notification actions") {
@@ -346,8 +350,8 @@ class AppDelegateSpec: QuickSpec {
                     }
                 }
                 it("should forward to the notification handler") {
-                    expect(notificationHandler.handleActionCallCount) == 1
-                    expect(notificationHandler.handleActionArgsForCall(callIndex: 0).0).to(equal("read"))
+                    expect(notificationHandler.handleActionCalls).to(haveCount(1))
+                    expect(notificationHandler.handleActionCalls.last?.0).to(equal("read"))
                 }
                 it("should call the completionHandler") {
                     expect(completionHandlerCalled) == true

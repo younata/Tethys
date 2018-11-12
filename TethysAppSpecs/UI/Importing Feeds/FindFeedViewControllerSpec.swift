@@ -1,6 +1,5 @@
 import Quick
 import Nimble
-import Ra
 import Tethys
 import TethysKit
 import SafariServices
@@ -14,32 +13,25 @@ class FindFeedViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: FindFeedViewController!
 
-        var injector: Ra.Injector!
         var webView: FakeWebView!
         var importUseCase: FakeImportUseCase!
-        var opmlService: FakeOPMLService!
         var themeRepository: ThemeRepository!
         var analytics: FakeAnalytics!
 
         beforeEach {
-            injector = Ra.Injector()
-
             feedRepository = FakeDatabaseUseCase()
-            injector.bind(DatabaseUseCase.self, to: feedRepository)
 
             importUseCase = FakeImportUseCase()
-            injector.bind(ImportUseCase.self, to: importUseCase)
-
-            opmlService = FakeOPMLService()
-            injector.bind(OPMLService.self, to: opmlService)
 
             analytics = FakeAnalytics()
-            injector.bind(Analytics.self, to: analytics)
 
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(ThemeRepository.self, to: themeRepository)
 
-            subject = injector.create(FindFeedViewController.self)!
+            subject = FindFeedViewController(
+                importUseCase: importUseCase,
+                themeRepository: themeRepository,
+                analytics: analytics
+            )
             webView = FakeWebView()
             subject.webContent = webView
 
@@ -195,7 +187,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                 }
 
                 it("asks the import use case to import the feed at the url") {
-                    expect(importUseCase.importItemArgsForCall(callIndex: 0)) == url
+                    expect(importUseCase.importItemCalls.last) == url
                 }
 
                 it("should show an indicator that we're doing things") {
@@ -282,7 +274,7 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             it("asks the import use case to check if the page at the url has a feed") {
-                expect(importUseCase.scanForImportableArgsForCall(callIndex: 0)) == URL(string: "https://example.com/feed.xml")
+                expect(importUseCase.scanForImportableCalls.last) == URL(string: "https://example.com/feed.xml")
             }
 
             context("when the use case finds a feed") {
@@ -393,7 +385,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("asks the import use case to import the feed at the url") {
-                        expect(importUseCase.importItemArgsForCall(callIndex: 0)) == url
+                        expect(importUseCase.importItemCalls.last) == url
                     }
 
                     describe("when the use case is finished") {

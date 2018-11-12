@@ -1,6 +1,5 @@
 import Cocoa
 import TethysKit
-import Ra
 
 @NSApplicationMain
 public final class AppDelegate: NSObject, NSApplicationDelegate {

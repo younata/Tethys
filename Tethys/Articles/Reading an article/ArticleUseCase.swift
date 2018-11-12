@@ -1,5 +1,4 @@
 import UIKit
-import Ra
 import TethysKit
 import Result
 import CBGPromise
@@ -14,28 +13,17 @@ public protocol ArticleUseCase {
     func relatedArticles(to article: Article) -> [Article]
 }
 
-public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
+public final class DefaultArticleUseCase: NSObject, ArticleUseCase {
     private let feedRepository: DatabaseUseCase
     private let themeRepository: ThemeRepository
-    private let bundle: Bundle
 
     private var relatedArticles: [Article: Future<Result<[Article], TethysError>>] = [:]
 
     public init(feedRepository: DatabaseUseCase,
-                themeRepository: ThemeRepository,
-                bundle: Bundle) {
+                themeRepository: ThemeRepository) {
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository
-        self.bundle = bundle
         super.init()
-    }
-
-    public required convenience init(injector: Injector) {
-        self.init(
-            feedRepository: injector.create(DatabaseUseCase.self)!,
-            themeRepository: injector.create(ThemeRepository.self)!,
-            bundle: injector.create(Bundle.self)!
-        )
     }
 
     public func articlesByAuthor(_ author: Author, callback: @escaping (DataStoreBackedArray<Article>) -> Void) {
@@ -112,7 +100,7 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
     }
 
     private lazy var prismJS: String = {
-        if let prismURL = self.bundle.url(forResource: "prism.js", withExtension: "html"),
+        if let prismURL = Bundle.main.url(forResource: "prism.js", withExtension: "html"),
             let prism = try? String(contentsOf: prismURL) {
                 return prism
         }
@@ -122,7 +110,7 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase, Injectable {
     private func htmlForArticle(_ article: Article) -> String {
         let prefix: String
         let cssFileName = self.themeRepository.articleCSSFileName
-        if let cssURL = self.bundle.url(forResource: cssFileName, withExtension: "css"),
+        if let cssURL = Bundle.main.url(forResource: cssFileName, withExtension: "css"),
             let css = try? String(contentsOf: cssURL) {
                 prefix = "<html><head>" +
                     "<style type=\"text/css\">\(css)</style>" +

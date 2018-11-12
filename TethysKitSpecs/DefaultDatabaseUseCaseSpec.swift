@@ -1,7 +1,6 @@
 import Quick
 import Nimble
 @testable import TethysKit
-import Ra
 import CBGPromise
 import Result
 #if os(iOS)

@@ -1,6 +1,5 @@
 import Cocoa
 import TethysKit
-import Ra
 
 public final class ArticlesList: NSObject {
     fileprivate var articles: DataStoreBackedArray<Article>?

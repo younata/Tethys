@@ -1,6 +1,5 @@
 import Cocoa
 import TethysKit
-import Ra
 
 public final class MainController: NSViewController {
     @IBOutlet public var window: NSWindow?

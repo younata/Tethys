@@ -1,11 +1,10 @@
 import UIKit
-import Ra
 
 public protocol ThemeRepositorySubscriber: NSObjectProtocol {
     func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository)
 }
 
-public final class ThemeRepository: NSObject, Injectable {
+public final class ThemeRepository: NSObject {
     public var backgroundColor: UIColor { return self.theme.backgroundColor }
     public var textColor: UIColor { return self.theme.textColor }
     public var articleCSSFileName: String { return self.theme.articleCSSFileName }
@@ -163,11 +162,6 @@ public final class ThemeRepository: NSObject, Injectable {
 
     public init(userDefaults: UserDefaults?) {
         self.userDefaults = userDefaults
-    }
-
-    public required init(injector: Ra.Injector) {
-        self.userDefaults = injector.create(UserDefaults.self) ??
-            UserDefaults.standard
     }
 
     deinit {

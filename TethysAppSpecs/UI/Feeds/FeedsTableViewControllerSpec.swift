@@ -1,6 +1,5 @@
 import Quick
 import Nimble
-import Ra
 import Tethys
 import BreakOutToRefresh
 import TethysKit
@@ -23,28 +22,52 @@ class FeedsTableViewControllerSpec: QuickSpec {
         var feeds: [Feed] = []
 
         beforeEach {
-            let injector = Injector()
-
             dataUseCase = FakeDatabaseUseCase()
-            injector.bind(DatabaseUseCase.self, to: dataUseCase)
-
-            injector.bind(OPMLService.self, to: FakeOPMLService())
-
             mainQueue = FakeOperationQueue()
-            injector.bind(kMainQueue, to: mainQueue)
-
             settingsRepository = SettingsRepository(userDefaults: nil)
-            injector.bind(SettingsRepository.self, to: settingsRepository)
-
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(ThemeRepository.self, to: themeRepository)
 
-            injector.bind(QuickActionRepository.self, to: FakeQuickActionRepository())
-            injector.bind(ImportUseCase.self, to: FakeImportUseCase())
-            analytics = FakeAnalytics()
-            injector.bind(Analytics.self, to: analytics)
-
-            subject = injector.create(FeedsTableViewController.self)
+            subject = FeedsTableViewController(
+                feedRepository: dataUseCase,
+                themeRepository: themeRepository,
+                settingsRepository: settingsRepository,
+                mainQueue: mainQueue,
+                findFeedViewController: {
+                    return FindFeedViewController(
+                        importUseCase: FakeImportUseCase(),
+                        themeRepository: themeRepository,
+                        analytics: FakeAnalytics()
+                    )
+                },
+                feedViewController: {
+                    return FeedViewController(
+                        feedRepository: FakeDatabaseUseCase(),
+                        themeRepository: themeRepository,
+                        tagEditorViewController: { fatalError() }
+                    )
+                },
+                settingsViewController: {
+                    return SettingsViewController(
+                        themeRepository: themeRepository,
+                        settingsRepository: settingsRepository,
+                        quickActionRepository: FakeQuickActionRepository(),
+                        databaseUseCase: FakeDatabaseUseCase(),
+                        opmlService: FakeOPMLService(),
+                        mainQueue: FakeOperationQueue(),
+                        documentationViewController: { fatalError() }
+                    )
+                },
+                articleListController: {
+                    return ArticleListController(
+                        mainQueue: FakeOperationQueue(),
+                        feedRepository: FakeDatabaseUseCase(),
+                        themeRepository: themeRepository,
+                        settingsRepository: settingsRepository,
+                        articleViewController: { fatalError() },
+                        generateBookViewController: { fatalError() }
+                    )
+                }
+            )
 
             navigationController = UINavigationController(rootViewController: subject)
 

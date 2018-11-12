@@ -3,7 +3,6 @@ import Nimble
 import Cocoa
 import Tethys
 import TethysKit
-import Ra
 
 class FeedsViewControllerSpec: QuickSpec {
     override func spec() {

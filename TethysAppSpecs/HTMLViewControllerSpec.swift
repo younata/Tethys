@@ -1,6 +1,5 @@
 import Quick
 import Nimble
-import Ra
 import Tethys
 
 class FakeHTMLViewControllerDelegate: HTMLViewControllerDelegate {
@@ -27,16 +26,11 @@ class FakeHTMLViewControllerDelegate: HTMLViewControllerDelegate {
 class HTMLViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: HTMLViewController!
-        var injector: Injector!
         var themeRepository: ThemeRepository!
 
         beforeEach {
-            injector = Injector()
-
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(ThemeRepository.self, to: themeRepository)
-
-            subject = injector.create(HTMLViewController.self)!
+            subject = HTMLViewController(themeRepository: themeRepository)
 
             expect(subject.view).toNot(beNil())
         }

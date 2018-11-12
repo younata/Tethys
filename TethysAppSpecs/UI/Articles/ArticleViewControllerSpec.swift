@@ -1,6 +1,5 @@
 import Quick
 import Nimble
-import Ra
 import TOBrowserActivityKit
 import SafariServices
 @testable import Tethys
@@ -9,25 +8,25 @@ import SafariServices
 class ArticleViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: ArticleViewController!
-        var injector: Injector!
+        var articleListController: ArticleListController!
         var navigationController: UINavigationController!
         var themeRepository: ThemeRepository!
         var htmlViewController: HTMLViewController!
         var articleUseCase: FakeArticleUseCase!
 
         beforeEach {
-            injector = Injector()
-
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(ThemeRepository.self, to: themeRepository)
-
-            htmlViewController = HTMLViewController(themeRepository: themeRepository)
-            injector.bind(HTMLViewController.self, to: htmlViewController)
-
             articleUseCase = FakeArticleUseCase()
-            injector.bind(ArticleUseCase.self, to: articleUseCase)
 
-            subject = injector.create(ArticleViewController.self)!
+            articleListController = articleListControllerFactory()
+            htmlViewController = htmlViewControllerFactory()
+
+            subject = ArticleViewController(
+                themeRepository: themeRepository,
+                articleUseCase: articleUseCase,
+                htmlViewController: { htmlViewController },
+                articleListController: { articleListController }
+            )
 
             navigationController = UINavigationController(rootViewController: subject)
 
@@ -220,21 +219,9 @@ class ArticleViewControllerSpec: QuickSpec {
                     }
 
                     describe("when the use case returns") {
-                        var articleListController: ArticleListController!
-
                         let articleByAuthor = Article(title: "article23", link: URL(string: "https://example.com/")!, summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: Date(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
 
                         beforeEach {
-                            articleListController = ArticleListController(
-                                mainQueue: FakeOperationQueue(),
-                                feedRepository: FakeDatabaseUseCase(),
-                                themeRepository: themeRepository,
-                                settingsRepository: SettingsRepository(userDefaults: nil),
-                                articleViewController: { subject },
-                                generateBookViewController: { injector.create(GenerateBookViewController.self)! }
-                            )
-                            injector.bind(ArticleListController.self, to: articleListController)
-
                             articleUseCase.articlesByAuthorArgsForCall(0).1(DataStoreBackedArray([article, articleByAuthor]))
                         }
 

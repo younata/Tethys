@@ -1,4 +1,3 @@
-import Ra
 import Muon
 import Lepton
 import CBGPromise
@@ -33,7 +32,7 @@ public protocol ImportUseCase {
     func importItem(_ url: URL) -> Future<Result<Void, TethysError>>
 }
 
-public final class DefaultImportUseCase: ImportUseCase, Injectable {
+public final class DefaultImportUseCase: ImportUseCase {
     private let urlSession: URLSession
     private let feedRepository: DatabaseUseCase
     private let opmlService: OPMLService
@@ -56,16 +55,6 @@ public final class DefaultImportUseCase: ImportUseCase, Injectable {
         self.opmlService = opmlService
         self.fileManager = fileManager
         self.mainQueue = mainQueue
-    }
-
-    public required convenience init(injector: Injector) {
-        self.init(
-            urlSession: injector.create(URLSession.self)!,
-            feedRepository: injector.create(DatabaseUseCase.self)!,
-            opmlService: injector.create(OPMLService.self)!,
-            fileManager: injector.create(FileManager.self)!,
-            mainQueue: injector.create(kMainQueue, type: OperationQueue.self)!
-        )
     }
 
     public func scanForImportable(_ url: URL) -> Future<ImportUseCaseItem> {

@@ -1,5 +1,5 @@
 import UIKit
-import Ra
+import Swinject
 import TethysKit
 import Result
 import CoreSpotlight
@@ -8,40 +8,39 @@ import CoreSpotlight
 public final class AppDelegate: UIResponder, UIApplicationDelegate {
     public var window: UIWindow?
 
-    public lazy var anInjector: Ra.Injector = {
-        let kitModule = KitModule()
-        let appModule = InjectorModule()
-        return Ra.Injector(module: appModule, kitModule)
+    public lazy var container: Container = {
+        let container = Container()
+        TethysKit.configure(container: container)
+        Tethys.configure(container: container)
+        return container
     }()
 
     private lazy var feedRepository: DatabaseUseCase = {
-        return self.anInjector.create(DatabaseUseCase.self)!
+        return self.container.resolve(DatabaseUseCase.self)!
     }()
 
     private lazy var notificationHandler: NotificationHandler = {
-        self.anInjector.create(NotificationHandler.self)!
+        self.container.resolve(NotificationHandler.self)!
     }()
 
     private lazy var backgroundFetchHandler: BackgroundFetchHandler = {
-        self.anInjector.create(BackgroundFetchHandler.self)!
+        self.container.resolve(BackgroundFetchHandler.self)!
     }()
 
     private lazy var analytics: Analytics = {
-        self.anInjector.create(Analytics.self)!
+        self.container.resolve(Analytics.self)!
     }()
 
     private lazy var importUseCase: ImportUseCase = {
-        self.anInjector.create(ImportUseCase.self)!
+        self.container.resolve(ImportUseCase.self)!
     }()
 
     internal lazy var splitView: SplitViewController = {
-        let splitView = self.anInjector.create(SplitViewController.self)!
-        self.anInjector.bind(SplitViewController.self, to: splitView)
-        return splitView
+        self.container.resolve(SplitViewController.self)!
     }()
 
     private lazy var bootstrapper: Bootstrapper = {
-        return BootstrapWorkFlow(window: self.getWindow(), injector: self.anInjector)
+        self.container.resolve(Bootstrapper.self, arguments: self.getWindow(), self.splitView)!
     }()
 
     private func getWindow() -> UIWindow {
@@ -55,8 +54,7 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
         return window
     }
 
-    public func application(_ application: UIApplication,
-                            didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool { // swiftlint:disable line-length
         UINavigationBar.appearance().tintColor = UIColor.darkGreen()
         UIBarButtonItem.appearance().tintColor = UIColor.darkGreen()
         UITabBar.appearance().tintColor = UIColor.darkGreen()

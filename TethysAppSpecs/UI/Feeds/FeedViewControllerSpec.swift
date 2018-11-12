@@ -1,7 +1,6 @@
 import Quick
 import Nimble
 import Tethys
-import Ra
 @testable import TethysKit
 
 class FeedViewControllerSpec: QuickSpec {
@@ -13,27 +12,22 @@ class FeedViewControllerSpec: QuickSpec {
 
         var navigationController: UINavigationController!
         var subject: FeedViewController!
-        var injector: Injector!
         var dataRepository: FakeDatabaseUseCase!
 
-        var backgroundQueue: FakeOperationQueue!
         var presentingController: UIViewController!
         var themeRepository: ThemeRepository!
 
         beforeEach {
-            injector = Injector()
-
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(ThemeRepository.self, to: themeRepository)
-
-            backgroundQueue = FakeOperationQueue()
-            backgroundQueue.runSynchronously = true
-            injector.bind(kBackgroundQueue, to: backgroundQueue)
 
             dataRepository = FakeDatabaseUseCase()
-            injector.bind(DatabaseUseCase.self, to: dataRepository)
-
-            subject = injector.create(FeedViewController.self)!
+            subject = FeedViewController(
+                feedRepository: dataRepository,
+                themeRepository: themeRepository,
+                tagEditorViewController: {
+                    return TagEditorViewController(feedRepository: dataRepository, themeRepository: themeRepository)
+                }
+            )
 
             navigationController = UINavigationController(rootViewController: subject)
 

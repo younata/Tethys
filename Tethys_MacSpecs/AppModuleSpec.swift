@@ -1,6 +1,5 @@
 import Quick
 import Nimble
-import Ra
 import Tethys
 
 class AppModuleSpec: QuickSpec {

@@ -2,7 +2,6 @@ import Quick
 import Nimble
 import Tethys
 import TethysKit
-import Ra
 import CBGPromise
 import Result
 import Sponde
@@ -10,22 +9,24 @@ import Sponde
 class GenerateBookViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: GenerateBookViewController!
-        var injector: Injector!
         var themeRepository: ThemeRepository!
         var generateBookUseCase: FakeGenerateBookUseCase!
         var navController: UINavigationController!
         var presentingController: UIViewController!
 
         beforeEach {
-            injector = Injector()
-
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(ThemeRepository.self, to: themeRepository)
-
             generateBookUseCase = FakeGenerateBookUseCase()
-            injector.bind(GenerateBookUseCase.self, to: generateBookUseCase)
 
-            subject = injector.create(GenerateBookViewController.self)!
+            subject = GenerateBookViewController(
+                themeRepository: themeRepository,
+                generateBookUseCase: generateBookUseCase,
+                chapterOrganizer: ChapterOrganizerController(
+                    themeRepository: themeRepository,
+                    settingsRepository: SettingsRepository(userDefaults: nil),
+                    articleListController: { fatalError() }
+                )
+            )
 
             presentingController = UIViewController()
             navController = UINavigationController(rootViewController: subject)

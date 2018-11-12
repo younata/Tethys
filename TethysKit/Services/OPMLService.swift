@@ -1,5 +1,4 @@
 import Foundation
-import Ra
 import Lepton
 import CBGPromise
 import Result
@@ -9,15 +8,15 @@ public protocol OPMLService {
     func writeOPML() -> Future<Result<URL, TethysError>>
 }
 
-final class DefaultOPMLService: NSObject, OPMLService, Injectable {
-    private let dataRepository: DefaultDatabaseUseCase
+final class DefaultOPMLService: NSObject, OPMLService {
+    private let dataRepository: DatabaseUseCase
     private let mainQueue: OperationQueue
     private let importQueue: OperationQueue
 
-    required init(injector: Injector) {
-        self.dataRepository = injector.create(DefaultDatabaseUseCase.self)!
-        self.mainQueue = injector.create(kMainQueue, type: OperationQueue.self)!
-        self.importQueue = injector.create(kBackgroundQueue, type: OperationQueue.self)!
+    init(dataRepository: DatabaseUseCase, mainQueue: OperationQueue, importQueue: OperationQueue) {
+        self.dataRepository = dataRepository
+        self.mainQueue = mainQueue
+        self.importQueue = importQueue
 
         super.init()
     }

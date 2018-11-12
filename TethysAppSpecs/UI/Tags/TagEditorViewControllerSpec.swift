@@ -1,12 +1,10 @@
 import Quick
 import Nimble
-import Ra
 import Tethys
 import TethysKit
 
 class TagEditorViewControllerSpec: QuickSpec {
     override func spec() {
-        var injector: Injector! = nil
         var dataRepository: FakeDatabaseUseCase! = nil
         var subject: TagEditorViewController! = nil
         var navigationController: UINavigationController! = nil
@@ -17,14 +15,9 @@ class TagEditorViewControllerSpec: QuickSpec {
         var callbackTag: String?
 
         beforeEach {
-            injector = Injector()
             dataRepository = FakeDatabaseUseCase()
-            injector.bind(DatabaseUseCase.self, to: dataRepository)
-
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(ThemeRepository.self, to: themeRepository)
-
-            subject = injector.create(TagEditorViewController.self)!
+            subject = TagEditorViewController(feedRepository: dataRepository, themeRepository: themeRepository)
             navigationController = UINavigationController(rootViewController: rootViewController)
             navigationController.pushViewController(subject, animated: false)
 

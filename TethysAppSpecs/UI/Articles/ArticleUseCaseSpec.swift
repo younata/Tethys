@@ -11,12 +11,11 @@ class ArticleUseCaseSpec: QuickSpec {
         var subject: DefaultArticleUseCase!
         var feedRepository: FakeDatabaseUseCase!
         var themeRepository: ThemeRepository!
-        let bundle = Bundle.main
 
         beforeEach {
             feedRepository = FakeDatabaseUseCase()
             themeRepository = ThemeRepository(userDefaults: nil)
-            subject = DefaultArticleUseCase(feedRepository: feedRepository, themeRepository: themeRepository, bundle: bundle)
+            subject = DefaultArticleUseCase(feedRepository: feedRepository, themeRepository: themeRepository)
         }
 
         describe("-articlesByAuthor:") {
@@ -163,7 +162,7 @@ class ArticleUseCaseSpec: QuickSpec {
                 }
 
                 it("is prefixed with the proper css") {
-                    let cssURL = bundle.url(forResource: themeRepository.articleCSSFileName, withExtension: "css")!
+                    let cssURL = Bundle.main.url(forResource: themeRepository.articleCSSFileName, withExtension: "css")!
                     let css = try! String(contentsOf: cssURL)
 
                     let expectedPrefix = "<html><head>" +
@@ -175,7 +174,7 @@ class ArticleUseCaseSpec: QuickSpec {
                 }
 
                 it("is postfixed with prismJS") {
-                    let prismURL = bundle.url(forResource: "prism.js", withExtension: "html")!
+                    let prismURL = Bundle.main.url(forResource: "prism.js", withExtension: "html")!
                     let prismJS = try! String(contentsOf: prismURL)
                     expect(html.hasSuffix(prismJS + "</body></html>")) == true
                 }
@@ -189,7 +188,7 @@ class ArticleUseCaseSpec: QuickSpec {
                 }
 
                 it("is properly structured") {
-                    let cssURL = bundle.url(forResource: themeRepository.articleCSSFileName, withExtension: "css")!
+                    let cssURL = Bundle.main.url(forResource: themeRepository.articleCSSFileName, withExtension: "css")!
                     let css = try! String(contentsOf: cssURL)
 
                     let expectedPrefix = "<html><head>" +
@@ -197,7 +196,7 @@ class ArticleUseCaseSpec: QuickSpec {
                         "<meta name=\"viewport\" content=\"initial-scale=1.0,maximum-scale=10.0\"/>" +
                     "</head><body>"
 
-                    let prismURL = bundle.url(forResource: "prism.js", withExtension: "html")!
+                    let prismURL = Bundle.main.url(forResource: "prism.js", withExtension: "html")!
                     let prismJS = try! String(contentsOf: prismURL)
 
                     let expectedPostfix = prismJS + "</body></html>"

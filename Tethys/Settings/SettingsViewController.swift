@@ -1,13 +1,12 @@
 import UIKit
 import PureLayout
 import SafariServices
-import Ra
 import Result
 import TethysKit
 
 // swiftlint:disable file_length
 
-public final class SettingsViewController: UIViewController, Injectable {
+public final class SettingsViewController: UIViewController {
     public let tableView = UITableView(frame: CGRect.zero, style: .grouped)
 
     fileprivate let themeRepository: ThemeRepository
@@ -39,18 +38,6 @@ public final class SettingsViewController: UIViewController, Injectable {
         self.documentationViewController = documentationViewController
 
         super.init(nibName: nil, bundle: nil)
-    }
-
-    public required convenience init(injector: Injector) {
-        self.init(
-            themeRepository: injector.create(ThemeRepository.self)!,
-            settingsRepository: injector.create(SettingsRepository.self)!,
-            quickActionRepository: injector.create(QuickActionRepository.self)!,
-            databaseUseCase: injector.create(DatabaseUseCase.self)!,
-            opmlService: injector.create(OPMLService.self)!,
-            mainQueue: injector.create(kMainQueue, type: OperationQueue.self)!,
-            documentationViewController: { injector.create(DocumentationViewController.self)! }
-        )
     }
 
     public required init?(coder aDecoder: NSCoder) {

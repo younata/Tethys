@@ -1,9 +1,8 @@
 import UIKit
 import Muon
-import Ra
 import TethysKit
 
-public final class FeedViewController: UIViewController, Injectable {
+public final class FeedViewController: UIViewController {
     public var feed: TethysKit.Feed? = nil {
         didSet {
             self.navigationItem.title = self.feed?.displayTitle ?? ""
@@ -27,14 +26,6 @@ public final class FeedViewController: UIViewController, Injectable {
         self.tagEditorViewController = tagEditorViewController
 
         super.init(nibName: nil, bundle: nil)
-    }
-
-    public required convenience init(injector: Injector) {
-        self.init(
-            feedRepository: injector.create(DatabaseUseCase.self)!,
-            themeRepository: injector.create(ThemeRepository.self)!,
-            tagEditorViewController: {injector.create(TagEditorViewController.self)!}
-        )
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }

@@ -1,7 +1,6 @@
 import Quick
 import Nimble
 import Tethys
-import Ra
 import SafariServices
 
 class SplitViewControllerSpec: QuickSpec {
@@ -13,12 +12,9 @@ class SplitViewControllerSpec: QuickSpec {
         let detail = UINavigationController(rootViewController: UIViewController())
 
         beforeEach {
-            let injector = Injector()
-
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(ThemeRepository.self, to: themeRepository)
 
-            subject = injector.create(SplitViewController.self)!
+            subject = SplitViewController(themeRepository: themeRepository)
             subject.view.layoutIfNeeded()
             subject.viewControllers = [master, detail]
         }

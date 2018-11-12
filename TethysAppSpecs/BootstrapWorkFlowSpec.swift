@@ -1,7 +1,6 @@
 import Quick
 import Nimble
 import UIKit
-import Ra
 import Tethys
 import TethysKit
 
@@ -11,22 +10,34 @@ class BootstrapWorkFlowSpec: QuickSpec {
         var window: UIWindow!
         var feedRepository: FakeDatabaseUseCase!
         var migrationUseCase: FakeMigrationUseCase!
+        var splitViewController: SplitViewController!
 
         beforeEach {
             window = UIWindow()
             feedRepository = FakeDatabaseUseCase()
             migrationUseCase = FakeMigrationUseCase()
 
-            let injector = Injector()
-            injector.bind(DatabaseUseCase.self, to: feedRepository)
-            injector.bind(MigrationUseCase.self, to: migrationUseCase)
-            injector.bind(kMainQueue, to: FakeOperationQueue())
+            splitViewController = splitViewControllerFactory()
+
             let articleUseCase = FakeArticleUseCase()
             articleUseCase.readArticleReturns("")
             articleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.foo"))
-            injector.bind(ArticleUseCase.self, to: articleUseCase)
 
-            subject = BootstrapWorkFlow(window: window, injector: injector)
+            subject = BootstrapWorkFlow(
+                window: window,
+                feedRepository: feedRepository,
+                migrationUseCase: migrationUseCase,
+                splitViewController: splitViewController,
+                migrationViewController: { migrationViewControllerFactory() },
+                feedsTableViewController: {
+                    feedsTableViewControllerFactory(
+                        articleListController: {
+                            articleListControllerFactory(articleViewController: { articleViewControllerFactory(articleUseCase: articleUseCase) } )
+                        }
+                    )
+                },
+                articleViewController: { articleViewControllerFactory(articleUseCase: articleUseCase) }
+            )
         }
 
         sharedExamples("showing the feeds list") { (sharedContext: @escaping SharedExampleContext) in

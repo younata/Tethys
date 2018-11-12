@@ -3,29 +3,25 @@ import Nimble
 import UIKit
 import SafariServices
 import Tethys
-import Ra
 
 class DocumentationViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: DocumentationViewController!
-        var fakeDocumentationUseCase: FakeDocumentationUseCase!
+        var documentationUseCase: FakeDocumentationUseCase!
         var htmlViewController: HTMLViewController!
         var themeRepository: ThemeRepository!
         var navigationController: UINavigationController!
 
         beforeEach {
-            let injector = Injector()
-
-            fakeDocumentationUseCase = FakeDocumentationUseCase()
-            injector.bind(DocumentationUseCase.self, to: fakeDocumentationUseCase)
-
+            documentationUseCase = FakeDocumentationUseCase()
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(ThemeRepository.self, to: themeRepository)
-
             htmlViewController = HTMLViewController(themeRepository: themeRepository)
-            injector.bind(HTMLViewController.self, to: htmlViewController)
 
-            subject = injector.create(DocumentationViewController.self)
+            subject = DocumentationViewController(
+                documentationUseCase: documentationUseCase,
+                themeRepository: themeRepository,
+                htmlViewController: htmlViewController
+            )
 
             navigationController = UINavigationController(rootViewController: subject)
 
@@ -46,8 +42,8 @@ class DocumentationViewControllerSpec: QuickSpec {
         describe("setting the documentation type") {
             let documentationType = Documentation.libraries
             beforeEach {
-                fakeDocumentationUseCase.htmlReturns = "example"
-                fakeDocumentationUseCase.titleReturns = "title"
+                documentationUseCase.htmlReturns = "example"
+                documentationUseCase.titleReturns = "title"
                 subject.configure(documentation: documentationType)
             }
 

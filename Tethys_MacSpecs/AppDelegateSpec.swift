@@ -2,7 +2,6 @@ import Quick
 import Nimble
 import Cocoa
 import Tethys
-import Ra
 import TethysKit
 
 class AppDelegateSpec: QuickSpec {

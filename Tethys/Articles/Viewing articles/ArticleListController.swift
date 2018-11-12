@@ -1,6 +1,5 @@
 import UIKit
 import TethysKit
-import Ra
 import CBGPromise
 
 public protocol ArticleListControllerDelegate: class {
@@ -13,8 +12,7 @@ public protocol ArticleListControllerDelegate: class {
     func articleListController(_: ArticleListController, shouldPreviewArticle article: Article) -> Bool
 }
 
-public final class ArticleListController: UIViewController, DataSubscriber, Injectable,
-                                          UITableViewDelegate, UITableViewDataSource {
+public final class ArticleListController: UIViewController, DataSubscriber, UITableViewDelegate, UITableViewDataSource {
     fileprivate enum ArticleListSection: Int {
         case overview = 0
         case articles = 1
@@ -65,17 +63,6 @@ public final class ArticleListController: UIViewController, DataSubscriber, Inje
         self.generateBookViewController = generateBookViewController
 
         super.init(nibName: nil, bundle: nil)
-    }
-
-    public required convenience init(injector: Injector) {
-        self.init(
-            mainQueue: injector.create(kMainQueue, type: OperationQueue.self)!,
-            feedRepository: injector.create(DatabaseUseCase.self)!,
-            themeRepository: injector.create(ThemeRepository.self)!,
-            settingsRepository: injector.create(SettingsRepository.self)!,
-            articleViewController: { injector.create(ArticleViewController.self)! },
-            generateBookViewController: { injector.create(GenerateBookViewController.self)! }
-        )
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }

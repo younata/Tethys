@@ -1,10 +1,9 @@
 import UIKit
-import Ra
 import CBGPromise
 import Result
 import TethysKit
 
-public final class FeedsTableViewController: UIViewController, Injectable {
+public final class FeedsTableViewController: UIViewController {
     public private(set) lazy var tableView: UITableView = {
         let tableView = self.tableViewController.tableView!
         tableView.tableHeaderView = self.searchBar
@@ -103,19 +102,6 @@ public final class FeedsTableViewController: UIViewController, Injectable {
         super.init(nibName: nil, bundle: nil)
     }
     // swiftlint:enable function_parameter_count
-
-    public required convenience init(injector: Injector) {
-        self.init(
-            feedRepository: injector.create(DatabaseUseCase.self)!,
-            themeRepository: injector.create(ThemeRepository.self)!,
-            settingsRepository: injector.create(SettingsRepository.self)!,
-            mainQueue: injector.create(kMainQueue, type: OperationQueue.self)!,
-            findFeedViewController: {injector.create(FindFeedViewController.self)!},
-            feedViewController: {injector.create(FeedViewController.self)!},
-            settingsViewController: {injector.create(SettingsViewController.self)!},
-            articleListController: {injector.create(ArticleListController.self)!}
-        )
-    }
 
     public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 

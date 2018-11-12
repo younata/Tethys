@@ -2,30 +2,20 @@ import Quick
 import Nimble
 import Tethys
 import UIKit
-import Ra
 import Result
 import TethysKit
 
 class LocalNotificationHandlerSpec: QuickSpec {
     override func spec() {
-        var injector: Injector! = nil
+        var subject: LocalNotificationHandler! = nil
         var dataRepository: FakeDatabaseUseCase! = nil
-
         var notificationSource: FakeNotificationSource! = nil
 
-        var subject: LocalNotificationHandler! = nil
 
         beforeEach {
-            injector = Injector()
-
             dataRepository = FakeDatabaseUseCase()
-            injector.bind(DatabaseUseCase.self, to: dataRepository)
-            let articleUseCase = FakeArticleUseCase()
-            articleUseCase.readArticleReturns("")
-            articleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
-            injector.bind(ArticleUseCase.self, to: articleUseCase)
 
-            subject = injector.create(LocalNotificationHandler.self)!
+            subject = LocalNotificationHandler(feedRepository: dataRepository)
 
             notificationSource = FakeNotificationSource()
         }
@@ -72,9 +62,17 @@ class LocalNotificationHandlerSpec: QuickSpec {
                 note.userInfo = ["feed": "feedIdentifier", "article": "articleIdentifier"]
 
                 let splitVC = UISplitViewController()
-                injector.bind(SettingsRepository.self, to: SettingsRepository())
-                injector.bind(kMainQueue, to: FakeOperationQueue())
-                navController = UINavigationController(rootViewController: injector.create(FeedsTableViewController.self)!)
+                navController = UINavigationController(rootViewController: feedsTableViewControllerFactory(
+                    articleListController: {
+                        articleListControllerFactory(articleViewController: {
+                            let articleUseCase = FakeArticleUseCase()
+                            articleUseCase.readArticleReturns("")
+                            articleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
+
+                            return articleViewControllerFactory(articleUseCase: articleUseCase)
+                        })
+                    }
+                ))
                 splitVC.viewControllers = [navController]
 
 

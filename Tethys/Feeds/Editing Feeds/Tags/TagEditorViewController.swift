@@ -1,9 +1,8 @@
 import UIKit
-import Ra
 import Result
 import TethysKit
 
-public final class TagEditorViewController: UIViewController, Injectable {
+public final class TagEditorViewController: UIViewController {
     public let tagPicker = TagPickerView(frame: CGRect.zero)
 
     fileprivate let tagLabel = UILabel(forAutoLayout: ())
@@ -21,13 +20,6 @@ public final class TagEditorViewController: UIViewController, Injectable {
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository
         super.init(nibName: nil, bundle: nil)
-    }
-
-    public required convenience init(injector: Injector) {
-        self.init(
-            feedRepository: injector.create(DatabaseUseCase.self)!,
-            themeRepository: injector.create(ThemeRepository.self)!
-        )
     }
 
     public required init?(coder aDecoder: NSCoder) {

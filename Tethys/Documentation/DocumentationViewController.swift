@@ -1,9 +1,8 @@
 import UIKit
 import SafariServices
-import Ra
 import PureLayout
 
-public final class DocumentationViewController: UIViewController, Injectable {
+public final class DocumentationViewController: UIViewController {
     public private(set) var documentation: Documentation?
     fileprivate let documentationUseCase: DocumentationUseCase
     fileprivate let htmlViewController: HTMLViewController
@@ -19,14 +18,6 @@ public final class DocumentationViewController: UIViewController, Injectable {
         themeRepository.addSubscriber(self)
         htmlViewController.delegate = self
         self.addChildViewController(htmlViewController)
-    }
-
-    public required convenience init(injector: Injector) {
-        self.init(
-            documentationUseCase: injector.create(DocumentationUseCase.self)!,
-            themeRepository: injector.create(ThemeRepository.self)!,
-            htmlViewController: injector.create(HTMLViewController.self)!
-        )
     }
 
     public required init?(coder aDecoder: NSCoder) {

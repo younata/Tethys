@@ -1,5 +1,4 @@
 import UIKit
-import Ra
 import TethysKit
 import Result
 
@@ -9,15 +8,11 @@ public protocol BackgroundFetchHandler {
                       completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
 }
 
-public struct DefaultBackgroundFetchHandler: BackgroundFetchHandler, Injectable {
+public struct DefaultBackgroundFetchHandler: BackgroundFetchHandler {
     private let feedRepository: DatabaseUseCase
 
     public init(feedRepository: DatabaseUseCase) {
         self.feedRepository = feedRepository
-    }
-
-    public init(injector: Injector) {
-        self.feedRepository = injector.create(DatabaseUseCase.self)!
     }
 
     public func performFetch(_ notificationHandler: NotificationHandler,
@@ -35,7 +30,7 @@ public struct DefaultBackgroundFetchHandler: BackgroundFetchHandler, Injectable 
             }
         }
 
-        feedRepository.updateFeeds {newFeeds, errors in
+        self.feedRepository.updateFeeds {newFeeds, errors in
             guard errors.isEmpty else {
                 completionHandler(.failed)
                 return

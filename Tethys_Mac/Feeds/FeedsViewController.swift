@@ -1,7 +1,6 @@
 import Cocoa
 import PureLayout
 import TethysKit
-import Ra
 
 public final class FeedsViewController: NSViewController {
     var feeds: [Feed] = []
@@ -25,8 +24,6 @@ public final class FeedsViewController: NSViewController {
         return scrollView
     }()
 
-    public private(set) var raInjector: Injector?
-
     public var onFeedSelection: (Feed) -> Void = {(_) in }
 
     fileprivate var databaseUseCase: DatabaseUseCase? {
@@ -37,8 +34,7 @@ public final class FeedsViewController: NSViewController {
         return self.raInjector?.create(string: kMainMenu) as? NSMenu
     }
 
-    public func configure(_ injector: Injector?) {
-        self.raInjector = injector
+    public func configure() {
         self.view = self.scrollView
 
         self.databaseUseCase?.addSubscriber(self)

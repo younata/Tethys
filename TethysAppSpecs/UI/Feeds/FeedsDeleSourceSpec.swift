@@ -2,7 +2,6 @@ import Quick
 import Nimble
 import Tethys
 import TethysKit
-import Ra
 
 class FeedsDeleSourceSpec: QuickSpec {
     override func spec() {
@@ -32,8 +31,6 @@ class FeedsDeleSourceSpec: QuickSpec {
 
             feedsSource.feeds = feeds
 
-            let injector = Injector()
-
             articleListFactory = {
                 articleListFactoryCallCount += 1
                 return ArticleListController(
@@ -41,8 +38,8 @@ class FeedsDeleSourceSpec: QuickSpec {
                     feedRepository: FakeDatabaseUseCase(),
                     themeRepository: themeRepository,
                     settingsRepository: SettingsRepository(userDefaults: nil),
-                    articleViewController: { return ArticleViewController(coder: NSKeyedUnarchiver())! },
-                    generateBookViewController: { return injector.create(GenerateBookViewController.self)! }
+                    articleViewController: { fatalError() },
+                    generateBookViewController: { fatalError() }
                 )
             }
 

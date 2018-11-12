@@ -1,11 +1,10 @@
 import Foundation
-import Ra
 
 public protocol SettingsRepositorySubscriber: NSObjectProtocol {
     func didChangeSetting(_: SettingsRepository)
 }
 
-public final class SettingsRepository: Injectable {
+public final class SettingsRepository {
     private enum SettingsKeys: String {
         case showEstimatedReadingLabel
         case refreshControlLabel
@@ -54,10 +53,6 @@ public final class SettingsRepository: Injectable {
             let refreshControlInt = self.userDefaults?.integer(forKey: SettingsKeys.refreshControlLabel.rawValue) {
             self.refreshControl = RefreshControlStyle(rawValue: refreshControlInt) ?? RefreshControlStyle.breakout
         }
-    }
-
-    public required convenience init(injector: Injector) {
-        self.init(userDefaults: injector.create(UserDefaults.self))
     }
 
     deinit {

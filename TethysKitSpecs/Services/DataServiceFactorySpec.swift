@@ -5,7 +5,7 @@ import RealmSwift
 
 class DataServiceFactorySpec: QuickSpec {
     override func spec() {
-        let bundle = Bundle(for: KitModule.classForCoder())
+        let bundle = Bundle(for: DefaultOPMLService.classForCoder())
         let fileManager = FileManager.default
         describe("currentDataService") {
             it("returns a new realm service if we have migrated") {

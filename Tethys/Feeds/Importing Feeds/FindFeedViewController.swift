@@ -3,10 +3,9 @@ import WebKit
 import SafariServices
 import Muon
 import Lepton
-import Ra
 import TethysKit
 
-public final class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFieldDelegate, Injectable {
+public final class FindFeedViewController: UIViewController, WKNavigationDelegate, UITextFieldDelegate {
     public lazy var webContent = WKWebView(forAutoLayout: ())
 
     public let loadingBar = UIProgressView(progressViewStyle: .bar)
@@ -34,14 +33,6 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.themeRepository = themeRepository
         self.analytics = analytics
         super.init(nibName: nil, bundle: nil)
-    }
-
-    public required convenience init(injector: Injector) {
-        self.init(
-            importUseCase: injector.create(ImportUseCase.self)!,
-            themeRepository: injector.create(ThemeRepository.self)!,
-            analytics: injector.create(Analytics.self)!
-        )
     }
 
     public required init?(coder aDecoder: NSCoder) {

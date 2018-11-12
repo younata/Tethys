@@ -1,9 +1,8 @@
 import UIKit
 import PureLayout
-import Ra
 import TethysKit
 
-public final class MigrationViewController: UIViewController, Injectable {
+public final class MigrationViewController: UIViewController {
     public let label: UILabel = {
         let label = UILabel(forAutoLayout: ())
         label.text = NSLocalizedString("MigrationViewController_Message", comment: "")
@@ -28,14 +27,6 @@ public final class MigrationViewController: UIViewController, Injectable {
 
         migrationUseCase.addSubscriber(self)
         themeRepository.addSubscriber(self)
-    }
-
-    public required convenience init(injector: Injector) {
-        self.init(
-            migrationUseCase: injector.create(MigrationUseCase.self)!,
-            themeRepository: injector.create(ThemeRepository.self)!,
-            mainQueue: injector.create(kMainQueue, type: OperationQueue.self)!
-        )
     }
 
     public required init?(coder aDecoder: NSCoder) {

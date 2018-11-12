@@ -1,6 +1,5 @@
 import WorkFlow
 import TethysKit
-import Ra
 
 public protocol Bootstrapper {
     func begin(_ feedAndArticle: (feed: Feed, article: Article)?)
@@ -13,9 +12,9 @@ public final class BootstrapWorkFlow: Bootstrapper {
     private let feedRepository: DatabaseUseCase
     private let migrationUseCase: MigrationUseCase
     private let splitViewController: SplitViewController
-    private let migrationViewController: (Void) -> MigrationViewController
-    private let feedsTableViewController: (Void) -> FeedsTableViewController
-    private let articleViewController: (Void) -> ArticleViewController
+    private let migrationViewController: () -> MigrationViewController
+    private let feedsTableViewController: () -> FeedsTableViewController
+    private let articleViewController: () -> ArticleViewController
 
     private let initialLaunch = false
 
@@ -24,9 +23,9 @@ public final class BootstrapWorkFlow: Bootstrapper {
                 feedRepository: DatabaseUseCase,
                 migrationUseCase: MigrationUseCase,
                 splitViewController: SplitViewController,
-                migrationViewController: @escaping (Void) -> MigrationViewController,
-                feedsTableViewController: @escaping (Void) -> FeedsTableViewController,
-                articleViewController: @escaping (Void) -> ArticleViewController) {
+                migrationViewController: @escaping () -> MigrationViewController,
+                feedsTableViewController: @escaping () -> FeedsTableViewController,
+                articleViewController: @escaping () -> ArticleViewController) {
         self.window = window
         self.feedRepository = feedRepository
         self.migrationUseCase = migrationUseCase
@@ -36,18 +35,6 @@ public final class BootstrapWorkFlow: Bootstrapper {
         self.articleViewController = articleViewController
     }
     // swiftlint:enable function_parameter_count
-
-    public convenience init(window: UIWindow, injector: Injector) {
-        self.init(
-            window: window,
-            feedRepository: injector.create(DatabaseUseCase.self)!,
-            migrationUseCase: injector.create(MigrationUseCase.self)!,
-            splitViewController: injector.create(SplitViewController.self)!,
-            migrationViewController: { injector.create(MigrationViewController.self)! },
-            feedsTableViewController: { injector.create(FeedsTableViewController.self)! },
-            articleViewController: { injector.create(ArticleViewController.self)! }
-        )
-    }
 
     private var feedAndArticle: (feed: Feed, article: Article)?
     public func begin(_ feedAndArticle: (feed: Feed, article: Article)? = nil) {

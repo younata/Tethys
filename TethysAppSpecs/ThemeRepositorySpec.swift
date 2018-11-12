@@ -1,7 +1,6 @@
 import Quick
 import Nimble
 import Tethys
-import Ra
 import UIKit
 
 fileprivate class FakeThemeSubscriber: NSObject, ThemeRepositorySubscriber {
@@ -14,17 +13,13 @@ fileprivate class FakeThemeSubscriber: NSObject, ThemeRepositorySubscriber {
 class ThemeRepositorySpec: QuickSpec {
     override func spec() {
         var subject: ThemeRepository! = nil
-        var injector: Injector! = nil
         var userDefaults: FakeUserDefaults! = nil
         var subscriber: FakeThemeSubscriber! = nil
 
         beforeEach {
-            injector = Injector()
-
             userDefaults = FakeUserDefaults()
-            injector.bind(UserDefaults.self, to: userDefaults)
 
-            subject = injector.create(ThemeRepository.self)!
+            subject = ThemeRepository(userDefaults: userDefaults)
 
             subscriber = FakeThemeSubscriber()
             subject.addSubscriber(subscriber)
@@ -138,7 +133,7 @@ class ThemeRepositorySpec: QuickSpec {
             }
 
             it("persists the change if it is not ephemeral") {
-                let otherRepo = injector.create(ThemeRepository.self)!
+                let otherRepo = ThemeRepository(userDefaults: userDefaults)
                 if (sharedContext()["ephemeral"] as? Bool != true) {
                     let expectedBackground = sharedContext()["background"] as? UIColor
                     expect(expectedBackground).toNot(beNil())

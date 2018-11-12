@@ -1,22 +1,17 @@
 import Quick
 import Nimble
-import Ra
 import Tethys
 import TethysKit
 
 class DefaultBackgroundFetchHandlerSpec: QuickSpec {
     override func spec() {
-        var injector: Injector! = nil
         var dataRepository: FakeDatabaseUseCase! = nil
 
         var subject: DefaultBackgroundFetchHandler! = nil
 
         beforeEach {
-            injector = Injector()
             dataRepository = FakeDatabaseUseCase()
-            injector.bind(DatabaseUseCase.self, to: dataRepository)
-
-            subject = injector.create(DefaultBackgroundFetchHandler.self)!
+            subject = DefaultBackgroundFetchHandler(feedRepository: dataRepository)
         }
 
         describe("updating feeds") {
@@ -66,7 +61,7 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
                 }
 
                 it("should send local notifications for each new article") {
-                    expect(notificationHandler.sendLocalNotificationCallCount) == articles.count
+                    expect(notificationHandler.sendLocalNotificationCalls).to(haveCount(articles.count))
                 }
 
                 it("should call the completion handler and indicate that there was new data found") {
@@ -81,7 +76,7 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
                 }
 
                 it("should not send any new local notifications") {
-                    expect(notificationHandler.sendLocalNotificationCallCount) == 0
+                    expect(notificationHandler.sendLocalNotificationCalls).to(beEmpty())
                 }
 
                 it("should call the completion handler and indicate that there was no new data found") {

@@ -1,11 +1,10 @@
 import UIKit
-import Ra
 import TethysKit
 import CBGPromise
 import Result
 import Sponde
 
-public class GenerateBookViewController: UIViewController, Injectable {
+public class GenerateBookViewController: UIViewController {
     public weak var articles: DataStoreBackedArray<Article>? {
         didSet {
             self.chapterOrganizer.articles = articles
@@ -75,14 +74,6 @@ public class GenerateBookViewController: UIViewController, Injectable {
         self.chapterOrganizer = chapterOrganizer
         self.generateBookUseCase = generateBookUseCase
         super.init(nibName: nil, bundle: nil)
-    }
-
-    public required convenience init(injector: Injector) {
-        self.init(
-            themeRepository: injector.create(ThemeRepository.self)!,
-            generateBookUseCase: injector.create(GenerateBookUseCase.self)!,
-            chapterOrganizer: injector.create(ChapterOrganizerController.self)!
-        )
     }
 
     public required init?(coder aDecoder: NSCoder) {

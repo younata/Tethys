@@ -2,7 +2,6 @@ import Quick
 import Nimble
 import Tethys
 import TethysKit
-import Ra
 
 class FeedsListControllerSpec: QuickSpec {
     override func spec() {

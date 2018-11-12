@@ -1,4 +1,3 @@
-import Ra
 import WorkFlow
 
 public protocol MigrationUseCaseSubscriber: class {
@@ -11,17 +10,11 @@ public protocol MigrationUseCase: WorkFlowComponent {
     func beginMigration()
 }
 
-public final class DefaultMigrationUseCase: MigrationUseCase, Injectable {
+public final class DefaultMigrationUseCase: MigrationUseCase {
     private let feedRepository: DatabaseUseCase
 
     public init(feedRepository: DatabaseUseCase) {
         self.feedRepository = feedRepository
-    }
-
-    public required convenience init(injector: Injector) {
-        self.init(
-            feedRepository: injector.create(DatabaseUseCase.self)!
-        )
     }
 
     private let _subscribers = NSHashTable<AnyObject>.weakObjects()

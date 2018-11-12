@@ -1,14 +1,14 @@
 # swift
-github "younata/Ra" "master"
 github "younata/Muon" "master"
 github "younata/Lepton" "master"
 github "younata/BreakOutToRefresh" "swift-3.0"
-github "ashleymills/Reachability.swift" "feature/ios10"
+github "ashleymills/Reachability.swift"
 github "younata/WorkFlow" "master"
 github "tid-kijyun/Kanna"
 github "antitypical/Result"
 github "cbguder/CBGPromise" "master"
 github "younata/Sponde" "master"
+github "swinject/swinject"
 
 # objc
 github "PureLayout/PureLayout"

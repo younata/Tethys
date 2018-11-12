@@ -1,12 +1,11 @@
 import UIKit
 import PureLayout
 import TOBrowserActivityKit
-import Ra
 import TethysKit
 import WebKit
 import SafariServices
 
-public final class ArticleViewController: UIViewController, Injectable {
+public final class ArticleViewController: UIViewController {
     public private(set) var article: Article?
     public func setArticle(_ article: Article?, read: Bool = true, show: Bool = true) {
         self.article = article
@@ -53,15 +52,6 @@ public final class ArticleViewController: UIViewController, Injectable {
 
         self.htmlViewController.delegate = self
         self.addChildViewController(self.htmlViewController)
-    }
-
-    public required convenience init(injector: Injector) {
-        self.init(
-            themeRepository: injector.create(ThemeRepository.self)!,
-            articleUseCase: injector.create(ArticleUseCase.self)!,
-            htmlViewController: { injector.create(HTMLViewController.self)! },
-            articleListController: { injector.create(ArticleListController.self)! }
-        )
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }

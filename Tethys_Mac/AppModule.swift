@@ -1,5 +1,4 @@
 import AppKit
-import Ra
 
 public let kMainMenu = "kMainMenuKey"
 

@@ -1,8 +1,7 @@
 import UIKit
 import SafariServices
-import Ra
 
-public final class SplitViewController: UISplitViewController, Injectable {
+public final class SplitViewController: UISplitViewController {
     public var collapseDetailViewController: Bool = true
 
     public private(set) lazy var masterNavigationController: UINavigationController = {
@@ -18,10 +17,6 @@ public final class SplitViewController: UISplitViewController, Injectable {
     public init(themeRepository: ThemeRepository) {
         self.themeRepository = themeRepository
         super.init(nibName: nil, bundle: nil)
-    }
-
-    public required convenience init(injector: Injector) {
-        self.init(themeRepository: injector.create(ThemeRepository.self)!)
     }
 
     public required init?(coder aDecoder: NSCoder) {

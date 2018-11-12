@@ -1,6 +1,5 @@
 import Quick
 import Nimble
-import Ra
 @testable import Tethys
 import TethysKit
 import UIKit
@@ -147,7 +146,6 @@ func fakeArticle(feed: Feed, isUpdated: Bool = false, read: Bool = false) -> Art
 
 class ArticleListControllerSpec: QuickSpec {
     override func spec() {
-        var injector: Injector!
         var mainQueue: FakeOperationQueue!
         var feed: Feed!
         var subject: ArticleListController!
@@ -158,24 +156,15 @@ class ArticleListControllerSpec: QuickSpec {
         var settingsRepository: SettingsRepository!
 
         beforeEach {
-            injector = Injector()
-
             mainQueue = FakeOperationQueue()
-            injector.bind(kMainQueue, to: mainQueue)
-
             settingsRepository = SettingsRepository(userDefaults: nil)
-            injector.bind(SettingsRepository.self, to: settingsRepository)
 
             let useCase = FakeArticleUseCase()
             useCase.readArticleReturns("hello")
             useCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
-            injector.bind(ArticleUseCase.self, to: useCase)
 
             themeRepository = ThemeRepository(userDefaults: nil)
-            injector.bind(ThemeRepository.self, to: themeRepository)
-
             dataRepository = FakeDatabaseUseCase()
-            injector.bind(DatabaseUseCase.self, to: dataRepository)
 
             publishedOffset = 0
 
@@ -190,7 +179,16 @@ class ArticleListControllerSpec: QuickSpec {
                 feed.addArticle(article)
             }
 
-            subject = injector.create(ArticleListController.self)!
+            subject = ArticleListController(
+                mainQueue: mainQueue,
+                feedRepository: dataRepository,
+                themeRepository: themeRepository,
+                settingsRepository: settingsRepository,
+                articleViewController: { articleViewControllerFactory(articleUseCase: useCase) },
+                generateBookViewController: {
+                    return generateBookViewControllerFactory()
+                }
+            )
 
             navigationController = UINavigationController(rootViewController: subject)
         }
@@ -359,7 +357,6 @@ class ArticleListControllerSpec: QuickSpec {
                     }
 
                     it("presents a generate book controller when tapped") {
-                        injector.bind(GenerateBookUseCase.self, to: FakeGenerateBookUseCase())
                         item?.tap()
 
                         expect(subject.presentedViewController).to(beAKindOf(UINavigationController.self))
@@ -471,7 +468,6 @@ class ArticleListControllerSpec: QuickSpec {
                     }
 
                     it("presents a generate book controller when tapped") {
-                        injector.bind(GenerateBookUseCase.self, to: FakeGenerateBookUseCase())
                         item?.tap()
 
                         expect(subject.presentedViewController).to(beAKindOf(UINavigationController.self))

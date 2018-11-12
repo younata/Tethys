@@ -7,17 +7,15 @@ class DocumentationUseCaseSpec: QuickSpec {
         var subject: DefaultDocumentationUseCase!
         var themeRepository: ThemeRepository!
 
-        let bundle = Bundle.main
-
         beforeEach {
             themeRepository = ThemeRepository(userDefaults: nil)
 
-            subject = DefaultDocumentationUseCase(themeRepository: themeRepository, bundle: bundle)
+            subject = DefaultDocumentationUseCase(themeRepository: themeRepository)
         }
 
         describe("html(documentation: )") {
             it("returns the contents of the libraries.html file with css when given Documentation.libraries") {
-                let cssURL = bundle.url(forResource: themeRepository.articleCSSFileName, withExtension: "css")!
+                let cssURL = Bundle.main.url(forResource: themeRepository.articleCSSFileName, withExtension: "css")!
                 let css = try! String(contentsOf: cssURL)
 
                 let expectedPrefix = "<html><head>" +
@@ -27,7 +25,7 @@ class DocumentationUseCaseSpec: QuickSpec {
 
                 let expectedPostfix = "</body></html>"
 
-                let librariesURL = bundle.url(forResource: "libraries", withExtension: "html")!
+                let librariesURL = Bundle.main.url(forResource: "libraries", withExtension: "html")!
                 let librariesContents = try! String(contentsOf: librariesURL)
 
                 let expectedHTML = expectedPrefix + librariesContents + expectedPostfix
@@ -36,7 +34,7 @@ class DocumentationUseCaseSpec: QuickSpec {
             }
 
             it("returns the contents of the icons.html file with css when given Documentation.icons") {
-                let cssURL = bundle.url(forResource: themeRepository.articleCSSFileName, withExtension: "css")!
+                let cssURL = Bundle.main.url(forResource: themeRepository.articleCSSFileName, withExtension: "css")!
                 let css = try! String(contentsOf: cssURL)
 
                 let expectedPrefix = "<html><head>" +
@@ -46,7 +44,7 @@ class DocumentationUseCaseSpec: QuickSpec {
 
                 let expectedPostfix = "</body></html>"
 
-                let librariesURL = bundle.url(forResource: "icons", withExtension: "html")!
+                let librariesURL = Bundle.main.url(forResource: "icons", withExtension: "html")!
                 let librariesContents = try! String(contentsOf: librariesURL)
 
                 let expectedHTML = expectedPrefix + librariesContents + expectedPostfix

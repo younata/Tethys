@@ -1,6 +1,5 @@
 import Quick
 import Nimble
-import Ra
 import Lepton
 import CBGPromise
 import Result
@@ -37,12 +36,11 @@ class DefaultOPMLServiceSpec: QuickSpec {
                 databaseMigrator: FakeDatabaseMigrator()
             )
 
-            let injector = Injector()
-            injector.bind(kMainQueue, to: mainQueue)
-            injector.bind(kBackgroundQueue, to: importQueue)
-            injector.bind(DefaultDatabaseUseCase.self, to: dataRepository)
-
-            subject = DefaultOPMLService(injector: injector)
+            subject = DefaultOPMLService(
+                dataRepository: dataRepository,
+                mainQueue: mainQueue,
+                importQueue: importQueue
+            )
         }
 
         describe("Importing OPML Files") {

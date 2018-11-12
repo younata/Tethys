@@ -1,13 +1,12 @@
 import Foundation
 import UIKit
-import Ra
 
 public protocol BackgroundStateReceiver: class {
     func willEnterBackground()
     func didEnterForeground()
 }
 
-public final class BackgroundStateMonitor: NSObject, Injectable {
+public final class BackgroundStateMonitor: NSObject {
     private let notificationCenter: NotificationCenter
 
     private let receivers = NSHashTable<AnyObject>.weakObjects()
@@ -26,12 +25,6 @@ public final class BackgroundStateMonitor: NSObject, Injectable {
                                        name: .UIApplicationWillResignActive, object: nil)
         notificationCenter.addObserver(self, selector: #selector(BackgroundStateMonitor.didEnterForeground),
                                        name: .UIApplicationDidBecomeActive, object: nil)
-    }
-
-    public required convenience init(injector: Injector) {
-        self.init(
-            notificationCenter: injector.create(NotificationCenter.self)!
-        )
     }
 
     deinit {

@@ -1,12 +1,11 @@
 import UIKit
 import TethysKit
-import Ra
 
 public protocol ChapterOrganizerControllerDelegate: class {
     func chapterOrganizerControllerDidChangeChapters(_: ChapterOrganizerController)
 }
 
-public class ChapterOrganizerController: UIViewController, Injectable {
+public class ChapterOrganizerController: UIViewController {
     public let addChapterButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle(NSLocalizedString("ChapterOrganizerController_AddChapter_Title", comment: ""), for: .normal)
@@ -59,14 +58,6 @@ public class ChapterOrganizerController: UIViewController, Injectable {
         self.articleListController = articleListController
         self.actionableTableView.themeRepository = themeRepository
         super.init(nibName: nil, bundle: nil)
-    }
-
-    public required convenience init(injector: Injector) {
-        self.init(
-            themeRepository: injector.create(ThemeRepository.self)!,
-            settingsRepository: injector.create(SettingsRepository.self)!,
-            articleListController: { injector.create(ArticleListController.self)! }
-        )
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }

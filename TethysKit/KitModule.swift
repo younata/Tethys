@@ -1,5 +1,5 @@
 import Foundation
-import Ra
+import Swinject
 #if os(iOS)
     import CoreSpotlight
 #endif
@@ -8,82 +8,117 @@ import Sponde
 
 public let kMainQueue = "kMainQueue"
 public let kBackgroundQueue = "kBackgroundQueue"
+private let kRealmQueue = "kRealmQueue"
 
-public final class KitModule: NSObject, Ra.InjectorModule {
-    // swiftlint:disable function_body_length
-    public func configureInjector(injector: Injector) {
-        // Operation Queues
-        let mainQueue = OperationQueue.main
-        injector.bind(kMainQueue, to: mainQueue)
-        injector.bind(URLSession.self, to: URLSession.shared)
-        injector.bind(Analytics.self, to: BadAnalytics())
-
-        var searchIndex: SearchIndex?
-        let reachable: Reachable? = Reachability()
-
-        #if os(iOS)
-            searchIndex = CSSearchableIndex.default()
-            injector.bind(SearchIndex.self, to: CSSearchableIndex.default())
-        #endif
-
+public func configure(container: Container) {
+    container.register(OperationQueue.self, name: kMainQueue) { _ in OperationQueue.main}
+    container.register(OperationQueue.self, name: kBackgroundQueue) { _ in
         let backgroundQueue = OperationQueue()
         backgroundQueue.qualityOfService = QualityOfService.utility
         backgroundQueue.maxConcurrentOperationCount = 1
-        injector.bind(kBackgroundQueue, to: backgroundQueue)
-
-        let urlSessionConfiguration = URLSessionConfiguration.default
-        let urlSessionDelegate = TethysKitURLSessionDelegate()
-
-        RealmMigrator.beginMigration()
-
-        let urlSession = URLSession(configuration: urlSessionConfiguration,
-            delegate: urlSessionDelegate,
-            delegateQueue: OperationQueue())
-
+        return backgroundQueue
+    }.inObjectScope(.container)
+    container.register(OperationQueue.self, name: kRealmQueue) { _ in
         let realmQueue = OperationQueue()
         realmQueue.qualityOfService = .userInitiated
         realmQueue.maxConcurrentOperationCount = 1
+        return realmQueue
+    }.inObjectScope(.container)
 
-        let dataServiceFactory = DataServiceFactory(mainQueue: mainQueue,
-            realmQueue: realmQueue,
-            searchIndex: searchIndex,
-            bundle: Bundle(for: self.classForCoder),
-            fileManager: FileManager.default)
+    container.register(URLSession.self) { _ in URLSession.shared }
+    container.register(FileManager.self) { _ in return FileManager.default }
+    container.register(UserDefaults.self) { _ in return UserDefaults.standard }
+    container.register(Bundle.self) { _ in Bundle(for: WebPageParser.classForCoder() )}
+    container.register(Analytics.self) { _ in BadAnalytics() }.inObjectScope(.container)
 
-        let updateService = UpdateService(
-            dataServiceFactory: dataServiceFactory,
-            urlSession: urlSession,
-            urlSessionDelegate: urlSessionDelegate,
-            workerQueue: backgroundQueue
+    container.register(Reachable.self) { _ in Reachability()! }
+
+    #if os(iOS)
+    container.register(SearchIndex.self) { _ in CSSearchableIndex.default() }
+    #endif
+
+    container.register(TethysKitURLSessionDelegate.self) { _ in
+        return TethysKitURLSessionDelegate()
+    }.inObjectScope(.container)
+
+    RealmMigrator.beginMigration()
+
+    container.register(URLSession.self) { r in
+        return URLSession(
+            configuration: .default,
+            delegate: r.resolve(TethysKitURLSessionDelegate.self)!,
+            delegateQueue: OperationQueue()
         )
-
-        let userDefaults = UserDefaults.standard
-
-        let updateUseCase = DefaultUpdateUseCase(
-            updateService: updateService,
-            mainQueue: mainQueue,
-            userDefaults: userDefaults
-        )
-
-        let dataRepository = DefaultDatabaseUseCase(mainQueue: mainQueue,
-            reachable: reachable,
-            dataServiceFactory: dataServiceFactory,
-            updateUseCase: updateUseCase,
-            databaseMigrator: DatabaseMigrator()
-        )
-
-        injector.bind(DatabaseUseCase.self, to: dataRepository)
-        injector.bind(DefaultDatabaseUseCase.self, to: dataRepository)
-
-        let opmlService = DefaultOPMLService(injector: injector)
-        injector.bind(OPMLService.self, to: opmlService)
-        injector.bind(MigrationUseCase.self, to: DefaultMigrationUseCase(injector: injector))
-        injector.bind(ImportUseCase.self, toBlock: DefaultImportUseCase.init)
-
-        let spondeService = Sponde.DefaultService(baseURL: URL(string: "https://autonoe.cfapps.io")!,
-                                                  networkClient: URLSession.shared)
-        let generateBookUseCase = DefaultGenerateBookUseCase(service: spondeService, mainQueue: mainQueue)
-        injector.bind(GenerateBookUseCase.self, to: generateBookUseCase)
     }
-    // swiftlint:enable function_body_length
+
+    container.register(DatabaseMigratorType.self) { _ in
+        return DatabaseMigrator()
+    }
+
+    container.register(DataServiceFactoryType.self) { r in
+        return DataServiceFactory(
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            realmQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!,
+            searchIndex: r.resolve(SearchIndex.self),
+            bundle: r.resolve(Bundle.self)!,
+            fileManager: r.resolve(FileManager.self)!
+        )
+    }
+
+    container.register(UpdateServiceType.self) { r in
+        return UpdateService(
+            dataServiceFactory: r.resolve(DataServiceFactoryType.self)!,
+            urlSession: r.resolve(URLSession.self)!,
+            urlSessionDelegate: r.resolve(TethysKitURLSessionDelegate.self)!,
+            workerQueue: r.resolve(OperationQueue.self, name: kBackgroundQueue)!
+        )
+    }
+
+    container.register(UpdateUseCase.self) { r in
+        return DefaultUpdateUseCase(
+            updateService: r.resolve(UpdateServiceType.self)!,
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            userDefaults: r.resolve(UserDefaults.self)!
+        )
+    }
+
+    container.register(DatabaseUseCase.self) { r in
+        return DefaultDatabaseUseCase(
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            reachable: r.resolve(Reachability.self),
+            dataServiceFactory: r.resolve(DataServiceFactoryType.self)!,
+            updateUseCase: r.resolve(UpdateUseCase.self)!,
+            databaseMigrator: r.resolve(DatabaseMigratorType.self)!
+        )
+    }
+
+    container.register(OPMLService.self) { r in
+        return DefaultOPMLService(
+            dataRepository: r.resolve(DatabaseUseCase.self)!,
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            importQueue: r.resolve(OperationQueue.self, name: kBackgroundQueue)!
+        )
+    }
+
+    container.register(MigrationUseCase.self) { r in
+        return DefaultMigrationUseCase(feedRepository: r.resolve(DatabaseUseCase.self)!)
+    }
+
+    container.register(ImportUseCase.self) { r in
+        return DefaultImportUseCase(
+            urlSession: r.resolve(URLSession.self)!,
+            feedRepository: r.resolve(DatabaseUseCase.self)!,
+            opmlService: r.resolve(OPMLService.self)!,
+            fileManager: r.resolve(FileManager.self)!,
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!
+        )
+    }
+
+    container.register(GenerateBookUseCase.self) { r in
+        return DefaultGenerateBookUseCase(
+            service: Sponde.DefaultService(baseURL: URL(string: "https://autonoe.cfapps.io")!,
+                                           networkClient: URLSession.shared),
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!
+        )
+    }
 }

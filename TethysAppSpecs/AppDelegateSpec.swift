@@ -52,7 +52,7 @@ class AppDelegateSpec: QuickSpec {
             container.register(BackgroundFetchHandler.self) { _ in backgroundFetchHandler }
 
             importUseCase = FakeImportUseCase()
-            container.register(ImportUseCase.self) { _ in FakeImportUseCase() }
+            container.register(ImportUseCase.self) { _ in importUseCase }
 
             container.register(SplitViewController.self) { _ in splitViewControllerFactory() }
             container.register(Bootstrapper.self) { _, window, splitView in

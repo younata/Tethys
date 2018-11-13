@@ -21,11 +21,11 @@ public func configure(container: Container) {
 
     container.register(ThemeRepository.self) { r in
         return ThemeRepository(userDefaults: r.resolve(UserDefaults.self) ?? nil)
-    }
+    }.inObjectScope(.container)
 
     container.register(SettingsRepository.self) { r in
         return SettingsRepository(userDefaults: r.resolve(UserDefaults.self) ?? nil)
-    }
+    }.inObjectScope(.container)
 
     container.register(BackgroundFetchHandler.self) { r in
         return DefaultBackgroundFetchHandler(feedRepository: r.resolve(DatabaseUseCase.self)!)
@@ -47,6 +47,8 @@ public func configure(container: Container) {
         )
     }
 
+    container.register(LocalNotificationSource.self) { _ in UIApplication.shared }
+
     container.register(ArticleUseCase.self) { r in
         return DefaultArticleUseCase(
             feedRepository: r.resolve(DatabaseUseCase.self)!,
@@ -60,17 +62,50 @@ public func configure(container: Container) {
         )
     }
 
-    // View Controllers
+    registerViewControllers(container: container)
+}
 
-    container.register(SplitViewController.self) { r in
-        return SplitViewController(themeRepository: r.resolve(ThemeRepository.self)!)
+private func registerViewControllers(container: Container) {
+    container.register(ArticleListController.self) { r in
+        return ArticleListController(
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            feedRepository: r.resolve(DatabaseUseCase.self)!,
+            themeRepository: r.resolve(ThemeRepository.self)!,
+            settingsRepository: r.resolve(SettingsRepository.self)!,
+            articleViewController: { r.resolve(ArticleViewController.self)! },
+            generateBookViewController: { r.resolve(GenerateBookViewController.self)! }
+        )
     }
 
-    container.register(MigrationViewController.self) { r in
-        return MigrationViewController(
-            migrationUseCase: r.resolve(MigrationUseCase.self)!,
+    container.register(ArticleViewController.self) { r in
+        return ArticleViewController(
             themeRepository: r.resolve(ThemeRepository.self)!,
-            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!
+            articleUseCase: r.resolve(ArticleUseCase.self)!,
+            htmlViewController: { r.resolve(HTMLViewController.self)! },
+            articleListController: { r.resolve(ArticleListController.self)! }
+        )
+    }
+
+    container.register(ChapterOrganizerController.self) { r in
+        return ChapterOrganizerController(
+            themeRepository: r.resolve(ThemeRepository.self)!,
+            settingsRepository: r.resolve(SettingsRepository.self)!,
+            articleListController: { r.resolve(ArticleListController.self)! }
+        )
+    }
+
+    container.register(DocumentationViewController.self) { r in
+        return DocumentationViewController(
+            documentationUseCase: r.resolve(DocumentationUseCase.self)!,
+            themeRepository: r.resolve(ThemeRepository.self)!,
+            htmlViewController: r.resolve(HTMLViewController.self)!
+        )
+    }
+
+    container.register(FeedsListController.self) { r in
+        return FeedsListController(
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            themeRepository: r.resolve(ThemeRepository.self)!
         )
     }
 
@@ -87,6 +122,14 @@ public func configure(container: Container) {
         )
     }
 
+    container.register(FeedViewController.self) { r in
+        return FeedViewController(
+            feedRepository: r.resolve(DatabaseUseCase.self)!,
+            themeRepository: r.resolve(ThemeRepository.self)!,
+            tagEditorViewController: { r.resolve(TagEditorViewController.self)! }
+        )
+    }
+
     container.register(FindFeedViewController.self) { r in
         return FindFeedViewController(
             importUseCase: r.resolve(ImportUseCase.self)!,
@@ -95,16 +138,46 @@ public func configure(container: Container) {
         )
     }
 
-    container.register(ArticleViewController.self) { r in
-        return ArticleViewController(
+    container.register(GenerateBookViewController.self) { r in
+        return GenerateBookViewController(
             themeRepository: r.resolve(ThemeRepository.self)!,
-            articleUseCase: r.resolve(ArticleUseCase.self)!,
-            htmlViewController: { r.resolve(HTMLViewController.self)! },
-            articleListController: { r.resolve(ArticleListController.self)! }
+            generateBookUseCase: r.resolve(GenerateBookUseCase.self)!,
+            chapterOrganizer: r.resolve(ChapterOrganizerController.self)!
         )
     }
 
     container.register(HTMLViewController.self) { r in
         return HTMLViewController(themeRepository: r.resolve(ThemeRepository.self)!)
+    }
+
+    container.register(MigrationViewController.self) { r in
+        return MigrationViewController(
+            migrationUseCase: r.resolve(MigrationUseCase.self)!,
+            themeRepository: r.resolve(ThemeRepository.self)!,
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!
+        )
+    }
+
+    container.register(SettingsViewController.self) { r in
+        return SettingsViewController(
+            themeRepository: r.resolve(ThemeRepository.self)!,
+            settingsRepository: r.resolve(SettingsRepository.self)!,
+            quickActionRepository: r.resolve(QuickActionRepository.self)!,
+            databaseUseCase: r.resolve(DatabaseUseCase.self)!,
+            opmlService: r.resolve(OPMLService.self)!,
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            documentationViewController: { r.resolve(DocumentationViewController.self)! }
+        )
+    }
+
+    container.register(SplitViewController.self) { r in
+        return SplitViewController(themeRepository: r.resolve(ThemeRepository.self)!)
+    }
+
+    container.register(TagEditorViewController.self) { r in
+        return TagEditorViewController(
+            feedRepository: r.resolve(DatabaseUseCase.self)!,
+            themeRepository: r.resolve(ThemeRepository.self)!
+        )
     }
 }

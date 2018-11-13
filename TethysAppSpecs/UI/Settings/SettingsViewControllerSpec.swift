@@ -322,7 +322,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("is selected if it's the current theme") { // which it is
-                        expect(cell.isSelected) == true
+                        expect(subject.tableView.indexPathsForSelectedRows).to(contain(indexPath))
                     }
 
                     it("has its theme repository set") {
@@ -1121,10 +1121,6 @@ class SettingsViewControllerSpec: QuickSpec {
 
                         it("returns an SFSafariViewController") {
                             expect(viewController).to(beAnInstanceOf(SFSafariViewController.self))
-                        }
-
-                        it("has no preview actions") {
-                            expect(viewController?.previewActionItems.count) == 0
                         }
 
                         it("pushes the login controller if the user commits the touch") {

@@ -130,7 +130,7 @@ public final class Feed: Hashable, CustomStringConvertible {
 
     @available(*, deprecated, message: "Query a service for the unread articles")
     public private(set) lazy var unreadArticles: DataStoreBackedArray<Article> = {
-        return self.articlesArray.filterWithPredicate(NSPredicate(format: "read == %@", false as CVarArg))
+        return self.articlesArray.filterWithPredicate(NSPredicate(format: "read == false"))
     }()
 
     @available(*, deprecated, message: "Don't use the feed object to add articles")

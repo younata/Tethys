@@ -18,8 +18,6 @@ final class InjectorModuleSpec: QuickSpec {
 
         describe("services") {
             alwaysIs(UserDefaults.self, a: UserDefaults.standard)
-            alwaysIs(Bundle.self, a: Bundle.main)
-            alwaysIs(FileManager.self, a: FileManager.default)
         }
 
         describe("Repositories") {
@@ -35,8 +33,6 @@ final class InjectorModuleSpec: QuickSpec {
 
             isA(ArticleUseCase.self, kindOf: DefaultArticleUseCase.self)
             isA(DocumentationUseCase.self, kindOf: DefaultDocumentationUseCase.self)
-
-            exists(FeedsDeleSource.self)
 
             describe("Bootstrapper") {
                 var bootstrapper: Bootstrapper?
@@ -63,30 +59,33 @@ final class InjectorModuleSpec: QuickSpec {
         }
 
         describe("View Controllers") {
-            exists(SplitViewController.self)
-            exists(MigrationViewController.self)
-            exists(TagEditorViewController.self)
-
-            exists(FeedViewController.self)
-            exists(FeedsTableViewController.self)
-            exists(FindFeedViewController.self)
-            exists(FeedsListController.self)
-
-            exists(SettingsViewController.self)
-
-            exists(ArticleViewController.self)
             exists(ArticleListController.self)
+            exists(ArticleViewController.self)
 
             exists(ChapterOrganizerController.self)
-            exists(GenerateBookViewController.self)
 
             exists(DocumentationViewController.self)
 
+            exists(FeedsListController.self)
+            exists(FeedsTableViewController.self)
+            exists(FeedViewController.self)
+            exists(FindFeedViewController.self)
+
+            exists(GenerateBookViewController.self)
+
             exists(HTMLViewController.self)
+
+            exists(MigrationViewController.self)
+
+
+            exists(SettingsViewController.self)
+            exists(SplitViewController.self)
+
+            exists(TagEditorViewController.self)
         }
 
         func exists<T>(_ type: T.Type) {
-            describe(Mirror(reflecting: type).description) {
+            describe("\(type)") {
                 it("exists") {
                     expect(subject.resolve(type)).toNot(beNil())
                 }
@@ -94,7 +93,7 @@ final class InjectorModuleSpec: QuickSpec {
         }
 
         func singleton<T>(_ type: T.Type) {
-            describe(Mirror(reflecting: type).description) {
+            describe("\(type)") {
                 it("exists") {
                     expect(subject.resolve(type)).toNot(beNil())
                 }
@@ -106,24 +105,24 @@ final class InjectorModuleSpec: QuickSpec {
         }
 
         func isA<T, U>(_ type: T.Type, kindOf otherType: U.Type) {
-            describe(Mirror(reflecting: type).description) {
+            describe("\(type)") {
                 it("exists") {
                     expect(subject.resolve(type)).toNot(beNil())
                 }
 
-                it("is a \(Mirror(reflecting: otherType).description)") {
+                it("is a \(otherType)") {
                     expect(subject.resolve(type)).to(beAKindOf(otherType))
                 }
             }
         }
 
         func alwaysIs<T: Equatable>(_ type: T.Type, a obj: T) {
-            describe(Mirror(reflecting: type).description) {
+            describe("\(type)") {
                 it("exists") {
                     expect(subject.resolve(type)).toNot(beNil())
                 }
 
-                it("is always \(Mirror(reflecting: obj).description)") {
+                it("is always \(obj)") {
                     expect(subject.resolve(type)).to(be(obj))
                 }
             }

@@ -80,7 +80,9 @@ public func configure(container: Container) {
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
             userDefaults: r.resolve(UserDefaults.self)!
         )
-    }
+    }.inObjectScope(.container)
+
+    container.register(BackgroundStateMonitor.self) { _ in BackgroundStateMonitor(notificationCenter: .default) }
 
     container.register(DatabaseUseCase.self) { r in
         return DefaultDatabaseUseCase(
@@ -90,7 +92,7 @@ public func configure(container: Container) {
             updateUseCase: r.resolve(UpdateUseCase.self)!,
             databaseMigrator: r.resolve(DatabaseMigratorType.self)!
         )
-    }
+    }.inObjectScope(.container)
 
     container.register(OPMLService.self) { r in
         return DefaultOPMLService(
@@ -98,7 +100,7 @@ public func configure(container: Container) {
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
             importQueue: r.resolve(OperationQueue.self, name: kBackgroundQueue)!
         )
-    }
+    }.inObjectScope(.container)
 
     container.register(MigrationUseCase.self) { r in
         return DefaultMigrationUseCase(feedRepository: r.resolve(DatabaseUseCase.self)!)

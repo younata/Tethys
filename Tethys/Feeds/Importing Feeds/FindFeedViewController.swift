@@ -24,6 +24,8 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
     fileprivate let themeRepository: ThemeRepository
     fileprivate let analytics: Analytics
 
+    private var didAddObserverToWebContent = false
+
     private let placeholderAttributes: [String: AnyObject] = [NSForegroundColorAttributeName: UIColor.black]
 
     public init(importUseCase: ImportUseCase,
@@ -50,6 +52,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.webContent.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
 
         self.webContent.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: nil)
+        self.didAddObserverToWebContent = true
 
         self.back = UIBarButtonItem(title: "<", style: .plain, target: self.webContent,
                                     action: #selector(UIWebView.goBack))
@@ -57,7 +60,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
                                        action: #selector(UIWebView.goForward))
 
         let addFeedTitle = NSLocalizedString("FindFeedViewController_AddFeed", comment: "")
-        let save = #selector(FindFeedViewController.save as (FindFeedViewController) -> (Void) -> Void)
+        let save = #selector(FindFeedViewController.save as (FindFeedViewController) -> () -> Void)
         self.addFeedButton = UIBarButtonItem(title: addFeedTitle, style: .plain, target: self, action: save)
         self.back.isEnabled = false
         self.forward.isEnabled = false
@@ -113,7 +116,9 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
     }
 
     deinit {
-        self.webContent.removeObserver(self, forKeyPath: "estimatedProgress")
+        if self.didAddObserverToWebContent {
+            self.webContent.removeObserver(self, forKeyPath: "estimatedProgress")
+        }
     }
 
     public override func viewWillTransition(to size: CGSize,

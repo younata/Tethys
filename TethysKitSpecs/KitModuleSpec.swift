@@ -28,17 +28,19 @@ class KitModuleSpec: QuickSpec {
             exists(UserDefaults.self)
             exists(FileManager.self)
 
-            alwaysIs(URLSession.self, a: URLSession.shared)
+            exists(URLSession.self)
             #if os(iOS)
                 exists(SearchIndex.self)
             #endif
             isA(DatabaseUseCase.self, kindOf: DefaultDatabaseUseCase.self, singleton: true)
             singleton(OPMLService.self)
             exists(BackgroundStateMonitor.self)
+
+            exists(GenerateBookUseCase.self)
         }
 
         func exists<T>(_ type: T.Type) {
-            describe(Mirror(reflecting: type).description) {
+            describe("\(type)") {
                 it("exists") {
                     expect(subject.resolve(type)).toNot(beNil())
                 }
@@ -46,7 +48,7 @@ class KitModuleSpec: QuickSpec {
         }
 
         func singleton<T>(_ type: T.Type) {
-            describe(Mirror(reflecting: type).description) {
+            describe("\(type)") {
                 it("exists") {
                     expect(subject.resolve(type)).toNot(beNil())
                 }
@@ -58,12 +60,12 @@ class KitModuleSpec: QuickSpec {
         }
 
         func isA<T, U>(_ type: T.Type, kindOf otherType: U.Type, singleton: Bool = false) {
-            describe(Mirror(reflecting: type).description) {
+            describe("\(type)") {
                 it("exists") {
                     expect(subject.resolve(type)).toNot(beNil())
                 }
 
-                it("is a \(Mirror(reflecting: otherType).description)") {
+                it("is a \(otherType)") {
                     expect(subject.resolve(type)).to(beAKindOf(otherType))
                 }
 
@@ -76,7 +78,7 @@ class KitModuleSpec: QuickSpec {
         }
 
         func alwaysIs<T: Equatable>(_ type: T.Type, a obj: T) {
-            describe(Mirror(reflecting: type).description) {
+            describe("\(type)") {
                 it("exists") {
                     expect(subject.resolve(type)).toNot(beNil())
                 }

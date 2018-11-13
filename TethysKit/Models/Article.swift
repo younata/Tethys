@@ -37,6 +37,7 @@ public final class Article: NSObject {
             }
         }
     }
+    @available(*, deprecated, message: "Use a service to get the article date")
     public internal(set) var updatedAt: Date? {
         willSet {
             if newValue != updatedAt {
@@ -58,6 +59,7 @@ public final class Article: NSObject {
             }
         }
     }
+    @available(*, deprecated, message: "Use a service to get the estimated reading time")
     public internal(set) var estimatedReadingTime: Int {
         willSet {
             if newValue != estimatedReadingTime {
@@ -80,7 +82,7 @@ public final class Article: NSObject {
         }
     }
 
-    @available(*, deprecated, message: "Query a service for the feed")
+    @available(*, deprecated, message: "Query an ArticleService for the feed")
     weak public internal(set) var feed: Feed? {
         didSet {
             if oldValue != feed {
@@ -98,12 +100,12 @@ public final class Article: NSObject {
 
     @available(*, deprecated, renamed: "relatedArticlesArray")
     public private(set) var relatedArticles = DataStoreBackedArray<Article>()
-    @available(*, deprecated, message: "Query a service for the related articles")
+    @available(*, deprecated, message: "Query an ArticleService for the related articles")
     public var relatedArticlesArray: [Article] { return Array(self.relatedArticles) }
 
     internal private(set) var updated: Bool = false
 
-    @available(*, deprecated, message: "Query a service for the author string")
+    @available(*, deprecated, message: "Query an ArticleService for the author string")
     public var authorsString: String {
         return self.authors.map({$0.description}).joined(separator: ", ")
     }
@@ -213,7 +215,7 @@ public final class Article: NSObject {
         }
     }
 
-    @available(*, deprecated, message: "Don't use the article object to add related articles")
+    @available(*, deprecated, message: "Use an ArticleService to add related articles")
     public func addRelatedArticle(_ article: Article) {
         guard article != self else { return }
         if !self.relatedArticles.contains(article) {
@@ -223,7 +225,7 @@ public final class Article: NSObject {
         }
     }
 
-    @available(*, deprecated, message: "Don't use the article object to remove related articles")
+    @available(*, deprecated, message: "Use an ArticleService to remove related articles")
     public func removeRelatedArticle(_ article: Article) {
         if self.relatedArticles.contains(article) {
             _ = self.relatedArticles.remove(article)

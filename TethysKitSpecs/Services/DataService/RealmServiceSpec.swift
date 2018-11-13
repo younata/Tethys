@@ -85,7 +85,12 @@ class RealmServiceSpec: QuickSpec {
                 for object in [realmFeed1] {
                     realm.add(object)
                 }
-                _ = try? realm.commitWrite()
+                do {
+                    try realm.commitWrite()
+                } catch let exception {
+                    dump(exception)
+                    fail("Error writing to realm: \(exception)")
+                }
             }
 
             it("finds an existing feed if that url exists") {
@@ -130,7 +135,12 @@ class RealmServiceSpec: QuickSpec {
                 for object in [realmFeed1, realmArticle1, realmArticle2] {
                     realm.add(object)
                 }
-                _ = try? realm.commitWrite()
+                do {
+                    try realm.commitWrite()
+                } catch let exception {
+                    dump(exception)
+                    fail("Error writing to realm: \(exception)")
+                }
 
                 feed1 = Feed(realmFeed: realmFeed1)
             }
@@ -234,7 +244,12 @@ class RealmServiceSpec: QuickSpec {
                 for object in [realmFeed1, realmFeed2, realmArticle1, realmArticle2, realmArticle3] {
                     realm.add(object)
                 }
-                _ = try? realm.commitWrite()
+                do {
+                    try realm.commitWrite()
+                } catch let exception {
+                    dump(exception)
+                    fail("Error writing to realm: \(exception)")
+                }
 
                 feed1 = Feed(realmFeed: realmFeed1)
                 feed2 = Feed(realmFeed: realmFeed2)

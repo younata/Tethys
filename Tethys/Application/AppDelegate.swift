@@ -19,10 +19,6 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
         return self.container.resolve(DatabaseUseCase.self)!
     }()
 
-    private lazy var notificationHandler: NotificationHandler = {
-        self.container.resolve(NotificationHandler.self)!
-    }()
-
     private lazy var backgroundFetchHandler: BackgroundFetchHandler = {
         self.container.resolve(BackgroundFetchHandler.self)!
     }()
@@ -68,7 +64,6 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
         self.createControllerHierarchy()
 
         self.feedRepository.addSubscriber(application)
-        self.notificationHandler.enableNotifications(application)
 
         if launchOptions == nil || launchOptions?.isEmpty == true ||
             (launchOptions?.count == 1 && launchOptions?[UIApplicationLaunchOptionsKey("test")] as? Bool == true) {
@@ -132,25 +127,11 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    // MARK: Local Notifications
-
-    public func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
-        self.notificationHandler.handleLocalNotification(notification, window: self.getWindow())
-    }
-
-    public func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?,
-                            for notification: UILocalNotification, completionHandler: @escaping () -> Void) {
-        self.notificationHandler.handleAction(identifier, notification: notification)
-        completionHandler()
-    }
-
     // MARK: Background Fetch
 
     public func application(_ application: UIApplication,
                             performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        self.backgroundFetchHandler.performFetch(self.notificationHandler,
-                                                 notificationSource: application,
-                                                 completionHandler: completionHandler)
+        self.backgroundFetchHandler.performFetch(completionHandler: completionHandler)
     }
 
     // MARK: - User Activities

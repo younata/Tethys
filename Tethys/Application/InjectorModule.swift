@@ -31,10 +31,6 @@ public func configure(container: Container) {
         return DefaultBackgroundFetchHandler(feedRepository: r.resolve(DatabaseUseCase.self)!)
     }
 
-    container.register(NotificationHandler.self) { r in
-        return LocalNotificationHandler(feedRepository: r.resolve(DatabaseUseCase.self)!)
-    }
-
     container.register(Bootstrapper.self) { r, window, splitController in
         return BootstrapWorkFlow(
             window: window,
@@ -46,8 +42,6 @@ public func configure(container: Container) {
             articleViewController: { r.resolve(ArticleViewController.self)! }
         )
     }
-
-    container.register(LocalNotificationSource.self) { _ in UIApplication.shared }
 
     container.register(ArticleUseCase.self) { r in
         return DefaultArticleUseCase(

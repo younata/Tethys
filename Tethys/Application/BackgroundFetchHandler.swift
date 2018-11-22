@@ -3,9 +3,7 @@ import TethysKit
 import Result
 
 public protocol BackgroundFetchHandler {
-    func performFetch(_ notificationHandler: NotificationHandler,
-                      notificationSource: LocalNotificationSource,
-                      completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
+    func performFetch(completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
 }
 
 public struct DefaultBackgroundFetchHandler: BackgroundFetchHandler {
@@ -15,9 +13,7 @@ public struct DefaultBackgroundFetchHandler: BackgroundFetchHandler {
         self.feedRepository = feedRepository
     }
 
-    public func performFetch(_ notificationHandler: NotificationHandler,
-                             notificationSource: LocalNotificationSource,
-                             completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    public func performFetch(completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         let articlesIdentifierPromise = self.feedRepository.feeds().map { result -> [String] in
             if case let Result.success(feeds) = result {
                 return feeds.reduce([]) {
@@ -46,9 +42,6 @@ public struct DefaultBackgroundFetchHandler: BackgroundFetchHandler {
                 }
 
                 if filteredArticleList.count > 0 {
-                    for article in filteredArticleList {
-                        notificationHandler.sendLocalNotification(notificationSource, article: article)
-                    }
                     completionHandler(.newData)
                 } else { completionHandler(.noData) }
             }

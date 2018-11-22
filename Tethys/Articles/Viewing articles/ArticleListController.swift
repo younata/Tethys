@@ -53,8 +53,8 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
                 feedRepository: DatabaseUseCase,
                 themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
-                articleViewController: @escaping (Void) -> ArticleViewController,
-                generateBookViewController: @escaping (Void) -> GenerateBookViewController) {
+                articleViewController: @escaping () -> ArticleViewController,
+                generateBookViewController: @escaping () -> GenerateBookViewController) {
         self.mainQueue = mainQueue
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository
@@ -227,13 +227,13 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
 
             cell.themeRepository = self.themeRepository
 
-            let readingTime = self.settingsRepository.showEstimatedReadingLabel ? article.estimatedReadingTime : nil
+            let readingTime = Int(round(self.settingsRepository.showEstimatedReadingLabel ? article.estimatedReadingTime : 0 / 60))
             cell.configure(
                 title: article.title,
                 publishedDate: article.updatedAt ?? article.published,
                 author: article.authorsString,
                 read: article.read,
-                readingTime: readingTime
+                readingTime: readingTime > 0 ? readingTime : nil
             )
 
             return cell

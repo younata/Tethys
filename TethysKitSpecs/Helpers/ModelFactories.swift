@@ -11,7 +11,7 @@ func articleFactory(
     content: String = "",
     read: Bool = false,
     synced: Bool = false,
-    estimatedReadingTime: Int = 0,
+    estimatedReadingTime: TimeInterval = 0,
     feed: Feed? = nil,
     flags: [String] = []
     ) -> Article {

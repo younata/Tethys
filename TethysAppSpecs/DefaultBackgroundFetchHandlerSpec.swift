@@ -15,16 +15,12 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
         }
 
         describe("updating feeds") {
-            var notificationHandler: FakeNotificationHandler! = nil
-            var notificationSource: FakeNotificationSource! = nil
             var fetchResult: UIBackgroundFetchResult? = nil
 
             beforeEach {
-                notificationHandler = FakeNotificationHandler()
-                notificationSource = FakeNotificationSource()
-                subject.performFetch(notificationHandler, notificationSource: notificationSource, completionHandler: {res in
+                subject.performFetch { res in
                     fetchResult = res
-                })
+                }
             }
 
             it("should make a network request") {
@@ -60,10 +56,6 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
                     dataRepository.updateFeedsCompletion(feeds, [])
                 }
 
-                it("should send local notifications for each new article") {
-                    expect(notificationHandler.sendLocalNotificationCalls).to(haveCount(articles.count))
-                }
-
                 it("should call the completion handler and indicate that there was new data found") {
                     expect(fetchResult).to(equal(UIBackgroundFetchResult.newData))
                 }
@@ -75,10 +67,6 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
                     dataRepository.updateFeedsCompletion([], [])
                 }
 
-                it("should not send any new local notifications") {
-                    expect(notificationHandler.sendLocalNotificationCalls).to(beEmpty())
-                }
-
                 it("should call the completion handler and indicate that there was no new data found") {
                     expect(fetchResult).to(equal(UIBackgroundFetchResult.noData))
                 }
@@ -88,10 +76,6 @@ class DefaultBackgroundFetchHandlerSpec: QuickSpec {
                 beforeEach {
                     dataRepository.feedsPromises.last?.resolve(.success([]))
                     dataRepository.updateFeedsCompletion([], [NSError(domain: "", code: 0, userInfo: nil)])
-                }
-
-                it("should not send any new local notifications") {
-                    expect(notificationSource.scheduledNotes).to(beEmpty())
                 }
 
                 it("should call the completion handler and indicate that there was an error") {

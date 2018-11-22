@@ -16,7 +16,6 @@
 		8902D54D1BB075F7003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5481BB0754F003D7C22 /* Lepton.framework */; };
 		8903A6251C4AB17C00E896BF /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903A6241C4AB17C00E896BF /* NotificationView.swift */; };
 		8903A6271C4ABA7800E896BF /* NotificationViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903A6261C4ABA7800E896BF /* NotificationViewSpec.swift */; };
-		8903EAFD1C6F8A46001C0189 /* FakeNotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EAFC1C6F8A46001C0189 /* FakeNotificationHandler.swift */; };
 		8903EB061C702689001C0189 /* webpage.html in Resources */ = {isa = PBXBuildFile; fileRef = 8903EB041C702580001C0189 /* webpage.html */; };
 		8903EB071C70268B001C0189 /* webpage.html in Resources */ = {isa = PBXBuildFile; fileRef = 8903EB041C702580001C0189 /* webpage.html */; };
 		8903EB091C702843001C0189 /* WebPageParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB081C702843001C0189 /* WebPageParser.swift */; };
@@ -350,8 +349,6 @@
 		89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204B41A73811000C792D2 /* AppDelegateSpec.swift */; };
 		89C204BD1A73F72800C792D2 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204BC1A73F72800C792D2 /* SplitViewController.swift */; };
 		89C204C21A73FEDA00C792D2 /* SplitViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204C11A73FEDA00C792D2 /* SplitViewControllerSpec.swift */; };
-		89C204C41A7400D100C792D2 /* NotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204C31A7400D100C792D2 /* NotificationHandler.swift */; };
-		89C204C71A740D8900C792D2 /* LocalNotificationHandlerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204C61A740D8900C792D2 /* LocalNotificationHandlerSpec.swift */; };
 		89C351661DEF8CD800E262C6 /* ActionableTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C351651DEF8CD800E262C6 /* ActionableTableView.swift */; };
 		89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509EF1A2EB18300CBD000 /* FeedViewController.swift */; };
 		89C509F41A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C509F31A2EE56E00CBD000 /* TagEditorViewController.swift */; };
@@ -400,8 +397,6 @@
 		89D970BB1B35BF6500ED84B8 /* WKWebView+TethysTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D970BA1B35BF6500ED84B8 /* WKWebView+TethysTests.m */; };
 		89D970BD1B3929A600ED84B8 /* BackgroundFetchHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D970BC1B3929A600ED84B8 /* BackgroundFetchHandler.swift */; };
 		89D970BF1B3929D600ED84B8 /* DefaultBackgroundFetchHandlerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D970BE1B3929D600ED84B8 /* DefaultBackgroundFetchHandlerSpec.swift */; };
-		89D970C11B392AD400ED84B8 /* FakeNotificationSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D970C01B392AD400ED84B8 /* FakeNotificationSource.swift */; };
-		89D970C31B392B0300ED84B8 /* LocalNotificationSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D970C21B392B0300ED84B8 /* LocalNotificationSource.swift */; };
 		89DB07481CBE1834006D672D /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89DB07471CBE1834006D672D /* Result.framework */; };
 		89DB07491CBE1862006D672D /* Result.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89DB07471CBE1834006D672D /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89DB074E1CBF2AC7006D672D /* CBGPromise.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89DB074D1CBF2AC7006D672D /* CBGPromise.framework */; };
@@ -603,7 +598,6 @@
 		8902D5481BB0754F003D7C22 /* Lepton.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lepton.framework; path = ../Carthage/Build/Mac/Lepton.framework; sourceTree = "<group>"; };
 		8903A6241C4AB17C00E896BF /* NotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		8903A6261C4ABA7800E896BF /* NotificationViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationViewSpec.swift; sourceTree = "<group>"; };
-		8903EAFC1C6F8A46001C0189 /* FakeNotificationHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeNotificationHandler.swift; sourceTree = "<group>"; };
 		8903EB001C6F9DFB001C0189 /* ImportUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportUseCase.swift; sourceTree = "<group>"; };
 		8903EB021C6FA022001C0189 /* ImportUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportUseCaseSpec.swift; sourceTree = "<group>"; };
 		8903EB041C702580001C0189 /* webpage.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = webpage.html; sourceTree = "<group>"; };
@@ -807,8 +801,6 @@
 		89C204B41A73811000C792D2 /* AppDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateSpec.swift; sourceTree = "<group>"; };
 		89C204BC1A73F72800C792D2 /* SplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
 		89C204C11A73FEDA00C792D2 /* SplitViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitViewControllerSpec.swift; sourceTree = "<group>"; };
-		89C204C31A7400D100C792D2 /* NotificationHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationHandler.swift; sourceTree = "<group>"; };
-		89C204C61A740D8900C792D2 /* LocalNotificationHandlerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalNotificationHandlerSpec.swift; sourceTree = "<group>"; };
 		89C351651DEF8CD800E262C6 /* ActionableTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionableTableView.swift; sourceTree = "<group>"; };
 		89C509EF1A2EB18300CBD000 /* FeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 		89C509F31A2EE56E00CBD000 /* TagEditorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagEditorViewController.swift; sourceTree = "<group>"; };
@@ -857,8 +849,6 @@
 		89D970BA1B35BF6500ED84B8 /* WKWebView+TethysTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "WKWebView+TethysTests.m"; sourceTree = "<group>"; };
 		89D970BC1B3929A600ED84B8 /* BackgroundFetchHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundFetchHandler.swift; sourceTree = "<group>"; };
 		89D970BE1B3929D600ED84B8 /* DefaultBackgroundFetchHandlerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultBackgroundFetchHandlerSpec.swift; sourceTree = "<group>"; };
-		89D970C01B392AD400ED84B8 /* FakeNotificationSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeNotificationSource.swift; sourceTree = "<group>"; };
-		89D970C21B392B0300ED84B8 /* LocalNotificationSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalNotificationSource.swift; sourceTree = "<group>"; };
 		89DB07471CBE1834006D672D /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/iOS/Result.framework; sourceTree = SOURCE_ROOT; };
 		89DB074D1CBF2AC7006D672D /* CBGPromise.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CBGPromise.framework; path = Carthage/Build/iOS/CBGPromise.framework; sourceTree = SOURCE_ROOT; };
 		89DBDA991A9EBB0C00959AC7 /* feed.rss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = feed.rss; sourceTree = "<group>"; };
@@ -1258,7 +1248,6 @@
 		896320941C17E5D300B7C980 /* UIApplicationProtocols */ = {
 			isa = PBXGroup;
 			children = (
-				89D970C21B392B0300ED84B8 /* LocalNotificationSource.swift */,
 				89735ABD1C0698370032E09C /* QuickActionRepository.swift */,
 			);
 			path = UIApplicationProtocols;
@@ -1562,7 +1551,6 @@
 				89BFAC0F1C4C66AE007B3415 /* CustomMatchers.swift */,
 				89D970BE1B3929D600ED84B8 /* DefaultBackgroundFetchHandlerSpec.swift */,
 				8941AB7C1DC9385A00A2CE5F /* HTMLViewControllerSpec.swift */,
-				89C204C61A740D8900C792D2 /* LocalNotificationHandlerSpec.swift */,
 				8903A6261C4ABA7800E896BF /* NotificationViewSpec.swift */,
 				89F98BA71BA07E50005C3CA8 /* SettingsRepositorySpec.swift */,
 				89C204C11A73FEDA00C792D2 /* SplitViewControllerSpec.swift */,
@@ -1787,7 +1775,6 @@
 				89D970BC1B3929A600ED84B8 /* BackgroundFetchHandler.swift */,
 				89CBDC161C7D8501006B70F5 /* BootstrapWorkFlow.swift */,
 				AE4356301A7AE4FE00A961B9 /* InjectorModule.swift */,
-				89C204C31A7400D100C792D2 /* NotificationHandler.swift */,
 				89C204BC1A73F72800C792D2 /* SplitViewController.swift */,
 				89CBDC141C7D7D96006B70F5 /* UIApplication+DataSubscriber.swift */,
 			);
@@ -1819,8 +1806,6 @@
 				890C8D441DE3A52100A037D7 /* FakeGenerateBookUseCase.swift */,
 				8903EB0E1C703570001C0189 /* FakeImportUseCase.swift */,
 				89CBDC081C7D431D006B70F5 /* FakeMigrationUseCase.swift */,
-				8903EAFC1C6F8A46001C0189 /* FakeNotificationHandler.swift */,
-				89D970C01B392AD400ED84B8 /* FakeNotificationSource.swift */,
 				898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */,
 				898C48C11B3A7CCC0097045A /* FakeOPMLService.swift */,
 				894942401C84BEC20095FFD4 /* FakeQuickActionRepository.swift */,
@@ -2563,9 +2548,7 @@
 				898DA4941DDE902F0029CBD3 /* GenerateBookViewController.swift in Sources */,
 				8941AB7B1DC9207200A2CE5F /* HTMLViewController.swift in Sources */,
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
-				89D970C31B392B0300ED84B8 /* LocalNotificationSource.swift in Sources */,
 				89CBDC011C7D41C9006B70F5 /* MigrationViewController.swift in Sources */,
-				89C204C41A7400D100C792D2 /* NotificationHandler.swift in Sources */,
 				8903A6251C4AB17C00E896BF /* NotificationView.swift in Sources */,
 				89735ABE1C0698370032E09C /* QuickActionRepository.swift in Sources */,
 				894D1AF31DB1EF2500E70B1A /* RefreshControl.swift in Sources */,
@@ -2614,8 +2597,6 @@
 				890C8D451DE3A52100A037D7 /* FakeGenerateBookUseCase.swift in Sources */,
 				8903EB0F1C703570001C0189 /* FakeImportUseCase.swift in Sources */,
 				89CBDC091C7D431D006B70F5 /* FakeMigrationUseCase.swift in Sources */,
-				8903EAFD1C6F8A46001C0189 /* FakeNotificationHandler.swift in Sources */,
-				89D970C11B392AD400ED84B8 /* FakeNotificationSource.swift in Sources */,
 				898F670C1B000451004A7BE3 /* FakeOperationQueue.swift in Sources */,
 				8978C52F2199180100D702BB /* Factories.swift in Sources */,
 				89EA6C371B4B308F00456892 /* FakeOPMLService.swift in Sources */,
@@ -2635,7 +2616,6 @@
 				899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */,
 				898DA4971DDEC3720029CBD3 /* GenerateBookViewControllerSpec.swift in Sources */,
 				8941AB7D1DC9385A00A2CE5F /* HTMLViewControllerSpec.swift in Sources */,
-				89C204C71A740D8900C792D2 /* LocalNotificationHandlerSpec.swift in Sources */,
 				89CBDC051C7D42D7006B70F5 /* MigrationViewControllerSpec.swift in Sources */,
 				8903A6271C4ABA7800E896BF /* NotificationViewSpec.swift in Sources */,
 				899823B11B30BA7E00818755 /* NSUserActivity+TethysTests.m in Sources */,

@@ -8,7 +8,7 @@ import Swinject
 
 fileprivate class FakeBackgroundFetchHandler: BackgroundFetchHandler {
     fileprivate var performFetchCalled = false
-    fileprivate func performFetch(_ notificationHandler: NotificationHandler, notificationSource: LocalNotificationSource, completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    fileprivate func performFetch(completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         performFetchCalled = true
     }
 
@@ -24,7 +24,6 @@ class AppDelegateSpec: QuickSpec {
 
         var dataUseCase: FakeDatabaseUseCase! = nil
 
-        var notificationHandler: FakeNotificationHandler! = nil
         var backgroundFetchHandler: FakeBackgroundFetchHandler! = nil
         var analytics: FakeAnalytics! = nil
         var importUseCase: FakeImportUseCase! = nil
@@ -45,9 +44,6 @@ class AppDelegateSpec: QuickSpec {
             analytics = FakeAnalytics()
             container.register(Analytics.self) { _ in analytics }
 
-            notificationHandler = FakeNotificationHandler()
-            container.register(NotificationHandler.self) { _ in notificationHandler }
-
             backgroundFetchHandler = FakeBackgroundFetchHandler()
             container.register(BackgroundFetchHandler.self) { _ in backgroundFetchHandler }
 
@@ -65,12 +61,6 @@ class AppDelegateSpec: QuickSpec {
         }
 
         describe("-application:didFinishLaunchingWithOptions:") {
-            it("should enable notifications") {
-                _ = subject.application(application, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsKey(rawValue: "test"): true])
-
-                expect(notificationHandler.enableNotificationsCalls).to(haveCount(1))
-            }
-
             it("tells analytics that the app was launched") {
                 _ = subject.application(application, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsKey(rawValue: "test"): true])
                 expect(analytics.logEventCallCount) == 1
@@ -326,35 +316,6 @@ class AppDelegateSpec: QuickSpec {
                             expect(completedAction) == false
                         }
                     }
-                }
-            }
-        }
-
-        describe("Local notifications") {
-            describe("receiving notifications") {
-                beforeEach {
-                    subject.application(UIApplication.shared, didReceive: UILocalNotification())
-                }
-                it("should forward to the notification handler") {
-
-                    expect(notificationHandler.handleLocalNotificationCalls).to(haveCount(1))
-                    expect(notificationHandler.handleActionCalls).to(beEmpty())
-                }
-            }
-            describe("handling notification actions") {
-                var completionHandlerCalled: Bool = false
-                beforeEach {
-                    completionHandlerCalled = false
-                    subject.application(UIApplication.shared, handleActionWithIdentifier: "read", for: UILocalNotification()) {
-                        completionHandlerCalled = true
-                    }
-                }
-                it("should forward to the notification handler") {
-                    expect(notificationHandler.handleActionCalls).to(haveCount(1))
-                    expect(notificationHandler.handleActionCalls.last?.0).to(equal("read"))
-                }
-                it("should call the completionHandler") {
-                    expect(completionHandlerCalled) == true
                 }
             }
         }

@@ -19,7 +19,7 @@ public final class FeedsDeleSource: NSObject {
     fileprivate let themeRepository: ThemeRepository
     fileprivate let navigationController: UINavigationController?
     fileprivate let mainQueue: OperationQueue
-    fileprivate let articleListController: ((Void) -> (ArticleListController))?
+    fileprivate let articleListController: (() -> (ArticleListController))?
 
     fileprivate var feeds: [Feed] {
         return self.feedsSource.feeds

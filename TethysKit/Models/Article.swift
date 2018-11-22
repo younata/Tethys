@@ -60,7 +60,7 @@ public final class Article: NSObject {
         }
     }
     @available(*, deprecated, message: "Use a service to get the estimated reading time")
-    public internal(set) var estimatedReadingTime: Int {
+    public internal(set) var estimatedReadingTime: TimeInterval {
         willSet {
             if newValue != estimatedReadingTime {
                 self.updated = true
@@ -142,7 +142,7 @@ public final class Article: NSObject {
 
     public init(title: String, link: URL, summary: String, authors: [Author], published: Date,
                 updatedAt: Date?, identifier: String, content: String, read: Bool, synced: Bool,
-                estimatedReadingTime: Int, feed: Feed?, flags: [String]) {
+                estimatedReadingTime: TimeInterval, feed: Feed?, flags: [String]) {
         self.title = title
         self.link = link
         self.summary = summary
@@ -173,7 +173,7 @@ public final class Article: NSObject {
         identifier = article.id
         content = article.content ?? ""
         read = article.read
-        estimatedReadingTime = article.estimatedReadingTime
+        estimatedReadingTime = article.estimatedReadingTime ?? 0
         synced = article.synced
         self.feed = feed
         self.flags = article.flags.map { $0.string }

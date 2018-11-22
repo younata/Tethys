@@ -4,6 +4,10 @@ import Result
 public protocol ArticleService {
     func feed(of article: Article) -> Future<Result<Feed, TethysError>>
     func authors(of article: Article) -> String
+
+    func date(for article: Article) -> Date
+    func estimatedReadingTime(of article: Article) -> TimeInterval
+
 }
 
 import RealmSwift
@@ -37,6 +41,31 @@ final class RealmArticleService: ArticleService {
 
     func authors(of article: Article) -> String {
         return article.authors.map { $0.description }.joined(separator: ", ")
+    }
+
+    func date(for article: Article) -> Date {
+        let realmArticle = self.realmArticle(for: article)
+        return realmArticle?.updatedAt ?? realmArticle?.published ?? Date()
+    }
+
+    func estimatedReadingTime(of article: Article) -> TimeInterval {
+        guard let realmArticle = self.realmArticle(for: article) else { return 0 }
+        if realmArticle.estimatedReadingTime > 0 {
+            return realmArticle.estimatedReadingTime
+        }
+        let text = realmArticle.content?.optional ?? realmArticle.summary?.optional ?? ""
+        let readingTime = estimateReadingTime(text)
+        self.workQueue.addOperation {
+            let realm = self.realmProvider.realm()
+            realm.beginWrite()
+            realmArticle.estimatedReadingTime = readingTime
+            do {
+                try realm.commitWrite()
+            } catch let exception {
+                dump(exception)
+            }
+        }
+        return readingTime
     }
 
     private func realmArticle(for article: Article) -> RealmArticle? {

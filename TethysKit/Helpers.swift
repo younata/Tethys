@@ -29,10 +29,15 @@ extension String {
         result = result.replacingOccurrences(of: "&gt;", with: ">")
         return result.replacingOccurrences(of: "&amp;", with: "&")
     }
+
+    var optional: String? {
+        return self.isEmpty ? nil : self
+    }
 }
 
-func estimateReadingTime(_ htmlString: String) -> Int {
+func estimateReadingTime(_ htmlString: String) -> TimeInterval {
     let words = htmlString.stringByStrippingHTML().components(separatedBy: " ")
 
-    return Int(round(Double(words.count) / 200.0))
+    let readingTime = TimeInterval(words.count) / 200.0 * 60.0
+    return readingTime
 }

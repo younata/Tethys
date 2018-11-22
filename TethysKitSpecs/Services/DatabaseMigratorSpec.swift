@@ -24,7 +24,7 @@ class DatabaseMigratorSpec: QuickSpec {
 
             let oldFeed1 = Feed(title: "oldfeed1", url: URL(string: "https://example.com/feed1")!, summary: "oldfeedsummary1", tags: ["a", "tag"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
             let oldContent: String = (0..<100).map { _ in "there are five words "}
-                .reduce(" there are five words ", +)
+                .reduce("", +)
             let oldArticle1 = Article(title: "oldarticle1", link: URL(string: "https://example.com/feed1/1")!, summary: "old1Summary", authors: [Author("me1")], published: Date(timeIntervalSince1970: 1), updatedAt: nil, identifier: "ident1", content: oldContent, read: true, synced: false, estimatedReadingTime: 0, feed: oldFeed1, flags: ["hello", "there"])
             oldFeed1.addArticle(oldArticle1)
 
@@ -68,14 +68,14 @@ class DatabaseMigratorSpec: QuickSpec {
 
             describe("migrating articles") {
                 it("migrates every article over") {
-                    let changedArticle = Article(title: "oldarticle1", link: URL(string: "https://example.com/feed1/1")!, summary: "old1Summary", authors: [Author("me1")], published: Date(timeIntervalSince1970: 1), updatedAt: nil, identifier: "ident1", content: oldContent, read: true, synced: false, estimatedReadingTime: 2, feed: oldFeed1, flags: ["hello", "there"])
+                    let changedArticle = Article(title: "oldarticle1", link: URL(string: "https://example.com/feed1/1")!, summary: "old1Summary", authors: [Author("me1")], published: Date(timeIntervalSince1970: 1), updatedAt: nil, identifier: "ident1", content: oldContent, read: true, synced: false, estimatedReadingTime: 120, feed: oldFeed1, flags: ["hello", "there"])
 
                     expect(newDatabase.articles).to(contain(changedArticle))
                     expect(newDatabase.articles).to(contain(oldArticle2))
                 }
 
                 it("updates the reading estimation if need be, even for existing articles") {
-                    let changedArticle = Article(title: "oldarticle1", link: URL(string: "https://example.com/feed1/1")!, summary: "old1Summary", authors: [Author("me1")], published: Date(timeIntervalSince1970: 1), updatedAt: nil, identifier: "ident1", content: oldContent, read: true, synced: false, estimatedReadingTime: 2, feed: oldFeed1, flags: ["hello", "there"])
+                    let changedArticle = Article(title: "oldarticle1", link: URL(string: "https://example.com/feed1/1")!, summary: "old1Summary", authors: [Author("me1")], published: Date(timeIntervalSince1970: 1), updatedAt: nil, identifier: "ident1", content: oldContent, read: true, synced: false, estimatedReadingTime: 120, feed: oldFeed1, flags: ["hello", "there"])
 
                     expect(newDatabase.articles).to(contain(changedArticle))
                     expect(newDatabase.articles).toNot(contain(oldArticle1))

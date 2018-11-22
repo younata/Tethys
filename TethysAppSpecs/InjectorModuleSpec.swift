@@ -24,12 +24,10 @@ final class InjectorModuleSpec: QuickSpec {
             singleton(SettingsRepository.self)
             singleton(ThemeRepository.self)
             singleton(QuickActionRepository.self)
-            singleton(LocalNotificationSource.self)
         }
 
         describe("Use Cases and Handlers") {
             isA(BackgroundFetchHandler.self, kindOf: DefaultBackgroundFetchHandler.self)
-            isA(NotificationHandler.self, kindOf: LocalNotificationHandler.self)
 
             isA(ArticleUseCase.self, kindOf: DefaultArticleUseCase.self)
             isA(DocumentationUseCase.self, kindOf: DefaultDocumentationUseCase.self)

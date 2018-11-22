@@ -18,4 +18,18 @@ final class FakeArticleService: ArticleService {
         self.authorsCalls.append(article)
         return self.authorStub(article)
     }
+
+    var dateForArticleStub: [Article: Date] = [:]
+    private(set) var dateForArticleCalls: [Article] = []
+    func date(for article: Article) -> Date {
+        self.dateForArticleCalls.append(article)
+        return self.dateForArticleStub[article] ?? Date()
+    }
+
+    var estimatedReadingTimeStub: [Article: TimeInterval] = [:]
+    private(set) var estimatedReadingTimeCalls: [Article] = []
+    func estimatedReadingTime(of article: Article) -> TimeInterval {
+        self.estimatedReadingTimeCalls.append(article)
+        return self.estimatedReadingTimeStub[article] ?? 0
+    }
 }

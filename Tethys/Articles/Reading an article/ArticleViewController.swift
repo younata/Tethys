@@ -35,13 +35,13 @@ public final class ArticleViewController: UIViewController {
     public let themeRepository: ThemeRepository
     fileprivate let articleUseCase: ArticleUseCase
     fileprivate let htmlViewController: HTMLViewController
-    fileprivate let htmlViewControllerFactory: (Void) -> HTMLViewController
-    fileprivate let articleListController: (Void) -> ArticleListController
+    fileprivate let htmlViewControllerFactory: () -> HTMLViewController
+    fileprivate let articleListController: () -> ArticleListController
 
     public init(themeRepository: ThemeRepository,
                 articleUseCase: ArticleUseCase,
-                htmlViewController: @escaping (Void) -> HTMLViewController,
-                articleListController: @escaping (Void) -> ArticleListController) {
+                htmlViewController: @escaping () -> HTMLViewController,
+                articleListController: @escaping () -> ArticleListController) {
         self.themeRepository = themeRepository
         self.articleUseCase = articleUseCase
         self.htmlViewController = htmlViewController()

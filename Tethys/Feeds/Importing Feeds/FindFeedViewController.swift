@@ -152,7 +152,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         var commands = [focusNavField, reloadContent]
 
         if !self.rssLinks.isEmpty {
-            let selector = #selector(FindFeedViewController.save as (FindFeedViewController) -> (Void) -> Void)
+            let selector = #selector(FindFeedViewController.save as (FindFeedViewController) -> () -> Void)
             let importFeed = UIKeyCommand(input: "i", modifierFlags: [], action: selector)
             importFeed.discoverabilityTitle =
                 NSLocalizedString("FindFeedViewController_FoundFeed_Import", comment: "")
@@ -365,7 +365,7 @@ extension FindFeedViewController {
         }
     }
 
-    fileprivate func displayAlertToSave(_ alertTitle: String, alertMessage: String, success: @escaping (Void) -> Void) {
+    fileprivate func displayAlertToSave(_ alertTitle: String, alertMessage: String, success: @escaping () -> Void) {
         let doNotSave = NSLocalizedString("FindFeedViewController_FoundFeed_Decline", comment: "")
         let save = NSLocalizedString("FindFeedViewController_FoundFeed_Import", comment: "")
 

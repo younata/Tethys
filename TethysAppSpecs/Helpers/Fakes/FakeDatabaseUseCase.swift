@@ -10,8 +10,8 @@ class FakeDatabaseUseCase: DatabaseUseCase {
     }
 
     var performDatabaseUpdatesProgress: ((Double) -> Void)?
-    var perfomDatabaseUpdatesCallback: ((Void) -> Void)?
-    func performDatabaseUpdates(_ progress: @escaping (Double) -> Void, callback: @escaping (Void) -> Void) {
+    var perfomDatabaseUpdatesCallback: (() -> Void)?
+    func performDatabaseUpdates(_ progress: @escaping (Double) -> Void, callback: @escaping () -> Void) {
         self.performDatabaseUpdatesProgress = progress
         self.perfomDatabaseUpdatesCallback = callback
     }
@@ -39,16 +39,6 @@ class FakeDatabaseUseCase: DatabaseUseCase {
     func articlesMatchingQuery(_ query: String) -> Future<Result<[Article], TethysError>> {
         let promise = Promise<Result<[Article], TethysError>>()
         self.articlesMatchingQueryPromises.append(promise)
-        return promise.future
-    }
-
-    var relatedArticlesPromises: [Promise<Result<[Article], TethysError>>] = []
-    var relatedArticles: [Article] = []
-    public func findRelatedArticles(to article: Article) -> Future<Result<[Article], TethysError>> {
-        self.relatedArticles.append(article)
-
-        let promise = Promise<Result<[Article], TethysError>>()
-        self.relatedArticlesPromises.append(promise)
         return promise.future
     }
 

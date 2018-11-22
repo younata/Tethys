@@ -197,29 +197,6 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             }
         }
 
-        it("finds all other articles that this article might link to") {
-            article?.content = "<a href=\"https://example.com/other_article/\"></a>"
-
-            var otherArticle: TethysKit.Article?
-
-            let createExpectation = spec.expectation(description: "Create Article")
-            dataService.createArticle(url: URL(string: "https://example.com/other_article/")!, feed: nil) {
-                otherArticle = $0
-                otherArticle?.synced = false
-                createExpectation.fulfill()
-            }
-            spec.waitForExpectations(timeout: 1, handler: nil)
-
-            let value = dataService.findRelatedArticles(to: article!).wait()
-
-            expect(value).toNot(beNil())
-            expect(value?.value).to(equal([otherArticle!]))
-
-            if let otherArticle = otherArticle {
-                _ = dataService.deleteArticle(otherArticle).wait()
-            }
-        }
-
         it("easily allows an article to be updated, filtering out title information") {
             guard let article = article else { fail(); return }
             let author = FakeImportableAuthor(name: "Rachel Brindle", email: URL(string: "mailto:rachel@example.com"))

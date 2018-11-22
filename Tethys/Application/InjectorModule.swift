@@ -52,7 +52,8 @@ public func configure(container: Container) {
     container.register(ArticleUseCase.self) { r in
         return DefaultArticleUseCase(
             feedRepository: r.resolve(DatabaseUseCase.self)!,
-            themeRepository: r.resolve(ThemeRepository.self)!
+            themeRepository: r.resolve(ThemeRepository.self)!,
+            articleService: r.resolve(ArticleService.self)!
         )
     }
 

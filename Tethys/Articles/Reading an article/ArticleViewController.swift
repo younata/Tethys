@@ -194,36 +194,16 @@ public final class ArticleViewController: UIViewController {
 
 extension ArticleViewController: HTMLViewControllerDelegate {
     public func openURL(url: URL) -> Bool {
-        if let openArticle = self.article,
-            let article = self.articleUseCase.relatedArticles(to: openArticle).first(where: { return $0.link == url }) {
-            let articleController = ArticleViewController(themeRepository: self.themeRepository,
-                                                          articleUseCase: self.articleUseCase,
-                                                          htmlViewController: self.htmlViewControllerFactory,
-                                                          articleListController: self.articleListController)
-            articleController.setArticle(article, read: true, show: true)
-            self.navigationController?.pushViewController(articleController, animated: true)
-        } else {
-            self.openURL(url)
-        }
+        self.openURL(url)
         return true
     }
 
     public func peekURL(url: URL) -> UIViewController? {
-        if let openArticle = self.article,
-            let article = self.articleUseCase.relatedArticles(to: openArticle).first(where: { return $0.link == url }) {
-            let articleController = ArticleViewController(themeRepository: self.themeRepository,
-                                                          articleUseCase: self.articleUseCase,
-                                                          htmlViewController: self.htmlViewControllerFactory,
-                                                          articleListController: self.articleListController)
-            articleController.setArticle(article, read: true, show: true)
-            return articleController
-        } else {
-            return SFSafariViewController(url: url)
-        }
+        return SFSafariViewController(url: url)
     }
 
     public func commitViewController(viewController: UIViewController) {
-        if let _ = viewController as? SFSafariViewController {
+        if viewController is SFSafariViewController {
             self.present(viewController, animated: true, completion: nil)
         } else {
             self.navigationController?.pushViewController(viewController, animated: true)

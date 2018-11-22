@@ -64,7 +64,6 @@ final class RealmArticle: Object {
     let flags = List<RealmString>()
     dynamic var feed: RealmFeed?
     let authors = List<RealmAuthor>()
-    let relatedArticles = List<RealmArticle>()
 
     dynamic var id: String = UUID().uuidString
     override static func primaryKey() -> String? {

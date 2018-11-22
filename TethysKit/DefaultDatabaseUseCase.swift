@@ -70,10 +70,6 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
             return articles.filterWithPredicate(compoundPredicate)
     }
 
-    func findRelatedArticles(to article: Article) -> Future<Result<[Article], TethysError>> {
-        return self.dataService.findRelatedArticles(to: article)
-    }
-
     // MARK: Private (DataRetriever)
 
     private func allFeeds() -> Future<Result<[Feed], TethysError>> {

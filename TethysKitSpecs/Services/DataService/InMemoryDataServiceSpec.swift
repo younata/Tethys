@@ -149,9 +149,6 @@ class InMemoryDataServiceSpec: QuickSpec {
                     read: false, synced: false, estimatedReadingTime: 0, feed: feed2, flags: [])
                 feed2.addArticle(article3)
 
-                article3.relatedArticles.append(article2)
-                article2.relatedArticles.append(article3)
-
                 subject.feeds = [feed1, feed2]
                 subject.articles = [article1, article2, article3]
             }
@@ -168,9 +165,6 @@ class InMemoryDataServiceSpec: QuickSpec {
                     _ = subject.articlesMatchingPredicate(NSPredicate(value: true)).then {
                         guard case let Result.success(articles) = $0 else { return }
                         expect(Array(articles)) == [article1, article2, article3]
-
-                        expect(articles[1].relatedArticles.contains(article3)).to(beTruthy())
-                        expect(articles[2].relatedArticles.contains(article2)).to(beTruthy())
                     }.wait()
 
                     _ = subject.articlesMatchingPredicate(NSPredicate(format: "title == %@", "article1")).then {

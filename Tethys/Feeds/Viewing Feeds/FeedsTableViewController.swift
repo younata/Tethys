@@ -74,22 +74,21 @@ public final class FeedsTableViewController: UIViewController {
     fileprivate let settingsRepository: SettingsRepository
     fileprivate let mainQueue: OperationQueue
 
-    fileprivate let findFeedViewController: (Void) -> FindFeedViewController
-    fileprivate let feedViewController: (Void) -> FeedViewController
-    fileprivate let settingsViewController: (Void) -> SettingsViewController
-    fileprivate let articleListController: (Void) -> ArticleListController
+    fileprivate let findFeedViewController: () -> FindFeedViewController
+    fileprivate let feedViewController: () -> FeedViewController
+    fileprivate let settingsViewController: () -> SettingsViewController
+    fileprivate let articleListController: () -> ArticleListController
 
     fileprivate var markReadFuture: Future<Result<Int, TethysError>>? = nil
 
-    // swiftlint:disable function_parameter_count
     public init(feedRepository: DatabaseUseCase,
                 themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
                 mainQueue: OperationQueue,
-                findFeedViewController: @escaping (Void) -> FindFeedViewController,
-                feedViewController: @escaping (Void) -> FeedViewController,
-                settingsViewController: @escaping (Void) -> SettingsViewController,
-                articleListController: @escaping (Void) -> ArticleListController
+                findFeedViewController: @escaping () -> FindFeedViewController,
+                feedViewController: @escaping () -> FeedViewController,
+                settingsViewController: @escaping () -> SettingsViewController,
+                articleListController: @escaping () -> ArticleListController
         ) {
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository
@@ -101,7 +100,6 @@ public final class FeedsTableViewController: UIViewController {
         self.articleListController = articleListController
         super.init(nibName: nil, bundle: nil)
     }
-    // swiftlint:enable function_parameter_count
 
     public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 

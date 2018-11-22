@@ -8,6 +8,5 @@ group :development, :test do
   gem "rest-client"
   gem "octokit"
   gem "pivotal-tracker"
-  gem "carthage_cache"
   gem "kramdown"
 end

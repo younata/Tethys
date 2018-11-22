@@ -16,11 +16,11 @@ public final class FeedViewController: UIViewController {
 
     private let feedRepository: DatabaseUseCase
     private let themeRepository: ThemeRepository
-    fileprivate let tagEditorViewController: (Void) -> TagEditorViewController
+    fileprivate let tagEditorViewController: () -> TagEditorViewController
 
     public init(feedRepository: DatabaseUseCase,
                 themeRepository: ThemeRepository,
-                tagEditorViewController: @escaping (Void) -> TagEditorViewController) {
+                tagEditorViewController: @escaping () -> TagEditorViewController) {
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository
         self.tagEditorViewController = tagEditorViewController

@@ -121,29 +121,6 @@ extension DataService {
         article.authors = authors
     }
 
-    func findRelatedArticles(to article: Article) -> Future<Result<[Article], TethysError>> {
-        let promise = Promise<Result<[Article], TethysError>>()
-
-        let content = article.content.isEmpty ? article.summary : article.content
-
-        let parser = WebPageParser(string: content) { urls in
-            let links = urls.flatMap { URL(string: $0.absoluteString, relativeTo: article.feed?.url)?.absoluteString }
-            _ = self.articlesMatchingPredicate(NSPredicate(format: "link IN %@", links)).then { result in
-                switch result {
-                case let .success(related):
-                    related.forEach(article.addRelatedArticle)
-                    _ = self.batchSave([], articles: [article] + related).wait()
-                    promise.resolve(.success(Array(related)))
-                case let .failure(error):
-                    promise.resolve(.failure(error))
-                }
-            }
-        }
-        parser.searchType = .links
-        parser.main()
-        return promise.future
-    }
-
     func updateSearchIndexForArticle(_ article: Article) {
         #if os(iOS)
             let identifier = article.identifier

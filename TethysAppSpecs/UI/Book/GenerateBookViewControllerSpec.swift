@@ -70,7 +70,7 @@ class GenerateBookViewControllerSpec: QuickSpec {
         }
 
         describe("setting the articles") {
-            let articles: [Article] = [
+            let articles = AnyCollection([
                 Article(title: "Article 1", link: URL(string: "https://example.com/1")!, summary: "", authors: [],
                         published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
                         synced: false, estimatedReadingTime: 0, feed: nil, flags: []),
@@ -80,16 +80,11 @@ class GenerateBookViewControllerSpec: QuickSpec {
                 Article(title: "Article 3", link: URL(string: "https://example.com/3")!, summary: "", authors: [],
                         published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
                         synced: false, estimatedReadingTime: 0, feed: nil, flags: []),
-            ]
-            let articlesArray = DataStoreBackedArray(articles)
+            ])
 
             it("also sets the articles on the chapterorganizer") {
-                subject.articles = articlesArray
-                if let chapterOrganizerArticles = subject.chapterOrganizer.articles {
-                    expect(Array(chapterOrganizerArticles)) == articles
-                } else {
-                    fail("chapter organizer doesn't have articles")
-                }
+                subject.articles = articles
+                expect(Array(subject.chapterOrganizer.articles)) == Array(articles)
             }
         }
 

@@ -310,6 +310,10 @@
 		8994320A219A813800FC6EB6 /* RealmArticleServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89943209219A813800FC6EB6 /* RealmArticleServiceSpec.swift */; };
 		8994320B219A813C00FC6EB6 /* RealmArticleServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89943209219A813800FC6EB6 /* RealmArticleServiceSpec.swift */; };
 		89943210219A921100FC6EB6 /* ModelFactories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8994320F219A921100FC6EB6 /* ModelFactories.swift */; };
+		89943212219AAA4900FC6EB6 /* FakeArticleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89943211219AAA4900FC6EB6 /* FakeArticleService.swift */; };
+		89943213219AAA5000FC6EB6 /* FakeArticleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89943211219AAA4900FC6EB6 /* FakeArticleService.swift */; };
+		89943214219AAA5200FC6EB6 /* FakeArticleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89943211219AAA4900FC6EB6 /* FakeArticleService.swift */; };
+		89943215219AAA5300FC6EB6 /* FakeArticleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89943211219AAA4900FC6EB6 /* FakeArticleService.swift */; };
 		8994F0EB1C8F53E600920E6D /* AuthorActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8994F0EA1C8F53E600920E6D /* AuthorActivity.swift */; };
 		8994F0F41C8F899600920E6D /* UIViewController+TethysTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8994F0F31C8F899600920E6D /* UIViewController+TethysTests.m */; };
 		899788811C508BB400B408C4 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899788801C508BB400B408C4 /* SnapshotHelper.swift */; };
@@ -420,6 +424,10 @@
 		89F98BA61BA07DC6005C3CA8 /* SettingsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA51BA07DC6005C3CA8 /* SettingsRepository.swift */; };
 		89F98BA81BA07E50005C3CA8 /* SettingsRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA71BA07E50005C3CA8 /* SettingsRepositorySpec.swift */; };
 		89F98BAA1BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA91BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift */; };
+		89FA3BD121A66F990026BC88 /* RealmProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FA3BD021A66F990026BC88 /* RealmProvider.swift */; };
+		89FA3BD321A6706D0026BC88 /* RealmProviderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FA3BD221A6706D0026BC88 /* RealmProviderSpec.swift */; };
+		89FA3BD421A670980026BC88 /* RealmProviderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FA3BD221A6706D0026BC88 /* RealmProviderSpec.swift */; };
+		89FA3BD521A6712A0026BC88 /* RealmProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FA3BD021A66F990026BC88 /* RealmProvider.swift */; };
 		89FF979E1BF058FB000080F7 /* DataStoreBackedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */; };
 		89FF97A11BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF97A01BF05CDC000080F7 /* DataStoreBackedArraySpec.swift */; };
 		89FF97A21BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF97A01BF05CDC000080F7 /* DataStoreBackedArraySpec.swift */; };
@@ -765,6 +773,7 @@
 		8992D43D1C37C9B0004A5A35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89943209219A813800FC6EB6 /* RealmArticleServiceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmArticleServiceSpec.swift; sourceTree = "<group>"; };
 		8994320F219A921100FC6EB6 /* ModelFactories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelFactories.swift; sourceTree = "<group>"; };
+		89943211219AAA4900FC6EB6 /* FakeArticleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeArticleService.swift; sourceTree = "<group>"; };
 		8994F0EA1C8F53E600920E6D /* AuthorActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorActivity.swift; sourceTree = "<group>"; };
 		8994F0F21C8F899600920E6D /* UIViewController+TethysTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+TethysTests.h"; sourceTree = "<group>"; };
 		8994F0F31C8F899600920E6D /* UIViewController+TethysTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+TethysTests.m"; sourceTree = "<group>"; };
@@ -873,6 +882,8 @@
 		89F98BA51BA07DC6005C3CA8 /* SettingsRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsRepository.swift; sourceTree = "<group>"; };
 		89F98BA71BA07E50005C3CA8 /* SettingsRepositorySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsRepositorySpec.swift; sourceTree = "<group>"; };
 		89F98BA91BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCellSpec.swift; sourceTree = "<group>"; };
+		89FA3BD021A66F990026BC88 /* RealmProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmProvider.swift; sourceTree = "<group>"; };
+		89FA3BD221A6706D0026BC88 /* RealmProviderSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmProviderSpec.swift; sourceTree = "<group>"; };
 		89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataStoreBackedArray.swift; path = ../DataStoreBackedArray.swift; sourceTree = "<group>"; };
 		89FF97A01BF05CDC000080F7 /* DataStoreBackedArraySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreBackedArraySpec.swift; sourceTree = "<group>"; };
 		AE4356301A7AE4FE00A961B9 /* InjectorModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InjectorModule.swift; sourceTree = "<group>"; };
@@ -1043,6 +1054,7 @@
 				895AC51A1C7FF27300A5F6A1 /* RealmMigrator.swift */,
 				8917546F1C5B449E0036D96D /* RealmObjects.swift */,
 				891754721C5B485B0036D96D /* RealmService.swift */,
+				89FA3BD021A66F990026BC88 /* RealmProvider.swift */,
 			);
 			path = Realm;
 			sourceTree = "<group>";
@@ -1409,6 +1421,7 @@
 				8999CC0E1C2E796100B81F5F /* DataServiceSpec.swift */,
 				89500B221CDEA26E004548C3 /* InMemoryDataServiceSpec.swift */,
 				891754781C5B48D40036D96D /* RealmServiceSpec.swift */,
+				89FA3BD221A6706D0026BC88 /* RealmProviderSpec.swift */,
 			);
 			path = DataService;
 			sourceTree = "<group>";
@@ -1652,6 +1665,7 @@
 		89D2566F1C3CC011004066B9 /* Fakes */ = {
 			isa = PBXGroup;
 			children = (
+				89943211219AAA4900FC6EB6 /* FakeArticleService.swift */,
 				89CBDBFD1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift */,
 				89CBDBF81C7D32EE006B70F5 /* FakeDataServiceFactory.swift */,
 				89628BE01CE175F100B4C624 /* FakeDataSubscriber.swift */,
@@ -2032,7 +2046,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0720;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = "Rachel Brindle";
 				TargetAttributes = {
 					894304201B45089A000078DC = {
@@ -2323,6 +2337,7 @@
 				89CC82061B461A5500648367 /* KitModule.swift in Sources */,
 				8978C531219A7FDC00D702BB /* ArticleService.swift in Sources */,
 				89146E401C88C6A700EC8F10 /* MigrationUseCase.swift in Sources */,
+				89FA3BD121A66F990026BC88 /* RealmProvider.swift in Sources */,
 				894304411B450A00000078DC /* OPMLService.swift in Sources */,
 				895AC51B1C7FF27300A5F6A1 /* RealmMigrator.swift in Sources */,
 				891754701C5B449E0036D96D /* RealmObjects.swift in Sources */,
@@ -2368,10 +2383,12 @@
 				890C8D3C1DE376D100A037D7 /* FakeSpondeService.swift in Sources */,
 				892E77151E09A49900866336 /* FakeTimerFactory.swift in Sources */,
 				8992D4331C3665B7004A5A35 /* FakeUpdateService.swift in Sources */,
+				89FA3BD321A6706D0026BC88 /* RealmProviderSpec.swift in Sources */,
 				8903F5BC1D404EA800546099 /* FakeUpdateUseCase.swift in Sources */,
 				8935F5DF1B462AD2000FFD5D /* FakeURLSession.swift in Sources */,
 				8903F5B01D4022AD00546099 /* FakeUserDefaults.swift in Sources */,
 				8935F5D91B4628B3000FFD5D /* FeedSpec.swift in Sources */,
+				89943212219AAA4900FC6EB6 /* FakeArticleService.swift in Sources */,
 				890C8D3A1DE3729B00A037D7 /* GenerateBookUseCaseSpec.swift in Sources */,
 				89146E441C88C73200EC8F10 /* ImportUseCaseSpec.swift in Sources */,
 				89500B231CDEA26E004548C3 /* InMemoryDataServiceSpec.swift in Sources */,
@@ -2409,6 +2426,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89FA3BD521A6712A0026BC88 /* RealmProvider.swift in Sources */,
 				8983204A1DC1216B00E32412 /* Analytics.swift in Sources */,
 				8983204E1DC1216B00E32412 /* Array+TethysKit.swift in Sources */,
 				898979591B70808300218498 /* Article.swift in Sources */,
@@ -2456,6 +2474,7 @@
 				898979A81B708E7800218498 /* DefaultDatabaseUseCaseSpec.swift in Sources */,
 				89CBDBFF1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift in Sources */,
 				8994320B219A813C00FC6EB6 /* RealmArticleServiceSpec.swift in Sources */,
+				89943215219AAA5300FC6EB6 /* FakeArticleService.swift in Sources */,
 				89146E4D1C88F01800EC8F10 /* FakeDatabaseUseCase.swift in Sources */,
 				89CBDBFA1C7D32EE006B70F5 /* FakeDataServiceFactory.swift in Sources */,
 				898320571DC121B400E32412 /* FakeDataSubscriber.swift in Sources */,
@@ -2470,6 +2489,7 @@
 				8992D4341C3665B7004A5A35 /* FakeUpdateService.swift in Sources */,
 				898320591DC121B400E32412 /* FakeUpdateUseCase.swift in Sources */,
 				898979B81B708F0C00218498 /* FakeURLSession.swift in Sources */,
+				89FA3BD421A670980026BC88 /* RealmProviderSpec.swift in Sources */,
 				898320C21DC1447A00E32412 /* FakeUserDefaults.swift in Sources */,
 				898979AA1B708E7800218498 /* FeedSpec.swift in Sources */,
 				89A3A9021DF0910B002AF9B5 /* GenerateBookUseCaseSpec.swift in Sources */,
@@ -2491,6 +2511,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89943214219AAA5200FC6EB6 /* FakeArticleService.swift in Sources */,
 				898979E31B72FF9A00218498 /* AppDelegateSpec.swift in Sources */,
 				8937F6B71B77AE5F0044A442 /* AppModuleSpec.swift in Sources */,
 				8958EC421DCBF5F80000159B /* BlankTarget.swift in Sources */,
@@ -2623,6 +2644,7 @@
 				89E2A33F1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift in Sources */,
 				89C204C21A73FEDA00C792D2 /* SplitViewControllerSpec.swift in Sources */,
 				89F98BAA1BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift in Sources */,
+				89943213219AAA5000FC6EB6 /* FakeArticleService.swift in Sources */,
 				899823A91B2C76B800818755 /* TagEditorViewControllerSpec.swift in Sources */,
 				8997C8511B255A1900972930 /* TagPickerViewSpec.swift in Sources */,
 				8918D4DD1B859D3B00DCDE0E /* ThemeRepositorySpec.swift in Sources */,
@@ -3058,14 +3080,22 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -3112,14 +3142,22 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;

@@ -4,35 +4,34 @@ import Result
 import CBGPromise
 
 public protocol ArticleUseCase {
-    func articlesByAuthor(_ author: Author, callback: @escaping (DataStoreBackedArray<Article>) -> Void)
+    func articlesByAuthor(_ author: Author, callback: @escaping (AnyCollection<Article>) -> Void)
 
     func readArticle(_ article: Article) -> String
     func userActivityForArticle(_ article: Article) -> NSUserActivity
     func toggleArticleRead(_ article: Article)
-
-    func relatedArticles(to article: Article) -> [Article]
 }
 
 public final class DefaultArticleUseCase: NSObject, ArticleUseCase {
     private let feedRepository: DatabaseUseCase
     private let themeRepository: ThemeRepository
-
-    private var relatedArticles: [Article: Future<Result<[Article], TethysError>>] = [:]
+    private let articleService: ArticleService
 
     public init(feedRepository: DatabaseUseCase,
-                themeRepository: ThemeRepository) {
+                themeRepository: ThemeRepository,
+                articleService: ArticleService) {
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository
+        self.articleService = articleService
         super.init()
     }
 
-    public func articlesByAuthor(_ author: Author, callback: @escaping (DataStoreBackedArray<Article>) -> Void) {
+    public func articlesByAuthor(_ author: Author, callback: @escaping (AnyCollection<Article>) -> Void) {
         _ = self.feedRepository.feeds().then {
             guard case let Result.success(feeds) = $0 else {
-                callback(DataStoreBackedArray<Article>([]))
+                callback(AnyCollection<Article>([]))
                 return
             }
-            guard let initial = feeds.first?.articlesArray else { return callback(DataStoreBackedArray()) }
+            guard let initial = feeds.first?.articlesArray else { return callback(AnyCollection<Article>([])) }
 
             let allArticles: DataStoreBackedArray<Article> = feeds[1..<feeds.count].reduce(initial) {
                 return $0.combine($1.articlesArray)
@@ -49,22 +48,12 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase {
                     author.name)
             }
 
-            callback(allArticles.filterWithPredicate(predicate))
+            callback(AnyCollection(allArticles.filterWithPredicate(predicate)))
         }
-    }
-
-    public func relatedArticles(to article: Article) -> [Article] {
-        if self.relatedArticles[article] == nil {
-            self.relatedArticles[article] = self.feedRepository.findRelatedArticles(to: article)
-        }
-        return self.relatedArticles[article]?.value?.value ?? Array(article.relatedArticles)
     }
 
     public func readArticle(_ article: Article) -> String {
         if !article.read { _ = self.feedRepository.markArticle(article, asRead: true) }
-        if self.relatedArticles[article] == nil {
-            self.relatedArticles[article] = self.feedRepository.findRelatedArticles(to: article)
-        }
         return self.htmlForArticle(article)
     }
 

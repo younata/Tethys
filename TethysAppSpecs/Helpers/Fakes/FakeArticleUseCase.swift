@@ -2,16 +2,17 @@ import TethysKit
 import Tethys
 import CBGPromise
 import Result
+
 class FakeArticleUseCase: ArticleUseCase {
     init() {
     }
 
     private(set) var articlesByAuthorCallCount : Int = 0
-    private var articlesByAuthorArgs : Array<(Author, (DataStoreBackedArray<Article>) -> Void)> = []
-    func articlesByAuthorArgsForCall(_ callIndex: Int) -> (Author, (DataStoreBackedArray<Article>) -> Void) {
+    private var articlesByAuthorArgs : Array<(Author, (AnyCollection<Article>) -> Void)> = []
+    func articlesByAuthorArgsForCall(_ callIndex: Int) -> (Author, (AnyCollection<Article>) -> Void) {
         return self.articlesByAuthorArgs[callIndex]
     }
-    func articlesByAuthor(_ author: Author, callback: @escaping (DataStoreBackedArray<Article>) -> Void) {
+    func articlesByAuthor(_ author: Author, callback: @escaping (AnyCollection<Article>) -> Void) {
         self.articlesByAuthorCallCount += 1
         self.articlesByAuthorArgs.append((author, callback))
     }
@@ -27,7 +28,7 @@ class FakeArticleUseCase: ArticleUseCase {
     func readArticleArgsForCall(_ callIndex: Int) -> (Article) {
         return self.readArticleArgs[callIndex]
     }
-    func readArticle(_ article: Article) -> (String) {
+    func readArticle(_ article: Article) -> String {
         self.readArticleCallCount += 1
         self.readArticleArgs.append((article))
         return self.readArticleStub!(article)
@@ -44,7 +45,7 @@ class FakeArticleUseCase: ArticleUseCase {
     func userActivityForArticleArgsForCall(_ callIndex: Int) -> (Article) {
         return self.userActivityForArticleArgs[callIndex]
     }
-    func userActivityForArticle(_ article: Article) -> (NSUserActivity) {
+    func userActivityForArticle(_ article: Article) -> NSUserActivity {
         self.userActivityForArticleCallCount += 1
         self.userActivityForArticleArgs.append((article))
         return self.userActivityForArticleStub!(article)
@@ -58,25 +59,5 @@ class FakeArticleUseCase: ArticleUseCase {
     func toggleArticleRead(_ article: Article) {
         self.toggleArticleReadCallCount += 1
         self.toggleArticleReadArgs.append((article))
-    }
-
-    private(set) var relatedArticlesCallCount : Int = 0
-    private var relatedArticlesArgs : Array<(Article)> = []
-    func relatedArticlesArgsForCall(_ callIndex: Int) -> (Article) {
-        return self.relatedArticlesArgs[callIndex]
-    }
-    private var relatedArticlesStub : ((Article) -> [Article])?
-    func relatedArticlesReturns(_ stubbedValues: ([Article])) {
-        self.relatedArticlesStub = {(article: Article) -> ([Article]) in
-            return stubbedValues
-        }
-    }
-    public func relatedArticles(to article: Article) -> [Article] {
-        self.relatedArticlesCallCount += 1
-        self.relatedArticlesArgs.append(article)
-        return self.relatedArticlesStub!(article)
-    }
-
-    static func reset() {
     }
 }

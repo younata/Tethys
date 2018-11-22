@@ -98,11 +98,6 @@ public final class Article: NSObject {
     }
     public private(set) var flags: [String] = []
 
-    @available(*, deprecated, renamed: "relatedArticlesArray")
-    public private(set) var relatedArticles = DataStoreBackedArray<Article>()
-    @available(*, deprecated, message: "Query an ArticleService for the related articles")
-    public var relatedArticlesArray: [Article] { return Array(self.relatedArticles) }
-
     internal private(set) var updated: Bool = false
 
     @available(*, deprecated, message: "Query an ArticleService for the author string")
@@ -183,20 +178,6 @@ public final class Article: NSObject {
         self.feed = feed
         self.flags = article.flags.map { $0.string }
         super.init()
-        if let realm = article.realm {
-            let relatedArticleIds = article.relatedArticles.map { $0.id }
-            self.relatedArticles = DataStoreBackedArray(realmDataType: RealmArticle.self,
-                predicate: NSPredicate(format: "id IN %@", Array(relatedArticleIds)),
-                realmConfiguration: realm.configuration,
-                conversionFunction: { object in
-                    let article = object as! RealmArticle
-                    let feed: Feed?
-                    if let realmFeed = article.feed {
-                        feed = Feed(realmFeed: realmFeed)
-                    } else { feed = nil }
-                    return Article(realmArticle: article, feed: feed)
-            })
-        }
         self.articleID = article.id as AnyObject?
         self.updated = false
     }
@@ -211,25 +192,6 @@ public final class Article: NSObject {
     public func removeFlag(_ flag: String) {
         if self.flags.contains(flag) {
             self.flags = self.flags.filter { $0 != flag }
-            self.updated = true
-        }
-    }
-
-    @available(*, deprecated, message: "Use an ArticleService to add related articles")
-    public func addRelatedArticle(_ article: Article) {
-        guard article != self else { return }
-        if !self.relatedArticles.contains(article) {
-            self.relatedArticles.append(article)
-            article.addRelatedArticle(self)
-            self.updated = true
-        }
-    }
-
-    @available(*, deprecated, message: "Use an ArticleService to remove related articles")
-    public func removeRelatedArticle(_ article: Article) {
-        if self.relatedArticles.contains(article) {
-            _ = self.relatedArticles.remove(article)
-            article.removeRelatedArticle(self)
             self.updated = true
         }
     }

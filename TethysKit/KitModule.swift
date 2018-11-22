@@ -4,6 +4,7 @@ import Swinject
     import CoreSpotlight
 #endif
 import Reachability
+import RealmSwift
 import Sponde
 
 public let kMainQueue = "kMainQueue"
@@ -51,6 +52,13 @@ public func configure(container: Container) {
         )
     }
 
+    container.register(BackgroundStateMonitor.self) { _ in BackgroundStateMonitor(notificationCenter: .default) }
+
+    configureServices(container: container)
+    configureUseCases(container: container)
+}
+
+private func configureServices(container: Container) {
     container.register(DatabaseMigratorType.self) { _ in
         return DatabaseMigrator()
     }
@@ -74,25 +82,17 @@ public func configure(container: Container) {
         )
     }
 
-    container.register(UpdateUseCase.self) { r in
-        return DefaultUpdateUseCase(
-            updateService: r.resolve(UpdateServiceType.self)!,
-            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
-            userDefaults: r.resolve(UserDefaults.self)!
-        )
-    }.inObjectScope(.container)
+    container.register(RealmProvider.self) { _ in
+        return DefaultRealmProvider(configuration: Realm.Configuration.defaultConfiguration)
+    }
 
-    container.register(BackgroundStateMonitor.self) { _ in BackgroundStateMonitor(notificationCenter: .default) }
-
-    container.register(DatabaseUseCase.self) { r in
-        return DefaultDatabaseUseCase(
+    container.register(ArticleService.self) { r in
+        return RealmArticleService(
+            realmProvider: r.resolve(RealmProvider.self)!,
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
-            reachable: r.resolve(Reachability.self),
-            dataServiceFactory: r.resolve(DataServiceFactoryType.self)!,
-            updateUseCase: r.resolve(UpdateUseCase.self)!,
-            databaseMigrator: r.resolve(DatabaseMigratorType.self)!
+            workQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!
         )
-    }.inObjectScope(.container)
+    }
 
     container.register(OPMLService.self) { r in
         return DefaultOPMLService(
@@ -101,7 +101,9 @@ public func configure(container: Container) {
             importQueue: r.resolve(OperationQueue.self, name: kBackgroundQueue)!
         )
     }.inObjectScope(.container)
+}
 
+private func configureUseCases(container: Container) {
     container.register(MigrationUseCase.self) { r in
         return DefaultMigrationUseCase(feedRepository: r.resolve(DatabaseUseCase.self)!)
     }
@@ -123,4 +125,22 @@ public func configure(container: Container) {
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!
         )
     }
+
+    container.register(DatabaseUseCase.self) { r in
+        return DefaultDatabaseUseCase(
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            reachable: r.resolve(Reachability.self),
+            dataServiceFactory: r.resolve(DataServiceFactoryType.self)!,
+            updateUseCase: r.resolve(UpdateUseCase.self)!,
+            databaseMigrator: r.resolve(DatabaseMigratorType.self)!
+        )
+    }.inObjectScope(.container)
+
+    container.register(UpdateUseCase.self) { r in
+        return DefaultUpdateUseCase(
+            updateService: r.resolve(UpdateServiceType.self)!,
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            userDefaults: r.resolve(UserDefaults.self)!
+        )
+    }.inObjectScope(.container)
 }

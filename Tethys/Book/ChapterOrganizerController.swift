@@ -31,7 +31,7 @@ public class ChapterOrganizerController: UIViewController {
     }()
 
     public weak var delegate: ChapterOrganizerControllerDelegate?
-    public weak var articles: DataStoreBackedArray<Article>?
+    public var articles: AnyCollection<Article> = AnyCollection<Article>([])
 
     public var maxHeight: Int {
         get { return self.actionableTableView.maxHeight }
@@ -48,11 +48,11 @@ public class ChapterOrganizerController: UIViewController {
 
     fileprivate var themeRepository: ThemeRepository
     fileprivate var settingsRepository: SettingsRepository
-    private var articleListController: (Void) -> ArticleListController
+    private var articleListController: () -> ArticleListController
 
     public init(themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
-                articleListController: @escaping (Void) -> ArticleListController) {
+                articleListController: @escaping () -> ArticleListController) {
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.articleListController = articleListController
@@ -85,7 +85,7 @@ public class ChapterOrganizerController: UIViewController {
     @objc private func addChapter() {
         let articleList = self.articleListController()
         articleList.delegate = self
-        articleList.articles = self.articles ?? DataStoreBackedArray()
+        articleList.articles = self.articles
         self.navigationController?.pushViewController(articleList, animated: true)
     }
 

@@ -149,8 +149,6 @@ class ArticleViewControllerSpec: QuickSpec {
 
         describe("setting the article") {
             let article = Article(title: "article", link: URL(string: "https://example.com/")!, summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: Date(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
-            let article2 = Article(title: "article2", link: URL(string: "https://example.com/2")!, summary: "summary2", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
-            article.addRelatedArticle(article2)
             let feed = Feed(title: "feed", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
 
             let userActivity = NSUserActivity(activityType: "com.example.test")
@@ -222,7 +220,7 @@ class ArticleViewControllerSpec: QuickSpec {
                         let articleByAuthor = Article(title: "article23", link: URL(string: "https://example.com/")!, summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: Date(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
 
                         beforeEach {
-                            articleUseCase.articlesByAuthorArgsForCall(0).1(DataStoreBackedArray([article, articleByAuthor]))
+                            articleUseCase.articlesByAuthorArgsForCall(0).1(AnyCollection([article, articleByAuthor]))
                         }
 
                         it("configures the articleListController with the articles") {
@@ -243,18 +241,7 @@ class ArticleViewControllerSpec: QuickSpec {
             }
 
             context("tapping a link") {
-                it("navigates to that article if the link goes to a related article") {
-                    articleUseCase.relatedArticlesReturns([article2])
-                    let shouldOpen = htmlViewController.delegate?.openURL(url: article2.link)
-                    expect(shouldOpen) == true
-                    expect(navigationController.topViewController) != subject
-                    expect(navigationController.topViewController).to(beAnInstanceOf(ArticleViewController.self))
-                    guard let articleViewController = navigationController.topViewController as? ArticleViewController else { return }
-                    expect(articleViewController.article) === article2
-                }
-
                 it("opens in an SFSafariViewController") {
-                    articleUseCase.relatedArticlesReturns([])
                     let url = URL(string: "https://example.com")!
                     let shouldOpen = htmlViewController.delegate?.openURL(url: url)
                     expect(shouldOpen) == true
@@ -268,8 +255,6 @@ class ArticleViewControllerSpec: QuickSpec {
                     var viewController: UIViewController?
 
                     beforeEach {
-                        articleUseCase.relatedArticlesReturns([])
-
                         viewController = htmlViewController.delegate?.peekURL(url: URL(string: "https://example.com/foo")!)
                     }
 

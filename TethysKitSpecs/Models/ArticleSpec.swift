@@ -143,37 +143,6 @@ class ArticleSpec: QuickSpec {
             }
         }
 
-        describe("relatedArticles") {
-            var a: Article!
-            var b: Article!
-
-            beforeEach {
-                a = Article(title: "a", link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
-                b = Article(title: "b", link: URL(string: "https://example.com/article2")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
-            }
-
-            it("doesn't let itself be added as a related article") {
-                a.addRelatedArticle(a)
-
-                expect(a.relatedArticles).to(beEmpty())
-            }
-
-            it("adding sets a bidirectional relationship for the two related articles") {
-                a.addRelatedArticle(b)
-                expect(a.relatedArticles.contains(b)).to(beTruthy())
-                expect(b.relatedArticles.contains(a)).to(beTruthy())
-            }
-
-            it("removing removes the relation from both articles") {
-                a.addRelatedArticle(b)
-
-                b.removeRelatedArticle(a)
-
-                expect(a.relatedArticles.contains(b)).toNot(beTruthy())
-                expect(b.relatedArticles.contains(a)).toNot(beTruthy())
-            }
-        }
-
         describe("the updated flag") {
             it("should start negative") {
                 expect(subject.updated) == false
@@ -267,16 +236,6 @@ class ArticleSpec: QuickSpec {
                 it("flags") {
                     subject.addFlag("flag")
                     expect(subject.updated) == true
-                }
-
-                it("relatedArticles") {
-                    let a = Article(title: "a", link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
-                    let b = Article(title: "b", link: URL(string: "https://example.com/article2")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
-
-                    a.addRelatedArticle(b)
-
-                    expect(a.updated) == true
-                    expect(b.updated) == true
                 }
             }
         }

@@ -5,7 +5,7 @@ import Result
 import Sponde
 
 public class GenerateBookViewController: UIViewController {
-    public weak var articles: DataStoreBackedArray<Article>? {
+    public var articles: AnyCollection<Article> = AnyCollection([]) {
         didSet {
             self.chapterOrganizer.articles = articles
         }

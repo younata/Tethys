@@ -12,8 +12,10 @@ import Result
 
 class RealmServiceSpec: QuickSpec {
     override func spec() {
-        let realmConf = Realm.Configuration(inMemoryIdentifier: "RealmServiceSpec")
-        var realm = try! Realm(configuration: realmConf)
+        let realmProvider = DefaultRealmProvider(
+            configuration: Realm.Configuration(inMemoryIdentifier: "RealmServiceSpec")
+        )
+        var realm = realmProvider.realm()
         try! realm.write {
             realm.deleteAll()
         }
@@ -22,10 +24,15 @@ class RealmServiceSpec: QuickSpec {
         mainQueue.runSynchronously = true
         var searchIndex = FakeSearchIndex()
 
-        var subject = RealmService(realmConfiguration: realmConf, mainQueue: mainQueue, workQueue: mainQueue, searchIndex: searchIndex)
+        var subject = RealmService(
+            realmProvider: realmProvider,
+            mainQueue: mainQueue,
+            workQueue: mainQueue,
+            searchIndex: searchIndex
+        )
 
         beforeEach {
-            realm = try! Realm(configuration: realmConf)
+            realm = realmProvider.realm()
             try! realm.write {
                 realm.deleteAll()
             }
@@ -34,7 +41,12 @@ class RealmServiceSpec: QuickSpec {
             mainQueue.runSynchronously = true
             searchIndex = FakeSearchIndex()
 
-            subject = RealmService(realmConfiguration: realmConf, mainQueue: mainQueue, workQueue: mainQueue, searchIndex: searchIndex)
+            subject = RealmService(
+                realmProvider: realmProvider,
+                mainQueue: mainQueue,
+                workQueue: mainQueue,
+                searchIndex: searchIndex
+            )
         }
 
         describe("create operations") {
@@ -238,9 +250,6 @@ class RealmServiceSpec: QuickSpec {
                 realmArticle2.feed = realmFeed1
                 realmArticle3.feed = realmFeed2
 
-                realmArticle3.relatedArticles.append(realmArticle2)
-                realmArticle2.relatedArticles.append(realmArticle3)
-
                 for object in [realmFeed1, realmFeed2, realmArticle1, realmArticle2, realmArticle3] {
                     realm.add(object)
                 }
@@ -271,9 +280,6 @@ class RealmServiceSpec: QuickSpec {
                     _ = subject.articlesMatchingPredicate(NSPredicate(value: true)).then {
                         guard case let Result.success(articles) = $0 else { return }
                         expect(Array(articles)) == [article1, article2, article3]
-
-                        expect(articles[1].relatedArticles.contains(article3)).to(beTruthy())
-                        expect(articles[2].relatedArticles.contains(article2)).to(beTruthy())
 
                         allExpectation.fulfill()
                     }

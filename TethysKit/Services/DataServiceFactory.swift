@@ -41,9 +41,11 @@ final class DataServiceFactory: DataServiceFactoryType {
     }
 
     func newDataService() -> DataService {
-        return RealmService(realmConfiguration: Realm.Configuration.defaultConfiguration,
+        return RealmService(
+            realmProvider: DefaultRealmProvider(configuration: Realm.Configuration.defaultConfiguration),
             mainQueue: self.mainQueue,
             workQueue: self.realmQueue,
-            searchIndex: self.searchIndex)
+            searchIndex: self.searchIndex
+        )
     }
 }

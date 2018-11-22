@@ -19,7 +19,6 @@ public protocol DatabaseUseCase {
 
     func deleteArticle(_ article: Article) -> Future<Result<Void, TethysError>>
     func markArticle(_ article: Article, asRead: Bool) -> Future<Result<Void, TethysError>>
-    func findRelatedArticles(to article: Article) -> Future<Result<[Article], TethysError>>
 
     func updateFeeds(_ callback: @escaping ([Feed], [NSError]) -> Void)
     func updateFeed(_ feed: Feed, callback: @escaping (Feed?, NSError?) -> Void)

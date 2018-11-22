@@ -20,7 +20,7 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
         static var numberOfSections = 2
     }
 
-    public internal(set) var articles = DataStoreBackedArray<Article>()
+    public internal(set) var articles = AnyCollection<Article>([])
     public var feed: Feed? {
         didSet {
             self.resetArticles()
@@ -46,8 +46,8 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
     fileprivate let feedRepository: DatabaseUseCase
     fileprivate let themeRepository: ThemeRepository
     fileprivate let settingsRepository: SettingsRepository
-    fileprivate let articleViewController: (Void) -> ArticleViewController
-    fileprivate let generateBookViewController: (Void) -> GenerateBookViewController
+    fileprivate let articleViewController: () -> ArticleViewController
+    fileprivate let generateBookViewController: () -> GenerateBookViewController
 
     public init(mainQueue: OperationQueue,
                 feedRepository: DatabaseUseCase,
@@ -118,11 +118,17 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
         let indices = articles.flatMap { self.articles.index(of: $0) }
         indices.forEach { self.articles[$0].read = read }
 
-        let indexPaths = indices.map { IndexPath(row: $0, section: ArticleListSection.articles.rawValue) }
+        let indexPaths: [IndexPath] = indices.flatMap {
+            let rowNumber = self.articles.distance(from: self.articles.startIndex, to: $0)
+            return IndexPath(row: rowNumber, section: ArticleListSection.articles.rawValue)
+        }
         self.tableView.reloadRows(at: indexPaths, with: .right)
     }
 
-    fileprivate func articleForIndexPath(_ indexPath: IndexPath) -> Article { return self.articles[indexPath.row] }
+    fileprivate func articleForIndexPath(_ indexPath: IndexPath) -> Article {
+        let index = self.articles.index(self.articles.startIndex, offsetBy: indexPath.row)
+        return self.articles[index]
+    }
 
     public func selectArticles() {
         let articles = self.tableView.indexPathsForSelectedRows?.map { self.articleForIndexPath($0) }
@@ -162,7 +168,7 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
         let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
         let promise = Promise<Bool>()
         alert.addAction(UIAlertAction(title: deleteTitle, style: .destructive) { _ in
-            _ = self.articles.remove(article)
+//            _ = self.articles.remove(article)
             _ = self.feedRepository.deleteArticle(article)
             promise.resolve(true)
             self.dismiss(animated: true, completion: nil)
@@ -291,7 +297,7 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
 
     fileprivate func resetArticles() {
         guard let articles = self.feed?.articlesArray else { return }
-        self.articles = articles
+        self.articles = AnyCollection(articles)
         self.tableView.reloadSections(IndexSet(integersIn: 0...1), with: .automatic)
     }
 

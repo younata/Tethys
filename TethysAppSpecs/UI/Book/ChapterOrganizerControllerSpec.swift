@@ -45,7 +45,7 @@ class ChapterOrganizerControllerSpec: QuickSpec {
                     synced: false, estimatedReadingTime: 0, feed: nil, flags: []),
         ]
 
-        let dataStoreArticles = DataStoreBackedArray(allArticles)
+        let articlesCollection = AnyCollection(allArticles)
 
         beforeEach {
             themeRepository = ThemeRepository(userDefaults: nil)
@@ -70,7 +70,7 @@ class ChapterOrganizerControllerSpec: QuickSpec {
             navController = UINavigationController(rootViewController: subject)
 
             subject.view.layoutIfNeeded()
-            subject.articles = dataStoreArticles
+            subject.articles = articlesCollection
 
             subject.delegate = delegate
 

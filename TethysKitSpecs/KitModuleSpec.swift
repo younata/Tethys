@@ -28,6 +28,10 @@ class KitModuleSpec: QuickSpec {
             exists(UserDefaults.self)
             exists(FileManager.self)
 
+            isA(RealmProvider.self, kindOf: DefaultRealmProvider.self)
+
+            exists(ArticleService.self)
+
             exists(URLSession.self)
             #if os(iOS)
                 exists(SearchIndex.self)

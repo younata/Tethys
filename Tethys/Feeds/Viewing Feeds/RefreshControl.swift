@@ -47,7 +47,6 @@ public final class RefreshControl: NSObject {
 
     public let spinner = UIRefreshControl()
 
-    // swiftlint:disable function_parameter_count
     public init(notificationCenter: NotificationCenter,
                 scrollView: UIScrollView,
                 mainQueue: OperationQueue,
@@ -74,7 +73,6 @@ public final class RefreshControl: NSObject {
         settingsRepository.addSubscriber(self)
         self.powerStateDidChange()
     }
-    // swiftlint:enable function_parameter_count
 
     deinit {
         self.notificationCenter.removeObserver(self)
@@ -120,7 +118,7 @@ public final class RefreshControl: NSObject {
     }
 
     fileprivate func changeRefreshStyle(forcedStyle: RefreshControlStyle? = nil) {
-        if let _ = forcedStyle {
+        if forcedStyle != nil {
             self.switchInSpinner()
         } else {
             switch self.settingsRepository.refreshControl {

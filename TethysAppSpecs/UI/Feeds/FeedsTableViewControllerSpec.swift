@@ -63,6 +63,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                         feedRepository: FakeDatabaseUseCase(),
                         themeRepository: themeRepository,
                         settingsRepository: settingsRepository,
+                        articleCellController: FakeArticleCellController(),
                         articleViewController: { fatalError() },
                         generateBookViewController: { fatalError() }
                     )
@@ -179,7 +180,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     beforeEach {
                         subject.present(UIViewController(), animated: false, completion: nil)
 
-                        let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                        let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, feed: nil, flags: [])
                         subscriber?.markedArticles([article], asRead: true)
                     }
 
@@ -190,7 +191,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
 
                 context("deleting an article") {
                     beforeEach {
-                        let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                        let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, feed: nil, flags: [])
                         subscriber?.deletedArticle(article)
                     }
                     
@@ -507,7 +508,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             }
 
                             it("when the subscriber gets a marked articles notice it does not refresh it's feed cache") {
-                                let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                                let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, feed: nil, flags: [])
                                 dataUseCase.subscribersArray.first?.markedArticles([article], asRead: true)
                                 expect(dataUseCase.feedsPromises.count) == 1
                             }

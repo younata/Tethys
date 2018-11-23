@@ -32,13 +32,13 @@ class FeedTableCellSpec: QuickSpec {
         sharedExamples("a standard feed cell") {(ctx: @escaping SharedExampleContext) in
             var subject: FeedTableCell! = nil
             it("sets the title") {
-                subject = ctx()["subject"] as! FeedTableCell
+                subject = ctx()["subject"] as? FeedTableCell
                 let title = ctx()["title"] as! String
                 expect(subject.nameLabel.text).to(equal(title))
             }
 
             it("sets the summary") {
-                subject = ctx()["subject"] as! FeedTableCell
+                subject = ctx()["subject"] as? FeedTableCell
                 let summary = ctx()["summary"] as? String ?? ""
                 expect(subject.summaryLabel.text).to(equal(summary))
             }
@@ -67,10 +67,10 @@ class FeedTableCellSpec: QuickSpec {
                 beforeEach {
                     let article1 = Article(title: "a", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [],
                         published: Date(), updatedAt: nil, identifier: "", content: "",
-                        read: true, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                        read: true, synced: false, feed: nil, flags: [])
                     let article2 = Article(title: "b", link: URL(string: "https://exapmle.com/2")!, summary: "", authors: [],
                         published: Date(), updatedAt: nil, identifier: "", content: "",
-                        read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                        read: false, synced: false, feed: nil, flags: [])
                     feed = Feed(title: "Hello", url: URL(string: "https://example.com")!, summary: "World", tags: [],
                         waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
                     subject.feed = feed

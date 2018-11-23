@@ -57,6 +57,14 @@ public func configure(container: Container) {
         )
     }
 
+    container.register(ArticleCellController.self) { r, alwaysHideUnread in
+        return DefaultArticleCellController(
+            hideUnread: alwaysHideUnread,
+            articleService: r.resolve(ArticleService.self)!,
+            settingsRepository: r.resolve(SettingsRepository.self)!
+        )
+    }
+
     registerViewControllers(container: container)
 }
 
@@ -67,6 +75,7 @@ private func registerViewControllers(container: Container) {
             feedRepository: r.resolve(DatabaseUseCase.self)!,
             themeRepository: r.resolve(ThemeRepository.self)!,
             settingsRepository: r.resolve(SettingsRepository.self)!,
+            articleCellController: r.resolve(ArticleCellController.self, argument: false)!,
             articleViewController: { r.resolve(ArticleViewController.self)! },
             generateBookViewController: { r.resolve(GenerateBookViewController.self)! }
         )
@@ -85,6 +94,7 @@ private func registerViewControllers(container: Container) {
         return ChapterOrganizerController(
             themeRepository: r.resolve(ThemeRepository.self)!,
             settingsRepository: r.resolve(SettingsRepository.self)!,
+            articleCellController: r.resolve(ArticleCellController.self, argument: true)!,
             articleListController: { r.resolve(ArticleListController.self)! }
         )
     }

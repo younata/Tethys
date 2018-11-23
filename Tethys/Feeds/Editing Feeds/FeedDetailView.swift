@@ -136,7 +136,7 @@ extension FeedDetailView: UITextFieldDelegate {
                           shouldChangeCharactersIn range: NSRange,
                           replacementString string: String) -> Bool {
         let text = NSString(string: textField.text ?? "").replacingCharacters(in: range, with: string)
-        if let url = URL(string: text), let _ = url.scheme {
+        if let url = URL(string: text), url.scheme != nil {
             self.delegate?.feedDetailView(self, urlDidChange: url)
         }
         return true

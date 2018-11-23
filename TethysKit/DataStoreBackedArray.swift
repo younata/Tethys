@@ -277,22 +277,18 @@ extension DataStoreBackedArray where T: Equatable {
     public func remove(_ object: T) -> Future<Bool> {
         return self.internalCount.map { (internalCount: Int) -> Bool in
             self.fetchUpToPosition(internalCount - 1)
-            var idxToRemove: Int? = nil
-            for (idx, obj) in self.appendedObjects.enumerated() {
-                if obj == object {
-                    idxToRemove = idx
-                    break
-                }
+            var idxToRemove: Int?
+            for (idx, obj) in self.appendedObjects.enumerated() where obj == object {
+                idxToRemove = idx
+                break
             }
-            if let _ = idxToRemove {
+            if idxToRemove != nil {
                 self.appendedObjects = self.appendedObjects.filter { $0 != object }
                 return true
             }
-            for (idx, obj) in self.enumerated() {
-                if obj == object {
-                    idxToRemove = idx
-                    break
-                }
+            for (idx, obj) in self.enumerated() where obj == object {
+                idxToRemove = idx
+                break
             }
             guard let idx = idxToRemove else {
                 return false

@@ -102,7 +102,7 @@ extension FeedViewController: FeedDetailViewDelegate {
 
     public func feedDetailView(_ feedDetailView: FeedDetailView,
                                editTag tag: String?,
-                               completion: @escaping (String) -> (Void)) {
+                               completion: @escaping (String) -> Void) {
         let tagEditorViewController = self.tagEditorViewController()
         if let tag = tag {
             tagEditorViewController.configure(tag: tag)

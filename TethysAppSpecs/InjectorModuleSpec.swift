@@ -18,6 +18,7 @@ final class InjectorModuleSpec: QuickSpec {
 
         describe("services") {
             alwaysIs(UserDefaults.self, a: UserDefaults.standard)
+            isA(BackgroundFetchHandler.self, kindOf: DefaultBackgroundFetchHandler.self)
         }
 
         describe("Repositories") {
@@ -26,9 +27,7 @@ final class InjectorModuleSpec: QuickSpec {
             singleton(QuickActionRepository.self)
         }
 
-        describe("Use Cases and Handlers") {
-            isA(BackgroundFetchHandler.self, kindOf: DefaultBackgroundFetchHandler.self)
-
+        describe("Controllers") {
             isA(ArticleUseCase.self, kindOf: DefaultArticleUseCase.self)
             isA(DocumentationUseCase.self, kindOf: DefaultDocumentationUseCase.self)
 
@@ -47,6 +46,14 @@ final class InjectorModuleSpec: QuickSpec {
 
                 it("is a BootstrapWorkFlow") {
                     expect(bootstrapper).to(beAKindOf(BootstrapWorkFlow.self))
+                }
+            }
+
+            describe("ArticleCellController") {
+                it("requires a bool argument") {
+                    expect(subject.resolve(ArticleCellController.self)).to(beNil())
+                    expect(subject.resolve(ArticleCellController.self, argument: false)).to(beAKindOf(DefaultArticleCellController.self))
+                    expect(subject.resolve(ArticleCellController.self, argument: true)).to(beAKindOf(DefaultArticleCellController.self))
                 }
             }
         }

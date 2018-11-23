@@ -32,8 +32,7 @@ class DefaultOPMLServiceSpec: QuickSpec {
                 mainQueue: mainQueue,
                 reachable: nil,
                 dataServiceFactory: dataServiceFactory,
-                updateUseCase: FakeUpdateUseCase(),
-                databaseMigrator: FakeDatabaseMigrator()
+                updateUseCase: FakeUpdateUseCase()
             )
 
             subject = DefaultOPMLService(

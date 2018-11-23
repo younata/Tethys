@@ -50,7 +50,10 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
         return window
     }
 
-    public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool { // swiftlint:disable line-length
+    public func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?
+        ) -> Bool {
         UINavigationBar.appearance().tintColor = UIColor.darkGreen()
         UIBarButtonItem.appearance().tintColor = UIColor.darkGreen()
         UITabBar.appearance().tintColor = UIColor.darkGreen()
@@ -77,7 +80,7 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
 
     public func application(_ app: UIApplication,
                             open url: URL,
-                            options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+                            options: [UIApplicationOpenURLOptionsKey: Any] = [:]) -> Bool {
         _ = self.importUseCase.scanForImportable(url).then { item in
             if case let .opml(url, _) = item {
                 _ = self.importUseCase.importItem(url)
@@ -130,7 +133,7 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: Background Fetch
 
     public func application(_ application: UIApplication,
-                            performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+                            performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) { // swiftlint:disable=line_length
         self.backgroundFetchHandler.performFetch(completionHandler: completionHandler)
     }
 

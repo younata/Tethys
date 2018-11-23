@@ -30,7 +30,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
 
         var updateUseCase: FakeUpdateUseCase!
 
-        var databaseMigrator: FakeDatabaseMigrator!
 
         beforeEach {
             feed1 = TethysKit.Feed(title: "a", url: URL(string: "https://example.com/feed1.feed")!, summary: "",
@@ -38,11 +37,11 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
 
             article1 = TethysKit.Article(title: "b", link: URL(string: "https://example.com/article1.html")!,
                 summary: "<p>Hello world!</p>", authors: [], published: Date(), updatedAt: nil, identifier: "article1",
-                content: "", read: false, synced: true, estimatedReadingTime: 0, feed: feed1, flags: [])
+                content: "", read: false, synced: true, feed: feed1, flags: [])
 
             article2 = TethysKit.Article(title: "c", link: URL(string: "https://example.com/article2.html")!,
                 summary: "<p>Hello world!</p>", authors: [], published: Date(), updatedAt: nil, identifier: "article2",
-                content: "", read: true, synced: true, estimatedReadingTime: 0, feed: feed1, flags: [])
+                content: "", read: true, synced: true, feed: feed1, flags: [])
 
             feed1.addArticle(article1)
             feed1.addArticle(article2)
@@ -65,13 +64,11 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
 
             updateUseCase = FakeUpdateUseCase()
 
-            databaseMigrator = FakeDatabaseMigrator()
 
             subject = DefaultDatabaseUseCase(mainQueue: mainQueue,
                 reachable: reachable,
                 dataServiceFactory: dataServiceFactory,
-                updateUseCase: updateUseCase,
-                databaseMigrator: databaseMigrator
+                updateUseCase: updateUseCase
             )
 
             dataSubscriber = FakeDataSubscriber()

@@ -140,7 +140,7 @@ extension DefaultImportUseCase {
     }
 
     fileprivate func isDataAFeed(_ data: String) -> Int? {
-        var ret: Int? = nil
+        var ret: Int?
         let feedParser = FeedParser(string: data)
         _ = feedParser.success {
             ret = $0.articles.count
@@ -160,7 +160,7 @@ extension DefaultImportUseCase {
     }
 
     fileprivate func isDataAnOPML(_ data: String) -> Int? {
-        var ret: Int? = nil
+        var ret: Int?
         let opmlParser = Parser(text: data)
         _ = opmlParser.success {
             ret = $0.count

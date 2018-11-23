@@ -24,6 +24,7 @@ class GenerateBookViewControllerSpec: QuickSpec {
                 chapterOrganizer: ChapterOrganizerController(
                     themeRepository: themeRepository,
                     settingsRepository: SettingsRepository(userDefaults: nil),
+                    articleCellController: FakeArticleCellController(),
                     articleListController: { fatalError() }
                 )
             )
@@ -73,13 +74,13 @@ class GenerateBookViewControllerSpec: QuickSpec {
             let articles = AnyCollection([
                 Article(title: "Article 1", link: URL(string: "https://example.com/1")!, summary: "", authors: [],
                         published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
-                        synced: false, estimatedReadingTime: 0, feed: nil, flags: []),
+                        synced: false, feed: nil, flags: []),
                 Article(title: "Article 2", link: URL(string: "https://example.com/2")!, summary: "", authors: [],
                         published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
-                        synced: false, estimatedReadingTime: 0, feed: nil, flags: []),
+                        synced: false, feed: nil, flags: []),
                 Article(title: "Article 3", link: URL(string: "https://example.com/3")!, summary: "", authors: [],
                         published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
-                        synced: false, estimatedReadingTime: 0, feed: nil, flags: []),
+                        synced: false, feed: nil, flags: []),
             ])
 
             it("also sets the articles on the chapterorganizer") {
@@ -146,13 +147,13 @@ class GenerateBookViewControllerSpec: QuickSpec {
             let chapters: [Article] = [
                 Article(title: "Article 1", link: URL(string: "https://example.com/1")!, summary: "", authors: [],
                         published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
-                        synced: false, estimatedReadingTime: 0, feed: nil, flags: []),
+                        synced: false, feed: nil, flags: []),
                 Article(title: "Article 2", link: URL(string: "https://example.com/2")!, summary: "", authors: [],
                         published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
-                        synced: false, estimatedReadingTime: 0, feed: nil, flags: []),
+                        synced: false, feed: nil, flags: []),
                 Article(title: "Article 3", link: URL(string: "https://example.com/3")!, summary: "", authors: [],
                         published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
-                        synced: false, estimatedReadingTime: 0, feed: nil, flags: []),
+                        synced: false, feed: nil, flags: []),
             ]
 
             let enterTitle = {

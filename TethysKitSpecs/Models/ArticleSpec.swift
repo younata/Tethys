@@ -15,7 +15,7 @@ class ArticleSpec: QuickSpec {
                 realm.deleteAll()
             }
 
-            subject = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
+            subject = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, feed: nil, flags: [])
         }
 
         describe("Equatable") {
@@ -35,9 +35,9 @@ class ArticleSpec: QuickSpec {
 
             it("should report two articles not created with datastore objects with the same property equality as equal") {
                 let date = Date()
-                let a = Article(title: "", link: URL(string: "https://example.com/articlea")!, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
-                let b = Article(title: "blah", link: URL(string: "https://example.com")!, summary: "hello", authors: [Author("anAuthor")], published: Date(timeIntervalSince1970: 0), updatedAt: nil, identifier: "hi", content: "hello there", read: true, synced: false, estimatedReadingTime: 70, feed: nil, flags: ["flag"])
-                let c = Article(title: "", link: URL(string: "https://example.com/articlea")!, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                let a = Article(title: "", link: URL(string: "https://example.com/articlea")!, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, synced: false, feed: nil, flags: [])
+                let b = Article(title: "blah", link: URL(string: "https://example.com")!, summary: "hello", authors: [Author("anAuthor")], published: Date(timeIntervalSince1970: 0), updatedAt: nil, identifier: "hi", content: "hello there", read: true, synced: false, feed: nil, flags: ["flag"])
+                let c = Article(title: "", link: URL(string: "https://example.com/articlea")!, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, synced: false, feed: nil, flags: [])
 
                 expect(a).toNot(equal(b))
                 expect(a).to(equal(c))
@@ -61,9 +61,9 @@ class ArticleSpec: QuickSpec {
 
             it("should report two articles not created from datastores with the same property equality as having the same hashValue") {
                 let date = Date()
-                let a = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
-                let b = Article(title: "blah", link: URL(string: "https://example.com")!, summary: "hello", authors: [Author("anAuthor")], published: Date(timeIntervalSince1970: 0), updatedAt: nil, identifier: "hi", content: "hello there", read: true, synced: false, estimatedReadingTime: 60, feed: nil, flags: ["flag"])
-                let c = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
+                let a = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, synced: false, feed: nil, flags: [])
+                let b = Article(title: "blah", link: URL(string: "https://example.com")!, summary: "hello", authors: [Author("anAuthor")], published: Date(timeIntervalSince1970: 0), updatedAt: nil, identifier: "hi", content: "hello there", read: true, synced: false, feed: nil, flags: ["flag"])
+                let c = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: date, updatedAt: nil, identifier: "", content: "", read: false, synced: false, feed: nil, flags: [])
 
                 expect(a.hashValue).toNot(equal(b.hashValue))
                 expect(a.hashValue).to(equal(c.hashValue))
@@ -81,7 +81,7 @@ class ArticleSpec: QuickSpec {
 
             context("trying to add the same flag again") {
                 beforeEach {
-                    subject = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: ["flag"])
+                    subject = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, feed: nil, flags: ["flag"])
                 }
 
                 it("should no-op") {
@@ -95,7 +95,7 @@ class ArticleSpec: QuickSpec {
         describe("removing a flag") {
             context("that is already a flag in the article") {
                 it("should remove the flag") {
-                    subject = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: ["flag"])
+                    subject = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, feed: nil, flags: ["flag"])
                     subject.removeFlag("flag")
 
                     expect(subject.flags).toNot(contain("flags"))
@@ -202,13 +202,6 @@ class ArticleSpec: QuickSpec {
                     subject.content = ""
                     expect(subject.updated) == false
                     subject.content = "content"
-                    expect(subject.updated) == true
-                }
-
-                it("estimatedReadingTime") {
-                    subject.estimatedReadingTime = 0
-                    expect(subject.updated) == false
-                    subject.estimatedReadingTime = 30
                     expect(subject.updated) == true
                 }
 

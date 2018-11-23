@@ -26,7 +26,6 @@ func articleFactory(
         content: content,
         read: read,
         synced: synced,
-        estimatedReadingTime: estimatedReadingTime,
         feed: feed,
         flags: flags
     )

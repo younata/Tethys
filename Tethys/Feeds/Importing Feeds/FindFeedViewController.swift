@@ -74,7 +74,8 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
 
         let cancelTitle = NSLocalizedString("Generic_Cancel", comment: "")
         self.cancelTextEntry = UIBarButtonItem(title: cancelTitle, style: .plain,
-                                               target: self, action: #selector(FindFeedViewController.dismissNavFieldKeyboard))
+                                               target: self,
+                                               action: #selector(FindFeedViewController.dismissNavFieldKeyboard))
 
         self.navigationController?.isToolbarHidden = false
         func spacer() -> UIBarButtonItem {
@@ -312,7 +313,7 @@ extension FindFeedViewController {
             for link in self.rssLinks {
                 let pathWithPrecedingSlash = link.path
                 let path = pathWithPrecedingSlash.substring(from:
-                    pathWithPrecedingSlash.characters.index(after: pathWithPrecedingSlash.startIndex))
+                    pathWithPrecedingSlash.index(after: pathWithPrecedingSlash.startIndex))
                 alert.addAction(UIAlertAction(title: path, style: .default) { _ in
                     self.save(link)
                     self.dismiss(animated: true, completion: nil)

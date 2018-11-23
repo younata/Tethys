@@ -88,6 +88,7 @@ func articleListControllerFactory(
     feedRepository: DatabaseUseCase = FakeDatabaseUseCase(),
     themeRepository: ThemeRepository = themeRepositoryFactory(),
     settingsRepository: SettingsRepository = settingsRepositoryFactory(),
+    articleCellController: ArticleCellController = FakeArticleCellController(),
     articleViewController: @escaping () -> ArticleViewController = { articleViewControllerFactory() },
     generateBookViewController: @escaping () -> GenerateBookViewController = { generateBookViewControllerFactory() }
     ) -> ArticleListController {
@@ -96,6 +97,7 @@ func articleListControllerFactory(
         feedRepository: feedRepository,
         themeRepository: themeRepository,
         settingsRepository: settingsRepository,
+        articleCellController: articleCellController,
         articleViewController: articleViewController,
         generateBookViewController: generateBookViewController
     )
@@ -128,11 +130,13 @@ func generateBookViewControllerFactory(
 func chapterOrganizerControllerFactory(
     themeRepository: ThemeRepository = themeRepositoryFactory(),
     settingsRepository: SettingsRepository = settingsRepositoryFactory(),
+    articleCellController: ArticleCellController = FakeArticleCellController(),
     articleListController: @escaping () -> ArticleListController = { articleListControllerFactory() }
     ) -> ChapterOrganizerController {
     return ChapterOrganizerController(
         themeRepository: themeRepository,
         settingsRepository: settingsRepository,
+        articleCellController: articleCellController,
         articleListController: articleListController
     )
 }

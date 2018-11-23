@@ -22,16 +22,16 @@ class GenerateBookUseCaseSpec: QuickSpec {
             let articles: [Article] = [
                 Article(title: "Article 1", link: URL(string: "https://example.com/1")!, summary: "", authors: [],
                         published: Date(), updatedAt: nil, identifier: "", content: "contents of chapter 1", read: false,
-                        synced: false, estimatedReadingTime: 0, feed: nil, flags: []),
+                        synced: false, feed: nil, flags: []),
                 Article(title: "Article 2", link: URL(string: "https://example.com/2")!, summary: "contents of chapter 2", authors: [],
                         published: Date(), updatedAt: nil, identifier: "", content: "   \n\t   ", read: false,
-                        synced: false, estimatedReadingTime: 0, feed: nil, flags: []),
+                        synced: false, feed: nil, flags: []),
                 Article(title: "Article 3", link: URL(string: "https://example.com/3")!, summary: "chapter 3 contents", authors: [],
                         published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
-                        synced: false, estimatedReadingTime: 0, feed: nil, flags: []),
+                        synced: false, feed: nil, flags: []),
                 Article(title: "Article 4", link: URL(string: "https://example.com/4")!, summary: "", authors: [],
                         published: Date(), updatedAt: nil, identifier: "", content: "", read: false,
-                        synced: false, estimatedReadingTime: 0, feed: nil, flags: []),
+                        synced: false, feed: nil, flags: []),
                 ]
 
             var generateBookPromise: Promise<Result<Book, SpondeError>>!

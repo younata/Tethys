@@ -114,10 +114,6 @@ extension DataService {
             article.read = item.read
             article.synced = true
         }
-
-        let content = item.content.isEmpty ? item.summary : item.content
-        article.estimatedReadingTime = estimateReadingTime(content)
-
         article.authors = authors
     }
 

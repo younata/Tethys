@@ -114,7 +114,7 @@ final class UpdateService: UpdateServiceType, NetworkClientDelegate {
     }
 
     func didFailToDownloadDataFromUrl(_ url: URL, error: Error?) {
-        guard let _ = error, let callback = self.callbacksInProgress[url] else { return }
+        guard error != nil, let callback = self.callbacksInProgress[url] else { return }
         self.callbacksInProgress.removeValue(forKey: url)
         let feed = callback.feed
         let promise = callback.promise

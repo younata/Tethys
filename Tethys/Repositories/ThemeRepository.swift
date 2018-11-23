@@ -145,7 +145,7 @@ public final class ThemeRepository: NSObject {
 
     private var values: [String: AnyObject] = [:]
     private func privateValueForKey(_ key: String) -> Any? {
-        if let _ = self.userDefaults {
+        if self.userDefaults != nil {
             return self.userDefaults?.value(forKey: key)
         } else {
             return self.values[key]
@@ -153,7 +153,7 @@ public final class ThemeRepository: NSObject {
     }
 
     private func privateSetValue(_ value: AnyObject, forKey key: String) {
-        if let _ = self.userDefaults {
+        if self.userDefaults != nil {
             self.userDefaults?.set(value, forKey: key)
         } else {
             self.values[key] = value

@@ -48,13 +48,16 @@ public class ChapterOrganizerController: UIViewController {
 
     fileprivate var themeRepository: ThemeRepository
     fileprivate var settingsRepository: SettingsRepository
+    fileprivate var articleCellController: ArticleCellController
     private var articleListController: () -> ArticleListController
 
     public init(themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
+                articleCellController: ArticleCellController,
                 articleListController: @escaping () -> ArticleListController) {
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
+        self.articleCellController = articleCellController
         self.articleListController = articleListController
         self.actionableTableView.themeRepository = themeRepository
         super.init(nibName: nil, bundle: nil)
@@ -109,16 +112,10 @@ extension ChapterOrganizerController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! ArticleCell
         cell.themeRepository = self.themeRepository
-        cell.hideUnread = true
         let chapter = self.chapters[indexPath.row]
 
-        cell.configure(
-            title: chapter.title,
-            publishedDate: chapter.updatedAt ?? chapter.published,
-            author: chapter.authorsString,
-            read: true,
-            readingTime: nil
-        )
+        self.articleCellController.configure(cell: cell, with: chapter)
+
         return cell
     }
 

@@ -141,7 +141,7 @@ func fakeArticle(feed: Feed, isUpdated: Bool = false, read: Bool = false) -> Art
         publishDate = Date(timeIntervalSinceReferenceDate: TimeInterval(publishedOffset))
         updatedDate = nil
     }
-    return Article(title: "article \(publishedOffset)", link: URL(string: "http://example.com")!, summary: "", authors: [Author(name: "Rachel", email: nil)], published: publishDate, updatedAt: updatedDate, identifier: "\(publishedOffset)", content: "", read: read, synced: false, estimatedReadingTime: 0, feed: feed, flags: [])
+    return Article(title: "article \(publishedOffset)", link: URL(string: "http://example.com")!, summary: "", authors: [Author(name: "Rachel", email: nil)], published: publishDate, updatedAt: updatedDate, identifier: "\(publishedOffset)", content: "", read: read, synced: false, feed: feed, flags: [])
 }
 
 class ArticleListControllerSpec: QuickSpec {
@@ -154,6 +154,7 @@ class ArticleListControllerSpec: QuickSpec {
         var dataRepository: FakeDatabaseUseCase!
         var themeRepository: ThemeRepository!
         var settingsRepository: SettingsRepository!
+        var articleCellController: FakeArticleCellController!
 
         beforeEach {
             mainQueue = FakeOperationQueue()
@@ -179,11 +180,14 @@ class ArticleListControllerSpec: QuickSpec {
                 feed.addArticle(article)
             }
 
+            articleCellController = FakeArticleCellController()
+
             subject = ArticleListController(
                 mainQueue: mainQueue,
                 feedRepository: dataRepository,
                 themeRepository: themeRepository,
                 settingsRepository: settingsRepository,
+                articleCellController: articleCellController,
                 articleViewController: { articleViewControllerFactory(articleUseCase: useCase) },
                 generateBookViewController: {
                     return generateBookViewControllerFactory()
@@ -520,10 +524,6 @@ class ArticleListControllerSpec: QuickSpec {
 
             describe("markedArticle(_:asRead:)") {
                 beforeEach {
-                    let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 3, section: 1)) as! ArticleCell
-
-                    expect(cell.unread.unread) == 1
-
                     articles[3].read = false
                     for subscriber in dataRepository.subscribersArray {
                         subscriber.markedArticles([articles[3]], asRead: true)
@@ -533,7 +533,14 @@ class ArticleListControllerSpec: QuickSpec {
                 it("reloads the tableView") {
                     let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 3, section: 1)) as! ArticleCell
 
-                    expect(cell.unread.unread) == 0
+                    expect(articleCellController.configureCalls).to(haveCount(6)) // 3 articles, called twice for each.
+
+                    guard let call = articleCellController.configureCalls.filter({ $0.article == articles[3] }).last else {
+                        fail("No call for article3 found")
+                        return
+                    }
+
+                    expect(call.cell).to(equal(cell))
                 }
             }
         }

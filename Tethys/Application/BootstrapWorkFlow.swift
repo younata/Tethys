@@ -18,7 +18,6 @@ public final class BootstrapWorkFlow: Bootstrapper {
 
     private let initialLaunch = false
 
-    // swiftlint:disable function_parameter_count
     public init(window: UIWindow,
                 feedRepository: DatabaseUseCase,
                 migrationUseCase: MigrationUseCase,
@@ -34,7 +33,6 @@ public final class BootstrapWorkFlow: Bootstrapper {
         self.feedsTableViewController = feedsTableViewController
         self.articleViewController = articleViewController
     }
-    // swiftlint:enable function_parameter_count
 
     private var feedAndArticle: (feed: Feed, article: Article)?
     public func begin(_ feedAndArticle: (feed: Feed, article: Article)? = nil) {

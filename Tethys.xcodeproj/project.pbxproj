@@ -43,10 +43,6 @@
 		890C8D431DE38B3400A037D7 /* Sponde.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890C8D3D1DE3771E00A037D7 /* Sponde.framework */; };
 		890C8D451DE3A52100A037D7 /* FakeGenerateBookUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890C8D441DE3A52100A037D7 /* FakeGenerateBookUseCase.swift */; };
 		890C8D4F1DE4096C00A037D7 /* icons.html in Resources */ = {isa = PBXBuildFile; fileRef = 890C8D4E1DE4096C00A037D7 /* icons.html */; };
-		89122E611C5D725D00004B1F /* DatabaseMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89122E601C5D725D00004B1F /* DatabaseMigrator.swift */; };
-		89122E621C5D725D00004B1F /* DatabaseMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89122E601C5D725D00004B1F /* DatabaseMigrator.swift */; };
-		89122E641C5D762000004B1F /* DatabaseMigratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89122E631C5D762000004B1F /* DatabaseMigratorSpec.swift */; };
-		89122E651C5D762000004B1F /* DatabaseMigratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89122E631C5D762000004B1F /* DatabaseMigratorSpec.swift */; };
 		89146E3F1C88C6A200EC8F10 /* MigrationUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC101C7D781E006B70F5 /* MigrationUseCaseSpec.swift */; };
 		89146E401C88C6A700EC8F10 /* MigrationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC0A1C7D432F006B70F5 /* MigrationUseCase.swift */; };
 		89146E411C88C6A800EC8F10 /* MigrationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC0A1C7D432F006B70F5 /* MigrationUseCase.swift */; };
@@ -380,8 +376,6 @@
 		89CBDBF51C7D1436006B70F5 /* DataServiceFactorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDBF31C7D1436006B70F5 /* DataServiceFactorySpec.swift */; };
 		89CBDBF91C7D32EE006B70F5 /* FakeDataServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDBF81C7D32EE006B70F5 /* FakeDataServiceFactory.swift */; };
 		89CBDBFA1C7D32EE006B70F5 /* FakeDataServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDBF81C7D32EE006B70F5 /* FakeDataServiceFactory.swift */; };
-		89CBDBFE1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDBFD1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift */; };
-		89CBDBFF1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDBFD1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift */; };
 		89CBDC011C7D41C9006B70F5 /* MigrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC001C7D41C9006B70F5 /* MigrationViewController.swift */; };
 		89CBDC051C7D42D7006B70F5 /* MigrationViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC041C7D42D7006B70F5 /* MigrationViewControllerSpec.swift */; };
 		89CBDC091C7D431D006B70F5 /* FakeMigrationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC081C7D431D006B70F5 /* FakeMigrationUseCase.swift */; };
@@ -423,6 +417,9 @@
 		89FA3BD321A6706D0026BC88 /* RealmProviderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FA3BD221A6706D0026BC88 /* RealmProviderSpec.swift */; };
 		89FA3BD421A670980026BC88 /* RealmProviderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FA3BD221A6706D0026BC88 /* RealmProviderSpec.swift */; };
 		89FA3BD521A6712A0026BC88 /* RealmProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FA3BD021A66F990026BC88 /* RealmProvider.swift */; };
+		89FA3BD921A76D730026BC88 /* ArticleCellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FA3BD821A76D730026BC88 /* ArticleCellController.swift */; };
+		89FA3BDB21A785480026BC88 /* ArticleCellControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FA3BDA21A785480026BC88 /* ArticleCellControllerSpec.swift */; };
+		89FA3BDD21A7AF990026BC88 /* FakeArticleCellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FA3BDC21A7AF990026BC88 /* FakeArticleCellController.swift */; };
 		89FF979E1BF058FB000080F7 /* DataStoreBackedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */; };
 		89FF97A11BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF97A01BF05CDC000080F7 /* DataStoreBackedArraySpec.swift */; };
 		89FF97A21BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF97A01BF05CDC000080F7 /* DataStoreBackedArraySpec.swift */; };
@@ -619,8 +616,6 @@
 		890C8D3D1DE3771E00A037D7 /* Sponde.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sponde.framework; path = Carthage/Build/iOS/Sponde.framework; sourceTree = "<group>"; };
 		890C8D441DE3A52100A037D7 /* FakeGenerateBookUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeGenerateBookUseCase.swift; sourceTree = "<group>"; };
 		890C8D4E1DE4096C00A037D7 /* icons.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = icons.html; sourceTree = "<group>"; };
-		89122E601C5D725D00004B1F /* DatabaseMigrator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseMigrator.swift; sourceTree = "<group>"; };
-		89122E631C5D762000004B1F /* DatabaseMigratorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseMigratorSpec.swift; sourceTree = "<group>"; };
 		8917546F1C5B449E0036D96D /* RealmObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmObjects.swift; sourceTree = "<group>"; };
 		891754721C5B485B0036D96D /* RealmService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmService.swift; sourceTree = "<group>"; };
 		891754781C5B48D40036D96D /* RealmServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmServiceSpec.swift; sourceTree = "<group>"; };
@@ -831,7 +826,6 @@
 		89CBDBF01C7D1206006B70F5 /* DataServiceFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataServiceFactory.swift; path = ../Services/DataServiceFactory.swift; sourceTree = "<group>"; };
 		89CBDBF31C7D1436006B70F5 /* DataServiceFactorySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataServiceFactorySpec.swift; sourceTree = "<group>"; };
 		89CBDBF81C7D32EE006B70F5 /* FakeDataServiceFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDataServiceFactory.swift; sourceTree = "<group>"; };
-		89CBDBFD1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDatabaseMigrator.swift; sourceTree = "<group>"; };
 		89CBDC001C7D41C9006B70F5 /* MigrationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MigrationViewController.swift; sourceTree = "<group>"; };
 		89CBDC041C7D42D7006B70F5 /* MigrationViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MigrationViewControllerSpec.swift; sourceTree = "<group>"; };
 		89CBDC081C7D431D006B70F5 /* FakeMigrationUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeMigrationUseCase.swift; sourceTree = "<group>"; };
@@ -874,6 +868,9 @@
 		89F98BA91BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCellSpec.swift; sourceTree = "<group>"; };
 		89FA3BD021A66F990026BC88 /* RealmProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmProvider.swift; sourceTree = "<group>"; };
 		89FA3BD221A6706D0026BC88 /* RealmProviderSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmProviderSpec.swift; sourceTree = "<group>"; };
+		89FA3BD821A76D730026BC88 /* ArticleCellController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleCellController.swift; sourceTree = "<group>"; };
+		89FA3BDA21A785480026BC88 /* ArticleCellControllerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleCellControllerSpec.swift; sourceTree = "<group>"; };
+		89FA3BDC21A7AF990026BC88 /* FakeArticleCellController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeArticleCellController.swift; sourceTree = "<group>"; };
 		89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataStoreBackedArray.swift; path = ../DataStoreBackedArray.swift; sourceTree = "<group>"; };
 		89FF97A01BF05CDC000080F7 /* DataStoreBackedArraySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreBackedArraySpec.swift; sourceTree = "<group>"; };
 		AE4356301A7AE4FE00A961B9 /* InjectorModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InjectorModule.swift; sourceTree = "<group>"; };
@@ -1181,6 +1178,7 @@
 			isa = PBXGroup;
 			children = (
 				8997C8521B2566A600972930 /* ArticleCellSpec.swift */,
+				89FA3BDA21A785480026BC88 /* ArticleCellControllerSpec.swift */,
 				899823AB1B2C883B00818755 /* ArticleListControllerSpec.swift */,
 				89831FEB1DB5C5FC00E32412 /* ArticleListHeaderCellSpec.swift */,
 				890B78C91C78E8650066E201 /* ArticleUseCaseSpec.swift */,
@@ -1654,7 +1652,6 @@
 			isa = PBXGroup;
 			children = (
 				89943211219AAA4900FC6EB6 /* FakeArticleService.swift */,
-				89CBDBFD1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift */,
 				89CBDBF81C7D32EE006B70F5 /* FakeDataServiceFactory.swift */,
 				89628BE01CE175F100B4C624 /* FakeDataSubscriber.swift */,
 				89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */,
@@ -1671,7 +1668,6 @@
 		89D256711C3CC02B004066B9 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				89122E631C5D762000004B1F /* DatabaseMigratorSpec.swift */,
 				89CBDBF31C7D1436006B70F5 /* DataServiceFactorySpec.swift */,
 				8994320D219A819500FC6EB6 /* DataService */,
 				8984FE8E1CBAAFED0096F4B3 /* RealmMigratorSpec.swift */,
@@ -1695,7 +1691,6 @@
 		89D256731C3CC22A004066B9 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				89122E601C5D725D00004B1F /* DatabaseMigrator.swift */,
 				8999CC0C1C2E710F00B81F5F /* DataService.swift */,
 				89E67D631C33CB8000819646 /* InMemoryDataService.swift */,
 				89A3417E1B150D1B0000C60B /* OPMLService.swift */,
@@ -1752,6 +1747,7 @@
 			isa = PBXGroup;
 			children = (
 				89C830B219D7D2CB009924DA /* ArticleCell.swift */,
+				89FA3BD821A76D730026BC88 /* ArticleCellController.swift */,
 				89C830AD19D7CB8E009924DA /* ArticleListController.swift */,
 				89831FE91DB5C2FC00E32412 /* ArticleListHeaderCell.swift */,
 			);
@@ -1798,6 +1794,7 @@
 				8958EC401DCBF58D0000159B /* BlankTarget.swift */,
 				89E186911D136C38005C5880 /* FakeAnalytics.swift */,
 				892CBDE91C7A27FE0062E578 /* FakeArticleUseCase.swift */,
+				89FA3BDC21A7AF990026BC88 /* FakeArticleCellController.swift */,
 				89348F2E1C60730D007D366B /* FakeDatabaseUseCase.swift */,
 				89EA6C351B4B2D8400456892 /* FakeDefaultDatabaseUseCase.swift */,
 				8958EC3B1DCB03250000159B /* FakeDocumentationUseCase.swift */,
@@ -2305,7 +2302,6 @@
 				8943044B1B450A5E000078DC /* Article.swift in Sources */,
 				8984FE891CB984A40096F4B3 /* Author.swift in Sources */,
 				892E76F11E07956E00866336 /* BackgroundStateMonitor.swift in Sources */,
-				89122E611C5D725D00004B1F /* DatabaseMigrator.swift in Sources */,
 				89628BDF1CE1742600B4C624 /* DatabaseUseCase.swift in Sources */,
 				8999CC0D1C2E710F00B81F5F /* DataService.swift in Sources */,
 				89CBDBF11C7D1206006B70F5 /* DataServiceFactory.swift in Sources */,
@@ -2344,7 +2340,6 @@
 				8935F5DA1B4628B3000FFD5D /* ArticleSpec.swift in Sources */,
 				8984FE8C1CBA1A180096F4B3 /* AuthorSpec.swift in Sources */,
 				892E76F41E079A3500866336 /* BackgroundStateMonitorSpec.swift in Sources */,
-				89122E641C5D762000004B1F /* DatabaseMigratorSpec.swift in Sources */,
 				89628BE31CE1805E00B4C624 /* DatabaseUseCaseSpec.swift in Sources */,
 				89CBDBF41C7D1436006B70F5 /* DataServiceFactorySpec.swift in Sources */,
 				8999CC0F1C2E796100B81F5F /* DataServiceSpec.swift in Sources */,
@@ -2352,7 +2347,6 @@
 				89FF97A11BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */,
 				8935F5D71B4628B3000FFD5D /* DefaultDatabaseUseCaseSpec.swift in Sources */,
 				89E186931D136C48005C5880 /* FakeAnalytics.swift in Sources */,
-				89CBDBFE1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift in Sources */,
 				89943210219A921100FC6EB6 /* ModelFactories.swift in Sources */,
 				89146E4C1C88F01700EC8F10 /* FakeDatabaseUseCase.swift in Sources */,
 				89CBDBF91C7D32EE006B70F5 /* FakeDataServiceFactory.swift in Sources */,
@@ -2416,7 +2410,6 @@
 				8983204E1DC1216B00E32412 /* Array+TethysKit.swift in Sources */,
 				898979591B70808300218498 /* Article.swift in Sources */,
 				8984FE8A1CB984A40096F4B3 /* Author.swift in Sources */,
-				89122E621C5D725D00004B1F /* DatabaseMigrator.swift in Sources */,
 				898320421DC1216B00E32412 /* DatabaseUseCase.swift in Sources */,
 				898911C71C3267E3009A44E9 /* DataService.swift in Sources */,
 				89CBDBF21C7D1206006B70F5 /* DataServiceFactory.swift in Sources */,
@@ -2451,13 +2444,11 @@
 			files = (
 				898979AB1B708E7800218498 /* ArticleSpec.swift in Sources */,
 				8984FE8D1CBA1A180096F4B3 /* AuthorSpec.swift in Sources */,
-				89122E651C5D762000004B1F /* DatabaseMigratorSpec.swift in Sources */,
 				8983205F1DC121D600E32412 /* DatabaseUseCaseSpec.swift in Sources */,
 				89CBDBF51C7D1436006B70F5 /* DataServiceFactorySpec.swift in Sources */,
 				898911C41C3267D6009A44E9 /* DataServiceSpec.swift in Sources */,
 				89FF97A21BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */,
 				898979A81B708E7800218498 /* DefaultDatabaseUseCaseSpec.swift in Sources */,
-				89CBDBFF1C7D38B5006B70F5 /* FakeDatabaseMigrator.swift in Sources */,
 				8994320B219A813C00FC6EB6 /* RealmArticleServiceSpec.swift in Sources */,
 				89943215219AAA5300FC6EB6 /* FakeArticleService.swift in Sources */,
 				89146E4D1C88F01800EC8F10 /* FakeDatabaseUseCase.swift in Sources */,
@@ -2534,6 +2525,7 @@
 				8994F0EB1C8F53E600920E6D /* AuthorActivity.swift in Sources */,
 				89D970BD1B3929A600ED84B8 /* BackgroundFetchHandler.swift in Sources */,
 				89CBDC171C7D8501006B70F5 /* BootstrapWorkFlow.swift in Sources */,
+				89FA3BD921A76D730026BC88 /* ArticleCellController.swift in Sources */,
 				898DA49B1DDF99580029CBD3 /* ChapterOrganizerController.swift in Sources */,
 				8941AB841DC9B00100A2CE5F /* DocumentationUseCase.swift in Sources */,
 				8941AB801DC9AEE400A2CE5F /* DocumentationViewController.swift in Sources */,
@@ -2603,6 +2595,7 @@
 				894942411C84BEC20095FFD4 /* FakeQuickActionRepository.swift in Sources */,
 				8935F5E01B462B7A000FFD5D /* FakeURLSession.swift in Sources */,
 				89C676541BA264F40037A224 /* FakeUserDefaults.swift in Sources */,
+				89FA3BDD21A7AF990026BC88 /* FakeArticleCellController.swift in Sources */,
 				8997C7F51B248D5A00972930 /* FakeWebView.swift in Sources */,
 				894D1AEB1DB0971E00E70B1A /* FakeWKNavigationAction.swift in Sources */,
 				8978C52B21975A0800D702BB /* InjectorModuleSpec.swift in Sources */,
@@ -2617,6 +2610,7 @@
 				898DA4971DDEC3720029CBD3 /* GenerateBookViewControllerSpec.swift in Sources */,
 				8941AB7D1DC9385A00A2CE5F /* HTMLViewControllerSpec.swift in Sources */,
 				89CBDC051C7D42D7006B70F5 /* MigrationViewControllerSpec.swift in Sources */,
+				89FA3BDB21A785480026BC88 /* ArticleCellControllerSpec.swift in Sources */,
 				8903A6271C4ABA7800E896BF /* NotificationViewSpec.swift in Sources */,
 				899823B11B30BA7E00818755 /* NSUserActivity+TethysTests.m in Sources */,
 				894D1AF51DB28B8E00E70B1A /* RefreshControlSpec.swift in Sources */,

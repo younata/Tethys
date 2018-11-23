@@ -17,7 +17,6 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
 
     private let dataServiceFactory: DataServiceFactoryType
     private let updateUseCase: UpdateUseCase
-    private let databaseMigrator: DatabaseMigratorType
 
     private var dataService: DataService {
         return self.dataServiceFactory.currentDataService
@@ -26,13 +25,11 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     init(mainQueue: OperationQueue,
          reachable: Reachable?,
          dataServiceFactory: DataServiceFactoryType,
-         updateUseCase: UpdateUseCase,
-         databaseMigrator: DatabaseMigratorType) {
+         updateUseCase: UpdateUseCase) {
         self.mainQueue = mainQueue
         self.reachable = reachable
         self.dataServiceFactory = dataServiceFactory
         self.updateUseCase = updateUseCase
-        self.databaseMigrator = databaseMigrator
     }
 
     func databaseUpdateAvailable() -> Bool {

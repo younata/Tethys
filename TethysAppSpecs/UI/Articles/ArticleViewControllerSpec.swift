@@ -92,7 +92,7 @@ class ArticleViewControllerSpec: QuickSpec {
                 }
             }
 
-            let article = Article(title: "article", link: URL(string: "https://example.com/article")!, summary: "summary", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
+            let article = Article(title: "article", link: URL(string: "https://example.com/article")!, summary: "summary", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, synced: false, feed: nil, flags: [])
 
             context("when viewing an article that has a link") {
                 beforeEach {
@@ -117,7 +117,7 @@ class ArticleViewControllerSpec: QuickSpec {
         }
 
         describe("continuing from user activity") {
-            let article = Article(title: "article", link: URL(string: "https://example.com/article")!, summary: "summary", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
+            let article = Article(title: "article", link: URL(string: "https://example.com/article")!, summary: "summary", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, synced: false, feed: nil, flags: [])
 
             beforeEach {
                 articleUseCase.readArticleStub = {
@@ -148,7 +148,7 @@ class ArticleViewControllerSpec: QuickSpec {
         }
 
         describe("setting the article") {
-            let article = Article(title: "article", link: URL(string: "https://example.com/")!, summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: Date(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
+            let article = Article(title: "article", link: URL(string: "https://example.com/")!, summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: Date(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, synced: false, feed: nil, flags: ["a"])
             let feed = Feed(title: "feed", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
 
             let userActivity = NSUserActivity(activityType: "com.example.test")
@@ -217,7 +217,7 @@ class ArticleViewControllerSpec: QuickSpec {
                     }
 
                     describe("when the use case returns") {
-                        let articleByAuthor = Article(title: "article23", link: URL(string: "https://example.com/")!, summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: Date(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: ["a"])
+                        let articleByAuthor = Article(title: "article23", link: URL(string: "https://example.com/")!, summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: Date(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, synced: false, feed: nil, flags: ["a"])
 
                         beforeEach {
                             articleUseCase.articlesByAuthorArgsForCall(0).1(AnyCollection([article, articleByAuthor]))

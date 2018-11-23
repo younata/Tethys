@@ -1,30 +1,52 @@
 import Nimble
 import UIKit
 
-public func equalColor(expectedColor: UIColor?) -> MatcherFunc<UIColor> {
-    return MatcherFunc { actualExpression, failureMessage in
-        guard let expectedColor = expectedColor else { return false }
-        guard let colors = (try? actualExpression.evaluate())??.getRGB() else { return false }
+public func equalColor(expectedColor: UIColor?) -> Predicate<UIColor> {
+    return Predicate { expression in
+        guard let expectedColor = expectedColor else {
+            return PredicateResult(bool: false, message: ExpectationMessage.fail("Expected value was nil (use BeNil() to match nils)"))
+        }
+        let result: UIColor?
+        do {
+            result = try expression.evaluate()
+        } catch let error {
+            return PredicateResult(
+                bool: false,
+                message: .fail("Got \(error) trying to evaluate expression")
+            )
+        }
+        guard let subject = result else {
+            return PredicateResult(bool: false, message: ExpectationMessage.fail("subject was nil"))
+        }
+        let colors = subject.getRGB()
 
         let expectedColors = expectedColor.getRGB()
 
+        var failingMessage = ExpectationMessage.fail("\(subject) not equal to \(expectedColor)")
+        var shouldPass = true
         if fabs(colors.red - expectedColors.red) > 1e-6 {
-            failureMessage.postfixMessage += " - (Red is off: Got \(colors.red), wanted \(expectedColors.red))"
-            return false
+            shouldPass = false
+            failingMessage = ExpectationMessage.details(failingMessage, "Red is off: Got \(colors.red), wanted \(expectedColors.red)")
         }
         if fabs(colors.green - expectedColors.green) > 1e-6 {
-            failureMessage.postfixMessage += " - (Green is off: Got \(colors.green), wanted \(expectedColors.green))"
-            return false
+            shouldPass = false
+            failingMessage = ExpectationMessage.appends(failingMessage, "Green is off: Got \(colors.green), wanted \(expectedColors.green)")
         }
         if fabs(colors.blue - expectedColors.blue) > 1e-6 {
-            failureMessage.postfixMessage += " - (Blue is off: Got \(colors.blue), wanted \(expectedColors.blue))"
-            return false
+            shouldPass = false
+            failingMessage = ExpectationMessage.appends(failingMessage, "Blue is off: Got \(colors.blue), wanted \(expectedColors.blue)")
         }
         if fabs(colors.alpha - expectedColors.alpha) > 1e-6 {
-            failureMessage.postfixMessage += " - (Alpha is off: Got \(colors.alpha), wanted \(expectedColors.alpha))"
-            return false
+            shouldPass = false
+            failingMessage = ExpectationMessage.appends(failingMessage, "Alpha is off: Got \(colors.alpha), wanted \(expectedColors.alpha)")
         }
-        return true
+        if shouldPass {
+            return PredicateResult(
+                bool: true,
+                message: ExpectationMessage.fail("\(subject) is equal to \(expectedColor)")
+            )
+        }
+        return PredicateResult(bool: false, message: failingMessage)
     }
 }
 

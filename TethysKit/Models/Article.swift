@@ -30,6 +30,7 @@ public final class Article: NSObject {
             }
         }
     }
+    @available(*, deprecated, message: "Use a service to get the article date")
     public internal(set) var published: Date {
         willSet {
             if newValue != published {
@@ -55,14 +56,6 @@ public final class Article: NSObject {
     public internal(set) var content: String {
         willSet {
             if newValue != content {
-                self.updated = true
-            }
-        }
-    }
-    @available(*, deprecated, message: "Use a service to get the estimated reading time")
-    public internal(set) var estimatedReadingTime: TimeInterval {
-        willSet {
-            if newValue != estimatedReadingTime {
                 self.updated = true
             }
         }
@@ -111,14 +104,10 @@ public final class Article: NSObject {
         }
         let authorsHashValue = authors.reduce(0) { $0 ^ $1.hashValue }
         let nonNilHashValues = title.hashValue ^ summary.hashValue ^ authorsHashValue ^
-            published.hashValue ^ identifier.hashValue ^ content.hashValue & read.hashValue &
-            estimatedReadingTime.hashValue ^ link.hashValue
+            published.hashValue ^ identifier.hashValue ^ content.hashValue ^ read.hashValue ^
+            link.hashValue
         let flagsHashValues = flags.reduce(0) { $0 ^ $1.hashValue }
-        var possiblyNilHashValues = 0
-        if let updatedAt = updatedAt {
-            possiblyNilHashValues ^= updatedAt.hashValue
-        }
-        return nonNilHashValues ^ flagsHashValues ^ possiblyNilHashValues
+        return nonNilHashValues ^ flagsHashValues
     }
 
     public override func isEqual(_ object: Any?) -> Bool {
@@ -130,19 +119,18 @@ public final class Article: NSObject {
         }
         return self.title == b.title && self.link == b.link && self.summary == b.summary &&
             self.authors == b.authors && self.published == b.published && self.updatedAt == b.updatedAt &&
-            self.identifier == b.identifier && self.content == b.content && self.read == b.read &&
-            self.flags == b.flags && self.estimatedReadingTime == b.estimatedReadingTime
+            self.identifier == b.identifier && self.content == b.content && self.read == b.read && self.flags == b.flags
     }
 
     public override var description: String {
         // swiftlint:disable line_length
-        return "(Article: title: \(title), link: \(link), summary: \(summary), author: \(authors), published: \(published), updated: \(String(describing: updatedAt)), identifier: \(identifier), content: \(content), read: \(read), estimatedReadingTime: \(estimatedReadingTime))\n"
+        return "(Article: title: \(title), link: \(link), summary: \(summary), author: \(authors), published: \(published), updated: \(String(describing: updatedAt)), identifier: \(identifier), content: \(content), read: \(read))\n"
         // swiftlint:enable line_length
     }
 
     public init(title: String, link: URL, summary: String, authors: [Author], published: Date,
                 updatedAt: Date?, identifier: String, content: String, read: Bool, synced: Bool,
-                estimatedReadingTime: TimeInterval, feed: Feed?, flags: [String]) {
+                feed: Feed?, flags: [String]) {
         self.title = title
         self.link = link
         self.summary = summary
@@ -155,7 +143,6 @@ public final class Article: NSObject {
         self.synced = synced
         self.feed = feed
         self.flags = flags
-        self.estimatedReadingTime = estimatedReadingTime
         super.init()
         self.updated = false
     }
@@ -173,7 +160,6 @@ public final class Article: NSObject {
         identifier = article.id
         content = article.content ?? ""
         read = article.read
-        estimatedReadingTime = article.estimatedReadingTime ?? 0
         synced = article.synced
         self.feed = feed
         self.flags = article.flags.map { $0.string }

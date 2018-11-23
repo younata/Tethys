@@ -26,7 +26,7 @@ final class RealmService: DataService {
         self.searchIndex = searchIndex
     }
 
-    func createFeed(url: URL, callback: @escaping (Feed) -> (Void)) -> Future<Result<Feed, TethysError>> {
+    func createFeed(url: URL, callback: @escaping (Feed) -> Void) -> Future<Result<Feed, TethysError>> {
         let promise = Promise<Result<Feed, TethysError>>()
         _ = self.realmTransaction {
             let realm = self.realmProvider.realm()
@@ -44,7 +44,7 @@ final class RealmService: DataService {
         return promise.future
     }
 
-    func createArticle(url: URL, feed: Feed?, callback: @escaping (Article) -> (Void)) {
+    func createArticle(url: URL, feed: Feed?, callback: @escaping (Article) -> Void) {
         _ = self.realmTransaction {
             let realm = self.realmProvider.realm()
             let realmArticle = realm.create(RealmArticle.self, value: ["link": url.absoluteString])
@@ -63,7 +63,8 @@ final class RealmService: DataService {
     private func privateFindOrCreateRealmFeed(url: URL) -> RealmFeed {
         let feed: RealmFeed
 
-        if let realmFeed = self.realmProvider.realm().objects(RealmFeed.self).filter("url = %@", url.absoluteString).first {
+        if let realmFeed = self.realmProvider.realm().objects(RealmFeed.self)
+            .filter("url = %@", url.absoluteString).first {
             feed = realmFeed
         } else {
             feed = self.realmProvider.realm().create(RealmFeed.self, value: ["url": url.absoluteString])
@@ -136,7 +137,7 @@ final class RealmService: DataService {
         }
     }
 
-    // Mark: - Read
+    // MARK: - Read
 
     func allFeeds() -> Future<Result<DataStoreBackedArray<Feed>, TethysError>> {
         let promise = Promise<Result<DataStoreBackedArray<Feed>, TethysError>>()
@@ -168,7 +169,7 @@ final class RealmService: DataService {
             return promise.future
     }
 
-    // Mark: - Delete
+    // MARK: - Delete
 
     func deleteFeed(_ feed: Feed) -> Future<Result<Void, TethysError>> {
         let promise = Promise<Result<Void, TethysError>>()
@@ -201,7 +202,7 @@ final class RealmService: DataService {
         return promise.future
     }
 
-    // Mark: - Batch
+    // MARK: - Batch
 
     func batchCreate(feedURLs: [URL], articleURLs: [URL]) ->
         Future<Result<([Feed], [Article]), TethysError>> {
@@ -246,7 +247,7 @@ final class RealmService: DataService {
         return promise.future
     }
 
-    // Mark: - Private
+    // MARK: - Private
 
     private func realmFeedForFeed(_ feed: Feed) -> RealmFeed? {
         guard let feedID = feed.feedID as? String else { return nil }
@@ -353,7 +354,6 @@ final class RealmService: DataService {
             }
             rarticle.flags.removeAll()
             rarticle.flags.append(objectsIn: flags)
-            rarticle.estimatedReadingTime = article.estimatedReadingTime
 
             if let feed = article.feed, let rfeed = self.realmFeedForFeed(feed) {
                 rarticle.feed = rfeed

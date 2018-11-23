@@ -119,7 +119,7 @@ public final class ArticleViewController: UIViewController {
         addTitleToCmd(markAsRead, NSLocalizedString("ArticleViewController_Command_ToggleRead", comment: ""))
         commands.append(markAsRead)
 
-        if let _ = self.article?.link {
+        if self.article?.link != nil {
             let cmd = UIKeyCommand(input: "l", modifierFlags: .command,
                                    action: #selector(ArticleViewController.openInSafari))
             addTitleToCmd(cmd, NSLocalizedString("ArticleViewController_Command_OpenInWebView", comment: ""))

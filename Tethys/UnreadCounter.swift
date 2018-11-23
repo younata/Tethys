@@ -1,7 +1,7 @@
 import UIKit
 import PureLayout
 
-fileprivate class OutlinedLabel: UILabel {
+private class OutlinedLabel: UILabel {
     fileprivate var outlineColor = UIColor.darkGreen()
 
     fileprivate override func drawText(in rect: CGRect) {

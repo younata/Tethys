@@ -216,7 +216,6 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             expect(article.content) == content
             expect(article.authors) == [Author(name: "Rachel Brindle", email: URL(string: "mailto:rachel@example.com"))]
             expect(article.read) == false
-            expect(article.estimatedReadingTime) == 150
             expect(article.synced) == true
         }
 

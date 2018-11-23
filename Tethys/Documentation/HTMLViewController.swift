@@ -48,9 +48,9 @@ public final class HTMLViewController: UIViewController {
 
     public override func observeValue(forKeyPath keyPath: String?,
                                       of object: Any?,
-                                      change: [NSKeyValueChangeKey : Any]?,
+                                      change: [NSKeyValueChangeKey: Any]?,
                                       context: UnsafeMutableRawPointer?) {
-        guard let _ = object as? WKWebView else { return }
+        guard object is WKWebView else { return }
         guard let keyPath = keyPath else { return }
         guard let change = change else { return }
         switch keyPath {

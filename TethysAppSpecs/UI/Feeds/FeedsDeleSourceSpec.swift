@@ -38,6 +38,7 @@ class FeedsDeleSourceSpec: QuickSpec {
                     feedRepository: FakeDatabaseUseCase(),
                     themeRepository: themeRepository,
                     settingsRepository: SettingsRepository(userDefaults: nil),
+                    articleCellController: FakeArticleCellController(),
                     articleViewController: { fatalError() },
                     generateBookViewController: { fatalError() }
                 )

@@ -59,10 +59,6 @@ public func configure(container: Container) {
 }
 
 private func configureServices(container: Container) {
-    container.register(DatabaseMigratorType.self) { _ in
-        return DatabaseMigrator()
-    }
-
     container.register(DataServiceFactoryType.self) { r in
         return DataServiceFactory(
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
@@ -131,8 +127,7 @@ private func configureUseCases(container: Container) {
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
             reachable: r.resolve(Reachability.self),
             dataServiceFactory: r.resolve(DataServiceFactoryType.self)!,
-            updateUseCase: r.resolve(UpdateUseCase.self)!,
-            databaseMigrator: r.resolve(DatabaseMigratorType.self)!
+            updateUseCase: r.resolve(UpdateUseCase.self)!
         )
     }.inObjectScope(.container)
 

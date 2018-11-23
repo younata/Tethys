@@ -42,23 +42,26 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
 
     public weak var delegate: ArticleListControllerDelegate?
 
-    fileprivate let mainQueue: OperationQueue
+    private let mainQueue: OperationQueue
     fileprivate let feedRepository: DatabaseUseCase
-    fileprivate let themeRepository: ThemeRepository
-    fileprivate let settingsRepository: SettingsRepository
-    fileprivate let articleViewController: () -> ArticleViewController
-    fileprivate let generateBookViewController: () -> GenerateBookViewController
+    private let themeRepository: ThemeRepository
+    private let settingsRepository: SettingsRepository
+    private let articleCellController: ArticleCellController
+    private let articleViewController: () -> ArticleViewController
+    private let generateBookViewController: () -> GenerateBookViewController
 
     public init(mainQueue: OperationQueue,
                 feedRepository: DatabaseUseCase,
                 themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
+                articleCellController: ArticleCellController,
                 articleViewController: @escaping () -> ArticleViewController,
                 generateBookViewController: @escaping () -> GenerateBookViewController) {
         self.mainQueue = mainQueue
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
+        self.articleCellController = articleCellController
         self.articleViewController = articleViewController
         self.generateBookViewController = generateBookViewController
 
@@ -168,7 +171,7 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
         let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
         let promise = Promise<Bool>()
         alert.addAction(UIAlertAction(title: deleteTitle, style: .destructive) { _ in
-//            _ = self.articles.remove(article)
+            self.articles = AnyCollection(self.articles.filter { $0 != article })
             _ = self.feedRepository.deleteArticle(article)
             promise.resolve(true)
             self.dismiss(animated: true, completion: nil)
@@ -227,14 +230,7 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
 
             cell.themeRepository = self.themeRepository
 
-            let readingTime = Int(round(self.settingsRepository.showEstimatedReadingLabel ? article.estimatedReadingTime : 0 / 60))
-            cell.configure(
-                title: article.title,
-                publishedDate: article.updatedAt ?? article.published,
-                author: article.authorsString,
-                read: article.read,
-                readingTime: readingTime > 0 ? readingTime : nil
-            )
+            self.articleCellController.configure(cell: cell, with: article)
 
             return cell
         }
@@ -293,7 +289,7 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
         return [delete, toggle]
     }
 
-    // Mark: Private
+    // MARK: Private
 
     fileprivate func resetArticles() {
         guard let articles = self.feed?.articlesArray else { return }
@@ -307,7 +303,7 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
         } else {
             var barItems = [self.editButtonItem]
 
-            if let _ = self.feed {
+            if self.feed != nil {
                 let shareSheet = UIBarButtonItem(barButtonSystemItem: .action,
                                                  target: self,
                                                  action: #selector(ArticleListController.shareFeed))
@@ -325,7 +321,7 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
 
     private func setupToolbar() {
         var items = [self.spacer(), self.generateBookButton, self.spacer()]
-        if let _ = self.feed {
+        if self.feed != nil {
             items += [self.markReadButton, self.spacer()]
         }
         self.toolbarItems = items
@@ -363,7 +359,7 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
 
         self.feedRepository.markFeedAsRead(feed).then { markReadResult in
             switch markReadResult {
-            case .success(_):
+            case .success:
                     self.mainQueue.addOperation {
                         indicator.removeFromSuperview()
 

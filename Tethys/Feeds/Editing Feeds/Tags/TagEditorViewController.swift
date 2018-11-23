@@ -11,7 +11,7 @@ public final class TagEditorViewController: UIViewController {
             self.navigationItem.rightBarButtonItem?.isEnabled = self.tag != nil
         }
     }
-    public var onSave: ((String) -> (Void))?
+    public var onSave: ((String) -> Void)?
 
     private let feedRepository: DatabaseUseCase
     private let themeRepository: ThemeRepository

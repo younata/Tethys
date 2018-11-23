@@ -8,70 +8,15 @@ public final class ArticleCell: UITableViewCell {
     public let unread = UnreadCounter(forAutoLayout: ())
     public let readingTime = UILabel(forAutoLayout: ())
 
-    public var titleText: String? { return self.title.text }
-    public var authorText: String? { return self.author.text }
-    public private(set) var publishedDate: Date?
-    public private(set) var readingTimeInMinutes: Int?
-
-    public var hideUnread: Bool = false {
-        didSet {
-            if self.hideUnread {
-                self.unread.unread = 0
-            }
-        }
-    }
-
     public var themeRepository: ThemeRepository? = nil {
         didSet {
             self.themeRepository?.addSubscriber(self)
         }
     }
 
-    private var unreadWidth: NSLayoutConstraint! = nil
-
-    private let dateFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-
-        dateFormatter.timeStyle = .none
-        dateFormatter.dateStyle = .short
-        dateFormatter.timeZone = NSCalendar.current.timeZone
-
-        return dateFormatter
-    }()
-
-    private let timeFormatter: DateComponentsFormatter = {
-        let formatter = DateComponentsFormatter()
-        formatter.allowedUnits = [.hour, .minute]
-        formatter.unitsStyle = .full
-        return formatter
-    }()
+    var unreadWidth: NSLayoutConstraint! = nil
 
     fileprivate let backgroundColorView = UIView()
-
-    public func configure(title: String, publishedDate: Date, author: String, read: Bool, readingTime: Int?) {
-        self.publishedDate = publishedDate
-        self.readingTimeInMinutes = readingTime
-
-        self.title.text = title
-        self.published.text = self.dateFormatter.string(from: publishedDate)
-        self.author.text = author
-        if self.hideUnread {
-            self.unread.unread = 0
-            self.unreadWidth.constant = 0
-        } else {
-            self.unread.unread = read ? 0 : 1
-            self.unreadWidth.constant = read ? 0 : 30
-        }
-        if let readingTime = readingTime, readingTime > 0 {
-            self.readingTime.isHidden = false
-            let localizedFormat = NSLocalizedString("ArticleCell_EstimatedReadingTime", comment: "")
-            let formattedTime = self.timeFormatter.string(from: TimeInterval(readingTime * 60)) ?? ""
-            self.readingTime.text = String.localizedStringWithFormat(localizedFormat, formattedTime)
-        } else {
-            self.readingTime.isHidden = true
-            self.readingTime.text = nil
-        }
-    }
 
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)

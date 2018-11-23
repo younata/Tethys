@@ -13,7 +13,7 @@ public final class SwitchTableViewCell: UITableViewCell {
     }
 
     public let theSwitch: UISwitch = UISwitch(forAutoLayout: ())
-    public var onTapSwitch: ((UISwitch) -> (Void))?
+    public var onTapSwitch: ((UISwitch) -> Void)?
 
     @objc private func didTapSwitch() {
         self.onTapSwitch?(self.theSwitch)

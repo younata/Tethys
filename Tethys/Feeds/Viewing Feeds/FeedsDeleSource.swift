@@ -29,13 +29,12 @@ public final class FeedsDeleSource: NSObject {
 
     public weak var scrollViewDelegate: UIScrollViewDelegate?
 
-    // swiftlint:disable function_parameter_count
     public init(tableView: UITableView,
                 feedsSource: FeedsSource,
                 themeRepository: ThemeRepository,
                 navigationController: UINavigationController?,
                 mainQueue: OperationQueue,
-                articleListController: ((Void) -> (ArticleListController))?) {
+                articleListController: (() -> (ArticleListController))?) {
         self.tableView = tableView
         self.feedsSource = feedsSource
         self.themeRepository = themeRepository
@@ -50,7 +49,6 @@ public final class FeedsDeleSource: NSObject {
         // Prevents a green triangle which'll (dis)appear depending on
         // whether new feed loaded into it has unread articles or not.
     }
-    // swiftlint:enable function_parameter_count
 
     fileprivate func feedAtIndexPath(_ indexPath: IndexPath) -> Feed {
         return self.feedsSource.feeds[indexPath.row]

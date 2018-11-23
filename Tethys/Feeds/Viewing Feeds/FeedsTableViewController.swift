@@ -79,7 +79,7 @@ public final class FeedsTableViewController: UIViewController {
     fileprivate let settingsViewController: () -> SettingsViewController
     fileprivate let articleListController: () -> ArticleListController
 
-    fileprivate var markReadFuture: Future<Result<Int, TethysError>>? = nil
+    fileprivate var markReadFuture: Future<Result<Int, TethysError>>?
 
     public init(feedRepository: DatabaseUseCase,
                 themeRepository: ThemeRepository,
@@ -116,7 +116,7 @@ public final class FeedsTableViewController: UIViewController {
         self.refreshControl.updateSize(self.view.bounds.size)
 
         self.navigationController?.navigationBar.addSubview(self.updateBar)
-        if let _ = self.updateBar.superview {
+        if self.updateBar.superview != nil {
             self.updateBar.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .top)
             self.updateBar.autoSetDimension(.height, toSize: 3)
         }
@@ -185,7 +185,7 @@ public final class FeedsTableViewController: UIViewController {
         return commands
     }
 
-    // MARK - Private/Internal
+    // MARK: - Private/Internal
 
     internal func importFromWeb() {
         self.presentController(self.findFeedViewController(), from: self.navigationItem.rightBarButtonItem)
@@ -216,7 +216,7 @@ public final class FeedsTableViewController: UIViewController {
     }
 
     fileprivate func reload(_ tag: String?, feeds: [Feed]? = nil) {
-        let reloadWithFeeds: ([Feed]) -> (Void) = {feeds in
+        let reloadWithFeeds: ([Feed]) -> Void = {feeds in
             let sortedFeeds = feeds.sorted {(f1: Feed, f2: Feed) in
                 let f1Unread = f1.unreadArticles.count
                 let f2Unread = f2.unreadArticles.count

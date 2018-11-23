@@ -162,7 +162,6 @@ class ArticleListControllerSpec: QuickSpec {
 
             let useCase = FakeArticleUseCase()
             useCase.readArticleReturns("hello")
-            useCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
 
             themeRepository = ThemeRepository(userDefaults: nil)
             dataRepository = FakeDatabaseUseCase()

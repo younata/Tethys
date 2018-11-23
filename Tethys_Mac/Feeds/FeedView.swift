@@ -27,7 +27,7 @@ public final class FeedView: NSView {
     }
 
     // swiftlint:disable weak_delegate
-    public private(set) var delegate: FeedViewDelegate? = nil
+    public private(set) var delegate: FeedViewDelegate?
     // swiftlint:enable weak_delegate
 
     public func configure(_ feed: Feed, delegate: FeedViewDelegate) {
@@ -72,7 +72,6 @@ public final class FeedView: NSView {
         self.delegate?.didSelectMenuOption(menuItem.title, forFeed: feed)
     }
 
-    // swiftlint:disable function_body_length
     public override init(frame: NSRect) {
         super.init(frame: frame)
 

@@ -27,7 +27,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         return nil
     }
 
-    public func openFile(_ filename: String, finish: ([Feed]) -> (Void)) -> Bool {
+    public func openFile(_ filename: String, finish: ([Feed]) -> Void) -> Bool {
         return false
     }
 

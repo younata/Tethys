@@ -55,8 +55,18 @@ final class RealmArticleService: ArticleService {
         }
         let text = realmArticle.content?.optional ?? realmArticle.summary?.optional ?? ""
         let readingTime = estimateReadingTime(text)
+        self.saveReadingTime(readingTime, for: article)
+        return readingTime
+    }
+
+    private func realmArticle(for article: Article) -> RealmArticle? {
+        return self.realmProvider.realm().object(ofType: RealmArticle.self, forPrimaryKey: article.identifier)
+    }
+
+    private func saveReadingTime(_ readingTime: TimeInterval, for article: Article) {
         self.workQueue.addOperation {
             let realm = self.realmProvider.realm()
+            guard let realmArticle = self.realmArticle(for: article) else { return }
             realm.beginWrite()
             realmArticle.estimatedReadingTime = readingTime
             do {
@@ -65,10 +75,5 @@ final class RealmArticleService: ArticleService {
                 dump(exception)
             }
         }
-        return readingTime
-    }
-
-    private func realmArticle(for article: Article) -> RealmArticle? {
-        return self.realmProvider.realm().object(ofType: RealmArticle.self, forPrimaryKey: article.identifier)
     }
 }

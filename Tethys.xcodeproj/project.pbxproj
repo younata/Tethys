@@ -318,7 +318,6 @@
 		899823A91B2C76B800818755 /* TagEditorViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899823A81B2C76B800818755 /* TagEditorViewControllerSpec.swift */; };
 		899823AC1B2C883B00818755 /* ArticleListControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899823AB1B2C883B00818755 /* ArticleListControllerSpec.swift */; };
 		899823AE1B30B64000818755 /* ArticleViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899823AD1B30B64000818755 /* ArticleViewControllerSpec.swift */; };
-		899823B11B30BA7E00818755 /* NSUserActivity+TethysTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 899823B01B30BA7E00818755 /* NSUserActivity+TethysTests.m */; };
 		899987371B483248003C1AF5 /* Muon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		899987391B483332003C1AF5 /* feed.rss in Resources */ = {isa = PBXBuildFile; fileRef = 89DBDA991A9EBB0C00959AC7 /* feed.rss */; };
 		8999873A1B483332003C1AF5 /* feed2.rss in Resources */ = {isa = PBXBuildFile; fileRef = 89DBDA9B1A9FBC4100959AC7 /* feed2.rss */; };
@@ -773,8 +772,6 @@
 		899823A81B2C76B800818755 /* TagEditorViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagEditorViewControllerSpec.swift; sourceTree = "<group>"; };
 		899823AB1B2C883B00818755 /* ArticleListControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListControllerSpec.swift; sourceTree = "<group>"; };
 		899823AD1B30B64000818755 /* ArticleViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleViewControllerSpec.swift; sourceTree = "<group>"; };
-		899823AF1B30BA7E00818755 /* NSUserActivity+TethysTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserActivity+TethysTests.h"; sourceTree = "<group>"; };
-		899823B01B30BA7E00818755 /* NSUserActivity+TethysTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserActivity+TethysTests.m"; sourceTree = "<group>"; };
 		8999CC0C1C2E710F00B81F5F /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 		8999CC0E1C2E796100B81F5F /* DataServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataServiceSpec.swift; sourceTree = "<group>"; };
 		899B7DFC1E902B080067ABFF /* URLShareSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLShareSheet.swift; sourceTree = "<group>"; };
@@ -1811,8 +1808,6 @@
 				8997C7F41B248D5A00972930 /* FakeWebView.swift */,
 				894D1AEA1DB0971E00E70B1A /* FakeWKNavigationAction.swift */,
 				894CEAA11DAE7C7500E8BDEB /* FakeWKPreviewItem.swift */,
-				899823AF1B30BA7E00818755 /* NSUserActivity+TethysTests.h */,
-				899823B01B30BA7E00818755 /* NSUserActivity+TethysTests.m */,
 				89DFAA5D1B75CE65004CD9CA /* PCKMethodRedirector.h */,
 				89F516551B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.h */,
 				89F516561B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.m */,
@@ -2612,7 +2607,6 @@
 				89CBDC051C7D42D7006B70F5 /* MigrationViewControllerSpec.swift in Sources */,
 				89FA3BDB21A785480026BC88 /* ArticleCellControllerSpec.swift in Sources */,
 				8903A6271C4ABA7800E896BF /* NotificationViewSpec.swift in Sources */,
-				899823B11B30BA7E00818755 /* NSUserActivity+TethysTests.m in Sources */,
 				894D1AF51DB28B8E00E70B1A /* RefreshControlSpec.swift in Sources */,
 				89F98BA81BA07E50005C3CA8 /* SettingsRepositorySpec.swift in Sources */,
 				89E2A33F1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift in Sources */,

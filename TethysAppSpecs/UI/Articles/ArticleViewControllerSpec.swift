@@ -67,7 +67,6 @@ class ArticleViewControllerSpec: QuickSpec {
         describe("Key Commands") {
             beforeEach {
                 articleUseCase.readArticleReturns("hello")
-                articleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
             }
 
             it("can become first responder") {
@@ -116,46 +115,12 @@ class ArticleViewControllerSpec: QuickSpec {
             }
         }
 
-        describe("continuing from user activity") {
-            let article = Article(title: "article", link: URL(string: "https://example.com/article")!, summary: "summary", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, synced: false, feed: nil, flags: [])
-
-            beforeEach {
-                articleUseCase.readArticleStub = {
-                    if $0 == article {
-                        return $0.content
-                    }
-                    return "hello"
-                }
-                articleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.test"))
-
-                subject.setArticle(article)
-
-                let activityType = "com.rachelbrindle.rssclient.article"
-                let userActivity = NSUserActivity(activityType: activityType)
-                userActivity.title = NSLocalizedString("Reading Article", comment: "")
-
-                userActivity.userInfo = [
-                    "feed": "",
-                    "article": ""
-                ]
-
-                subject.restoreUserActivityState(userActivity)
-            }
-
-            it("shows the content") {
-                expect(htmlViewController.htmlString).to(contain(article.content))
-            }
-        }
-
         describe("setting the article") {
             let article = Article(title: "article", link: URL(string: "https://example.com/")!, summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: Date(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, synced: false, feed: nil, flags: ["a"])
             let feed = Feed(title: "feed", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
 
-            let userActivity = NSUserActivity(activityType: "com.example.test")
-
             beforeEach {
                 articleUseCase.readArticleReturns("example")
-                articleUseCase.userActivityForArticleReturns(userActivity)
 
                 article.feed = feed
                 feed.addArticle(article)
@@ -165,10 +130,6 @@ class ArticleViewControllerSpec: QuickSpec {
             it("asks the use case for the html to show") {
                 expect(articleUseCase.readArticleCallCount) == 1
                 expect(articleUseCase.readArticleArgsForCall(0)) == article
-            }
-
-            it("sets the user activity up") {
-                expect(subject.userActivity) === userActivity
             }
 
             it("should include the share button in the toolbar, and the open in safari button") {

@@ -19,9 +19,12 @@ final class DefaultRealmProvider: RealmProvider {
             return realm
         }
 
-        // swiftlint:disable force_try
-        let realm = try! Realm(configuration: self.configuration)
-        // swiftlint:enable force_try
+        let realm: Realm
+        do {
+            realm = try Realm(configuration: self.configuration)
+        } catch let error {
+            fatalError("Received \(error) trying to create a realm")
+        }
         self.realmsForThreads[thread] = realm
 
         return realm

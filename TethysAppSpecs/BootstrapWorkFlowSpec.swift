@@ -21,7 +21,6 @@ class BootstrapWorkFlowSpec: QuickSpec {
 
             let articleUseCase = FakeArticleUseCase()
             articleUseCase.readArticleReturns("")
-            articleUseCase.userActivityForArticleReturns(NSUserActivity(activityType: "com.example.foo"))
 
             subject = BootstrapWorkFlow(
                 window: window,

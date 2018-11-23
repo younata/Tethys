@@ -13,8 +13,6 @@ public final class ArticleViewController: UIViewController {
         guard let article = article else { return }
         if show { self.showArticle(article, read: read) }
 
-        self.userActivity = self.articleUseCase.userActivityForArticle(article)
-
         self.toolbarItems = [
             self.spacer(), self.shareButton, self.spacer(), self.openInSafariButton, self.spacer()
         ]
@@ -208,12 +206,6 @@ extension ArticleViewController: HTMLViewControllerDelegate {
         } else {
             self.navigationController?.pushViewController(viewController, animated: true)
         }
-    }
-}
-extension ArticleViewController: NSUserActivityDelegate {
-    public func userActivityWillSave(_ userActivity: NSUserActivity) {
-        guard let article = self.article else { return }
-        userActivity.userInfo = ["feed": article.feed?.title ?? "", "article": article.identifier]
     }
 }
 

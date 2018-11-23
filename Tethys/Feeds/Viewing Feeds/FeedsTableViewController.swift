@@ -155,7 +155,8 @@ public final class FeedsTableViewController: UIViewController {
         self.navigationController?.setToolbarHidden(true, animated: true)
     }
 
-    public override func viewWillTransition(to size: CGSize,
+    public override func viewWillTransition(
+        to size: CGSize,
         with coordinator: UIViewControllerTransitionCoordinator) {
             super.viewWillTransition(to: size, with: coordinator)
 

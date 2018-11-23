@@ -329,48 +329,5 @@ class AppDelegateSpec: QuickSpec {
                 expect(backgroundFetchHandler.performFetchCalled) == true
             }
         }
-
-        describe("user activities") {
-            var responderArray: [UIResponder] = []
-            var article: Article! = nil
-
-            beforeEach {
-                let feed = Feed(title: "title", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
-                article = Article(title: "title", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "", read: false, synced: false, feed: feed, flags: [])
-                feed.addArticle(article)
-                _ = subject.application(UIApplication.shared, didFinishLaunchingWithOptions: nil)
-            }
-
-            describe("normal user activities") {
-                beforeEach {
-                    let activity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
-                    activity.userInfo = [
-                        "feed": "feed",
-                        "article": "identifier",
-                    ]
-                    expect(subject.application(UIApplication.shared, continue: activity) {responders in
-                        responderArray = responders as? [UIResponder] ?? []
-                    }) == true
-                }
-                
-                it("should not set the responderArray") {
-                    expect(responderArray).to(beEmpty())
-                }
-            }
-            
-            describe("searchable user activities") {
-                beforeEach {
-                    let activity = NSUserActivity(activityType: CSSearchableItemActionType)
-                    activity.userInfo = [CSSearchableItemActivityIdentifier: "identifier"]
-                    expect(subject.application(UIApplication.shared, continue: activity) {responders in
-                        responderArray = responders as? [UIResponder] ?? []
-                    }) == true
-                }
-                
-                it("should not set the responderArray") {
-                    expect(responderArray).to(beEmpty())
-                }
-            }
-        }
     }
 }

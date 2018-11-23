@@ -125,7 +125,7 @@ private func configureUseCases(container: Container) {
     container.register(DatabaseUseCase.self) { r in
         return DefaultDatabaseUseCase(
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
-            reachable: r.resolve(Reachability.self),
+            reachable: r.resolve(Reachable.self),
             dataServiceFactory: r.resolve(DataServiceFactoryType.self)!,
             updateUseCase: r.resolve(UpdateUseCase.self)!
         )

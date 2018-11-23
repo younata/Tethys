@@ -168,7 +168,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
 
         _ = self.feeds().map { result in
             return result.map { feeds in
-                guard feeds.isEmpty == false && self.reachable?.hasNetworkConnectivity == true else {
+                guard feeds.isEmpty == false && self.reachable?.hasNetworkConnectivity != false else {
                     self.updatingFeedsCallbacks.forEach { $0([], []) }
                     self.updatingFeedsCallbacks = []
                     for subscriber in self.allSubscribers {

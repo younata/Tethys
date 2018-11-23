@@ -137,44 +137,6 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
         self.backgroundFetchHandler.performFetch(completionHandler: completionHandler)
     }
 
-    // MARK: - User Activities
-
-    public func application(_ application: UIApplication,
-                            continue userActivity: NSUserActivity,
-                            restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
-        let type = userActivity.activityType
-        if type == "com.rachelbrindle.rssclient.article",
-            let userInfo = userActivity.userInfo,
-            let feedTitle = userInfo["feed"] as? String,
-            let articleID = userInfo["article"] as? String {
-            _ = self.feedRepository.feeds().then {
-                if case let Result.success(feeds) = $0 {
-                    if let feed = feeds.objectPassingTest({ return $0.title == feedTitle }),
-                        let article = feed.articlesArray.filter({ $0.identifier == articleID }).first {
-                        self.createControllerHierarchy(feed, article: article)
-                    }
-                }
-            }
-            return true
-        }
-        if type == CSSearchableItemActionType,
-            let uniqueID = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
-            _ = self.feedRepository.feeds().then {
-                guard case let Result.success(feeds) = $0 else { return }
-                guard let article = feeds.reduce([Article](), {articles, feed in
-                    return articles + Array(feed.articlesArray)
-                }).objectPassingTest({ article in
-                    return article.identifier == uniqueID
-                }), let feed = article.feed else {
-                    return
-                }
-                self.createControllerHierarchy(feed, article: article)
-            }
-            return true
-        }
-        return false
-    }
-
     // MARK: - Private
 
     private func createControllerHierarchy(_ feed: Feed? = nil, article: Article? = nil) {

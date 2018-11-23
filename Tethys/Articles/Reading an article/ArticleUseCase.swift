@@ -7,7 +7,6 @@ public protocol ArticleUseCase {
     func articlesByAuthor(_ author: Author, callback: @escaping (AnyCollection<Article>) -> Void)
 
     func readArticle(_ article: Article) -> String
-    func userActivityForArticle(_ article: Article) -> NSUserActivity
     func toggleArticleRead(_ article: Article)
 }
 
@@ -61,33 +60,6 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase {
         _ = self.feedRepository.markArticle(article, asRead: !article.read)
     }
 
-    private lazy var userActivity: NSUserActivity = {
-        let userActivity = NSUserActivity(activityType: "com.rachelbrindle.rssclient.article")
-        userActivity.requiredUserInfoKeys = ["feed", "article"]
-        userActivity.isEligibleForPublicIndexing = false
-        userActivity.isEligibleForSearch = true
-        userActivity.delegate = self
-        return userActivity
-    }()
-    fileprivate weak var mostRecentArticle: Article?
-
-    public func userActivityForArticle(_ article: Article) -> NSUserActivity {
-        let title: String
-        if let feedTitle = article.feed?.title {
-            title = "\(feedTitle): \(article.title)"
-        } else {
-            title = article.title
-        }
-        self.mostRecentArticle = article
-        self.userActivity.title = title
-        self.userActivity.webpageURL = article.link
-        let authorWords = article.authors.flatMap { $0.description.components(separatedBy: " ") }
-        self.userActivity.keywords = Set([article.title, article.summary] + article.flags + authorWords)
-        self.userActivity.becomeCurrent()
-        self.userActivity.needsSave = true
-        return self.userActivity
-    }
-
     private lazy var prismJS: String = {
         if let prismURL = Bundle.main.url(forResource: "prism.js", withExtension: "html"),
             let prism = try? String(contentsOf: prismURL) {
@@ -115,15 +87,5 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase {
         let postfix = self.prismJS + "</body></html>"
 
         return prefix + "<h2>\(article.title)</h2>" + content + postfix
-    }
-}
-
-extension DefaultArticleUseCase: NSUserActivityDelegate {
-    public func userActivityWillSave(_ userActivity: NSUserActivity) {
-        guard let article = self.mostRecentArticle else { return }
-        userActivity.userInfo = [
-            "feed": article.feed?.title ?? "",
-            "article": article.identifier
-        ]
     }
 }

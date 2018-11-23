@@ -28,6 +28,8 @@ class KitModuleSpec: QuickSpec {
             exists(UserDefaults.self)
             exists(FileManager.self)
 
+            exists(Reachable.self)
+
             isA(RealmProvider.self, kindOf: DefaultRealmProvider.self)
 
             exists(ArticleService.self)

@@ -34,23 +34,6 @@ class FakeArticleUseCase: ArticleUseCase {
         return self.readArticleStub!(article)
     }
 
-    private(set) var userActivityForArticleCallCount : Int = 0
-    var userActivityForArticleStub : ((Article) -> (NSUserActivity))?
-    private var userActivityForArticleArgs : Array<(Article)> = []
-    func userActivityForArticleReturns(_ stubbedValues: (NSUserActivity)) {
-        self.userActivityForArticleStub = {(article: Article) -> (NSUserActivity) in
-            return stubbedValues
-        }
-    }
-    func userActivityForArticleArgsForCall(_ callIndex: Int) -> (Article) {
-        return self.userActivityForArticleArgs[callIndex]
-    }
-    func userActivityForArticle(_ article: Article) -> NSUserActivity {
-        self.userActivityForArticleCallCount += 1
-        self.userActivityForArticleArgs.append((article))
-        return self.userActivityForArticleStub!(article)
-    }
-
     private(set) var toggleArticleReadCallCount : Int = 0
     private var toggleArticleReadArgs : Array<(Article)> = []
     func toggleArticleReadArgsForCall(_ callIndex: Int) -> (Article) {

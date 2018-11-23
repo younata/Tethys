@@ -157,39 +157,7 @@ class ArticleViewControllerSpec: QuickSpec {
                         expect(activityViewController.applicationActivities as? [NSObject]).toNot(beNil())
                         if let activities = activityViewController.applicationActivities as? [NSObject] {
                             expect(activities.first).to(beAnInstanceOf(TOActivitySafari.self))
-                            expect(activities[1]).to(beAnInstanceOf(TOActivityChrome.self))
-                            expect(activities.last).to(beAnInstanceOf(AuthorActivity.self))
-                        }
-                    }
-                }
-
-                describe("tapping view articles by author") {
-                    beforeEach {
-                        guard let activityViewController = subject.presentedViewController as? URLShareSheet else {
-                            fail("")
-                            return
-                        }
-
-                        activityViewController.completionWithItemsHandler?(UIActivityType(rawValue: "com.rachelbrindle.Tethys.author"), true, nil, nil)
-                    }
-
-                    it("asks the use case for all articles by that author") {
-                        expect(articleUseCase.articlesByAuthorCallCount) == 1
-                    }
-
-                    describe("when the use case returns") {
-                        let articleByAuthor = Article(title: "article23", link: URL(string: "https://example.com/")!, summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: Date(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, synced: false, feed: nil, flags: ["a"])
-
-                        beforeEach {
-                            articleUseCase.articlesByAuthorArgsForCall(0).1(AnyCollection([article, articleByAuthor]))
-                        }
-
-                        it("configures the articleListController with the articles") {
-                            expect(articleListController.title) == "Rachel"
-                        }
-
-                        it("shows an article list with the returned articles") {
-                            expect(subject.shown) === articleListController
+                            expect(activities.last).to(beAnInstanceOf(TOActivityChrome.self))
                         }
                     }
                 }

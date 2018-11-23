@@ -9,83 +9,32 @@ import CBGPromise
 class ArticleUseCaseSpec: QuickSpec {
     override func spec() {
         var subject: DefaultArticleUseCase!
-        var feedRepository: FakeDatabaseUseCase!
         var themeRepository: ThemeRepository!
         var articleService: FakeArticleService!
 
         beforeEach {
-            feedRepository = FakeDatabaseUseCase()
             themeRepository = ThemeRepository(userDefaults: nil)
             articleService = FakeArticleService()
             subject = DefaultArticleUseCase(
-                feedRepository: feedRepository,
-                themeRepository: themeRepository,
-                articleService: articleService
+                articleService: articleService,
+                themeRepository: themeRepository
             )
         }
 
-        describe("-articlesByAuthor:") {
-            var receivedArticles: [Article]? = nil
-
-            beforeEach {
-                subject.articlesByAuthor(Author(name: "author", email: nil)) {
-                    receivedArticles = Array($0)
-                }
-            }
-
-            it("asks the feed repository for all feeds") {
-                expect(feedRepository.feedsPromises.count) == 1
-            }
-
-            context("when the feeds promise resolves successfully") {
-                let article1 = Article(title: "a", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [Author(name: "author", email: nil)], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, feed: nil, flags: [])
-                let article2 = Article(title: "b", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [Author(name: "foo", email: nil)], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, feed: nil, flags: [])
-                let article3 = Article(title: "c", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [Author(name: "author", email: nil)], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, feed: nil, flags: [])
-                let article4 = Article(title: "d", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [Author(name: "bar", email: nil)], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, feed: nil, flags: [])
-
-                let feed1 = Feed(title: "ab", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
-                let feed2 = Feed(title: "cd", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article3, article4], image: nil)
-                article1.feed = feed1
-                article2.feed = feed1
-                article3.feed = feed2
-                article4.feed = feed2
-
-                beforeEach {
-                    feedRepository.feedsPromises.last?.resolve(.success([feed1, feed2]))
-                }
-
-                it("calls the callback with a list of articles from those feeds filtered by article") {
-                    expect(receivedArticles) == [article1, article3]
-                }
-            }
-
-            context("when the feeds promise fails") {
-                beforeEach {
-                    feedRepository.feedsPromises.last?.resolve(.failure(.unknown))
-                }
-
-                it("calls the callback with nothing") {
-                    expect(receivedArticles) == []
-                }
-            }
-        }
-
         describe("-readArticle:") {
-            it("marks the article as read if it wasn't already") {
+            it("marks the article as read") {
                 let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: false, synced: false, feed: nil, flags: [])
 
                 _ = subject.readArticle(article)
 
-                expect(feedRepository.lastArticleMarkedRead) == article
-                expect(article.read) == true
-            }
+                expect(articleService.markArticleAsReadCalls).to(haveCount(1))
 
-            it("doesn't mark the article as read if it already was") {
-                let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: true, synced: false, feed: nil, flags: [])
-
-                _ = subject.readArticle(article)
-
-                expect(feedRepository.lastArticleMarkedRead).to(beNil())
+                guard let call = articleService.markArticleAsReadCalls.last else {
+                    fail("Didn't call ArticleService to mark article as read")
+                    return
+                }
+                expect(call.article) == article
+                expect(call.read) == true
             }
 
             describe("the returned html string") {
@@ -150,8 +99,14 @@ class ArticleUseCaseSpec: QuickSpec {
 
                 subject.toggleArticleRead(article)
 
-                expect(feedRepository.lastArticleMarkedRead) == article
-                expect(article.read) == true
+                expect(articleService.markArticleAsReadCalls).to(haveCount(1))
+
+                guard let call = articleService.markArticleAsReadCalls.last else {
+                    fail("Didn't call ArticleService to mark article as read")
+                    return
+                }
+                expect(call.article) == article
+                expect(call.read) == true
             }
 
             it("marks the article as unread if it already was") {
@@ -159,8 +114,14 @@ class ArticleUseCaseSpec: QuickSpec {
 
                 subject.toggleArticleRead(article)
 
-                expect(feedRepository.lastArticleMarkedRead) == article
-                expect(article.read) == false
+                expect(articleService.markArticleAsReadCalls).to(haveCount(1))
+
+                guard let call = articleService.markArticleAsReadCalls.last else {
+                    fail("Didn't call ArticleService to mark article as unread")
+                    return
+                }
+                expect(call.article) == article
+                expect(call.read) == false
             }
         }
     }

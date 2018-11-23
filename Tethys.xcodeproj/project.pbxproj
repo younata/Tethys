@@ -309,7 +309,6 @@
 		89943213219AAA5000FC6EB6 /* FakeArticleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89943211219AAA4900FC6EB6 /* FakeArticleService.swift */; };
 		89943214219AAA5200FC6EB6 /* FakeArticleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89943211219AAA4900FC6EB6 /* FakeArticleService.swift */; };
 		89943215219AAA5300FC6EB6 /* FakeArticleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89943211219AAA4900FC6EB6 /* FakeArticleService.swift */; };
-		8994F0EB1C8F53E600920E6D /* AuthorActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8994F0EA1C8F53E600920E6D /* AuthorActivity.swift */; };
 		8994F0F41C8F899600920E6D /* UIViewController+TethysTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8994F0F31C8F899600920E6D /* UIViewController+TethysTests.m */; };
 		899788811C508BB400B408C4 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899788801C508BB400B408C4 /* SnapshotHelper.swift */; };
 		8997C7F51B248D5A00972930 /* FakeWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C7F41B248D5A00972930 /* FakeWebView.swift */; };
@@ -762,7 +761,6 @@
 		89943209219A813800FC6EB6 /* RealmArticleServiceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmArticleServiceSpec.swift; sourceTree = "<group>"; };
 		8994320F219A921100FC6EB6 /* ModelFactories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelFactories.swift; sourceTree = "<group>"; };
 		89943211219AAA4900FC6EB6 /* FakeArticleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeArticleService.swift; sourceTree = "<group>"; };
-		8994F0EA1C8F53E600920E6D /* AuthorActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorActivity.swift; sourceTree = "<group>"; };
 		8994F0F21C8F899600920E6D /* UIViewController+TethysTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+TethysTests.h"; sourceTree = "<group>"; };
 		8994F0F31C8F899600920E6D /* UIViewController+TethysTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+TethysTests.m"; sourceTree = "<group>"; };
 		899788801C508BB400B408C4 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
@@ -1731,7 +1729,6 @@
 			children = (
 				890B78C71C77FD200066E201 /* ArticleUseCase.swift */,
 				89C830B519D7DE97009924DA /* ArticleViewController.swift */,
-				8994F0EA1C8F53E600920E6D /* AuthorActivity.swift */,
 				8918D4D31B84593100DCDE0E /* ClearnessDark.css */,
 				8918D4D81B85887E00DCDE0E /* darkhub2.css */,
 				8924D8E81A094CF5003B7529 /* github2.css */,
@@ -2517,7 +2514,6 @@
 				89831FEA1DB5C2FC00E32412 /* ArticleListHeaderCell.swift in Sources */,
 				890B78C81C77FD200066E201 /* ArticleUseCase.swift in Sources */,
 				89C830B619D7DE97009924DA /* ArticleViewController.swift in Sources */,
-				8994F0EB1C8F53E600920E6D /* AuthorActivity.swift in Sources */,
 				89D970BD1B3929A600ED84B8 /* BackgroundFetchHandler.swift in Sources */,
 				89CBDC171C7D8501006B70F5 /* BootstrapWorkFlow.swift in Sources */,
 				89FA3BD921A76D730026BC88 /* ArticleCellController.swift in Sources */,

@@ -3,6 +3,9 @@ import Result
 
 public protocol ArticleService {
     func feed(of article: Article) -> Future<Result<Feed, TethysError>>
+
+    func mark(article: Article, asRead read: Bool) -> Future<Result<Article, TethysError>>
+
     func authors(of article: Article) -> String
 
     func date(for article: Article) -> Date
@@ -27,14 +30,35 @@ final class RealmArticleService: ArticleService {
         let promise = Promise<Result<Feed, TethysError>>()
         self.workQueue.addOperation {
             guard let feed = self.realmArticle(for: article)?.feed else {
-                self.mainQueue.addOperation {
-                    promise.resolve(.failure(TethysError.database(DatabaseError.entryNotFound)))
-                }
-                return
+                return self.resolve(promise: promise, error: .database(.entryNotFound))
             }
-            self.mainQueue.addOperation {
-                promise.resolve(.success(Feed(realmFeed: feed)))
+            return self.resolve(promise: promise, with: Feed(realmFeed: feed))
+        }
+        return promise.future
+    }
+
+    func mark(article: Article, asRead read: Bool) -> Future<Result<Article, TethysError>> {
+        let promise = Promise<Result<Article, TethysError>>()
+        guard article.read != read else {
+            promise.resolve(.success(article))
+            return promise.future
+        }
+        self.workQueue.addOperation {
+            guard let realmArticle = self.realmArticle(for: article) else {
+                return self.resolve(promise: promise, error: .database(.entryNotFound))
             }
+            let realm = self.realmProvider.realm()
+            realm.beginWrite()
+            realmArticle.read = read
+            do {
+                try realm.commitWrite()
+            } catch let exception {
+                dump(exception)
+            }
+            self.feed(of: article).then { result in
+                self.resolve(promise: promise, with: Article(realmArticle: realmArticle, feed: result.value))
+            }
+
         }
         return promise.future
     }
@@ -74,6 +98,21 @@ final class RealmArticleService: ArticleService {
             } catch let exception {
                 dump(exception)
             }
+        }
+    }
+
+    private func resolve<T>(promise: Promise<Result<T, TethysError>>, with value: T? = nil, error: TethysError? = nil) {
+        self.mainQueue.addOperation {
+            let result: Result<T, TethysError>
+            if let value = value {
+                result = Result<T, TethysError>.success(value)
+            } else if let error = error {
+                result = Result<T, TethysError>.failure(error)
+            } else {
+                fatalError("Called resolve with two nil arguments")
+            }
+
+            promise.resolve(result)
         }
     }
 }

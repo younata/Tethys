@@ -18,6 +18,7 @@ public protocol DatabaseUseCase {
     func markFeedAsRead(_ feed: Feed) -> Future<Result<Int, TethysError>>
 
     func deleteArticle(_ article: Article) -> Future<Result<Void, TethysError>>
+    @available(*, deprecated, message: "Use an ArticleService")
     func markArticle(_ article: Article, asRead: Bool) -> Future<Result<Void, TethysError>>
 
     func updateFeeds(_ callback: @escaping ([Feed], [NSError]) -> Void)

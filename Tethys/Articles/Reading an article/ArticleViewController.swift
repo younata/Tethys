@@ -83,8 +83,6 @@ public final class ArticleViewController: UIViewController {
 
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.userActivity?.invalidate()
-        self.userActivity = nil
 
         self.navigationController?.hidesBarsOnSwipe = false
         self.navigationController?.hidesBarsOnTap = false
@@ -147,31 +145,12 @@ public final class ArticleViewController: UIViewController {
         let safari = TOActivitySafari()
         let chrome = TOActivityChrome()
 
-        let authorActivity: AuthorActivity?
-        if let author = article.authors.first {
-            authorActivity = AuthorActivity(author: author)
-        } else { authorActivity = nil }
-
-        var activities: [UIActivity] = [safari, chrome]
-        if let activity = authorActivity { activities.append(activity) }
-
         let activity = URLShareSheet(
             url: article.link,
             themeRepository: self.themeRepository,
             activityItems: [article.link],
-            applicationActivities: activities
+            applicationActivities: [safari, chrome]
         )
-        activity.completionWithItemsHandler = { activityType, completed, _, _ in
-            guard completed, let authorActivity = authorActivity else { return }
-            if activityType == authorActivity.activityType, let author = article.authors.first {
-                self.articleUseCase.articlesByAuthor(author) {
-                    let articleListController = self.articleListController()
-                    articleListController.articles = $0
-                    articleListController.title = article.authors.first?.description
-                    self.show(articleListController, sender: self)
-                }
-            }
-        }
 
         self.present(activity, animated: true, completion: nil)
     }

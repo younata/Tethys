@@ -12,6 +12,15 @@ final class FakeArticleService: ArticleService {
         return promise.future
     }
 
+    private(set) var markArticleAsReadCalls: [(article: Article, read: Bool)] = []
+    private(set) var markArticleAsReadPromises: [Promise<Result<Article, TethysError>>] = []
+    func mark(article: Article, asRead read: Bool) -> Future<Result<Article, TethysError>> {
+        self.markArticleAsReadCalls.append((article, read))
+        let promise = Promise<Result<Article, TethysError>>()
+        self.markArticleAsReadPromises.append(promise)
+        return promise.future
+    }
+
     private(set) var authorsCalls: [Article] = []
     var authorStub: (Article) -> String = { _ in "" }
     func authors(of article: Article) -> String {

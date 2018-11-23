@@ -1,5 +1,7 @@
 import Quick
 import Nimble
+import Result
+import CBGPromise
 import RealmSwift
 @testable import TethysKit
 
@@ -79,6 +81,53 @@ final class RealmArticleServiceSpec: QuickSpec {
                 let article = Article(realmArticle: realmArticle, feed: nil)
 
                 expect(subject.feed(of: article).value?.error).to(equal(TethysError.database(.entryNotFound)))
+            }
+        }
+
+        describe("mark(article:asRead:)") {
+            var future: Future<Result<Article, TethysError>>!
+            context("when the article is already at the desired read state") {
+                let article = articleFactory(read: true)
+
+                beforeEach {
+                    future = subject.mark(article: article, asRead: true)
+                }
+
+                it("immediately resolves the future with the article") {
+                    expect(future.value?.value).to(equal(article))
+                }
+            }
+
+            context("when the article is not already at the desired read state") {
+                var realmArticle: RealmArticle!
+
+                beforeEach {
+                    realm.beginWrite()
+
+                    realmArticle = RealmArticle()
+                    realmArticle.title = "article"
+                    realmArticle.link = "https://example.com/article/article1"
+                    realmArticle.read = false
+
+                    realm.add(realmArticle)
+
+                    do {
+                        try realm.commitWrite()
+                    } catch let exception {
+                        dump(exception)
+                        fail("Error writing to realm: \(exception)")
+                    }
+
+                    future = subject.mark(article: Article(realmArticle: realmArticle, feed: nil), asRead: true)
+                }
+
+                it("marks the realm representation of the article as read") {
+                    expect(realmArticle.read).to(beTrue())
+                }
+
+                it("resolves the future with a read version of the article") {
+                    expect(future.value?.value).to(equal(Article(realmArticle: realmArticle, feed: nil)))
+                }
             }
         }
 

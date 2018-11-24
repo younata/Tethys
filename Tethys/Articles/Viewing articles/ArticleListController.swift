@@ -21,6 +21,7 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
     }
 
     public internal(set) var articles = AnyCollection<Article>([])
+
     public var feed: Feed? {
         didSet {
             self.resetArticles()
@@ -43,6 +44,7 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
     public weak var delegate: ArticleListControllerDelegate?
 
     private let mainQueue: OperationQueue
+    fileprivate let articleService: ArticleService
     fileprivate let feedRepository: DatabaseUseCase
     private let themeRepository: ThemeRepository
     private let settingsRepository: SettingsRepository
@@ -51,6 +53,7 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
     private let generateBookViewController: () -> GenerateBookViewController
 
     public init(mainQueue: OperationQueue,
+                articleService: ArticleService,
                 feedRepository: DatabaseUseCase,
                 themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
@@ -58,6 +61,7 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
                 articleViewController: @escaping () -> ArticleViewController,
                 generateBookViewController: @escaping () -> GenerateBookViewController) {
         self.mainQueue = mainQueue
+        self.articleService = articleService
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
@@ -93,8 +97,7 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
 
         self.navigationItem.title = self.feed?.displayTitle
 
-        self.tableView.allowsMultipleSelection = self.delegate?.articleListControllerCanSelectMultipleArticles(self)
-            ?? false
+        self.tableView.allowsMultipleSelection = self.delegate?.articleListControllerCanSelectMultipleArticles(self) ?? false
 
         self.registerForPreviewing(with: self, sourceView: self.tableView)
         self.resetBarItems()
@@ -186,7 +189,26 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
     }
 
     fileprivate func toggleRead(article: Article) {
-        _ = self.feedRepository.markArticle(article, asRead: !article.read)
+        self.articleService.mark(article: article, asRead: !article.read).then { result in
+            switch result {
+            case .success(let updatedArticle):
+                self.update(article: article, to: updatedArticle)
+            case .failure:
+                break
+            }
+        }
+    }
+
+    fileprivate func update(article: Article, to updatedArticle: Article) {
+        guard let collectionIndex = self.articles.firstIndex(of: article) else { return }
+        let index = self.articles.distance(from: self.articles.startIndex, to: collectionIndex)
+        self.articles = AnyCollection(self.articles.map({
+            if $0 == article {
+                return updatedArticle
+            }
+            return $0
+        }))
+        self.tableView.reloadRows(at: [IndexPath(row: index, section: 1)], with: .automatic)
     }
 
     // MARK: - Table view data source
@@ -423,7 +445,14 @@ extension ArticleListController: UIViewControllerPreviewingDelegate {
                                   commit viewControllerToCommit: UIViewController) {
         if let articleController = viewControllerToCommit as? ArticleViewController,
             let article = articleController.article {
-            _ = self.feedRepository.markArticle(article, asRead: true)
+            self.articleService.mark(article: article, asRead: true).then { result in
+                switch result {
+                case .success(let updatedArticle):
+                    self.update(article: article, to: updatedArticle)
+                case .failure:
+                    break
+                }
+            }
             self.showArticleController(articleController, animated: true)
         }
     }

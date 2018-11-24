@@ -418,6 +418,9 @@
 		89FA3BD921A76D730026BC88 /* ArticleCellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FA3BD821A76D730026BC88 /* ArticleCellController.swift */; };
 		89FA3BDB21A785480026BC88 /* ArticleCellControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FA3BDA21A785480026BC88 /* ArticleCellControllerSpec.swift */; };
 		89FA3BDD21A7AF990026BC88 /* FakeArticleCellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FA3BDC21A7AF990026BC88 /* FakeArticleCellController.swift */; };
+		89FA3BDE21A925D00026BC88 /* ModelFactories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8994320F219A921100FC6EB6 /* ModelFactories.swift */; };
+		89FA3BDF21A925D30026BC88 /* ModelFactories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8994320F219A921100FC6EB6 /* ModelFactories.swift */; };
+		89FA3BE021A925D40026BC88 /* ModelFactories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8994320F219A921100FC6EB6 /* ModelFactories.swift */; };
 		89FF979E1BF058FB000080F7 /* DataStoreBackedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF979D1BF058FB000080F7 /* DataStoreBackedArray.swift */; };
 		89FF97A11BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF97A01BF05CDC000080F7 /* DataStoreBackedArraySpec.swift */; };
 		89FF97A21BF05CDC000080F7 /* DataStoreBackedArraySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FF97A01BF05CDC000080F7 /* DataStoreBackedArraySpec.swift */; };
@@ -2463,6 +2466,7 @@
 				89A3A9021DF0910B002AF9B5 /* GenerateBookUseCaseSpec.swift in Sources */,
 				89146E451C88C73400EC8F10 /* ImportUseCaseSpec.swift in Sources */,
 				8983205D1DC121BF00E32412 /* InMemoryDataServiceSpec.swift in Sources */,
+				89FA3BDF21A925D30026BC88 /* ModelFactories.swift in Sources */,
 				8937F6C11B79D0800044A442 /* KitModuleSpec.swift in Sources */,
 				89146E3F1C88C6A200EC8F10 /* MigrationUseCaseSpec.swift in Sources */,
 				898979A71B708E7800218498 /* OPMLServiceSpec.swift in Sources */,
@@ -2487,6 +2491,7 @@
 				898979DE1B72578A00218498 /* FakeDefaultDatabaseUseCase.swift in Sources */,
 				8969947E1DC1687500A97C66 /* FakeImportUseCase.swift in Sources */,
 				898979DF1B72579C00218498 /* FakeOPMLService.swift in Sources */,
+				89FA3BE021A925D40026BC88 /* ModelFactories.swift in Sources */,
 				898979E11B72A63100218498 /* FeedsViewControllerSpec.swift in Sources */,
 				89DFAA601B7684A0004CD9CA /* FeedViewSpec.swift in Sources */,
 				898979D51B71CE3A00218498 /* MainControllerSpec.swift in Sources */,
@@ -2597,6 +2602,7 @@
 				898ECDE11B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift in Sources */,
 				89CB98BF1B13947800C87160 /* FeedTableCellSpec.swift in Sources */,
 				89F517021B1C070C0005AB04 /* FeedViewControllerSpec.swift in Sources */,
+				89FA3BDE21A925D00026BC88 /* ModelFactories.swift in Sources */,
 				899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */,
 				898DA4971DDEC3720029CBD3 /* GenerateBookViewControllerSpec.swift in Sources */,
 				8941AB7D1DC9385A00A2CE5F /* HTMLViewControllerSpec.swift in Sources */,

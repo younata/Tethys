@@ -152,6 +152,7 @@ class ArticleListControllerSpec: QuickSpec {
         var navigationController: UINavigationController!
         var articles: [Article] = []
         var dataRepository: FakeDatabaseUseCase!
+        var articleService: FakeArticleService!
         var themeRepository: ThemeRepository!
         var settingsRepository: SettingsRepository!
         var articleCellController: FakeArticleCellController!
@@ -179,10 +180,12 @@ class ArticleListControllerSpec: QuickSpec {
                 feed.addArticle(article)
             }
 
+            articleService = FakeArticleService()
             articleCellController = FakeArticleCellController()
 
             subject = ArticleListController(
                 mainQueue: mainQueue,
+                articleService: articleService,
                 feedRepository: dataRepository,
                 themeRepository: themeRepository,
                 settingsRepository: settingsRepository,
@@ -591,8 +594,8 @@ class ArticleListControllerSpec: QuickSpec {
                 }
 
                 it("does not mark the article as read") {
+                    expect(articleService.markArticleAsReadCalls).to(haveCount(0))
                     expect(articles[0].read) == false
-                    expect(dataRepository.lastArticleMarkedRead).to(beNil())
                 }
 
                 describe("the preview actions") {
@@ -610,19 +613,59 @@ class ArticleListControllerSpec: QuickSpec {
 
                     describe("the first action") {
                         describe("for an unread article") {
-                            it("marks the article as read") {
+                            beforeEach {
                                 action = previewActions?.first as? UIPreviewAction
 
                                 expect(action?.title).to(equal("Mark Read"))
                                 action?.handler(action!, viewController!)
+                            }
 
-                                expect(dataRepository.lastArticleMarkedRead).to(equal(articles.first))
-                                expect(articles.first?.read) == true
+                            it("marks the article as read") {
+                                guard let call = articleService.markArticleAsReadCalls.last else {
+                                    fail("Didn't call ArticleService to mark article as read")
+                                    return
+                                }
+                                expect(call.article) == articles.first
+                                expect(call.read) == true
+                            }
+
+                            context("when the articleService successfully marks the article as read") {
+                                var updatedArticle: Article!
+                                beforeEach {
+                                    guard let article = articles.first else { fail("No articles - can't happen"); return }
+                                    updatedArticle = Article(
+                                        title: article.title,
+                                        link: article.link,
+                                        summary: article.summary,
+                                        authors: article.authors,
+                                        published: article.published,
+                                        updatedAt: article.updatedAt,
+                                        identifier: article.identifier,
+                                        content: article.content,
+                                        read: true,
+                                        synced: article.synced,
+                                        feed: article.feed,
+                                        flags: article.flags
+                                    )
+                                    articleService.markArticleAsReadPromises.last?.resolve(.success(
+                                        updatedArticle
+                                        ))
+                                }
+
+                                it("Updates the articles in the controller to reflect that") {
+                                    expect(subject.articles.first).to(equal(updatedArticle))
+                                }
+                            }
+
+                            context("when the articleService fails to mark the article as read") {
+                                xit("presents a banner indicates that a failure happened") {
+                                    fail("Not Implemented")
+                                }
                             }
                         }
 
                         describe("for a read article") {
-                            it("marks the article as unread") {
+                            beforeEach {
                                 let rect = subject.tableView.rectForRow(at: IndexPath(row: 2, section: 1))
                                 let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
                                 viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
@@ -631,9 +674,49 @@ class ArticleListControllerSpec: QuickSpec {
 
                                 expect(action?.title).to(equal("Mark Unread"))
                                 action?.handler(action!, viewController!)
+                            }
 
-                                expect(dataRepository.lastArticleMarkedRead).to(equal(articles[2]))
-                                expect(articles.first?.read) == false
+                            it("marks the article as unread") {
+                                guard let call = articleService.markArticleAsReadCalls.last else {
+                                    fail("Didn't call ArticleService to mark article as read/unread")
+                                    return
+                                }
+                                expect(call.article) == articles[2]
+                                expect(call.read) == false
+                            }
+
+                            context("when the articleService successfully marks the article as read") {
+                                var updatedArticle: Article!
+                                beforeEach {
+                                    guard let article = articles.first else { fail("No articles - can't happen"); return }
+                                    updatedArticle = Article(
+                                        title: article.title,
+                                        link: article.link,
+                                        summary: article.summary,
+                                        authors: article.authors,
+                                        published: article.published,
+                                        updatedAt: article.updatedAt,
+                                        identifier: article.identifier,
+                                        content: article.content,
+                                        read: false,
+                                        synced: article.synced,
+                                        feed: article.feed,
+                                        flags: article.flags
+                                    )
+                                    articleService.markArticleAsReadPromises.last?.resolve(.success(
+                                        updatedArticle
+                                        ))
+                                }
+
+                                it("Updates the articles in the controller to reflect that") {
+                                    expect(subject.articles.first).to(equal(updatedArticle))
+                                }
+                            }
+
+                            context("when the articleService fails to mark the article as read") {
+                                xit("presents a banner indicates that a failure happened") {
+                                    fail("Not Implemented")
+                                }
                             }
                         }
                     }
@@ -711,13 +794,51 @@ class ArticleListControllerSpec: QuickSpec {
                         }
                     }
 
-                    it("should push the view controller") {
+                    it("pushes the view controller") {
                         expect(navigationController.topViewController).to(beIdenticalTo(viewController))
                     }
 
-                    it("should mark the article as read") {
-                        expect(articles[0].read) == true
-                        expect(dataRepository.lastArticleMarkedRead).to(equal(articles[0]))
+                    it("marks the article as read") {
+                        guard let call = articleService.markArticleAsReadCalls.last else {
+                            fail("Didn't call ArticleService to mark article as read")
+                            return
+                        }
+                        expect(call.article) == articles[0]
+                        expect(call.read) == true
+                    }
+
+                    context("when the articleService successfully marks the article as read") {
+                        var updatedArticle: Article!
+                        beforeEach {
+                            guard let article = articles.first else { fail("No articles - can't happen"); return }
+                            updatedArticle = Article(
+                                title: article.title,
+                                link: article.link,
+                                summary: article.summary,
+                                authors: article.authors,
+                                published: article.published,
+                                updatedAt: article.updatedAt,
+                                identifier: article.identifier,
+                                content: article.content,
+                                read: true,
+                                synced: article.synced,
+                                feed: article.feed,
+                                flags: article.flags
+                            )
+                            articleService.markArticleAsReadPromises.last?.resolve(.success(
+                                updatedArticle
+                            ))
+                        }
+
+                        it("Updates the articles in the controller to reflect that") {
+                            expect(subject.articles.first).to(equal(updatedArticle))
+                        }
+                    }
+
+                    context("when the articleService fails to mark the article as read") {
+                        xit("presents a banner indicates that a failure happened") {
+                            fail("Not Implemented")
+                        }
                     }
                 }
             }
@@ -966,25 +1087,113 @@ class ArticleListControllerSpec: QuickSpec {
                             }
 
                             describe("for an unread article") {
-                                it("should mark the article as read with the second action item") {
+                                beforeEach {
                                     let indexPath = IndexPath(row: 0, section: 1)
-                                    if let markRead = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.last {
-                                        expect(markRead.title).to(equal("Mark\nRead"))
-                                        markRead.handler?(markRead, indexPath)
-                                        expect(dataRepository.lastArticleMarkedRead).to(equal(articles.first))
-                                        expect(articles.first?.read) == true
+                                    guard let markRead = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.last else {
+                                        fail("No mark read edit action")
+                                        return
+                                    }
+
+                                    expect(markRead.title).to(equal("Mark\nRead"))
+                                    markRead.handler?(markRead, indexPath)
+                                }
+
+                                it("marks the article as read with the second action item") {
+                                    guard let call = articleService.markArticleAsReadCalls.last else {
+                                        fail("Didn't call ArticleService to mark article as read")
+                                        return
+                                    }
+                                    expect(call.article) == articles.first
+                                    expect(call.read) == true
+                                }
+
+                                context("when the articleService successfully marks the article as read") {
+                                    var updatedArticle: Article!
+                                    beforeEach {
+                                        guard let article = articles.first else { fail("No articles - can't happen"); return }
+                                        updatedArticle = Article(
+                                            title: article.title,
+                                            link: article.link,
+                                            summary: article.summary,
+                                            authors: article.authors,
+                                            published: article.published,
+                                            updatedAt: article.updatedAt,
+                                            identifier: article.identifier,
+                                            content: article.content,
+                                            read: true,
+                                            synced: article.synced,
+                                            feed: article.feed,
+                                            flags: article.flags
+                                        )
+                                        articleService.markArticleAsReadPromises.last?.resolve(.success(
+                                            updatedArticle
+                                        ))
+                                    }
+
+                                    it("Updates the articles in the controller to reflect that") {
+                                        expect(subject.articles.first).to(equal(updatedArticle))
+                                    }
+                                }
+
+                                context("when the articleService fails to mark the article as read") {
+                                    xit("presents a banner indicates that a failure happened") {
+                                        fail("Not Implemented")
                                     }
                                 }
                             }
 
                             describe("for a read article") {
-                                it("should mark the article as unread with the second action item") {
+                                beforeEach {
                                     let indexPath = IndexPath(row: 2, section: 1)
-                                    if let markUnread = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.last {
-                                        expect(markUnread.title).to(equal("Mark\nUnread"))
-                                        markUnread.handler?(markUnread, indexPath)
-                                        expect(dataRepository.lastArticleMarkedRead).to(equal(articles[2]))
-                                        expect(articles[2].read) == false
+                                    guard let markRead = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.last else {
+                                        fail("No mark unread edit action")
+                                        return
+                                    }
+
+                                    expect(markRead.title).to(equal("Mark\nUnread"))
+                                    markRead.handler?(markRead, indexPath)
+                                }
+
+                                it("marks the article as unread with the second action item") {
+                                    guard let call = articleService.markArticleAsReadCalls.last else {
+                                        fail("Didn't call ArticleService to mark article as read")
+                                        return
+                                    }
+                                    expect(call.article) == articles[2]
+                                    expect(call.read) == false
+                                }
+
+                                context("when the articleService successfully marks the article as read") {
+                                    var updatedArticle: Article!
+                                    beforeEach {
+                                        guard let article = articles.first else { fail("No articles - can't happen"); return }
+                                        updatedArticle = Article(
+                                            title: article.title,
+                                            link: article.link,
+                                            summary: article.summary,
+                                            authors: article.authors,
+                                            published: article.published,
+                                            updatedAt: article.updatedAt,
+                                            identifier: article.identifier,
+                                            content: article.content,
+                                            read: false,
+                                            synced: article.synced,
+                                            feed: article.feed,
+                                            flags: article.flags
+                                        )
+                                        articleService.markArticleAsReadPromises.last?.resolve(.success(
+                                            updatedArticle
+                                            ))
+                                    }
+
+                                    it("Updates the articles in the controller to reflect that") {
+                                        expect(Array(subject.articles)[2]).to(equal(updatedArticle))
+                                    }
+                                }
+
+                                context("when the articleService fails to mark the article as read") {
+                                    xit("presents a banner indicates that a failure happened") {
+                                        fail("Not Implemented")
                                     }
                                 }
                             }

@@ -58,17 +58,7 @@ class ChapterOrganizerControllerSpec: QuickSpec {
                 themeRepository: themeRepository,
                 settingsRepository: settingsRepository,
                 articleCellController: articleCellController,
-                articleListController: {
-                    ArticleListController(
-                        mainQueue: FakeOperationQueue(),
-                        feedRepository: FakeDatabaseUseCase(),
-                        themeRepository: themeRepository,
-                        settingsRepository: settingsRepository,
-                        articleCellController: articleCellController,
-                        articleViewController: { fatalError() },
-                        generateBookViewController: { fatalError() }
-                    )
-                }
+                articleListController: { return articleListControllerFactory() }
             )
 
             navController = UINavigationController(rootViewController: subject)

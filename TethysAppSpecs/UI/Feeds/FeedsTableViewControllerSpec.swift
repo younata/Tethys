@@ -57,17 +57,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                         documentationViewController: { fatalError() }
                     )
                 },
-                articleListController: {
-                    return ArticleListController(
-                        mainQueue: FakeOperationQueue(),
-                        feedRepository: FakeDatabaseUseCase(),
-                        themeRepository: themeRepository,
-                        settingsRepository: settingsRepository,
-                        articleCellController: FakeArticleCellController(),
-                        articleViewController: { fatalError() },
-                        generateBookViewController: { fatalError() }
-                    )
-                }
+                articleListController: { return articleListControllerFactory() }
             )
 
             navigationController = UINavigationController(rootViewController: subject)

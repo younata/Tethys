@@ -55,10 +55,13 @@ final class RealmArticleService: ArticleService {
             } catch let exception {
                 dump(exception)
             }
-            self.feed(of: article).then { result in
-                self.resolve(promise: promise, with: Article(realmArticle: realmArticle, feed: result.value))
+            let feed: Feed?
+            if let realmFeed = realmArticle.feed {
+                feed = Feed(realmFeed: realmFeed)
+            } else {
+                feed = nil
             }
-
+            self.resolve(promise: promise, with: Article(realmArticle: realmArticle, feed: feed))
         }
         return promise.future
     }

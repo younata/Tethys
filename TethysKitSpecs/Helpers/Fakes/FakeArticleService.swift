@@ -21,11 +21,11 @@ final class FakeArticleService: ArticleService {
         return promise.future
     }
 
+    var authorStub: [Article: String] = [:]
     private(set) var authorsCalls: [Article] = []
-    var authorStub: (Article) -> String = { _ in "" }
     func authors(of article: Article) -> String {
         self.authorsCalls.append(article)
-        return self.authorStub(article)
+        return self.authorStub[article] ?? ""
     }
 
     var dateForArticleStub: [Article: Date] = [:]

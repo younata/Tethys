@@ -1,7 +1,7 @@
 import Quick
 import Nimble
 
-import Tethys
+@testable import Tethys
 import TethysKit
 
 final class ArticleCellControllerSpec: QuickSpec {
@@ -36,6 +36,38 @@ final class ArticleCellControllerSpec: QuickSpec {
             }
         }
 
+        func itBehavesLikeDisplaysUnreadStatus() {
+            describe("Display an unread article") {
+                it("shows the unread counter") {
+                    expect(cell.unread.isHidden) == false
+                }
+
+                it("sets the unread value to non-zero") {
+                    expect(cell.unread.unread) > 0
+                }
+
+                it("makes sure there's room to view it") {
+                    expect(cell.unreadWidth.constant).to(beCloseTo(30))
+                }
+            }
+        }
+
+        func itBehavesLikeDisplaysReadStatus() {
+            describe("Display an unread article") {
+                it("hides the unread counter") {
+                    expect(cell.unread.isHidden) == true
+                }
+
+                it("sets the unread value to zero") {
+                    expect(cell.unread.unread) == 0
+                }
+
+                it("doesn't allow room to view it anyway") {
+                    expect(cell.unreadWidth.constant).to(beCloseTo(0))
+                }
+            }
+        }
+
         context("when configured to not hide unread status") {
             beforeEach {
                 subject = DefaultArticleCellController(
@@ -43,72 +75,91 @@ final class ArticleCellControllerSpec: QuickSpec {
                     articleService: articleService,
                     settingsRepository: settingsRepository
                 )
+
             }
 
-            xdescribe("configure(title:publishedDate:author:read:readingTime:)") {
+            context("with an article that hasn't been read yet") {
                 beforeEach {
-//                    subject.configure(
-//                        title: "title",
-//                        publishedDate: Date(timeIntervalSinceReferenceDate: 0),
-//                        author: "Rachel",
-//                        read: false,
-//                        readingTime: nil
-//                    )
+                    let article = articleFactory(
+                        title: "my title",
+                        read: false
+                    )
+
+                    articleService.dateForArticleStub[article] = Date(timeIntervalSinceReferenceDate: 0)
+                    articleService.authorStub[article] = "A Few Authors"
+
+                    subject.configure(cell: cell, with: article)
                 }
-//                it("indicates that it's unread") {
-//                    expect(subject.unread.unread) == 1
-//                }
-//
-//                it("doesn't show the unread indicator when 'hideUnread' is set") {
-//                    subject.hideUnread = true
-//                    expect(subject.unread.unread) == 0
-//                }
-//
-//                it("still doesn't show the unread indicator when read is set to true") {
-//                    subject.hideUnread = false
-//                    subject.configure(
-//                        title: "title",
-//                        publishedDate: Date(timeIntervalSinceReferenceDate: 0),
-//                        author: "Rachel",
-//                        read: true,
-//                        readingTime: nil
-//                    )
-//                    expect(subject.unread.unread) == 0
-//                }
-//
-//                it("doesn't show the reading time label when readingTime is nil") {
-//                    expect(subject.readingTime.isHidden) == true
-//                    expect(subject.readingTime.text).to(beNil())
-//                }
-//
-//                it("doesn't show the reading time label when the readingTime is zero") {
-//                    subject.configure(
-//                        title: "title",
-//                        publishedDate: Date(timeIntervalSinceReferenceDate: 0),
-//                        author: "Rachel",
-//                        read: true,
-//                        readingTime: 0
-//                    )
-//                    expect(subject.readingTime.isHidden) == true
-//                    expect(subject.readingTime.text).to(beNil())
-//                }
-//
-//                it("shows the reading time label when the readingTime is greater than 0") {
-//                    subject.configure(
-//                        title: "title",
-//                        publishedDate: Date(timeIntervalSinceReferenceDate: 0),
-//                        author: "Rachel",
-//                        read: true,
-//                        readingTime: 15
-//                    )
-//                    expect(subject.readingTime.isHidden) == false
-//                    expect(subject.readingTime.text) == "15 minutes to read"
-//                }
+
+                itBehavesLikeShowing(title: "my title", date: "12/31/00", author: "A Few Authors")
+
+                itBehavesLikeDisplaysUnreadStatus()
+            }
+
+            context("with an article that has been read") {
+                beforeEach {
+                    let article = articleFactory(
+                        title: "my title",
+                        read: true
+                    )
+
+                    articleService.dateForArticleStub[article] = Date(timeIntervalSinceReferenceDate: 0)
+                    articleService.authorStub[article] = "A Few Authors"
+
+                    subject.configure(cell: cell, with: article)
+                }
+
+                itBehavesLikeShowing(title: "my title", date: "12/31/00", author: "A Few Authors")
+
+                itBehavesLikeDisplaysReadStatus()
             }
         }
 
         context("when configured to hide unread status") {
+            beforeEach {
+                subject = DefaultArticleCellController(
+                    hideUnread: true,
+                    articleService: articleService,
+                    settingsRepository: settingsRepository
+                )
 
+            }
+
+            context("with an article that hasn't been read yet") {
+                beforeEach {
+                    let article = articleFactory(
+                        title: "my title",
+                        read: false
+                    )
+
+                    articleService.dateForArticleStub[article] = Date(timeIntervalSinceReferenceDate: 0)
+                    articleService.authorStub[article] = "A Few Authors"
+
+                    subject.configure(cell: cell, with: article)
+                }
+
+                itBehavesLikeShowing(title: "my title", date: "12/31/00", author: "A Few Authors")
+
+                itBehavesLikeDisplaysReadStatus()
+            }
+
+            context("with an article that has been read") {
+                beforeEach {
+                    let article = articleFactory(
+                        title: "my title",
+                        read: true
+                    )
+
+                    articleService.dateForArticleStub[article] = Date(timeIntervalSinceReferenceDate: 0)
+                    articleService.authorStub[article] = "A Few Authors"
+
+                    subject.configure(cell: cell, with: article)
+                }
+
+                itBehavesLikeShowing(title: "my title", date: "12/31/00", author: "A Few Authors")
+
+                itBehavesLikeDisplaysReadStatus()
+            }
         }
     }
 }

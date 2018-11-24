@@ -39,9 +39,11 @@ public struct DefaultArticleCellController: ArticleCellController {
         if self.hideUnread {
             cell.unread.unread = 0
             cell.unreadWidth.constant = 0
+            cell.unread.isHidden = true
         } else {
-            cell.unread.unread = article.read ? 1 : 0
+            cell.unread.unread = article.read ? 0 : 1
             cell.unreadWidth.constant = article.read ? 0 : 30
+            cell.unread.isHidden = article.read
         }
 
         if self.settingsRepository.showEstimatedReadingLabel {

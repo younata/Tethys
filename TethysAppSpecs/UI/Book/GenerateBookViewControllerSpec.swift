@@ -243,7 +243,7 @@ class GenerateBookViewControllerSpec: QuickSpec {
                     var format: Book.Format!
 
                     beforeEach {
-                        format = sharedContext()["format"] as! Book.Format
+                        format = sharedContext()["format"] as? Book.Format
                     }
 
                     it("shows an indicator that we're doing things") {

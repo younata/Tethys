@@ -19,8 +19,6 @@ final class RealmFeed: Object {
     dynamic var url = ""
     dynamic var summary: String?
     let tags = List<RealmString>()
-    dynamic var waitPeriod: Int = 0
-    dynamic var remainingWait: Int = 0
     dynamic var lastUpdated = Date(timeIntervalSinceReferenceDate: 0)
     var articles = LinkingObjects(fromType: RealmArticle.self, property: "feed")
     dynamic var imageData: Data?
@@ -56,6 +54,9 @@ final class RealmArticle: Object {
     dynamic var summary: String?
     dynamic var published = Date(timeIntervalSinceNow: 0)
     dynamic var updatedAt: Date?
+
+    dynamic var date: Date { return updatedAt ?? published }
+
     dynamic var identifier: String?
     dynamic var content: String?
     dynamic var read = false

@@ -60,7 +60,7 @@ class DefaultOPMLServiceSpec: QuickSpec {
                 beforeEach {
                     let previouslyImportedFeed = Feed(title: "imported",
                         url: URL(string: "http://example.com/previouslyImportedFeed")!, summary: "",
-                        tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                        tags: [], articles: [], image: nil)
                     dataRepository.feedsPromises.first?.resolve(.success([previouslyImportedFeed]))
                 }
 
@@ -113,9 +113,9 @@ class DefaultOPMLServiceSpec: QuickSpec {
             context("when the feeds promise succeeds") {
                 beforeEach {
                     let feed1 = Feed(title: "a", url: URL(string: "http://example.com/feed")!, summary: "",
-                        tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                        tags: ["a", "b", "c"], articles: [], image: nil)
                     let feed3 = Feed(title: "e", url: URL(string: "http://example.com/otherfeed")!, summary: "",
-                        tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                        tags: ["dad"], articles: [], image: nil)
                     dataRepository.feedsPromises.first?.resolve(.success([feed1, feed3]))
                 }
 

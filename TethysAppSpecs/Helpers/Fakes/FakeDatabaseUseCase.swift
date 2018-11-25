@@ -95,27 +95,6 @@ class FakeDatabaseUseCase: DatabaseUseCase {
         return self.lastFeedMarkedReadPromise!.future
     }
 
-    var lastDeletedArticle: Article? = nil
-    var deleteArticlePromises: [Promise<Result<Void, TethysError>>] = []
-    func deleteArticle(_ article: Article) -> Future<Result<Void, TethysError>> {
-        lastDeletedArticle = article
-        article.feed?.removeArticle(article)
-        article.feed = nil
-        let promise = Promise<Result<Void, TethysError>>()
-        deleteArticlePromises.append(promise)
-        return promise.future
-    }
-
-    var lastArticleMarkedRead: Article? = nil
-    var markArticleReadPromises: [Promise<Result<Void, TethysError>>] = []
-    func markArticle(_ article: Article, asRead read: Bool) -> Future<Result<Void, TethysError>> {
-        lastArticleMarkedRead = article
-        article.read = read
-        let promise = Promise<Result<Void, TethysError>>()
-        markArticleReadPromises.append(promise)
-        return promise.future
-    }
-
     var didUpdateFeeds = false
     var updateFeedsCompletion: ([Feed], [NSError]) -> (Void) = {_ in }
     func updateFeeds(_ callback: @escaping ([Feed], [NSError]) -> (Void)) {

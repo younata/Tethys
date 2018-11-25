@@ -16,12 +16,12 @@ class FeedSpec: QuickSpec {
             }
 
             subject = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [],
-                waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                articles: [], image: nil)
         }
 
         it("uses it's url as the title if the title is blank") {
             subject = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [],
-                waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                articles: [], image: nil)
 
             expect(subject.displayTitle).to(equal("https://example.com"))
         }
@@ -61,9 +61,9 @@ class FeedSpec: QuickSpec {
             }
 
             it("should report two feeds not created from datastores with the same property equality as equal") {
-                let a = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                let b = Feed(title: "blah", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                let c = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let a = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil)
+                let b = Feed(title: "blah", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil)
+                let c = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil)
 
                 expect(a).toNot(equal(b))
                 expect(a).to(equal(c))
@@ -87,9 +87,9 @@ class FeedSpec: QuickSpec {
             }
 
             it("should report two feeds not created from datastores with the same property equality as having the same hashValue") {
-                let a = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                let b = Feed(title: "blah", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                let c = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let a = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil)
+                let b = Feed(title: "blah", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil)
+                let c = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil)
 
                 expect(a.hashValue).toNot(equal(b.hashValue))
                 expect(a.hashValue).to(equal(c.hashValue))
@@ -116,7 +116,7 @@ class FeedSpec: QuickSpec {
             context("when the article is already associated with this feed") {
                 beforeEach {
                     subject = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [],
-                                   waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
+                                   articles: [article], image: nil)
                 }
 
                 it("essentially no-ops") {
@@ -131,7 +131,7 @@ class FeedSpec: QuickSpec {
                 var otherFeed: Feed! = nil
                 beforeEach {
                     otherFeed = Feed(title: "blah", url: URL(string: "https://example.com")!, summary: "", tags: [],
-                                     waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
+                                     articles: [article], image: nil)
                 }
 
                 it("should remove the article from the other feed and add it to this feed") {
@@ -163,7 +163,7 @@ class FeedSpec: QuickSpec {
             context("when the article is associated with this feed") {
                 beforeEach {
                     subject = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [],
-                                   waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
+                                   articles: [article], image: nil)
                 }
 
                 it("removes the article and unsets the article's feed") {
@@ -178,7 +178,7 @@ class FeedSpec: QuickSpec {
                 var otherFeed: Feed! = nil
                 beforeEach {
                     otherFeed = Feed(title: "blah", url: URL(string: "https://example.com")!, summary: "", tags: [],
-                                     waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
+                                     articles: [article], image: nil)
                 }
 
                 it("essentially no-ops") {
@@ -200,7 +200,7 @@ class FeedSpec: QuickSpec {
             context("trying to add the same flag again") {
                 beforeEach {
                     subject = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: ["tag"],
-                        waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                        articles: [], image: nil)
                 }
 
                 it("should no-op") {
@@ -235,7 +235,7 @@ class FeedSpec: QuickSpec {
             context("that is already a flag in the article") {
                 it("should remove the flag") {
                     subject = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: ["tag"],
-                        waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                        articles: [], image: nil)
 
                     subject.removeTag("tag")
 
@@ -284,20 +284,6 @@ class FeedSpec: QuickSpec {
 
                 it("tags") {
                     subject.addTag("tag")
-                    expect(subject.updated) == true
-                }
-
-                it("waitPeriod") {
-                    subject.waitPeriod = 0
-                    expect(subject.updated) == false
-                    subject.waitPeriod = 1
-                    expect(subject.updated) == true
-                }
-
-                it("remainingWait") {
-                    subject.remainingWait = 0
-                    expect(subject.updated) == false
-                    subject.remainingWait = 1
                     expect(subject.updated) == true
                 }
 

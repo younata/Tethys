@@ -12,7 +12,7 @@ public protocol ArticleListControllerDelegate: class {
     func articleListController(_: ArticleListController, shouldPreviewArticle article: Article) -> Bool
 }
 
-public final class ArticleListController: UIViewController, DataSubscriber, UITableViewDelegate, UITableViewDataSource {
+public final class ArticleListController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     fileprivate enum ArticleListSection: Int {
         case overview = 0
         case articles = 1
@@ -93,8 +93,6 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
         self.view.addSubview(self.tableView)
         self.tableView.autoPinEdgesToSuperviewEdges()
 
-        self.feedRepository.addSubscriber(self)
-
         self.navigationItem.title = self.feed?.displayTitle
 
         self.tableView.allowsMultipleSelection = self.delegate?.articleListControllerCanSelectMultipleArticles(self) ?? false
@@ -113,23 +111,6 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
 
     var _previewActionItems: [UIPreviewAction] = []
     public override var previewActionItems: [UIPreviewActionItem] { return self._previewActionItems }
-
-    public func deletedArticle(_ article: Article) {}
-    public func willUpdateFeeds() {}
-    public func didUpdateFeedsProgress(_ finished: Int, total: Int) {}
-    public func didUpdateFeeds(_ feeds: [Feed]) {}
-    public func deletedFeed(_ feed: Feed, feedsLeft: Int) {}
-
-    public func markedArticles(_ articles: [Article], asRead read: Bool) {
-        let indices = articles.flatMap { self.articles.index(of: $0) }
-        indices.forEach { self.articles[$0].read = read }
-
-        let indexPaths: [IndexPath] = indices.flatMap {
-            let rowNumber = self.articles.distance(from: self.articles.startIndex, to: $0)
-            return IndexPath(row: rowNumber, section: ArticleListSection.articles.rawValue)
-        }
-        self.tableView.reloadRows(at: indexPaths, with: .right)
-    }
 
     fileprivate func articleForIndexPath(_ indexPath: IndexPath) -> Article {
         let index = self.articles.index(self.articles.startIndex, offsetBy: indexPath.row)
@@ -175,8 +156,9 @@ public final class ArticleListController: UIViewController, DataSubscriber, UITa
         let promise = Promise<Bool>()
         alert.addAction(UIAlertAction(title: deleteTitle, style: .destructive) { _ in
             self.articles = AnyCollection(self.articles.filter { $0 != article })
-            _ = self.feedRepository.deleteArticle(article)
-            promise.resolve(true)
+            self.articleService.remove(article: article).then { result in
+                promise.resolve(result.value != nil)
+            }
             self.dismiss(animated: true, completion: nil)
         })
         let cancelTitle = NSLocalizedString("Generic_Cancel", comment: "")

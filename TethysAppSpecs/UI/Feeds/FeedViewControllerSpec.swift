@@ -6,9 +6,9 @@ import Tethys
 class FeedViewControllerSpec: QuickSpec {
     override func spec() {
         var feed = Feed(title: "title", url: URL(string: "http://example.com/feed")!, summary: "summary",
-            tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            tags: ["a", "b", "c"], articles: [], image: nil)
         let otherFeed = Feed(title: "", url: URL(string: "http://example.com/feed")!, summary: "",
-            tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            tags: ["a", "b", "c"], articles: [], image: nil)
 
         var navigationController: UINavigationController!
         var subject: FeedViewController!
@@ -35,7 +35,7 @@ class FeedViewControllerSpec: QuickSpec {
             presentingController.present(navigationController, animated: false, completion: nil)
 
             feed = Feed(title: "title", url: URL(string: "http://example.com/feed")!, summary: "summary",
-                tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                tags: ["a", "b", "c"], articles: [], image: nil)
 
             subject.feed = feed
 

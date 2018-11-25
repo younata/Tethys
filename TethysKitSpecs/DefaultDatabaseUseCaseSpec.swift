@@ -33,7 +33,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
 
         beforeEach {
             feed1 = TethysKit.Feed(title: "a", url: URL(string: "https://example.com/feed1.feed")!, summary: "",
-                tags: ["a", "b", "c", "d"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                tags: ["a", "b", "c", "d"], articles: [], image: nil)
 
             article1 = TethysKit.Article(title: "b", link: URL(string: "https://example.com/article1.html")!,
                 summary: "<p>Hello world!</p>", authors: [], published: Date(), updatedAt: nil, identifier: "article1",
@@ -47,7 +47,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
             feed1.addArticle(article2)
 
             feed2 = TethysKit.Feed(title: "e", url: URL(string: "https://example.com/feed2.feed")!, summary: "",
-                tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                tags: ["dad"], articles: [], image: nil)
 
             feeds = [feed1, feed2]
 
@@ -194,11 +194,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                     }
                 }
 
-                it("informs any subscribers") {
-                    expect(dataSubscriber.markedArticles).toNot(beNil())
-                    expect(dataSubscriber.read) == true
-                }
-
                 it("resolves the promise with the number of articles marked read") {
                     expect(markedReadFuture?.value).toNot(beNil())
                     let calledResults = markedReadFuture!.value!
@@ -208,47 +203,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                     case .failure(_):
                         expect(false) == true
                     }
-                }
-            }
-
-            describe("deleteArticle") {
-                var article: TethysKit.Article! = nil
-
-                beforeEach {
-                    article = article1
-
-                    _ = subject.deleteArticle(article)
-                }
-
-                it("should remove the article from the data service") {
-                    expect(dataService.articles).toNot(contain(article))
-                }
-
-                it("should inform any subscribes") {
-                    expect(dataSubscriber.deletedArticle).to(equal(article))
-                }
-            }
-
-            describe("markArticle:asRead:") {
-                var article: TethysKit.Article! = nil
-
-                beforeEach {
-                    article = article1
-
-                    mainQueue.runSynchronously = true
-                }
-
-                beforeEach {
-                    _ = subject.markArticle(article, asRead: true)
-                }
-
-                it("marks the article object as read") {
-                    expect(article.read) == true
-                }
-
-                it("informs any subscribers") {
-                    expect(dataSubscriber.markedArticles).to(equal([article]))
-                    expect(dataSubscriber.read) == true
                 }
             }
 

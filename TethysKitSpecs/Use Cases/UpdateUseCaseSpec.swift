@@ -23,7 +23,7 @@ class UpdateUseCaseSpec: QuickSpec {
 
         beforeEach {
             feed1 = Feed(title: "a", url: URL(string: "https://example.com/feed1.feed")!, summary: "",
-                tags: ["a", "b", "c", "d"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                tags: ["a", "b", "c", "d"], articles: [], image: nil)
 
             article1 = Article(title: "b", link: URL(string: "https://example.com/article1.html")!,
                 summary: "<p>Hello world!</p>", authors: [], published: Date(), updatedAt: nil, identifier: "article1",
@@ -37,7 +37,7 @@ class UpdateUseCaseSpec: QuickSpec {
             feed1.addArticle(article2)
 
             feed3 = Feed(title: "e", url: URL(string: "https://example.com/feed3.feed")!, summary: "",
-                tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                tags: ["dad"], articles: [], image: nil)
 
             feeds = [feed1, feed3]
 

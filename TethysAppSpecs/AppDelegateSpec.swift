@@ -89,7 +89,7 @@ class AppDelegateSpec: QuickSpec {
                 beforeEach {
                     _ = subject.application(application, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsKey(rawValue: "test"): true])
 
-                    splitViewController = subject.window!.rootViewController as! UISplitViewController
+                    splitViewController = subject.window!.rootViewController as? UISplitViewController
                 }
 
                 it("should have a splitViewController with a single subviewcontroller as the rootViewController") {
@@ -191,7 +191,7 @@ class AppDelegateSpec: QuickSpec {
             }
 
             describe("selecting a 'View Feed' action") {
-                let feed = Feed(title: "title", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil, identifier: "feed")
+                let feed = Feed(title: "title", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil, identifier: "feed")
                 let article = Article(title: "title", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "", read: false, synced: false, feed: feed, flags: [])
                 feed.addArticle(article)
 

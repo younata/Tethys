@@ -5,17 +5,19 @@ public protocol ArticleService {
     func feed(of article: Article) -> Future<Result<Feed, TethysError>>
 
     func mark(article: Article, asRead read: Bool) -> Future<Result<Article, TethysError>>
+    func remove(article: Article) -> Future<Result<Void, TethysError>>
 
     func authors(of article: Article) -> String
 
     func date(for article: Article) -> Date
     func estimatedReadingTime(of article: Article) -> TimeInterval
 
+//    func content(of: Article) -> Future<Result<String, TethysError>>
 }
 
 import RealmSwift
 
-final class RealmArticleService: ArticleService {
+struct RealmArticleService: ArticleService {
     private let realmProvider: RealmProvider
     private let mainQueue: OperationQueue
     private let workQueue: OperationQueue
@@ -66,13 +68,33 @@ final class RealmArticleService: ArticleService {
         return promise.future
     }
 
+    func remove(article: Article) -> Future<Result<Void, TethysError>> {
+        let promise = Promise<Result<Void, TethysError>>()
+        self.workQueue.addOperation {
+            guard let realmArticle = self.realmArticle(for: article) else {
+                return self.resolve(promise: promise, error: .database(.entryNotFound))
+            }
+            let realm = self.realmProvider.realm()
+            realm.beginWrite()
+            realm.delete(realmArticle)
+            do {
+                try realm.commitWrite()
+            } catch let exception {
+                dump(exception)
+                return self.resolve(promise: promise, error: .database(.unknown))
+            }
+            return self.resolve(promise: promise, with: Void())
+        }
+        return promise.future
+    }
+
     func authors(of article: Article) -> String {
         return article.authors.map { $0.description }.joined(separator: ", ")
     }
 
     func date(for article: Article) -> Date {
         let realmArticle = self.realmArticle(for: article)
-        return realmArticle?.updatedAt ?? realmArticle?.published ?? Date()
+        return realmArticle?.date ?? Date()
     }
 
     func estimatedReadingTime(of article: Article) -> TimeInterval {

@@ -117,7 +117,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
         describe("setting the article") {
             let article = Article(title: "article", link: URL(string: "https://example.com/")!, summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: Date(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, synced: false, feed: nil, flags: ["a"])
-            let feed = Feed(title: "feed", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [article], image: nil)
+            let feed = Feed(title: "feed", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [article], image: nil)
 
             beforeEach {
                 articleUseCase.readArticleReturns("example")

@@ -131,6 +131,80 @@ final class RealmArticleServiceSpec: QuickSpec {
             }
         }
 
+        describe("remove(article:)") {
+            var future: Future<Result<Void, TethysError>>!
+            var realmArticle: RealmArticle!
+            var articleIdentifier: String!
+
+            beforeEach {
+                realm.beginWrite()
+
+                realmArticle = RealmArticle()
+                realmArticle.title = "article"
+                realmArticle.link = "https://example.com/article/article1"
+
+                realm.add(realmArticle)
+
+                do {
+                    try realm.commitWrite()
+                } catch let exception {
+                    dump(exception)
+                    fail("Error writing to realm: \(exception)")
+                }
+
+                articleIdentifier = realmArticle.id
+            }
+
+            context("and the article is associated with a feed") {
+                var realmFeed: RealmFeed!
+
+                beforeEach {
+                    realm.beginWrite()
+
+                    realmFeed = RealmFeed()
+
+                    realmArticle.feed = realmFeed
+
+                    realm.add(realmFeed)
+
+                    do {
+                        try realm.commitWrite()
+                    } catch let exception {
+                        dump(exception)
+                        fail("Error writing to realm: \(exception)")
+                    }
+
+                    future = subject.remove(article: Article(realmArticle: realmArticle, feed: nil))
+                }
+
+                it("removes the article from the realmFeed's list of articles") {
+                    expect(realmFeed.articles).to(haveCount(0))
+                }
+
+                it("removes the article from the database") {
+                    expect(realm.object(ofType: RealmArticle.self, forPrimaryKey: articleIdentifier)).to(beNil())
+                }
+
+                it("resolves the future with success") {
+                    expect(future.value?.value).to(beVoid())
+                }
+            }
+
+            context("and the article is not associated with a feed") {
+                beforeEach {
+                    future = subject.remove(article: Article(realmArticle: realmArticle, feed: nil))
+                }
+
+                it("removes the article from the database") {
+                    expect(realm.object(ofType: RealmArticle.self, forPrimaryKey: articleIdentifier)).to(beNil())
+                }
+
+                it("resolves the future with success") {
+                    expect(future.value?.value).to(beVoid())
+                }
+            }
+        }
+
         describe("authors(of:)") {
             context("with one author") {
                 it("returns the author's name") {

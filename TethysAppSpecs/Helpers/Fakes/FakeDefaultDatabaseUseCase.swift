@@ -10,8 +10,8 @@ class FakeDefaultDatabaseUseCase : DefaultDatabaseUseCase {
     }
 
     var performDatabaseUpdatesProgress: ((Double) -> Void)? = nil
-    var performDatabaseUpdatesCallback: ((Void) -> Void)? = nil
-    override func performDatabaseUpdates(_ progress: @escaping (Double) -> Void, callback: @escaping (Void) -> Void) {
+    var performDatabaseUpdatesCallback: (() -> Void)? = nil
+    override func performDatabaseUpdates(_ progress: @escaping (Double) -> Void, callback: @escaping () -> Void) {
         self.performDatabaseUpdatesProgress = progress
         self.performDatabaseUpdatesCallback = callback
     }
@@ -58,27 +58,6 @@ class FakeDefaultDatabaseUseCase : DefaultDatabaseUseCase {
     override func feeds() -> Future<Result<[Feed], TethysError>> {
         let promise = Promise<Result<[Feed], TethysError>>()
         self.feedsPromises.append(promise)
-        return promise.future
-    }
-
-    var lastArticleMarkedRead: Article? = nil
-    var markArticleReadPromises: [Promise<Result<Void, TethysError>>] = []
-    override func markArticle(_ article: Article, asRead read: Bool) -> Future<Result<Void, TethysError>> {
-        lastArticleMarkedRead = article
-        article.read = read
-        let promise = Promise<Result<Void, TethysError>>()
-        markArticleReadPromises.append(promise)
-        return promise.future
-    }
-
-    var lastDeletedArticle: Article? = nil
-    var deleteArticlePromises: [Promise<Result<Void, TethysError>>] = []
-    override func deleteArticle(_ article: Article) -> Future<Result<Void, TethysError>> {
-        lastDeletedArticle = article
-        article.feed?.removeArticle(article)
-        article.feed = nil
-        let promise = Promise<Result<Void, TethysError>>()
-        deleteArticlePromises.append(promise)
         return promise.future
     }
 

@@ -43,7 +43,7 @@ class UpdateServiceSpec: QuickSpec {
                 var updateFeedFuture: Future<Result<TethysKit.Feed, TethysError>>!
 
                 beforeEach {
-                    feed = TethysKit.Feed(title: "feed", url: URL(string: "http://www.objc.io")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    feed = TethysKit.Feed(title: "feed", url: URL(string: "http://www.objc.io")!, summary: "", tags: [], articles: [], image: nil)
                     dataService.feeds = [feed]
 
                     updatedFeed = nil

@@ -140,27 +140,6 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         }
     }
 
-    func deleteArticle(_ article: Article) -> Future<Result<Void, TethysError>> {
-        return self.dataService.deleteArticle(article).then { _ in
-            for object in self.subscribers.allObjects {
-                if let subscriber = object as? DataSubscriber {
-                    subscriber.deletedArticle(article)
-                }
-            }
-        }
-    }
-
-    func markArticle(_ article: Article, asRead: Bool) -> Future<Result<Void, TethysError>> {
-        return self.privateMarkArticles([article], asRead: asRead).map { result -> Result<Void, TethysError> in
-            switch result {
-            case .success:
-                return .success()
-            case let .failure(error):
-                return .failure(error)
-            }
-        }
-    }
-
     private var updatingFeedsCallbacks = [([Feed], [NSError]) -> Void]()
     func updateFeeds(_ callback: @escaping ([Feed], [NSError]) -> Void) {
         self.updatingFeedsCallbacks.append(callback)
@@ -226,11 +205,6 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         }
         return self.dataService.batchSave([], articles: articles).map { result in
             return result.map {
-                for subscriber in self.allSubscribers {
-                    self.mainQueue.addOperation {
-                        subscriber.markedArticles(articles, asRead: read)
-                    }
-                }
                 return amountToChange
             }
         }

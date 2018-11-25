@@ -202,7 +202,7 @@ class RealmServiceSpec: QuickSpec {
             }
 
             it("creates a new feed and article if the feed does not exist") {
-                let feed2 = Feed(title: "feed2", url: URL(string: "https://example.com/feed/feed2")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let feed2 = Feed(title: "feed2", url: URL(string: "https://example.com/feed/feed2")!, summary: "", tags: [], articles: [], image: nil)
                 let future = subject.findOrCreateArticle(feed: feed2, url: URL(string: "https://example.com/article/article2")!)
                 expect(future.value).toNot(beNil())
                 let article = future.value

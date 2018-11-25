@@ -8,10 +8,10 @@ class DatabaseUseCaseSpec: QuickSpec {
     override func spec() {
         var subject: FakeDatabaseUseCase!
         let feeds = [
-            Feed(title: "1", url: URL(string: "https://example.com/1")!, summary: "", tags: ["a", "b", "c", "d"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
-            Feed(title: "2", url: URL(string: "https://example.com/2")!, summary: "", tags: ["b", "d"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
-            Feed(title: "3", url: URL(string: "https://example.com/3")!, summary: "", tags: ["dad"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
-            Feed(title: "4", url: URL(string: "https://example.com/4")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
+            Feed(title: "1", url: URL(string: "https://example.com/1")!, summary: "", tags: ["a", "b", "c", "d"], articles: [], image: nil),
+            Feed(title: "2", url: URL(string: "https://example.com/2")!, summary: "", tags: ["b", "d"], articles: [], image: nil),
+            Feed(title: "3", url: URL(string: "https://example.com/3")!, summary: "", tags: ["dad"], articles: [], image: nil),
+            Feed(title: "4", url: URL(string: "https://example.com/4")!, summary: "", tags: [], articles: [], image: nil),
         ]
 
         beforeEach {

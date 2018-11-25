@@ -59,20 +59,6 @@ public final class Feed: Hashable, CustomStringConvertible {
     }
 
     public fileprivate(set) var tags: [String]
-    public var waitPeriod: Int {
-        willSet {
-            if newValue != waitPeriod {
-                self.updated = true
-            }
-        }
-    }
-    public internal(set) var remainingWait: Int {
-        willSet {
-            if newValue != remainingWait {
-                self.updated = true
-            }
-        }
-    }
 
     public var settings: Settings? {
         willSet {
@@ -82,7 +68,7 @@ public final class Feed: Hashable, CustomStringConvertible {
         }
     }
 
-    @available(*, deprecated, message: "Query a service for the articles")
+    @available(*, deprecated, message: "Query a FeedService for the articles")
     public internal(set) var articlesArray: DataStoreBackedArray<Article>
 
     public internal(set) var image: Image? {
@@ -99,8 +85,7 @@ public final class Feed: Hashable, CustomStringConvertible {
         if let id = feedID as? String {
             return id.hash
         }
-        let nonNilHashValues = title.hashValue ^ url.hashValue ^ summary.hashValue ^
-            waitPeriod.hashValue ^ remainingWait.hashValue
+        let nonNilHashValues = title.hashValue ^ url.hashValue ^ summary.hashValue
         let possiblyNilHashValues: Int
         if let image = image {
                 possiblyNilHashValues = image.hash
@@ -123,15 +108,18 @@ public final class Feed: Hashable, CustomStringConvertible {
             return aID == bID
         }
         return self.title == b.title && self.url == b.url && self.summary == b.summary && self.tags == b.tags &&
-            self.waitPeriod == b.waitPeriod && self.remainingWait == b.remainingWait && self.image == b.image
+            self.image == b.image
     }
 
     public private(set) var updated = false
 
-    @available(*, deprecated, message: "Query a service for the unread articles")
+    @available(*, deprecated, message: "Query a service for the unread articles, for unread count, use the unreadCount property")
     public private(set) lazy var unreadArticles: DataStoreBackedArray<Article> = {
         return self.articlesArray.filterWithPredicate(NSPredicate(format: "read == false"))
     }()
+    public var unreadCount: Int {
+        return self.articlesArray.filterWithPredicate(NSPredicate(format: "read == false")).count
+    }
 
     @available(*, deprecated, message: "Don't use the feed object to add articles")
     public func addArticle(_ article: Article) {
@@ -188,15 +176,12 @@ public final class Feed: Hashable, CustomStringConvertible {
         )
     }
 
-    public init(title: String, url: URL, summary: String, tags: [String],
-                waitPeriod: Int, remainingWait: Int, articles: [Article], image: Image?,
+    public init(title: String, url: URL, summary: String, tags: [String], articles: [Article], image: Image?,
                 lastUpdated: Date = Date(), identifier: String = "") {
         self.title = title
         self.url = url
         self.summary = summary
         self.tags = tags
-        self.waitPeriod = waitPeriod
-        self.remainingWait = remainingWait
         self.image = image
         self.articlesArray = DataStoreBackedArray(articles)
         self.lastUpdated = lastUpdated
@@ -215,8 +200,6 @@ public final class Feed: Hashable, CustomStringConvertible {
         self.url = URL(string: feed.url)!
         self.summary = feed.summary ?? ""
         self.tags = feed.tags.map { $0.string }
-        self.waitPeriod = feed.waitPeriod
-        self.remainingWait = feed.remainingWait
         self.lastUpdated = feed.lastUpdated
 
         if let data = feed.imageData {

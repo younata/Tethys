@@ -1,5 +1,22 @@
 import TethysKit
 
+func feedFactory(
+    title: String = "title",
+    url: URL = URL(string: "https://example.com/feed")!,
+    summary: String = "summary",
+    tags: [String] = [],
+    image: Image? = nil
+    ) -> Feed {
+    return Feed(
+        title: title,
+        url: url,
+        summary: summary,
+        tags: tags,
+        articles: [],
+        image: image
+    )
+}
+
 func articleFactory(
     title: String = "",
     link: URL = URL(string: "https://example.com")!,

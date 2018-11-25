@@ -49,7 +49,7 @@ class FeedTableCellSpec: QuickSpec {
             context("with a feed that has no unread articles") {
                 beforeEach {
                     feed = Feed(title: "Hello", url: URL(string: "https://example.com")!, summary: "World", tags: [],
-                        waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                        articles: [], image: nil)
                     subject.feed = feed
                 }
 
@@ -72,7 +72,7 @@ class FeedTableCellSpec: QuickSpec {
                         published: Date(), updatedAt: nil, identifier: "", content: "",
                         read: false, synced: false, feed: nil, flags: [])
                     feed = Feed(title: "Hello", url: URL(string: "https://example.com")!, summary: "World", tags: [],
-                        waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
+                        articles: [article1, article2], image: nil)
                     subject.feed = feed
                 }
                 itBehavesLike("a standard feed cell") {
@@ -90,7 +90,7 @@ class FeedTableCellSpec: QuickSpec {
                 beforeEach {
                     image = UIImage(named: "GrayIcon")
                     feed = Feed(title: "Hello", url: URL(string: "https://example.com")!, summary: "World", tags: [],
-                        waitPeriod: 0, remainingWait: 0, articles: [], image: image)
+                        articles: [], image: image)
                     subject.feed = feed
                 }
 
@@ -112,7 +112,7 @@ class FeedTableCellSpec: QuickSpec {
             context("with a feed that doesn't have an image") {
                 beforeEach {
                     feed = Feed(title: "Hello", url: URL(string: "https://example.com")!, summary: "World", tags: [],
-                        waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                        articles: [], image: nil)
                     subject.feed = feed
                 }
 

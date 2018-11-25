@@ -14,7 +14,6 @@ class FeedsTableViewControllerSpec: QuickSpec {
         var navigationController: UINavigationController! = nil
         var themeRepository: ThemeRepository! = nil
         var settingsRepository: SettingsRepository! = nil
-        var analytics: FakeAnalytics! = nil
         var mainQueue: FakeOperationQueue!
 
         var feed1: Feed! = nil
@@ -63,7 +62,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
             navigationController = UINavigationController(rootViewController: subject)
 
             feed1 = Feed(title: "a", url: URL(string: "http://example.com/feed")!, summary: "",
-                tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                tags: ["a", "b", "c"], articles: [], image: nil)
 
             feeds = [feed1]
         }
@@ -163,30 +162,6 @@ class FeedsTableViewControllerSpec: QuickSpec {
                                 expect(dataUseCase.feedsPromises.count) == 2
                             }
                         }
-                    }
-                }
-
-                context("marking an article as read") {
-                    beforeEach {
-                        subject.present(UIViewController(), animated: false, completion: nil)
-
-                        let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, feed: nil, flags: [])
-                        subscriber?.markedArticles([article], asRead: true)
-                    }
-
-                    it("refreshes it's feed cache") {
-                        expect(dataUseCase.feedsPromises.count) == 2
-                    }
-                }
-
-                context("deleting an article") {
-                    beforeEach {
-                        let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, feed: nil, flags: [])
-                        subscriber?.deletedArticle(article)
-                    }
-                    
-                    it("should refresh it's feed cache") {
-                        expect(dataUseCase.feedsPromises.count) == 2
                     }
                 }
             }
@@ -337,7 +312,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                             var feed3: Feed! = nil
                             beforeEach {
                                 feed3 = Feed(title: "d", url: URL(string: "https://example.com")!, summary: "", tags: [],
-                                    waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                    articles: [], image: nil)
                                 dataUseCase.updateFeedsCompletion([], [])
                                 for object in dataUseCase.subscribers.allObjects {
                                     if let subscriber = object as? DataSubscriber {

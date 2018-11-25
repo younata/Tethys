@@ -169,7 +169,7 @@ class ArticleListControllerSpec: QuickSpec {
 
             publishedOffset = 0
 
-            feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "hello world", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "hello world", tags: [], articles: [], image: nil)
             let d = fakeArticle(feed: feed)
             let c = fakeArticle(feed: feed, read: true)
             let b = fakeArticle(feed: feed, isUpdated: true)
@@ -518,35 +518,6 @@ class ArticleListControllerSpec: QuickSpec {
             }
         }
 
-        describe("as a DataSubscriber") {
-            beforeEach {
-                subject.feed = feed
-                subject.view.layoutIfNeeded()
-            }
-
-            describe("markedArticle(_:asRead:)") {
-                beforeEach {
-                    articles[3].read = false
-                    for subscriber in dataRepository.subscribersArray {
-                        subscriber.markedArticles([articles[3]], asRead: true)
-                    }
-                }
-
-                it("reloads the tableView") {
-                    let cell = subject.tableView.dataSource?.tableView(subject.tableView, cellForRowAt: IndexPath(row: 3, section: 1)) as! ArticleCell
-
-                    expect(articleCellController.configureCalls).to(haveCount(6)) // 3 articles, called twice for each.
-
-                    guard let call = articleCellController.configureCalls.filter({ $0.article == articles[3] }).last else {
-                        fail("No call for article3 found")
-                        return
-                    }
-
-                    expect(call.cell).to(equal(cell))
-                }
-            }
-        }
-
         describe("force pressing an article cell") {
             var viewControllerPreviewing: FakeUIViewControllerPreviewing! = nil
             let indexPath = IndexPath(row: 0, section: 1)
@@ -736,7 +707,7 @@ class ArticleListControllerSpec: QuickSpec {
                             }
 
                             it("does not yet delete the article") {
-                                expect(dataRepository.lastDeletedArticle).to(beNil())
+                                expect(articleService.removeArticleCalls).to(beEmpty())
                             }
 
                             it("presents an alert asking for confirmation that the user wants to do this") {
@@ -759,11 +730,35 @@ class ArticleListControllerSpec: QuickSpec {
                                 }
 
                                 it("deletes the article") {
-                                    expect(dataRepository.lastDeletedArticle) == articles.first
+                                    expect(articleService.removeArticleCalls.last).to(equal(articles.first))
                                 }
 
                                 it("dismisses the alert") {
                                     expect(subject.presentedViewController).to(beNil())
+                                }
+
+                                xit("shows a spinner while we wait to delete the article") {
+                                    fail("Implement me!")
+                                }
+
+                                context("when the delete operation succeeds") {
+                                    beforeEach {
+                                        articleService.removeArticlePromises.last?.resolve(.success())
+                                    }
+
+                                    it("removes the article from the list") {
+                                        expect(Array(subject.articles)).toNot(contain(articles[0]))
+                                    }
+                                }
+
+                                context("when the delete operation fails") {
+                                    beforeEach {
+                                        articleService.removeArticlePromises.last?.resolve(.failure(TethysError.database(.unknown)))
+                                    }
+
+                                    xit("shows a message saying that we had an error") {
+                                        fail("Implement me!")
+                                    }
                                 }
                             }
 
@@ -776,7 +771,7 @@ class ArticleListControllerSpec: QuickSpec {
                                 }
 
                                 it("does not delete the article") {
-                                    expect(dataRepository.lastDeletedArticle).to(beNil())
+                                    expect(articleService.removeArticleCalls).to(beEmpty())
                                 }
 
                                 it("dismisses the alert") {
@@ -916,7 +911,7 @@ class ArticleListControllerSpec: QuickSpec {
                         subject.view.layoutIfNeeded()
 
                         subject.feed = Feed(title: "Title", url: URL(string: "https://example.com")!, summary: "",
-                                            tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                            tags: [], articles: [], image: nil)
                         subject.tableView.reloadData()
                     }
 
@@ -1036,7 +1031,7 @@ class ArticleListControllerSpec: QuickSpec {
                                     }
 
                                     it("does not yet delete the article") {
-                                        expect(dataRepository.lastDeletedArticle).to(beNil())
+                                        expect(articleService.removeArticleCalls).to(beEmpty())
                                     }
 
                                     it("presents an alert asking for confirmation that the user wants to do this") {
@@ -1059,11 +1054,35 @@ class ArticleListControllerSpec: QuickSpec {
                                         }
 
                                         it("deletes the article") {
-                                            expect(dataRepository.lastDeletedArticle) == articles.first
+                                            expect(articleService.removeArticleCalls.last) == articles.first
                                         }
 
                                         it("dismisses the alert") {
                                             expect(subject.presentedViewController).to(beNil())
+                                        }
+
+                                        xit("shows a spinner while we wait to delete the article") {
+                                            fail("Implement me!")
+                                        }
+
+                                        context("when the delete operation succeeds") {
+                                            beforeEach {
+                                                articleService.removeArticlePromises.last?.resolve(.success())
+                                            }
+
+                                            it("removes the article from the list") {
+                                                expect(Array(subject.articles)).toNot(contain(articles[0]))
+                                            }
+                                        }
+
+                                        context("when the delete operation fails") {
+                                            beforeEach {
+                                                articleService.removeArticlePromises.last?.resolve(.failure(TethysError.database(.unknown)))
+                                            }
+
+                                            xit("shows a message saying that we had an error") {
+                                                fail("Implement me!")
+                                            }
                                         }
                                     }
 
@@ -1076,7 +1095,7 @@ class ArticleListControllerSpec: QuickSpec {
                                         }
 
                                         it("does not delete the article") {
-                                            expect(dataRepository.lastDeletedArticle).to(beNil())
+                                            expect(articleService.removeArticleCalls).to(beEmpty())
                                         }
 
                                         it("dismisses the alert") {

@@ -16,8 +16,8 @@ class FeedsListControllerSpec: QuickSpec {
 
             subject = FeedsListController(mainQueue: FakeOperationQueue(), themeRepository: themeRepository)
             feeds = [
-                Feed(title: "a", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
-                Feed(title: "b", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil),
+                Feed(title: "a", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil),
+                Feed(title: "b", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil),
             ]
             subject.feeds = feeds
 

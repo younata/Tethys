@@ -14,8 +14,7 @@ final class InMemoryDataService: DataService {
     var articles = [Article]()
 
     func createFeed(url: URL, callback: @escaping (Feed) -> Void) -> Future<Result<Feed, TethysError>> {
-        let feed = Feed(title: "", url: url, summary: "", tags: [], waitPeriod: 0,
-                        remainingWait: 0, articles: [], image: nil)
+        let feed = Feed(title: "", url: url, summary: "", tags: [], articles: [], image: nil)
         callback(feed)
         self.feeds.append(feed)
         let promise = Promise<Result<Feed, TethysError>>()
@@ -36,8 +35,7 @@ final class InMemoryDataService: DataService {
         if let feed = self.feeds.first(where: { $0.url == url }) {
             promise.resolve(feed)
         } else {
-            let feed = Feed(title: "", url: url, summary: "", tags: [], waitPeriod: 0,
-                            remainingWait: 0, articles: [], image: nil)
+            let feed = Feed(title: "", url: url, summary: "", tags: [], articles: [], image: nil)
             self.feeds.append(feed)
             promise.resolve(feed)
         }

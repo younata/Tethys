@@ -83,7 +83,7 @@ class ImportUseCaseSpec: QuickSpec {
                         describe("when the feed repository succeeds") {
                             context("and a feed with the proposed feed url is in the feeds list") {
                                 beforeEach {
-                                    let existingFeed = Feed(title: "", url: url, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                    let existingFeed = Feed(title: "", url: url, summary: "", tags: [], articles: [], image: nil)
 
                                     feedRepository.feedsPromises.first?.resolve(.success([existingFeed]))
                                 }
@@ -110,7 +110,7 @@ class ImportUseCaseSpec: QuickSpec {
                                     var feed: Feed!
                                     beforeEach {
                                         feedRepository.didUpdateFeed = nil
-                                        feed = Feed(title: "", url: url, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                        feed = Feed(title: "", url: url, summary: "", tags: [], articles: [], image: nil)
                                         feedRepository.newFeedCallback(feed)
                                     }
 
@@ -230,7 +230,7 @@ class ImportUseCaseSpec: QuickSpec {
                         describe("when the feed repository succeeds") {
                             context("and a feed with the proposed feed url is in the feeds list") {
                                 beforeEach {
-                                    let existingFeed = Feed(title: "", url: feed1Url, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                    let existingFeed = Feed(title: "", url: feed1Url, summary: "", tags: [], articles: [], image: nil)
 
                                     feedRepository.feedsPromises.first?.resolve(.success([existingFeed]))
                                 }
@@ -256,7 +256,7 @@ class ImportUseCaseSpec: QuickSpec {
                                 context("when the feed repository creates the feed") {
                                     var feed: Feed!
                                     beforeEach {
-                                        feed = Feed(title: "", url: feed1Url, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                        feed = Feed(title: "", url: feed1Url, summary: "", tags: [], articles: [], image: nil)
                                         feedRepository.newFeedCallback(feed)
                                         feedRepository.newFeedPromises.last?.resolve(.success())
                                     }
@@ -338,7 +338,7 @@ class ImportUseCaseSpec: QuickSpec {
                         describe("when the feeds repository succeeds") {
                             context("and a feed with the proposed feed url is in the feeds list") {
                                 beforeEach {
-                                    let existingFeed = Feed(title: "", url: URL(string: "http://iotlist.co/posts.atom")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                    let existingFeed = Feed(title: "", url: URL(string: "http://iotlist.co/posts.atom")!, summary: "", tags: [], articles: [], image: nil)
 
                                     feedRepository.feedsPromises.first?.resolve(.success([existingFeed]))
                                 }
@@ -364,7 +364,7 @@ class ImportUseCaseSpec: QuickSpec {
                                 context("when the feed repository creates the feed") {
                                     var feed: Feed!
                                     beforeEach {
-                                        feed = Feed(title: "", url: URL(string: "http://iotlist.co/posts.atom")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                                        feed = Feed(title: "", url: URL(string: "http://iotlist.co/posts.atom")!, summary: "", tags: [], articles: [], image: nil)
                                         feedRepository.newFeedCallback(feed)
                                         feedRepository.newFeedPromises.last?.resolve(.success())
                                     }

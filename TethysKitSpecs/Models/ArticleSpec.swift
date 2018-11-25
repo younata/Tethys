@@ -118,7 +118,7 @@ class ArticleSpec: QuickSpec {
             var feed: Feed! = nil
 
             beforeEach {
-                feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil)
 
                 subject.feed = feed
             }
@@ -134,7 +134,7 @@ class ArticleSpec: QuickSpec {
             }
 
             it("should remove from the old and add to the new when changing feeds") {
-                let newFeed = Feed(title: "blah", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let newFeed = Feed(title: "blah", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil)
 
                 subject.feed = newFeed
 
@@ -222,7 +222,8 @@ class ArticleSpec: QuickSpec {
                 it("feed") {
                     subject.feed = nil
                     expect(subject.updated) == false
-                    subject.feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                    let feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil)
+                    subject.feed = feed
                     expect(subject.updated) == true
                 }
 

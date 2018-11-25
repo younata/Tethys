@@ -40,7 +40,7 @@ class FeedViewSpec: QuickSpec {
         }
 
         describe("gesture recognizers") {
-            let feed = Feed(title: "feed", url: URL(string: "https://example.com")!, summary: "feedSummary", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            let feed = Feed(title: "feed", url: URL(string: "https://example.com")!, summary: "feedSummary", tags: [], articles: [], image: nil)
 
             var delegate: FakeFeedViewDelegate! = nil
 
@@ -137,7 +137,7 @@ class FeedViewSpec: QuickSpec {
         }
 
         context("when configured with a standard feed") {
-            let feed = Feed(title: "feed", url: URL(string: "https://example.com")!, summary: "feedSummary", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            let feed = Feed(title: "feed", url: URL(string: "https://example.com")!, summary: "feedSummary", tags: [], articles: [], image: nil)
 
             beforeEach {
                 subject.configure(feed, delegate: FakeFeedViewDelegate())
@@ -160,7 +160,7 @@ class FeedViewSpec: QuickSpec {
                 published: Date(), updatedAt: nil, identifier: "", content: "",
                 read: false, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
             let feed = Feed(title: "Hello", url: URL(string: "https://example.com")!, summary: "World", tags: [],
-                waitPeriod: 0, remainingWait: 0, articles: [article1, article2], image: nil)
+                articles: [article1, article2], image: nil)
 
             beforeEach {
                 subject.configure(feed, delegate: FakeFeedViewDelegate())
@@ -181,7 +181,7 @@ class FeedViewSpec: QuickSpec {
             beforeEach {
                 let image = NSImage(named: "GrayIcon")
                 feed = Feed(title: "feed", url: URL(string: "https://example.com")!, summary: "feedSummary", tags: [],
-                    waitPeriod: 0, remainingWait: 0, articles: [], image: image)
+                    articles: [], image: image)
                 subject.configure(feed, delegate: FakeFeedViewDelegate())
             }
 

@@ -16,7 +16,7 @@ class FeedsDeleSourceSpec: QuickSpec {
         var articleListFactoryCallCount = 0
 
         let feed1 = Feed(title: "a", url: URL(string: "http://example.com/feed")!, summary: "",
-                         tags: ["a", "b", "c"], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                         tags: ["a", "b", "c"], articles: [], image: nil)
         var feeds: [Feed] = []
 
         beforeEach {

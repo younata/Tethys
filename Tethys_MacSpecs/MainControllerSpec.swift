@@ -41,7 +41,7 @@ class MainControllerSpec: QuickSpec {
         }
 
         describe("showing articles") {
-            let feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            let feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil)
             let article = Article(title: "", link: URL(string: "https://example.com/1")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: true, synced: false, estimatedReadingTime: 0, feed: nil, flags: [])
             feed.addArticle(article)
 
@@ -107,7 +107,7 @@ class MainControllerSpec: QuickSpec {
 //                }
 //
 //                context("and the file is actually an opml file") {
-//                    let feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+//                    let feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil)
 //                    beforeEach {
 //                        opmlManager.importOPMLCompletion([feed])
 //                    }

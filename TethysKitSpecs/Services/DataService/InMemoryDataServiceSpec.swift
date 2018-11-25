@@ -58,7 +58,7 @@ class InMemoryDataServiceSpec: QuickSpec {
 
         describe("findOrCreateFeed") {
             beforeEach {
-                let feed1 = Feed(title: "feed1", url: URL(string: "https://example.com/feed/feed1")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let feed1 = Feed(title: "feed1", url: URL(string: "https://example.com/feed/feed1")!, summary: "", tags: [], articles: [], image: nil)
                 subject.feeds = [feed1]
             }
 
@@ -82,7 +82,7 @@ class InMemoryDataServiceSpec: QuickSpec {
         }
 
         describe("findOrCreateArticle") {
-            let feed1 = Feed(title: "feed1", url: URL(string: "https://example.com/feed/feed1")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+            let feed1 = Feed(title: "feed1", url: URL(string: "https://example.com/feed/feed1")!, summary: "", tags: [], articles: [], image: nil)
             let article1 = Article(title: "article", link: URL(string: "https://example.com/article/article1")!, summary: "", authors: [],
                                    published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, feed: feed1, flags: [])
             feed1.addArticle(article1)
@@ -110,7 +110,7 @@ class InMemoryDataServiceSpec: QuickSpec {
             }
 
             it("creates a new feed and article if the feed does not exist") {
-                let feed2 = Feed(title: "feed2", url: URL(string: "https://example.com/feed/feed2")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                let feed2 = Feed(title: "feed2", url: URL(string: "https://example.com/feed/feed2")!, summary: "", tags: [], articles: [], image: nil)
                 let future = subject.findOrCreateArticle(feed: feed2, url: URL(string: "https://example.com/article/article2")!)
                 expect(future.value).toNot(beNil())
                 let article = future.value
@@ -130,8 +130,8 @@ class InMemoryDataServiceSpec: QuickSpec {
             var article3: TethysKit.Article!
 
             beforeEach {
-                feed1 = Feed(title: "feed1", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
-                feed2 = Feed(title: "feed2", url: URL(string: "https://example.com")!, summary: "", tags: [], waitPeriod: 0, remainingWait: 0, articles: [], image: nil)
+                feed1 = Feed(title: "feed1", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil)
+                feed2 = Feed(title: "feed2", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil)
 
                 article1 = Article(title: "article1", link: URL(string: "https://example.com/article1")!, summary: "",
                     authors: [], published: Date(timeIntervalSince1970: 15), updatedAt: nil, identifier: "",

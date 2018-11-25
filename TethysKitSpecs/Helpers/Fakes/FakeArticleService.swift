@@ -21,6 +21,15 @@ final class FakeArticleService: ArticleService {
         return promise.future
     }
 
+    private(set) var removeArticleCalls: [Article] = []
+    private(set) var removeArticlePromises: [Promise<Result<Void, TethysError>>] = []
+    func remove(article: Article) -> Future<Result<Void, TethysError>> {
+        self.removeArticleCalls.append(article)
+        let promise = Promise<Result<Void, TethysError>>()
+        self.removeArticlePromises.append(promise)
+        return promise.future
+    }
+
     var authorStub: [Article: String] = [:]
     private(set) var authorsCalls: [Article] = []
     func authors(of article: Article) -> String {

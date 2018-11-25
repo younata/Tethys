@@ -85,6 +85,7 @@ func htmlViewControllerFactory(themeRepository: ThemeRepository = themeRepositor
 
 func articleListControllerFactory(
     mainQueue: FakeOperationQueue = FakeOperationQueue(),
+    feedService: FeedService = FakeFeedService(),
     articleService: ArticleService = FakeArticleService(),
     feedRepository: DatabaseUseCase = FakeDatabaseUseCase(),
     themeRepository: ThemeRepository = themeRepositoryFactory(),
@@ -94,6 +95,7 @@ func articleListControllerFactory(
     ) -> ArticleListController {
     return ArticleListController(
         mainQueue: mainQueue,
+        feedService: feedService,
         articleService: articleService,
         feedRepository: feedRepository,
         themeRepository: themeRepository,

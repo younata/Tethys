@@ -27,6 +27,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     public let tableView = UITableView(forAutoLayout: ())
 
     private let mainQueue: OperationQueue
+    fileprivate let feedService: FeedService
     fileprivate let articleService: ArticleService
     fileprivate let feedRepository: DatabaseUseCase
     private let themeRepository: ThemeRepository
@@ -35,6 +36,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     private let articleViewController: () -> ArticleViewController
 
     public init(mainQueue: OperationQueue,
+                feedService: FeedService,
                 articleService: ArticleService,
                 feedRepository: DatabaseUseCase,
                 themeRepository: ThemeRepository,
@@ -42,6 +44,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
                 articleCellController: ArticleCellController,
                 articleViewController: @escaping () -> ArticleViewController) {
         self.mainQueue = mainQueue
+        self.feedService = feedService
         self.articleService = articleService
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository

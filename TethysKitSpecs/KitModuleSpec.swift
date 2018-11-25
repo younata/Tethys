@@ -32,6 +32,7 @@ class KitModuleSpec: QuickSpec {
 
             isA(RealmProvider.self, kindOf: DefaultRealmProvider.self)
 
+            exists(FeedService.self)
             exists(ArticleService.self)
 
             exists(URLSession.self)

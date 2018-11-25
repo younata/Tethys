@@ -81,6 +81,14 @@ private func configureServices(container: Container) {
         return DefaultRealmProvider(configuration: Realm.Configuration.defaultConfiguration)
     }
 
+    container.register(FeedService.self) { r in
+        return RealmFeedService(
+            realmProvider: r.resolve(RealmProvider.self)!,
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            workQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!
+        )
+    }
+
     container.register(ArticleService.self) { r in
         return RealmArticleService(
             realmProvider: r.resolve(RealmProvider.self)!,

@@ -67,6 +67,7 @@ private func registerViewControllers(container: Container) {
     container.register(ArticleListController.self) { r in
         return ArticleListController(
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            feedService: r.resolve(FeedService.self)!,
             articleService: r.resolve(ArticleService.self)!,
             feedRepository: r.resolve(DatabaseUseCase.self)!,
             themeRepository: r.resolve(ThemeRepository.self)!,

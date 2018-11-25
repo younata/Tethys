@@ -19,10 +19,6 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
         return self.container.resolve(DatabaseUseCase.self)!
     }()
 
-    private lazy var backgroundFetchHandler: BackgroundFetchHandler = {
-        self.container.resolve(BackgroundFetchHandler.self)!
-    }()
-
     private lazy var analytics: Analytics = {
         self.container.resolve(Analytics.self)!
     }()
@@ -128,13 +124,6 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
         } else {
             completionHandler(false)
         }
-    }
-
-    // MARK: Background Fetch
-
-    public func application(_ application: UIApplication,
-                            performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) { // swiftlint:disable=line_length
-        self.backgroundFetchHandler.performFetch(completionHandler: completionHandler)
     }
 
     // MARK: - Private

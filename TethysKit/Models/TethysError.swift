@@ -1,6 +1,4 @@
-import Sponde
-
-public enum NetworkError: Error {
+public enum NetworkError: Error, Equatable {
     case internetDown
     case dns
     case serverNotFound
@@ -23,26 +21,7 @@ public enum NetworkError: Error {
     }
 }
 
-extension NetworkError: Equatable {}
-
-public func == (lhs: NetworkError, rhs: NetworkError) -> Bool {
-    switch (lhs, rhs) {
-    case (.internetDown, .internetDown):
-        return true
-    case (.dns, .dns):
-        return true
-    case (.serverNotFound, .serverNotFound):
-        return true
-    case (let .http(lhsError), let .http(rhsError)):
-        return lhsError == rhsError
-    case (.unknown, .unknown):
-        return true
-    default:
-        return false
-    }
-}
-
-public enum DatabaseError: Error {
+public enum DatabaseError: Error, Equatable {
     case notFound
     case entryNotFound
     case unknown
@@ -59,11 +38,10 @@ public enum DatabaseError: Error {
     }
 }
 
-public enum TethysError: Error {
+public enum TethysError: Error, Equatable {
     case network(URL, NetworkError)
     case http(Int)
     case database(DatabaseError)
-    case book(SpondeError)
     case unknown
 
     public var localizedDescription: String {
@@ -76,29 +54,8 @@ public enum TethysError: Error {
             return String.localizedStringWithFormat("Error_Standard_HTTP", status)
         case let .database(error):
             return error.localizedDescription
-        case let .book(error):
-            return error.description
         case .unknown:
             return NSLocalizedString("Error_Standard_Unknown", comment: "")
         }
-    }
-}
-
-extension TethysError: Equatable {}
-
-public func == (lhs: TethysError, rhs: TethysError) -> Bool {
-    switch (lhs, rhs) {
-    case (let .network(lhsurl, lhsError), let .network(rhsurl, rhsError)):
-        return lhsurl == rhsurl && lhsError == rhsError
-    case (let .http(lhsError), let .http(rhsError)):
-        return lhsError == rhsError
-    case (let .database(lhsError), let .database(rhsError)):
-        return lhsError == rhsError
-    case (let .book(lhsError), let .book(rhsError)):
-        return lhsError == rhsError
-    case (.unknown, .unknown):
-        return true
-    default:
-        return false
     }
 }

@@ -18,7 +18,6 @@ final class InjectorModuleSpec: QuickSpec {
 
         describe("services") {
             alwaysIs(UserDefaults.self, a: UserDefaults.standard)
-            isA(BackgroundFetchHandler.self, kindOf: DefaultBackgroundFetchHandler.self)
         }
 
         describe("Repositories") {
@@ -67,16 +66,12 @@ final class InjectorModuleSpec: QuickSpec {
             exists(ArticleListController.self)
             exists(ArticleViewController.self)
 
-            exists(ChapterOrganizerController.self)
-
             exists(DocumentationViewController.self)
 
             exists(FeedsListController.self)
             exists(FeedsTableViewController.self)
             exists(FeedViewController.self)
             exists(FindFeedViewController.self)
-
-            exists(GenerateBookViewController.self)
 
             exists(HTMLViewController.self)
 

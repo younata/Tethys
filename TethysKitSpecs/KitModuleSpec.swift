@@ -41,8 +41,6 @@ class KitModuleSpec: QuickSpec {
             isA(DatabaseUseCase.self, kindOf: DefaultDatabaseUseCase.self, singleton: true)
             singleton(OPMLService.self)
             exists(BackgroundStateMonitor.self)
-
-            exists(GenerateBookUseCase.self)
         }
 
         func exists<T>(_ type: T.Type) {

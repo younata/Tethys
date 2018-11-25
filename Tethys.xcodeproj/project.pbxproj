@@ -34,14 +34,6 @@
 		8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8908949A1BFED7B8002848A4 /* FakeReachable.swift */; };
 		890B78C81C77FD200066E201 /* ArticleUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890B78C71C77FD200066E201 /* ArticleUseCase.swift */; };
 		890B78CA1C78E8650066E201 /* ArticleUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890B78C91C78E8650066E201 /* ArticleUseCaseSpec.swift */; };
-		890C8D381DE371E700A037D7 /* GenerateBookUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890C8D371DE371E700A037D7 /* GenerateBookUseCase.swift */; };
-		890C8D3A1DE3729B00A037D7 /* GenerateBookUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890C8D391DE3729B00A037D7 /* GenerateBookUseCaseSpec.swift */; };
-		890C8D3C1DE376D100A037D7 /* FakeSpondeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890C8D3B1DE376D100A037D7 /* FakeSpondeService.swift */; };
-		890C8D3E1DE3771E00A037D7 /* Sponde.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890C8D3D1DE3771E00A037D7 /* Sponde.framework */; };
-		890C8D3F1DE3773E00A037D7 /* Sponde.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 890C8D3D1DE3771E00A037D7 /* Sponde.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		890C8D401DE3774600A037D7 /* Sponde.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890C8D3D1DE3771E00A037D7 /* Sponde.framework */; };
-		890C8D431DE38B3400A037D7 /* Sponde.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890C8D3D1DE3771E00A037D7 /* Sponde.framework */; };
-		890C8D451DE3A52100A037D7 /* FakeGenerateBookUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890C8D441DE3A52100A037D7 /* FakeGenerateBookUseCase.swift */; };
 		890C8D4F1DE4096C00A037D7 /* icons.html in Resources */ = {isa = PBXBuildFile; fileRef = 890C8D4E1DE4096C00A037D7 /* icons.html */; };
 		89146E3F1C88C6A200EC8F10 /* MigrationUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC101C7D781E006B70F5 /* MigrationUseCaseSpec.swift */; };
 		89146E401C88C6A700EC8F10 /* MigrationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC0A1C7D432F006B70F5 /* MigrationUseCase.swift */; };
@@ -142,6 +134,10 @@
 		895B9A1621AA2585003FFE46 /* FeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895B9A1521AA2585003FFE46 /* FeedService.swift */; };
 		895B9A1721AA2BD9003FFE46 /* FeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895B9A1521AA2585003FFE46 /* FeedService.swift */; };
 		895B9A1A21AA2C06003FFE46 /* RealmFeedServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895B9A1921AA2C06003FFE46 /* RealmFeedServiceSpec.swift */; };
+		895B9A1C21AA66A3003FFE46 /* FakeFeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895B9A1B21AA66A3003FFE46 /* FakeFeedService.swift */; };
+		895B9A1D21AA66A9003FFE46 /* FakeFeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895B9A1B21AA66A3003FFE46 /* FakeFeedService.swift */; };
+		895B9A1E21AA66AA003FFE46 /* FakeFeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895B9A1B21AA66A3003FFE46 /* FakeFeedService.swift */; };
+		895B9A1F21AA66AB003FFE46 /* FakeFeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895B9A1B21AA66A3003FFE46 /* FakeFeedService.swift */; };
 		896276F41C4C34980005E8E7 /* UIKit_PivotalSpecHelperStubs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 896276F31C4C34980005E8E7 /* UIKit_PivotalSpecHelperStubs.framework */; };
 		896276F51C4C34A50005E8E7 /* UIKit_PivotalSpecHelperStubs.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 896276F31C4C34980005E8E7 /* UIKit_PivotalSpecHelperStubs.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89628BDF1CE1742600B4C624 /* DatabaseUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89628BDE1CE1742600B4C624 /* DatabaseUseCase.swift */; };
@@ -294,10 +290,6 @@
 		898979E11B72A63100218498 /* FeedsViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898979E01B72A63100218498 /* FeedsViewControllerSpec.swift */; };
 		898979E31B72FF9A00218498 /* AppDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898979E21B72FF9A00218498 /* AppDelegateSpec.swift */; };
 		898C48C51B3D98F60097045A /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 898C48C41B3D98F60097045A /* test.jpg */; };
-		898DA4941DDE902F0029CBD3 /* GenerateBookViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898DA4931DDE902F0029CBD3 /* GenerateBookViewController.swift */; };
-		898DA4971DDEC3720029CBD3 /* GenerateBookViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898DA4961DDEC3720029CBD3 /* GenerateBookViewControllerSpec.swift */; };
-		898DA49B1DDF99580029CBD3 /* ChapterOrganizerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898DA49A1DDF99580029CBD3 /* ChapterOrganizerController.swift */; };
-		898DA49D1DDFB7EF0029CBD3 /* ChapterOrganizerControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898DA49C1DDFB7EF0029CBD3 /* ChapterOrganizerControllerSpec.swift */; };
 		898ECDE11B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898ECDE01B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift */; };
 		898F670C1B000451004A7BE3 /* FakeOperationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */; };
 		898F6E121B129AB6000D343D /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F6E111B129AB6000D343D /* ActivityIndicator.swift */; };
@@ -334,10 +326,6 @@
 		899C6A9F1DCAACF800E0A61C /* libraries.html in Resources */ = {isa = PBXBuildFile; fileRef = 899C6A9E1DCAACF800E0A61C /* libraries.html */; };
 		899C6AA01DCAAD0E00E0A61C /* libraries.html in Resources */ = {isa = PBXBuildFile; fileRef = 899C6A9E1DCAACF800E0A61C /* libraries.html */; };
 		89A3A8C91DEF942F002AF9B5 /* ActionableTableViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A3A8C81DEF942F002AF9B5 /* ActionableTableViewSpec.swift */; };
-		89A3A9011DF09107002AF9B5 /* GenerateBookUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890C8D371DE371E700A037D7 /* GenerateBookUseCase.swift */; };
-		89A3A9021DF0910B002AF9B5 /* GenerateBookUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890C8D391DE3729B00A037D7 /* GenerateBookUseCaseSpec.swift */; };
-		89A3A9041DF09161002AF9B5 /* Sponde.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89A3A9031DF09161002AF9B5 /* Sponde.framework */; };
-		89A3A9061DF09175002AF9B5 /* Sponde.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89A3A9051DF09175002AF9B5 /* Sponde.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89AFF9FF1D4870F7002255E8 /* FakeImportables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */; };
 		89B8BBDD1B9C5B1000B2C112 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89B8BBDF1B9C5B1000B2C112 /* Launch Screen.xib */; };
 		89BA95391C4C8E7C001FD453 /* WorkFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89BA95381C4C8E7C001FD453 /* WorkFlow.framework */; };
@@ -390,8 +378,6 @@
 		89D427E01CF540560093D186 /* TethysErrorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D427DF1CF540560093D186 /* TethysErrorSpec.swift */; };
 		89D427E21CF556A90093D186 /* HTTPError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D427E11CF556A90093D186 /* HTTPError.swift */; };
 		89D970BB1B35BF6500ED84B8 /* WKWebView+TethysTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D970BA1B35BF6500ED84B8 /* WKWebView+TethysTests.m */; };
-		89D970BD1B3929A600ED84B8 /* BackgroundFetchHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D970BC1B3929A600ED84B8 /* BackgroundFetchHandler.swift */; };
-		89D970BF1B3929D600ED84B8 /* DefaultBackgroundFetchHandlerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D970BE1B3929D600ED84B8 /* DefaultBackgroundFetchHandlerSpec.swift */; };
 		89DB07481CBE1834006D672D /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89DB07471CBE1834006D672D /* Result.framework */; };
 		89DB07491CBE1862006D672D /* Result.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89DB07471CBE1834006D672D /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89DB074E1CBF2AC7006D672D /* CBGPromise.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89DB074D1CBF2AC7006D672D /* CBGPromise.framework */; };
@@ -517,7 +503,6 @@
 				8978C5292191675100D702BB /* Reachability.framework in Embed Frameworks */,
 				898911941C2FC8A2009A44E9 /* RealmSwift.framework in Embed Frameworks */,
 				89DB07491CBE1862006D672D /* Result.framework in Embed Frameworks */,
-				890C8D3F1DE3773E00A037D7 /* Sponde.framework in Embed Frameworks */,
 				8978C5282191672100D702BB /* Swinject.framework in Embed Frameworks */,
 				89146E501C88F0A600EC8F10 /* WorkFlow.framework in Embed Frameworks */,
 			);
@@ -552,7 +537,6 @@
 				898320C91DC14D3D00E32412 /* Realm.framework in Embed Frameworks */,
 				898320CA1DC14D3D00E32412 /* RealmSwift.framework in Embed Frameworks */,
 				898320C61DC14D3D00E32412 /* Result.framework in Embed Frameworks */,
-				89A3A9061DF09175002AF9B5 /* Sponde.framework in Embed Frameworks */,
 				8989793A1B707FAE00218498 /* TethysKit.framework in Embed Frameworks */,
 				898320C81DC14D3D00E32412 /* WorkFlow.framework in Embed Frameworks */,
 			);
@@ -614,11 +598,6 @@
 		8908949A1BFED7B8002848A4 /* FakeReachable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeReachable.swift; sourceTree = "<group>"; };
 		890B78C71C77FD200066E201 /* ArticleUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleUseCase.swift; sourceTree = "<group>"; };
 		890B78C91C78E8650066E201 /* ArticleUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleUseCaseSpec.swift; sourceTree = "<group>"; };
-		890C8D371DE371E700A037D7 /* GenerateBookUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenerateBookUseCase.swift; sourceTree = "<group>"; };
-		890C8D391DE3729B00A037D7 /* GenerateBookUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenerateBookUseCaseSpec.swift; sourceTree = "<group>"; };
-		890C8D3B1DE376D100A037D7 /* FakeSpondeService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeSpondeService.swift; sourceTree = "<group>"; };
-		890C8D3D1DE3771E00A037D7 /* Sponde.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sponde.framework; path = Carthage/Build/iOS/Sponde.framework; sourceTree = "<group>"; };
-		890C8D441DE3A52100A037D7 /* FakeGenerateBookUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeGenerateBookUseCase.swift; sourceTree = "<group>"; };
 		890C8D4E1DE4096C00A037D7 /* icons.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = icons.html; sourceTree = "<group>"; };
 		8917546F1C5B449E0036D96D /* RealmObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmObjects.swift; sourceTree = "<group>"; };
 		891754721C5B485B0036D96D /* RealmService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmService.swift; sourceTree = "<group>"; };
@@ -677,6 +656,7 @@
 		895AC51A1C7FF27300A5F6A1 /* RealmMigrator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmMigrator.swift; sourceTree = "<group>"; };
 		895B9A1521AA2585003FFE46 /* FeedService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedService.swift; sourceTree = "<group>"; };
 		895B9A1921AA2C06003FFE46 /* RealmFeedServiceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmFeedServiceSpec.swift; sourceTree = "<group>"; };
+		895B9A1B21AA66A3003FFE46 /* FakeFeedService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeFeedService.swift; sourceTree = "<group>"; };
 		896276F31C4C34980005E8E7 /* UIKit_PivotalSpecHelperStubs.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit_PivotalSpecHelperStubs.framework; path = ../Carthage/Build/iOS/UIKit_PivotalSpecHelperStubs.framework; sourceTree = "<group>"; };
 		89628BDE1CE1742600B4C624 /* DatabaseUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DatabaseUseCase.swift; path = ../DatabaseUseCase.swift; sourceTree = "<group>"; };
 		89628BE01CE175F100B4C624 /* FakeDataSubscriber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDataSubscriber.swift; sourceTree = "<group>"; };
@@ -755,10 +735,6 @@
 		898C48C81B40FBE00097045A /* FakeSearchIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeSearchIndex.swift; sourceTree = "<group>"; };
 		898C48CA1B425F8C0097045A /* DefaultDatabaseUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DefaultDatabaseUseCase.swift; path = ../DefaultDatabaseUseCase.swift; sourceTree = "<group>"; };
 		898C48CC1B42605A0097045A /* DefaultDatabaseUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultDatabaseUseCaseSpec.swift; sourceTree = "<group>"; };
-		898DA4931DDE902F0029CBD3 /* GenerateBookViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenerateBookViewController.swift; sourceTree = "<group>"; };
-		898DA4961DDEC3720029CBD3 /* GenerateBookViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenerateBookViewControllerSpec.swift; sourceTree = "<group>"; };
-		898DA49A1DDF99580029CBD3 /* ChapterOrganizerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChapterOrganizerController.swift; sourceTree = "<group>"; };
-		898DA49C1DDFB7EF0029CBD3 /* ChapterOrganizerControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChapterOrganizerControllerSpec.swift; sourceTree = "<group>"; };
 		898ECDE01B197C0D00E4D7F6 /* FeedsTableViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsTableViewControllerSpec.swift; sourceTree = "<group>"; };
 		898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeOperationQueue.swift; sourceTree = "<group>"; };
 		898F6E111B129AB6000D343D /* ActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
@@ -789,8 +765,6 @@
 		89A341811B150DA90000C60B /* OPMLServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLServiceSpec.swift; sourceTree = "<group>"; };
 		89A3A8C81DEF942F002AF9B5 /* ActionableTableViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionableTableViewSpec.swift; sourceTree = "<group>"; };
 		89A3A8CA1DEFAD13002AF9B5 /* Tethys.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = Tethys.entitlements; sourceTree = "<group>"; };
-		89A3A9031DF09161002AF9B5 /* Sponde.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sponde.framework; path = Carthage/Build/Mac/Sponde.framework; sourceTree = "<group>"; };
-		89A3A9051DF09175002AF9B5 /* Sponde.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sponde.framework; path = ../Carthage/Build/Mac/Sponde.framework; sourceTree = "<group>"; };
 		89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeImportables.swift; sourceTree = "<group>"; };
 		89B8BBDE1B9C5B1000B2C112 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = "Base.lproj/Launch Screen.xib"; sourceTree = "<group>"; };
 		89B8BBE11B9C5B1500B2C112 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = "en.lproj/Launch Screen.xib"; sourceTree = "<group>"; };
@@ -844,8 +818,6 @@
 		89D427E11CF556A90093D186 /* HTTPError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPError.swift; sourceTree = "<group>"; };
 		89D970B91B35BF6400ED84B8 /* WKWebView+TethysTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WKWebView+TethysTests.h"; sourceTree = "<group>"; };
 		89D970BA1B35BF6500ED84B8 /* WKWebView+TethysTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "WKWebView+TethysTests.m"; sourceTree = "<group>"; };
-		89D970BC1B3929A600ED84B8 /* BackgroundFetchHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundFetchHandler.swift; sourceTree = "<group>"; };
-		89D970BE1B3929D600ED84B8 /* DefaultBackgroundFetchHandlerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultBackgroundFetchHandlerSpec.swift; sourceTree = "<group>"; };
 		89DB07471CBE1834006D672D /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/iOS/Result.framework; sourceTree = SOURCE_ROOT; };
 		89DB074D1CBF2AC7006D672D /* CBGPromise.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CBGPromise.framework; path = Carthage/Build/iOS/CBGPromise.framework; sourceTree = SOURCE_ROOT; };
 		89DBDA991A9EBB0C00959AC7 /* feed.rss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = feed.rss; sourceTree = "<group>"; };
@@ -892,7 +864,6 @@
 				898911911C2FC88E009A44E9 /* Realm.framework in Frameworks */,
 				898911921C2FC88E009A44E9 /* RealmSwift.framework in Frameworks */,
 				89DB07481CBE1834006D672D /* Result.framework in Frameworks */,
-				890C8D401DE3774600A037D7 /* Sponde.framework in Frameworks */,
 				8978C526219166FB00D702BB /* Swinject.framework in Frameworks */,
 				89146E521C88F0BC00EC8F10 /* WorkFlow.framework in Frameworks */,
 			);
@@ -909,7 +880,6 @@
 				890894991BFEC698002848A4 /* Reachability.framework in Frameworks */,
 				898911951C2FC8A6009A44E9 /* Realm.framework in Frameworks */,
 				898911961C2FC8A6009A44E9 /* RealmSwift.framework in Frameworks */,
-				890C8D3E1DE3771E00A037D7 /* Sponde.framework in Frameworks */,
 				8978C5272191670300D702BB /* Swinject.framework in Frameworks */,
 				8943042B1B45089A000078DC /* TethysKit.framework in Frameworks */,
 				89146E511C88F0B800EC8F10 /* WorkFlow.framework in Frameworks */,
@@ -939,7 +909,6 @@
 				898911991C2FC8E2009A44E9 /* Realm.framework in Frameworks */,
 				8989119A1C2FC8E2009A44E9 /* RealmSwift.framework in Frameworks */,
 				898320981DC13BC000E32412 /* Result.framework in Frameworks */,
-				89A3A9041DF09161002AF9B5 /* Sponde.framework in Frameworks */,
 				8983208D1DC13B9B00E32412 /* WorkFlow.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -988,7 +957,6 @@
 				892E76BC1E0197DF00866336 /* libxml2.tbd in Frameworks */,
 				898131681AF880400090FA7F /* Muon.framework in Frameworks */,
 				89CAD4C31BA483C9006D79FC /* PureLayout.framework in Frameworks */,
-				890C8D431DE38B3400A037D7 /* Sponde.framework in Frameworks */,
 				894304361B45089B000078DC /* TethysKit.framework in Frameworks */,
 				89CB98941B12DFBA00C87160 /* TOBrowserActivityKit.framework in Frameworks */,
 				89BA95391C4C8E7C001FD453 /* WorkFlow.framework in Frameworks */,
@@ -1019,7 +987,6 @@
 			children = (
 				89628BDE1CE1742600B4C624 /* DatabaseUseCase.swift */,
 				898C48CA1B425F8C0097045A /* DefaultDatabaseUseCase.swift */,
-				890C8D371DE371E700A037D7 /* GenerateBookUseCase.swift */,
 				8903EB001C6F9DFB001C0189 /* ImportUseCase.swift */,
 				89CBDC0A1C7D432F006B70F5 /* MigrationUseCase.swift */,
 				8903F5B71D403FEF00546099 /* UpdateUseCase.swift */,
@@ -1030,7 +997,6 @@
 		89146E3E1C88C63800EC8F10 /* Use Cases */ = {
 			isa = PBXGroup;
 			children = (
-				890C8D391DE3729B00A037D7 /* GenerateBookUseCaseSpec.swift */,
 				8903EB021C6FA022001C0189 /* ImportUseCaseSpec.swift */,
 				89CBDC101C7D781E006B70F5 /* MigrationUseCaseSpec.swift */,
 				8903F5BF1D412EF500546099 /* UpdateUseCaseSpec.swift */,
@@ -1172,7 +1138,6 @@
 			isa = PBXGroup;
 			children = (
 				898320B11DC1411D00E32412 /* PureLayout.framework */,
-				89A3A9051DF09175002AF9B5 /* Sponde.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1326,8 +1291,6 @@
 				892E76BB1E0197DF00866336 /* libxml2.tbd */,
 				898320911DC13BC000E32412 /* Reachability.framework */,
 				898320921DC13BC000E32412 /* Result.framework */,
-				89A3A9031DF09161002AF9B5 /* Sponde.framework */,
-				890C8D3D1DE3771E00A037D7 /* Sponde.framework */,
 				8983208C1DC13B9B00E32412 /* WorkFlow.framework */,
 			);
 			name = Frameworks;
@@ -1375,24 +1338,6 @@
 				898979D41B71CE3A00218498 /* MainControllerSpec.swift */,
 			);
 			path = Tethys_MacSpecs;
-			sourceTree = "<group>";
-		};
-		898DA4921DDE90060029CBD3 /* Book */ = {
-			isa = PBXGroup;
-			children = (
-				898DA49A1DDF99580029CBD3 /* ChapterOrganizerController.swift */,
-				898DA4931DDE902F0029CBD3 /* GenerateBookViewController.swift */,
-			);
-			path = Book;
-			sourceTree = "<group>";
-		};
-		898DA4951DDEC2930029CBD3 /* Book */ = {
-			isa = PBXGroup;
-			children = (
-				898DA49C1DDFB7EF0029CBD3 /* ChapterOrganizerControllerSpec.swift */,
-				898DA4961DDEC3720029CBD3 /* GenerateBookViewControllerSpec.swift */,
-			);
-			path = Book;
 			sourceTree = "<group>";
 		};
 		8992D43A1C37C9B0004A5A35 /* TethysAcceptanceSpecs */ = {
@@ -1446,7 +1391,6 @@
 			isa = PBXGroup;
 			children = (
 				895AC5231C80BBD700A5F6A1 /* Articles */,
-				898DA4951DDEC2930029CBD3 /* Book */,
 				899C6A9B1DCAA3EF00E0A61C /* Documentation */,
 				895AC5251C80BC0700A5F6A1 /* Feeds */,
 				89A3A8C71DEF9404002AF9B5 /* Generic */,
@@ -1514,7 +1458,6 @@
 			children = (
 				89EF4FE31A97DAD70052A82F /* Application */,
 				89C830B419D7D2D2009924DA /* Articles */,
-				898DA4921DDE90060029CBD3 /* Book */,
 				8933E93519EE342F00ECFF3F /* Categories */,
 				8941AB7E1DC9AEAF00A2CE5F /* Documentation */,
 				89C830B119D7D2B7009924DA /* Feeds */,
@@ -1558,7 +1501,6 @@
 				89C204B41A73811000C792D2 /* AppDelegateSpec.swift */,
 				89CBDC2B1C7E60B7006B70F5 /* BootstrapWorkFlowSpec.swift */,
 				89BFAC0F1C4C66AE007B3415 /* CustomMatchers.swift */,
-				89D970BE1B3929D600ED84B8 /* DefaultBackgroundFetchHandlerSpec.swift */,
 				8941AB7C1DC9385A00A2CE5F /* HTMLViewControllerSpec.swift */,
 				8903A6261C4ABA7800E896BF /* NotificationViewSpec.swift */,
 				89F98BA71BA07E50005C3CA8 /* SettingsRepositorySpec.swift */,
@@ -1663,12 +1605,12 @@
 			isa = PBXGroup;
 			children = (
 				89943211219AAA4900FC6EB6 /* FakeArticleService.swift */,
+				895B9A1B21AA66A3003FFE46 /* FakeFeedService.swift */,
 				89CBDBF81C7D32EE006B70F5 /* FakeDataServiceFactory.swift */,
 				89628BE01CE175F100B4C624 /* FakeDataSubscriber.swift */,
 				89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */,
 				8908949A1BFED7B8002848A4 /* FakeReachable.swift */,
 				898C48C81B40FBE00097045A /* FakeSearchIndex.swift */,
-				890C8D3B1DE376D100A037D7 /* FakeSpondeService.swift */,
 				892E77141E09A49900866336 /* FakeTimerFactory.swift */,
 				8992D4321C3665B7004A5A35 /* FakeUpdateService.swift */,
 				8903F5BB1D404EA800546099 /* FakeUpdateUseCase.swift */,
@@ -1780,7 +1722,6 @@
 			children = (
 				896320941C17E5D300B7C980 /* UIApplicationProtocols */,
 				89C8307819D730E9009924DA /* AppDelegate.swift */,
-				89D970BC1B3929A600ED84B8 /* BackgroundFetchHandler.swift */,
 				89CBDC161C7D8501006B70F5 /* BootstrapWorkFlow.swift */,
 				AE4356301A7AE4FE00A961B9 /* InjectorModule.swift */,
 				89C204BC1A73F72800C792D2 /* SplitViewController.swift */,
@@ -1812,7 +1753,6 @@
 				8958EC3B1DCB03250000159B /* FakeDocumentationUseCase.swift */,
 				894D1AF01DB1AAC400E70B1A /* FakeFeedsSource.swift */,
 				89C676551BA28FE60037A224 /* FakeFileManager.swift */,
-				890C8D441DE3A52100A037D7 /* FakeGenerateBookUseCase.swift */,
 				8903EB0E1C703570001C0189 /* FakeImportUseCase.swift */,
 				89CBDC081C7D431D006B70F5 /* FakeMigrationUseCase.swift */,
 				898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */,
@@ -2239,7 +2179,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"SwiftLint does not exist, download from https://github.com/realm/SwiftLint\"\nfi";
+			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"SwiftLint does not exist, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 		89CAD4C01BA3D36E006D79FC /* Embed Carthage Libraries */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2259,7 +2199,6 @@
 				"$(SRCROOT)/Carthage/Build/iOS/Kanna.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Result.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/CBGPromise.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/Sponde.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Swinject.framework",
 			);
 			name = "Embed Carthage Libraries";
@@ -2319,7 +2258,6 @@
 				898979661B70849000218498 /* DefaultDatabaseUseCase.swift in Sources */,
 				8943044A1B450A5E000078DC /* Feed.swift in Sources */,
 				892E30F71CF4011F00E327A0 /* Future+when.swift in Sources */,
-				890C8D381DE371E700A037D7 /* GenerateBookUseCase.swift in Sources */,
 				89CC82041B461A2B00648367 /* Helpers.swift in Sources */,
 				89D427E21CF556A90093D186 /* HTTPError.swift in Sources */,
 				8903F5CF1D4177DE00546099 /* Importable.swift in Sources */,
@@ -2371,7 +2309,6 @@
 				8935F5E11B462B8C000FFD5D /* FakeOPMLService.swift in Sources */,
 				8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */,
 				8935F5DD1B462AD2000FFD5D /* FakeSearchIndex.swift in Sources */,
-				890C8D3C1DE376D100A037D7 /* FakeSpondeService.swift in Sources */,
 				892E77151E09A49900866336 /* FakeTimerFactory.swift in Sources */,
 				8992D4331C3665B7004A5A35 /* FakeUpdateService.swift in Sources */,
 				89FA3BD321A6706D0026BC88 /* RealmProviderSpec.swift in Sources */,
@@ -2380,7 +2317,6 @@
 				8903F5B01D4022AD00546099 /* FakeUserDefaults.swift in Sources */,
 				8935F5D91B4628B3000FFD5D /* FeedSpec.swift in Sources */,
 				89943212219AAA4900FC6EB6 /* FakeArticleService.swift in Sources */,
-				890C8D3A1DE3729B00A037D7 /* GenerateBookUseCaseSpec.swift in Sources */,
 				89146E441C88C73200EC8F10 /* ImportUseCaseSpec.swift in Sources */,
 				89500B231CDEA26E004548C3 /* InMemoryDataServiceSpec.swift in Sources */,
 				8937F6C01B79D0800044A442 /* KitModuleSpec.swift in Sources */,
@@ -2392,6 +2328,7 @@
 				89D427E01CF540560093D186 /* TethysErrorSpec.swift in Sources */,
 				898911C21C3267C6009A44E9 /* UpdateServiceSpec.swift in Sources */,
 				8903F5C01D412EF500546099 /* UpdateUseCaseSpec.swift in Sources */,
+				895B9A1C21AA66A3003FFE46 /* FakeFeedService.swift in Sources */,
 				8903EB0C1C702FA3001C0189 /* WebPageParserSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2430,7 +2367,6 @@
 				898320411DC1216B00E32412 /* DefaultDatabaseUseCase.swift in Sources */,
 				898979581B70808300218498 /* Feed.swift in Sources */,
 				898320451DC1216B00E32412 /* Future+when.swift in Sources */,
-				89A3A9011DF09107002AF9B5 /* GenerateBookUseCase.swift in Sources */,
 				898320461DC1216B00E32412 /* Helpers.swift in Sources */,
 				898320501DC1217B00E32412 /* HTTPError.swift in Sources */,
 				898320521DC1217B00E32412 /* Importable.swift in Sources */,
@@ -2481,8 +2417,8 @@
 				89FA3BD421A670980026BC88 /* RealmProviderSpec.swift in Sources */,
 				898320C21DC1447A00E32412 /* FakeUserDefaults.swift in Sources */,
 				898979AA1B708E7800218498 /* FeedSpec.swift in Sources */,
-				89A3A9021DF0910B002AF9B5 /* GenerateBookUseCaseSpec.swift in Sources */,
 				89146E451C88C73400EC8F10 /* ImportUseCaseSpec.swift in Sources */,
+				895B9A1D21AA66A9003FFE46 /* FakeFeedService.swift in Sources */,
 				8983205D1DC121BF00E32412 /* InMemoryDataServiceSpec.swift in Sources */,
 				89FA3BDF21A925D30026BC88 /* ModelFactories.swift in Sources */,
 				8937F6C11B79D0800044A442 /* KitModuleSpec.swift in Sources */,
@@ -2505,6 +2441,7 @@
 				898979E31B72FF9A00218498 /* AppDelegateSpec.swift in Sources */,
 				8937F6B71B77AE5F0044A442 /* AppModuleSpec.swift in Sources */,
 				8958EC421DCBF5F80000159B /* BlankTarget.swift in Sources */,
+				895B9A1E21AA66AA003FFE46 /* FakeFeedService.swift in Sources */,
 				8969947D1DC1655000A97C66 /* FakeDatabaseUseCase.swift in Sources */,
 				898979DE1B72578A00218498 /* FakeDefaultDatabaseUseCase.swift in Sources */,
 				8969947E1DC1687500A97C66 /* FakeImportUseCase.swift in Sources */,
@@ -2537,10 +2474,8 @@
 				89831FEA1DB5C2FC00E32412 /* ArticleListHeaderCell.swift in Sources */,
 				890B78C81C77FD200066E201 /* ArticleUseCase.swift in Sources */,
 				89C830B619D7DE97009924DA /* ArticleViewController.swift in Sources */,
-				89D970BD1B3929A600ED84B8 /* BackgroundFetchHandler.swift in Sources */,
 				89CBDC171C7D8501006B70F5 /* BootstrapWorkFlow.swift in Sources */,
 				89FA3BD921A76D730026BC88 /* ArticleCellController.swift in Sources */,
-				898DA49B1DDF99580029CBD3 /* ChapterOrganizerController.swift in Sources */,
 				8941AB841DC9B00100A2CE5F /* DocumentationUseCase.swift in Sources */,
 				8941AB801DC9AEE400A2CE5F /* DocumentationViewController.swift in Sources */,
 				8918D4A41B8115F800DCDE0E /* ExplanationView.swift in Sources */,
@@ -2551,7 +2486,6 @@
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
 				89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */,
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
-				898DA4941DDE902F0029CBD3 /* GenerateBookViewController.swift in Sources */,
 				8941AB7B1DC9207200A2CE5F /* HTMLViewController.swift in Sources */,
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
 				89CBDC011C7D41C9006B70F5 /* MigrationViewController.swift in Sources */,
@@ -2588,10 +2522,9 @@
 				899823AE1B30B64000818755 /* ArticleViewControllerSpec.swift in Sources */,
 				8958EC411DCBF58D0000159B /* BlankTarget.swift in Sources */,
 				89CBDC2C1C7E60B7006B70F5 /* BootstrapWorkFlowSpec.swift in Sources */,
-				898DA49D1DDFB7EF0029CBD3 /* ChapterOrganizerControllerSpec.swift in Sources */,
 				89BFAC101C4C66AE007B3415 /* CustomMatchers.swift in Sources */,
-				89D970BF1B3929D600ED84B8 /* DefaultBackgroundFetchHandlerSpec.swift in Sources */,
 				899C6A9D1DCAA42200E0A61C /* DocumentationUseCaseSpec.swift in Sources */,
+				895B9A1F21AA66AB003FFE46 /* FakeFeedService.swift in Sources */,
 				8958EC3A1DCABDA60000159B /* DocumentationViewControllerSpec.swift in Sources */,
 				89E186921D136C38005C5880 /* FakeAnalytics.swift in Sources */,
 				892CBDEA1C7A27FE0062E578 /* FakeArticleUseCase.swift in Sources */,
@@ -2600,7 +2533,6 @@
 				8958EC3C1DCB03250000159B /* FakeDocumentationUseCase.swift in Sources */,
 				894D1AF11DB1AAC400E70B1A /* FakeFeedsSource.swift in Sources */,
 				89C676561BA28FE60037A224 /* FakeFileManager.swift in Sources */,
-				890C8D451DE3A52100A037D7 /* FakeGenerateBookUseCase.swift in Sources */,
 				8903EB0F1C703570001C0189 /* FakeImportUseCase.swift in Sources */,
 				89CBDC091C7D431D006B70F5 /* FakeMigrationUseCase.swift in Sources */,
 				898F670C1B000451004A7BE3 /* FakeOperationQueue.swift in Sources */,
@@ -2622,7 +2554,6 @@
 				89F517021B1C070C0005AB04 /* FeedViewControllerSpec.swift in Sources */,
 				89FA3BDE21A925D00026BC88 /* ModelFactories.swift in Sources */,
 				899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */,
-				898DA4971DDEC3720029CBD3 /* GenerateBookViewControllerSpec.swift in Sources */,
 				8941AB7D1DC9385A00A2CE5F /* HTMLViewControllerSpec.swift in Sources */,
 				89CBDC051C7D42D7006B70F5 /* MigrationViewControllerSpec.swift in Sources */,
 				89FA3BDB21A785480026BC88 /* ArticleCellControllerSpec.swift in Sources */,

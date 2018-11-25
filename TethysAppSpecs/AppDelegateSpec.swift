@@ -6,14 +6,6 @@ import CoreSpotlight
 import Result
 import Swinject
 
-fileprivate class FakeBackgroundFetchHandler: BackgroundFetchHandler {
-    fileprivate var performFetchCalled = false
-    fileprivate func performFetch(completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        performFetchCalled = true
-    }
-
-    fileprivate var handleEventsCalled = false
-}
 
 class AppDelegateSpec: QuickSpec {
     override func spec() {
@@ -24,7 +16,6 @@ class AppDelegateSpec: QuickSpec {
 
         var dataUseCase: FakeDatabaseUseCase! = nil
 
-        var backgroundFetchHandler: FakeBackgroundFetchHandler! = nil
         var analytics: FakeAnalytics! = nil
         var importUseCase: FakeImportUseCase! = nil
 
@@ -43,9 +34,6 @@ class AppDelegateSpec: QuickSpec {
 
             analytics = FakeAnalytics()
             container.register(Analytics.self) { _ in analytics }
-
-            backgroundFetchHandler = FakeBackgroundFetchHandler()
-            container.register(BackgroundFetchHandler.self) { _ in backgroundFetchHandler }
 
             importUseCase = FakeImportUseCase()
             container.register(ImportUseCase.self) { _ in importUseCase }
@@ -317,16 +305,6 @@ class AppDelegateSpec: QuickSpec {
                         }
                     }
                 }
-            }
-        }
-
-        describe("background fetch") {
-            beforeEach {
-                subject.application(UIApplication.shared) {res in }
-            }
-
-            it("should forward the call to the backgroundFetchHandler") {
-                expect(backgroundFetchHandler.performFetchCalled) == true
             }
         }
     }

@@ -5,7 +5,6 @@ import Swinject
 #endif
 import Reachability
 import RealmSwift
-import Sponde
 
 public let kMainQueue = "kMainQueue"
 public let kBackgroundQueue = "kBackgroundQueue"
@@ -110,14 +109,6 @@ private func configureUseCases(container: Container) {
             feedRepository: r.resolve(DatabaseUseCase.self)!,
             opmlService: r.resolve(OPMLService.self)!,
             fileManager: r.resolve(FileManager.self)!,
-            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!
-        )
-    }
-
-    container.register(GenerateBookUseCase.self) { r in
-        return DefaultGenerateBookUseCase(
-            service: Sponde.DefaultService(baseURL: URL(string: "https://autonoe.cfapps.io")!,
-                                           networkClient: URLSession.shared),
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!
         )
     }

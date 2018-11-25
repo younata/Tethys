@@ -42,93 +42,6 @@ class FakeUIViewControllerPreviewing: NSObject, UIViewControllerPreviewing {
     }
 }
 
-class FakeArticleListControllerDelegate: ArticleListControllerDelegate {
-    var canSelectMultipleArticlesCallCount = 0
-    var canSelectMultipleArticlesReturns: ((ArticleListController) -> Bool)?
-    func articleListControllerCanSelectMultipleArticlesReturns(_ returnValue: Bool) {
-        self.canSelectMultipleArticlesReturns = { _ in return returnValue }
-    }
-    func articleListControllerCanSelectMultipleArticles(_ articleListController: ArticleListController) -> Bool {
-        canSelectMultipleArticlesCallCount += 1
-        return self.canSelectMultipleArticlesReturns!(articleListController)
-    }
-
-    var shouldShowToolBarCallCount = 0
-    var shouldShowToolBarReturns: ((ArticleListController) -> Bool)?
-    func articleListControllerShouldShowToolbarReturns(_ returnValue: Bool) {
-        self.shouldShowToolBarReturns = { _ in return returnValue }
-    }
-    func articleListControllerShouldShowToolbar(_ articleListController: ArticleListController) -> Bool {
-        self.shouldShowToolBarCallCount += 1
-        return self.shouldShowToolBarReturns!(articleListController)
-    }
-
-    var rightBarButtonItemsCallCount = 0
-    var rightBarButtonItemsReturns: ((ArticleListController) -> [UIBarButtonItem])?
-    func articleListControllerRightBarButtonItemsReturns(_ returnValue: [UIBarButtonItem]) {
-        self.rightBarButtonItemsReturns = { _ in return returnValue }
-    }
-    func articleListControllerRightBarButtonItems(_ articleListController: ArticleListController) -> [UIBarButtonItem] {
-        self.rightBarButtonItemsCallCount += 1
-        return self.rightBarButtonItemsReturns?(articleListController) ?? []
-    }
-
-    var canEditArticleCallCount = 0
-    var canEditArticleReturns: ((ArticleListController, Article) -> Bool)?
-    func articleListControllecCanEditArticleReturns(_ returnValue: Bool) {
-        self.canEditArticleReturns = { _ in return returnValue }
-    }
-    var canEditArticleArgs: [(ArticleListController, Article)] = []
-    func canEditArticleArgsForCall(_ callIndex: Int) -> (ArticleListController, Article) {
-        return canEditArticleArgs[callIndex]
-    }
-    func articleListController(_ articleListController: ArticleListController, canEditArticle article: Article) -> Bool {
-        self.canEditArticleCallCount += 1
-        self.canEditArticleArgs.append((articleListController, article))
-        return self.canEditArticleReturns!(articleListController, article)
-    }
-
-    var shouldShowArticleViewCallCount = 0
-    var shouldShowArticleViewReturns: ((ArticleListController, Article) -> Bool)?
-    func articleListControllerShouldShowArticleViewReturns(_ returnValue: Bool) {
-        self.shouldShowArticleViewReturns = { _ in return returnValue }
-    }
-    var shouldShowArticleViewArgs: [(ArticleListController, Article)] = []
-    func shouldShowArticleViewArgsForCall(_ callIndex: Int) -> (ArticleListController, Article) {
-        return self.shouldShowArticleViewArgs[callIndex]
-    }
-    func articleListController(_ articleListController: ArticleListController, shouldShowArticleView article: Article) -> Bool {
-        self.shouldShowArticleViewCallCount += 1
-        self.shouldShowArticleViewArgs.append((articleListController, article))
-        return self.shouldShowArticleViewReturns!(articleListController, article)
-    }
-
-    var didSelectArticlesCallCount = 0
-    var didSelectArticlesArgs: [(ArticleListController, [Article])] = []
-    func didSelectArticlesArgsForCall(_ callIndex: Int) -> (ArticleListController, [Article]) {
-        return self.didSelectArticlesArgs[callIndex]
-    }
-    func articleListController(_ articleListController: ArticleListController, didSelectArticles articles: [Article]) {
-        self.didSelectArticlesCallCount += 1
-        self.didSelectArticlesArgs.append((articleListController, articles))
-    }
-
-    var shouldPreviewArticleCallCount = 0
-    var shouldPreviewArticleReturns: ((ArticleListController, Article) -> Bool)?
-    func articleListControllerShouldPreviewArticleReturns(_ returnValue: Bool) {
-        self.shouldPreviewArticleReturns = { _ in return returnValue }
-    }
-    var shouldPreviewArticleArgs: [(ArticleListController, Article)] = []
-    func shouldPreviewArticleArgsForCall(_ callIndex: Int) -> (ArticleListController, Article) {
-        return self.shouldPreviewArticleArgs[callIndex]
-    }
-    func articleListController(_ articleListController: ArticleListController, shouldPreviewArticle article: Article) -> Bool {
-        self.shouldPreviewArticleCallCount += 1
-        self.shouldPreviewArticleArgs.append((articleListController, article))
-        return self.shouldPreviewArticleReturns!((articleListController, article))
-    }
-}
-
 private var publishedOffset = -1
 func fakeArticle(feed: Feed, isUpdated: Bool = false, read: Bool = false) -> Article {
     publishedOffset += 1
@@ -190,10 +103,7 @@ class ArticleListControllerSpec: QuickSpec {
                 themeRepository: themeRepository,
                 settingsRepository: settingsRepository,
                 articleCellController: articleCellController,
-                articleViewController: { articleViewControllerFactory(articleUseCase: useCase) },
-                generateBookViewController: {
-                    return generateBookViewControllerFactory()
-                }
+                articleViewController: { articleViewControllerFactory(articleUseCase: useCase) }
             )
 
             navigationController = UINavigationController(rootViewController: subject)
@@ -204,142 +114,11 @@ class ArticleListControllerSpec: QuickSpec {
             expect(subject.tableView.keyboardDismissMode).to(equal(UIScrollViewKeyboardDismissMode.onDrag))
         }
 
-        describe("selectArticles") {
-            var delegate: FakeArticleListControllerDelegate!
-            beforeEach {
-                delegate = FakeArticleListControllerDelegate()
-                delegate.articleListControllerShouldShowArticleViewReturns(false)
-                delegate.articleListControllerCanSelectMultipleArticlesReturns(true)
-                delegate.articleListControllecCanEditArticleReturns(false)
-                delegate.articleListControllerShouldShowToolbarReturns(false)
-                subject.delegate = delegate
-
-                subject.view.layoutIfNeeded()
-                subject.feed = feed
-                subject.viewWillAppear(true)
-
-                let indexPath = IndexPath(row: 0, section: 1)
-                let secondIndexPath = IndexPath(row: 1, section: 1)
-                subject.tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
-                subject.tableView.selectRow(at: secondIndexPath, animated: false, scrollPosition: .none)
-
-                subject.selectArticles()
-            }
-
-            it("calls the delegate with didSelectArticles") {
-                expect(delegate.didSelectArticlesCallCount) == 1
-
-                let articles = [
-                    feed.articlesArray[0],
-                    feed.articlesArray[1]
-                ]
-
-                let args = delegate.didSelectArticlesArgsForCall(0)
-
-                expect(args.0) == subject
-                expect(args.1) == articles
-            }
+        it("hides the toolbar") {
+            expect(navigationController.isToolbarHidden).to(beTruthy())
         }
 
         describe("the bar button items") {
-            describe("with a delegate") {
-                let barButtonItem = UIBarButtonItem(title: "hello", style: .plain, target: nil, action: nil)
-                it("uses the bar buttons specified by the delegate") {
-                    let delegate = FakeArticleListControllerDelegate()
-                    delegate.articleListControllerCanSelectMultipleArticlesReturns(true)
-                    delegate.articleListControllecCanEditArticleReturns(false)
-                    delegate.articleListControllerRightBarButtonItemsReturns([
-                        barButtonItem
-                    ])
-                    subject.delegate = delegate
-                    subject.view.layoutIfNeeded()
-
-                    expect(subject.navigationItem.rightBarButtonItems) == [barButtonItem]
-                }
-            }
-
-            describe("without one") { // current behavior
-                describe("when a feed is backing the list") {
-                    beforeEach {
-                        subject.view.layoutIfNeeded()
-
-                        subject.feed = feed
-                    }
-
-                    it("displays a share sheet icon for sharing that feed") {
-                        expect(subject.navigationItem.rightBarButtonItems?.count) == 2
-                        expect(subject.navigationItem.rightBarButtonItems?.first) == subject.editButtonItem
-                        if let shareSheet = subject.navigationItem.rightBarButtonItems?.last {
-                            shareSheet.tap()
-                            expect(subject.presentedViewController).to(beAnInstanceOf(URLShareSheet.self))
-                            if let shareSheet = subject.presentedViewController as? URLShareSheet {
-                                expect(shareSheet.url) == feed.url
-                                expect(shareSheet.themeRepository) == themeRepository
-                                expect(shareSheet.activityItems as? [URL]) == [feed.url]
-                            }
-                        }
-                    }
-                }
-
-                describe("when a feed is not backing the list") {
-                    beforeEach {
-                        subject.view.layoutIfNeeded()
-
-                        subject.feed = nil
-                    }
-
-                    it("does not display a share sheet icon for sharing that feed") {
-                        expect(subject.navigationItem.rightBarButtonItems?.count) == 1
-                        expect(subject.navigationItem.rightBarButtonItems?.first) == subject.editButtonItem
-                    }
-                }
-            }
-        }
-
-        describe("the toolbar") {
-            var delegate: FakeArticleListControllerDelegate!
-            beforeEach {
-                subject.view.layoutIfNeeded()
-            }
-
-            describe("when the delegate says not to show the toolbar") {
-                beforeEach {
-                    delegate = FakeArticleListControllerDelegate()
-                    delegate.articleListControllerShouldShowToolbarReturns(false)
-                    subject.delegate = delegate
-                    subject.viewWillAppear(false)
-                }
-
-                it("does not show the toolbar") {
-                    expect(navigationController.isToolbarHidden) == true
-                }
-            }
-
-            describe("when the delegate says to show the toolbar") {
-                beforeEach {
-                    delegate = FakeArticleListControllerDelegate()
-                    subject.delegate = delegate
-                    delegate.articleListControllerShouldShowToolbarReturns(true)
-                    subject.viewWillAppear(false)
-                }
-
-                it("shows the toolbar") {
-                    expect(navigationController.isToolbarHidden) == false
-                }
-            }
-
-            describe("when there is no delegate") {
-                beforeEach {
-                    subject.viewWillAppear(false)
-                }
-
-                it("shows the toolbar") {
-                    expect(navigationController.isToolbarHidden) == false
-                }
-            }
-        }
-
-        describe("the toolbar items") {
             describe("when a feed is backing the list") {
                 beforeEach {
                     subject.view.layoutIfNeeded()
@@ -347,50 +126,62 @@ class ArticleListControllerSpec: QuickSpec {
                     subject.feed = feed
                 }
 
-                it("has 5 items") {
-                    expect(subject.toolbarItems?.count) == 5
+                it("displays 3 items") {
+                    expect(subject.navigationItem.rightBarButtonItems).to(haveCount(3))
                 }
 
-                describe("the second toolBarItem") {
+                describe("the first item") {
                     var item: UIBarButtonItem?
 
                     beforeEach {
-                        item = subject.toolbarItems?[1]
+                        item = subject.navigationItem.rightBarButtonItems?.first
                     }
 
-                    it("Uses a book image") {
-                        expect(item?.image) == UIImage(named: "Book")
+                    it("is the edit button") {
+                        expect(item) == subject.editButtonItem
+                    }
+                }
+
+                describe("the second item") {
+                    var item: UIBarButtonItem?
+
+                    beforeEach {
+                        guard subject.navigationItem.rightBarButtonItems?.count == 3 else {
+                            item = nil
+                            return
+                        }
+                        item = subject.navigationItem.rightBarButtonItems?[1]
                     }
 
-                    it("presents a generate book controller when tapped") {
-                        item?.tap()
+                    describe("when tapped") {
+                        beforeEach {
+                            item?.tap()
+                        }
 
-                        expect(subject.presentedViewController).to(beAKindOf(UINavigationController.self))
-                        if let navController = subject.navigationController?.visibleViewController as? UINavigationController {
-                            expect(navController.visibleViewController).to(beAKindOf(GenerateBookViewController.self))
-                            if let dataStoreArticles = (navController.visibleViewController as? GenerateBookViewController)?.articles {
-                                expect(Array(dataStoreArticles)) == Array(subject.articles)
-                            } else {
-                                fail("setting generatebookcontroller articles")
+                        it("presents a share sheet") {
+                            expect(subject.presentedViewController).to(beAnInstanceOf(URLShareSheet.self))
+                        }
+
+                        it("configures the share sheet with the url") {
+                            guard let shareSheet = subject.presentedViewController as? URLShareSheet else {
+                                fail("No share sheet presented")
+                                return
                             }
-                        } else {
-                            fail("showing generatebookcontroller")
+                            expect(shareSheet.url) == feed.url
+                            expect(shareSheet.themeRepository) == themeRepository
+                            expect(shareSheet.activityItems as? [URL]) == [feed.url]
                         }
                     }
                 }
 
-                describe("the fourth toolBarItem") {
+                describe("the third item") {
                     var item: UIBarButtonItem?
 
                     beforeEach {
-                        item = subject.toolbarItems?[3]
+                        item = subject.navigationItem.rightBarButtonItems?.last
                     }
 
-                    it("is titled 'Mark Read'") {
-                        expect(item?.title) == "Mark Read"
-                    }
-
-                    describe("tapping it") {
+                    describe("when tapped") {
                         beforeEach {
                             item?.tap()
                         }
@@ -455,39 +246,13 @@ class ArticleListControllerSpec: QuickSpec {
             describe("when a feed is not backing the list") {
                 beforeEach {
                     subject.view.layoutIfNeeded()
+
                     subject.feed = nil
                 }
 
-                it("it has a 3 items") {
-                    expect(subject.toolbarItems?.count) == 3
-                }
-
-                describe("the second toolBarItem") {
-                    var item: UIBarButtonItem?
-
-                    beforeEach {
-                        item = subject.toolbarItems?[1]
-                    }
-
-                    it("Uses a book image") {
-                        expect(item?.image) == UIImage(named: "Book")
-                    }
-
-                    it("presents a generate book controller when tapped") {
-                        item?.tap()
-
-                        expect(subject.presentedViewController).to(beAKindOf(UINavigationController.self))
-                        if let navController = subject.navigationController?.visibleViewController as? UINavigationController {
-                            expect(navController.visibleViewController).to(beAKindOf(GenerateBookViewController.self))
-                            if let dataStoreArticles = (navController.visibleViewController as? GenerateBookViewController)?.articles {
-                                expect(Array(dataStoreArticles)) == Array(subject.articles)
-                            } else {
-                                fail("setting generatebookcontroller articles")
-                            }
-                        } else {
-                            fail("showing generatebookcontroller")
-                        }
-                    }
+                it("displays only the edit button") {
+                    expect(subject.navigationItem.rightBarButtonItems?.count) == 1
+                    expect(subject.navigationItem.rightBarButtonItems?.first) == subject.editButtonItem
                 }
             }
         }
@@ -512,328 +277,299 @@ class ArticleListControllerSpec: QuickSpec {
                 expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
                 expect(subject.navigationController?.navigationBar.titleTextAttributes as? [String: UIColor]) == [NSForegroundColorAttributeName: themeRepository.textColor]
             }
-
-            it("updates the navigation toolbar") {
-                expect(subject.navigationController?.toolbar.barStyle) == themeRepository.barStyle
-            }
         }
 
         describe("force pressing an article cell") {
             var viewControllerPreviewing: FakeUIViewControllerPreviewing! = nil
             let indexPath = IndexPath(row: 0, section: 1)
+            var viewController: UIViewController? = nil
 
             beforeEach {
                 viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
+
+                subject.view.layoutIfNeeded()
+                subject.feed = feed
+                let rect = subject.tableView.rectForRow(at: indexPath)
+                let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
+                viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
             }
 
-            context("when the delegate says to not preview articles") {
-                var delegate: FakeArticleListControllerDelegate!
-                beforeEach {
-                    delegate = FakeArticleListControllerDelegate()
-                    subject.delegate = delegate
-                    delegate.articleListControllerShouldPreviewArticleReturns(false)
-                    delegate.articleListControllecCanEditArticleReturns(false)
-                    delegate.articleListControllerCanSelectMultipleArticlesReturns(false)
-                    subject.view.layoutIfNeeded()
-                    subject.feed = feed
-                }
-
-                it("does not return a view controller to present to the user") {
-                    let rect = subject.tableView.rectForRow(at: indexPath)
-                    let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
-                    let viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
-                    expect(viewController).to(beNil())
+            it("returns an ArticleViewController configured with the article to present to the user") {
+                expect(viewController).to(beAKindOf(ArticleViewController.self))
+                if let articleVC = viewController as? ArticleViewController {
+                    expect(articleVC.article).to(equal(articles[0]))
                 }
             }
 
-            context("when the delegate is not set") {
-                var viewController: UIViewController? = nil
+            it("does not mark the article as read") {
+                expect(articleService.markArticleAsReadCalls).to(haveCount(0))
+                expect(articles[0].read) == false
+            }
+
+            describe("the preview actions") {
+                var previewActions: [UIPreviewActionItem]?
+                var action: UIPreviewAction?
 
                 beforeEach {
-                    subject.view.layoutIfNeeded()
-                    subject.feed = feed
-                    let rect = subject.tableView.rectForRow(at: indexPath)
-                    let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
-                    viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                    previewActions = viewController?.previewActionItems
+                    expect(previewActions).toNot(beNil())
                 }
 
-                it("returns an ArticleViewController configured with the article to present to the user") {
-                    expect(viewController).to(beAKindOf(ArticleViewController.self))
-                    if let articleVC = viewController as? ArticleViewController {
-                        expect(articleVC.article).to(equal(articles[0]))
-                    }
+                it("has 2 preview actions") {
+                    expect(previewActions?.count) == 2
                 }
 
-                it("does not mark the article as read") {
-                    expect(articleService.markArticleAsReadCalls).to(haveCount(0))
-                    expect(articles[0].read) == false
-                }
-
-                describe("the preview actions") {
-                    var previewActions: [UIPreviewActionItem]?
-                    var action: UIPreviewAction?
-
-                    beforeEach {
-                        previewActions = viewController?.previewActionItems
-                        expect(previewActions).toNot(beNil())
-                    }
-
-                    it("has 2 preview actions") {
-                        expect(previewActions?.count) == 2
-                    }
-
-                    describe("the first action") {
-                        describe("for an unread article") {
-                            beforeEach {
-                                action = previewActions?.first as? UIPreviewAction
-
-                                expect(action?.title).to(equal("Mark Read"))
-                                action?.handler(action!, viewController!)
-                            }
-
-                            it("marks the article as read") {
-                                guard let call = articleService.markArticleAsReadCalls.last else {
-                                    fail("Didn't call ArticleService to mark article as read")
-                                    return
-                                }
-                                expect(call.article) == articles.first
-                                expect(call.read) == true
-                            }
-
-                            context("when the articleService successfully marks the article as read") {
-                                var updatedArticle: Article!
-                                beforeEach {
-                                    guard let article = articles.first else { fail("No articles - can't happen"); return }
-                                    updatedArticle = Article(
-                                        title: article.title,
-                                        link: article.link,
-                                        summary: article.summary,
-                                        authors: article.authors,
-                                        published: article.published,
-                                        updatedAt: article.updatedAt,
-                                        identifier: article.identifier,
-                                        content: article.content,
-                                        read: true,
-                                        synced: article.synced,
-                                        feed: article.feed,
-                                        flags: article.flags
-                                    )
-                                    articleService.markArticleAsReadPromises.last?.resolve(.success(
-                                        updatedArticle
-                                        ))
-                                }
-
-                                it("Updates the articles in the controller to reflect that") {
-                                    expect(subject.articles.first).to(equal(updatedArticle))
-                                }
-                            }
-
-                            context("when the articleService fails to mark the article as read") {
-                                xit("presents a banner indicates that a failure happened") {
-                                    fail("Not Implemented")
-                                }
-                            }
-                        }
-
-                        describe("for a read article") {
-                            beforeEach {
-                                let rect = subject.tableView.rectForRow(at: IndexPath(row: 2, section: 1))
-                                let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
-                                viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
-                                previewActions = viewController?.previewActionItems
-                                action = previewActions?.first as? UIPreviewAction
-
-                                expect(action?.title).to(equal("Mark Unread"))
-                                action?.handler(action!, viewController!)
-                            }
-
-                            it("marks the article as unread") {
-                                guard let call = articleService.markArticleAsReadCalls.last else {
-                                    fail("Didn't call ArticleService to mark article as read/unread")
-                                    return
-                                }
-                                expect(call.article) == articles[2]
-                                expect(call.read) == false
-                            }
-
-                            context("when the articleService successfully marks the article as read") {
-                                var updatedArticle: Article!
-                                beforeEach {
-                                    guard let article = articles.first else { fail("No articles - can't happen"); return }
-                                    updatedArticle = Article(
-                                        title: article.title,
-                                        link: article.link,
-                                        summary: article.summary,
-                                        authors: article.authors,
-                                        published: article.published,
-                                        updatedAt: article.updatedAt,
-                                        identifier: article.identifier,
-                                        content: article.content,
-                                        read: false,
-                                        synced: article.synced,
-                                        feed: article.feed,
-                                        flags: article.flags
-                                    )
-                                    articleService.markArticleAsReadPromises.last?.resolve(.success(
-                                        updatedArticle
-                                        ))
-                                }
-
-                                it("Updates the articles in the controller to reflect that") {
-                                    expect(subject.articles.first).to(equal(updatedArticle))
-                                }
-                            }
-
-                            context("when the articleService fails to mark the article as read") {
-                                xit("presents a banner indicates that a failure happened") {
-                                    fail("Not Implemented")
-                                }
-                            }
-                        }
-                    }
-
-                    describe("the last action") {
+                describe("the first action") {
+                    describe("for an unread article") {
                         beforeEach {
-                            action = previewActions?.last as? UIPreviewAction
+                            action = previewActions?.first as? UIPreviewAction
+
+                            expect(action?.title).to(equal("Mark Read"))
+                            action?.handler(action!, viewController!)
                         }
 
-                        it("states that it deletes the article") {
-                            expect(action?.title) == "Delete"
+                        it("marks the article as read") {
+                            guard let call = articleService.markArticleAsReadCalls.last else {
+                                fail("Didn't call ArticleService to mark article as read")
+                                return
+                            }
+                            expect(call.article) == articles.first
+                            expect(call.read) == true
                         }
 
-                        describe("tapping it") {
+                        context("when the articleService successfully marks the article as read") {
+                            var updatedArticle: Article!
                             beforeEach {
-                                action?.handler(action!, viewController!)
+                                guard let article = articles.first else { fail("No articles - can't happen"); return }
+                                updatedArticle = Article(
+                                    title: article.title,
+                                    link: article.link,
+                                    summary: article.summary,
+                                    authors: article.authors,
+                                    published: article.published,
+                                    updatedAt: article.updatedAt,
+                                    identifier: article.identifier,
+                                    content: article.content,
+                                    read: true,
+                                    synced: article.synced,
+                                    feed: article.feed,
+                                    flags: article.flags
+                                )
+                                articleService.markArticleAsReadPromises.last?.resolve(.success(
+                                    updatedArticle
+                                    ))
                             }
 
-                            it("does not yet delete the article") {
+                            it("Updates the articles in the controller to reflect that") {
+                                expect(subject.articles.first).to(equal(updatedArticle))
+                            }
+                        }
+
+                        context("when the articleService fails to mark the article as read") {
+                            xit("presents a banner indicates that a failure happened") {
+                                fail("Not Implemented")
+                            }
+                        }
+                    }
+
+                    describe("for a read article") {
+                        beforeEach {
+                            let rect = subject.tableView.rectForRow(at: IndexPath(row: 2, section: 1))
+                            let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
+                            viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                            previewActions = viewController?.previewActionItems
+                            action = previewActions?.first as? UIPreviewAction
+
+                            expect(action?.title).to(equal("Mark Unread"))
+                            action?.handler(action!, viewController!)
+                        }
+
+                        it("marks the article as unread") {
+                            guard let call = articleService.markArticleAsReadCalls.last else {
+                                fail("Didn't call ArticleService to mark article as read/unread")
+                                return
+                            }
+                            expect(call.article) == articles[2]
+                            expect(call.read) == false
+                        }
+
+                        context("when the articleService successfully marks the article as read") {
+                            var updatedArticle: Article!
+                            beforeEach {
+                                guard let article = articles.first else { fail("No articles - can't happen"); return }
+                                updatedArticle = Article(
+                                    title: article.title,
+                                    link: article.link,
+                                    summary: article.summary,
+                                    authors: article.authors,
+                                    published: article.published,
+                                    updatedAt: article.updatedAt,
+                                    identifier: article.identifier,
+                                    content: article.content,
+                                    read: false,
+                                    synced: article.synced,
+                                    feed: article.feed,
+                                    flags: article.flags
+                                )
+                                articleService.markArticleAsReadPromises.last?.resolve(.success(
+                                    updatedArticle
+                                    ))
+                            }
+
+                            it("Updates the articles in the controller to reflect that") {
+                                expect(subject.articles.first).to(equal(updatedArticle))
+                            }
+                        }
+
+                        context("when the articleService fails to mark the article as read") {
+                            xit("presents a banner indicates that a failure happened") {
+                                fail("Not Implemented")
+                            }
+                        }
+                    }
+                }
+
+                describe("the last action") {
+                    beforeEach {
+                        action = previewActions?.last as? UIPreviewAction
+                    }
+
+                    it("states that it deletes the article") {
+                        expect(action?.title) == "Delete"
+                    }
+
+                    describe("tapping it") {
+                        beforeEach {
+                            action?.handler(action!, viewController!)
+                        }
+
+                        it("does not yet delete the article") {
+                            expect(articleService.removeArticleCalls).to(beEmpty())
+                        }
+
+                        it("presents an alert asking for confirmation that the user wants to do this") {
+                            expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                            guard let alert = subject.presentedViewController as? UIAlertController else { return }
+                            expect(alert.preferredStyle) == UIAlertControllerStyle.alert
+                            expect(alert.title) == "Delete \(articles.first!.title)?"
+
+                            expect(alert.actions.count) == 2
+                            expect(alert.actions.first?.title) == "Delete"
+                            expect(alert.actions.last?.title) == "Cancel"
+                        }
+
+                        describe("tapping 'Delete'") {
+                            beforeEach {
+                                expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                guard let alert = subject.presentedViewController as? UIAlertController else { return }
+
+                                alert.actions.first?.handler?(alert.actions.first!)
+                            }
+
+                            it("deletes the article") {
+                                expect(articleService.removeArticleCalls.last).to(equal(articles.first))
+                            }
+
+                            it("dismisses the alert") {
+                                expect(subject.presentedViewController).to(beNil())
+                            }
+
+                            xit("shows a spinner while we wait to delete the article") {
+                                fail("Implement me!")
+                            }
+
+                            context("when the delete operation succeeds") {
+                                beforeEach {
+                                    articleService.removeArticlePromises.last?.resolve(.success())
+                                }
+
+                                it("removes the article from the list") {
+                                    expect(Array(subject.articles)).toNot(contain(articles[0]))
+                                }
+                            }
+
+                            context("when the delete operation fails") {
+                                beforeEach {
+                                    articleService.removeArticlePromises.last?.resolve(.failure(TethysError.database(.unknown)))
+                                }
+
+                                xit("shows a message saying that we had an error") {
+                                    fail("Implement me!")
+                                }
+                            }
+                        }
+
+                        describe("tapping 'Cancel'") {
+                            beforeEach {
+                                expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                guard let alert = subject.presentedViewController as? UIAlertController else { return }
+
+                                alert.actions.last?.handler?(alert.actions.last!)
+                            }
+
+                            it("does not delete the article") {
                                 expect(articleService.removeArticleCalls).to(beEmpty())
                             }
 
-                            it("presents an alert asking for confirmation that the user wants to do this") {
-                                expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                guard let alert = subject.presentedViewController as? UIAlertController else { return }
-                                expect(alert.preferredStyle) == UIAlertControllerStyle.alert
-                                expect(alert.title) == "Delete \(articles.first!.title)?"
-
-                                expect(alert.actions.count) == 2
-                                expect(alert.actions.first?.title) == "Delete"
-                                expect(alert.actions.last?.title) == "Cancel"
-                            }
-
-                            describe("tapping 'Delete'") {
-                                beforeEach {
-                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                    guard let alert = subject.presentedViewController as? UIAlertController else { return }
-
-                                    alert.actions.first?.handler?(alert.actions.first!)
-                                }
-
-                                it("deletes the article") {
-                                    expect(articleService.removeArticleCalls.last).to(equal(articles.first))
-                                }
-
-                                it("dismisses the alert") {
-                                    expect(subject.presentedViewController).to(beNil())
-                                }
-
-                                xit("shows a spinner while we wait to delete the article") {
-                                    fail("Implement me!")
-                                }
-
-                                context("when the delete operation succeeds") {
-                                    beforeEach {
-                                        articleService.removeArticlePromises.last?.resolve(.success())
-                                    }
-
-                                    it("removes the article from the list") {
-                                        expect(Array(subject.articles)).toNot(contain(articles[0]))
-                                    }
-                                }
-
-                                context("when the delete operation fails") {
-                                    beforeEach {
-                                        articleService.removeArticlePromises.last?.resolve(.failure(TethysError.database(.unknown)))
-                                    }
-
-                                    xit("shows a message saying that we had an error") {
-                                        fail("Implement me!")
-                                    }
-                                }
-                            }
-
-                            describe("tapping 'Cancel'") {
-                                beforeEach {
-                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                    guard let alert = subject.presentedViewController as? UIAlertController else { return }
-
-                                    alert.actions.last?.handler?(alert.actions.last!)
-                                }
-
-                                it("does not delete the article") {
-                                    expect(articleService.removeArticleCalls).to(beEmpty())
-                                }
-
-                                it("dismisses the alert") {
-                                    expect(subject.presentedViewController).to(beNil())
-                                }
+                            it("dismisses the alert") {
+                                expect(subject.presentedViewController).to(beNil())
                             }
                         }
                     }
                 }
+            }
 
-                describe("committing that view controller") {
+            describe("committing that view controller") {
+                beforeEach {
+                    if let vc = viewController {
+                        subject.previewingContext(viewControllerPreviewing, commit: vc)
+                    }
+                }
+
+                it("pushes the view controller") {
+                    expect(navigationController.topViewController).to(beIdenticalTo(viewController))
+                }
+
+                it("marks the article as read") {
+                    guard let call = articleService.markArticleAsReadCalls.last else {
+                        fail("Didn't call ArticleService to mark article as read")
+                        return
+                    }
+                    expect(call.article) == articles[0]
+                    expect(call.read) == true
+                }
+
+                context("when the articleService successfully marks the article as read") {
+                    var updatedArticle: Article!
                     beforeEach {
-                        if let vc = viewController {
-                            subject.previewingContext(viewControllerPreviewing, commit: vc)
-                        }
-                    }
-
-                    it("pushes the view controller") {
-                        expect(navigationController.topViewController).to(beIdenticalTo(viewController))
-                    }
-
-                    it("marks the article as read") {
-                        guard let call = articleService.markArticleAsReadCalls.last else {
-                            fail("Didn't call ArticleService to mark article as read")
-                            return
-                        }
-                        expect(call.article) == articles[0]
-                        expect(call.read) == true
-                    }
-
-                    context("when the articleService successfully marks the article as read") {
-                        var updatedArticle: Article!
-                        beforeEach {
-                            guard let article = articles.first else { fail("No articles - can't happen"); return }
-                            updatedArticle = Article(
-                                title: article.title,
-                                link: article.link,
-                                summary: article.summary,
-                                authors: article.authors,
-                                published: article.published,
-                                updatedAt: article.updatedAt,
-                                identifier: article.identifier,
-                                content: article.content,
-                                read: true,
-                                synced: article.synced,
-                                feed: article.feed,
-                                flags: article.flags
-                            )
-                            articleService.markArticleAsReadPromises.last?.resolve(.success(
-                                updatedArticle
+                        guard let article = articles.first else { fail("No articles - can't happen"); return }
+                        updatedArticle = Article(
+                            title: article.title,
+                            link: article.link,
+                            summary: article.summary,
+                            authors: article.authors,
+                            published: article.published,
+                            updatedAt: article.updatedAt,
+                            identifier: article.identifier,
+                            content: article.content,
+                            read: true,
+                            synced: article.synced,
+                            feed: article.feed,
+                            flags: article.flags
+                        )
+                        articleService.markArticleAsReadPromises.last?.resolve(.success(
+                            updatedArticle
                             ))
-                        }
-
-                        it("Updates the articles in the controller to reflect that") {
-                            expect(subject.articles.first).to(equal(updatedArticle))
-                        }
                     }
 
-                    context("when the articleService fails to mark the article as read") {
-                        xit("presents a banner indicates that a failure happened") {
-                            fail("Not Implemented")
-                        }
+                    it("Updates the articles in the controller to reflect that") {
+                        expect(subject.articles.first).to(equal(updatedArticle))
+                    }
+                }
+
+                context("when the articleService fails to mark the article as read") {
+                    xit("presents a banner indicates that a failure happened") {
+                        fail("Not Implemented")
                     }
                 }
             }
@@ -852,17 +588,6 @@ class ArticleListControllerSpec: QuickSpec {
                 subject.feed = feed
 
                 expect(subject.tableView.allowsMultipleSelection) == false
-            }
-
-            it("allows multiselection if the delegate says so") {
-                let delegate = FakeArticleListControllerDelegate()
-                delegate.articleListControllerCanSelectMultipleArticlesReturns(true)
-                delegate.articleListControllecCanEditArticleReturns(false)
-                subject.delegate = delegate
-                subject.view.layoutIfNeeded()
-                subject.feed = feed
-
-                expect(subject.tableView.allowsMultipleSelection) == true
             }
 
             describe("the first section") {
@@ -945,289 +670,237 @@ class ArticleListControllerSpec: QuickSpec {
                 }
 
                 describe("the cells") {
-                    context("when a delegate is set") {
-                        var delegate: FakeArticleListControllerDelegate!
-                        beforeEach {
-                            delegate = FakeArticleListControllerDelegate()
-                            subject.delegate = delegate
+                    it("is editable") {
+                        let section = 1
+                        for row in 0..<subject.tableView.numberOfRows(inSection: section) {
+                            let indexPath = IndexPath(row: row, section: section)
+                            expect(subject.tableView(subject.tableView, canEditRowAt: indexPath)) == true
                         }
+                    }
 
-                        it("are only editable if the delegate says so") {
-                            let section = 1
-                            for row in 0..<subject.tableView.numberOfRows(inSection: section) {
-                                let indexPath = IndexPath(row: row, section: section)
-                                delegate.articleListControllecCanEditArticleReturns(false)
-                                expect(subject.tableView(subject.tableView, canEditRowAt: indexPath)) == false
-                                delegate.articleListControllecCanEditArticleReturns(true)
-                                expect(subject.tableView(subject.tableView, canEditRowAt: indexPath)) == true
-                            }
+                    it("has 2 edit actions") {
+                        let section = 1
+                        for row in 0..<subject.tableView.numberOfRows(inSection: section) {
+                            let indexPath = IndexPath(row: row, section: section)
+                            expect(subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.count).to(equal(2))
                         }
+                    }
 
-                        describe("when tapped (and the delegate says not to show article view") {
-                            let indexPath = IndexPath(row: 1, section: 1)
+                    describe("the edit actions") {
+                        describe("the first action") {
+                            var action: UITableViewRowAction! = nil
+                            let indexPath = IndexPath(row: 0, section: 1)
+
                             beforeEach {
-                                delegate.articleListControllerShouldShowArticleViewReturns(false)
-                                subject.tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
-                                subject.tableView(subject.tableView, didSelectRowAt: indexPath)
+                                action = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.first
                             }
 
-                            it("nothing should happen") {
-                                expect(navigationController.topViewController).to(beIdenticalTo(subject))
+                            it("states that it deletes the article") {
+                                expect(action?.title) == "Delete"
                             }
 
-                            it("doesn't deselect the tapped article") {
-                                expect(subject.tableView.indexPathsForSelectedRows?.contains(indexPath)) == true
+                            describe("tapping it") {
+                                beforeEach {
+                                    action.handler?(action, indexPath)
+                                }
+
+                                it("does not yet delete the article") {
+                                    expect(articleService.removeArticleCalls).to(beEmpty())
+                                }
+
+                                it("presents an alert asking for confirmation that the user wants to do this") {
+                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                    guard let alert = subject.presentedViewController as? UIAlertController else { return }
+                                    expect(alert.preferredStyle) == UIAlertControllerStyle.alert
+                                    expect(alert.title) == "Delete \(articles.first!.title)?"
+
+                                    expect(alert.actions.count) == 2
+                                    expect(alert.actions.first?.title) == "Delete"
+                                    expect(alert.actions.last?.title) == "Cancel"
+                                }
+
+                                describe("tapping 'Delete'") {
+                                    beforeEach {
+                                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                        guard let alert = subject.presentedViewController as? UIAlertController else { return }
+
+                                        alert.actions.first?.handler?(alert.actions.first!)
+                                    }
+
+                                    it("deletes the article") {
+                                        expect(articleService.removeArticleCalls.last) == articles.first
+                                    }
+
+                                    it("dismisses the alert") {
+                                        expect(subject.presentedViewController).to(beNil())
+                                    }
+
+                                    xit("shows a spinner while we wait to delete the article") {
+                                        fail("Implement me!")
+                                    }
+
+                                    context("when the delete operation succeeds") {
+                                        beforeEach {
+                                            articleService.removeArticlePromises.last?.resolve(.success())
+                                        }
+
+                                        it("removes the article from the list") {
+                                            expect(Array(subject.articles)).toNot(contain(articles[0]))
+                                        }
+                                    }
+
+                                    context("when the delete operation fails") {
+                                        beforeEach {
+                                            articleService.removeArticlePromises.last?.resolve(.failure(TethysError.database(.unknown)))
+                                        }
+
+                                        xit("shows a message saying that we had an error") {
+                                            fail("Implement me!")
+                                        }
+                                    }
+                                }
+
+                                describe("tapping 'Cancel'") {
+                                    beforeEach {
+                                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                        guard let alert = subject.presentedViewController as? UIAlertController else { return }
+
+                                        alert.actions.last?.handler?(alert.actions.last!)
+                                    }
+
+                                    it("does not delete the article") {
+                                        expect(articleService.removeArticleCalls).to(beEmpty())
+                                    }
+
+                                    it("dismisses the alert") {
+                                        expect(subject.presentedViewController).to(beNil())
+                                    }
+                                }
                             }
                         }
 
-                        describe("when tapped (and the delegate says to show the article view)") {
+                        describe("for an unread article") {
                             beforeEach {
-                                delegate.articleListControllerShouldShowArticleViewReturns(true)
-                                subject.tableView(subject.tableView, didSelectRowAt: IndexPath(row: 1, section: 1))
+                                let indexPath = IndexPath(row: 0, section: 1)
+                                guard let markRead = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.last else {
+                                    fail("No mark read edit action")
+                                    return
+                                }
+
+                                expect(markRead.title).to(equal("Mark\nRead"))
+                                markRead.handler?(markRead, indexPath)
                             }
 
-                            it("should navigate to an ArticleViewController") {
-                                expect(navigationController.topViewController).to(beAnInstanceOf(ArticleViewController.self))
-                                if let articleController = navigationController.topViewController as? ArticleViewController {
-                                    expect(articleController.article).to(equal(articles[1]))
+                            it("marks the article as read with the second action item") {
+                                guard let call = articleService.markArticleAsReadCalls.last else {
+                                    fail("Didn't call ArticleService to mark article as read")
+                                    return
+                                }
+                                expect(call.article) == articles.first
+                                expect(call.read) == true
+                            }
+
+                            context("when the articleService successfully marks the article as read") {
+                                var updatedArticle: Article!
+                                beforeEach {
+                                    guard let article = articles.first else { fail("No articles - can't happen"); return }
+                                    updatedArticle = Article(
+                                        title: article.title,
+                                        link: article.link,
+                                        summary: article.summary,
+                                        authors: article.authors,
+                                        published: article.published,
+                                        updatedAt: article.updatedAt,
+                                        identifier: article.identifier,
+                                        content: article.content,
+                                        read: true,
+                                        synced: article.synced,
+                                        feed: article.feed,
+                                        flags: article.flags
+                                    )
+                                    articleService.markArticleAsReadPromises.last?.resolve(.success(
+                                        updatedArticle
+                                        ))
+                                }
+
+                                it("Updates the articles in the controller to reflect that") {
+                                    expect(subject.articles.first).to(equal(updatedArticle))
+                                }
+                            }
+
+                            context("when the articleService fails to mark the article as read") {
+                                xit("presents a banner indicates that a failure happened") {
+                                    fail("Not Implemented")
+                                }
+                            }
+                        }
+
+                        describe("for a read article") {
+                            beforeEach {
+                                let indexPath = IndexPath(row: 2, section: 1)
+                                guard let markRead = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.last else {
+                                    fail("No mark unread edit action")
+                                    return
+                                }
+
+                                expect(markRead.title).to(equal("Mark\nUnread"))
+                                markRead.handler?(markRead, indexPath)
+                            }
+
+                            it("marks the article as unread with the second action item") {
+                                guard let call = articleService.markArticleAsReadCalls.last else {
+                                    fail("Didn't call ArticleService to mark article as read")
+                                    return
+                                }
+                                expect(call.article) == articles[2]
+                                expect(call.read) == false
+                            }
+
+                            context("when the articleService successfully marks the article as read") {
+                                var updatedArticle: Article!
+                                beforeEach {
+                                    guard let article = articles.first else { fail("No articles - can't happen"); return }
+                                    updatedArticle = Article(
+                                        title: article.title,
+                                        link: article.link,
+                                        summary: article.summary,
+                                        authors: article.authors,
+                                        published: article.published,
+                                        updatedAt: article.updatedAt,
+                                        identifier: article.identifier,
+                                        content: article.content,
+                                        read: false,
+                                        synced: article.synced,
+                                        feed: article.feed,
+                                        flags: article.flags
+                                    )
+                                    articleService.markArticleAsReadPromises.last?.resolve(.success(
+                                        updatedArticle
+                                        ))
+                                }
+
+                                it("Updates the articles in the controller to reflect that") {
+                                    expect(Array(subject.articles)[2]).to(equal(updatedArticle))
+                                }
+                            }
+
+                            context("when the articleService fails to mark the article as read") {
+                                xit("presents a banner indicates that a failure happened") {
+                                    fail("Not Implemented")
                                 }
                             }
                         }
                     }
 
-                    context("without a delegate") {
-                        it("is editable") {
-                            let section = 1
-                            for row in 0..<subject.tableView.numberOfRows(inSection: section) {
-                                let indexPath = IndexPath(row: row, section: section)
-                                expect(subject.tableView(subject.tableView, canEditRowAt: indexPath)) == true
-                            }
+                    describe("when tapped") {
+                        beforeEach {
+                            subject.tableView(subject.tableView, didSelectRowAt: IndexPath(row: 1, section: 1))
                         }
 
-                        it("has 2 edit actions") {
-                            let section = 1
-                            for row in 0..<subject.tableView.numberOfRows(inSection: section) {
-                                let indexPath = IndexPath(row: row, section: section)
-                                expect(subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.count).to(equal(2))
-                            }
-                        }
-
-                        describe("the edit actions") {
-                            describe("the first action") {
-                                var action: UITableViewRowAction! = nil
-                                let indexPath = IndexPath(row: 0, section: 1)
-
-                                beforeEach {
-                                    action = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.first
-                                }
-
-                                it("states that it deletes the article") {
-                                    expect(action?.title) == "Delete"
-                                }
-
-                                describe("tapping it") {
-                                    beforeEach {
-                                        action.handler?(action, indexPath)
-                                    }
-
-                                    it("does not yet delete the article") {
-                                        expect(articleService.removeArticleCalls).to(beEmpty())
-                                    }
-
-                                    it("presents an alert asking for confirmation that the user wants to do this") {
-                                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                        guard let alert = subject.presentedViewController as? UIAlertController else { return }
-                                        expect(alert.preferredStyle) == UIAlertControllerStyle.alert
-                                        expect(alert.title) == "Delete \(articles.first!.title)?"
-
-                                        expect(alert.actions.count) == 2
-                                        expect(alert.actions.first?.title) == "Delete"
-                                        expect(alert.actions.last?.title) == "Cancel"
-                                    }
-
-                                    describe("tapping 'Delete'") {
-                                        beforeEach {
-                                            expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                            guard let alert = subject.presentedViewController as? UIAlertController else { return }
-
-                                            alert.actions.first?.handler?(alert.actions.first!)
-                                        }
-
-                                        it("deletes the article") {
-                                            expect(articleService.removeArticleCalls.last) == articles.first
-                                        }
-
-                                        it("dismisses the alert") {
-                                            expect(subject.presentedViewController).to(beNil())
-                                        }
-
-                                        xit("shows a spinner while we wait to delete the article") {
-                                            fail("Implement me!")
-                                        }
-
-                                        context("when the delete operation succeeds") {
-                                            beforeEach {
-                                                articleService.removeArticlePromises.last?.resolve(.success())
-                                            }
-
-                                            it("removes the article from the list") {
-                                                expect(Array(subject.articles)).toNot(contain(articles[0]))
-                                            }
-                                        }
-
-                                        context("when the delete operation fails") {
-                                            beforeEach {
-                                                articleService.removeArticlePromises.last?.resolve(.failure(TethysError.database(.unknown)))
-                                            }
-
-                                            xit("shows a message saying that we had an error") {
-                                                fail("Implement me!")
-                                            }
-                                        }
-                                    }
-
-                                    describe("tapping 'Cancel'") {
-                                        beforeEach {
-                                            expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                            guard let alert = subject.presentedViewController as? UIAlertController else { return }
-
-                                            alert.actions.last?.handler?(alert.actions.last!)
-                                        }
-
-                                        it("does not delete the article") {
-                                            expect(articleService.removeArticleCalls).to(beEmpty())
-                                        }
-
-                                        it("dismisses the alert") {
-                                            expect(subject.presentedViewController).to(beNil())
-                                        }
-                                    }
-                                }
-                            }
-
-                            describe("for an unread article") {
-                                beforeEach {
-                                    let indexPath = IndexPath(row: 0, section: 1)
-                                    guard let markRead = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.last else {
-                                        fail("No mark read edit action")
-                                        return
-                                    }
-
-                                    expect(markRead.title).to(equal("Mark\nRead"))
-                                    markRead.handler?(markRead, indexPath)
-                                }
-
-                                it("marks the article as read with the second action item") {
-                                    guard let call = articleService.markArticleAsReadCalls.last else {
-                                        fail("Didn't call ArticleService to mark article as read")
-                                        return
-                                    }
-                                    expect(call.article) == articles.first
-                                    expect(call.read) == true
-                                }
-
-                                context("when the articleService successfully marks the article as read") {
-                                    var updatedArticle: Article!
-                                    beforeEach {
-                                        guard let article = articles.first else { fail("No articles - can't happen"); return }
-                                        updatedArticle = Article(
-                                            title: article.title,
-                                            link: article.link,
-                                            summary: article.summary,
-                                            authors: article.authors,
-                                            published: article.published,
-                                            updatedAt: article.updatedAt,
-                                            identifier: article.identifier,
-                                            content: article.content,
-                                            read: true,
-                                            synced: article.synced,
-                                            feed: article.feed,
-                                            flags: article.flags
-                                        )
-                                        articleService.markArticleAsReadPromises.last?.resolve(.success(
-                                            updatedArticle
-                                        ))
-                                    }
-
-                                    it("Updates the articles in the controller to reflect that") {
-                                        expect(subject.articles.first).to(equal(updatedArticle))
-                                    }
-                                }
-
-                                context("when the articleService fails to mark the article as read") {
-                                    xit("presents a banner indicates that a failure happened") {
-                                        fail("Not Implemented")
-                                    }
-                                }
-                            }
-
-                            describe("for a read article") {
-                                beforeEach {
-                                    let indexPath = IndexPath(row: 2, section: 1)
-                                    guard let markRead = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.last else {
-                                        fail("No mark unread edit action")
-                                        return
-                                    }
-
-                                    expect(markRead.title).to(equal("Mark\nUnread"))
-                                    markRead.handler?(markRead, indexPath)
-                                }
-
-                                it("marks the article as unread with the second action item") {
-                                    guard let call = articleService.markArticleAsReadCalls.last else {
-                                        fail("Didn't call ArticleService to mark article as read")
-                                        return
-                                    }
-                                    expect(call.article) == articles[2]
-                                    expect(call.read) == false
-                                }
-
-                                context("when the articleService successfully marks the article as read") {
-                                    var updatedArticle: Article!
-                                    beforeEach {
-                                        guard let article = articles.first else { fail("No articles - can't happen"); return }
-                                        updatedArticle = Article(
-                                            title: article.title,
-                                            link: article.link,
-                                            summary: article.summary,
-                                            authors: article.authors,
-                                            published: article.published,
-                                            updatedAt: article.updatedAt,
-                                            identifier: article.identifier,
-                                            content: article.content,
-                                            read: false,
-                                            synced: article.synced,
-                                            feed: article.feed,
-                                            flags: article.flags
-                                        )
-                                        articleService.markArticleAsReadPromises.last?.resolve(.success(
-                                            updatedArticle
-                                            ))
-                                    }
-
-                                    it("Updates the articles in the controller to reflect that") {
-                                        expect(Array(subject.articles)[2]).to(equal(updatedArticle))
-                                    }
-                                }
-
-                                context("when the articleService fails to mark the article as read") {
-                                    xit("presents a banner indicates that a failure happened") {
-                                        fail("Not Implemented")
-                                    }
-                                }
-                            }
-                        }
-                        
-                        describe("when tapped") {
-                            beforeEach {
-                                subject.tableView(subject.tableView, didSelectRowAt: IndexPath(row: 1, section: 1))
-                            }
-                            
-                            it("should navigate to an ArticleViewController") {
-                                expect(navigationController.topViewController).to(beAnInstanceOf(ArticleViewController.self))
-                                if let articleController = navigationController.topViewController as? ArticleViewController {
-                                    expect(articleController.article).to(equal(articles[1]))
-                                }
+                        it("should navigate to an ArticleViewController") {
+                            expect(navigationController.topViewController).to(beAnInstanceOf(ArticleViewController.self))
+                            if let articleController = navigationController.topViewController as? ArticleViewController {
+                                expect(articleController.article).to(equal(articles[1]))
                             }
                         }
                     }

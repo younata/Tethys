@@ -27,10 +27,6 @@ public func configure(container: Container) {
         return SettingsRepository(userDefaults: r.resolve(UserDefaults.self) ?? nil)
     }.inObjectScope(.container)
 
-    container.register(BackgroundFetchHandler.self) { r in
-        return DefaultBackgroundFetchHandler(feedRepository: r.resolve(DatabaseUseCase.self)!)
-    }
-
     container.register(Bootstrapper.self) { r, window, splitController in
         return BootstrapWorkFlow(
             window: window,
@@ -76,8 +72,7 @@ private func registerViewControllers(container: Container) {
             themeRepository: r.resolve(ThemeRepository.self)!,
             settingsRepository: r.resolve(SettingsRepository.self)!,
             articleCellController: r.resolve(ArticleCellController.self, argument: false)!,
-            articleViewController: { r.resolve(ArticleViewController.self)! },
-            generateBookViewController: { r.resolve(GenerateBookViewController.self)! }
+            articleViewController: { r.resolve(ArticleViewController.self)! }
         )
     }
 
@@ -86,15 +81,6 @@ private func registerViewControllers(container: Container) {
             themeRepository: r.resolve(ThemeRepository.self)!,
             articleUseCase: r.resolve(ArticleUseCase.self)!,
             htmlViewController: { r.resolve(HTMLViewController.self)! },
-            articleListController: { r.resolve(ArticleListController.self)! }
-        )
-    }
-
-    container.register(ChapterOrganizerController.self) { r in
-        return ChapterOrganizerController(
-            themeRepository: r.resolve(ThemeRepository.self)!,
-            settingsRepository: r.resolve(SettingsRepository.self)!,
-            articleCellController: r.resolve(ArticleCellController.self, argument: true)!,
             articleListController: { r.resolve(ArticleListController.self)! }
         )
     }
@@ -140,14 +126,6 @@ private func registerViewControllers(container: Container) {
             importUseCase: r.resolve(ImportUseCase.self)!,
             themeRepository: r.resolve(ThemeRepository.self)!,
             analytics: r.resolve(Analytics.self)!
-        )
-    }
-
-    container.register(GenerateBookViewController.self) { r in
-        return GenerateBookViewController(
-            themeRepository: r.resolve(ThemeRepository.self)!,
-            generateBookUseCase: r.resolve(GenerateBookUseCase.self)!,
-            chapterOrganizer: r.resolve(ChapterOrganizerController.self)!
         )
     }
 

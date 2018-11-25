@@ -90,8 +90,7 @@ func articleListControllerFactory(
     themeRepository: ThemeRepository = themeRepositoryFactory(),
     settingsRepository: SettingsRepository = settingsRepositoryFactory(),
     articleCellController: ArticleCellController = FakeArticleCellController(),
-    articleViewController: @escaping () -> ArticleViewController = { articleViewControllerFactory() },
-    generateBookViewController: @escaping () -> GenerateBookViewController = { generateBookViewControllerFactory() }
+    articleViewController: @escaping () -> ArticleViewController = { articleViewControllerFactory() }
     ) -> ArticleListController {
     return ArticleListController(
         mainQueue: mainQueue,
@@ -100,8 +99,7 @@ func articleListControllerFactory(
         themeRepository: themeRepository,
         settingsRepository: settingsRepository,
         articleCellController: articleCellController,
-        articleViewController: articleViewController,
-        generateBookViewController: generateBookViewController
+        articleViewController: articleViewController
     )
 }
 
@@ -114,32 +112,6 @@ func migrationViewControllerFactory(
         migrationUseCase: migrationUseCase,
         themeRepository: themeRepository,
         mainQueue: mainQueue
-    )
-}
-
-func generateBookViewControllerFactory(
-    themeRepository: ThemeRepository = themeRepositoryFactory(),
-    generateBookUseCase: GenerateBookUseCase = FakeGenerateBookUseCase(),
-    chapterOrganizer: ChapterOrganizerController = chapterOrganizerControllerFactory()
-    ) -> GenerateBookViewController {
-    return GenerateBookViewController(
-        themeRepository: themeRepository,
-        generateBookUseCase: generateBookUseCase,
-        chapterOrganizer: chapterOrganizer
-    )
-}
-
-func chapterOrganizerControllerFactory(
-    themeRepository: ThemeRepository = themeRepositoryFactory(),
-    settingsRepository: SettingsRepository = settingsRepositoryFactory(),
-    articleCellController: ArticleCellController = FakeArticleCellController(),
-    articleListController: @escaping () -> ArticleListController = { articleListControllerFactory() }
-    ) -> ChapterOrganizerController {
-    return ChapterOrganizerController(
-        themeRepository: themeRepository,
-        settingsRepository: settingsRepository,
-        articleCellController: articleCellController,
-        articleListController: articleListController
     )
 }
 

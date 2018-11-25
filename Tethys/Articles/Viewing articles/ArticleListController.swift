@@ -2,16 +2,6 @@ import UIKit
 import TethysKit
 import CBGPromise
 
-public protocol ArticleListControllerDelegate: class {
-    func articleListControllerCanSelectMultipleArticles(_: ArticleListController) -> Bool
-    func articleListControllerShouldShowToolbar(_: ArticleListController) -> Bool
-    func articleListControllerRightBarButtonItems(_: ArticleListController) -> [UIBarButtonItem]
-    func articleListController(_: ArticleListController, canEditArticle article: Article) -> Bool
-    func articleListController(_: ArticleListController, shouldShowArticleView article: Article) -> Bool
-    func articleListController(_: ArticleListController, didSelectArticles articles: [Article])
-    func articleListController(_: ArticleListController, shouldPreviewArticle article: Article) -> Bool
-}
-
 public final class ArticleListController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     fileprivate enum ArticleListSection: Int {
         case overview = 0
@@ -29,19 +19,12 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         }
     }
 
-    public private(set) lazy var generateBookButton: UIBarButtonItem = {
-        return UIBarButtonItem(image: UIImage(named: "Book"), style: .plain,
-                               target: self, action: #selector(ArticleListController.displayGenerateBookController))
-    }()
-
     public private(set) lazy var markReadButton: UIBarButtonItem = {
         return UIBarButtonItem(title: NSLocalizedString("ArticleListController_Action_MarkRead", comment: ""),
                                style: .plain, target: self, action: #selector(ArticleListController.markFeedRead))
     }()
 
     public let tableView = UITableView(forAutoLayout: ())
-
-    public weak var delegate: ArticleListControllerDelegate?
 
     private let mainQueue: OperationQueue
     fileprivate let articleService: ArticleService
@@ -50,7 +33,6 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     private let settingsRepository: SettingsRepository
     private let articleCellController: ArticleCellController
     private let articleViewController: () -> ArticleViewController
-    private let generateBookViewController: () -> GenerateBookViewController
 
     public init(mainQueue: OperationQueue,
                 articleService: ArticleService,
@@ -58,8 +40,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
                 themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
                 articleCellController: ArticleCellController,
-                articleViewController: @escaping () -> ArticleViewController,
-                generateBookViewController: @escaping () -> GenerateBookViewController) {
+                articleViewController: @escaping () -> ArticleViewController) {
         self.mainQueue = mainQueue
         self.articleService = articleService
         self.feedRepository = feedRepository
@@ -67,7 +48,6 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         self.settingsRepository = settingsRepository
         self.articleCellController = articleCellController
         self.articleViewController = articleViewController
-        self.generateBookViewController = generateBookViewController
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -95,7 +75,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
 
         self.navigationItem.title = self.feed?.displayTitle
 
-        self.tableView.allowsMultipleSelection = self.delegate?.articleListControllerCanSelectMultipleArticles(self) ?? false
+        self.tableView.allowsMultipleSelection = false
 
         self.registerForPreviewing(with: self, sourceView: self.tableView)
         self.resetBarItems()
@@ -103,9 +83,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
 
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if !(self.delegate?.articleListControllerShouldShowToolbar(self) == false) {
-            self.navigationController?.setToolbarHidden(false, animated: true)
-        }
+        self.navigationController?.setToolbarHidden(false, animated: true)
         self.themeRepository.addSubscriber(self)
     }
 
@@ -115,11 +93,6 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     fileprivate func articleForIndexPath(_ indexPath: IndexPath) -> Article {
         let index = self.articles.index(self.articles.startIndex, offsetBy: indexPath.row)
         return self.articles[index]
-    }
-
-    public func selectArticles() {
-        let articles = self.tableView.indexPathsForSelectedRows?.map { self.articleForIndexPath($0) }
-        self.delegate?.articleListController(self, didSelectArticles: articles ?? [])
     }
 
     public func showArticle(_ article: Article, animated: Bool = true) -> ArticleViewController {
@@ -243,24 +216,15 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if ArticleListSection(rawValue: indexPath.section) == ArticleListSection.articles {
             let article = self.articleForIndexPath(indexPath)
-            if self.delegate?.articleListController(self, shouldShowArticleView: article) != false {
-                tableView.deselectRow(at: indexPath, animated: false)
-                _ = self.showArticle(article)
-            } else {
-                return
-            }
+            tableView.deselectRow(at: indexPath, animated: false)
+            _ = self.showArticle(article)
         } else {
             tableView.deselectRow(at: indexPath, animated: false)
         }
     }
 
     public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        if ArticleListSection(rawValue: indexPath.section) == ArticleListSection.articles {
-            return self.delegate?.articleListController(self,
-                                                        canEditArticle: self.articleForIndexPath(indexPath)) != false
-        } else {
-            return false
-        }
+        return ArticleListSection(rawValue: indexPath.section) == ArticleListSection.articles
     }
 
     public func tableView(_ tableView: UITableView,
@@ -302,33 +266,21 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     }
 
     fileprivate func resetBarItems() {
-        if let barItems = self.delegate?.articleListControllerRightBarButtonItems(self) {
-            self.navigationItem.rightBarButtonItems = barItems
-        } else {
-            var barItems = [self.editButtonItem]
+        var barItems = [self.editButtonItem]
 
-            if self.feed != nil {
-                let shareSheet = UIBarButtonItem(barButtonSystemItem: .action,
-                                                 target: self,
-                                                 action: #selector(ArticleListController.shareFeed))
-                barItems.append(shareSheet)
-            }
-
-            self.navigationItem.rightBarButtonItems = barItems
+        if self.feed != nil {
+            let shareSheet = UIBarButtonItem(barButtonSystemItem: .action,
+                                             target: self,
+                                             action: #selector(ArticleListController.shareFeed))
+            barItems.append(shareSheet)
+            barItems.append(self.markReadButton)
         }
-        self.setupToolbar()
+
+        self.navigationItem.rightBarButtonItems = barItems
     }
 
     private func spacer() -> UIBarButtonItem {
         return UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-    }
-
-    private func setupToolbar() {
-        var items = [self.spacer(), self.generateBookButton, self.spacer()]
-        if self.feed != nil {
-            items += [self.markReadButton, self.spacer()]
-        }
-        self.toolbarItems = items
     }
 
     @objc fileprivate func shareFeed() {
@@ -340,16 +292,6 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
             applicationActivities: nil
         )
         self.present(shareSheet, animated: true, completion: nil)
-    }
-
-    @objc private func displayGenerateBookController() {
-        let generateBookController = self.generateBookViewController()
-        generateBookController.articles = self.articles
-        self.present(
-            UINavigationController(rootViewController: generateBookController),
-            animated: true,
-            completion: nil
-        )
     }
 
     @objc private func markFeedRead() {
@@ -395,7 +337,6 @@ extension ArticleListController: UIViewControllerPreviewingDelegate {
                                   viewControllerForLocation location: CGPoint) -> UIViewController? {
         // swiftlint:disable line_length
         if let indexPath = self.tableView.indexPathForRow(at: location),
-            self.delegate?.articleListController(self, shouldPreviewArticle: self.articleForIndexPath(indexPath)) != false &&
             ArticleListSection(rawValue: indexPath.section) == ArticleListSection.articles {
                 let article = self.articleForIndexPath(indexPath)
                 let articleController = self.configuredArticleController(article, read: false)
@@ -454,6 +395,5 @@ extension ArticleListController: ThemeRepositorySubscriber {
         self.navigationController?.navigationBar.titleTextAttributes = [
             NSForegroundColorAttributeName: themeRepository.textColor
         ]
-        self.navigationController?.toolbar.barStyle = themeRepository.barStyle
     }
 }

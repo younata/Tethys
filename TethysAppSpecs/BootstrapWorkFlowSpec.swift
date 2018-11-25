@@ -31,15 +31,17 @@ class BootstrapWorkFlowSpec: QuickSpec {
                 feedsTableViewController: {
                     feedsTableViewControllerFactory(
                         articleListController: { feed in
-                            articleListControllerFactory(feed: feed, articleViewController: { articleViewControllerFactory(articleUseCase: articleUseCase) } )
+                            articleListControllerFactory(feed: feed, articleViewController: { article in
+                                return articleViewControllerFactory(article: article, articleUseCase: articleUseCase)
+                            })
                         }
                     )
                 },
-                articleViewController: { articleViewControllerFactory(articleUseCase: articleUseCase) }
+                blankViewController: { blankViewControllerFactory() }
             )
         }
 
-        sharedExamples("showing the feeds list") { (sharedContext: @escaping SharedExampleContext) in
+        func itBehavesLikeItHasAFeedsList(feed: Feed? = nil, article: Article? = nil) {
             var splitViewController: UISplitViewController?
 
             beforeEach {
@@ -69,14 +71,13 @@ class BootstrapWorkFlowSpec: QuickSpec {
                     expect(nc?.viewControllers.first).to(beAnInstanceOf(FeedsTableViewController.self))
                 }
 
-                it("shows a feeds list if a feed was specified") {
-                    guard let feed = sharedContext()["feed"] as? Feed else {
-                        return
+                if feed != nil {
+                    it("shows the list of articles for the feed") {
+                        let nc = vc as? UINavigationController
+                        expect(nc?.topViewController).to(beAnInstanceOf(ArticleListController.self))
+                        guard let articleListController = nc?.topViewController as? ArticleListController else { return }
+                        expect(articleListController.feed) == feed
                     }
-                    let nc = vc as? UINavigationController
-                    expect(nc?.topViewController).to(beAnInstanceOf(ArticleListController.self))
-                    guard let articleListController = nc?.topViewController as? ArticleListController else { return }
-                    expect(articleListController.feed) == feed
                 }
             }
 
@@ -91,19 +92,23 @@ class BootstrapWorkFlowSpec: QuickSpec {
                     expect(vc).to(beAnInstanceOf(UINavigationController.self))
                 }
 
-                it("has an ArticleViewController as the root controller") {
-                    let nc = vc as? UINavigationController
-                    expect(nc?.viewControllers.first).to(beAnInstanceOf(ArticleViewController.self))
-                }
-
-                it("shows an article if an article was specified") {
-                    guard let article = sharedContext()["article"] as? Article else {
-                        return
+                if article != nil {
+                    it("shows an ArticleViewController as the root controller") {
+                        let nc = vc as? UINavigationController
+                        expect(nc?.viewControllers.first).to(beAnInstanceOf(ArticleViewController.self))
                     }
-                    let nc = vc as? UINavigationController
-                    expect(nc?.topViewController).to(beAnInstanceOf(ArticleViewController.self))
-                    guard let articleViewController = nc?.topViewController as? ArticleViewController else { return }
-                    expect(articleViewController.article) == article
+
+                    it("shows the article") {
+                        let nc = vc as? UINavigationController
+                        expect(nc?.topViewController).to(beAnInstanceOf(ArticleViewController.self))
+                        guard let articleViewController = nc?.topViewController as? ArticleViewController else { return }
+                        expect(articleViewController.article) == article
+                    }
+                } else {
+                    it("shows a view controller configured with the theme repository") {
+                        let nc = vc as? UINavigationController
+                        expect(nc?.visibleViewController).to(beAnInstanceOf(BlankViewController.self))
+                    }
                 }
             }
         }
@@ -133,7 +138,7 @@ class BootstrapWorkFlowSpec: QuickSpec {
                         migrationUseCase.beginWorkArgsForCall(0)()
                     }
 
-                    itBehavesLike("showing the feeds list")
+                    itBehavesLikeItHasAFeedsList()
                 }
             }
 
@@ -144,7 +149,7 @@ class BootstrapWorkFlowSpec: QuickSpec {
                     subject.begin()
                 }
 
-                itBehavesLike("showing the feeds list")
+                itBehavesLikeItHasAFeedsList()
             }
 
             describe("when provided with an article and a feed") {
@@ -171,9 +176,7 @@ class BootstrapWorkFlowSpec: QuickSpec {
                             migrationUseCase.beginWorkArgsForCall(0)()
                         }
 
-                        itBehavesLike("showing the feeds list") {
-                            ["feed": feed, "article": article]
-                        }
+                        itBehavesLikeItHasAFeedsList(feed: feed, article: article)
                     }
                 }
 
@@ -184,9 +187,7 @@ class BootstrapWorkFlowSpec: QuickSpec {
                         subject.begin((feed, article))
                     }
 
-                    itBehavesLike("showing the feeds list") {
-                        ["feed": feed, "article": article]
-                    }
+                    itBehavesLikeItHasAFeedsList(feed: feed, article: article)
                 }
             }
         }

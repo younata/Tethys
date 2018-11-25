@@ -13,7 +13,7 @@ public final class MigrationViewController: UIViewController {
     public let progressBar: UIProgressView = {
         let bar = UIProgressView(progressViewStyle: .default)
         bar.translatesAutoresizingMaskIntoConstraints = true
-        bar.progressTintColor = UIColor.darkGreen()
+        bar.progressTintColor = UIColor.darkGreen
         return bar
     }()
 

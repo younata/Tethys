@@ -12,7 +12,6 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
 
     public private(set) var articles = AnyCollection<Article>([])
 
-
     public private(set) lazy var markReadButton: UIBarButtonItem = {
         return UIBarButtonItem(title: NSLocalizedString("ArticleListController_Action_MarkRead", comment: ""),
                                style: .plain, target: self, action: #selector(ArticleListController.markFeedRead))
@@ -25,14 +24,14 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     fileprivate let articleService: ArticleService
     private let themeRepository: ThemeRepository
     private let articleCellController: ArticleCellController
-    private let articleViewController: () -> ArticleViewController
+    fileprivate let articleViewController: (Article) -> ArticleViewController
 
     public init(feed: Feed,
                 feedService: FeedService,
                 articleService: ArticleService,
                 themeRepository: ThemeRepository,
                 articleCellController: ArticleCellController,
-                articleViewController: @escaping () -> ArticleViewController) {
+                articleViewController: @escaping (Article) -> ArticleViewController) {
         self.feed = feed
         self.feedService = feedService
         self.articleService = articleService
@@ -88,15 +87,10 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     }
 
     public func showArticle(_ article: Article, animated: Bool = true) -> ArticleViewController {
-        let avc = self.configuredArticleController(article)
+        let avc = self.articleViewController(article)
+        self.markRead(article: article, read: true)
         self.showArticleController(avc, animated: animated)
         return avc
-    }
-
-    fileprivate func configuredArticleController(_ article: Article, read: Bool = true) -> ArticleViewController {
-        let articleViewController = self.articleViewController()
-        articleViewController.setArticle(article, read: read)
-        return articleViewController
     }
 
     fileprivate func showArticleController(_ avc: ArticleViewController, animated: Bool) {
@@ -340,7 +334,7 @@ extension ArticleListController: UIViewControllerPreviewingDelegate {
         if let indexPath = self.tableView.indexPathForRow(at: location),
             ArticleListSection(rawValue: indexPath.section) == ArticleListSection.articles {
                 let article = self.articleForIndexPath(indexPath)
-                let articleController = self.configuredArticleController(article, read: false)
+                let articleController = self.articleViewController(article)
                 articleController._previewActionItems = self.previewItems(article: article)
                 return articleController
         }
@@ -366,9 +360,8 @@ extension ArticleListController: UIViewControllerPreviewingDelegate {
 
     public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
                                   commit viewControllerToCommit: UIViewController) {
-        if let articleController = viewControllerToCommit as? ArticleViewController,
-            let article = articleController.article {
-            self.markRead(article: article, read: true)
+        if let articleController = viewControllerToCommit as? ArticleViewController {
+            self.markRead(article: articleController.article, read: true)
             self.showArticleController(articleController, animated: true)
         }
     }

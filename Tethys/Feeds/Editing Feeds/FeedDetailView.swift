@@ -93,7 +93,7 @@ public final class FeedDetailView: UIView {
 
         self.addTagButton.setTitle(NSLocalizedString("FeedViewController_Actions_AddTag", comment: ""), for: .normal)
         self.addTagButton.addTarget(self, action: #selector(FeedDetailView.didTapAddTarget), for: .touchUpInside)
-        self.addTagButton.setTitleColor(UIColor.darkGreen(), for: .normal)
+        self.addTagButton.setTitleColor(UIColor.darkGreen, for: .normal)
         self.urlField.textColor = UIColor.gray
     }
 

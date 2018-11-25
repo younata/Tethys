@@ -3,20 +3,7 @@ import Tethys
 import CBGPromise
 import Result
 
-class FakeArticleUseCase: ArticleUseCase {
-    init() {
-    }
-
-    private(set) var articlesByAuthorCallCount : Int = 0
-    private var articlesByAuthorArgs : Array<(Author, (AnyCollection<Article>) -> Void)> = []
-    func articlesByAuthorArgsForCall(_ callIndex: Int) -> (Author, (AnyCollection<Article>) -> Void) {
-        return self.articlesByAuthorArgs[callIndex]
-    }
-    func articlesByAuthor(_ author: Author, callback: @escaping (AnyCollection<Article>) -> Void) {
-        self.articlesByAuthorCallCount += 1
-        self.articlesByAuthorArgs.append((author, callback))
-    }
-
+final class FakeArticleUseCase: ArticleUseCase {
     private(set) var readArticleCallCount : Int = 0
     var readArticleStub : ((Article) -> (String))?
     private var readArticleArgs : Array<(Article)> = []

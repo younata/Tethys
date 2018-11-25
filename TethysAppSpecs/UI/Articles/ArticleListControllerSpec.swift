@@ -100,7 +100,7 @@ class ArticleListControllerSpec: QuickSpec {
                 articleService: articleService,
                 themeRepository: themeRepository,
                 articleCellController: articleCellController,
-                articleViewController: { articleViewControllerFactory(articleUseCase: articleUseCase) }
+                articleViewController: { article in articleViewControllerFactory(article: article, articleUseCase: articleUseCase) }
             )
 
             navigationController = UINavigationController(rootViewController: subject)
@@ -942,6 +942,30 @@ class ArticleListControllerSpec: QuickSpec {
                                 expect(navigationController.topViewController).to(beAnInstanceOf(ArticleViewController.self))
                                 if let articleController = navigationController.topViewController as? ArticleViewController {
                                     expect(articleController.article).to(equal(articles[1]))
+                                }
+                            }
+
+                            it("marks the article as read") {
+                                expect(articleService.markArticleAsReadCalls.last?.article).to(equal(articles[1]))
+                            }
+
+                            describe("if the mark article as read call fails") {
+                                beforeEach {
+                                    articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
+                                }
+
+                                it("shows an alert box") {
+                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                    if let alert = subject.presentedViewController as? UIAlertController {
+                                        expect(alert.title) == "Error saving article"
+                                        expect(alert.message) == "Unknown Database Error"
+                                        expect(alert.actions.count) == 1
+                                        if let action = alert.actions.first {
+                                            expect(action.title) == "Ok"
+                                            action.handler?(action)
+                                            expect(subject.presentedViewController).to(beNil())
+                                        }
+                                    }
                                 }
                             }
                         }

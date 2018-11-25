@@ -2,7 +2,7 @@ import UIKit
 import PureLayout
 
 private class OutlinedLabel: UILabel {
-    fileprivate var outlineColor = UIColor.darkGreen()
+    fileprivate var outlineColor = UIColor.darkGreen
 
     fileprivate override func drawText(in rect: CGRect) {
         let textColor = self.textColor
@@ -26,9 +26,9 @@ public final class UnreadCounter: UIView {
     private let outlineLabel = OutlinedLabel(forAutoLayout: ())
 
     public var countLabel: UILabel { return self.outlineLabel }
-    public var triangleColor = UIColor.darkGreen() {
+    public var triangleColor = UIColor.darkGreen {
         didSet {
-            self.triangleLayer.fillColor = self.triangleColor?.cgColor
+            self.triangleLayer.fillColor = self.triangleColor.cgColor
             self.outlineLabel.outlineColor = self.triangleColor
         }
     }
@@ -75,7 +75,7 @@ public final class UnreadCounter: UIView {
         self.backgroundColor = UIColor.clear
 
         self.triangleLayer.strokeColor = UIColor.clear.cgColor
-        self.triangleLayer.fillColor = self.triangleColor?.cgColor
+        self.triangleLayer.fillColor = self.triangleColor.cgColor
         self.layer.addSublayer(self.triangleLayer)
 
         self.countLabel.isHidden = true

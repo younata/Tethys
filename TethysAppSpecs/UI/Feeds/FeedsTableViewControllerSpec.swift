@@ -525,31 +525,6 @@ class FeedsTableViewControllerSpec: QuickSpec {
                     }
                 }
             }
-
-            xdescribe("when the feeds promise fails") { // TODO: Implement!
-                beforeEach {
-                    UIView.pauseAnimations()
-                    dataUseCase.feedsPromises.first?.resolve(.failure(.unknown))
-                }
-
-                afterEach {
-                    UIView.resetAnimations()
-                }
-
-                it("hides the activity indicator") {
-                    expect(subject.loadingView.superview).to(beNil())
-                }
-
-                it("does not show the onboarding view") {
-                    expect(subject.onboardingView.superview).to(beNil())
-                }
-
-                it("brings up an alert notifying the user") {
-                    expect(subject.notificationView.titleLabel.isHidden) == false
-                    expect(subject.notificationView.titleLabel.text) == "Error"
-                    expect(subject.notificationView.messageLabel.text) == "Unknown Error"
-                }
-            }
         }
     }
 }

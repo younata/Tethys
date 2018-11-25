@@ -1,4 +1,4 @@
-import Foundation
+import UIKit
 import TethysKit
 import CBGPromise
 
@@ -176,7 +176,7 @@ extension FeedsDeleSource: UITableViewDelegate {
         let share = UITableViewRowAction(style: .normal, title: shareTitle) {_ in
             self.feedsSource.shareFeed(feed: self.feedAtIndexPath(indexPath))
         }
-        share.backgroundColor = UIColor.darkGreen()
+        share.backgroundColor = UIColor.darkGreen
         return [delete, markRead, edit, share]
     }
 }

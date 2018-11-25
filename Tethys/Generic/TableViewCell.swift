@@ -27,7 +27,7 @@ public final class TableViewCell: UITableViewCell, ThemeRepositorySubscriber {
     }
 
     private func updateBackgroundColor(_ selected: Bool) {
-        self.backgroundColor = selected ? UIColor.darkGreen() : self.themeRepository?.backgroundColor
+        self.backgroundColor = selected ? UIColor.darkGreen : self.themeRepository?.backgroundColor
     }
 
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {

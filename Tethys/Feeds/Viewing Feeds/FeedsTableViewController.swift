@@ -26,7 +26,7 @@ public final class FeedsTableViewController: UIViewController {
     public lazy var updateBar: UIProgressView = {
         let updateBar = UIProgressView(progressViewStyle: .default)
         updateBar.translatesAutoresizingMaskIntoConstraints = false
-        updateBar.progressTintColor = UIColor.darkGreen()
+        updateBar.progressTintColor = UIColor.darkGreen
         updateBar.trackTintColor = UIColor.clear
         updateBar.isHidden = true
         return updateBar

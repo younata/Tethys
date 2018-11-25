@@ -6,18 +6,7 @@ import WebKit
 import SafariServices
 
 public final class ArticleViewController: UIViewController {
-    public private(set) var article: Article?
-    public func setArticle(_ article: Article?, read: Bool = true, show: Bool = true) {
-        self.article = article
-
-        guard let article = article else { return }
-        if show { self.showArticle(article, read: read) }
-
-        self.toolbarItems = [
-            self.spacer(), self.shareButton, self.spacer(), self.openInSafariButton, self.spacer()
-        ]
-        self.title = article.title
-    }
+    public let article: Article
 
     public private(set) lazy var shareButton: UIBarButtonItem = {
         return UIBarButtonItem(barButtonSystemItem: .action, target: self,
@@ -33,18 +22,15 @@ public final class ArticleViewController: UIViewController {
     public let themeRepository: ThemeRepository
     fileprivate let articleUseCase: ArticleUseCase
     fileprivate let htmlViewController: HTMLViewController
-    fileprivate let htmlViewControllerFactory: () -> HTMLViewController
-    fileprivate let articleListController: () -> ArticleListController
 
-    public init(themeRepository: ThemeRepository,
+    public init(article: Article,
+                themeRepository: ThemeRepository,
                 articleUseCase: ArticleUseCase,
-                htmlViewController: @escaping () -> HTMLViewController,
-                articleListController: @escaping () -> ArticleListController) {
+                htmlViewController: @escaping () -> HTMLViewController) {
+        self.article = article
         self.themeRepository = themeRepository
         self.articleUseCase = articleUseCase
         self.htmlViewController = htmlViewController()
-        self.htmlViewControllerFactory = htmlViewController
-        self.articleListController = articleListController
 
         super.init(nibName: nil, bundle: nil)
 
@@ -54,7 +40,7 @@ public final class ArticleViewController: UIViewController {
 
     public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
-    fileprivate func showArticle(_ article: Article, read: Bool = true) {
+    fileprivate func showArticle(_ article: Article) {
         self.htmlViewController.configure(html: self.articleUseCase.readArticle(article))
     }
 
@@ -71,6 +57,11 @@ public final class ArticleViewController: UIViewController {
         self.updateLeftBarButtonItem(self.traitCollection)
 
         self.themeRepository.addSubscriber(self)
+
+        self.toolbarItems = [
+            self.spacer(), self.shareButton, self.spacer(), self.openInSafariButton, self.spacer()
+        ]
+        self.title = article.title
     }
 
     public override func viewDidAppear(_ animated: Bool) {
@@ -115,12 +106,10 @@ public final class ArticleViewController: UIViewController {
         addTitleToCmd(markAsRead, NSLocalizedString("ArticleViewController_Command_ToggleRead", comment: ""))
         commands.append(markAsRead)
 
-        if self.article?.link != nil {
-            let cmd = UIKeyCommand(input: "l", modifierFlags: .command,
-                                   action: #selector(ArticleViewController.openInSafari))
-            addTitleToCmd(cmd, NSLocalizedString("ArticleViewController_Command_OpenInWebView", comment: ""))
-            commands.append(cmd)
-        }
+        let cmd = UIKeyCommand(input: "l", modifierFlags: .command,
+                               action: #selector(ArticleViewController.openInSafari))
+        addTitleToCmd(cmd, NSLocalizedString("ArticleViewController_Command_OpenInWebView", comment: ""))
+        commands.append(cmd)
 
         let showShareSheet = UIKeyCommand(input: "s", modifierFlags: .command,
                                           action: #selector(ArticleViewController.share))
@@ -136,19 +125,17 @@ public final class ArticleViewController: UIViewController {
     }
 
     @objc fileprivate func toggleArticleRead() {
-        guard let article = self.article else { return }
-        self.articleUseCase.toggleArticleRead(article)
+        self.articleUseCase.toggleArticleRead(self.article)
     }
 
     @objc fileprivate func share() {
-        guard let article = self.article else { return }
         let safari = TOActivitySafari()
         let chrome = TOActivityChrome()
 
         let activity = URLShareSheet(
-            url: article.link,
+            url: self.article.link,
             themeRepository: self.themeRepository,
-            activityItems: [article.link],
+            activityItems: [self.article.link],
             applicationActivities: [safari, chrome]
         )
 
@@ -156,7 +143,7 @@ public final class ArticleViewController: UIViewController {
     }
 
     @objc private func openInSafari() {
-        if let url = self.article?.link { self.openURL(url) }
+        self.openURL(self.article.link)
     }
 
     fileprivate func openURL(_ url: URL) {
@@ -190,9 +177,7 @@ extension ArticleViewController: HTMLViewControllerDelegate {
 
 extension ArticleViewController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        if let article = self.article {
-            self.showArticle(article)
-        }
+        self.showArticle(article)
 
         self.view.backgroundColor = themeRepository.backgroundColor
         self.navigationController?.navigationBar.barStyle = themeRepository.barStyle

@@ -109,7 +109,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.loadingBar.autoSetDimension(.height, toSize: 1)
         self.loadingBar.progress = 0
         self.loadingBar.isHidden = true
-        self.loadingBar.progressTintColor = UIColor.darkGreen()
+        self.loadingBar.progressTintColor = UIColor.darkGreen
 
         self.themeRepository.addSubscriber(self)
 

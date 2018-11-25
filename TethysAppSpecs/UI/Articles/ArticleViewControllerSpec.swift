@@ -8,29 +8,31 @@ import SafariServices
 class ArticleViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: ArticleViewController!
-        var articleListController: ArticleListController!
         var navigationController: UINavigationController!
         var themeRepository: ThemeRepository!
         var htmlViewController: HTMLViewController!
         var articleUseCase: FakeArticleUseCase!
 
+        let article = articleFactory()
+
         beforeEach {
             themeRepository = ThemeRepository(userDefaults: nil)
             articleUseCase = FakeArticleUseCase()
 
-            articleListController = articleListControllerFactory()
             htmlViewController = htmlViewControllerFactory()
 
+            articleUseCase.readArticleReturns("example")
+
             subject = ArticleViewController(
+                article: article,
                 themeRepository: themeRepository,
                 articleUseCase: articleUseCase,
-                htmlViewController: { htmlViewController },
-                articleListController: { articleListController }
+                htmlViewController: { htmlViewController }
             )
 
             navigationController = UINavigationController(rootViewController: subject)
 
-            expect(subject.view).toNot(beNil())
+            subject.view.layoutIfNeeded()
         }
 
         describe("when the view appears") {
@@ -65,10 +67,6 @@ class ArticleViewControllerSpec: QuickSpec {
         }
 
         describe("Key Commands") {
-            beforeEach {
-                articleUseCase.readArticleReturns("hello")
-            }
-
             it("can become first responder") {
                 expect(subject.canBecomeFirstResponder) == true
             }
@@ -91,48 +89,29 @@ class ArticleViewControllerSpec: QuickSpec {
                 }
             }
 
-            let article = Article(title: "article", link: URL(string: "https://example.com/article")!, summary: "summary", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "<h1>hi</h1>", read: false, synced: false, feed: nil, flags: [])
-
-            context("when viewing an article that has a link") {
-                beforeEach {
-                    subject.setArticle(article, read: false, show: false)
-                }
-
-                it("should not list the next/previous article commands") {
-                    let expectedCommands = [
-                        UIKeyCommand(input: "r", modifierFlags: .shift, action: #selector(BlankTarget.blank)),
-                        UIKeyCommand(input: "l", modifierFlags: .command, action: #selector(BlankTarget.blank)),
-                        UIKeyCommand(input: "s", modifierFlags: .command, action: #selector(BlankTarget.blank)),
+            it("should not list the next/previous article commands") {
+                let expectedCommands = [
+                    UIKeyCommand(input: "r", modifierFlags: .shift, action: #selector(BlankTarget.blank)),
+                    UIKeyCommand(input: "l", modifierFlags: .command, action: #selector(BlankTarget.blank)),
+                    UIKeyCommand(input: "s", modifierFlags: .command, action: #selector(BlankTarget.blank)),
                     ]
-                    let expectedDiscoverabilityTitles = [
-                        "Toggle Read",
-                        "Open Article in WebView",
-                        "Open Share Sheet",
+                let expectedDiscoverabilityTitles = [
+                    "Toggle Read",
+                    "Open Article in WebView",
+                    "Open Share Sheet",
                     ]
 
-                    hasKindsOfKeyCommands(expectedCommands: expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
-                }
+                hasKindsOfKeyCommands(expectedCommands: expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
             }
         }
 
-        describe("setting the article") {
-            let article = Article(title: "article", link: URL(string: "https://example.com/")!, summary: "summary", authors: [Author(name: "Rachel", email: nil)], published: Date(), updatedAt: nil, identifier: "identifier", content: "content!", read: false, synced: false, feed: nil, flags: ["a"])
-            let feed = Feed(title: "feed", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [article], image: nil)
-
-            beforeEach {
-                articleUseCase.readArticleReturns("example")
-
-                article.feed = feed
-                feed.addArticle(article)
-                subject.setArticle(article)
-            }
-
+        describe("the content") {
             it("asks the use case for the html to show") {
                 expect(articleUseCase.readArticleCallCount) == 1
                 expect(articleUseCase.readArticleArgsForCall(0)) == article
             }
 
-            it("should include the share button in the toolbar, and the open in safari button") {
+            it("includes the share button in the toolbar, and the open in safari button") {
                 expect(subject.toolbarItems?.contains(subject.shareButton)) == true
                 expect(subject.toolbarItems?.contains(subject.openInSafariButton)) == true
             }
@@ -187,7 +166,7 @@ class ArticleViewControllerSpec: QuickSpec {
                         viewController = htmlViewController.delegate?.peekURL(url: URL(string: "https://example.com/foo")!)
                     }
 
-                    it("presents another FindFeedViewController configured with that link") {
+                    it("presents an SFSafariViewController configured with that link") {
                         expect(viewController).to(beAnInstanceOf(SFSafariViewController.self))
                     }
 

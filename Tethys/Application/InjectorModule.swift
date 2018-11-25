@@ -1,6 +1,6 @@
-import Foundation
-import TethysKit
+import UIKit
 import Swinject
+import TethysKit
 
 public func configure(container: Container) {
     container.register(UnreadCounter.self) { _ in
@@ -34,8 +34,8 @@ public func configure(container: Container) {
             migrationUseCase: r.resolve(MigrationUseCase.self)!,
             splitViewController: splitController,
             migrationViewController: { r.resolve(MigrationViewController.self)! },
-            feedsTableViewController: { r.resolve(FeedsTableViewController.self)!},
-            articleViewController: { r.resolve(ArticleViewController.self)! }
+            feedsTableViewController: { r.resolve(FeedsTableViewController.self)! },
+            blankViewController: { r.resolve(BlankViewController.self)! }
         )
     }
 
@@ -71,17 +71,21 @@ private func registerViewControllers(container: Container) {
             articleService: r.resolve(ArticleService.self)!,
             themeRepository: r.resolve(ThemeRepository.self)!,
             articleCellController: r.resolve(ArticleCellController.self, argument: false)!,
-            articleViewController: { r.resolve(ArticleViewController.self)! }
+            articleViewController: { article in r.resolve(ArticleViewController.self, argument: article)! }
         )
     }
 
-    container.register(ArticleViewController.self) { r in
+    container.register(ArticleViewController.self) { r, article in
         return ArticleViewController(
+            article: article,
             themeRepository: r.resolve(ThemeRepository.self)!,
             articleUseCase: r.resolve(ArticleUseCase.self)!,
-            htmlViewController: { r.resolve(HTMLViewController.self)! },
-            articleListController: { r.resolve(ArticleListController.self)! }
+            htmlViewController: { r.resolve(HTMLViewController.self)! }
         )
+    }
+
+    container.register(BlankViewController.self) { r in
+        return BlankViewController(themeRepository: r.resolve(ThemeRepository.self)!)
     }
 
     container.register(DocumentationViewController.self) { r in

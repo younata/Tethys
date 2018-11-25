@@ -50,9 +50,9 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?
         ) -> Bool {
-        UINavigationBar.appearance().tintColor = UIColor.darkGreen()
-        UIBarButtonItem.appearance().tintColor = UIColor.darkGreen()
-        UITabBar.appearance().tintColor = UIColor.darkGreen()
+        UINavigationBar.appearance().tintColor = UIColor.darkGreen
+        UIBarButtonItem.appearance().tintColor = UIColor.darkGreen
+        UITabBar.appearance().tintColor = UIColor.darkGreen
 
         if NSClassFromString("XCTestCase") != nil &&
             launchOptions?[UIApplicationLaunchOptionsKey("test")] as? Bool != true {

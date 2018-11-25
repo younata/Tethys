@@ -1,3 +1,5 @@
+import UIKit
+
 public class URLShareSheet: UIActivityViewController {
     public let url: URL
     public let themeRepository: ThemeRepository

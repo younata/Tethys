@@ -73,7 +73,6 @@
 		892E77071E08459300866336 /* KVOMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E77061E08459300866336 /* KVOMonitor.swift */; };
 		892E77131E09A2E300866336 /* TimerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E77121E09A2E300866336 /* TimerFactory.swift */; };
 		892E77151E09A49900866336 /* FakeTimerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E77141E09A49900866336 /* FakeTimerFactory.swift */; };
-		8933E93419EE33F700ECFF3F /* UIColor+Tethys.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933E93319EE33F700ECFF3F /* UIColor+Tethys.m */; };
 		89348F2F1C60730D007D366B /* FakeDatabaseUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89348F2E1C60730D007D366B /* FakeDatabaseUseCase.swift */; };
 		8935F5CD1B462702000FFD5D /* Muon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; };
 		8935F5CE1B462702000FFD5D /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; };
@@ -107,6 +106,9 @@
 		894304411B450A00000078DC /* OPMLService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A3417E1B150D1B0000C60B /* OPMLService.swift */; };
 		8943044A1B450A5E000078DC /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4DB1B0533B600EDD6D0 /* Feed.swift */; };
 		8943044B1B450A5E000078DC /* Article.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4DE1B0535EB00EDD6D0 /* Article.swift */; };
+		894644D321AB546200153308 /* BlankViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894644D221AB546200153308 /* BlankViewController.swift */; };
+		894644D521AB566C00153308 /* BlankViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894644D421AB566C00153308 /* BlankViewControllerSpec.swift */; };
+		894644D721AB57C100153308 /* UIColor+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894644D621AB57C100153308 /* UIColor+Custom.swift */; };
 		894942411C84BEC20095FFD4 /* FakeQuickActionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894942401C84BEC20095FFD4 /* FakeQuickActionRepository.swift */; };
 		8949698D1C72FAEB00A91986 /* Kanna.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8903EB141C72F8A7001C0189 /* Kanna.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		894CEAA21DAE7C7500E8BDEB /* FakeWKPreviewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894CEAA11DAE7C7500E8BDEB /* FakeWKPreviewItem.swift */; };
@@ -619,8 +621,6 @@
 		892E77061E08459300866336 /* KVOMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KVOMonitor.swift; sourceTree = "<group>"; };
 		892E77121E09A2E300866336 /* TimerFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerFactory.swift; sourceTree = "<group>"; };
 		892E77141E09A49900866336 /* FakeTimerFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeTimerFactory.swift; sourceTree = "<group>"; };
-		8933E93219EE33F700ECFF3F /* UIColor+Tethys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Tethys.h"; sourceTree = "<group>"; };
-		8933E93319EE33F700ECFF3F /* UIColor+Tethys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Tethys.m"; sourceTree = "<group>"; };
 		89348F2E1C60730D007D366B /* FakeDatabaseUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDatabaseUseCase.swift; sourceTree = "<group>"; };
 		8937F6B41B77AD780044A442 /* AppModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppModule.swift; sourceTree = "<group>"; };
 		8937F6B61B77AE5F0044A442 /* AppModuleSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppModuleSpec.swift; sourceTree = "<group>"; };
@@ -637,6 +637,9 @@
 		894304251B45089A000078DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8943042A1B45089A000078DC /* TethysKitSpecs.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TethysKitSpecs.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		894304331B45089B000078DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		894644D221AB546200153308 /* BlankViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlankViewController.swift; sourceTree = "<group>"; };
+		894644D421AB566C00153308 /* BlankViewControllerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlankViewControllerSpec.swift; sourceTree = "<group>"; };
+		894644D621AB57C100153308 /* UIColor+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Custom.swift"; sourceTree = "<group>"; };
 		894942401C84BEC20095FFD4 /* FakeQuickActionRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeQuickActionRepository.swift; sourceTree = "<group>"; };
 		894CEAA11DAE7C7500E8BDEB /* FakeWKPreviewItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeWKPreviewItem.swift; sourceTree = "<group>"; };
 		894D1AEA1DB0971E00E70B1A /* FakeWKNavigationAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeWKNavigationAction.swift; sourceTree = "<group>"; };
@@ -786,7 +789,6 @@
 		89C8308219D730E9009924DA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		89C8308B19D730E9009924DA /* TethysAppSpecs.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TethysAppSpecs.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		89C8309019D730E9009924DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		89C8309B19D73334009924DA /* Tethys-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tethys-Bridging-Header.h"; sourceTree = "<group>"; };
 		89C830AD19D7CB8E009924DA /* ArticleListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListController.swift; sourceTree = "<group>"; };
 		89C830B219D7D2CB009924DA /* ArticleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleCell.swift; sourceTree = "<group>"; };
 		89C830B519D7DE97009924DA /* ArticleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleViewController.swift; sourceTree = "<group>"; };
@@ -1061,8 +1063,7 @@
 		8933E93519EE342F00ECFF3F /* Categories */ = {
 			isa = PBXGroup;
 			children = (
-				8933E93219EE33F700ECFF3F /* UIColor+Tethys.h */,
-				8933E93319EE33F700ECFF3F /* UIColor+Tethys.m */,
+				894644D621AB57C100153308 /* UIColor+Custom.swift */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -1415,6 +1416,7 @@
 			isa = PBXGroup;
 			children = (
 				89A3A8C81DEF942F002AF9B5 /* ActionableTableViewSpec.swift */,
+				894644D421AB566C00153308 /* BlankViewControllerSpec.swift */,
 				899B7DFE1E902E110067ABFF /* URLShareSheetSpec.swift */,
 			);
 			path = Generic;
@@ -1472,7 +1474,6 @@
 				89C8308219D730E9009924DA /* Images.xcassets */,
 				89B8BBDF1B9C5B1000B2C112 /* Launch Screen.xib */,
 				8903A6241C4AB17C00E896BF /* NotificationView.swift */,
-				89C8309B19D73334009924DA /* Tethys-Bridging-Header.h */,
 				898046D11A1BC8FD00EB29F0 /* Tethys.entitlements */,
 				89C830CC19DC67B9009924DA /* UnreadCounter.swift */,
 			);
@@ -1734,6 +1735,7 @@
 			isa = PBXGroup;
 			children = (
 				89C351651DEF8CD800E262C6 /* ActionableTableView.swift */,
+				894644D221AB546200153308 /* BlankViewController.swift */,
 				89F98BA01BA079A3005C3CA8 /* SwitchTableViewCell.swift */,
 				89F98BA31BA079EA005C3CA8 /* TableViewCell.swift */,
 				899B7DFC1E902B080067ABFF /* URLShareSheet.swift */,
@@ -2467,6 +2469,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				89C351661DEF8CD800E262C6 /* ActionableTableView.swift in Sources */,
+				894644D721AB57C100153308 /* UIColor+Custom.swift in Sources */,
 				898F6E121B129AB6000D343D /* ActivityIndicator.swift in Sources */,
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
@@ -2485,6 +2488,7 @@
 				89C830C819DA2FEF009924DA /* FeedsTableViewController.swift in Sources */,
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
 				89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */,
+				894644D321AB546200153308 /* BlankViewController.swift in Sources */,
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
 				8941AB7B1DC9207200A2CE5F /* HTMLViewController.swift in Sources */,
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
@@ -2502,7 +2506,6 @@
 				8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */,
 				8918D4DB1B8598D100DCDE0E /* ThemeRepository.swift in Sources */,
 				89CBDC151C7D7D96006B70F5 /* UIApplication+DataSubscriber.swift in Sources */,
-				8933E93419EE33F700ECFF3F /* UIColor+Tethys.m in Sources */,
 				89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */,
 				899B7DFD1E902B080067ABFF /* URLShareSheet.swift in Sources */,
 			);
@@ -2512,6 +2515,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				894644D521AB566C00153308 /* BlankViewControllerSpec.swift in Sources */,
 				89A3A8C91DEF942F002AF9B5 /* ActionableTableViewSpec.swift in Sources */,
 				89CB984A1B12C50000C87160 /* ActivityIndicatorSpec.swift in Sources */,
 				89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */,
@@ -3134,7 +3138,6 @@
 				PRODUCT_NAME = Tethys;
 				PROVISIONING_PROFILE = "184da801-b6b9-47e3-a560-e3d9c54e5ac0";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development com.rachelbrindle.RSSClient";
-				SWIFT_OBJC_BRIDGING_HEADER = "Tethys/Tethys-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "";
@@ -3166,7 +3169,6 @@
 				PRODUCT_NAME = Tethys;
 				PROVISIONING_PROFILE = "102ff7ac-9378-49de-8e9e-fa6cf25e9870";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.rachelbrindle.RSSClient";
-				SWIFT_OBJC_BRIDGING_HEADER = "Tethys/Tethys-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "";
 			};

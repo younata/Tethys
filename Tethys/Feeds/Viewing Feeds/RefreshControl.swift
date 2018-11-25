@@ -40,7 +40,7 @@ public final class RefreshControl: NSObject {
         refreshView.breakoutDelegate = self
         refreshView.scenebackgroundColor = UIColor.white
         refreshView.paddleColor = UIColor.blue
-        refreshView.ballColor = UIColor.darkGreen()
+        refreshView.ballColor = UIColor.darkGreen
         refreshView.blockColors = [UIColor.darkGray, UIColor.gray, UIColor.lightGray]
         return refreshView
     }()

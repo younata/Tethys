@@ -27,44 +27,27 @@ public final class HTMLViewController: UIViewController {
     }
 
     public let content = WKWebView(forAutoLayout: ())
-
     public let progressIndicator = UIProgressView(forAutoLayout: ())
 
-    public let themeRepository: ThemeRepository
+    private var observer: NSKeyValueObservation?
 
+    public let themeRepository: ThemeRepository
     public init(themeRepository: ThemeRepository) {
         self.themeRepository = themeRepository
         super.init(nibName: nil, bundle: nil)
 
         self.content.isOpaque = false
-        self.content.addObserver(
-            self, forKeyPath: "estimatedProgress", options: [NSKeyValueObservingOptions.new], context: nil
-        )
+        self.observer = self.content.observe(\.estimatedProgress, options: [.new]) { _ in
+            self.progressIndicator.progress = Float(self.content.estimatedProgress)
+        }
     }
 
     public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func observeValue(forKeyPath keyPath: String?,
-                                      of object: Any?,
-                                      change: [NSKeyValueChangeKey: Any]?,
-                                      context: UnsafeMutableRawPointer?) {
-        guard object is WKWebView else { return }
-        guard let keyPath = keyPath else { return }
-        guard let change = change else { return }
-        switch keyPath {
-        case "estimatedProgress":
-            if let val = change[NSKeyValueChangeKey.newKey] as? Double {
-                self.progressIndicator.progress = Float(val)
-            }
-        default:
-            break
-        }
-    }
-
     deinit {
-        self.content.removeObserver(self, forKeyPath: "estimatedProgress")
+        self.observer = nil
     }
 
     public override func viewDidLoad() {
@@ -83,7 +66,7 @@ public final class HTMLViewController: UIViewController {
                                                    constant: 0))
         self.progressIndicator.autoPinEdge(toSuperviewEdge: .leading)
         self.progressIndicator.autoPinEdge(toSuperviewEdge: .trailing)
-        self.progressIndicator.progressTintColor = UIColor.darkGreen()
+        self.progressIndicator.progressTintColor = UIColor.darkGreen
         self.progressIndicator.isHidden = true
 
         self.content.allowsLinkPreview = true

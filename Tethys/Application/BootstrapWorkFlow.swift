@@ -14,7 +14,7 @@ public final class BootstrapWorkFlow: Bootstrapper {
     private let splitViewController: SplitViewController
     private let migrationViewController: () -> MigrationViewController
     private let feedsTableViewController: () -> FeedsTableViewController
-    private let articleViewController: () -> ArticleViewController
+    private let blankViewController: () -> BlankViewController
 
     private let initialLaunch = false
 
@@ -24,14 +24,14 @@ public final class BootstrapWorkFlow: Bootstrapper {
                 splitViewController: SplitViewController,
                 migrationViewController: @escaping () -> MigrationViewController,
                 feedsTableViewController: @escaping () -> FeedsTableViewController,
-                articleViewController: @escaping () -> ArticleViewController) {
+                blankViewController: @escaping () -> BlankViewController) {
         self.window = window
         self.feedRepository = feedRepository
         self.migrationUseCase = migrationUseCase
         self.splitViewController = splitViewController
         self.migrationViewController = migrationViewController
         self.feedsTableViewController = feedsTableViewController
-        self.articleViewController = articleViewController
+        self.blankViewController = blankViewController
     }
 
     private var feedAndArticle: (feed: Feed, article: Article)?
@@ -70,7 +70,7 @@ public final class BootstrapWorkFlow: Bootstrapper {
             feedsTableViewController
         ]
         self.splitViewController.detailNavigationController.viewControllers = [
-            self.articleViewController()
+            self.blankViewController()
         ]
         self.splitViewController.viewControllers = [
             self.splitViewController.masterNavigationController,

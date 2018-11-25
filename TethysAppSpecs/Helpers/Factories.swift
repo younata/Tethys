@@ -64,16 +64,16 @@ func feedsTableViewControllerFactory(
 }
 
 func articleViewControllerFactory(
+    article: Article = articleFactory(),
     themeRepository: ThemeRepository = themeRepositoryFactory(),
     articleUseCase: ArticleUseCase = FakeArticleUseCase(),
-    htmlViewController: @escaping () -> HTMLViewController = { htmlViewControllerFactory() },
-    articleListController: @escaping () -> ArticleListController = { articleListControllerFactory() }
+    htmlViewController: @escaping () -> HTMLViewController = { htmlViewControllerFactory() }
     ) -> ArticleViewController {
     return ArticleViewController(
+        article: article,
         themeRepository: themeRepository,
         articleUseCase: articleUseCase,
-        htmlViewController: htmlViewController,
-        articleListController: articleListController
+        htmlViewController: htmlViewController
     )
 }
 
@@ -89,7 +89,7 @@ func articleListControllerFactory(
     articleService: ArticleService = FakeArticleService(),
     themeRepository: ThemeRepository = themeRepositoryFactory(),
     articleCellController: ArticleCellController = FakeArticleCellController(),
-    articleViewController: @escaping () -> ArticleViewController = { articleViewControllerFactory() }
+    articleViewController: @escaping (Article) -> ArticleViewController = { article in articleViewControllerFactory(article: article) }
     ) -> ArticleListController {
     return ArticleListController(
         feed: feed,
@@ -145,6 +145,14 @@ func documentationViewControllerFactory(
     )
 }
 
+func blankViewControllerFactory(
+    themeRepository: ThemeRepository = themeRepositoryFactory()
+    ) -> BlankViewController {
+    return BlankViewController(
+        themeRepository: themeRepository
+    )
+}
+
 // Workflows
 
 func bootstrapWorkFlowFactory(
@@ -154,7 +162,7 @@ func bootstrapWorkFlowFactory(
     splitViewController: SplitViewController = splitViewControllerFactory(),
     migrationViewController: @escaping () -> MigrationViewController = { migrationViewControllerFactory() },
     feedsTableViewController: @escaping () -> FeedsTableViewController = { feedsTableViewControllerFactory() },
-    articleViewController: @escaping () -> ArticleViewController = { articleViewControllerFactory() }
+    blankViewController: @escaping () -> BlankViewController = { blankViewControllerFactory() }
     ) -> BootstrapWorkFlow {
     return BootstrapWorkFlow(
         window: window,
@@ -163,7 +171,7 @@ func bootstrapWorkFlowFactory(
         splitViewController: splitViewController,
         migrationViewController: migrationViewController,
         feedsTableViewController: feedsTableViewController,
-        articleViewController: articleViewController
+        blankViewController: blankViewController
     )
 }
 

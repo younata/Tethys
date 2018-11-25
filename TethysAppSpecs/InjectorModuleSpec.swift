@@ -81,7 +81,26 @@ final class InjectorModuleSpec: QuickSpec {
                     }
                 }
             }
-            exists(ArticleViewController.self)
+            describe("ArticleViewController") {
+                it("returns nil without an argument") {
+                    expect(subject.resolve(ArticleViewController.self)).to(beNil())
+                }
+
+                describe("if created with an article") {
+                    let article: Article = articleFactory()
+
+                    it("exists") {
+                        expect(subject.resolve(ArticleViewController.self, argument: article)).toNot(beNil())
+                    }
+
+                    it("sets the feed to the given feed") {
+                        let controller = subject.resolve(ArticleViewController.self, argument: article)
+                        expect(controller?.article).to(equal(article))
+                    }
+                }
+            }
+
+            exists(BlankViewController.self)
 
             exists(DocumentationViewController.self)
 

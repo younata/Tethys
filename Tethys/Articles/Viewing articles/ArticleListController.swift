@@ -12,12 +12,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
 
     public internal(set) var articles = AnyCollection<Article>([])
 
-    public var feed: Feed? {
-        didSet {
-            self.resetArticles()
-            self.resetBarItems()
-        }
-    }
+    public var feed: Feed?
 
     public private(set) lazy var markReadButton: UIBarButtonItem = {
         return UIBarButtonItem(title: NSLocalizedString("ArticleListController_Action_MarkRead", comment: ""),
@@ -26,27 +21,21 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
 
     public let tableView = UITableView(forAutoLayout: ())
 
-    private let mainQueue: OperationQueue
     fileprivate let feedService: FeedService
     fileprivate let articleService: ArticleService
-    fileprivate let feedRepository: DatabaseUseCase
     private let themeRepository: ThemeRepository
     private let settingsRepository: SettingsRepository
     private let articleCellController: ArticleCellController
     private let articleViewController: () -> ArticleViewController
 
-    public init(mainQueue: OperationQueue,
-                feedService: FeedService,
+    public init(feedService: FeedService,
                 articleService: ArticleService,
-                feedRepository: DatabaseUseCase,
                 themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
                 articleCellController: ArticleCellController,
                 articleViewController: @escaping () -> ArticleViewController) {
-        self.mainQueue = mainQueue
         self.feedService = feedService
         self.articleService = articleService
-        self.feedRepository = feedRepository
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.articleCellController = articleCellController
@@ -81,6 +70,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         self.tableView.allowsMultipleSelection = false
 
         self.registerForPreviewing(with: self, sourceView: self.tableView)
+        self.resetArticles()
         self.resetBarItems()
     }
 
@@ -131,9 +121,18 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
         let promise = Promise<Bool>()
         alert.addAction(UIAlertAction(title: deleteTitle, style: .destructive) { _ in
-            self.articles = AnyCollection(self.articles.filter { $0 != article })
             self.articleService.remove(article: article).then { result in
-                promise.resolve(result.value != nil)
+                switch result {
+                case .success:
+                    self.articles = AnyCollection(self.articles.filter { $0 != article })
+                    promise.resolve(true)
+                case .failure(let error):
+                    self.showAlert(
+                        error: error,
+                        title: NSLocalizedString("ArticleListController_Action_Delete_Error_Title", comment: "")
+                    )
+                    promise.resolve(false)
+                }
             }
             self.dismiss(animated: true, completion: nil)
         })
@@ -147,12 +146,19 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     }
 
     fileprivate func toggleRead(article: Article) {
-        self.articleService.mark(article: article, asRead: !article.read).then { result in
+        self.markRead(article: article, read: !article.read)
+    }
+
+    fileprivate func markRead(article: Article, read: Bool) {
+        self.articleService.mark(article: article, asRead: read).then { result in
             switch result {
             case .success(let updatedArticle):
                 self.update(article: article, to: updatedArticle)
-            case .failure:
-                break
+            case .failure(let error):
+                self.showAlert(
+                    error: error,
+                    title: NSLocalizedString("ArticleListController_Action_Save_Error_Title", comment: "")
+                )
             }
         }
     }
@@ -263,9 +269,20 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     // MARK: Private
 
     fileprivate func resetArticles() {
-        guard let articles = self.feed?.articlesArray else { return }
-        self.articles = AnyCollection(articles)
-        self.tableView.reloadSections(IndexSet(integersIn: 0...1), with: .automatic)
+        guard let feed = self.feed else { return }
+
+        self.feedService.articles(of: feed).then { result in
+            switch result {
+            case .success(let articles):
+                self.articles = articles
+                self.tableView.reloadSections(IndexSet(integersIn: 0...1), with: .automatic)
+            case .failure(let error):
+                self.showAlert(
+                    error: error,
+                    title: NSLocalizedString("ArticleListController_Retrieving_Error_Title", comment: "")
+                )
+            }
+        }
     }
 
     fileprivate func resetBarItems() {
@@ -306,25 +323,23 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
 
         indicator.configure(message: NSLocalizedString("ArticleListController_Action_MarkRead_Indicator", comment: ""))
 
-        self.feedRepository.markFeedAsRead(feed).then { markReadResult in
+        self.feedService.readAll(of: feed).then { markReadResult in
             switch markReadResult {
             case .success:
-                    self.mainQueue.addOperation {
-                        indicator.removeFromSuperview()
-
-                }
+                indicator.removeFromSuperview()
+                self.resetArticles()
             case let .failure(error):
-                self.mainQueue.addOperation {
-                    indicator.removeFromSuperview()
-                    self.showAlert(error: error)
-                }
+                indicator.removeFromSuperview()
+                self.showAlert(
+                    error: error,
+                    title: NSLocalizedString("ArticleListController_Action_MarkRead_Error_Title", comment: "")
+                )
             }
         }
     }
 
-    private func showAlert(error: TethysError) {
-        let alertTitle = NSLocalizedString("ArticleListController_Action_MarkRead_Error_Title", comment: "")
-        let alert = UIAlertController(title: alertTitle,
+    private func showAlert(error: TethysError, title: String) {
+        let alert = UIAlertController(title: title,
                                       message: error.localizedDescription,
                                       preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: NSLocalizedString("Generic_Ok", comment: ""),
@@ -338,7 +353,6 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
 extension ArticleListController: UIViewControllerPreviewingDelegate {
     public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
                                   viewControllerForLocation location: CGPoint) -> UIViewController? {
-        // swiftlint:disable line_length
         if let indexPath = self.tableView.indexPathForRow(at: location),
             ArticleListSection(rawValue: indexPath.section) == ArticleListSection.articles {
                 let article = self.articleForIndexPath(indexPath)
@@ -346,7 +360,6 @@ extension ArticleListController: UIViewControllerPreviewingDelegate {
                 articleController._previewActionItems = self.previewItems(article: article)
                 return articleController
         }
-        // swiftlint:enable line_length
         return nil
     }
 
@@ -371,14 +384,7 @@ extension ArticleListController: UIViewControllerPreviewingDelegate {
                                   commit viewControllerToCommit: UIViewController) {
         if let articleController = viewControllerToCommit as? ArticleViewController,
             let article = articleController.article {
-            self.articleService.mark(article: article, asRead: true).then { result in
-                switch result {
-                case .success(let updatedArticle):
-                    self.update(article: article, to: updatedArticle)
-                case .failure:
-                    break
-                }
-            }
+            self.markRead(article: article, read: true)
             self.showArticleController(articleController, animated: true)
         }
     }

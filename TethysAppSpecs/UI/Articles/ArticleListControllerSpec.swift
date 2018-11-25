@@ -67,7 +67,6 @@ class ArticleListControllerSpec: QuickSpec {
 
         var articleUseCase: FakeArticleUseCase!
 
-        var dataRepository: FakeDatabaseUseCase!
         var feedService: FakeFeedService!
         var articleService: FakeArticleService!
         var themeRepository: ThemeRepository!
@@ -82,7 +81,6 @@ class ArticleListControllerSpec: QuickSpec {
             articleUseCase.readArticleReturns("hello")
 
             themeRepository = ThemeRepository(userDefaults: nil)
-            dataRepository = FakeDatabaseUseCase()
 
             publishedOffset = 0
 
@@ -94,26 +92,9 @@ class ArticleListControllerSpec: QuickSpec {
             let a = fakeArticle(feed: feed)
             articles = [a, b, c, d]
 
-            for article in articles {
-                feed.addArticle(article)
-            }
-
             feedService = FakeFeedService()
             articleService = FakeArticleService()
             articleCellController = FakeArticleCellController()
-
-            subject = ArticleListController(
-                mainQueue: mainQueue,
-                feedService: feedService,
-                articleService: articleService,
-                feedRepository: dataRepository,
-                themeRepository: themeRepository,
-                settingsRepository: settingsRepository,
-                articleCellController: articleCellController,
-                articleViewController: { articleViewControllerFactory(articleUseCase: articleUseCase) }
-            )
-
-            navigationController = UINavigationController(rootViewController: subject)
         }
 
         func sharedBehaviorForAnArticleList() {
@@ -207,24 +188,8 @@ class ArticleListControllerSpec: QuickSpec {
                                 context("when the articleService successfully marks the article as read") {
                                     var updatedArticle: Article!
                                     beforeEach {
-                                        guard let article = articles.first else { fail("No articles - can't happen"); return }
-                                        updatedArticle = Article(
-                                            title: article.title,
-                                            link: article.link,
-                                            summary: article.summary,
-                                            authors: article.authors,
-                                            published: article.published,
-                                            updatedAt: article.updatedAt,
-                                            identifier: article.identifier,
-                                            content: article.content,
-                                            read: true,
-                                            synced: article.synced,
-                                            feed: article.feed,
-                                            flags: article.flags
-                                        )
-                                        articleService.markArticleAsReadPromises.last?.resolve(.success(
-                                            updatedArticle
-                                            ))
+                                        updatedArticle = articleFactory()
+                                        articleService.markArticleAsReadPromises.last?.resolve(.success(updatedArticle))
                                     }
 
                                     it("Updates the articles in the controller to reflect that") {
@@ -233,8 +198,22 @@ class ArticleListControllerSpec: QuickSpec {
                                 }
 
                                 context("when the articleService fails to mark the article as read") {
-                                    xit("presents a banner indicates that a failure happened") {
-                                        fail("Not Implemented")
+                                    beforeEach {
+                                        articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
+                                    }
+
+                                    it("shows an alert box") {
+                                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                        if let alert = subject.presentedViewController as? UIAlertController {
+                                            expect(alert.title) == "Error saving article"
+                                            expect(alert.message) == "Unknown Database Error"
+                                            expect(alert.actions.count) == 1
+                                            if let action = alert.actions.first {
+                                                expect(action.title) == "Ok"
+                                                action.handler?(action)
+                                                expect(subject.presentedViewController).to(beNil())
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -263,34 +242,32 @@ class ArticleListControllerSpec: QuickSpec {
                                 context("when the articleService successfully marks the article as read") {
                                     var updatedArticle: Article!
                                     beforeEach {
-                                        guard let article = articles.first else { fail("No articles - can't happen"); return }
-                                        updatedArticle = Article(
-                                            title: article.title,
-                                            link: article.link,
-                                            summary: article.summary,
-                                            authors: article.authors,
-                                            published: article.published,
-                                            updatedAt: article.updatedAt,
-                                            identifier: article.identifier,
-                                            content: article.content,
-                                            read: false,
-                                            synced: article.synced,
-                                            feed: article.feed,
-                                            flags: article.flags
-                                        )
-                                        articleService.markArticleAsReadPromises.last?.resolve(.success(
-                                            updatedArticle
-                                            ))
+                                        updatedArticle = articleFactory()
+                                        articleService.markArticleAsReadPromises.last?.resolve(.success(updatedArticle))
                                     }
 
                                     it("Updates the articles in the controller to reflect that") {
-                                        expect(subject.articles.first).to(equal(updatedArticle))
+                                        expect(Array(subject.articles)[2]).to(equal(updatedArticle))
                                     }
                                 }
 
                                 context("when the articleService fails to mark the article as read") {
-                                    xit("presents a banner indicates that a failure happened") {
-                                        fail("Not Implemented")
+                                    beforeEach {
+                                        articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
+                                    }
+
+                                    it("shows an alert box") {
+                                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                        if let alert = subject.presentedViewController as? UIAlertController {
+                                            expect(alert.title) == "Error saving article"
+                                            expect(alert.message) == "Unknown Database Error"
+                                            expect(alert.actions.count) == 1
+                                            if let action = alert.actions.first {
+                                                expect(action.title) == "Ok"
+                                                action.handler?(action)
+                                                expect(subject.presentedViewController).to(beNil())
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -360,8 +337,22 @@ class ArticleListControllerSpec: QuickSpec {
                                             articleService.removeArticlePromises.last?.resolve(.failure(TethysError.database(.unknown)))
                                         }
 
-                                        xit("shows a message saying that we had an error") {
-                                            fail("Implement me!")
+                                        it("shows an alert box") {
+                                            expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                            if let alert = subject.presentedViewController as? UIAlertController {
+                                                expect(alert.title) == "Error deleting article"
+                                                expect(alert.message) == "Unknown Database Error"
+                                                expect(alert.actions.count) == 1
+                                                if let action = alert.actions.first {
+                                                    expect(action.title) == "Ok"
+                                                    action.handler?(action)
+                                                    expect(subject.presentedViewController).to(beNil())
+                                                }
+                                            }
+                                        }
+
+                                        it("keeps the article from the list") {
+                                            expect(Array(subject.articles)).to(contain(articles[0]))
                                         }
                                     }
                                 }
@@ -409,24 +400,8 @@ class ArticleListControllerSpec: QuickSpec {
                         context("when the articleService successfully marks the article as read") {
                             var updatedArticle: Article!
                             beforeEach {
-                                guard let article = articles.first else { fail("No articles - can't happen"); return }
-                                updatedArticle = Article(
-                                    title: article.title,
-                                    link: article.link,
-                                    summary: article.summary,
-                                    authors: article.authors,
-                                    published: article.published,
-                                    updatedAt: article.updatedAt,
-                                    identifier: article.identifier,
-                                    content: article.content,
-                                    read: true,
-                                    synced: article.synced,
-                                    feed: article.feed,
-                                    flags: article.flags
-                                )
-                                articleService.markArticleAsReadPromises.last?.resolve(.success(
-                                    updatedArticle
-                                    ))
+                                updatedArticle = articleFactory()
+                                articleService.markArticleAsReadPromises.last?.resolve(.success(updatedArticle))
                             }
 
                             it("Updates the articles in the controller to reflect that") {
@@ -435,8 +410,22 @@ class ArticleListControllerSpec: QuickSpec {
                         }
 
                         context("when the articleService fails to mark the article as read") {
-                            xit("presents a banner indicates that a failure happened") {
-                                fail("Not Implemented")
+                            beforeEach {
+                                articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
+                            }
+
+                            it("shows an alert box") {
+                                expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                if let alert = subject.presentedViewController as? UIAlertController {
+                                    expect(alert.title) == "Error saving article"
+                                    expect(alert.message) == "Unknown Database Error"
+                                    expect(alert.actions.count) == 1
+                                    if let action = alert.actions.first {
+                                        expect(action.title) == "Ok"
+                                        action.handler?(action)
+                                        expect(subject.presentedViewController).to(beNil())
+                                    }
+                                }
                             }
                         }
                     }
@@ -545,8 +534,18 @@ class ArticleListControllerSpec: QuickSpec {
                                                     articleService.removeArticlePromises.last?.resolve(.failure(TethysError.database(.unknown)))
                                                 }
 
-                                                xit("shows a message saying that we had an error") {
-                                                    fail("Implement me!")
+                                                it("shows an alert box") {
+                                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                                    if let alert = subject.presentedViewController as? UIAlertController {
+                                                        expect(alert.title) == "Error deleting article"
+                                                        expect(alert.message) == "Unknown Database Error"
+                                                        expect(alert.actions.count) == 1
+                                                        if let action = alert.actions.first {
+                                                            expect(action.title) == "Ok"
+                                                            action.handler?(action)
+                                                            expect(subject.presentedViewController).to(beNil())
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
@@ -598,11 +597,8 @@ class ArticleListControllerSpec: QuickSpec {
                                     context("when the articleService successfully marks the article as read") {
                                         var updatedArticle: Article!
                                         beforeEach {
-                                            guard let article = articles.first else { fail("No articles - can't happen"); return }
                                             updatedArticle = articleFactory()
-                                            articleService.markArticleAsReadPromises.last?.resolve(.success(
-                                                updatedArticle
-                                            ))
+                                            articleService.markArticleAsReadPromises.last?.resolve(.success(updatedArticle))
                                         }
 
                                         it("Updates the articles in the controller to reflect that") {
@@ -611,8 +607,22 @@ class ArticleListControllerSpec: QuickSpec {
                                     }
 
                                     context("when the articleService fails to mark the article as read") {
-                                        xit("presents a banner indicates that a failure happened") {
-                                            fail("Not Implemented")
+                                        beforeEach {
+                                            articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
+                                        }
+
+                                        it("shows an alert box") {
+                                            expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                            if let alert = subject.presentedViewController as? UIAlertController {
+                                                expect(alert.title) == "Error saving article"
+                                                expect(alert.message) == "Unknown Database Error"
+                                                expect(alert.actions.count) == 1
+                                                if let action = alert.actions.first {
+                                                    expect(action.title) == "Ok"
+                                                    action.handler?(action)
+                                                    expect(subject.presentedViewController).to(beNil())
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -645,11 +655,8 @@ class ArticleListControllerSpec: QuickSpec {
                                     context("when the articleService successfully marks the article as read") {
                                         var updatedArticle: Article!
                                         beforeEach {
-                                            guard let article = articles.first else { fail("No articles - can't happen"); return }
                                             updatedArticle = articleFactory(read: true)
-                                            articleService.markArticleAsReadPromises.last?.resolve(.success(
-                                                updatedArticle
-                                            ))
+                                            articleService.markArticleAsReadPromises.last?.resolve(.success(updatedArticle))
                                         }
 
                                         it("Updates the articles in the controller to reflect that") {
@@ -658,8 +665,22 @@ class ArticleListControllerSpec: QuickSpec {
                                     }
 
                                     context("when the articleService fails to mark the article as read") {
-                                        xit("presents a banner indicates that a failure happened") {
-                                            fail("Not Implemented")
+                                        beforeEach {
+                                            articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
+                                        }
+
+                                        it("shows an alert box") {
+                                            expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                            if let alert = subject.presentedViewController as? UIAlertController {
+                                                expect(alert.title) == "Error saving article"
+                                                expect(alert.message) == "Unknown Database Error"
+                                                expect(alert.actions.count) == 1
+                                                if let action = alert.actions.first {
+                                                    expect(action.title) == "Ok"
+                                                    action.handler?(action)
+                                                    expect(subject.presentedViewController).to(beNil())
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -691,10 +712,8 @@ class ArticleListControllerSpec: QuickSpec {
         describe("when a feed is backing the list") {
             beforeEach {
                 subject = ArticleListController(
-                    mainQueue: mainQueue,
                     feedService: feedService,
                     articleService: articleService,
-                    feedRepository: dataRepository,
                     themeRepository: themeRepository,
                     settingsRepository: settingsRepository,
                     articleCellController: articleCellController,
@@ -707,208 +726,261 @@ class ArticleListControllerSpec: QuickSpec {
 
                 subject.view.layoutIfNeeded()
             }
-            
-            sharedBehaviorForAnArticleList()
 
-            describe("the bar button items") {
-                it("displays 3 items") {
-                    expect(subject.navigationItem.rightBarButtonItems).to(haveCount(3))
+            it("requests the articles from the cell") {
+                expect(feedService.articlesOfFeedCalls).to(equal([feed]))
+            }
+
+            describe("when the request succeeds") {
+                beforeEach {
+                    feedService.articlesOfFeedPromises.last?.resolve(.success(AnyCollection(articles)))
                 }
 
-                describe("the first item") {
-                    var item: UIBarButtonItem?
+                sharedBehaviorForAnArticleList()
 
-                    beforeEach {
-                        item = subject.navigationItem.rightBarButtonItems?.first
+                describe("the bar button items") {
+                    it("displays 3 items") {
+                        expect(subject.navigationItem.rightBarButtonItems).to(haveCount(3))
                     }
 
-                    it("is the edit button") {
-                        expect(item) == subject.editButtonItem
-                    }
-                }
+                    describe("the first item") {
+                        var item: UIBarButtonItem?
 
-                describe("the second item") {
-                    var item: UIBarButtonItem?
-
-                    beforeEach {
-                        guard subject.navigationItem.rightBarButtonItems?.count == 3 else {
-                            item = nil
-                            return
-                        }
-                        item = subject.navigationItem.rightBarButtonItems?[1]
-                    }
-
-                    describe("when tapped") {
                         beforeEach {
-                            item?.tap()
+                            item = subject.navigationItem.rightBarButtonItems?.first
                         }
 
-                        it("presents a share sheet") {
-                            expect(subject.presentedViewController).to(beAnInstanceOf(URLShareSheet.self))
+                        it("is the edit button") {
+                            expect(item) == subject.editButtonItem
                         }
+                    }
 
-                        it("configures the share sheet with the url") {
-                            guard let shareSheet = subject.presentedViewController as? URLShareSheet else {
-                                fail("No share sheet presented")
+                    describe("the second item") {
+                        var item: UIBarButtonItem?
+
+                        beforeEach {
+                            guard subject.navigationItem.rightBarButtonItems?.count == 3 else {
+                                item = nil
                                 return
                             }
-                            expect(shareSheet.url) == feed.url
-                            expect(shareSheet.themeRepository) == themeRepository
-                            expect(shareSheet.activityItems as? [URL]) == [feed.url]
+                            item = subject.navigationItem.rightBarButtonItems?[1]
+                        }
+
+                        describe("when tapped") {
+                            beforeEach {
+                                item?.tap()
+                            }
+
+                            it("presents a share sheet") {
+                                expect(subject.presentedViewController).to(beAnInstanceOf(URLShareSheet.self))
+                            }
+
+                            it("configures the share sheet with the url") {
+                                guard let shareSheet = subject.presentedViewController as? URLShareSheet else {
+                                    fail("No share sheet presented")
+                                    return
+                                }
+                                expect(shareSheet.url) == feed.url
+                                expect(shareSheet.themeRepository) == themeRepository
+                                expect(shareSheet.activityItems as? [URL]) == [feed.url]
+                            }
                         }
                     }
-                }
 
-                describe("the third item") {
-                    var item: UIBarButtonItem?
+                    describe("the third item") {
+                        var item: UIBarButtonItem?
 
-                    beforeEach {
-                        item = subject.navigationItem.rightBarButtonItems?.last
-                    }
-
-                    describe("when tapped") {
                         beforeEach {
-                            item?.tap()
+                            item = subject.navigationItem.rightBarButtonItems?.last
                         }
 
-                        it("shows an indicator that we're doing things") {
-                            let indicator = subject.view.subviews.filter {
-                                return $0.isKind(of: ActivityIndicator.classForCoder())
-                                }.first as? ActivityIndicator
-                            expect(indicator?.message) == "Marking Articles as Read"
-                        }
-
-                        it("marks all articles of that feed as read") {
-                            expect(dataRepository.lastFeedMarkedRead) == feed
-                        }
-
-                        describe("when the mark read promise succeeds") {
+                        describe("when tapped") {
                             beforeEach {
-                                dataRepository.lastFeedMarkedReadPromise?.resolve(.success(1))
-
-                                mainQueue.runNextOperation()
-
+                                item?.tap()
                             }
-                            it("removes the indicator") {
+
+                            it("shows an indicator that we're doing things") {
                                 let indicator = subject.view.subviews.filter {
                                     return $0.isKind(of: ActivityIndicator.classForCoder())
-                                    }.first
-                                expect(indicator).to(beNil())
-                            }
-                        }
-
-                        describe("when the mark read promise fails") {
-                            beforeEach {
-                                dataRepository.lastFeedMarkedReadPromise?.resolve(.failure(.database(.unknown)))
-                                mainQueue.runNextOperation()
+                                    }.first as? ActivityIndicator
+                                expect(indicator?.message) == "Marking Articles as Read"
                             }
 
-                            it("removes the indicator") {
-                                let indicator = subject.view.subviews.filter {
-                                    return $0.isKind(of: ActivityIndicator.classForCoder())
-                                    }.first
-                                expect(indicator).to(beNil())
+                            it("marks all articles of that feed as read") {
+                                expect(feedService.readAllOfFeedCalls) == [feed]
                             }
 
-                            it("shows an alert box") {
-                                expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                if let alert = subject.presentedViewController as? UIAlertController {
-                                    expect(alert.title) == "Unable to Mark Articles as Read"
-                                    expect(alert.message) == "Unknown Database Error"
-                                    expect(alert.actions.count) == 1
-                                    if let action = alert.actions.first {
-                                        expect(action.title) == "Ok"
-                                        action.handler?(action)
-                                        expect(subject.presentedViewController).to(beNil())
+                            describe("when the mark read promise succeeds") {
+                                beforeEach {
+                                    feedService.readAllOfFeedPromises.last?.resolve(.success())
+                                }
+
+                                it("removes the indicator") {
+                                    let indicator = subject.view.subviews.filter {
+                                        return $0.isKind(of: ActivityIndicator.classForCoder())
+                                        }.first
+                                    expect(indicator).to(beNil())
+                                }
+
+                                it("refreshes the articles") {
+                                    expect(feedService.articlesOfFeedCalls).to(haveCount(2))
+                                    expect(feedService.articlesOfFeedCalls.last).to(equal(feed))
+                                }
+
+                                describe("when the articles request succeeds") {
+                                    let updatedArticles = [
+                                        articleFactory(title: "1"),
+                                        articleFactory(title: "2"),
+                                        articleFactory(title: "3"),
+                                    ]
+                                    var oldConfigureCalls: Int = 0
+                                    beforeEach {
+                                        oldConfigureCalls = articleCellController.configureCalls.count
+                                        feedService.articlesOfFeedPromises.last?.resolve(.success(AnyCollection(updatedArticles)))
+                                    }
+
+                                    it("refreshes the tableView with the articles") {
+                                        expect(articleCellController.configureCalls.count - oldConfigureCalls).to(equal(3))
+
+                                        let calls = articleCellController.configureCalls.suffix(3)
+
+                                        expect(calls.map { $0.article }).to(equal(updatedArticles))
+                                    }
+                                }
+                            }
+
+                            describe("when the mark read promise fails") {
+                                beforeEach {
+                                    feedService.readAllOfFeedPromises.last?.resolve(.failure(.database(.unknown)))
+                                }
+
+                                it("removes the indicator") {
+                                    let indicator = subject.view.subviews.filter {
+                                        return $0.isKind(of: ActivityIndicator.classForCoder())
+                                        }.first
+                                    expect(indicator).to(beNil())
+                                }
+
+                                it("shows an alert box") {
+                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                                    if let alert = subject.presentedViewController as? UIAlertController {
+                                        expect(alert.title) == "Unable to Mark Articles as Read"
+                                        expect(alert.message) == "Unknown Database Error"
+                                        expect(alert.actions.count) == 1
+                                        if let action = alert.actions.first {
+                                            expect(action.title) == "Ok"
+                                            action.handler?(action)
+                                            expect(subject.presentedViewController).to(beNil())
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            describe("the table") {
-                describe("the first section") {
-                    func itShowsTheFeedCell() {
-                        it("has 1 cell in the first section of the tableView") {
-                            expect(subject.tableView.numberOfRows(inSection: 0)) == 1
-                        }
-
-                        describe("that cell") {
-                            var cell: ArticleListHeaderCell?
-
-                            beforeEach {
-                                feed.summary = "summary"
-                                cell = subject.tableView.visibleCells.first as? ArticleListHeaderCell
-                                expect(cell).toNot(beNil())
+                describe("the table") {
+                    describe("the first section") {
+                        func itShowsTheFeedCell() {
+                            it("has 1 cell in the first section of the tableView") {
+                                expect(subject.tableView.numberOfRows(inSection: 0)) == 1
                             }
 
-                            it("is configured with the theme repository") {
-                                expect(cell?.themeRepository).to(beIdenticalTo(themeRepository))
-                            }
+                            describe("that cell") {
+                                var cell: ArticleListHeaderCell?
 
-                            it("configures the image") {
-                                if let image = feed.image {
-                                    expect(cell?.iconView.image) == image
-                                } else {
-                                    expect(cell?.iconView.image).to(beNil())
+                                beforeEach {
+                                    feed.summary = "summary"
+                                    cell = subject.tableView.visibleCells.first as? ArticleListHeaderCell
+                                    expect(cell).toNot(beNil())
+                                }
+
+                                it("is configured with the theme repository") {
+                                    expect(cell?.themeRepository).to(beIdenticalTo(themeRepository))
+                                }
+
+                                it("configures the image") {
+                                    if let image = feed.image {
+                                        expect(cell?.iconView.image) == image
+                                    } else {
+                                        expect(cell?.iconView.image).to(beNil())
+                                    }
+                                }
+
+                                it("is configured with the feed") {
+                                    expect(cell?.summary.text) == feed.displaySummary
+                                }
+
+                                it("has no edit actions") {
+                                    expect(subject.tableView(subject.tableView, editActionsForRowAt: IndexPath(row: 0, section: 0))).to(beNil())
+                                }
+
+                                it("does nothing when tapped") {
+                                    subject.tableView(subject.tableView, didSelectRowAt: IndexPath(row: 0, section: 0))
+                                    expect(navigationController.topViewController).to(beIdenticalTo(subject))
                                 }
                             }
+                        }
 
-                            it("is configured with the feed") {
-                                expect(cell?.summary.text) == feed.displaySummary
+                        context("if the feed has a summary and an image") {
+                            beforeEach {
+                                feed.image = Image(named: "GrayIcon")
+                                feed.summary = "a summary"
+                                subject.tableView.reloadData()
                             }
 
-                            it("has no edit actions") {
-                                expect(subject.tableView(subject.tableView, editActionsForRowAt: IndexPath(row: 0, section: 0))).to(beNil())
+                            itShowsTheFeedCell()
+                        }
+
+                        context("if the feed only has a summary") {
+                            beforeEach {
+                                feed.image = nil
+                                feed.summary = "a summary"
+                                subject.tableView.reloadData()
                             }
 
-                            it("does nothing when tapped") {
-                                subject.tableView(subject.tableView, didSelectRowAt: IndexPath(row: 0, section: 0))
-                                expect(navigationController.topViewController).to(beIdenticalTo(subject))
+                            itShowsTheFeedCell()
+                        }
+
+                        context("if the feed only has an image") {
+                            beforeEach {
+                                feed.image = Image(named: "GrayIcon")
+                                feed.summary = ""
+                                subject.tableView.reloadData()
+                            }
+                            itShowsTheFeedCell()
+                        }
+
+                        context("if the feed has neither summary nor image") {
+                            beforeEach {
+                                feed.image = nil
+                                feed.summary = ""
+                                subject.tableView.reloadData()
+                            }
+
+                            it("has 0 cells in the first section of the tableView") {
+                                expect(subject.tableView.numberOfRows(inSection: 0)) == 0
                             }
                         }
                     }
+                }
+            }
 
-                    context("if the feed has a summary and an image") {
-                        beforeEach {
-                            feed.image = Image(named: "GrayIcon")
-                            feed.summary = "a summary"
-                            subject.tableView.reloadData()
-                        }
+            describe("when the request fails") {
+                beforeEach {
+                    feedService.articlesOfFeedPromises.last?.resolve(.failure(.database(.unknown)))
+                }
 
-                        itShowsTheFeedCell()
-                    }
-
-                    context("if the feed only has a summary") {
-                        beforeEach {
-                            feed.image = nil
-                            feed.summary = "a summary"
-                            subject.tableView.reloadData()
-                        }
-
-                        itShowsTheFeedCell()
-                    }
-
-                    context("if the feed only has an image") {
-                        beforeEach {
-                            feed.image = Image(named: "GrayIcon")
-                            feed.summary = ""
-                            subject.tableView.reloadData()
-                        }
-                        itShowsTheFeedCell()
-                    }
-
-                    context("if the feed has neither summary nor image") {
-                        beforeEach {
-                            feed.image = nil
-                            feed.summary = ""
-                            subject.tableView.reloadData()
-                        }
-
-                        it("has 0 cells in the first section of the tableView") {
-                            expect(subject.tableView.numberOfRows(inSection: 0)) == 0
+                it("shows an alert box") {
+                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                    if let alert = subject.presentedViewController as? UIAlertController {
+                        expect(alert.title) == "Unable to retrieve articles"
+                        expect(alert.message) == "Unknown Database Error"
+                        expect(alert.actions.count) == 1
+                        if let action = alert.actions.first {
+                            expect(action.title) == "Ok"
+                            action.handler?(action)
+                            expect(subject.presentedViewController).to(beNil())
                         }
                     }
                 }
@@ -918,10 +990,8 @@ class ArticleListControllerSpec: QuickSpec {
         describe("when a feed is not backing the list") {
             beforeEach {
                 subject = ArticleListController(
-                    mainQueue: mainQueue,
                     feedService: feedService,
                     articleService: articleService,
-                    feedRepository: dataRepository,
                     themeRepository: themeRepository,
                     settingsRepository: settingsRepository,
                     articleCellController: articleCellController,

@@ -30,8 +30,8 @@ class BootstrapWorkFlowSpec: QuickSpec {
                 migrationViewController: { migrationViewControllerFactory() },
                 feedsTableViewController: {
                     feedsTableViewControllerFactory(
-                        articleListController: {
-                            articleListControllerFactory(articleViewController: { articleViewControllerFactory(articleUseCase: articleUseCase) } )
+                        articleListController: { feed in
+                            articleListControllerFactory(feed: feed, articleViewController: { articleViewControllerFactory(articleUseCase: articleUseCase) } )
                         }
                     )
                 },

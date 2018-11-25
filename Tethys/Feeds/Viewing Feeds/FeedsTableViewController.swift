@@ -77,7 +77,7 @@ public final class FeedsTableViewController: UIViewController {
     fileprivate let findFeedViewController: () -> FindFeedViewController
     fileprivate let feedViewController: () -> FeedViewController
     fileprivate let settingsViewController: () -> SettingsViewController
-    fileprivate let articleListController: () -> ArticleListController
+    fileprivate let articleListController: (Feed) -> ArticleListController
 
     fileprivate var markReadFuture: Future<Result<Int, TethysError>>?
 
@@ -88,7 +88,7 @@ public final class FeedsTableViewController: UIViewController {
                 findFeedViewController: @escaping () -> FindFeedViewController,
                 feedViewController: @escaping () -> FeedViewController,
                 settingsViewController: @escaping () -> SettingsViewController,
-                articleListController: @escaping () -> ArticleListController
+                articleListController: @escaping (Feed) -> ArticleListController
         ) {
         self.feedRepository = feedRepository
         self.themeRepository = themeRepository
@@ -262,8 +262,7 @@ public final class FeedsTableViewController: UIViewController {
     }
 
     internal func showFeed(_ feed: Feed, animated: Bool) -> ArticleListController {
-        let articleListController = self.articleListController()
-        articleListController.feed = feed
+        let articleListController = self.articleListController(feed)
         self.navigationController?.pushViewController(articleListController, animated: animated)
         return articleListController
     }

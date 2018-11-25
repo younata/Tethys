@@ -49,7 +49,7 @@ func feedsTableViewControllerFactory(
     findFeedViewController: @escaping () -> FindFeedViewController = { findFeedViewControllerFactory() },
     feedViewController: @escaping () -> FeedViewController = { feedViewControllerFactory() },
     settingsViewController: @escaping () -> SettingsViewController = { settingsViewControllerFactory() },
-    articleListController: @escaping () -> ArticleListController = { articleListControllerFactory() }
+    articleListController: @escaping (Feed) -> ArticleListController = { feed in articleListControllerFactory(feed: feed) }
     ) -> FeedsTableViewController {
     return FeedsTableViewController(
         feedRepository: feedRepository,
@@ -84,18 +84,18 @@ func htmlViewControllerFactory(themeRepository: ThemeRepository = themeRepositor
 }
 
 func articleListControllerFactory(
+    feed: Feed = feedFactory(),
     feedService: FeedService = FakeFeedService(),
     articleService: ArticleService = FakeArticleService(),
     themeRepository: ThemeRepository = themeRepositoryFactory(),
-    settingsRepository: SettingsRepository = settingsRepositoryFactory(),
     articleCellController: ArticleCellController = FakeArticleCellController(),
     articleViewController: @escaping () -> ArticleViewController = { articleViewControllerFactory() }
     ) -> ArticleListController {
     return ArticleListController(
+        feed: feed,
         feedService: feedService,
         articleService: articleService,
         themeRepository: themeRepository,
-        settingsRepository: settingsRepository,
         articleCellController: articleCellController,
         articleViewController: articleViewController
     )

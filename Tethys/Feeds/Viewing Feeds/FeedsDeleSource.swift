@@ -19,7 +19,7 @@ public final class FeedsDeleSource: NSObject {
     fileprivate let themeRepository: ThemeRepository
     fileprivate let navigationController: UINavigationController?
     fileprivate let mainQueue: OperationQueue
-    fileprivate let articleListController: (() -> (ArticleListController))?
+    fileprivate let articleListController: ((Feed) -> (ArticleListController))?
 
     fileprivate var feeds: [Feed] {
         return self.feedsSource.feeds
@@ -34,7 +34,7 @@ public final class FeedsDeleSource: NSObject {
                 themeRepository: ThemeRepository,
                 navigationController: UINavigationController?,
                 mainQueue: OperationQueue,
-                articleListController: (() -> (ArticleListController))?) {
+                articleListController: ((Feed) -> (ArticleListController))?) {
         self.tableView = tableView
         self.feedsSource = feedsSource
         self.themeRepository = themeRepository
@@ -55,8 +55,7 @@ public final class FeedsDeleSource: NSObject {
     }
 
     fileprivate func configuredArticleListWithFeeds(_ feed: Feed) -> ArticleListController? {
-        let articleListController = self.articleListController?()
-        articleListController?.feed = feed
+        let articleListController = self.articleListController?(feed)
         return articleListController
     }
 

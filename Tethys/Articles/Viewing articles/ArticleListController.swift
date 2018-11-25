@@ -10,9 +10,8 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         static var numberOfSections = 2
     }
 
-    public internal(set) var articles = AnyCollection<Article>([])
+    public private(set) var articles = AnyCollection<Article>([])
 
-    public var feed: Feed?
 
     public private(set) lazy var markReadButton: UIBarButtonItem = {
         return UIBarButtonItem(title: NSLocalizedString("ArticleListController_Action_MarkRead", comment: ""),
@@ -21,23 +20,23 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
 
     public let tableView = UITableView(forAutoLayout: ())
 
+    public let feed: Feed
     fileprivate let feedService: FeedService
     fileprivate let articleService: ArticleService
     private let themeRepository: ThemeRepository
-    private let settingsRepository: SettingsRepository
     private let articleCellController: ArticleCellController
     private let articleViewController: () -> ArticleViewController
 
-    public init(feedService: FeedService,
+    public init(feed: Feed,
+                feedService: FeedService,
                 articleService: ArticleService,
                 themeRepository: ThemeRepository,
-                settingsRepository: SettingsRepository,
                 articleCellController: ArticleCellController,
                 articleViewController: @escaping () -> ArticleViewController) {
+        self.feed = feed
         self.feedService = feedService
         self.articleService = articleService
         self.themeRepository = themeRepository
-        self.settingsRepository = settingsRepository
         self.articleCellController = articleCellController
         self.articleViewController = articleViewController
 
@@ -65,7 +64,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         self.view.addSubview(self.tableView)
         self.tableView.autoPinEdgesToSuperviewEdges()
 
-        self.navigationItem.title = self.feed?.displayTitle
+        self.navigationItem.title = self.feed.displayTitle
 
         self.tableView.allowsMultipleSelection = false
 
@@ -183,7 +182,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         guard let section = ArticleListSection(rawValue: section) else { return 0 }
         switch section {
         case .overview:
-            if let feed = self.feed, feed.image != nil || !feed.displaySummary.isEmpty {
+            if self.feed.image != nil || !self.feed.displaySummary.isEmpty {
                 return 1
             }
             return 0
@@ -198,14 +197,11 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         }
         switch section {
         case .overview:
-            if let feed = self.feed {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "headerCell",
-                                                         for: indexPath) as! ArticleListHeaderCell
-                cell.configure(summary: feed.displaySummary, image: feed.image)
-                cell.themeRepository = self.themeRepository
-                return cell
-            }
-            return UITableViewCell()
+            let cell = tableView.dequeueReusableCell(withIdentifier: "headerCell",
+                                                     for: indexPath) as! ArticleListHeaderCell
+            cell.configure(summary: self.feed.displaySummary, image: self.feed.image)
+            cell.themeRepository = self.themeRepository
+            return cell
         case .articles:
             let article = self.articleForIndexPath(indexPath)
             let cellTypeToUse = (article.read ? "read" : "unread")
@@ -269,9 +265,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     // MARK: Private
 
     fileprivate func resetArticles() {
-        guard let feed = self.feed else { return }
-
-        self.feedService.articles(of: feed).then { result in
+        self.feedService.articles(of: self.feed).then { result in
             switch result {
             case .success(let articles):
                 self.articles = articles
@@ -286,17 +280,10 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     }
 
     fileprivate func resetBarItems() {
-        var barItems = [self.editButtonItem]
-
-        if self.feed != nil {
-            let shareSheet = UIBarButtonItem(barButtonSystemItem: .action,
-                                             target: self,
-                                             action: #selector(ArticleListController.shareFeed))
-            barItems.append(shareSheet)
-            barItems.append(self.markReadButton)
-        }
-
-        self.navigationItem.rightBarButtonItems = barItems
+        let shareSheet = UIBarButtonItem(barButtonSystemItem: .action,
+                                         target: self,
+                                         action: #selector(ArticleListController.shareFeed))
+        self.navigationItem.rightBarButtonItems = [self.editButtonItem, shareSheet, self.markReadButton]
     }
 
     private func spacer() -> UIBarButtonItem {
@@ -304,26 +291,23 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     }
 
     @objc fileprivate func shareFeed() {
-        guard let url = self.feed?.url else { return }
         let shareSheet = URLShareSheet(
-            url: url,
+            url: self.feed.url,
             themeRepository: self.themeRepository,
-            activityItems: [url],
+            activityItems: [self.feed.url],
             applicationActivities: nil
         )
         self.present(shareSheet, animated: true, completion: nil)
     }
 
     @objc private func markFeedRead() {
-        guard let feed = self.feed else { return }
-
         let indicator = ActivityIndicator(forAutoLayout: ())
         self.view.addSubview(indicator)
         indicator.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
 
         indicator.configure(message: NSLocalizedString("ArticleListController_Action_MarkRead_Indicator", comment: ""))
 
-        self.feedService.readAll(of: feed).then { markReadResult in
+        self.feedService.readAll(of: self.feed).then { markReadResult in
             switch markReadResult {
             case .success:
                 indicator.removeFromSuperview()

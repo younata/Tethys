@@ -64,12 +64,12 @@ public func configure(container: Container) {
 }
 
 private func registerViewControllers(container: Container) {
-    container.register(ArticleListController.self) { r in
+    container.register(ArticleListController.self) { r, feed in
         return ArticleListController(
+            feed: feed,
             feedService: r.resolve(FeedService.self)!,
             articleService: r.resolve(ArticleService.self)!,
             themeRepository: r.resolve(ThemeRepository.self)!,
-            settingsRepository: r.resolve(SettingsRepository.self)!,
             articleCellController: r.resolve(ArticleCellController.self, argument: false)!,
             articleViewController: { r.resolve(ArticleViewController.self)! }
         )
@@ -108,7 +108,7 @@ private func registerViewControllers(container: Container) {
             findFeedViewController: { r.resolve(FindFeedViewController.self)! },
             feedViewController: { r.resolve(FeedViewController.self)! },
             settingsViewController: { r.resolve(SettingsViewController.self)! },
-            articleListController: { r.resolve(ArticleListController.self)! }
+            articleListController: { (feed: Feed?) in r.resolve(ArticleListController.self, argument: feed)! }
         )
     }
 

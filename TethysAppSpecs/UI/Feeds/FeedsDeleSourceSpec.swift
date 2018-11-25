@@ -12,7 +12,7 @@ class FeedsDeleSourceSpec: QuickSpec {
         var themeRepository: ThemeRepository!
         var navigationController: UINavigationController!
         var mainQueue: FakeOperationQueue!
-        var articleListFactory: (() -> (ArticleListController))!
+        var articleListFactory: ((Feed) -> (ArticleListController))!
         var articleListFactoryCallCount = 0
 
         let feed1 = Feed(title: "a", url: URL(string: "http://example.com/feed")!, summary: "",
@@ -31,9 +31,9 @@ class FeedsDeleSourceSpec: QuickSpec {
 
             feedsSource.feeds = feeds
 
-            articleListFactory = {
+            articleListFactory = { feed in
                 articleListFactoryCallCount += 1
-                return articleListControllerFactory()
+                return articleListControllerFactory(feed: feed)
             }
 
             mainQueue = FakeOperationQueue()
@@ -44,7 +44,7 @@ class FeedsDeleSourceSpec: QuickSpec {
                 themeRepository: themeRepository,
                 navigationController: navigationController,
                 mainQueue: mainQueue,
-                articleListController: articleListFactory
+                articleListController: { feed in articleListFactory(feed) }
             )
 
 

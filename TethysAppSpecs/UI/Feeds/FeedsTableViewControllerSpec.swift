@@ -56,7 +56,7 @@ class FeedsTableViewControllerSpec: QuickSpec {
                         documentationViewController: { fatalError() }
                     )
                 },
-                articleListController: { return articleListControllerFactory() }
+                articleListController: { feed in articleListControllerFactory(feed: feed) }
             )
 
             navigationController = UINavigationController(rootViewController: subject)

@@ -68,7 +68,7 @@ class BootstrapWorkFlowSpec: QuickSpec {
 
                 it("has a FeedsTableViewController as the root controller") {
                     let nc = vc as? UINavigationController
-                    expect(nc?.viewControllers.first).to(beAnInstanceOf(FeedsTableViewController.self))
+                    expect(nc?.viewControllers.first).to(beAnInstanceOf(FeedListController.self))
                 }
 
                 if feed != nil {

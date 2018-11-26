@@ -23,7 +23,6 @@ final class InjectorModuleSpec: QuickSpec {
         describe("Repositories") {
             singleton(SettingsRepository.self)
             singleton(ThemeRepository.self)
-            singleton(QuickActionRepository.self)
         }
 
         describe("Controllers") {
@@ -93,7 +92,7 @@ final class InjectorModuleSpec: QuickSpec {
                         expect(subject.resolve(ArticleViewController.self, argument: article)).toNot(beNil())
                     }
 
-                    it("sets the feed to the given feed") {
+                    it("sets the feed to the given article") {
                         let controller = subject.resolve(ArticleViewController.self, argument: article)
                         expect(controller?.article).to(equal(article))
                     }
@@ -104,9 +103,25 @@ final class InjectorModuleSpec: QuickSpec {
 
             exists(DocumentationViewController.self)
 
-            exists(FeedsListController.self)
-            exists(FeedsTableViewController.self)
-            exists(FeedViewController.self)
+            exists(FeedListController.self)
+            describe("FeedViewController") {
+                it("returns nil without an argument") {
+                    expect(subject.resolve(FeedViewController.self)).to(beNil())
+                }
+
+                describe("if created with a feed") {
+                    let feed: Feed = feedFactory()
+
+                    it("exists") {
+                        expect(subject.resolve(FeedViewController.self, argument: feed)).toNot(beNil())
+                    }
+
+                    it("sets the feed to the given feed") {
+                        let controller = subject.resolve(FeedViewController.self, argument: feed)
+                        expect(controller?.feed).to(equal(feed))
+                    }
+                }
+            }
             exists(FindFeedViewController.self)
 
             exists(HTMLViewController.self)

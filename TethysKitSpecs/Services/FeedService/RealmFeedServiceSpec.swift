@@ -14,6 +14,8 @@ final class RealmFeedServiceSpec: QuickSpec {
         var mainQueue: FakeOperationQueue!
         var workQueue: FakeOperationQueue!
 
+        var updateService: FakeUpdateService!
+
         var subject: RealmFeedService!
 
         var realmFeed1: RealmFeed!
@@ -46,8 +48,11 @@ final class RealmFeedServiceSpec: QuickSpec {
             workQueue = FakeOperationQueue()
             workQueue.runSynchronously = true
 
+            updateService = FakeUpdateService()
+
             subject = RealmFeedService(
                 realmProvider: realmProvider,
+                updateService: updateService,
                 mainQueue: mainQueue,
                 workQueue: workQueue
             )
@@ -68,24 +73,75 @@ final class RealmFeedServiceSpec: QuickSpec {
 
         describe("feeds()") {
             var future: Future<Result<AnyCollection<Feed>, TethysError>>!
-            // TODO: invoke an update service
+
+            func itUpdatesTheFeeds(_ onSuccess: () -> Void) {
+                describe("updating feeds") {
+                    it("asks the update service to update each of the feeds") {
+                        expect(updateService.updateFeedCalls).to(contain(
+                            Feed(realmFeed: realmFeed1),
+                            Feed(realmFeed: realmFeed2),
+                            Feed(realmFeed: realmFeed3)
+                        ))
+                        expect(updateService.updateFeedCalls).to(haveCount(3))
+                    }
+
+                    describe("if all feeds successfully update") {
+                        beforeEach {
+                            let feeds = [realmFeed1, realmFeed2, realmFeed3]
+                            updateService.updateFeedPromises.enumerated().forEach { index, promise in
+                                $0.resolve(.success(Feed(realmFeed: feeds[index])))
+                            }
+                        }
+
+                        onSuccess()
+                    }
+
+                    describe("if any feeds fail to update") {
+                        beforeEach {
+                            updateService.updateFeedPromises[0].resolve(.success(Feed(realmFeed: realmFeed1)))
+                            updateService.updateFeedPromises[2].resolve(.success(Feed(realmFeed: realmFeed3)))
+                            updateService.updateFeedPromises[1].resolve(.failure(.http(503)))
+                        }
+
+                        onSuccess()
+                    }
+
+                    describe("if all feeds fail to update") {
+                        beforeEach {
+                            updateService.updateFeedPromises.forEach { $0.resolve(.failure(.http(503))) }
+                        }
+
+                        it("resolves the future with an error") {
+                            expect(future.value?.error).to(equal(
+                                TethysError.multiple([
+                                    .http(503),
+                                    .http(503),
+                                    .http(503)
+                                ])
+                            ))
+                        }
+                    }
+                }
+            }
 
             context("when none of the feeds have unread articles associated with them") {
                 beforeEach {
                     future = subject.feeds()
                 }
 
-                it("resolves the future with all stored feeds, ordered by the title of the feed") {
-                    guard let result = future.value?.value else {
-                        fail("Expected to have the list of feeds, got \(String(describing: future.value))")
-                        return
-                    }
+                itUpdatesTheFeeds {
+                    it("resolves the future with all stored feeds, ordered by the title of the feed") {
+                        guard let result = future.value?.value else {
+                            fail("Expected to have the list of feeds, got \(String(describing: future.value))")
+                            return
+                        }
 
-                    expect(Array(result)) == [
-                        Feed(realmFeed: realmFeed1),
-                        Feed(realmFeed: realmFeed2),
-                        Feed(realmFeed: realmFeed3),
-                    ]
+                        expect(Array(result)) == [
+                            Feed(realmFeed: realmFeed1),
+                            Feed(realmFeed: realmFeed2),
+                            Feed(realmFeed: realmFeed3),
+                        ]
+                    }
                 }
             }
 
@@ -112,17 +168,19 @@ final class RealmFeedServiceSpec: QuickSpec {
                     future = subject.feeds()
                 }
 
-                it("resolves the future all stored feeds, ordered first by unread count, then by the title of the feed") {
-                    guard let result = future.value?.value else {
-                        fail("Expected to have the list of feeds, got \(String(describing: future.value))")
-                        return
-                    }
+                itUpdatesTheFeeds {
+                    it("resolves the future all stored feeds, ordered first by unread count, then by the title of the feed") {
+                        guard let result = future.value?.value else {
+                            fail("Expected to have the list of feeds, got \(String(describing: future.value))")
+                            return
+                        }
 
-                    expect(Array(result)) == [
-                        Feed(realmFeed: realmFeed2),
-                        Feed(realmFeed: realmFeed1),
-                        Feed(realmFeed: realmFeed3),
-                    ]
+                        expect(Array(result)) == [
+                            Feed(realmFeed: realmFeed2),
+                            Feed(realmFeed: realmFeed1),
+                            Feed(realmFeed: realmFeed3),
+                        ]
+                    }
                 }
             }
         }

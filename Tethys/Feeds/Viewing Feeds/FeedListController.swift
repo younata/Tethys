@@ -3,24 +3,15 @@ import CBGPromise
 import Result
 import TethysKit
 
-public final class FeedsTableViewController: UIViewController {
+public final class FeedListController: UIViewController {
     public private(set) lazy var tableView: UITableView = {
         let tableView = self.tableViewController.tableView!
-        tableView.tableHeaderView = self.searchBar
+        tableView.tableHeaderView = UIView()
         tableView.tableFooterView = UIView()
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 80
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
-    }()
-
-    public lazy var searchBar: UISearchBar = {
-        let searchBar = UISearchBar(frame: CGRect(x: 0, y: 0, width: 320, height: 32))
-        searchBar.autocorrectionType = .no
-        searchBar.autocapitalizationType = .none
-        searchBar.delegate = self
-        searchBar.placeholder = NSLocalizedString("FeedsTableViewController_SearchBar_Placeholder", comment: "")
-        return searchBar
     }()
 
     public lazy var updateBar: UIProgressView = {
@@ -69,28 +60,28 @@ public final class FeedsTableViewController: UIViewController {
     private var menuTopOffset: NSLayoutConstraint!
     public let notificationView = NotificationView(forAutoLayout: ())
 
-    fileprivate let feedRepository: DatabaseUseCase
+    fileprivate let feedService: FeedService
     fileprivate let themeRepository: ThemeRepository
     fileprivate let settingsRepository: SettingsRepository
     fileprivate let mainQueue: OperationQueue
 
     fileprivate let findFeedViewController: () -> FindFeedViewController
-    fileprivate let feedViewController: () -> FeedViewController
+    fileprivate let feedViewController: (Feed) -> FeedViewController
     fileprivate let settingsViewController: () -> SettingsViewController
     fileprivate let articleListController: (Feed) -> ArticleListController
 
     fileprivate var markReadFuture: Future<Result<Int, TethysError>>?
 
-    public init(feedRepository: DatabaseUseCase,
+    public init(feedService: FeedService,
                 themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
                 mainQueue: OperationQueue,
                 findFeedViewController: @escaping () -> FindFeedViewController,
-                feedViewController: @escaping () -> FeedViewController,
+                feedViewController: @escaping (Feed) -> FeedViewController,
                 settingsViewController: @escaping () -> SettingsViewController,
                 articleListController: @escaping (Feed) -> ArticleListController
         ) {
-        self.feedRepository = feedRepository
+        self.feedService = feedService
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.mainQueue = mainQueue
@@ -130,23 +121,23 @@ public final class FeedsTableViewController: UIViewController {
         self.showLoadingView(NSLocalizedString("FeedsTableViewController_Loading_Feeds", comment: ""))
 
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self,
-                                        action: #selector(FeedsTableViewController.didTapAddFeed))
+                                        action: #selector(FeedListController.didTapAddFeed))
         self.navigationItem.rightBarButtonItems = [addButton, self.tableViewController.editButtonItem]
 
         let settingsTitle = NSLocalizedString("SettingsViewController_Title", comment: "")
         let settingsButton = UIBarButtonItem(title: settingsTitle,
             style: .plain,
             target: self,
-            action: #selector(FeedsTableViewController.presentSettings))
+            action: #selector(FeedListController.presentSettings))
         self.navigationItem.leftBarButtonItem = settingsButton
 
         self.navigationItem.title = NSLocalizedString("FeedsTableViewController_Title", comment: "")
 
         self.registerForPreviewing(with: self.feedsDeleSource, sourceView: self.tableView)
 
-        self.feedRepository.addSubscriber(self)
         self.themeRepository.addSubscriber(self)
-        self.reload(self.searchBar.text)
+        self.refreshControl.beginRefreshing()
+        self.reload()
     }
 
     public override func viewWillAppear(_ animated: Bool) {
@@ -171,14 +162,12 @@ public final class FeedsTableViewController: UIViewController {
     public override var canBecomeFirstResponder: Bool { return true }
     public override var keyCommands: [UIKeyCommand]? {
         let commands = [
-            UIKeyCommand(input: "f", modifierFlags: .command, action: #selector(FeedsTableViewController.search)),
             UIKeyCommand(input: "i", modifierFlags: .command,
-                         action: #selector(FeedsTableViewController.importFromWeb)),
+                         action: #selector(FeedListController.importFromWeb)),
             UIKeyCommand(input: ",", modifierFlags: .command,
-                         action: #selector(FeedsTableViewController.presentSettings))
+                         action: #selector(FeedListController.presentSettings))
             ]
         let discoverabilityTitles = [
-            NSLocalizedString("FeedsTableViewController_Command_Search", comment: ""),
             NSLocalizedString("FeedsTableViewController_Command_ImportWeb", comment: ""),
             NSLocalizedString("FeedsTableViewController_Command_Settings", comment: "")
         ]
@@ -191,8 +180,6 @@ public final class FeedsTableViewController: UIViewController {
     internal func importFromWeb() {
         self.presentController(self.findFeedViewController(), from: self.navigationItem.rightBarButtonItem)
     }
-
-    @objc fileprivate func search() { self.searchBar.becomeFirstResponder() }
 
     @objc fileprivate func presentSettings() {
         self.presentController(self.settingsViewController(), from: self.navigationItem.leftBarButtonItem)
@@ -216,23 +203,16 @@ public final class FeedsTableViewController: UIViewController {
         self.loadingView.autoPinEdgesToSuperviewEdges()
     }
 
-    fileprivate func reload(_ tag: String?, feeds: [Feed]? = nil) {
+    fileprivate func reload() {
         let reloadWithFeeds: ([Feed]) -> Void = {feeds in
-            let sortedFeeds = feeds.sorted {(f1: Feed, f2: Feed) in
-                let f1Unread = f1.unreadArticles.count
-                let f2Unread = f2.unreadArticles.count
-                if f1Unread != f2Unread { return f1Unread > f2Unread }
-                return f1.displayTitle.lowercased() < f2.displayTitle.lowercased()
-            }
-
             self.refreshControl.endRefreshing()
 
             self.loadingView.removeFromSuperview()
             self.onboardingView.removeFromSuperview()
-            let filteredFeeds = sortedFeeds.filter {
+            let filteredFeeds = feeds.filter {
                 return $0.title != NSLocalizedString("AppDelegate_UnreadFeed_Title", comment: "")
             }
-            if filteredFeeds.isEmpty && (tag == nil || tag?.isEmpty == true) {
+            if filteredFeeds.isEmpty {
                 self.view.addSubview(self.onboardingView)
                 self.onboardingView.autoCenterInSuperview()
                 self.onboardingView.autoMatch(.width,
@@ -242,17 +222,24 @@ public final class FeedsTableViewController: UIViewController {
             }
 
             let oldFeeds = self.feeds
-            self.feeds = sortedFeeds
-            if oldFeeds != sortedFeeds {
+            self.feeds = feeds
+            if oldFeeds != feeds {
                 self.tableView.reloadSections(IndexSet(integer: 0), with: .right)
             } else {
                 self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
             }
         }
 
-        if let feeds = feeds, (tag == nil || tag?.isEmpty == true) { reloadWithFeeds(feeds) }
-        _ = self.feedRepository.feeds(matchingTag: tag).then {
-            if case let Result.success(feeds) = $0 { reloadWithFeeds(feeds) }
+        self.feedService.feeds().then {
+            switch $0 {
+            case .success(let feeds):
+                reloadWithFeeds(Array(feeds))
+            case .failure(let error):
+                self.show(
+                    error: error,
+                    title: NSLocalizedString("FeedsTableViewController_UpdateFeeds_Error_Title", comment: "")
+                )
+            }
         }
     }
 
@@ -266,9 +253,14 @@ public final class FeedsTableViewController: UIViewController {
         self.navigationController?.pushViewController(articleListController, animated: animated)
         return articleListController
     }
+
+    fileprivate func show(error: TethysError, title: String) {
+        self.notificationView.display(title, message: error.localizedDescription)
+
+    }
 }
 
-extension FeedsTableViewController: FeedsSource {
+extension FeedListController: FeedsSource {
     public func deleteFeed(feed: Feed) -> Future<Bool> {
         let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
         let confirmDelete = NSLocalizedString("Generic_ConfirmDelete", comment: "")
@@ -278,9 +270,19 @@ extension FeedsTableViewController: FeedsSource {
         let promise = Promise<Bool>()
         alert.addAction(UIAlertAction(title: deleteTitle, style: .destructive) { _ in
             self.feeds = self.feeds.filter { $0 != feed }
-            _ = self.feedRepository.deleteFeed(feed)
             self.dismiss(animated: true, completion: nil)
-            promise.resolve(true)
+            self.feedService.remove(feed: feed).then { result in
+                switch result {
+                case .success:
+                    promise.resolve(true)
+                case .failure(let error):
+                    self.show(
+                        error: error,
+                        title: NSLocalizedString("FeedsTableViewController_Loading_Deleting_Feed_Error", comment: "")
+                    )
+                    promise.resolve(false)
+                }
+            }
         })
         let cancelTitle = NSLocalizedString("Generic_Cancel", comment: "")
         alert.addAction(UIAlertAction(title: cancelTitle, style: .cancel) { _ in
@@ -292,19 +294,21 @@ extension FeedsTableViewController: FeedsSource {
     }
 
     public func markRead(feed: Feed) -> Future<Void> {
-        self.markReadFuture = self.feedRepository.markFeedAsRead(feed)
-        return self.markReadFuture!.map { _ -> Void in
-            self.mainQueue.addOperation {
-                self.reload(self.searchBar.text)
-                self.markReadFuture = nil
+        return self.feedService.readAll(of: feed).map { result -> Void in
+            switch result {
+            case .success:
+                break
+            case .failure(let error):
+                self.show(
+                    error: error,
+                    title: NSLocalizedString("FeedsTableViewController_Loading_Marking_Feed_Error", comment: "")
+                )
             }
         }
     }
 
     public func editFeed(feed: Feed) {
-        let feedViewController = self.feedViewController()
-        feedViewController.feed = feed
-        self.present(UINavigationController(rootViewController: feedViewController),
+        self.present(UINavigationController(rootViewController: self.feedViewController(feed)),
                      animated: true, completion: nil)
     }
 
@@ -317,34 +321,15 @@ extension FeedsTableViewController: FeedsSource {
         )
         self.present(shareSheet, animated: true, completion: nil)
     }
-
-    public func selectFeed(feed: Feed) {}
 }
 
-extension FeedsTableViewController: Refresher {
+extension FeedListController: Refresher {
     public func refresh() {
-        self.feedRepository.updateFeeds({_, errors in
-            if !errors.isEmpty {
-                let alertTitle = NSLocalizedString("FeedsTableViewController_UpdateFeeds_Error_Title", comment: "")
-                let messageString: String
-                if errors.count == 1, let error = errors.first, error.userInfo["feedTitle"] == nil {
-                    messageString = error.localizedDescription
-                } else {
-                    messageString = errors.filter({$0.userInfo["feedTitle"] != nil}).map({(error) -> (String) in
-                        let title = error.userInfo["feedTitle"]!
-                        let failureReason = error.localizedFailureReason ?? error.localizedDescription
-                        return "\(title): \(failureReason)"
-                    }).joined(separator: "\n")
-                }
-
-                let alertMessage = messageString
-                self.notificationView.display(alertTitle, message: alertMessage)
-            }
-        })
+        self.reload()
     }
 }
 
-extension FeedsTableViewController: ThemeRepositorySubscriber {
+extension FeedListController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.navigationController?.navigationBar.barStyle = self.themeRepository.barStyle
         self.navigationController?.navigationBar.titleTextAttributes = [
@@ -355,34 +340,6 @@ extension FeedsTableViewController: ThemeRepositorySubscriber {
         self.tableView.separatorColor = self.themeRepository.textColor
         self.tableView.indicatorStyle = self.themeRepository.scrollIndicatorStyle
 
-        self.searchBar.barStyle = self.themeRepository.barStyle
-        self.searchBar.backgroundColor = self.themeRepository.backgroundColor
-
         self.setNeedsStatusBarAppearanceUpdate()
-    }
-}
-
-extension FeedsTableViewController: UISearchBarDelegate {
-    public func searchBar(_ searchBar: UISearchBar, textDidChange text: String) { self.reload(text) }
-}
-
-extension FeedsTableViewController: DataSubscriber {
-    public func markedArticles(_ articles: [Article], asRead read: Bool) {}
-
-    public func deletedArticle(_ article: Article) {}
-
-    public func deletedFeed(_ feed: Feed, feedsLeft: Int) { self.reload(self.searchBar.text) }
-    public func willUpdateFeeds() {
-        self.updateBar.isHidden = false
-        self.updateBar.progress = 0
-        self.refreshControl.beginRefreshing()
-    }
-    public func didUpdateFeedsProgress(_ finished: Int, total: Int) {
-        self.updateBar.setProgress(Float(finished) / Float(total), animated: true)
-    }
-    public func didUpdateFeeds(_ feeds: [Feed]) {
-        self.updateBar.isHidden = true
-        self.refreshControl.endRefreshing(force: true)
-        self.reload(self.searchBar.text, feeds: feeds)
     }
 }

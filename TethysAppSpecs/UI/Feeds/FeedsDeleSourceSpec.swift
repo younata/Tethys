@@ -92,11 +92,6 @@ class FeedsDeleSourceSpec: QuickSpec {
                             expect(articleList.feed) == feed
                         }
                     }
-
-                    it("calls selectFeed on the feedsSource") {
-                        expect(feedsSource.selectFeedCallCount) == 1
-                        expect(feedsSource.selectFeedArgsForCall(callIndex: 0)) == feed
-                    }
                 }
 
                 describe("force pressing a cell") {

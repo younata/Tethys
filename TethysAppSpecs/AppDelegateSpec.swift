@@ -15,6 +15,7 @@ class AppDelegateSpec: QuickSpec {
         var container: Container! = nil
 
         var dataUseCase: FakeDatabaseUseCase! = nil
+        var feedService: FakeFeedService! = nil
 
         var analytics: FakeAnalytics! = nil
         var importUseCase: FakeImportUseCase! = nil
@@ -29,6 +30,9 @@ class AppDelegateSpec: QuickSpec {
 
             dataUseCase = FakeDatabaseUseCase()
             container.register(DatabaseUseCase.self) { _ in dataUseCase }
+
+            feedService = FakeFeedService()
+            container.register(FeedService.self) { _ in feedService }
 
             container.register(MigrationUseCase.self) { _ in FakeMigrationUseCase() }
 
@@ -100,7 +104,7 @@ class AppDelegateSpec: QuickSpec {
 
                     it("should have a FeedsTableViewController as the root controller") {
                         let nc = vc as! UINavigationController
-                        expect(nc.viewControllers.first).to(beAnInstanceOf(FeedsTableViewController.self))
+                        expect(nc.viewControllers.first).to(beAnInstanceOf(FeedListController.self))
                     }
                 }
             }
@@ -174,135 +178,6 @@ class AppDelegateSpec: QuickSpec {
                     if (analytics.logEventCallCount > 0) {
                         expect(analytics.logEventArgsForCall(0).0) == "QuickActionUsed"
                         expect(analytics.logEventArgsForCall(0).1) == ["kind": "Add New Feed"]
-                    }
-                }
-            }
-
-            describe("selecting a 'View Feed' action") {
-                let feed = Feed(title: "title", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil, identifier: "feed")
-                let article = Article(title: "title", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "identifier", content: "", read: false, synced: false, feed: feed, flags: [])
-                feed.addArticle(article)
-
-                context("when the userInfo is properly set") {
-                    beforeEach {
-                        let shortCut = UIApplicationShortcutItem(type: "com.rachelbrindle.rssclient.viewfeed",
-                                                                 localizedTitle: feed.displayTitle,
-                                                                 localizedSubtitle: nil,
-                                                                 icon: nil,
-                                                                 userInfo: ["feed": feed.title])
-
-                        subject.application(application, performActionFor: shortCut) {completed in
-                            completedAction = completed
-                        }
-                    }
-
-                    it("asks the dataUseCase for the feeds") {
-                        expect(dataUseCase.feedsPromises.count) == 1
-                    }
-
-                    describe("when the promise succeeds") {
-                        context("and the selected feed is in the list") {
-                            beforeEach {
-                                dataUseCase.feedsPromises.last?.resolve(.success([feed]))
-                            }
-
-                            it("opens an article list for the selected feed") {
-                                expect(completedAction) == true
-
-                                let navController = (subject.window?.rootViewController as? UISplitViewController)?.viewControllers.first as? UINavigationController
-                                expect(navController?.visibleViewController).to(beAKindOf(ArticleListController.self))
-                                let articleController = navController?.visibleViewController as? ArticleListController
-                                expect(articleController?.feed) == feed
-                            }
-
-                            it("tells analytics to log that the user used quick actions to add a new feed") {
-                                expect(analytics.logEventCallCount) == 1
-                                if (analytics.logEventCallCount > 0) {
-                                    expect(analytics.logEventArgsForCall(0).0) == "QuickActionUsed"
-                                    expect(analytics.logEventArgsForCall(0).1) == ["kind": "View Feed"]
-                                }
-                            }
-                        }
-
-                        context("and the selected feed is not in the list") {
-                            beforeEach {
-                                dataUseCase.feedsPromises.last?.resolve(.success([]))
-                            }
-
-                            it("does nothing and returns false") {
-                                expect(completedAction) == false
-                            }
-                        }
-                    }
-
-                    describe("when the promise fails") {
-                        beforeEach {
-                            dataUseCase.feedsPromises.last?.resolve(.failure(.unknown))
-                        }
-
-                        it("does nothing and returns false") {
-                            expect(completedAction) == false
-                        }
-                    }
-                }
-
-                context("when the userinfo was not set") {
-                    beforeEach {
-                        let shortCut = UIApplicationShortcutItem(type: "com.rachelbrindle.rssclient.viewfeed",
-                                                                 localizedTitle: feed.displayTitle)
-
-                        subject.application(application, performActionFor: shortCut) {completed in
-                            completedAction = completed
-                        }
-                    }
-
-                    it("asks the dataUseCase for the feeds") {
-                        expect(dataUseCase.feedsPromises.count) == 1
-                    }
-
-                    describe("when the promise succeeds") {
-                        context("and the selected feed is in the list") {
-                            beforeEach {
-                                dataUseCase.feedsPromises.last?.resolve(.success([feed]))
-                            }
-
-                            it("opens an article list for the selected feed") {
-                                expect(completedAction) == true
-
-                                let navController = (subject.window?.rootViewController as? UISplitViewController)?.viewControllers.first as? UINavigationController
-                                expect(navController?.visibleViewController).to(beAKindOf(ArticleListController.self))
-                                let articleController = navController?.visibleViewController as? ArticleListController
-                                expect(articleController?.feed) == feed
-                            }
-
-                            it("tells analytics to log that the user used quick actions to add a new feed") {
-                                expect(analytics.logEventCallCount) == 1
-                                if (analytics.logEventCallCount > 0) {
-                                    expect(analytics.logEventArgsForCall(0).0) == "QuickActionUsed"
-                                    expect(analytics.logEventArgsForCall(0).1) == ["kind": "View Feed"]
-                                }
-                            }
-                        }
-
-                        context("and the selected feed is not in the list") {
-                            beforeEach {
-                                dataUseCase.feedsPromises.last?.resolve(.success([]))
-                            }
-
-                            it("does nothing and returns false") {
-                                expect(completedAction) == false
-                            }
-                        }
-                    }
-
-                    describe("when the promise fails") {
-                        beforeEach {
-                            dataUseCase.feedsPromises.last?.resolve(.failure(.unknown))
-                        }
-
-                        it("does nothing and returns false") {
-                            expect(completedAction) == false
-                        }
                     }
                 }
             }

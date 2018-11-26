@@ -52,14 +52,4 @@ class FakeFeedsSource: FeedsSource {
         self.deleteFeedPromises.append(promise)
         return promise.future
     }
-
-    var selectFeedCallCount: Int = 0
-    private var selectFeedArgs: [Feed] = []
-    func selectFeedArgsForCall(callIndex: Int) -> Feed {
-        return self.selectFeedArgs[callIndex]
-    }
-    func selectFeed(feed: Feed) {
-        self.selectFeedArgs.append(feed)
-        self.selectFeedCallCount += 1
-    }
 }

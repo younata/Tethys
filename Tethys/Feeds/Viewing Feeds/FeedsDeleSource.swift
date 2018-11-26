@@ -9,8 +9,6 @@ public protocol FeedsSource {
     func shareFeed(feed: Feed)
     func markRead(feed: Feed) -> Future<Void>
     func deleteFeed(feed: Feed) -> Future<Bool>
-
-    func selectFeed(feed: Feed)
 }
 
 public final class FeedsDeleSource: NSObject {
@@ -133,7 +131,6 @@ extension FeedsDeleSource: UITableViewDelegate {
         if let al = self.configuredArticleListWithFeeds(feed) {
             self.showArticleList(al, animated: true)
         }
-        self.feedsSource.selectFeed(feed: feed)
     }
 
     public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {

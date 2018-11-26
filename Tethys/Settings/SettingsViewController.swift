@@ -11,7 +11,6 @@ public final class SettingsViewController: UIViewController {
 
     fileprivate let themeRepository: ThemeRepository
     fileprivate let settingsRepository: SettingsRepository
-    fileprivate let quickActionRepository: QuickActionRepository
     fileprivate let databaseUseCase: DatabaseUseCase
     fileprivate let opmlService: OPMLService
     fileprivate let mainQueue: OperationQueue
@@ -24,14 +23,12 @@ public final class SettingsViewController: UIViewController {
 
     public init(themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
-                quickActionRepository: QuickActionRepository,
                 databaseUseCase: DatabaseUseCase,
                 opmlService: OPMLService,
                 mainQueue: OperationQueue,
                 documentationViewController: @escaping () -> DocumentationViewController) {
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
-        self.quickActionRepository = quickActionRepository
         self.databaseUseCase = databaseUseCase
         self.opmlService = opmlService
         self.mainQueue = mainQueue
@@ -144,88 +141,6 @@ public final class SettingsViewController: UIViewController {
                                                      section: SettingsSection.refresh.rawValue)
         self.tableView.selectRow(at: currentThemeIndexPath, animated: false, scrollPosition: .none)
         self.tableView.selectRow(at: currentRefreshStyleIndexPath, animated: false, scrollPosition: .none)
-
-    }
-
-    fileprivate func titleForQuickAction(_ row: Int) -> String {
-        let quickActions = self.quickActionRepository.quickActions
-        if row >= quickActions.count {
-            let title: String
-            if quickActions.count == 0 {
-                title = NSLocalizedString("SettingsViewController_QuickActions_AddFirst", comment: "")
-            } else {
-                title = NSLocalizedString("SettingsViewController_QuickActions_AddAdditional", comment: "")
-            }
-            return title
-        } else {
-            let action = quickActions[row]
-            return action.localizedTitle
-        }
-    }
-
-    fileprivate func feedForQuickAction(_ row: Int, feeds: [Feed]) -> Feed? {
-        let quickActions = self.quickActionRepository.quickActions
-        guard row < quickActions.count else { return nil }
-
-        let quickAction = quickActions[row]
-
-        return feeds.objectPassingTest({$0.title == quickAction.localizedTitle})
-    }
-
-    fileprivate func quickActionController(indexPath: IndexPath) -> FeedsListController {
-        let feedsListController = FeedsListController(mainQueue: self.mainQueue,
-                                                      themeRepository: self.themeRepository)
-        feedsListController.navigationItem.title = self.titleForQuickAction(indexPath.row)
-
-        let quickActions = self.quickActionRepository.quickActions
-        _ = self.databaseUseCase.feeds().then {
-            if case let Result.success(feeds) = $0 {
-                if !quickActions.isEmpty {
-                    let quickActionFeeds = quickActions.indices.reduce([Feed]()) {
-                        guard let feed = self.feedForQuickAction($1, feeds: feeds) else { return $0 }
-                        return $0 + [feed]
-                    }
-                    feedsListController.feeds = feeds.filter { !quickActionFeeds.contains($0) }
-                } else {
-                    feedsListController.feeds = feeds
-                }
-            }
-        }
-        if indexPath.row < self.quickActionRepository.quickActions.count {
-            let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
-            feedsListController._previewActionItems = [
-                UIPreviewAction(title: deleteTitle, style: .destructive) { _ in
-                    self.quickActionRepository.quickActions.remove(at: indexPath.row)
-                    if self.quickActionRepository.quickActions.count != 2 {
-                        self.tableView.deleteRows(at: [indexPath], with: .automatic)
-                    } else {
-                        self.tableView.reloadRows(at: [
-                            indexPath, IndexPath(row: 2, section: indexPath.section)
-                            ], with: .automatic)
-                    }
-                }
-            ]
-        }
-        feedsListController.tapFeed = {feed in
-            let newQuickAction = UIApplicationShortcutItem(type: "com.rachelbrindle.rssclient.viewfeed",
-                                                           localizedTitle: feed.displayTitle,
-                                                           localizedSubtitle: nil,
-                                                           icon: nil,
-                                                           userInfo: ["feed": feed.title])
-            if indexPath.row < quickActions.count {
-                self.quickActionRepository.quickActions[indexPath.row] = newQuickAction
-            } else {
-                self.quickActionRepository.quickActions.append(newQuickAction)
-                if self.quickActionRepository.quickActions.count <= 3 {
-                    let quickActionsCount = self.quickActionRepository.quickActions.count
-                    let insertedIndexPath = IndexPath(row: quickActionsCount, section: indexPath.section)
-                    self.tableView.insertRows(at: [insertedIndexPath], with: .automatic)
-                }
-            }
-            self.tableView.reloadRows(at: [indexPath], with: .automatic)
-            _ = self.navigationController?.popViewController(animated: true)
-        }
-        return feedsListController
     }
 }
 
@@ -253,12 +168,10 @@ extension SettingsViewController: UIViewControllerPreviewingDelegate {
     public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
                                   viewControllerForLocation location: CGPoint) -> UIViewController? {
         guard let indexPath = self.tableView.indexPathForRow(at: location),
-            let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection) else {
+            let section = SettingsSection(rawValue: indexPath.section) else {
                 return nil
         }
         switch section {
-        case .quickActions:
-            return self.quickActionController(indexPath: indexPath)
         case .credits:
             if indexPath.row == 0 {
                 guard let url = URL(string: "https://twitter.com/younata") else { return nil }
@@ -291,7 +204,7 @@ extension SettingsViewController: UITableViewDataSource {
     }
 
     public func tableView(_ tableView: UITableView, numberOfRowsInSection sectionNum: Int) -> Int {
-        guard let section = SettingsSection(rawValue: sectionNum, traits: self.traitCollection) else {
+        guard let section = SettingsSection(rawValue: sectionNum) else {
             return 0
         }
         switch section {
@@ -299,11 +212,6 @@ extension SettingsViewController: UITableViewDataSource {
             return 2
         case .refresh:
             return 2
-        case .quickActions:
-            if self.quickActionRepository.quickActions.count == 3 {
-                return 3
-            }
-            return self.quickActionRepository.quickActions.count + 1
         case .other:
             return OtherSection.numberOfOptions
         case .credits:
@@ -312,7 +220,7 @@ extension SettingsViewController: UITableViewDataSource {
     }
 
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection) else {
+        guard let section = SettingsSection(rawValue: indexPath.section) else {
             return TableViewCell()
         }
         switch section {
@@ -320,8 +228,6 @@ extension SettingsViewController: UITableViewDataSource {
             return self.themeCell(indexPath: indexPath)
         case .refresh:
             return self.refreshCell(indexPath: indexPath)
-        case .quickActions:
-            return self.quickActionCell(indexPath: indexPath)
         case .other:
             return self.otherCell(indexPath: indexPath)
         case .credits:
@@ -330,7 +236,7 @@ extension SettingsViewController: UITableViewDataSource {
     }
 
     public func tableView(_ tableView: UITableView, titleForHeaderInSection sectionNum: Int) -> String? {
-        guard let section = SettingsSection(rawValue: sectionNum, traits: self.traitCollection) else { return nil }
+        guard let section = SettingsSection(rawValue: sectionNum) else { return nil }
         return section.description
     }
 
@@ -347,13 +253,6 @@ extension SettingsViewController: UITableViewDataSource {
         guard let refreshStyle = RefreshControlStyle(rawValue: indexPath.row) else { return cell }
         cell.themeRepository = self.themeRepository
         cell.textLabel?.text = refreshStyle.description
-        return cell
-    }
-
-    private func quickActionCell(indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
-        cell.themeRepository = self.themeRepository
-        cell.textLabel?.text = self.titleForQuickAction(indexPath.row)
         return cell
     }
 
@@ -401,7 +300,7 @@ extension SettingsViewController: UITableViewDataSource {
 
 extension SettingsViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection) else { return }
+        guard let section = SettingsSection(rawValue: indexPath.section) else { return }
 
         switch section {
         case .theme:
@@ -414,34 +313,12 @@ extension SettingsViewController: UITableViewDelegate {
     }
 
     public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection),
-            section == .quickActions else { return false }
-        if section == .quickActions { return indexPath.row < self.quickActionRepository.quickActions.count }
-        return true
+        return false
     }
 
     public func tableView(_ tableView: UITableView,
                           editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        guard self.tableView(tableView, canEditRowAt: indexPath) else { return nil }
-
-        guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection) else {return nil}
-        switch section {
-        case .quickActions:
-            let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
-            let deleteAction = UITableViewRowAction(style: .default, title: deleteTitle) {_, indexPath in
-                self.quickActionRepository.quickActions.remove(at: indexPath.row)
-                if self.quickActionRepository.quickActions.count != 2 {
-                    tableView.deleteRows(at: [indexPath], with: .automatic)
-                } else {
-                    tableView.reloadRows(at: [
-                        indexPath, IndexPath(row: 2, section: indexPath.section)
-                        ], with: .automatic)
-                }
-            }
-            return [deleteAction]
-        default:
-            return nil
-        }
+        return nil
     }
 
     @objc(tableView:commitEditingStyle:forRowAtIndexPath:)
@@ -450,14 +327,12 @@ extension SettingsViewController: UITableViewDelegate {
                           forRowAt indexPath: IndexPath) {}
 
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let section = SettingsSection(rawValue: indexPath.section, traits: self.traitCollection) else { return }
+        guard let section = SettingsSection(rawValue: indexPath.section) else { return }
         switch section {
         case .theme:
             self.didTapThemeCell(indexPath: indexPath)
         case .refresh:
             self.didTapRefreshCell(indexPath: indexPath)
-        case .quickActions:
-            self.didTapQuickActionCell(tableView: tableView, indexPath: indexPath)
         case .other:
             self.didTapOtherCell(tableView: tableView, indexPath: indexPath)
         case .credits:
@@ -477,11 +352,6 @@ extension SettingsViewController: UITableViewDelegate {
         self.refreshControlStyle = refreshControlStyle
         self.navigationItem.rightBarButtonItem?.isEnabled = true
         self.reloadTable()
-    }
-
-    private func didTapQuickActionCell(tableView: UITableView, indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: false)
-        self.navigationController?.pushViewController(self.quickActionController(indexPath: indexPath), animated: true)
     }
 
     private func didTapOtherCell(tableView: UITableView, indexPath: IndexPath) {

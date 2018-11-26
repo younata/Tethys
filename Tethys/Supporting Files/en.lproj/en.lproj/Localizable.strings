@@ -2,13 +2,10 @@
 "NotificationHandler_LocalNotification_MarkRead_Title" = "New article in %@: %@";
 
 "SettingsViewController_Table_Header_Theme" = "Theme";
-"SettingsViewController_Table_Header_QuickActions" = "Quick Actions";
 "SettingsViewController_Table_Header_Refresh" = "Refresh Style";
 "SettingsViewController_Table_Header_Other" = "Other";
 "SettingsViewController_Table_Header_Credits" = "Credits";
 "SettingsViewController_Title" = "Settings";
-"SettingsViewController_QuickActions_AddFirst" = "Add a Quick Action";
-"SettingsViewController_QuickActions_AddAdditional" = "Add a new Quick Action";
 "SettingsViewController_Other_ShowReadingTimes" = "Show Estimated Reading Times";
 "SettingsViewController_Other_ExportOPML" = "Export OPML";
 "SettingsViewController_Other_ExportOPML_Error_Title" = "Error Exporting OPML";
@@ -27,11 +24,13 @@
 "FeedsTableViewController_Title" = "Feeds";
 "FeedsTableViewController_Loading_Feeds" = "Loading Feeds";
 "FeedsTableViewController_Loading_Deleting_Feed" = "Deleting Feed";
+"FeedsTableViewController_Loading_Deleting_Feed_Error" = "Unable to delete feed";
 "FeedsTableViewController_Loading_Marking_Feed" = "Marking Articles as Read";
+"FeedsTableViewController_Loading_Marking_Feed_Error" = "Unable to update feed";
 "FeedsTableViewController_Command_Search" = "Filter by tags";
 "FeedsTableViewController_Command_ImportWeb" = "Add from Web";
 "FeedsTableViewController_Command_Settings" = "Open settings";
-"FeedsTableViewController_UpdateFeeds_Error_Title" = "Unable to update feeds";
+"FeedsTableViewController_UpdateFeeds_Error_Title" = "Unable to fetch feeds";
 "FeedsTableViewController_UpdateFeeds_Error_Accept" = "OK";
 "FeedsTableViewController_Table_EditAction_Delete" = "Delete";
 "FeedsTableViewController_Table_EditAction_MarkRead" = "Mark\nRead";

@@ -20,11 +20,13 @@ func findFeedViewControllerFactory(
 }
 
 func feedViewControllerFactory(
+    feed: Feed = feedFactory(),
     feedRepository: DatabaseUseCase = FakeDatabaseUseCase(),
     themeRepository: ThemeRepository = themeRepositoryFactory(),
     tagEditorViewController: @escaping () -> TagEditorViewController = { tagEditorViewControllerFactory() }
     ) -> FeedViewController {
     return FeedViewController(
+        feed: feed,
         feedRepository: feedRepository,
         themeRepository: themeRepository,
         tagEditorViewController: tagEditorViewController
@@ -42,17 +44,17 @@ func tagEditorViewControllerFactory(
 }
 
 func feedsTableViewControllerFactory(
-    feedRepository: DatabaseUseCase = FakeDatabaseUseCase(),
+    feedService: FeedService = FakeFeedService(),
     themeRepository: ThemeRepository = themeRepositoryFactory(),
     settingsRepository: SettingsRepository = settingsRepositoryFactory(),
     mainQueue: FakeOperationQueue = FakeOperationQueue(),
     findFeedViewController: @escaping () -> FindFeedViewController = { findFeedViewControllerFactory() },
-    feedViewController: @escaping () -> FeedViewController = { feedViewControllerFactory() },
+    feedViewController: @escaping (Feed) -> FeedViewController = { feed in feedViewControllerFactory(feed: feed) },
     settingsViewController: @escaping () -> SettingsViewController = { settingsViewControllerFactory() },
     articleListController: @escaping (Feed) -> ArticleListController = { feed in articleListControllerFactory(feed: feed) }
-    ) -> FeedsTableViewController {
-    return FeedsTableViewController(
-        feedRepository: feedRepository,
+    ) -> FeedListController {
+    return FeedListController(
+        feedService: feedService,
         themeRepository: themeRepository,
         settingsRepository: SettingsRepository(userDefaults: nil),
         mainQueue: FakeOperationQueue(),
@@ -116,7 +118,6 @@ func migrationViewControllerFactory(
 func settingsViewControllerFactory(
     themeRepository: ThemeRepository = themeRepositoryFactory(),
     settingsRepository: SettingsRepository = settingsRepositoryFactory(),
-    quickActionRepository: QuickActionRepository = FakeQuickActionRepository(),
     databaseUseCase: DatabaseUseCase = FakeDatabaseUseCase(),
     opmlService: OPMLService = FakeOPMLService(),
     mainQueue: FakeOperationQueue = FakeOperationQueue(),
@@ -125,7 +126,6 @@ func settingsViewControllerFactory(
     return SettingsViewController(
         themeRepository: themeRepository,
         settingsRepository: settingsRepository,
-        quickActionRepository: quickActionRepository,
         databaseUseCase: databaseUseCase,
         opmlService: opmlService,
         mainQueue: mainQueue,
@@ -161,7 +161,7 @@ func bootstrapWorkFlowFactory(
     migrationUseCase: MigrationUseCase = FakeMigrationUseCase(),
     splitViewController: SplitViewController = splitViewControllerFactory(),
     migrationViewController: @escaping () -> MigrationViewController = { migrationViewControllerFactory() },
-    feedsTableViewController: @escaping () -> FeedsTableViewController = { feedsTableViewControllerFactory() },
+    feedsTableViewController: @escaping () -> FeedListController = { feedsTableViewControllerFactory() },
     blankViewController: @escaping () -> BlankViewController = { blankViewControllerFactory() }
     ) -> BootstrapWorkFlow {
     return BootstrapWorkFlow(

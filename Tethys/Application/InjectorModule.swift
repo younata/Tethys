@@ -17,8 +17,6 @@ public func configure(container: Container) {
 
     container.register(UserDefaults.self) { _ in return UserDefaults.standard }
 
-    container.register(QuickActionRepository.self) { _ in return UIApplication.shared }.inObjectScope(.container)
-
     container.register(ThemeRepository.self) { r in
         return ThemeRepository(userDefaults: r.resolve(UserDefaults.self) ?? nil)
     }.inObjectScope(.container)
@@ -34,7 +32,7 @@ public func configure(container: Container) {
             migrationUseCase: r.resolve(MigrationUseCase.self)!,
             splitViewController: splitController,
             migrationViewController: { r.resolve(MigrationViewController.self)! },
-            feedsTableViewController: { r.resolve(FeedsTableViewController.self)! },
+            feedsTableViewController: { r.resolve(FeedListController.self)! },
             blankViewController: { r.resolve(BlankViewController.self)! }
         )
     }
@@ -96,28 +94,22 @@ private func registerViewControllers(container: Container) {
         )
     }
 
-    container.register(FeedsListController.self) { r in
-        return FeedsListController(
-            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
-            themeRepository: r.resolve(ThemeRepository.self)!
-        )
-    }
-
-    container.register(FeedsTableViewController.self) { r in
-        return FeedsTableViewController(
-            feedRepository: r.resolve(DatabaseUseCase.self)!,
+    container.register(FeedListController.self) { r in
+        return FeedListController(
+            feedService: r.resolve(FeedService.self)!,
             themeRepository: r.resolve(ThemeRepository.self)!,
             settingsRepository: r.resolve(SettingsRepository.self)!,
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
             findFeedViewController: { r.resolve(FindFeedViewController.self)! },
-            feedViewController: { r.resolve(FeedViewController.self)! },
+            feedViewController: { feed in r.resolve(FeedViewController.self, argument: feed)! },
             settingsViewController: { r.resolve(SettingsViewController.self)! },
             articleListController: { (feed: Feed?) in r.resolve(ArticleListController.self, argument: feed)! }
         )
     }
 
-    container.register(FeedViewController.self) { r in
+    container.register(FeedViewController.self) { r, feed in
         return FeedViewController(
+            feed: feed,
             feedRepository: r.resolve(DatabaseUseCase.self)!,
             themeRepository: r.resolve(ThemeRepository.self)!,
             tagEditorViewController: { r.resolve(TagEditorViewController.self)! }
@@ -148,7 +140,6 @@ private func registerViewControllers(container: Container) {
         return SettingsViewController(
             themeRepository: r.resolve(ThemeRepository.self)!,
             settingsRepository: r.resolve(SettingsRepository.self)!,
-            quickActionRepository: r.resolve(QuickActionRepository.self)!,
             databaseUseCase: r.resolve(DatabaseUseCase.self)!,
             opmlService: r.resolve(OPMLService.self)!,
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,

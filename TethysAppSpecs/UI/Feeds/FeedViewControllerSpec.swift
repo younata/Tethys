@@ -5,10 +5,7 @@ import Tethys
 
 class FeedViewControllerSpec: QuickSpec {
     override func spec() {
-        var feed = Feed(title: "title", url: URL(string: "http://example.com/feed")!, summary: "summary",
-            tags: ["a", "b", "c"], articles: [], image: nil)
-        let otherFeed = Feed(title: "", url: URL(string: "http://example.com/feed")!, summary: "",
-            tags: ["a", "b", "c"], articles: [], image: nil)
+        var feed: Feed!
 
         var navigationController: UINavigationController!
         var subject: FeedViewController!
@@ -18,10 +15,13 @@ class FeedViewControllerSpec: QuickSpec {
         var themeRepository: ThemeRepository!
 
         beforeEach {
+            feed = Feed(title: "title", url: URL(string: "http://example.com/feed")!, summary: "summary", tags: ["a", "b", "c"], articles: [], image: nil)
+
             themeRepository = ThemeRepository(userDefaults: nil)
 
             dataRepository = FakeDatabaseUseCase()
             subject = FeedViewController(
+                feed: feed,
                 feedRepository: dataRepository,
                 themeRepository: themeRepository,
                 tagEditorViewController: {
@@ -34,12 +34,7 @@ class FeedViewControllerSpec: QuickSpec {
             presentingController = UIViewController()
             presentingController.present(navigationController, animated: false, completion: nil)
 
-            feed = Feed(title: "title", url: URL(string: "http://example.com/feed")!, summary: "summary",
-                tags: ["a", "b", "c"], articles: [], image: nil)
-
-            subject.feed = feed
-
-            expect(subject.view).toNot(beNil())
+            subject.view.layoutIfNeeded()
         }
 
         it("has a save button") {
@@ -93,28 +88,6 @@ class FeedViewControllerSpec: QuickSpec {
                 expect(subject.feedDetailView.url) == URL(string: "http://example.com/feed")
                 expect(subject.feedDetailView.summary) == "summary"
                 expect(subject.feedDetailView.tags) == ["a", "b", "c"]
-            }
-
-            describe("when the feed has a tag that starts with '~'") {
-                beforeEach {
-                    feed.addTag("~custom title")
-                    subject.feed = feed
-                }
-
-                it("uses that tag as the title, minus the leading '~'") {
-                    expect(subject.feedDetailView.title) == "custom title"
-                }
-            }
-
-            describe("when the feed has a tag that starts with '`'") {
-                beforeEach {
-                    feed.addTag("`custom summary")
-                    subject.feed = feed
-                }
-
-                it("uses that tag as the summary, minus the leading '`'") {
-                    expect(subject.feedDetailView.summary) == "custom summary"
-                }
             }
         }
 

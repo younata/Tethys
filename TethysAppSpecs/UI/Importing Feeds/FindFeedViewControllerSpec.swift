@@ -4,14 +4,14 @@ import Tethys
 import TethysKit
 import SafariServices
 
-private var navController: UINavigationController! = nil
-private var feedRepository: FakeDatabaseUseCase! = nil
-private var rootViewController: UIViewController! = nil
-
 
 class FindFeedViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: FindFeedViewController!
+
+        var navController: UINavigationController! = nil
+        var databaseUseCase: FakeDatabaseUseCase! = nil
+        var rootViewController: UIViewController! = nil
 
         var webView: FakeWebView!
         var importUseCase: FakeImportUseCase!
@@ -19,7 +19,7 @@ class FindFeedViewControllerSpec: QuickSpec {
         var analytics: FakeAnalytics!
 
         beforeEach {
-            feedRepository = FakeDatabaseUseCase()
+            databaseUseCase = FakeDatabaseUseCase()
 
             importUseCase = FakeImportUseCase()
 

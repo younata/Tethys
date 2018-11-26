@@ -1,27 +1,23 @@
 import UIKit
-import Muon
 import TethysKit
 
 public final class FeedViewController: UIViewController {
-    public var feed: TethysKit.Feed? = nil {
-        didSet {
-            self.navigationItem.title = self.feed?.displayTitle ?? ""
-            self.resetFeedView()
-        }
-    }
 
     public let feedDetailView = FeedDetailView(forAutoLayout: ())
     fileprivate var feedURL: URL?
     fileprivate var feedTags: [String]?
 
-    private let feedRepository: DatabaseUseCase
+    public let feed: Feed
+    private let databaseUseCase: DatabaseUseCase
     private let themeRepository: ThemeRepository
     fileprivate let tagEditorViewController: () -> TagEditorViewController
 
-    public init(feedRepository: DatabaseUseCase,
+    public init(feed: Feed,
+                feedRepository: DatabaseUseCase,
                 themeRepository: ThemeRepository,
                 tagEditorViewController: @escaping () -> TagEditorViewController) {
-        self.feedRepository = feedRepository
+        self.feed = feed
+        self.databaseUseCase = feedRepository
         self.themeRepository = themeRepository
         self.tagEditorViewController = tagEditorViewController
 
@@ -42,15 +38,16 @@ public final class FeedViewController: UIViewController {
         let saveButton = UIBarButtonItem(title: saveTitle, style: .plain, target: self, action:
             #selector(FeedViewController.save))
         self.navigationItem.rightBarButtonItem = saveButton
-        self.navigationItem.title = self.feed?.displayTitle ?? ""
+        self.navigationItem.title = self.feed.displayTitle
 
         self.view.addSubview(self.feedDetailView)
         self.feedDetailView.autoPinEdgesToSuperviewEdges()
 
         self.themeRepository.addSubscriber(self)
         self.feedDetailView.themeRepository = self.themeRepository
-
         self.feedDetailView.delegate = self
+        self.feedDetailView.configure(title: feed.displayTitle, url: feed.url,
+                                      summary: feed.displaySummary, tags: feed.tags)
 
         self.setTagMaxHeight(height: self.view.bounds.size.height)
     }
@@ -65,28 +62,20 @@ public final class FeedViewController: UIViewController {
         self.feedDetailView.maxHeight = Int(height - 400)
     }
 
-    fileprivate func resetFeedView() {
-        guard let feed = self.feed else { return }
-        self.feedDetailView.configure(title: feed.displayTitle, url: feed.url,
-                                      summary: feed.displaySummary, tags: feed.tags)
-    }
-
     @objc fileprivate func dismissFromNavigation() {
         self.navigationController?.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
     @objc fileprivate func save() {
-        if let theFeed = self.feed {
-            if let theFeedURL = self.feedURL, theFeedURL != theFeed.url {
-                theFeed.url = theFeedURL
-            }
-            if let theFeedTags = self.feedTags, theFeedTags != theFeed.tags {
-                let existingTags = theFeed.tags
-                existingTags.forEach { theFeed.removeTag($0) }
-                theFeedTags.forEach { theFeed.addTag($0) }
-            }
-            _ = self.feedRepository.saveFeed(theFeed)
+        if let theFeedURL = self.feedURL, theFeedURL != self.feed.url {
+            self.feed.url = theFeedURL
         }
+        if let tags = self.feedTags, tags != self.feed.tags {
+            let existingTags = self.feed.tags
+            existingTags.forEach { self.feed.removeTag($0) }
+            tags.forEach { self.feed.addTag($0) }
+        }
+        _ = self.databaseUseCase.saveFeed(self.feed)
         self.dismissFromNavigation()
     }
 }

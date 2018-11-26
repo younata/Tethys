@@ -65,7 +65,7 @@ class UpdateUseCaseSpec: QuickSpec {
             }
 
             it("makes a network request for every feed in the data store w/ a url") {
-                expect(updateService.updatedFeeds) == [feed1, feed3]
+                expect(updateService.updateFeedCalls) == [feed1, feed3]
             }
 
             context("when the update request succeeds") {

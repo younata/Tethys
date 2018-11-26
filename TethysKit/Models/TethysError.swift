@@ -42,6 +42,7 @@ public enum TethysError: Error, Equatable {
     case network(URL, NetworkError)
     case http(Int)
     case database(DatabaseError)
+    case multiple(Array<TethysError>)
     case unknown
 
     public var localizedDescription: String {
@@ -52,6 +53,8 @@ public enum TethysError: Error, Equatable {
                                                     error.localizedDescription)
         case let .http(status):
             return String.localizedStringWithFormat("Error_Standard_HTTP", status)
+        case let .multiple(errors):
+            return errors.map { $0.localizedDescription }.joined(separator: ", ")
         case let .database(error):
             return error.localizedDescription
         case .unknown:

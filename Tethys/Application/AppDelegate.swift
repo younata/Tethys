@@ -15,12 +15,16 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
         return container
     }()
 
-    private lazy var feedRepository: DatabaseUseCase = {
+    private lazy var databaseUseCase: DatabaseUseCase = {
         return self.container.resolve(DatabaseUseCase.self)!
     }()
 
     private lazy var analytics: Analytics = {
         self.container.resolve(Analytics.self)!
+    }()
+
+    private lazy var feedService: FeedService = {
+        return self.container.resolve(FeedService.self)!
     }()
 
     private lazy var importUseCase: ImportUseCase = {
@@ -62,7 +66,7 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
 
         self.createControllerHierarchy()
 
-        self.feedRepository.addSubscriber(application)
+        self.databaseUseCase.addSubscriber(application)
 
         if launchOptions == nil || launchOptions?.isEmpty == true ||
             (launchOptions?.count == 1 && launchOptions?[UIApplicationLaunchOptionsKey("test")] as? Bool == true) {
@@ -98,7 +102,7 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         navigationController.popToRootViewController(animated: false)
 
-        guard let feedsViewController = navigationController.topViewController as? FeedsTableViewController else {
+        guard let feedsViewController = navigationController.topViewController as? FeedListController else {
             completionHandler(false)
             return
         }
@@ -107,20 +111,6 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
             feedsViewController.importFromWeb()
             self.analytics.logEvent("QuickActionUsed", data: ["kind": "Add New Feed"])
             completionHandler(true)
-        } else if shortcutItem.type == "com.rachelbrindle.rssclient.viewfeed" {
-            let feedTitle = shortcutItem.userInfo?["feed"] as? String ?? shortcutItem.localizedTitle
-            // swiftlint:disable conditional_binding_cascade
-            _ = self.feedRepository.feeds().then {
-                if case let Result.success(feeds) = $0,
-                    let feed = feeds.objectPassingTest({ return $0.title == feedTitle }) {
-                    _ = feedsViewController.showFeed(feed, animated: false)
-                    self.analytics.logEvent("QuickActionUsed", data: ["kind": "View Feed"])
-                    completionHandler(true)
-                } else {
-                    completionHandler(false)
-                }
-            }
-            // swiftlint:enable conditional_binding_cascade
         } else {
             completionHandler(false)
         }

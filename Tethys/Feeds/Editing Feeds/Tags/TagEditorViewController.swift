@@ -13,11 +13,11 @@ public final class TagEditorViewController: UIViewController {
     }
     public var onSave: ((String) -> Void)?
 
-    private let feedRepository: DatabaseUseCase
+    private let databaseUseCase: DatabaseUseCase
     private let themeRepository: ThemeRepository
 
     public init(feedRepository: DatabaseUseCase, themeRepository: ThemeRepository) {
-        self.feedRepository = feedRepository
+        self.databaseUseCase = feedRepository
         self.themeRepository = themeRepository
         super.init(nibName: nil, bundle: nil)
     }
@@ -40,7 +40,7 @@ public final class TagEditorViewController: UIViewController {
 
         self.tagPicker.translatesAutoresizingMaskIntoConstraints = false
         self.tagPicker.themeRepository = self.themeRepository
-        _ = self.feedRepository.allTags().then {
+        _ = self.databaseUseCase.allTags().then {
             if case let Result.success(tags) = $0 {
                 self.tagPicker.configureWithTags(tags) {
                     self.tag = $0

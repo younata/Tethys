@@ -88,8 +88,9 @@ final class RealmFeedServiceSpec: QuickSpec {
                     describe("if all feeds successfully update") {
                         beforeEach {
                             let feeds = [realmFeed1, realmFeed2, realmFeed3]
-                            updateService.updateFeedPromises.enumerated().forEach { index, promise in
-                                $0.resolve(.success(Feed(realmFeed: feeds[index])))
+                            updateService.updateFeedPromises.enumerated().forEach {
+                                let (index, promise) = $0
+                                promise.resolve(.success(Feed(realmFeed: feeds[index]!)))
                             }
                         }
 
@@ -98,6 +99,7 @@ final class RealmFeedServiceSpec: QuickSpec {
 
                     describe("if any feeds fail to update") {
                         beforeEach {
+                            guard updateService.updateFeedPromises.count == 3 else { return }
                             updateService.updateFeedPromises[0].resolve(.success(Feed(realmFeed: realmFeed1)))
                             updateService.updateFeedPromises[2].resolve(.success(Feed(realmFeed: realmFeed3)))
                             updateService.updateFeedPromises[1].resolve(.failure(.http(503)))

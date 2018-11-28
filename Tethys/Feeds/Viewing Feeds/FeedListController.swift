@@ -43,17 +43,6 @@ public final class FeedListController: UIViewController {
         )
     }()
 
-    fileprivate lazy var feedsDeleSource: FeedsDeleSource = {
-        return FeedsDeleSource(
-            tableView: self.tableView,
-            feedsSource: self,
-            themeRepository: self.themeRepository,
-            navigationController: self.navigationController!,
-            mainQueue: self.mainQueue,
-            articleListController: self.articleListController
-        )
-    }()
-
     public let loadingView = ActivityIndicator(forAutoLayout: ())
     public fileprivate(set) var feeds: [Feed] = []
     private let tableViewController = UITableViewController(style: .plain)
@@ -101,9 +90,10 @@ public final class FeedListController: UIViewController {
         self.tableView.keyboardDismissMode = .onDrag
         self.view.addSubview(self.tableView)
         self.tableView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
-        self.tableView.delegate = self.feedsDeleSource
-        self.tableView.dataSource = self.feedsDeleSource
-        self.feedsDeleSource.scrollViewDelegate = self.refreshControl
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
+        self.tableView.register(FeedTableCell.self, forCellReuseIdentifier: "read")
+        self.tableView.register(FeedTableCell.self, forCellReuseIdentifier: "unread")
         self.refreshControl.updateSize(self.view.bounds.size)
 
         self.navigationController?.navigationBar.addSubview(self.updateBar)
@@ -133,7 +123,7 @@ public final class FeedListController: UIViewController {
 
         self.navigationItem.title = NSLocalizedString("FeedsTableViewController_Title", comment: "")
 
-        self.registerForPreviewing(with: self.feedsDeleSource, sourceView: self.tableView)
+        self.registerForPreviewing(with: self, sourceView: self.tableView)
 
         self.themeRepository.addSubscriber(self)
         self.refreshControl.beginRefreshing()
@@ -223,11 +213,8 @@ public final class FeedListController: UIViewController {
 
             let oldFeeds = self.feeds
             self.feeds = feeds
-            if oldFeeds != feeds {
-                self.tableView.reloadSections(IndexSet(integer: 0), with: .right)
-            } else {
-                self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
-            }
+            let animation: UITableViewRowAnimation = oldFeeds != feeds ? .right : .none
+            self.tableView.reloadSections(IndexSet(integer: 0), with: animation)
         }
 
         self.feedService.feeds().then {
@@ -258,43 +245,41 @@ public final class FeedListController: UIViewController {
         self.notificationView.display(title, message: error.localizedDescription)
 
     }
-}
 
-extension FeedListController: FeedsSource {
-    public func deleteFeed(feed: Feed) -> Future<Bool> {
+    fileprivate func deleteFeed(feed: Feed, indexPath: IndexPath?) {
         let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
         let confirmDelete = NSLocalizedString("Generic_ConfirmDelete", comment: "")
         let deleteAlertTitle = NSString.localizedStringWithFormat(confirmDelete as NSString,
                                                                   feed.displayTitle) as String
         let alert = UIAlertController(title: deleteAlertTitle, message: "", preferredStyle: .alert)
-        let promise = Promise<Bool>()
         alert.addAction(UIAlertAction(title: deleteTitle, style: .destructive) { _ in
-            self.feeds = self.feeds.filter { $0 != feed }
             self.dismiss(animated: true, completion: nil)
             self.feedService.remove(feed: feed).then { result in
                 switch result {
                 case .success:
-                    promise.resolve(true)
+                    self.feeds = self.feeds.filter { $0 != feed }
+                    if let indexPath = indexPath {
+                        self.tableView.deleteRows(at: [indexPath], with: .automatic)
+                    } else {
+                        self.tableView.reloadData()
+                    }
                 case .failure(let error):
                     self.show(
                         error: error,
                         title: NSLocalizedString("FeedsTableViewController_Loading_Deleting_Feed_Error", comment: "")
                     )
-                    promise.resolve(false)
                 }
             }
         })
         let cancelTitle = NSLocalizedString("Generic_Cancel", comment: "")
         alert.addAction(UIAlertAction(title: cancelTitle, style: .cancel) { _ in
             self.dismiss(animated: true, completion: nil)
-            promise.resolve(false)
         })
         self.present(alert, animated: true, completion: nil)
-        return promise.future
     }
 
-    public func markRead(feed: Feed) -> Future<Void> {
-        return self.feedService.readAll(of: feed).map { result -> Void in
+    fileprivate func markRead(feed: Feed, indexPath: IndexPath?) {
+        self.feedService.readAll(of: feed).then { result in
             switch result {
             case .success:
                 break
@@ -304,15 +289,21 @@ extension FeedListController: FeedsSource {
                     title: NSLocalizedString("FeedsTableViewController_Loading_Marking_Feed_Error", comment: "")
                 )
             }
+        }.then { _ in
+            if let indexPath = indexPath {
+                self.tableView.reloadRows(at: [indexPath], with: .automatic)
+            } else {
+                self.tableView.reloadData()
+            }
         }
     }
 
-    public func editFeed(feed: Feed) {
+    fileprivate func editFeed(feed: Feed) {
         self.present(UINavigationController(rootViewController: self.feedViewController(feed)),
                      animated: true, completion: nil)
     }
 
-    public func shareFeed(feed: Feed) {
+    fileprivate func shareFeed(feed: Feed) {
         let shareSheet = URLShareSheet(
             url: feed.url,
             themeRepository: self.themeRepository,
@@ -320,6 +311,50 @@ extension FeedListController: FeedsSource {
             applicationActivities: nil
         )
         self.present(shareSheet, animated: true, completion: nil)
+    }
+
+    fileprivate func feed(indexPath: IndexPath) -> Feed {
+        return self.feeds[indexPath.row]
+    }
+}
+
+extension FeedListController: UIViewControllerPreviewingDelegate {
+    public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
+                                  viewControllerForLocation location: CGPoint) -> UIViewController? {
+        if let indexPath = self.tableView.indexPathForRow(at: location) {
+            let feed = self.feeds[indexPath.row]
+            let articleListController = self.articleListController(feed)
+            articleListController._previewActionItems = self.articleListPreviewItems(feed: feed)
+            return articleListController
+        }
+        return nil
+    }
+
+    private func articleListPreviewItems(feed: Feed) -> [UIPreviewAction] {
+        let readTitle = NSLocalizedString("FeedsTableViewController_PreviewItem_MarkRead", comment: "")
+        let markRead = UIPreviewAction(title: readTitle, style: .default) { _ in
+            self.markRead(feed: feed, indexPath: nil)
+        }
+        let editTitle = NSLocalizedString("Generic_Edit", comment: "")
+        let edit = UIPreviewAction(title: editTitle, style: .default) { _ in
+            self.editFeed(feed: feed)
+        }
+        let shareTitle = NSLocalizedString("Generic_Share", comment: "")
+        let share = UIPreviewAction(title: shareTitle, style: .default) { _ in
+            self.shareFeed(feed: feed)
+        }
+        let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
+        let delete = UIPreviewAction(title: deleteTitle, style: .destructive) { _ in
+            self.deleteFeed(feed: feed, indexPath: nil)
+        }
+        return [markRead, edit, share, delete]
+    }
+
+    public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
+                                  commit viewControllerToCommit: UIViewController) {
+        if let articleController = viewControllerToCommit as? ArticleListController {
+            self.navigationController?.pushViewController(articleController, animated: true)
+        }
     }
 }
 
@@ -342,4 +377,78 @@ extension FeedListController: ThemeRepositorySubscriber {
 
         self.setNeedsStatusBarAppearanceUpdate()
     }
+}
+
+extension FeedListController: UITableViewDelegate, UITableViewDataSource {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.feeds.count
+    }
+
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let feed = self.feed(indexPath: indexPath)
+        let cellTypeToUse = (feed.unreadArticles.isEmpty ? "unread": "read")
+        // Prevents a green triangle which'll (dis)appear depending on
+        // whether new feed loaded into it has unread articles or not.
+
+        if let cell = tableView.dequeueReusableCell(withIdentifier: cellTypeToUse,
+                                                    for: indexPath) as? FeedTableCell {
+            cell.feed = feed
+            cell.themeRepository = self.themeRepository
+            return cell
+        }
+        return UITableViewCell()
+    }
+
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
+
+        let feed = self.feed(indexPath: indexPath)
+
+        self.navigationController?.pushViewController(self.articleListController(feed), animated: true)
+    }
+
+    public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool { return true }
+
+    public func tableView(_ tableView: UITableView,
+                          commit editingStyle: UITableViewCellEditingStyle,
+                          forRowAt indexPath: IndexPath) {}
+
+    public func tableView(_ tableView: UITableView,
+                          editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
+        let delete = UITableViewRowAction(style: .default, title: deleteTitle) {(_, indexPath: IndexPath!) in
+            self.deleteFeed(feed: self.feed(indexPath: indexPath), indexPath: indexPath)
+        }
+
+        let readTitle = NSLocalizedString("FeedsTableViewController_Table_EditAction_MarkRead", comment: "")
+        let markRead = UITableViewRowAction(style: .normal, title: readTitle) {_, indexPath in
+            self.markRead(feed: self.feed(indexPath: indexPath), indexPath: indexPath)
+        }
+
+        let editTitle = NSLocalizedString("Generic_Edit", comment: "")
+        let edit = UITableViewRowAction(style: .normal, title: editTitle) {_, indexPath in
+            self.editFeed(feed: self.feed(indexPath: indexPath))
+        }
+        edit.backgroundColor = UIColor.blue
+        let shareTitle = NSLocalizedString("Generic_Share", comment: "")
+        let share = UITableViewRowAction(style: .normal, title: shareTitle) {_ in
+            self.shareFeed(feed: self.feed(indexPath: indexPath))
+        }
+        share.backgroundColor = UIColor.darkGreen
+        return [delete, markRead, edit, share]
+    }
+
+    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        self.refreshControl.scrollViewWillBeginDragging(scrollView)
+    }
+
+    public func scrollViewWillEndDragging(_ scrollView: UIScrollView,
+                                          withVelocity velocity: CGPoint,
+                                          targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        self.refreshControl.scrollViewWillEndDragging(scrollView,
+                                                            withVelocity: velocity,
+                                                            targetContentOffset: targetContentOffset)
+    }
+
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) { self.refreshControl.scrollViewDidScroll(scrollView) }
 }

@@ -46,10 +46,6 @@ public final class HTMLViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    deinit {
-        self.observer = nil
-    }
-
     public override func viewDidLoad() {
         super.viewDidLoad()
 

@@ -24,9 +24,9 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
     fileprivate let themeRepository: ThemeRepository
     fileprivate let analytics: Analytics
 
-    private var didAddObserverToWebContent = false
-
     private let placeholderAttributes: [String: AnyObject] = [NSForegroundColorAttributeName: UIColor.black]
+
+    private var observer: NSKeyValueObservation?
 
     public init(importUseCase: ImportUseCase,
                 themeRepository: ThemeRepository,
@@ -51,8 +51,9 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.view.addSubview(self.webContent)
         self.webContent.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
 
-        self.webContent.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: nil)
-        self.didAddObserverToWebContent = true
+        self.observer = self.webContent.observe(\.estimatedProgress, options: [.new]) { _ in
+            self.loadingBar.progress = Float(self.webContent.estimatedProgress)
+        }
 
         self.back = UIBarButtonItem(title: "<", style: .plain, target: self.webContent,
                                     action: #selector(UIWebView.goBack))
@@ -116,24 +117,11 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.analytics.logEvent("DidViewWebImport", data: nil)
     }
 
-    deinit {
-        if self.didAddObserverToWebContent {
-            self.webContent.removeObserver(self, forKeyPath: "estimatedProgress")
-        }
-    }
-
     public override func viewWillTransition(to size: CGSize,
                                             with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
         self.navField.frame = CGRect(x: 0, y: 0, width: size.width * 0.8, height: 32)
-    }
-
-    public override func observeValue(forKeyPath keyPath: String?, of object: Any?,
-                                      change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if keyPath == "estimatedProgress" && object as? NSObject == self.webContent {
-            self.loadingBar.progress = Float(self.webContent.estimatedProgress)
-        }
     }
 
     public override var canBecomeFirstResponder: Bool { return true }
@@ -171,7 +159,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
     }
 
     public func textFieldDidEndEditing(_ textField: UITextField) {
-        var button: UIBarButtonItem? = nil
+        var button: UIBarButtonItem?
         if self.webContent.estimatedProgress >= 1.0 {
             button = self.reload
         }

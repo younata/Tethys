@@ -209,26 +209,6 @@ class FeedSpec: QuickSpec {
                     expect(subject.updated) == false
                 }
             }
-
-            describe("Adding a tag that starts with '~'") {
-                beforeEach {
-                    subject.addTag("~newTag")
-                }
-
-                it("should now report the title as the new tag minus the prefix'd '~'") {
-                    expect(subject.displayTitle).to(equal("newTag"))
-                }
-            }
-
-            describe("Adding a tag that starts with '`'") {
-                beforeEach {
-                    subject.addTag("`newTag")
-                }
-
-                it("should now report the summary as the new tag minus the prefix'd '`'") {
-                    expect(subject.displaySummary).to(equal("newTag"))
-                }
-            }
         }
 
         describe("removing a tag") {

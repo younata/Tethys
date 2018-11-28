@@ -2,7 +2,7 @@ import RealmSwift
 import Result
 import CBGPromise
 
-fileprivate enum BackingStore {
+private enum BackingStore {
     case realm
     case array
 }

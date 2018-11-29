@@ -2,7 +2,7 @@
 import CBGPromise
 import Result
 
-class FakeUpdateService: UpdateServiceType {
+class FakeUpdateService: UpdateService {
     var updateFeedCalls: [Feed] = []
     var updateFeedPromises: [Promise<Result<Feed, TethysError>>] = []
     func updateFeed(_ feed: Feed) -> Future<Result<Feed, TethysError>> {

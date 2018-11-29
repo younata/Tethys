@@ -44,14 +44,6 @@ class FakeDatabaseUseCase: DatabaseUseCase {
 
     // MARK: DataWriter
 
-    let subscribers = NSHashTable<AnyObject>.weakObjects()
-    var subscribersArray: [DataSubscriber] {
-        return self.subscribers.allObjects.flatMap { $0 as? DataSubscriber }
-    }
-    func addSubscriber(_ subscriber: DataSubscriber) {
-        self.subscribers.add(subscriber)
-    }
-
     var newFeedCallback: (Feed) -> (Void) = {_ in }
     var didCreateFeed = false
     var lastCreateFeedURL: URL? = nil

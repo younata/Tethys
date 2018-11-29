@@ -68,8 +68,8 @@ private func configureServices(container: Container) {
         )
     }
 
-    container.register(UpdateServiceType.self) { r in
-        return UpdateService(
+    container.register(UpdateService.self) { r in
+        return OldUpdateService(
             dataServiceFactory: r.resolve(DataServiceFactoryType.self)!,
             urlSession: r.resolve(URLSession.self)!,
             urlSessionDelegate: r.resolve(TethysKitURLSessionDelegate.self)!,
@@ -84,7 +84,7 @@ private func configureServices(container: Container) {
     container.register(FeedService.self) { r in
         return RealmFeedService(
             realmProvider: r.resolve(RealmProvider.self)!,
-            updateService: r.resolve(UpdateServiceType.self)!,
+            updateService: r.resolve(UpdateService.self)!,
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
             workQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!
         )
@@ -133,7 +133,7 @@ private func configureUseCases(container: Container) {
 
     container.register(UpdateUseCase.self) { r in
         return DefaultUpdateUseCase(
-            updateService: r.resolve(UpdateServiceType.self)!,
+            updateService: r.resolve(UpdateService.self)!,
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
             userDefaults: r.resolve(UserDefaults.self)!
         )

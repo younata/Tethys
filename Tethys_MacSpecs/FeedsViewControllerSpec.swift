@@ -209,29 +209,5 @@ class FeedsViewControllerSpec: QuickSpec {
                 }
             }
         }
-
-        describe("when the feeds update") {
-            let feed3 = Feed(title: "feed3", url: URL(string: "https://example.com")!, summary: "feed3Summary", tags: [], articles: [], image: nil)
-
-            let updatedFeeds = [feed1, feed2, feed3]
-
-            var dataSource: NSTableViewDataSource! = nil
-
-            beforeEach {
-                for object in databaseUseCase.subscribers.allObjects {
-                    if let subscriber = object as? DataSubscriber {
-                        subscriber.didUpdateFeeds([])
-                    }
-                }
-
-                databaseUseCase.feedsPromises.last?.resolve(.success(updatedFeeds))
-
-                dataSource = subject.tableView.dataSource
-            }
-
-            it("should update the feeds") {
-                expect(dataSource.numberOfRows?(in: subject.tableView)).to(equal(updatedFeeds.count))
-            }
-        }
     }
 }

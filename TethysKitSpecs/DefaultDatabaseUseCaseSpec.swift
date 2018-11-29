@@ -21,8 +21,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
         var article1: TethysKit.Article!
         var article2: TethysKit.Article!
 
-        var dataSubscriber: FakeDataSubscriber!
-
         var reachable: FakeReachable!
 
         var dataServiceFactory: FakeDataServiceFactory!
@@ -70,9 +68,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                 dataServiceFactory: dataServiceFactory,
                 updateUseCase: updateUseCase
             )
-
-            dataSubscriber = FakeDataSubscriber()
-            subject.addSubscriber(dataSubscriber)
         }
 
         afterEach {
@@ -174,11 +169,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                 it("should remove the feed from the data service") {
                     expect(dataService.feeds).toNot(contain(feed1))
                 }
-
-                it("should inform any subscribers") {
-                    expect(dataSubscriber.deletedFeed).to(equal(feed1))
-                    expect(dataSubscriber.deletedFeedsLeft).to(equal(1))
-                }
             }
 
             describe("markFeedAsRead") {
@@ -258,8 +248,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                         expect(updateUseCase.updateFeedsCallCount) == 1
                         guard updateUseCase.updateFeedsCallCount == 1 else { return }
                         let args = updateUseCase.updateFeedsArgsForCall(0)
-                        expect(args.0) == [feed]
-                        expect(args.1 as? [FakeDataSubscriber]) == [dataSubscriber]
+                        expect(args) == [feed]
                     }
 
                     context("when the network request succeeds") {
@@ -271,10 +260,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                         describe("when the last operation completes") {
                             beforeEach {
                                 mainQueue.runNextOperation()
-                            }
-
-                            it("should inform subscribers that we updated our datastore for that feed") {
-                                expect(dataSubscriber.updatedFeeds) == feeds
                             }
 
                             it("should call the completion handler without an error") {
@@ -290,7 +275,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                         }
 
                         it("adds an operation to the main queue") {
-                            expect(mainQueue.operationCount) > 1
+                            expect(mainQueue.operationCount) >= 1
                         }
 
                         describe("when the last operation completes") {
@@ -298,10 +283,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                                 while mainQueue.operationCount > 0 {
                                     mainQueue.runNextOperation()
                                 }
-                            }
-
-                            it("should inform subscribers that we updated our datastore for that feed") {
-                                expect(dataSubscriber.updatedFeeds) == []
                             }
 
                             it("should call the completion handler without an error") {
@@ -342,10 +323,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                         expect(didCallCallback) == true
                         expect(callbackErrors).to(beEmpty())
                     }
-
-                    it("should not inform any subscribers") {
-                        expect(dataSubscriber.updatedFeeds).to(beNil())
-                    }
                 }
 
                 context("when the network is not reachable") {
@@ -368,10 +345,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                         expect(didCallCallback) == true
                         expect(callbackErrors).to(equal([]))
                     }
-
-                    it("should not inform any subscribers") {
-                        expect(dataSubscriber.updatedFeeds).to(beNil())
-                    }
                 }
 
                 context("when there are feeds in the data store") {
@@ -388,8 +361,7 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                         expect(updateUseCase.updateFeedsCallCount) == 1
                         guard updateUseCase.updateFeedsCallCount == 1 else { return }
                         let args = updateUseCase.updateFeedsArgsForCall(0)
-                        expect(args.0) == [feed1, feed2]
-                        expect(args.1 as? [FakeDataSubscriber]) == [dataSubscriber]
+                        expect(args) == [feed1, feed2]
                     }
 
                     context("trying to update feeds while a request is still in progress") {
@@ -432,20 +404,12 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
                             expect(didCallCallback) == true
                             expect(callbackErrors).to(equal([]))
                         }
-
-                        it("should inform any subscribers") {
-                            expect(dataSubscriber.updatedFeeds).toNot(beNil())
-                        }
                     }
 
                     context("when the update request fails") {
                         beforeEach {
                             mainQueue.runSynchronously = true
                             updateFeedsPromise.resolve(.failure(.unknown))
-                        }
-
-                        it("should inform subscribers that we updated our datastore for that feed") {
-                            expect(dataSubscriber.updatedFeeds) == []
                         }
 
                         it("should call the completion handler without an error") {

@@ -4,12 +4,12 @@ import RealmSwift
 
 struct RealmFeedService: FeedService {
     private let realmProvider: RealmProvider
-    private let updateService: UpdateServiceType
+    private let updateService: UpdateService
     private let mainQueue: OperationQueue
     private let workQueue: OperationQueue
 
     init(realmProvider: RealmProvider,
-         updateService: UpdateServiceType,
+         updateService: UpdateService,
          mainQueue: OperationQueue,
          workQueue: OperationQueue) {
         self.realmProvider = realmProvider

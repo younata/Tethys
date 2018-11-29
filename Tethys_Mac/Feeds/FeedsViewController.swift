@@ -124,20 +124,6 @@ public final class FeedsViewController: NSViewController {
     }
 }
 
-extension FeedsViewController: DataSubscriber {
-    public func markedArticles(_ articles: [Article], asRead read: Bool) {}
-
-    public func deletedArticle(_ article: Article) {}
-
-    public func deletedFeed(_ feed: Feed, feedsLeft: Int) {}
-
-    public func willUpdateFeeds() {}
-    public func didUpdateFeedsProgress(_ finished: Int, total: Int) {}
-    public func didUpdateFeeds(_ feeds: [Feed]) {
-        self.reload()
-    }
-}
-
 extension FeedsViewController: NSTableViewDataSource {
     public func numberOfRows(in tableView: NSTableView) -> Int {
         return self.feeds.count

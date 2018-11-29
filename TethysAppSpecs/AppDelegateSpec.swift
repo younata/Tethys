@@ -14,7 +14,6 @@ class AppDelegateSpec: QuickSpec {
         let application = UIApplication.shared
         var container: Container! = nil
 
-        var dataUseCase: FakeDatabaseUseCase! = nil
         var feedService: FakeFeedService! = nil
 
         var analytics: FakeAnalytics! = nil
@@ -27,9 +26,6 @@ class AppDelegateSpec: QuickSpec {
 
             container.register(OperationQueue.self, name: kMainQueue) { _ in FakeOperationQueue() }
             container.register(OperationQueue.self, name: kBackgroundQueue) { _ in FakeOperationQueue() }
-
-            dataUseCase = FakeDatabaseUseCase()
-            container.register(DatabaseUseCase.self) { _ in dataUseCase }
 
             feedService = FakeFeedService()
             container.register(FeedService.self) { _ in feedService }
@@ -60,19 +56,6 @@ class AppDelegateSpec: QuickSpec {
                     expect(analytics.logEventArgsForCall(0).0) == "SessionBegan"
                     expect(analytics.logEventArgsForCall(0).1).to(beNil())
                 }
-            }
-
-            it("should add the UIApplication object to the dataWriter's subscribers") {
-                _ = subject.application(application, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsKey(rawValue: "test"): true])
-
-                var applicationInSubscribers = false
-                for subscriber in dataUseCase.subscribers.allObjects {
-                    if subscriber is UIApplication {
-                        applicationInSubscribers = true
-                        break
-                    }
-                }
-                expect(applicationInSubscribers) == true
             }
 
             describe("window view controllers") {

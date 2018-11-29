@@ -6,7 +6,7 @@ import Result
 
 class UpdateServiceSpec: QuickSpec {
     override func spec() {
-        var subject: UpdateService!
+        var subject: OldUpdateService!
         var urlSession: FakeURLSession!
         var urlSessionDelegate: TethysKitURLSessionDelegate!
         var dataServiceFactory: FakeDataServiceFactory!
@@ -26,7 +26,7 @@ class UpdateServiceSpec: QuickSpec {
             workerQueue = FakeOperationQueue()
             workerQueue.runSynchronously = true
 
-            subject = UpdateService(
+            subject = OldUpdateService(
                 dataServiceFactory: dataServiceFactory,
                 urlSession: urlSession,
                 urlSessionDelegate: urlSessionDelegate,

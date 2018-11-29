@@ -16,11 +16,6 @@ class FakeDefaultDatabaseUseCase : DefaultDatabaseUseCase {
         self.performDatabaseUpdatesCallback = callback
     }
 
-    var subscribers = Array<DataSubscriber>()
-    override func addSubscriber(_ subscriber: DataSubscriber) {
-        self.subscribers.append(subscriber)
-    }
-
     var lastSavedFeed: Feed? = nil
     var saveFeedPromises: [Promise<Result<Void, TethysError>>] = []
     override func saveFeed(_ feed: Feed) -> Future<Result<Void, TethysError>> {

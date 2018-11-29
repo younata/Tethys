@@ -87,15 +87,6 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
 
     // MARK: DataWriter
 
-    private let subscribers = NSHashTable<AnyObject>.weakObjects()
-    private var allSubscribers: [DataSubscriber] {
-        return self.subscribers.allObjects.flatMap { $0 as? DataSubscriber }
-    }
-
-    func addSubscriber(_ subscriber: DataSubscriber) {
-        subscribers.add(subscriber)
-    }
-
     func newFeed(url: URL, callback: @escaping (Feed) -> Void) -> Future<Result<Void, TethysError>> {
         let promise = Promise<Result<Void, TethysError>>()
         _ = self.dataService.createFeed(url: url) {
@@ -114,13 +105,6 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
             switch result {
             case .success:
                 return self.feeds().map { feedsResult -> Result<Void, TethysError> in
-                    _ = feedsResult.map { (feeds: [Feed]) -> Void in
-                        self.mainQueue.addOperation {
-                            for subscriber in self.allSubscribers {
-                                subscriber.deletedFeed(feed, feedsLeft: feeds.count)
-                            }
-                        }
-                    }
                     return .success()
                 }
             case let .failure(error):
@@ -150,22 +134,12 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
                 guard feeds.isEmpty == false && self.reachable?.hasNetworkConnectivity != false else {
                     self.updatingFeedsCallbacks.forEach { $0([], []) }
                     self.updatingFeedsCallbacks = []
-                    for subscriber in self.allSubscribers {
-                        self.mainQueue.addOperation {
-                            subscriber.didUpdateFeeds([])
-                        }
-                    }
                     return
                 }
 
                 self.privateUpdateFeeds(feeds) {updatedFeeds, errors in
                     for updateCallback in self.updatingFeedsCallbacks {
                         self.mainQueue.addOperation { updateCallback(updatedFeeds, errors) }
-                    }
-                    for subscriber in self.allSubscribers {
-                        self.mainQueue.addOperation {
-                            subscriber.didUpdateFeeds(updatedFeeds)
-                        }
                     }
                     self.updatingFeedsCallbacks = []
                 }
@@ -179,14 +153,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
             return
         }
         self.privateUpdateFeeds([feed]) {feeds, errors in
-            for object in self.subscribers.allObjects {
-                if let subscriber = object as? DataSubscriber {
-                    self.mainQueue.addOperation {
-                        subscriber.didUpdateFeeds(feeds)
-                    }
-                }
-                self.mainQueue.addOperation { callback(feeds.first, errors.first) }
-            }
+            self.mainQueue.addOperation { callback(feeds.first, errors.first) }
         }
     }
 
@@ -211,7 +178,7 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
     }
 
     private func privateUpdateFeeds(_ feeds: [Feed], callback: @escaping ([Feed], [NSError]) -> Void) {
-        _ = self.updateUseCase.updateFeeds(feeds, subscribers: self.allSubscribers).then { res in
+        _ = self.updateUseCase.updateFeeds(feeds).then { res in
             switch res {
             case .success:
                 _ = self.allFeeds().then { result in

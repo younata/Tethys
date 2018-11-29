@@ -45,11 +45,12 @@ final class TethysKitURLSessionDelegate: NSObject, URLSessionDownloadDelegate {
     }
 }
 
-protocol UpdateServiceType: class {
+protocol UpdateService: class {
     func updateFeed(_ feed: TethysKit.Feed) -> Future<Result<TethysKit.Feed, TethysError>>
+//    func updateAll() -> Future<Result<AnyCollection<TethysKit.Feed>, TethysError>>
 }
 
-final class UpdateService: UpdateServiceType, NetworkClientDelegate {
+final class OldUpdateService: UpdateService, NetworkClientDelegate {
     private let dataServiceFactory: DataServiceFactoryType
     private let urlSession: URLSession
     private let workerQueue: OperationQueue

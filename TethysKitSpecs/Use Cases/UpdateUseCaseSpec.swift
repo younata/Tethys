@@ -17,8 +17,6 @@ class UpdateUseCaseSpec: QuickSpec {
         var article1: Article!
         var article2: Article!
 
-        var dataSubscriber: FakeDataSubscriber!
-
         var userDefaults: FakeUserDefaults!
 
         beforeEach {
@@ -41,8 +39,6 @@ class UpdateUseCaseSpec: QuickSpec {
 
             feeds = [feed1, feed3]
 
-            dataSubscriber = FakeDataSubscriber()
-
             updateService = FakeUpdateService()
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
@@ -54,14 +50,10 @@ class UpdateUseCaseSpec: QuickSpec {
             )
         }
         
-        describe("-updateFeeds") {
+        describe("updateFeeds()") {
             var receivedFuture: Future<Result<Void, TethysError>>!
             beforeEach {
-                receivedFuture = subject.updateFeeds(feeds, subscribers: [dataSubscriber])
-            }
-
-            it("informs any subscribers") {
-                expect(dataSubscriber.didStartUpdatingFeeds) == true
+                receivedFuture = subject.updateFeeds(feeds)
             }
 
             it("makes a network request for every feed in the data store w/ a url") {
@@ -75,11 +67,6 @@ class UpdateUseCaseSpec: QuickSpec {
                     updateService.updateFeedPromises.enumerated().forEach {
                         $1.resolve(.success(updatingFeeds[$0]!))
                     }
-                }
-
-                it("should inform subscribers that we downloaded a thing and are about to process it") {
-                    expect(dataSubscriber.updateFeedsProgressFinished).to(equal(2))
-                    expect(dataSubscriber.updateFeedsProgressTotal).to(equal(2))
                 }
 
                 it("should call the completion handler without an error") {

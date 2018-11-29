@@ -15,10 +15,6 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
         return container
     }()
 
-    private lazy var databaseUseCase: DatabaseUseCase = {
-        return self.container.resolve(DatabaseUseCase.self)!
-    }()
-
     private lazy var analytics: Analytics = {
         self.container.resolve(Analytics.self)!
     }()
@@ -65,8 +61,6 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         self.createControllerHierarchy()
-
-        self.databaseUseCase.addSubscriber(application)
 
         if launchOptions == nil || launchOptions?.isEmpty == true ||
             (launchOptions?.count == 1 && launchOptions?[UIApplicationLaunchOptionsKey("test")] as? Bool == true) {

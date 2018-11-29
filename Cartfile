@@ -2,6 +2,7 @@
 github "younata/Muon" "master"
 github "younata/Lepton" "master"
 github "younata/BreakOutToRefresh" "swift-3.0"
+github "younata/FutureHTTP" "master"
 github "ashleymills/Reachability.swift"
 github "younata/WorkFlow" "master"
 github "tid-kijyun/Kanna"

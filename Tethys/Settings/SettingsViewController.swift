@@ -4,17 +4,14 @@ import SafariServices
 import Result
 import TethysKit
 
-// swiftlint:disable file_length
-
 public final class SettingsViewController: UIViewController {
     public let tableView = UITableView(frame: CGRect.zero, style: .grouped)
 
     fileprivate let themeRepository: ThemeRepository
     fileprivate let settingsRepository: SettingsRepository
-    fileprivate let databaseUseCase: DatabaseUseCase
     fileprivate let opmlService: OPMLService
     fileprivate let mainQueue: OperationQueue
-    fileprivate let documentationViewController: () -> DocumentationViewController
+    fileprivate let documentationViewController: (Documentation) -> DocumentationViewController
 
     fileprivate var oldTheme: ThemeRepository.Theme = .light
 
@@ -23,13 +20,11 @@ public final class SettingsViewController: UIViewController {
 
     public init(themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
-                databaseUseCase: DatabaseUseCase,
                 opmlService: OPMLService,
                 mainQueue: OperationQueue,
-                documentationViewController: @escaping () -> DocumentationViewController) {
+                documentationViewController: @escaping (Documentation) -> DocumentationViewController) {
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
-        self.databaseUseCase = databaseUseCase
         self.opmlService = opmlService
         self.mainQueue = mainQueue
         self.documentationViewController = documentationViewController
@@ -177,13 +172,9 @@ extension SettingsViewController: UIViewControllerPreviewingDelegate {
                 guard let url = URL(string: "https://twitter.com/younata") else { return nil }
                 return SFSafariViewController(url: url)
             } else if indexPath.row == 1 {
-                let viewController = self.documentationViewController()
-                viewController.configure(documentation: .libraries)
-                return viewController
+                return self.documentationViewController(.libraries)
             } else if indexPath.row == 2 {
-                let viewController = self.documentationViewController()
-                viewController.configure(documentation: .icons)
-                return viewController
+                return self.documentationViewController(.icons)
             } else {
                 return nil
             }
@@ -396,12 +387,10 @@ extension SettingsViewController: UITableViewDelegate {
             let viewController = SFSafariViewController(url: url)
             self.present(viewController, animated: true, completion: nil)
         } else if indexPath.row == 1 {
-            let viewController = self.documentationViewController()
-            viewController.configure(documentation: .libraries)
+            let viewController = self.documentationViewController(.libraries)
             self.navigationController?.pushViewController(viewController, animated: true)
         } else if indexPath.row == 2 {
-            let viewController = self.documentationViewController()
-            viewController.configure(documentation: .icons)
+            let viewController = self.documentationViewController(.icons)
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }

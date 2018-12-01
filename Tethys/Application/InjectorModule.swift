@@ -44,12 +44,6 @@ public func configure(container: Container) {
         )
     }
 
-    container.register(DocumentationUseCase.self) { r in
-        return DefaultDocumentationUseCase(
-            themeRepository: r.resolve(ThemeRepository.self)!
-        )
-    }
-
     container.register(ArticleCellController.self) { r, alwaysHideUnread in
         return DefaultArticleCellController(
             hideUnread: alwaysHideUnread,
@@ -86,9 +80,9 @@ private func registerViewControllers(container: Container) {
         return BlankViewController(themeRepository: r.resolve(ThemeRepository.self)!)
     }
 
-    container.register(DocumentationViewController.self) { r in
+    container.register(DocumentationViewController.self) { r, documentation in
         return DocumentationViewController(
-            documentationUseCase: r.resolve(DocumentationUseCase.self)!,
+            documentation: documentation,
             themeRepository: r.resolve(ThemeRepository.self)!,
             htmlViewController: r.resolve(HTMLViewController.self)!
         )
@@ -140,10 +134,11 @@ private func registerViewControllers(container: Container) {
         return SettingsViewController(
             themeRepository: r.resolve(ThemeRepository.self)!,
             settingsRepository: r.resolve(SettingsRepository.self)!,
-            databaseUseCase: r.resolve(DatabaseUseCase.self)!,
             opmlService: r.resolve(OPMLService.self)!,
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
-            documentationViewController: { r.resolve(DocumentationViewController.self)! }
+            documentationViewController: { documentation in
+                return r.resolve(DocumentationViewController.self, argument: documentation)!
+            }
         )
     }
 

@@ -386,7 +386,7 @@ extension FeedListController: UITableViewDelegate, UITableViewDataSource {
 
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let feed = self.feed(indexPath: indexPath)
-        let cellTypeToUse = (feed.unreadArticles.isEmpty ? "unread": "read")
+        let cellTypeToUse = (feed.unreadCount > 0 ? "unread": "read")
         // Prevents a green triangle which'll (dis)appear depending on
         // whether new feed loaded into it has unread articles or not.
 

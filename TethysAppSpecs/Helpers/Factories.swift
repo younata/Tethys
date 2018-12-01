@@ -118,15 +118,13 @@ func migrationViewControllerFactory(
 func settingsViewControllerFactory(
     themeRepository: ThemeRepository = themeRepositoryFactory(),
     settingsRepository: SettingsRepository = settingsRepositoryFactory(),
-    databaseUseCase: DatabaseUseCase = FakeDatabaseUseCase(),
     opmlService: OPMLService = FakeOPMLService(),
     mainQueue: FakeOperationQueue = FakeOperationQueue(),
-    documentationViewController: @escaping () -> DocumentationViewController = { documentationViewControllerFactory() }
+    documentationViewController: @escaping (Documentation) -> DocumentationViewController = { docs in documentationViewControllerFactory(documentation: docs) }
     ) -> SettingsViewController {
     return SettingsViewController(
         themeRepository: themeRepository,
         settingsRepository: settingsRepository,
-        databaseUseCase: databaseUseCase,
         opmlService: opmlService,
         mainQueue: mainQueue,
         documentationViewController: documentationViewController
@@ -134,12 +132,12 @@ func settingsViewControllerFactory(
 }
 
 func documentationViewControllerFactory(
-    documentationUseCase: DocumentationUseCase = FakeDocumentationUseCase(),
+    documentation: Documentation = .libraries,
     themeRepository: ThemeRepository = themeRepositoryFactory(),
     htmlViewController: HTMLViewController = htmlViewControllerFactory()
     ) -> DocumentationViewController {
     return DocumentationViewController(
-        documentationUseCase: documentationUseCase,
+        documentation: documentation,
         themeRepository: themeRepository,
         htmlViewController: htmlViewController
     )

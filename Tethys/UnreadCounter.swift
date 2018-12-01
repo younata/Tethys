@@ -44,8 +44,9 @@ public final class UnreadCounter: UIView {
         set { self.countLabel.isHidden = newValue }
     }
 
-    public var unread: UInt = 0 {
+    public var unread: Int = 0 {
         didSet {
+            assert(unread >= 0)
             self.unreadDidChange()
         }
     }

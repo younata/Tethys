@@ -27,7 +27,6 @@ final class InjectorModuleSpec: QuickSpec {
 
         describe("Controllers") {
             isA(ArticleUseCase.self, kindOf: DefaultArticleUseCase.self)
-            isA(DocumentationUseCase.self, kindOf: DefaultDocumentationUseCase.self)
 
             describe("Bootstrapper") {
                 var bootstrapper: Bootstrapper?
@@ -101,7 +100,19 @@ final class InjectorModuleSpec: QuickSpec {
 
             exists(BlankViewController.self)
 
-            exists(DocumentationViewController.self)
+            describe("DocumentationViewController") {
+                it("returns nil without an argument") {
+                    expect(subject.resolve(DocumentationViewController.self)).to(beNil())
+                }
+
+                describe("if created with an article") {
+                    let documentation = Documentation.icons
+
+                    it("exists") {
+                        expect(subject.resolve(DocumentationViewController.self, argument: documentation)).toNot(beNil())
+                    }
+                }
+            }
 
             exists(FeedListController.self)
             describe("FeedViewController") {

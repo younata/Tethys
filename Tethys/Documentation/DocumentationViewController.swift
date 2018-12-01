@@ -2,20 +2,25 @@ import UIKit
 import SafariServices
 import PureLayout
 
-public final class DocumentationViewController: UIViewController {
-    public private(set) var documentation: Documentation?
-    fileprivate let documentationUseCase: DocumentationUseCase
-    fileprivate let htmlViewController: HTMLViewController
+public enum Documentation {
+    case libraries
+    case icons
+}
 
-    public init(documentationUseCase: DocumentationUseCase,
+public final class DocumentationViewController: UIViewController {
+    public let documentation: Documentation
+    private let themeRepository: ThemeRepository
+    private let htmlViewController: HTMLViewController
+
+    public init(documentation: Documentation,
                 themeRepository: ThemeRepository,
                 htmlViewController: HTMLViewController) {
-        self.documentationUseCase = documentationUseCase
+        self.documentation = documentation
+        self.themeRepository = themeRepository
         self.htmlViewController = htmlViewController
 
         super.init(nibName: nil, bundle: nil)
 
-        themeRepository.addSubscriber(self)
         htmlViewController.delegate = self
         self.addChildViewController(htmlViewController)
     }
@@ -24,13 +29,47 @@ public final class DocumentationViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public func configure(documentation: Documentation) {
-        self.documentation = documentation
-        self.title = self.documentationUseCase.title(documentation: documentation)
-        self.htmlViewController.configure(html: self.documentationUseCase.html(documentation: documentation))
-
+    public override func viewDidLoad() {
         self.view.addSubview(self.htmlViewController.view)
         self.htmlViewController.view.autoPinEdgesToSuperviewEdges()
+
+        switch self.documentation {
+        case .libraries:
+            self.title = NSLocalizedString("SettingsViewController_Credits_Libraries", comment: "")
+        case .icons:
+            self.title = NSLocalizedString("SettingsViewController_Credits_Icons", comment: "")
+        }
+
+        themeRepository.addSubscriber(self)
+    }
+
+    fileprivate func loadHTML() {
+        let url: URL
+        switch self.documentation {
+        case .libraries:
+            url = Bundle.main.url(forResource: "libraries", withExtension: "html")!
+        case .icons:
+            url = Bundle.main.url(forResource: "icons", withExtension: "html")!
+        }
+        self.htmlViewController.configure(html: self.htmlFixes(content: (try? String(contentsOf: url)) ?? ""))
+    }
+
+    private func htmlFixes(content: String) -> String {
+        let prefix: String
+        let cssFileName = self.themeRepository.articleCSSFileName
+        if let cssURL = Bundle.main.url(forResource: cssFileName, withExtension: "css"),
+            let css = try? String(contentsOf: cssURL) {
+            prefix = "<html><head>" +
+                "<style type=\"text/css\">\(css)</style>" +
+                "<meta name=\"viewport\" content=\"initial-scale=1.0,maximum-scale=10.0\"/>" +
+            "</head><body>"
+        } else {
+            prefix = "<html><body>"
+        }
+
+        let postfix = "</body></html>"
+
+        return prefix + content + postfix
     }
 }
 
@@ -40,6 +79,7 @@ extension DocumentationViewController: ThemeRepositorySubscriber {
         self.navigationController?.navigationBar.titleTextAttributes = [
             NSForegroundColorAttributeName: themeRepository.textColor
         ]
+        self.loadHTML()
     }
 }
 

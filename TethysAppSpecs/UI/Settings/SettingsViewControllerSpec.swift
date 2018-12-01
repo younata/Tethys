@@ -9,7 +9,6 @@ class SettingsViewControllerSpec: QuickSpec {
         var subject: SettingsViewController! = nil
         var navigationController: UINavigationController! = nil
         var themeRepository: ThemeRepository! = nil
-        var feedRepository: FakeDatabaseUseCase! = nil
         var settingsRepository: SettingsRepository! = nil
         var opmlService: FakeOPMLService! = nil
 
@@ -17,8 +16,6 @@ class SettingsViewControllerSpec: QuickSpec {
             themeRepository = ThemeRepository(userDefaults: nil)
 
             settingsRepository = SettingsRepository(userDefaults: nil)
-
-            feedRepository = FakeDatabaseUseCase()
 
             let mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
@@ -28,10 +25,9 @@ class SettingsViewControllerSpec: QuickSpec {
             subject = SettingsViewController(
                 themeRepository: themeRepository,
                 settingsRepository: settingsRepository,
-                databaseUseCase: feedRepository,
                 opmlService: opmlService,
                 mainQueue: mainQueue,
-                documentationViewController: { documentationViewControllerFactory() }
+                documentationViewController: { documentation in documentationViewControllerFactory(documentation: documentation) }
             )
 
             navigationController = UINavigationController(rootViewController: subject)

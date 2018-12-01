@@ -22,11 +22,8 @@ default_platform :ios
 
 
 platform :ios do
-  desc 'Sets up (usually for CI)'
-  lane :setup do
-    match(type: 'development', app_identifier: 'com.rachelbrindle.RSSClient', readonly: true)
-    match(type: 'appstore', app_identifier: 'com.rachelbrindle.RSSClient', readonly: true)
-    carthage(platform: 'iOS')
+  before_all do
+    carthage(platform: "iOS", cache_builds: true)
   end
 
   desc 'Sort'
@@ -42,7 +39,9 @@ platform :ios do
   end
 
   desc 'Deploy a new version to TestFlight'
-  lane :deploy_testflight do
+  lane :beta do
+    match(type: 'development', app_identifier: 'com.rachelbrindle.RSSClient', readonly: true)
+    match(type: 'appstore', app_identifier: 'com.rachelbrindle.RSSClient', readonly: true)
     increment_build_number(xcodeproj: 'Tethys.xcodeproj', build_number: build_number)
     gym(project: 'Tethys.xcodeproj', scheme: "Tethys", export_method: "app-store")
     pilot(distribute_external: false, changelog: `git log -1 --format='%B'`)

@@ -3,6 +3,7 @@ import Swinject
 #if os(iOS)
     import CoreSpotlight
 #endif
+import FutureHTTP
 import Reachability
 import RealmSwift
 
@@ -26,9 +27,12 @@ public func configure(container: Container) {
     }.inObjectScope(.container)
 
     container.register(URLSession.self) { _ in URLSession.shared }
-    container.register(FileManager.self) { _ in return FileManager.default }
-    container.register(UserDefaults.self) { _ in return UserDefaults.standard }
+    container.register(FileManager.self) { _ in FileManager.default }
+    container.register(UserDefaults.self) { _ in UserDefaults.standard }
     container.register(Bundle.self) { _ in Bundle(for: WebPageParser.classForCoder() )}
+
+    container.register(HTTPClient.self) { _ in URLSession.shared }
+
     container.register(Analytics.self) { _ in BadAnalytics() }.inObjectScope(.container)
 
     container.register(Reachable.self) { _ in Reachability()! }
@@ -69,11 +73,11 @@ private func configureServices(container: Container) {
     }
 
     container.register(UpdateService.self) { r in
-        return OldUpdateService(
-            dataServiceFactory: r.resolve(DataServiceFactoryType.self)!,
-            urlSession: r.resolve(URLSession.self)!,
-            urlSessionDelegate: r.resolve(TethysKitURLSessionDelegate.self)!,
-            workerQueue: r.resolve(OperationQueue.self, name: kBackgroundQueue)!
+        return RealmRSSUpdateService(
+            httpClient: r.resolve(HTTPClient.self)!,
+            realmProvider: r.resolve(RealmProvider.self)!,
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            workQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!
         )
     }
 

@@ -45,7 +45,6 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             expect(feed.title) == "a & title"
             expect(feed.summary) == "description"
             expect(feed.url) == URL(string: "https://example.com/")
-            expect(feed.lastUpdated) == itemUpdateDate
             expect(feed.articlesArray.count).to(equal(1))
             if let article = feed.articlesArray.first {
                 expect(article.title) == "article"
@@ -72,7 +71,6 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             expect(feed.title) == "a & title"
             expect(feed.summary) == "description"
             expect(feed.url) == URL(string: "https://example.com/")
-            expect(feed.lastUpdated) == itemUpdateDate
             expect(feed.articlesArray.count).to(equal(1))
             if let article = feed.articlesArray.first {
                 expect(article.title) == "article"
@@ -125,7 +123,6 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             expect(feed.title) == "a & title"
             expect(feed.summary) == "description"
             expect(feed.url) == URL(string: "https://example.com/")
-            expect(feed.lastUpdated) == itemUpdateDate
             expect(feed.articlesArray.count).to(equal(1))
             if let article = feed.articlesArray.first {
                 expect(article.title) == "article"
@@ -160,7 +157,6 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
                 expect(feed.title) == "a title"
                 expect(feed.summary) == "description"
                 expect(feed.url) == URL(string: "https://example.com/")
-                expect(feed.lastUpdated) == info.lastUpdated
                 expect(feed.articlesArray.count).to(equal(2))
                 let articles = feed.articlesArray
                 if let firstArticle = articles.last {

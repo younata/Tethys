@@ -42,14 +42,6 @@ public final class Feed: Hashable, CustomStringConvertible {
 
     public var displaySummary: String { return self.summary }
 
-    public var lastUpdated: Date {
-        willSet {
-            if newValue != lastUpdated {
-                self.updated = true
-            }
-        }
-    }
-
     public fileprivate(set) var tags: [String]
 
     public var settings: Settings? {
@@ -99,8 +91,7 @@ public final class Feed: Hashable, CustomStringConvertible {
         if let aID = self.feedID as? URL, let bID = b.feedID as? URL {
             return aID == bID
         }
-        return self.title == b.title && self.url == b.url && self.summary == b.summary && self.tags == b.tags &&
-            self.image == b.image
+        return self.title == b.title && self.url == b.url && self.summary == b.summary && self.tags == b.tags
     }
 
     public private(set) var updated = false
@@ -168,15 +159,14 @@ public final class Feed: Hashable, CustomStringConvertible {
         )
     }
 
-    public init(title: String, url: URL, summary: String, tags: [String], articles: [Article], image: Image?,
-                lastUpdated: Date = Date(), identifier: String = "") {
+    public init(title: String, url: URL, summary: String, tags: [String], articles: [Article] = [], image: Image? = nil,
+                identifier: String = "") {
         self.title = title
         self.url = url
         self.summary = summary
         self.tags = tags
         self.image = image
         self.articlesArray = DataStoreBackedArray(articles)
-        self.lastUpdated = lastUpdated
         self.identifier = identifier
 
         for article in articles {
@@ -192,7 +182,6 @@ public final class Feed: Hashable, CustomStringConvertible {
         self.url = URL(string: feed.url)!
         self.summary = feed.summary ?? ""
         self.tags = feed.tags.map { $0.string }
-        self.lastUpdated = feed.lastUpdated
 
         if let data = feed.imageData {
             self.image = Image(data: data)

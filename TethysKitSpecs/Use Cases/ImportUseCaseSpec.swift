@@ -338,7 +338,7 @@ class ImportUseCaseSpec: QuickSpec {
                         describe("when the feeds repository succeeds") {
                             context("and a feed with the proposed feed url is in the feeds list") {
                                 beforeEach {
-                                    let existingFeed = Feed(title: "", url: URL(string: "http://iotlist.co/posts.atom")!, summary: "", tags: [], articles: [], image: nil)
+                                    let existingFeed = Feed(title: "", url: URL(string: "http://younata.github.io/")!, summary: "", tags: [], articles: [], image: nil)
 
                                     feedRepository.feedsPromises.first?.resolve(.success([existingFeed]))
                                 }

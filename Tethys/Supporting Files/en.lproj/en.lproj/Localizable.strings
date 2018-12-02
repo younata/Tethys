@@ -101,9 +101,11 @@
 
 // Errors
 
-"Error_Network_InternetDown" = "Internet Down";
+"Error_Network_Cancelled" = "Request Cancelled";
 "Error_Network_DNS" = "DNS Error";
+"Error_Network_InternetDown" = "Internet Down";
 "Error_Network_ServerNotFound" = "Server Not Found";
+"Error_Network_TimedOut" = "Request Timed Out";
 "Error_Network_Unknown" = "Unknown Network Error";
 
 "Error_Database_DatabaseNotFound" = "Database not found";

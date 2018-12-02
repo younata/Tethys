@@ -1,3 +1,6 @@
+import CBGPromise
+import Result
+
 func documentsDirectory() -> String {
     return NSHomeDirectory() + "/Documents"
 }
@@ -40,4 +43,23 @@ func estimateReadingTime(_ htmlString: String) -> TimeInterval {
 
     let readingTime = TimeInterval(words.count) / 200.0 * 60.0
     return readingTime
+}
+
+extension Promise {
+    static func resolved<T>(_ value: T) -> Future<T> {
+        let promise = Promise<T>()
+        promise.resolve(value)
+        return promise.future
+    }
+}
+
+extension Result where Result.Error : Swift.Error {
+    func mapFuture<U>(_ transform: (Value) -> Future<Result<U, Error>>) -> Future<Result<U, Error>> {
+        switch self {
+        case .success(let value):
+            return transform(value)
+        case .failure(let error):
+            return Promise<Result<U, Error>>.resolved(Result<U, Error>.failure(error))
+        }
+    }
 }

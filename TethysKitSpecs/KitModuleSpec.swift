@@ -1,6 +1,7 @@
 import Quick
 import Nimble
 import Swinject
+import FutureHTTP
 #if os(iOS)
     import CoreSpotlight
 #endif
@@ -34,6 +35,10 @@ class KitModuleSpec: QuickSpec {
 
             exists(FeedService.self)
             exists(ArticleService.self)
+
+            isA(HTTPClient.self, kindOf: URLSession.self, singleton: true)
+
+            isA(UpdateService.self, kindOf: RealmRSSUpdateService.self)
 
             exists(URLSession.self)
             #if os(iOS)

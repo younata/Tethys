@@ -1,20 +1,28 @@
+import Muon
+
 public enum NetworkError: Error, Equatable {
-    case internetDown
+    case cancelled
     case dns
-    case serverNotFound
     case http(HTTPError)
+    case internetDown
+    case serverNotFound
+    case timedOut
     case unknown
 
     public var localizedDescription: String {
         switch self {
-        case .internetDown:
-            return NSLocalizedString("Error_Network_InternetDown", comment: "")
+        case .cancelled:
+            return NSLocalizedString("Error_Network_Cancelled", comment: "")
         case .dns:
             return NSLocalizedString("Error_Network_DNS", comment: "")
-        case .serverNotFound:
-            return NSLocalizedString("Error_Network_ServerNotFound", comment: "")
         case let .http(status):
             return status.description
+        case .internetDown:
+            return NSLocalizedString("Error_Network_InternetDown", comment: "")
+        case .serverNotFound:
+            return NSLocalizedString("Error_Network_ServerNotFound", comment: "")
+        case .timedOut:
+            return NSLocalizedString("Error_Network_TimedOut", comment: "")
         case .unknown:
             return NSLocalizedString("Error_Network_Unknown", comment: "")
         }
@@ -42,7 +50,8 @@ public enum TethysError: Error, Equatable {
     case network(URL, NetworkError)
     case http(Int)
     case database(DatabaseError)
-    case multiple(Array<TethysError>)
+    case feed(FeedParserError)
+    case multiple([TethysError])
     case unknown
 
     public var localizedDescription: String {
@@ -53,6 +62,8 @@ public enum TethysError: Error, Equatable {
                                                     error.localizedDescription)
         case let .http(status):
             return String.localizedStringWithFormat("Error_Standard_HTTP", status)
+        case let .feed(error):
+            return error.localizedDescription
         case let .multiple(errors):
             return errors.map { $0.localizedDescription }.joined(separator: ", ")
         case let .database(error):

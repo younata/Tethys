@@ -300,7 +300,6 @@ final class RealmService: DataService {
                 return realmString
             }
             rfeed.tags.replaceSubrange(0..<rfeed.tags.count, with: tags)
-            rfeed.lastUpdated = feed.lastUpdated
             #if os(iOS)
                 if let image = feed.image {
                     rfeed.imageData = UIImagePNGRepresentation(image)

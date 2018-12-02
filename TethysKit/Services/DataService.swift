@@ -57,7 +57,6 @@ extension DataService {
     func updateFeed(_ feed: Feed, info: ImportableFeed) -> Future<Result<Void, TethysError>> {
         feed.title = info.title.stringByUnescapingHTML().stringByStrippingHTML()
         feed.summary = info.description
-        feed.lastUpdated = info.lastUpdated
 
         let articles: [ImportableArticle] = info.importableArticles.filter {
             return $0.title.isEmpty == false

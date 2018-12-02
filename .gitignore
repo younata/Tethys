@@ -9,7 +9,9 @@ foo
 /Carthage
 /.release_token
 /.bundle
-/fastlane/
+/fastlane/README.md
+/fastlane/report.xml
+/fastlane/test_output
 /rNews.app*
 /rNews.ipa
 /Tethys.app*

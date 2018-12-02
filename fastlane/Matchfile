@@ -1,0 +1,7 @@
+
+git_url("git@github.com:younata/Certs.git")
+git_branch("rssclient")
+
+type("development")
+
+app_identifier(["com.younata.RSSClient"])

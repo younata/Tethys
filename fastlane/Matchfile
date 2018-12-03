@@ -4,4 +4,4 @@ git_branch("rssclient")
 
 type("development")
 
-app_identifier(["com.younata.RSSClient"])
+app_identifier(["com.rachelbrindle.rNews"])

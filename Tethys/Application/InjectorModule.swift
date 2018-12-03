@@ -97,7 +97,7 @@ private func registerViewControllers(container: Container) {
             findFeedViewController: { r.resolve(FindFeedViewController.self)! },
             feedViewController: { feed in r.resolve(FeedViewController.self, argument: feed)! },
             settingsViewController: { r.resolve(SettingsViewController.self)! },
-            articleListController: { (feed: Feed?) in r.resolve(ArticleListController.self, argument: feed)! }
+            articleListController: { feed in r.resolve(ArticleListController.self, argument: feed)! }
         )
     }
 

@@ -3,8 +3,8 @@
     <channel>
         <title>Rachel Brindle</title>
         <description>Software Engineer and Electric Vehicle enthusiast</description>
-        <link>http://younata.github.io/</link>
-        <atom:link href="http://younata.github.io/feed.xml" rel="self" type="application/rss+xml" />
+        <link>https://younata.github.io/</link>
+        <atom:link href="https://younata.github.io/feed.xml" rel="self" type="application/rss+xml" />
         <pubDate>Mon, 17 Sep 2018 05:15:24 +0000</pubDate>
         <lastBuildDate>Mon, 17 Sep 2018 05:15:24 +0000</lastBuildDate>
         <generator>Jekyll v3.7.4</generator>
@@ -115,6 +115,7 @@
             <pubDate>Sun, 16 Sep 2018 00:00:00 +0000</pubDate>
             <link>http://younata.github.io/2018/09/16/MKOverlayRenderer-drawing-lines/</link>
             <guid isPermaLink="true">http://younata.github.io/2018/09/16/MKOverlayRenderer-drawing-lines/</guid>
+            <author>Rachel Brindle</author>
 
             <category>MKMapView,</category>
 
@@ -162,6 +163,7 @@
             <pubDate>Sun, 23 Apr 2017 00:00:00 +0000</pubDate>
             <link>http://younata.github.io/2017/04/23/solar-charge-ebike/</link>
             <guid isPermaLink="true">http://younata.github.io/2017/04/23/solar-charge-ebike/</guid>
+            <author>Rachel Brindle</author>
 
             <category>electric,</category>
 
@@ -382,6 +384,7 @@
             <pubDate>Tue, 08 Nov 2016 00:00:00 +0000</pubDate>
             <link>http://younata.github.io/2016/11/08/concourse-mac-worker/</link>
             <guid isPermaLink="true">http://younata.github.io/2016/11/08/concourse-mac-worker/</guid>
+            <author>Rachel Brindle</author>
 
             <category>ios,</category>
 
@@ -505,6 +508,7 @@
             <pubDate>Tue, 08 Nov 2016 00:00:00 +0000</pubDate>
             <link>http://younata.github.io/2016/11/08/concourse-aws/</link>
             <guid isPermaLink="true">http://younata.github.io/2016/11/08/concourse-aws/</guid>
+            <author>Rachel Brindle</author>
 
             <category>concourse,</category>
 
@@ -702,6 +706,7 @@
             <pubDate>Wed, 02 Nov 2016 00:00:00 +0000</pubDate>
             <link>http://younata.github.io/2016/11/02/automating-releases/</link>
             <guid isPermaLink="true">http://younata.github.io/2016/11/02/automating-releases/</guid>
+            <author>Rachel Brindle</author>
 
             <category>mobile,</category>
 
@@ -737,6 +742,7 @@
             <pubDate>Wed, 23 Dec 2015 00:00:00 +0000</pubDate>
             <link>http://younata.github.io/2015/12/23/iot-homemade-thermostat/</link>
             <guid isPermaLink="true">http://younata.github.io/2015/12/23/iot-homemade-thermostat/</guid>
+            <author>Rachel Brindle</author>
 
             <category>home</category>
 
@@ -813,6 +819,7 @@
             <pubDate>Fri, 21 Aug 2015 00:00:00 +0000</pubDate>
             <link>http://younata.github.io/2015/08/21/osx-programming-set-up-core-animation/</link>
             <guid isPermaLink="true">http://younata.github.io/2015/08/21/osx-programming-set-up-core-animation/</guid>
+            <author>Rachel Brindle</author>
 
             <category>swift,</category>
 
@@ -978,6 +985,7 @@
             <pubDate>Fri, 14 Aug 2015 00:00:00 +0000</pubDate>
             <link>http://younata.github.io/2015/08/14/osx-programming-programmatic-menu-buttons/</link>
             <guid isPermaLink="true">http://younata.github.io/2015/08/14/osx-programming-programmatic-menu-buttons/</guid>
+            <author>Rachel Brindle</author>
 
             <category>swift,</category>
 
@@ -1132,6 +1140,7 @@
             <pubDate>Sat, 08 Aug 2015 00:00:00 +0000</pubDate>
             <link>http://younata.github.io/2015/08/08/osx-programming-programmatic-scrolling-tableview/</link>
             <guid isPermaLink="true">http://younata.github.io/2015/08/08/osx-programming-programmatic-scrolling-tableview/</guid>
+            <author>Rachel Brindle</author>
 
             <category>swift,</category>
 
@@ -1170,6 +1179,7 @@
             <pubDate>Tue, 21 Jul 2015 00:00:00 +0000</pubDate>
             <link>http://younata.github.io/2015/07/21/muon-rss-parsing-swift/</link>
             <guid isPermaLink="true">http://younata.github.io/2015/07/21/muon-rss-parsing-swift/</guid>
+            <author>Rachel Brindle</author>
 
             <category>ios,</category>
 

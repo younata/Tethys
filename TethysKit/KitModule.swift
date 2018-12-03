@@ -118,8 +118,8 @@ private func configureUseCases(container: Container) {
 
     container.register(ImportUseCase.self) { r in
         return DefaultImportUseCase(
-            urlSession: r.resolve(URLSession.self)!,
-            feedRepository: r.resolve(DatabaseUseCase.self)!,
+            httpClient: r.resolve(HTTPClient.self)!,
+            feedService: r.resolve(FeedService.self)!,
             opmlService: r.resolve(OPMLService.self)!,
             fileManager: r.resolve(FileManager.self)!,
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!

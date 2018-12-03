@@ -15,9 +15,9 @@ final class RealmString: Object {
 }
 
 final class RealmFeed: Object {
-    dynamic var title: String?
+    dynamic var title = ""
     dynamic var url = ""
-    dynamic var summary: String?
+    dynamic var summary = ""
     let tags = List<RealmString>()
     var articles = LinkingObjects(fromType: RealmArticle.self, property: "feed")
     dynamic var imageData: Data?

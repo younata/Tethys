@@ -64,6 +64,32 @@ struct RealmFeedService: FeedService {
         return promise.future
     }
 
+    func subscribe(to url: URL) -> Future<Result<Feed, TethysError>> {
+        let promise = Promise<Result<Feed, TethysError>>()
+        self.workQueue.addOperation {
+            let predicate = NSPredicate(format: "url == %@", url.absoluteString)
+            if let realmFeed = self.realmProvider.realm().objects(RealmFeed.self).filter(predicate).first {
+                return self.resolve(promise: promise, with: Feed(realmFeed: realmFeed))
+            }
+
+            let realm = self.realmProvider.realm()
+            realm.beginWrite()
+            let feed = RealmFeed()
+            feed.url = url.absoluteString
+
+            realm.add(feed)
+
+            do {
+                try realm.commitWrite()
+            } catch let exception {
+                dump(exception)
+                return self.resolve(promise: promise, error: .database(.unknown))
+            }
+            self.resolve(promise: promise, with: Feed(realmFeed: feed))
+        }
+        return promise.future
+    }
+
     func readAll(of feed: Feed) -> Future<Result<Void, TethysError>> {
         let promise = Promise<Result<Void, TethysError>>()
         self.workQueue.addOperation {

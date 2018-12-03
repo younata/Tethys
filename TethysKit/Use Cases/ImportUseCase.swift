@@ -1,30 +1,14 @@
 import Muon
 import Lepton
-import CBGPromise
 import Result
+import CBGPromise
+import FutureHTTP
 
-public enum ImportUseCaseItem {
+public enum ImportUseCaseItem: Equatable {
     case none(URL)
     case webPage(URL, [URL])
     case feed(URL, Int)
     case opml(URL, Int)
-}
-
-extension ImportUseCaseItem: Equatable {}
-
-public func == (lhs: ImportUseCaseItem, rhs: ImportUseCaseItem) -> Bool {
-    switch (lhs, rhs) {
-    case (.none(let lhsUrl), .none(let rhsUrl)):
-        return lhsUrl == rhsUrl
-    case (.webPage(let lhsUrl, let lhsFeeds), .webPage(let rhsUrl, let rhsFeeds)):
-        return lhsUrl == rhsUrl && lhsFeeds == rhsFeeds
-    case (.feed(let lhsUrl, _), .feed(let rhsUrl, _)):
-        return lhsUrl == rhsUrl
-    case (.opml(let lhsUrl, _), .opml(let rhsUrl, _)):
-        return lhsUrl == rhsUrl
-    default:
-        return false
-    }
 }
 
 public protocol ImportUseCase {
@@ -33,8 +17,8 @@ public protocol ImportUseCase {
 }
 
 public final class DefaultImportUseCase: ImportUseCase {
-    private let urlSession: URLSession
-    private let feedRepository: DatabaseUseCase
+    private let httpClient: HTTPClient
+    private let feedService: FeedService
     private let opmlService: OPMLService
     private let fileManager: FileManager
     private let mainQueue: OperationQueue
@@ -45,13 +29,13 @@ public final class DefaultImportUseCase: ImportUseCase {
     }
     fileprivate var knownUrls: [URL: ImportType] = [:]
 
-    public init(urlSession: URLSession,
-                feedRepository: DatabaseUseCase,
+    public init(httpClient: HTTPClient,
+                feedService: FeedService,
                 opmlService: OPMLService,
                 fileManager: FileManager,
                 mainQueue: OperationQueue) {
-        self.urlSession = urlSession
-        self.feedRepository = feedRepository
+        self.httpClient = httpClient
+        self.feedService = feedService
         self.opmlService = opmlService
         self.fileManager = fileManager
         self.mainQueue = mainQueue
@@ -66,15 +50,18 @@ public final class DefaultImportUseCase: ImportUseCase {
             }
             promise.resolve(self.scanDataForItem(data, url: url))
         } else {
-            self.urlSession.dataTask(with: url) { data, _, error in
-                guard error == nil, let data = data else {
-                    promise.resolve(.none(url))
-                    return
+            self.httpClient.request(URLRequest(url: url)).map { result in
+                switch result {
+                case .success(let response):
+                    self.mainQueue.addOperation {
+                        promise.resolve(self.scanDataForItem(response.body, url: url))
+                    }
+                case .failure:
+                    self.mainQueue.addOperation {
+                        promise.resolve(.none(url))
+                    }
                 }
-                self.mainQueue.addOperation {
-                    promise.resolve(self.scanDataForItem(data, url: url))
-                }
-            }.resume()
+            }
         }
         return promise.future
     }
@@ -88,28 +75,8 @@ public final class DefaultImportUseCase: ImportUseCase {
         switch importType {
         case .feed:
             let url = self.canonicalURLForFeedAtURL(url)
-            return self.feedRepository.feeds().map { result -> Future<Result<Void, TethysError>> in
-                let promise = Promise<Result<Void, TethysError>>()
-                switch result {
-                case let .success(feeds):
-                    let existingFeed = feeds.objectPassingTest({ $0.url == url })
-                    guard existingFeed == nil else {
-                        promise.resolve(.failure(.unknown))
-                        return promise.future
-                    }
-                    var feed: Feed?
-                    _ = self.feedRepository.newFeed(url: url) {
-                        feed = $0
-                    }.then { _ in
-                        self.feedRepository.updateFeed(feed!) { _ in
-                            guard promise.future.value == nil else { return }
-                            promise.resolve(.success())
-                        }
-                    }
-                case let .failure(error):
-                    promise.resolve(.failure(error))
-                }
-                return promise.future
+            return self.feedService.subscribe(to: url).map { result in
+                return result.map { _ in Void() }
             }
         case .opml:
             let promise = Promise<Result<Void, TethysError>>()
@@ -117,12 +84,8 @@ public final class DefaultImportUseCase: ImportUseCase {
             return promise.future
         }
     }
-}
 
-// MARK: private
-
-extension DefaultImportUseCase {
-    fileprivate func scanDataForItem(_ data: Data, url: URL) -> ImportUseCaseItem {
+    private func scanDataForItem(_ data: Data, url: URL) -> ImportUseCaseItem {
         guard let string = String(data: data, encoding: String.Encoding.utf8) else {
             return .none(url)
         }
@@ -139,7 +102,7 @@ extension DefaultImportUseCase {
         }
     }
 
-    fileprivate func isDataAFeed(_ data: String) -> Int? {
+    private func isDataAFeed(_ data: String) -> Int? {
         var ret: Int?
         let feedParser = FeedParser(string: data)
         _ = feedParser.success {
@@ -149,7 +112,7 @@ extension DefaultImportUseCase {
         return ret
     }
 
-    fileprivate func canonicalURLForFeedAtURL(_ url: URL) -> URL {
+    private func canonicalURLForFeedAtURL(_ url: URL) -> URL {
         guard url.isFileURL else { return url }
         let string = (try? String(contentsOf: url)) ?? ""
         var ret: URL! = nil
@@ -159,7 +122,7 @@ extension DefaultImportUseCase {
         return ret
     }
 
-    fileprivate func isDataAnOPML(_ data: String) -> Int? {
+    private func isDataAnOPML(_ data: String) -> Int? {
         var ret: Int?
         let opmlParser = Parser(text: data)
         _ = opmlParser.success {
@@ -169,7 +132,7 @@ extension DefaultImportUseCase {
         return ret
     }
 
-    fileprivate func feedsInWebPage(_ url: URL, webPage: String) -> [URL] {
+    private func feedsInWebPage(_ url: URL, webPage: String) -> [URL] {
         var ret: [URL] = []
         let webPageParser = WebPageParser(string: webPage) {
             ret = $0.map { URL(string: $0.absoluteString, relativeTo: url)?.absoluteURL ?? $0 as URL }

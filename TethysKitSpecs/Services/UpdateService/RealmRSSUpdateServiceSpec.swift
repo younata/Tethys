@@ -128,6 +128,16 @@ final class RealmRSSUpdateServiceSpec: QuickSpec {
                             expect(article.published).to(equal(dateFormatter.date(from: "2018-09-16T00:00:00Z")!))
                             expect(article.identifier).to(beNil())
                             expect(article.link).to(equal("http://younata.github.io/2018/09/16/MKOverlayRenderer-drawing-lines/"))
+                            expect(article.authors).to(haveCount(1))
+                        }
+
+                        it("inserts any new authors into the list") {
+                            let authors = realm.objects(RealmAuthor.self)
+
+                            expect(authors).to(haveCount(1))
+
+                            expect(authors.first?.email).to(beNil())
+                            expect(authors.first?.name).to(equal("Rachel Brindle"))
                         }
 
                         it("resolves the promise with the now-updated feed") {
@@ -150,6 +160,10 @@ final class RealmRSSUpdateServiceSpec: QuickSpec {
 
                             it("doesn't add duplicate articles") {
                                 expect(realmFeed.articles).to(haveCount(10))
+                            }
+
+                            it("doesn't add duplicate authors") {
+                                expect(realm.objects(RealmAuthor.self)).to(haveCount(1))
                             }
                         }
                     }

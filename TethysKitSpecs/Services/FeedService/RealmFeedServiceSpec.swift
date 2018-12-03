@@ -232,6 +232,55 @@ final class RealmFeedServiceSpec: QuickSpec {
             }
         }
 
+        describe("subscribe(to:)") {
+            var future: Future<Result<Feed, TethysError>>!
+
+            let url = URL(string: "https://example.com/feed")!
+
+            context("if a feed with that url already exists in the database") {
+                var existingFeed: RealmFeed!
+                beforeEach {
+                    write {
+                        existingFeed = RealmFeed()
+                        existingFeed.title = "Feed"
+                        existingFeed.url = "https://example.com/feed"
+
+                        realm.add(existingFeed)
+                    }
+
+                    future = subject.subscribe(to: url)
+                }
+
+                it("resolves the promise with the feed") {
+                    expect(future.value?.value).to(equal(Feed(realmFeed: existingFeed)))
+                }
+            }
+
+            context("if no feed with that url exists in the database") {
+                beforeEach {
+                    future = subject.subscribe(to: url)
+                }
+
+                it("creates a dummy feed with that url as it's only contents") {
+                    expect(realm.objects(RealmFeed.self)).to(haveCount(4))
+
+                    let feed = realm.objects(RealmFeed.self).first { $0.url == url.absoluteString }
+
+                    expect(feed).toNot(beNil())
+                    expect(feed?.title).to(equal(""))
+                    expect(feed?.summary).to(equal(""))
+                }
+
+                it("resolves the promise with the dummy feed") {
+                    expect(future.value?.value).to(equal(Feed(
+                        title: "",
+                        url: url,
+                        summary: "", tags: []
+                    )))
+                }
+            }
+        }
+
         describe("readAll(of:)") {
             var future: Future<Result<Void, TethysError>>!
 

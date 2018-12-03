@@ -63,7 +63,8 @@ final class RealmRSSUpdateService: UpdateService {
                 return
             }
             promise.resolve(.success($0))
-        }.failure { _ in
+        }.failure { error in
+            dump(error)
             guard promise.future.value == nil else {
                 print("Error: Resolving promise twice - currently \(String(describing: promise.future.value))")
                 return
@@ -176,6 +177,29 @@ final class RealmRSSUpdateService: UpdateService {
         realmArticle.updatedAt = article.updated
         realmArticle.summary = article.summary
         realmArticle.content = article.content
+
+        article.authors.forEach {
+            self.upsert(author: $0, to: realmArticle)
+        }
+    }
+
+    private func upsert(author: Muon.Author, to article: RealmArticle) {
+        let realmAuthor: RealmAuthor
+        let predicate = NSPredicate(format: "name == %@", author.name)
+
+        if let existingAuthor = self.realmProvider.realm().objects(RealmAuthor.self).filter(predicate).first {
+            realmAuthor = existingAuthor
+        } else {
+            realmAuthor = RealmAuthor()
+            realmAuthor.name = author.name
+            self.realmProvider.realm().add(realmAuthor)
+        }
+
+        realmAuthor.email = author.email?.absoluteString ?? realmAuthor.email
+
+        if !article.authors.contains(realmAuthor) {
+            article.authors.append(realmAuthor)
+        }
     }
 
     private func resolve<T>(promise: Promise<Result<T, TethysError>>, with value: T? = nil, error: TethysError? = nil) {

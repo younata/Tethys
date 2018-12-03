@@ -20,6 +20,15 @@ final class FakeFeedService: FeedService {
         return promise.future
     }
 
+    private(set) var subscribeCalls: [URL] = []
+    private(set) var subscribePromises: [Promise<Result<Feed, TethysError>>] = []
+    func subscribe(to url: URL) -> Future<Result<Feed, TethysError>> {
+        self.subscribeCalls.append(url)
+        let promise = Promise<Result<Feed, TethysError>>()
+        self.subscribePromises.append(promise)
+        return promise.future
+    }
+
     private(set) var readAllOfFeedCalls: [Feed] = []
     private(set) var readAllOfFeedPromises: [Promise<Result<Void, TethysError>>] = []
     func readAll(of feed: Feed) -> Future<Result<Void, TethysError>> {

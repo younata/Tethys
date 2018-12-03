@@ -4,18 +4,6 @@ import Result
 @testable import TethysKit
 
 class FakeDatabaseUseCase: DatabaseUseCase {
-    var _databaseUpdateAvailable = false
-    func databaseUpdateAvailable() -> Bool {
-        return self._databaseUpdateAvailable
-    }
-
-    var performDatabaseUpdatesProgress: ((Double) -> Void)?
-    var perfomDatabaseUpdatesCallback: (() -> Void)?
-    func performDatabaseUpdates(_ progress: @escaping (Double) -> Void, callback: @escaping () -> Void) {
-        self.performDatabaseUpdatesProgress = progress
-        self.perfomDatabaseUpdatesCallback = callback
-    }
-
     var allTagsPromises: [Promise<Result<[String], TethysError>>] = []
     func allTags() -> Future<Result<[String], TethysError>> {
         let promise = Promise<Result<[String], TethysError>>()

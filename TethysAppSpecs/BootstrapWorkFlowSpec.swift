@@ -8,14 +8,10 @@ class BootstrapWorkFlowSpec: QuickSpec {
     override func spec() {
         var subject: BootstrapWorkFlow!
         var window: UIWindow!
-        var feedRepository: FakeDatabaseUseCase!
-        var migrationUseCase: FakeMigrationUseCase!
         var splitViewController: SplitViewController!
 
         beforeEach {
             window = UIWindow()
-            feedRepository = FakeDatabaseUseCase()
-            migrationUseCase = FakeMigrationUseCase()
 
             splitViewController = splitViewControllerFactory()
 
@@ -24,10 +20,7 @@ class BootstrapWorkFlowSpec: QuickSpec {
 
             subject = BootstrapWorkFlow(
                 window: window,
-                feedRepository: feedRepository,
-                migrationUseCase: migrationUseCase,
                 splitViewController: splitViewController,
-                migrationViewController: { migrationViewControllerFactory() },
                 feedsTableViewController: {
                     feedsTableViewControllerFactory(
                         articleListController: { feed in
@@ -113,83 +106,23 @@ class BootstrapWorkFlowSpec: QuickSpec {
             }
         }
 
-        context("on first application launch") {
-            pending("it runs the user through the onboarding workflow") {}
+        context("when not provided with an article and a feed") {
+            beforeEach {
+                subject.begin()
+            }
+
+            itBehavesLikeItHasAFeedsList()
         }
 
-        context("on subsequent launches") {
-            context("if a migration is available") {
-                beforeEach {
-                    feedRepository._databaseUpdateAvailable = true
+        describe("when provided with an article and a feed") {
+            let feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil)
+            let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, feed: nil, flags: [])
 
-                    subject.begin()
-                }
-
-                it("begins the migration use case") {
-                    expect(migrationUseCase.beginWorkCallCount) == 1
-                }
-
-                it("shows a migration view controller as the root view controller") {
-                    expect(window.rootViewController).to(beAnInstanceOf(MigrationViewController.self))
-                }
-
-                describe("when the migration finishes") {
-                    beforeEach {
-                        migrationUseCase.beginWorkArgsForCall(0)()
-                    }
-
-                    itBehavesLikeItHasAFeedsList()
-                }
+            beforeEach {
+                subject.begin((feed, article))
             }
 
-            context("otherwise") {
-                beforeEach {
-                    feedRepository._databaseUpdateAvailable = false
-
-                    subject.begin()
-                }
-
-                itBehavesLikeItHasAFeedsList()
-            }
-
-            describe("when provided with an article and a feed") {
-                let feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil)
-                let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, feed: nil, flags: [])
-
-                context("if a migration is available") {
-                    beforeEach {
-                        feedRepository._databaseUpdateAvailable = true
-
-                        subject.begin((feed, article))
-                    }
-
-                    it("begins the migration use case") {
-                        expect(migrationUseCase.beginWorkCallCount) == 1
-                    }
-
-                    it("shows a migration view controller as the root view controller") {
-                        expect(window.rootViewController).to(beAnInstanceOf(MigrationViewController.self))
-                    }
-
-                    describe("when the migration finishes") {
-                        beforeEach {
-                            migrationUseCase.beginWorkArgsForCall(0)()
-                        }
-
-                        itBehavesLikeItHasAFeedsList(feed: feed, article: article)
-                    }
-                }
-
-                context("otherwise") {
-                    beforeEach {
-                        feedRepository._databaseUpdateAvailable = false
-
-                        subject.begin((feed, article))
-                    }
-
-                    itBehavesLikeItHasAFeedsList(feed: feed, article: article)
-                }
-            }
+            itBehavesLikeItHasAFeedsList(feed: feed, article: article)
         }
     }
 }

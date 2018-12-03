@@ -74,12 +74,6 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
             feeds = []
         }
 
-        describe("databaseUpdateAvailable") {
-            it("returns false by default") {
-                expect(subject.databaseUpdateAvailable()) == false
-            }
-        }
-
         describe("as a DataRetriever") {
             describe("allTags") {
                 var calledHandler = false

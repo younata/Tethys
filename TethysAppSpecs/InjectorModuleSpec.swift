@@ -137,9 +137,6 @@ final class InjectorModuleSpec: QuickSpec {
 
             exists(HTMLViewController.self)
 
-            exists(MigrationViewController.self)
-
-
             exists(SettingsViewController.self)
             exists(SplitViewController.self)
 

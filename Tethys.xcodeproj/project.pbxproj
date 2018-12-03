@@ -35,9 +35,6 @@
 		890B78C81C77FD200066E201 /* ArticleUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890B78C71C77FD200066E201 /* ArticleUseCase.swift */; };
 		890B78CA1C78E8650066E201 /* ArticleUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890B78C91C78E8650066E201 /* ArticleUseCaseSpec.swift */; };
 		890C8D4F1DE4096C00A037D7 /* icons.html in Resources */ = {isa = PBXBuildFile; fileRef = 890C8D4E1DE4096C00A037D7 /* icons.html */; };
-		89146E3F1C88C6A200EC8F10 /* MigrationUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC101C7D781E006B70F5 /* MigrationUseCaseSpec.swift */; };
-		89146E401C88C6A700EC8F10 /* MigrationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC0A1C7D432F006B70F5 /* MigrationUseCase.swift */; };
-		89146E411C88C6A800EC8F10 /* MigrationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC0A1C7D432F006B70F5 /* MigrationUseCase.swift */; };
 		89146E421C88C70600EC8F10 /* ImportUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB001C6F9DFB001C0189 /* ImportUseCase.swift */; };
 		89146E431C88C70700EC8F10 /* ImportUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB001C6F9DFB001C0189 /* ImportUseCase.swift */; };
 		89146E441C88C73200EC8F10 /* ImportUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB021C6FA022001C0189 /* ImportUseCaseSpec.swift */; };
@@ -189,7 +186,6 @@
 		8983205B1DC121B400E32412 /* FakeImportables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */; };
 		8983205C1DC121B900E32412 /* TethysErrorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D427DF1CF540560093D186 /* TethysErrorSpec.swift */; };
 		8983205D1DC121BF00E32412 /* InMemoryDataServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89500B221CDEA26E004548C3 /* InMemoryDataServiceSpec.swift */; };
-		8983205E1DC121D000E32412 /* MigrationUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC101C7D781E006B70F5 /* MigrationUseCaseSpec.swift */; };
 		8983205F1DC121D600E32412 /* DatabaseUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89628BE21CE1805E00B4C624 /* DatabaseUseCaseSpec.swift */; };
 		8983208D1DC13B9B00E32412 /* WorkFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8983208C1DC13B9B00E32412 /* WorkFlow.framework */; };
 		898320941DC13BC000E32412 /* CBGPromise.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8983208E1DC13BC000E32412 /* CBGPromise.framework */; };
@@ -208,8 +204,6 @@
 		898320AE1DC13F1E00E32412 /* WorkFlow.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898320A71DC13F1E00E32412 /* WorkFlow.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		898320B21DC1411D00E32412 /* PureLayout.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898320B11DC1411D00E32412 /* PureLayout.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		898320B31DC1413200E32412 /* PureLayout.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898320B11DC1411D00E32412 /* PureLayout.framework */; };
-		898320C01DC1442E00E32412 /* FakeMigrationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC081C7D431D006B70F5 /* FakeMigrationUseCase.swift */; };
-		898320C11DC1442F00E32412 /* FakeMigrationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC081C7D431D006B70F5 /* FakeMigrationUseCase.swift */; };
 		898320C21DC1447A00E32412 /* FakeUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C676531BA264F40037A224 /* FakeUserDefaults.swift */; };
 		898320C31DC14D3D00E32412 /* CBGPromise.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898320B41DC142C600E32412 /* CBGPromise.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		898320C51DC14D3D00E32412 /* Kanna.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 898320B61DC142C600E32412 /* Kanna.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -354,9 +348,6 @@
 		89CBDBF51C7D1436006B70F5 /* DataServiceFactorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDBF31C7D1436006B70F5 /* DataServiceFactorySpec.swift */; };
 		89CBDBF91C7D32EE006B70F5 /* FakeDataServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDBF81C7D32EE006B70F5 /* FakeDataServiceFactory.swift */; };
 		89CBDBFA1C7D32EE006B70F5 /* FakeDataServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDBF81C7D32EE006B70F5 /* FakeDataServiceFactory.swift */; };
-		89CBDC011C7D41C9006B70F5 /* MigrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC001C7D41C9006B70F5 /* MigrationViewController.swift */; };
-		89CBDC051C7D42D7006B70F5 /* MigrationViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC041C7D42D7006B70F5 /* MigrationViewControllerSpec.swift */; };
-		89CBDC091C7D431D006B70F5 /* FakeMigrationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC081C7D431D006B70F5 /* FakeMigrationUseCase.swift */; };
 		89CBDC171C7D8501006B70F5 /* BootstrapWorkFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC161C7D8501006B70F5 /* BootstrapWorkFlow.swift */; };
 		89CBDC2C1C7E60B7006B70F5 /* BootstrapWorkFlowSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC2B1C7E60B7006B70F5 /* BootstrapWorkFlowSpec.swift */; };
 		89CC82001B46198200648367 /* SearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C61B40D2AC0097045A /* SearchIndex.swift */; };
@@ -783,11 +774,6 @@
 		89CBDBF01C7D1206006B70F5 /* DataServiceFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataServiceFactory.swift; path = ../Services/DataServiceFactory.swift; sourceTree = "<group>"; };
 		89CBDBF31C7D1436006B70F5 /* DataServiceFactorySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataServiceFactorySpec.swift; sourceTree = "<group>"; };
 		89CBDBF81C7D32EE006B70F5 /* FakeDataServiceFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDataServiceFactory.swift; sourceTree = "<group>"; };
-		89CBDC001C7D41C9006B70F5 /* MigrationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MigrationViewController.swift; sourceTree = "<group>"; };
-		89CBDC041C7D42D7006B70F5 /* MigrationViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MigrationViewControllerSpec.swift; sourceTree = "<group>"; };
-		89CBDC081C7D431D006B70F5 /* FakeMigrationUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeMigrationUseCase.swift; sourceTree = "<group>"; };
-		89CBDC0A1C7D432F006B70F5 /* MigrationUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MigrationUseCase.swift; sourceTree = "<group>"; };
-		89CBDC101C7D781E006B70F5 /* MigrationUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MigrationUseCaseSpec.swift; sourceTree = "<group>"; };
 		89CBDC161C7D8501006B70F5 /* BootstrapWorkFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BootstrapWorkFlow.swift; sourceTree = "<group>"; };
 		89CBDC2B1C7E60B7006B70F5 /* BootstrapWorkFlowSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BootstrapWorkFlowSpec.swift; sourceTree = "<group>"; };
 		89CC82031B461A2B00648367 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
@@ -967,7 +953,6 @@
 				89628BDE1CE1742600B4C624 /* DatabaseUseCase.swift */,
 				898C48CA1B425F8C0097045A /* DefaultDatabaseUseCase.swift */,
 				8903EB001C6F9DFB001C0189 /* ImportUseCase.swift */,
-				89CBDC0A1C7D432F006B70F5 /* MigrationUseCase.swift */,
 				8903F5B71D403FEF00546099 /* UpdateUseCase.swift */,
 			);
 			path = "Use Cases";
@@ -977,7 +962,6 @@
 			isa = PBXGroup;
 			children = (
 				8903EB021C6FA022001C0189 /* ImportUseCaseSpec.swift */,
-				89CBDC101C7D781E006B70F5 /* MigrationUseCaseSpec.swift */,
 				8903F5BF1D412EF500546099 /* UpdateUseCaseSpec.swift */,
 			);
 			path = "Use Cases";
@@ -1379,7 +1363,6 @@
 				895AC5251C80BC0700A5F6A1 /* Feeds */,
 				89A3A8C71DEF9404002AF9B5 /* Generic */,
 				89CB98BD1B13945500C87160 /* Importing Feeds */,
-				89CBDC031C7D42C2006B70F5 /* Migration */,
 				895AC5261C80BC1500A5F6A1 /* Settings */,
 				899823AA1B2C837400818755 /* Tags */,
 			);
@@ -1447,7 +1430,6 @@
 				89C830B119D7D2B7009924DA /* Feeds */,
 				89CB98BB1B13921200C87160 /* Frameworks */,
 				89F98BA21BA079DE005C3CA8 /* Generic */,
-				89CBDC021C7D428E006B70F5 /* Migration */,
 				896320931C1779F900B7C980 /* Repositories */,
 				896320921C1779DE00B7C980 /* Settings */,
 				89C8307619D730E9009924DA /* Supporting Files */,
@@ -1565,22 +1547,6 @@
 				899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */,
 			);
 			path = "Importing Feeds";
-			sourceTree = "<group>";
-		};
-		89CBDC021C7D428E006B70F5 /* Migration */ = {
-			isa = PBXGroup;
-			children = (
-				89CBDC001C7D41C9006B70F5 /* MigrationViewController.swift */,
-			);
-			path = Migration;
-			sourceTree = "<group>";
-		};
-		89CBDC031C7D42C2006B70F5 /* Migration */ = {
-			isa = PBXGroup;
-			children = (
-				89CBDC041C7D42D7006B70F5 /* MigrationViewControllerSpec.swift */,
-			);
-			path = Migration;
 			sourceTree = "<group>";
 		};
 		89D2566F1C3CC011004066B9 /* Fakes */ = {
@@ -1732,7 +1698,6 @@
 				89EA6C351B4B2D8400456892 /* FakeDefaultDatabaseUseCase.swift */,
 				89C676551BA28FE60037A224 /* FakeFileManager.swift */,
 				8903EB0E1C703570001C0189 /* FakeImportUseCase.swift */,
-				89CBDC081C7D431D006B70F5 /* FakeMigrationUseCase.swift */,
 				898F670B1B000451004A7BE3 /* FakeOperationQueue.swift */,
 				898C48C11B3A7CCC0097045A /* FakeOPMLService.swift */,
 				89C676531BA264F40037A224 /* FakeUserDefaults.swift */,
@@ -2244,7 +2209,6 @@
 				89CC82061B461A5500648367 /* KitModule.swift in Sources */,
 				8978C531219A7FDC00D702BB /* ArticleService.swift in Sources */,
 				894E755421B316F200B4A0A1 /* RealmRSSUpdateService.swift in Sources */,
-				89146E401C88C6A700EC8F10 /* MigrationUseCase.swift in Sources */,
 				89FA3BD121A66F990026BC88 /* RealmProvider.swift in Sources */,
 				894304411B450A00000078DC /* OPMLService.swift in Sources */,
 				895AC51B1C7FF27300A5F6A1 /* RealmMigrator.swift in Sources */,
@@ -2283,7 +2247,6 @@
 				894E755821B3176000B4A0A1 /* RealmRSSUpdateServiceSpec.swift in Sources */,
 				89146E4E1C88F01F00EC8F10 /* FakeFileManager.swift in Sources */,
 				89AFF9FF1D4870F7002255E8 /* FakeImportables.swift in Sources */,
-				898320C11DC1442F00E32412 /* FakeMigrationUseCase.swift in Sources */,
 				8935F5DE1B462AD2000FFD5D /* FakeOperationQueue.swift in Sources */,
 				8935F5E11B462B8C000FFD5D /* FakeOPMLService.swift in Sources */,
 				8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */,
@@ -2299,7 +2262,6 @@
 				89500B231CDEA26E004548C3 /* InMemoryDataServiceSpec.swift in Sources */,
 				8937F6C01B79D0800044A442 /* KitModuleSpec.swift in Sources */,
 				892E77071E08459300866336 /* KVOMonitor.swift in Sources */,
-				8983205E1DC121D000E32412 /* MigrationUseCaseSpec.swift in Sources */,
 				8935F5D51B4628B3000FFD5D /* OPMLServiceSpec.swift in Sources */,
 				8984FE8F1CBAAFED0096F4B3 /* RealmMigratorSpec.swift in Sources */,
 				891754791C5B48D40036D96D /* RealmServiceSpec.swift in Sources */,
@@ -2350,7 +2312,6 @@
 				89146E431C88C70700EC8F10 /* ImportUseCase.swift in Sources */,
 				89500B251CDEA289004548C3 /* InMemoryDataService.swift in Sources */,
 				898320471DC1216B00E32412 /* KitModule.swift in Sources */,
-				89146E411C88C6A800EC8F10 /* MigrationUseCase.swift in Sources */,
 				89943208219A812C00FC6EB6 /* ArticleService.swift in Sources */,
 				898979521B70808300218498 /* OPMLService.swift in Sources */,
 				895AC51C1C7FF27300A5F6A1 /* RealmMigrator.swift in Sources */,
@@ -2382,7 +2343,6 @@
 				895AC5211C80227D00A5F6A1 /* FakeDefaultDatabaseUseCase.swift in Sources */,
 				89146E4F1C88F02000EC8F10 /* FakeFileManager.swift in Sources */,
 				8983205B1DC121B400E32412 /* FakeImportables.swift in Sources */,
-				898320C01DC1442E00E32412 /* FakeMigrationUseCase.swift in Sources */,
 				898979B71B708F0700218498 /* FakeOperationQueue.swift in Sources */,
 				898979B61B708F0000218498 /* FakeOPMLService.swift in Sources */,
 				898320561DC121B400E32412 /* FakeReachable.swift in Sources */,
@@ -2397,7 +2357,6 @@
 				8983205D1DC121BF00E32412 /* InMemoryDataServiceSpec.swift in Sources */,
 				89FA3BDF21A925D30026BC88 /* ModelFactories.swift in Sources */,
 				8937F6C11B79D0800044A442 /* KitModuleSpec.swift in Sources */,
-				89146E3F1C88C6A200EC8F10 /* MigrationUseCaseSpec.swift in Sources */,
 				898979A71B708E7800218498 /* OPMLServiceSpec.swift in Sources */,
 				8984FE901CBAAFED0096F4B3 /* RealmMigratorSpec.swift in Sources */,
 				8917547A1C5B48D40036D96D /* RealmServiceSpec.swift in Sources */,
@@ -2461,7 +2420,6 @@
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
 				8941AB7B1DC9207200A2CE5F /* HTMLViewController.swift in Sources */,
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
-				89CBDC011C7D41C9006B70F5 /* MigrationViewController.swift in Sources */,
 				8903A6251C4AB17C00E896BF /* NotificationView.swift in Sources */,
 				894D1AF31DB1EF2500E70B1A /* RefreshControl.swift in Sources */,
 				89F98BA61BA07DC6005C3CA8 /* SettingsRepository.swift in Sources */,
@@ -2502,7 +2460,6 @@
 				89EA6C361B4B2D8400456892 /* FakeDefaultDatabaseUseCase.swift in Sources */,
 				89C676561BA28FE60037A224 /* FakeFileManager.swift in Sources */,
 				8903EB0F1C703570001C0189 /* FakeImportUseCase.swift in Sources */,
-				89CBDC091C7D431D006B70F5 /* FakeMigrationUseCase.swift in Sources */,
 				898F670C1B000451004A7BE3 /* FakeOperationQueue.swift in Sources */,
 				8978C52F2199180100D702BB /* Factories.swift in Sources */,
 				89EA6C371B4B308F00456892 /* FakeOPMLService.swift in Sources */,
@@ -2519,7 +2476,6 @@
 				89FA3BDE21A925D00026BC88 /* ModelFactories.swift in Sources */,
 				899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */,
 				8941AB7D1DC9385A00A2CE5F /* HTMLViewControllerSpec.swift in Sources */,
-				89CBDC051C7D42D7006B70F5 /* MigrationViewControllerSpec.swift in Sources */,
 				89FA3BDB21A785480026BC88 /* ArticleCellControllerSpec.swift in Sources */,
 				8903A6271C4ABA7800E896BF /* NotificationViewSpec.swift in Sources */,
 				894D1AF51DB28B8E00E70B1A /* RefreshControlSpec.swift in Sources */,

@@ -99,10 +99,6 @@ private func configureServices(container: Container) {
 }
 
 private func configureUseCases(container: Container) {
-    container.register(MigrationUseCase.self) { r in
-        return DefaultMigrationUseCase(feedRepository: r.resolve(DatabaseUseCase.self)!)
-    }
-
     container.register(ImportUseCase.self) { r in
         return DefaultImportUseCase(
             httpClient: r.resolve(HTTPClient.self)!,

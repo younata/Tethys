@@ -30,8 +30,6 @@ class AppDelegateSpec: QuickSpec {
             feedService = FakeFeedService()
             container.register(FeedService.self) { _ in feedService }
 
-            container.register(MigrationUseCase.self) { _ in FakeMigrationUseCase() }
-
             analytics = FakeAnalytics()
             container.register(Analytics.self) { _ in analytics }
 

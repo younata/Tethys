@@ -103,18 +103,6 @@ func articleListControllerFactory(
     )
 }
 
-func migrationViewControllerFactory(
-    migrationUseCase: MigrationUseCase = FakeMigrationUseCase(),
-    themeRepository: ThemeRepository = themeRepositoryFactory(),
-    mainQueue: FakeOperationQueue = FakeOperationQueue()
-    ) -> MigrationViewController {
-    return MigrationViewController(
-        migrationUseCase: migrationUseCase,
-        themeRepository: themeRepository,
-        mainQueue: mainQueue
-    )
-}
-
 func settingsViewControllerFactory(
     themeRepository: ThemeRepository = themeRepositoryFactory(),
     settingsRepository: SettingsRepository = settingsRepositoryFactory(),
@@ -155,19 +143,13 @@ func blankViewControllerFactory(
 
 func bootstrapWorkFlowFactory(
     window: UIWindow = UIWindow(),
-    feedRepository: DatabaseUseCase = FakeDatabaseUseCase(),
-    migrationUseCase: MigrationUseCase = FakeMigrationUseCase(),
     splitViewController: SplitViewController = splitViewControllerFactory(),
-    migrationViewController: @escaping () -> MigrationViewController = { migrationViewControllerFactory() },
     feedsTableViewController: @escaping () -> FeedListController = { feedsTableViewControllerFactory() },
     blankViewController: @escaping () -> BlankViewController = { blankViewControllerFactory() }
     ) -> BootstrapWorkFlow {
     return BootstrapWorkFlow(
         window: window,
-        feedRepository: feedRepository,
-        migrationUseCase: migrationUseCase,
         splitViewController: splitViewController,
-        migrationViewController: migrationViewController,
         feedsTableViewController: feedsTableViewController,
         blankViewController: blankViewController
     )

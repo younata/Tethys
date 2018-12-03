@@ -3,9 +3,6 @@ import Result
 import Reachability
 
 public protocol DatabaseUseCase {
-    func databaseUpdateAvailable() -> Bool
-    func performDatabaseUpdates(_ progress: @escaping (Double) -> Void, callback: @escaping () -> Void)
-
     func allTags() -> Future<Result<[String], TethysError>>
     @available(*, deprecated, message: "Use a FeedService")
     func feeds() -> Future<Result<[Feed], TethysError>>

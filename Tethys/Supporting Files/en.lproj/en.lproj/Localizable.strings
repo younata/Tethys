@@ -54,8 +54,6 @@
 "FindFeedViewController_Error_Navigation_title" = "Unable to load page";
 "FindFeedViewController_Error_Navigation_message" = "The page at %@ failed to load";
 
-"MigrationViewController_Message" = "Optimizing your database, hang tight";
-
 "FeedViewController_Table_Header_Title" = "Title";
 "FeedViewController_Table_Header_URL" = "URL";
 "FeedViewController_Table_Header_Summary" = "Summary";

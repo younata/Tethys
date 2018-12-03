@@ -32,14 +32,6 @@ class DefaultDatabaseUseCase: DatabaseUseCase {
         self.updateUseCase = updateUseCase
     }
 
-    func databaseUpdateAvailable() -> Bool {
-        return false
-    }
-
-    func performDatabaseUpdates(_ progress: @escaping (Double) -> Void, callback: @escaping () -> Void) {
-        guard self.databaseUpdateAvailable() else { return callback() }
-    }
-
     // MARK: - DataRetriever
 
     func allTags() -> Future<Result<[String], TethysError>> {

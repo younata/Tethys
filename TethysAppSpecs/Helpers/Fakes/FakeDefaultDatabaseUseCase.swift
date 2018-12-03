@@ -4,18 +4,6 @@ import Result
 @testable import TethysKit
 
 class FakeDefaultDatabaseUseCase : DefaultDatabaseUseCase {
-    var databaseUpdateIsAvailable = false
-    override func databaseUpdateAvailable() -> Bool {
-        return self.databaseUpdateIsAvailable
-    }
-
-    var performDatabaseUpdatesProgress: ((Double) -> Void)? = nil
-    var performDatabaseUpdatesCallback: (() -> Void)? = nil
-    override func performDatabaseUpdates(_ progress: @escaping (Double) -> Void, callback: @escaping () -> Void) {
-        self.performDatabaseUpdatesProgress = progress
-        self.performDatabaseUpdatesCallback = callback
-    }
-
     var lastSavedFeed: Feed? = nil
     var saveFeedPromises: [Promise<Result<Void, TethysError>>] = []
     override func saveFeed(_ feed: Feed) -> Future<Result<Void, TethysError>> {

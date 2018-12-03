@@ -28,10 +28,7 @@ public func configure(container: Container) {
     container.register(Bootstrapper.self) { r, window, splitController in
         return BootstrapWorkFlow(
             window: window,
-            feedRepository: r.resolve(DatabaseUseCase.self)!,
-            migrationUseCase: r.resolve(MigrationUseCase.self)!,
             splitViewController: splitController,
-            migrationViewController: { r.resolve(MigrationViewController.self)! },
             feedsTableViewController: { r.resolve(FeedListController.self)! },
             blankViewController: { r.resolve(BlankViewController.self)! }
         )
@@ -120,14 +117,6 @@ private func registerViewControllers(container: Container) {
 
     container.register(HTMLViewController.self) { r in
         return HTMLViewController(themeRepository: r.resolve(ThemeRepository.self)!)
-    }
-
-    container.register(MigrationViewController.self) { r in
-        return MigrationViewController(
-            migrationUseCase: r.resolve(MigrationUseCase.self)!,
-            themeRepository: r.resolve(ThemeRepository.self)!,
-            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!
-        )
     }
 
     container.register(SettingsViewController.self) { r in

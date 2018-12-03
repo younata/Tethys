@@ -4,7 +4,7 @@ import CBGPromise
 import Result
 @testable import TethysKit
 
-class UpdateServiceSpec: QuickSpec {
+class OldUpdateServiceSpec: QuickSpec {
     override func spec() {
         var subject: OldUpdateService!
         var urlSession: FakeURLSession!

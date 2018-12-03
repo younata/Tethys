@@ -242,8 +242,8 @@
 		8989119F1C2FC903009A44E9 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898911971C2FC8E2009A44E9 /* Realm.framework */; };
 		898911A01C2FC903009A44E9 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898911981C2FC8E2009A44E9 /* RealmSwift.framework */; };
 		898911A21C30F0BE009A44E9 /* UpdateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898911A11C30F0BE009A44E9 /* UpdateService.swift */; };
-		898911C21C3267C6009A44E9 /* UpdateServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898911C11C3267C6009A44E9 /* UpdateServiceSpec.swift */; };
-		898911C31C3267D6009A44E9 /* UpdateServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898911C11C3267C6009A44E9 /* UpdateServiceSpec.swift */; };
+		898911C21C3267C6009A44E9 /* OldUpdateServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898911C11C3267C6009A44E9 /* OldUpdateServiceSpec.swift */; };
+		898911C31C3267D6009A44E9 /* OldUpdateServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898911C11C3267C6009A44E9 /* OldUpdateServiceSpec.swift */; };
 		898911C41C3267D6009A44E9 /* DataServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8999CC0E1C2E796100B81F5F /* DataServiceSpec.swift */; };
 		898911C61C3267E3009A44E9 /* UpdateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898911A11C30F0BE009A44E9 /* UpdateService.swift */; };
 		898911C71C3267E3009A44E9 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8999CC0C1C2E710F00B81F5F /* DataService.swift */; };
@@ -703,7 +703,7 @@
 		898911971C2FC8E2009A44E9 /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = ../Carthage/Build/Mac/Realm.framework; sourceTree = "<group>"; };
 		898911981C2FC8E2009A44E9 /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = ../Carthage/Build/Mac/RealmSwift.framework; sourceTree = "<group>"; };
 		898911A11C30F0BE009A44E9 /* UpdateService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateService.swift; sourceTree = "<group>"; };
-		898911C11C3267C6009A44E9 /* UpdateServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateServiceSpec.swift; sourceTree = "<group>"; };
+		898911C11C3267C6009A44E9 /* OldUpdateServiceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldUpdateServiceSpec.swift; sourceTree = "<group>"; };
 		898979241B707FAD00218498 /* TethysKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TethysKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		898979281B707FAD00218498 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8989792D1B707FAE00218498 /* TethysKitSpecs.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TethysKitSpecs.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1122,7 +1122,7 @@
 		894E755621B3175200B4A0A1 /* UpdateService */ = {
 			isa = PBXGroup;
 			children = (
-				898911C11C3267C6009A44E9 /* UpdateServiceSpec.swift */,
+				898911C11C3267C6009A44E9 /* OldUpdateServiceSpec.swift */,
 				894E755721B3176000B4A0A1 /* RealmRSSUpdateServiceSpec.swift */,
 			);
 			path = UpdateService;
@@ -2314,7 +2314,7 @@
 				8984FE8F1CBAAFED0096F4B3 /* RealmMigratorSpec.swift in Sources */,
 				891754791C5B48D40036D96D /* RealmServiceSpec.swift in Sources */,
 				89D427E01CF540560093D186 /* TethysErrorSpec.swift in Sources */,
-				898911C21C3267C6009A44E9 /* UpdateServiceSpec.swift in Sources */,
+				898911C21C3267C6009A44E9 /* OldUpdateServiceSpec.swift in Sources */,
 				8903F5C01D412EF500546099 /* UpdateUseCaseSpec.swift in Sources */,
 				895B9A1C21AA66A3003FFE46 /* FakeFeedService.swift in Sources */,
 				8903EB0C1C702FA3001C0189 /* WebPageParserSpec.swift in Sources */,
@@ -2414,7 +2414,7 @@
 				8984FE901CBAAFED0096F4B3 /* RealmMigratorSpec.swift in Sources */,
 				8917547A1C5B48D40036D96D /* RealmServiceSpec.swift in Sources */,
 				8983205C1DC121B900E32412 /* TethysErrorSpec.swift in Sources */,
-				898911C31C3267D6009A44E9 /* UpdateServiceSpec.swift in Sources */,
+				898911C31C3267D6009A44E9 /* OldUpdateServiceSpec.swift in Sources */,
 				8903F5C11D412EF500546099 /* UpdateUseCaseSpec.swift in Sources */,
 				8903EB0D1C702FA3001C0189 /* WebPageParserSpec.swift in Sources */,
 			);

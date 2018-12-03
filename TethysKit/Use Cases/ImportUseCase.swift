@@ -79,9 +79,9 @@ public final class DefaultImportUseCase: ImportUseCase {
                 return result.map { _ in Void() }
             }
         case .opml:
-            let promise = Promise<Result<Void, TethysError>>()
-            self.opmlService.importOPML(url) { _ in promise.resolve(.success()) }
-            return promise.future
+            return self.opmlService.importOPML(url).map { result in
+                return result.map { _ in Void() }
+            }
         }
     }
 

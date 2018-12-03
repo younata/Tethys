@@ -4,19 +4,19 @@ import CBGPromise
 import Result
 
 public protocol OPMLService {
-    func importOPML(_ opml: URL, completion: @escaping ([Feed]) -> Void)
+    func importOPML(_ opml: URL) -> Future<Result<AnyCollection<Feed>, TethysError>>
     func writeOPML() -> Future<Result<URL, TethysError>>
 }
 
-final class DefaultOPMLService: NSObject, OPMLService {
-    private let dataRepository: DatabaseUseCase
+final class LeptonOPMLService: NSObject, OPMLService {
+    private let feedService: FeedService
     private let mainQueue: OperationQueue
-    private let importQueue: OperationQueue
+    private let workQueue: OperationQueue
 
-    init(dataRepository: DatabaseUseCase, mainQueue: OperationQueue, importQueue: OperationQueue) {
-        self.dataRepository = dataRepository
+    init(feedService: FeedService, mainQueue: OperationQueue, importQueue: OperationQueue) {
+        self.feedService = feedService
         self.mainQueue = mainQueue
-        self.importQueue = importQueue
+        self.workQueue = importQueue
 
         super.init()
     }
@@ -35,57 +35,45 @@ final class DefaultOPMLService: NSObject, OPMLService {
         }).isEmpty == false
     }
 
-    func importOPML(_ opml: URL, completion: @escaping ([Feed]) -> Void) {
-        _ = dataRepository.feeds().then {
-            guard case let Result.success(existingFeeds) = $0 else { return }
-            do {
-                let text = try String(contentsOf: opml, encoding: String.Encoding.utf8)
-                let parser = Lepton.Parser(text: text)
-                _ = parser.success {items in
-                    var feeds: [Feed] = []
+    func importOPML(_ opml: URL) -> Future<Result<AnyCollection<Feed>, TethysError>> {
+        let promise = Promise<Result<AnyCollection<Feed>, TethysError>>()
+        let text: String
+        do {
+            text = try String(contentsOf: opml, encoding: String.Encoding.utf8)
+        } catch let error {
+            dump(error)
+            promise.resolve(.failure(.unknown))
+            return promise.future
+        }
+        let parser = Lepton.Parser(text: text)
 
-                    var feedCount = 0
+        _ = parser.success {items in
+            let futures = items.compactMap { URL(string: $0.xmlURL ?? "") }.map { self.feedService.subscribe(to: $0) }
+            Promise<Result<Feed, TethysError>>.when(futures).then { results in
+                let feeds = results.compactMap { $0.value }
 
-                    let isComplete = {
-                        if feeds.count == feedCount {
-                            self.dataRepository.updateFeeds { _ in
-                                self.mainQueue.addOperation {
-                                    completion(feeds)
-                                }
-                            }
-                        }
+                self.mainQueue.addOperation {
+                    guard feeds.isEmpty else {
+                        promise.resolve(.success(AnyCollection(feeds)))
+                        return
                     }
-
-                    for item in items {
-                        if self.feedAlreadyExists(existingFeeds, item: item) {
-                            continue
-                        }
-                        if let feedURLString = item.xmlURL, let feedURL = URL(string: feedURLString) {
-                            feedCount += 1
-                            _ = self.dataRepository.newFeed(url: feedURL) { newFeed in
-                                for tag in item.tags {
-                                    newFeed.addTag(tag)
-                                }
-                                feeds.append(newFeed)
-                                isComplete()
-                            }
-                        }
-                    }
+                    promise.resolve(.failure(TethysError.multiple(results.compactMap { $0.error })))
                 }
-                _ = parser.failure { _ in
-                    self.mainQueue.addOperation {
-                        completion([])
-                    }
-                }
-
-                self.importQueue.addOperation(parser)
-            } catch _ {
-                completion([])
             }
         }
+        _ = parser.failure { error in
+            dump(error)
+            self.mainQueue.addOperation {
+                promise.resolve(.failure(.unknown))
+            }
+        }
+
+        self.workQueue.addOperation(parser)
+
+        return promise.future
     }
 
-    private func generateOPMLContents(_ feeds: [Feed]) -> String {
+    private func generateOPMLContents(_ feeds: AnyCollection<Feed>) -> String {
         func sanitize(_ str: String?) -> String {
             if str == nil {
                 return ""
@@ -119,7 +107,7 @@ final class DefaultOPMLService: NSObject, OPMLService {
     }
 
     func writeOPML() -> Future<Result<URL, TethysError>> {
-        return self.dataRepository.feeds().map { result -> Result<URL, TethysError> in
+        return self.feedService.feeds().map { result -> Result<URL, TethysError> in
             switch result {
             case let .success(feeds):
                 let opmlString = self.generateOPMLContents(feeds)

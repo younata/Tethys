@@ -47,7 +47,6 @@ final class TethysKitURLSessionDelegate: NSObject, URLSessionDownloadDelegate {
 
 protocol UpdateService: class {
     func updateFeed(_ feed: TethysKit.Feed) -> Future<Result<TethysKit.Feed, TethysError>>
-//    func updateAll() -> Future<Result<AnyCollection<TethysKit.Feed>, TethysError>>
 }
 
 final class OldUpdateService: UpdateService, NetworkClientDelegate {

@@ -111,7 +111,7 @@ class ImportUseCaseSpec: QuickSpec {
                             future = subject.importItem(url)
                         }
 
-                        it("does not make another urlSession call") {
+                        it("does not make another network call") {
                             expect(httpClient.requests).to(haveCount(1))
                         }
 
@@ -148,13 +148,27 @@ class ImportUseCaseSpec: QuickSpec {
                         }
 
                         it("asks the opml service to import the feed list") {
-                            expect(opmlService.importOPMLURL) == url
+                            expect(opmlService.importOPMLCalls).to(equal([url]))
                         }
 
-                        it("calls the callback when the opml service finishes") {
-                            opmlService.importOPMLCompletion([])
+                        describe("when the opml service succeeds") {
+                            beforeEach {
+                                opmlService.importOPMLPromises.last?.resolve(.success(AnyCollection([])))
+                            }
 
-                            expect(future.value?.value).to(beVoid())
+                            it("resolves the promise successfully") {
+                                expect(future.value?.value).to(beVoid())
+                            }
+                        }
+
+                        describe("when the opml service fails") {
+                            beforeEach {
+                                opmlService.importOPMLPromises.last?.resolve(.failure(.database(.unknown)))
+                            }
+
+                            it("forwards the error") {
+                                expect(future.value?.error).to(equal(.database(.unknown)))
+                            }
                         }
                     }
                 }
@@ -188,7 +202,7 @@ class ImportUseCaseSpec: QuickSpec {
                             future = subject.importItem(feed1Url)
                         }
 
-                        it("does not make another urlSession call") {
+                        it("does not make another network call") {
                             expect(httpClient.requests).to(haveCount(1))
                         }
 
@@ -254,21 +268,33 @@ class ImportUseCaseSpec: QuickSpec {
                     }
 
                     context("later calling -importItem:callback: with that url") {
-                        var didImport = false
+                        var future: Future<Result<Void, TethysError>>!
                         beforeEach {
-                            _ = subject.importItem(opmlURL).then { _ in
-                                didImport = true
-                            }
+                            future = subject.importItem(opmlURL)
                         }
 
                         it("asks the opml service to import the feed list") {
-                            expect(opmlService.importOPMLURL) == opmlURL
+                            expect(opmlService.importOPMLCalls).to(equal([opmlURL]))
                         }
 
-                        it("calls the callback when the opml service finishes") {
-                            opmlService.importOPMLCompletion([])
-                            
-                            expect(didImport) == true
+                        describe("when the opml service succeeds") {
+                            beforeEach {
+                                opmlService.importOPMLPromises.last?.resolve(.success(AnyCollection([])))
+                            }
+
+                            it("resolves the promise successfully") {
+                                expect(future.value?.value).to(beVoid())
+                            }
+                        }
+
+                        describe("when the opml service fails") {
+                            beforeEach {
+                                opmlService.importOPMLPromises.last?.resolve(.failure(.database(.unknown)))
+                            }
+
+                            it("forwards the error") {
+                                expect(future.value?.error).to(equal(.database(.unknown)))
+                            }
                         }
                     }
                 }

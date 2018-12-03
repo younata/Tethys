@@ -103,8 +103,8 @@ private func configureServices(container: Container) {
     }
 
     container.register(OPMLService.self) { r in
-        return DefaultOPMLService(
-            dataRepository: r.resolve(DatabaseUseCase.self)!,
+        return LeptonOPMLService(
+            feedService: r.resolve(FeedService.self)!,
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
             importQueue: r.resolve(OperationQueue.self, name: kBackgroundQueue)!
         )

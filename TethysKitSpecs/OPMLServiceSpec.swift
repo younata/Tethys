@@ -1,95 +1,102 @@
 import Quick
 import Nimble
 import Lepton
-import CBGPromise
 import Result
+import CBGPromise
 @testable import TethysKit
 
-class DefaultOPMLServiceSpec: QuickSpec {
+class LeptonOPMLServiceSpec: QuickSpec {
     override func spec() {
         var subject: OPMLService!
 
-        var dataRepository: FakeDefaultDatabaseUseCase!
-        var importQueue: FakeOperationQueue!
+        var feedService: FakeFeedService!
+        var workQueue: FakeOperationQueue!
         var mainQueue: FakeOperationQueue!
 
-        var dataServiceFactory: FakeDataServiceFactory!
-        var dataService: InMemoryDataService!
-
         beforeEach {
-            importQueue = FakeOperationQueue()
-            importQueue.runSynchronously = true
+            feedService = FakeFeedService()
+
+            workQueue = FakeOperationQueue()
+            workQueue.runSynchronously = true
 
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
 
-            dataService = InMemoryDataService(mainQueue: mainQueue, searchIndex: FakeSearchIndex())
-
-            dataServiceFactory = FakeDataServiceFactory()
-            dataServiceFactory.currentDataService = dataService
-
-            dataRepository = FakeDefaultDatabaseUseCase(
+            subject = LeptonOPMLService(
+                feedService: feedService,
                 mainQueue: mainQueue,
-                reachable: nil,
-                dataServiceFactory: dataServiceFactory,
-                updateUseCase: FakeUpdateUseCase()
-            )
-
-            subject = DefaultOPMLService(
-                dataRepository: dataRepository,
-                mainQueue: mainQueue,
-                importQueue: importQueue
+                importQueue: workQueue
             )
         }
 
-        describe("Importing OPML Files") {
-            var feeds: [Feed] = []
+        describe("importOPML()") {
+            var future: Future<Result<AnyCollection<Feed>, TethysError>>!
             beforeEach {
                 let opmlUrl = Bundle(for: self.classForCoder).url(forResource: "test", withExtension: "opml")!
 
-                subject.importOPML(opmlUrl) {otherFeeds in
-                    feeds = otherFeeds
-                }
+                future = subject.importOPML(opmlUrl)
             }
 
-            it("makes a request to the datarepository for the list of all feeds") {
-                expect(dataRepository.feedsPromises.count) == 1
+            it("tells the feed service to import each feed in the opml file") {
+                expect(feedService.subscribeCalls).to(haveCount(3))
+
+                expect(feedService.subscribeCalls).to(contain(
+                    URL(string: "http://example.com/feedWithTag")!,
+                    URL(string: "http://example.com/previouslyImportedFeed")!,
+                    URL(string: "http://example.com/feedWithTitle")!
+                ))
             }
 
-            context("when the feeds promise succeeds") {
+            describe("if all the subscribe calls succeed") {
+                let feed1 = Feed(title: "a", url: URL(string: "http://example.com/feed1")!, summary: "", tags: [])
+                let feed2 = Feed(title: "b", url: URL(string: "http://example.com/feed2")!, summary: "", tags: [])
+                let feed3 = Feed(title: "c", url: URL(string: "http://example.com/feed3")!, summary: "", tags: [])
+
                 beforeEach {
-                    let previouslyImportedFeed = Feed(title: "imported",
-                        url: URL(string: "http://example.com/previouslyImportedFeed")!, summary: "",
-                        tags: [], articles: [], image: nil)
-                    dataRepository.feedsPromises.first?.resolve(.success([previouslyImportedFeed]))
+                    guard feedService.subscribeCalls.count == 3 else { return }
+                    feedService.subscribePromises[0].resolve(.success(feed1))
+                    feedService.subscribePromises[1].resolve(.success(feed2))
+                    feedService.subscribePromises[2].resolve(.success(feed3))
                 }
 
-                it("tells the data repository to update the feeds") {
-                    expect(dataRepository.didUpdateFeeds) == true
-                }
-
-                describe("when the data repository finishes") {
-                    beforeEach {
-                        dataRepository.updateFeedsCompletion(dataService.feeds, [])
-                    }
-
-                    it("returns a list of feeds imported") {
-                        expect(feeds.count).to(equal(2))
-                        guard feeds.count == 2 else {
-                            return
-                        }
-                        feeds.sort { $0.title < $1.title }
-                        let first = feeds[0]
-                        expect(first.url).to(equal(URL(string: "http://example.com/feedWithTag")))
-
-                        let second = feeds[1]
-                        expect(second.url).to(equal(URL(string: "http://example.com/feedWithTitle")))
-                    }
+                it("resolves the future with the collection of feeds") {
+                    expect(future.value?.value).to(haveCount(3))
+                    expect(future.value?.value).to(contain(feed1, feed2, feed3))
                 }
             }
 
-            context("when the feeds promise fails") {
-                // TODO: Implement case when feeds promise fails
+            describe("if only a handful of subscribe calls succeed") {
+                let feed1 = Feed(title: "a", url: URL(string: "http://example.com/feed1")!, summary: "", tags: [])
+                let feed3 = Feed(title: "c", url: URL(string: "http://example.com/feed3")!, summary: "", tags: [])
+
+                beforeEach {
+                    guard feedService.subscribeCalls.count == 3 else { return }
+                    feedService.subscribePromises[0].resolve(.success(feed1))
+                    feedService.subscribePromises[1].resolve(.failure(.unknown))
+                    feedService.subscribePromises[2].resolve(.success(feed3))
+                }
+
+                it("resolves the future with the collection of successful feeds") {
+                    expect(future.value?.value).to(haveCount(2))
+                    expect(future.value?.value).to(contain(feed1, feed3))
+                }
+            }
+
+            describe("if none of the subscribe calls succeed") {
+                beforeEach {
+                    guard feedService.subscribeCalls.count == 3 else { return }
+                    feedService.subscribePromises[0].resolve(.failure(.database(.unknown)))
+                    feedService.subscribePromises[1].resolve(.failure(.unknown))
+                    feedService.subscribePromises[2].resolve(.failure(.http(503)))
+                }
+
+                it("resolves the future noting each error") {
+                    expect(future.value?.error).to(equal(TethysError.multiple([
+                        TethysError.database(.unknown),
+                        TethysError.unknown,
+                        TethysError.http(503)
+                    ])))
+                }
             }
         }
 
@@ -106,8 +113,8 @@ class DefaultOPMLServiceSpec: QuickSpec {
                 let _ = try? fileManager.removeItem(atPath: file)
             }
 
-            it("makes a request to the datarepository for the list of all feeds") {
-                expect(dataRepository.feedsPromises.count) == 1
+            it("asks the feed service for the list of all feeds") {
+                expect(feedService.feedsPromises.count) == 1
             }
 
             context("when the feeds promise succeeds") {
@@ -116,7 +123,7 @@ class DefaultOPMLServiceSpec: QuickSpec {
                         tags: ["a", "b", "c"], articles: [], image: nil)
                     let feed3 = Feed(title: "e", url: URL(string: "http://example.com/otherfeed")!, summary: "",
                         tags: ["dad"], articles: [], image: nil)
-                    dataRepository.feedsPromises.first?.resolve(.success([feed1, feed3]))
+                    feedService.feedsPromises.last?.resolve(.success(AnyCollection([feed1, feed3])))
                 }
 
                 it("resolves the promise with a valid opml file") {
@@ -150,7 +157,7 @@ class DefaultOPMLServiceSpec: QuickSpec {
 
             context("when the feeds promise fails") {
                 it("forwards the promise as the error") {
-                    dataRepository.feedsPromises.first?.resolve(.failure(.unknown))
+                    feedService.feedsPromises.last?.resolve(.failure(.unknown))
 
                     expect(writeOPMLFuture.value?.error) == TethysError.unknown
                 }

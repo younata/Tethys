@@ -4,11 +4,14 @@ import CBGPromise
 import Result
 
 class FakeOPMLService: OPMLService {
-    var importOPMLURL : URL? = nil
+    var importOPMLCalls: [URL] = []
+    var importOPMLPromises: [Promise<Result<AnyCollection<Feed>, TethysError>>] = []
     var importOPMLCompletion : ([Feed]) -> Void = {_ in }
-    func importOPML(_ opml: URL, completion: @escaping ([Feed]) -> Void) {
-        importOPMLURL = opml
-        importOPMLCompletion = completion
+    func importOPML(_ opml: URL) -> Future<Result<AnyCollection<Feed>, TethysError>> {
+        self.importOPMLCalls.append(opml)
+        let promise = Promise<Result<AnyCollection<Feed>, TethysError>>()
+        self.importOPMLPromises.append(promise)
+        return promise.future
     }
 
     var didReceiveWriteOPML = false
